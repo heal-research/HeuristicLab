@@ -36,9 +36,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
 
     public QuadraticAssignmentProblemView() {
       InitializeComponent();
-      Controls.Remove(parameterCollectionView);
-      parameterCollectionView.Dock = DockStyle.Fill;
-      problemTabPage.Controls.Add(parameterCollectionView);
     }
 
     protected override void RegisterContentEvents() {

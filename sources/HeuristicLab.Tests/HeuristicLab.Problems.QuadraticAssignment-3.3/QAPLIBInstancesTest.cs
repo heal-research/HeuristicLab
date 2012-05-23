@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Problems.Instances.QAPLIB;
@@ -175,7 +174,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
       var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();
       var failedInstances = new StringBuilder();
-      string tempPath = Path.GetTempPath();
 
       var instances = provider.GetDataDescriptors();
       Assert.IsTrue(instances.Any(), "No instances could be found.");
@@ -195,7 +193,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
       var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();
       var failedInstances = new StringBuilder();
-      string tempPath = Path.GetTempPath();
 
       var instances = provider.GetDataDescriptors();
       Assert.IsTrue(instances.Any(), "No instances could be found.");

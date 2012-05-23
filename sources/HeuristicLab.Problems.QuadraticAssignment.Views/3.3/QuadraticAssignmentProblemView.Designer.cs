@@ -67,8 +67,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 3);
-      this.parameterCollectionView.Size = new System.Drawing.Size(497, 269);
+      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+      this.parameterCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.parameterCollectionView.Location = new System.Drawing.Point(3, 3);
+      this.parameterCollectionView.Size = new System.Drawing.Size(497, 274);
       // 
       // nameTextBox
       // 
@@ -77,15 +79,15 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.problemTabPage);
       this.tabControl.Controls.Add(this.visualizationTabPage);
-      this.tabControl.Location = new System.Drawing.Point(0, 29);
+      this.tabControl.Location = new System.Drawing.Point(0, 27);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(511, 304);
+      this.tabControl.Size = new System.Drawing.Size(511, 306);
       this.tabControl.TabIndex = 8;
       // 
       // problemTabPage
@@ -94,7 +96,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.problemTabPage.Location = new System.Drawing.Point(4, 22);
       this.problemTabPage.Name = "problemTabPage";
       this.problemTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.problemTabPage.Size = new System.Drawing.Size(503, 278);
+      this.problemTabPage.Size = new System.Drawing.Size(503, 280);
       this.problemTabPage.TabIndex = 0;
       this.problemTabPage.Text = "Problem";
       this.problemTabPage.UseVisualStyleBackColor = true;
@@ -105,7 +107,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.visualizationTabPage.Location = new System.Drawing.Point(4, 22);
       this.visualizationTabPage.Name = "visualizationTabPage";
       this.visualizationTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.visualizationTabPage.Size = new System.Drawing.Size(503, 278);
+      this.visualizationTabPage.Size = new System.Drawing.Size(503, 280);
       this.visualizationTabPage.TabIndex = 1;
       this.visualizationTabPage.Text = "Visualization";
       this.visualizationTabPage.UseVisualStyleBackColor = true;
@@ -117,7 +119,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.qapView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.qapView.Location = new System.Drawing.Point(3, 3);
       this.qapView.Name = "qapView";
-      this.qapView.Size = new System.Drawing.Size(497, 272);
+      this.qapView.Size = new System.Drawing.Size(497, 245);
       this.qapView.TabIndex = 0;
       this.qapView.Weights = null;
       // 
@@ -127,7 +129,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Name = "QuadraticAssignmentProblemView";
       this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);
-      this.problemInstanceSplitContainer.Panel1.PerformLayout();
       this.problemInstanceSplitContainer.Panel2.ResumeLayout(false);
       this.problemInstanceSplitContainer.Panel2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).EndInit();

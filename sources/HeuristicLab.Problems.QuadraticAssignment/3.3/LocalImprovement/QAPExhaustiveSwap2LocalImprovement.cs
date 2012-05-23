@@ -99,14 +99,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       return new QAPExhaustiveSwap2LocalImprovement(this, cloner);
     }
 
-    public override IOperation Apply() {
-      int maxIterations = MaximumIterationsParameter.ActualValue.Value;
-      Permutation assignment = AssignmentParameter.ActualValue;
-      bool maximization = MaximizationParameter.ActualValue.Value;
-      DoubleMatrix weights = WeightsParameter.ActualValue;
-      DoubleMatrix distances = DistancesParameter.ActualValue;
-
-      double evaluatedSolutions = 0.0;
+    public static double Improve(Permutation assignment, double quality, DoubleMatrix weights, DoubleMatrix distances, bool maximization, int maxIterations, out double evaluatedSolutions) {
+      evaluatedSolutions = 0.0;
       double evalSolPerMove = 4.0 / assignment.Length;
 
       for (int i = 0; i < maxIterations; i++) {
@@ -123,9 +117,22 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         }
         if (bestMove == null) break;
         Swap2Manipulator.Apply(assignment, bestMove.Index1, bestMove.Index2);
-        QualityParameter.ActualValue.Value += bestQuality;
+        quality += bestQuality;
       }
-      EvaluatedSolutionsParameter.ActualValue.Value += (int)Math.Ceiling(evaluatedSolutions);
+      return quality;
+    }
+
+    public override IOperation Apply() {
+      int maxIterations = MaximumIterationsParameter.ActualValue.Value;
+      Permutation assignment = AssignmentParameter.ActualValue;
+      bool maximization = MaximizationParameter.ActualValue.Value;
+      DoubleMatrix weights = WeightsParameter.ActualValue;
+      DoubleMatrix distances = DistancesParameter.ActualValue;
+      double quality = QualityParameter.ActualValue.Value;
+
+      double evaluations;
+      QualityParameter.ActualValue.Value = Improve(assignment, quality, weights, distances, maximization, maxIterations, out evaluations);
+      EvaluatedSolutionsParameter.ActualValue.Value += (int)Math.Ceiling(evaluations);
       return base.Apply();
     }
   }
