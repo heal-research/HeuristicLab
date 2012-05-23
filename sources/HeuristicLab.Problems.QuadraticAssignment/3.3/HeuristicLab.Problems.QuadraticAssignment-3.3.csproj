@@ -113,6 +113,7 @@
     <Compile Include="Analyzers\BestQAPSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\QAPAlleleFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\QAPPopulationDiversityAnalyzer.cs" />
+    <Compile Include="BoundsCalculators\GilmoreLawlerBoundCalculator.cs" />
     <Compile Include="Evaluators\QAPScrambleMoveEvaluator.cs" />
     <Compile Include="Evaluators\QAPSwap2MoveEvaluator.cs" />
     <Compile Include="Evaluators\QAPEvaluator.cs" />
@@ -200,6 +201,10 @@
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.LinearAssignment\3.3\HeuristicLab.Problems.LinearAssignment-3.3.csproj">
+      <Project>{7250653F-DE83-4069-8D34-8050E8E45EA1}</Project>
+      <Name>HeuristicLab.Problems.LinearAssignment-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

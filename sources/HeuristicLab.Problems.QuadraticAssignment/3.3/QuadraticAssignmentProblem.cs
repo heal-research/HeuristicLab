@@ -59,6 +59,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public IValueParameter<DoubleMatrix> DistancesParameter {
       get { return (IValueParameter<DoubleMatrix>)Parameters["Distances"]; }
     }
+    public IValueParameter<DoubleValue> LowerBoundParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["LowerBound"]; }
+    }
+    public IValueParameter<DoubleValue> AverageQualityParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["AverageQuality"]; }
+    }
     #endregion
 
     #region Properties
@@ -77,6 +83,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public DoubleMatrix Distances {
       get { return DistancesParameter.Value; }
       set { DistancesParameter.Value = value; }
+    }
+    public DoubleValue LowerBound {
+      get { return LowerBoundParameter.Value; }
+      set { LowerBoundParameter.Value = value; }
+    }
+    public DoubleValue AverageQuality {
+      get { return AverageQualityParameter.Value; }
+      set { AverageQualityParameter.Value = value; }
     }
 
     private BestQAPSolutionAnalyzer BestQAPSolutionAnalyzer {
@@ -104,10 +118,13 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities.", new DoubleMatrix(5, 5)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", new DoubleMatrix(5, 5)));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("LowerBound", "The Gilmore-Lawler lower bound to the solution quality."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
 
       Maximization.Value = false;
       MaximizationParameter.Hidden = true;
 
+      WeightsParameter.GetsCollected = false;
       Weights = new DoubleMatrix(new double[,] {
         { 0, 1, 0, 0, 1 },
         { 1, 0, 1, 0, 0 },
@@ -116,6 +133,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         { 1, 0, 0, 1, 0 }
       });
 
+      DistancesParameter.GetsCollected = false;
       Distances = new DoubleMatrix(new double[,] {
         {   0, 360, 582, 582, 360 },
         { 360,   0, 360, 582, 582 },
@@ -152,8 +170,16 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         Parameters.Remove("DistanceMatrix");
         Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", d));
       }
-      RegisterEventHandlers();
+      if (!Parameters.ContainsKey("LowerBound")) {
+        Parameters.Add(new OptionalValueParameter<DoubleValue>("LowerBound", "The Gilmore-Lawler lower bound to the solution quality."));
+        LowerBound = new DoubleValue(GilmoreLawlerBoundCalculator.CalculateLowerBound(Weights, Distances));
+      }
+      if (!Parameters.ContainsKey("AverageQuality")) {
+        Parameters.Add(new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
+        AverageQuality = new DoubleValue(Weights.Average() * Distances.Average() * Weights.Rows * Weights.Rows);
+      }
       #endregion
+      RegisterEventHandlers();
     }
 
     #region Events
@@ -185,6 +211,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     private void WeightsParameter_ValueChanged(object sender, EventArgs e) {
       Weights.RowsChanged += new EventHandler(Weights_RowsChanged);
       Weights.ColumnsChanged += new EventHandler(Weights_ColumnsChanged);
+      Weights.ToStringChanged += new EventHandler(Weights_ToStringChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
       ParameterizeOperators();
@@ -210,9 +237,13 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         AdjustDistanceMatrix();
       }
     }
+    private void Weights_ToStringChanged(object sender, EventArgs e) {
+      UpdateParameterValues();
+    }
     private void DistancesParameter_ValueChanged(object sender, EventArgs e) {
       Distances.RowsChanged += new EventHandler(Distances_RowsChanged);
       Distances.ColumnsChanged += new EventHandler(Distances_ColumnsChanged);
+      Distances.ToStringChanged += new EventHandler(Distances_ToStringChanged);
       ParameterizeSolutionCreator();
       ParameterizeEvaluator();
       ParameterizeOperators();
@@ -238,20 +269,25 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         AdjustWeightsMatrix();
       }
     }
+    private void Distances_ToStringChanged(object sender, EventArgs e) {
+      UpdateParameterValues();
+    }
     #endregion
 
-    #region Helpers
     private void RegisterEventHandlers() {
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       WeightsParameter.ValueChanged += new EventHandler(WeightsParameter_ValueChanged);
       Weights.RowsChanged += new EventHandler(Weights_RowsChanged);
       Weights.ColumnsChanged += new EventHandler(Weights_ColumnsChanged);
+      Weights.ToStringChanged += new EventHandler(Weights_ToStringChanged);
       DistancesParameter.ValueChanged += new EventHandler(DistancesParameter_ValueChanged);
       Distances.RowsChanged += new EventHandler(Distances_RowsChanged);
       Distances.ColumnsChanged += new EventHandler(Distances_ColumnsChanged);
+      Distances.ToStringChanged += new EventHandler(Distances_ToStringChanged);
     }
 
+    #region Helpers
     private void InitializeOperators() {
       var defaultOperators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
         new PartiallyMatchedCrossover(),
@@ -362,6 +398,11 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         ((IStringConvertibleMatrix)Weights).Rows = Distances.Rows;
       }
     }
+
+    private void UpdateParameterValues() {
+      LowerBound = new DoubleValue(GilmoreLawlerBoundCalculator.CalculateLowerBound(Weights, Distances));
+      AverageQuality = new DoubleValue(Weights.Average() * Distances.Average() * Weights.Rows * Weights.Rows);
+    }
     #endregion
 
     public void Load(QAPData data) {
@@ -406,6 +447,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       BestKnownQuality = null;
       BestKnownSolution = null;
       BestKnownSolutions = null;
+      UpdateParameterValues();
     }
 
     public void EvaluateAndLoadAssignment(int[] assignment) {
