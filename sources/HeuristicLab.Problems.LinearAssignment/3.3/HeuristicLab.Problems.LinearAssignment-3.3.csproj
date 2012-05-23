@@ -116,7 +116,7 @@
     <Compile Include="LinearAssignmentProblemSolver.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
