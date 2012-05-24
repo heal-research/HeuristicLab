@@ -50,9 +50,14 @@ using HeuristicLab.Problems.TestFunctions;
 using HeuristicLab.Problems.TravelingSalesman;
 using HeuristicLab.Problems.VehicleRouting;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using HeuristicLab.Problems.Instances.VehicleRouting;
+using HeuristicLab.Problems.Instances;
+
 
 namespace HeuristicLab_33.Tests {
   [TestClass]
@@ -115,9 +120,9 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGaVrpSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(1828.9368669428336, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(1831.5504074358635, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(1895.8980772167054, GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(1828.9368669428338, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(1830.1444308908331, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(1871.7128510304112, GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(99100, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
@@ -126,20 +131,20 @@ namespace HeuristicLab_33.Tests {
       #region Problem Configuration
       VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
 
-      vrpProblem.ImportFromSolomon("C101.txt");
-      vrpProblem.ImportSolution("C101.opt.txt");
+      SolomonFormatInstanceProvider instanceProvider = new SolomonInstanceProvider();
+      IVRPData data = instanceProvider.LoadData("C101.txt", "C101.opt.txt");
+      vrpProblem.Load(data);
       vrpProblem.Name = "C101 VRP (imported from Solomon)";
       vrpProblem.Description = "Represents a Vehicle Routing Problem.";
-      vrpProblem.DistanceFactorParameter.Value.Value = 1;
-      vrpProblem.FleetUsageFactorParameter.Value.Value = 100;
-      vrpProblem.OverloadPenaltyParameter.Value.Value = 100;
-      vrpProblem.TardinessPenaltyParameter.Value.Value = 100;
-      vrpProblem.TimeFactorParameter.Value.Value = 0;
-      vrpProblem.EvaluatorParameter.Value = new VRPEvaluator();
+      CVRPTWProblemInstance instance = vrpProblem.ProblemInstance as CVRPTWProblemInstance;
+      instance.DistanceFactor.Value = 1;
+      instance.FleetUsageFactor.Value = 100;
+      instance.OverloadPenalty.Value = 100;
+      instance.TardinessPenalty.Value = 100;
+      instance.TimeFactor.Value = 0;
       vrpProblem.MaximizationParameter.Value.Value = false;
-      vrpProblem.SolutionCreatorParameter.Value = new RandomCreator();
-      vrpProblem.UseDistanceMatrix.Value = true;
-      vrpProblem.Vehicles.Value = 25;
+      instance.UseDistanceMatrix.Value = true;
+      instance.Vehicles.Value = 25;
       #endregion
       #region Algorithm Configuration
       ga.Name = "Genetic Algorithm - VRP";
@@ -949,15 +954,15 @@ namespace HeuristicLab_33.Tests {
       ga.SetSeedRandomly.Value = true;
       ga.Selector = ga.SelectorParameter.ValidValues
         .OfType<S>()
-        .Single();
+        .First();
 
       ga.Crossover = ga.CrossoverParameter.ValidValues
         .OfType<C>()
-        .Single();
+        .First();
 
       ga.Mutator = ga.MutatorParameter.ValidValues
         .OfType<M>()
-        .Single();
+        .First();
 
       var tSelector = ga.Selector as TournamentSelector;
       if (tSelector != null) {

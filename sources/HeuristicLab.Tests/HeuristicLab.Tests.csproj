@@ -299,7 +299,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Builder.testsettings" />
+    <None Include="Builder.testsettings">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="HeuristicLab-3.3\Resources\GA_SymbReg.hl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -624,6 +626,14 @@
       <Project>{CE0F99D6-1C56-48A9-9B68-3E5B833703EF}</Project>
       <Name>HeuristicLab.Problems.Instances.TSPLIB-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.VehicleRouting.Views\3.4\HeuristicLab.Problems.Instances.VehicleRouting.Views-3.4.csproj">
+      <Project>{E2419315-B10A-4BC1-B517-A24DCF4C59AC}</Project>
+      <Name>HeuristicLab.Problems.Instances.VehicleRouting.Views-3.4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HeuristicLab.Problems.Instances.VehicleRouting\3.4\HeuristicLab.Problems.Instances.VehicleRouting-3.4.csproj">
+      <Project>{8C265E11-4F8D-4CED-9E6B-F400A0075C18}</Project>
+      <Name>HeuristicLab.Problems.Instances.VehicleRouting-3.4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Problems.Instances.Views\3.3\HeuristicLab.Problems.Instances.Views-3.3.csproj">
       <Project>{B1BA398F-953F-4C3A-B07B-1E5E17A27DD9}</Project>
       <Name>HeuristicLab.Problems.Instances.Views-3.3</Name>
@@ -680,13 +690,13 @@
       <Project>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</Project>
       <Name>HeuristicLab.Problems.TravelingSalesman-3.3</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Problems.VehicleRouting.Views\3.3\HeuristicLab.Problems.VehicleRouting.Views-3.3.csproj">
-      <Project>{D1386FE7-682D-4E18-8C4F-CFD423FA5DD0}</Project>
-      <Name>HeuristicLab.Problems.VehicleRouting.Views-3.3</Name>
+    <ProjectReference Include="..\HeuristicLab.Problems.VehicleRouting.Views\3.4\HeuristicLab.Problems.VehicleRouting.Views-3.4.csproj">
+      <Project>{7EA0985E-A1D6-4FA7-B30A-2633FDFB01F0}</Project>
+      <Name>HeuristicLab.Problems.VehicleRouting.Views-3.4</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Problems.VehicleRouting\3.3\HeuristicLab.Problems.VehicleRouting-3.3.csproj">
-      <Project>{6410BDA6-3641-42B2-BABA-AA626E2F6F71}</Project>
-      <Name>HeuristicLab.Problems.VehicleRouting-3.3</Name>
+    <ProjectReference Include="..\HeuristicLab.Problems.VehicleRouting\3.4\HeuristicLab.Problems.VehicleRouting-3.4.csproj">
+      <Project>{B94FFB82-43D4-40AB-9980-B03470ADF221}</Project>
+      <Name>HeuristicLab.Problems.VehicleRouting-3.4</Name>
     </ProjectReference>
     <ProjectReference Include="..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
