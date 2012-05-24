@@ -35,7 +35,6 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.Prins;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
-  [Creatable("Problems")]
   [StorableClass]
   public sealed class VehicleRoutingProblem : SingleObjectiveHeuristicOptimizationProblem<IVRPEvaluator, IVRPCreator>, IStorableContent {
     public string Filename { get; set; }
