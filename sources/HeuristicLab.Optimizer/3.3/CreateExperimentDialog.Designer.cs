@@ -60,6 +60,7 @@ namespace HeuristicLab.Optimizer {
       this.progressLabel = new System.Windows.Forms.Label();
       this.selectAllCheckBox = new System.Windows.Forms.CheckBox();
       this.selectNoneCheckBox = new System.Windows.Forms.CheckBox();
+      this.instanceDiscoveryBackgroundWorker = new System.ComponentModel.BackgroundWorker();
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).BeginInit();
       this.SuspendLayout();
       // 
@@ -180,30 +181,29 @@ namespace HeuristicLab.Optimizer {
       this.experimentCreationBackgroundWorker.WorkerReportsProgress = true;
       this.experimentCreationBackgroundWorker.WorkerSupportsCancellation = true;
       this.experimentCreationBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.experimentCreationBackgroundWorker_DoWork);
-      this.experimentCreationBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.experimentCreationBackgroundWorker_ProgressChanged);
+      this.experimentCreationBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
       this.experimentCreationBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.experimentCreationBackgroundWorker_RunWorkerCompleted);
       // 
       // experimentCreationProgressBar
       // 
-      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.experimentCreationProgressBar.Location = new System.Drawing.Point(15, 259);
+      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.experimentCreationProgressBar.Location = new System.Drawing.Point(128, 142);
       this.experimentCreationProgressBar.Name = "experimentCreationProgressBar";
-      this.experimentCreationProgressBar.Size = new System.Drawing.Size(92, 23);
+      this.experimentCreationProgressBar.Size = new System.Drawing.Size(128, 23);
       this.experimentCreationProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
       this.experimentCreationProgressBar.TabIndex = 7;
       this.experimentCreationProgressBar.Visible = false;
       // 
       // progressLabel
       // 
-      this.progressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.progressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
       this.progressLabel.BackColor = System.Drawing.SystemColors.Control;
-      this.progressLabel.Location = new System.Drawing.Point(113, 259);
+      this.progressLabel.Location = new System.Drawing.Point(128, 168);
       this.progressLabel.Name = "progressLabel";
-      this.progressLabel.Size = new System.Drawing.Size(75, 23);
+      this.progressLabel.Size = new System.Drawing.Size(128, 23);
       this.progressLabel.TabIndex = 8;
       this.progressLabel.Text = "label1";
-      this.progressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.progressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       this.progressLabel.Visible = false;
       // 
       // selectAllCheckBox
@@ -228,6 +228,14 @@ namespace HeuristicLab.Optimizer {
       this.selectNoneCheckBox.UseVisualStyleBackColor = true;
       this.selectNoneCheckBox.CheckedChanged += new System.EventHandler(this.selectNoneCheckBox_CheckedChanged);
       // 
+      // instanceDiscoveryBackgroundWorker
+      // 
+      this.instanceDiscoveryBackgroundWorker.WorkerReportsProgress = true;
+      this.instanceDiscoveryBackgroundWorker.WorkerSupportsCancellation = true;
+      this.instanceDiscoveryBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.instanceDiscoveryBackgroundWorker_DoWork);
+      this.instanceDiscoveryBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+      this.instanceDiscoveryBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.instanceDiscoveryBackgroundWorker_RunWorkerCompleted);
+      // 
       // CreateExperimentDialog
       // 
       this.AcceptButton = this.okButton;
@@ -235,6 +243,8 @@ namespace HeuristicLab.Optimizer {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(281, 294);
+      this.Controls.Add(this.progressLabel);
+      this.Controls.Add(this.experimentCreationProgressBar);
       this.Controls.Add(this.selectNoneCheckBox);
       this.Controls.Add(this.selectAllCheckBox);
       this.Controls.Add(this.instancesListView);
@@ -245,8 +255,6 @@ namespace HeuristicLab.Optimizer {
       this.Controls.Add(this.createBatchRunCheckBox);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
-      this.Controls.Add(this.progressLabel);
-      this.Controls.Add(this.experimentCreationProgressBar);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "CreateExperimentDialog";
@@ -256,6 +264,7 @@ namespace HeuristicLab.Optimizer {
       this.Text = "Create Experiment";
       this.TopMost = true;
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CreateExperimentDialog_FormClosing);
+      this.Load += new System.EventHandler(this.CreateExperimentDialog_Load);
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -279,6 +288,7 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.Label progressLabel;
     private System.Windows.Forms.CheckBox selectAllCheckBox;
     private System.Windows.Forms.CheckBox selectNoneCheckBox;
+    private System.ComponentModel.BackgroundWorker instanceDiscoveryBackgroundWorker;
 
   }
 }

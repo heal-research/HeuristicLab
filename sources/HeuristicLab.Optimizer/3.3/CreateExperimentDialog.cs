@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Optimization;
@@ -37,7 +38,7 @@ namespace HeuristicLab.Optimizer {
         optimizer = value;
         experiment = null;
         okButton.Enabled = optimizer != null;
-        FillOrHideInstanceListView();
+        SetInstanceListViewVisibility();
       }
     }
 
@@ -56,58 +57,40 @@ namespace HeuristicLab.Optimizer {
       InitializeComponent();
       createBatchRun = createBatchRunCheckBox.Checked;
       repetitions = (int)repetitionsNumericUpDown.Value;
-      Optimizer = optimizer;
+      // do not set the Optimizer property here, because we want to delay instance discovery to the time when the form loads
+      this.optimizer = optimizer;
+      this.experiment = null;
+      okButton.Enabled = optimizer != null;
     }
 
-    private void FillOrHideInstanceListView() {
-      if (optimizer != null && optimizer is IAlgorithm) {
-        var algorithm = (IAlgorithm)Optimizer;
-        if (algorithm.Problem != null) {
-          var instanceProviders = ProblemInstanceManager.GetProviders(algorithm.Problem);
-          if (instanceProviders.Any()) {
-            FillInstanceListView(instanceProviders);
-            if (instancesListView.Items.Count > 0) {
-              selectAllCheckBox.Visible = true;
-              selectNoneCheckBox.Visible = true;
-              instancesLabel.Visible = true;
-              instancesListView.Visible = true;
-              Height = 330;
-              return;
-            }
-          }
+    #region Event handlers
+    private void CreateExperimentDialog_Load(object sender, EventArgs e) {
+      SetInstanceListViewVisibility();
+    }
+
+    private void CreateExperimentDialog_FormClosing(object sender, FormClosingEventArgs e) {
+      if (experimentCreationBackgroundWorker.IsBusy) {
+        if (DialogResult != System.Windows.Forms.DialogResult.OK) {
+          if (experimentCreationBackgroundWorker.IsBusy) experimentCreationBackgroundWorker.CancelAsync();
+          if (instanceDiscoveryBackgroundWorker.IsBusy) instanceDiscoveryBackgroundWorker.CancelAsync();
         }
+        e.Cancel = true;
       }
-      selectAllCheckBox.Visible = false;
-      selectNoneCheckBox.Visible = false;
-      instancesLabel.Visible = false;
-      instancesListView.Visible = false;
-      Height = 130;
     }
 
-    private void FillInstanceListView(IEnumerable<IProblemInstanceProvider> instanceProviders) {
-      foreach (var provider in instanceProviders) {
-        var group = new ListViewGroup(provider.Name, provider.Name);
-        group.Tag = provider;
-        instancesListView.Groups.Add(group);
-        foreach (var d in ProblemInstanceManager.GetDataDescriptors(provider)) {
-          var item = new ListViewItem(d.Name, group);
-          item.Tag = d;
-          instancesListView.Items.Add(item);
-        }
-      }
-      instancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-      selectAllCheckBox.Checked = true;
+    private void okButton_Click(object sender, EventArgs e) {
+      SetMode(locked: true);
+      experimentCreationBackgroundWorker.RunWorkerAsync(GetSelectedInstances());
+      backgroundWorkerWaitHandle.WaitOne(); // make sure the background worker has started before exiting
     }
 
-    private void createBatchRunCheckBox_CheckedChanged(object sender, EventArgs e) {
-      repetitionsNumericUpDown.Enabled = createBatchRunCheckBox.Checked;
-      createBatchRun = createBatchRunCheckBox.Checked;
+    private void instancesListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      if (!suppressListViewEventHandling) {
+        selectAllCheckBox.Checked = instancesListView.Items.Count == instancesListView.CheckedItems.Count;
+        selectNoneCheckBox.Checked = instancesListView.CheckedItems.Count == 0;
+      }
     }
-    private void repetitionsNumericUpDown_Validated(object sender, EventArgs e) {
-      if (repetitionsNumericUpDown.Text == string.Empty)
-        repetitionsNumericUpDown.Text = repetitionsNumericUpDown.Value.ToString();
-      repetitions = (int)repetitionsNumericUpDown.Value;
-    }
+
     private void selectAllCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (selectAllCheckBox.Checked) {
         selectNoneCheckBox.Checked = false;
@@ -120,6 +103,7 @@ namespace HeuristicLab.Optimizer {
         } finally { suppressListViewEventHandling = false; }
       }
     }
+
     private void selectNoneCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (selectNoneCheckBox.Checked) {
         selectAllCheckBox.Checked = false;
@@ -132,64 +116,39 @@ namespace HeuristicLab.Optimizer {
         } finally { suppressListViewEventHandling = false; }
       }
     }
-    private void instancesListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      if (!suppressListViewEventHandling) {
-        selectAllCheckBox.Checked = instancesListView.Items.Count == instancesListView.CheckedItems.Count;
-        selectNoneCheckBox.Checked = instancesListView.CheckedItems.Count == 0;
-      }
+
+    private void createBatchRunCheckBox_CheckedChanged(object sender, EventArgs e) {
+      repetitionsNumericUpDown.Enabled = createBatchRunCheckBox.Checked;
+      createBatchRun = createBatchRunCheckBox.Checked;
     }
-    private void okButton_Click(object sender, EventArgs e) {
-      SetMode(createExperiment: true);
-      experimentCreationBackgroundWorker.RunWorkerAsync(GetSelectedInstances());
-      backgroundWorkerWaitHandle.WaitOne();
+
+    private void repetitionsNumericUpDown_Validated(object sender, EventArgs e) {
+      if (repetitionsNumericUpDown.Text == string.Empty)
+        repetitionsNumericUpDown.Text = repetitionsNumericUpDown.Value.ToString();
+      repetitions = (int)repetitionsNumericUpDown.Value;
     }
-    private void experimentCreationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      backgroundWorkerWaitHandle.Set();
-      experimentCreationBackgroundWorker.ReportProgress(0, string.Empty);
-      var items = (Dictionary<IProblemInstanceProvider, List<IDataDescriptor>>)e.Argument;
-      var localExperiment = new Experiment();
-      if (items.Count == 0) {
-        AddOptimizer((IOptimizer)Optimizer.Clone(), localExperiment);
-        experimentCreationBackgroundWorker.ReportProgress(100, string.Empty);
-      } else {
-        int counter = 0, total = items.SelectMany(x => x.Value).Count();
-        foreach (var provider in items.Keys) {
-          foreach (var descriptor in items[provider]) {
-            var algorithm = (IAlgorithm)Optimizer.Clone();
-            ProblemInstanceManager.LoadData(provider, descriptor, (IProblemInstanceConsumer)algorithm.Problem);
-            AddOptimizer(algorithm, localExperiment);
-            counter++;
-            experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / total), descriptor.Name);
-            if (experimentCreationBackgroundWorker.CancellationPending) {
-              e.Cancel = true;
-              localExperiment = null;
-              break;
-            }
-          }
-        }
-      }
-      if (localExperiment != null) localExperiment.Prepare(true);
-      e.Result = localExperiment;
+    #endregion
+
+    #region Helpers
+    private void SetInstanceListViewVisibility() {
+      bool instancesAvailable = optimizer != null
+        && optimizer is IAlgorithm
+        && ((IAlgorithm)optimizer).Problem != null
+        && ProblemInstanceManager.GetProviders(((IAlgorithm)optimizer).Problem).Any();
+      selectAllCheckBox.Visible = instancesAvailable;
+      selectNoneCheckBox.Visible = instancesAvailable;
+      instancesLabel.Visible = instancesAvailable;
+      instancesListView.Visible = instancesAvailable;
+      if (instancesAvailable) {
+        Height = 330;
+        FillInstanceListViewAsync();
+      } else Height = 130;
     }
-    private void experimentCreationBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-      experimentCreationProgressBar.Value = e.ProgressPercentage;
-      progressLabel.Text = (string)e.UserState;
-    }
-    private void experimentCreationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
-      SetMode(createExperiment: false);
-      if (e.Error != null) MessageBox.Show(e.Error.Message, "Error occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      if (!e.Cancelled && e.Error == null) {
-        experiment = (Experiment)e.Result;
-        DialogResult = System.Windows.Forms.DialogResult.OK;
-        Close();
-      }
-    }
-    private void CreateExperimentDialog_FormClosing(object sender, FormClosingEventArgs e) {
-      if (experimentCreationBackgroundWorker.IsBusy) {
-        if (DialogResult != System.Windows.Forms.DialogResult.OK)
-          experimentCreationBackgroundWorker.CancelAsync();
-        e.Cancel = true;
-      }
+
+    private void FillInstanceListViewAsync() {
+      SetMode(locked: true);
+      var instanceProviders = ProblemInstanceManager.GetProviders(((IAlgorithm)Optimizer).Problem);
+      instanceDiscoveryBackgroundWorker.RunWorkerAsync(instanceProviders);
     }
 
     private void AddOptimizer(IOptimizer optimizer, Experiment experiment) {
@@ -203,16 +162,17 @@ namespace HeuristicLab.Optimizer {
       }
     }
 
-    private void SetMode(bool createExperiment) {
-      createBatchRunCheckBox.Enabled = !createExperiment;
-      repetitionsNumericUpDown.Enabled = !createExperiment;
-      selectAllCheckBox.Enabled = !createExperiment;
-      selectNoneCheckBox.Enabled = !createExperiment;
-      instancesListView.Enabled = !createExperiment;
-      okButton.Enabled = !createExperiment;
-      okButton.Visible = !createExperiment;
-      progressLabel.Visible = createExperiment;
-      experimentCreationProgressBar.Visible = createExperiment;
+    private void SetMode(bool locked) {
+      createBatchRunCheckBox.Enabled = !locked;
+      repetitionsNumericUpDown.Enabled = !locked;
+      selectAllCheckBox.Enabled = !locked;
+      selectNoneCheckBox.Enabled = !locked;
+      instancesListView.Enabled = !locked;
+      instancesListView.Visible = !locked;
+      okButton.Enabled = !locked;
+      okButton.Visible = !locked;
+      progressLabel.Visible = locked;
+      experimentCreationProgressBar.Visible = locked;
     }
 
     private Dictionary<IProblemInstanceProvider, List<IDataDescriptor>> GetSelectedInstances() {
@@ -224,5 +184,115 @@ namespace HeuristicLab.Optimizer {
       }
       return selectedInstances;
     }
+    #endregion
+
+    #region Background workers
+    private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+      experimentCreationProgressBar.Value = e.ProgressPercentage;
+      progressLabel.Text = (string)e.UserState;
+    }
+
+    private void instanceDiscoveryBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+      double progress = 0;
+      instanceDiscoveryBackgroundWorker.ReportProgress((int)progress, string.Empty);
+      var instanceProviders = ((IEnumerable<IProblemInstanceProvider>)e.Argument).ToArray();
+      ListViewGroup[] groups = new ListViewGroup[instanceProviders.Length];
+      for (int i = 0; i < instanceProviders.Length; i++) {
+        var provider = instanceProviders[i];
+        groups[i] = new ListViewGroup(provider.Name, provider.Name) { Tag = provider };
+      }
+      e.Result = groups;
+      for (int i = 0; i < groups.Length; i++) {
+        var group = groups[i];
+        var provider = group.Tag as IProblemInstanceProvider;
+        progress = (100.0 * i) / groups.Length;
+        instanceDiscoveryBackgroundWorker.ReportProgress((int)progress, provider.Name);
+        var descriptors = ProblemInstanceManager.GetDataDescriptors(provider).ToArray();
+        for (int j = 0; j < descriptors.Length; j++) {
+          #region Check cancellation request
+          if (instanceDiscoveryBackgroundWorker.CancellationPending) {
+            e.Cancel = true;
+            return;
+          }
+          #endregion
+          var d = descriptors[j];
+          progress += 1.0 / (descriptors.Length * groups.Length);
+          instanceDiscoveryBackgroundWorker.ReportProgress((int)progress, d.Name);
+          var item = new ListViewItem(d.Name, group) { Tag = d };
+        }
+      }
+      instanceDiscoveryBackgroundWorker.ReportProgress(100, string.Empty);
+    }
+
+    private void instanceDiscoveryBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      try {
+        // unfortunately it's not enough to just add the groups, the items need to be added separately
+        foreach (var group in (ListViewGroup[])e.Result) {
+          instancesListView.Groups.Add(group);
+          instancesListView.Items.AddRange(group.Items);
+        }
+        instancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        selectAllCheckBox.Checked = true;
+      } catch { }
+      try {
+        SetMode(locked: false);
+        if (e.Error != null) MessageBox.Show(e.Error.Message, "Error occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      } catch { }
+    }
+
+    private StringBuilder failedInstances;
+    private void experimentCreationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+      backgroundWorkerWaitHandle.Set();
+      experimentCreationBackgroundWorker.ReportProgress(0, string.Empty);
+      failedInstances = new StringBuilder();
+      var items = (Dictionary<IProblemInstanceProvider, List<IDataDescriptor>>)e.Argument;
+      var localExperiment = new Experiment();
+      if (items.Count == 0) {
+        AddOptimizer((IOptimizer)Optimizer.Clone(), localExperiment);
+        experimentCreationBackgroundWorker.ReportProgress(100, string.Empty);
+      } else {
+        int counter = 0, total = items.SelectMany(x => x.Value).Count();
+        foreach (var provider in items.Keys) {
+          foreach (var descriptor in items[provider]) {
+            #region Check cancellation request
+            if (experimentCreationBackgroundWorker.CancellationPending) {
+              e.Cancel = true;
+              localExperiment = null;
+              return;
+            }
+            #endregion
+            var algorithm = (IAlgorithm)Optimizer.Clone();
+            bool failed = false;
+            try {
+              ProblemInstanceManager.LoadData(provider, descriptor, (IProblemInstanceConsumer)algorithm.Problem);
+            } catch (Exception ex) {
+              failedInstances.AppendLine(descriptor.Name + ": " + ex.Message);
+              failed = true;
+            }
+            if (!failed) {
+              AddOptimizer(algorithm, localExperiment);
+              counter++;
+              experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / total), descriptor.Name);
+            } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / total), "Loading failed (" + descriptor.Name + ")");
+          }
+        }
+      }
+      if (localExperiment != null) localExperiment.Prepare(true);
+      e.Result = localExperiment;
+    }
+
+    private void experimentCreationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+      try {
+        SetMode(locked: false);
+        if (e.Error != null) MessageBox.Show(e.Error.Message, "Error occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        if (failedInstances.Length > 0) MessageBox.Show("Some instances could not be loaded: " + Environment.NewLine + failedInstances.ToString(), "Some instances failed to load", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        if (!e.Cancelled && e.Error == null) {
+          experiment = (Experiment)e.Result;
+          DialogResult = System.Windows.Forms.DialogResult.OK;
+          Close();
+        }
+      } catch { }
+    }
+    #endregion
   }
 }
