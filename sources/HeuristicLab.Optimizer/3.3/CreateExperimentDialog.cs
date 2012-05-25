@@ -22,33 +22,45 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Optimizer {
   public partial class CreateExperimentDialog : Form {
+    private enum DialogMode { Normal = 1, DiscoveringInstances = 2, CreatingExperiment = 3 };
+
     private IOptimizer optimizer;
     public IOptimizer Optimizer {
       get { return optimizer; }
       set {
         optimizer = value;
-        experiment = null;
+        Experiment = null;
         okButton.Enabled = optimizer != null;
-        SetInstanceListViewVisibility();
+        SetTabControlVisibility();
+        FillInstanceListViewAsync();
+        FillParametersListView();
       }
     }
 
-    private Experiment experiment;
-    public Experiment Experiment {
-      get { return experiment; }
-    }
+    public Experiment Experiment { get; private set; }
 
     private bool createBatchRun;
     private int repetitions;
+    private Dictionary<IProblemInstanceProvider, HashSet<IDataDescriptor>> instances;
+    private Dictionary<IValueParameter, Tuple<int, int, int>> intParameters;
+    private Dictionary<IValueParameter, Tuple<double, double, double>> doubleParameters;
+    private HashSet<IValueParameter> boolParameters;
+    private Dictionary<IValueParameter, HashSet<INamedItem>> multipleChoiceParameters;
+
+    private StringBuilder failedInstances;
     private EventWaitHandle backgroundWorkerWaitHandle = new ManualResetEvent(false);
     private bool suppressListViewEventHandling;
 
@@ -59,13 +71,21 @@ namespace HeuristicLab.Optimizer {
       repetitions = (int)repetitionsNumericUpDown.Value;
       // do not set the Optimizer property here, because we want to delay instance discovery to the time when the form loads
       this.optimizer = optimizer;
-      this.experiment = null;
+      Experiment = null;
       okButton.Enabled = optimizer != null;
+
+      instances = new Dictionary<IProblemInstanceProvider, HashSet<IDataDescriptor>>();
+      intParameters = new Dictionary<IValueParameter, Tuple<int, int, int>>();
+      doubleParameters = new Dictionary<IValueParameter, Tuple<double, double, double>>();
+      boolParameters = new HashSet<IValueParameter>();
+      multipleChoiceParameters = new Dictionary<IValueParameter, HashSet<INamedItem>>();
     }
 
     #region Event handlers
     private void CreateExperimentDialog_Load(object sender, EventArgs e) {
-      SetInstanceListViewVisibility();
+      SetTabControlVisibility();
+      FillInstanceListViewAsync();
+      FillParametersListView();
     }
 
     private void CreateExperimentDialog_FormClosing(object sender, FormClosingEventArgs e) {
@@ -79,16 +99,188 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void okButton_Click(object sender, EventArgs e) {
-      SetMode(locked: true);
-      experimentCreationBackgroundWorker.RunWorkerAsync(GetSelectedInstances());
+      SetMode(DialogMode.CreatingExperiment);
+      experimentCreationBackgroundWorker.RunWorkerAsync();
       backgroundWorkerWaitHandle.WaitOne(); // make sure the background worker has started before exiting
     }
 
+    #region Parameters variation
+    private void parametersListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      var parameter = (IValueParameter)e.Item.Tag;
+      var isConstrainedValueParameter = typeof(OptionalConstrainedValueParameter<>).Equals(parameter.GetType().GetGenericTypeDefinition())
+        || typeof(ConstrainedValueParameter<>).Equals(parameter.GetType().GetGenericTypeDefinition());
+
+      if (!isConstrainedValueParameter && parameter.Value == null) {
+        if (e.Item.Checked) e.Item.Checked = false;
+        return;
+      }
+
+      if (isConstrainedValueParameter) {
+        if (e.Item.Checked) {
+          multipleChoiceParameters.Add(parameter, new HashSet<INamedItem>());
+        } else multipleChoiceParameters.Remove(parameter);
+      }
+
+      var intValue = parameter.Value as ValueTypeValue<int>;
+      if (intValue != null) {
+        if (e.Item.Checked) {
+          int minimum = intValue.Value;
+          int maximum = intValue.Value;
+          int step = 1;
+          intParameters.Add(parameter, new Tuple<int, int, int>(minimum, maximum, step));
+        } else intParameters.Remove(parameter);
+      }
+
+      var doubleValue = parameter.Value as ValueTypeValue<double>;
+      if (doubleValue != null) {
+        if (e.Item.Checked) {
+          double minimum = doubleValue.Value;
+          double maximum = doubleValue.Value;
+          double step = 1;
+          doubleParameters.Add(parameter, new Tuple<double, double, double>(minimum, maximum, step));
+        } else doubleParameters.Remove(parameter);
+      }
+
+      var boolValue = parameter.Value as ValueTypeValue<bool>;
+      if (boolValue != null) {
+        if (e.Item.Checked) boolParameters.Add(parameter);
+        else boolParameters.Remove(parameter);
+      }
+
+      if (e.Item.Selected) UpdateDetailsView(parameter);
+      else e.Item.Selected = true;
+    }
+
+    private void parametersListView_SelectedIndexChanged(object sender, EventArgs e) {
+      if (parametersListView.SelectedItems.Count == 0) {
+        ClearDetailsView();
+      } else {
+        var parameter = parametersListView.SelectedItems[0].Tag as IValueParameter;
+        UpdateDetailsView(parameter);
+      }
+    }
+
+    private void UpdateDetailsView(IValueParameter parameter) {
+      ClearDetailsView();
+
+      var isConstrainedValueParameter =
+        typeof(OptionalConstrainedValueParameter<>).IsAssignableFrom(parameter.GetType().GetGenericTypeDefinition())
+        || typeof(ConstrainedValueParameter<>).Equals(parameter.GetType().GetGenericTypeDefinition());
+
+      if (isConstrainedValueParameter) {
+        choicesLabel.Visible = true;
+        choicesListView.Enabled = true;
+        choicesListView.Visible = true;
+        choicesListView.Tag = parameter;
+
+        if (!multipleChoiceParameters.ContainsKey(parameter)) return;
+        dynamic constrainedValuedParameter = parameter;
+        dynamic validValues = constrainedValuedParameter.ValidValues;
+        foreach (var choice in validValues) {
+          choicesListView.Items.Add(new ListViewItem(choice.ToString()) {
+            Tag = choice,
+            Checked = multipleChoiceParameters[parameter].Contains((INamedItem)choice)
+          });
+        }
+        return;
+      }
+
+      minimumLabel.Visible = true; minimumTextBox.Visible = true;
+      maximumLabel.Visible = true; maximumTextBox.Visible = true;
+      stepSizeLabel.Visible = true; stepSizeTextBox.Visible = true;
+
+      var intValue = parameter.Value as ValueTypeValue<int>;
+      if (intValue != null) {
+        if (!intParameters.ContainsKey(parameter)) return;
+        string min = intParameters[parameter].Item1.ToString();
+        string max = intParameters[parameter].Item2.ToString();
+        string step = intParameters[parameter].Item3.ToString();
+        UpdateMinMaxStepSize(parameter, min, max, step);
+        return;
+      }
+
+      var doubleValue = parameter.Value as ValueTypeValue<double>;
+      if (doubleValue != null) {
+        if (!doubleParameters.ContainsKey(parameter)) return;
+        string min = doubleParameters[parameter].Item1.ToString();
+        string max = doubleParameters[parameter].Item2.ToString();
+        string step = doubleParameters[parameter].Item3.ToString();
+        UpdateMinMaxStepSize(parameter, min, max, step);
+        return;
+      }
+    }
+
+    #region Detail controls
+    private void choiceListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      var parameter = (IValueParameter)choicesListView.Tag;
+      if (e.Item.Checked) {
+        multipleChoiceParameters[parameter].Add((INamedItem)e.Item.Tag);
+      } else multipleChoiceParameters[parameter].Remove((INamedItem)e.Item.Tag);
+
+      experimentsLabel.Text = GetNumberOfVariations().ToString();
+    }
+
+    private void detailsTextBox_Validating(object sender, CancelEventArgs e) {
+      var parameter = (IValueParameter)((TextBox)sender).Tag;
+      errorProvider.Clear();
+
+      var intValue = parameter.Value as ValueTypeValue<int>;
+      if (intValue != null) {
+        int value;
+        if (!int.TryParse(((TextBox)sender).Text, out value)) {
+          errorProvider.SetError(((TextBox)sender), "Please enter a valid integer number.");
+          e.Cancel = true;
+        } else {
+          var before = intParameters[parameter];
+          var after = default(Tuple<int, int, int>);
+          if (sender == minimumTextBox) after = new Tuple<int, int, int>(value, before.Item2, before.Item3);
+          else if (sender == maximumTextBox) after = new Tuple<int, int, int>(before.Item1, value, before.Item3);
+          else if (sender == stepSizeTextBox) after = new Tuple<int, int, int>(before.Item1, before.Item2, value);
+          intParameters[parameter] = after;
+        }
+      }
+
+      var doubleValue = parameter.Value as ValueTypeValue<double>;
+      if (doubleValue != null) {
+        double value;
+        if (!double.TryParse(((TextBox)sender).Text, NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out value)) {
+          errorProvider.SetError(((TextBox)sender), "Please enter a valid number.");
+          e.Cancel = true;
+        } else {
+          var before = doubleParameters[parameter];
+          var after = default(Tuple<double, double, double>);
+          if (sender == minimumTextBox) after = new Tuple<double, double, double>(value, before.Item2, before.Item3);
+          else if (sender == maximumTextBox) after = new Tuple<double, double, double>(before.Item1, value, before.Item3);
+          else if (sender == stepSizeTextBox) after = new Tuple<double, double, double>(before.Item1, before.Item2, value);
+          doubleParameters[parameter] = after;
+        }
+      }
+
+      experimentsLabel.Text = GetNumberOfVariations().ToString();
+    }
+    #endregion
+    #endregion
+
+    #region Instances
     private void instancesListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
       if (!suppressListViewEventHandling) {
         selectAllCheckBox.Checked = instancesListView.Items.Count == instancesListView.CheckedItems.Count;
         selectNoneCheckBox.Checked = instancesListView.CheckedItems.Count == 0;
       }
+      var provider = (IProblemInstanceProvider)e.Item.Group.Tag;
+      var descriptor = (IDataDescriptor)e.Item.Tag;
+      if (e.Item.Checked) {
+        if (!instances.ContainsKey(provider))
+          instances.Add(provider, new HashSet<IDataDescriptor>());
+        instances[provider].Add(descriptor);
+      } else {
+        if (instances.ContainsKey(provider)) {
+          instances[provider].Remove(descriptor);
+          if (instances[provider].Count == 0)
+            instances.Remove(provider);
+        }
+      }
+      experimentsLabel.Text = GetNumberOfVariations().ToString();
     }
 
     private void selectAllCheckBox_CheckedChanged(object sender, EventArgs e) {
@@ -116,6 +308,7 @@ namespace HeuristicLab.Optimizer {
         } finally { suppressListViewEventHandling = false; }
       }
     }
+    #endregion
 
     private void createBatchRunCheckBox_CheckedChanged(object sender, EventArgs e) {
       repetitionsNumericUpDown.Enabled = createBatchRunCheckBox.Checked;
@@ -130,25 +323,58 @@ namespace HeuristicLab.Optimizer {
     #endregion
 
     #region Helpers
-    private void SetInstanceListViewVisibility() {
-      bool instancesAvailable = optimizer != null
-        && optimizer is IAlgorithm
+    private void SetTabControlVisibility() {
+      bool isAlgorithm = optimizer != null && optimizer is IAlgorithm;
+      bool instancesAvailable = isAlgorithm
         && ((IAlgorithm)optimizer).Problem != null
         && ProblemInstanceManager.GetProviders(((IAlgorithm)optimizer).Problem).Any();
-      selectAllCheckBox.Visible = instancesAvailable;
-      selectNoneCheckBox.Visible = instancesAvailable;
-      instancesLabel.Visible = instancesAvailable;
-      instancesListView.Visible = instancesAvailable;
-      if (instancesAvailable) {
-        Height = 330;
-        FillInstanceListViewAsync();
-      } else Height = 130;
+      if (instancesAvailable && tabControl.TabCount == 1)
+        tabControl.TabPages.Add(instancesTabPage);
+      else if (!instancesAvailable && tabControl.TabCount == 2)
+        tabControl.TabPages.Remove(instancesTabPage);
+      tabControl.Visible = isAlgorithm;
+      if (isAlgorithm) {
+        experimentsLabel.Visible = true;
+        experimentsToCreateDescriptionLabel.Visible = true;
+        Height = 430;
+      } else {
+        experimentsLabel.Visible = false;
+        experimentsToCreateDescriptionLabel.Visible = false;
+        Height = 130;
+      }
+    }
+
+    private void FillParametersListView() {
+      parametersListView.Items.Clear();
+      intParameters.Clear();
+      doubleParameters.Clear();
+      boolParameters.Clear();
+      multipleChoiceParameters.Clear();
+
+      if (Optimizer is IAlgorithm) {
+        var parameters = ((IAlgorithm)optimizer).Parameters;
+        foreach (var param in parameters) {
+          var valueParam = param as IValueParameter;
+          if (valueParam != null && (valueParam.Value is ValueTypeValue<bool>
+              || valueParam.Value is ValueTypeValue<int>
+              || valueParam.Value is ValueTypeValue<double>)
+            || typeof(OptionalConstrainedValueParameter<>).IsAssignableFrom(param.GetType().GetGenericTypeDefinition())
+            || typeof(ConstrainedValueParameter<>).IsAssignableFrom(param.GetType().GetGenericTypeDefinition()))
+            parametersListView.Items.Add(new ListViewItem(param.Name) { Tag = param });
+        }
+      }
     }
 
     private void FillInstanceListViewAsync() {
-      SetMode(locked: true);
-      var instanceProviders = ProblemInstanceManager.GetProviders(((IAlgorithm)Optimizer).Problem);
-      instanceDiscoveryBackgroundWorker.RunWorkerAsync(instanceProviders);
+      instances.Clear();
+      instancesListView.Items.Clear();
+      instancesListView.Groups.Clear();
+
+      if (Optimizer is IAlgorithm) {
+        SetMode(DialogMode.DiscoveringInstances);
+        var instanceProviders = ProblemInstanceManager.GetProviders(((IAlgorithm)Optimizer).Problem);
+        instanceDiscoveryBackgroundWorker.RunWorkerAsync(instanceProviders);
+      }
     }
 
     private void AddOptimizer(IOptimizer optimizer, Experiment experiment) {
@@ -162,41 +388,194 @@ namespace HeuristicLab.Optimizer {
       }
     }
 
-    private void SetMode(bool locked) {
-      createBatchRunCheckBox.Enabled = !locked;
-      repetitionsNumericUpDown.Enabled = !locked;
-      selectAllCheckBox.Enabled = !locked;
-      selectNoneCheckBox.Enabled = !locked;
-      instancesListView.Enabled = !locked;
-      instancesListView.Visible = !locked;
-      okButton.Enabled = !locked;
-      okButton.Visible = !locked;
-      progressLabel.Visible = locked;
-      experimentCreationProgressBar.Visible = locked;
+    private int GetNumberOfVariations() {
+      int instancesCount = 1;
+      if (instances.Values.Any())
+        instancesCount = Math.Max(instances.Values.SelectMany(x => x).Count(), 1);
+
+      int intParameterVariations = 1;
+      foreach (var intParam in intParameters.Values) {
+        if (intParam.Item3 == 0) continue;
+        intParameterVariations *= (intParam.Item2 - intParam.Item1) / intParam.Item3 + 1;
+      }
+      int doubleParameterVariations = 1;
+      foreach (var doubleParam in doubleParameters.Values) {
+        if (doubleParam.Item3 == 0) continue;
+        doubleParameterVariations *= (int)Math.Floor((doubleParam.Item2 - doubleParam.Item1) / doubleParam.Item3) + 1;
+      }
+      int boolParameterVariations = 1;
+      foreach (var boolParam in boolParameters) {
+        boolParameterVariations *= 2;
+      }
+      int choiceParameterVariations = 1;
+      foreach (var choiceParam in multipleChoiceParameters.Values) {
+        choiceParameterVariations *= Math.Max(choiceParam.Count, 1);
+      }
+
+      return (instancesCount * intParameterVariations * doubleParameterVariations * boolParameterVariations * choiceParameterVariations);
     }
 
-    private Dictionary<IProblemInstanceProvider, List<IDataDescriptor>> GetSelectedInstances() {
-      var selectedInstances = new Dictionary<IProblemInstanceProvider, List<IDataDescriptor>>();
-      foreach (var checkedItem in instancesListView.CheckedItems.OfType<ListViewItem>()) {
-        if (!selectedInstances.ContainsKey((IProblemInstanceProvider)checkedItem.Group.Tag))
-          selectedInstances.Add((IProblemInstanceProvider)checkedItem.Group.Tag, new List<IDataDescriptor>());
-        selectedInstances[(IProblemInstanceProvider)checkedItem.Group.Tag].Add((IDataDescriptor)checkedItem.Tag);
-      }
-      return selectedInstances;
+    private void SetMode(DialogMode mode) {
+      createBatchRunCheckBox.Enabled = mode == DialogMode.Normal;
+      repetitionsNumericUpDown.Enabled = mode == DialogMode.Normal;
+      selectAllCheckBox.Enabled = mode == DialogMode.Normal;
+      selectNoneCheckBox.Enabled = mode == DialogMode.Normal;
+      instancesListView.Enabled = mode == DialogMode.Normal;
+      instancesListView.Visible = mode == DialogMode.Normal || mode == DialogMode.CreatingExperiment;
+      okButton.Enabled = mode == DialogMode.Normal;
+      okButton.Visible = mode == DialogMode.Normal;
+      instanceDiscoveryProgressLabel.Visible = mode == DialogMode.DiscoveringInstances;
+      instanceDiscoveryProgressBar.Visible = mode == DialogMode.DiscoveringInstances;
+      experimentCreationProgressBar.Visible = mode == DialogMode.CreatingExperiment;
     }
+
+    private void ClearDetailsView() {
+      minimumLabel.Visible = false;
+      minimumTextBox.Text = string.Empty;
+      minimumTextBox.Enabled = false;
+      minimumTextBox.Visible = false;
+      maximumLabel.Visible = false;
+      maximumTextBox.Text = string.Empty;
+      maximumTextBox.Enabled = false;
+      maximumTextBox.Visible = false;
+      stepSizeLabel.Visible = false;
+      stepSizeTextBox.Text = string.Empty;
+      stepSizeTextBox.Enabled = false;
+      stepSizeTextBox.Visible = false;
+      choicesLabel.Visible = false;
+      choicesListView.Items.Clear();
+      choicesListView.Enabled = false;
+      choicesListView.Visible = false;
+    }
+
+    private void UpdateMinMaxStepSize(IValueParameter parameter, string min, string max, string step) {
+      minimumLabel.Visible = true;
+      minimumTextBox.Text = min;
+      minimumTextBox.Enabled = true;
+      minimumTextBox.Visible = true;
+      minimumTextBox.Tag = parameter;
+      maximumLabel.Visible = true;
+      maximumTextBox.Text = max;
+      maximumTextBox.Enabled = true;
+      maximumTextBox.Visible = true;
+      maximumTextBox.Tag = parameter;
+      stepSizeLabel.Visible = true;
+      stepSizeTextBox.Text = step;
+      stepSizeTextBox.Enabled = true;
+      stepSizeTextBox.Visible = true;
+      stepSizeTextBox.Tag = parameter;
+    }
+
+    #region Retrieve parameter combinations
+    private IEnumerable<Dictionary<IValueParameter, int>> GetIntParameterConfigurations() {
+      var configuration = new Dictionary<IValueParameter, int>();
+      var indices = new Dictionary<IValueParameter, int>();
+      bool finished;
+      do {
+        foreach (var p in intParameters) {
+          if (!indices.ContainsKey(p.Key)) indices.Add(p.Key, 0);
+          var value = p.Value.Item1 + p.Value.Item3 * indices[p.Key];
+          configuration[p.Key] = value;
+        }
+        yield return configuration;
+
+        finished = true;
+        foreach (var p in intParameters.Keys) {
+          var newValue = intParameters[p].Item1 + intParameters[p].Item3 * (indices[p] + 1);
+          if (newValue > intParameters[p].Item2 || intParameters[p].Item3 == 0)
+            indices[p] = 0;
+          else {
+            indices[p]++;
+            finished = false;
+            break;
+          }
+        }
+      } while (!finished);
+    }
+
+    private IEnumerable<Dictionary<IValueParameter, double>> GetDoubleParameterConfigurations() {
+      var configuration = new Dictionary<IValueParameter, double>();
+      var indices = new Dictionary<IValueParameter, int>();
+      bool finished;
+      do {
+        foreach (var p in doubleParameters) {
+          if (!indices.ContainsKey(p.Key)) indices.Add(p.Key, 0);
+          var value = p.Value.Item1 + p.Value.Item3 * indices[p.Key];
+          configuration[p.Key] = value;
+        }
+        yield return configuration;
+
+        finished = true;
+        foreach (var p in doubleParameters.Keys) {
+          var newValue = doubleParameters[p].Item1 + doubleParameters[p].Item3 * (indices[p] + 1);
+          if (newValue > doubleParameters[p].Item2 || doubleParameters[p].Item3 == 0)
+            indices[p] = 0;
+          else {
+            indices[p]++;
+            finished = false;
+            break;
+          }
+        }
+      } while (!finished);
+    }
+
+    private IEnumerable<Dictionary<IValueParameter, bool>> GetBoolParameterConfigurations() {
+      var configuration = new Dictionary<IValueParameter, bool>();
+      bool finished;
+      do {
+        finished = true;
+        foreach (var p in boolParameters) {
+          if (!configuration.ContainsKey(p)) configuration.Add(p, false);
+          else {
+            if (configuration[p]) {
+              configuration[p] = false;
+            } else {
+              configuration[p] = true;
+              finished = false;
+              break;
+            }
+          }
+        }
+        yield return configuration;
+      } while (!finished);
+    }
+
+    private IEnumerable<Dictionary<IValueParameter, INamedItem>> GetMultipleChoiceConfigurations() {
+      var configuration = new Dictionary<IValueParameter, INamedItem>();
+      var enumerators = new Dictionary<IValueParameter, IEnumerator<INamedItem>>();
+      bool finished;
+      do {
+        foreach (var p in multipleChoiceParameters.Keys.ToArray()) {
+          if (!enumerators.ContainsKey(p)) {
+            enumerators.Add(p, multipleChoiceParameters[p].GetEnumerator());
+            if (!enumerators[p].MoveNext()) {
+              multipleChoiceParameters.Remove(p);
+              continue;
+            }
+          }
+          configuration[p] = enumerators[p].Current;
+        }
+
+        finished = true;
+        foreach (var p in multipleChoiceParameters.Keys) {
+          if (!enumerators[p].MoveNext()) {
+            enumerators[p] = multipleChoiceParameters[p].GetEnumerator();
+          } else {
+            finished = false;
+            break;
+          }
+        }
+        yield return configuration;
+      } while (!finished);
+    }
+    #endregion
     #endregion
 
     #region Background workers
-    private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-      experimentCreationProgressBar.Value = e.ProgressPercentage;
-      progressLabel.Text = (string)e.UserState;
-    }
-
+    #region Instance discovery
     private void instanceDiscoveryBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      double progress = 0;
-      instanceDiscoveryBackgroundWorker.ReportProgress((int)progress, string.Empty);
       var instanceProviders = ((IEnumerable<IProblemInstanceProvider>)e.Argument).ToArray();
-      ListViewGroup[] groups = new ListViewGroup[instanceProviders.Length];
+      var groups = new ListViewGroup[instanceProviders.Length];
       for (int i = 0; i < instanceProviders.Length; i++) {
         var provider = instanceProviders[i];
         groups[i] = new ListViewGroup(provider.Name, provider.Name) { Tag = provider };
@@ -205,7 +584,7 @@ namespace HeuristicLab.Optimizer {
       for (int i = 0; i < groups.Length; i++) {
         var group = groups[i];
         var provider = group.Tag as IProblemInstanceProvider;
-        progress = (100.0 * i) / groups.Length;
+        double progress = (100.0 * i) / groups.Length;
         instanceDiscoveryBackgroundWorker.ReportProgress((int)progress, provider.Name);
         var descriptors = ProblemInstanceManager.GetDataDescriptors(provider).ToArray();
         for (int j = 0; j < descriptors.Length; j++) {
@@ -224,6 +603,11 @@ namespace HeuristicLab.Optimizer {
       instanceDiscoveryBackgroundWorker.ReportProgress(100, string.Empty);
     }
 
+    private void instanceDiscoveryBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+      instanceDiscoveryProgressBar.Value = e.ProgressPercentage;
+      instanceDiscoveryProgressLabel.Text = (string)e.UserState;
+    }
+
     private void instanceDiscoveryBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       try {
         // unfortunately it's not enough to just add the groups, the items need to be added separately
@@ -232,28 +616,31 @@ namespace HeuristicLab.Optimizer {
           instancesListView.Items.AddRange(group.Items);
         }
         instancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-        selectAllCheckBox.Checked = true;
+        selectNoneCheckBox.Checked = true;
       } catch { }
       try {
-        SetMode(locked: false);
+        SetMode(DialogMode.Normal);
         if (e.Error != null) MessageBox.Show(e.Error.Message, "Error occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
       } catch { }
     }
+    #endregion
 
-    private StringBuilder failedInstances;
+    #region Experiment creation
     private void experimentCreationBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      backgroundWorkerWaitHandle.Set();
-      experimentCreationBackgroundWorker.ReportProgress(0, string.Empty);
+      backgroundWorkerWaitHandle.Set(); // notify the ok button that we're busy now
       failedInstances = new StringBuilder();
-      var items = (Dictionary<IProblemInstanceProvider, List<IDataDescriptor>>)e.Argument;
       var localExperiment = new Experiment();
-      if (items.Count == 0) {
-        AddOptimizer((IOptimizer)Optimizer.Clone(), localExperiment);
+
+      if (instances.Count == 0) {
+        var variations = experimentCreationBackgroundWorker_CalculateParameterVariations(optimizer);
+        foreach (var v in variations)
+          AddOptimizer(v, localExperiment);
         experimentCreationBackgroundWorker.ReportProgress(100, string.Empty);
+
       } else {
-        int counter = 0, total = items.SelectMany(x => x.Value).Count();
-        foreach (var provider in items.Keys) {
-          foreach (var descriptor in items[provider]) {
+        int counter = 0, totalInstances = instances.SelectMany(x => x.Value).Count(), totalVariations = GetNumberOfVariations();
+        foreach (var provider in instances.Keys) {
+          foreach (var descriptor in instances[provider]) {
             #region Check cancellation request
             if (experimentCreationBackgroundWorker.CancellationPending) {
               e.Cancel = true;
@@ -270,29 +657,123 @@ namespace HeuristicLab.Optimizer {
               failed = true;
             }
             if (!failed) {
-              AddOptimizer(algorithm, localExperiment);
-              counter++;
-              experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / total), descriptor.Name);
-            } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / total), "Loading failed (" + descriptor.Name + ")");
+              var variations = experimentCreationBackgroundWorker_CalculateParameterVariations(algorithm);
+              foreach (var v in variations) {
+                AddOptimizer(v, localExperiment);
+                counter++;
+              }
+              experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / (totalInstances * totalVariations)), descriptor.Name);
+            } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / (totalInstances * totalVariations)), "Loading failed (" + descriptor.Name + ")");
           }
         }
       }
       if (localExperiment != null) localExperiment.Prepare(true);
-      e.Result = localExperiment;
+      Experiment = localExperiment;
+    }
+
+    private IEnumerable<IOptimizer> experimentCreationBackgroundWorker_CalculateParameterVariations(IOptimizer optimizer) {
+      if (!boolParameters.Any() && !intParameters.Any() && !doubleParameters.Any() && !multipleChoiceParameters.Any()) {
+        yield return (IOptimizer)optimizer.Clone();
+        yield break;
+      }
+      bool finished;
+      var mcEnumerator = GetMultipleChoiceConfigurations().GetEnumerator();
+      var boolEnumerator = GetBoolParameterConfigurations().GetEnumerator();
+      var intEnumerator = GetIntParameterConfigurations().GetEnumerator();
+      var doubleEnumerator = GetDoubleParameterConfigurations().GetEnumerator();
+      mcEnumerator.MoveNext(); boolEnumerator.MoveNext(); intEnumerator.MoveNext(); doubleEnumerator.MoveNext();
+      do {
+        var variant = (IAlgorithm)optimizer.Clone();
+        variant.Name += " {";
+        finished = true;
+        if (doubleParameters.Any()) {
+          foreach (var d in doubleEnumerator.Current) {
+            var value = (ValueTypeValue<double>)((IValueParameter)variant.Parameters[d.Key.Name]).Value;
+            value.Value = d.Value;
+            variant.Name += d.Key.Name + "=" + d.Value.ToString() + ", ";
+          }
+          if (finished) {
+            if (doubleEnumerator.MoveNext()) {
+              finished = false;
+            } else {
+              doubleEnumerator = GetDoubleParameterConfigurations().GetEnumerator();
+              doubleEnumerator.MoveNext();
+            }
+          }
+        }
+        if (intParameters.Any()) {
+          foreach (var i in intEnumerator.Current) {
+            var value = (ValueTypeValue<int>)((IValueParameter)variant.Parameters[i.Key.Name]).Value;
+            value.Value = i.Value;
+            variant.Name += i.Key.Name + "=" + i.Value.ToString() + ", ";
+          }
+          if (finished) {
+            if (intEnumerator.MoveNext()) {
+              finished = false;
+            } else {
+              intEnumerator = GetIntParameterConfigurations().GetEnumerator();
+              intEnumerator.MoveNext();
+            }
+          }
+        }
+        if (boolParameters.Any()) {
+          foreach (var b in boolEnumerator.Current) {
+            var value = (ValueTypeValue<bool>)((IValueParameter)variant.Parameters[b.Key.Name]).Value;
+            value.Value = b.Value;
+            variant.Name += b.Key.Name + "=" + b.Value.ToString() + ", ";
+          }
+          if (finished) {
+            if (boolEnumerator.MoveNext()) {
+              finished = false;
+            } else {
+              boolEnumerator = GetBoolParameterConfigurations().GetEnumerator();
+              boolEnumerator.MoveNext();
+            }
+          }
+        }
+        if (multipleChoiceParameters.Any()) {
+          foreach (var m in mcEnumerator.Current) {
+            dynamic variantParam = variant.Parameters[m.Key.Name];
+            var variantEnumerator = ((IEnumerable<object>)variantParam.ValidValues).GetEnumerator();
+            var originalEnumerator = ((IEnumerable<object>)((dynamic)m.Key).ValidValues).GetEnumerator();
+            while (variantEnumerator.MoveNext() && originalEnumerator.MoveNext()) {
+              if (m.Value == (INamedItem)originalEnumerator.Current) {
+                variantParam.Value = (dynamic)variantEnumerator.Current;
+                variant.Name += m.Key.Name + "=" + m.Value.Name + ", ";
+                break;
+              }
+            }
+          }
+          if (finished) {
+            if (mcEnumerator.MoveNext()) {
+              finished = false;
+            } else {
+              mcEnumerator = GetMultipleChoiceConfigurations().GetEnumerator();
+              mcEnumerator.MoveNext();
+            }
+          }
+        }
+        variant.Name = variant.Name.Substring(0, variant.Name.Length - 2) + "}";
+        yield return variant;
+      } while (!finished);
+    }
+
+    private void experimentCreationBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+      experimentCreationProgressBar.Value = e.ProgressPercentage;
     }
 
     private void experimentCreationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       try {
-        SetMode(locked: false);
+        SetMode(DialogMode.Normal);
         if (e.Error != null) MessageBox.Show(e.Error.Message, "Error occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
         if (failedInstances.Length > 0) MessageBox.Show("Some instances could not be loaded: " + Environment.NewLine + failedInstances.ToString(), "Some instances failed to load", MessageBoxButtons.OK, MessageBoxIcon.Error);
         if (!e.Cancelled && e.Error == null) {
-          experiment = (Experiment)e.Result;
           DialogResult = System.Windows.Forms.DialogResult.OK;
           Close();
         }
       } catch { }
     }
+    #endregion
     #endregion
   }
 }

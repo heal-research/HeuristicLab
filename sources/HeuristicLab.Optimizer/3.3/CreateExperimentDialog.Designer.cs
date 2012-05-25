@@ -52,16 +52,43 @@ namespace HeuristicLab.Optimizer {
       this.repetitionsLabel = new System.Windows.Forms.Label();
       this.repetitionsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.instancesLabel = new System.Windows.Forms.Label();
       this.instancesListView = new System.Windows.Forms.ListView();
       this.columnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.experimentCreationBackgroundWorker = new System.ComponentModel.BackgroundWorker();
-      this.experimentCreationProgressBar = new System.Windows.Forms.ProgressBar();
-      this.progressLabel = new System.Windows.Forms.Label();
+      this.instanceDiscoveryProgressBar = new System.Windows.Forms.ProgressBar();
+      this.instanceDiscoveryProgressLabel = new System.Windows.Forms.Label();
       this.selectAllCheckBox = new System.Windows.Forms.CheckBox();
       this.selectNoneCheckBox = new System.Windows.Forms.CheckBox();
       this.instanceDiscoveryBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+      this.tabControl = new System.Windows.Forms.TabControl();
+      this.parametersTabPage = new System.Windows.Forms.TabPage();
+      this.parametersSplitContainer = new System.Windows.Forms.SplitContainer();
+      this.parametersListView = new System.Windows.Forms.ListView();
+      this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.choicesLabel = new System.Windows.Forms.Label();
+      this.choicesListView = new System.Windows.Forms.ListView();
+      this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.stepSizeTextBox = new System.Windows.Forms.TextBox();
+      this.maximumTextBox = new System.Windows.Forms.TextBox();
+      this.minimumTextBox = new System.Windows.Forms.TextBox();
+      this.stepSizeLabel = new System.Windows.Forms.Label();
+      this.maximumLabel = new System.Windows.Forms.Label();
+      this.minimumLabel = new System.Windows.Forms.Label();
+      this.instancesTabPage = new System.Windows.Forms.TabPage();
+      this.label1 = new System.Windows.Forms.Label();
+      this.experimentsToCreateDescriptionLabel = new System.Windows.Forms.Label();
+      this.experimentsLabel = new System.Windows.Forms.Label();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      this.experimentCreationProgressBar = new System.Windows.Forms.ProgressBar();
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).BeginInit();
+      this.tabControl.SuspendLayout();
+      this.parametersTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.parametersSplitContainer)).BeginInit();
+      this.parametersSplitContainer.Panel1.SuspendLayout();
+      this.parametersSplitContainer.Panel2.SuspendLayout();
+      this.parametersSplitContainer.SuspendLayout();
+      this.instancesTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // okButton
@@ -69,10 +96,10 @@ namespace HeuristicLab.Optimizer {
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.okButton.Enabled = false;
-      this.okButton.Location = new System.Drawing.Point(113, 259);
+      this.okButton.Location = new System.Drawing.Point(187, 359);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
-      this.okButton.TabIndex = 4;
+      this.okButton.TabIndex = 7;
       this.okButton.Text = "&OK";
       this.okButton.UseVisualStyleBackColor = true;
       this.okButton.Click += new System.EventHandler(this.okButton_Click);
@@ -81,10 +108,10 @@ namespace HeuristicLab.Optimizer {
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(194, 259);
+      this.cancelButton.Location = new System.Drawing.Point(268, 359);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
-      this.cancelButton.TabIndex = 5;
+      this.cancelButton.TabIndex = 8;
       this.cancelButton.Text = "&Cancel";
       this.cancelButton.UseVisualStyleBackColor = true;
       // 
@@ -135,7 +162,7 @@ namespace HeuristicLab.Optimizer {
             0,
             0});
       this.repetitionsNumericUpDown.Name = "repetitionsNumericUpDown";
-      this.repetitionsNumericUpDown.Size = new System.Drawing.Size(156, 20);
+      this.repetitionsNumericUpDown.Size = new System.Drawing.Size(230, 20);
       this.repetitionsNumericUpDown.TabIndex = 3;
       this.repetitionsNumericUpDown.ThousandsSeparator = true;
       this.toolTip.SetToolTip(this.repetitionsNumericUpDown, "Number of repetitions executed by the batch run.");
@@ -146,15 +173,6 @@ namespace HeuristicLab.Optimizer {
             0});
       this.repetitionsNumericUpDown.Validated += new System.EventHandler(this.repetitionsNumericUpDown_Validated);
       // 
-      // instancesLabel
-      // 
-      this.instancesLabel.AutoSize = true;
-      this.instancesLabel.Location = new System.Drawing.Point(12, 54);
-      this.instancesLabel.Name = "instancesLabel";
-      this.instancesLabel.Size = new System.Drawing.Size(56, 13);
-      this.instancesLabel.TabIndex = 2;
-      this.instancesLabel.Text = "&Instances:";
-      // 
       // instancesListView
       // 
       this.instancesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -164,10 +182,10 @@ namespace HeuristicLab.Optimizer {
       this.instancesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader});
       this.instancesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-      this.instancesListView.Location = new System.Drawing.Point(113, 77);
+      this.instancesListView.Location = new System.Drawing.Point(6, 35);
       this.instancesListView.Name = "instancesListView";
-      this.instancesListView.Size = new System.Drawing.Size(156, 176);
-      this.instancesListView.TabIndex = 6;
+      this.instancesListView.Size = new System.Drawing.Size(308, 225);
+      this.instancesListView.TabIndex = 3;
       this.instancesListView.UseCompatibleStateImageBehavior = false;
       this.instancesListView.View = System.Windows.Forms.View.Details;
       this.instancesListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.instancesListView_ItemChecked);
@@ -181,50 +199,50 @@ namespace HeuristicLab.Optimizer {
       this.experimentCreationBackgroundWorker.WorkerReportsProgress = true;
       this.experimentCreationBackgroundWorker.WorkerSupportsCancellation = true;
       this.experimentCreationBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.experimentCreationBackgroundWorker_DoWork);
-      this.experimentCreationBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+      this.experimentCreationBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.experimentCreationBackgroundWorker_ProgressChanged);
       this.experimentCreationBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.experimentCreationBackgroundWorker_RunWorkerCompleted);
       // 
-      // experimentCreationProgressBar
+      // instanceDiscoveryProgressBar
       // 
-      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.experimentCreationProgressBar.Location = new System.Drawing.Point(128, 142);
-      this.experimentCreationProgressBar.Name = "experimentCreationProgressBar";
-      this.experimentCreationProgressBar.Size = new System.Drawing.Size(128, 23);
-      this.experimentCreationProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-      this.experimentCreationProgressBar.TabIndex = 7;
-      this.experimentCreationProgressBar.Visible = false;
+      this.instanceDiscoveryProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.instanceDiscoveryProgressBar.Location = new System.Drawing.Point(6, 132);
+      this.instanceDiscoveryProgressBar.Name = "instanceDiscoveryProgressBar";
+      this.instanceDiscoveryProgressBar.Size = new System.Drawing.Size(308, 23);
+      this.instanceDiscoveryProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+      this.instanceDiscoveryProgressBar.TabIndex = 4;
+      this.instanceDiscoveryProgressBar.Visible = false;
       // 
-      // progressLabel
+      // instanceDiscoveryProgressLabel
       // 
-      this.progressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.progressLabel.BackColor = System.Drawing.SystemColors.Control;
-      this.progressLabel.Location = new System.Drawing.Point(128, 168);
-      this.progressLabel.Name = "progressLabel";
-      this.progressLabel.Size = new System.Drawing.Size(128, 23);
-      this.progressLabel.TabIndex = 8;
-      this.progressLabel.Text = "label1";
-      this.progressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      this.progressLabel.Visible = false;
+      this.instanceDiscoveryProgressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.instanceDiscoveryProgressLabel.BackColor = System.Drawing.SystemColors.Control;
+      this.instanceDiscoveryProgressLabel.Location = new System.Drawing.Point(6, 158);
+      this.instanceDiscoveryProgressLabel.Name = "instanceDiscoveryProgressLabel";
+      this.instanceDiscoveryProgressLabel.Size = new System.Drawing.Size(308, 23);
+      this.instanceDiscoveryProgressLabel.TabIndex = 5;
+      this.instanceDiscoveryProgressLabel.Text = "label1";
+      this.instanceDiscoveryProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.instanceDiscoveryProgressLabel.Visible = false;
       // 
       // selectAllCheckBox
       // 
       this.selectAllCheckBox.AutoSize = true;
-      this.selectAllCheckBox.Location = new System.Drawing.Point(113, 54);
+      this.selectAllCheckBox.Location = new System.Drawing.Point(52, 12);
       this.selectAllCheckBox.Name = "selectAllCheckBox";
-      this.selectAllCheckBox.Size = new System.Drawing.Size(67, 17);
-      this.selectAllCheckBox.TabIndex = 9;
-      this.selectAllCheckBox.Text = "select all";
+      this.selectAllCheckBox.Size = new System.Drawing.Size(36, 17);
+      this.selectAllCheckBox.TabIndex = 1;
+      this.selectAllCheckBox.Text = "all";
       this.selectAllCheckBox.UseVisualStyleBackColor = true;
       this.selectAllCheckBox.CheckedChanged += new System.EventHandler(this.selectAllCheckBox_CheckedChanged);
       // 
       // selectNoneCheckBox
       // 
       this.selectNoneCheckBox.AutoSize = true;
-      this.selectNoneCheckBox.Location = new System.Drawing.Point(186, 54);
+      this.selectNoneCheckBox.Location = new System.Drawing.Point(94, 12);
       this.selectNoneCheckBox.Name = "selectNoneCheckBox";
-      this.selectNoneCheckBox.Size = new System.Drawing.Size(81, 17);
-      this.selectNoneCheckBox.TabIndex = 9;
-      this.selectNoneCheckBox.Text = "select none";
+      this.selectNoneCheckBox.Size = new System.Drawing.Size(50, 17);
+      this.selectNoneCheckBox.TabIndex = 2;
+      this.selectNoneCheckBox.Text = "none";
       this.selectNoneCheckBox.UseVisualStyleBackColor = true;
       this.selectNoneCheckBox.CheckedChanged += new System.EventHandler(this.selectNoneCheckBox_CheckedChanged);
       // 
@@ -233,8 +251,224 @@ namespace HeuristicLab.Optimizer {
       this.instanceDiscoveryBackgroundWorker.WorkerReportsProgress = true;
       this.instanceDiscoveryBackgroundWorker.WorkerSupportsCancellation = true;
       this.instanceDiscoveryBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.instanceDiscoveryBackgroundWorker_DoWork);
-      this.instanceDiscoveryBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+      this.instanceDiscoveryBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.instanceDiscoveryBackgroundWorker_ProgressChanged);
       this.instanceDiscoveryBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.instanceDiscoveryBackgroundWorker_RunWorkerCompleted);
+      // 
+      // tabControl
+      // 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Controls.Add(this.parametersTabPage);
+      this.tabControl.Controls.Add(this.instancesTabPage);
+      this.tabControl.Location = new System.Drawing.Point(15, 54);
+      this.tabControl.Name = "tabControl";
+      this.tabControl.SelectedIndex = 0;
+      this.tabControl.Size = new System.Drawing.Size(328, 299);
+      this.tabControl.TabIndex = 4;
+      // 
+      // parametersTabPage
+      // 
+      this.parametersTabPage.Controls.Add(this.parametersSplitContainer);
+      this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
+      this.parametersTabPage.Name = "parametersTabPage";
+      this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.parametersTabPage.Size = new System.Drawing.Size(320, 273);
+      this.parametersTabPage.TabIndex = 1;
+      this.parametersTabPage.Text = "Parameters Variation";
+      this.parametersTabPage.UseVisualStyleBackColor = true;
+      // 
+      // parametersSplitContainer
+      // 
+      this.parametersSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.parametersSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.parametersSplitContainer.Location = new System.Drawing.Point(3, 3);
+      this.parametersSplitContainer.Name = "parametersSplitContainer";
+      // 
+      // parametersSplitContainer.Panel1
+      // 
+      this.parametersSplitContainer.Panel1.Controls.Add(this.parametersListView);
+      // 
+      // parametersSplitContainer.Panel2
+      // 
+      this.parametersSplitContainer.Panel2.Controls.Add(this.choicesLabel);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.choicesListView);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.stepSizeTextBox);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.maximumTextBox);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.minimumTextBox);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.stepSizeLabel);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.maximumLabel);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.minimumLabel);
+      this.parametersSplitContainer.Size = new System.Drawing.Size(314, 267);
+      this.parametersSplitContainer.SplitterDistance = 124;
+      this.parametersSplitContainer.TabIndex = 1;
+      // 
+      // parametersListView
+      // 
+      this.parametersListView.CheckBoxes = true;
+      this.parametersListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+      this.parametersListView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.parametersListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.parametersListView.Location = new System.Drawing.Point(0, 0);
+      this.parametersListView.MultiSelect = false;
+      this.parametersListView.Name = "parametersListView";
+      this.parametersListView.Size = new System.Drawing.Size(124, 267);
+      this.parametersListView.TabIndex = 0;
+      this.parametersListView.UseCompatibleStateImageBehavior = false;
+      this.parametersListView.View = System.Windows.Forms.View.Details;
+      this.parametersListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.parametersListView_ItemChecked);
+      this.parametersListView.SelectedIndexChanged += new System.EventHandler(this.parametersListView_SelectedIndexChanged);
+      // 
+      // columnHeader1
+      // 
+      this.columnHeader1.Width = 150;
+      // 
+      // choicesLabel
+      // 
+      this.choicesLabel.AutoSize = true;
+      this.choicesLabel.Location = new System.Drawing.Point(13, 15);
+      this.choicesLabel.Name = "choicesLabel";
+      this.choicesLabel.Size = new System.Drawing.Size(48, 13);
+      this.choicesLabel.TabIndex = 0;
+      this.choicesLabel.Text = "Choices:";
+      // 
+      // choicesListView
+      // 
+      this.choicesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.choicesListView.CheckBoxes = true;
+      this.choicesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2});
+      this.choicesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.choicesListView.Location = new System.Drawing.Point(16, 34);
+      this.choicesListView.Name = "choicesListView";
+      this.choicesListView.Size = new System.Drawing.Size(155, 220);
+      this.choicesListView.TabIndex = 6;
+      this.choicesListView.UseCompatibleStateImageBehavior = false;
+      this.choicesListView.View = System.Windows.Forms.View.Details;
+      this.choicesListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.choiceListView_ItemChecked);
+      // 
+      // columnHeader2
+      // 
+      this.columnHeader2.Width = 150;
+      // 
+      // stepSizeTextBox
+      // 
+      this.stepSizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.stepSizeTextBox.Location = new System.Drawing.Point(73, 64);
+      this.stepSizeTextBox.Name = "stepSizeTextBox";
+      this.stepSizeTextBox.Size = new System.Drawing.Size(83, 20);
+      this.stepSizeTextBox.TabIndex = 5;
+      this.stepSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
+      // 
+      // maximumTextBox
+      // 
+      this.maximumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.maximumTextBox.Location = new System.Drawing.Point(73, 38);
+      this.maximumTextBox.Name = "maximumTextBox";
+      this.maximumTextBox.Size = new System.Drawing.Size(83, 20);
+      this.maximumTextBox.TabIndex = 3;
+      this.maximumTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
+      // 
+      // minimumTextBox
+      // 
+      this.minimumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.minimumTextBox.Location = new System.Drawing.Point(73, 12);
+      this.minimumTextBox.Name = "minimumTextBox";
+      this.minimumTextBox.Size = new System.Drawing.Size(83, 20);
+      this.minimumTextBox.TabIndex = 1;
+      this.minimumTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
+      // 
+      // stepSizeLabel
+      // 
+      this.stepSizeLabel.AutoSize = true;
+      this.stepSizeLabel.Location = new System.Drawing.Point(13, 67);
+      this.stepSizeLabel.Name = "stepSizeLabel";
+      this.stepSizeLabel.Size = new System.Drawing.Size(53, 13);
+      this.stepSizeLabel.TabIndex = 4;
+      this.stepSizeLabel.Text = "Step size:";
+      // 
+      // maximumLabel
+      // 
+      this.maximumLabel.AutoSize = true;
+      this.maximumLabel.Location = new System.Drawing.Point(13, 41);
+      this.maximumLabel.Name = "maximumLabel";
+      this.maximumLabel.Size = new System.Drawing.Size(54, 13);
+      this.maximumLabel.TabIndex = 2;
+      this.maximumLabel.Text = "Maximum:";
+      // 
+      // minimumLabel
+      // 
+      this.minimumLabel.AutoSize = true;
+      this.minimumLabel.Location = new System.Drawing.Point(13, 15);
+      this.minimumLabel.Name = "minimumLabel";
+      this.minimumLabel.Size = new System.Drawing.Size(51, 13);
+      this.minimumLabel.TabIndex = 0;
+      this.minimumLabel.Text = "Minimum:";
+      // 
+      // instancesTabPage
+      // 
+      this.instancesTabPage.Controls.Add(this.label1);
+      this.instancesTabPage.Controls.Add(this.instanceDiscoveryProgressBar);
+      this.instancesTabPage.Controls.Add(this.selectNoneCheckBox);
+      this.instancesTabPage.Controls.Add(this.instanceDiscoveryProgressLabel);
+      this.instancesTabPage.Controls.Add(this.selectAllCheckBox);
+      this.instancesTabPage.Controls.Add(this.instancesListView);
+      this.instancesTabPage.Location = new System.Drawing.Point(4, 22);
+      this.instancesTabPage.Name = "instancesTabPage";
+      this.instancesTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.instancesTabPage.Size = new System.Drawing.Size(320, 273);
+      this.instancesTabPage.TabIndex = 0;
+      this.instancesTabPage.Text = "Problem Instances";
+      this.instancesTabPage.UseVisualStyleBackColor = true;
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(6, 13);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(40, 13);
+      this.label1.TabIndex = 0;
+      this.label1.Text = "Select:";
+      // 
+      // experimentsToCreateDescriptionLabel
+      // 
+      this.experimentsToCreateDescriptionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.experimentsToCreateDescriptionLabel.AutoSize = true;
+      this.experimentsToCreateDescriptionLabel.Location = new System.Drawing.Point(12, 364);
+      this.experimentsToCreateDescriptionLabel.Name = "experimentsToCreateDescriptionLabel";
+      this.experimentsToCreateDescriptionLabel.Size = new System.Drawing.Size(112, 13);
+      this.experimentsToCreateDescriptionLabel.TabIndex = 5;
+      this.experimentsToCreateDescriptionLabel.Text = "Experiments to create:";
+      // 
+      // experimentsLabel
+      // 
+      this.experimentsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.experimentsLabel.AutoSize = true;
+      this.experimentsLabel.Location = new System.Drawing.Point(130, 364);
+      this.experimentsLabel.Name = "experimentsLabel";
+      this.experimentsLabel.Size = new System.Drawing.Size(13, 13);
+      this.experimentsLabel.TabIndex = 6;
+      this.experimentsLabel.Text = "1";
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.ContainerControl = this;
+      // 
+      // experimentCreationProgressBar
+      // 
+      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.experimentCreationProgressBar.Location = new System.Drawing.Point(187, 359);
+      this.experimentCreationProgressBar.Name = "experimentCreationProgressBar";
+      this.experimentCreationProgressBar.Size = new System.Drawing.Size(75, 23);
+      this.experimentCreationProgressBar.TabIndex = 9;
+      this.experimentCreationProgressBar.Visible = false;
       // 
       // CreateExperimentDialog
       // 
@@ -242,14 +476,12 @@ namespace HeuristicLab.Optimizer {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(281, 294);
-      this.Controls.Add(this.progressLabel);
+      this.ClientSize = new System.Drawing.Size(355, 394);
       this.Controls.Add(this.experimentCreationProgressBar);
-      this.Controls.Add(this.selectNoneCheckBox);
-      this.Controls.Add(this.selectAllCheckBox);
-      this.Controls.Add(this.instancesListView);
+      this.Controls.Add(this.experimentsLabel);
+      this.Controls.Add(this.experimentsToCreateDescriptionLabel);
+      this.Controls.Add(this.tabControl);
       this.Controls.Add(this.repetitionsNumericUpDown);
-      this.Controls.Add(this.instancesLabel);
       this.Controls.Add(this.repetitionsLabel);
       this.Controls.Add(this.createBatchRunLabel);
       this.Controls.Add(this.createBatchRunCheckBox);
@@ -266,6 +498,16 @@ namespace HeuristicLab.Optimizer {
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CreateExperimentDialog_FormClosing);
       this.Load += new System.EventHandler(this.CreateExperimentDialog_Load);
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).EndInit();
+      this.tabControl.ResumeLayout(false);
+      this.parametersTabPage.ResumeLayout(false);
+      this.parametersSplitContainer.Panel1.ResumeLayout(false);
+      this.parametersSplitContainer.Panel2.ResumeLayout(false);
+      this.parametersSplitContainer.Panel2.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.parametersSplitContainer)).EndInit();
+      this.parametersSplitContainer.ResumeLayout(false);
+      this.instancesTabPage.ResumeLayout(false);
+      this.instancesTabPage.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -280,15 +522,34 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.Label repetitionsLabel;
     private System.Windows.Forms.NumericUpDown repetitionsNumericUpDown;
     private System.Windows.Forms.ToolTip toolTip;
-    private System.Windows.Forms.Label instancesLabel;
     private System.Windows.Forms.ListView instancesListView;
     private System.Windows.Forms.ColumnHeader columnHeader;
     private System.ComponentModel.BackgroundWorker experimentCreationBackgroundWorker;
-    private System.Windows.Forms.ProgressBar experimentCreationProgressBar;
-    private System.Windows.Forms.Label progressLabel;
+    private System.Windows.Forms.ProgressBar instanceDiscoveryProgressBar;
+    private System.Windows.Forms.Label instanceDiscoveryProgressLabel;
     private System.Windows.Forms.CheckBox selectAllCheckBox;
     private System.Windows.Forms.CheckBox selectNoneCheckBox;
     private System.ComponentModel.BackgroundWorker instanceDiscoveryBackgroundWorker;
+    private System.Windows.Forms.TabControl tabControl;
+    private System.Windows.Forms.TabPage parametersTabPage;
+    private System.Windows.Forms.TabPage instancesTabPage;
+    private System.Windows.Forms.SplitContainer parametersSplitContainer;
+    private System.Windows.Forms.ListView parametersListView;
+    private System.Windows.Forms.ColumnHeader columnHeader1;
+    private System.Windows.Forms.Label experimentsToCreateDescriptionLabel;
+    private System.Windows.Forms.Label experimentsLabel;
+    private System.Windows.Forms.Label choicesLabel;
+    private System.Windows.Forms.ListView choicesListView;
+    private System.Windows.Forms.ColumnHeader columnHeader2;
+    private System.Windows.Forms.TextBox stepSizeTextBox;
+    private System.Windows.Forms.TextBox maximumTextBox;
+    private System.Windows.Forms.TextBox minimumTextBox;
+    private System.Windows.Forms.Label stepSizeLabel;
+    private System.Windows.Forms.Label maximumLabel;
+    private System.Windows.Forms.Label minimumLabel;
+    private System.Windows.Forms.Label label1;
+    private System.Windows.Forms.ErrorProvider errorProvider;
+    private System.Windows.Forms.ProgressBar experimentCreationProgressBar;
 
   }
 }
