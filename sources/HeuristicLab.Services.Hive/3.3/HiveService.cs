@@ -333,6 +333,7 @@ namespace HeuristicLab.Services.Hive {
         dao.SetJobPermission(jobId, userManager.CurrentUserId, grantedUserId, DA.Permission.NotAllowed);
       });
     }
+
     public IEnumerable<JobPermission> GetJobPermissions(Guid jobId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       return trans.UseTransaction(() => {
@@ -494,12 +495,12 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public IEnumerable<Slave> GetSlaves() {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       return dao.GetSlaves(x => true);
     }
 
     public IEnumerable<SlaveGroup> GetSlaveGroups() {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       return dao.GetSlaveGroups(x => true);
     }
 

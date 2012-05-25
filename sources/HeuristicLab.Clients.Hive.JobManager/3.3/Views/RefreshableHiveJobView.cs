@@ -22,6 +22,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,6 +42,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
   [Content(typeof(RefreshableJob), true)]
   public partial class RefreshableHiveJobView : HeuristicLab.Core.Views.ItemView {
     private ProgressView progressView;
+    private HiveResourceSelectorDialog hiveResourceSelectorDialog;
 
     public new RefreshableJob Content {
       get { return (RefreshableJob)base.Content; }
@@ -148,6 +150,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         this.nameTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded;
         this.resourceNamesTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded;
+        this.searchButton.Enabled = Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded);
         this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded;
 
         this.isPrivilegedCheckBox.Enabled = Content.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded); // TODO: check if user has the rights to do this        
@@ -331,6 +334,19 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     #endregion
 
     #region Control events
+    private void searchButton_Click(object sender, EventArgs e) {
+      if (hiveResourceSelectorDialog == null)
+        hiveResourceSelectorDialog = new HiveResourceSelectorDialog();
+      if (hiveResourceSelectorDialog.ShowDialog(this) == DialogResult.OK) {
+        StringBuilder sb = new StringBuilder();
+        foreach (Resource resource in hiveResourceSelectorDialog.GetSelectedResources()) {
+          sb.Append(resource.Name);
+          sb.Append("; ");
+        }
+        resourceNamesTextBox.Text = sb.ToString();
+      }
+    }
+
     private void startButton_Click(object sender, EventArgs e) {
       if (nameTextBox.Text.Trim() == string.Empty) {
         MessageBox.Show("Please enter a name for the job before uploading it!", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);

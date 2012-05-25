@@ -57,6 +57,7 @@
       this.finishedLabel = new System.Windows.Forms.Label();
       this.calculatingLabel = new System.Windows.Forms.Label();
       this.jobsLabel = new System.Windows.Forms.Label();
+      this.searchButton = new System.Windows.Forms.Button();
       this.tabControl.SuspendLayout();
       this.tasksTabPage.SuspendLayout();
       this.permissionTabPage.SuspendLayout();
@@ -69,8 +70,8 @@
       // tabControl
       // 
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.tasksTabPage);
       this.tabControl.Controls.Add(this.permissionTabPage);
       this.tabControl.Controls.Add(this.runsTabPage);
@@ -97,8 +98,8 @@
       // 
       this.jobsTreeView.AllowDrop = true;
       this.jobsTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.jobsTreeView.Caption = "ItemTree View";
       this.jobsTreeView.Content = null;
       this.jobsTreeView.Location = new System.Drawing.Point(2, 3);
@@ -135,8 +136,8 @@
       // hiveExperimentPermissionListView
       // 
       this.hiveExperimentPermissionListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.hiveExperimentPermissionListView.Caption = "HiveExperimentPermissionList View";
       this.hiveExperimentPermissionListView.Content = null;
       this.hiveExperimentPermissionListView.HiveExperimentId = new System.Guid("00000000-0000-0000-0000-000000000000");
@@ -161,8 +162,8 @@
       // runCollectionViewHost
       // 
       this.runCollectionViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.runCollectionViewHost.Caption = "View";
       this.runCollectionViewHost.Content = null;
       this.runCollectionViewHost.Enabled = false;
@@ -187,8 +188,8 @@
       // stateLogViewHost
       // 
       this.stateLogViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.stateLogViewHost.Caption = "StateLog View";
       this.stateLogViewHost.Content = null;
       this.stateLogViewHost.Enabled = false;
@@ -213,8 +214,8 @@
       // logView
       // 
       this.logView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.logView.Caption = "Log View";
       this.logView.Content = null;
       this.logView.Location = new System.Drawing.Point(3, 3);
@@ -304,10 +305,10 @@
       // resourceNamesTextBox
       // 
       this.resourceNamesTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.resourceNamesTextBox.Location = new System.Drawing.Point(70, 52);
       this.resourceNamesTextBox.Name = "resourceNamesTextBox";
-      this.resourceNamesTextBox.Size = new System.Drawing.Size(415, 20);
+      this.resourceNamesTextBox.Size = new System.Drawing.Size(385, 20);
       this.resourceNamesTextBox.TabIndex = 2;
       this.resourceNamesTextBox.Validated += new System.EventHandler(this.resourceNamesTextBox_Validated);
       // 
@@ -323,7 +324,7 @@
       // nameTextBox
       // 
       this.nameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.nameTextBox.Location = new System.Drawing.Point(70, 27);
       this.nameTextBox.Name = "nameTextBox";
       this.nameTextBox.Size = new System.Drawing.Size(501, 20);
@@ -345,7 +346,7 @@
       // 
       this.isPrivilegedCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.isPrivilegedCheckBox.AutoSize = true;
-      this.isPrivilegedCheckBox.Location = new System.Drawing.Point(491, 53);
+      this.isPrivilegedCheckBox.Location = new System.Drawing.Point(491, 54);
       this.isPrivilegedCheckBox.Name = "isPrivilegedCheckBox";
       this.isPrivilegedCheckBox.Size = new System.Drawing.Size(72, 17);
       this.isPrivilegedCheckBox.TabIndex = 3;
@@ -384,7 +385,7 @@
       // finishedTextBox
       // 
       this.finishedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.finishedTextBox.Location = new System.Drawing.Point(74, 64);
       this.finishedTextBox.Name = "finishedTextBox";
       this.finishedTextBox.Size = new System.Drawing.Size(53, 20);
@@ -393,7 +394,7 @@
       // calculatingTextBox
       // 
       this.calculatingTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.calculatingTextBox.Location = new System.Drawing.Point(74, 40);
       this.calculatingTextBox.Name = "calculatingTextBox";
       this.calculatingTextBox.Size = new System.Drawing.Size(53, 20);
@@ -402,7 +403,7 @@
       // jobsTextBox
       // 
       this.jobsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.jobsTextBox.Location = new System.Drawing.Point(74, 16);
       this.jobsTextBox.Name = "jobsTextBox";
       this.jobsTextBox.Size = new System.Drawing.Size(53, 20);
@@ -435,10 +436,22 @@
       this.jobsLabel.TabIndex = 0;
       this.jobsLabel.Text = "Waiting:";
       // 
+      // searchButton
+      // 
+      this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.searchButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Zoom;
+      this.searchButton.Location = new System.Drawing.Point(461, 50);
+      this.searchButton.Name = "searchButton";
+      this.searchButton.Size = new System.Drawing.Size(24, 24);
+      this.searchButton.TabIndex = 26;
+      this.searchButton.UseVisualStyleBackColor = true;
+      this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
+      // 
       // RefreshableHiveJobView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.searchButton);
       this.Controls.Add(this.isPrivilegedCheckBox);
       this.Controls.Add(this.infoGroupBox);
       this.Controls.Add(this.refreshAutomaticallyCheckBox);
@@ -503,6 +516,7 @@
     private System.Windows.Forms.Button refreshPermissionsButton;
     private System.Windows.Forms.TabPage runsTabPage;
     private MainForm.WindowsForms.ViewHost runCollectionViewHost;
+    private System.Windows.Forms.Button searchButton;
 
   }
 }

@@ -95,6 +95,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtensionMethods\TreeNodeExtensions.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Views\HiveJobManagerView.cs">
       <SubType>UserControl</SubType>
@@ -114,6 +115,18 @@
     </Compile>
     <Compile Include="Views\HiveJobPermissionView.Designer.cs">
       <DependentUpon>HiveJobPermissionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HiveResourceSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\HiveResourceSelector.Designer.cs">
+      <DependentUpon>HiveResourceSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HiveResourceSelectorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\HiveResourceSelectorDialog.Designer.cs">
+      <DependentUpon>HiveResourceSelectorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\RefreshableHiveJobListView.cs">
       <SubType>UserControl</SubType>
