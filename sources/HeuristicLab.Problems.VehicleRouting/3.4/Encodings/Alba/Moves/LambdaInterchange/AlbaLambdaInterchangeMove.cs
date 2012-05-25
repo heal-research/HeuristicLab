@@ -79,6 +79,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         this.Individual = permutation.Clone() as AlbaEncoding;
     }
 
+    [StorableConstructor]
+    protected AlbaLambdaInterchangeMove(bool deserializing) : base(deserializing) { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AlbaLambdaInterchangeMove(this, cloner);
     }

@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private PickupViolationsRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
+    protected PickupViolationsRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
 
     public PickupViolationsRelaxationVRPAnalyzer()
       : base() {
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return new PickupViolationsRelaxationVRPAnalyzer(this, cloner);
     }
 
-    private PickupViolationsRelaxationVRPAnalyzer(PickupViolationsRelaxationVRPAnalyzer original, Cloner cloner)
+    protected PickupViolationsRelaxationVRPAnalyzer(PickupViolationsRelaxationVRPAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }
 

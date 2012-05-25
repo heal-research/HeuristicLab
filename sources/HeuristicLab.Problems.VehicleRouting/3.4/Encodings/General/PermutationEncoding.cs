@@ -59,8 +59,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     protected PermutationEncoding(PermutationEncoding original, Cloner cloner)
       : base(original, cloner) {
-        this.ProblemInstance = original.ProblemInstance;
         this.readOnly = original.readOnly;
+
+        if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
+          this.ProblemInstance = (IVRPProblemInstance)cloner.Clone(original.ProblemInstance);
+        else
+          this.ProblemInstance = original.ProblemInstance;
     }
 
     public PermutationEncoding(Permutation permutation, IVRPProblemInstance problemInstance)

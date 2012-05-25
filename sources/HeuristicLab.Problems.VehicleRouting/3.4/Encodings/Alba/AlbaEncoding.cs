@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaEncoding(bool serializing)
+    protected AlbaEncoding(bool serializing)
       : base(serializing) {
     }
 

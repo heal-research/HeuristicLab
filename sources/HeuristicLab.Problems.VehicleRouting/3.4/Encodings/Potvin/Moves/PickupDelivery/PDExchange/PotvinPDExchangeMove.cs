@@ -65,6 +65,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       this.Individual = individual.Clone() as PotvinEncoding;
     }
 
+    [StorableConstructor]
+    protected PotvinPDExchangeMove(bool deserializing) : base(deserializing) { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PotvinPDExchangeMove(this, cloner);
     }

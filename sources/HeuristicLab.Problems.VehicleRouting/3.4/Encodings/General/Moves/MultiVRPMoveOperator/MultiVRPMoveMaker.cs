@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
     }
     
     [StorableConstructor]
-    private MultiVRPMoveMaker(bool deserializing) : base(deserializing) { }
+    protected MultiVRPMoveMaker(bool deserializing) : base(deserializing) { }
 
     public MultiVRPMoveMaker()
       : base() {

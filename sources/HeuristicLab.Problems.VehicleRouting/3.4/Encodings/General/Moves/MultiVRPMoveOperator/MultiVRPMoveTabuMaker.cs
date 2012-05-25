@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
     }
     
     [StorableConstructor]
-    private MultiVRPMoveTabuMaker(bool deserializing) : base(deserializing) { }
+    protected MultiVRPMoveTabuMaker(bool deserializing) : base(deserializing) { }
 
     public MultiVRPMoveTabuMaker()
       : base() {

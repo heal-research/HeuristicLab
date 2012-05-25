@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    private MultiVRPSolutionCreator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPSolutionCreator(bool deserializing) : base(deserializing) { }
     public MultiVRPSolutionCreator()
       : base() {
       Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The new VRP tours."));

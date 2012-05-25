@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
     }
 
     [StorableConstructor]
-    private ZhuEncoding(bool serializing)
+    protected ZhuEncoding(bool serializing)
       : base(serializing) {
     }
 

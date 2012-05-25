@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
     }
 
     [StorableConstructor]
-    private GVREncoding(bool serializing)
+    protected GVREncoding(bool serializing)
       : base(serializing) {
     }
 

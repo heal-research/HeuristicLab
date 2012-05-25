@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     [StorableConstructor]
-    private MultiVRPMoveGenerator(bool deserializing) : base(deserializing) { }
+    protected MultiVRPMoveGenerator(bool deserializing) : base(deserializing) { }
     public MultiVRPMoveGenerator()
       : base() {
       Parameters.Add(new ValueLookupParameter<IntValue>("SelectedOperators", "The number of selected operators.", new IntValue(1)));

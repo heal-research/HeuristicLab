@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to generate."));
     }
 
-    private PotvinTwoOptStarMultiMoveGenerator(PotvinTwoOptStarMoveGenerator original, Cloner cloner)
+    private PotvinTwoOptStarMultiMoveGenerator(PotvinTwoOptStarMultiMoveGenerator original, Cloner cloner)
       : base(original, cloner) {
     }
 

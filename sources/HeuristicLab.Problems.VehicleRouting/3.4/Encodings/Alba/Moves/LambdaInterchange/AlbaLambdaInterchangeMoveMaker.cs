@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaLambdaInterchangeMoveMaker(bool deserializing) : base(deserializing) { }
+    protected AlbaLambdaInterchangeMoveMaker(bool deserializing) : base(deserializing) { }
 
     public AlbaLambdaInterchangeMoveMaker()
       : base() {

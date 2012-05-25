@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
     }
 
-    private PotvinVehicleAssignmentSingleMoveGenerator(PotvinVehicleAssignmentMoveGenerator original, Cloner cloner)
+    private PotvinVehicleAssignmentSingleMoveGenerator(PotvinVehicleAssignmentSingleMoveGenerator original, Cloner cloner)
       : base(original, cloner) {
     }
 

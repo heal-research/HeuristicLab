@@ -142,6 +142,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
+      cloner.Clone(ProblemInstance);
       return new VehicleRoutingProblem(this, cloner);
     }
 

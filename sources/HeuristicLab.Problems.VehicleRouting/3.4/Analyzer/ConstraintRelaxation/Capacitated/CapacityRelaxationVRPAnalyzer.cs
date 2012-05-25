@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private CapacityRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
+    protected CapacityRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
 
     public CapacityRelaxationVRPAnalyzer()
       : base() {
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return new CapacityRelaxationVRPAnalyzer(this, cloner);
     }
 
-    private CapacityRelaxationVRPAnalyzer(CapacityRelaxationVRPAnalyzer original, Cloner cloner)
+    protected CapacityRelaxationVRPAnalyzer(CapacityRelaxationVRPAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }
 

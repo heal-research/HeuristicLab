@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     }
 
     [StorableConstructor]
-    private PrinsEncoding(bool serializing)
+    protected PrinsEncoding(bool serializing)
       : base(serializing) {
     }
 

@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base() {
     }
 
-    private PotvinVehicleAssignmentExhaustiveMoveGenerator(PotvinVehicleAssignmentMoveGenerator original, Cloner cloner)
+    private PotvinVehicleAssignmentExhaustiveMoveGenerator(PotvinVehicleAssignmentExhaustiveMoveGenerator original, Cloner cloner)
       : base(original, cloner) {
     }
 

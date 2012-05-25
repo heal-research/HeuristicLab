@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableConstructor]
-    private TimeWindowRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
+    protected TimeWindowRelaxationVRPAnalyzer(bool deserializing) : base(deserializing) { }
 
     public TimeWindowRelaxationVRPAnalyzer()
       : base() {
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       return new TimeWindowRelaxationVRPAnalyzer(this, cloner);
     }
 
-    private TimeWindowRelaxationVRPAnalyzer(TimeWindowRelaxationVRPAnalyzer original, Cloner cloner)
+    protected TimeWindowRelaxationVRPAnalyzer(TimeWindowRelaxationVRPAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }
 

@@ -114,7 +114,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     protected TourEncoding(TourEncoding original, Cloner cloner)
       : base(original, cloner) {
        this.Tours = (ItemList<Tour>)cloner.Clone(original.Tours);
-       this.ProblemInstance = original.ProblemInstance;
+       if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
+         this.ProblemInstance = (IVRPProblemInstance)cloner.Clone(original.ProblemInstance);
+       else
+         this.ProblemInstance = original.ProblemInstance;
     }
 
     public static void ConvertFrom(IVRPEncoding encoding, TourEncoding solution, IVRPProblemInstance problemInstance) {

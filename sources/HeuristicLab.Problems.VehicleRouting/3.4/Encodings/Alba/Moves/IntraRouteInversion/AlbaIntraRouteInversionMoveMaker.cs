@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     [StorableConstructor]
-    private AlbaIntraRouteInversionMoveMaker(bool deserializing) : base(deserializing) { }
+    protected AlbaIntraRouteInversionMoveMaker(bool deserializing) : base(deserializing) { }
 
     public AlbaIntraRouteInversionMoveMaker()
       : base() {

@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [StorableConstructor]
-    private PotvinPDShiftMoveMaker(bool deserializing) : base(deserializing) { }
+    protected PotvinPDShiftMoveMaker(bool deserializing) : base(deserializing) { }
 
     public PotvinPDShiftMoveMaker()
       : base() {

@@ -74,6 +74,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       this.Individual = cloner.Clone(Individual) as PotvinEncoding;
     }
 
+    [StorableConstructor]
+    protected PotvinPDShiftMove(bool deserializing) : base(deserializing) { }
+
     #region IVRPMove Members
 
     [ThreadStatic]

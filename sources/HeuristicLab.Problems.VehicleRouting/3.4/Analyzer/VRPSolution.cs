@@ -105,9 +105,13 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private VRPSolution(VRPSolution original, Cloner cloner)
       : base(original, cloner) {
-      this.problemInstance = original.problemInstance;
       this.solution = (IVRPEncoding)cloner.Clone(original.solution);
       this.quality = (DoubleValue)cloner.Clone(original.quality);
+
+      if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
+        this.ProblemInstance = (IVRPProblemInstance)cloner.Clone(original.ProblemInstance);
+      else
+        this.ProblemInstance = original.ProblemInstance;
 
       this.Initialize();
     }
