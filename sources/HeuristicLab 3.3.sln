@@ -35,6 +35,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 	ProjectSection(ProjectDependencies) = postProject
 		{E1D6C801-892A-406A-B606-F158E36DD3C3} = {E1D6C801-892A-406A-B606-F158E36DD3C3}
 		{730A9104-D4D1-4360-966B-E49B7571DDA3} = {730A9104-D4D1-4360-966B-E49B7571DDA3}
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3} = {DBFD7205-61AF-40EF-8776-3052DEF91CF3}
 		{315BDA09-3F4F-49B3-9790-B37CFC1C5750} = {315BDA09-3F4F-49B3-9790-B37CFC1C5750}
 		{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD} = {489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}
 		{72104A0B-90E7-42F3-9ABE-9BBBADD4B943} = {72104A0B-90E7-42F3-9ABE-9BBBADD4B943}
@@ -312,6 +313,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Instances.VehicleRouting.Views-3.4", "HeuristicLab.Problems.Instances.VehicleRouting.Views\3.4\HeuristicLab.Problems.Instances.VehicleRouting.Views-3.4.csproj", "{E2419315-B10A-4BC1-B517-A24DCF4C59AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OutdatedPlugins", "OutdatedPlugins", "{7EB6A587-BD45-40F2-BB15-4A69677A326C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Clients.Hive.JobManager-3.3", "HeuristicLab.Clients.Hive.JobManager\3.3\HeuristicLab.Clients.Hive.JobManager-3.3.csproj", "{DBFD7205-61AF-40EF-8776-3052DEF91CF3}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -1526,6 +1529,18 @@ Global
 		{E2419315-B10A-4BC1-B517-A24DCF4C59AC}.Release|x64.Build.0 = Release|x64
 		{E2419315-B10A-4BC1-B517-A24DCF4C59AC}.Release|x86.ActiveCfg = Release|x86
 		{E2419315-B10A-4BC1-B517-A24DCF4C59AC}.Release|x86.Build.0 = Release|x86
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Debug|x64.ActiveCfg = Debug|x64
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Debug|x64.Build.0 = Debug|x64
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Debug|x86.ActiveCfg = Debug|x86
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Debug|x86.Build.0 = Debug|x86
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Release|x64.ActiveCfg = Release|x64
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Release|x64.Build.0 = Release|x64
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Release|x86.ActiveCfg = Release|x86
+		{DBFD7205-61AF-40EF-8776-3052DEF91CF3}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

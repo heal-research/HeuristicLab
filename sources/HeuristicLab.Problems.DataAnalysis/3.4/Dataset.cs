@@ -130,8 +130,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
         variableValues = new Dictionary<string, IList>();
         for (int col = 0; col < storableData.GetLength(1); col++) {
           string columName = variableNames[col];
-          var values = new List<double>();
-          for (int row = 0; row < storableData.GetLength(0); row++) {
+          var values = new List<double>(rows);
+          for (int row = 0; row < rows; row++) {
             values.Add(storableData[row, col]);
           }
           variableValues.Add(columName, values);
