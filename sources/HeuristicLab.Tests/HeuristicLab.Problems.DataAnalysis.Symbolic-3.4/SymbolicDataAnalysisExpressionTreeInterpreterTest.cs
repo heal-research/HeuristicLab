@@ -26,7 +26,8 @@ using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
 
 
   [TestClass()]

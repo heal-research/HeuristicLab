@@ -24,8 +24,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
   internal class SymbolicExpressionImporter {
     private const string VARSTART = "VAR";
     private const string LAGGEDVARSTART = "LAGVARIABLE";

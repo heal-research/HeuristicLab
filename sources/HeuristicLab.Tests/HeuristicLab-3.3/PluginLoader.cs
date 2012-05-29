@@ -27,7 +27,7 @@ using System.Reflection;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab_33.Tests {
-  internal static class PluginLoader {
+  public static class PluginLoader {
     public const string ExecutableExtension = ".exe";
     public const string AssemblyExtension = ".dll";
     public const string TestAccessorAssemblyExtension = "_Accessor.dll";
@@ -35,7 +35,9 @@ namespace HeuristicLab_33.Tests {
     public static List<Assembly> Assemblies;
 
     static PluginLoader() {
-      foreach (string path in Directory.EnumerateFiles(Environment.CurrentDirectory).Where(s => IsRelevantAssemblyPath(s))) {
+      //EnvDTE.DTE dte = (EnvDTE.DTE)Marshal.GetActiveObject("VisualStudio.DTE");
+      //string solutionDir = System.IO.Path.GetDirectoryName(_applicationObject.Solution.FullName);
+      foreach (string path in Directory.EnumerateFiles(Environment.CurrentDirectory).Where(IsRelevantAssemblyPath)) {
         try {
           Assembly.LoadFrom(path);
         }

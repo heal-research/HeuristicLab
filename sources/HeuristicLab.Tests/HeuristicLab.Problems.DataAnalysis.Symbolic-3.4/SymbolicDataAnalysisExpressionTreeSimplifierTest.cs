@@ -21,16 +21,14 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
+
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
 
   [TestClass()]
-  public class SymbolicDataAnalysisExpressionTreeSimplifierTest {    
+  public class SymbolicDataAnalysisExpressionTreeSimplifierTest {
     [TestMethod]
     public void SimplifierAxiomsTest() {
       SymbolicExpressionImporter importer = new SymbolicExpressionImporter();

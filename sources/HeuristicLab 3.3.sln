@@ -267,8 +267,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.View
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.QuadraticAssignment.Algorithms-3.3", "HeuristicLab.Problems.QuadraticAssignment.Algorithms\3.3\HeuristicLab.Problems.QuadraticAssignment.Algorithms-3.3.csproj", "{5B9B9E8C-2706-43C2-80B8-A08341E431F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tests", "HeuristicLab.Tests\HeuristicLab.Tests.csproj", "{B62872C1-6752-4758-9823-751A2D28C388}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Hive-3.3", "HeuristicLab.Hive\3.3\HeuristicLab.Hive-3.3.csproj", "{F98A1740-9AC9-4D36-A582-6A2D0D06978D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Clients.Hive-3.3", "HeuristicLab.Clients.Hive\3.3\HeuristicLab.Clients.Hive-3.3.csproj", "{B5EF1E5A-9F3D-40B9-B4B0-30AADF2E2CEB}"
@@ -1276,18 +1274,6 @@ Global
 		{5B9B9E8C-2706-43C2-80B8-A08341E431F7}.Release|x64.Build.0 = Release|x64
 		{5B9B9E8C-2706-43C2-80B8-A08341E431F7}.Release|x86.ActiveCfg = Release|x86
 		{5B9B9E8C-2706-43C2-80B8-A08341E431F7}.Release|x86.Build.0 = Release|x86
-		{B62872C1-6752-4758-9823-751A2D28C388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B62872C1-6752-4758-9823-751A2D28C388}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B62872C1-6752-4758-9823-751A2D28C388}.Debug|x64.ActiveCfg = Debug|x64
-		{B62872C1-6752-4758-9823-751A2D28C388}.Debug|x64.Build.0 = Debug|x64
-		{B62872C1-6752-4758-9823-751A2D28C388}.Debug|x86.ActiveCfg = Debug|x86
-		{B62872C1-6752-4758-9823-751A2D28C388}.Debug|x86.Build.0 = Debug|x86
-		{B62872C1-6752-4758-9823-751A2D28C388}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B62872C1-6752-4758-9823-751A2D28C388}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B62872C1-6752-4758-9823-751A2D28C388}.Release|x64.ActiveCfg = Release|x64
-		{B62872C1-6752-4758-9823-751A2D28C388}.Release|x64.Build.0 = Release|x64
-		{B62872C1-6752-4758-9823-751A2D28C388}.Release|x86.ActiveCfg = Release|x86
-		{B62872C1-6752-4758-9823-751A2D28C388}.Release|x86.Build.0 = Release|x86
 		{F98A1740-9AC9-4D36-A582-6A2D0D06978D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F98A1740-9AC9-4D36-A582-6A2D0D06978D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F98A1740-9AC9-4D36-A582-6A2D0D06978D}.Debug|x64.ActiveCfg = Debug|x64
@@ -1557,7 +1543,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{6410BDA6-3641-42B2-BABA-AA626E2F6F71} = {7EB6A587-BD45-40F2-BB15-4A69677A326C}
 		{D1386FE7-682D-4E18-8C4F-CFD423FA5DD0} = {7EB6A587-BD45-40F2-BB15-4A69677A326C}
+		{6410BDA6-3641-42B2-BABA-AA626E2F6F71} = {7EB6A587-BD45-40F2-BB15-4A69677A326C}
 	EndGlobalSection
 EndGlobal

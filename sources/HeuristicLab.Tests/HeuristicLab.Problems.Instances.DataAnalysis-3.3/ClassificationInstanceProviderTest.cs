@@ -21,9 +21,10 @@
 
 using System;
 using System.Text;
+using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
+namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
   [TestClass()]
   public class ClassificationInstanceProviderTest {
 

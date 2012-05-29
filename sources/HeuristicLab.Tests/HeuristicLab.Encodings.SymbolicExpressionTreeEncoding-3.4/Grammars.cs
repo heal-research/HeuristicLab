@@ -26,7 +26,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_34.Tests {
   public static class Grammars {
     [StorableClass]
     private class Addition : Symbol {

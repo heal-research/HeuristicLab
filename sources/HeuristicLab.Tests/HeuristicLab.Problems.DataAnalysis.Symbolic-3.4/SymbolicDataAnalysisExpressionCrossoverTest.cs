@@ -26,12 +26,13 @@ using System.Linq;
 using System.Threading;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ExecutionContext = HeuristicLab.Core.ExecutionContext;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
   [TestClass()]
   public class SymbolicDataAnalysisExpressionCrossoverTest {
     private const int PopulationSize = 10000;
@@ -135,7 +136,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
                         msPerCrossover + " ms per crossover (~" + Math.Round(1000.0 / (msPerCrossover)) + " crossover operations / s)");
 
       foreach (var tree in trees)
-        HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests.Util.IsValid(tree);
+        HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_34.Tests.Util.IsValid(tree);
     }
   }
 }

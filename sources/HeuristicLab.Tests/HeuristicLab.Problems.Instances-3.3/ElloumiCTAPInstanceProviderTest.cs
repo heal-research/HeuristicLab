@@ -24,7 +24,7 @@ using System.Text;
 using HeuristicLab.Problems.Instances.ElloumiCTAP;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests {
+namespace HeuristicLab.Problems.Instances_33.Tests {
   [TestClass()]
   public class ElloumiCTAPInstanceProviderTest {
 

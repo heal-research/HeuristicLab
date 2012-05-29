@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Tests {
+namespace HeuristicLab_33.Tests {
   [TestClass]
   public class InstantiateCreatablesTest {
     [TestMethod]
@@ -42,7 +42,8 @@ namespace HeuristicLab.Tests {
       foreach (var t in types) {
         try {
           var instance = Activator.CreateInstance(t);
-        } catch {
+        }
+        catch {
           exceptions.Add("Error instantiating " + t.FullName);
         }
       }

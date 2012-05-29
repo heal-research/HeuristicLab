@@ -22,10 +22,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.DataAnalysis.Tests {
+namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
   [TestClass]
   public class OnlineCalculatorPerformanceTest {
     private const int Rows = 5000;

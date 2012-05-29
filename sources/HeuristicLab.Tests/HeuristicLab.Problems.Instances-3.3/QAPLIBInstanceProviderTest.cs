@@ -24,7 +24,7 @@ using System.Text;
 using HeuristicLab.Problems.Instances.QAPLIB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace UnitTests {
+namespace HeuristicLab.Problems.Instances_33.Tests {
   [TestClass()]
   public class QAPLIBInstanceProviderTest {
 
@@ -36,7 +36,8 @@ namespace UnitTests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;

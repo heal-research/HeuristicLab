@@ -26,11 +26,11 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_34.Tests {
   [TestClass]
   public class FullTreeCreatorTest {
     private const int POPULATION_SIZE = 10000;
-    private const int MAX_TREE_DEPTH = 9 ;
+    private const int MAX_TREE_DEPTH = 9;
     private const int MAX_TREE_LENGTH = 256;
     private TestContext testContextInstance;
 

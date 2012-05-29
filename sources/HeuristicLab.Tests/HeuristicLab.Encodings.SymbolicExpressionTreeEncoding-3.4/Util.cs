@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_3._4.Tests {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_34.Tests {
   public static class Util {
     public static string GetSizeDistributionString(IList<ISymbolicExpressionTree> trees, int maxTreeLength, int binSize) {
       int[] histogram = new int[maxTreeLength / binSize];

@@ -21,10 +21,11 @@
 
 using System;
 using System.Globalization;
+using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Analysis.Tests {
+namespace HeuristicLab.Analysis_33.Tests {
   [TestClass]
   public class MultidimensionalScalingTest {
     [TestMethod]

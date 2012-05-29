@@ -19,12 +19,12 @@
  */
 #endregion
 
+
 using System;
 using System.Text;
 using HeuristicLab.Problems.Instances.TSPLIB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace UnitTests {
+namespace HeuristicLab.Problems.Instances_33.Tests {
   [TestClass()]
   public class TSPLIBInstanceProviderTest {
 
@@ -36,7 +36,8 @@ namespace UnitTests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -53,7 +54,8 @@ namespace UnitTests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -70,7 +72,8 @@ namespace UnitTests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
