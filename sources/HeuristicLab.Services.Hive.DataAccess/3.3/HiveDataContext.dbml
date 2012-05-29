@@ -36,10 +36,12 @@
       <Column Name="ResourceType" Type="System.String" CanBeNull="false" IsDiscriminator="true" />
       <Column Name="ParentResourceId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Column Name="HbInterval" Type="System.Int32" DbType="Int" CanBeNull="false" />
+      <Column Name="OwnerUserId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
       <Association Name="Resource_AssignedResource" Member="AssignedResources" ThisKey="ResourceId" OtherKey="ResourceId" Type="AssignedResource" />
       <Association Name="Resource_Resource" Member="ChildResources" ThisKey="ResourceId" OtherKey="ParentResourceId" Type="Resource" />
       <Association Name="Resource_Downtime" Member="Downtimes" Storage="_UptimeCalendars" ThisKey="ResourceId" OtherKey="ResourceId" Type="Downtime" />
       <Association Name="Resource_StateLog" Member="StateLogs" ThisKey="ResourceId" OtherKey="SlaveId" Type="StateLog" />
+      <Association Name="Resource_SlavePermission" Member="ResourcePermissions" ThisKey="ResourceId" OtherKey="ResourceId" Type="ResourcePermission" />
       <Association Name="Resource_Resource" Member="ParentResource" ThisKey="ParentResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" />
       <Type Name="Slave" InheritanceCode="Slave" IsInheritanceDefault="true">
         <Column Name="CpuSpeed" Storage="_CPUSpeed" Type="System.Int32" DbType="Int" CanBeNull="true" />
@@ -190,6 +192,14 @@
       <Column Name="Timestamp" Type="System.DateTime" CanBeNull="false" />
       <Association Name="Statistics_UserStatistics" Member="UserStatistics" ThisKey="StatisticsId" OtherKey="StatisticsId" Type="UserStatistics" />
       <Association Name="Statistics_SlaveStatistics" Member="SlaveStatistics" ThisKey="StatisticsId" OtherKey="StatisticsId" Type="SlaveStatistics" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ResourcePermission" Member="ResourcePermissions">
+    <Type Name="ResourcePermission">
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="GrantedUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="GrantedByUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Association Name="Resource_SlavePermission" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

@@ -352,31 +352,33 @@ namespace HeuristicLab.Services.Hive {
     #region Login Methods
     public void Hello(Slave slaveInfo) {
       authen.AuthenticateForAnyRole(HiveRoles.Slave);
+      if (userManager.CurrentUser.UserName != "hiveslave")
+        slaveInfo.OwnerUserId = userManager.CurrentUserId;
+
       trans.UseTransaction(() => {
         var slave = dao.GetSlave(slaveInfo.Id);
 
         if (slave == null) {
           dao.AddSlave(slaveInfo);
         } else {
-          var dbSlave = dao.GetSlave(slaveInfo.Id);
+          slave.Name = slaveInfo.Name;
+          slave.Description = slaveInfo.Description;
+          slave.OwnerUserId = slaveInfo.OwnerUserId;
 
-          dbSlave.Name = slaveInfo.Name;
-          dbSlave.Description = slaveInfo.Description;
+          slave.Cores = slaveInfo.Cores;
+          slave.CpuArchitecture = slaveInfo.CpuArchitecture;
+          slave.CpuSpeed = slaveInfo.CpuSpeed;
+          slave.FreeCores = slaveInfo.FreeCores;
+          slave.FreeMemory = slaveInfo.FreeMemory;
+          slave.Memory = slaveInfo.Memory;
+          slave.OperatingSystem = slaveInfo.OperatingSystem;
 
-          dbSlave.Cores = slaveInfo.Cores;
-          dbSlave.CpuArchitecture = slaveInfo.CpuArchitecture;
-          dbSlave.CpuSpeed = slaveInfo.CpuSpeed;
-          dbSlave.FreeCores = slaveInfo.FreeCores;
-          dbSlave.FreeMemory = slaveInfo.FreeMemory;
-          dbSlave.Memory = slaveInfo.Memory;
-          dbSlave.OperatingSystem = slaveInfo.OperatingSystem;
-
-          dbSlave.LastHeartbeat = DateTime.Now;
-          dbSlave.SlaveState = SlaveState.Idle;
+          slave.LastHeartbeat = DateTime.Now;
+          slave.SlaveState = SlaveState.Idle;
 
           // don't update those properties: dbSlave.IsAllowedToCalculate, dbSlave.ParentResourceId 
 
-          dao.UpdateSlave(dbSlave);
+          dao.UpdateSlave(slave);
         }
       });
     }
@@ -463,6 +465,38 @@ namespace HeuristicLab.Services.Hive {
     }
     #endregion
 
+    #region ResourcePermission Methods
+    public void GrantResourcePermission(Guid resourceId, Guid grantedUserId) {
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      trans.UseTransaction(() => {
+        Resource resource = dao.GetResource(resourceId);
+        if (resource == null) throw new FaultException<FaultReason>(new FaultReason("Could not find resource with id " + resourceId));
+        if (resource.OwnerUserId != userManager.CurrentUserId) throw new FaultException<FaultReason>(new FaultReason("Not allowed to grant permission for this resource"));
+        dao.AddResourcePermission(new ResourcePermission { ResourceId = resourceId, GrantedByUserId = userManager.CurrentUserId, GrantedUserId = grantedUserId });
+      });
+    }
+
+    public void RevokeResourcePermission(Guid resourceId, Guid grantedUserId) {
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      trans.UseTransaction(() => {
+        Resource resource = dao.GetResource(resourceId);
+        if (resource == null) throw new FaultException<FaultReason>(new FaultReason("Could not find resource with id " + resourceId));
+        if (resource.OwnerUserId != userManager.CurrentUserId) throw new FaultException<FaultReason>(new FaultReason("Not allowed to revoke permission for this resource"));
+        dao.DeleteResourcePermission(resourceId, grantedUserId);
+      });
+    }
+
+    public IEnumerable<ResourcePermission> GetResourcePermissions(Guid resourceId) {
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      return trans.UseTransaction(() => {
+        Resource resource = dao.GetResource(resourceId);
+        if (resource == null) throw new FaultException<FaultReason>(new FaultReason("Could not find resource with id " + resourceId));
+        if (resource.OwnerUserId != userManager.CurrentUserId) throw new FaultException<FaultReason>(new FaultReason("Not allowed to list permissions for this resource"));
+        return dao.GetResourcePermissions(x => x.ResourceId == resourceId);
+      });
+    }
+    #endregion
+
     #region Slave Methods
     public int GetNewHeartbeatInterval(Guid slaveId) {
       authen.AuthenticateForAnyRole(HiveRoles.Slave);
@@ -496,12 +530,18 @@ namespace HeuristicLab.Services.Hive {
 
     public IEnumerable<Slave> GetSlaves() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      return dao.GetSlaves(x => true);
+      return dao.GetSlaves(x => x.OwnerUserId == null
+                             || x.OwnerUserId == userManager.CurrentUserId
+                             || x.ResourcePermissions.Count(y => y.GrantedUserId == userManager.CurrentUserId) > 0
+                             || authen.IsInRole(HiveRoles.Administrator));
     }
 
     public IEnumerable<SlaveGroup> GetSlaveGroups() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      return dao.GetSlaveGroups(x => true);
+      return dao.GetSlaveGroups(x => x.OwnerUserId == null
+                                  || x.OwnerUserId == userManager.CurrentUserId
+                                  || x.ResourcePermissions.Count(y => y.GrantedUserId == userManager.CurrentUserId) > 0
+                                  || authen.IsInRole(HiveRoles.Administrator));
     }
 
     public void UpdateSlave(Slave slave) {

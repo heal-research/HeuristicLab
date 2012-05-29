@@ -41,7 +41,14 @@ CREATE TABLE [dbo].[Resource](
   [CpuUtilization] float,
   [HbInterval] int NOT NULL,
   [IsDisposable] Bit,
+  [OwnerUserId] UniqueIdentifier,
   CONSTRAINT [PK_dbo.Resource] PRIMARY KEY ([ResourceId])
+  )
+CREATE TABLE [dbo].[ResourcePermission](
+  [ResourceId] UniqueIdentifier NOT NULL,
+  [GrantedUserId] UniqueIdentifier NOT NULL,
+  [GrantedByUserId] UniqueIdentifier NOT NULL,
+  CONSTRAINT [PK_dbo.ResourcePermission] PRIMARY KEY ([ResourceId], [GrantedUserId])
   )
 CREATE TABLE [dbo].[Task](
   [TaskId] UniqueIdentifier NOT NULL,
@@ -155,6 +162,8 @@ ALTER TABLE [dbo].[RequiredPlugins]
   ADD CONSTRAINT [Task_RequiredPlugin] FOREIGN KEY ([TaskId]) REFERENCES [dbo].[Task]([TaskId])
 ALTER TABLE [dbo].[Resource]
   ADD CONSTRAINT [Resource_Resource] FOREIGN KEY ([ParentResourceId]) REFERENCES [dbo].[Resource]([ResourceId])
+ALTER TABLE [dbo].[ResourcePermission]
+  ADD CONSTRAINT [Resource_ResourcePermission] FOREIGN KEY ([ResourceId]) REFERENCES [dbo].[Resource]([ResourceId])
 ALTER TABLE [dbo].[Task]
   ADD CONSTRAINT [Task_Task] FOREIGN KEY ([ParentTaskId]) REFERENCES [dbo].[Task]([TaskId])
 ALTER TABLE [dbo].[Task]

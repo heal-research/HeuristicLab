@@ -118,6 +118,7 @@
     <Compile Include="Exceptions\AnonymousUserException.cs" />
     <Compile Include="HiveAdminClient.cs" />
     <Compile Include="HiveClient.cs" />
+    <Compile Include="ServiceClients\ResourcePermission.cs" />
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

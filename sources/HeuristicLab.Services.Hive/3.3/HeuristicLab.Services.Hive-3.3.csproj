@@ -113,6 +113,7 @@
   <ItemGroup>
     <Compile Include="Convert.cs" />
     <Compile Include="DataTransfer\Command.cs" />
+    <Compile Include="DataTransfer\ResourcePermission.cs" />
     <Compile Include="DataTransfer\Downtime.cs" />
     <Compile Include="DataTransfer\Heartbeat.cs" />
     <Compile Include="DataTransfer\Job.cs" />

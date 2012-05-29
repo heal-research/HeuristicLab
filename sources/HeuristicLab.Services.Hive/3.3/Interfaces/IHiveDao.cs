@@ -116,6 +116,14 @@ namespace HeuristicLab.Services.Hive {
     IEnumerable<DT.Task> GetJobsByResourceId(Guid resourceId);
     #endregion
 
+    #region ResourcePermission Methods
+    DT.ResourcePermission GetResourcePermission(Guid resourceId, Guid grantedUserId);
+    IEnumerable<DT.ResourcePermission> GetResourcePermissions(Expression<Func<ResourcePermission, bool>> predicate);
+    void AddResourcePermission(DT.ResourcePermission dto);
+    void UpdateResourcePermission(DT.ResourcePermission dto);
+    void DeleteResourcePermission(Guid resourceId, Guid grantedUserId);
+    #endregion
+
     #region Authorization Methods
     Permission GetPermissionForTask(Guid taskId, Guid userId);
     Permission GetPermissionForJob(Guid jobId, Guid userId);

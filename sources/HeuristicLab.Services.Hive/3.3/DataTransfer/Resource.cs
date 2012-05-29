@@ -28,9 +28,10 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
   public class Resource : NamedHiveItem {
     [DataMember]
     public Guid? ParentResourceId { get; set; }
-
     [DataMember]
     public int HbInterval { get; set; }
+    [DataMember]
+    public Guid? OwnerUserId { get; set; }
 
     public Resource() { }
   }

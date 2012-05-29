@@ -157,6 +157,17 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     void DeletePlugin(Guid pluginId);
     #endregion
 
+    #region ResourcePermission Methods
+    [OperationContract]
+    void GrantResourcePermission(Guid resourceId, Guid grantedUserId);
+
+    [OperationContract]
+    void RevokeResourcePermission(Guid resourceId, Guid grantedUserId);
+
+    [OperationContract]
+    IEnumerable<ResourcePermission> GetResourcePermissions(Guid resourceId);
+    #endregion
+
     #region Slave Methods
     [OperationContract]
     Guid AddSlave(Slave slave);

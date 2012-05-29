@@ -612,6 +612,44 @@ namespace HeuristicLab.Services.Hive.DataAccess {
     }
     #endregion
 
+    #region ResourcePermission Methods
+    public DT.ResourcePermission GetResourcePermission(Guid resourceId, Guid grantedUserId) {
+      using (var db = CreateContext()) {
+        return DT.Convert.ToDto(db.ResourcePermissions.SingleOrDefault(x => x.ResourceId == resourceId && x.GrantedUserId == grantedUserId));
+      }
+    }
+
+    public IEnumerable<DT.ResourcePermission> GetResourcePermissions(Expression<Func<ResourcePermission, bool>> predicate) {
+      using (var db = CreateContext()) {
+        return db.ResourcePermissions.Where(predicate).Select(x => DT.Convert.ToDto(x)).ToArray();
+      }
+    }
+
+    public void AddResourcePermission(DT.ResourcePermission dto) {
+      using (var db = CreateContext()) {
+        var entity = db.ResourcePermissions.SingleOrDefault(x => x.ResourceId == dto.ResourceId && x.GrantedUserId == dto.GrantedUserId);
+        if (entity == null) { db.ResourcePermissions.InsertOnSubmit(DT.Convert.ToEntity(dto)); db.SubmitChanges(); }
+      }
+    }
+
+    public void UpdateResourcePermission(DT.ResourcePermission dto) {
+      using (var db = CreateContext()) {
+        var entity = db.ResourcePermissions.FirstOrDefault(x => x.ResourceId == dto.ResourceId && x.GrantedUserId == dto.GrantedUserId);
+        if (entity == null) db.ResourcePermissions.InsertOnSubmit(DT.Convert.ToEntity(dto));
+        else DT.Convert.ToEntity(dto, entity);
+        db.SubmitChanges();
+      }
+    }
+
+    public void DeleteResourcePermission(Guid resourceId, Guid grantedUserId) {
+      using (var db = CreateContext()) {
+        var entity = db.ResourcePermissions.FirstOrDefault(x => x.ResourceId == resourceId && x.GrantedUserId == grantedUserId);
+        if (entity != null) db.ResourcePermissions.DeleteOnSubmit(entity);
+        db.SubmitChanges();
+      }
+    }
+    #endregion
+
     #region Authorization Methods
     public Permission GetPermissionForTask(Guid taskId, Guid userId) {
       using (var db = CreateContext()) {

@@ -86,6 +86,13 @@ ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
 
+ALTER TABLE [dbo].[ResourcePermission]  DROP  CONSTRAINT [Resource_ResourcePermission]
+ALTER TABLE [dbo].[ResourcePermission]  WITH CHECK ADD CONSTRAINT [Resource_ResourcePermission] FOREIGN KEY([ResourceId])
+REFERENCES [dbo].[Resource] ([ResourceId])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+
 ALTER TABLE [dbo].[Statistics] ALTER COLUMN StatisticsId ADD ROWGUIDCOL;
 ALTER TABLE [dbo].[Statistics] WITH NOCHECK ADD CONSTRAINT [DF_Statistics_StatisticsId] DEFAULT (NEWSEQUENTIALID()) FOR StatisticsId;
 GO

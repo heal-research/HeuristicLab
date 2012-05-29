@@ -199,6 +199,40 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     }
     #endregion
 
+    #region Resource
+    public static DT.Resource ToDto(DB.Resource source) {
+      if (source == null) return null;
+      return new DT.Resource { Id = source.ResourceId, Name = source.Name, ParentResourceId = source.ParentResourceId, HbInterval = source.HbInterval, OwnerUserId = source.OwnerUserId };
+    }
+    public static DB.Resource ToEntity(DT.Resource source) {
+      if (source == null) return null;
+      var entity = new DB.Resource(); ToEntity(source, entity);
+      return entity;
+    }
+    public static void ToEntity(DT.Resource source, DB.Resource target) {
+      if ((source != null) && (target != null)) {
+        target.ResourceId = source.Id; target.Name = source.Name; target.ParentResourceId = source.ParentResourceId; target.HbInterval = source.HbInterval; target.OwnerUserId = source.OwnerUserId;
+      }
+    }
+    #endregion
+
+    #region SlaveGroup
+    public static DT.SlaveGroup ToDto(DB.SlaveGroup source) {
+      if (source == null) return null;
+      return new DT.SlaveGroup { Id = source.ResourceId, Name = source.Name, ParentResourceId = source.ParentResourceId, HbInterval = source.HbInterval, OwnerUserId = source.OwnerUserId };
+    }
+    public static DB.SlaveGroup ToEntity(DT.SlaveGroup source) {
+      if (source == null) return null;
+      var entity = new DB.SlaveGroup(); ToEntity(source, entity);
+      return entity;
+    }
+    public static void ToEntity(DT.SlaveGroup source, DB.SlaveGroup target) {
+      if ((source != null) && (target != null)) {
+        target.ResourceId = source.Id; target.Name = source.Name; target.ParentResourceId = source.ParentResourceId; target.HbInterval = source.HbInterval; target.OwnerUserId = source.OwnerUserId;
+      }
+    }
+    #endregion
+
     #region Slave
     public static DT.Slave ToDto(DB.Slave source) {
       if (source == null) return null;
@@ -218,7 +252,8 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
         LastHeartbeat = source.LastHeartbeat,
         CpuUtilization = source.CpuUtilization,
         HbInterval = source.HbInterval,
-        IsDisposable = source.IsDisposable
+        IsDisposable = source.IsDisposable,
+        OwnerUserId = source.OwnerUserId
       };
     }
     public static DB.Slave ToEntity(DT.Slave source) {
@@ -244,64 +279,24 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
         target.CpuUtilization = source.CpuUtilization;
         target.HbInterval = source.HbInterval;
         target.IsDisposable = source.IsDisposable;
+        target.OwnerUserId = source.OwnerUserId;
       }
     }
     #endregion
 
-    #region SlaveGroup
-    public static DT.SlaveGroup ToDto(DB.SlaveGroup source) {
+    #region ResourcePermission
+    public static DT.ResourcePermission ToDto(DB.ResourcePermission source) {
       if (source == null) return null;
-      return new DT.SlaveGroup { Id = source.ResourceId, Name = source.Name, ParentResourceId = source.ParentResourceId, HbInterval = source.HbInterval };
+      return new DT.ResourcePermission { ResourceId = source.ResourceId, GrantedUserId = source.GrantedUserId, GrantedByUserId = source.GrantedByUserId };
     }
-    public static DB.SlaveGroup ToEntity(DT.SlaveGroup source) {
+    public static DB.ResourcePermission ToEntity(DT.ResourcePermission source) {
       if (source == null) return null;
-      var entity = new DB.SlaveGroup(); ToEntity(source, entity);
+      var entity = new DB.ResourcePermission(); ToEntity(source, entity);
       return entity;
     }
-    public static void ToEntity(DT.SlaveGroup source, DB.SlaveGroup target) {
+    public static void ToEntity(DT.ResourcePermission source, DB.ResourcePermission target) {
       if ((source != null) && (target != null)) {
-        target.ResourceId = source.Id; target.Name = source.Name; target.ParentResourceId = source.ParentResourceId; target.HbInterval = source.HbInterval;
-      }
-    }
-    #endregion
-
-    #region Resource
-    public static DT.Resource ToDto(DB.Resource source) {
-      if (source == null) return null;
-      return new DT.Resource { Id = source.ResourceId, Name = source.Name, ParentResourceId = source.ParentResourceId, HbInterval = source.HbInterval };
-    }
-    public static DB.Resource ToEntity(DT.Resource source) {
-      if (source == null) return null;
-      var entity = new DB.Resource(); ToEntity(source, entity);
-      return entity;
-    }
-    public static void ToEntity(DT.Resource source, DB.Resource target) {
-      if ((source != null) && (target != null)) {
-        target.ResourceId = source.Id; target.Name = source.Name; target.ParentResourceId = source.ParentResourceId; target.HbInterval = source.HbInterval;
-      }
-    }
-    #endregion
-
-    #region Statistics
-    public static DT.Statistics ToDto(DB.Statistics source) {
-      if (source == null) return null;
-      return new DT.Statistics {
-        Id = source.StatisticsId,
-        TimeStamp = source.Timestamp,
-        SlaveStatistics = source.SlaveStatistics.Select(x => Convert.ToDto(x)).ToArray(),
-        UserStatistics = source.UserStatistics.Select(x => Convert.ToDto(x)).ToArray()
-      };
-    }
-    public static DB.Statistics ToEntity(DT.Statistics source) {
-      if (source == null) return null;
-      var entity = new DB.Statistics(); ToEntity(source, entity);
-      return entity;
-    }
-    public static void ToEntity(DT.Statistics source, DB.Statistics target) {
-      if ((source != null) && (target != null)) {
-        target.StatisticsId = source.Id;
-        target.Timestamp = source.TimeStamp;
-
+        target.ResourceId = source.ResourceId; target.GrantedUserId = source.GrantedUserId; target.GrantedByUserId = source.GrantedByUserId;
       }
     }
     #endregion
@@ -333,6 +328,30 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
         target.FreeCores = source.FreeCores;
         target.FreeMemory = source.FreeMemory;
         target.Memory = source.Memory;
+      }
+    }
+    #endregion
+
+    #region Statistics
+    public static DT.Statistics ToDto(DB.Statistics source) {
+      if (source == null) return null;
+      return new DT.Statistics {
+        Id = source.StatisticsId,
+        TimeStamp = source.Timestamp,
+        SlaveStatistics = source.SlaveStatistics.Select(x => Convert.ToDto(x)).ToArray(),
+        UserStatistics = source.UserStatistics.Select(x => Convert.ToDto(x)).ToArray()
+      };
+    }
+    public static DB.Statistics ToEntity(DT.Statistics source) {
+      if (source == null) return null;
+      var entity = new DB.Statistics(); ToEntity(source, entity);
+      return entity;
+    }
+    public static void ToEntity(DT.Statistics source, DB.Statistics target) {
+      if ((source != null) && (target != null)) {
+        target.StatisticsId = source.Id;
+        target.Timestamp = source.TimeStamp;
+
       }
     }
     #endregion
