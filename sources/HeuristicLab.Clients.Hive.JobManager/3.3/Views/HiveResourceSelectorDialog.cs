@@ -26,10 +26,6 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
   public partial class HiveResourceSelectorDialog : Form {
-    public HiveResourceSelector HiveResourceSelector {
-      get { return hiveResourceSelector; }
-    }
-
     public HiveResourceSelectorDialog() {
       InitializeComponent();
     }

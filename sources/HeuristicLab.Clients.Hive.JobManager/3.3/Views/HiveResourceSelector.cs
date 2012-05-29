@@ -32,6 +32,8 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
+  [View("Hive Resource Selector View")]
+  [Content(typeof(IItemList<Resource>), true)]
   public partial class HiveResourceSelector : ItemView, IDisposable {
     private const int slaveImageIndex = 0;
     private const int slaveGroupImageIndex = 1;
@@ -92,8 +94,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     protected override void OnContentChanged() {
-      base.OnContentChanged();
-      selectedResources = new HashSet<Resource>(Content.Where(x => selectedResources.Any(y => x.Id == y.Id)));
+      if (Content != null) {
+        base.OnContentChanged();
+        selectedResources = new HashSet<Resource>(Content.Where(x => selectedResources.Any(y => x.Id == y.Id)));
+      }
       UpdateMainTree();
       ExtractStatistics();
     }
