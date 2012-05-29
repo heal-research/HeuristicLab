@@ -24,9 +24,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
 
 
@@ -51,6 +51,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
     }
 
     [TestMethod]
+    public void SymbolicDataAnalysisExpressionTreeInterpreterTypeCoherentGrammarPerformanceTest() {
+      TypeCoherentGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+    }
+    [TestMethod]
     public void SymbolicDataAnalysisExpressionTreeInterpreterFullGrammarPerformanceTest() {
       FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
     }
@@ -60,12 +64,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
     }
 
     [TestMethod]
+    public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterTypeCoherentGrammarPerformanceTest() {
+      TypeCoherentGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
+    }
+    [TestMethod]
     public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterFullGrammarPerformanceTest() {
       FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
     }
     [TestMethod]
     public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterArithmeticGrammarPerformanceTest() {
       ArithmeticGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
+    }
+
+    private void TypeCoherentGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
+      var twister = new MersenneTwister(31415);
+      var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
+      var grammar = new TypeCoherentExpressionGrammar();
+      grammar.ConfigureAsDefaultRegressionGrammar();
+      grammar.MaximumFunctionArguments = 0;
+      grammar.MaximumFunctionDefinitions = 0;
+      grammar.MinimumFunctionArguments = 0;
+      grammar.MinimumFunctionDefinitions = 0;
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
+      foreach (ISymbolicExpressionTree tree in randomTrees) {
+        Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
+      }
+      double nodesPerSec = Util.CalculateEvaluatedNodesPerSec(randomTrees, interpreter, dataset, 3);
+      Assert.IsTrue(nodesPerSec > nodesPerSecThreshold); // evaluated nodes per seconds must be larger than 15mNodes/sec
     }
 
     private void FullGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
