@@ -94,12 +94,16 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     protected override void OnContentChanged() {
+      base.OnContentChanged();
+
       if (Content != null) {
-        base.OnContentChanged();
         selectedResources = new HashSet<Resource>(Content.Where(x => selectedResources.Any(y => x.Id == y.Id)));
+        UpdateMainTree();
+        ExtractStatistics();
+      } else {
+        mainTreeNodes.Clear();
+        UpdateFilteredTree();
       }
-      UpdateMainTree();
-      ExtractStatistics();
     }
 
     #region MainTree Methods

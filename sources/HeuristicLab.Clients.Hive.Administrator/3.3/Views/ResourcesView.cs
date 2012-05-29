@@ -34,7 +34,7 @@ using TS = System.Threading.Tasks;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
   [View("Resources View")]
-  [Content(typeof(IItemList<Resource>), IsDefaultView = true)]
+  [Content(typeof(IItemList<Resource>), false)]
   public partial class ResourcesView : ItemView, IDisposable {
     public new IItemList<Resource> Content {
       get { return (IItemList<Resource>)base.Content; }
