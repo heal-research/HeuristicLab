@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       AttachEventHandlers();
     }
 

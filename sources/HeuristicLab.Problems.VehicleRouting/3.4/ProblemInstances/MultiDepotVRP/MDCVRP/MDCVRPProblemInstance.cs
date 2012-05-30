@@ -22,21 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPProblemInstance", "Represents a multi depot CVRP instance.")]
   [StorableClass]
-  public class MDCVRPProblemInstance: MultiDepotVRPProblemInstance, IHeterogenousCapacitatedProblemInstance {
+  public class MDCVRPProblemInstance : MultiDepotVRPProblemInstance, IHeterogenousCapacitatedProblemInstance {
     protected IValueParameter<DoubleArray> CapacityParameter {
       get { return (IValueParameter<DoubleArray>)Parameters["Capacity"]; }
     }
@@ -65,8 +64,8 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     protected override IEnumerable<IOperator> GetOperators() {
-        return base.GetOperators()
-          .Where(o => o is IHeterogenousCapacitatedOperator).Cast<IOperator>();
+      return base.GetOperators()
+        .Where(o => o is IHeterogenousCapacitatedOperator).Cast<IOperator>();
     }
 
     protected override IEnumerable<IOperator> GetAnalyzers() {
@@ -80,7 +79,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         return new MDCVRPEvaluator();
       }
     }
-    
+
     [StorableConstructor]
     protected MDCVRPProblemInstance(bool deserializing) : base(deserializing) { }
 
@@ -98,11 +97,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     protected MDCVRPProblemInstance(MDCVRPProblemInstance original, Cloner cloner)
       : base(original, cloner) {
-        AttachEventHandlers();
+      AttachEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       AttachEventHandlers();
     }
 

@@ -22,16 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("VRPProblemInstance", "Represents a VRP instance.")]
@@ -71,7 +68,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         return GetOperators().Union(GetAnalyzers());
       }
     }
-    
+
     protected ValueParameter<DoubleMatrix> CoordinatesParameter {
       get { return (ValueParameter<DoubleMatrix>)Parameters["Coordinates"]; }
     }
@@ -173,7 +170,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     private IVRPEvaluator evaluator = null;
 
     public IVRPEvaluator SolutionEvaluator {
-      get {       
+      get {
         return evaluator;
       }
     }
@@ -186,7 +183,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
       if (distanceMatrix != null)
         distance = distanceMatrix[start, end];
-      else 
+      else
         distance = CalculateDistance(start, end);
 
       return distance;
@@ -198,7 +195,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
       startDistance = GetDistance(start, customer, solution);
       endDistance = GetDistance(customer, end, solution);
-      
+
       double newDistance = startDistance + endDistance;
 
       return newDistance - distance;
@@ -243,7 +240,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     protected abstract IVRPEvaluator Evaluator { get; }
     protected abstract IVRPCreator Creator { get; }
-    
+
     [StorableConstructor]
     protected VRPProblemInstance(bool deserializing) : base(deserializing) { }
 
@@ -264,12 +261,12 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     protected VRPProblemInstance(VRPProblemInstance original, Cloner cloner)
       : base(original, cloner) {
-      evaluator = Evaluator;  
+      evaluator = Evaluator;
       AttachEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       evaluator = Evaluator;
       AttachEventHandlers();
     }

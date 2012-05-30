@@ -26,17 +26,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Interpreters;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.Instances;
-using System.Reflection;
-using HeuristicLab.Problems.VehicleRouting.Interpreters;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
@@ -111,7 +109,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [Storable]
-    private List<IOperator> operators; 
+    private List<IOperator> operators;
 
     public IEnumerable<IOperator> Operators {
       get { return operators; }
@@ -172,12 +170,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void OnReset() {
       EventHandler handler = Reset;
       if (handler != null) handler(this, EventArgs.Empty);
-    }  
+    }
     #endregion
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       AttachEventHandlers();
       AttachProblemInstanceEventHandlers();
     }
@@ -203,7 +201,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
           solutionCreatorParameter.Value = defaultCreator;
 
         ProblemInstance.EvaluationChanged += new EventHandler(ProblemInstance_EvaluationChanged);
-      }      
+      }
     }
 
     private void EvalBestKnownSolution() {
@@ -247,7 +245,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeSolutionCreator();
-      
+
       OnSolutionCreatorChanged();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
@@ -368,7 +366,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
         }
       } else {
         throw new Exception("Cannot find an interpreter for " + data.GetType());
-      }   
+      }
     }
   }
 }

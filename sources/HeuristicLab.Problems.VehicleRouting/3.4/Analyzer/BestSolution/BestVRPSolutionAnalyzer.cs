@@ -20,6 +20,7 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
@@ -27,9 +28,8 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -81,19 +81,19 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public BestVRPSolutionAnalyzer()
       : base() {
-        Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The problem instance."));
-        Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
+      Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The problem instance."));
+      Parameters.Add(new ScopeTreeLookupParameter<IVRPEncoding>("VRPTours", "The VRP tours which should be evaluated."));
 
-        Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
-        Parameters.Add(new LookupParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
+      Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));
+      Parameters.Add(new LookupParameter<VRPSolution>("BestKnownSolution", "The best known solution of this VRP instance."));
 
-        Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the VRP solutions which should be analyzed."));
-        Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Distance", "The distances of the VRP solutions which should be analyzed."));
-        Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("VehiclesUtilized", "The utilized vehicles of the VRP solutions which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the VRP solutions which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Distance", "The distances of the VRP solutions which should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("VehiclesUtilized", "The utilized vehicles of the VRP solutions which should be analyzed."));
 
-        Parameters.Add(new LookupParameter<VRPSolution>("BestSolution", "The best VRP solution."));
-        Parameters.Add(new LookupParameter<VRPSolution>("BestValidSolution", "The best valid VRP solution."));
-        Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best VRP solution should be stored."));
+      Parameters.Add(new LookupParameter<VRPSolution>("BestSolution", "The best VRP solution."));
+      Parameters.Add(new LookupParameter<VRPSolution>("BestValidSolution", "The best valid VRP solution."));
+      Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best VRP solution should be stored."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       #region Backwards Compatibility
       if (!Parameters.ContainsKey("BestKnownQuality")) {
         Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this VRP instance."));

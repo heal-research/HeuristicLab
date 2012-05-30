@@ -22,21 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPTWProblemInstance", "Represents a single depot CVRPTW instance.")]
   [StorableClass]
-  public class CVRPTWProblemInstance: CVRPProblemInstance, ITimeWindowedProblemInstance {
+  public class CVRPTWProblemInstance : CVRPProblemInstance, ITimeWindowedProblemInstance {
     protected IValueParameter<DoubleArray> ReadyTimeParameter {
       get { return (IValueParameter<DoubleArray>)Parameters["ReadyTime"]; }
     }
@@ -96,13 +95,13 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         .Where(o => o is IAnalyzer)
         .Cast<IOperator>().Union(base.GetAnalyzers());
     }
-    
+
     protected override IVRPEvaluator Evaluator {
       get {
         return new CVRPTWEvaluator();
       }
     }
-    
+
     [StorableConstructor]
     protected CVRPTWProblemInstance(bool deserializing) : base(deserializing) { }
 
@@ -124,11 +123,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     protected CVRPTWProblemInstance(CVRPTWProblemInstance original, Cloner cloner)
       : base(original, cloner) {
-        AttachEventHandlers();
+      AttachEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       AttachEventHandlers();
     }
 

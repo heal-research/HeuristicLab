@@ -22,28 +22,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPPDTWProblemInstance", "Represents a multi depot CVRPPDTW instance.")]
   [StorableClass]
-  public class MDCVRPPDTWProblemInstance: MDCVRPTWProblemInstance, IPickupAndDeliveryProblemInstance {
+  public class MDCVRPPDTWProblemInstance : MDCVRPTWProblemInstance, IPickupAndDeliveryProblemInstance {
     protected IValueParameter<IntArray> PickupDeliveryLocationParameter {
       get { return (IValueParameter<IntArray>)Parameters["PickupDeliveryLocation"]; }
     }
     protected IValueParameter<DoubleValue> PickupViolationPenaltyParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["EvalPickupViolationPenalty"]; }
     }
-    
+
     public IntArray PickupDeliveryLocation {
       get { return PickupDeliveryLocationParameter.Value; }
       set { PickupDeliveryLocationParameter.Value = value; }
@@ -65,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     protected override IEnumerable<IOperator> GetOperators() {
-      return 
+      return
         ApplicationManager.Manager.GetInstances<IPickupAndDeliveryOperator>()
         .Where(o => !(o is IAnalyzer))
         .Cast<IOperator>().Union(base.GetOperators());
@@ -76,7 +75,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         .Where(o => o is IAnalyzer)
         .Cast<IOperator>().Union(base.GetAnalyzers());
     }
-    
+
     protected override IVRPEvaluator Evaluator {
       get {
         return new MDCVRPPDTWEvaluator();
@@ -86,7 +85,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     public int GetPickupDeliveryLocation(int city) {
       return PickupDeliveryLocation[city - 1];
     }
-    
+
     [StorableConstructor]
     protected MDCVRPPDTWProblemInstance(bool deserializing) : base(deserializing) { }
 
@@ -105,11 +104,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     protected MDCVRPPDTWProblemInstance(MDCVRPPDTWProblemInstance original, Cloner cloner)
       : base(original, cloner) {
-        AttachEventHandlers();
+      AttachEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       AttachEventHandlers();
     }
 

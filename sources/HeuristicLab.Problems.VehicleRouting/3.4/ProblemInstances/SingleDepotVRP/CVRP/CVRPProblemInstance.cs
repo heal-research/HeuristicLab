@@ -22,21 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPProblemInstance", "Represents a single depot CVRP instance.")]
   [StorableClass]
-  public class CVRPProblemInstance: SingleDepotVRPProblemInstance, IHomogenousCapacitatedProblemInstance {
+  public class CVRPProblemInstance : SingleDepotVRPProblemInstance, IHomogenousCapacitatedProblemInstance {
     protected IValueParameter<DoubleValue> CapacityParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Capacity"]; }
     }
@@ -59,13 +58,14 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         if (currentOverloadPenalty != null)
           return currentOverloadPenalty;
         else
-          return OverloadPenaltyParameter.Value; }
+          return OverloadPenaltyParameter.Value;
+      }
       set { CurrentOverloadPenaltyParameter.Value = value; }
     }
 
     protected override IEnumerable<IOperator> GetOperators() {
-        return base.GetOperators()
-          .Where(o => o is IHomogenousCapacitatedOperator).Cast<IOperator>();
+      return base.GetOperators()
+        .Where(o => o is IHomogenousCapacitatedOperator).Cast<IOperator>();
     }
 
     protected override IEnumerable<IOperator> GetAnalyzers() {
@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         return new CVRPEvaluator();
       }
     }
-    
+
     [StorableConstructor]
     protected CVRPProblemInstance(bool deserializing) : base(deserializing) { }
 
@@ -97,11 +97,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     protected CVRPProblemInstance(CVRPProblemInstance original, Cloner cloner)
       : base(original, cloner) {
-        AttachEventHandlers();
+      AttachEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserializationHook() {
+    private void AfterDeserialization() {
       AttachEventHandlers();
     }
 
