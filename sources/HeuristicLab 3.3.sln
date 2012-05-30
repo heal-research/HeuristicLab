@@ -6,7 +6,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Build.cmd = Build.cmd
 		ConfigMerger.exe = ConfigMerger.exe
 		..\documentation\License\gpl-3.0.txt = ..\documentation\License\gpl-3.0.txt
-		HeuristicLab 3.3.vsmdi = HeuristicLab 3.3.vsmdi
 		MergeConfigs.cmd = MergeConfigs.cmd
 		PreBuildEvent.cmd = PreBuildEvent.cmd
 	EndProjectSection
@@ -317,9 +316,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Clients.Hive.JobManager-3.3", "HeuristicLab.Clients.Hive.JobManager\3.3\HeuristicLab.Clients.Hive.JobManager-3.3.csproj", "{DBFD7205-61AF-40EF-8776-3052DEF91CF3}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = HeuristicLab 3.3.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64

@@ -86,7 +86,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
     ///</summary>
     [TestMethod()]
     [DeploymentItem("HeuristicLab.Encodings.BinaryVectorEncoding-3.3.dll")]
-    public void SinglePointCrossoverCrossTest() {
+    public void NPointCrossoverCrossTest() {
       NPointCrossover_Accessor target = new NPointCrossover_Accessor(new PrivateObject(typeof(NPointCrossover)));
       ItemArray<BinaryVector> parents;
       TestRandom random = new TestRandom();
@@ -121,7 +121,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
     ///A test for Apply
     ///</summary>
     [TestMethod()]
-    public void SinglePointCrossoverApplyTest() {
+    public void NPointCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       BinaryVector parent1, parent2, expected, actual;
       IntValue n;
@@ -175,7 +175,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
     ///A test for SinglePointCrossover Constructor
     ///</summary>
     [TestMethod()]
-    public void SinglePointCrossoverConstructorTest() {
+    public void NPointCrossoverConstructorTest() {
       NPointCrossover target = new NPointCrossover();
     }
   }
