@@ -31,6 +31,7 @@ namespace HeuristicLab.Clients.Hive.Administration {
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]  
   [PluginDependency("HeuristicLab.Clients.Hive", "3.3")]
   [PluginDependency("HeuristicLab.Clients.Hive.Views", "3.3")]
+  [PluginDependency("HeuristicLab.DayView", "1.0.0.0")]
   [PluginDependency("HeuristicLab.Optimizer", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]  
