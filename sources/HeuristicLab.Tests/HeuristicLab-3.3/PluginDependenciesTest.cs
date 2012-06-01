@@ -84,6 +84,8 @@ namespace HeuristicLab_33.Tests {
 
         foreach (PluginDependencyAttribute attribute in pluginDependencies.Keys) {
           string pluginDependencyName = pluginDependencies[attribute];
+
+          if (pluginDependencyName == "HeuristicLab.MathJax") continue; //is never referenced as this plugin contains HTML files
           var referencedPluginAssemblies = pluginAssembly.GetReferencedAssemblies().Where(IsPluginAssemblyName);
           if (referencedPluginAssemblies.Any(a => pluginNames[a.FullName] == pluginDependencyName)) continue;
 
