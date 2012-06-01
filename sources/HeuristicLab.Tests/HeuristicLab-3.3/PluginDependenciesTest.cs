@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -32,23 +33,23 @@ namespace HeuristicLab_33.Tests {
   public class PluginDependenciesTest {
     private static Dictionary<Assembly, Type> loadedPlugins;
     private static Dictionary<string, string> pluginNames;
-    private static HashSet<string> extLibPluginNames;
+    private static Dictionary<string, Assembly> pluginFilesToPluginLookup = new Dictionary<string, Assembly>();
+    //private static Dictionary<string, string> pluginToPluginFilesLookup = new Dictionary<string, string>();
 
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
-      loadedPlugins = PluginLoader.Assemblies.Where(x => PluginLoader.IsPluginAssembly(x)).ToDictionary(a => a, GetPluginFromAssembly);
+      loadedPlugins = PluginLoader.Assemblies.Where(PluginLoader.IsPluginAssembly).ToDictionary(a => a, GetPluginFromAssembly);
       pluginNames = loadedPlugins.ToDictionary(a => a.Key.GetName().FullName, a => GetPluginName(a.Value));
 
-      extLibPluginNames = new HashSet<string>();
-      extLibPluginNames.Add("HeuristicLab.ALGLIB");
-      extLibPluginNames.Add("HeuristicLab.LibSVM");
-      extLibPluginNames.Add("HeuristicLab.log4net");
-      extLibPluginNames.Add("HeuristicLab.MathJax");
-      extLibPluginNames.Add("HeuristicLab.Netron");
-      extLibPluginNames.Add("HeuristicLab.ProtobufCS");
-      extLibPluginNames.Add("HeuristicLab.SharpDevelop");
-      extLibPluginNames.Add("HeuristicLab.WinFormsUI");
+      foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
+        Type pluginType = GetPluginFromAssembly(pluginAssembly);
+        var pluginFileAttributes = Attribute.GetCustomAttributes(pluginType, false).OfType<PluginFileAttribute>();
+        foreach (var pluginFileAttribute in pluginFileAttributes) {
+          string fillNameWithoutExtension = Path.GetFileNameWithoutExtension(pluginFileAttribute.FileName);
+          pluginFilesToPluginLookup.Add(fillNameWithoutExtension, pluginAssembly);
+        }
+      }
     }
 
     [TestMethod]
@@ -56,15 +57,21 @@ namespace HeuristicLab_33.Tests {
       StringBuilder errorMessage = new StringBuilder();
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
         Type plugin = loadedPlugins[pluginAssembly];
-        Dictionary<string, PluginDependencyAttribute> pluginDependencies =
-          Attribute.GetCustomAttributes(plugin, false).OfType<PluginDependencyAttribute>().ToDictionary(a => a.Dependency);
-        foreach (AssemblyName referencedPluginName in pluginAssembly.GetReferencedAssemblies())
-          if (pluginNames.ContainsKey(referencedPluginName.FullName)) {  //check if reference assembly is a plugin
-            if (!pluginDependencies.ContainsKey(pluginNames[referencedPluginName.FullName]))
-              errorMessage.AppendLine("Missing dependency in plugin " + plugin + " to referenced plugin " + pluginNames[referencedPluginName.FullName] + ".");
-          }
-      }
+        Dictionary<string, PluginDependencyAttribute> pluginDependencies = Attribute.GetCustomAttributes(plugin, false).OfType<PluginDependencyAttribute>().ToDictionary(a => a.Dependency);
 
+        foreach (AssemblyName referencedAssemblyName in pluginAssembly.GetReferencedAssemblies()) {
+          if (IsPluginAssemblyName(referencedAssemblyName)) {
+            if (!pluginDependencies.ContainsKey(pluginNames[referencedAssemblyName.FullName]))
+              errorMessage.AppendLine("Missing dependency in plugin " + plugin + " to referenced plugin " + pluginNames[referencedAssemblyName.FullName] + ".");
+          } else { //no plugin assembly => test if the assembly is delivered by another plugin
+            if (pluginFilesToPluginLookup.ContainsKey(referencedAssemblyName.Name)) {
+              string containingPluginFullName = pluginFilesToPluginLookup[referencedAssemblyName.Name].FullName;
+              if (containingPluginFullName != pluginAssembly.FullName && !pluginDependencies.ContainsKey(pluginNames[containingPluginFullName]))
+                errorMessage.AppendLine("Missing dependency in plugin " + plugin + " to plugin " + pluginNames[containingPluginFullName] + " due to a reference to " + referencedAssemblyName.FullName + ".");
+            }
+          }
+        }
+      }
       Assert.IsTrue(errorMessage.Length == 0, errorMessage.ToString());
     }
 
@@ -73,32 +80,40 @@ namespace HeuristicLab_33.Tests {
       StringBuilder errorMessage = new StringBuilder();
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
         Type plugin = loadedPlugins[pluginAssembly];
-        Dictionary<PluginDependencyAttribute, string> pluginDependencies =
-          Attribute.GetCustomAttributes(plugin, false).OfType<PluginDependencyAttribute>().ToDictionary(a => a, a => a.Dependency);
+        Dictionary<PluginDependencyAttribute, string> pluginDependencies = Attribute.GetCustomAttributes(plugin, false).OfType<PluginDependencyAttribute>().ToDictionary(a => a, a => a.Dependency);
 
         foreach (PluginDependencyAttribute attribute in pluginDependencies.Keys) {
           string pluginDependencyName = pluginDependencies[attribute];
-          //do not check extlib plugins, because the transport assemblies are never referenced in the assemblies
-          if (extLibPluginNames.Contains(pluginDependencyName)) continue;
-          if (pluginAssembly.GetReferencedAssemblies().Where(a => pluginNames.ContainsKey(a.FullName))
-            .All(a => pluginNames[a.FullName] != pluginDependencyName)) {
-            errorMessage.AppendLine("Unnecessary plugin dependency in " + GetPluginName(plugin) + " to " + pluginDependencyName + ".");
-          }
+          var referencedPluginAssemblies = pluginAssembly.GetReferencedAssemblies().Where(IsPluginAssemblyName);
+          if (referencedPluginAssemblies.Any(a => pluginNames[a.FullName] == pluginDependencyName)) continue;
+
+          var referencedNonPluginAssemblies = pluginAssembly.GetReferencedAssemblies().Where(a => !IsPluginAssemblyName(a));
+          bool found = (from referencedNonPluginAssemblie in referencedNonPluginAssemblies
+                        select referencedNonPluginAssemblie.Name into assemblyName
+                        where pluginFilesToPluginLookup.ContainsKey(assemblyName)
+                        select GetPluginFromAssembly(pluginFilesToPluginLookup[assemblyName]) into pluginType
+                        select GetPluginName(pluginType)).Any(pluginName => pluginName == pluginDependencyName);
+
+          if (!found) errorMessage.AppendLine("Unnecessary plugin dependency in " + GetPluginName(plugin) + " to " + pluginDependencyName + ".");
         }
       }
-
       Assert.IsTrue(errorMessage.Length == 0, errorMessage.ToString());
     }
 
     private static Type GetPluginFromAssembly(Assembly assembly) {
       return assembly.GetExportedTypes().Where(t => typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface).FirstOrDefault();
     }
+
     private static string GetPluginName(Type plugin) {
       string name = string.Empty;
       PluginAttribute pluginAttribute = (PluginAttribute)Attribute.GetCustomAttribute(plugin, typeof(PluginAttribute));
       if (pluginAttribute != null)
         name = pluginAttribute.Name;
       return name;
+    }
+
+    private static bool IsPluginAssemblyName(AssemblyName assemblyName) {
+      return pluginNames.ContainsKey(assemblyName.FullName);
     }
   }
 }
