@@ -19,16 +19,8 @@
  */
 #endregion
 
-
-namespace HeuristicLab.Problems.Instances {
-  /// <summary>
-  /// Interface for VRP data
-  /// </summary>
-  public interface IVRPData {
-    string Name { get; set; }
-    string Description { get; set; }
-    int Dimension { get; set; }
-    double? BestKnownQuality { get; set; }
-    int[][] BestKnownTour { get; set; }
+namespace HeuristicLab.Problems.Instances.VehicleRouting {
+  public interface IVRPInstanceProvider {
+    IVRPData LoadData(string vrpFile, string tourFile);
   }
 }

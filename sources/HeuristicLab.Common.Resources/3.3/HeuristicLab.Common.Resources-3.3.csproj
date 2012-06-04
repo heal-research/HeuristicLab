@@ -429,6 +429,8 @@
     <None Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Objects_Executable_Stopped.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Actions_SaveAsHH.png" />
+    <None Include="Resources\SaveAs.bmp" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Checkout.png" />
     <Content Include="Resources\VS2008ImageLibrary\VS2008ImageLibrary_Actions_Clone.png" />
     <None Include="Resources\VS2010ImageLibrary\VS2010ImageLibrary_Objects_Information_Large.png" />

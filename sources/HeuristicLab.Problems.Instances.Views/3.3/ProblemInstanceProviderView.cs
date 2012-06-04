@@ -35,8 +35,6 @@ namespace HeuristicLab.Problems.Instances.Views {
 
     public abstract IProblemInstanceConsumer Consumer { get; set; }
 
-    public abstract IProblemInstanceExporter Exporter { get; set; }
-
     public ProblemInstanceProviderView() {
       InitializeComponent();
     }

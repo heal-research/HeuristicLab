@@ -45,7 +45,7 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.problemInstanceSplitContainer = new System.Windows.Forms.SplitContainer();
-      this.problemInstanceConsumerView = new HeuristicLab.Problems.Instances.Views.ProblemInstanceConsumerView();
+      this.ProblemInstanceConsumerViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).BeginInit();
       this.problemInstanceSplitContainer.Panel1.SuspendLayout();
@@ -86,7 +86,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // problemInstanceSplitContainer.Panel1
       // 
-      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.problemInstanceConsumerView);
+      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.ProblemInstanceConsumerViewHost);
       this.problemInstanceSplitContainer.Panel1MinSize = 10;
       // 
       // problemInstanceSplitContainer.Panel2
@@ -99,18 +99,21 @@ namespace HeuristicLab.Optimization.Views {
       this.problemInstanceSplitContainer.SplitterDistance = 26;
       this.problemInstanceSplitContainer.TabIndex = 13;
       // 
-      // problemInstanceConsumerView
+      // ProblemInstanceConsumerViewHost
       // 
-      this.problemInstanceConsumerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.ProblemInstanceConsumerViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.problemInstanceConsumerView.Caption = "ProblemInstanceProviderView";
-      this.problemInstanceConsumerView.Content = null;
-      this.problemInstanceConsumerView.Location = new System.Drawing.Point(0, 1);
-      this.problemInstanceConsumerView.Name = "problemInstanceConsumerView";
-      this.problemInstanceConsumerView.ReadOnly = false;
-      this.problemInstanceConsumerView.Size = new System.Drawing.Size(511, 23);
-      this.problemInstanceConsumerView.TabIndex = 0;
+      this.ProblemInstanceConsumerViewHost.Caption = "ProblemInstanceConsumerView";
+      this.ProblemInstanceConsumerViewHost.Content = null;
+      this.ProblemInstanceConsumerViewHost.Enabled = false;
+      this.ProblemInstanceConsumerViewHost.Location = new System.Drawing.Point(0, 1);
+      this.ProblemInstanceConsumerViewHost.Name = "ProblemInstanceConsumerViewHost";
+      this.ProblemInstanceConsumerViewHost.ReadOnly = false;
+      this.ProblemInstanceConsumerViewHost.Size = new System.Drawing.Size(511, 23);
+      this.ProblemInstanceConsumerViewHost.TabIndex = 0;
+      this.ProblemInstanceConsumerViewHost.ViewsLabelVisible = false;
+      this.ProblemInstanceConsumerViewHost.ViewType = null;
       // 
       // ProblemView
       // 
@@ -132,6 +135,6 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     protected System.Windows.Forms.SplitContainer problemInstanceSplitContainer;
-    protected HeuristicLab.Problems.Instances.Views.ProblemInstanceConsumerView problemInstanceConsumerView;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost ProblemInstanceConsumerViewHost;
   }
 }

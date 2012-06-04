@@ -19,11 +19,14 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.Instances;
+using HeuristicLab.Problems.Instances.Views;
 
 namespace HeuristicLab.Optimization.Views {
   /// <summary>
@@ -32,6 +35,9 @@ namespace HeuristicLab.Optimization.Views {
   [View("Problem View")]
   [Content(typeof(IProblem), true)]
   public partial class ProblemView : ParameterizedNamedItemView {
+
+    private static Type neededViewType = typeof(ProblemInstanceConsumerView);
+
     public new IProblem Content {
       get { return (IProblem)base.Content; }
       set { base.Content = value; }
@@ -48,8 +54,12 @@ namespace HeuristicLab.Optimization.Views {
       base.OnContentChanged();
       IProblemInstanceConsumer consumer = Content as IProblemInstanceConsumer;
       if (consumer != null) {
-        problemInstanceConsumerView.Content = consumer;
-        problemInstanceSplitContainer.Panel1Collapsed = !problemInstanceConsumerView.ProblemInstanceProviders.Any();
+        IEnumerable<Type> viewTypes = MainFormManager.GetViewTypes(consumer.GetType(), true);
+        Type genericView = viewTypes.Where(x => x.IsSubclassOf(neededViewType)).First();
+        ProblemInstanceConsumerViewHost.ViewType = genericView;
+        ProblemInstanceConsumerViewHost.Content = consumer;
+        ProblemInstanceConsumerView view = (ProblemInstanceConsumerView)ProblemInstanceConsumerViewHost.ActiveView;
+        problemInstanceSplitContainer.Panel1Collapsed = !view.ProblemInstanceProviders.Any();
       } else {
         problemInstanceSplitContainer.Panel1Collapsed = true;
       }

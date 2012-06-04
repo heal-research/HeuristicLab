@@ -20,18 +20,18 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.Instances.Views;
-using System.IO;
 
 namespace HeuristicLab.Problems.Instances.TSPLIB.Views {
   [View("TSPLIB TSP InstanceProvider View")]
-  [Content(typeof(TSPLIBTSPInstanceProvider), IsDefaultView = true)]
-  public partial class TSPLIBTSPInstanceProviderView : ProblemInstanceProviderViewGeneric<TSPData> {
-    public new TSPLIBTSPInstanceProvider Content {
-      get { return (TSPLIBTSPInstanceProvider)base.Content; }
+  [Content(typeof(IProblemInstanceConsumer<TSPData>), IsDefaultView = true)]
+  public partial class TSPLIBTSPInstanceProviderView : ProblemInstanceConsumerViewGeneric<TSPData> {
+    public new IProblemInstanceConsumer<TSPData> Content {
+      get { return (IProblemInstanceConsumer<TSPData>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -40,16 +40,21 @@ namespace HeuristicLab.Problems.Instances.TSPLIB.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      using (var dialog = new TSPLIBImportDialog()) {
-        if (dialog.ShowDialog() == DialogResult.OK) {
-          var instance = Content.LoadData(dialog.TSPFileName, dialog.TourFileName, dialog.Quality);
-          try {
-            GenericConsumer.Load(instance);
-          }
-          catch (Exception ex) {
-            MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
+      TSPLIBTSPInstanceProvider provider = SelectedProvider as TSPLIBTSPInstanceProvider;
+      if (provider != null) {
+        using (var dialog = new TSPLIBImportDialog()) {
+          if (dialog.ShowDialog() == DialogResult.OK) {
+            var instance = provider.LoadData(dialog.TSPFileName, dialog.TourFileName, dialog.Quality);
+            try {
+              GenericConsumer.Load(instance);
+            }
+            catch (Exception ex) {
+              MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
+            }
           }
         }
+      } else {
+        base.importButton_Click(sender, e);
       }
     }
   }

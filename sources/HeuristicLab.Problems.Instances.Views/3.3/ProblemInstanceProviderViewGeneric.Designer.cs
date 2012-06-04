@@ -48,22 +48,15 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.loadButton = new System.Windows.Forms.Button();
       this.instanceLabel = new System.Windows.Forms.Label();
       this.instancesComboBox = new System.Windows.Forms.ComboBox();
-      this.importButton = new System.Windows.Forms.Button();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.exportButton = new System.Windows.Forms.Button();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-      this.problemInstanceProviderSplitContainer = new System.Windows.Forms.SplitContainer();
-      ((System.ComponentModel.ISupportInitialize)(this.problemInstanceProviderSplitContainer)).BeginInit();
-      this.problemInstanceProviderSplitContainer.Panel1.SuspendLayout();
-      this.problemInstanceProviderSplitContainer.Panel2.SuspendLayout();
-      this.problemInstanceProviderSplitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
       // loadButton
       // 
       this.loadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.loadButton.Location = new System.Drawing.Point(604, 0);
+      this.loadButton.Location = new System.Drawing.Point(667, -1);
       this.loadButton.Name = "loadButton";
       this.loadButton.Size = new System.Drawing.Size(24, 24);
       this.loadButton.TabIndex = 6;
@@ -82,86 +75,36 @@ namespace HeuristicLab.Problems.Instances.Views {
       // 
       // instancesComboBox
       // 
-      this.instancesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.instancesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.instancesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.instancesComboBox.FormattingEnabled = true;
       this.instancesComboBox.Location = new System.Drawing.Point(60, 1);
       this.instancesComboBox.Name = "instancesComboBox";
-      this.instancesComboBox.Size = new System.Drawing.Size(538, 21);
+      this.instancesComboBox.Size = new System.Drawing.Size(601, 21);
       this.instancesComboBox.TabIndex = 7;
-      this.instancesComboBox.DataSourceChanged += new System.EventHandler(this.comboBox_DataSourceChanged);
-      // 
-      // importButton
-      // 
-      this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.importButton.Location = new System.Drawing.Point(636, 0);
-      this.importButton.Name = "importButton";
-      this.importButton.Size = new System.Drawing.Size(24, 24);
-      this.importButton.TabIndex = 6;
-      this.importButton.Text = "Import";
-      this.importButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.importButton.UseVisualStyleBackColor = true;
-      this.importButton.Click += new System.EventHandler(this.importButton_Click);
+      this.instancesComboBox.DataSourceChanged += new System.EventHandler(this.instancesComboBox_DataSourceChanged);
       // 
       // openFileDialog
       // 
       this.openFileDialog.Filter = "All files|*.*";
-      // 
-      // exportButton
-      // 
-      this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.exportButton.Location = new System.Drawing.Point(-1, 0);
-      this.exportButton.Name = "exportButton";
-      this.exportButton.Size = new System.Drawing.Size(24, 24);
-      this.exportButton.TabIndex = 8;
-      this.exportButton.Text = "Export";
-      this.exportButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.exportButton.UseVisualStyleBackColor = true;
-      this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
       // 
       // saveFileDialog
       // 
       this.saveFileDialog.Filter = "CSV files|*.csv|All files|*.*";
       this.saveFileDialog.Title = "Save RegressionInstance...";
       // 
-      // problemInstanceProviderSplitContainer
-      // 
-      this.problemInstanceProviderSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.problemInstanceProviderSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-      this.problemInstanceProviderSplitContainer.IsSplitterFixed = true;
-      this.problemInstanceProviderSplitContainer.Location = new System.Drawing.Point(0, -1);
-      this.problemInstanceProviderSplitContainer.Name = "problemInstanceProviderSplitContainer";
-      // 
-      // problemInstanceProviderSplitContainer.Panel1
-      // 
-      this.problemInstanceProviderSplitContainer.Panel1.Controls.Add(this.instanceLabel);
-      this.problemInstanceProviderSplitContainer.Panel1.Controls.Add(this.instancesComboBox);
-      this.problemInstanceProviderSplitContainer.Panel1.Controls.Add(this.importButton);
-      this.problemInstanceProviderSplitContainer.Panel1.Controls.Add(this.loadButton);
-      // 
-      // problemInstanceProviderSplitContainer.Panel2
-      // 
-      this.problemInstanceProviderSplitContainer.Panel2.Controls.Add(this.exportButton);
-      this.problemInstanceProviderSplitContainer.Size = new System.Drawing.Size(694, 22);
-      this.problemInstanceProviderSplitContainer.SplitterDistance = 665;
-      this.problemInstanceProviderSplitContainer.TabIndex = 9;
-      // 
-      // ProblemInstanceProviderView
+      // ProblemInstanceProviderViewGeneric
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.problemInstanceProviderSplitContainer);
-      this.Name = "ProblemInstanceProviderView";
+      this.Controls.Add(this.instanceLabel);
+      this.Controls.Add(this.instancesComboBox);
+      this.Controls.Add(this.loadButton);
+      this.Name = "ProblemInstanceProviderViewGeneric";
       this.Size = new System.Drawing.Size(694, 21);
-      this.problemInstanceProviderSplitContainer.Panel1.ResumeLayout(false);
-      this.problemInstanceProviderSplitContainer.Panel1.PerformLayout();
-      this.problemInstanceProviderSplitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.problemInstanceProviderSplitContainer)).EndInit();
-      this.problemInstanceProviderSplitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
@@ -172,10 +115,6 @@ namespace HeuristicLab.Problems.Instances.Views {
     protected System.Windows.Forms.Button loadButton;
     protected System.Windows.Forms.Label instanceLabel;
     protected System.Windows.Forms.ComboBox instancesComboBox;
-    protected System.Windows.Forms.Button importButton;
-    protected System.Windows.Forms.Button exportButton;
     protected System.Windows.Forms.SaveFileDialog saveFileDialog;
-    protected System.Windows.Forms.SplitContainer problemInstanceProviderSplitContainer;
-
   }
 }

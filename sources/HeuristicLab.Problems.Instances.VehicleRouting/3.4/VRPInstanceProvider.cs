@@ -28,7 +28,7 @@ using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class VRPInstanceProvider<T> : ProblemInstanceProvider<T> where T : IVRPData {
+  public abstract class VRPInstanceProvider<T> : ProblemInstanceProvider<T>, IVRPInstanceProvider where T : IVRPData {
     protected abstract string FileName { get; }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       throw new NotSupportedException();
     }
 
-    public T LoadData(string vrpFile, string tourFile) {
+    public IVRPData LoadData(string vrpFile, string tourFile) {
       var data = LoadData(vrpFile);
       if (!String.IsNullOrEmpty(tourFile)) {
         LoadSolution(tourFile, data);

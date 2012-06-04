@@ -20,19 +20,19 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Problems.Instances.Views;
-using System.IO;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
   [View("VRP InstanceProvider View")]
-  [Content(typeof(VRPInstanceProvider<>), IsDefaultView = true)]
-  public partial class VRPInstanceProviderView<T> : ProblemInstanceProviderViewGeneric<T> where T : class, IVRPData  {
+  [Content(typeof(IProblemInstanceConsumer<IVRPData>), IsDefaultView = true)]
+  public partial class VRPInstanceProviderView<T> : ProblemInstanceConsumerViewGeneric<T> where T : class, IVRPData {
 
-    public new VRPInstanceProvider<T> Content {
-      get { return (VRPInstanceProvider<T>)base.Content; }
+    public new IProblemInstanceConsumer<T> Content {
+      get { return (IProblemInstanceConsumer<T>)base.Content; }
       set { base.Content = value; }
     }
 
@@ -41,14 +41,17 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      using (var dialog = new VRPImportDialog(Content.Name)) {
-        if (dialog.ShowDialog() == DialogResult.OK) {
-          var instance = Content.LoadData(dialog.VRPFileName, dialog.TourFileName);
-          try {
-            GenericConsumer.Load(instance as T);
-          }
-          catch (Exception ex) {
-            MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
+      IVRPInstanceProvider provider = SelectedProvider as IVRPInstanceProvider;
+      if (provider != null) {
+        using (var dialog = new VRPImportDialog(SelectedProvider.Name)) {
+          if (dialog.ShowDialog() == DialogResult.OK) {
+            var instance = provider.LoadData(dialog.VRPFileName, dialog.TourFileName);
+            try {
+              GenericConsumer.Load(instance as T);
+            }
+            catch (Exception ex) {
+              MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
+            }
           }
         }
       }
