@@ -45,6 +45,7 @@ namespace HeuristicLab.Optimizer {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateExperimentDialog));
       this.okButton = new System.Windows.Forms.Button();
       this.cancelButton = new System.Windows.Forms.Button();
       this.createBatchRunCheckBox = new System.Windows.Forms.CheckBox();
@@ -52,8 +53,6 @@ namespace HeuristicLab.Optimizer {
       this.repetitionsLabel = new System.Windows.Forms.Label();
       this.repetitionsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.instancesListView = new System.Windows.Forms.ListView();
-      this.columnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.experimentCreationBackgroundWorker = new System.ComponentModel.BackgroundWorker();
       this.instanceDiscoveryProgressBar = new System.Windows.Forms.ProgressBar();
       this.instanceDiscoveryProgressLabel = new System.Windows.Forms.Label();
@@ -65,21 +64,23 @@ namespace HeuristicLab.Optimizer {
       this.parametersSplitContainer = new System.Windows.Forms.SplitContainer();
       this.parametersListView = new System.Windows.Forms.ListView();
       this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-      this.choicesLabel = new System.Windows.Forms.Label();
-      this.choicesListView = new System.Windows.Forms.ListView();
-      this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.detailsTypeLabel = new System.Windows.Forms.Label();
       this.stepSizeTextBox = new System.Windows.Forms.TextBox();
       this.maximumTextBox = new System.Windows.Forms.TextBox();
       this.minimumTextBox = new System.Windows.Forms.TextBox();
       this.stepSizeLabel = new System.Windows.Forms.Label();
       this.maximumLabel = new System.Windows.Forms.Label();
       this.minimumLabel = new System.Windows.Forms.Label();
+      this.choicesListView = new System.Windows.Forms.ListView();
+      this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.instancesTabPage = new System.Windows.Forms.TabPage();
       this.label1 = new System.Windows.Forms.Label();
+      this.instancesTreeView = new System.Windows.Forms.TreeView();
       this.experimentsToCreateDescriptionLabel = new System.Windows.Forms.Label();
-      this.experimentsLabel = new System.Windows.Forms.Label();
+      this.variationsLabel = new System.Windows.Forms.Label();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
       this.experimentCreationProgressBar = new System.Windows.Forms.ProgressBar();
+      this.warningProvider = new System.Windows.Forms.ErrorProvider(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).BeginInit();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
@@ -89,6 +90,7 @@ namespace HeuristicLab.Optimizer {
       this.parametersSplitContainer.SuspendLayout();
       this.instancesTabPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).BeginInit();
       this.SuspendLayout();
       // 
       // okButton
@@ -148,8 +150,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // repetitionsNumericUpDown
       // 
-      this.repetitionsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.repetitionsNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.repetitionsNumericUpDown.Location = new System.Drawing.Point(113, 28);
       this.repetitionsNumericUpDown.Maximum = new decimal(new int[] {
             1000000,
@@ -172,27 +174,6 @@ namespace HeuristicLab.Optimizer {
             0,
             0});
       this.repetitionsNumericUpDown.Validated += new System.EventHandler(this.repetitionsNumericUpDown_Validated);
-      // 
-      // instancesListView
-      // 
-      this.instancesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.instancesListView.CheckBoxes = true;
-      this.instancesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader});
-      this.instancesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-      this.instancesListView.Location = new System.Drawing.Point(6, 35);
-      this.instancesListView.Name = "instancesListView";
-      this.instancesListView.Size = new System.Drawing.Size(308, 225);
-      this.instancesListView.TabIndex = 3;
-      this.instancesListView.UseCompatibleStateImageBehavior = false;
-      this.instancesListView.View = System.Windows.Forms.View.Details;
-      this.instancesListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.instancesListView_ItemChecked);
-      // 
-      // columnHeader
-      // 
-      this.columnHeader.Width = 150;
       // 
       // experimentCreationBackgroundWorker
       // 
@@ -256,9 +237,9 @@ namespace HeuristicLab.Optimizer {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.instancesTabPage);
       this.tabControl.Location = new System.Drawing.Point(15, 54);
@@ -291,14 +272,14 @@ namespace HeuristicLab.Optimizer {
       // 
       // parametersSplitContainer.Panel2
       // 
-      this.parametersSplitContainer.Panel2.Controls.Add(this.choicesLabel);
-      this.parametersSplitContainer.Panel2.Controls.Add(this.choicesListView);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.detailsTypeLabel);
       this.parametersSplitContainer.Panel2.Controls.Add(this.stepSizeTextBox);
       this.parametersSplitContainer.Panel2.Controls.Add(this.maximumTextBox);
       this.parametersSplitContainer.Panel2.Controls.Add(this.minimumTextBox);
       this.parametersSplitContainer.Panel2.Controls.Add(this.stepSizeLabel);
       this.parametersSplitContainer.Panel2.Controls.Add(this.maximumLabel);
       this.parametersSplitContainer.Panel2.Controls.Add(this.minimumLabel);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.choicesListView);
       this.parametersSplitContainer.Size = new System.Drawing.Size(314, 267);
       this.parametersSplitContainer.SplitterDistance = 124;
       this.parametersSplitContainer.TabIndex = 1;
@@ -324,20 +305,77 @@ namespace HeuristicLab.Optimizer {
       // 
       this.columnHeader1.Width = 150;
       // 
-      // choicesLabel
+      // detailsTypeLabel
       // 
-      this.choicesLabel.AutoSize = true;
-      this.choicesLabel.Location = new System.Drawing.Point(13, 15);
-      this.choicesLabel.Name = "choicesLabel";
-      this.choicesLabel.Size = new System.Drawing.Size(48, 13);
-      this.choicesLabel.TabIndex = 0;
-      this.choicesLabel.Text = "Choices:";
+      this.detailsTypeLabel.AutoSize = true;
+      this.detailsTypeLabel.Location = new System.Drawing.Point(13, 15);
+      this.detailsTypeLabel.Name = "detailsTypeLabel";
+      this.detailsTypeLabel.Size = new System.Drawing.Size(48, 13);
+      this.detailsTypeLabel.TabIndex = 0;
+      this.detailsTypeLabel.Text = "Choices:";
+      // 
+      // stepSizeTextBox
+      // 
+      this.stepSizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.stepSizeTextBox.Location = new System.Drawing.Point(73, 86);
+      this.stepSizeTextBox.Name = "stepSizeTextBox";
+      this.stepSizeTextBox.Size = new System.Drawing.Size(98, 20);
+      this.stepSizeTextBox.TabIndex = 5;
+      this.stepSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
+      // 
+      // maximumTextBox
+      // 
+      this.maximumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.maximumTextBox.Location = new System.Drawing.Point(73, 60);
+      this.maximumTextBox.Name = "maximumTextBox";
+      this.maximumTextBox.Size = new System.Drawing.Size(98, 20);
+      this.maximumTextBox.TabIndex = 3;
+      this.maximumTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
+      // 
+      // minimumTextBox
+      // 
+      this.minimumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.minimumTextBox.Location = new System.Drawing.Point(73, 34);
+      this.minimumTextBox.Name = "minimumTextBox";
+      this.minimumTextBox.Size = new System.Drawing.Size(98, 20);
+      this.minimumTextBox.TabIndex = 1;
+      this.minimumTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
+      // 
+      // stepSizeLabel
+      // 
+      this.stepSizeLabel.AutoSize = true;
+      this.stepSizeLabel.Location = new System.Drawing.Point(13, 89);
+      this.stepSizeLabel.Name = "stepSizeLabel";
+      this.stepSizeLabel.Size = new System.Drawing.Size(53, 13);
+      this.stepSizeLabel.TabIndex = 4;
+      this.stepSizeLabel.Text = "Step size:";
+      // 
+      // maximumLabel
+      // 
+      this.maximumLabel.AutoSize = true;
+      this.maximumLabel.Location = new System.Drawing.Point(13, 63);
+      this.maximumLabel.Name = "maximumLabel";
+      this.maximumLabel.Size = new System.Drawing.Size(54, 13);
+      this.maximumLabel.TabIndex = 2;
+      this.maximumLabel.Text = "Maximum:";
+      // 
+      // minimumLabel
+      // 
+      this.minimumLabel.AutoSize = true;
+      this.minimumLabel.Location = new System.Drawing.Point(13, 37);
+      this.minimumLabel.Name = "minimumLabel";
+      this.minimumLabel.Size = new System.Drawing.Size(51, 13);
+      this.minimumLabel.TabIndex = 0;
+      this.minimumLabel.Text = "Minimum:";
       // 
       // choicesListView
       // 
-      this.choicesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.choicesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.choicesListView.CheckBoxes = true;
       this.choicesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader2});
@@ -354,63 +392,6 @@ namespace HeuristicLab.Optimizer {
       // 
       this.columnHeader2.Width = 150;
       // 
-      // stepSizeTextBox
-      // 
-      this.stepSizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.stepSizeTextBox.Location = new System.Drawing.Point(73, 64);
-      this.stepSizeTextBox.Name = "stepSizeTextBox";
-      this.stepSizeTextBox.Size = new System.Drawing.Size(83, 20);
-      this.stepSizeTextBox.TabIndex = 5;
-      this.stepSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
-      // 
-      // maximumTextBox
-      // 
-      this.maximumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.maximumTextBox.Location = new System.Drawing.Point(73, 38);
-      this.maximumTextBox.Name = "maximumTextBox";
-      this.maximumTextBox.Size = new System.Drawing.Size(83, 20);
-      this.maximumTextBox.TabIndex = 3;
-      this.maximumTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
-      // 
-      // minimumTextBox
-      // 
-      this.minimumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.minimumTextBox.Location = new System.Drawing.Point(73, 12);
-      this.minimumTextBox.Name = "minimumTextBox";
-      this.minimumTextBox.Size = new System.Drawing.Size(83, 20);
-      this.minimumTextBox.TabIndex = 1;
-      this.minimumTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
-      // 
-      // stepSizeLabel
-      // 
-      this.stepSizeLabel.AutoSize = true;
-      this.stepSizeLabel.Location = new System.Drawing.Point(13, 67);
-      this.stepSizeLabel.Name = "stepSizeLabel";
-      this.stepSizeLabel.Size = new System.Drawing.Size(53, 13);
-      this.stepSizeLabel.TabIndex = 4;
-      this.stepSizeLabel.Text = "Step size:";
-      // 
-      // maximumLabel
-      // 
-      this.maximumLabel.AutoSize = true;
-      this.maximumLabel.Location = new System.Drawing.Point(13, 41);
-      this.maximumLabel.Name = "maximumLabel";
-      this.maximumLabel.Size = new System.Drawing.Size(54, 13);
-      this.maximumLabel.TabIndex = 2;
-      this.maximumLabel.Text = "Maximum:";
-      // 
-      // minimumLabel
-      // 
-      this.minimumLabel.AutoSize = true;
-      this.minimumLabel.Location = new System.Drawing.Point(13, 15);
-      this.minimumLabel.Name = "minimumLabel";
-      this.minimumLabel.Size = new System.Drawing.Size(51, 13);
-      this.minimumLabel.TabIndex = 0;
-      this.minimumLabel.Text = "Minimum:";
-      // 
       // instancesTabPage
       // 
       this.instancesTabPage.Controls.Add(this.label1);
@@ -418,7 +399,7 @@ namespace HeuristicLab.Optimizer {
       this.instancesTabPage.Controls.Add(this.selectNoneCheckBox);
       this.instancesTabPage.Controls.Add(this.instanceDiscoveryProgressLabel);
       this.instancesTabPage.Controls.Add(this.selectAllCheckBox);
-      this.instancesTabPage.Controls.Add(this.instancesListView);
+      this.instancesTabPage.Controls.Add(this.instancesTreeView);
       this.instancesTabPage.Location = new System.Drawing.Point(4, 22);
       this.instancesTabPage.Name = "instancesTabPage";
       this.instancesTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -436,39 +417,59 @@ namespace HeuristicLab.Optimizer {
       this.label1.TabIndex = 0;
       this.label1.Text = "Select:";
       // 
+      // instancesTreeView
+      // 
+      this.instancesTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.instancesTreeView.CheckBoxes = true;
+      this.instancesTreeView.Location = new System.Drawing.Point(6, 35);
+      this.instancesTreeView.Name = "instancesTreeView";
+      this.instancesTreeView.Size = new System.Drawing.Size(308, 232);
+      this.instancesTreeView.TabIndex = 6;
+      this.instancesTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.instancesTreeView_AfterCheck);
+      // 
       // experimentsToCreateDescriptionLabel
       // 
       this.experimentsToCreateDescriptionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.experimentsToCreateDescriptionLabel.AutoSize = true;
       this.experimentsToCreateDescriptionLabel.Location = new System.Drawing.Point(12, 364);
       this.experimentsToCreateDescriptionLabel.Name = "experimentsToCreateDescriptionLabel";
-      this.experimentsToCreateDescriptionLabel.Size = new System.Drawing.Size(112, 13);
+      this.experimentsToCreateDescriptionLabel.Size = new System.Drawing.Size(56, 13);
       this.experimentsToCreateDescriptionLabel.TabIndex = 5;
-      this.experimentsToCreateDescriptionLabel.Text = "Experiments to create:";
+      this.experimentsToCreateDescriptionLabel.Text = "Variations:";
       // 
-      // experimentsLabel
+      // variationsLabel
       // 
-      this.experimentsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.experimentsLabel.AutoSize = true;
-      this.experimentsLabel.Location = new System.Drawing.Point(130, 364);
-      this.experimentsLabel.Name = "experimentsLabel";
-      this.experimentsLabel.Size = new System.Drawing.Size(13, 13);
-      this.experimentsLabel.TabIndex = 6;
-      this.experimentsLabel.Text = "1";
+      this.variationsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.variationsLabel.AutoSize = true;
+      this.variationsLabel.Location = new System.Drawing.Point(74, 364);
+      this.variationsLabel.Name = "variationsLabel";
+      this.variationsLabel.Size = new System.Drawing.Size(13, 13);
+      this.variationsLabel.TabIndex = 6;
+      this.variationsLabel.Text = "1";
+      this.variationsLabel.TextChanged += new System.EventHandler(this.experimentsLabel_TextChanged);
       // 
       // errorProvider
       // 
+      this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
       this.errorProvider.ContainerControl = this;
       // 
       // experimentCreationProgressBar
       // 
-      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.experimentCreationProgressBar.Location = new System.Drawing.Point(187, 359);
       this.experimentCreationProgressBar.Name = "experimentCreationProgressBar";
       this.experimentCreationProgressBar.Size = new System.Drawing.Size(75, 23);
       this.experimentCreationProgressBar.TabIndex = 9;
       this.experimentCreationProgressBar.Visible = false;
+      // 
+      // warningProvider
+      // 
+      this.warningProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.warningProvider.ContainerControl = this;
+      this.warningProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("warningProvider.Icon")));
       // 
       // CreateExperimentDialog
       // 
@@ -478,7 +479,7 @@ namespace HeuristicLab.Optimizer {
       this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(355, 394);
       this.Controls.Add(this.experimentCreationProgressBar);
-      this.Controls.Add(this.experimentsLabel);
+      this.Controls.Add(this.variationsLabel);
       this.Controls.Add(this.experimentsToCreateDescriptionLabel);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.repetitionsNumericUpDown);
@@ -508,6 +509,7 @@ namespace HeuristicLab.Optimizer {
       this.instancesTabPage.ResumeLayout(false);
       this.instancesTabPage.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.warningProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -522,8 +524,6 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.Label repetitionsLabel;
     private System.Windows.Forms.NumericUpDown repetitionsNumericUpDown;
     private System.Windows.Forms.ToolTip toolTip;
-    private System.Windows.Forms.ListView instancesListView;
-    private System.Windows.Forms.ColumnHeader columnHeader;
     private System.ComponentModel.BackgroundWorker experimentCreationBackgroundWorker;
     private System.Windows.Forms.ProgressBar instanceDiscoveryProgressBar;
     private System.Windows.Forms.Label instanceDiscoveryProgressLabel;
@@ -537,8 +537,8 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.ListView parametersListView;
     private System.Windows.Forms.ColumnHeader columnHeader1;
     private System.Windows.Forms.Label experimentsToCreateDescriptionLabel;
-    private System.Windows.Forms.Label experimentsLabel;
-    private System.Windows.Forms.Label choicesLabel;
+    private System.Windows.Forms.Label variationsLabel;
+    private System.Windows.Forms.Label detailsTypeLabel;
     private System.Windows.Forms.ListView choicesListView;
     private System.Windows.Forms.ColumnHeader columnHeader2;
     private System.Windows.Forms.TextBox stepSizeTextBox;
@@ -550,6 +550,8 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.ErrorProvider errorProvider;
     private System.Windows.Forms.ProgressBar experimentCreationProgressBar;
+    private System.Windows.Forms.ErrorProvider warningProvider;
+    private System.Windows.Forms.TreeView instancesTreeView;
 
   }
 }

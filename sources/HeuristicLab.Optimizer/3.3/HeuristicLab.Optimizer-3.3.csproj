@@ -115,6 +115,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CreateExperimentDialog.resx">
+      <DependentUpon>CreateExperimentDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Documents\GA_VRP.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbClass.hl" />
     <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />

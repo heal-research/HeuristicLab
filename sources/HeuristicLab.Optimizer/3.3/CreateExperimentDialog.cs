@@ -45,7 +45,7 @@ namespace HeuristicLab.Optimizer {
         Experiment = null;
         okButton.Enabled = optimizer != null;
         SetTabControlVisibility();
-        FillInstanceListViewAsync();
+        FillInstanceTreeViewAsync();
         FillParametersListView();
       }
     }
@@ -62,11 +62,12 @@ namespace HeuristicLab.Optimizer {
 
     private StringBuilder failedInstances;
     private EventWaitHandle backgroundWorkerWaitHandle = new ManualResetEvent(false);
-    private bool suppressListViewEventHandling;
+    private bool suppressTreeViewEventHandling, suppressCheckAllNoneEventHandling;
 
     public CreateExperimentDialog() : this(null) { }
     public CreateExperimentDialog(IOptimizer optimizer) {
       InitializeComponent();
+      instanceDiscoveryProgressLabel.BackColor = instancesTabPage.BackColor;
       createBatchRun = createBatchRunCheckBox.Checked;
       repetitions = (int)repetitionsNumericUpDown.Value;
       // do not set the Optimizer property here, because we want to delay instance discovery to the time when the form loads
@@ -84,7 +85,7 @@ namespace HeuristicLab.Optimizer {
     #region Event handlers
     private void CreateExperimentDialog_Load(object sender, EventArgs e) {
       SetTabControlVisibility();
-      FillInstanceListViewAsync();
+      FillInstanceTreeViewAsync();
       FillParametersListView();
     }
 
@@ -118,7 +119,9 @@ namespace HeuristicLab.Optimizer {
       if (isConstrainedValueParameter) {
         if (e.Item.Checked) {
           multipleChoiceParameters.Add(parameter, new HashSet<INamedItem>());
-        } else multipleChoiceParameters.Remove(parameter);
+        } else {
+          multipleChoiceParameters.Remove(parameter);
+        }
       }
 
       var intValue = parameter.Value as ValueTypeValue<int>;
@@ -147,6 +150,7 @@ namespace HeuristicLab.Optimizer {
         else boolParameters.Remove(parameter);
       }
 
+      UpdateVariationsLabel();
       if (e.Item.Selected) UpdateDetailsView(parameter);
       else e.Item.Selected = true;
     }
@@ -168,7 +172,7 @@ namespace HeuristicLab.Optimizer {
         || typeof(ConstrainedValueParameter<>).Equals(parameter.GetType().GetGenericTypeDefinition());
 
       if (isConstrainedValueParameter) {
-        choicesLabel.Visible = true;
+        detailsTypeLabel.Text = "Choices:";
         choicesListView.Enabled = true;
         choicesListView.Visible = true;
         choicesListView.Tag = parameter;
@@ -185,12 +189,15 @@ namespace HeuristicLab.Optimizer {
         return;
       }
 
-      minimumLabel.Visible = true; minimumTextBox.Visible = true;
-      maximumLabel.Visible = true; maximumTextBox.Visible = true;
-      stepSizeLabel.Visible = true; stepSizeTextBox.Visible = true;
+      if (!(parameter.Value is ValueTypeValue<bool>)) {
+        minimumLabel.Visible = true; minimumTextBox.Visible = true;
+        maximumLabel.Visible = true; maximumTextBox.Visible = true;
+        stepSizeLabel.Visible = true; stepSizeTextBox.Visible = true;
+      } else detailsTypeLabel.Text = "Boolean parameter: True / False";
 
       var intValue = parameter.Value as ValueTypeValue<int>;
       if (intValue != null) {
+        detailsTypeLabel.Text = "Integer parameter:";
         if (!intParameters.ContainsKey(parameter)) return;
         string min = intParameters[parameter].Item1.ToString();
         string max = intParameters[parameter].Item2.ToString();
@@ -201,6 +208,7 @@ namespace HeuristicLab.Optimizer {
 
       var doubleValue = parameter.Value as ValueTypeValue<double>;
       if (doubleValue != null) {
+        detailsTypeLabel.Text = "Double parameter:";
         if (!doubleParameters.ContainsKey(parameter)) return;
         string min = doubleParameters[parameter].Item1.ToString();
         string max = doubleParameters[parameter].Item2.ToString();
@@ -217,7 +225,7 @@ namespace HeuristicLab.Optimizer {
         multipleChoiceParameters[parameter].Add((INamedItem)e.Item.Tag);
       } else multipleChoiceParameters[parameter].Remove((INamedItem)e.Item.Tag);
 
-      experimentsLabel.Text = GetNumberOfVariations().ToString();
+      UpdateVariationsLabel();
     }
 
     private void detailsTextBox_Validating(object sender, CancelEventArgs e) {
@@ -256,20 +264,46 @@ namespace HeuristicLab.Optimizer {
         }
       }
 
-      experimentsLabel.Text = GetNumberOfVariations().ToString();
+      UpdateVariationsLabel();
     }
     #endregion
     #endregion
 
     #region Instances
-    private void instancesListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
-      if (!suppressListViewEventHandling) {
-        selectAllCheckBox.Checked = instancesListView.Items.Count == instancesListView.CheckedItems.Count;
-        selectNoneCheckBox.Checked = instancesListView.CheckedItems.Count == 0;
+    private void instancesTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
+      if (!suppressTreeViewEventHandling) {
+        if (e.Node.Nodes.Count > 0) { // provider node was (un)checked
+          SyncProviderNode(e.Node);
+        } else { // descriptor node was (un)checked
+          SyncInstanceNode(e.Node);
+        }
+
+        suppressCheckAllNoneEventHandling = true;
+        try {
+          var treeViewNodes = instancesTreeView.Nodes.OfType<TreeNode>().SelectMany(x => x.Nodes.OfType<TreeNode>());
+          selectAllCheckBox.Checked = treeViewNodes.Count() == instances.SelectMany(x => x.Value).Count();
+          selectNoneCheckBox.Checked = !treeViewNodes.Any(x => x.Checked);
+        } finally { suppressCheckAllNoneEventHandling = false; }
+        UpdateVariationsLabel();
       }
-      var provider = (IProblemInstanceProvider)e.Item.Group.Tag;
-      var descriptor = (IDataDescriptor)e.Item.Tag;
-      if (e.Item.Checked) {
+    }
+
+    private void SyncProviderNode(TreeNode node) {
+      suppressTreeViewEventHandling = true;
+      try {
+        foreach (TreeNode n in node.Nodes) {
+          if (n.Checked != node.Checked) {
+            n.Checked = node.Checked;
+            SyncInstanceNode(n, false);
+          }
+        }
+      } finally { suppressTreeViewEventHandling = false; }
+    }
+
+    private void SyncInstanceNode(TreeNode node, bool providerCheck = true) {
+      var provider = (IProblemInstanceProvider)node.Parent.Tag;
+      var descriptor = (IDataDescriptor)node.Tag;
+      if (node.Checked) {
         if (!instances.ContainsKey(provider))
           instances.Add(provider, new HashSet<IDataDescriptor>());
         instances[provider].Add(descriptor);
@@ -280,32 +314,48 @@ namespace HeuristicLab.Optimizer {
             instances.Remove(provider);
         }
       }
-      experimentsLabel.Text = GetNumberOfVariations().ToString();
+      if (providerCheck) {
+        bool allChecked = node.Parent.Nodes.OfType<TreeNode>().All(x => x.Checked);
+        suppressTreeViewEventHandling = true;
+        try {
+          node.Parent.Checked = allChecked;
+        } finally { suppressTreeViewEventHandling = false; }
+      }
     }
 
     private void selectAllCheckBox_CheckedChanged(object sender, EventArgs e) {
-      if (selectAllCheckBox.Checked) {
-        selectNoneCheckBox.Checked = false;
-        if (instancesListView.CheckedItems.Count == instancesListView.Items.Count) return;
-        try {
-          suppressListViewEventHandling = true;
-          foreach (var item in instancesListView.Items.OfType<ListViewItem>()) {
-            item.Checked = true;
-          }
-        } finally { suppressListViewEventHandling = false; }
+      if (!suppressCheckAllNoneEventHandling) {
+        if (selectAllCheckBox.Checked) {
+          suppressCheckAllNoneEventHandling = true;
+          try { selectNoneCheckBox.Checked = false; } finally { suppressCheckAllNoneEventHandling = false; }
+          try {
+            suppressTreeViewEventHandling = true;
+            foreach (TreeNode node in instancesTreeView.Nodes) {
+              if (!node.Checked) {
+                node.Checked = true;
+                SyncProviderNode(node);
+              }
+            }
+          } finally { suppressTreeViewEventHandling = false; }
+        }
       }
     }
 
     private void selectNoneCheckBox_CheckedChanged(object sender, EventArgs e) {
-      if (selectNoneCheckBox.Checked) {
-        selectAllCheckBox.Checked = false;
-        if (instancesListView.CheckedItems.Count == 0) return;
-        try {
-          suppressListViewEventHandling = true;
-          foreach (var item in instancesListView.Items.OfType<ListViewItem>()) {
-            item.Checked = false;
-          }
-        } finally { suppressListViewEventHandling = false; }
+      if (!suppressCheckAllNoneEventHandling) {
+        if (selectNoneCheckBox.Checked) {
+          suppressCheckAllNoneEventHandling = true;
+          try { selectAllCheckBox.Checked = false; } finally { suppressCheckAllNoneEventHandling = false; }
+          try {
+            suppressTreeViewEventHandling = true;
+            foreach (TreeNode node in instancesTreeView.Nodes) {
+              if (node.Checked) {
+                node.Checked = false;
+                SyncProviderNode(node);
+              }
+            }
+          } finally { suppressTreeViewEventHandling = false; }
+        }
       }
     }
     #endregion
@@ -319,6 +369,14 @@ namespace HeuristicLab.Optimizer {
       if (repetitionsNumericUpDown.Text == string.Empty)
         repetitionsNumericUpDown.Text = repetitionsNumericUpDown.Value.ToString();
       repetitions = (int)repetitionsNumericUpDown.Value;
+    }
+
+    private void experimentsLabel_TextChanged(object sender, EventArgs e) {
+      long number;
+      if (long.TryParse(variationsLabel.Text, NumberStyles.AllowThousands, CultureInfo.CurrentCulture.NumberFormat, out number)) {
+        if (number > 1000) warningProvider.SetError(variationsLabel, "Consider reducing the number of variations!");
+        else warningProvider.SetError(variationsLabel, null);
+      }
     }
     #endregion
 
@@ -334,11 +392,11 @@ namespace HeuristicLab.Optimizer {
         tabControl.TabPages.Remove(instancesTabPage);
       tabControl.Visible = isAlgorithm;
       if (isAlgorithm) {
-        experimentsLabel.Visible = true;
+        variationsLabel.Visible = true;
         experimentsToCreateDescriptionLabel.Visible = true;
         Height = 430;
       } else {
-        experimentsLabel.Visible = false;
+        variationsLabel.Visible = false;
         experimentsToCreateDescriptionLabel.Visible = false;
         Height = 130;
       }
@@ -365,15 +423,13 @@ namespace HeuristicLab.Optimizer {
       }
     }
 
-    private void FillInstanceListViewAsync() {
+    private void FillInstanceTreeViewAsync() {
       instances.Clear();
-      instancesListView.Items.Clear();
-      instancesListView.Groups.Clear();
+      instancesTreeView.Nodes.Clear();
 
-      if (Optimizer is IAlgorithm) {
+      if (Optimizer is IAlgorithm && ((IAlgorithm)Optimizer).Problem != null) {
         SetMode(DialogMode.DiscoveringInstances);
-        var instanceProviders = ProblemInstanceManager.GetProviders(((IAlgorithm)Optimizer).Problem);
-        instanceDiscoveryBackgroundWorker.RunWorkerAsync(instanceProviders);
+        instanceDiscoveryBackgroundWorker.RunWorkerAsync();
       }
     }
 
@@ -420,10 +476,10 @@ namespace HeuristicLab.Optimizer {
       repetitionsNumericUpDown.Enabled = mode == DialogMode.Normal;
       selectAllCheckBox.Enabled = mode == DialogMode.Normal;
       selectNoneCheckBox.Enabled = mode == DialogMode.Normal;
-      instancesListView.Enabled = mode == DialogMode.Normal;
-      instancesListView.Visible = mode == DialogMode.Normal || mode == DialogMode.CreatingExperiment;
+      instancesTreeView.Enabled = mode == DialogMode.Normal;
+      instancesTreeView.Visible = mode == DialogMode.Normal || mode == DialogMode.CreatingExperiment;
       okButton.Enabled = mode == DialogMode.Normal;
-      okButton.Visible = mode == DialogMode.Normal;
+      okButton.Visible = mode != DialogMode.CreatingExperiment;
       instanceDiscoveryProgressLabel.Visible = mode == DialogMode.DiscoveringInstances;
       instanceDiscoveryProgressBar.Visible = mode == DialogMode.DiscoveringInstances;
       experimentCreationProgressBar.Visible = mode == DialogMode.CreatingExperiment;
@@ -442,7 +498,6 @@ namespace HeuristicLab.Optimizer {
       stepSizeTextBox.Text = string.Empty;
       stepSizeTextBox.Enabled = false;
       stepSizeTextBox.Visible = false;
-      choicesLabel.Visible = false;
       choicesListView.Items.Clear();
       choicesListView.Enabled = false;
       choicesListView.Visible = false;
@@ -464,6 +519,10 @@ namespace HeuristicLab.Optimizer {
       stepSizeTextBox.Enabled = true;
       stepSizeTextBox.Visible = true;
       stepSizeTextBox.Tag = parameter;
+    }
+
+    private void UpdateVariationsLabel() {
+      variationsLabel.Text = GetNumberOfVariations().ToString("#,#", CultureInfo.CurrentCulture);
     }
 
     #region Retrieve parameter combinations
@@ -574,18 +633,18 @@ namespace HeuristicLab.Optimizer {
     #region Background workers
     #region Instance discovery
     private void instanceDiscoveryBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
-      var instanceProviders = ((IEnumerable<IProblemInstanceProvider>)e.Argument).ToArray();
-      var groups = new ListViewGroup[instanceProviders.Length];
+      var instanceProviders = ProblemInstanceManager.GetProviders(((IAlgorithm)Optimizer).Problem).ToArray();
+      var nodes = new TreeNode[instanceProviders.Length];
       for (int i = 0; i < instanceProviders.Length; i++) {
         var provider = instanceProviders[i];
-        groups[i] = new ListViewGroup(provider.Name, provider.Name) { Tag = provider };
+        nodes[i] = new TreeNode(provider.Name) { Tag = provider };
       }
-      e.Result = groups;
-      for (int i = 0; i < groups.Length; i++) {
-        var group = groups[i];
-        var provider = group.Tag as IProblemInstanceProvider;
-        double progress = (100.0 * i) / groups.Length;
-        instanceDiscoveryBackgroundWorker.ReportProgress((int)progress, provider.Name);
+      e.Result = nodes;
+      for (int i = 0; i < nodes.Length; i++) {
+        var providerNode = nodes[i];
+        var provider = providerNode.Tag as IProblemInstanceProvider;
+        double progress = i / (double)nodes.Length;
+        instanceDiscoveryBackgroundWorker.ReportProgress((int)(100 * progress), provider.Name);
         var descriptors = ProblemInstanceManager.GetDataDescriptors(provider).ToArray();
         for (int j = 0; j < descriptors.Length; j++) {
           #region Check cancellation request
@@ -594,28 +653,25 @@ namespace HeuristicLab.Optimizer {
             return;
           }
           #endregion
-          var d = descriptors[j];
-          progress += 1.0 / (descriptors.Length * groups.Length);
-          instanceDiscoveryBackgroundWorker.ReportProgress((int)progress, d.Name);
-          var item = new ListViewItem(d.Name, group) { Tag = d };
+          var node = new TreeNode(descriptors[j].Name) { Tag = descriptors[j] };
+          providerNode.Nodes.Add(node);
         }
       }
       instanceDiscoveryBackgroundWorker.ReportProgress(100, string.Empty);
     }
 
     private void instanceDiscoveryBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-      instanceDiscoveryProgressBar.Value = e.ProgressPercentage;
+      if (instanceDiscoveryProgressBar.Value != e.ProgressPercentage)
+        instanceDiscoveryProgressBar.Value = e.ProgressPercentage;
       instanceDiscoveryProgressLabel.Text = (string)e.UserState;
+      Application.DoEvents();
     }
 
     private void instanceDiscoveryBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       try {
-        // unfortunately it's not enough to just add the groups, the items need to be added separately
-        foreach (var group in (ListViewGroup[])e.Result) {
-          instancesListView.Groups.Add(group);
-          instancesListView.Items.AddRange(group.Items);
-        }
-        instancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        instancesTreeView.Nodes.AddRange((TreeNode[])e.Result);
+        foreach (TreeNode node in instancesTreeView.Nodes)
+          node.Collapse();
         selectNoneCheckBox.Checked = true;
       } catch { }
       try {
@@ -638,7 +694,7 @@ namespace HeuristicLab.Optimizer {
         experimentCreationBackgroundWorker.ReportProgress(100, string.Empty);
 
       } else {
-        int counter = 0, totalInstances = instances.SelectMany(x => x.Value).Count(), totalVariations = GetNumberOfVariations();
+        int counter = 0, totalVariations = GetNumberOfVariations();
         foreach (var provider in instances.Keys) {
           foreach (var descriptor in instances[provider]) {
             #region Check cancellation request
@@ -661,9 +717,9 @@ namespace HeuristicLab.Optimizer {
               foreach (var v in variations) {
                 AddOptimizer(v, localExperiment);
                 counter++;
+                experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / totalVariations), descriptor.Name);
               }
-              experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / (totalInstances * totalVariations)), descriptor.Name);
-            } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / (totalInstances * totalVariations)), "Loading failed (" + descriptor.Name + ")");
+            } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / totalVariations), "Loading failed (" + descriptor.Name + ")");
           }
         }
       }
@@ -760,6 +816,7 @@ namespace HeuristicLab.Optimizer {
 
     private void experimentCreationBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
       experimentCreationProgressBar.Value = e.ProgressPercentage;
+      Application.DoEvents();
     }
 
     private void experimentCreationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
