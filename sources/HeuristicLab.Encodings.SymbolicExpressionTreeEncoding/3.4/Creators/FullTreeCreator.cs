@@ -193,7 +193,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         if (!possibleSymbols.Any())
           throw new InvalidOperationException("No symbols are available for the tree.");
         var weights = possibleSymbols.Select(s => s.InitialFrequency).ToList();
-        var selectedSymbol = possibleSymbols.SelectRandom(random);
+        var selectedSymbol = possibleSymbols.SelectRandom(weights, random);
         var tree = selectedSymbol.CreateTreeNode();
         if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
         root.AddSubtree(tree);
