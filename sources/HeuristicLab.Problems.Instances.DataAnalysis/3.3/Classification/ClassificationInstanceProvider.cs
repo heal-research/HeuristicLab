@@ -35,8 +35,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       csvFileParser.Parse(path);
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      string targetVar = csvFileParser.VariableNames.Last();
-      IEnumerable<string> allowedInputVars = csvFileParser.VariableNames.Where(x => !x.Equals(targetVar));
+      string targetVar = csvFileParser.VariableNames.Where(x => dataset.DoubleVariables.Contains(x)).Last();
+      IEnumerable<string> allowedInputVars = dataset.DoubleVariables.Where(x => !x.Equals(targetVar));
 
       ClassificationProblemData claData = new ClassificationProblemData(dataset, allowedInputVars, targetVar);
 
