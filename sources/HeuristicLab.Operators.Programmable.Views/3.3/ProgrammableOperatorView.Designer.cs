@@ -285,7 +285,7 @@ namespace HeuristicLab.Operators.Programmable {
       // ProgrammableOperatorView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.tabControl1);
       this.Controls.Add(this.breakpointLabel);
       this.Controls.Add(this.breakpointCheckBox);

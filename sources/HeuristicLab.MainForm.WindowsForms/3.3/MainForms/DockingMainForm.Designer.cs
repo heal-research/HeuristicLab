@@ -119,7 +119,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // DockingMainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ClientSize = new System.Drawing.Size(624, 412);
       this.Controls.Add(this.dockPanel);
       this.IsMdiContainer = true;

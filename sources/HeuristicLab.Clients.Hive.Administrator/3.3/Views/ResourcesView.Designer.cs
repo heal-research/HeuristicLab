@@ -236,7 +236,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // ResourcesView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitSlaves);
       this.Name = "ResourcesView";
       this.Size = new System.Drawing.Size(853, 553);

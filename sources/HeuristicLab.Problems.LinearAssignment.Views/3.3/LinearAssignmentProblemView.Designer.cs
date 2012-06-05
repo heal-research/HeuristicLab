@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.LinearAssignment.Views {
       // LinearAssignmentProblemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "LinearAssignmentProblemView";
       this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);
       this.problemInstanceSplitContainer.Panel2.ResumeLayout(false);

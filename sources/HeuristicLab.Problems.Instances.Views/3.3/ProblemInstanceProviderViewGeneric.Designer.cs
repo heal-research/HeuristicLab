@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       // ProblemInstanceProviderViewGeneric
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.instanceLabel);
       this.Controls.Add(this.instancesComboBox);
       this.Controls.Add(this.loadButton);

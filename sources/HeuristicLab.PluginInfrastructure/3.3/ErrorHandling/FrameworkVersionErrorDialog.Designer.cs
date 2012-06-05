@@ -101,7 +101,7 @@ namespace HeuristicLab.PluginInfrastructure {
       // 
       this.AcceptButton = this.closeButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.CancelButton = this.closeButton;
       this.ClientSize = new System.Drawing.Size(381, 116);
       this.Controls.Add(this.label);

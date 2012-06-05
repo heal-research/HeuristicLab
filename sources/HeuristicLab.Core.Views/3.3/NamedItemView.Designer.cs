@@ -93,7 +93,7 @@ namespace HeuristicLab.Core.Views {
       // NamedItemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.infoLabel);
       this.Controls.Add(this.nameTextBox);
       this.Controls.Add(this.nameLabel);

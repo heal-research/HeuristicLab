@@ -49,7 +49,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // DockSideBar
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "DockSideBar";
       this.Size = new System.Drawing.Size(230, 225);
       this.ResumeLayout(false);

@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // ClassificationEnsembleSolutionEstimatedClassValuesView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.SamplesComboBox);
       this.Name = "ClassificationEnsembleSolutionEstimatedClassValuesView";
       this.Controls.SetChildIndex(this.matrixView, 0);

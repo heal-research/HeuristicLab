@@ -170,7 +170,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       // StarterForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ClientSize = new System.Drawing.Size(666, 546);
       this.Controls.Add(this.aboutButton);
       this.Controls.Add(this.showDetailsButton);

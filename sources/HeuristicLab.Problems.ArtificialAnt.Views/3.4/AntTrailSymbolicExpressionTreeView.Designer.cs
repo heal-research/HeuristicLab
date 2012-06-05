@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.ArtificialAnt.Views {
       // AntTrailSymbolicExpressionTreeView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.symExpressionGroupBox);
       this.Name = "AntTrailSymbolicExpressionTreeView";
       this.Size = new System.Drawing.Size(392, 310);

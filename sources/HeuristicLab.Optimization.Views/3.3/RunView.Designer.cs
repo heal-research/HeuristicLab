@@ -246,7 +246,7 @@ namespace HeuristicLab.Optimization.Views {
       // RunView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.colorArea);
       this.Controls.Add(this.showDetailsCheckBox);
       this.Controls.Add(this.colorLabel);

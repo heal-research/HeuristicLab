@@ -106,7 +106,7 @@ namespace HeuristicLab.Persistence.GUI {
       // PersistenceConfigurationForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ClientSize = new System.Drawing.Size(582, 609);
       this.Controls.Add(this.buttonPanel);
       this.Controls.Add(this.configurationTabs);

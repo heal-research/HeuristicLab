@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.chart);
       this.Name = "RegressionSolutionLineChartView";
       this.Size = new System.Drawing.Size(358, 225);

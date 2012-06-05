@@ -100,7 +100,7 @@ namespace HeuristicLab.Core.Views {
       // OperatorTreeView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.graphTreeView);
       this.Name = "OperatorTreeView";
       this.Size = new System.Drawing.Size(475, 291);

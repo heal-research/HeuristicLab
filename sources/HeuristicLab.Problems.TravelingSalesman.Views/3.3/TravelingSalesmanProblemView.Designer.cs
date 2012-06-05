@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
       // TravelingSalesmanProblemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "TravelingSalesmanProblemView";
       this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);
       this.problemInstanceSplitContainer.Panel1.PerformLayout();

@@ -87,7 +87,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // ParameterCollectionView
       // 
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "ParameterCollectionView";
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);

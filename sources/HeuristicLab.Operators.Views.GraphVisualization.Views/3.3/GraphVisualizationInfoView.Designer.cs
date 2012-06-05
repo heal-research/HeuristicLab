@@ -74,7 +74,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       // GraphVisualizationInfoView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.graphVisualization);
       this.Name = "GraphVisualizationInfoView";
       this.Size = new System.Drawing.Size(665, 444);

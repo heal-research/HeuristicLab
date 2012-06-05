@@ -48,7 +48,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // MultipleDocumentMainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ClientSize = new System.Drawing.Size(596, 407);
       this.IsMdiContainer = true;
       this.Name = "MultipleDocumentMainForm";

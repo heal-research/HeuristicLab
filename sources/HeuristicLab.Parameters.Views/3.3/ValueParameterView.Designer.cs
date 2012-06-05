@@ -142,7 +142,7 @@ namespace HeuristicLab.Parameters.Views {
       // ValueParameterView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.valueGroupBox);
       this.Name = "ValueParameterView";
       this.Size = new System.Drawing.Size(386, 315);

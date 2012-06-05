@@ -297,7 +297,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // PluginView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ClientSize = new System.Drawing.Size(687, 565);
       this.Controls.Add(this.showLicenseButton);
       this.Controls.Add(this.errorTextBox);

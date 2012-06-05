@@ -262,7 +262,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // InstallationManagerForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ClientSize = new System.Drawing.Size(622, 444);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.statusStrip);

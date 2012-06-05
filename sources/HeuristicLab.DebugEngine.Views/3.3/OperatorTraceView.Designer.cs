@@ -104,7 +104,7 @@ namespace HeuristicLab.DebugEngine {
       // OperatorTraceView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.operatorTraceGroupBox);
       this.Name = "OperatorTraceView";
       this.Size = new System.Drawing.Size(152, 489);

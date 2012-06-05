@@ -118,7 +118,7 @@ namespace HeuristicLab.Parameters.Views {
       // ScopeTreeLookupParameterView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.actualNameTextBox);
       this.Controls.Add(this.depthLabel);
       this.Controls.Add(this.depthTextBox);

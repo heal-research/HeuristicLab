@@ -97,7 +97,7 @@
       // EvaluationTCPChannelView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.ipAddressLabel);
       this.Controls.Add(this.portTextBox);
       this.Controls.Add(this.portLabel);

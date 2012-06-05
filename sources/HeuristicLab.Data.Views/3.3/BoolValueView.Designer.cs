@@ -62,7 +62,7 @@ namespace HeuristicLab.Data.Views {
       // BoolValueView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.valueCheckBox);
       this.Name = "BoolValueView";
       this.Size = new System.Drawing.Size(71, 27);

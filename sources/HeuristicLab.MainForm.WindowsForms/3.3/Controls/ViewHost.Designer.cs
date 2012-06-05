@@ -103,7 +103,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // ViewHost
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.viewsLabel);
       this.Controls.Add(this.configurationLabel);
       this.Controls.Add(this.messageLabel);

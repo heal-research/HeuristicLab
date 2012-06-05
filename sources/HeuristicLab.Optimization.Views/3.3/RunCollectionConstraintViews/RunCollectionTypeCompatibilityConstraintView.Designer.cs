@@ -62,7 +62,7 @@ namespace HeuristicLab.Optimization.Views {
       // RunCollectionTypeCompatibilityConstraintView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.cmbType);
       this.Name = "RunCollectionTypeCompatibilityConstraintView";
       this.Controls.SetChildIndex(this.cmbType, 0);

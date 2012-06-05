@@ -66,7 +66,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // BasicUpdateView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.updateAndInstallButton);
       this.Name = "BasicUpdateView";
       this.Size = new System.Drawing.Size(163, 55);

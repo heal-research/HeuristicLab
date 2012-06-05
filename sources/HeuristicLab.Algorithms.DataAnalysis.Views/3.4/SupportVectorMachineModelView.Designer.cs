@@ -64,7 +64,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       // 
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.textBox);
       this.Name = "SupportVectorMachineModelView";
       this.Size = new System.Drawing.Size(253, 251);

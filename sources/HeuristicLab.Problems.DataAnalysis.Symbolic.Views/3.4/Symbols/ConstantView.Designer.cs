@@ -213,7 +213,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // ConstantView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.mutationGroupBox);
       this.Controls.Add(this.initializationGroupBox);
       this.Name = "ConstantView";

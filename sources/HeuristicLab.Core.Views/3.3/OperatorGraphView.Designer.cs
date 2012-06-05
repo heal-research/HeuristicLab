@@ -133,7 +133,7 @@ namespace HeuristicLab.Core.Views {
       // OperatorGraphView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitContainer);
       this.Name = "OperatorGraphView";
       this.Size = new System.Drawing.Size(608, 533);

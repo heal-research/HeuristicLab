@@ -125,7 +125,7 @@
       // 
       this.AcceptButton = this.okButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(260, 202);
       this.Controls.Add(this.labelRestart);

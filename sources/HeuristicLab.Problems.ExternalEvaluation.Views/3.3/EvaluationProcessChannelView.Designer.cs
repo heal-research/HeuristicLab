@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Views {
       // EvaluationProcessChannelView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.executableTextBox);
       this.Controls.Add(this.argumentsLabel);
       this.Controls.Add(this.argumentsTextBox);

@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       // QuadraticAssignmentProblemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "QuadraticAssignmentProblemView";
       this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);
       this.problemInstanceSplitContainer.Panel2.ResumeLayout(false);

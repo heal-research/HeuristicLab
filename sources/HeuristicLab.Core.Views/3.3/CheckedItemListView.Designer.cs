@@ -45,7 +45,7 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     private void InitializeComponent() {
       components = new System.ComponentModel.Container();
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       base.itemsListView.CheckBoxes = true;
       base.itemsListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(itemsListView_ItemCheck);
       base.itemsListView.MouseDown += new System.Windows.Forms.MouseEventHandler(itemsListView_MouseDown);

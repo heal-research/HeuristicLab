@@ -61,7 +61,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
       // LicenseView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ClientSize = new System.Drawing.Size(410, 445);
       this.Controls.Add(this.richTextBox);
       this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;

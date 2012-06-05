@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // DataAnalysisSolutionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "DataAnalysisSolutionView";
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);

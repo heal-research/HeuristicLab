@@ -77,7 +77,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // ProgressView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.panel);
       this.Name = "ProgressView";
       this.Size = new System.Drawing.Size(360, 88);

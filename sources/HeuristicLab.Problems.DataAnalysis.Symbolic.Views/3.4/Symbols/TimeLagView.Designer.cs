@@ -122,7 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // LaggedSymbolView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.maxTimeOffsetTextBox);
       this.Controls.Add(this.minTimeOffsetTextBox);
       this.Controls.Add(this.maxTimeOffsetLabel);

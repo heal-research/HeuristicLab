@@ -42,7 +42,7 @@
       // HiveItemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.storeButton);
       this.Name = "HiveItemView";
       this.Size = new System.Drawing.Size(354, 308);

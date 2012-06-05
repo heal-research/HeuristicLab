@@ -73,7 +73,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // SymbolicExpressionTreeChart
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ContextMenuStrip = this.contextMenuStrip;
       this.Name = "SymbolicExpressionTreeChart";
       this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseClick);

@@ -261,7 +261,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       this.DragEnter += new System.Windows.Forms.DragEventHandler(this.OperatorGraphView_DragEnterOver);
       this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitContainer);
       this.Name = "OperatorGraphView";
       this.Size = new System.Drawing.Size(665, 444);
