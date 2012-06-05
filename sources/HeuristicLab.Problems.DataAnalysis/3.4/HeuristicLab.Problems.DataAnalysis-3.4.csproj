@@ -140,6 +140,7 @@
     </Compile>
     <Compile Include="Interfaces\Regression\IRegressionEnsembleSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionSolutionBase.cs" />
+    <Compile Include="OnlineCalculators\HoeffdingsDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMaxAbsoluteErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\NormalizedGiniCalculator.cs" />
