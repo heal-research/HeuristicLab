@@ -21,14 +21,17 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.DebugEngine {
+namespace HeuristicLab.DebugEngine.Views {
 
-  [Plugin("HeuristicLab.DebugEngine", "3.3.6.$WCREV$")]
-  [PluginFile("HeuristicLab.DebugEngine-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
+  [Plugin("HeuristicLab.DebugEngine.Views", "3.3.6.7259")]
+  [PluginFile("HeuristicLab.DebugEngine.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]  
-  public class HeuristicLabDebugEnginePlugin : PluginBase { }
+  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.DebugEngine", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
+  [PluginDependency("HeuristicLab.Operators", "3.3")]
+  public class HeuristicLabDebugEngineViewsPlugin : PluginBase { }
 }
