@@ -56,13 +56,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     protected override void Manipulate(IRandom random, ISymbolicExpressionTree tree) {
+      OnePointShaker.Shake(random, tree, ShakingFactor);
+    }
+
+    public static void Shake(IRandom random, ISymbolicExpressionTree tree, double shakingFactor) {
       List<ISymbolicExpressionTreeNode> parametricNodes = new List<ISymbolicExpressionTreeNode>();
       tree.Root.ForEachNodePostfix(n => {
         if (n.HasLocalParameters) parametricNodes.Add(n);
       });
       if (parametricNodes.Count > 0) {
         var selectedPoint = parametricNodes.SelectRandom(random);
-        selectedPoint.ShakeLocalParameters(random, ShakingFactor);
+        selectedPoint.ShakeLocalParameters(random, shakingFactor);
       }
     }
   }

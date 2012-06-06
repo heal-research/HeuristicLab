@@ -69,18 +69,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     protected override Allele[] CalculateAlleles(ISymbolicExpressionTree solution) {
-      return GetAllSubtreesOfDepth(solution, AlleleTreeDepth)
+      return CalculateAlleles(solution, AlleleTreeDepth);
+    }
+
+    public static Allele[] CalculateAlleles(ISymbolicExpressionTree solution, int alleleTreedepth) {
+      return GetAllSubtreesOfDepth(solution, alleleTreedepth)
         .AsParallel()
-        .Select(t => GetAlleleFromSubtreeOfDepth(t, AlleleTreeDepth))
+        .Select(t => GetAlleleFromSubtreeOfDepth(t, alleleTreedepth))
         .ToArray();
     }
 
-    private Allele GetAlleleFromSubtreeOfDepth(ISymbolicExpressionTreeNode tree, int d) {
+    private static Allele GetAlleleFromSubtreeOfDepth(ISymbolicExpressionTreeNode tree, int d) {
       string textualRepresentation = GetTextualRepresentationFromSubtreeOfDepth(tree, d);
       return new Allele(textualRepresentation);
     }
 
-    private string GetTextualRepresentationFromSubtreeOfDepth(ISymbolicExpressionTreeNode tree, int d) {
+    private static string GetTextualRepresentationFromSubtreeOfDepth(ISymbolicExpressionTreeNode tree, int d) {
       if (d == 0) return "";
       StringBuilder builder = new StringBuilder();
       var varTreeNode = tree as VariableTreeNode;
@@ -99,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return builder.ToString();
     }
 
-    private IEnumerable<ISymbolicExpressionTreeNode> GetAllSubtreesOfDepth(ISymbolicExpressionTree solution, int d) {
+    private static IEnumerable<ISymbolicExpressionTreeNode> GetAllSubtreesOfDepth(ISymbolicExpressionTree solution, int d) {
       return from node in solution.IterateNodesPostfix()
              where node.GetDepth() >= d
              select node;
