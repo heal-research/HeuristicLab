@@ -35,7 +35,7 @@ using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Optimizer {
   public partial class CreateExperimentDialog : Form {
-    private enum DialogMode { Normal = 1, DiscoveringInstances = 2, CreatingExperiment = 3 };
+    private enum DialogMode { Normal = 1, DiscoveringInstances = 2, CreatingExperiment = 3, PreparingExperiment = 4 };
 
     private IOptimizer optimizer;
     public IOptimizer Optimizer {
@@ -58,7 +58,7 @@ namespace HeuristicLab.Optimizer {
     private Dictionary<IValueParameter, Tuple<int, int, int>> intParameters;
     private Dictionary<IValueParameter, Tuple<double, double, double>> doubleParameters;
     private HashSet<IValueParameter> boolParameters;
-    private Dictionary<IValueParameter, HashSet<INamedItem>> multipleChoiceParameters;
+    private Dictionary<IValueParameter, HashSet<IItem>> multipleChoiceParameters;
 
     private StringBuilder failedInstances;
     private EventWaitHandle backgroundWorkerWaitHandle = new ManualResetEvent(false);
@@ -79,7 +79,7 @@ namespace HeuristicLab.Optimizer {
       intParameters = new Dictionary<IValueParameter, Tuple<int, int, int>>();
       doubleParameters = new Dictionary<IValueParameter, Tuple<double, double, double>>();
       boolParameters = new HashSet<IValueParameter>();
-      multipleChoiceParameters = new Dictionary<IValueParameter, HashSet<INamedItem>>();
+      multipleChoiceParameters = new Dictionary<IValueParameter, HashSet<IItem>>();
     }
 
     #region Event handlers
@@ -118,7 +118,7 @@ namespace HeuristicLab.Optimizer {
 
       if (isConstrainedValueParameter) {
         if (e.Item.Checked) {
-          multipleChoiceParameters.Add(parameter, new HashSet<INamedItem>());
+          multipleChoiceParameters.Add(parameter, new HashSet<IItem>());
         } else {
           multipleChoiceParameters.Remove(parameter);
         }
@@ -183,7 +183,7 @@ namespace HeuristicLab.Optimizer {
         foreach (var choice in validValues) {
           choicesListView.Items.Add(new ListViewItem(choice.ToString()) {
             Tag = choice,
-            Checked = multipleChoiceParameters[parameter].Contains((INamedItem)choice)
+            Checked = multipleChoiceParameters[parameter].Contains(choice)
           });
         }
         return;
@@ -222,8 +222,8 @@ namespace HeuristicLab.Optimizer {
     private void choiceListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
       var parameter = (IValueParameter)choicesListView.Tag;
       if (e.Item.Checked) {
-        multipleChoiceParameters[parameter].Add((INamedItem)e.Item.Tag);
-      } else multipleChoiceParameters[parameter].Remove((INamedItem)e.Item.Tag);
+        multipleChoiceParameters[parameter].Add((IItem)e.Item.Tag);
+      } else multipleChoiceParameters[parameter].Remove((IItem)e.Item.Tag);
 
       UpdateVariationsLabel();
     }
@@ -474,15 +474,17 @@ namespace HeuristicLab.Optimizer {
     private void SetMode(DialogMode mode) {
       createBatchRunCheckBox.Enabled = mode == DialogMode.Normal;
       repetitionsNumericUpDown.Enabled = mode == DialogMode.Normal;
+      parametersSplitContainer.Enabled = mode == DialogMode.Normal || mode == DialogMode.DiscoveringInstances;
       selectAllCheckBox.Enabled = mode == DialogMode.Normal;
       selectNoneCheckBox.Enabled = mode == DialogMode.Normal;
       instancesTreeView.Enabled = mode == DialogMode.Normal;
-      instancesTreeView.Visible = mode == DialogMode.Normal || mode == DialogMode.CreatingExperiment;
+      instancesTreeView.Visible = mode == DialogMode.Normal || mode == DialogMode.CreatingExperiment || mode == DialogMode.PreparingExperiment;
       okButton.Enabled = mode == DialogMode.Normal;
-      okButton.Visible = mode != DialogMode.CreatingExperiment;
+      okButton.Visible = mode != DialogMode.CreatingExperiment && mode != DialogMode.PreparingExperiment;
+      cancelButton.Enabled = mode != DialogMode.PreparingExperiment;
       instanceDiscoveryProgressLabel.Visible = mode == DialogMode.DiscoveringInstances;
       instanceDiscoveryProgressBar.Visible = mode == DialogMode.DiscoveringInstances;
-      experimentCreationProgressBar.Visible = mode == DialogMode.CreatingExperiment;
+      experimentCreationProgressBar.Visible = mode == DialogMode.CreatingExperiment || mode == DialogMode.PreparingExperiment;
     }
 
     private void ClearDetailsView() {
@@ -599,9 +601,9 @@ namespace HeuristicLab.Optimizer {
       } while (!finished);
     }
 
-    private IEnumerable<Dictionary<IValueParameter, INamedItem>> GetMultipleChoiceConfigurations() {
-      var configuration = new Dictionary<IValueParameter, INamedItem>();
-      var enumerators = new Dictionary<IValueParameter, IEnumerator<INamedItem>>();
+    private IEnumerable<Dictionary<IValueParameter, IItem>> GetMultipleChoiceConfigurations() {
+      var configuration = new Dictionary<IValueParameter, IItem>();
+      var enumerators = new Dictionary<IValueParameter, IEnumerator<IItem>>();
       bool finished;
       do {
         foreach (var p in multipleChoiceParameters.Keys.ToArray()) {
@@ -619,6 +621,7 @@ namespace HeuristicLab.Optimizer {
         foreach (var p in multipleChoiceParameters.Keys) {
           if (!enumerators[p].MoveNext()) {
             enumerators[p] = multipleChoiceParameters[p].GetEnumerator();
+            enumerators[p].MoveNext();
           } else {
             finished = false;
             break;
@@ -687,14 +690,12 @@ namespace HeuristicLab.Optimizer {
       failedInstances = new StringBuilder();
       var localExperiment = new Experiment();
 
+      int counter = 0, totalVariations = GetNumberOfVariations();
       if (instances.Count == 0) {
-        var variations = experimentCreationBackgroundWorker_CalculateParameterVariations(optimizer);
-        foreach (var v in variations)
-          AddOptimizer(v, localExperiment);
+        AddParameterVariations(localExperiment, ref counter, totalVariations);
         experimentCreationBackgroundWorker.ReportProgress(100, string.Empty);
 
       } else {
-        int counter = 0, totalVariations = GetNumberOfVariations();
         foreach (var provider in instances.Keys) {
           foreach (var descriptor in instances[provider]) {
             #region Check cancellation request
@@ -713,18 +714,28 @@ namespace HeuristicLab.Optimizer {
               failed = true;
             }
             if (!failed) {
-              var variations = experimentCreationBackgroundWorker_CalculateParameterVariations(algorithm);
-              foreach (var v in variations) {
-                AddOptimizer(v, localExperiment);
-                counter++;
-                experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / totalVariations), descriptor.Name);
-              }
-            } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round(100.0 * counter / totalVariations), "Loading failed (" + descriptor.Name + ")");
+              AddParameterVariations(localExperiment, ref counter, totalVariations);
+            } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round((100.0 * counter) / totalVariations), "Loading failed (" + descriptor.Name + ")");
           }
         }
       }
-      if (localExperiment != null) localExperiment.Prepare(true);
+      if (localExperiment != null) {
+        // this step can take some time
+        SetMode(DialogMode.PreparingExperiment);
+        experimentCreationBackgroundWorker.ReportProgress(-1);
+        localExperiment.Prepare(true);
+        experimentCreationBackgroundWorker.ReportProgress(100);
+      }
       Experiment = localExperiment;
+    }
+
+    private void AddParameterVariations(Experiment localExperiment, ref int counter, int totalVariations) {
+      var variations = experimentCreationBackgroundWorker_CalculateParameterVariations(optimizer);
+      foreach (var v in variations) {
+        AddOptimizer(v, localExperiment);
+        counter++;
+        experimentCreationBackgroundWorker.ReportProgress((int)Math.Round((100.0 * counter) / totalVariations), string.Empty);
+      }
     }
 
     private IEnumerable<IOptimizer> experimentCreationBackgroundWorker_CalculateParameterVariations(IOptimizer optimizer) {
@@ -793,9 +804,11 @@ namespace HeuristicLab.Optimizer {
             var variantEnumerator = ((IEnumerable<object>)variantParam.ValidValues).GetEnumerator();
             var originalEnumerator = ((IEnumerable<object>)((dynamic)m.Key).ValidValues).GetEnumerator();
             while (variantEnumerator.MoveNext() && originalEnumerator.MoveNext()) {
-              if (m.Value == (INamedItem)originalEnumerator.Current) {
+              if (m.Value == (IItem)originalEnumerator.Current) {
                 variantParam.Value = (dynamic)variantEnumerator.Current;
-                variant.Name += m.Key.Name + "=" + m.Value.Name + ", ";
+                if (m.Value is INamedItem)
+                  variant.Name += m.Key.Name + "=" + ((INamedItem)m.Value).Name + ", ";
+                else variant.Name += m.Key.Name + "=" + m.Value.ToString() + ", ";
                 break;
               }
             }
@@ -815,7 +828,12 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void experimentCreationBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
-      experimentCreationProgressBar.Value = e.ProgressPercentage;
+      if (e.ProgressPercentage >= 0 && e.ProgressPercentage <= 100) {
+        experimentCreationProgressBar.Style = ProgressBarStyle.Continuous;
+        experimentCreationProgressBar.Value = e.ProgressPercentage;
+      } else {
+        experimentCreationProgressBar.Style = ProgressBarStyle.Marquee;
+      }
       Application.DoEvents();
     }
 
