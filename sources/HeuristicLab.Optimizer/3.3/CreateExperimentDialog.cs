@@ -701,7 +701,7 @@ namespace HeuristicLab.Optimizer {
 
       int counter = 0, totalVariations = GetNumberOfVariations();
       if (instances.Count == 0) {
-        AddParameterVariations(localExperiment, ref counter, totalVariations);
+        AddParameterVariations(Optimizer, localExperiment, ref counter, totalVariations);
         experimentCreationBackgroundWorker.ReportProgress(100, string.Empty);
 
       } else {
@@ -724,7 +724,8 @@ namespace HeuristicLab.Optimizer {
               failed = true;
             }
             if (!failed) {
-              AddParameterVariations(localExperiment, ref counter, totalVariations);
+
+              AddParameterVariations(algorithm, localExperiment, ref counter, totalVariations);
             } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round((100.0 * counter) / totalVariations), "Loading failed (" + descriptor.Name + ")");
           }
         }
@@ -739,7 +740,7 @@ namespace HeuristicLab.Optimizer {
       Experiment = localExperiment;
     }
 
-    private void AddParameterVariations(Experiment localExperiment, ref int counter, int totalVariations) {
+    private void AddParameterVariations(IOptimizer optimizer, Experiment localExperiment, ref int counter, int totalVariations) {
       var variations = experimentCreationBackgroundWorker_CalculateParameterVariations(optimizer);
       foreach (var v in variations) {
         AddOptimizer(v, localExperiment);
