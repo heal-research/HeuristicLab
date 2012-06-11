@@ -27,6 +27,7 @@ namespace HeuristicLab.Optimization.Views {
   /// </summary>
   [Plugin("HeuristicLab.Optimization.Views", "3.3.6.$WCREV$")]
   [PluginFile("HeuristicLab.Optimization.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
