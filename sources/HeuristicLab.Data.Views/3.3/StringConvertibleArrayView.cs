@@ -194,7 +194,8 @@ namespace HeuristicLab.Data.Views {
         Content.SetValue(values[row], row + rowIndex);
     }
     private string[] SplitClipboardString(string clipboardText) {
-      clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
+      if (clipboardText.EndsWith(Environment.NewLine))
+        clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
       return clipboardText.Split(new string[] { Environment.NewLine, "\t" }, StringSplitOptions.None);
     }
     #endregion

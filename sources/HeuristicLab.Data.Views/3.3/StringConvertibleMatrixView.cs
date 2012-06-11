@@ -369,13 +369,11 @@ namespace HeuristicLab.Data.Views {
         rowIndex = dataGridView.CurrentCell.RowIndex;
         columnIndex = dataGridView.CurrentCell.ColumnIndex;
       }
+      if (Content.Rows < values.GetLength(1) + rowIndex) Content.Rows = values.GetLength(1) + rowIndex;
+      if (Content.Columns < values.GetLength(0) + columnIndex) Content.Columns = values.GetLength(0) + columnIndex;
 
       for (int row = 0; row < values.GetLength(1); row++) {
-        if (row + rowIndex >= Content.Rows)
-          Content.Rows = Content.Rows + 1;
         for (int col = 0; col < values.GetLength(0); col++) {
-          if (col + columnIndex >= Content.Columns)
-            Content.Columns = Content.Columns + 1;
           Content.SetValue(values[col, row], row + rowIndex, col + columnIndex);
         }
       }
