@@ -67,8 +67,6 @@ namespace HeuristicLab.Analysis.Views {
       Content.Rows.ItemsRemoved += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsRemoved);
       Content.Rows.ItemsReplaced += new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsReplaced);
       Content.Rows.CollectionReset += new CollectionItemsChangedEventHandler<DataRow>(Rows_CollectionReset);
-      foreach (DataRow row in Content.Rows)
-        RegisterDataRowEvents(row);
     }
 
     protected virtual void RegisterDataRowEvents(DataRow row) {
@@ -134,6 +132,17 @@ namespace HeuristicLab.Analysis.Views {
       ConfigureChartArea(chart.ChartAreas[0]);
       RecalculateAxesScale(chart.ChartAreas[0]);
       UpdateYCursorInterval();
+    }
+
+    protected virtual void RemoveDataRows(IEnumerable<DataRow> rows) {
+      foreach (var row in rows) {
+        DeregisterDataRowEvents(row);
+        Series series = chart.Series[row.Name];
+        chart.Series.Remove(series);
+        if (invisibleSeries.Contains(series))
+          invisibleSeries.Remove(series);
+      }
+      RecalculateAxesScale(chart.ChartAreas[0]);
     }
 
     private void ConfigureSeries(Series series, DataRow row) {
@@ -262,17 +271,6 @@ namespace HeuristicLab.Analysis.Views {
       double digits = (int)Math.Log10(interestingValuesRange) - 3;
       double yZoomInterval = Math.Pow(10, digits);
       this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
-    }
-
-    protected virtual void RemoveDataRows(IEnumerable<DataRow> rows) {
-      foreach (var row in rows) {
-        DeregisterDataRowEvents(row);
-        Series series = chart.Series[row.Name];
-        chart.Series.Remove(series);
-        if (invisibleSeries.Contains(series))
-          invisibleSeries.Remove(series);
-      }
-      RecalculateAxesScale(chart.ChartAreas[0]);
     }
 
     #region Event Handlers
