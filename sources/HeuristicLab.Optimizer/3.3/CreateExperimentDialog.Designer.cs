@@ -64,13 +64,9 @@ namespace HeuristicLab.Optimizer {
       this.parametersSplitContainer = new System.Windows.Forms.SplitContainer();
       this.parametersListView = new System.Windows.Forms.ListView();
       this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.generateButton = new System.Windows.Forms.Button();
+      this.stringConvertibleArrayView = new HeuristicLab.Data.Views.StringConvertibleArrayView();
       this.detailsTypeLabel = new System.Windows.Forms.Label();
-      this.stepSizeTextBox = new System.Windows.Forms.TextBox();
-      this.maximumTextBox = new System.Windows.Forms.TextBox();
-      this.minimumTextBox = new System.Windows.Forms.TextBox();
-      this.stepSizeLabel = new System.Windows.Forms.Label();
-      this.maximumLabel = new System.Windows.Forms.Label();
-      this.minimumLabel = new System.Windows.Forms.Label();
       this.choicesListView = new System.Windows.Forms.ListView();
       this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.instancesTabPage = new System.Windows.Forms.TabPage();
@@ -79,8 +75,8 @@ namespace HeuristicLab.Optimizer {
       this.experimentsToCreateDescriptionLabel = new System.Windows.Forms.Label();
       this.variationsLabel = new System.Windows.Forms.Label();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-      this.experimentCreationProgressBar = new System.Windows.Forms.ProgressBar();
       this.warningProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      this.experimentCreationProgressBar = new System.Windows.Forms.ProgressBar();
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).BeginInit();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
@@ -272,13 +268,9 @@ namespace HeuristicLab.Optimizer {
       // 
       // parametersSplitContainer.Panel2
       // 
+      this.parametersSplitContainer.Panel2.Controls.Add(this.generateButton);
+      this.parametersSplitContainer.Panel2.Controls.Add(this.stringConvertibleArrayView);
       this.parametersSplitContainer.Panel2.Controls.Add(this.detailsTypeLabel);
-      this.parametersSplitContainer.Panel2.Controls.Add(this.stepSizeTextBox);
-      this.parametersSplitContainer.Panel2.Controls.Add(this.maximumTextBox);
-      this.parametersSplitContainer.Panel2.Controls.Add(this.minimumTextBox);
-      this.parametersSplitContainer.Panel2.Controls.Add(this.stepSizeLabel);
-      this.parametersSplitContainer.Panel2.Controls.Add(this.maximumLabel);
-      this.parametersSplitContainer.Panel2.Controls.Add(this.minimumLabel);
       this.parametersSplitContainer.Panel2.Controls.Add(this.choicesListView);
       this.parametersSplitContainer.Size = new System.Drawing.Size(314, 267);
       this.parametersSplitContainer.SplitterDistance = 124;
@@ -305,6 +297,29 @@ namespace HeuristicLab.Optimizer {
       // 
       this.columnHeader1.Width = 150;
       // 
+      // generateButton
+      // 
+      this.generateButton.Location = new System.Drawing.Point(16, 10);
+      this.generateButton.Name = "generateButton";
+      this.generateButton.Size = new System.Drawing.Size(75, 23);
+      this.generateButton.TabIndex = 8;
+      this.generateButton.Text = "Generate...";
+      this.generateButton.UseVisualStyleBackColor = true;
+      this.generateButton.Click += new System.EventHandler(this.generateButton_Click);
+      // 
+      // stringConvertibleArrayView
+      // 
+      this.stringConvertibleArrayView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.stringConvertibleArrayView.Caption = "StringConvertibleArray View";
+      this.stringConvertibleArrayView.Content = null;
+      this.stringConvertibleArrayView.Location = new System.Drawing.Point(16, 39);
+      this.stringConvertibleArrayView.Name = "stringConvertibleArrayView";
+      this.stringConvertibleArrayView.ReadOnly = false;
+      this.stringConvertibleArrayView.Size = new System.Drawing.Size(155, 215);
+      this.stringConvertibleArrayView.TabIndex = 7;
+      // 
       // detailsTypeLabel
       // 
       this.detailsTypeLabel.AutoSize = true;
@@ -313,63 +328,6 @@ namespace HeuristicLab.Optimizer {
       this.detailsTypeLabel.Size = new System.Drawing.Size(48, 13);
       this.detailsTypeLabel.TabIndex = 0;
       this.detailsTypeLabel.Text = "Choices:";
-      // 
-      // stepSizeTextBox
-      // 
-      this.stepSizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.stepSizeTextBox.Location = new System.Drawing.Point(73, 86);
-      this.stepSizeTextBox.Name = "stepSizeTextBox";
-      this.stepSizeTextBox.Size = new System.Drawing.Size(98, 20);
-      this.stepSizeTextBox.TabIndex = 5;
-      this.stepSizeTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
-      // 
-      // maximumTextBox
-      // 
-      this.maximumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.maximumTextBox.Location = new System.Drawing.Point(73, 60);
-      this.maximumTextBox.Name = "maximumTextBox";
-      this.maximumTextBox.Size = new System.Drawing.Size(98, 20);
-      this.maximumTextBox.TabIndex = 3;
-      this.maximumTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
-      // 
-      // minimumTextBox
-      // 
-      this.minimumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.minimumTextBox.Location = new System.Drawing.Point(73, 34);
-      this.minimumTextBox.Name = "minimumTextBox";
-      this.minimumTextBox.Size = new System.Drawing.Size(98, 20);
-      this.minimumTextBox.TabIndex = 1;
-      this.minimumTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.detailsTextBox_Validating);
-      // 
-      // stepSizeLabel
-      // 
-      this.stepSizeLabel.AutoSize = true;
-      this.stepSizeLabel.Location = new System.Drawing.Point(13, 89);
-      this.stepSizeLabel.Name = "stepSizeLabel";
-      this.stepSizeLabel.Size = new System.Drawing.Size(53, 13);
-      this.stepSizeLabel.TabIndex = 4;
-      this.stepSizeLabel.Text = "Step size:";
-      // 
-      // maximumLabel
-      // 
-      this.maximumLabel.AutoSize = true;
-      this.maximumLabel.Location = new System.Drawing.Point(13, 63);
-      this.maximumLabel.Name = "maximumLabel";
-      this.maximumLabel.Size = new System.Drawing.Size(54, 13);
-      this.maximumLabel.TabIndex = 2;
-      this.maximumLabel.Text = "Maximum:";
-      // 
-      // minimumLabel
-      // 
-      this.minimumLabel.AutoSize = true;
-      this.minimumLabel.Location = new System.Drawing.Point(13, 37);
-      this.minimumLabel.Name = "minimumLabel";
-      this.minimumLabel.Size = new System.Drawing.Size(51, 13);
-      this.minimumLabel.TabIndex = 0;
-      this.minimumLabel.Text = "Minimum:";
       // 
       // choicesListView
       // 
@@ -455,6 +413,12 @@ namespace HeuristicLab.Optimizer {
       this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
       this.errorProvider.ContainerControl = this;
       // 
+      // warningProvider
+      // 
+      this.warningProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.warningProvider.ContainerControl = this;
+      this.warningProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("warningProvider.Icon")));
+      // 
       // experimentCreationProgressBar
       // 
       this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
@@ -465,16 +429,9 @@ namespace HeuristicLab.Optimizer {
       this.experimentCreationProgressBar.TabIndex = 9;
       this.experimentCreationProgressBar.Visible = false;
       // 
-      // warningProvider
-      // 
-      this.warningProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
-      this.warningProvider.ContainerControl = this;
-      this.warningProvider.Icon = ((System.Drawing.Icon)(resources.GetObject("warningProvider.Icon")));
-      // 
       // CreateExperimentDialog
       // 
       this.AcceptButton = this.okButton;
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(355, 394);
@@ -541,17 +498,13 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.Label detailsTypeLabel;
     private System.Windows.Forms.ListView choicesListView;
     private System.Windows.Forms.ColumnHeader columnHeader2;
-    private System.Windows.Forms.TextBox stepSizeTextBox;
-    private System.Windows.Forms.TextBox maximumTextBox;
-    private System.Windows.Forms.TextBox minimumTextBox;
-    private System.Windows.Forms.Label stepSizeLabel;
-    private System.Windows.Forms.Label maximumLabel;
-    private System.Windows.Forms.Label minimumLabel;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.ErrorProvider errorProvider;
-    private System.Windows.Forms.ProgressBar experimentCreationProgressBar;
     private System.Windows.Forms.ErrorProvider warningProvider;
     private System.Windows.Forms.TreeView instancesTreeView;
+    private Data.Views.StringConvertibleArrayView stringConvertibleArrayView;
+    private System.Windows.Forms.ProgressBar experimentCreationProgressBar;
+    private System.Windows.Forms.Button generateButton;
 
   }
 }

@@ -55,8 +55,8 @@ namespace HeuristicLab.Optimizer {
     private bool createBatchRun;
     private int repetitions;
     private Dictionary<IProblemInstanceProvider, HashSet<IDataDescriptor>> instances;
-    private Dictionary<IValueParameter, Tuple<int, int, int>> intParameters;
-    private Dictionary<IValueParameter, Tuple<double, double, double>> doubleParameters;
+    private Dictionary<IValueParameter, IntArray> intParameters;
+    private Dictionary<IValueParameter, DoubleArray> doubleParameters;
     private HashSet<IValueParameter> boolParameters;
     private Dictionary<IValueParameter, HashSet<IItem>> multipleChoiceParameters;
 
@@ -76,8 +76,8 @@ namespace HeuristicLab.Optimizer {
       okButton.Enabled = optimizer != null;
 
       instances = new Dictionary<IProblemInstanceProvider, HashSet<IDataDescriptor>>();
-      intParameters = new Dictionary<IValueParameter, Tuple<int, int, int>>();
-      doubleParameters = new Dictionary<IValueParameter, Tuple<double, double, double>>();
+      intParameters = new Dictionary<IValueParameter, IntArray>();
+      doubleParameters = new Dictionary<IValueParameter, DoubleArray>();
       boolParameters = new HashSet<IValueParameter>();
       multipleChoiceParameters = new Dictionary<IValueParameter, HashSet<IItem>>();
     }
@@ -117,30 +117,23 @@ namespace HeuristicLab.Optimizer {
       }
 
       if (isConstrainedValueParameter) {
-        if (e.Item.Checked) {
-          multipleChoiceParameters.Add(parameter, new HashSet<IItem>());
-        } else {
-          multipleChoiceParameters.Remove(parameter);
-        }
+        if (e.Item.Checked) multipleChoiceParameters.Add(parameter, new HashSet<IItem>());
+        else multipleChoiceParameters.Remove(parameter);
       }
 
       var intValue = parameter.Value as ValueTypeValue<int>;
       if (intValue != null) {
         if (e.Item.Checked) {
-          int minimum = intValue.Value;
-          int maximum = intValue.Value;
-          int step = 1;
-          intParameters.Add(parameter, new Tuple<int, int, int>(minimum, maximum, step));
+          intParameters.Add(parameter, new IntArray());
+          intParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
         } else intParameters.Remove(parameter);
       }
 
       var doubleValue = parameter.Value as ValueTypeValue<double>;
       if (doubleValue != null) {
         if (e.Item.Checked) {
-          double minimum = doubleValue.Value;
-          double maximum = doubleValue.Value;
-          double step = 1;
-          doubleParameters.Add(parameter, new Tuple<double, double, double>(minimum, maximum, step));
+          doubleParameters.Add(parameter, new DoubleArray());
+          doubleParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
         } else doubleParameters.Remove(parameter);
       }
 
@@ -173,47 +166,49 @@ namespace HeuristicLab.Optimizer {
 
       if (isConstrainedValueParameter) {
         detailsTypeLabel.Text = "Choices:";
-        choicesListView.Enabled = true;
-        choicesListView.Visible = true;
         choicesListView.Tag = parameter;
 
-        if (!multipleChoiceParameters.ContainsKey(parameter)) return;
         dynamic constrainedValuedParameter = parameter;
         dynamic validValues = constrainedValuedParameter.ValidValues;
         foreach (var choice in validValues) {
           choicesListView.Items.Add(new ListViewItem(choice.ToString()) {
             Tag = choice,
-            Checked = multipleChoiceParameters[parameter].Contains(choice)
+            Checked = multipleChoiceParameters.ContainsKey(parameter)
+            && multipleChoiceParameters[parameter].Contains(choice)
           });
         }
+        choicesListView.Enabled = multipleChoiceParameters.ContainsKey(parameter);
+        detailsTypeLabel.Visible = true;
+        choicesListView.Visible = true;
         return;
       }
 
-      if (!(parameter.Value is ValueTypeValue<bool>)) {
-        minimumLabel.Visible = true; minimumTextBox.Visible = true;
-        maximumLabel.Visible = true; maximumTextBox.Visible = true;
-        stepSizeLabel.Visible = true; stepSizeTextBox.Visible = true;
-      } else detailsTypeLabel.Text = "Boolean parameter: True / False";
+      if (parameter.Value is ValueTypeValue<bool>) {
+        detailsTypeLabel.Text = "Boolean parameter: True / False";
+        detailsTypeLabel.Visible = true;
+      }
 
       var intValue = parameter.Value as ValueTypeValue<int>;
       if (intValue != null) {
-        detailsTypeLabel.Text = "Integer parameter:";
-        if (!intParameters.ContainsKey(parameter)) return;
-        string min = intParameters[parameter].Item1.ToString();
-        string max = intParameters[parameter].Item2.ToString();
-        string step = intParameters[parameter].Item3.ToString();
-        UpdateMinMaxStepSize(parameter, min, max, step);
+        if (intParameters.ContainsKey(parameter))
+          stringConvertibleArrayView.Content = intParameters[parameter];
+        stringConvertibleArrayView.Visible = true;
+        stringConvertibleArrayView.ReadOnly = !intParameters.ContainsKey(parameter);
+        generateButton.Tag = parameter;
+        generateButton.Enabled = intParameters.ContainsKey(parameter);
+        generateButton.Visible = true;
         return;
       }
 
       var doubleValue = parameter.Value as ValueTypeValue<double>;
       if (doubleValue != null) {
-        detailsTypeLabel.Text = "Double parameter:";
-        if (!doubleParameters.ContainsKey(parameter)) return;
-        string min = doubleParameters[parameter].Item1.ToString();
-        string max = doubleParameters[parameter].Item2.ToString();
-        string step = doubleParameters[parameter].Item3.ToString();
-        UpdateMinMaxStepSize(parameter, min, max, step);
+        if (doubleParameters.ContainsKey(parameter))
+          stringConvertibleArrayView.Content = doubleParameters[parameter];
+        stringConvertibleArrayView.Visible = true;
+        stringConvertibleArrayView.ReadOnly = !doubleParameters.ContainsKey(parameter);
+        generateButton.Tag = parameter;
+        generateButton.Enabled = doubleParameters.ContainsKey(parameter);
+        generateButton.Visible = true;
         return;
       }
     }
@@ -221,49 +216,56 @@ namespace HeuristicLab.Optimizer {
     #region Detail controls
     private void choiceListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
       var parameter = (IValueParameter)choicesListView.Tag;
-      if (e.Item.Checked) {
-        multipleChoiceParameters[parameter].Add((IItem)e.Item.Tag);
-      } else multipleChoiceParameters[parameter].Remove((IItem)e.Item.Tag);
+      if (multipleChoiceParameters.ContainsKey(parameter)) {
+        if (e.Item.Checked) {
+          multipleChoiceParameters[parameter].Add((IItem)e.Item.Tag);
+        } else multipleChoiceParameters[parameter].Remove((IItem)e.Item.Tag);
 
-      UpdateVariationsLabel();
+        UpdateVariationsLabel();
+      }
     }
 
-    private void detailsTextBox_Validating(object sender, CancelEventArgs e) {
-      var parameter = (IValueParameter)((TextBox)sender).Tag;
-      errorProvider.Clear();
-
-      var intValue = parameter.Value as ValueTypeValue<int>;
-      if (intValue != null) {
-        int value;
-        if (!int.TryParse(((TextBox)sender).Text, out value)) {
-          errorProvider.SetError(((TextBox)sender), "Please enter a valid integer number.");
-          e.Cancel = true;
-        } else {
-          var before = intParameters[parameter];
-          var after = default(Tuple<int, int, int>);
-          if (sender == minimumTextBox) after = new Tuple<int, int, int>(value, before.Item2, before.Item3);
-          else if (sender == maximumTextBox) after = new Tuple<int, int, int>(before.Item1, value, before.Item3);
-          else if (sender == stepSizeTextBox) after = new Tuple<int, int, int>(before.Item1, before.Item2, value);
-          intParameters[parameter] = after;
+    private void generateButton_Click(object sender, EventArgs e) {
+      var parameter = (IValueParameter)generateButton.Tag;
+      bool integerOnly = intParameters.ContainsKey(parameter);
+      double min = 0, max = 1, step = 1;
+      #region Try to calculate some meaningful values
+      if (integerOnly) {
+        int len = intParameters[parameter].Length;
+        if (len > 0) {
+          min = intParameters[parameter].Min();
+          max = intParameters[parameter].Max();
+          step = len >= 2 ? Math.Abs((intParameters[parameter][len - 1] - intParameters[parameter][len - 2])) : 1;
+        }
+      } else {
+        int len = doubleParameters[parameter].Length;
+        if (len > 0) {
+          min = doubleParameters[parameter].Min();
+          max = doubleParameters[parameter].Max();
+          step = len >= 2 ? Math.Abs((doubleParameters[parameter][len - 1] - doubleParameters[parameter][len - 2])) : 1;
         }
       }
-
-      var doubleValue = parameter.Value as ValueTypeValue<double>;
-      if (doubleValue != null) {
-        double value;
-        if (!double.TryParse(((TextBox)sender).Text, NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out value)) {
-          errorProvider.SetError(((TextBox)sender), "Please enter a valid number.");
-          e.Cancel = true;
-        } else {
-          var before = doubleParameters[parameter];
-          var after = default(Tuple<double, double, double>);
-          if (sender == minimumTextBox) after = new Tuple<double, double, double>(value, before.Item2, before.Item3);
-          else if (sender == maximumTextBox) after = new Tuple<double, double, double>(before.Item1, value, before.Item3);
-          else if (sender == stepSizeTextBox) after = new Tuple<double, double, double>(before.Item1, before.Item2, value);
-          doubleParameters[parameter] = after;
+      #endregion
+      using (var dialog = new DefineArithmeticProgressionDialog(integerOnly, min, max, step)) {
+        if (dialog.ShowDialog() == DialogResult.OK) {
+          var values = dialog.Values;
+          if (integerOnly) {
+            intParameters[parameter].Reset -= new EventHandler(ValuesArray_Reset);
+            intParameters[parameter] = new IntArray(values.Select(x => (int)x).ToArray());
+            intParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
+            stringConvertibleArrayView.Content = intParameters[parameter];
+          } else {
+            doubleParameters[parameter].Reset -= new EventHandler(ValuesArray_Reset);
+            doubleParameters[parameter] = new DoubleArray(values.ToArray());
+            doubleParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
+            stringConvertibleArrayView.Content = doubleParameters[parameter];
+          }
+          UpdateVariationsLabel();
         }
       }
+    }
 
+    private void ValuesArray_Reset(object sender, EventArgs e) {
       UpdateVariationsLabel();
     }
     #endregion
@@ -458,13 +460,11 @@ namespace HeuristicLab.Optimizer {
 
       int intParameterVariations = 1;
       foreach (var intParam in intParameters.Values) {
-        if (intParam.Item3 == 0) continue;
-        intParameterVariations *= (intParam.Item2 - intParam.Item1) / intParam.Item3 + 1;
+        intParameterVariations *= Math.Max(intParam.Length, 1);
       }
       int doubleParameterVariations = 1;
       foreach (var doubleParam in doubleParameters.Values) {
-        if (doubleParam.Item3 == 0) continue;
-        doubleParameterVariations *= (int)Math.Floor((doubleParam.Item2 - doubleParam.Item1) / doubleParam.Item3) + 1;
+        doubleParameterVariations *= Math.Max(doubleParam.Length, 1);
       }
       int boolParameterVariations = 1;
       foreach (var boolParam in boolParameters) {
@@ -479,55 +479,33 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void SetMode(DialogMode mode) {
-      createBatchRunCheckBox.Enabled = mode == DialogMode.Normal;
-      repetitionsNumericUpDown.Enabled = mode == DialogMode.Normal;
-      parametersSplitContainer.Enabled = mode == DialogMode.Normal || mode == DialogMode.DiscoveringInstances;
-      selectAllCheckBox.Enabled = mode == DialogMode.Normal;
-      selectNoneCheckBox.Enabled = mode == DialogMode.Normal;
-      instancesTreeView.Enabled = mode == DialogMode.Normal;
-      instancesTreeView.Visible = mode == DialogMode.Normal || mode == DialogMode.CreatingExperiment || mode == DialogMode.PreparingExperiment;
-      okButton.Enabled = mode == DialogMode.Normal;
-      okButton.Visible = mode != DialogMode.CreatingExperiment && mode != DialogMode.PreparingExperiment;
-      cancelButton.Enabled = mode != DialogMode.PreparingExperiment;
-      instanceDiscoveryProgressLabel.Visible = mode == DialogMode.DiscoveringInstances;
-      instanceDiscoveryProgressBar.Visible = mode == DialogMode.DiscoveringInstances;
-      experimentCreationProgressBar.Visible = mode == DialogMode.CreatingExperiment || mode == DialogMode.PreparingExperiment;
+      if (InvokeRequired) Invoke((Action<DialogMode>)SetMode, mode);
+      else {
+        createBatchRunCheckBox.Enabled = mode == DialogMode.Normal;
+        repetitionsNumericUpDown.Enabled = mode == DialogMode.Normal;
+        parametersSplitContainer.Enabled = mode == DialogMode.Normal || mode == DialogMode.DiscoveringInstances;
+        selectAllCheckBox.Enabled = mode == DialogMode.Normal;
+        selectNoneCheckBox.Enabled = mode == DialogMode.Normal;
+        instancesTreeView.Enabled = mode == DialogMode.Normal;
+        instancesTreeView.Visible = mode == DialogMode.Normal || mode == DialogMode.CreatingExperiment || mode == DialogMode.PreparingExperiment;
+        okButton.Enabled = mode == DialogMode.Normal;
+        okButton.Visible = mode != DialogMode.CreatingExperiment && mode != DialogMode.PreparingExperiment;
+        cancelButton.Enabled = mode != DialogMode.PreparingExperiment;
+        instanceDiscoveryProgressLabel.Visible = mode == DialogMode.DiscoveringInstances;
+        instanceDiscoveryProgressBar.Visible = mode == DialogMode.DiscoveringInstances;
+        experimentCreationProgressBar.Visible = mode == DialogMode.CreatingExperiment || mode == DialogMode.PreparingExperiment;
+      }
     }
 
     private void ClearDetailsView() {
-      minimumLabel.Visible = false;
-      minimumTextBox.Text = string.Empty;
-      minimumTextBox.Enabled = false;
-      minimumTextBox.Visible = false;
-      maximumLabel.Visible = false;
-      maximumTextBox.Text = string.Empty;
-      maximumTextBox.Enabled = false;
-      maximumTextBox.Visible = false;
-      stepSizeLabel.Visible = false;
-      stepSizeTextBox.Text = string.Empty;
-      stepSizeTextBox.Enabled = false;
-      stepSizeTextBox.Visible = false;
+      stringConvertibleArrayView.Visible = false;
+      stringConvertibleArrayView.Content = null;
+      stringConvertibleArrayView.ReadOnly = true;
+      generateButton.Visible = false;
+      detailsTypeLabel.Visible = false;
       choicesListView.Items.Clear();
       choicesListView.Enabled = false;
       choicesListView.Visible = false;
-    }
-
-    private void UpdateMinMaxStepSize(IValueParameter parameter, string min, string max, string step) {
-      minimumLabel.Visible = true;
-      minimumTextBox.Text = min;
-      minimumTextBox.Enabled = true;
-      minimumTextBox.Visible = true;
-      minimumTextBox.Tag = parameter;
-      maximumLabel.Visible = true;
-      maximumTextBox.Text = max;
-      maximumTextBox.Enabled = true;
-      maximumTextBox.Visible = true;
-      maximumTextBox.Tag = parameter;
-      stepSizeLabel.Visible = true;
-      stepSizeTextBox.Text = step;
-      stepSizeTextBox.Enabled = true;
-      stepSizeTextBox.Visible = true;
-      stepSizeTextBox.Tag = parameter;
     }
 
     private void UpdateVariationsLabel() {
@@ -537,23 +515,24 @@ namespace HeuristicLab.Optimizer {
     #region Retrieve parameter combinations
     private IEnumerable<Dictionary<IValueParameter, int>> GetIntParameterConfigurations() {
       var configuration = new Dictionary<IValueParameter, int>();
-      var indices = new Dictionary<IValueParameter, int>();
+      var enumerators = new Dictionary<IValueParameter, IEnumerator<int>>();
       bool finished;
       do {
         foreach (var p in intParameters) {
-          if (!indices.ContainsKey(p.Key)) indices.Add(p.Key, 0);
-          var value = p.Value.Item1 + p.Value.Item3 * indices[p.Key];
-          configuration[p.Key] = value;
+          if (!enumerators.ContainsKey(p.Key)) {
+            enumerators[p.Key] = p.Value.GetEnumerator();
+            enumerators[p.Key].MoveNext();
+          }
+          configuration[p.Key] = enumerators[p.Key].Current;
         }
         yield return configuration;
 
         finished = true;
-        foreach (var p in intParameters.Keys) {
-          var newValue = intParameters[p].Item1 + intParameters[p].Item3 * (indices[p] + 1);
-          if (newValue > intParameters[p].Item2 || intParameters[p].Item3 == 0)
-            indices[p] = 0;
-          else {
-            indices[p]++;
+        foreach (var p in intParameters) {
+          if (!enumerators[p.Key].MoveNext()) {
+            enumerators[p.Key] = p.Value.GetEnumerator();
+            enumerators[p.Key].MoveNext();
+          } else {
             finished = false;
             break;
           }
@@ -563,23 +542,24 @@ namespace HeuristicLab.Optimizer {
 
     private IEnumerable<Dictionary<IValueParameter, double>> GetDoubleParameterConfigurations() {
       var configuration = new Dictionary<IValueParameter, double>();
-      var indices = new Dictionary<IValueParameter, int>();
+      var enumerators = new Dictionary<IValueParameter, IEnumerator<double>>();
       bool finished;
       do {
         foreach (var p in doubleParameters) {
-          if (!indices.ContainsKey(p.Key)) indices.Add(p.Key, 0);
-          var value = p.Value.Item1 + p.Value.Item3 * indices[p.Key];
-          configuration[p.Key] = value;
+          if (!enumerators.ContainsKey(p.Key)) {
+            enumerators[p.Key] = p.Value.GetEnumerator();
+            enumerators[p.Key].MoveNext();
+          }
+          configuration[p.Key] = enumerators[p.Key].Current;
         }
         yield return configuration;
 
         finished = true;
-        foreach (var p in doubleParameters.Keys) {
-          var newValue = doubleParameters[p].Item1 + doubleParameters[p].Item3 * (indices[p] + 1);
-          if (newValue > doubleParameters[p].Item2 || doubleParameters[p].Item3 == 0)
-            indices[p] = 0;
-          else {
-            indices[p]++;
+        foreach (var p in doubleParameters) {
+          if (!enumerators[p.Key].MoveNext()) {
+            enumerators[p.Key] = p.Value.GetEnumerator();
+            enumerators[p.Key].MoveNext();
+          } else {
             finished = false;
             break;
           }
@@ -731,8 +711,8 @@ namespace HeuristicLab.Optimizer {
         }
       }
       if (localExperiment != null) {
-        // don't do GUI stuff in do_work
         // this step can take some time
+        SetMode(DialogMode.PreparingExperiment);
         experimentCreationBackgroundWorker.ReportProgress(-1);
         localExperiment.Prepare(true);
         experimentCreationBackgroundWorker.ReportProgress(100);
@@ -843,8 +823,6 @@ namespace HeuristicLab.Optimizer {
         experimentCreationProgressBar.Style = ProgressBarStyle.Continuous;
         experimentCreationProgressBar.Value = e.ProgressPercentage;
       } else {
-        SetMode(DialogMode.PreparingExperiment);
-
         experimentCreationProgressBar.Style = ProgressBarStyle.Marquee;
       }
       Application.DoEvents();
