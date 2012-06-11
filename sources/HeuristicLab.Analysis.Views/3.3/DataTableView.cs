@@ -103,8 +103,7 @@ namespace HeuristicLab.Analysis.Views {
       chart.Series.Clear();
       if (Content != null) {
         chart.Titles[0].Text = Content.Name;
-        foreach (DataRow row in Content.Rows)
-          AddDataRow(row);
+        AddDataRows(Content.Rows);
         ConfigureChartArea(chart.ChartAreas[0]);
         RecalculateAxesScale(chart.ChartAreas[0]);
       }
@@ -122,15 +121,16 @@ namespace HeuristicLab.Analysis.Views {
         }
       } else MessageBox.Show("Nothing to configure.");
     }
-
-    protected virtual void AddDataRow(DataRow row) {
-      Series series = new Series(row.Name);
-      if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
-      else series.LegendText = row.Name;
-      ConfigureSeries(series, row);
-      FillSeriesWithRowValues(series, row);
-
-      chart.Series.Add(series);
+    protected virtual void AddDataRows(IEnumerable<DataRow> rows) {
+      foreach (var row in rows) {
+        RegisterDataRowEvents(row);
+        Series series = new Series(row.Name);
+        if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
+        else series.LegendText = row.Name;
+        ConfigureSeries(series, row);
+        FillSeriesWithRowValues(series, row);
+        chart.Series.Add(series);
+      }
       ConfigureChartArea(chart.ChartAreas[0]);
       RecalculateAxesScale(chart.ChartAreas[0]);
       UpdateYCursorInterval();
@@ -264,12 +264,14 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.ChartAreas[0].CursorY.Interval = yZoomInterval;
     }
 
-
-    protected virtual void RemoveDataRow(DataRow row) {
-      Series series = chart.Series[row.Name];
-      chart.Series.Remove(series);
-      if (invisibleSeries.Contains(series))
-        invisibleSeries.Remove(series);
+    protected virtual void RemoveDataRows(IEnumerable<DataRow> rows) {
+      foreach (var row in rows) {
+        DeregisterDataRowEvents(row);
+        Series series = chart.Series[row.Name];
+        chart.Series.Remove(series);
+        if (invisibleSeries.Contains(series))
+          invisibleSeries.Remove(series);
+      }
       RecalculateAxesScale(chart.ChartAreas[0]);
     }
 
@@ -297,48 +299,30 @@ namespace HeuristicLab.Analysis.Views {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsAdded), sender, e);
       else {
-        foreach (DataRow row in e.Items) {
-          AddDataRow(row);
-          RegisterDataRowEvents(row);
-        }
+        AddDataRows(e.Items);
       }
     }
     private void Rows_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<DataRow> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsRemoved), sender, e);
       else {
-        foreach (DataRow row in e.Items) {
-          DeregisterDataRowEvents(row);
-          RemoveDataRow(row);
-        }
+        RemoveDataRows(e.Items);
       }
     }
     private void Rows_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<DataRow> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<DataRow>(Rows_ItemsReplaced), sender, e);
       else {
-        foreach (DataRow row in e.OldItems) {
-          DeregisterDataRowEvents(row);
-          RemoveDataRow(row);
-        }
-        foreach (DataRow row in e.Items) {
-          AddDataRow(row);
-          RegisterDataRowEvents(row);
-        }
+        RemoveDataRows(e.OldItems);
+        AddDataRows(e.Items);
       }
     }
     private void Rows_CollectionReset(object sender, CollectionItemsChangedEventArgs<DataRow> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<DataRow>(Rows_CollectionReset), sender, e);
       else {
-        foreach (DataRow row in e.OldItems) {
-          DeregisterDataRowEvents(row);
-          RemoveDataRow(row);
-        }
-        foreach (DataRow row in e.Items) {
-          AddDataRow(row);
-          RegisterDataRowEvents(row);
-        }
+        RemoveDataRows(e.OldItems);
+        AddDataRows(e.Items);
       }
     }
     #endregion
