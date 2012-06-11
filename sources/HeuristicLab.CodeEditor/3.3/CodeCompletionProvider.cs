@@ -91,10 +91,12 @@ namespace HeuristicLab.CodeEditor {
                                               textArea.MotherTextEditorControl.Text);
       List<ICompletionData> resultList = new List<ICompletionData>();
       if (rr != null) {
-        ArrayList completionData = rr.GetCompletionData(codeEditor.projectContent);
-        if (completionData != null) {
-          AddCompletionData(resultList, completionData);
-        }
+        try {
+          ArrayList completionData = rr.GetCompletionData(codeEditor.projectContent);
+          if (completionData != null) {
+            AddCompletionData(resultList, completionData);
+          }
+        } catch (NullReferenceException x) { }
       }
       return resultList.ToArray();
     }
