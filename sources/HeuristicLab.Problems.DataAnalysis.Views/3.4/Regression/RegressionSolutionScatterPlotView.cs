@@ -118,6 +118,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       double zoomInterval = Math.Max(Math.Pow(10, digits), 10E-5);
       this.chart.ChartAreas[0].CursorX.Interval = zoomInterval;
       this.chart.ChartAreas[0].CursorY.Interval = zoomInterval;
+
+      this.chart.ChartAreas[0].AxisX.ScaleView.SmallScrollSize = zoomInterval;
+      this.chart.ChartAreas[0].AxisY.ScaleView.SmallScrollSize = zoomInterval;
+
+      this.chart.ChartAreas[0].AxisX.ScaleView.SmallScrollMinSizeType = DateTimeIntervalType.Number;
+      this.chart.ChartAreas[0].AxisX.ScaleView.SmallScrollMinSize = zoomInterval;
+      this.chart.ChartAreas[0].AxisY.ScaleView.SmallScrollMinSizeType = DateTimeIntervalType.Number;
+      this.chart.ChartAreas[0].AxisY.ScaleView.SmallScrollMinSize = zoomInterval;
+
+      if (digits < 0) {
+        this.chart.ChartAreas[0].AxisX.LabelStyle.Format = "F" + (int)Math.Abs(digits);
+        this.chart.ChartAreas[0].AxisY.LabelStyle.Format = "F" + (int)Math.Abs(digits);
+      } else {
+        this.chart.ChartAreas[0].AxisX.LabelStyle.Format = "F0";
+        this.chart.ChartAreas[0].AxisY.LabelStyle.Format = "F0";
+      }
     }
 
 
