@@ -380,7 +380,8 @@ namespace HeuristicLab.Data.Views {
       ClearSorting();
     }
     private string[,] SplitClipboardString(string clipboardText) {
-      clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
+      if (clipboardText.EndsWith(Environment.NewLine))
+        clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
       string[,] values = null;
       string[] lines = clipboardText.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
       string[] cells;
