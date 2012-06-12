@@ -184,6 +184,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateDataTableComboBox() {
+      dataTableComboBox.Items.Clear();
       var dataTables = (from run in Content
                         from result in run.Results
                         where result.Value is DataTable
@@ -194,6 +195,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateDataRowComboBox() {
+      dataRowComboBox.Items.Clear();
       string resultName = (string)dataTableComboBox.SelectedItem;
       var dataTables = from run in Content
                        where run.Results.ContainsKey(resultName)
