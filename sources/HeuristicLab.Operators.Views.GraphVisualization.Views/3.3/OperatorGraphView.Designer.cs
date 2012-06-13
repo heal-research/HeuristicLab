@@ -58,7 +58,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       this.zoomToFitButton = new System.Windows.Forms.Button();
       this.relayoutButton = new System.Windows.Forms.Button();
       this.connectButton = new System.Windows.Forms.Button();
-      this.panButton = new System.Windows.Forms.Button();
       this.selectButton = new System.Windows.Forms.Button();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
       this.detailsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
@@ -129,7 +128,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       this.splitContainer.Panel1.Controls.Add(this.zoomToFitButton);
       this.splitContainer.Panel1.Controls.Add(this.relayoutButton);
       this.splitContainer.Panel1.Controls.Add(this.connectButton);
-      this.splitContainer.Panel1.Controls.Add(this.panButton);
       this.splitContainer.Panel1.Controls.Add(this.selectButton);
       this.splitContainer.Panel1.Controls.Add(this.graphVisualizationInfoView);
       // 
@@ -143,10 +141,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       // screenshotButton
       // 
       this.screenshotButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Image;
-      this.screenshotButton.Location = new System.Drawing.Point(243, 3);
+      this.screenshotButton.Location = new System.Drawing.Point(213, 3);
       this.screenshotButton.Name = "screenshotButton";
       this.screenshotButton.Size = new System.Drawing.Size(24, 24);
-      this.screenshotButton.TabIndex = 8;
+      this.screenshotButton.TabIndex = 7;
       this.buttonToolTip.SetToolTip(this.screenshotButton, "Screenshot");
       this.screenshotButton.UseVisualStyleBackColor = true;
       this.screenshotButton.Click += new System.EventHandler(this.screenshotButton_Click);
@@ -154,10 +152,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       // zoomOutButton
       // 
       this.zoomOutButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ZoomOut;
-      this.zoomOutButton.Location = new System.Drawing.Point(213, 3);
+      this.zoomOutButton.Location = new System.Drawing.Point(183, 3);
       this.zoomOutButton.Name = "zoomOutButton";
       this.zoomOutButton.Size = new System.Drawing.Size(24, 24);
-      this.zoomOutButton.TabIndex = 7;
+      this.zoomOutButton.TabIndex = 6;
       this.buttonToolTip.SetToolTip(this.zoomOutButton, "Zoom Out");
       this.zoomOutButton.UseVisualStyleBackColor = true;
       this.zoomOutButton.Click += new System.EventHandler(this.zoomOutButton_Click);
@@ -165,10 +163,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       // zoomInButton
       // 
       this.zoomInButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ZoomIn;
-      this.zoomInButton.Location = new System.Drawing.Point(183, 3);
+      this.zoomInButton.Location = new System.Drawing.Point(153, 3);
       this.zoomInButton.Name = "zoomInButton";
       this.zoomInButton.Size = new System.Drawing.Size(24, 24);
-      this.zoomInButton.TabIndex = 6;
+      this.zoomInButton.TabIndex = 5;
       this.buttonToolTip.SetToolTip(this.zoomInButton, "Zoom In");
       this.zoomInButton.UseVisualStyleBackColor = true;
       this.zoomInButton.Click += new System.EventHandler(this.zoomInButton_Click);
@@ -176,10 +174,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       // zoomAreaButton
       // 
       this.zoomToFitButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ActualSize;
-      this.zoomToFitButton.Location = new System.Drawing.Point(153, 3);
+      this.zoomToFitButton.Location = new System.Drawing.Point(123, 3);
       this.zoomToFitButton.Name = "zoomAreaButton";
       this.zoomToFitButton.Size = new System.Drawing.Size(24, 24);
-      this.zoomToFitButton.TabIndex = 5;
+      this.zoomToFitButton.TabIndex = 4;
       this.buttonToolTip.SetToolTip(this.zoomToFitButton, "Zoom to Fit");
       this.zoomToFitButton.UseVisualStyleBackColor = true;
       this.zoomToFitButton.Click += new System.EventHandler(this.zoomAreaButton_Click);
@@ -187,10 +185,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       // relayoutButton
       // 
       this.relayoutButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.RefreshDocument;
-      this.relayoutButton.Location = new System.Drawing.Point(123, 3);
+      this.relayoutButton.Location = new System.Drawing.Point(93, 3);
       this.relayoutButton.Name = "relayoutButton";
       this.relayoutButton.Size = new System.Drawing.Size(24, 24);
-      this.relayoutButton.TabIndex = 4;
+      this.relayoutButton.TabIndex = 3;
       this.buttonToolTip.SetToolTip(this.relayoutButton, "Relayout Graph");
       this.relayoutButton.UseVisualStyleBackColor = true;
       this.relayoutButton.Click += new System.EventHandler(this.relayoutButton_Click);
@@ -198,24 +196,13 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       // connectButton
       // 
       this.connectButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Interface;
-      this.connectButton.Location = new System.Drawing.Point(63, 3);
+      this.connectButton.Location = new System.Drawing.Point(33, 3);
       this.connectButton.Name = "connectButton";
       this.connectButton.Size = new System.Drawing.Size(24, 24);
-      this.connectButton.TabIndex = 3;
+      this.connectButton.TabIndex = 2;
       this.buttonToolTip.SetToolTip(this.connectButton, "Connection Tool");
       this.connectButton.UseVisualStyleBackColor = true;
       this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
-      // 
-      // panButton
-      // 
-      this.panButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Breakpoint;
-      this.panButton.Location = new System.Drawing.Point(33, 3);
-      this.panButton.Name = "panButton";
-      this.panButton.Size = new System.Drawing.Size(24, 24);
-      this.panButton.TabIndex = 2;
-      this.buttonToolTip.SetToolTip(this.panButton, "Pan Tool");
-      this.panButton.UseVisualStyleBackColor = true;
-      this.panButton.Click += new System.EventHandler(this.panButton_Click);
       // 
       // selectButton
       // 
@@ -289,7 +276,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
     private System.Windows.Forms.Button zoomToFitButton;
     private System.Windows.Forms.Button relayoutButton;
     private System.Windows.Forms.Button connectButton;
-    private System.Windows.Forms.Button panButton;
     private System.Windows.Forms.Button screenshotButton;
     private System.Windows.Forms.ToolTip buttonToolTip;
   }

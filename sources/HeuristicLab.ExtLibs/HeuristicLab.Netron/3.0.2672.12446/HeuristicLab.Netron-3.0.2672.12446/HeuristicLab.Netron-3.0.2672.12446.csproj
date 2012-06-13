@@ -108,6 +108,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomTools\CustomPanTool.cs" />
     <Compile Include="ExpandableIconMaterial.cs" />
     <Compile Include="NetronVisualization.cs">
       <SubType>Component</SubType>

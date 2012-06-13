@@ -26,18 +26,23 @@ using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Netron.CustomTools;
 using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
   [View("OperatorGraph View (Chart)")]
   [Content(typeof(OperatorGraph), true)]
   public partial class OperatorGraphView : AsynchronousContentView {
+    private ITool lastActiveTool;
+
     public OperatorGraphView() {
       InitializeComponent();
 
       this.graphVisualizationInfoView.Controller.OnShowContextMenu += new EventHandler<EntityMenuEventArgs>(Controller_OnShowContextMenu);
       this.graphVisualizationInfoView.Controller.Model.Selection.OnNewSelection += new EventHandler(Controller_SelectionChanged);
       this.graphVisualizationInfoView.Controller.OnMouseDown += new EventHandler<MouseEventArgs>(Controller_OnMouseDown);
+      this.graphVisualizationInfoView.Controller.ParentControl.MouseDown += new MouseEventHandler(ParentControl_MouseDown);
+      this.graphVisualizationInfoView.Controller.ParentControl.MouseUp += new MouseEventHandler(ParentControl_MouseUp);
       foreach (ITool tool in this.graphVisualizationInfoView.Controller.Tools) {
         tool.OnToolActivate += new EventHandler<ToolEventArgs>(tool_OnToolActivate);
         tool.OnToolDeactivate += new EventHandler<ToolEventArgs>(tool_OnToolDeactivate);
@@ -68,7 +73,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       base.SetEnabledStateOfControls();
       if (Content == null) {
         selectButton.Enabled = false;
-        panButton.Enabled = false;
         relayoutButton.Enabled = false;
         zoomToFitButton.Enabled = false;
         zoomInButton.Enabled = false;
@@ -78,7 +82,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
         connectButton.Enabled = false;
       } else {
         selectButton.Enabled = true;
-        panButton.Enabled = true;
         relayoutButton.Enabled = true;
         zoomToFitButton.Enabled = true;
         zoomInButton.Enabled = true;
@@ -146,6 +149,20 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
               eventArgs.Handled = true;
           }
         }
+      }
+    }
+
+    void ParentControl_MouseDown(object sender, MouseEventArgs e) {
+      lastActiveTool = this.graphVisualizationInfoView.Controller.ActiveTool;
+      if (e.Button == MouseButtons.Middle) {
+        if (!(lastActiveTool is CustomPanTool)) this.graphVisualizationInfoView.Controller.ActivateTool(CustomPanTool.ToolName);
+      }
+    }
+
+    void ParentControl_MouseUp(object sender, MouseEventArgs e) {
+      if (e.Button == MouseButtons.Middle) {
+        if (lastActiveTool != null) this.graphVisualizationInfoView.Controller.ActivateTool(lastActiveTool.Name);
+        else this.graphVisualizationInfoView.Controller.DeactivateAllTools();
       }
     }
 
@@ -251,9 +268,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
         case ControllerBase.SelectionToolName:
           button = this.selectButton;
           break;
-        case ControllerBase.PanToolName:
-          button = this.panButton;
-          break;
         case ControllerBase.ConnectionToolName:
           button = this.connectButton;
           break;
@@ -267,10 +281,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
     private void selectButton_Click(object sender, EventArgs e) {
       ITool tool = this.graphVisualizationInfoView.Controller.Tools.Where(t => t.Name == ControllerBase.SelectionToolName).First();
       this.graphVisualizationInfoView.Controller.DeactivateAllTools();
-    }
-
-    private void panButton_Click(object sender, EventArgs e) {
-      this.graphVisualizationInfoView.Controller.ActivateTool(ControllerBase.PanToolName);
     }
 
     private void connectButton_Click(object sender, EventArgs e) {

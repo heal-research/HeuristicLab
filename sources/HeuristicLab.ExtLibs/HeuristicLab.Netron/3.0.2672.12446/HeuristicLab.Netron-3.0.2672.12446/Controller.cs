@@ -29,6 +29,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Netron.CustomTools;
 using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Netron {
@@ -39,6 +40,7 @@ namespace HeuristicLab.Netron {
 
     public Controller(IDiagramControl surface)
       : base(surface) {
+      base.AddTool(new CustomPanTool());
     }
 
     public override bool ActivateTextEditor(ITextProvider textProvider) {
