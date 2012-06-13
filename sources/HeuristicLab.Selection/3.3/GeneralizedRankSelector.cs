@@ -62,8 +62,14 @@ namespace HeuristicLab.Selection {
       IScope[] selected = new IScope[count];
       double pressure = PressureParameter.ActualValue.Value;
 
-      var ordered = qualities.Select((x, index) => new KeyValuePair<int, double>(index, x.Value)).OrderBy(x => x.Value).ToList();
+      var ordered = qualities.Where(x => IsValidQuality(x.Value)).Select((x, index) => new KeyValuePair<int, double>(index, x.Value)).OrderBy(x => x.Value).ToList();
       if (maximization) ordered.Reverse();
+
+      //check if list with indexes is as long as the original scope list
+      //otherwise invalid quality values were filtered
+      if (ordered.Count != scopes.Count) {
+        throw new ArgumentException("The scopes contain invalid quality values (either infinity or double.NaN) on which the selector cannot operate.");
+      }
 
       int m = scopes.Count;
       for (int i = 0; i < count; i++) {

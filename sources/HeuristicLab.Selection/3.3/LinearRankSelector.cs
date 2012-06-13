@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -53,12 +54,18 @@ namespace HeuristicLab.Selection {
       IScope[] selected = new IScope[count];
 
       // create a list for each scope that contains the scope's index in the original scope list and its lots
-      var temp = qualities.Select((x, index) => new { index, x.Value });
+      var temp = qualities.Where(x => IsValidQuality(x.Value)).Select((x, index) => new { index, x.Value });
       if (maximization)
         temp = temp.OrderBy(x => x.Value);
       else
         temp = temp.OrderByDescending(x => x.Value);
       var list = temp.Select((x, index) => new { x.index, lots = index + 1 }).ToList();
+
+      //check if list with indexes is as long as the original scope list
+      //otherwise invalid quality values were filtered
+      if (list.Count != scopes.Count) {
+        throw new ArgumentException("The scopes contain invalid quality values (either infinity or double.NaN) on which the selector cannot operate.");
+      }
 
       int lotSum = list.Count * (list.Count + 1) / 2;
       for (int i = 0; i < count; i++) {

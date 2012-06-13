@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -56,9 +57,15 @@ namespace HeuristicLab.Selection {
       bool copy = CopySelectedParameter.Value.Value;
       IRandom random = RandomParameter.ActualValue;
       bool maximization = MaximizationParameter.ActualValue.Value;
-      List<double> qualities = QualityParameter.ActualValue.Select(x => x.Value).ToList();
+      List<double> qualities = QualityParameter.ActualValue.Where(x => IsValidQuality(x.Value)).Select(x => x.Value).ToList();
       int groupSize = GroupSizeParameter.ActualValue.Value;
       IScope[] selected = new IScope[count];
+
+      //check if list with indexes is as long as the original scope list
+      //otherwise invalid quality values were filtered
+      if (qualities.Count != scopes.Count) {
+        throw new ArgumentException("The scopes contain invalid quality values (either infinity or double.NaN) on which the selector cannot operate.");
+      }
 
       for (int i = 0; i < count; i++) {
         int best = random.Next(scopes.Count);

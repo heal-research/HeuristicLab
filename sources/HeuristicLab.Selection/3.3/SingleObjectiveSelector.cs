@@ -62,5 +62,9 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The quality value contained in each sub-scope which is used for selection."));
       CopySelectedParameter.Hidden = true;
     }
+
+    protected bool IsValidQuality(double quality) {
+      return !double.IsNaN(quality) && !double.IsInfinity(quality);
+    }
   }
 }
