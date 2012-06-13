@@ -211,7 +211,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
 
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
-      foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
       ParameterizeAnalyzers();
@@ -236,7 +236,7 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       UpdateShakingOperators();
       UpdateAnalyzers();
-      foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeIterationBasedOperators();
       base.Problem_OperatorsChanged(sender, e);
     }

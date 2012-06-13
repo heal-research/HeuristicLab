@@ -243,7 +243,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
-      foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
       ParameterizeRankAndCrowdingSorter();
       ParameterizeMainLoop();
@@ -272,7 +272,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       base.Problem_EvaluatorChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
-      foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();

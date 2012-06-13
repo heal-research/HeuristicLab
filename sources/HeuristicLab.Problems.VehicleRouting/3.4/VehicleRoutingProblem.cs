@@ -109,9 +109,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     [Storable]
-    private List<IOperator> operators;
+    private List<IItem> operators;
 
-    public IEnumerable<IOperator> Operators {
+    public IEnumerable<IItem> Operators {
       get { return operators; }
     }
     #endregion
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       EvaluatorParameter.Hidden = true;
 
-      operators = new List<IOperator>();
+      operators = new List<IItem>();
 
       InitializeRandomVRPInstance();
       InitializeOperators();
@@ -146,7 +146,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private VehicleRoutingProblem(VehicleRoutingProblem original, Cloner cloner)
       : base(original, cloner) {
-      this.operators = original.operators.Select(x => (IOperator)cloner.Clone(x)).ToList();
+      this.operators = original.operators.Select(x => (IItem)cloner.Clone(x)).ToList();
       this.AttachEventHandlers();
     }
 
@@ -253,7 +253,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void InitializeOperators() {
-      operators = new List<IOperator>();
+      operators = new List<IItem>();
 
       if (ProblemInstance != null) {
         operators.AddRange(
@@ -266,14 +266,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private void ParameterizeSolutionCreator() {
       if (SolutionCreator is IMultiVRPOperator) {
-        (SolutionCreator as IMultiVRPOperator).SetOperators(Operators);
+        (SolutionCreator as IMultiVRPOperator).SetOperators(Operators.OfType<IOperator>());
       }
     }
 
     private void ParameterizeOperators() {
-      foreach (IOperator op in Operators) {
+      foreach (IOperator op in Operators.OfType<IOperator>()) {
         if (op is IMultiVRPOperator) {
-          (op as IMultiVRPOperator).SetOperators(Operators);
+          (op as IMultiVRPOperator).SetOperators(Operators.OfType<IOperator>());
         }
       }
     }

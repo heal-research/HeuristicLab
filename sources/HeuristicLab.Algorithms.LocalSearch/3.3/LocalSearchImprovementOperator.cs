@@ -291,9 +291,9 @@ namespace HeuristicLab.Algorithms.LocalSearch {
 
       if (MoveGenerator != null && Problem != null) {
         IMoveGenerator generator = MoveGeneratorParameter.Value;
-        foreach (IMoveMaker moveMaker in MoveHelper.GetCompatibleMoveMakers(generator, Problem.Operators).OrderBy(x => x.Name))
+        foreach (IMoveMaker moveMaker in MoveHelper.GetCompatibleMoveMakers(generator, Problem.Operators.OfType<IOperator>()).OrderBy(x => x.Name))
           MoveMakerParameter.ValidValues.Add(moveMaker);
-        foreach (ISingleObjectiveMoveEvaluator moveEvaluator in MoveHelper.GetCompatibleSingleObjectiveMoveEvaluators(generator, Problem.Operators).OrderBy(x => x.Name))
+        foreach (ISingleObjectiveMoveEvaluator moveEvaluator in MoveHelper.GetCompatibleSingleObjectiveMoveEvaluators(generator, Problem.Operators.OfType<IOperator>()).OrderBy(x => x.Name))
           MoveEvaluatorParameter.ValidValues.Add(moveEvaluator);
 
         if (oldMoveMaker != null) {

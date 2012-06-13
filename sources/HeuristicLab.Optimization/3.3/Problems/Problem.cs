@@ -34,9 +34,8 @@ namespace HeuristicLab.Optimization {
   [StorableClass]
   public abstract class Problem : ParameterizedNamedItem, IProblem {
     private static readonly string OperatorsParameterName = "Operators";
-
-    public IFixedValueParameter<OperatorCollection> OperatorsParameter {
-      get { return (IFixedValueParameter<OperatorCollection>)Parameters[OperatorsParameterName]; }
+    public IFixedValueParameter<ItemCollection<IItem>> OperatorsParameter {
+      get { return (IFixedValueParameter<ItemCollection<IItem>>)Parameters[OperatorsParameterName]; }
     }
 
     public static new Image StaticItemImage {
@@ -52,49 +51,58 @@ namespace HeuristicLab.Optimization {
 
     protected Problem()
       : base() {
-      Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", new OperatorCollection(), false));
+      Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>(), false));
       OperatorsParameter.Hidden = true;
       RegisterEventHandlers();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (Parameters.ContainsKey(OperatorsParameterName) && Parameters[OperatorsParameterName] is FixedValueParameter<OperatorCollection>) {
+        OperatorCollection tmp = ((IFixedValueParameter<OperatorCollection>)Parameters[OperatorsParameterName]).Value;
+        Parameters.Remove(OperatorsParameterName);
+        Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>(tmp), false));        
+        OperatorsParameter.Hidden = true;
+      }
+      #endregion
+
       RegisterEventHandlers();
     }
 
     private void RegisterEventHandlers() {
-      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IOperator>(Operators_Changed);
-      Operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IOperator>(Operators_Changed);
-      Operators.CollectionReset += new CollectionItemsChangedEventHandler<IOperator>(Operators_Changed);
+      Operators.ItemsAdded += new CollectionItemsChangedEventHandler<IItem>(Operators_Changed);
+      Operators.ItemsRemoved += new CollectionItemsChangedEventHandler<IItem>(Operators_Changed);
+      Operators.CollectionReset += new CollectionItemsChangedEventHandler<IItem>(Operators_Changed);
     }
 
     #region properties
     // BackwardsCompatibility3.3
     #region Backwards compatible code, remove with 3.4
-    [Storable(Name = "Operators")]
+    [Storable(Name = "Operators", AllowOneWay = true)]
     private IEnumerable<IOperator> StorableOperators {
-      get { return null; }
       set {
         if (!Parameters.ContainsKey(OperatorsParameterName)) {
-          Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", new OperatorCollection(value), false));
+          Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>(value), false));
           OperatorsParameter.Hidden = true;
         }
       }
     }
     #endregion
-    protected OperatorCollection Operators {
+    protected ItemCollection<IItem> Operators {
       get {
         // BackwardsCompatibility3.3
         #region Backwards compatible code, remove with 3.4
         if (!Parameters.ContainsKey(OperatorsParameterName)) {
-          Parameters.Add(new FixedValueParameter<OperatorCollection>(OperatorsParameterName, "The operators that the problem provides to the algorithms.", new OperatorCollection(), false));
+          Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>(), false));
           OperatorsParameter.Hidden = true;
         }
         #endregion
         return OperatorsParameter.Value;
       }
     }
-    IEnumerable<IOperator> IProblem.Operators { get { return Operators; } }
+    IEnumerable<IItem> IProblem.Operators { get { return Operators; } }
     #endregion
 
     protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {

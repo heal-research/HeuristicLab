@@ -82,8 +82,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public OptionalValueParameter<IScope> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<IScope>)Parameters["BestKnownSolution"]; }
     }
-    public ValueParameter<ItemList<IOperator>> OperatorsParameter {
-      get { return (ValueParameter<ItemList<IOperator>>)Parameters["Operators"]; }
+    public ValueParameter<ItemList<IItem>> OperatorsParameter {
+      get { return (ValueParameter<ItemList<IItem>>)Parameters["Operators"]; }
     }
     public OptionalValueParameter<EvaluationCache> CacheParameter {
       get { return (OptionalValueParameter<EvaluationCache>)Parameters["Cache"]; }
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return BestKnownQualityParameter.Value; }
       set { BestKnownQualityParameter.Value = value; }
     }
-    public IEnumerable<IOperator> Operators {
+    public IEnumerable<IItem> Operators {
       get { return OperatorsParameter.Value; }
     }
     private BestScopeSolutionAnalyzer BestScopeSolutionAnalyzer {
@@ -144,7 +144,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", "Set to false as most test functions are minimization problems.", new BoolValue(false)));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
       Parameters.Add(new OptionalValueParameter<IScope>("BestKnownSolution", "The best known solution for this external evaluation problem."));
-      Parameters.Add(new ValueParameter<ItemList<IOperator>>("Operators", "The operators that are passed to the algorithm.", new ItemList<IOperator>()));
+      Parameters.Add(new ValueParameter<ItemList<IItem>>("Operators", "The operators and items that the problem provides to the algorithms.", new ItemList<IItem>()));
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
 
       InitializeOperators();
@@ -162,6 +162,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
             ClientsParameter.Value = new CheckedItemCollection<IEvaluationServiceClient>() { client };
           Parameters.Remove("Client");
         }
+      }
+
+      if (Parameters.ContainsKey("Operators") && Parameters["Operators"] is ValueParameter<ItemList<IOperator>>) {
+        ItemList<IOperator> tmp = ((ValueParameter<ItemList<IOperator>>)Parameters["Operators"]).Value;
+        Parameters.Remove("Operators");
+        Parameters.Add(new ValueParameter<ItemList<IItem>>("Operators", "The operators and items that the problem provides to the algorithms.", new ItemList<IItem>(tmp), false));
       }
       #endregion
       RegisterEventHandlers();
@@ -220,12 +226,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       OperatorsParameter.ValueChanged += new EventHandler(OperatorsParameter_ValueChanged);
-      OperatorsParameter.Value.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_ItemsAdded);
-      OperatorsParameter.Value.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_ItemsRemoved);
-      OperatorsParameter.Value.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IOperator>>(OperatorsParameter_Value_CollectionReset);
+      OperatorsParameter.Value.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IItem>>(OperatorsParameter_Value_ItemsAdded);
+      OperatorsParameter.Value.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<IItem>>(OperatorsParameter_Value_ItemsRemoved);
+      OperatorsParameter.Value.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<IItem>>(OperatorsParameter_Value_CollectionReset);
     }
     private void InitializeOperators() {
-      ItemList<IOperator> operators = OperatorsParameter.Value;
+      ItemList<IItem> operators = OperatorsParameter.Value;
       operators.Add(new BestScopeSolutionAnalyzer());
       ParameterizeAnalyzers();
     }

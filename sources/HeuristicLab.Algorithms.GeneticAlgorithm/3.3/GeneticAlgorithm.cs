@@ -226,7 +226,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
-      foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
       ParameterizeGeneticAlgorithmMainLoop();
       ParameterizeSelectors();

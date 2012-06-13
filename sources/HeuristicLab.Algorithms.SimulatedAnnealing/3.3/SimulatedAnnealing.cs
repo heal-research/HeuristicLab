@@ -232,7 +232,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
       ParameterizeStochasticOperator(Problem.Evaluator);
-      foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
         op.MoveQualityParameter.ActualNameChanged += new EventHandler(MoveEvaluator_MoveQualityParameter_ActualNameChanged);
       }
@@ -265,7 +265,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       base.Problem_EvaluatorChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
-      foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       // This may seem pointless, but some operators already have the eventhandler registered, others don't
       // FIXME: Is there another way to solve this problem?
       foreach (ISingleObjectiveMoveEvaluator op in Problem.Operators.OfType<ISingleObjectiveMoveEvaluator>()) {
