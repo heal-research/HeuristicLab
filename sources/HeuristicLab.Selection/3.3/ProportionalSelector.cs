@@ -68,14 +68,14 @@ namespace HeuristicLab.Selection {
 
       // prepare qualities for proportional selection
       var qualities = QualityParameter.ActualValue.Select(x => x.Value);
-      //check if list with indexes is as long as the original scope list
-      //otherwise invalid quality values were filtered
-      if (!qualities.All(IsValidQuality)) {
-        throw new ArgumentException("The scopes contain invalid quality values (either infinity or double.NaN) on which the selector cannot operate.");
+      double minQuality = double.MaxValue;
+      double maxQuality = double.MinValue;
+      foreach (var quality in qualities) {
+        if (!IsValidQuality(quality)) throw new ArgumentException("The scopes contain invalid quality values (either infinity or double.NaN) on which the selector cannot operate.");
+        if (quality < minQuality) minQuality = quality;
+        if (quality > maxQuality) maxQuality = quality;
       }
 
-      double minQuality = qualities.Min();
-      double maxQuality = qualities.Max();
       if (minQuality == maxQuality) {  // all quality values are equal
         qualities = qualities.Select(x => 1.0);
       } else {
@@ -94,7 +94,7 @@ namespace HeuristicLab.Selection {
       }
 
       List<double> list = qualities.ToList();
-      double qualitySum = qualities.Sum();
+      double qualitySum = list.Sum();
       for (int i = 0; i < count; i++) {
         double selectedQuality = random.NextDouble() * qualitySum;
         int index = 0;
