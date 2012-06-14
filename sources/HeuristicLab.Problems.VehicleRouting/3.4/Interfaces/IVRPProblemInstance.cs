@@ -30,7 +30,7 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   public interface IVRPProblemInstance: IItem {
-    IVRPEvaluator SolutionEvaluator { get; }
+    IVRPEvaluator SolutionEvaluator { get; set; }
     IVRPEvaluator MoveEvaluator { get; }
     IEnumerable<IOperator> Operators { get; }
 

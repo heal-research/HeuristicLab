@@ -173,6 +173,12 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       get {
         return evaluator;
       }
+
+      set {
+        moveEvaluator = null;
+        evaluator = value;
+        EvalBestKnownSolution();
+      }
     }
 
     public virtual double GetDistance(int start, int end, IVRPEncoding solution) {

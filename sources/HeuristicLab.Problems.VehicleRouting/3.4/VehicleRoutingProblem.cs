@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class VehicleRoutingProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {
+  public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {
     public string Filename { get; set; }
 
     public static new Image StaticItemImage {
@@ -107,13 +107,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public ISolutionCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
     }
-
-    [Storable]
-    private List<IItem> operators;
-
-    public IEnumerable<IItem> Operators {
-      get { return operators; }
-    }
     #endregion
 
     [StorableConstructor]
@@ -130,8 +123,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       EvaluatorParameter.Hidden = true;
 
-      operators = new List<IItem>();
-
       InitializeRandomVRPInstance();
       InitializeOperators();
 
@@ -146,7 +137,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private VehicleRoutingProblem(VehicleRoutingProblem original, Cloner cloner)
       : base(original, cloner) {
-      this.operators = original.operators.Select(x => (IItem)cloner.Clone(x)).ToList();
       this.AttachEventHandlers();
     }
 
@@ -161,16 +151,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       EventHandler handler = EvaluatorChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
-    public event EventHandler OperatorsChanged;
-    private void OnOperatorsChanged() {
-      EventHandler handler = OperatorsChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler Reset;
-    private void OnReset() {
-      EventHandler handler = Reset;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
     #endregion
 
     #region Helpers
@@ -180,9 +160,16 @@ namespace HeuristicLab.Problems.VehicleRouting {
       AttachProblemInstanceEventHandlers();
     }
 
+    [Storable(Name = "operators", AllowOneWay = true)]
+    private List<IOperator> StorableOperators {
+      set { Operators.AddRange(value); }
+    }
+
     private void AttachEventHandlers() {
       ProblemInstanceParameter.ValueChanged += new EventHandler(ProblemInstanceParameter_ValueChanged);
       BestKnownSolutionParameter.ValueChanged += new EventHandler(BestKnownSolutionParameter_ValueChanged);
+      EvaluatorParameter.ValueChanged += new EventHandler(EvaluatorParameter_ValueChanged);
+      SolutionCreatorParameter.ValueChanged += new EventHandler(SolutionCreatorParameter_ValueChanged);
     }
 
     private void AttachProblemInstanceEventHandlers() {
@@ -192,7 +179,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (ProblemInstance != null) {
         EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
         IVRPCreator defaultCreator = null;
-        foreach (IVRPCreator creator in operators.Where(o => o is IVRPCreator)) {
+        foreach (IVRPCreator creator in Operators.Where(o => o is IVRPCreator)) {
           solutionCreatorParameter.ValidValues.Add(creator);
           if (creator is Encodings.Alba.RandomCreator)
             defaultCreator = creator;
@@ -219,6 +206,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     void ProblemInstance_EvaluationChanged(object sender, EventArgs e) {
+      EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
       EvalBestKnownSolution();
     }
 
@@ -244,30 +232,24 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizeSolutionCreator();
-
       OnSolutionCreatorChanged();
     }
     private void EvaluatorParameter_ValueChanged(object sender, EventArgs e) {
+      if (ProblemInstance != null)
+        ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
       OnEvaluatorChanged();
     }
 
     private void InitializeOperators() {
-      operators = new List<IItem>();
+      Operators.Clear();
 
       if (ProblemInstance != null) {
-        operators.AddRange(
+        Operators.AddRange(
         ProblemInstance.Operators.Concat(
           ApplicationManager.Manager.GetInstances<IGeneralVRPOperator>().Cast<IOperator>()).OrderBy(op => op.Name));
       }
 
       ParameterizeOperators();
-    }
-
-    private void ParameterizeSolutionCreator() {
-      if (SolutionCreator is IMultiVRPOperator) {
-        (SolutionCreator as IMultiVRPOperator).SetOperators(Operators.OfType<IOperator>());
-      }
     }
 
     private void ParameterizeOperators() {
