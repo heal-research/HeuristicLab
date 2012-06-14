@@ -37,6 +37,9 @@ namespace HeuristicLab.Data {
       get { return Item2.Value; }
       set { Item2.Value = value; }
     }
+    public int Size {
+      get { return End - Start; }
+    }
 
     [StorableConstructor]
     protected IntRange(bool deserializing) : base(deserializing) { }
