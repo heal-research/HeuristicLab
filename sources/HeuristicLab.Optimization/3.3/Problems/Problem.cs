@@ -33,7 +33,7 @@ namespace HeuristicLab.Optimization {
   [Item("Problem", "Represents the base class for a problem.")]
   [StorableClass]
   public abstract class Problem : ParameterizedNamedItem, IProblem {
-    private static readonly string OperatorsParameterName = "Operators";
+    private const string OperatorsParameterName = "Operators";
     public IFixedValueParameter<ItemCollection<IItem>> OperatorsParameter {
       get { return (IFixedValueParameter<ItemCollection<IItem>>)Parameters[OperatorsParameterName]; }
     }
@@ -60,11 +60,14 @@ namespace HeuristicLab.Optimization {
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
-      if (Parameters.ContainsKey(OperatorsParameterName) && Parameters[OperatorsParameterName] is FixedValueParameter<OperatorCollection>) {
-        OperatorCollection tmp = ((IFixedValueParameter<OperatorCollection>)Parameters[OperatorsParameterName]).Value;
-        Parameters.Remove(OperatorsParameterName);
-        Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>(tmp), false));        
-        OperatorsParameter.Hidden = true;
+      IParameter operatorsParam;
+      if (Parameters.TryGetValue(OperatorsParameterName, out operatorsParam)) {
+        var operators = operatorsParam.ActualValue as OperatorCollection;
+        if (operators != null) {
+          Parameters.Remove(OperatorsParameterName);
+          Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>(operators), false));
+          OperatorsParameter.Hidden = true;
+        }
       }
       #endregion
 
@@ -83,10 +86,18 @@ namespace HeuristicLab.Optimization {
     [Storable(Name = "Operators", AllowOneWay = true)]
     private IEnumerable<IOperator> StorableOperators {
       set {
+        IParameter operatorsParam;
+        if (Parameters.TryGetValue(OperatorsParameterName, out operatorsParam)) {
+          var items = operatorsParam.ActualValue as ItemCollection<IItem>;
+          if (items == null) Parameters.Remove(operatorsParam);
+        }
+
+        //necessary to convert old experiments files where no parameter was used for saving the operators
         if (!Parameters.ContainsKey(OperatorsParameterName)) {
-          Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>(value), false));
+          Parameters.Add(new FixedValueParameter<ItemCollection<IItem>>(OperatorsParameterName, "The operators and items that the problem provides to the algorithms.", new ItemCollection<IItem>(), false));
           OperatorsParameter.Hidden = true;
         }
+        if (value != null) Operators.AddRange(value);
       }
     }
     #endregion
