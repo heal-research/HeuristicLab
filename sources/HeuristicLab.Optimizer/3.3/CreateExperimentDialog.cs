@@ -59,6 +59,7 @@ namespace HeuristicLab.Optimizer {
     private Dictionary<IValueParameter, DoubleArray> doubleParameters;
     private HashSet<IValueParameter> boolParameters;
     private Dictionary<IValueParameter, HashSet<IItem>> multipleChoiceParameters;
+    private IItem optionalNullChoice = new BoolValue(); // any item will do
 
     private StringBuilder failedInstances;
     private EventWaitHandle backgroundWorkerWaitHandle = new ManualResetEvent(false);
@@ -160,14 +161,22 @@ namespace HeuristicLab.Optimizer {
     private void UpdateDetailsView(IValueParameter parameter) {
       ClearDetailsView();
 
+      var isOptionalConstrainedValueParameter = typeof(OptionalConstrainedValueParameter<>).IsAssignableFrom(parameter.GetType().GetGenericTypeDefinition());
       var isConstrainedValueParameter =
-        typeof(OptionalConstrainedValueParameter<>).IsAssignableFrom(parameter.GetType().GetGenericTypeDefinition())
+        isOptionalConstrainedValueParameter
         || typeof(ConstrainedValueParameter<>).Equals(parameter.GetType().GetGenericTypeDefinition());
 
       if (isConstrainedValueParameter) {
         detailsTypeLabel.Text = "Choices:";
         choicesListView.Tag = parameter;
 
+        if (isOptionalConstrainedValueParameter) {
+          choicesListView.Items.Add(new ListViewItem("-") {
+            Tag = optionalNullChoice,
+            Checked = multipleChoiceParameters.ContainsKey(parameter)
+            && multipleChoiceParameters[parameter].Contains(optionalNullChoice)
+          });
+        }
         dynamic constrainedValuedParameter = parameter;
         dynamic validValues = constrainedValuedParameter.ValidValues;
         foreach (var choice in validValues) {
@@ -796,6 +805,11 @@ namespace HeuristicLab.Optimizer {
         if (multipleChoiceParameters.Any()) {
           foreach (var m in mcEnumerator.Current) {
             dynamic variantParam = variant.Parameters[m.Key.Name];
+            if (m.Value == optionalNullChoice) {
+              variantParam.Value = null;
+              variant.Name += m.Key.Name + "=null, ";
+              continue;
+            }
             var variantEnumerator = ((IEnumerable<object>)variantParam.ValidValues).GetEnumerator();
             var originalEnumerator = ((IEnumerable<object>)((dynamic)m.Key).ValidValues).GetEnumerator();
             while (variantEnumerator.MoveNext() && originalEnumerator.MoveNext()) {
