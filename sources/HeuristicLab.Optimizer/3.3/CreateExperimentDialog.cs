@@ -247,7 +247,7 @@ namespace HeuristicLab.Optimizer {
       }
       #endregion
       using (var dialog = new DefineArithmeticProgressionDialog(integerOnly, min, max, step)) {
-        if (dialog.ShowDialog() == DialogResult.OK) {
+        if (dialog.ShowDialog(this) == DialogResult.OK) {
           var values = dialog.Values;
           if (integerOnly) {
             intParameters[parameter].Reset -= new EventHandler(ValuesArray_Reset);

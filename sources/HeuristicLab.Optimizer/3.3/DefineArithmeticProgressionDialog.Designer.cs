@@ -59,8 +59,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // stepSizeTextBox
       // 
-      this.stepSizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.stepSizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.stepSizeTextBox.Location = new System.Drawing.Point(75, 64);
       this.stepSizeTextBox.Name = "stepSizeTextBox";
       this.stepSizeTextBox.Size = new System.Drawing.Size(184, 20);
@@ -69,8 +69,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // maximumTextBox
       // 
-      this.maximumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.maximumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.maximumTextBox.Location = new System.Drawing.Point(75, 38);
       this.maximumTextBox.Name = "maximumTextBox";
       this.maximumTextBox.Size = new System.Drawing.Size(184, 20);
@@ -79,8 +79,8 @@ namespace HeuristicLab.Optimizer {
       // 
       // minimumTextBox
       // 
-      this.minimumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.minimumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.minimumTextBox.Location = new System.Drawing.Point(75, 12);
       this.minimumTextBox.Name = "minimumTextBox";
       this.minimumTextBox.Size = new System.Drawing.Size(184, 20);
@@ -158,7 +158,11 @@ namespace HeuristicLab.Optimizer {
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "DefineArithmeticProgressionDialog";
+      this.ShowIcon = false;
+      this.ShowInTaskbar = false;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Generate Values";
+      this.TopMost = true;
       this.Load += new System.EventHandler(this.DefineArithmeticProgressionDialog_Load);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
