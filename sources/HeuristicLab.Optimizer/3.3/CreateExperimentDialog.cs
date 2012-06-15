@@ -681,31 +681,33 @@ namespace HeuristicLab.Optimizer {
 
       int counter = 0, totalVariations = GetNumberOfVariations();
       if (instances.Count == 0) {
-        AddParameterVariations(Optimizer, localExperiment, ref counter, totalVariations);
+        try {
+          AddParameterVariations(Optimizer, localExperiment, ref counter, totalVariations);
+        } catch (OperationCanceledException) {
+          e.Cancel = true;
+          localExperiment = null;
+          return;
+        }
         experimentCreationBackgroundWorker.ReportProgress(100, string.Empty);
-
       } else {
         foreach (var provider in instances.Keys) {
           foreach (var descriptor in instances[provider]) {
-            #region Check cancellation request
-            if (experimentCreationBackgroundWorker.CancellationPending) {
-              e.Cancel = true;
-              localExperiment = null;
-              return;
-            }
-            #endregion
             var algorithm = (IAlgorithm)Optimizer.Clone();
             bool failed = false;
             try {
               ProblemInstanceManager.LoadData(provider, descriptor, (IProblemInstanceConsumer)algorithm.Problem);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
               failedInstances.AppendLine(descriptor.Name + ": " + ex.Message);
               failed = true;
             }
             if (!failed) {
-
-              AddParameterVariations(algorithm, localExperiment, ref counter, totalVariations);
+              try {
+                AddParameterVariations(algorithm, localExperiment, ref counter, totalVariations);
+              } catch (OperationCanceledException) {
+                e.Cancel = true;
+                localExperiment = null;
+                return;
+              }
             } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round((100.0 * counter) / totalVariations), "Loading failed (" + descriptor.Name + ")");
           }
         }
@@ -723,6 +725,8 @@ namespace HeuristicLab.Optimizer {
     private void AddParameterVariations(IOptimizer optimizer, Experiment localExperiment, ref int counter, int totalVariations) {
       var variations = experimentCreationBackgroundWorker_CalculateParameterVariations(optimizer);
       foreach (var v in variations) {
+        if (experimentCreationBackgroundWorker.CancellationPending)
+          throw new OperationCanceledException();
         AddOptimizer(v, localExperiment);
         counter++;
         experimentCreationBackgroundWorker.ReportProgress((int)Math.Round((100.0 * counter) / totalVariations), string.Empty);
