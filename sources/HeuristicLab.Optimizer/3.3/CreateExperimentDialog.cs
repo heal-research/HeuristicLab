@@ -412,7 +412,7 @@ namespace HeuristicLab.Optimizer {
       if (isAlgorithm) {
         variationsLabel.Visible = true;
         experimentsToCreateDescriptionLabel.Visible = true;
-        Height = 430;
+        Height = 450;
       } else {
         variationsLabel.Visible = false;
         experimentsToCreateDescriptionLabel.Visible = false;
@@ -744,7 +744,9 @@ namespace HeuristicLab.Optimizer {
 
     private IEnumerable<IOptimizer> experimentCreationBackgroundWorker_CalculateParameterVariations(IOptimizer optimizer) {
       if (!boolParameters.Any() && !intParameters.Any() && !doubleParameters.Any() && !multipleChoiceParameters.Any()) {
-        yield return (IOptimizer)optimizer.Clone();
+        var o = (IOptimizer)optimizer.Clone();
+        o.Runs.Clear();
+        yield return o;
         yield break;
       }
       bool finished;
@@ -755,6 +757,7 @@ namespace HeuristicLab.Optimizer {
       mcEnumerator.MoveNext(); boolEnumerator.MoveNext(); intEnumerator.MoveNext(); doubleEnumerator.MoveNext();
       do {
         var variant = (IAlgorithm)optimizer.Clone();
+        variant.Runs.Clear();
         variant.Name += " {";
         finished = true;
         if (doubleParameters.Any()) {

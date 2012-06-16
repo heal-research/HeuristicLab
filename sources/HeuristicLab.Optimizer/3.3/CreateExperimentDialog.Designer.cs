@@ -94,7 +94,7 @@ namespace HeuristicLab.Optimizer {
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.okButton.Enabled = false;
-      this.okButton.Location = new System.Drawing.Point(187, 359);
+      this.okButton.Location = new System.Drawing.Point(246, 377);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 7;
@@ -106,7 +106,7 @@ namespace HeuristicLab.Optimizer {
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(268, 359);
+      this.cancelButton.Location = new System.Drawing.Point(327, 377);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 8;
@@ -160,7 +160,7 @@ namespace HeuristicLab.Optimizer {
             0,
             0});
       this.repetitionsNumericUpDown.Name = "repetitionsNumericUpDown";
-      this.repetitionsNumericUpDown.Size = new System.Drawing.Size(230, 20);
+      this.repetitionsNumericUpDown.Size = new System.Drawing.Size(289, 20);
       this.repetitionsNumericUpDown.TabIndex = 3;
       this.repetitionsNumericUpDown.ThousandsSeparator = true;
       this.toolTip.SetToolTip(this.repetitionsNumericUpDown, "Number of repetitions executed by the batch run.");
@@ -241,7 +241,7 @@ namespace HeuristicLab.Optimizer {
       this.tabControl.Location = new System.Drawing.Point(15, 54);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(328, 299);
+      this.tabControl.Size = new System.Drawing.Size(387, 317);
       this.tabControl.TabIndex = 4;
       // 
       // parametersTabPage
@@ -250,9 +250,9 @@ namespace HeuristicLab.Optimizer {
       this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
       this.parametersTabPage.Name = "parametersTabPage";
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.parametersTabPage.Size = new System.Drawing.Size(320, 273);
+      this.parametersTabPage.Size = new System.Drawing.Size(379, 291);
       this.parametersTabPage.TabIndex = 1;
-      this.parametersTabPage.Text = "Parameters Variation";
+      this.parametersTabPage.Text = "Parameter Variations";
       this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // parametersSplitContainer
@@ -272,8 +272,8 @@ namespace HeuristicLab.Optimizer {
       this.parametersSplitContainer.Panel2.Controls.Add(this.stringConvertibleArrayView);
       this.parametersSplitContainer.Panel2.Controls.Add(this.detailsTypeLabel);
       this.parametersSplitContainer.Panel2.Controls.Add(this.choicesListView);
-      this.parametersSplitContainer.Size = new System.Drawing.Size(314, 267);
-      this.parametersSplitContainer.SplitterDistance = 124;
+      this.parametersSplitContainer.Size = new System.Drawing.Size(373, 285);
+      this.parametersSplitContainer.SplitterDistance = 155;
       this.parametersSplitContainer.TabIndex = 1;
       // 
       // parametersListView
@@ -286,7 +286,7 @@ namespace HeuristicLab.Optimizer {
       this.parametersListView.Location = new System.Drawing.Point(0, 0);
       this.parametersListView.MultiSelect = false;
       this.parametersListView.Name = "parametersListView";
-      this.parametersListView.Size = new System.Drawing.Size(124, 267);
+      this.parametersListView.Size = new System.Drawing.Size(155, 285);
       this.parametersListView.TabIndex = 0;
       this.parametersListView.UseCompatibleStateImageBehavior = false;
       this.parametersListView.View = System.Windows.Forms.View.Details;
@@ -317,7 +317,7 @@ namespace HeuristicLab.Optimizer {
       this.stringConvertibleArrayView.Location = new System.Drawing.Point(16, 39);
       this.stringConvertibleArrayView.Name = "stringConvertibleArrayView";
       this.stringConvertibleArrayView.ReadOnly = false;
-      this.stringConvertibleArrayView.Size = new System.Drawing.Size(155, 215);
+      this.stringConvertibleArrayView.Size = new System.Drawing.Size(183, 233);
       this.stringConvertibleArrayView.TabIndex = 7;
       // 
       // detailsTypeLabel
@@ -340,7 +340,7 @@ namespace HeuristicLab.Optimizer {
       this.choicesListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.choicesListView.Location = new System.Drawing.Point(16, 34);
       this.choicesListView.Name = "choicesListView";
-      this.choicesListView.Size = new System.Drawing.Size(155, 220);
+      this.choicesListView.Size = new System.Drawing.Size(183, 238);
       this.choicesListView.TabIndex = 6;
       this.choicesListView.UseCompatibleStateImageBehavior = false;
       this.choicesListView.View = System.Windows.Forms.View.Details;
@@ -391,7 +391,7 @@ namespace HeuristicLab.Optimizer {
       // 
       this.experimentsToCreateDescriptionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.experimentsToCreateDescriptionLabel.AutoSize = true;
-      this.experimentsToCreateDescriptionLabel.Location = new System.Drawing.Point(12, 364);
+      this.experimentsToCreateDescriptionLabel.Location = new System.Drawing.Point(12, 382);
       this.experimentsToCreateDescriptionLabel.Name = "experimentsToCreateDescriptionLabel";
       this.experimentsToCreateDescriptionLabel.Size = new System.Drawing.Size(56, 13);
       this.experimentsToCreateDescriptionLabel.TabIndex = 5;
@@ -401,7 +401,7 @@ namespace HeuristicLab.Optimizer {
       // 
       this.variationsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.variationsLabel.AutoSize = true;
-      this.variationsLabel.Location = new System.Drawing.Point(74, 364);
+      this.variationsLabel.Location = new System.Drawing.Point(74, 382);
       this.variationsLabel.Name = "variationsLabel";
       this.variationsLabel.Size = new System.Drawing.Size(13, 13);
       this.variationsLabel.TabIndex = 6;
@@ -423,9 +423,9 @@ namespace HeuristicLab.Optimizer {
       // 
       this.experimentCreationProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
-      this.experimentCreationProgressBar.Location = new System.Drawing.Point(187, 359);
+      this.experimentCreationProgressBar.Location = new System.Drawing.Point(187, 377);
       this.experimentCreationProgressBar.Name = "experimentCreationProgressBar";
-      this.experimentCreationProgressBar.Size = new System.Drawing.Size(75, 23);
+      this.experimentCreationProgressBar.Size = new System.Drawing.Size(134, 23);
       this.experimentCreationProgressBar.TabIndex = 9;
       this.experimentCreationProgressBar.Visible = false;
       // 
@@ -434,7 +434,7 @@ namespace HeuristicLab.Optimizer {
       this.AcceptButton = this.okButton;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(355, 394);
+      this.ClientSize = new System.Drawing.Size(414, 412);
       this.Controls.Add(this.experimentCreationProgressBar);
       this.Controls.Add(this.variationsLabel);
       this.Controls.Add(this.experimentsToCreateDescriptionLabel);
