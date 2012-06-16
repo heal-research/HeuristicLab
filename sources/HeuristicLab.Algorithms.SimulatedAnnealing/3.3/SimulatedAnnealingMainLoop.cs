@@ -50,6 +50,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public LookupParameter<DoubleValue> MoveQualityParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
+    public ILookupParameter<DoubleValue> TemperatureParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Temperature"]; }
+    }
     public ValueLookupParameter<DoubleValue> StartTemperatureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["StartTemperature"]; }
     }
@@ -108,6 +111,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The value which represents the quality of a solution."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestKnownQuality", "The best known quality value found so far."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The value which represents the quality of a move."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Temperature", "The current temperature."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("StartTemperature", "The initial temperature."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("EndTemperature", "The end temperature."));
       Parameters.Add(new ValueLookupParameter<IntValue>("InnerIterations", "The amount of inner iterations (number of moves before temperature is adjusted again)."));
@@ -125,7 +129,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       #endregion
 
       #region Create operators
-      VariableCreator variableCreator = new VariableCreator();
+      Assigner temperatureInitializer = new Assigner();
       ResultsCollector resultsCollector1 = new ResultsCollector();
       SubScopesProcessor subScopesProcessor0 = new SubScopesProcessor();
       Placeholder analyzer1 = new Placeholder();
@@ -147,10 +151,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch iterationsTermination = new ConditionalBranch();
 
-      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("Temperature", new DoubleValue(double.MaxValue)));
+      temperatureInitializer.LeftSideParameter.ActualName = TemperatureParameter.ActualName;
+      temperatureInitializer.RightSideParameter.ActualName = StartTemperatureParameter.Name;
 
       resultsCollector1.CollectedValues.Add(new LookupParameter<IntValue>(IterationsParameter.Name));
-      resultsCollector1.CollectedValues.Add(new LookupParameter<DoubleValue>("Temperature"));
       resultsCollector1.ResultsParameter.ActualName = ResultsParameter.Name;
 
       analyzer1.Name = "Analyzer (placeholder)";
@@ -198,8 +202,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       #endregion
 
       #region Create operator graph
-      OperatorGraph.InitialOperator = variableCreator;
-      variableCreator.Successor = resultsCollector1;
+      OperatorGraph.InitialOperator = temperatureInitializer;
+      temperatureInitializer.Successor = resultsCollector1;
       resultsCollector1.Successor = subScopesProcessor0;
       subScopesProcessor0.Operators.Add(analyzer1);
       subScopesProcessor0.Successor = sssp;
@@ -236,6 +240,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       #region Backwards compatible code (remove with 3.4)
       if (!Parameters.ContainsKey("Iterations"))
         Parameters.Add(new LookupParameter<IntValue>("Iterations", "The number of iterations."));
+      if (!Parameters.ContainsKey("Temperature"))
+        Parameters.Add(new LookupParameter<DoubleValue>("Temperature", "The current temperature."));
       #endregion
     }
 

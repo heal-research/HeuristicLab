@@ -143,17 +143,28 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     }
     [Storable]
     private QualityAnalyzer qualityAnalyzer;
+    [Storable]
+    private SingleValueAnalyzer temperatureAnalyzer;
     #endregion
 
     [StorableConstructor]
     private SimulatedAnnealing(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (temperatureAnalyzer == null) {
+        temperatureAnalyzer = new SingleValueAnalyzer();
+        temperatureAnalyzer.Name = "TemperatureAnalyzer";
+        temperatureAnalyzer.ResultsParameter.ActualName = "Results";
+        temperatureAnalyzer.ValueParameter.ActualName = "Temperature";
+        temperatureAnalyzer.ValuesParameter.ActualName = "Temperature Chart";
+        Analyzer.Operators.Add(temperatureAnalyzer);
+      }
       Initialize();
     }
     private SimulatedAnnealing(SimulatedAnnealing original, Cloner cloner)
       : base(original, cloner) {
       qualityAnalyzer = cloner.Clone(original.qualityAnalyzer);
+      temperatureAnalyzer = cloner.Clone(original.temperatureAnalyzer);
       Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -204,6 +215,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       mainLoop.MoveMakerParameter.ActualName = MoveMakerParameter.Name;
       mainLoop.AnnealingOperatorParameter.ActualName = AnnealingOperatorParameter.Name;
       mainLoop.MaximumIterationsParameter.ActualName = MaximumIterationsParameter.Name;
+      mainLoop.TemperatureParameter.ActualName = "Temperature";
       mainLoop.StartTemperatureParameter.ActualName = StartTemperatureParameter.Name;
       mainLoop.EndTemperatureParameter.ActualName = EndTemperatureParameter.Name;
       mainLoop.RandomParameter.ActualName = RandomCreator.RandomParameter.ActualName;
@@ -217,6 +229,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       ParameterizeAnnealingOperators();
 
       qualityAnalyzer = new QualityAnalyzer();
+      temperatureAnalyzer = new SingleValueAnalyzer();
+      temperatureAnalyzer.Name = "TemperatureAnalyzer";
       ParameterizeAnalyzers();
       UpdateAnalyzers();
 
@@ -347,6 +361,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         qualityAnalyzer.MaximizationParameter.Hidden = false;
         qualityAnalyzer.QualityParameter.Hidden = false;
         qualityAnalyzer.BestKnownQualityParameter.Hidden = false;
+        temperatureAnalyzer.ResultsParameter.ActualName = "Results";
+        temperatureAnalyzer.ValueParameter.ActualName = "Temperature";
+        temperatureAnalyzer.ValuesParameter.ActualName = "Temperature Chart";
       }
     }
     private void UpdateMoveParameters() {
@@ -469,6 +486,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
         }
       }
       Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(temperatureAnalyzer, temperatureAnalyzer.EnabledByDefault);
     }
     private SimulatedAnnealingMainLoop FindMainLoop(IOperator start) {
       IOperator mainLoop = start;
