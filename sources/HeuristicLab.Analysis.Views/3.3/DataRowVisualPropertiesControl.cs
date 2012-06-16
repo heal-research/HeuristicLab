@@ -44,6 +44,7 @@ namespace HeuristicLab.Analysis.Views {
       InitializeComponent();
       chartTypeComboBox.DataSource = Enum.GetValues(typeof(DataRowVisualProperties.DataRowChartType));
       lineStyleComboBox.DataSource = Enum.GetValues(typeof(DataRowVisualProperties.DataRowLineStyle));
+      SetEnabledStateOfControls();
     }
 
     protected virtual void OnContentChanged() {

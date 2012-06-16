@@ -91,9 +91,12 @@ namespace HeuristicLab.Analysis.Views {
       if (!SuppressEvents) {
         if (seriesListView.SelectedItems.Count != 1) {
           dataRowVisualPropertiesControl.Content = null;
+          upButton.Enabled = downButton.Enabled = false;
         } else {
           string rowName = seriesListView.SelectedItems[0].Text;
           dataRowVisualPropertiesControl.Content = Content.Rows[rowName].VisualProperties;
+          upButton.Enabled = seriesListView.SelectedIndices[0] > 0;
+          downButton.Enabled = seriesListView.SelectedIndices[0] < seriesListView.Items.Count - 1;
         }
       }
     }
@@ -159,7 +162,8 @@ namespace HeuristicLab.Analysis.Views {
       foreach (DataRow row in Content.Rows) {
         seriesListView.Items.Add(new ListViewItem(row.Name, 0));
       }
-      seriesListView.SelectedIndices.Add(0);
+      if (seriesListView.Items.Count > 0)
+        seriesListView.SelectedIndices.Add(0);
     }
 
     private void UpdateAllSeriesPositions() {
