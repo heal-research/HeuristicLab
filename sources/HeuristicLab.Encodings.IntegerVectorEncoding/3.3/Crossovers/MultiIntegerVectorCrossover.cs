@@ -24,6 +24,7 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -33,12 +34,16 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("MultiIntegerVectorCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
   [StorableClass]
-  public class MultiIntegerVectorCrossover : StochasticMultiBranch<IIntegerVectorCrossover>, IIntegerVectorCrossover, IStochasticOperator {
+  public class MultiIntegerVectorCrossover : StochasticMultiBranch<IIntegerVectorCrossover>, IIntegerVectorCrossover, IStochasticOperator, IBoundedIntegerVectorOperator {
     public override bool CanChangeName {
       get { return false; }
     }
     protected override bool CreateChildOperation {
       get { return true; }
+    }
+
+    public IValueLookupParameter<IntMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<IntMatrix>)Parameters["Bounds"]; }
     }
 
     public ILookupParameter<ItemArray<IntegerVector>> ParentsParameter {
@@ -54,6 +59,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     protected MultiIntegerVectorCrossover(MultiIntegerVectorCrossover original, Cloner cloner) : base(original, cloner) { }
     public MultiIntegerVectorCrossover()
       : base() {
+      Parameters.Add(new ValueLookupParameter<IntMatrix>("Bounds", "The bounds matrix can contain one row for each dimension with three columns specifying minimum (inclusive), maximum (exclusive), and step size. If less rows are given the matrix is cycled."));
       Parameters.Add(new ScopeTreeLookupParameter<IntegerVector>("Parents", "The parent integer vector which should be crossed."));
       ParentsParameter.ActualName = "IntegerVector";
       Parameters.Add(new LookupParameter<IntegerVector>("Child", "The child integer vector resulting from the crossover."));
@@ -86,6 +92,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       }
       foreach (IStochasticOperator crossover in Operators.OfType<IStochasticOperator>()) {
         crossover.RandomParameter.ActualName = RandomParameter.Name;
+      }
+      foreach (IBoundedIntegerVectorOperator crossover in Operators.OfType<IBoundedIntegerVectorOperator>()) {
+        crossover.BoundsParameter.ActualName = BoundsParameter.Name;
       }
     }
 

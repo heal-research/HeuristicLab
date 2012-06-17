@@ -46,11 +46,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     public IValueLookupParameter<IntValue> LengthParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["Length"]; }
     }
-    public IValueLookupParameter<IntValue> MinimumParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Minimum"]; }
-    }
-    public IValueLookupParameter<IntValue> MaximumParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Maximum"]; }
+    public IValueLookupParameter<IntMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<IntMatrix>)Parameters["Bounds"]; }
     }
 
     [StorableConstructor]
@@ -61,15 +58,31 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
       Parameters.Add(new LookupParameter<IntegerVector>("IntegerVector", "The vector which should be manipulated."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the vector."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Minimum", "The inclusive lower bound for each element in the vector."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Maximum", "The exclusive upper bound for each element in the vector."));
+      Parameters.Add(new ValueLookupParameter<IntMatrix>("Bounds", "The bounds matrix can contain one row for each dimension with three columns specifying minimum (inclusive), maximum (exclusive), and step size. If less rows are given the matrix is cycled."));
     }
 
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("Bounds")) {
+        var min = ((IValueLookupParameter<IntValue>)Parameters["Minimum"]).Value as IntValue;
+        var max = ((IValueLookupParameter<IntValue>)Parameters["Maximum"]).Value as IntValue;
+        Parameters.Remove("Minimum");
+        Parameters.Remove("Maximum");
+        Parameters.Add(new ValueLookupParameter<IntMatrix>("Bounds", "The bounds matrix can contain one row for each dimension with three columns specifying minimum (inclusive), maximum (exclusive), and step size. If less rows are given the matrix is cycled."));
+        if (min != null && max != null) {
+          BoundsParameter.Value = new IntMatrix(new int[,] { { min.Value, max.Value, 1 } });
+        }
+      }
+    }
+    #endregion
+
     public sealed override IOperation Apply() {
-      IntegerVectorParameter.ActualValue = Create(RandomParameter.ActualValue, LengthParameter.ActualValue, MinimumParameter.ActualValue, MaximumParameter.ActualValue);
+      IntegerVectorParameter.ActualValue = Create(RandomParameter.ActualValue, LengthParameter.ActualValue, BoundsParameter.ActualValue);
       return base.Apply();
     }
 
-    protected abstract IntegerVector Create(IRandom random, IntValue length, IntValue minimum, IntValue maximum);
+    protected abstract IntegerVector Create(IRandom random, IntValue length, IntMatrix bounds);
   }
 }

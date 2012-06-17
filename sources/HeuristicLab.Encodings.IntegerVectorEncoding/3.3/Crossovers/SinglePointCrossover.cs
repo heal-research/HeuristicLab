@@ -53,7 +53,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <returns>The newly created integer vector, resulting from the single point crossover.</returns>
     public static IntegerVector Apply(IRandom random, IntegerVector parent1, IntegerVector parent2) {
       if (parent1.Length != parent2.Length)
-        throw new ArgumentException("DiscreteCrossover: The parents are of different length.");
+        throw new ArgumentException("SinglePointCrossover: The parents are of different length.");
 
       int length = parent1.Length;
       int[] result = new int[length];

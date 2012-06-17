@@ -44,39 +44,36 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     /// <summary>
-    /// Performs a discrete crossover operation of the two given parents.
+    /// Performs a discrete crossover operation of any number of given parents.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown when the vectors of the parents are of different length.</exception>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parent1">The first parent for the crossover operation.</param>
-    /// <param name="parent2">The second parent for the crossover operation.</param>
+    /// <param name="parents">The list of parents for the crossover operation.</param>
     /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
-    public static IntegerVector Apply(IRandom random, IntegerVector parent1, IntegerVector parent2) {
-      if (parent1.Length != parent2.Length)
-        throw new ArgumentException("DiscreteCrossover: The parents are of different length.");
+    public static IntegerVector Apply(IRandom random, ItemArray<IntegerVector> parents) {
+      int length = parents[0].Length;
 
-      int length = parent1.Length;
-      int[] result = new int[length];
-
-      for (int i = 0; i < length; i++) {
-        if (random.NextDouble() < 0.5)
-          result[i] = parent1[i];
-        else
-          result[i] = parent2[i];
+      for (int i = 0; i < parents.Length; i++) {
+        if (parents[i].Length != length)
+          throw new ArgumentException("DiscreteCrossover: The parents' vectors are of different length.", "parents");
       }
-      return new IntegerVector(result);
+
+      var result = new IntegerVector(length);
+      for (int i = 0; i < length; i++) {
+        result[i] = parents[random.Next(parents.Length)][i];
+      }
+
+      return result;
     }
 
     /// <summary>
-    /// Performs a discrete crossover operation for two given parent integer vectors.
+    /// Performs a discrete crossover operation for any number of given parent integer vectors.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown if there are not exactly two parents.</exception>
     /// <param name="random">A random number generator.</param>
-    /// <param name="parents">An array containing the two integer vectors that should be crossed.</param>
+    /// <param name="parents">An array containing integer vectors that should be crossed.</param>
     /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
     protected override IntegerVector Cross(IRandom random, ItemArray<IntegerVector> parents) {
-      if (parents.Length != 2) throw new ArgumentException("ERROR in DiscreteCrossover: The number of parents is not equal to 2");
-      return Apply(random, parents[0], parents[1]);
+      return Apply(random, parents);
     }
   }
 }

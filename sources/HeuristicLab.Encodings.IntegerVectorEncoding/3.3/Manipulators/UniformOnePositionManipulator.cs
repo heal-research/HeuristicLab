@@ -35,19 +35,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// </remarks>
   [Item("UniformOnePositionManipulator", " Uniformly distributed change of a single position of an integer vector. It is implemented as described in Michalewicz, Z. 1999. Genetic Algorithms + Data Structures = Evolution Programs. Third, Revised and Extended Edition, Spring-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  public class UniformOnePositionManipulator : IntegerVectorManipulator {
-    /// <summary>
-    /// The lower bound of the values in the int vector.
-    /// </summary>
-    public ValueLookupParameter<IntValue> MinimumParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["Minimum"]; }
-    }
-    /// <summary>
-    /// The upper bound of the values in the int vector.
-    /// </summary>
-    public ValueLookupParameter<IntValue> MaximumParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["Maximum"]; }
-    }
+  public class UniformOnePositionManipulator : BoundedIntegerVectorManipulator {
 
     [StorableConstructor]
     protected UniformOnePositionManipulator(bool deserializing) : base(deserializing) { }
@@ -56,15 +44,28 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// Initializes a new instance of <see cref="UniformOnePositionManipulator"/> with two parameters
     /// (<c>Minimum</c> and <c>Maximum</c>).
     /// </summary>
-    public UniformOnePositionManipulator()
-      : base() {
-      Parameters.Add(new ValueLookupParameter<IntValue>("Minimum", "Minimum of the sampling range for the vector element (included)"));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Maximum", "Maximum of the sampling range for the vector element (excluded)"));
-    }
+    public UniformOnePositionManipulator() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new UniformOnePositionManipulator(this, cloner);
     }
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("Bounds")) {
+        var min = ((IValueLookupParameter<IntValue>)Parameters["Minimum"]).Value as IntValue;
+        var max = ((IValueLookupParameter<IntValue>)Parameters["Maximum"]).Value as IntValue;
+        Parameters.Remove("Minimum");
+        Parameters.Remove("Maximum");
+        Parameters.Add(new ValueLookupParameter<IntMatrix>("Bounds", "The bounds matrix can contain one row for each dimension with three columns specifying minimum (inclusive), maximum (exclusive), and step size. If less rows are given the matrix is cycled."));
+        if (min != null && max != null) {
+          BoundsParameter.Value = new IntMatrix(new int[,] { { min.Value, max.Value, 1 } });
+        }
+      }
+    }
+    #endregion
 
     /// <summary>
     /// Changes randomly a single position in the given integer <paramref name="vector"/>.
@@ -75,9 +76,16 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// the vector element to change (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for
     /// the vector element to change (exclusive).</param>
-    public static void Apply(IRandom random, IntegerVector vector, IntValue min, IntValue max) {
-      int index = random.Next(vector.Length);
-      vector[index] = random.Next(min.Value, max.Value);
+    /// <param name="bounds">The bounds and step size for each dimension (will be cycled in case there are less rows than elements in the parent vectors).</param>
+    public static void Apply(IRandom random, IntegerVector vector, IntMatrix bounds) {
+      Manipulate(random, vector, bounds, random.Next(vector.Length));
+    }
+
+    public static void Manipulate(IRandom random, IntegerVector vector, IntMatrix bounds, int index) {
+      if (bounds == null || bounds.Rows == 0 || bounds.Columns < 2) throw new ArgumentException("UniformOnePositionManipulator: Invalid bounds specified", "bounds");
+      int min = bounds[index % bounds.Rows, 0], max = bounds[index % bounds.Rows, 1], step = 1;
+      if (bounds.Columns > 2) step = bounds[index % bounds.Rows, 2];
+      vector[index] = RoundFeasible(min, max, step, random.Next(min, max + 1));
     }
 
     /// <summary>
@@ -86,10 +94,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="random">A random number generator.</param>
     /// <param name="vector">The integer vector to manipulate.</param>
-    protected override void Manipulate(IRandom random, IntegerVector vector) {
-      if (MinimumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MinimumParameter.ActualName + " could not be found.");
-      if (MaximumParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + MaximumParameter.ActualName + " could not be found.");
-      Apply(random, vector, MinimumParameter.ActualValue, MaximumParameter.ActualValue);
+    /// <param name="bounds">The bounds and step size for each dimension (will be cycled in case there are less rows than elements in the parent vectors).</param>
+    protected override void ManipulateBounded(IRandom random, IntegerVector vector, IntMatrix bounds) {
+      if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("UniformOnePositionManipulator: Parameter " + BoundsParameter.ActualName + " could not be found.");
+      Apply(random, vector, bounds);
     }
   }
 }

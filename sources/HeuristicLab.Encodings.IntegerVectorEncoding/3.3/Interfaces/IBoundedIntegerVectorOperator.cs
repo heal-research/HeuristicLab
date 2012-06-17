@@ -21,14 +21,12 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
-  /// <summary>
-  /// An interface which represents an operator for creating vectors of int-valued data.
-  /// </summary>
-  public interface IIntegerVectorCreator : ISolutionCreator, IBoundedIntegerVectorOperator {
-    IValueLookupParameter<IntValue> LengthParameter { get; }
-    ILookupParameter<IntegerVector> IntegerVectorParameter { get; }
+  public interface IBoundedIntegerVectorOperator : IIntegerVectorOperator {
+    /// <summary>
+    /// The bounds parameter must contain at least one row and at least two columns. The first two columns specify min and max values, the last column specifies the step size, but is optional (1 is assumed if omitted).
+    /// </summary>
+    IValueLookupParameter<IntMatrix> BoundsParameter { get; }
   }
 }

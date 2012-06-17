@@ -36,6 +36,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Random", "3.3")]
   public class HeuristicLabEncodingsIntegerVectorEncodingPlugin : PluginBase {
   }
 }

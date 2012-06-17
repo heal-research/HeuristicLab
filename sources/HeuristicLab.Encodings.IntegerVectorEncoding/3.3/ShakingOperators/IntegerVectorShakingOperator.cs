@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       Parameters.Add(new LookupParameter<IntegerVector>("IntegerVector", "The integer vector to shake."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator that will be used for stochastic shaking operators."));
       foreach (IIntegerVectorManipulator shaker in ApplicationManager.Manager.GetInstances<IIntegerVectorManipulator>().OrderBy(x => x.Name))
-        Operators.Add(shaker);
+        if (!(shaker is ISelfAdaptiveManipulator)) Operators.Add(shaker);
     }
 
     #region Wiring of some parameters

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -48,15 +49,31 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       return new IntegerVector(this, cloner);
     }
 
-    public virtual void Randomize(IRandom random, int startIndex, int length, int min, int max) {
+    public virtual void Randomize(IRandom random, int startIndex, int length, int min, int max, int step = 1) {
       if (length > 0) {
-        for (int i = 0; i < length; i++)
-          array[startIndex + i] = random.Next(min, max);
+        int numbers = (int)Math.Floor((max - min) / (double)step);
+        for (int i = startIndex; i < startIndex + length; i++) {
+          array[i] = random.Next(numbers) * step + min;
+        }
         OnReset();
       }
     }
-    public void Randomize(IRandom random, int min, int max) {
-      Randomize(random, 0, Length, min, max);
+    public virtual void Randomize(IRandom random, int startIndex, int length, IntMatrix bounds) {
+      if (length > 0) {
+        for (int i = startIndex; i < startIndex + length; i++) {
+          int min = bounds[i % bounds.Rows, 0], max = bounds[i % bounds.Rows, 1], step = 1;
+          if (bounds.Columns > 2) step = bounds[i % bounds.Rows, 2];
+          int numbers = (int)Math.Floor((max - min) / (double)step);
+          array[i] = random.Next(numbers) * step + min;
+        }
+        OnReset();
+      }
+    }
+    public void Randomize(IRandom random, int min, int max, int step = 1) {
+      Randomize(random, 0, Length, min, max, step);
+    }
+    public void Randomize(IRandom random, IntMatrix bounds) {
+      Randomize(random, 0, Length, bounds);
     }
   }
 }

@@ -24,11 +24,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
-  /// <summary>
-  /// An interface which represents an operator for creating vectors of int-valued data.
-  /// </summary>
-  public interface IIntegerVectorCreator : ISolutionCreator, IBoundedIntegerVectorOperator {
-    IValueLookupParameter<IntValue> LengthParameter { get; }
-    ILookupParameter<IntegerVector> IntegerVectorParameter { get; }
+  public interface IIntegerVectorStdDevStrategyParameterCrossover : IIntegerVectorStdDevStrategyParameterOperator, IStrategyParameterCrossover {
+    ILookupParameter<ItemArray<DoubleArray>> ParentsParameter { get; }
   }
 }

@@ -118,7 +118,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
       parent1 = new IntegerVector(new int[] { 2, 2, 3, 5, 1 });
       parent2 = new IntegerVector(new int[] { 4, 1, 3, 2, 8 });
       expected = new IntegerVector(new int[] { 2, 2, 3, 5, 8 });
-      actual = DiscreteCrossover.Apply(random, parent1, parent2);
+      actual = DiscreteCrossover.Apply(random, new ItemArray<IntegerVector>(new IntegerVector[] { parent1, parent2 }));
       Assert.IsTrue(Auxiliary.IntegerVectorIsEqualByPosition(actual, expected));
 
       // The following test is not based on published examples
@@ -128,7 +128,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
       parent2 = new IntegerVector(new int[] { 4, 1, 3, 2, 8 });
       exceptionFired = false;
       try {
-        actual = DiscreteCrossover.Apply(random, parent1, parent2);
+        actual = DiscreteCrossover.Apply(random, new ItemArray<IntegerVector>(new IntegerVector[] { parent1, parent2 }));
       }
       catch (System.ArgumentException) {
         exceptionFired = true;

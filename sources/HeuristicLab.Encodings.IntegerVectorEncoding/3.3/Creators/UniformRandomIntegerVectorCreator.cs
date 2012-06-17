@@ -48,11 +48,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <param name="min">The minimum value of the sampling range for each vector element (inclusive).</param>
     /// <param name="max">The maximum value of the sampling range for each vector element (exclusive).</param>
     /// <returns>The newly created integer vector.</returns>
-    public static IntegerVector Apply(IRandom random, int length, int min, int max) {
-      int[] result = new int[length];
-      for (int i = 0; i < length; i++)
-        result[i] = random.Next(min, max);
-      return new IntegerVector(result);
+    public static IntegerVector Apply(IRandom random, int length, IntMatrix bounds) {
+      var result = new IntegerVector(length);
+      result.Randomize(random, bounds);
+      return result;
     }
 
     /// <summary>
@@ -60,11 +59,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// </summary>
     /// <param name="random">The pseudo random number generator to use.</param>
     /// <param name="length">The length of the int vector.</param>
-    /// <param name="minimum">The minimum value of the sampling range for each vector element (inclusive).</param>
-    /// <param name="maximum">The maximum value of the sampling range for each vector element (exclusive).</param>
+    /// <param name="bounds">Contains in each row for each dimension minimum (inclusive), maximum (inclusive), and step size.</param>
     /// <returns>The newly created int vector.</returns>
-    protected override IntegerVector Create(IRandom random, IntValue length, IntValue minimum, IntValue maximum) {
-      return Apply(random, length.Value, minimum.Value, maximum.Value);
+    protected override IntegerVector Create(IRandom random, IntValue length, IntMatrix bounds) {
+      return Apply(random, length.Value, bounds);
     }
   }
 }
