@@ -84,6 +84,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.instancesComboBox.Size = new System.Drawing.Size(601, 21);
       this.instancesComboBox.TabIndex = 7;
       this.instancesComboBox.DataSourceChanged += new System.EventHandler(this.instancesComboBox_DataSourceChanged);
+      this.instancesComboBox.SelectedIndexChanged += new System.EventHandler(this.instancesComboBox_SelectedIndexChanged);
       // 
       // openFileDialog
       // 

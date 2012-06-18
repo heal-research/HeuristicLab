@@ -68,10 +68,8 @@ namespace HeuristicLab.Problems.Instances.Views {
       InitializeComponent();
       importButton.Text = String.Empty;
       importButton.Image = VSImageLibrary.Open;
-      toolTip.SetToolTip(importButton, "Open a " + GetProblemType() + " problem from file.");
       exportButton.Text = String.Empty;
       exportButton.Image = VSImageLibrary.SaveAs;
-      toolTip.SetToolTip(exportButton, "Export currently loaded " + GetProblemType() + " problem to a file.");
       libraryInfoButton.Text = String.Empty;
       libraryInfoButton.Image = VSImageLibrary.Help;
     }
@@ -159,15 +157,14 @@ namespace HeuristicLab.Problems.Instances.Views {
     }
 
     protected string GetProblemType() {
-      string dataTypeName = typeof(T).Name.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries).Last();
-      if (dataTypeName.EndsWith("Data"))
-        return dataTypeName.Substring(0, dataTypeName.Length - "Data".Length);
-      else return dataTypeName;
+      return SelectedProvider.Name;
     }
 
     #region ToolTip
     protected void SetTooltip() {
       toolTip.SetToolTip(problemInstanceProviderComboBox, GetProviderToolTip());
+      toolTip.SetToolTip(importButton, "Open a " + GetProblemType() + " problem from file.");
+      toolTip.SetToolTip(exportButton, "Export currently loaded " + GetProblemType() + " problem to a file.");
       if (SelectedProvider.WebLink != null)
         toolTip.SetToolTip(libraryInfoButton, "Browse to " + SelectedProvider.WebLink.ToString());
       else toolTip.SetToolTip(libraryInfoButton, "Library does not have a web reference.");

@@ -64,6 +64,7 @@ namespace HeuristicLab.Problems.Instances.Views {
         IEnumerable<IDataDescriptor> dataDescriptors = Content.GetDataDescriptors().ToList();
         ShowInstanceLoad(dataDescriptors.Count() > 0);
         instancesComboBox.DataSource = dataDescriptors;
+        instancesComboBox.SelectedIndex = -1;
       }
     }
 
@@ -82,7 +83,7 @@ namespace HeuristicLab.Problems.Instances.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       instancesComboBox.Enabled = !ReadOnly && !Locked && Content != null && GenericConsumer != null;
-      loadButton.Enabled = !ReadOnly && !Locked && Content != null && GenericConsumer != null;
+      loadButton.Enabled = !ReadOnly && !Locked && Content != null && GenericConsumer != null && instancesComboBox.SelectedIndex >= 0;
     }
 
     protected virtual void loadButton_Click(object sender, EventArgs e) {
@@ -100,6 +101,10 @@ namespace HeuristicLab.Problems.Instances.Views {
       var comboBox = (ComboBox)sender;
       if (comboBox.DataSource == null)
         comboBox.Items.Clear();
+    }
+
+    private void instancesComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
+      SetEnabledStateOfControls();
     }
   }
 }
