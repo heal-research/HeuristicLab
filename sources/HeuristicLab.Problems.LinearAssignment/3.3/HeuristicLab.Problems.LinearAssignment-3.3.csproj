@@ -111,7 +111,12 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HungarianAlgorithm.cs" />
+    <Compile Include="LAPAssignment.cs" />
     <None Include="Plugin.cs.frame" />
+    <Compile Include="Analyzers\BestLAPSolutionAnalyzer.cs" />
+    <Compile Include="Interfaces\ILAPEvaluator.cs" />
+    <Compile Include="LAPEvaluator.cs" />
     <Compile Include="LinearAssignmentProblem.cs" />
     <Compile Include="LinearAssignmentProblemSolver.cs" />
     <Compile Include="Plugin.cs" />
@@ -122,6 +127,11 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -145,6 +155,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">

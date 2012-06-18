@@ -21,18 +21,23 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LinearAssignmentProblem", "In the linear assignment problem (LAP) an assignment of workers to jobs has to be found such that each worker is assigned to exactly one job, each job is assigned to exactly one worker and the sum of the resulting costs needs to be minimal.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class LinearAssignmentProblem : Problem {
+  public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator> {
+    public static readonly string CostsDescription = "The cost matrix that describes the assignment of rows to columns.";
+
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
     }
@@ -41,11 +46,11 @@ namespace HeuristicLab.Problems.LinearAssignment {
     public IValueParameter<DoubleMatrix> CostsParameter {
       get { return (IValueParameter<DoubleMatrix>)Parameters["Costs"]; }
     }
-    public IValueParameter<IntArray> SolutionParameter {
-      get { return (IValueParameter<IntArray>)Parameters["Solution"]; }
+    public IValueParameter<ItemSet<Permutation>> BestKnownSolutionsParameter {
+      get { return (IValueParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"]; }
     }
-    public IValueParameter<DoubleValue> QualityParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["Quality"]; }
+    public IValueParameter<Permutation> BestKnownSolutionParameter {
+      get { return (IValueParameter<Permutation>)Parameters["BestKnownSolution"]; }
     }
     #endregion
 
@@ -54,31 +59,38 @@ namespace HeuristicLab.Problems.LinearAssignment {
       get { return CostsParameter.Value; }
       set { CostsParameter.Value = value; }
     }
-    public IntArray Solution {
-      get { return SolutionParameter.Value; }
-      set { SolutionParameter.Value = value; }
+    public ItemSet<Permutation> BestKnownSolutions {
+      get { return BestKnownSolutionsParameter.Value; }
+      set { BestKnownSolutionsParameter.Value = value; }
     }
-    public DoubleValue Quality {
-      get { return QualityParameter.Value; }
-      set { QualityParameter.Value = value; }
+    public Permutation BestKnownSolution {
+      get { return BestKnownSolutionParameter.Value; }
+      set { BestKnownSolutionParameter.Value = value; }
     }
-
     #endregion
+
+    [Storable]
+    private BestLAPSolutionAnalyzer bestLAPSolutionAnalyzer;
 
     [StorableConstructor]
     private LinearAssignmentProblem(bool deserializing) : base(deserializing) { }
     private LinearAssignmentProblem(LinearAssignmentProblem original, Cloner cloner)
       : base(original, cloner) {
+      this.bestLAPSolutionAnalyzer = cloner.Clone(original.bestLAPSolutionAnalyzer);
       AttachEventHandlers();
     }
     public LinearAssignmentProblem()
-      : base() {
-      Parameters.Add(new ValueParameter<DoubleMatrix>("Costs", "The cost matrix that describes the assignment of rows to columns.", new DoubleMatrix(3, 3)));
-      Parameters.Add(new OptionalValueParameter<IntArray>("Solution", "An optimal solution.", null));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("Quality", "The solution quality.", null));
-
+      : base(new LAPEvaluator(), new RandomPermutationCreator()) {
+      Parameters.Add(new ValueParameter<DoubleMatrix>("Costs", CostsDescription, new DoubleMatrix(3, 3)));
+      Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+      Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
+      
       ((ValueParameter<DoubleMatrix>)CostsParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
 
+      bestLAPSolutionAnalyzer = new BestLAPSolutionAnalyzer();
+      SolutionCreator.PermutationParameter.ActualName = "Assignment";
+      InitializeOperators();
+      Parameterize();
       AttachEventHandlers();
     }
 
@@ -87,13 +99,33 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     #region Events
+    protected override void OnEvaluatorChanged() {
+      base.OnEvaluatorChanged();
+      Parameterize();
+    }
+    protected override void OnOperatorsChanged() {
+      base.OnOperatorsChanged();
+      Parameterize();
+    }
+    protected override void OnSolutionCreatorChanged() {
+      base.OnSolutionCreatorChanged();
+      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+      Parameterize();
+    }
     private void Costs_RowsChanged(object sender, EventArgs e) {
-      if (Costs.Rows != Costs.Columns)
+      if (Costs.Rows != Costs.Columns) {
         ((IStringConvertibleMatrix)Costs).Columns = Costs.Rows;
+        Parameterize();
+      }
     }
     private void Costs_ColumnsChanged(object sender, EventArgs e) {
-      if (Costs.Rows != Costs.Columns)
+      if (Costs.Rows != Costs.Columns) {
         ((IStringConvertibleMatrix)Costs).Rows = Costs.Columns;
+        Parameterize();
+      }
+    }
+    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
+      Parameterize();
     }
     #endregion
 
@@ -106,6 +138,47 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private void AttachEventHandlers() {
       Costs.RowsChanged += new EventHandler(Costs_RowsChanged);
       Costs.ColumnsChanged += new EventHandler(Costs_ColumnsChanged);
+      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
+    }
+
+    private void InitializeOperators() {
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>());
+      Operators.RemoveAll(x => x is IMoveOperator);
+      Operators.Add(bestLAPSolutionAnalyzer);
+    }
+
+    private void Parameterize() {
+      SolutionCreator.LengthParameter.Value = new IntValue(Costs.Rows);
+      SolutionCreator.LengthParameter.Hidden = false;
+      Evaluator.CostsParameter.ActualName = CostsParameter.Name;
+      Evaluator.CostsParameter.Hidden = true;
+      Evaluator.AssignmentParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      Evaluator.AssignmentParameter.Hidden = true;
+
+      foreach (var op in Operators.OfType<IPermutationCrossover>()) {
+        op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.ParentsParameter.Hidden = true;
+        op.ChildParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.ChildParameter.Hidden = true;
+      }
+
+      foreach (var op in Operators.OfType<IPermutationManipulator>()) {
+        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.PermutationParameter.Hidden = true;
+      }
+
+      foreach (var op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>()) {
+        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.PermutationParameter.Hidden = true;
+      }
+
+      bestLAPSolutionAnalyzer.AssignmentParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      bestLAPSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+      bestLAPSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+      bestLAPSolutionAnalyzer.BestKnownSolutionsParameter.ActualName = BestKnownSolutionsParameter.Name;
+      bestLAPSolutionAnalyzer.CostsParameter.ActualName = CostsParameter.Name;
+      bestLAPSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      bestLAPSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
     }
     #endregion
   }

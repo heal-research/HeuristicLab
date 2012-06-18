@@ -19,19 +19,14 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.LinearAssignment.Views {
-  [Plugin("HeuristicLab.Problems.LinearAssignment.Views", "3.3.6.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.LinearAssignment.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Data.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.PermutationEncoding", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.LinearAssignment", "3.3")]
-  public class HeuristicLabProblemsLinearAssignmentViewsPlugin : PluginBase {
+namespace HeuristicLab.Problems.LinearAssignment {
+  public interface ILAPEvaluator : ISingleObjectiveEvaluator {
+    ILookupParameter<DoubleMatrix> CostsParameter { get; }
+    ILookupParameter<Permutation> AssignmentParameter { get; }
   }
 }

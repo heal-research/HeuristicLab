@@ -20,11 +20,53 @@
 #endregion
 
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.LinearAssignment {
-  public static class LinearAssignmentProblemSolver {
+  [Item("LinearAssignmentProblemSolver", "Uses the hungarian algorithm to solve linear assignment problems.")]
+  [StorableClass]
+  public sealed class LinearAssignmentProblemSolver : SingleSuccessorOperator {
     private const int UNASSIGNED = -1;
+
+    public ILookupParameter<DoubleMatrix> CostsParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Costs"]; }
+    }
+    public ILookupParameter<Permutation> AssignmentParameter {
+      get { return (ILookupParameter<Permutation>)Parameters["Assignment"]; }
+    }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
+    }
+
+    [StorableConstructor]
+    private LinearAssignmentProblemSolver(bool deserializing) : base(deserializing) { }
+    private LinearAssignmentProblemSolver(LinearAssignmentProblemSolver original, Cloner cloner) : base(original, cloner) { }
+    public LinearAssignmentProblemSolver()
+      : base() {
+      Parameters.Add(new LookupParameter<DoubleMatrix>("Costs", LinearAssignmentProblem.CostsDescription));
+      Parameters.Add(new LookupParameter<Permutation>("Assignment", "The assignment solution to create."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the solution."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LinearAssignmentProblemSolver(this, cloner);
+    }
+
+    public override IOperation Apply() {
+      var costs = CostsParameter.ActualValue;
+      double quality;
+      var solution = Solve(costs, out quality);
+
+      AssignmentParameter.ActualValue = new Permutation(PermutationTypes.Absolute, solution);
+      QualityParameter.ActualValue = new DoubleValue(quality);
+
+      return base.Apply();
+    }
 
     /// <summary>
     /// Uses the Hungarian algorithm to solve the linear assignment problem (LAP).
