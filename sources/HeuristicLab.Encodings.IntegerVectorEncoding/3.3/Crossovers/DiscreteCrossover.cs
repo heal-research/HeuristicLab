@@ -46,11 +46,12 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// <summary>
     /// Performs a discrete crossover operation of any number of given parents.
     /// </summary>
-    /// <exception cref="ArgumentException">Thrown when the vectors of the parents are of different length.</exception>
+    /// <exception cref="ArgumentException">Thrown when the vectors of the parents are of different length or when there are less than 2 parents.</exception>
     /// <param name="random">A random number generator.</param>
     /// <param name="parents">The list of parents for the crossover operation.</param>
     /// <returns>The newly created integer vector, resulting from the crossover operation.</returns>
     public static IntegerVector Apply(IRandom random, ItemArray<IntegerVector> parents) {
+      if (parents.Length < 2) throw new ArgumentException("DiscreteCrossover: There are less than two parents to cross.");
       int length = parents[0].Length;
 
       for (int i = 0; i < parents.Length; i++) {

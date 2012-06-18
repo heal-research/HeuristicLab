@@ -114,7 +114,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
       bool exceptionFired;
       // The following test is not based on published examples
       random.Reset();
-      random.DoubleNumbers = new double[] { 0, 0, 0.9, 0, 0.9 };
+      random.IntNumbers = new int[] { 0, 0, 1, 0, 1 };
       parent1 = new IntegerVector(new int[] { 2, 2, 3, 5, 1 });
       parent2 = new IntegerVector(new int[] { 4, 1, 3, 2, 8 });
       expected = new IntegerVector(new int[] { 2, 2, 3, 5, 8 });
@@ -123,7 +123,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
 
       // The following test is not based on published examples
       random.Reset();
-      random.DoubleNumbers = new double[] { 0, 0, 0.9, 0, 0.9 };
+      random.IntNumbers = new int[] { 0, 0, 1, 0, 1 };
       parent1 = new IntegerVector(new int[] { 2, 2, 3, 5, 1, 9 }); // this parent is longer
       parent2 = new IntegerVector(new int[] { 4, 1, 3, 2, 8 });
       exceptionFired = false;
