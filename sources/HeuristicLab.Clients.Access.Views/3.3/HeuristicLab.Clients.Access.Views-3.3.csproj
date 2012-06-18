@@ -105,7 +105,9 @@
     <Compile Include="ClientViews\ClientRegistrationDialog.Designer.cs">
       <DependentUpon>ClientRegistrationDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClientViews\ClientView.cs" />
+    <Compile Include="ClientViews\ClientView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ClientViews\ClientView.Designer.cs">
       <DependentUpon>ClientView.cs</DependentUpon>
     </Compile>
@@ -131,23 +133,33 @@
     <Compile Include="UserViews\LightweightUserGroupSelectionView.Designer.cs">
       <DependentUpon>LightweightUserGroupSelectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\LightweightUserInformationView.cs" />
+    <Compile Include="UserViews\LightweightUserInformationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserViews\LightweightUserInformationView.Designer.cs">
       <DependentUpon>LightweightUserInformationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserInformationView.cs" />
+    <Compile Include="UserViews\RefreshableLightweightUserInformationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserViews\RefreshableLightweightUserInformationView.Designer.cs">
       <DependentUpon>RefreshableLightweightUserInformationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\LightweightUserView.cs" />
+    <Compile Include="UserViews\LightweightUserView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserViews\LightweightUserView.Designer.cs">
       <DependentUpon>LightweightUserView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\RefreshableLightweightUserView.cs" />
+    <Compile Include="UserViews\RefreshableLightweightUserView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserViews\RefreshableLightweightUserView.Designer.cs">
       <DependentUpon>RefreshableLightweightUserView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserViews\RefreshableView.cs" />
+    <Compile Include="UserViews\RefreshableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UserViews\RefreshableView.Designer.cs">
       <DependentUpon>RefreshableView.cs</DependentUpon>
     </Compile>

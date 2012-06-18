@@ -19,7 +19,10 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using HeuristicLab.Optimizer;
 
 namespace HeuristicLab.Clients.Access.Administration {
@@ -31,8 +34,14 @@ namespace HeuristicLab.Clients.Access.Administration {
       get { return new string[] { "&Services", "&Access" }; }
     }
     public override void Execute() {
-      using (UserAdministrationDialog dialog = new UserAdministrationDialog()) {
-        dialog.ShowDialog();
+      if (UserInformation.Instance.User.Roles.Where(x => x.Name == UserInformation.AdministratorRoleName).Count() > 0) {
+        using (UserAdministrationDialog dialog = new UserAdministrationDialog()) {
+          dialog.ShowDialog();
+        }
+      } else {
+        MessageBox.Show("You do not seem to have the permissions to use the Access Service Administrator." + Environment.NewLine +
+        "If that's not the case or you have any questions please write an email to support@heuristiclab.com",
+        "Access Service Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
     public override int Position {

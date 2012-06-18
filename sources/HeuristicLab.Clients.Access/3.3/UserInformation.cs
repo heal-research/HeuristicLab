@@ -24,6 +24,8 @@ using System.ServiceModel.Security;
 
 namespace HeuristicLab.Clients.Access {
   public sealed class UserInformation {
+    public const string AdministratorRoleName = "AccessService Administrator";
+
     private static UserInformation instance;
     public static UserInformation Instance {
       get {
