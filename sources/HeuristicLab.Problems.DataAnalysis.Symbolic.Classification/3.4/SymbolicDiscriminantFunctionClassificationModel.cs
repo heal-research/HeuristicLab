@@ -126,11 +126,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var targetVariable = problemData.TargetVariable;
       var rows = problemData.TrainingIndizes;
       var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
+      var boundedEstimatedValues = estimatedValues.LimitToRange(model.LowerEstimationLimit, model.UpperEstimationLimit);
       var targetValues = dataset.GetDoubleValues(targetVariable, rows);
       double alpha;
       double beta;
       OnlineCalculatorError errorState;
-      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta, out errorState);
+      OnlineLinearScalingParameterCalculator.Calculate(boundedEstimatedValues, targetValues, out alpha, out beta, out errorState);
       if (errorState != OnlineCalculatorError.None) return;
 
       ConstantTreeNode alphaTreeNode = null;

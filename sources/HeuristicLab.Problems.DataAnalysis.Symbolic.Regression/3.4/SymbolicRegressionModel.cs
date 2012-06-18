@@ -34,8 +34,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   public class SymbolicRegressionModel : SymbolicDataAnalysisModel, ISymbolicRegressionModel {
     [Storable]
     private double lowerEstimationLimit;
+    public double LowerEstimationLimit { get { return lowerEstimationLimit; } }
     [Storable]
     private double upperEstimationLimit;
+    public double UpperEstimationLimit { get { return upperEstimationLimit; } }
 
     [StorableConstructor]
     protected SymbolicRegressionModel(bool deserializing) : base(deserializing) { }
@@ -72,11 +74,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var targetVariable = problemData.TargetVariable;
       var rows = problemData.TrainingIndizes;
       var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
+      var boundedEstimatedValues = estimatedValues.LimitToRange(model.LowerEstimationLimit, model.UpperEstimationLimit);
       var targetValues = dataset.GetDoubleValues(targetVariable, rows);
       double alpha;
       double beta;
       OnlineCalculatorError errorState;
-      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta, out errorState);
+      OnlineLinearScalingParameterCalculator.Calculate(boundedEstimatedValues, targetValues, out alpha, out beta, out errorState);
       if (errorState != OnlineCalculatorError.None) return;
 
       ConstantTreeNode alphaTreeNode = null;
