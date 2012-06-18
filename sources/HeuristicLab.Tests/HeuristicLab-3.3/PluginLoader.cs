@@ -35,8 +35,6 @@ namespace HeuristicLab_33.Tests {
     public static List<Assembly> Assemblies;
 
     static PluginLoader() {
-      //EnvDTE.DTE dte = (EnvDTE.DTE)Marshal.GetActiveObject("VisualStudio.DTE");
-      //string solutionDir = System.IO.Path.GetDirectoryName(_applicationObject.Solution.FullName);
       foreach (string path in Directory.EnumerateFiles(Environment.CurrentDirectory).Where(IsRelevantAssemblyPath)) {
         try {
           Assembly.LoadFrom(path);
