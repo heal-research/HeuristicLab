@@ -32,22 +32,22 @@ namespace HeuristicLab.Clients.Access {
       this.FullName = original.FullName;
       this.UserName = original.UserName;
       this.EMail = original.EMail;
-      this.Groups = original.Groups.Select(x => (UserGroup)x.Clone(cloner)).ToList();
-      this.Roles = original.Roles.Select(x => (Role)x.Clone(cloner)).ToList();
+      this.Groups = original.Groups != null ? original.Groups.Select(x => (UserGroup)x.Clone(cloner)).ToList() : null;
+      this.Roles = original.Roles != null ? original.Roles.Select(x => (Role)x.Clone(cloner)).ToList() : null;
     }
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.User; }
     }
 
-    public LightweightUser() { }
+    public LightweightUser() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LightweightUser(this, cloner);
     }
 
     public override string ToString() {
-      return UserName + " (" + FullName + ")";
+      return (UserName != null && FullName != null) ? UserName + " (" + FullName + ")" : string.Empty;
     }
   }
 }

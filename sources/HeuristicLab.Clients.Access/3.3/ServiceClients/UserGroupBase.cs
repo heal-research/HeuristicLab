@@ -27,10 +27,10 @@ namespace HeuristicLab.Clients.Access {
   public partial class UserGroupBase {
     protected UserGroupBase(UserGroupBase original, Cloner cloner)
       : base(original, cloner) {
-      Id = original.Id;
+      this.Id = original.Id;
     }
 
-    public UserGroupBase() { }
+    public UserGroupBase() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new UserGroupBase(this, cloner);

@@ -36,7 +36,8 @@ namespace HeuristicLab.Clients.Access {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.UserAccounts; }
     }
 
-    public UserGroup() {
+    public UserGroup()
+      : base() {
       this.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(UserGroup_PropertyChanged);
     }
 

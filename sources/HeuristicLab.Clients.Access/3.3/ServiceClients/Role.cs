@@ -34,22 +34,22 @@ namespace HeuristicLab.Clients.Access {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Script; }
     }
 
-    public Role() { }
+    public Role() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Role(this, cloner);
     }
 
     public override string ToString() {
-      return Name;
+      return Name != null ? Name : string.Empty;
     }
 
     public override bool Equals(object obj) {
-      return ((Role)obj).Name.Equals(this.Name);
+      return Name != null ? ((Role)obj).Name.Equals(this.Name) : false;
     }
 
     public override int GetHashCode() {
-      return Name.GetHashCode();
+      return Name != null ? Name.GetHashCode() : string.Empty.GetHashCode();
     }
   }
 }

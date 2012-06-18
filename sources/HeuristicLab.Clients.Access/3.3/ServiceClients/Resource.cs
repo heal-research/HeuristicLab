@@ -36,7 +36,7 @@ namespace HeuristicLab.Clients.Access {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.OrgChart; }
     }
 
-    public Resource() { }
+    public Resource() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Resource(this, cloner);
