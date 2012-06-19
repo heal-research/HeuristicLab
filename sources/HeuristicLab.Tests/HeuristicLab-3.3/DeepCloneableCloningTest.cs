@@ -121,7 +121,14 @@ namespace HeuristicLab_33.Tests {
         }
         catch { continue; } // no default constructor
 
-        var clone = (IDeepCloneable)item.Clone(new Cloner());
+        IDeepCloneable clone = null;
+        try {
+          clone = (IDeepCloneable)item.Clone(new Cloner());
+        } catch (Exception e) {
+          TestContext.WriteLine("ERROR! " + e.GetType().Name + " was thrown while cloning " + deepCloneableType.Name + ".");
+          success = false;
+          continue;
+        }
         var intersections = CheckTotalInequality(item, clone).Where(x => x.GetType().FullName.StartsWith("HeuristicLab"));
         if (!intersections.Any()) continue;
 
