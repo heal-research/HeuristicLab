@@ -79,6 +79,30 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.imageListSlaveGroups.ImageSize = new System.Drawing.Size(16, 16);
       this.imageListSlaveGroups.TransparentColor = System.Drawing.Color.Transparent;
       // 
+      // splitSlaves
+      // 
+      this.splitSlaves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitSlaves.Location = new System.Drawing.Point(3, 3);
+      this.splitSlaves.Name = "splitSlaves";
+      // 
+      // splitSlaves.Panel1
+      // 
+      this.splitSlaves.Panel1.Controls.Add(this.btnRefresh);
+      this.splitSlaves.Panel1.Controls.Add(this.progressBar);
+      this.splitSlaves.Panel1.Controls.Add(this.btnSave);
+      this.splitSlaves.Panel1.Controls.Add(this.btnRemoveGroup);
+      this.splitSlaves.Panel1.Controls.Add(this.btnAddGroup);
+      this.splitSlaves.Panel1.Controls.Add(this.treeSlaveGroup);
+      // 
+      // splitSlaves.Panel2
+      // 
+      this.splitSlaves.Panel2.Controls.Add(this.tabSlaveGroup);
+      this.splitSlaves.Size = new System.Drawing.Size(847, 547);
+      this.splitSlaves.SplitterDistance = 249;
+      this.splitSlaves.TabIndex = 3;
+      // 
       // btnRefresh
       // 
       this.btnRefresh.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
@@ -89,6 +113,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.toolTip.SetToolTip(this.btnRefresh, "Fetch list from server");
       this.btnRefresh.UseVisualStyleBackColor = true;
       this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+      // 
+      // progressBar
+      // 
+      this.progressBar.Location = new System.Drawing.Point(123, 4);
+      this.progressBar.Name = "progressBar";
+      this.progressBar.Size = new System.Drawing.Size(123, 23);
+      this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+      this.progressBar.TabIndex = 7;
       // 
       // btnSave
       // 
@@ -123,55 +155,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.btnAddGroup.UseVisualStyleBackColor = true;
       this.btnAddGroup.Click += new System.EventHandler(this.btnAddGroup_Click);
       // 
-      // btnPermissionsSave
-      // 
-      this.btnPermissionsSave.Enabled = false;
-      this.btnPermissionsSave.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
-      this.btnPermissionsSave.Location = new System.Drawing.Point(36, 6);
-      this.btnPermissionsSave.Name = "btnPermissionsSave";
-      this.btnPermissionsSave.Size = new System.Drawing.Size(24, 24);
-      this.btnPermissionsSave.TabIndex = 1;
-      this.toolTip.SetToolTip(this.btnPermissionsSave, "Store slave and group sharing permissions on the server");
-      this.btnPermissionsSave.UseVisualStyleBackColor = true;
-      this.btnPermissionsSave.Click += new System.EventHandler(this.btnPermissionsSave_Click);
-      // 
-      // splitSlaves
-      // 
-      this.splitSlaves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.splitSlaves.Location = new System.Drawing.Point(3, 3);
-      this.splitSlaves.Name = "splitSlaves";
-      // 
-      // splitSlaves.Panel1
-      // 
-      this.splitSlaves.Panel1.Controls.Add(this.btnRefresh);
-      this.splitSlaves.Panel1.Controls.Add(this.progressBar);
-      this.splitSlaves.Panel1.Controls.Add(this.btnSave);
-      this.splitSlaves.Panel1.Controls.Add(this.btnRemoveGroup);
-      this.splitSlaves.Panel1.Controls.Add(this.btnAddGroup);
-      this.splitSlaves.Panel1.Controls.Add(this.treeSlaveGroup);
-      // 
-      // splitSlaves.Panel2
-      // 
-      this.splitSlaves.Panel2.Controls.Add(this.tabSlaveGroup);
-      this.splitSlaves.Size = new System.Drawing.Size(847, 547);
-      this.splitSlaves.SplitterDistance = 249;
-      this.splitSlaves.TabIndex = 3;
-      // 
-      // progressBar
-      // 
-      this.progressBar.Location = new System.Drawing.Point(123, 4);
-      this.progressBar.Name = "progressBar";
-      this.progressBar.Size = new System.Drawing.Size(123, 23);
-      this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-      this.progressBar.TabIndex = 7;
-      // 
       // treeSlaveGroup
       // 
       this.treeSlaveGroup.AllowDrop = true;
-      this.treeSlaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.treeSlaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.treeSlaveGroup.ImageIndex = 0;
       this.treeSlaveGroup.ImageList = this.imageListSlaveGroups;
@@ -189,8 +177,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // tabSlaveGroup
       // 
-      this.tabSlaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.tabSlaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabSlaveGroup.Controls.Add(this.tabDetails);
       this.tabSlaveGroup.Controls.Add(this.tabSchedule);
@@ -215,8 +203,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // slaveView
       // 
-      this.slaveView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.slaveView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.slaveView.Caption = "SlaveView";
       this.slaveView.Content = null;
@@ -239,8 +227,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // scheduleView
       // 
-      this.scheduleView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.scheduleView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.scheduleView.Caption = "ScheduleView";
       this.scheduleView.Content = null;
@@ -262,6 +250,18 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.tabPermissions.Text = "Permissions";
       this.tabPermissions.UseVisualStyleBackColor = true;
       // 
+      // btnPermissionsSave
+      // 
+      this.btnPermissionsSave.Enabled = false;
+      this.btnPermissionsSave.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
+      this.btnPermissionsSave.Location = new System.Drawing.Point(39, 9);
+      this.btnPermissionsSave.Name = "btnPermissionsSave";
+      this.btnPermissionsSave.Size = new System.Drawing.Size(24, 24);
+      this.btnPermissionsSave.TabIndex = 1;
+      this.toolTip.SetToolTip(this.btnPermissionsSave, "Store slave and group sharing permissions on the server");
+      this.btnPermissionsSave.UseVisualStyleBackColor = true;
+      this.btnPermissionsSave.Click += new System.EventHandler(this.btnPermissionsSave_Click);
+      // 
       // permissionView
       // 
       this.permissionView.Caption = "RefreshableLightweightUser View";
@@ -275,7 +275,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // ResourcesView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitSlaves);
       this.Name = "ResourcesView";

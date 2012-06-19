@@ -70,7 +70,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       drawTool1.DayView = this.dvOnline;
       this.dvOnline.ActiveTool = drawTool1;
       this.dvOnline.AmPmDisplay = false;
-      this.dvOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.dvOnline.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
       this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
@@ -245,7 +246,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // mcOnline
       // 
-      this.mcOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.mcOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.mcOnline.CalendarDimensions = new System.Drawing.Size(2, 1);
       this.mcOnline.Location = new System.Drawing.Point(3, 9);
@@ -255,7 +256,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // ScheduleView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.dvOnline);
       this.Controls.Add(this.groupBox1);
