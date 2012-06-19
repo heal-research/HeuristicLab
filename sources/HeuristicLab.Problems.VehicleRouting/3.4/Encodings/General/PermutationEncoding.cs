@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,12 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
-using System;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
@@ -59,12 +58,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     protected PermutationEncoding(PermutationEncoding original, Cloner cloner)
       : base(original, cloner) {
-        this.readOnly = original.readOnly;
+      this.readOnly = original.readOnly;
 
-        if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
-          this.ProblemInstance = (IVRPProblemInstance)cloner.Clone(original.ProblemInstance);
-        else
-          this.ProblemInstance = original.ProblemInstance;
+      if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
+        this.ProblemInstance = (IVRPProblemInstance)cloner.Clone(original.ProblemInstance);
+      else
+        this.ProblemInstance = original.ProblemInstance;
     }
 
     public PermutationEncoding(Permutation permutation, IVRPProblemInstance problemInstance)

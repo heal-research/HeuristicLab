@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,24 +20,18 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPTWEvaluator", "Represents a single depot CVRPTW evaluator.")]
   [StorableClass]
-  public class CVRPTWEvaluator: CVRPEvaluator {
+  public class CVRPTWEvaluator : CVRPEvaluator {
     public ILookupParameter<DoubleValue> TardinessParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Tardiness"]; }
     }
@@ -54,7 +48,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       TourInsertionInfo tourInfo = new TourInsertionInfo(solution.GetVehicleAssignment(solution.GetTourIndex(tour)));
       eval.InsertionInfo.AddTourInsertionInfo(tourInfo);
       double originalQuality = eval.Quality;
-      
+
       IHomogenousCapacitatedProblemInstance cvrpInstance = instance as IHomogenousCapacitatedProblemInstance;
       DoubleArray demand = instance.Demand;
 
@@ -110,7 +104,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         if (time < readyTime[end])
           currentWaitingTime = readyTime[end] - time;
 
-        double waitTime = readyTime[end]-time;
+        double waitTime = readyTime[end] - time;
 
         waitingTime += currentWaitingTime;
         time += currentWaitingTime;
@@ -224,14 +218,14 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         } else {
           //arrive later than before, probably don't have to wait
           if (nextStop.WaitingTime > 0) {
-            additionalTime -= Math.Min(additionalTime, nextStop.WaitingTime);            
+            additionalTime -= Math.Min(additionalTime, nextStop.WaitingTime);
           }
 
           //check due date
           if (nextStop.SpareTime > 0) {
             double spare = nextStop.SpareTime - additionalTime;
             if (spare < 0)
-              tardiness += -spare; 
+              tardiness += -spare;
           } else {
             tardiness += additionalTime;
           }
@@ -262,7 +256,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       TardinessParameter.ActualValue.Value = (tourEvaluation as CVRPTWEvaluation).Tardiness;
       TravelTimeParameter.ActualValue.Value = (tourEvaluation as CVRPTWEvaluation).TravelTime;
     }
-    
+
     [StorableConstructor]
     protected CVRPTWEvaluator(bool deserializing) : base(deserializing) { }
 

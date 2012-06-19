@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,14 +19,13 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using System;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
@@ -61,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
         bool feasible = true;
 
         do {
-          tour.Stops.Add(this[j-1] + 1);
+          tour.Stops.Add(this[j - 1] + 1);
 
           VRPEvaluation eval =
             ProblemInstance.EvaluateTour(tour, this);

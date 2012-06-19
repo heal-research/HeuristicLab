@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,9 +29,8 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Analysis;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public BestAverageWorstCapaciatatedVRPToursAnalyzer()
       : base() {
-      #region Create parameters 
+      #region Create parameters
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The problem instance."));
 
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Overload", "The overloads of the VRP solutions which should be analyzed."));
@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentAverageOverload", "The current average overload value of all solutions."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("CurrentWorstOverload", "The current worst overload value of all solutions."));
       Parameters.Add(new ValueLookupParameter<DataTable>("Overloads", "The data table to store the current best, current average, current worst, best and best known overload value."));
- 
+
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The results collection where the analysis values should be stored."));
       #endregion
 
@@ -144,12 +144,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private BestAverageWorstCapaciatatedVRPToursAnalyzer(BestAverageWorstCapaciatatedVRPToursAnalyzer original, Cloner cloner)
       : base(original, cloner) {
-        this.Initialize();
+      this.Initialize();
     }
 
     void OverloadParameter_DepthChanged(object sender, EventArgs e) {
       BestAverageWorstCalculator.OverloadParameter.Depth = OverloadParameter.Depth;
       BestMemorizer.OverloadParameter.Depth = OverloadParameter.Depth;
-    } 
+    }
   }
 }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,24 +20,19 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   [View("VRPSolution View")]
-  [Content(typeof(VRPSolution), true)] 
-  public partial class VRPSolutionView: HeuristicLab.Core.Views.ItemView {
+  [Content(typeof(VRPSolution), true)]
+  public partial class VRPSolutionView : HeuristicLab.Core.Views.ItemView {
     public new VRPSolution Content {
       get { return (VRPSolution)base.Content; }
       set { base.Content = value; }
-    } 
-    
+    }
+
     public VRPSolutionView() {
       InitializeComponent();
       problemInstanceView.ViewsLabelVisible = false;

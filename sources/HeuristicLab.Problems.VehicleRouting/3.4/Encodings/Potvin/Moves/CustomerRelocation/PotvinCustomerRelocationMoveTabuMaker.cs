@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -48,9 +48,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     protected PotvinCustomerRelocationMoveTabuMaker(PotvinCustomerRelocationMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public PotvinCustomerRelocationMoveTabuMaker()
       : base() {
-        Parameters.Add(new LookupParameter<PotvinCustomerRelocationMove>("PotvinCustomerRelocationMove", "The moves that should be made."));
-        Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
-        Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
+      Parameters.Add(new LookupParameter<PotvinCustomerRelocationMove>("PotvinCustomerRelocationMove", "The moves that should be made."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
+      Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

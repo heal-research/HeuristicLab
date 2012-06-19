@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -117,59 +117,60 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       pickipDeliveryLocation = new List<int>();
     }
 
-     public LiLimParser(string file): this() {
+    public LiLimParser(string file)
+      : this() {
       this.file = file;
     }
 
-     public LiLimParser(Stream stream): this() {
+    public LiLimParser(Stream stream)
+      : this() {
       this.stream = stream;
     }
 
-     public void Parse() {
-       string line;
-       Regex reg = new Regex(@"-?\d+");
-       MatchCollection m;
+    public void Parse() {
+      string line;
+      Regex reg = new Regex(@"-?\d+");
+      MatchCollection m;
 
-       StreamReader reader;
-       if (stream != null) {
-         reader = new StreamReader(stream);   
-       }
-       else {
-         reader = new StreamReader(file);
-         problemName = Path.GetFileNameWithoutExtension(file);
-       }
+      StreamReader reader;
+      if (stream != null) {
+        reader = new StreamReader(stream);
+      } else {
+        reader = new StreamReader(file);
+        problemName = Path.GetFileNameWithoutExtension(file);
+      }
 
-       using (reader) {
-         line = reader.ReadLine();
+      using (reader) {
+        line = reader.ReadLine();
 
-         m = reg.Matches(line);
-         if (m.Count != 3)
-           throw new InvalidDataException("File has wrong format!");
+        m = reg.Matches(line);
+        if (m.Count != 3)
+          throw new InvalidDataException("File has wrong format!");
 
-         vehicles = int.Parse(m[0].Value);
-         capacity = double.Parse(m[1].Value);
+        vehicles = int.Parse(m[0].Value);
+        capacity = double.Parse(m[1].Value);
 
-         line = reader.ReadLine();
-         while ((line != null) && (line.Length > 5)) {
-           m = reg.Matches(line);
-           if (m.Count != 9) { continue; }
-           xCoord.Add((double)int.Parse(m[1].Value));
-           yCoord.Add((double)int.Parse(m[2].Value));
-           demand.Add((double)int.Parse(m[3].Value));
-           readyTime.Add((double)int.Parse(m[4].Value));
-           double st = (double)int.Parse(m[6].Value);
-           dueTime.Add((double)int.Parse(m[5].Value));
-           serviceTime.Add(st);
+        line = reader.ReadLine();
+        while ((line != null) && (line.Length > 5)) {
+          m = reg.Matches(line);
+          if (m.Count != 9) { continue; }
+          xCoord.Add((double)int.Parse(m[1].Value));
+          yCoord.Add((double)int.Parse(m[2].Value));
+          demand.Add((double)int.Parse(m[3].Value));
+          readyTime.Add((double)int.Parse(m[4].Value));
+          double st = (double)int.Parse(m[6].Value);
+          dueTime.Add((double)int.Parse(m[5].Value));
+          serviceTime.Add(st);
 
-           int location = int.Parse(m[7].Value);
-           if (location == 0)
-             location = int.Parse(m[8].Value);
-           pickipDeliveryLocation.Add(location);
+          int location = int.Parse(m[7].Value);
+          if (location == 0)
+            location = int.Parse(m[8].Value);
+          pickipDeliveryLocation.Add(location);
 
-           line = reader.ReadLine();
-         }
-         cities = serviceTime.Count;
-       }
-     }
+          line = reader.ReadLine();
+        }
+        cities = serviceTime.Count;
+      }
+    }
   }
 }

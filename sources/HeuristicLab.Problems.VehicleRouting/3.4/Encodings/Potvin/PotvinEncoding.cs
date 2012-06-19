@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,22 +19,19 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Drawing;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinEncoding", "Represents a potvin encoding of VRP solutions. It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
   [StorableClass]
-  public class PotvinEncoding : TourEncoding {   
+  public class PotvinEncoding : TourEncoding {
     [Storable]
     public List<int> Unrouted { get; set; }
 
@@ -58,8 +55,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected PotvinEncoding(PotvinEncoding original, Cloner cloner)
       : base(original, cloner) {
-        this.Unrouted = new List<int>(original.Unrouted);
-        this.VehicleAssignment = cloner.Clone<Permutation>(original.VehicleAssignment);
+      this.Unrouted = new List<int>(original.Unrouted);
+      this.VehicleAssignment = cloner.Clone<Permutation>(original.VehicleAssignment);
     }
 
     public override void Repair() {
@@ -159,7 +156,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     public int FindBestInsertionPlace(Tour tour, int city, int positionToAvoid = -1) {
       if (tour.Stops.Count == 0)
         return 0;
-      
+
       int place = -1;
       double minQuality = -1;
 

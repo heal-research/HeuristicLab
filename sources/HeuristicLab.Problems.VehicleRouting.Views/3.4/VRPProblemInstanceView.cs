@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,10 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -99,20 +96,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
           case 5: result.Add(new Pen(Color.FromArgb(r, g, 0)));
             break;
         }
-        
+
         i++;
         if (i == 6) {
           i = 0;
 
-          if(r >= step)
+          if (r >= step)
             r -= step;
 
-          if(g >= step)
-           g -= step;
+          if (g >= step)
+            g -= step;
 
-          if(b >= step)
-           b -= step;
-        }       
+          if (b >= step)
+            b -= step;
+        }
       }
 
       return result;

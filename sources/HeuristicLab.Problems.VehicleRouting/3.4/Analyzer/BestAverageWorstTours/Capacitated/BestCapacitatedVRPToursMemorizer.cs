@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,12 +20,12 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestCapacitatedVRPToursMemorizer", "An operator that updates the best VRP tour found so far in the scope three.")]
@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public BestCapacitatedVRPToursMemorizer()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Overload", "The overloads of the VRP solutions which should be analyzed."));
- 
+
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestOverload", "The best overload found so far."));
     }
 
@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       int i = OverloadParameter.ActualValue.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
       if (BestOverloadParameter.ActualValue == null)
         BestOverloadParameter.ActualValue = new DoubleValue(OverloadParameter.ActualValue[i].Value);
-      else if(OverloadParameter.ActualValue[i].Value <= BestOverloadParameter.ActualValue.Value)
+      else if (OverloadParameter.ActualValue[i].Value <= BestOverloadParameter.ActualValue.Value)
         BestOverloadParameter.ActualValue.Value = OverloadParameter.ActualValue[i].Value;
 
       return base.Apply();

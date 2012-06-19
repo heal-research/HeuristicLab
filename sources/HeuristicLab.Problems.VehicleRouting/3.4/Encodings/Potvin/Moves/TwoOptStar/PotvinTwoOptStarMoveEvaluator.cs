@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,10 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Common;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMoveEvaluator", "Evaluates a two opt star move for a VRP representation. ")]
@@ -43,7 +40,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public PotvinTwoOptStarMoveEvaluator()
       : base() {
-       Parameters.Add(new LookupParameter<PotvinTwoOptStarMove>("PotvinTwoOptStarMove", "The move that should be evaluated."));
+      Parameters.Add(new LookupParameter<PotvinTwoOptStarMove>("PotvinTwoOptStarMove", "The move that should be evaluated."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -61,6 +58,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       PotvinTwoOptStarMoveMaker.Apply(newSolution, move, ProblemInstance);
 
       UpdateEvaluation(newSolution);
-    } 
+    }
   }
 }

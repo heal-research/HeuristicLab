@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
@@ -35,7 +34,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     public IValueParameter<IntValue> Iterations {
       get { return (IValueParameter<IntValue>)Parameters["Iterations"]; }
     }
-        
+
     [StorableConstructor]
     protected PrinsLSManipulator(bool deserializing) : base(deserializing) { }
 
@@ -59,7 +58,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       while (i < individual.Length && index == -1) {
         if (individual[i] == city)
           index = i;
-        
+
         i++;
       }
 
@@ -77,7 +76,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       while (found == null && i < tours.Count) {
         if (tours[i].Stops.Contains(city))
           found = tours[i];
-        
+
         i++;
       }
 
@@ -183,7 +182,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       int childIndex = 0;
       int parentIndex = 0;
 
-      while(childIndex < child.Length) {
+      while (childIndex < child.Length) {
         if (parent[parentIndex] == u) {
           child[childIndex] = v;
           parentIndex++;
@@ -226,11 +225,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       int i = 0;
 
       while (i < child.Length) {
-        if(parent[i] == x) {
+        if (parent[i] == x) {
           child[i] = y;
-        } else if(parent[i] == v) {
+        } else if (parent[i] == v) {
           child[i] = x;
-        } else if(parent[i] == y) {
+        } else if (parent[i] == y) {
           child[i] = v;
         } else {
           child[i] = parent[i];
@@ -301,7 +300,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
         if (iu < tour.Stops.Count - 1) {
           int x = tour.Stops[iu + 1] - 1;
 
-          if(x != v)
+          if (x != v)
             Swap(u, x, v, parent, child);
         }
       }
@@ -342,8 +341,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
 
               if (x != v && y != u)
                 Swap(x, v, parent, child);
-             }
-           }
+            }
+          }
         }
       }
     }
@@ -392,7 +391,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
       }
     }
 
-    protected PrinsEncoding Manipulate(PrinsEncoding individual, 
+    protected PrinsEncoding Manipulate(PrinsEncoding individual,
       double originalQuality, int u, int v) {
       PrinsEncoding child = null;
       bool improvement = false;

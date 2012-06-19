@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,13 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
@@ -84,15 +83,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     private static PotvinEncoding CreateSolution(IVRPProblemInstance instance, IRandom random, bool adhereTimeWindows) {
       PotvinEncoding result = new PotvinEncoding(instance);
 
-      IPickupAndDeliveryProblemInstance pdp = instance as IPickupAndDeliveryProblemInstance; 
+      IPickupAndDeliveryProblemInstance pdp = instance as IPickupAndDeliveryProblemInstance;
 
       List<int> customers = new List<int>();
       for (int i = 1; i <= instance.Cities.Value; i++)
-        if(pdp == null || pdp.GetDemand(i) >= 0)
+        if (pdp == null || pdp.GetDemand(i) >= 0)
           customers.Add(i);
 
-      customers.Sort(delegate(int city1, int city2)
-          {
+      customers.Sort(delegate(int city1, int city2) {
             double angle1 = CalculateAngleToDepot(instance, city1);
             double angle2 = CalculateAngleToDepot(instance, city2);
 
@@ -107,7 +105,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         int index = (i + j) % customers.Count;
 
         int stopIdx = 0;
-        if(currentTour.Stops.Count > 0)
+        if (currentTour.Stops.Count > 0)
           result.FindBestInsertionPlace(currentTour, customers[index]);
         currentTour.Stops.Insert(stopIdx, customers[index]);
 
@@ -117,17 +115,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         }
 
         CVRPEvaluation evaluation = instance.EvaluateTour(currentTour, result) as CVRPEvaluation;
-        if (result.Tours.Count < instance.Vehicles.Value && 
+        if (result.Tours.Count < instance.Vehicles.Value &&
           ((adhereTimeWindows && !instance.Feasible(evaluation)) || ((!adhereTimeWindows) && evaluation.Overload > double.Epsilon))) {
-            currentTour.Stops.Remove(customers[index]);
-            if (pdp != null)
-              currentTour.Stops.Remove(pdp.GetPickupDeliveryLocation(customers[index]));
+          currentTour.Stops.Remove(customers[index]);
+          if (pdp != null)
+            currentTour.Stops.Remove(pdp.GetPickupDeliveryLocation(customers[index]));
 
           if (currentTour.Stops.Count == 0)
             result.Tours.Remove(currentTour);
           currentTour = new Tour();
           result.Tours.Add(currentTour);
-          
+
           currentTour.Stops.Add(customers[index]);
           if (pdp != null) {
             currentTour.Stops.Add(pdp.GetPickupDeliveryLocation(customers[index]));

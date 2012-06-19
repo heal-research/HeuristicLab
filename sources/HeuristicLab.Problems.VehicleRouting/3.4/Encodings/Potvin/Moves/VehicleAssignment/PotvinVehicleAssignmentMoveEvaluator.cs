@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,10 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Common;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMoveEvaluator", "Evaluates a vehicle assignment move for a VRP representation. ")]
@@ -44,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public PotvinVehicleAssignmentMoveEvaluator()
       : base() {
-       Parameters.Add(new LookupParameter<PotvinVehicleAssignmentMove>("PotvinVehicleAssignmentMove", "The move that should be evaluated."));
+      Parameters.Add(new LookupParameter<PotvinVehicleAssignmentMove>("PotvinVehicleAssignmentMove", "The move that should be evaluated."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -62,6 +59,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       PotvinVehicleAssignmentMoveMaker.Apply(newSolution, move, ProblemInstance);
 
       UpdateEvaluation(newSolution);
-    } 
+    }
   }
 }

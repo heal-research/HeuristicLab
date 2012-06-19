@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,28 +19,26 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Common;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaTranslocationMove", "Item that describes a translocation move on a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public class AlbaTranslocationMove: TranslocationMove, IVRPMove {
+  public class AlbaTranslocationMove : TranslocationMove, IVRPMove {
     public IVRPEncoding Individual { get { return Permutation as AlbaEncoding; } }
 
-    public AlbaTranslocationMove(int index1, int index2, int index3): 
+    public AlbaTranslocationMove(int index1, int index2, int index3) :
       base(index1, index2, index3) {
     }
 
-    public AlbaTranslocationMove(int index1, int index2, int index3, AlbaEncoding individual): 
-      base(index1, index2, index3, individual.Clone() as AlbaEncoding){
+    public AlbaTranslocationMove(int index1, int index2, int index3, AlbaEncoding individual) :
+      base(index1, index2, index3, individual.Clone() as AlbaEncoding) {
     }
 
     [StorableConstructor]
@@ -52,11 +50,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     protected AlbaTranslocationMove(AlbaTranslocationMove original, Cloner cloner)
       : base(original, cloner) {
-        this.Index1 = original.Index1;
-        this.Index2 = original.Index2;
-        this.Index3 = original.Index3;
+      this.Index1 = original.Index1;
+      this.Index2 = original.Index2;
+      this.Index3 = original.Index3;
 
-        this.Permutation = cloner.Clone(Permutation) as AlbaEncoding;
+      this.Permutation = cloner.Clone(Permutation) as AlbaEncoding;
     }
 
     #region IVRPMove Members

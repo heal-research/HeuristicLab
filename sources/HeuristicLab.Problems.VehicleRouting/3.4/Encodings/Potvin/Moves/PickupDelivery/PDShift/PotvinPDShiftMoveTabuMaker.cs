@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,11 +21,11 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDShiftMoveTabuMaker", "Declares a given shift move as tabu.")]
@@ -62,14 +62,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     protected PotvinPDShiftMoveTabuMaker(PotvinPDShiftMoveTabuMaker original, Cloner cloner) : base(original, cloner) { }
     public PotvinPDShiftMoveTabuMaker()
       : base() {
-        Parameters.Add(new LookupParameter<PotvinPDShiftMove>("PotvinPDShiftMove", "The moves that should be made."));
-        Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
-        Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
+      Parameters.Add(new LookupParameter<PotvinPDShiftMove>("PotvinPDShiftMove", "The moves that should be made."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
+      Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
 
-        Parameters.Add(new LookupParameter<DoubleValue>("Distance", "The distance of the individual"));
-        Parameters.Add(new LookupParameter<DoubleValue>("Overload", "The overload of the individual"));
-        Parameters.Add(new LookupParameter<DoubleValue>("Tardiness", "The tardiness of the individual"));
-        Parameters.Add(new LookupParameter<IntValue>("PickupViolations", "The number of pickup violations."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Distance", "The distance of the individual"));
+      Parameters.Add(new LookupParameter<DoubleValue>("Overload", "The overload of the individual"));
+      Parameters.Add(new LookupParameter<DoubleValue>("Tardiness", "The tardiness of the individual"));
+      Parameters.Add(new LookupParameter<IntValue>("PickupViolations", "The number of pickup violations."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       int pickupViolations = 0;
       if (PickupViolationsParameter.ActualValue != null)
         pickupViolations = PickupViolationsParameter.ActualValue.Value;
-      
+
       return new PotvinPDRelocateMoveAttribute(baseQuality, move.OldTour, move.City, distance, overload, tardiness, pickupViolations);
     }
   }

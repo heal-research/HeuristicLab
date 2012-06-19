@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -117,116 +117,117 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       serviceTime = new List<double>();
     }
 
-     public CordeauParser(string file): this() {
+    public CordeauParser(string file)
+      : this() {
       this.file = file;
     }
 
-     public CordeauParser(Stream stream)
-       : this() {
+    public CordeauParser(Stream stream)
+      : this() {
       this.stream = stream;
     }
 
-     public void Parse() {
-       string line;
-       Regex reg = new Regex(@"-?\d+(\.\d+)?");
-       MatchCollection m;
+    public void Parse() {
+      string line;
+      Regex reg = new Regex(@"-?\d+(\.\d+)?");
+      MatchCollection m;
 
-       StreamReader reader;
-       if (stream != null) {
-         reader = new StreamReader(stream);
-       } else {
-         reader = new StreamReader(file);
-         problemName = Path.GetFileNameWithoutExtension(file);
-       }
+      StreamReader reader;
+      if (stream != null) {
+        reader = new StreamReader(stream);
+      } else {
+        reader = new StreamReader(file);
+        problemName = Path.GetFileNameWithoutExtension(file);
+      }
 
-       using (reader) {
-         List<double> depotXcoord = new List<double>();
-         List<double> depotYcoord = new List<double>();
-         List<double> depotReadyTime = new List<double>();
-         List<double> depotDueTime = new List<double>();
-         
-         List<double> routeDueTime = new List<double>();
+      using (reader) {
+        List<double> depotXcoord = new List<double>();
+        List<double> depotYcoord = new List<double>();
+        List<double> depotReadyTime = new List<double>();
+        List<double> depotDueTime = new List<double>();
 
-         line = reader.ReadLine();
+        List<double> routeDueTime = new List<double>();
 
-         m = reg.Matches(line);
-         if (m.Count != 4)
-           throw new InvalidDataException("File has wrong format!");
+        line = reader.ReadLine();
 
-         int type = int.Parse(m[0].Value);
-         if(type != 2 && type != 6)
-           throw new InvalidDataException("Unsupported instance type");
+        m = reg.Matches(line);
+        if (m.Count != 4)
+          throw new InvalidDataException("File has wrong format!");
 
-         bool timeWindows = type == 6;
-         vehicles = int.Parse(m[1].Value);
-         cities = int.Parse(m[2].Value);
-         depots = int.Parse(m[3].Value);
-         line = reader.ReadLine();
+        int type = int.Parse(m[0].Value);
+        if (type != 2 && type != 6)
+          throw new InvalidDataException("Unsupported instance type");
 
-         for (int i = 0; i < depots; i++) {
-           m = reg.Matches(line);
-           if (m.Count != 2) { continue; }
+        bool timeWindows = type == 6;
+        vehicles = int.Parse(m[1].Value);
+        cities = int.Parse(m[2].Value);
+        depots = int.Parse(m[3].Value);
+        line = reader.ReadLine();
 
-           routeDueTime.Add(double.Parse(m[0].Value, System.Globalization.CultureInfo.InvariantCulture));
-           capacity.Add(double.Parse(m[1].Value, System.Globalization.CultureInfo.InvariantCulture));
+        for (int i = 0; i < depots; i++) {
+          m = reg.Matches(line);
+          if (m.Count != 2) { continue; }
 
-           line = reader.ReadLine();
-         }
+          routeDueTime.Add(double.Parse(m[0].Value, System.Globalization.CultureInfo.InvariantCulture));
+          capacity.Add(double.Parse(m[1].Value, System.Globalization.CultureInfo.InvariantCulture));
 
-         while ((line != null)) {
-           m = reg.Matches(line);
+          line = reader.ReadLine();
+        }
 
-           if (demand.Count < cities) {
-             xCoord.Add(double.Parse(m[1].Value, System.Globalization.CultureInfo.InvariantCulture));
-             yCoord.Add(double.Parse(m[2].Value, System.Globalization.CultureInfo.InvariantCulture));
-             demand.Add((double)int.Parse(m[4].Value, System.Globalization.CultureInfo.InvariantCulture));
-             serviceTime.Add(int.Parse(m[3].Value));
+        while ((line != null)) {
+          m = reg.Matches(line);
 
-             if (timeWindows) {
-               readyTime.Add(int.Parse(m[m.Count - 2].Value));
-               dueTime.Add(int.Parse(m[m.Count - 1].Value));
-             } else {
-               readyTime.Add(0);
-               dueTime.Add(double.MaxValue);
-             }
-           } else {
-             depotXcoord.Add(double.Parse(m[1].Value, System.Globalization.CultureInfo.InvariantCulture));
-             depotYcoord.Add(double.Parse(m[2].Value, System.Globalization.CultureInfo.InvariantCulture));
+          if (demand.Count < cities) {
+            xCoord.Add(double.Parse(m[1].Value, System.Globalization.CultureInfo.InvariantCulture));
+            yCoord.Add(double.Parse(m[2].Value, System.Globalization.CultureInfo.InvariantCulture));
+            demand.Add((double)int.Parse(m[4].Value, System.Globalization.CultureInfo.InvariantCulture));
+            serviceTime.Add(int.Parse(m[3].Value));
 
-             if (timeWindows) {
-               depotReadyTime.Add(int.Parse(m[m.Count - 2].Value));
-               depotDueTime.Add(int.Parse(m[m.Count - 1].Value));
-             } else {
-               depotReadyTime.Add(0);
-               depotDueTime.Add(double.MaxValue);
-             }
-           }
+            if (timeWindows) {
+              readyTime.Add(int.Parse(m[m.Count - 2].Value));
+              dueTime.Add(int.Parse(m[m.Count - 1].Value));
+            } else {
+              readyTime.Add(0);
+              dueTime.Add(double.MaxValue);
+            }
+          } else {
+            depotXcoord.Add(double.Parse(m[1].Value, System.Globalization.CultureInfo.InvariantCulture));
+            depotYcoord.Add(double.Parse(m[2].Value, System.Globalization.CultureInfo.InvariantCulture));
 
-           line = reader.ReadLine();
-         }
+            if (timeWindows) {
+              depotReadyTime.Add(int.Parse(m[m.Count - 2].Value));
+              depotDueTime.Add(int.Parse(m[m.Count - 1].Value));
+            } else {
+              depotReadyTime.Add(0);
+              depotDueTime.Add(double.MaxValue);
+            }
+          }
 
-         for (int i = 0; i < depotDueTime.Count; i++) {
-           if (!timeWindows) {
-             depotDueTime[i] = routeDueTime[i];
-           }
-           if (depotDueTime[i] < double.Epsilon)
-             depotDueTime[i] = double.MaxValue;
-         }
+          line = reader.ReadLine();
+        }
 
-         xCoord.InsertRange(0, depotXcoord);
-         yCoord.InsertRange(0, depotYcoord);
-         readyTime.InsertRange(0, depotReadyTime);
-         dueTime.InsertRange(0, depotDueTime);
+        for (int i = 0; i < depotDueTime.Count; i++) {
+          if (!timeWindows) {
+            depotDueTime[i] = routeDueTime[i];
+          }
+          if (depotDueTime[i] < double.Epsilon)
+            depotDueTime[i] = double.MaxValue;
+        }
 
-         List<double> originalCapacities = new List<double>(capacity);
-         capacity.Clear();
-         for (int i = 0; i < depots; i++) {
-           for (int j = 0; j < vehicles; j++) {
-             capacity.Add(originalCapacities[i]);
-           }
-         }
-         vehicles *= depots;
-       }
-     }
+        xCoord.InsertRange(0, depotXcoord);
+        yCoord.InsertRange(0, depotYcoord);
+        readyTime.InsertRange(0, depotReadyTime);
+        dueTime.InsertRange(0, depotDueTime);
+
+        List<double> originalCapacities = new List<double>(capacity);
+        capacity.Clear();
+        for (int i = 0; i < depots; i++) {
+          for (int j = 0; j < vehicles; j++) {
+            capacity.Add(originalCapacities[i]);
+          }
+        }
+        vehicles *= depots;
+      }
+    }
   }
 }

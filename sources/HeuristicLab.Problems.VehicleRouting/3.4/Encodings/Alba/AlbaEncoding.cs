@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,27 +19,26 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaEncoding", "Represents an Alba encoding of VRP solutions. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public class AlbaEncoding : PermutationEncoding  {   
+  public class AlbaEncoding : PermutationEncoding {
     #region IVRPEncoding Members
     public override List<Tour> GetTours() {
       Repair();
       List<Tour> result = new List<Tour>();
 
       int cities = ProblemInstance.Cities.Value;
-      
+
       Tour tour = new Tour();
       for (int i = 0; i < this.array.Length; i++) {
         if (this.array[i] >= cities) {
@@ -76,11 +75,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
           if (this.array[i] >= ProblemInstance.Cities.Value) {
             vehicleAssignment = this.array[i] - ProblemInstance.Cities.Value;
           }
-          
+
           i--;
         }
-      }
-      else
+      } else
         vehicleAssignment = this[lastStopIndex + 1] - this.ProblemInstance.Cities.Value;
 
       return vehicleAssignment;
@@ -122,7 +120,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     public static AlbaEncoding ConvertFrom(List<int> routeParam, IVRPProblemInstance instance) {
       List<int> route = new List<int>(routeParam);
-      
+
       int cities = instance.Cities.Value;
 
       for (int i = 0; i < route.Count; i++) {
@@ -152,7 +150,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       int[] array = new int[cities + tours.Count + emptyVehicles];
       int delimiter = 0;
       int arrayIndex = 0;
-      
+
       foreach (Tour tour in tours) {
         foreach (int city in tour.Stops) {
           array[arrayIndex] = city - 1;
@@ -161,7 +159,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
         if (arrayIndex != array.Length) {
           array[arrayIndex] = cities + encoding.GetVehicleAssignment(delimiter);
-          
+
           delimiter++;
           arrayIndex++;
         }

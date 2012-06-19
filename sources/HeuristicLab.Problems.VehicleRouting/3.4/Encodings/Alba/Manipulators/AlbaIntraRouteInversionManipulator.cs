@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,25 +19,21 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaIntraRouteInversionManipulator", "An operator which applies the SLS operation to a VRP representation. It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public sealed class AlbaIntraRouteInversionManipulator : AlbaManipulator {   
+  public sealed class AlbaIntraRouteInversionManipulator : AlbaManipulator {
     [StorableConstructor]
     private AlbaIntraRouteInversionManipulator(bool deserializing) : base(deserializing) { }
 
     public AlbaIntraRouteInversionManipulator()
       : base() {
-     }
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new AlbaIntraRouteInversionManipulator(this, cloner);

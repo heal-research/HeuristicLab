@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,15 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRManipulator", "A VRP manipulation operation.")]
@@ -49,7 +47,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
     }
 
     protected abstract void Manipulate(IRandom random, GVREncoding individual);
-   
+
     public override IOperation Apply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is GVREncoding)) {

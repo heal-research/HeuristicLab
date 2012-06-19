@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,9 +21,7 @@
 
 using System;
 using System.ComponentModel;
-using System.Text;
 using System.Windows.Forms;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Views {
   public enum VRPFormat { Empty, TSPLib, Solomon, ORLib, LiLim, Cordeau }
@@ -78,7 +76,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Views {
     private void VRPImportDialog_HelpButtonClicked(object sender, CancelEventArgs e) {
       if (MessageBox.Show("Do you want to open the HeuristicLab wiki website?", "Help",
         MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.Yes) {
-          System.Diagnostics.Process.Start("http://dev.heuristiclab.com/trac/hl/core/wiki/Vehicle%20Routing%20Problem");
+        System.Diagnostics.Process.Start("http://dev.heuristiclab.com/trac/hl/core/wiki/Vehicle%20Routing%20Problem");
       }
     }
   }

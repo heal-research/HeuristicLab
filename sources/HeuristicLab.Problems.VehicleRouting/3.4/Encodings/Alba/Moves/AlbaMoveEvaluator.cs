@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,28 +19,24 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaMoveEvaluator", "Evaluates an Alba VRP move.")]
   [StorableClass]
-  public abstract class AlbaMoveEvaluator: VRPMoveEvaluator, IAlbaOperator {
-       [StorableConstructor]
+  public abstract class AlbaMoveEvaluator : VRPMoveEvaluator, IAlbaOperator {
+    [StorableConstructor]
     protected AlbaMoveEvaluator(bool deserializing) : base(deserializing) { }
 
-       public AlbaMoveEvaluator()
+    public AlbaMoveEvaluator()
       : base() {
     }
 
-       protected AlbaMoveEvaluator(AlbaMoveEvaluator original, Cloner cloner)
-         : base(original, cloner) {
-       }
+    protected AlbaMoveEvaluator(AlbaMoveEvaluator original, Cloner cloner)
+      : base(original, cloner) {
+    }
   }
 }

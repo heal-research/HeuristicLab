@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,9 +29,8 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Analysis;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public BestAverageWorstTimeWindowedVRPToursAnalyzer()
       : base() {
-      #region Create parameters 
+      #region Create parameters
       Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The problem instance."));
 
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Tardiness", "The tardiness of the VRP solutions which should be analyzed."));
@@ -192,7 +192,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private BestAverageWorstTimeWindowedVRPToursAnalyzer(BestAverageWorstTimeWindowedVRPToursAnalyzer original, Cloner cloner)
       : base(original, cloner) {
-       this.Initialize();
+      this.Initialize();
     }
 
     void TardinessParameter_DepthChanged(object sender, EventArgs e) {

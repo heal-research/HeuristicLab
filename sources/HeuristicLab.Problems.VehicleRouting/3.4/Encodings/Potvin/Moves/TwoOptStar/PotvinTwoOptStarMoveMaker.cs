@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,17 +19,13 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMoveMaker", "Peforms the two opt star move on a given VRP encoding and updates the quality.")]
@@ -40,7 +36,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     public override ILookupParameter VRPMoveParameter {
-         get { return TwoOptStarMoveParameter; }
+      get { return TwoOptStarMoveParameter; }
     }
 
     [StorableConstructor]
@@ -61,7 +57,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public static void GetSegments(PotvinTwoOptStarMove move, out List<int> segmentX1, out List<int> segmentX2) {
       PotvinEncoding solution = move.Individual as PotvinEncoding;
-      
+
       Tour route1 = solution.Tours[move.Tour1];
       Tour route2 = solution.Tours[move.Tour2];
 
@@ -97,7 +93,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         route2.Stops.Remove(stop);
       route2.Stops.AddRange(segmentX1);
     }
-        
+
     protected override void PerformMove() {
       PotvinTwoOptStarMove move = TwoOptStarMoveParameter.ActualValue;
 

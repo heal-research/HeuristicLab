@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,31 +19,29 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Common;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMove", "Item that describes a relocation move on a VRP representation.")]
   [StorableClass]
-  public class PotvinVehicleAssignmentMove: Item, IVRPMove {
+  public class PotvinVehicleAssignmentMove : Item, IVRPMove {
     [Storable]
     public IVRPEncoding Individual { get; protected set; }
-    
+
     [Storable]
     public int Tour1 { get; protected set; }
 
     [Storable]
     public int Tour2 { get; protected set; }
 
-   
-    public PotvinVehicleAssignmentMove(): base() {
+
+    public PotvinVehicleAssignmentMove()
+      : base() {
       Tour1 = -1;
       Tour2 = -1;
 
@@ -63,8 +61,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected PotvinVehicleAssignmentMove(PotvinVehicleAssignmentMove original, Cloner cloner)
       : base(original, cloner) {
-        this.Tour1 = original.Tour1;
-        this.Tour2 = original.Tour2;
+      this.Tour1 = original.Tour1;
+      this.Tour2 = original.Tour2;
 
       this.Individual = cloner.Clone(Individual) as PotvinEncoding;
     }

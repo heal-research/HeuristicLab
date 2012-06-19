@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -44,11 +44,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     protected PotvinVehicleAssignmentMoveAttribute(bool deserializing) : base(deserializing) { }
     protected PotvinVehicleAssignmentMoveAttribute(PotvinVehicleAssignmentMoveAttribute original, Cloner cloner)
       : base(original, cloner) {
-        this.Tour = original.Tour;
-        this.Vehicle = original.Vehicle;
-        this.Distance = original.Distance;
-        this.Overload = original.Overload;
-        this.Tardiness = original.Tardiness;
+      this.Tour = original.Tour;
+      this.Vehicle = original.Vehicle;
+      this.Distance = original.Distance;
+      this.Overload = original.Overload;
+      this.Tardiness = original.Tardiness;
     }
     public PotvinVehicleAssignmentMoveAttribute(double moveQuality, int tour, int vehicle,
       double distance, double overload, double tardiness)

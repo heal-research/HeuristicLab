@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Globalization;
 using System.IO;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
@@ -28,7 +27,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     private string file;
     private Stream stream;
     private string problemName;
-    
+
     #region Inner Enum TSPLIBEdgeWeightType
     public enum GoldenEdgeWeightType {
       UNDEFINED,
@@ -124,12 +123,13 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       demands = null;
     }
 
-    public GoldenParser(string file): this() {
+    public GoldenParser(string file)
+      : this() {
       this.file = file;
     }
 
     public GoldenParser(Stream stream)
-       : this() {
+      : this() {
       this.stream = stream;
     }
 

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
   public interface IVRPMoveOperator : IVRPOperator, IMoveOperator {

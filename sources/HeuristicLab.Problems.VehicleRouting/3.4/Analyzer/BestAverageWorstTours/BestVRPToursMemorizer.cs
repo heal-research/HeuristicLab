@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,12 +20,12 @@
 #endregion
 
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestVRPToursMemorizer", "An operator that updates the best VRP tour found so far in the scope three.")]
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestDistance", "The best distance found so far."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("BestVehiclesUtilized", "The best vehicles utilized found so far."));
- 
+
     }
 
     [StorableConstructor]

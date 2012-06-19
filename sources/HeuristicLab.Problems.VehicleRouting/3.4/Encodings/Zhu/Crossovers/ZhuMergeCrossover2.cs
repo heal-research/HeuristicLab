@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,17 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuMergeCrossover2", "The Zhu Merge Crossover (Version 2).  It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
   [StorableClass]
-  public sealed class ZhuMergeCrossover2 : ZhuCrossover {    
+  public sealed class ZhuMergeCrossover2 : ZhuCrossover {
     [StorableConstructor]
     private ZhuMergeCrossover2(bool deserializing) : base(deserializing) { }
 
@@ -71,7 +69,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
         if (i == breakPoint) {
           child[i] = p1[parent1Index];
         } else {
-          if (dueTime != null && 
+          if (dueTime != null &&
             (dueTime[p1[parent1Index] + 1] <
             dueTime[p2[parent2Index] + 1])) {
             child[i] = p1[parent1Index];

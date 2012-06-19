@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinOneLevelExchangeMainpulator", "The 1M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -43,10 +39,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     private PotvinOneLevelExchangeMainpulator(PotvinOneLevelExchangeMainpulator original, Cloner cloner)
       : base(original, cloner) {
     }
-    
+
     protected override void Manipulate(IRandom random, PotvinEncoding individual) {
       bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
-      
+
       int selectedIndex = SelectRandomTourBiasedByLength(random, individual);
       if (selectedIndex >= 0) {
         Tour route1 =

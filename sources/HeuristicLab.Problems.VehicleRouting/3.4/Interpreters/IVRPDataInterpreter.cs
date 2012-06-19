@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,10 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
@@ -34,11 +30,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
     public double? BestKnownQuality { get; set; }
     public IVRPEncoding BestKnownSolution { get; set; }
   }
-  
-  public interface IVRPDataInterpreter  {
+
+  public interface IVRPDataInterpreter {
     VRPInstanceDescription Interpret(IVRPData data);
   }
 
-  public interface IVRPDataInterpreter<T>: IVRPDataInterpreter where T : IVRPData {
+  public interface IVRPDataInterpreter<T> : IVRPDataInterpreter where T : IVRPData {
   }
 }

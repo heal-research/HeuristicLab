@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,18 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuHeuristicCrossover2", "The Zhu Heuristic Crossover (Version 2). It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
   [StorableClass]
-  public sealed class ZhuHeuristicCrossover2 : ZhuCrossover {    
+  public sealed class ZhuHeuristicCrossover2 : ZhuCrossover {
     [StorableConstructor]
     private ZhuHeuristicCrossover2(bool deserializing) : base(deserializing) { }
 
@@ -60,14 +57,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
       int predecessor = breakPoint - 1;
       if (predecessor < 0)
         predecessor = predecessor + child.Length;
-      
+
       int parent1Index = i;
       int parent2Index = i;
 
       while (i != predecessor) {
         if (i == breakPoint) {
           child[i] = p1[parent1Index];
-          
+
           p1.Remove(child[i]);
           if (parent1Index >= p1.Count)
             parent1Index = 0;

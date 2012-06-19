@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,23 +21,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("CVRPPDTWEvaluator", "Represents a single depot CVRPPDTW evaluator.")]
   [StorableClass]
-  public class CVRPPDTWEvaluator: CVRPTWEvaluator {
+  public class CVRPPDTWEvaluator : CVRPTWEvaluator {
     public ILookupParameter<IntValue> PickupViolationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["PickupViolations"]; }
     }
@@ -118,7 +113,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         //Pickup / deliver
         double arrivalSpareCapacity = capacity - currentLoad;
 
-        bool validPickupDelivery = 
+        bool validPickupDelivery =
           validPickupDelivery =
           ((demand[end] >= 0) ||
            (stops.ContainsKey(pickupDeliveryLocation[end])));
@@ -133,7 +128,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
           overweight += currentLoad - capacity;
 
         double spareCapacity = capacity - currentLoad;
-        CVRPPDTWInsertionInfo stopInfo = new CVRPPDTWInsertionInfo(start, end, spareCapacity, tourStartTime, 
+        CVRPPDTWInsertionInfo stopInfo = new CVRPPDTWInsertionInfo(start, end, spareCapacity, tourStartTime,
           arrivalTime, time, spareTime, waitTime, new List<int>(stops.Keys), arrivalSpareCapacity);
         tourInfo.AddStopInsertionInfo(stopInfo);
 
@@ -171,7 +166,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       tourInfo.Quality = eval.Quality - originalQuality;
     }
 
-    protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, TourInsertionInfo tourInsertionInfo, int index, int customer, 
+    protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
       out bool feasible) {
       CVRPPDTWInsertionInfo insertionInfo = tourInsertionInfo.GetStopInsertionInfo(index) as CVRPPDTWInsertionInfo;
 
@@ -308,7 +303,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
       PickupViolationsParameter.ActualValue.Value = (tourEvaluation as CVRPPDTWEvaluation).PickupViolations;
     }
-    
+
     [StorableConstructor]
     protected CVRPPDTWEvaluator(bool deserializing) : base(deserializing) { }
 

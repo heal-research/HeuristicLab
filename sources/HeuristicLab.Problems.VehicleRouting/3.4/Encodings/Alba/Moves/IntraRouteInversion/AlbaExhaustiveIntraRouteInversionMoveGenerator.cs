@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,15 +19,12 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaExhaustiveIntraRouteInversionGenerator", "Generates all possible intra route inversion moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -53,20 +50,20 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
       int currentTourStart = 0;
       int currentTourEnd = 0;
-      while(currentTourEnd != individual.Length) {
+      while (currentTourEnd != individual.Length) {
         currentTourEnd = currentTourStart;
-        while (individual[currentTourEnd] < problemInstance.Cities.Value && 
+        while (individual[currentTourEnd] < problemInstance.Cities.Value &&
           currentTourEnd < individual.Length) {
           currentTourEnd++;
         }
 
         int tourLength = currentTourEnd - currentTourStart;
         if (tourLength >= 4) {
-          for (int i = 0; i <= tourLength - 4; i++ ) {
+          for (int i = 0; i <= tourLength - 4; i++) {
             for (int j = i + 2; j <= tourLength - 2; j++) {
               AlbaIntraRouteInversionMove move = new AlbaIntraRouteInversionMove(
-                currentTourStart + i, 
-                currentTourStart + j, 
+                currentTourStart + i,
+                currentTourStart + j,
                 individual);
 
               moves.Add(move);

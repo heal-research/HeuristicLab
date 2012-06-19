@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,31 +19,29 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Common;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Optimization;
 using System;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDRearrangeMove", "Item that describes a rearrange move on a PDP representation.")]
   [StorableClass]
-  public class PotvinPDRearrangeMove: Item, IVRPMove {
+  public class PotvinPDRearrangeMove : Item, IVRPMove {
     [Storable]
     public IVRPEncoding Individual { get; protected set; }
-    
+
     [Storable]
     public int City { get; protected set; }
 
     [Storable]
     public int Tour { get; protected set; }
-   
-    public PotvinPDRearrangeMove(): base() {
+
+    public PotvinPDRearrangeMove()
+      : base() {
       City = -1;
       Tour = -1;
 
@@ -77,7 +75,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     [ThreadStatic]
     private static PotvinPDRearrangeMoveEvaluator moveEvaluator;
     public VRPMoveEvaluator GetMoveEvaluator() {
-      if(moveEvaluator == null)
+      if (moveEvaluator == null)
         moveEvaluator = new PotvinPDRearrangeMoveEvaluator();
 
       return moveEvaluator;

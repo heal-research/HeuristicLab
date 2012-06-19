@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,11 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Drawing;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
@@ -35,7 +33,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [StorableClass]
   public class GVREncoding : TourEncoding {
     public override List<Tour> GetTours() {
-      List<Tour> tours = new List<Tour>();    
+      List<Tour> tours = new List<Tour>();
 
       foreach (Tour tour in base.Tours) {
         Tour newTour = new Tour();
@@ -72,11 +70,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
         tours[tours.Count - 2].Stops.AddRange(tour.Stops);
 
         tours.Remove(tour);
-      } 
+      }
 
       return tours;
     }
-    
+
     public GVREncoding(IVRPProblemInstance problemInstance)
       : base(problemInstance) {
     }

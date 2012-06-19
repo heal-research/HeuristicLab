@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,11 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Drawing;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
@@ -35,7 +33,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
-    
+
     #region IVRPEncoding Members
     public virtual void Repair() {
       List<Tour> toBeRemoved = new List<Tour>();
@@ -52,15 +50,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         Tours[Tours.Count - 2].Stops.AddRange(tour.Stops);
 
         Tours.Remove(tour);
-      } 
+      }
     }
 
-    public virtual List<Tour> GetTours() {      
-     List<Tour> result = new List<Tour>();
-     foreach (Tour tour in Tours)
-       result.Add(tour.Clone() as Tour);
+    public virtual List<Tour> GetTours() {
+      List<Tour> result = new List<Tour>();
+      foreach (Tour tour in Tours)
+        result.Add(tour.Clone() as Tour);
 
-     return result;
+      return result;
     }
 
     public int GetTourIndex(Tour tour) {
@@ -81,8 +79,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     }
 
     public int Cities {
-      get 
-      {
+      get {
         int cities = 0;
 
         foreach (Tour tour in Tours) {
@@ -113,11 +110,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     protected TourEncoding(TourEncoding original, Cloner cloner)
       : base(original, cloner) {
-       this.Tours = (ItemList<Tour>)cloner.Clone(original.Tours);
-       if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
-         this.ProblemInstance = (IVRPProblemInstance)cloner.Clone(original.ProblemInstance);
-       else
-         this.ProblemInstance = original.ProblemInstance;
+      this.Tours = (ItemList<Tour>)cloner.Clone(original.Tours);
+      if (original.ProblemInstance != null && cloner.ClonedObjectRegistered(original.ProblemInstance))
+        this.ProblemInstance = (IVRPProblemInstance)cloner.Clone(original.ProblemInstance);
+      else
+        this.ProblemInstance = original.ProblemInstance;
     }
 
     public static void ConvertFrom(IVRPEncoding encoding, TourEncoding solution, IVRPProblemInstance problemInstance) {

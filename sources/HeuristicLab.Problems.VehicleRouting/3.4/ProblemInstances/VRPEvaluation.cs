@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,10 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
-  public class StopInsertionInfo {   
+  public class StopInsertionInfo {
     private int start;
 
     public int Start {
@@ -40,11 +34,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     public int End {
       get { return end; }
     }
-        
+
     public StopInsertionInfo(int start, int end)
       : base() {
-        this.start = start;
-        this.end = end;
+      this.start = start;
+      this.end = end;
     }
   }
 
@@ -66,9 +60,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       stopInsertionInfos.Add(info);
     }
 
-   public StopInsertionInfo GetStopInsertionInfo(int stop) {
+    public StopInsertionInfo GetStopInsertionInfo(int stop) {
       return stopInsertionInfos[stop];
-    } 
+    }
 
     public int GetStopCount() {
       return stopInsertionInfos.Count;
@@ -77,13 +71,13 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
   public class InsertionInfo {
     private List<TourInsertionInfo> tourInsertionInfos;
-    
+
     public InsertionInfo()
       : base() {
-        tourInsertionInfos = new List<TourInsertionInfo>();
+      tourInsertionInfos = new List<TourInsertionInfo>();
     }
 
-    public void AddTourInsertionInfo(TourInsertionInfo info) {     
+    public void AddTourInsertionInfo(TourInsertionInfo info) {
       tourInsertionInfos.Add(info);
     }
 
@@ -91,7 +85,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return tourInsertionInfos[tour];
     }
   }
-  
+
   public class VRPEvaluation {
     public double Quality { get; set; }
     public double Distance { get; set; }

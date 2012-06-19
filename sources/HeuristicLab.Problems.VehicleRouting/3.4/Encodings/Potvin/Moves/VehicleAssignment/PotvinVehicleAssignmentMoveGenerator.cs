@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,14 +19,11 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMoveGenerator", "Generates vehicle assignment moves from a given VRP encoding.")]
@@ -49,8 +46,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public PotvinVehicleAssignmentMoveGenerator()
       : base() {
-        Parameters.Add(new LookupParameter<PotvinVehicleAssignmentMove>("PotvinVehicleAssignmentMove", "The moves that should be generated in subscopes."));
-        Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
+      Parameters.Add(new LookupParameter<PotvinVehicleAssignmentMove>("PotvinVehicleAssignmentMove", "The moves that should be generated in subscopes."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
     }
 
     protected PotvinVehicleAssignmentMoveGenerator(PotvinVehicleAssignmentMoveGenerator original, Cloner cloner)

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Common;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinCustomerRelocationMoveEvaluator", "Evaluates a customer relocation move for a VRP representation. ")]
@@ -56,11 +54,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public PotvinCustomerRelocationMoveEvaluator()
       : base() {
-       Parameters.Add(new LookupParameter<PotvinCustomerRelocationMove>("PotvinCustomerRelocationMove", "The move that should be evaluated."));
+      Parameters.Add(new LookupParameter<PotvinCustomerRelocationMove>("PotvinCustomerRelocationMove", "The move that should be evaluated."));
 
-       Parameters.Add(new LookupParameter<VariableCollection>("Memories", "The TS memory collection."));
-       Parameters.Add(new ValueParameter<StringValue>("AdditionFrequencyMemoryKey", "The key that is used for the addition frequency in the TS memory.", new StringValue("AdditionFrequency")));
-       Parameters.Add(new ValueParameter<DoubleValue>("Lambda", "The lambda parameter.", new DoubleValue(0.015)));
+      Parameters.Add(new LookupParameter<VariableCollection>("Memories", "The TS memory collection."));
+      Parameters.Add(new ValueParameter<StringValue>("AdditionFrequencyMemoryKey", "The key that is used for the addition frequency in the TS memory.", new StringValue("AdditionFrequency")));
+      Parameters.Add(new ValueParameter<DoubleValue>("Lambda", "The lambda parameter.", new DoubleValue(0.015)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -97,6 +95,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           }
         }
       }
-    } 
+    }
   }
 }

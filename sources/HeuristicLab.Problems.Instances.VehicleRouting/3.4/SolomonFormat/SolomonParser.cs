@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -109,11 +109,13 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       serviceTime = new List<double>();
     }
 
-    public SolomonParser(string file): this() {
+    public SolomonParser(string file)
+      : this() {
       this.file = file;
     }
 
-    public SolomonParser(Stream stream): this() {
+    public SolomonParser(Stream stream)
+      : this() {
       this.stream = stream;
     }
 

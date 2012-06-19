@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,17 +19,14 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDShiftMoveMaker", "Peforms the shift move on a given PDP encoding and updates the quality.")]
@@ -48,8 +45,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     public PotvinPDShiftMoveMaker()
       : base() {
-        Parameters.Add(new LookupParameter<PotvinPDShiftMove>("PotvinPDShiftMove", "The moves that should be made."));
-     }
+      Parameters.Add(new LookupParameter<PotvinPDShiftMove>("PotvinPDShiftMove", "The moves that should be made."));
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PotvinPDShiftMoveMaker(this, cloner);
@@ -73,7 +70,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
       if (problemInstance is IPickupAndDeliveryProblemInstance) {
         IPickupAndDeliveryProblemInstance pdp = problemInstance as IPickupAndDeliveryProblemInstance;
-        
+
         int location = pdp.GetPickupDeliveryLocation(move.City);
         Tour oldTour2 = solution.Tours.Find(t => t.Stops.Contains(location));
         oldTour2.Stops.Remove(location);

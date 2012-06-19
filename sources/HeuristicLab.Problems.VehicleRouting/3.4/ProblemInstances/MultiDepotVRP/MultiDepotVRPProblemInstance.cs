@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,24 +19,22 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MultiDepotVRPProblemInstance", "Represents a multi depot VRP instance.")]
   [StorableClass]
-  public class MultiDepotVRPProblemInstance: VRPProblemInstance, IMultiDepotProblemInstance {
+  public class MultiDepotVRPProblemInstance : VRPProblemInstance, IMultiDepotProblemInstance {
     protected IValueParameter<IntValue> DepotsParameter {
       get { return (IValueParameter<IntValue>)Parameters["Depots"]; }
     }
@@ -59,7 +57,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         VehicleDepotAssignmentParameter.Value = value;
       }
     }
-    
+
     protected override IEnumerable<IOperator> GetOperators() {
       return ApplicationManager.Manager.GetInstances<IMultiDepotOperator>().Cast<IOperator>();
     }
@@ -94,7 +92,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     public override double[] GetCoordinates(int city) {
       double[] coordinates;
-      
+
       if (city == 0) {
         //calculate centroid
         coordinates = new double[Coordinates.Columns];
@@ -118,7 +116,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
     public int GetDepot(int customer, IVRPEncoding solution) {
       int depot = -1;
-      
+
       Tour tour =
           solution.GetTours().FirstOrDefault(t => t.Stops.Contains(customer));
 
@@ -134,7 +132,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     public override double GetDistance(int start, int end, IVRPEncoding solution) {
       if (start == 0 && end == 0)
         return 0;
-      
+
       if (start == 0) {
         start = GetDepot(end, solution);
         end += Depots.Value - 1;
@@ -145,11 +143,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         start += Depots.Value - 1;
         end += Depots.Value - 1;
       }
-      
+
       return base.GetDistance(start, end, solution);
     }
 
-    public override double GetInsertionDistance(int start, int customer, int end, IVRPEncoding solution, 
+    public override double GetInsertionDistance(int start, int customer, int end, IVRPEncoding solution,
       out double startDistance, out double endDistance) {
       if (start == 0) {
         start = GetDepot(end, solution);
@@ -162,7 +160,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         end += Depots.Value - 1;
       }
       customer += Depots.Value - 1;
-      
+
       double distance = base.GetDistance(start, end, solution);
 
       startDistance = base.GetDistance(start, customer, solution);
@@ -172,7 +170,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
       return newDistance - distance;
     }
-    
+
     [StorableConstructor]
     protected MultiDepotVRPProblemInstance(bool deserializing) : base(deserializing) { }
 

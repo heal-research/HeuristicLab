@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,12 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinSequenceBasedCrossover", "The SBX crossover for a VRP representations.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -43,10 +40,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     private PotvinSequenceBasedCrossover(PotvinSequenceBasedCrossover original, Cloner cloner)
       : base(original, cloner) {
     }
-        
+
     protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
       bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
-      
+
       PotvinEncoding child = parent1.Clone() as PotvinEncoding;
       Tour newTour = new Tour();
 
@@ -89,7 +86,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         }
       } else {
         return child;
-      } 
+      }
     }
   }
 }

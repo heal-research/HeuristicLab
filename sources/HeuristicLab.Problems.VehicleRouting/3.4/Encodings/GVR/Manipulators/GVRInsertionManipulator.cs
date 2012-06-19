@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,12 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRInsertionManipulator", "An operator which manipulates a GVR representation by inserting a customer at another location. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
@@ -54,12 +51,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
       tour.Stops.RemoveAt(position);
 
       //with a probability of 1/(2*V) create a new tour, else insert at another position
-      if (individual.GetTours().Count > 0 &&        
-        individual.GetTours().Count < ProblemInstance.Vehicles.Value && 
+      if (individual.GetTours().Count > 0 &&
+        individual.GetTours().Count < ProblemInstance.Vehicles.Value &&
         random.Next(individual.GetTours().Count * 2) == 0) {
         Tour newTour = new Tour();
         newTour.Stops.Add(customer);
-       
+
         individual.Tours.Add(newTour);
       } else {
         Tour newTour = individual.Tours[random.Next(individual.Tours.Count)];

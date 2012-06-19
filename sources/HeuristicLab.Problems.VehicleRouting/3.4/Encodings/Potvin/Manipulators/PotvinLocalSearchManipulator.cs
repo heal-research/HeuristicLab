@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
@@ -39,7 +38,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     [StorableConstructor]
     private PotvinLocalSearchManipulator(bool deserializing) : base(deserializing) { }
 
-    public PotvinLocalSearchManipulator() : base() {
+    public PotvinLocalSearchManipulator()
+      : base() {
       Parameters.Add(new ValueParameter<IntValue>("Iterations", "The number of max iterations.", new IntValue(100)));
     }
 
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
             }
           }
           individual.Tours[currentTour].Stops.RemoveRange(currentCity, length);
-          
+
           currentCity++;
         }
         currentTour++;
@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
                   individual.Tours[tour].Stops.RemoveRange(city, length);
                   individual.Tours[insertionTour].Stops.InsertRange(
                     insertionPlace,
-                    toBeInserted); 
+                    toBeInserted);
                 }
                 city++;
               }
@@ -124,7 +124,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
             length--;
           }
           iterations++;
-        } while (insertionFound && 
+        } while (insertionFound &&
           iterations < Iterations.Value.Value);
 
         IList<Tour> toBeRemoved = new List<Tour>();

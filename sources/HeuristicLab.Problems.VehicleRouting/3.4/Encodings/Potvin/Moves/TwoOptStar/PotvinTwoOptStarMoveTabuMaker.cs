@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,15 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Operators;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMoveTabuMaker", "Declares a given two opt star move as tabu.")]
@@ -139,7 +138,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       foreach (int city in segmentX2) {
         tabuList.Add(new PotvinTwoOptStarMoveAttribute(baseQuality, move.Tour2, city, distance, overload, tardiness));
       }
-      
+
       return base.Apply();
     }
   }

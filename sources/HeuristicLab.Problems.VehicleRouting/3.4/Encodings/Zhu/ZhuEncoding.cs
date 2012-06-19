@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,14 +19,13 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using System;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
@@ -49,10 +48,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
         if (!ProblemInstance.TourFeasible(newTour, this)) {
           newTour.Stops.Remove(city);
           if (newTour.Stops.Count > 0)
-              result.Add(newTour);
+            result.Add(newTour);
 
-            newTour = new Tour();
-            newTour.Stops.Add(city);
+          newTour = new Tour();
+          newTour.Stops.Add(city);
         }
       }
 

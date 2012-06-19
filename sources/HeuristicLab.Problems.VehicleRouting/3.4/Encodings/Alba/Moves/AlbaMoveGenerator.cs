@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,20 +19,16 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaMoveGenerator", "Generates Alba VRP moves.")]
   [StorableClass]
-  public abstract class AlbaMoveGenerator : VRPMoveGenerator, IAlbaOperator {    
+  public abstract class AlbaMoveGenerator : VRPMoveGenerator, IAlbaOperator {
     [StorableConstructor]
     protected AlbaMoveGenerator(bool deserializing) : base(deserializing) { }
 
@@ -49,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       if (!(solution is AlbaEncoding)) {
         VRPToursParameter.ActualValue = AlbaEncoding.ConvertFrom(solution, ProblemInstance);
       }
-      
+
       return base.Apply();
     }
   }

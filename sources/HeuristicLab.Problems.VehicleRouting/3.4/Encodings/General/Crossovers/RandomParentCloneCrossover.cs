@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,17 +19,13 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General.Crossovers {
   [Item("RandomParentCloneCrossover", "An operator which randomly chooses one parent and returns a clone.")]
@@ -67,7 +63,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General.Crossovers {
     private RandomParentCloneCrossover(RandomParentCloneCrossover original, Cloner cloner)
       : base(original, cloner) {
     }
-    
+
     public override IOperation Apply() {
       if (RandomParameter.ActualValue.Next() < 0.5)
         ChildParameter.ActualValue = ParentsParameter.ActualValue[0].Clone() as IVRPEncoding;

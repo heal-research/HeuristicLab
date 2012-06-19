@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,15 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Data;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
-  public interface IPickupAndDeliveryProblemInstance: IVRPProblemInstance {
+  public interface IPickupAndDeliveryProblemInstance : IVRPProblemInstance {
     IntArray PickupDeliveryLocation { get; }
     DoubleValue PickupViolationPenalty { get; set; }
 

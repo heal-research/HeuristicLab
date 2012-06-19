@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,24 +19,20 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveEvaluator", "Evaluates a VRP move.")]
   [StorableClass]
   public abstract class VRPMoveEvaluator : VRPMoveOperator, ISingleObjectiveMoveEvaluator {
     public const string MovePrefix = "Move";
-    
+
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -81,7 +77,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     public override IOperation Apply() {
       EvaluateMove();
-      
+
       return base.Apply();
     }
   }

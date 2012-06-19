@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
-using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMoveMaker", "Peforms the vehicle assignment move on a given VRP encoding and updates the quality.")]
@@ -39,11 +36,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     public override ILookupParameter VRPMoveParameter {
-         get { return VehicleAssignmentMoveParameter; }
+      get { return VehicleAssignmentMoveParameter; }
     }
 
     public ILookupParameter<VariableCollection> MemoriesParameter {
-      get { return (ILookupParameter<VariableCollection>)Parameters["Memories"]; } 
+      get { return (ILookupParameter<VariableCollection>)Parameters["Memories"]; }
     }
 
     public IValueParameter<StringValue> AdditionFrequencyMemoryKeyParameter {

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,14 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
   [Item("GVRCrossover", "The GVR crossover operation. It is implemented as described in Pereira, F.B. et al (2002). GVR: a New Genetic Representation for the Vehicle Routing Problem. AICS 2002, LNAI 2464, pp. 95-102.")]
@@ -60,7 +58,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
       int breakPoint1 = random.Next(tour.Stops.Count);
       int length = random.Next(1, tour.Stops.Count - breakPoint1 + 1);
       List<int> subroute = tour.Stops.GetRange(breakPoint1, length);
-      
+
       //remove duplicates
       List<Tour> toBeRemoved = new List<Tour>();
 
@@ -103,7 +101,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
 
       return child;
     }
-   
+
     public override IOperation Apply() {
       ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {

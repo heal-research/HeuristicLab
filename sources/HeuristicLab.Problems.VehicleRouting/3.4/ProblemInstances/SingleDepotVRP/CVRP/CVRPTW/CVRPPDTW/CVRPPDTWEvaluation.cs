@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,12 +19,7 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   public class CVRPPDTWInsertionInfo : CVRPTWInsertionInfo {
@@ -37,18 +32,18 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     private double arrivalSpareCapacity;
 
     public double ArrivalSpareCapacity {
-      get { return arrivalSpareCapacity;  }
+      get { return arrivalSpareCapacity; }
     }
 
-    public CVRPPDTWInsertionInfo(int start, int end, double spareCapacity, double tourStartTime, 
+    public CVRPPDTWInsertionInfo(int start, int end, double spareCapacity, double tourStartTime,
       double arrivalTime, double leaveTime, double spareTime, double waitingTime, List<int> visited, double arrivalSpareCapacity)
       : base(start, end, spareCapacity, tourStartTime, arrivalTime, leaveTime, spareTime, waitingTime) {
-        this.visited = visited;
-        this.arrivalSpareCapacity = arrivalSpareCapacity;
+      this.visited = visited;
+      this.arrivalSpareCapacity = arrivalSpareCapacity;
     }
   }
-  
-  public class CVRPPDTWEvaluation: CVRPTWEvaluation {
+
+  public class CVRPPDTWEvaluation : CVRPTWEvaluation {
     public int PickupViolations { get; set; }
   }
 }

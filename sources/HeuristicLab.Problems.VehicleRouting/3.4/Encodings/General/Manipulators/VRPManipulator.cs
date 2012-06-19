@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,17 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPManipulator", "Manipulates a VRP solution.")]
@@ -44,7 +38,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     public VRPManipulator()
       : base() {
-        Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be manipulated."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours to be manipulated."));
     }
 
     protected VRPManipulator(VRPManipulator original, Cloner cloner)

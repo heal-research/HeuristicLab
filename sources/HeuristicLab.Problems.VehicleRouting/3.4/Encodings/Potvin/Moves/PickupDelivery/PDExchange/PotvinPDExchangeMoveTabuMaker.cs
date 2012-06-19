@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,13 +21,12 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Optimization.Operators;
+using HeuristicLab.Data;
+using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Operators;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDExchangeMoveTabuMaker", "Declares a given exchange move as tabu.")]
@@ -49,7 +48,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
 
-    
+
     public ILookupParameter<PotvinPDExchangeMove> PDExchangeMoveParameter {
       get { return (ILookupParameter<PotvinPDExchangeMove>)Parameters["PotvinPDExchangeMove"]; }
     }
@@ -87,14 +86,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the solution."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, else if it is a minimization problem."));
 
-        Parameters.Add(new LookupParameter<PotvinPDExchangeMove>("PotvinPDExchangeMove", "The moves that should be made."));
-        Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
-        Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
+      Parameters.Add(new LookupParameter<PotvinPDExchangeMove>("PotvinPDExchangeMove", "The moves that should be made."));
+      Parameters.Add(new LookupParameter<IVRPEncoding>("VRPTours", "The VRP tours considered in the move."));
+      Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
 
-        Parameters.Add(new LookupParameter<DoubleValue>("Distance", "The distance of the individual"));
-        Parameters.Add(new LookupParameter<DoubleValue>("Overload", "The overload of the individual"));
-        Parameters.Add(new LookupParameter<DoubleValue>("Tardiness", "The tardiness of the individual"));
-        Parameters.Add(new LookupParameter<IntValue>("PickupViolations", "The number of pickup violations."));
+      Parameters.Add(new LookupParameter<DoubleValue>("Distance", "The distance of the individual"));
+      Parameters.Add(new LookupParameter<DoubleValue>("Overload", "The overload of the individual"));
+      Parameters.Add(new LookupParameter<DoubleValue>("Tardiness", "The tardiness of the individual"));
+      Parameters.Add(new LookupParameter<IntValue>("PickupViolations", "The number of pickup violations."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

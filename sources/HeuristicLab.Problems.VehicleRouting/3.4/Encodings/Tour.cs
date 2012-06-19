@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,10 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting {
@@ -44,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     protected Tour(Tour original, Cloner cloner)
       : base(original, cloner) {
-        this.Stops = new List<int>(original.Stops);
+      this.Stops = new List<int>(original.Stops);
     }
 
     [StorableConstructor]
@@ -76,7 +73,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       while (equal && index < Stops.Count) {
         equal = equal && tour.Stops[index] == Stops[index];
         index++;
-      }      
+      }
 
       return equal;
     }

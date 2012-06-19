@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,14 +19,12 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarExhaustiveMoveGenerator", "Generates two opt star moves from a given VRP encoding.")]
@@ -54,7 +52,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         for (int tour2 = tour1 + 1; tour2 < individual.Tours.Count; tour2++) {
           for (int index1 = 0; index1 <= individual.Tours[tour1].Stops.Count; index1++) {
             for (int index2 = 0; index2 <= individual.Tours[tour2].Stops.Count; index2++) {
-              if ((index1 != individual.Tours[tour1].Stops.Count || index2 != individual.Tours[tour2].Stops.Count) && 
+              if ((index1 != individual.Tours[tour1].Stops.Count || index2 != individual.Tours[tour2].Stops.Count) &&
                   (index1 != 0 || index2 != 0))
                 result.Add(new PotvinTwoOptStarMove(tour1, index1, tour2, index2, individual));
             }

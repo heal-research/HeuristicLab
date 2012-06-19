@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
   [Item("PrinsStochasticLSManipulator", "An operator which manipulates a VRP representation by using the stochastic version of the Prins local search.  It is implemented as described in Prins, C. (2004). A simple and effective evolutionary algorithm for the vehicle routing problem. Computers & Operations Research, 12:1985-2002.")]
@@ -34,13 +33,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
     public IValueParameter<IntValue> SampleSize {
       get { return (IValueParameter<IntValue>)Parameters["SampleSize"]; }
     }
-    
+
     [StorableConstructor]
     private PrinsStochasticLSManipulator(bool deserializing) : base(deserializing) { }
 
     public PrinsStochasticLSManipulator()
       : base() {
-        Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The sample size.", new IntValue(200)));
+      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The sample size.", new IntValue(200)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -64,15 +63,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
         int samples = 0;
         while (!improvement &&
           samples < SampleSize.Value.Value) {
-            int u = random.Next(ProblemInstance.Cities.Value);
-            int v = random.Next(ProblemInstance.Cities.Value);
+          int u = random.Next(ProblemInstance.Cities.Value);
+          int v = random.Next(ProblemInstance.Cities.Value);
 
-            child = Manipulate(individual,
-                  originalQuality, u, v);
+          child = Manipulate(individual,
+                originalQuality, u, v);
 
-            improvement = child != null;
+          improvement = child != null;
 
-            samples++;
+          samples++;
         }
 
         if (improvement) {
@@ -82,7 +81,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Prins {
         }
 
         iterations++;
-      } while (improvement && 
+      } while (improvement &&
         iterations < Iterations.Value.Value);
     }
   }

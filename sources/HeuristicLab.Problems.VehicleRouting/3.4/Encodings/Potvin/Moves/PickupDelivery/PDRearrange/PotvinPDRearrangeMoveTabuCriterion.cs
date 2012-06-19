@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (LookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
-    }  
+    }
 
     public ILookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (ILookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
@@ -156,7 +156,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           }
         }
       }
-      
+
       MoveTabuParameter.ActualValue = new BoolValue(isTabu);
       return base.Apply();
     }

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       this.problemInstance = problemInstance;
       this.solution = solution;
       this.quality = quality;
-      
+
       Initialize();
     }
     [StorableConstructor]
@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
-   
+
     private void RegisterProblemInstanceEvents() {
       ProblemInstance.ToStringChanged += new EventHandler(ProblemInstance_ToStringChanged);
     }

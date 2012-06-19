@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,23 +19,20 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
-using System.Collections.Generic;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDShiftSingleMoveGenerator", "Generates a single shift move from a given PDP encoding.")]
   [StorableClass]
   public sealed class PotvinPDShiftSingleMoveGenerator : PotvinPDShiftMoveGenerator,
-    ISingleMoveGenerator {    
+    ISingleMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -81,7 +78,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         return new PotvinPDShiftMove(city, oldTourIndex, newTourIndex, individual);
       } else {
         return null;
-      }             
+      }
     }
 
     protected override PotvinPDShiftMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance) {

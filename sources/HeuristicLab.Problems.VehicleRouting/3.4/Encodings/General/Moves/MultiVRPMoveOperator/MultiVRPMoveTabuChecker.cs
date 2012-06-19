@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,18 +19,17 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
-namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
+namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPMoveTabuChecker", "Checks if a VRP move is tabu.")]
   [StorableClass]
   public class MultiVRPMoveTabuChecker : SingleSuccessorOperator, IMultiVRPMoveOperator, ITabuChecker, IGeneralVRPOperator {
@@ -65,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General{
       get { return UseAspirationCriterionParameter.Value; }
       set { UseAspirationCriterionParameter.Value = value; }
     }
-    
+
     [StorableConstructor]
     protected MultiVRPMoveTabuChecker(bool deserializing) : base(deserializing) { }
 

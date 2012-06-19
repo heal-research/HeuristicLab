@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,15 +19,13 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Common;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaCrossover", "An operator which crosses two VRP representations.")]
@@ -36,9 +34,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    
+
     [StorableConstructor]
-    protected AlbaCrossover(bool deserializing) : base(deserializing) {
+    protected AlbaCrossover(bool deserializing)
+      : base(deserializing) {
     }
 
     public AlbaCrossover()
@@ -65,7 +64,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       }
       ParentsParameter.ActualValue = parents;
 
-      ChildParameter.ActualValue = 
+      ChildParameter.ActualValue =
         Crossover(RandomParameter.ActualValue, parents[0] as AlbaEncoding, parents[1] as AlbaEncoding);
       (ChildParameter.ActualValue as AlbaEncoding).Repair();
 

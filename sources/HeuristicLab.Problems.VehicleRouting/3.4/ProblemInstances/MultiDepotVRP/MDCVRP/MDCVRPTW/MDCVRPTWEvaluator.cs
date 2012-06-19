@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,24 +20,18 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPTWEvaluator", "Represents a multi depot CVRPTW evaluator.")]
   [StorableClass]
-  public class MDCVRPTWEvaluator: MDCVRPEvaluator {
+  public class MDCVRPTWEvaluator : MDCVRPEvaluator {
     public ILookupParameter<DoubleValue> TardinessParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Tardiness"]; }
     }
@@ -129,7 +123,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
         //service
         double currentServiceTime = 0;
-        if(end > 0)
+        if (end > 0)
           currentServiceTime = serviceTimes[end - 1];
         serviceTime += currentServiceTime;
         time += currentServiceTime;
@@ -192,7 +186,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       if (demand > insertionInfo.SpareCapacity) {
         feasible = false;
 
-        if(insertionInfo.SpareCapacity >= 0)
+        if (insertionInfo.SpareCapacity >= 0)
           costs += (demand - insertionInfo.SpareCapacity) * overloadPenalty;
         else
           costs += demand * overloadPenalty;
@@ -240,14 +234,14 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         } else {
           //arrive later than before, probably don't have to wait
           if (nextStop.WaitingTime > 0) {
-            additionalTime -= Math.Min(additionalTime, nextStop.WaitingTime);            
+            additionalTime -= Math.Min(additionalTime, nextStop.WaitingTime);
           }
 
           //check due date
           if (nextStop.SpareTime > 0) {
             double spare = nextStop.SpareTime - additionalTime;
             if (spare < 0)
-              tardiness += -spare; 
+              tardiness += -spare;
           } else {
             tardiness += additionalTime;
           }
@@ -278,7 +272,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       TardinessParameter.ActualValue.Value = (tourEvaluation as CVRPTWEvaluation).Tardiness;
       TravelTimeParameter.ActualValue.Value = (tourEvaluation as CVRPTWEvaluation).TravelTime;
     }
-    
+
     [StorableConstructor]
     protected MDCVRPTWEvaluator(bool deserializing) : base(deserializing) { }
 

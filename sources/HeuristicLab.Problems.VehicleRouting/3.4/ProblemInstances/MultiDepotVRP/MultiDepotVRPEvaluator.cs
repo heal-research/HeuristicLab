@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,30 +19,20 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("SingleDepotVRPEvaluator", "Represents a single depot VRP evaluator.")]
   [StorableClass]
-  public class MultiDepotVRPEvaluator: VRPEvaluator {
+  public class MultiDepotVRPEvaluator : VRPEvaluator {
     protected override void EvaluateTour(VRPEvaluation eval, IVRPProblemInstance instance, Tour tour, IVRPEncoding solution) {
       TourInsertionInfo tourInfo = new TourInsertionInfo(solution.GetVehicleAssignment(solution.GetTourIndex(tour)));
       eval.InsertionInfo.AddTourInsertionInfo(tourInfo);
-      
+
       double distance = 0.0;
       double quality = 0.0;
 
@@ -78,7 +68,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
       out bool feasible) {
       StopInsertionInfo insertionInfo = tourInsertionInfo.GetStopInsertionInfo(index);
-      
+
       double costs = 0;
       feasible = true;
       double startDistance, endDistance;
@@ -87,7 +77,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
       return costs;
     }
-    
+
     [StorableConstructor]
     protected MultiDepotVRPEvaluator(bool deserializing) : base(deserializing) { }
 

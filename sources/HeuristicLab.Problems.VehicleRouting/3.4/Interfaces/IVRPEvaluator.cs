@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,18 +19,14 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
-  public interface IVRPEvaluator: IVRPOperator, ISingleObjectiveEvaluator {
+  public interface IVRPEvaluator : IVRPOperator, ISingleObjectiveEvaluator {
     ILookupParameter<IVRPEncoding> VRPToursParameter { get; }
-    
+
     VRPEvaluation Evaluate(IVRPProblemInstance instance, IVRPEncoding solution);
     VRPEvaluation EvaluateTour(IVRPProblemInstance instance, Tour tour, IVRPEncoding solution);
     bool Feasible(VRPEvaluation evaluation);

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   public class CVRPInsertionInfo : StopInsertionInfo {
@@ -40,8 +33,8 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       this.spareCapacity = spareCapacity;
     }
   }
-  
-  public class CVRPEvaluation: VRPEvaluation {
+
+  public class CVRPEvaluation : VRPEvaluation {
     public double Overload { get; set; }
   }
 }

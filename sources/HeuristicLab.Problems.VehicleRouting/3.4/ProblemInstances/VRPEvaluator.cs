@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,29 +19,22 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("VRPEvaluator", "Represents a VRP evaluator.")]
   [StorableClass]
-  public abstract class VRPEvaluator: VRPOperator, IVRPEvaluator {
+  public abstract class VRPEvaluator : VRPOperator, IVRPEvaluator {
     public ILookupParameter<IVRPEncoding> VRPToursParameter {
       get { return (ILookupParameter<IVRPEncoding>)Parameters["VRPTours"]; }
     }
-    
+
     #region ISingleObjectiveEvaluator Members
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -58,7 +51,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     public ILookupParameter<DoubleValue> PenaltyParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Penalty"]; }
     }
-    
+
     [StorableConstructor]
     protected VRPEvaluator(bool deserializing) : base(deserializing) { }
 
@@ -109,7 +102,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       double costs = GetTourInsertionCosts(
         instance,
         solution,
-        eval.InsertionInfo.GetTourInsertionInfo(tour), 
+        eval.InsertionInfo.GetTourInsertionInfo(tour),
         index,
         customer, out tourFeasible);
 

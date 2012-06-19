@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,19 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Common;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -39,7 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("TimeWindowRelaxationVRPAnalyzer", "An operator for adaptively relaxing the time window constraints.")]
   [StorableClass]
-  public class TimeWindowRelaxationVRPAnalyzer: SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator {
+  public class TimeWindowRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }
@@ -101,10 +97,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public override IOperation Apply() {
       ITimeWindowedProblemInstance vrptw = ProblemInstanceParameter.ActualValue as ITimeWindowedProblemInstance;
       ResultCollection results = ResultsParameter.ActualValue;
-      
+
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       ItemArray<DoubleValue> tardiness = TardinessParameter.ActualValue;
-      
+
       double sigma = SigmaParameter.Value.Value;
       double phi = PhiParameter.Value.Value;
       double minPenalty = MinPenaltyFactorParameter.Value.Value;

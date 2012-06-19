@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,23 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Common;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeMove", "Item that describes a lambda move on a VRP representation.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
   [StorableClass]
-  public class AlbaLambdaInterchangeMove: Item, IVRPMove {
+  public class AlbaLambdaInterchangeMove : Item, IVRPMove {
     [Storable]
     public IVRPEncoding Individual { get; protected set; }
-    
+
     [Storable]
     public int Tour1 { get; protected set; }
 
@@ -53,8 +50,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     [Storable]
     public int Length2 { get; protected set; }
-    
-    public AlbaLambdaInterchangeMove(): base() {
+
+    public AlbaLambdaInterchangeMove()
+      : base() {
       Tour1 = -1;
       Position1 = -1;
       Length1 = -1;
@@ -66,17 +64,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       Individual = null;
     }
 
-    public AlbaLambdaInterchangeMove(int tour1, int position1, int length1, 
+    public AlbaLambdaInterchangeMove(int tour1, int position1, int length1,
       int tour2, int position2, int length2, AlbaEncoding permutation) {
-        Tour1 = tour1;
-        Position1 = position1;
-        Length1 = length1;
+      Tour1 = tour1;
+      Position1 = position1;
+      Length1 = length1;
 
-        Tour2 = tour2;
-        Position2 = position2;
-        Length2 = length2;
+      Tour2 = tour2;
+      Position2 = position2;
+      Length2 = length2;
 
-        this.Individual = permutation.Clone() as AlbaEncoding;
+      this.Individual = permutation.Clone() as AlbaEncoding;
     }
 
     [StorableConstructor]

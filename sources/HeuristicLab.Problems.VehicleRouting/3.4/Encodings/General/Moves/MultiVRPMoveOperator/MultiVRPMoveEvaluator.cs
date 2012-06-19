@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,13 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("MultiVRPMoveEvaluator", "Evaluates a move for the VRP representation.")]
@@ -40,7 +39,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public MultiVRPMoveEvaluator()
       : base() {
-        Parameters.Add(new LookupParameter<IVRPMove>("VRPMove", "The generated moves."));
+      Parameters.Add(new LookupParameter<IVRPMove>("VRPMove", "The generated moves."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

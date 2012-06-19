@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,23 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Common;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMove", "Item that describes a two opt star move on a VRP representation.")]
   [StorableClass]
-  public class PotvinTwoOptStarMove: Item, IVRPMove {
+  public class PotvinTwoOptStarMove : Item, IVRPMove {
     [Storable]
     public IVRPEncoding Individual { get; protected set; }
-    
+
     [Storable]
     public int Tour1 { get; protected set; }
 
@@ -47,8 +44,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     [Storable]
     public int X2 { get; protected set; }
-   
-    public PotvinTwoOptStarMove(): base() {
+
+    public PotvinTwoOptStarMove()
+      : base() {
       X1 = -1;
       Tour1 = -1;
       X2 = -1;

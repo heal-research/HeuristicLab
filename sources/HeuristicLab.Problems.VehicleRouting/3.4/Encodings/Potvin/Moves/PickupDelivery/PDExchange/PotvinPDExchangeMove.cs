@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,24 +19,21 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Common;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Data;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Optimization;
 using System;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Optimization;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinPDExchangeMove", "Item that describes a exchange move on a PDP representation.")]
   [StorableClass]
-  public class PotvinPDExchangeMove: Item, IVRPMove {
+  public class PotvinPDExchangeMove : Item, IVRPMove {
     [Storable]
     public IVRPEncoding Individual { get; protected set; }
-    
+
     [Storable]
     public int City { get; protected set; }
 
@@ -48,8 +45,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     [Storable]
     public int Replaced { get; protected set; }
-   
-    public PotvinPDExchangeMove(): base() {
+
+    public PotvinPDExchangeMove()
+      : base() {
       City = -1;
       Tour = -1;
 
@@ -94,7 +92,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     }
 
     [ThreadStatic]
-    private static PotvinPDExchangeMoveMaker moveMaker; 
+    private static PotvinPDExchangeMoveMaker moveMaker;
     public VRPMoveMaker GetMoveMaker() {
       if (moveMaker == null)
         moveMaker = new PotvinPDExchangeMoveMaker();

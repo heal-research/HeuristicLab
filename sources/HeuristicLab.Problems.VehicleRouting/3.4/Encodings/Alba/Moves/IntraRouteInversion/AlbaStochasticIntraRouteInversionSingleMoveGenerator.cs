@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,16 +19,13 @@
  */
 #endregion
 
-using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Parameters;
-using System.Collections.Generic;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaStochasticIntraRouteInversionSingleMoveGenerator", "Generates one random intra route inversion move from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -42,17 +39,17 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
     }
 
     #endregion
-    
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    
+
     [StorableConstructor]
     private AlbaStochasticIntraRouteInversionSingleMoveGenerator(bool deserializing) : base(deserializing) { }
 
     public AlbaStochasticIntraRouteInversionSingleMoveGenerator()
       : base() {
-        Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -102,7 +99,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       List<AlbaIntraRouteInversionMove> moves = new List<AlbaIntraRouteInversionMove>();
 
       AlbaIntraRouteInversionMove move = Apply(individual, problemInstance.Cities.Value, RandomParameter.ActualValue);
-      if(move != null)
+      if (move != null)
         moves.Add(move);
 
       return moves.ToArray();

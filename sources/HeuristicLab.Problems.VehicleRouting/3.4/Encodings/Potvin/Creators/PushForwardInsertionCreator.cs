@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,13 +21,12 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
@@ -115,7 +114,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return distance;
     }
 
-    private static int GetNearestDepot(IVRPProblemInstance problemInstance, List<int> depots, int customer, 
+    private static int GetNearestDepot(IVRPProblemInstance problemInstance, List<int> depots, int customer,
       double alpha, double beta, double gamma, out double minCost) {
       int nearest = -1;
       minCost = double.MaxValue;
@@ -131,7 +130,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         double y0 = problemInstance.Coordinates[depot, 1];
 
         double distance = GetDistance(customer + depotCount - 1, depot, problemInstance);
-       
+
         double dueTime = 0;
         if (problemInstance is ITimeWindowedProblemInstance)
           dueTime = (problemInstance as ITimeWindowedProblemInstance).DueTime[customer + depotCount - 1];
@@ -157,8 +156,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return nearest;
     }
 
-    private static List<int> SortCustomers(IVRPProblemInstance problemInstance, List<int> customers, List<int> depots, 
-      Dictionary<int, int> depotAssignment, 
+    private static List<int> SortCustomers(IVRPProblemInstance problemInstance, List<int> customers, List<int> depots,
+      Dictionary<int, int> depotAssignment,
       double alpha, double beta, double gamma) {
       List<int> sortedCustomers = new List<int>();
       depotAssignment.Clear();
@@ -167,7 +166,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
       for (int i = 0; i < customers.Count; i++) {
         double cost;
-        int depot = GetNearestDepot(problemInstance, depots, customers[i], 
+        int depot = GetNearestDepot(problemInstance, depots, customers[i],
           alpha, beta, gamma,
           out cost);
         depotAssignment[customers[i]] = depot;

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,14 +20,12 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
-using HeuristicLab.Parameters;
-using System.Collections.Generic;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaExhaustiveLambdaInterchangeMoveGenerator", "Generates all possible lambda interchange moves from a given VRP encoding.  It is implemented as described in Alba, E. and Dorronsoro, B. (2004). Solving the Vehicle Routing Problem by Using Cellular Genetic Algorithms.")]
@@ -60,10 +58,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
           for (int length1 = 0; length1 <= Math.Min(lambda, tour1.Stops.Count); length1++) {
             for (int length2 = 0; length2 <= Math.Min(lambda, tour2.Stops.Count); length2++) {
-              if(length1 != 0 || length2 != 0) {
+              if (length1 != 0 || length2 != 0) {
                 for (int index1 = 0; index1 < tour1.Stops.Count - length1 + 1; index1++) {
                   for (int index2 = 0; index2 < tour2.Stops.Count - length2 + 1; index2++) {
-                    moves.Add(new AlbaLambdaInterchangeMove(tour1Index, index1, length1, 
+                    moves.Add(new AlbaLambdaInterchangeMove(tour1Index, index1, length1,
                       tour2Index, index2, length2, individual));
                   }
                 }

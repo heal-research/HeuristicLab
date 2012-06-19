@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,17 +19,14 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveMaker", "Performs a VRP move.")]
@@ -64,14 +61,14 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     private void UpdateMoveEvaluation() {
       IVRPEvaluator evaluator = ProblemInstance.SolutionEvaluator;
       ICollection<IParameter> addedParameters = new List<IParameter>();
-      
+
       try {
         foreach (IParameter parameter in evaluator.Parameters) {
-          if (parameter is ILookupParameter 
-            && parameter != evaluator.VRPToursParameter 
+          if (parameter is ILookupParameter
+            && parameter != evaluator.VRPToursParameter
             && parameter != evaluator.ProblemInstanceParameter) {
             ILookupParameter evaluatorParameter = parameter as ILookupParameter;
-          
+
             string resultName = evaluatorParameter.ActualName;
             if (!this.Parameters.ContainsKey(resultName)) {
               ILookupParameter resultParameter = new LookupParameter<IItem>(resultName);
@@ -83,7 +80,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
             string moveResultName = VRPMoveEvaluator.MovePrefix + resultName;
             if (!this.Parameters.ContainsKey(moveResultName)) {
               ILookupParameter moveResultParameter = new LookupParameter<IItem>(moveResultName);
-              moveResultParameter.ExecutionContext = ExecutionContext; 
+              moveResultParameter.ExecutionContext = ExecutionContext;
               this.Parameters.Add(moveResultParameter);
               addedParameters.Add(moveResultParameter);
             }
@@ -95,7 +92,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         }
       }
       finally {
-        foreach(IParameter parameter in addedParameters) {
+        foreach (IParameter parameter in addedParameters) {
           this.Parameters.Remove(parameter);
         }
       }
@@ -104,7 +101,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public override IOperation Apply() {
       PerformMove();
       UpdateMoveEvaluation();
-      
+
       return base.Apply();
     }
   }

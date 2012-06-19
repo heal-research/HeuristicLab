@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,18 +19,13 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.Instances;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Data;
+using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
-  public class MDCVRPTWInterpreter: IVRPDataInterpreter<MDCVRPTWData> {
+  public class MDCVRPTWInterpreter : IVRPDataInterpreter<MDCVRPTWData> {
     public VRPInstanceDescription Interpret(IVRPData data) {
       MDCVRPTWData cvrpData = data as MDCVRPTWData;
 
@@ -39,7 +34,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
       result.Description = cvrpData.Description;
 
       MDCVRPTWProblemInstance problem = new MDCVRPTWProblemInstance();
-      if(cvrpData.Coordinates != null)
+      if (cvrpData.Coordinates != null)
         problem.Coordinates = new DoubleMatrix(cvrpData.Coordinates);
       if (cvrpData.MaximumVehicles != null)
         problem.Vehicles.Value = (int)cvrpData.MaximumVehicles;
@@ -64,7 +59,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
       if (cvrpData.BestKnownTour != null) {
         PotvinEncoding solution = new PotvinEncoding(problem);
 
-        for(int i = 0; i < cvrpData.BestKnownTour.GetLength(0); i++) {
+        for (int i = 0; i < cvrpData.BestKnownTour.GetLength(0); i++) {
           Tour tour = new Tour();
           solution.Tours.Add(tour);
 
@@ -72,7 +67,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
             tour.Stops.Add(stop + 1);
           }
         }
-        
+
         result.BestKnownSolution = solution;
       }
 

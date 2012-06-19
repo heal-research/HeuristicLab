@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,12 +19,12 @@
  */
 #endregion
 
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   [Item("BestAverageWorstPickupAndDeliveryVRPToursCalculator", "An operator which calculates the current best, average and worst properties of VRP tours in the scope tree.")]
@@ -45,10 +45,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     public BestAverageWorstPickupAndDeliveryVRPToursCalculator()
       : base() {
-        Parameters.Add(new ScopeTreeLookupParameter<IntValue>("PickupViolations", "The pickup violations of the VRP solutions which should be analyzed."));
-        Parameters.Add(new ValueLookupParameter<IntValue>("BestPickupViolations", "The best pickup violations value."));
-        Parameters.Add(new ValueLookupParameter<DoubleValue>("AveragePickupViolations", "The average pickup violations value of all solutions."));
-        Parameters.Add(new ValueLookupParameter<IntValue>("WorstPickupViolations", "The worst pickup violations value of all solutions."));
+      Parameters.Add(new ScopeTreeLookupParameter<IntValue>("PickupViolations", "The pickup violations of the VRP solutions which should be analyzed."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("BestPickupViolations", "The best pickup violations value."));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("AveragePickupViolations", "The average pickup violations value of all solutions."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("WorstPickupViolations", "The worst pickup violations value of all solutions."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -83,10 +83,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
         else worst.Value = max;
       }
     }
-  
+
     public override IOperation Apply() {
       UpdatePickupViolations();
-     
+
       return base.Apply();
     }
   }

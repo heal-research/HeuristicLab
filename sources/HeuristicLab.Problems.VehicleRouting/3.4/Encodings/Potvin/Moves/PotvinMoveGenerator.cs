@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,20 +19,16 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinMoveGenerator", "Generates Potvin VRP moves.")]
   [StorableClass]
-  public abstract class PotvinMoveGenerator : VRPMoveGenerator, IPotvinOperator {    
+  public abstract class PotvinMoveGenerator : VRPMoveGenerator, IPotvinOperator {
     [StorableConstructor]
     protected PotvinMoveGenerator(bool deserializing) : base(deserializing) { }
 
@@ -49,7 +45,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       if (!(solution is PotvinEncoding)) {
         VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, ProblemInstance);
       }
-      
+
       return base.Apply();
     }
   }

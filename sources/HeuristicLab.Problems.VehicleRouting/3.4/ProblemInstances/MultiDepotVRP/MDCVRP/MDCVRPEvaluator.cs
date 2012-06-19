@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,25 +19,18 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HeuristicLab.Problems.VehicleRouting.Interfaces;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Core;
-using HeuristicLab.Parameters;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.VehicleRouting.Variants;
-using HeuristicLab.Problems.VehicleRouting.Encodings;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   [Item("MDCVRPEvaluator", "Represents a multi depot CVRP evaluator.")]
   [StorableClass]
-  public class MDCVRPEvaluator: VRPEvaluator {
+  public class MDCVRPEvaluator : VRPEvaluator {
     public ILookupParameter<DoubleValue> OverloadParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Overload"]; }
     }
@@ -102,10 +95,10 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       tourInfo.Quality = eval.Quality - originalQuality;
     }
 
-    protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, TourInsertionInfo tourInsertionInfo, int index, int customer, 
+    protected override double GetTourInsertionCosts(IVRPProblemInstance instance, IVRPEncoding solution, TourInsertionInfo tourInsertionInfo, int index, int customer,
       out bool feasible) {
       CVRPInsertionInfo insertionInfo = tourInsertionInfo.GetStopInsertionInfo(index) as CVRPInsertionInfo;
-      
+
       double costs = 0;
       feasible = tourInsertionInfo.Penalty < double.Epsilon;
 
@@ -119,12 +112,12 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       if (demand > insertionInfo.SpareCapacity) {
         feasible = false;
 
-        if(insertionInfo.SpareCapacity >= 0)
+        if (insertionInfo.SpareCapacity >= 0)
           costs += (demand - insertionInfo.SpareCapacity) * overloadPenalty;
         else
           costs += demand * overloadPenalty;
       }
-      
+
       return costs;
     }
 
@@ -139,7 +132,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
       OverloadParameter.ActualValue.Value = (tourEvaluation as CVRPEvaluation).Overload;
     }
-    
+
     [StorableConstructor]
     protected MDCVRPEvaluator(bool deserializing) : base(deserializing) { }
 
