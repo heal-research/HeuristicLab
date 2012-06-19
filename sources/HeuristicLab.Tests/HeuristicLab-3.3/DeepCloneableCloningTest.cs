@@ -125,7 +125,9 @@ namespace HeuristicLab_33.Tests {
         try {
           clone = (IDeepCloneable)item.Clone(new Cloner());
         } catch (Exception e) {
-          TestContext.WriteLine("ERROR! " + e.GetType().Name + " was thrown while cloning " + deepCloneableType.Name + ".");
+          TestContext.WriteLine(Environment.NewLine + deepCloneableType.FullName + ":");
+          TestContext.WriteLine("ERROR! " + e.GetType().Name + @" was thrown during cloning.
+All IDeepCloneable items with a default constructor should be cloneable when using that constructor!");
           success = false;
           continue;
         }
