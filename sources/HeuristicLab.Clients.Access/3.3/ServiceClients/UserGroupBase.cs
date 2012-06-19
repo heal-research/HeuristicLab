@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
@@ -27,7 +28,7 @@ namespace HeuristicLab.Clients.Access {
   public partial class UserGroupBase {
     protected UserGroupBase(UserGroupBase original, Cloner cloner)
       : base(original, cloner) {
-      this.Id = original.Id;
+      this.Id = Guid.NewGuid();
     }
 
     public UserGroupBase() : base() { }
