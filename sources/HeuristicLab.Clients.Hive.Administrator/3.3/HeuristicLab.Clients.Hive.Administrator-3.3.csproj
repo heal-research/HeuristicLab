@@ -141,10 +141,6 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Administration\3.3\HeuristicLab.Clients.Access.Administration-3.3.csproj">
-      <Project>{C9CF6AE8-4637-4A75-9141-042F479B5D50}</Project>
-      <Name>HeuristicLab.Clients.Access.Administration-3.3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Views\3.3\HeuristicLab.Clients.Access.Views-3.3.csproj">
       <Project>{FE856595-64CD-46DA-9CD2-FFF3E6B0D4F2}</Project>
       <Name>HeuristicLab.Clients.Access.Views-3.3</Name>
