@@ -41,11 +41,11 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
-    private IAuthenticationManager authenticationManager;
-    public IAuthenticationManager AuthenticationManager {
+    private Access.IRoleVerifier roleVerifier;
+    public Access.IRoleVerifier RoleVerifier {
       get {
-        if (authenticationManager == null) authenticationManager = new AuthenticationManager();
-        return authenticationManager;
+        if (roleVerifier == null) roleVerifier = new Access.RoleVerifier();
+        return roleVerifier;
       }
     }
 
@@ -73,10 +73,10 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
-    private IUserManager userManager;
-    public IUserManager UserManager {
+    private Access.IUserManager userManager;
+    public Access.IUserManager UserManager {
       get {
-        if (userManager == null) userManager = new UserManager();
+        if (userManager == null) userManager = new Access.UserManager();
         return userManager;
       }
     }
@@ -84,7 +84,7 @@ namespace HeuristicLab.Services.Hive {
     private HeartbeatManager heartbeatManager;
     public HeartbeatManager HeartbeatManager {
       get {
-        if(heartbeatManager == null) heartbeatManager = new HeartbeatManager();
+        if (heartbeatManager == null) heartbeatManager = new HeartbeatManager();
         return heartbeatManager;
       }
     }

@@ -28,9 +28,10 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Services.Hive.Server {
   [Plugin("HeuristicLab.Services.Hive", "3.3.6.$WCREV$")]
   [PluginFile("HeuristicLab.Services.Hive-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]  
+  [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]  
+  [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Services.Access-3.3", "3.3")]
   [PluginDependency("HeuristicLab.Services.Hive.DataAccess", "3.3")]
   public class HeuristicLabServicesHivePlugin : PluginBase {
   }

@@ -19,20 +19,19 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Services.Hive.DataTransfer;
+using System.Linq;
+using HeuristicLab.Clients.Access;
 
-namespace HeuristicLab.Services.Hive {
-  public interface IAuthorizationManager {
-    /// <summary>
-    /// Compares the current UserId with the given userId and takes appropriate actions if the mismatch
-    /// </summary>
-    void Authorize(Guid userId);
+namespace HeuristicLab.Clients.Hive.Administrator {
+  public static class HiveRoles {
+    public const string Administrator = "Hive Administrator";
+    public const string User = "Hive User";
+    public const string Slave = "Hive Slave";
+    public const string IsAllowedPrivileged = "Hive IsAllowedPrivileged";
 
-    void AuthorizeForTask(Guid taskId, Permission requiredPermission);
-
-    void AuthorizeForJob(Guid jobId, Permission requiredPermission);
-
-    void AuthorizeForResourceAdministration(Guid resourceId);
+    public static bool CheckAdminUserPermissions() {
+      UserInformation.Instance.Refresh();
+      return UserInformation.Instance.UserExists && UserInformation.Instance.User.Roles.Any(x => x.Name == HiveRoles.Administrator);
+    }
   }
 }

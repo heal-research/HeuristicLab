@@ -227,10 +227,16 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      if (Content == null) {
-        btnSaveCal.Enabled = false;
+    }
+
+    public virtual void SetEnabledStateOfControls(bool state) {
+      if (InvokeRequired) {
+        Invoke(new Action(() => SetEnabledStateOfControls(state)));
       } else {
-        btnSaveCal.Enabled = true;
+        if (Content == null) state = false;
+        groupBox1.Enabled = state;
+        btnClearCal.Enabled = state;
+        btnSaveCal.Enabled = state;
       }
     }
 

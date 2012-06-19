@@ -20,12 +20,14 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.ServiceModel.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HeuristicLab.Clients.Access;
 using HeuristicLab.Clients.Hive.Views;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
@@ -44,8 +46,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     public const string UngroupedGroupName = "UNGROUPED";
     private const int slaveImageIndex = 0;
     private const int slaveGroupImageIndex = 1;
+    private readonly Color ownedResourceColor = Color.LightGreen;
     private TS.Task progressTask;
     private bool stopProgressTask;
+    private bool currentlyAuthorized;
 
 
     public ResourcesView() {
@@ -55,11 +59,17 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
       HiveAdminClient.Instance.Refreshing += new EventHandler(Instance_Refreshing);
       HiveAdminClient.Instance.Refreshed += new EventHandler(Instance_Refreshed);
+
+      Access.AccessClient.Instance.Refreshing += new EventHandler(Content_Refreshing);
+      Access.AccessClient.Instance.Refreshed += new EventHandler(Content_Refreshed);
     }
 
     public new void Dispose() {
       HiveAdminClient.Instance.Refreshing -= new EventHandler(Instance_Refreshing);
       HiveAdminClient.Instance.Refreshed -= new EventHandler(Instance_Refreshed);
+
+      Access.AccessClient.Instance.Refreshing -= new EventHandler(Content_Refreshing);
+      Access.AccessClient.Instance.Refreshed -= new EventHandler(Content_Refreshed);
     }
 
     private void UpdateProgress() {
@@ -86,10 +96,24 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       stopProgressTask = false;
       progressTask = new TS.Task(UpdateProgress);
       progressTask.Start();
+      SetEnabledStateOfControls(false);
     }
 
     void Instance_Refreshed(object sender, EventArgs e) {
       stopProgressTask = true;
+      SetEnabledStateOfControls(true);
+    }
+
+    void Content_Refreshing(object sender, EventArgs e) {
+      stopProgressTask = false;
+      progressTask = new TS.Task(UpdateProgress);
+      progressTask.Start();
+      SetEnabledStateOfControls(false);
+    }
+
+    void Content_Refreshed(object sender, EventArgs e) {
+      stopProgressTask = true;
+      SetEnabledStateOfControls(true);
     }
 
     #region Register Content Events
@@ -109,8 +133,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       base.OnContentChanged();
       if (Content == null) {
         slaveView.Content = null;
+        scheduleView.Content = null;
+        permissionView.Content = null;
+        permissionView.FetchSelectedUsers = null;
         treeSlaveGroup.Nodes.Clear();
       } else {
+        permissionView.Content = Access.AccessClient.Instance;
         treeSlaveGroup.Nodes.Clear();
 
         //rebuild
@@ -133,6 +161,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
               tn.Tag = g;
               tn.Text = g.Name;
+              if (g.OwnerUserId == Access.UserInformation.Instance.User.Id) tn.BackColor = ownedResourceColor;
 
               BuildSlaveGroupTree(g, tn);
               treeSlaveGroup.Nodes.Add(tn);
@@ -143,6 +172,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
               stn.ImageIndex = slaveImageIndex;
               stn.SelectedImageIndex = stn.ImageIndex;
               stn.Tag = g;
+              if (g.OwnerUserId == Access.UserInformation.Instance.User.Id) stn.BackColor = ownedResourceColor;
               ungrp.Nodes.Add(stn);
             }
           }
@@ -161,6 +191,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         }
         stn.SelectedImageIndex = stn.ImageIndex;
         stn.Tag = r;
+        if (r.OwnerUserId == Access.UserInformation.Instance.User.Id) stn.BackColor = ownedResourceColor;
         tn.Nodes.Add(stn);
 
         BuildSlaveGroupTree(r, stn);
@@ -173,6 +204,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         btnAddGroup.Enabled = false;
         btnRemoveGroup.Enabled = false;
         btnSave.Enabled = false;
+        btnPermissionsSave.Enabled = false;
+        permissionView.Enabled = false;
       } else {
         btnAddGroup.Enabled = true;
         btnRemoveGroup.Enabled = true;
@@ -180,20 +213,62 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       }
     }
 
-    private void treeSlaveGroup_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-      if (slaveView.Content != null && slaveView.Content is SlaveGroup) {
-        slaveView.Content.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(SlaveViewContent_PropertyChanged);
+    public virtual void SetEnabledStateOfControls(bool state) {
+      if (InvokeRequired) {
+        Invoke(new Action(() => SetEnabledStateOfControls(state)));
+      } else {
+        if (Content == null) state = false;
+        btnAddGroup.Enabled = state;
+        btnRemoveGroup.Enabled = state;
+        btnSave.Enabled = state;
+        scheduleView.SetEnabledStateOfControls(state && IsAuthorized(slaveView.Content));
+        btnPermissionsSave.Enabled = state && permissionView.FetchSelectedUsers != null && Content != null;
+        permissionView.Enabled = state && permissionView.FetchSelectedUsers != null && Content != null;
       }
+    }
 
-      slaveView.Content = (Resource)e.Node.Tag;
-      HiveAdminClient.Instance.DowntimeForResourceId = ((Resource)e.Node.Tag).Id;
+    private bool IsAuthorized(Resource resource) {
+      return resource != null
+          && resource.Name != UngroupedGroupName
+          && resource.Id != Guid.Empty
+          && HiveServiceLocator.Instance.CallHiveService<bool>(service => { return service.AuthorizesForResourceAdministration(resource.Id); });
+    }
 
-      if (e.Node.Tag is SlaveGroup) {
-        slaveView.Content.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(SlaveViewContent_PropertyChanged);
-      }
+    private void treeSlaveGroup_AfterSelect(object sender, TreeViewEventArgs e) {
+      if (e.Action != TreeViewAction.Unknown) {
+        Resource selectedResource = ((Resource)e.Node.Tag);
+        currentlyAuthorized = IsAuthorized(selectedResource);
+        if (currentlyAuthorized) {
+          permissionView.FetchSelectedUsers = new Func<List<Guid>>(() => {
+            return HiveServiceLocator.Instance.CallHiveService<List<ResourcePermission>>(service => {
+              return service.GetResourcePermissions(selectedResource.Id);
+            }).Select(x => x.GrantedUserId).ToList();
+          });
+          if (!tabSlaveGroup.TabPages.Contains(tabPermissions)) tabSlaveGroup.TabPages.Add(tabPermissions);
+        } else {
+          permissionView.FetchSelectedUsers = null;
+          btnPermissionsSave.Enabled = false;
+          if (selectedResource.Id == Guid.Empty) {
+            if (!tabSlaveGroup.TabPages.Contains(tabPermissions)) tabSlaveGroup.TabPages.Add(tabPermissions);
+          } else tabSlaveGroup.TabPages.Remove(tabPermissions);
+        }
 
-      if (tabSlaveGroup.SelectedIndex == 1) {
-        UpdateScheduleAsync();
+        if (slaveView.Content != null && slaveView.Content is SlaveGroup) {
+          slaveView.Content.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(SlaveViewContent_PropertyChanged);
+        }
+
+        slaveView.Content = selectedResource;
+        HiveAdminClient.Instance.DowntimeForResourceId = selectedResource.Id;
+
+        if (selectedResource is SlaveGroup) {
+          slaveView.Content.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(SlaveViewContent_PropertyChanged);
+        }
+
+        if (tabSlaveGroup.SelectedIndex == 1) {
+          UpdateScheduleAsync();
+        } else if (tabSlaveGroup.SelectedIndex == 2) {
+          UpdatePermissionsAsync();
+        }
       }
     }
 
@@ -216,6 +291,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void btnAddGroup_Click(object sender, EventArgs e) {
       SlaveGroup newGroup = new SlaveGroup();
       newGroup.Name = "New Group";
+      newGroup.OwnerUserId = UserInformation.Instance.User.Id;
       Content.Add(newGroup);
     }
 
@@ -268,7 +344,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
         if (destNode.TreeView == newNode.TreeView) {
           if (destNode.Text == UngroupedGroupName || (destNode.Parent != null && destNode.Parent.Text == UngroupedGroupName)) {
-            MessageBox.Show(String.Format("You can't drag items to the {0} group.{1}This group only contains slaves which haven't yet been assigned to a real group.",
+            MessageBox.Show(string.Format("You can't drag items to the group \"{0}\".{1}This group only contains slaves which haven't yet been assigned to a real group.",
               UngroupedGroupName, Environment.NewLine), "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
           }
@@ -284,6 +360,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           }
 
           if (newNode.Tag is SlaveGroup && CheckParentsEqualsMovedNode(parentNode, newNode)) {
+            return;
+          }
+
+          SlaveGroup parent = (SlaveGroup)parentNode.Tag;
+
+          if (parent.OwnerUserId != null && !IsAuthorized(parent)) {
+            MessageBox.Show(string.Format("You don't have the permissions to drag items to the group \"{0}\".", ((Resource)parentNode.Tag).Name),
+              "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
           }
 
@@ -329,7 +413,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     private void treeSlaveGroup_ItemDrag(object sender, ItemDragEventArgs e) {
       TreeNode sourceNode = (TreeNode)e.Item;
-      DoDragDrop(sourceNode, DragDropEffects.All);
+      if (IsAuthorized((Resource)sourceNode.Tag))
+        DoDragDrop(sourceNode, DragDropEffects.All);
     }
 
     private void treeSlaveGroup_DragEnter(object sender, DragEventArgs e) {
@@ -402,7 +487,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     private void UpdateSchedule() {
       HiveAdminClient.Instance.RefreshCalendar();
-      scheduleView.Invoke(new Action(() => scheduleView.Content = HiveAdminClient.Instance.Downtimes));
+      scheduleView.Invoke(new Action(() => {
+        scheduleView.Content = HiveAdminClient.Instance.Downtimes;
+        SetEnabledStateOfControls(currentlyAuthorized);
+      }));
     }
 
     private void UpdateScheduleAsync() {
@@ -411,6 +499,18 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
+    private void UpdatePermissions() {
+      if (permissionView.Content != null && permissionView.FetchSelectedUsers != null)
+        permissionView.Invoke(new Action(() => permissionView.ManualRefresh()));
+    }
+
+    private void UpdatePermissionsAsync() {
+      TS.Task.Factory.StartNew(UpdatePermissions).ContinueWith((t) => {
+        DisplayError(t.Exception);
+      }, TaskContinuationOptions.OnlyOnFaulted);
+    }
+
+
     private void DisplayError(Exception ex) {
       MessageBox.Show(string.Format("An error occured while updating: {0} {1}", Environment.NewLine, ex.Message), "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
@@ -418,6 +518,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private void tabSlaveGroup_SelectedIndexChanged(object sender, EventArgs e) {
       if (tabSlaveGroup.SelectedIndex == 1) {
         UpdateScheduleAsync();
+      } else if (tabSlaveGroup.SelectedIndex == 2) {
+        UpdatePermissionsAsync();
       }
     }
 
@@ -427,6 +529,15 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     private void ResourcesView_Load(object sender, EventArgs e) {
       UpdateResourcesAsync();
+    }
+
+    private void btnPermissionsSave_Click(object sender, EventArgs e) {
+      SetEnabledStateOfControls(false);
+      HiveServiceLocator.Instance.CallHiveService(service => {
+        service.GrantResourcePermissions(((Resource)treeSlaveGroup.SelectedNode.Tag).Id, permissionView.GetAddedUsers().Select(x => x.Id).ToList());
+        service.RevokeResourcePermissions(((Resource)treeSlaveGroup.SelectedNode.Tag).Id, permissionView.GetDeletedUsers().Select(x => x.Id).ToList());
+      });
+      SetEnabledStateOfControls(true);
     }
   }
 }

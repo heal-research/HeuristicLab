@@ -21,6 +21,7 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Clients.Access;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -62,13 +63,18 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         txtId.Clear();
         txtHbIntervall.Clear();
         cbxDisposable.Checked = false;
+        cbxPublic.Checked = false;
       } else {
         if (Content.GetType() == typeof(Slave)) {
           ShowSlaveUI(true);
           Slave ct = (Slave)Content;
+          bool authorized = HiveServiceLocator.Instance.CallHiveService<bool>(service => service.AuthorizesForResourceAdministration(ct.Id));
           txtName.Text = ct.Name;
           txtHbIntervall.Text = ct.HbInterval.ToString();
-          cbxDisposable.Checked = ct.IsDisposable.GetValueOrDefault();
+          cbxPublic.Enabled = authorized;
+          cbxPublic.CheckedChanged -= new EventHandler(cbxPublic_CheckedChanged);
+          cbxPublic.Checked = ct.OwnerUserId == null;
+          cbxPublic.CheckedChanged += new EventHandler(cbxPublic_CheckedChanged);
           txtCPU.Text = string.Format("{0} Cores @ {1} Mhz, Arch.: {2}", ct.Cores.ToString(), ct.CpuSpeed.ToString(), ct.CpuArchitecture.ToString());
           txtDetailsDescription.Text = ct.Description;
           txtMemory.Text = ct.Memory.ToString();
@@ -77,10 +83,16 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           txtLastHeartbeat.Text = ct.LastHeartbeat.ToString();
           txtFreeMemory.Text = ct.FreeMemory.ToString();
           txtId.Text = ct.Id.ToString();
+          cbxDisposable.Enabled = authorized;
+          cbxDisposable.Checked = ct.IsDisposable.GetValueOrDefault();
         } else if (Content.GetType() == typeof(SlaveGroup)) {
           SlaveGroup ct = (SlaveGroup)Content;
           txtName.Text = ct.Name;
           txtHbIntervall.Text = ct.HbInterval.ToString();
+          cbxPublic.Enabled = ct.Name != "UNGROUPED" && HiveRoles.CheckAdminUserPermissions();
+          cbxPublic.CheckedChanged -= new EventHandler(cbxPublic_CheckedChanged);
+          cbxPublic.Checked = ct.OwnerUserId == null;
+          cbxPublic.CheckedChanged += new EventHandler(cbxPublic_CheckedChanged);
           ShowSlaveUI(false);
         } else {
           throw new Exception("Unknown Resource in SlaveView");
@@ -135,9 +147,15 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       }
     }
 
-    private void checkBox1_CheckedChanged(object sender, EventArgs e) {
+    private void cbxDisposable_CheckedChanged(object sender, EventArgs e) {
       if (Content != null) {
         ((Slave)Content).IsDisposable = cbxDisposable.Checked;
+      }
+    }
+
+    private void cbxPublic_CheckedChanged(object sender, EventArgs e) {
+      if (Content != null) {
+        Content.OwnerUserId = cbxPublic.Checked ? null : new Guid?(UserInformation.Instance.User.Id);
       }
     }
   }

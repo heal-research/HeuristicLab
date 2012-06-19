@@ -70,8 +70,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       drawTool1.DayView = this.dvOnline;
       this.dvOnline.ActiveTool = drawTool1;
       this.dvOnline.AmPmDisplay = false;
-      this.dvOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)));
+      this.dvOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
       this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
       this.dvOnline.DayHeadersHeight = 15;
@@ -82,12 +82,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.dvOnline.EnableShadows = false;
       this.dvOnline.EnableTimeIndicator = false;
       this.dvOnline.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-      this.dvOnline.Location = new System.Drawing.Point(9, 176);
+      this.dvOnline.Location = new System.Drawing.Point(3, 183);
       this.dvOnline.MinHalfHourApp = false;
       this.dvOnline.Name = "dvOnline";
       this.dvOnline.SelectionEnd = new System.DateTime(((long)(0)));
       this.dvOnline.SelectionStart = new System.DateTime(((long)(0)));
-      this.dvOnline.Size = new System.Drawing.Size(823, 354);
+      this.dvOnline.Size = new System.Drawing.Size(836, 354);
       this.dvOnline.StartDate = new System.DateTime(((long)(0)));
       this.dvOnline.TabIndex = 54;
       this.dvOnline.OnSelectionChanged += new System.EventHandler<System.EventArgs>(this.dvOnline_OnSelectionChanged);
@@ -122,6 +122,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // groupBox1
       // 
+      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox1.Controls.Add(this.txttimeTo);
       this.groupBox1.Controls.Add(this.txttimeFrom);
       this.groupBox1.Controls.Add(this.dtpTo);
@@ -132,9 +133,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.groupBox1.Controls.Add(this.label2);
       this.groupBox1.Controls.Add(this.label1);
       this.groupBox1.Controls.Add(this.btCreate);
-      this.groupBox1.Location = new System.Drawing.Point(373, 4);
+      this.groupBox1.Location = new System.Drawing.Point(375, 3);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(254, 161);
+      this.groupBox1.Size = new System.Drawing.Size(259, 168);
       this.groupBox1.TabIndex = 56;
       this.groupBox1.TabStop = false;
       // 
@@ -216,9 +217,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnSaveCal
       // 
+      this.btnSaveCal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnSaveCal.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
       this.btnSaveCal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.btnSaveCal.Location = new System.Drawing.Point(633, 41);
+      this.btnSaveCal.Location = new System.Drawing.Point(640, 41);
       this.btnSaveCal.Name = "btnSaveCal";
       this.btnSaveCal.Size = new System.Drawing.Size(199, 26);
       this.btnSaveCal.TabIndex = 57;
@@ -229,9 +231,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btnClearCal
       // 
+      this.btnClearCal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnClearCal.Image = HeuristicLab.Common.Resources.VSImageLibrary.Document;
       this.btnClearCal.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.btnClearCal.Location = new System.Drawing.Point(633, 9);
+      this.btnClearCal.Location = new System.Drawing.Point(640, 9);
       this.btnClearCal.Name = "btnClearCal";
       this.btnClearCal.Size = new System.Drawing.Size(199, 26);
       this.btnClearCal.TabIndex = 58;
@@ -242,8 +245,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // mcOnline
       // 
+      this.mcOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.mcOnline.CalendarDimensions = new System.Drawing.Size(2, 1);
-      this.mcOnline.Location = new System.Drawing.Point(4, 9);
+      this.mcOnline.Location = new System.Drawing.Point(3, 9);
       this.mcOnline.Name = "mcOnline";
       this.mcOnline.TabIndex = 55;
       this.mcOnline.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.mcOnline_DateChanged);

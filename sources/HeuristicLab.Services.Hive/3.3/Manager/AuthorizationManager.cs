@@ -33,7 +33,7 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public void AuthorizeForTask(Guid taskId, DT.Permission requiredPermission) {
-      if (ServiceLocator.Instance.AuthenticationManager.IsInRole(HiveRoles.Slave)) return; // slave-users can access all tasks
+      if (ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Slave)) return; // slave-users can access all tasks
 
       Permission permission = ServiceLocator.Instance.HiveDao.GetPermissionForTask(taskId, ServiceLocator.Instance.UserManager.CurrentUserId);
       if (permission == Permission.NotAllowed || (permission != DT.Convert.ToEntity(requiredPermission) && DT.Convert.ToEntity(requiredPermission) == Permission.Full))
@@ -44,6 +44,12 @@ namespace HeuristicLab.Services.Hive {
       Permission permission = ServiceLocator.Instance.HiveDao.GetPermissionForJob(jobId, ServiceLocator.Instance.UserManager.CurrentUserId);
       if (permission == Permission.NotAllowed || (permission != DT.Convert.ToEntity(requiredPermission) && DT.Convert.ToEntity(requiredPermission) == Permission.Full))
         throw new SecurityException("Current user is not authorized to access task");
+    }
+
+    public void AuthorizeForResourceAdministration(Guid resourceId) {
+      Resource resource = DT.Convert.ToEntity(ServiceLocator.Instance.HiveDao.GetResource(resourceId));
+      if (resource.OwnerUserId != ServiceLocator.Instance.UserManager.CurrentUserId && !ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Administrator))
+        throw new SecurityException("Current user is not authorized to access resource");
     }
   }
 }

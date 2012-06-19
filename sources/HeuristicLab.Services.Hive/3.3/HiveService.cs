@@ -40,8 +40,8 @@ namespace HeuristicLab.Services.Hive {
     private IHiveDao dao {
       get { return ServiceLocator.Instance.HiveDao; }
     }
-    private IAuthenticationManager authen {
-      get { return ServiceLocator.Instance.AuthenticationManager; }
+    private Access.IRoleVerifier authen {
+      get { return ServiceLocator.Instance.RoleVerifier; }
     }
     private IAuthorizationManager author {
       get { return ServiceLocator.Instance.AuthorizationManager; }
@@ -52,12 +52,22 @@ namespace HeuristicLab.Services.Hive {
     private IEventManager eventManager {
       get { return ServiceLocator.Instance.EventManager; }
     }
-    private IUserManager userManager {
+    private Access.IUserManager userManager {
       get { return ServiceLocator.Instance.UserManager; }
     }
     private HeartbeatManager heartbeatManager {
       get { return ServiceLocator.Instance.HeartbeatManager; }
     }
+
+    #region Authorization Methods
+    public bool AuthorizesForResourceAdministration(Guid resourceId) {
+      try {
+        author.AuthorizeForResourceAdministration(resourceId);
+        return true;
+      }
+      catch (System.Security.SecurityException) { return false; }
+    }
+    #endregion
 
     #region Task Methods
     public Guid AddTask(Task task, TaskData taskData, IEnumerable<Guid> resourceIds) {
@@ -466,23 +476,25 @@ namespace HeuristicLab.Services.Hive {
     #endregion
 
     #region ResourcePermission Methods
-    public void GrantResourcePermission(Guid resourceId, Guid grantedUserId) {
+    public void GrantResourcePermissions(Guid resourceId, params Guid[] grantedUserIds) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       trans.UseTransaction(() => {
         Resource resource = dao.GetResource(resourceId);
         if (resource == null) throw new FaultException<FaultReason>(new FaultReason("Could not find resource with id " + resourceId));
-        if (resource.OwnerUserId != userManager.CurrentUserId) throw new FaultException<FaultReason>(new FaultReason("Not allowed to grant permission for this resource"));
-        dao.AddResourcePermission(new ResourcePermission { ResourceId = resourceId, GrantedByUserId = userManager.CurrentUserId, GrantedUserId = grantedUserId });
+        if (resource.OwnerUserId != userManager.CurrentUserId && !authen.IsInRole(HiveRoles.Administrator)) throw new FaultException<FaultReason>(new FaultReason("Not allowed to grant permission for this resource"));
+        foreach (Guid id in grantedUserIds)
+          dao.AddResourcePermission(new ResourcePermission { ResourceId = resourceId, GrantedByUserId = userManager.CurrentUserId, GrantedUserId = id });
       });
     }
 
-    public void RevokeResourcePermission(Guid resourceId, Guid grantedUserId) {
+    public void RevokeResourcePermissions(Guid resourceId, params Guid[] grantedUserIds) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       trans.UseTransaction(() => {
         Resource resource = dao.GetResource(resourceId);
         if (resource == null) throw new FaultException<FaultReason>(new FaultReason("Could not find resource with id " + resourceId));
-        if (resource.OwnerUserId != userManager.CurrentUserId) throw new FaultException<FaultReason>(new FaultReason("Not allowed to revoke permission for this resource"));
-        dao.DeleteResourcePermission(resourceId, grantedUserId);
+        if (resource.OwnerUserId != userManager.CurrentUserId && !authen.IsInRole(HiveRoles.Administrator)) throw new FaultException<FaultReason>(new FaultReason("Not allowed to revoke permission for this resource"));
+        foreach (Guid id in grantedUserIds)
+          dao.DeleteResourcePermission(resourceId, id);
       });
     }
 
@@ -491,7 +503,6 @@ namespace HeuristicLab.Services.Hive {
       return trans.UseTransaction(() => {
         Resource resource = dao.GetResource(resourceId);
         if (resource == null) throw new FaultException<FaultReason>(new FaultReason("Could not find resource with id " + resourceId));
-        if (resource.OwnerUserId != userManager.CurrentUserId) throw new FaultException<FaultReason>(new FaultReason("Not allowed to list permissions for this resource"));
         return dao.GetResourcePermissions(x => x.ResourceId == resourceId);
       });
     }
@@ -514,7 +525,7 @@ namespace HeuristicLab.Services.Hive {
     }
 
     public Guid AddSlaveGroup(SlaveGroup slaveGroup) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       return trans.UseTransaction(() => dao.AddSlaveGroup(slaveGroup));
     }
 
@@ -530,43 +541,45 @@ namespace HeuristicLab.Services.Hive {
 
     public IEnumerable<Slave> GetSlaves() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      return dao.GetSlaves(x => x.OwnerUserId == null
-                             || x.OwnerUserId == userManager.CurrentUserId
-                             || x.ResourcePermissions.Count(y => y.GrantedUserId == userManager.CurrentUserId) > 0
-                             || authen.IsInRole(HiveRoles.Administrator));
+      return dao.GetSlaves(x => true).Where(x => x.OwnerUserId == null
+                                         || x.OwnerUserId == userManager.CurrentUserId
+                                         || userManager.VerifyUser(userManager.CurrentUserId, GetResourcePermissions(x.Id).Select(y => y.GrantedUserId).ToList())
+                                         || authen.IsInRole(HiveRoles.Administrator)).ToArray();
     }
 
     public IEnumerable<SlaveGroup> GetSlaveGroups() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      return dao.GetSlaveGroups(x => x.OwnerUserId == null
-                                  || x.OwnerUserId == userManager.CurrentUserId
-                                  || x.ResourcePermissions.Count(y => y.GrantedUserId == userManager.CurrentUserId) > 0
-                                  || authen.IsInRole(HiveRoles.Administrator));
+      return dao.GetSlaveGroups(x => true).Where(x => x.OwnerUserId == null
+                                              || x.OwnerUserId == userManager.CurrentUserId
+                                              || userManager.VerifyUser(userManager.CurrentUserId, GetResourcePermissions(x.Id).Select(y => y.GrantedUserId).ToList())
+                                              || authen.IsInRole(HiveRoles.Administrator)).ToArray();
     }
 
     public void UpdateSlave(Slave slave) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       trans.UseTransaction(() => {
         dao.UpdateSlave(slave);
       });
     }
 
     public void UpdateSlaveGroup(SlaveGroup slaveGroup) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       trans.UseTransaction(() => {
         dao.UpdateSlaveGroup(slaveGroup);
       });
     }
 
     public void DeleteSlave(Guid slaveId) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      author.AuthorizeForResourceAdministration(slaveId);
       trans.UseTransaction(() => {
         dao.DeleteSlave(slaveId);
       });
     }
 
     public void DeleteSlaveGroup(Guid slaveGroupId) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      author.AuthorizeForResourceAdministration(slaveGroupId);
       trans.UseTransaction(() => {
         dao.DeleteSlaveGroup(slaveGroupId);
       });
@@ -622,26 +635,30 @@ namespace HeuristicLab.Services.Hive {
 
     #region Downtime Methods
     public Guid AddDowntime(Downtime downtime) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      author.AuthorizeForResourceAdministration(downtime.ResourceId);
       return trans.UseTransaction(() => dao.AddDowntime(downtime));
     }
 
     public void DeleteDowntime(Guid downtimeId) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      // TODO: pass resource id
+      // author.AuthorizeForResource(resourceId);
       trans.UseTransaction(() => {
         dao.DeleteDowntime(downtimeId);
       });
     }
 
     public void UpdateDowntime(Downtime downtime) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      author.AuthorizeForResourceAdministration(downtime.ResourceId);
       trans.UseTransaction(() => {
         dao.UpdateDowntime(downtime);
       });
     }
 
     public IEnumerable<Downtime> GetDowntimesForResource(Guid resourceId) {
-      authen.AuthenticateForAnyRole(HiveRoles.Administrator);
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       return trans.UseTransaction(() => dao.GetDowntimes(x => x.ResourceId == resourceId));
     }
     #endregion

@@ -96,6 +96,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HiveRoles.cs" />
     <Compile Include="Views\HiveAdministratorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -140,6 +141,18 @@
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Administration\3.3\HeuristicLab.Clients.Access.Administration-3.3.csproj">
+      <Project>{C9CF6AE8-4637-4A75-9141-042F479B5D50}</Project>
+      <Name>HeuristicLab.Clients.Access.Administration-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Views\3.3\HeuristicLab.Clients.Access.Views-3.3.csproj">
+      <Project>{FE856595-64CD-46DA-9CD2-FFF3E6B0D4F2}</Project>
+      <Name>HeuristicLab.Clients.Access.Views-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj">
+      <Project>{494F87F4-0F25-4D33-A382-10CDB2174D48}</Project>
+      <Name>HeuristicLab.Clients.Access-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
       <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
       <Name>HeuristicLab.Clients.Common-3.3</Name>

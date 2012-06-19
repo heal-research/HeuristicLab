@@ -29,6 +29,10 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
   [ServiceContract(ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IHiveService {
+    #region Authorization Methods
+    [OperationContract]
+    bool AuthorizesForResourceAdministration(Guid resourceId);
+    #endregion
 
     #region Task Methods
     [OperationContract]
@@ -159,10 +163,10 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
     #region ResourcePermission Methods
     [OperationContract]
-    void GrantResourcePermission(Guid resourceId, Guid grantedUserId);
+    void GrantResourcePermissions(Guid resourceId, params Guid[] grantedUserIds);
 
     [OperationContract]
-    void RevokeResourcePermission(Guid resourceId, Guid grantedUserId);
+    void RevokeResourcePermissions(Guid resourceId, params Guid[] grantedUserIds);
 
     [OperationContract]
     IEnumerable<ResourcePermission> GetResourcePermissions(Guid resourceId);

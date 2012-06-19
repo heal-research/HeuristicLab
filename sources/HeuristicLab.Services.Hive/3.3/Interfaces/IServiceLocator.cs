@@ -23,12 +23,12 @@ using HeuristicLab.Services.Hive.DataAccess;
 
 namespace HeuristicLab.Services.Hive {
   public interface IServiceLocator {
-    IAuthenticationManager AuthenticationManager { get; }
+    Access.IRoleVerifier RoleVerifier { get; }
     IAuthorizationManager AuthorizationManager { get; }
     IHiveDao HiveDao { get; }
     IEventManager EventManager { get; }
     ITransactionManager TransactionManager { get; }
-    IUserManager UserManager { get; }
+    Access.IUserManager UserManager { get; }
     HeartbeatManager HeartbeatManager { get; }
   }
 }

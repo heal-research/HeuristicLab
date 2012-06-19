@@ -20,19 +20,20 @@
 #endregion
 
 using System;
-using HeuristicLab.Services.Hive.DataTransfer;
+using System.Runtime.Serialization;
 
-namespace HeuristicLab.Services.Hive {
-  public interface IAuthorizationManager {
-    /// <summary>
-    /// Compares the current UserId with the given userId and takes appropriate actions if the mismatch
-    /// </summary>
-    void Authorize(Guid userId);
+namespace HeuristicLab.Services.Hive.DataTransfer {
+  [DataContract]
+  [Serializable]
+  public class ResourcePermission : HiveItem {
+    // info: this class is derived from HiveItem to simplify handling on the client side, altough it does not have a Id.
+    [DataMember]
+    public Guid ResourceId { get; set; }
+    [DataMember]
+    public Guid GrantedUserId { get; set; }
+    [DataMember]
+    public Guid GrantedByUserId { get; set; }
 
-    void AuthorizeForTask(Guid taskId, Permission requiredPermission);
-
-    void AuthorizeForJob(Guid jobId, Permission requiredPermission);
-
-    void AuthorizeForResourceAdministration(Guid resourceId);
+    public ResourcePermission() { }
   }
 }
