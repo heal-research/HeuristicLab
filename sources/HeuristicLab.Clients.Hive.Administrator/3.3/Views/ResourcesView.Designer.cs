@@ -264,6 +264,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // permissionView
       // 
+      this.permissionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.permissionView.Caption = "RefreshableLightweightUser View";
       this.permissionView.Content = null;
       this.permissionView.FetchSelectedUsers = null;
