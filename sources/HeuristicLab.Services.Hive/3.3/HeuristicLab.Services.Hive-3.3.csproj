@@ -138,15 +138,11 @@
     <Compile Include="HiveDao.cs" />
     <Compile Include="HiveJanitor.cs" />
     <Compile Include="Interfaces\IHiveDao.cs" />
-    <Compile Include="Interfaces\IUserManager.cs" />
-    <Compile Include="Manager\UserManager.cs" />
     <Compile Include="Settings.cs" />
     <None Include="app.config" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
-    <Compile Include="Manager\AuthenticationManager.cs" />
     <Compile Include="Manager\HeartbeatManager.cs" />
-    <Compile Include="Interfaces\IAuthenticationManager.cs" />
     <Compile Include="Interfaces\IEventManager.cs" />
     <Compile Include="Interfaces\IServiceLocator.cs" />
     <Compile Include="Manager\AuthorizationManager.cs" />
