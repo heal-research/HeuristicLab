@@ -231,7 +231,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       return resource != null
           && resource.Name != UngroupedGroupName
           && resource.Id != Guid.Empty
-          && HiveServiceLocator.Instance.CallHiveService<bool>(service => { return service.AuthorizesForResourceAdministration(resource.Id); });
+          && UserInformation.Instance.UserExists
+          && (resource.OwnerUserId == UserInformation.Instance.User.Id || HiveRoles.CheckAdminUserPermissions());
     }
 
     private void treeSlaveGroup_AfterSelect(object sender, TreeViewEventArgs e) {

@@ -13,6 +13,205 @@ namespace HeuristicLab.Clients.Hive {
 
   [System.Diagnostics.DebuggerStepThroughAttribute()]
   [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+  [System.Runtime.Serialization.DataContractAttribute(Name = "Slave", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
+  [System.SerializableAttribute()]
+  public partial class Slave : HeuristicLab.Clients.Hive.Resource {
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private System.Nullable<int> CoresField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private HeuristicLab.Clients.Hive.CpuArchitecture CpuArchitectureField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private System.Nullable<int> CpuSpeedField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private double CpuUtilizationField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private System.Nullable<int> FreeCoresField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private System.Nullable<int> FreeMemoryField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private bool IsAllowedToCalculateField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private System.Nullable<bool> IsDisposableField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private System.Nullable<System.DateTime> LastHeartbeatField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private System.Nullable<int> MemoryField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private string OperatingSystemField;
+
+    [System.Runtime.Serialization.OptionalFieldAttribute()]
+    private HeuristicLab.Clients.Hive.SlaveState SlaveStateField;
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public System.Nullable<int> Cores {
+      get {
+        return this.CoresField;
+      }
+      set {
+        if ((this.CoresField.Equals(value) != true)) {
+          this.CoresField = value;
+          this.RaisePropertyChanged("Cores");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public HeuristicLab.Clients.Hive.CpuArchitecture CpuArchitecture {
+      get {
+        return this.CpuArchitectureField;
+      }
+      set {
+        if ((this.CpuArchitectureField.Equals(value) != true)) {
+          this.CpuArchitectureField = value;
+          this.RaisePropertyChanged("CpuArchitecture");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public System.Nullable<int> CpuSpeed {
+      get {
+        return this.CpuSpeedField;
+      }
+      set {
+        if ((this.CpuSpeedField.Equals(value) != true)) {
+          this.CpuSpeedField = value;
+          this.RaisePropertyChanged("CpuSpeed");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public double CpuUtilization {
+      get {
+        return this.CpuUtilizationField;
+      }
+      set {
+        if ((this.CpuUtilizationField.Equals(value) != true)) {
+          this.CpuUtilizationField = value;
+          this.RaisePropertyChanged("CpuUtilization");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public System.Nullable<int> FreeCores {
+      get {
+        return this.FreeCoresField;
+      }
+      set {
+        if ((this.FreeCoresField.Equals(value) != true)) {
+          this.FreeCoresField = value;
+          this.RaisePropertyChanged("FreeCores");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public System.Nullable<int> FreeMemory {
+      get {
+        return this.FreeMemoryField;
+      }
+      set {
+        if ((this.FreeMemoryField.Equals(value) != true)) {
+          this.FreeMemoryField = value;
+          this.RaisePropertyChanged("FreeMemory");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public bool IsAllowedToCalculate {
+      get {
+        return this.IsAllowedToCalculateField;
+      }
+      set {
+        if ((this.IsAllowedToCalculateField.Equals(value) != true)) {
+          this.IsAllowedToCalculateField = value;
+          this.RaisePropertyChanged("IsAllowedToCalculate");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public System.Nullable<bool> IsDisposable {
+      get {
+        return this.IsDisposableField;
+      }
+      set {
+        if ((this.IsDisposableField.Equals(value) != true)) {
+          this.IsDisposableField = value;
+          this.RaisePropertyChanged("IsDisposable");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public System.Nullable<System.DateTime> LastHeartbeat {
+      get {
+        return this.LastHeartbeatField;
+      }
+      set {
+        if ((this.LastHeartbeatField.Equals(value) != true)) {
+          this.LastHeartbeatField = value;
+          this.RaisePropertyChanged("LastHeartbeat");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public System.Nullable<int> Memory {
+      get {
+        return this.MemoryField;
+      }
+      set {
+        if ((this.MemoryField.Equals(value) != true)) {
+          this.MemoryField = value;
+          this.RaisePropertyChanged("Memory");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public string OperatingSystem {
+      get {
+        return this.OperatingSystemField;
+      }
+      set {
+        if ((object.ReferenceEquals(this.OperatingSystemField, value) != true)) {
+          this.OperatingSystemField = value;
+          this.RaisePropertyChanged("OperatingSystem");
+        }
+      }
+    }
+
+    [System.Runtime.Serialization.DataMemberAttribute()]
+    public HeuristicLab.Clients.Hive.SlaveState SlaveState {
+      get {
+        return this.SlaveStateField;
+      }
+      set {
+        if ((this.SlaveStateField.Equals(value) != true)) {
+          this.SlaveStateField = value;
+          this.RaisePropertyChanged("SlaveState");
+        }
+      }
+    }
+  }
+
+  [System.Diagnostics.DebuggerStepThroughAttribute()]
+  [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
   [System.Runtime.Serialization.DataContractAttribute(Name = "HiveItem", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
   [System.SerializableAttribute()]
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.LightweightTask))]
@@ -26,8 +225,8 @@ namespace HeuristicLab.Clients.Hive {
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Job))]
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Plugin))]
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Resource))]
-  [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Slave))]
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.SlaveGroup))]
+  [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Slave))]
   public partial class HiveItem : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
 
     [System.NonSerializedAttribute()]
@@ -710,8 +909,8 @@ namespace HeuristicLab.Clients.Hive {
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Job))]
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Plugin))]
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Resource))]
-  [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Slave))]
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.SlaveGroup))]
+  [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Slave))]
   public partial class NamedHiveItem : HeuristicLab.Clients.Hive.HiveItem {
 
     [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -957,8 +1156,8 @@ namespace HeuristicLab.Clients.Hive {
   [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
   [System.Runtime.Serialization.DataContractAttribute(Name = "Resource", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
   [System.SerializableAttribute()]
-  [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Slave))]
   [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.SlaveGroup))]
+  [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.Hive.Slave))]
   public partial class Resource : HeuristicLab.Clients.Hive.NamedHiveItem {
 
     [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -1012,208 +1211,34 @@ namespace HeuristicLab.Clients.Hive {
 
   [System.Diagnostics.DebuggerStepThroughAttribute()]
   [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-  [System.Runtime.Serialization.DataContractAttribute(Name = "Slave", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
-  [System.SerializableAttribute()]
-  public partial class Slave : HeuristicLab.Clients.Hive.Resource {
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private System.Nullable<int> CoresField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private HeuristicLab.Clients.Hive.CpuArchitecture CpuArchitectureField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private System.Nullable<int> CpuSpeedField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private double CpuUtilizationField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private System.Nullable<int> FreeCoresField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private System.Nullable<int> FreeMemoryField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private bool IsAllowedToCalculateField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private System.Nullable<bool> IsDisposableField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private System.Nullable<System.DateTime> LastHeartbeatField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private System.Nullable<int> MemoryField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private string OperatingSystemField;
-
-    [System.Runtime.Serialization.OptionalFieldAttribute()]
-    private HeuristicLab.Clients.Hive.SlaveState SlaveStateField;
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public System.Nullable<int> Cores {
-      get {
-        return this.CoresField;
-      }
-      set {
-        if ((this.CoresField.Equals(value) != true)) {
-          this.CoresField = value;
-          this.RaisePropertyChanged("Cores");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public HeuristicLab.Clients.Hive.CpuArchitecture CpuArchitecture {
-      get {
-        return this.CpuArchitectureField;
-      }
-      set {
-        if ((this.CpuArchitectureField.Equals(value) != true)) {
-          this.CpuArchitectureField = value;
-          this.RaisePropertyChanged("CpuArchitecture");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public System.Nullable<int> CpuSpeed {
-      get {
-        return this.CpuSpeedField;
-      }
-      set {
-        if ((this.CpuSpeedField.Equals(value) != true)) {
-          this.CpuSpeedField = value;
-          this.RaisePropertyChanged("CpuSpeed");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public double CpuUtilization {
-      get {
-        return this.CpuUtilizationField;
-      }
-      set {
-        if ((this.CpuUtilizationField.Equals(value) != true)) {
-          this.CpuUtilizationField = value;
-          this.RaisePropertyChanged("CpuUtilization");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public System.Nullable<int> FreeCores {
-      get {
-        return this.FreeCoresField;
-      }
-      set {
-        if ((this.FreeCoresField.Equals(value) != true)) {
-          this.FreeCoresField = value;
-          this.RaisePropertyChanged("FreeCores");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public System.Nullable<int> FreeMemory {
-      get {
-        return this.FreeMemoryField;
-      }
-      set {
-        if ((this.FreeMemoryField.Equals(value) != true)) {
-          this.FreeMemoryField = value;
-          this.RaisePropertyChanged("FreeMemory");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public bool IsAllowedToCalculate {
-      get {
-        return this.IsAllowedToCalculateField;
-      }
-      set {
-        if ((this.IsAllowedToCalculateField.Equals(value) != true)) {
-          this.IsAllowedToCalculateField = value;
-          this.RaisePropertyChanged("IsAllowedToCalculate");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public System.Nullable<bool> IsDisposable {
-      get {
-        return this.IsDisposableField;
-      }
-      set {
-        if ((this.IsDisposableField.Equals(value) != true)) {
-          this.IsDisposableField = value;
-          this.RaisePropertyChanged("IsDisposable");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public System.Nullable<System.DateTime> LastHeartbeat {
-      get {
-        return this.LastHeartbeatField;
-      }
-      set {
-        if ((this.LastHeartbeatField.Equals(value) != true)) {
-          this.LastHeartbeatField = value;
-          this.RaisePropertyChanged("LastHeartbeat");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public System.Nullable<int> Memory {
-      get {
-        return this.MemoryField;
-      }
-      set {
-        if ((this.MemoryField.Equals(value) != true)) {
-          this.MemoryField = value;
-          this.RaisePropertyChanged("Memory");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public string OperatingSystem {
-      get {
-        return this.OperatingSystemField;
-      }
-      set {
-        if ((object.ReferenceEquals(this.OperatingSystemField, value) != true)) {
-          this.OperatingSystemField = value;
-          this.RaisePropertyChanged("OperatingSystem");
-        }
-      }
-    }
-
-    [System.Runtime.Serialization.DataMemberAttribute()]
-    public HeuristicLab.Clients.Hive.SlaveState SlaveState {
-      get {
-        return this.SlaveStateField;
-      }
-      set {
-        if ((this.SlaveStateField.Equals(value) != true)) {
-          this.SlaveStateField = value;
-          this.RaisePropertyChanged("SlaveState");
-        }
-      }
-    }
-  }
-
-  [System.Diagnostics.DebuggerStepThroughAttribute()]
-  [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
   [System.Runtime.Serialization.DataContractAttribute(Name = "SlaveGroup", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
   [System.SerializableAttribute()]
   public partial class SlaveGroup : HeuristicLab.Clients.Hive.Resource {
+  }
+
+  [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+  [System.Runtime.Serialization.DataContractAttribute(Name = "CpuArchitecture", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
+  public enum CpuArchitecture : int {
+
+    [System.Runtime.Serialization.EnumMemberAttribute()]
+    x86 = 0,
+
+    [System.Runtime.Serialization.EnumMemberAttribute()]
+    x64 = 1,
+  }
+
+  [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+  [System.Runtime.Serialization.DataContractAttribute(Name = "SlaveState", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
+  public enum SlaveState : int {
+
+    [System.Runtime.Serialization.EnumMemberAttribute()]
+    Idle = 0,
+
+    [System.Runtime.Serialization.EnumMemberAttribute()]
+    Calculating = 1,
+
+    [System.Runtime.Serialization.EnumMemberAttribute()]
+    Offline = 2,
   }
 
   [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
@@ -1271,31 +1296,6 @@ namespace HeuristicLab.Clients.Hive {
 
     [System.Runtime.Serialization.EnumMemberAttribute()]
     Full = 2,
-  }
-
-  [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-  [System.Runtime.Serialization.DataContractAttribute(Name = "CpuArchitecture", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
-  public enum CpuArchitecture : int {
-
-    [System.Runtime.Serialization.EnumMemberAttribute()]
-    x86 = 0,
-
-    [System.Runtime.Serialization.EnumMemberAttribute()]
-    x64 = 1,
-  }
-
-  [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-  [System.Runtime.Serialization.DataContractAttribute(Name = "SlaveState", Namespace = "http://schemas.datacontract.org/2004/07/HeuristicLab.Services.Hive.DataTransfer")]
-  public enum SlaveState : int {
-
-    [System.Runtime.Serialization.EnumMemberAttribute()]
-    Idle = 0,
-
-    [System.Runtime.Serialization.EnumMemberAttribute()]
-    Calculating = 1,
-
-    [System.Runtime.Serialization.EnumMemberAttribute()]
-    Offline = 2,
   }
 
   [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -1663,9 +1663,6 @@ namespace HeuristicLab.Clients.Hive {
   [System.ServiceModel.ServiceContractAttribute(ConfigurationName = "HeuristicLab.Clients.Hive.IHiveService")]
   public interface IHiveService {
 
-    [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IHiveService/GetSlaveGroup", ReplyAction = "http://tempuri.org/IHiveService/GetSlaveGroupResponse")]
-    HeuristicLab.Clients.Hive.SlaveGroup GetSlaveGroup(System.Guid slaveGroupId);
-
     [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IHiveService/GetSlaves", ReplyAction = "http://tempuri.org/IHiveService/GetSlavesResponse")]
     System.Collections.Generic.List<HeuristicLab.Clients.Hive.Slave> GetSlaves();
 
@@ -1719,9 +1716,6 @@ namespace HeuristicLab.Clients.Hive {
 
     [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IHiveService/GetUserIdByUsername", ReplyAction = "http://tempuri.org/IHiveService/GetUserIdByUsernameResponse")]
     System.Guid GetUserIdByUsername(string username);
-
-    [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IHiveService/AuthorizesForResourceAdministration", ReplyAction = "http://tempuri.org/IHiveService/AuthorizesForResourceAdministrationResponse")]
-    bool AuthorizesForResourceAdministration(System.Guid resourceId);
 
     [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IHiveService/AddTask", ReplyAction = "http://tempuri.org/IHiveService/AddTaskResponse")]
     System.Guid AddTask(HeuristicLab.Clients.Hive.Task task, HeuristicLab.Clients.Hive.TaskData taskData, System.Collections.Generic.List<System.Guid> resourceIds);
@@ -1846,6 +1840,9 @@ namespace HeuristicLab.Clients.Hive {
 
     [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IHiveService/GetSlave", ReplyAction = "http://tempuri.org/IHiveService/GetSlaveResponse")]
     HeuristicLab.Clients.Hive.Slave GetSlave(System.Guid slaveId);
+
+    [System.ServiceModel.OperationContractAttribute(Action = "http://tempuri.org/IHiveService/GetSlaveGroup", ReplyAction = "http://tempuri.org/IHiveService/GetSlaveGroupResponse")]
+    HeuristicLab.Clients.Hive.SlaveGroup GetSlaveGroup(System.Guid slaveGroupId);
   }
 
   [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1873,10 +1870,6 @@ namespace HeuristicLab.Clients.Hive {
 
     public HiveServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) :
       base(binding, remoteAddress) {
-    }
-
-    public HeuristicLab.Clients.Hive.SlaveGroup GetSlaveGroup(System.Guid slaveGroupId) {
-      return base.Channel.GetSlaveGroup(slaveGroupId);
     }
 
     public System.Collections.Generic.List<HeuristicLab.Clients.Hive.Slave> GetSlaves() {
@@ -1949,10 +1942,6 @@ namespace HeuristicLab.Clients.Hive {
 
     public System.Guid GetUserIdByUsername(string username) {
       return base.Channel.GetUserIdByUsername(username);
-    }
-
-    public bool AuthorizesForResourceAdministration(System.Guid resourceId) {
-      return base.Channel.AuthorizesForResourceAdministration(resourceId);
     }
 
     public System.Guid AddTask(HeuristicLab.Clients.Hive.Task task, HeuristicLab.Clients.Hive.TaskData taskData, System.Collections.Generic.List<System.Guid> resourceIds) {
@@ -2117,6 +2106,10 @@ namespace HeuristicLab.Clients.Hive {
 
     public HeuristicLab.Clients.Hive.Slave GetSlave(System.Guid slaveId) {
       return base.Channel.GetSlave(slaveId);
+    }
+
+    public HeuristicLab.Clients.Hive.SlaveGroup GetSlaveGroup(System.Guid slaveGroupId) {
+      return base.Channel.GetSlaveGroup(slaveGroupId);
     }
   }
 }

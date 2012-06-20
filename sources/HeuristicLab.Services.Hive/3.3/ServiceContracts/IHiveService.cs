@@ -29,11 +29,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
   [ServiceContract(ProtectionLevel = ProtectionLevel.EncryptAndSign)]
   public interface IHiveService {
-    #region Authorization Methods
-    [OperationContract]
-    bool AuthorizesForResourceAdministration(Guid resourceId);
-    #endregion
-
     #region Task Methods
     [OperationContract]
     Guid AddTask(Task task, TaskData taskData, IEnumerable<Guid> resourceIds);

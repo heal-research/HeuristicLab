@@ -59,16 +59,6 @@ namespace HeuristicLab.Services.Hive {
       get { return ServiceLocator.Instance.HeartbeatManager; }
     }
 
-    #region Authorization Methods
-    public bool AuthorizesForResourceAdministration(Guid resourceId) {
-      try {
-        author.AuthorizeForResourceAdministration(resourceId);
-        return true;
-      }
-      catch (System.Security.SecurityException) { return false; }
-    }
-    #endregion
-
     #region Task Methods
     public Guid AddTask(Task task, TaskData taskData, IEnumerable<Guid> resourceIds) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);

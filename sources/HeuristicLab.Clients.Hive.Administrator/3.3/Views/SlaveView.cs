@@ -68,7 +68,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         if (Content.GetType() == typeof(Slave)) {
           ShowSlaveUI(true);
           Slave ct = (Slave)Content;
-          bool authorized = HiveServiceLocator.Instance.CallHiveService<bool>(service => service.AuthorizesForResourceAdministration(ct.Id));
+          bool authorized = UserInformation.Instance.UserExists && (ct.OwnerUserId == UserInformation.Instance.User.Id || HiveRoles.CheckAdminUserPermissions());
           txtName.Text = ct.Name;
           txtHbIntervall.Text = ct.HbInterval.ToString();
           cbxPublic.Enabled = authorized;
