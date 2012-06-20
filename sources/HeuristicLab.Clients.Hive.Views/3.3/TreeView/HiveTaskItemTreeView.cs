@@ -88,6 +88,8 @@ namespace HeuristicLab.Clients.Hive.Views {
     }
 
     protected override void removeButton_Click(object sender, EventArgs e) {
+      base.removeButton_Click(sender, e);
+
       if (treeView.SelectedNode != null) {
         var selectedItem = (HiveTask)treeView.SelectedNode.Tag;
         var parentItem = GetParentItem(selectedItem);

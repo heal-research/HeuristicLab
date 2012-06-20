@@ -366,7 +366,7 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     protected virtual void removeButton_Click(object sender, EventArgs e) {
       if (treeView.SelectedNode != null) {
-
+        detailsViewHost.Content = null;
       }
     }
 
