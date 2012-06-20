@@ -23,6 +23,8 @@ using System;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   public class MissingClientRegistrationException : Exception {
-    public MissingClientRegistrationException() : base("To be able to store runs, you need to register your client first.") { }
+    public MissingClientRegistrationException()
+      : base("To be able to store runs automatically, you need to register your client first." +
+        Environment.NewLine + "To register your client, click on \"Services\" -> \"Access\" -> \"Client Information\".") { }
   }
 }

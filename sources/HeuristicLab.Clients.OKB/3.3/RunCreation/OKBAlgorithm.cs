@@ -199,7 +199,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       RegisterAlgorithmEvents();
       runs = new RunCollection();
       storeRunsAutomatically = true;
-      CheckUserPermissions();
       RegisterRunsEvents();
     }
 
@@ -250,8 +249,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       Algorithm.Prepare(clearRuns);
     }
     public void Start() {
+      CheckUserPermissions();
       if (!ClientInformation.Instance.ClientExists && storeRunsAutomatically) {
-        throw new Exception("To be able to store runs automatically, you need to register your client first.");
+        throw new MissingClientRegistrationException();
       }
       Algorithm.Start();
     }
@@ -404,8 +404,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
           OKBRun okbRun = new OKBRun(AlgorithmId, problem.ProblemId, run, UserId);
           runs.Add(okbRun);
           if (StoreRunsAutomatically) {
-            try { okbRun.Store(); }
-            catch (Exception) { }
+            okbRun.Store();
           }
         } else {
           runs.Add(run);
