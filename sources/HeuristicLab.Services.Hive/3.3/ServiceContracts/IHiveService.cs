@@ -163,10 +163,10 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
     #region ResourcePermission Methods
     [OperationContract]
-    void GrantResourcePermissions(Guid resourceId, params Guid[] grantedUserIds);
+    void GrantResourcePermissions(Guid resourceId, Guid[] grantedUserIds);
 
     [OperationContract]
-    void RevokeResourcePermissions(Guid resourceId, params Guid[] grantedUserIds);
+    void RevokeResourcePermissions(Guid resourceId, Guid[] grantedUserIds);
 
     [OperationContract]
     IEnumerable<ResourcePermission> GetResourcePermissions(Guid resourceId);

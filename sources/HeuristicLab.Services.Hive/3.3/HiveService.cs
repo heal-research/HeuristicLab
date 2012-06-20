@@ -476,7 +476,7 @@ namespace HeuristicLab.Services.Hive {
     #endregion
 
     #region ResourcePermission Methods
-    public void GrantResourcePermissions(Guid resourceId, params Guid[] grantedUserIds) {
+    public void GrantResourcePermissions(Guid resourceId, Guid[] grantedUserIds) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       trans.UseTransaction(() => {
         Resource resource = dao.GetResource(resourceId);
@@ -487,7 +487,7 @@ namespace HeuristicLab.Services.Hive {
       });
     }
 
-    public void RevokeResourcePermissions(Guid resourceId, params Guid[] grantedUserIds) {
+    public void RevokeResourcePermissions(Guid resourceId, Guid[] grantedUserIds) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       trans.UseTransaction(() => {
         Resource resource = dao.GetResource(resourceId);
