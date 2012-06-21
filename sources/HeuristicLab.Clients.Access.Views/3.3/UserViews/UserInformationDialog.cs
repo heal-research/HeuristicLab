@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Clients.Access.Views {
@@ -36,12 +37,18 @@ namespace HeuristicLab.Clients.Access.Views {
       }
     }
 
-    void Instance_Refreshed(object sender, System.EventArgs e) {
-      closeButton.Enabled = true;
+    void Instance_Refreshed(object sender, EventArgs e) {
+      if (this.InvokeRequired)
+        this.Invoke(new Action<object, EventArgs>(Instance_Refreshed), sender, e);
+      else
+        closeButton.Enabled = true;
     }
 
-    void Instance_Refreshing(object sender, System.EventArgs e) {
-      closeButton.Enabled = false;
+    void Instance_Refreshing(object sender, EventArgs e) {
+      if (this.InvokeRequired)
+        this.Invoke(new Action<object, EventArgs>(Instance_Refreshing), sender, e);
+      else
+        closeButton.Enabled = false;
     }
 
     private void closeButton_Click(object sender, System.EventArgs e) {

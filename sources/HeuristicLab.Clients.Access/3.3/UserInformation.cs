@@ -21,6 +21,7 @@
 
 using System;
 using System.ServiceModel.Security;
+using System.Threading.Tasks;
 
 namespace HeuristicLab.Clients.Access {
   public sealed class UserInformation {
@@ -29,7 +30,7 @@ namespace HeuristicLab.Clients.Access {
     private static UserInformation instance;
     public static UserInformation Instance {
       get {
-        if (instance == null) instance = new UserInformation();
+        InitializeUserInformation();
         return instance;
       }
     }
@@ -60,11 +61,10 @@ namespace HeuristicLab.Clients.Access {
     }
 
     private UserInformation() {
-      //this blocks, so there should be anywhere in the Optimizer startup process
-      //a call to FetchUserInformationFromServerAsync which is non-blocking
-      FetchUserInformationFromServer();
+      if (instance == null) {
+        FetchUserInformationFromServer();
+      }
     }
-
 
     private void FetchUserInformationFromServer() {
       userName = HeuristicLab.Clients.Common.Properties.Settings.Default.UserName;
@@ -90,6 +90,14 @@ namespace HeuristicLab.Clients.Access {
 
     public void Refresh() {
       FetchUserInformationFromServer();
+    }
+
+    private static void InitializeUserInformation() {
+      if (instance == null) instance = new UserInformation();
+    }
+
+    public static void InitializeAsync() {
+      Task.Factory.StartNew(InitializeUserInformation);
     }
   }
 }

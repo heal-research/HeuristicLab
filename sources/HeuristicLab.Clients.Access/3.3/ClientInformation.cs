@@ -21,13 +21,14 @@
 
 using System;
 using System.ServiceModel.Security;
+using System.Threading.Tasks;
 
 namespace HeuristicLab.Clients.Access {
   public sealed class ClientInformation {
     private static ClientInformation instance;
     public static ClientInformation Instance {
       get {
-        if (instance == null) instance = new ClientInformation();
+        InitializeClientInformation();
         return instance;
       }
     }
@@ -53,12 +54,14 @@ namespace HeuristicLab.Clients.Access {
     }
 
     private ClientInformation() {
-      if (ClientInformationUtils.IsClientHeuristicLab()) {
-        FetchClientInformationFromServer();
-      } else {
-        // this means we are executed by an Hive slave, therefore we just get our machine id (e.g. for OKB Algs)
-        // because the slave has already done the registration process
-        GenerateLocalClientConfig();
+      if (instance == null) {
+        if (ClientInformationUtils.IsClientHeuristicLab()) {
+          FetchClientInformationFromServer();
+        } else {
+          // this means we are executed by an Hive slave, therefore we just get our machine id (e.g. for OKB Algs)
+          // because the slave has already done the registration process
+          GenerateLocalClientConfig();
+        }
       }
     }
 
@@ -98,6 +101,14 @@ namespace HeuristicLab.Clients.Access {
 
     public void Refresh() {
       FetchClientInformationFromServer();
+    }
+
+    private static void InitializeClientInformation() {
+      if (instance == null) instance = new ClientInformation();
+    }
+
+    public static void InitializeAsync() {
+      Task.Factory.StartNew(InitializeClientInformation);
     }
   }
 }

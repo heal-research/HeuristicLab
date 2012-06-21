@@ -20,6 +20,7 @@
 #endregion
 
 using System.Windows.Forms;
+using HeuristicLab.Clients.Access;
 using HeuristicLab.Optimizer.Properties;
 using HeuristicLab.PluginInfrastructure;
 
@@ -40,6 +41,7 @@ namespace HeuristicLab.Optimizer {
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
+  [PluginDependency("HeuristicLab.Clients.Access", "3.3")]
   public class HeuristicLabOptimizerPlugin : PluginBase {
   }
 
@@ -57,6 +59,9 @@ namespace HeuristicLab.Optimizer {
       }
 
       if (mainForm != null) {
+        ClientInformation.InitializeAsync();
+        UserInformation.InitializeAsync();
+
         mainForm.ShowContentInViewHost = true;
         Application.Run(mainForm);
       } else {
