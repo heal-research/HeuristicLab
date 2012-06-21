@@ -120,6 +120,8 @@
     <Compile Include="Classification\RealWorld\ClassificationRealWorldInstanceProvider.cs" />
     <Compile Include="Classification\ResourceClassificationDataDescriptor.cs" />
     <Compile Include="Classification\ResourceClassificationInstanceProvider.cs" />
+    <Compile Include="Clustering\ClusteringInstanceProvider.cs" />
+    <Compile Include="Clustering\CSV\ClusteringCSVInstanceProvider.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regression\ArtificialRegressionDataDescriptor.cs" />
