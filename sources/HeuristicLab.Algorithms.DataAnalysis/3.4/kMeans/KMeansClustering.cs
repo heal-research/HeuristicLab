@@ -78,7 +78,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region k-Means clustering
     protected override void Run() {
       var solution = CreateKMeansSolution(Problem.ProblemData, K.Value, Restarts.Value);
-      Results.Add(new Result(KMeansSolutionResultName, "The linear regression solution.", solution));
+      Results.Add(new Result(KMeansSolutionResultName, "The k-Means clustering solution.", solution));
     }
 
     public static KMeansClusteringSolution CreateKMeansSolution(IClusteringProblemData problemData, int k, int restarts) {
