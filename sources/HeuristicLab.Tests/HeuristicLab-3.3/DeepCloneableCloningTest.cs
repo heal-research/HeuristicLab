@@ -124,7 +124,8 @@ namespace HeuristicLab_33.Tests {
         IDeepCloneable clone = null;
         try {
           clone = (IDeepCloneable)item.Clone(new Cloner());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
           TestContext.WriteLine(Environment.NewLine + deepCloneableType.FullName + ":");
           TestContext.WriteLine("ERROR! " + e.GetType().Name + @" was thrown during cloning.
 All IDeepCloneable items with a default constructor should be cloneable when using that constructor!");
@@ -144,7 +145,7 @@ All IDeepCloneable items with a default constructor should be cloneable when usi
       var originalObjects = new HashSet<object>(original.GetObjectGraphObjects(excludeStaticMembers: true).Where(x => !x.GetType().IsValueType), new ReferenceEqualityComparer());
       var clonedObjects = new HashSet<object>(clone.GetObjectGraphObjects(excludeStaticMembers: true).Where(x => !x.GetType().IsValueType), new ReferenceEqualityComparer());
 
-      return originalObjects.Intersect(clonedObjects);
+      return originalObjects.Intersect(clonedObjects, new ReferenceEqualityComparer());
     }
 
     private bool ProcessEqualObjects(IDeepCloneable item, IEnumerable<object> intersections) {
