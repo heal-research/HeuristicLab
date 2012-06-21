@@ -30,7 +30,6 @@ namespace HeuristicLab.Clients.Hive.Administrator {
     public const string IsAllowedPrivileged = "Hive IsAllowedPrivileged";
 
     public static bool CheckAdminUserPermissions() {
-      UserInformation.Instance.Refresh();
       return UserInformation.Instance.UserExists && UserInformation.Instance.User.Roles.Any(x => x.Name == HiveRoles.Administrator);
     }
   }

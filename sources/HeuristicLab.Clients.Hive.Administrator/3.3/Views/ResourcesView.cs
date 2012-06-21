@@ -60,8 +60,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       HiveAdminClient.Instance.Refreshing += new EventHandler(Instance_Refreshing);
       HiveAdminClient.Instance.Refreshed += new EventHandler(Instance_Refreshed);
 
-      Access.AccessClient.Instance.Refreshing += new EventHandler(Content_Refreshing);
-      Access.AccessClient.Instance.Refreshed += new EventHandler(Content_Refreshed);
+      Access.AccessClient.Instance.Refreshing += new EventHandler(AccessClient_Refreshing);
+      Access.AccessClient.Instance.Refreshed += new EventHandler(AccessClient_Refreshed);
     }
 
     private void UpdateProgress() {
@@ -88,24 +88,24 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       stopProgressTask = false;
       progressTask = new TS.Task(UpdateProgress);
       progressTask.Start();
-      SetEnabledStateOfControls(false);
+      SetEnabledStateOfControls();
     }
 
     void Instance_Refreshed(object sender, EventArgs e) {
       stopProgressTask = true;
-      SetEnabledStateOfControls(true);
+      SetEnabledStateOfControls();
     }
 
-    void Content_Refreshing(object sender, EventArgs e) {
+    void AccessClient_Refreshing(object sender, EventArgs e) {
       stopProgressTask = false;
       progressTask = new TS.Task(UpdateProgress);
       progressTask.Start();
-      SetEnabledStateOfControls(false);
+      SetEnabledStateOfControls();
     }
 
-    void Content_Refreshed(object sender, EventArgs e) {
+    void AccessClient_Refreshed(object sender, EventArgs e) {
       stopProgressTask = true;
-      SetEnabledStateOfControls(true);
+      SetEnabledStateOfControls();
     }
 
     #region Register Content Events
@@ -198,24 +198,16 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         btnSave.Enabled = false;
         btnPermissionsSave.Enabled = false;
         permissionView.Enabled = false;
+        scheduleView.SetEnabledStateOfSchedule(false);
+        btnPermissionsSave.Enabled = false;
+        permissionView.Enabled = false;
       } else {
         btnAddGroup.Enabled = true;
         btnRemoveGroup.Enabled = true;
         btnSave.Enabled = true;
-      }
-    }
-
-    public virtual void SetEnabledStateOfControls(bool state) {
-      if (InvokeRequired) {
-        Invoke(new Action(() => SetEnabledStateOfControls(state)));
-      } else {
-        if (Content == null) state = false;
-        btnAddGroup.Enabled = state;
-        btnRemoveGroup.Enabled = state;
-        btnSave.Enabled = state;
-        scheduleView.SetEnabledStateOfControls(state && IsAuthorized(slaveView.Content));
-        btnPermissionsSave.Enabled = state && permissionView.FetchSelectedUsers != null && Content != null;
-        permissionView.Enabled = state && permissionView.FetchSelectedUsers != null && Content != null;
+        scheduleView.SetEnabledStateOfSchedule(IsAuthorized(slaveView.Content));
+        btnPermissionsSave.Enabled = permissionView.FetchSelectedUsers != null;
+        permissionView.Enabled = permissionView.FetchSelectedUsers != null;
       }
     }
 
@@ -482,7 +474,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       HiveAdminClient.Instance.RefreshCalendar();
       scheduleView.Invoke(new Action(() => {
         scheduleView.Content = HiveAdminClient.Instance.Downtimes;
-        SetEnabledStateOfControls(currentlyAuthorized);
+        SetEnabledStateOfControls();
       }));
     }
 
@@ -525,12 +517,12 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void btnPermissionsSave_Click(object sender, EventArgs e) {
-      SetEnabledStateOfControls(false);
+      SetEnabledStateOfControls();
       HiveServiceLocator.Instance.CallHiveService(service => {
         service.GrantResourcePermissions(((Resource)treeSlaveGroup.SelectedNode.Tag).Id, permissionView.GetAddedUsers().Select(x => x.Id).ToList());
         service.RevokeResourcePermissions(((Resource)treeSlaveGroup.SelectedNode.Tag).Id, permissionView.GetDeletedUsers().Select(x => x.Id).ToList());
       });
-      SetEnabledStateOfControls(true);
+      SetEnabledStateOfControls();
     }
   }
 }

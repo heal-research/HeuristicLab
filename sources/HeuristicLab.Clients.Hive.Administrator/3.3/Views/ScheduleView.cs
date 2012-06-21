@@ -229,9 +229,9 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       base.SetEnabledStateOfControls();
     }
 
-    public virtual void SetEnabledStateOfControls(bool state) {
+    public virtual void SetEnabledStateOfSchedule(bool state) {
       if (InvokeRequired) {
-        Invoke(new Action(() => SetEnabledStateOfControls(state)));
+        Invoke(new Action(() => SetEnabledStateOfSchedule(state)));
       } else {
         if (Content == null) state = false;
         groupBox1.Enabled = state;

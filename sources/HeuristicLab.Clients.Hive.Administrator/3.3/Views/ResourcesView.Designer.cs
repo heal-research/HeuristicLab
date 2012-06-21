@@ -39,8 +39,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       HiveAdminClient.Instance.Refreshing -= new EventHandler(Instance_Refreshing);
       HiveAdminClient.Instance.Refreshed -= new EventHandler(Instance_Refreshed);
 
-      Access.AccessClient.Instance.Refreshing -= new EventHandler(Content_Refreshing);
-      Access.AccessClient.Instance.Refreshed -= new EventHandler(Content_Refreshed);
+      Access.AccessClient.Instance.Refreshing -= new EventHandler(AccessClient_Refreshing);
+      Access.AccessClient.Instance.Refreshed -= new EventHandler(AccessClient_Refreshed);
       base.Dispose(disposing);
     }
 
