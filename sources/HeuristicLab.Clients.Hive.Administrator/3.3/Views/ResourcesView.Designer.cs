@@ -20,6 +20,7 @@
 #endregion
 
 
+using System;
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
   partial class ResourcesView {
     /// <summary> 
@@ -35,6 +36,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       if (disposing && (components != null)) {
         components.Dispose();
       }
+      HiveAdminClient.Instance.Refreshing -= new EventHandler(Instance_Refreshing);
+      HiveAdminClient.Instance.Refreshed -= new EventHandler(Instance_Refreshed);
+
+      Access.AccessClient.Instance.Refreshing -= new EventHandler(Content_Refreshing);
+      Access.AccessClient.Instance.Refreshed -= new EventHandler(Content_Refreshed);
       base.Dispose(disposing);
     }
 
@@ -81,8 +87,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // splitSlaves
       // 
-      this.splitSlaves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.splitSlaves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitSlaves.Location = new System.Drawing.Point(3, 3);
       this.splitSlaves.Name = "splitSlaves";
@@ -158,8 +164,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // treeSlaveGroup
       // 
       this.treeSlaveGroup.AllowDrop = true;
-      this.treeSlaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.treeSlaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.treeSlaveGroup.ImageIndex = 0;
       this.treeSlaveGroup.ImageList = this.imageListSlaveGroups;
@@ -177,8 +183,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // tabSlaveGroup
       // 
-      this.tabSlaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabSlaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabSlaveGroup.Controls.Add(this.tabDetails);
       this.tabSlaveGroup.Controls.Add(this.tabSchedule);
@@ -203,8 +209,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // slaveView
       // 
-      this.slaveView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.slaveView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.slaveView.Caption = "SlaveView";
       this.slaveView.Content = null;
@@ -227,8 +233,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // scheduleView
       // 
-      this.scheduleView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.scheduleView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.scheduleView.Caption = "ScheduleView";
       this.scheduleView.Content = null;
@@ -264,8 +270,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // permissionView
       // 
-      this.permissionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.permissionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.permissionView.Caption = "RefreshableLightweightUser View";
       this.permissionView.Content = null;

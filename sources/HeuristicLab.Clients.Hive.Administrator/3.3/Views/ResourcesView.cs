@@ -64,14 +64,6 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       Access.AccessClient.Instance.Refreshed += new EventHandler(Content_Refreshed);
     }
 
-    public new void Dispose() {
-      HiveAdminClient.Instance.Refreshing -= new EventHandler(Instance_Refreshing);
-      HiveAdminClient.Instance.Refreshed -= new EventHandler(Instance_Refreshed);
-
-      Access.AccessClient.Instance.Refreshing -= new EventHandler(Content_Refreshing);
-      Access.AccessClient.Instance.Refreshed -= new EventHandler(Content_Refreshed);
-    }
-
     private void UpdateProgress() {
       while (!stopProgressTask) {
         int diff = (progressBar.Maximum - progressBar.Minimum) / 10;

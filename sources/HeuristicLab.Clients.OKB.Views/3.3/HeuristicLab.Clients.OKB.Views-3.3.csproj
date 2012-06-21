@@ -95,127 +95,187 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Administration\AdministratorMenuItem.cs" />
-    <Compile Include="Administration\Views\AdministratorView.cs" />
+    <Compile Include="Administration\Views\AdministratorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\AdministratorView.Designer.cs">
       <DependentUpon>AdministratorView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\AlgorithmClassCollectionView.cs" />
+    <Compile Include="Administration\Views\AlgorithmClassCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\AlgorithmClassCollectionView.Designer.cs">
       <DependentUpon>AlgorithmClassCollectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\AlgorithmCollectionView.cs" />
+    <Compile Include="Administration\Views\AlgorithmCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\AlgorithmCollectionView.Designer.cs">
       <DependentUpon>AlgorithmCollectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\AlgorithmView.cs" />
+    <Compile Include="Administration\Views\AlgorithmView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\AlgorithmView.Designer.cs">
       <DependentUpon>AlgorithmView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\OKBItemCollectionView.cs" />
+    <Compile Include="Administration\Views\OKBItemCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\OKBItemCollectionView.Designer.cs">
       <DependentUpon>OKBItemCollectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\NamedOKBItemView.cs" />
+    <Compile Include="Administration\Views\NamedOKBItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\NamedOKBItemView.Designer.cs">
       <DependentUpon>NamedOKBItemView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\OKBItemView.cs" />
+    <Compile Include="Administration\Views\OKBItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\OKBItemView.Designer.cs">
       <DependentUpon>OKBItemView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\PlatformCollectionView.cs" />
+    <Compile Include="Administration\Views\PlatformCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\PlatformCollectionView.Designer.cs">
       <DependentUpon>PlatformCollectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\ProblemClassCollectionView.cs" />
+    <Compile Include="Administration\Views\ProblemClassCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\ProblemClassCollectionView.Designer.cs">
       <DependentUpon>ProblemClassCollectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\ProblemCollectionView.cs" />
+    <Compile Include="Administration\Views\ProblemCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\ProblemCollectionView.Designer.cs">
       <DependentUpon>ProblemCollectionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Administration\Views\ProblemView.cs" />
+    <Compile Include="Administration\Views\ProblemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Administration\Views\ProblemView.Designer.cs">
       <DependentUpon>ProblemView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Query\QueryMenuItem.cs" />
-    <Compile Include="Query\Views\CombinedFilterView.cs" />
+    <Compile Include="Query\Views\CombinedFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\CombinedFilterView.Designer.cs">
       <DependentUpon>CombinedFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\OrdinalComparisonTimeSpanFilterView.cs" />
+    <Compile Include="Query\Views\OrdinalComparisonTimeSpanFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\OrdinalComparisonTimeSpanFilterView.Designer.cs">
       <DependentUpon>OrdinalComparisonTimeSpanFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\OrdinalComparisonPercentFilterView.cs" />
+    <Compile Include="Query\Views\OrdinalComparisonPercentFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\OrdinalComparisonPercentFilterView.Designer.cs">
       <DependentUpon>OrdinalComparisonPercentFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\OrdinalComparisonDateTimeFilterView.cs" />
+    <Compile Include="Query\Views\OrdinalComparisonDateTimeFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\OrdinalComparisonDateTimeFilterView.Designer.cs">
       <DependentUpon>OrdinalComparisonDateTimeFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\OrdinalComparisonFloatFilterView.cs" />
+    <Compile Include="Query\Views\OrdinalComparisonFloatFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\OrdinalComparisonFloatFilterView.Designer.cs">
       <DependentUpon>OrdinalComparisonFloatFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\OrdinalComparisonIntFilterView.cs" />
+    <Compile Include="Query\Views\OrdinalComparisonIntFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\OrdinalComparisonIntFilterView.Designer.cs">
       <DependentUpon>OrdinalComparisonIntFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\EqualityComparisonBoolFilterView.cs" />
+    <Compile Include="Query\Views\EqualityComparisonBoolFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\EqualityComparisonBoolFilterView.Designer.cs">
       <DependentUpon>EqualityComparisonBoolFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\EqualityComparisonFilterView.cs" />
+    <Compile Include="Query\Views\EqualityComparisonFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\EqualityComparisonFilterView.Designer.cs">
       <DependentUpon>EqualityComparisonFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\FilterView.cs" />
+    <Compile Include="Query\Views\FilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\FilterView.Designer.cs">
       <DependentUpon>FilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\OrdinalComparisonDoubleFilterView.cs" />
+    <Compile Include="Query\Views\OrdinalComparisonDoubleFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\OrdinalComparisonDoubleFilterView.Designer.cs">
       <DependentUpon>OrdinalComparisonDoubleFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\OrdinalComparisonFilterView.cs" />
+    <Compile Include="Query\Views\OrdinalComparisonFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\OrdinalComparisonFilterView.Designer.cs">
       <DependentUpon>OrdinalComparisonFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\OrdinalComparisonLongFilterView.cs" />
+    <Compile Include="Query\Views\OrdinalComparisonLongFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\OrdinalComparisonLongFilterView.Designer.cs">
       <DependentUpon>OrdinalComparisonLongFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\QueryView.cs" />
+    <Compile Include="Query\Views\QueryView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\QueryView.Designer.cs">
       <DependentUpon>QueryView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\StringComparisonAvailableValuesFilterView.cs" />
+    <Compile Include="Query\Views\StringComparisonAvailableValuesFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\StringComparisonAvailableValuesFilterView.Designer.cs">
       <DependentUpon>StringComparisonAvailableValuesFilterView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Query\Views\StringComparisonFilterView.cs" />
+    <Compile Include="Query\Views\StringComparisonFilterView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Query\Views\StringComparisonFilterView.Designer.cs">
       <DependentUpon>StringComparisonFilterView.cs</DependentUpon>
     </Compile>
     <Compile Include="RunCreation\CreateFromExperimentMenuItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RunCreation\Views\OKBAlgorithmView.cs" />
+    <Compile Include="RunCreation\Views\OKBAlgorithmView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="RunCreation\Views\OKBAlgorithmView.Designer.cs">
       <DependentUpon>OKBAlgorithmView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCreation\Views\OKBExperimentUploadView.cs" />
+    <Compile Include="RunCreation\Views\OKBExperimentUploadView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="RunCreation\Views\OKBExperimentUploadView.Designer.cs">
       <DependentUpon>OKBExperimentUploadView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCreation\Views\OKBProblemView.cs" />
+    <Compile Include="RunCreation\Views\OKBProblemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="RunCreation\Views\OKBProblemView.Designer.cs">
       <DependentUpon>OKBProblemView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCreation\Views\OKBRunView.cs" />
+    <Compile Include="RunCreation\Views\OKBRunView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="RunCreation\Views\OKBRunView.Designer.cs">
       <DependentUpon>OKBRunView.cs</DependentUpon>
     </Compile>
