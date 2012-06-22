@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
@@ -28,6 +29,20 @@ namespace HeuristicLab_33.Tests {
   [TestClass]
   public class ToStringTest {
 
+    private TestContext testContextInstance;
+    /// <summary>
+    ///Gets or sets the test context which provides
+    ///information about and functionality for the current test run.
+    ///</summary>
+    public TestContext TestContext {
+      get {
+        return testContextInstance;
+      }
+      set {
+        testContextInstance = value;
+      }
+    }
+
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
@@ -36,10 +51,18 @@ namespace HeuristicLab_33.Tests {
 
     [TestMethod]
     public void TestToString() {
+      bool success = true;
       // just test for all IItems that the ToString method doesn't throw an exception
       foreach (object item in ApplicationManager.Manager.GetInstances(typeof(IItem))) {
-        item.ToString();
+        try {
+          item.ToString();
+        }
+        catch (Exception e) {
+          TestContext.WriteLine(item.GetType() + " throws a " + e.GetType() + " in the ToString method.");
+          success = false;
+        }
       }
+      Assert.IsTrue(success, "There are potential errors in the ToString methods of  objects.");
     }
   }
 }
