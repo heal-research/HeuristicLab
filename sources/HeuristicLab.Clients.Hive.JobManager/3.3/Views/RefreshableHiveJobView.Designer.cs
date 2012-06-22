@@ -364,7 +364,7 @@
       this.refreshAutomaticallyCheckBox.TabIndex = 24;
       this.refreshAutomaticallyCheckBox.Text = "&Refresh automatically";
       this.refreshAutomaticallyCheckBox.UseVisualStyleBackColor = true;
-      this.refreshAutomaticallyCheckBox.Validated += new System.EventHandler(this.refreshAutomaticallyCheckBox_Validated);
+      this.refreshAutomaticallyCheckBox.CheckedChanged += new System.EventHandler(this.refreshAutomaticallyCheckBox_CheckedChanged);
       // 
       // infoGroupBox
       // 

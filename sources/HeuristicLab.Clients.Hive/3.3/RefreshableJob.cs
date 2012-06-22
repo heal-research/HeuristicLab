@@ -518,18 +518,14 @@ namespace HeuristicLab.Clients.Hive {
 
     public event EventHandler HiveTasksChanged;
     protected virtual void OnHiveTasksChanged() {
-      if (jobResultPoller != null && jobResultPoller.IsPolling) {
-        jobResultPoller.Stop();
-        DeregisterResultPollingEvents();
-      }
+      StopResultPolling();
       if (this.HiveTasks != null && this.HiveTasks.Count > 0 && this.GetAllHiveTasks().All(x => x.Task.Id != Guid.Empty)) {
         if (IsFinished()) {
           this.ExecutionState = Core.ExecutionState.Stopped;
           this.RefreshAutomatically = false;
-        }
-
-        if (this.RefreshAutomatically) {
-          StartResultPolling();
+          if (jobResultPoller != null) DeregisterResultPollingEvents();
+        } else {
+          this.RefreshAutomatically = true;
         }
       }
 

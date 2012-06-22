@@ -415,7 +415,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         Content.Job.ResourceNames = resourceNamesTextBox.Text;
     }
 
-    private void refreshAutomaticallyCheckBox_Validated(object sender, EventArgs e) {
+    private void refreshAutomaticallyCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (Content != null) Content.RefreshAutomatically = refreshAutomaticallyCheckBox.Checked;
     }
 
