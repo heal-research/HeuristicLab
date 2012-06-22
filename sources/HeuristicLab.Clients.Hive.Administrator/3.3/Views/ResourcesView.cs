@@ -101,6 +101,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       progressTask = new TS.Task(UpdateProgress);
       progressTask.Start();
       SetEnabledStateOfControls();
+      btnPermissionsSave.Enabled = false;
     }
 
     void AccessClient_Refreshed(object sender, EventArgs e) {
