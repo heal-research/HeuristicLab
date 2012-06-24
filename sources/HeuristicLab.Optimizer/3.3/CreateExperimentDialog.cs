@@ -125,7 +125,17 @@ namespace HeuristicLab.Optimizer {
       var intValue = parameter.Value as ValueTypeValue<int>;
       if (intValue != null) {
         if (e.Item.Checked) {
-          intParameters.Add(parameter, new IntArray());
+          IntArray initialValues;
+          if (intValue.Value == int.MinValue)
+            initialValues = new IntArray(new int[] { -100, -50, 5 });
+          else if (intValue.Value == int.MaxValue)
+            initialValues = new IntArray(new int[] { 5, 50, 100 });
+          else if (intValue.Value == 0)
+            initialValues = new IntArray(new int[] { 0, 1, 2 });
+          else if (Math.Abs(intValue.Value) < 10)
+            initialValues = new IntArray(new int[] { intValue.Value - 1, intValue.Value, intValue.Value + 1 });
+          else initialValues = new IntArray(new int[] { intValue.Value / 2, intValue.Value, intValue.Value * 2 });
+          intParameters.Add(parameter, initialValues);
           intParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
         } else intParameters.Remove(parameter);
       }
@@ -133,7 +143,21 @@ namespace HeuristicLab.Optimizer {
       var doubleValue = parameter.Value as ValueTypeValue<double>;
       if (doubleValue != null) {
         if (e.Item.Checked) {
-          doubleParameters.Add(parameter, new DoubleArray());
+          DoubleArray initialValues;
+          if (doubleValue.Value == double.MinValue)
+            initialValues = new DoubleArray(new double[] { -1, -0.5, 0 });
+          else if (doubleValue.Value == double.MaxValue)
+            initialValues = new DoubleArray(new double[] { 0, 0.5, 1 });
+          else if (doubleValue.Value == 0.0)
+            initialValues = new DoubleArray(new double[] { 0, 0.1, 0.2 });
+          else if (Math.Abs(doubleValue.Value) <= 1.0) {
+            if (doubleValue.Value > 0.9 || (doubleValue.Value < 0.0 && doubleValue.Value > -0.1))
+              initialValues = new DoubleArray(new double[] { doubleValue.Value - 0.2, doubleValue.Value - 0.1, doubleValue.Value });
+            else if (doubleValue.Value < -0.9 || (doubleValue.Value > 0 && doubleValue.Value < 0.1))
+              initialValues = new DoubleArray(new double[] { doubleValue.Value, doubleValue.Value + 0.1, doubleValue.Value + 0.2 });
+            else initialValues = new DoubleArray(new double[] { doubleValue.Value - 0.1, doubleValue.Value, doubleValue.Value + 0.1 });
+          } else initialValues = new DoubleArray(new double[] { doubleValue.Value / 2.0, doubleValue.Value, doubleValue.Value * 2.0 });
+          doubleParameters.Add(parameter, initialValues);
           doubleParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
         } else doubleParameters.Remove(parameter);
       }
@@ -354,6 +378,7 @@ namespace HeuristicLab.Optimizer {
           }
           finally { suppressTreeViewEventHandling = false; }
         }
+        UpdateVariationsLabel();
       }
     }
 
@@ -374,6 +399,7 @@ namespace HeuristicLab.Optimizer {
           }
           finally { suppressTreeViewEventHandling = false; }
         }
+        UpdateVariationsLabel();
       }
     }
     #endregion
@@ -632,30 +658,30 @@ namespace HeuristicLab.Optimizer {
     #region Background workers
     #region Instance discovery
     private void instanceDiscoveryBackgroundWorker_DoWork(object sender, DoWorkEventArgs e) {
+      instanceDiscoveryBackgroundWorker.ReportProgress(0, "Finding instance providers...");
       var instanceProviders = ProblemInstanceManager.GetProviders(((IAlgorithm)Optimizer).Problem).ToArray();
-      var nodes = new TreeNode[instanceProviders.Length];
+      var nodes = new List<TreeNode>(instanceProviders.Length);
       for (int i = 0; i < instanceProviders.Length; i++) {
         var provider = instanceProviders[i];
-        nodes[i] = new TreeNode(provider.Name) { Tag = provider };
-      }
-      e.Result = nodes;
-      for (int i = 0; i < nodes.Length; i++) {
-        var providerNode = nodes[i];
-        var provider = providerNode.Tag as IProblemInstanceProvider;
-        double progress = i / (double)nodes.Length;
-        instanceDiscoveryBackgroundWorker.ReportProgress((int)(100 * progress), provider.Name);
-        var descriptors = ProblemInstanceManager.GetDataDescriptors(provider).ToArray();
-        for (int j = 0; j < descriptors.Length; j++) {
+        var providerNode = new TreeNode(provider.Name) { Tag = provider };
+        var descriptors = ProblemInstanceManager.GetDataDescriptors(provider);
+        foreach (var desc in descriptors) {
           #region Check cancellation request
           if (instanceDiscoveryBackgroundWorker.CancellationPending) {
             e.Cancel = true;
+            e.Result = nodes.ToArray();
             return;
           }
           #endregion
-          var node = new TreeNode(descriptors[j].Name) { Tag = descriptors[j] };
+          var node = new TreeNode(desc.Name) { Tag = desc };
           providerNode.Nodes.Add(node);
+          if (providerNode.Nodes.Count == 1)
+            nodes.Add(providerNode);
         }
+        double progress = nodes.Count > 0 ? i / (double)nodes.Count : 0.0;
+        instanceDiscoveryBackgroundWorker.ReportProgress((int)(100 * progress), provider.Name);
       }
+      e.Result = nodes.ToArray();
       instanceDiscoveryBackgroundWorker.ReportProgress(100, string.Empty);
     }
 
@@ -668,17 +694,17 @@ namespace HeuristicLab.Optimizer {
 
     private void instanceDiscoveryBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       try {
-        instancesTreeView.Nodes.AddRange((TreeNode[])e.Result);
-        foreach (TreeNode node in instancesTreeView.Nodes)
-          node.Collapse();
+        if (((TreeNode[])e.Result).Length > 0) {
+          instancesTreeView.Nodes.AddRange((TreeNode[])e.Result);
+          foreach (TreeNode node in instancesTreeView.Nodes)
+            node.Collapse();
+        }
         selectNoneCheckBox.Checked = true;
-      }
-      catch { }
+      } catch { }
       try {
         SetMode(DialogMode.Normal);
         if (e.Error != null) MessageBox.Show(e.Error.Message, "Error occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-      catch { }
+      } catch { }
     }
     #endregion
 

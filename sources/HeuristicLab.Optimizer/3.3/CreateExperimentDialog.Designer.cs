@@ -182,9 +182,9 @@ namespace HeuristicLab.Optimizer {
       // instanceDiscoveryProgressBar
       // 
       this.instanceDiscoveryProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.instanceDiscoveryProgressBar.Location = new System.Drawing.Point(6, 132);
+      this.instanceDiscoveryProgressBar.Location = new System.Drawing.Point(6, 141);
       this.instanceDiscoveryProgressBar.Name = "instanceDiscoveryProgressBar";
-      this.instanceDiscoveryProgressBar.Size = new System.Drawing.Size(308, 23);
+      this.instanceDiscoveryProgressBar.Size = new System.Drawing.Size(367, 23);
       this.instanceDiscoveryProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
       this.instanceDiscoveryProgressBar.TabIndex = 4;
       this.instanceDiscoveryProgressBar.Visible = false;
@@ -193,9 +193,9 @@ namespace HeuristicLab.Optimizer {
       // 
       this.instanceDiscoveryProgressLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
       this.instanceDiscoveryProgressLabel.BackColor = System.Drawing.SystemColors.Control;
-      this.instanceDiscoveryProgressLabel.Location = new System.Drawing.Point(6, 158);
+      this.instanceDiscoveryProgressLabel.Location = new System.Drawing.Point(6, 167);
       this.instanceDiscoveryProgressLabel.Name = "instanceDiscoveryProgressLabel";
-      this.instanceDiscoveryProgressLabel.Size = new System.Drawing.Size(308, 23);
+      this.instanceDiscoveryProgressLabel.Size = new System.Drawing.Size(367, 23);
       this.instanceDiscoveryProgressLabel.TabIndex = 5;
       this.instanceDiscoveryProgressLabel.Text = "label1";
       this.instanceDiscoveryProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -361,7 +361,7 @@ namespace HeuristicLab.Optimizer {
       this.instancesTabPage.Location = new System.Drawing.Point(4, 22);
       this.instancesTabPage.Name = "instancesTabPage";
       this.instancesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.instancesTabPage.Size = new System.Drawing.Size(320, 273);
+      this.instancesTabPage.Size = new System.Drawing.Size(379, 291);
       this.instancesTabPage.TabIndex = 0;
       this.instancesTabPage.Text = "Problem Instances";
       this.instancesTabPage.UseVisualStyleBackColor = true;
@@ -383,7 +383,7 @@ namespace HeuristicLab.Optimizer {
       this.instancesTreeView.CheckBoxes = true;
       this.instancesTreeView.Location = new System.Drawing.Point(6, 35);
       this.instancesTreeView.Name = "instancesTreeView";
-      this.instancesTreeView.Size = new System.Drawing.Size(308, 232);
+      this.instancesTreeView.Size = new System.Drawing.Size(367, 250);
       this.instancesTreeView.TabIndex = 6;
       this.instancesTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.instancesTreeView_AfterCheck);
       // 
@@ -452,7 +452,6 @@ namespace HeuristicLab.Optimizer {
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Create Experiment";
-      this.TopMost = true;
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CreateExperimentDialog_FormClosing);
       this.Load += new System.EventHandler(this.CreateExperimentDialog_Load);
       ((System.ComponentModel.ISupportInitialize)(this.repetitionsNumericUpDown)).EndInit();
