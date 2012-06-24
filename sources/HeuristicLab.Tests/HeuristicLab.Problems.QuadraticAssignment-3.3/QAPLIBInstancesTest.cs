@@ -167,6 +167,24 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
       { "wil50", 48816 },
       { "wil100", 273038 }
     };
+    private static Dictionary<string, double> lowerBounds = new Dictionary<string, double>() {
+      { "bur26a", 5315200 },
+      { "bur26f", 3706888 },
+      { "chr25a", 2765 },
+      { "els19", 11971949 },
+      { "esc32a", 35 },
+      { "esc32e", 0 },
+      { "had20", 6166 },
+      { "kra32", 67390 },
+      { "lipa50a", 62020 },
+      { "lipa50b", 1210244 },
+      { "nug30", 4539 },
+      { "scr20", 86766 },
+      { "sko42", 11311 },
+      { "tai35a", 1951207 },
+      { "tai35b", 30866283 },
+      { "tai100a", 15824355 }
+    };
     #endregion
 
     [TestMethod]
@@ -203,7 +221,26 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
           && qap.BestKnownQuality != null && qap.BestKnownQuality.Value != qaplibInstances[instance.Name])
           failedInstances.AppendLine(instance.Name + ": " + qap.BestKnownQuality.Value.ToString() + " vs " + qaplibInstances[instance.Name]);
       }
-      Assert.IsTrue(failedInstances.Length == 0, "Following instances/solutions have suspicious quality: " + Environment.NewLine + failedInstances.ToString());
+      Assert.IsTrue(failedInstances.Length == 0, "Following instances/solutions have suspicious best quality: " + Environment.NewLine + failedInstances.ToString());
+    }
+
+    [TestMethod]
+    public void TestQAPLIBLowerBounds() {
+      var provider = new QAPLIBInstanceProvider();
+      var qap = new QuadraticAssignmentProblem();
+      var failedInstances = new StringBuilder();
+
+      var instances = provider.GetDataDescriptors();
+      Assert.IsTrue(instances.Any(), "No instances could be found.");
+
+      foreach (var instance in instances) {
+        if (lowerBounds.ContainsKey(instance.Name)) {
+          qap.Load(provider.LoadData(instance));
+          if (qap.LowerBound.Value != lowerBounds[instance.Name])
+            failedInstances.AppendLine(instance.Name + ": The Gilmore-Lawler lower bound is not valid.");
+        }
+      }
+      Assert.IsTrue(failedInstances.Length == 0, "Following instances failed for the GLB calculation: " + Environment.NewLine + failedInstances.ToString());
     }
   }
 }

@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         for (int j = 0; j < N; j++) {
           for (int k = 0; k < N - 1; k++)
             costs[i, j] += sortedWeights[i, k] * sortedDistances[j, N - 2 - k];
-          costs[i, j] += weights[i, i] * distances[j, j];
+          costs[i, j] += sortedWeights[i, N - 1] * sortedDistances[j, N - 1];
         }
       }
 
