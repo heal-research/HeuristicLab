@@ -41,6 +41,12 @@ namespace HeuristicLab.Problems.LinearAssignment {
     public ILookupParameter<DoubleMatrix> CostsParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Costs"]; }
     }
+    public IValueLookupParameter<StringArray> RowNamesParameter {
+      get { return (IValueLookupParameter<StringArray>)Parameters["RowNames"]; }
+    }
+    public IValueLookupParameter<StringArray> ColumnNamesParameter {
+      get { return (IValueLookupParameter<StringArray>)Parameters["ColumnNames"]; }
+    }
     public IScopeTreeLookupParameter<Permutation> AssignmentParameter {
       get { return (IScopeTreeLookupParameter<Permutation>)Parameters["Assignment"]; }
     }
@@ -70,6 +76,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Costs", LinearAssignmentProblem.CostsDescription));
+      Parameters.Add(new ValueLookupParameter<StringArray>("RowNames", LinearAssignmentProblem.RowNamesDescription));
+      Parameters.Add(new ValueLookupParameter<StringArray>("ColumnNames", LinearAssignmentProblem.ColumnNamesDescription));
       Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Assignment", "The LAP solutions from which the best solution should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the LAP solutions which should be analyzed."));
       Parameters.Add(new LookupParameter<LAPAssignment>("BestSolution", "The best LAP solution."));
@@ -85,6 +93,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
 
     public override IOperation Apply() {
       var costs = CostsParameter.ActualValue;
+      var rowNames = RowNamesParameter.ActualValue;
+      var columnNames = ColumnNamesParameter.ActualValue;
       var permutations = AssignmentParameter.ActualValue;
       var qualities = QualityParameter.ActualValue;
       var results = ResultsParameter.ActualValue;
@@ -121,7 +131,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
 
       LAPAssignment assignment = BestSolutionParameter.ActualValue;
       if (assignment == null) {
-        assignment = new LAPAssignment(costs, (Permutation)permutations[i].Clone(), new DoubleValue(qualities[i].Value));
+        assignment = new LAPAssignment(costs, rowNames, columnNames, (Permutation)permutations[i].Clone(), new DoubleValue(qualities[i].Value));
         BestSolutionParameter.ActualValue = assignment;
         results.Add(new Result("Best LAP Solution", assignment));
       } else {
@@ -130,6 +140,12 @@ namespace HeuristicLab.Problems.LinearAssignment {
           assignment.Costs = costs;
           assignment.Assignment = (Permutation)permutations[i].Clone();
           assignment.Quality.Value = qualities[i].Value;
+          if (rowNames != null)
+            assignment.RowNames = rowNames;
+          else assignment.RowNames = null;
+          if (columnNames != null)
+            assignment.ColumnNames = columnNames;
+          else assignment.ColumnNames = null;
         }
       }
 

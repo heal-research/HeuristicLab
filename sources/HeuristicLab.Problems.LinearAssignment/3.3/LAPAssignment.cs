@@ -43,6 +43,28 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
 
     [Storable]
+    private StringArray rowNames;
+    public StringArray RowNames {
+      get { return rowNames; }
+      set {
+        bool changed = (rowNames != value);
+        rowNames = value;
+        if (changed) OnPropertyChanged("RowNames");
+      }
+    }
+
+    [Storable]
+    private StringArray columnNames;
+    public StringArray ColumnNames {
+      get { return columnNames; }
+      set {
+        bool changed = (columnNames != value);
+        columnNames = value;
+        if (changed) OnPropertyChanged("ColumnNames");
+      }
+    }
+
+    [Storable]
     private Permutation assignment;
     public Permutation Assignment {
       get { return assignment; }
@@ -78,6 +100,15 @@ namespace HeuristicLab.Problems.LinearAssignment {
     }
     public LAPAssignment(DoubleMatrix costs, Permutation assignment, DoubleValue quality)
       : this(costs, assignment) {
+      this.quality = quality;
+    }
+    public LAPAssignment(DoubleMatrix costs, StringArray rowNames, StringArray columnNames, Permutation assignment)
+      : this(costs, assignment) {
+      this.rowNames = rowNames;
+      this.columnNames = columnNames;
+    }
+    public LAPAssignment(DoubleMatrix costs, StringArray rowNames, StringArray columnNames, Permutation assignment, DoubleValue quality)
+      : this(costs, rowNames, columnNames, assignment) {
       this.quality = quality;
     }
 

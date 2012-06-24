@@ -51,7 +51,6 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private ValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-
     #endregion
 
     #region Properties
@@ -68,7 +67,6 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private HungarianAlgorithm(bool deserializing) : base(deserializing) { }
     private HungarianAlgorithm(HungarianAlgorithm original, Cloner cloner)
       : base(original, cloner) {
-      // TODO: clone your private fields here
       AttachEventHandlers();
     }
     public HungarianAlgorithm()
@@ -85,6 +83,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
 
       UpdateAnalyzers();
       AttachEventHandlers();
+
+      Problem = new LinearAssignmentProblem();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

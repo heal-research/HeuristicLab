@@ -37,6 +37,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
   [StorableClass]
   public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator> {
     public static readonly string CostsDescription = "The cost matrix that describes the assignment of rows to columns.";
+    public static readonly string RowNamesDescription = "The elements represented by the rows of the costs matrix.";
+    public static readonly string ColumnNamesDescription = "The elements represented by the columns of the costs matrix.";
 
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -52,12 +54,26 @@ namespace HeuristicLab.Problems.LinearAssignment {
     public IValueParameter<Permutation> BestKnownSolutionParameter {
       get { return (IValueParameter<Permutation>)Parameters["BestKnownSolution"]; }
     }
+    public IValueParameter<StringArray> RowNamesParameter {
+      get { return (IValueParameter<StringArray>)Parameters["RowNames"]; }
+    }
+    public IValueParameter<StringArray> ColumnNamesParameter {
+      get { return (IValueParameter<StringArray>)Parameters["ColumnNames"]; }
+    }
     #endregion
 
     #region Properties
     public DoubleMatrix Costs {
       get { return CostsParameter.Value; }
       set { CostsParameter.Value = value; }
+    }
+    public StringArray RowNames {
+      get { return RowNamesParameter.Value; }
+      set { RowNamesParameter.Value = value; }
+    }
+    public StringArray ColumnNames {
+      get { return ColumnNamesParameter.Value; }
+      set { ColumnNamesParameter.Value = value; }
     }
     public ItemSet<Permutation> BestKnownSolutions {
       get { return BestKnownSolutionsParameter.Value; }
@@ -84,8 +100,18 @@ namespace HeuristicLab.Problems.LinearAssignment {
       Parameters.Add(new ValueParameter<DoubleMatrix>("Costs", CostsDescription, new DoubleMatrix(3, 3)));
       Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
-      
+      Parameters.Add(new OptionalValueParameter<StringArray>("RowNames", RowNamesDescription));
+      Parameters.Add(new OptionalValueParameter<StringArray>("ColumnNames", ColumnNamesDescription));
+
       ((ValueParameter<DoubleMatrix>)CostsParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
+      ((OptionalValueParameter<StringArray>)RowNamesParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
+      ((OptionalValueParameter<StringArray>)ColumnNamesParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
+
+      RowNames = new StringArray(new string[] { "Human", "Von Neumann machine", "Quantum computer" });
+      ColumnNames = new StringArray(new string[] { "Find a person's e-mail address", "Compute first 1000 decimals of Pi", "Factorize large integers" });
+      Costs[0, 0] = 1; Costs[0, 1] = 10; Costs[0, 2] = 100;
+      Costs[1, 0] = 10; Costs[1, 1] = 1; Costs[1, 2] = 100;
+      Costs[2, 0] = 100; Costs[2, 1] = 10; Costs[2, 1] = 1;
 
       bestLAPSolutionAnalyzer = new BestLAPSolutionAnalyzer();
       SolutionCreator.PermutationParameter.ActualName = "Assignment";
