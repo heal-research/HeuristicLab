@@ -40,7 +40,7 @@
       this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 0);
       this.chart.Name = "chart";
-      this.chart.Size = new System.Drawing.Size(358, 225);
+      this.chart.Size = new System.Drawing.Size(289, 220);
       this.chart.TabIndex = 0;
       this.chart.CustomizeLegend += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CustomizeLegendEventArgs>(this.chart_CustomizeLegend);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
@@ -49,7 +49,6 @@
       // RegressionSolutionResidualHistogram
       // 
       this.AllowDrop = true;
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.chart);
       this.Name = "RegressionSolutionResidualHistogram";

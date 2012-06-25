@@ -38,10 +38,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected const string TRAINING_SAMPLES = "Training samples";
     protected const string TEST_SAMPLES = "Test samples";
     /// <summary>
-    /// used to reduce code duplication
-    /// </summary>
-    protected readonly string[] ALL_SERIES = new string[] { ALL_SAMPLES, TRAINING_SAMPLES, TEST_SAMPLES };
-    /// <summary>
     /// approximate amount of bins 
     /// </summary>
     protected const double bins = 25;
@@ -61,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       : base() {
       InitializeComponent();
       relativeFrequencies = new Dictionary<string, List<List<double>>>();
-      foreach (string series in ALL_SERIES) {
+      foreach (string series in new List<String>() { ALL_SAMPLES, TRAINING_SAMPLES, TEST_SAMPLES }) {
         chart.Series.Add(series);
         chart.Series[series].LegendText = series;
         chart.Series[series].ChartType = SeriesChartType.Column;
@@ -86,13 +82,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void RedrawChart() {
-      foreach (string series in ALL_SERIES) {
-        chart.Series[series].Points.Clear();
-        relativeFrequencies[series].Clear();
+      foreach (Series series in chart.Series) {
+        series.Points.Clear();
+        relativeFrequencies[series.Name].Clear();
       }
       if (Content != null) {
-        Dictionary<string, List<double>> residuals = CalculateResiduals();
-        double realMax = Math.Max(Math.Abs(residuals[ALL_SAMPLES].Min()), Math.Abs(residuals[ALL_SAMPLES].Max()));
+        List<double> residuals = CalculateResiduals();
+        double realMax = Math.Max(Math.Abs(residuals.Min()), Math.Abs(residuals.Max()));
         double roundedMax = HumanRoundMax(realMax);
         double intervalWidth = (roundedMax * 2.0) / bins;
         intervalWidth = HumanRoundMax(intervalWidth);
@@ -101,10 +97,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         help = help % 1 < 0.5 ? (int)help : (int)help + 1;
         roundedMax = help * intervalWidth;
 
-        foreach (string series in ALL_SERIES) {
-          CalculateFrequencies(residuals[series], series, roundedMax, intervalWidth);
+        foreach (Series series in chart.Series) {
+          CalculateFrequencies(residuals, series.Name, roundedMax, intervalWidth);
           if (!series.Equals(ALL_SAMPLES))
-            ShowValues(chart.Series[series], relativeFrequencies[series]);
+            ShowValues(series);
         }
 
         ChartArea chartArea = chart.ChartAreas[0];
@@ -131,36 +127,60 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private Dictionary<string, List<double>> CalculateResiduals() {
-      Dictionary<string, List<double>> residuals = new Dictionary<string, List<double>>();
+    private List<double> CalculateResiduals() {
+      List<double> residuals = new List<double>();
 
-      foreach (string series in ALL_SERIES) {
-        residuals[series] = new List<double>();
-      }
       IRegressionProblemData problemdata = Content.ProblemData;
       List<double> targetValues = problemdata.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToList();
       List<double> estimatedValues = Content.EstimatedValues.ToList();
 
       for (int i = 0; i < Content.ProblemData.Dataset.Rows; i++) {
         double residual = estimatedValues[i] - targetValues[i];
-        residuals[ALL_SAMPLES].Add(residual);
-        if (i >= problemdata.TrainingPartition.Start && i < problemdata.TrainingPartition.End)
-          residuals[TRAINING_SAMPLES].Add(residual);
-        if (i >= problemdata.TestPartition.Start && i < problemdata.TestPartition.End)
-          residuals[TEST_SAMPLES].Add(residual);
+        residuals.Add(residual);
       }
       return residuals;
     }
 
     private void CalculateFrequencies(List<double> residualValues, string series, double max, double intervalWidth) {
+      IEnumerable<double> relevantResiduals = residualValues;
+      IRegressionProblemData problemdata = Content.ProblemData;
+      if (series.Equals(TRAINING_SAMPLES)) {
+        relevantResiduals = residualValues.Skip(problemdata.TrainingPartition.Start).Take(problemdata.TrainingPartition.Size);
+      } else if (series.Equals(TEST_SAMPLES)) {
+        relevantResiduals = residualValues.Skip(problemdata.TestPartition.Start).Take(problemdata.TestPartition.Size);
+      }
+
       double intervalCenter = intervalWidth / 2.0;
-      double sampleCount = residualValues.Count;
+      double sampleCount = relevantResiduals.Count();
       double current = -max;
 
       for (int i = 0; i <= bins; i++) {
-        IEnumerable<double> help = residualValues.Where(x => x >= (current - intervalCenter) && x < (current + intervalCenter));
+        IEnumerable<double> help = relevantResiduals.Where(x => x >= (current - intervalCenter) && x < (current + intervalCenter));
         relativeFrequencies[series].Add(new List<double>() { current, help.Count() / sampleCount, current - intervalCenter, current + intervalCenter });
         current += intervalWidth;
+      }
+    }
+
+    private void ShowValues(Series series) {
+      List<List<double>> relativeSeriesFrequencies = relativeFrequencies[series.Name];
+      DataPointCollection seriesPoints = series.Points;
+
+      foreach (var valueList in relativeSeriesFrequencies) {
+        seriesPoints.AddXY(valueList[0], valueList[1]);
+        seriesPoints[seriesPoints.Count - 1]["from"] = valueList[2].ToString();
+        seriesPoints[seriesPoints.Count - 1]["to"] = valueList[3].ToString();
+      }
+    }
+
+    private void ToggleSeriesData(Series series) {
+      if (series.Points.Count > 0) {  //checks if series is shown
+        if (chart.Series.Any(s => s != series && s.Points.Count > 0)) {
+          series.Points.Clear();
+        }
+      } else if (Content != null) {
+        ShowValues(series);
+        chart.Legends[series.Legend].ForeColor = Color.Black;
+        chart.Refresh();
       }
     }
 
@@ -215,26 +235,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       e.LegendItems[2].Cells[1].ForeColor = chart.Series[TEST_SAMPLES].Points.Count == 0 ? Color.Gray : Color.Black;
     }
     #endregion
-
-    private void ToggleSeriesData(Series series) {
-      if (series.Points.Count > 0) {  //checks if series is shown
-        if (chart.Series.Any(s => s != series && s.Points.Count > 0)) {
-          series.Points.Clear();
-        }
-      } else if (Content != null) {
-        ShowValues(series, relativeFrequencies[series.Name]);
-        chart.Legends[series.Legend].ForeColor = Color.Black;
-        chart.Refresh();
-      }
-    }
-    private void ShowValues(Series series, List<List<double>> relativeSeriesFrequencies) {
-      DataPointCollection seriesPoints = series.Points;
-
-      foreach (var valueList in relativeSeriesFrequencies) {
-        seriesPoints.AddXY(valueList[0], valueList[1]);
-        seriesPoints[seriesPoints.Count - 1]["from"] = valueList[2].ToString();
-        seriesPoints[seriesPoints.Count - 1]["to"] = valueList[3].ToString();
-      }
-    }
   }
 }
