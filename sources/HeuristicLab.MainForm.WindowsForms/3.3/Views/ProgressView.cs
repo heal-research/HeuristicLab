@@ -25,99 +25,105 @@ using System.Windows.Forms;
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class ProgressView : HeuristicLab.MainForm.WindowsForms.View {
     private ContentView parentView;
+
     private IProgress progress;
     public IProgress Progress {
-      get {
-        return this.progress;
-      }
+      get { return progress; }
       set {
-        if (this.progress != value) {
-          if (this.progress != null) {
-            DeregisterProgressEvents();
-          }
-          this.progress = value;
-          RegisterProgressEvents();
-          OnProgressChanged();
-        }
+        if (progress == value) return;
+        DeregisterProgressEvents();
+        progress = value;
+        RegisterProgressEvents();
+        OnProgressChanged();
       }
     }
 
+    private bool cancelEnabled;
     public bool CancelEnabled {
-      get {
-        return cancelButton.Visible;
-      }
+      get { return cancelEnabled; }
       set {
-        if (InvokeRequired) {
-          Invoke(new Action<bool>((ce) => { CancelEnabled = ce; }), value);
-        } else {
-          cancelButton.Visible = value;
-        }
+        cancelEnabled = value;
+        SetCancelButtonVisibility();
       }
     }
 
-    /// <param name="parentView">This is the View which will be locked if lockParentView is true</param>
+    /// <param name="parentView">This is the view which will be locked while progress is made.</param>
     public ProgressView(ContentView parentView, IProgress progress) {
       InitializeComponent();
-      this.parentView = parentView;
-      this.Progress = progress;
+      Progress = progress;
+      CancelEnabled = false;
 
-      this.CancelEnabled = false;
+      if (parentView != null) {
+        this.parentView = parentView;
+        this.Left = (parentView.ClientRectangle.Width / 2) - (this.Width / 2);
+        this.Top = (parentView.ClientRectangle.Height / 2) - (this.Height / 2);
+        this.Anchor = AnchorStyles.Left | AnchorStyles.Top;
 
-      progressBar.Style = ProgressBarStyle.Marquee;
+        LockBackground();
 
-      this.Left = (parentView.ClientRectangle.Width / 2) - (this.Width / 2);
-      this.Top = (parentView.ClientRectangle.Height / 2) - (this.Height / 2);
-      this.Anchor = AnchorStyles.Left | AnchorStyles.Top;
-
-      LockBackground();
-
-      parentView.Controls.Add(this);
-      this.BringToFront();
+        parentView.Controls.Add(this);
+        BringToFront();
+      }
     }
 
     private void RegisterProgressEvents() {
+      if (progress == null) return;
       progress.Finished += new EventHandler(progress_Finished);
       progress.StatusChanged += new EventHandler(progress_StatusChanged);
-      progress.ProgressValueChanged += new EventHandler(progress_ProgressChanged);
+      progress.ProgressValueChanged += new EventHandler(progress_ProgressValueChanged);
     }
 
     private void DeregisterProgressEvents() {
+      if (progress == null) return;
       progress.Finished -= new EventHandler(progress_Finished);
       progress.StatusChanged -= new EventHandler(progress_StatusChanged);
-      progress.ProgressValueChanged -= new EventHandler(progress_ProgressChanged);
+      progress.ProgressValueChanged -= new EventHandler(progress_ProgressValueChanged);
     }
 
-    void progress_Finished(object sender, EventArgs e) {
+    private void progress_Finished(object sender, EventArgs e) {
       Finish();
     }
 
-    void progress_ProgressChanged(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Invoke(new EventHandler(progress_ProgressChanged), sender, e);
-      } else {
-        progressBar.Style = ProgressBarStyle.Blocks;
-        this.progressBar.Value = Math.Min(this.progressBar.Maximum, (int)(progress.ProgressValue * progressBar.Maximum));
-      }
+    private void progress_StatusChanged(object sender, EventArgs e) {
+      UpdateProgressStatus();
     }
 
-    void progress_StatusChanged(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Invoke(new EventHandler(progress_StatusChanged), sender, e);
-      } else {
-        statusLabel.Text = progress.Status;
-      }
+    private void progress_ProgressValueChanged(object sender, EventArgs e) {
+      UpdateProgressValue();
     }
 
     private void LockBackground() {
       if (InvokeRequired) {
-        Invoke(new Action(LockBackground));
+        Invoke((Action)LockBackground);
       } else {
-        this.parentView.Locked = true;
-        foreach (Control c in this.parentView.Controls) {
+        parentView.Locked = true;
+        parentView.ReadOnly = true;
+        foreach (Control c in this.parentView.Controls)
           c.Enabled = false;
+        Enabled = true;
+        ReadOnly = false;
+      }
+    }
+
+    private void UpdateProgressValue() {
+      if (InvokeRequired) Invoke((Action)UpdateProgressValue);
+      else {
+        double progressValue = progress.ProgressValue;
+        if (progressValue < progressBar.Minimum || progressValue > progressBar.Maximum) {
+          progressBar.Style = ProgressBarStyle.Marquee;
+          progressBar.Value = progressBar.Minimum;
+        } else {
+          progressBar.Style = ProgressBarStyle.Blocks;
+          progressBar.Value = (int)Math.Round(progressBar.Minimum + progressValue * (progressBar.Maximum - progressBar.Minimum));
         }
-        this.Enabled = true;
-        this.ReadOnly = false;
+      }
+    }
+
+    private void UpdateProgressStatus() {
+      if (InvokeRequired) Invoke((Action)UpdateProgressStatus);
+      else {
+        string status = progress.Status;
+        statusLabel.Text = progress.Status;
       }
     }
 
@@ -126,23 +132,32 @@ namespace HeuristicLab.MainForm.WindowsForms {
         Invoke(new Action(Finish));
       } else {
         progressBar.Value = progressBar.Maximum;
-        parentView.Locked = false;
-        foreach (Control c in this.parentView.Controls) {
-          c.Enabled = true;
-        }
         parentView.Controls.Remove(this);
+        parentView.Locked = false;
+        parentView.ReadOnly = false;
+        foreach (Control c in this.parentView.Controls)
+          c.Enabled = false;
         DeregisterProgressEvents();
-        this.Dispose();
+        Dispose();
       }
     }
 
     private void cancelButton_Click(object sender, EventArgs e) {
+      OnCanceled();
       Finish();
     }
 
+    private void SetCancelButtonVisibility() {
+      if (InvokeRequired) {
+        Invoke((Action)SetCancelButtonVisibility);
+      } else {
+        cancelButton.Visible = cancelEnabled;
+      }
+    }
+
     private void OnProgressChanged() {
-      progress_StatusChanged(this, EventArgs.Empty);
-      progress_ProgressChanged(this, EventArgs.Empty);
+      UpdateProgressStatus();
+      UpdateProgressValue();
     }
 
     public event EventHandler Canceled;

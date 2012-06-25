@@ -38,7 +38,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.progressBar.Location = new System.Drawing.Point(3, 3);
       this.progressBar.Name = "progressBar";
       this.progressBar.Size = new System.Drawing.Size(352, 23);
-      this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+      this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
       this.progressBar.TabIndex = 0;
       // 
       // statusLabel
