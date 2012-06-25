@@ -29,14 +29,15 @@
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.label1 = new System.Windows.Forms.Label();
       this.cmbSamples = new System.Windows.Forms.ComboBox();
+      this.LegendToolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
       // 
       // chart
       // 
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+                  | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
       legend1.Alignment = System.Drawing.StringAlignment.Center;
@@ -72,7 +73,6 @@
       // 
       // RegressionSolutionErrorCharacteristicsCurveView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.label1);
       this.Controls.Add(this.cmbSamples);
@@ -90,5 +90,6 @@
     protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     protected System.Windows.Forms.Label label1;
     protected System.Windows.Forms.ComboBox cmbSamples;
+    private System.Windows.Forms.ToolTip LegendToolTip;
   }
 }

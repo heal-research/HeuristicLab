@@ -240,10 +240,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void chart_MouseMove(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
-      if (result.ChartElementType == ChartElementType.LegendItem)
+      if (result.ChartElementType == ChartElementType.LegendItem) {
         Cursor = Cursors.Hand;
-      else
+        LegendToolTip.SetToolTip(chart, "Double-click to open model");
+      } else {
         Cursor = Cursors.Default;
+        LegendToolTip.RemoveAll();
+      }
     }
   }
 }
