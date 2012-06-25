@@ -30,10 +30,6 @@ using System.Threading;
 
 namespace HeuristicLab.Common {
   public static class ObjectExtensions {
-    public static IEnumerable<T> ToEnumerable<T>(this T item) {
-      return new[] { item };
-    }
-
     public static IEnumerable<object> GetObjectGraphObjects(this object obj, HashSet<string> excludedMembers = null, bool excludeStaticMembers = false) {
       if (obj == null) return Enumerable.Empty<object>();
       if (excludedMembers == null) excludedMembers = new HashSet<string>();

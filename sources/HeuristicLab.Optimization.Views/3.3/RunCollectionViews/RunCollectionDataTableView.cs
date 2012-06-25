@@ -25,7 +25,6 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
-using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
@@ -35,24 +34,25 @@ namespace HeuristicLab.Optimization.Views {
   public partial class RunCollectionDataTableView : ItemView {
     private const string AllDataRows = "All DataRows";
 
-    public RunCollectionDataTableView() {
-      InitializeComponent();
-      runMapping = new Dictionary<IRun, IEnumerable<DataRow>>();
-      combinedDataTable = new DataTable("Combined DataTable", "A data table containing all data rows from all run.");
-      viewHost.Content = combinedDataTable;
-      suppressUpdates = false;
-    }
-
     public new RunCollection Content {
       get { return (RunCollection)base.Content; }
       set { base.Content = value; }
     }
 
+    private int rowNumber = 0;
     private bool suppressUpdates;
     private readonly Dictionary<IRun, IEnumerable<DataRow>> runMapping;
     private readonly DataTable combinedDataTable;
     public DataTable CombinedDataTable {
       get { return combinedDataTable; }
+    }
+
+    public RunCollectionDataTableView() {
+      InitializeComponent();
+      runMapping = new Dictionary<IRun, IEnumerable<DataRow>>();
+      combinedDataTable = new DataTable("Combined DataTable", "A data table containing data rows from multiple runs.");
+      viewHost.Content = combinedDataTable;
+      suppressUpdates = false;
     }
 
     #region Content events
@@ -110,9 +110,8 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void run_Changed(object sender, EventArgs e) {
       if (suppressUpdates) return;
-      IRun run = (IRun)sender;
-      UpdateRuns(run.ToEnumerable());
-
+      var run = (IRun)sender;
+      UpdateRuns(new IRun[] { run });
     }
     #endregion
 
@@ -130,6 +129,7 @@ namespace HeuristicLab.Optimization.Views {
 
     private void RebuildCombinedDataTable() {
       RemoveRuns(Content);
+      rowNumber = 0;
       AddRuns(Content);
     }
 
@@ -141,6 +141,7 @@ namespace HeuristicLab.Optimization.Views {
       var dataRows = runs.Where(r => r.Visible && runMapping.ContainsKey(r)).SelectMany(r => runMapping[r]);
       combinedDataTable.Rows.AddRange(dataRows);
     }
+
     private void RemoveRuns(IEnumerable<IRun> runs) {
       var dataRows = runs.Where(r => runMapping.ContainsKey(r)).SelectMany(r => runMapping[r]).ToList();
       foreach (var run in runs) {
@@ -164,13 +165,12 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-    private int rowNumber = 0;
     private IEnumerable<DataRow> ExtractDataRowsFromRun(IRun run) {
-      string resultName = (string)dataTableComboBox.SelectedItem;
-      string rowName = (string)dataRowComboBox.SelectedItem;
+      var resultName = (string)dataTableComboBox.SelectedItem;
+      var rowName = (string)dataRowComboBox.SelectedItem;
       if (!run.Results.ContainsKey(resultName)) yield break;
 
-      DataTable dataTable = (DataTable)run.Results[resultName];
+      var dataTable = (DataTable)run.Results[resultName];
       foreach (var dataRow in dataTable.Rows) {
         if (dataRow.Name != rowName && rowName != AllDataRows) continue;
         rowNumber++;
@@ -196,7 +196,7 @@ namespace HeuristicLab.Optimization.Views {
 
     private void UpdateDataRowComboBox() {
       dataRowComboBox.Items.Clear();
-      string resultName = (string)dataTableComboBox.SelectedItem;
+      var resultName = (string)dataTableComboBox.SelectedItem;
       var dataTables = from run in Content
                        where run.Results.ContainsKey(resultName)
                        select run.Results[resultName] as DataTable;
