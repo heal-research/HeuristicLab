@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// <summary>
     /// used to reduce code duplication
     /// </summary>
-    protected static string[] ALL_SERIES = new string[] { ALL_SAMPLES, TRAINING_SAMPLES, TEST_SAMPLES };
+    protected readonly string[] ALL_SERIES = new string[] { ALL_SAMPLES, TRAINING_SAMPLES, TEST_SAMPLES };
     /// <summary>
     /// approximate amount of bins 
     /// </summary>
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     ///  keeps for all series a list for every bin with the position of the bin, the relative frequency of the
     ///  residuals and the beginning and the end of the interval of the bin
     ///  </summary>
-    protected Dictionary<string, List<List<double>>> relativeFrequencies;
+    protected readonly Dictionary<string, List<List<double>>> relativeFrequencies;
     #endregion
 
     public new IRegressionSolution Content {
@@ -154,7 +154,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private void CalculateFrequencies(List<double> residualValues, string series, double max, double intervalWidth) {
       double intervalCenter = intervalWidth / 2.0;
-      double sampleCount = residualValues.Count();
+      double sampleCount = residualValues.Count;
       double current = -max;
 
       for (int i = 0; i <= bins; i++) {
