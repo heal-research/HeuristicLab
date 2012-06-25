@@ -492,7 +492,7 @@ namespace HeuristicLab.Clients.Hive {
     /// </summary>
     private static IEnumerable<string> ToResourceNameList(string resourceNames) {
       if (!string.IsNullOrEmpty(resourceNames)) {
-        return resourceNames.Split(';');
+        return resourceNames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       } else {
         return new List<string>();
       }

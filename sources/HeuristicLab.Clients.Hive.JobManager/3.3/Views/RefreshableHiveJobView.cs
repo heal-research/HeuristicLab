@@ -153,7 +153,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         this.searchButton.Enabled = Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded);
         this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded;
 
-        this.isPrivilegedCheckBox.Enabled = Content.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded); // TODO: check if user has the rights to do this        
+        this.isPrivilegedCheckBox.Enabled = Content.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded); // TODO: check if user has the rights to do this
         this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && Content.ExecutionState == ExecutionState.Started;
         this.refreshButton.Enabled = Content.IsDownloadable && alreadyUploaded;
         this.Locked = !Content.IsControllable || Content.ExecutionState == ExecutionState.Started;
@@ -341,7 +341,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         StringBuilder sb = new StringBuilder();
         foreach (Resource resource in hiveResourceSelectorDialog.GetSelectedResources()) {
           sb.Append(resource.Name);
-          sb.Append("; ");
+          sb.Append(";");
         }
         resourceNamesTextBox.Text = sb.ToString();
       }
