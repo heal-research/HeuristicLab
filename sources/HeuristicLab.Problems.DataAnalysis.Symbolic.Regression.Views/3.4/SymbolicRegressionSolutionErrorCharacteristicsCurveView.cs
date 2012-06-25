@@ -22,7 +22,6 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Views;
@@ -72,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
           node => node.VariableName).Distinct();
       foreach (var variable in usedVariables) {
         problemData.InputVariables.SetItemCheckedState(
-          problemData.InputVariables.Where(x => x.Value == variable).First(), true);
+          problemData.InputVariables.First(x => x.Value == variable), true);
       }
 
       var solution = LinearRegression.CreateLinearRegressionSolution(problemData, out rmse, out cvRmsError);
@@ -88,15 +87,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     protected override void Content_ProblemDataChanged(object sender, EventArgs e) {
       linearRegressionSolution = CreateLinearRegressionSolution();
       base.Content_ProblemDataChanged(sender, e);
-    }
-
-    private void chart_MouseDown(object sender, MouseEventArgs e) {
-      if (e.Clicks < 2) return;
-      HitTestResult result = chart.HitTest(e.X, e.Y);
-      if (result.ChartElementType != ChartElementType.LegendItem) return;
-      if (result.Series.Name != linearRegressionSolution.Name) return;
-
-      MainFormManager.MainForm.ShowContent((IRegressionSolution)result.Series.Tag);
     }
   }
 }

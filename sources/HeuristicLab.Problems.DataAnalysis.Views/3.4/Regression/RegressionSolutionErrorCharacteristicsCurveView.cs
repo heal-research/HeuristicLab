@@ -25,13 +25,11 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Error Characteristics Curve")]
   [Content(typeof(IRegressionSolution))]
   public partial class RegressionSolutionErrorCharacteristicsCurveView : DataAnalysisSolutionEvaluationView {
-    private IRegressionSolution constantModel;
     protected const string TrainingSamples = "Training";
     protected const string TestSamples = "Test";
     protected const string AllSamples = "All Samples";
@@ -102,8 +100,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.Annotations.Clear();
       if (Content == null) return;
 
+      var constantModel = CreateConstantModel();
       var originalValues = GetOriginalValues().ToList();
-      constantModel = CreateConstantModel();
       var baselineEstimatedValues = GetEstimatedValues(constantModel);
       var baselineResiduals = GetResiduals(originalValues, baselineEstimatedValues);
 
@@ -198,11 +196,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           throw new NotSupportedException();
       }
       return estimatedValues;
-    }
-
-    protected IEnumerable<double> GetbaselineEstimatedValues(IEnumerable<double> originalValues) {
-      double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).Average();
-      return Enumerable.Repeat(averageTrainingTarget, originalValues.Count());
     }
 
     protected virtual List<double> GetResiduals(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues) {

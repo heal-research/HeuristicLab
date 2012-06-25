@@ -25,11 +25,7 @@
     private void InitializeComponent() {
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
-      // 
-      // chart
-      // 
-      this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
-      // 
+      //
       // SymbolicRegressionSolutionErrorCharacteristicsCurveView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
