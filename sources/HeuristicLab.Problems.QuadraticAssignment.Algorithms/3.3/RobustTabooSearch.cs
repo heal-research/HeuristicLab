@@ -243,6 +243,7 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
       continueByIterationBranch.Successor = null;
 
       RegisterEventHandlers();
+      Problem = new QuadraticAssignmentProblem();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
