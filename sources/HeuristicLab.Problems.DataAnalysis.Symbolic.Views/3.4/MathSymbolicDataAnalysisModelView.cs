@@ -20,15 +20,14 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using System.Threading;
-using System.IO;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [View("Mathematical Representation")]
-  [Content(typeof(ISymbolicDataAnalysisModel), true)]
+  [Content(typeof(ISymbolicDataAnalysisModel))]
   public partial class MathSymbolicDataAnalysisModelView : AsynchronousContentView {
     private SymbolicDataAnalysisExpressionLatexFormatter formatter = new SymbolicDataAnalysisExpressionLatexFormatter();
     public MathSymbolicDataAnalysisModelView()
@@ -41,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       webBrowser.DocumentCompleted += (sender, args) => RefreshHtmlPage();
 
       string hlDir = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
-      webBrowser.Navigate("file://"+Path.Combine(hlDir, "displayModelFrame.html"));
+      webBrowser.Navigate("file://" + Path.Combine(hlDir, "displayModelFrame.html"));
     }
 
     public new ISymbolicDataAnalysisModel Content {
