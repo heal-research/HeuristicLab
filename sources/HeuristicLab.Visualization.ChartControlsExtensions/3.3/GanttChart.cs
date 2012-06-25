@@ -34,6 +34,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     public GanttChart() {
       InitializeComponent();
+      chart.CustomizeAllChartAreas();
     }
 
     public void AddCategory(string name, Color color) {

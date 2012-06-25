@@ -20,8 +20,11 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Visualization.ChartControlsExtensions;
@@ -30,6 +33,8 @@ namespace HeuristicLab.Clients.Hive.Views {
   [View("StateLogGanttChartList View")]
   [Content(typeof(StateLogListList), true)]
   public sealed partial class StateLogGanttChartListView : ItemView {
+    private IList<LegendItem> invisibleLegendItems;
+
     public new StateLogListList Content {
       get { return (StateLogListList)base.Content; }
       set { base.Content = value; }
@@ -37,16 +42,23 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     public StateLogGanttChartListView() {
       InitializeComponent();
+      invisibleLegendItems = new List<LegendItem>();
     }
 
     protected override void DeregisterContentEvents() {
       // Deregister your event handlers here
+      ganttChart.chart.MouseMove -= new System.Windows.Forms.MouseEventHandler(chart_MouseDown);
+      ganttChart.chart.MouseDown -= new System.Windows.Forms.MouseEventHandler(chart_MouseDown);
+      ganttChart.chart.CustomizeLegend -= new EventHandler<CustomizeLegendEventArgs>(chart_CustomizeLegend);
       base.DeregisterContentEvents();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       // Register your event handlers here
+      ganttChart.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(chart_MouseMove);
+      ganttChart.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(chart_MouseDown);
+      ganttChart.chart.CustomizeLegend += new EventHandler<CustomizeLegendEventArgs>(chart_CustomizeLegend);
     }
 
     protected override void OnContentChanged() {
@@ -74,10 +86,10 @@ namespace HeuristicLab.Clients.Hive.Views {
 
           for (int i = Content.Count - 1; i >= 0; i--) {
             for (int j = 0; j < Content[i].Count - 1; j++) {
-              if (Content[i][j].State != TaskState.Offline)
+              if (Content[i][j].State != TaskState.Offline && invisibleLegendItems.All(x => x.Name != Content[i][j].State.ToString()))
                 AddData(ganttChart, i.ToString(), Content[i][j], Content[i][j + 1], upperLimit);
             }
-            if (Content[i].Count > 0) {
+            if (Content[i].Count > 0 && invisibleLegendItems.All(x => x.Name != Content[i][Content[i].Count - 1].State.ToString())) {
               AddData(ganttChart, i.ToString(), Content[i][Content[i].Count - 1], null, upperLimit);
             }
           }
@@ -112,5 +124,37 @@ namespace HeuristicLab.Clients.Hive.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
     }
+
+    #region Events
+    void chart_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
+      HitTestResult result = ganttChart.chart.HitTest(e.X, e.Y);
+      if (result.ChartElementType == ChartElementType.LegendItem)
+        Cursor = Cursors.Hand;
+      else
+        Cursor = Cursors.Default;
+    }
+
+    private void chart_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+      HitTestResult result = ganttChart.chart.HitTest(e.X, e.Y);
+      if (result.ChartElementType == ChartElementType.LegendItem)
+        ToggleLegendItemVisibility(result.Object as LegendItem);
+      ganttChart.Reset();
+      OnContentChanged();
+    }
+
+    private void chart_CustomizeLegend(object sender, CustomizeLegendEventArgs e) {
+      foreach (var item in e.LegendItems)
+        foreach (var cell in item.Cells)
+          cell.ForeColor = invisibleLegendItems.Any(x => x.Name == item.Name) ? Color.Gray : Color.Black;
+    }
+    #endregion
+
+    #region Helpers
+    private void ToggleLegendItemVisibility(LegendItem legendItem) {
+      var item = invisibleLegendItems.FirstOrDefault(x => x.Name == legendItem.Name);
+      if (item != null) invisibleLegendItems.Remove(item);
+      else invisibleLegendItems.Add(legendItem);
+    }
+    #endregion
   }
 }
