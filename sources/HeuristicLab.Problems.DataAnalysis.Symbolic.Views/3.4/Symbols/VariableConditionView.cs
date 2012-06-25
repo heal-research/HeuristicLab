@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   [View("Variable View")]
   [Content(typeof(VariableCondition), true)]
   public partial class VariableConditionView : SymbolView {
-    private CheckedItemCollectionView<StringValue> variableNamesView;
+    private readonly CheckedItemCollectionView<StringValue> variableNamesView;
 
     public new VariableCondition Content {
       get { return (VariableCondition)base.Content; }

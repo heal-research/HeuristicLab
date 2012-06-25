@@ -151,10 +151,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region persistence and cloning
     [StorableConstructor]
-    private VariableCondition(bool deserializing)
-      : base(deserializing) {
-      variableNames = new List<string>();
-    }
+    private VariableCondition(bool deserializing) : base(deserializing) { }
     private VariableCondition(VariableCondition original, Cloner cloner)
       : base(original, cloner) {
       thresholdInitializerMu = original.thresholdInitializerMu;
