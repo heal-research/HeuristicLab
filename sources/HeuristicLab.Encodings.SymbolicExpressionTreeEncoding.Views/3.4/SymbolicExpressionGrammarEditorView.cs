@@ -163,22 +163,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       SetEnabledStateOfControls();
     }
 
-    private void symbolsTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
-      if (e.Action != TreeViewAction.Unknown) {
-        Content.StartGrammarManipulation();
-        allowedChildSymbolsControl.Symbol = null;
-        var symbol = (ISymbol)e.Node.Tag;
-        symbol.Enabled = e.Node.Checked;
-        foreach (var node in IterateTreeNodes())
-          node.Checked = ((ISymbol)node.Tag).Enabled;
-
-        Content.FinishedGrammarManipulation();
-      }
+    private void symbolsTreeView_BeforeCheck(object sender, TreeViewCancelEventArgs e) {
+      if (e.Action == TreeViewAction.Unknown) return;
+      e.Cancel = Content == null || Content.ReadOnly || ReadOnly || Locked;
     }
 
-    private void symbolsTreeView_BeforeCheck(object sender, TreeViewCancelEventArgs e) {
-      if (Content == null || Content.ReadOnly) e.Cancel = true;
-      if (ReadOnly || Locked) e.Cancel = true;
+    private void symbolsTreeView_AfterCheck(object sender, TreeViewEventArgs e) {
+      if (e.Action == TreeViewAction.Unknown) return;
+      Content.StartGrammarManipulation();
+      allowedChildSymbolsControl.Symbol = null;
+      var symbol = (ISymbol)e.Node.Tag;
+      symbol.Enabled = e.Node.Checked;
+      foreach (var node in IterateTreeNodes())
+        node.Checked = ((ISymbol)node.Tag).Enabled;
+
+      Content.FinishedGrammarManipulation();
     }
 
     #region drag & drop operations
