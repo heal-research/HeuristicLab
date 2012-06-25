@@ -114,6 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       UpdateSeries(baselineResiduals, baselineSeries);
       baselineSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(baselineSeries);
       baselineSeries.Tag = constantModel;
+      baselineSeries.LegendToolTip = "Double-click to open model";
       chart.Series.Add(baselineSeries);
 
       AddRegressionSolution(Content);
@@ -128,6 +129,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var estimatedValues = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
       UpdateSeries(estimatedValues, solutionSeries);
       solutionSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(solutionSeries);
+      solutionSeries.LegendToolTip = "Double-click to open model";
       chart.Series.Add(solutionSeries);
     }
 
@@ -242,10 +244,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       HitTestResult result = chart.HitTest(e.X, e.Y);
       if (result.ChartElementType == ChartElementType.LegendItem) {
         Cursor = Cursors.Hand;
-        LegendToolTip.SetToolTip(chart, "Double-click to open model");
       } else {
         Cursor = Cursors.Default;
-        LegendToolTip.RemoveAll();
       }
     }
   }

@@ -29,7 +29,6 @@
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.label1 = new System.Windows.Forms.Label();
       this.cmbSamples = new System.Windows.Forms.ComboBox();
-      this.LegendToolTip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
       // 
@@ -90,6 +89,5 @@
     protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     protected System.Windows.Forms.Label label1;
     protected System.Windows.Forms.ComboBox cmbSamples;
-    private System.Windows.Forms.ToolTip LegendToolTip;
   }
 }
