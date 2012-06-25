@@ -53,23 +53,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void RegisterVariableNamesViewContentEvents() {
-      variableNamesView.Content.ItemsAdded += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
-      variableNamesView.Content.ItemsRemoved += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
-      variableNamesView.Content.CheckedItemsChanged += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
-      variableNamesView.Content.CollectionReset += new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      variableNamesView.Content.ItemsAdded += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
+      variableNamesView.Content.ItemsRemoved += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
+      variableNamesView.Content.CheckedItemsChanged += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
+      variableNamesView.Content.CollectionReset += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
       foreach (var variable in variableNamesView.Content) {
-        variable.ValueChanged += new EventHandler(variable_ValueChanged);
+        variable.ValueChanged += new EventHandler(Variable_ValueChanged);
       }
     }
 
 
     private void DeregisterVariableNamesViewContentEvents() {
-      variableNamesView.Content.ItemsAdded -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
-      variableNamesView.Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
-      variableNamesView.Content.CheckedItemsChanged -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
-      variableNamesView.Content.CollectionReset -= new CollectionItemsChangedEventHandler<StringValue>(variableNames_Changed);
+      variableNamesView.Content.ItemsAdded -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
+      variableNamesView.Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
+      variableNamesView.Content.CheckedItemsChanged -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
+      variableNamesView.Content.CollectionReset -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
       foreach (var variable in variableNamesView.Content) {
-        variable.ValueChanged -= new EventHandler(variable_ValueChanged);
+        variable.ValueChanged -= new EventHandler(Variable_ValueChanged);
       }
     }
 
@@ -108,17 +108,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     #endregion
 
     #region control event handlers
-    private void variableNames_Changed(object sender, CollectionItemsChangedEventArgs<StringValue> args) {
-      if (args.Items != null)
-        foreach (var newVar in args.Items)
-          newVar.ValueChanged += new EventHandler(variable_ValueChanged);
-      if (args.OldItems != null)
-        foreach (var oldVar in args.OldItems)
-          oldVar.ValueChanged -= new EventHandler(variable_ValueChanged);
+    private void VariableNames_Changed(object sender, CollectionItemsChangedEventArgs<StringValue> e) {
+      foreach (var newVar in e.Items)
+        newVar.ValueChanged += new EventHandler(Variable_ValueChanged);
+      foreach (var oldVar in e.OldItems)
+        oldVar.ValueChanged -= new EventHandler(Variable_ValueChanged);
       UpdateContent();
     }
 
-    private void variable_ValueChanged(object sender, EventArgs e) {
+    private void Variable_ValueChanged(object sender, EventArgs e) {
       UpdateContent();
     }
 
@@ -130,7 +128,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
-    private void weightMuTextBox_TextChanged(object sender, EventArgs e) {
+    private void WeightMuTextBox_TextChanged(object sender, EventArgs e) {
       double nu;
       if (double.TryParse(weightInitializationMuTextBox.Text, out nu)) {
         Content.WeightMu = nu;
@@ -139,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         errorProvider.SetError(weightInitializationMuTextBox, "Invalid value");
       }
     }
-    private void weightSigmaTextBox_TextChanged(object sender, EventArgs e) {
+    private void WeightSigmaTextBox_TextChanged(object sender, EventArgs e) {
       double sigma;
       if (double.TryParse(weightInitializationSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
         Content.WeightSigma = sigma;
@@ -149,7 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
-    private void additiveWeightChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
+    private void AdditiveWeightChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
       double sigma;
       if (double.TryParse(additiveWeightChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
         Content.WeightManipulatorSigma = sigma;
@@ -158,7 +156,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         errorProvider.SetError(additiveWeightChangeSigmaTextBox, "Invalid value");
       }
     }
-    private void multiplicativeWeightChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
+    private void MultiplicativeWeightChangeSigmaTextBox_TextChanged(object sender, EventArgs e) {
       double sigma;
       if (double.TryParse(multiplicativeWeightChangeSigmaTextBox.Text, out sigma) && sigma >= 0.0) {
         Content.MultiplicativeWeightManipulatorSigma = sigma;

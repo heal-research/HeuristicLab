@@ -121,7 +121,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.weightInitializationMuTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.weightInitializationMuTextBox, "The mu (mean) parameter of the normal distribution from which to sample the initi" +
         "al weights.");
-      this.weightInitializationMuTextBox.TextChanged += new System.EventHandler(this.weightMuTextBox_TextChanged);
+      this.weightInitializationMuTextBox.TextChanged += new System.EventHandler(this.WeightMuTextBox_TextChanged);
       // 
       // initializationGroupBox
       // 
@@ -158,7 +158,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.weightInitializationSigmaTextBox.TabIndex = 3;
       this.toolTip.SetToolTip(this.weightInitializationSigmaTextBox, "The sigma parameter for the normal distribution from which to sample the initial " +
         "weights.");
-      this.weightInitializationSigmaTextBox.TextChanged += new System.EventHandler(this.weightSigmaTextBox_TextChanged);
+      this.weightInitializationSigmaTextBox.TextChanged += new System.EventHandler(this.WeightSigmaTextBox_TextChanged);
       // 
       // mutationGroupBox
       // 
@@ -196,7 +196,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.multiplicativeWeightChangeSigmaTextBox.TabIndex = 3;
       this.toolTip.SetToolTip(this.multiplicativeWeightChangeSigmaTextBox, "The sigma (std.dev.) parameter for the normal distribution to sample a multiplica" +
         "tive change in weight.");
-      this.multiplicativeWeightChangeSigmaTextBox.TextChanged += new System.EventHandler(this.multiplicativeWeightChangeSigmaTextBox_TextChanged);
+      this.multiplicativeWeightChangeSigmaTextBox.TextChanged += new System.EventHandler(this.MultiplicativeWeightChangeSigmaTextBox_TextChanged);
       // 
       // additiveWeightChangeLabel
       // 
@@ -219,7 +219,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.additiveWeightChangeSigmaTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.additiveWeightChangeSigmaTextBox, "The sigma (std.dev.) parameter for the normal distribution to sample an additive " +
         "change in weight.");
-      this.additiveWeightChangeSigmaTextBox.TextChanged += new System.EventHandler(this.additiveWeightChangeSigmaTextBox_TextChanged);
+      this.additiveWeightChangeSigmaTextBox.TextChanged += new System.EventHandler(this.AdditiveWeightChangeSigmaTextBox_TextChanged);
       // 
       // tabControl
       // 
