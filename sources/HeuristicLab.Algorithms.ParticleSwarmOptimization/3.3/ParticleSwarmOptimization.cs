@@ -63,23 +63,23 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
     public IValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (IValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
-    public ConstrainedValueParameter<IParticleCreator> ParticleCreatorParameter {
-      get { return (ConstrainedValueParameter<IParticleCreator>)Parameters["ParticleCreator"]; }
+    public IConstrainedValueParameter<IParticleCreator> ParticleCreatorParameter {
+      get { return (IConstrainedValueParameter<IParticleCreator>)Parameters["ParticleCreator"]; }
     }
-    public ConstrainedValueParameter<IParticleUpdater> ParticleUpdaterParameter {
-      get { return (ConstrainedValueParameter<IParticleUpdater>)Parameters["ParticleUpdater"]; }
+    public IConstrainedValueParameter<IParticleUpdater> ParticleUpdaterParameter {
+      get { return (IConstrainedValueParameter<IParticleUpdater>)Parameters["ParticleUpdater"]; }
     }
-    public OptionalConstrainedValueParameter<ITopologyInitializer> TopologyInitializerParameter {
-      get { return (OptionalConstrainedValueParameter<ITopologyInitializer>)Parameters["TopologyInitializer"]; }
+    public IConstrainedValueParameter<ITopologyInitializer> TopologyInitializerParameter {
+      get { return (IConstrainedValueParameter<ITopologyInitializer>)Parameters["TopologyInitializer"]; }
     }
-    public OptionalConstrainedValueParameter<ITopologyUpdater> TopologyUpdaterParameter {
-      get { return (OptionalConstrainedValueParameter<ITopologyUpdater>)Parameters["TopologyUpdater"]; }
+    public IConstrainedValueParameter<ITopologyUpdater> TopologyUpdaterParameter {
+      get { return (IConstrainedValueParameter<ITopologyUpdater>)Parameters["TopologyUpdater"]; }
     }
-    public OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> InertiaUpdaterParameter {
-      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["InertiaUpdater"]; }
+    public IConstrainedValueParameter<IDiscreteDoubleValueModifier> InertiaUpdaterParameter {
+      get { return (IConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["InertiaUpdater"]; }
     }
-    public ConstrainedValueParameter<ISwarmUpdater> SwarmUpdaterParameter {
-      get { return (ConstrainedValueParameter<ISwarmUpdater>)Parameters["SwarmUpdater"]; }
+    public IConstrainedValueParameter<ISwarmUpdater> SwarmUpdaterParameter {
+      get { return (IConstrainedValueParameter<ISwarmUpdater>)Parameters["SwarmUpdater"]; }
 
     }
     #endregion

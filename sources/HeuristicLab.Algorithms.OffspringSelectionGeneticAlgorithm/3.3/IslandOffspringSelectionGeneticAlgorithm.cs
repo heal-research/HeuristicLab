@@ -69,14 +69,14 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueParameter<PercentValue> MigrationRateParameter {
       get { return (ValueParameter<PercentValue>)Parameters["MigrationRate"]; }
     }
-    private ConstrainedValueParameter<IMigrator> MigratorParameter {
-      get { return (ConstrainedValueParameter<IMigrator>)Parameters["Migrator"]; }
+    public IConstrainedValueParameter<IMigrator> MigratorParameter {
+      get { return (IConstrainedValueParameter<IMigrator>)Parameters["Migrator"]; }
     }
-    private ConstrainedValueParameter<ISelector> EmigrantsSelectorParameter {
-      get { return (ConstrainedValueParameter<ISelector>)Parameters["EmigrantsSelector"]; }
+    public IConstrainedValueParameter<ISelector> EmigrantsSelectorParameter {
+      get { return (IConstrainedValueParameter<ISelector>)Parameters["EmigrantsSelector"]; }
     }
-    private ConstrainedValueParameter<IReplacer> ImmigrationReplacerParameter {
-      get { return (ConstrainedValueParameter<IReplacer>)Parameters["ImmigrationReplacer"]; }
+    public IConstrainedValueParameter<IReplacer> ImmigrationReplacerParameter {
+      get { return (IConstrainedValueParameter<IReplacer>)Parameters["ImmigrationReplacer"]; }
     }
     private ValueParameter<IntValue> PopulationSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
@@ -84,17 +84,17 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
-    private ConstrainedValueParameter<ISelector> SelectorParameter {
-      get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
+    public IConstrainedValueParameter<ISelector> SelectorParameter {
+      get { return (IConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
     }
-    private ConstrainedValueParameter<ICrossover> CrossoverParameter {
-      get { return (ConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
+    public IConstrainedValueParameter<ICrossover> CrossoverParameter {
+      get { return (IConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
     private ValueParameter<PercentValue> MutationProbabilityParameter {
       get { return (ValueParameter<PercentValue>)Parameters["MutationProbability"]; }
     }
-    private OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
-      get { return (OptionalConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
+    public IConstrainedValueParameter<IManipulator> MutatorParameter {
+      get { return (IConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
     private ValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
@@ -108,8 +108,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueLookupParameter<DoubleValue> ComparisonFactorUpperBoundParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["ComparisonFactorUpperBound"]; }
     }
-    private OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> ComparisonFactorModifierParameter {
-      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ComparisonFactorModifier"]; }
+    public IConstrainedValueParameter<IDiscreteDoubleValueModifier> ComparisonFactorModifierParameter {
+      get { return (IConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["ComparisonFactorModifier"]; }
     }
     private ValueLookupParameter<DoubleValue> MaximumSelectionPressureParameter {
       get { return (ValueLookupParameter<DoubleValue>)Parameters["MaximumSelectionPressure"]; }
@@ -204,7 +204,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return ComparisonFactorUpperBoundParameter.Value; }
       set { ComparisonFactorUpperBoundParameter.Value = value; }
     }
-    private IDiscreteDoubleValueModifier ComparisonFactorModifier {
+    public IDiscreteDoubleValueModifier ComparisonFactorModifier {
       get { return ComparisonFactorModifierParameter.Value; }
       set { ComparisonFactorModifierParameter.Value = value; }
     }

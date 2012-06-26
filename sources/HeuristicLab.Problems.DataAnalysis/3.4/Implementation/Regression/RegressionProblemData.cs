@@ -94,8 +94,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public ConstrainedValueParameter<StringValue> TargetVariableParameter {
-      get { return (ConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
+    public IConstrainedValueParameter<StringValue> TargetVariableParameter {
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
     }
     public string TargetVariable {
       get { return TargetVariableParameter.Value.Value; }

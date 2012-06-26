@@ -66,8 +66,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public OptionalValueParameter<VRPSolution> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<VRPSolution>)Parameters["BestKnownSolution"]; }
     }
-    public IValueParameter<IVRPCreator> SolutionCreatorParameter {
-      get { return (IValueParameter<IVRPCreator>)Parameters["SolutionCreator"]; }
+    public IConstrainedValueParameter<IVRPCreator> SolutionCreatorParameter {
+      get { return (IConstrainedValueParameter<IVRPCreator>)Parameters["SolutionCreator"]; }
     }
     IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
       get { return SolutionCreatorParameter; }
@@ -104,8 +104,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return this.Evaluator; }
     }
 
-    public ISolutionCreator SolutionCreator {
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
+    }
+    public IVRPCreator SolutionCreator {
+      get { return SolutionCreatorParameter.Value; }
+      set { SolutionCreatorParameter.Value = value; }
     }
     #endregion
 

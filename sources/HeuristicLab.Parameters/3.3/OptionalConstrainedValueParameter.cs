@@ -32,17 +32,17 @@ namespace HeuristicLab.Parameters {
   /// </summary>
   [Item("OptionalConstrainedValueParameter", "A parameter whose value has to be chosen from a set of valid values or is null.")]
   [StorableClass]
-  public class OptionalConstrainedValueParameter<T> : Parameter, IValueParameter<T> where T : class, IItem {
+  public class OptionalConstrainedValueParameter<T> : Parameter, IConstrainedValueParameter<T> where T : class, IItem {
     public override Image ItemImage {
       get {
         if (value != null) return value.ItemImage;
         else return base.ItemImage;
       }
     }
-
+      
     [Storable]
     private ItemSet<T> validValues;
-    public ItemSet<T> ValidValues {
+    public IItemSet<T> ValidValues {
       get { return validValues; }
     }
 

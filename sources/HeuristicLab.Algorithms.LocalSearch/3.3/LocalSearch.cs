@@ -57,14 +57,14 @@ namespace HeuristicLab.Algorithms.LocalSearch {
     private ValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    public ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
-      get { return (ConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
+    public IConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
+      get { return (IConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
     }
-    public ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
-      get { return (ConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
+    public IConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
+      get { return (IConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
     }
-    public ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
-      get { return (ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
+    public IConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
+      get { return (IConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
     }
     private ValueParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumIterations"]; }

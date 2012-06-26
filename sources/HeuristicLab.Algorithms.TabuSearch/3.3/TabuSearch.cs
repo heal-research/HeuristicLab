@@ -57,20 +57,20 @@ namespace HeuristicLab.Algorithms.TabuSearch {
     private ValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (ValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    public ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
-      get { return (ConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
+    public IConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
+      get { return (IConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
     }
-    public ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
-      get { return (ConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
+    public IConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
+      get { return (IConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
     }
-    public ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
-      get { return (ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
+    public IConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
+      get { return (IConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
     }
-    public ConstrainedValueParameter<ITabuChecker> TabuCheckerParameter {
-      get { return (ConstrainedValueParameter<ITabuChecker>)Parameters["TabuChecker"]; }
+    public IConstrainedValueParameter<ITabuChecker> TabuCheckerParameter {
+      get { return (IConstrainedValueParameter<ITabuChecker>)Parameters["TabuChecker"]; }
     }
-    public ConstrainedValueParameter<ITabuMaker> TabuMakerParameter {
-      get { return (ConstrainedValueParameter<ITabuMaker>)Parameters["TabuMaker"]; }
+    public IConstrainedValueParameter<ITabuMaker> TabuMakerParameter {
+      get { return (IConstrainedValueParameter<ITabuMaker>)Parameters["TabuMaker"]; }
     }
     private ValueParameter<IntValue> TabuTenureParameter {
       get { return (ValueParameter<IntValue>)Parameters["TabuTenure"]; }

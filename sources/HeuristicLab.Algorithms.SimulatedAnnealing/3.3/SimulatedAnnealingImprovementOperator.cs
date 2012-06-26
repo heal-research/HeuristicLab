@@ -66,14 +66,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
-    private ConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
-      get { return (ConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
+    public IConstrainedValueParameter<IMoveGenerator> MoveGeneratorParameter {
+      get { return (IConstrainedValueParameter<IMoveGenerator>)Parameters["MoveGenerator"]; }
     }
-    private ConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
-      get { return (ConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
+    public IConstrainedValueParameter<IMoveMaker> MoveMakerParameter {
+      get { return (IConstrainedValueParameter<IMoveMaker>)Parameters["MoveMaker"]; }
     }
-    private ConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
-      get { return (ConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
+    public IConstrainedValueParameter<ISingleObjectiveMoveEvaluator> MoveEvaluatorParameter {
+      get { return (IConstrainedValueParameter<ISingleObjectiveMoveEvaluator>)Parameters["MoveEvaluator"]; }
     }
     private IValueLookupParameter<IntValue> InnerIterationsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["InnerIterations"]; }
@@ -87,8 +87,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private ValueParameter<DoubleValue> EndTemperatureParameter {
       get { return (ValueParameter<DoubleValue>)Parameters["EndTemperature"]; }
     }
-    private ConstrainedValueParameter<IDiscreteDoubleValueModifier> AnnealingOperatorParameter {
-      get { return (ConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["AnnealingOperator"]; }
+    public IConstrainedValueParameter<IDiscreteDoubleValueModifier> AnnealingOperatorParameter {
+      get { return (IConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["AnnealingOperator"]; }
     }
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -114,6 +114,10 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public IMoveMaker MoveMaker {
       get { return MoveMakerParameter.Value; }
       set { MoveMakerParameter.Value = value; }
+    }
+    public IDiscreteDoubleValueModifier AnnealingOperator {
+      get { return AnnealingOperatorParameter.Value; }
+      set { AnnealingOperatorParameter.Value = value; }
     }
     public ISingleObjectiveMoveEvaluator MoveEvaluator {
       get { return MoveEvaluatorParameter.Value; }

@@ -52,8 +52,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IFixedValueParameter<DoubleValue> DecayParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters[DecayParameterName]; }
     }
-    public ConstrainedValueParameter<IntValue> HiddenLayersParameter {
-      get { return (ConstrainedValueParameter<IntValue>)Parameters[HiddenLayersParameterName]; }
+    public IConstrainedValueParameter<IntValue> HiddenLayersParameter {
+      get { return (IConstrainedValueParameter<IntValue>)Parameters[HiddenLayersParameterName]; }
     }
     public IFixedValueParameter<IntValue> NodesInFirstHiddenLayerParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[NodesInFirstHiddenLayerParameterName]; }

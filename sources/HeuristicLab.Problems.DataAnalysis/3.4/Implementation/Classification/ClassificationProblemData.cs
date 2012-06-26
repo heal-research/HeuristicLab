@@ -206,8 +206,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     #region parameter properties
-    public ConstrainedValueParameter<StringValue> TargetVariableParameter {
-      get { return (ConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
+    public IConstrainedValueParameter<StringValue> TargetVariableParameter {
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[TargetVariableParameterName]; }
     }
     public IFixedValueParameter<StringMatrix> ClassNamesParameter {
       get { return (IFixedValueParameter<StringMatrix>)Parameters[ClassNamesParameterName]; }

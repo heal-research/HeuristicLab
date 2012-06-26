@@ -88,8 +88,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public ILookupParameter<DoubleValue> VelocityBoundsScaleParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["VelocityBoundsScale"]; }
     }
-    public OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> VelocityBoundsScalingOperatorParameter {
-      get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["VelocityBoundsScalingOperator"]; }
+    public IConstrainedValueParameter<IDiscreteDoubleValueModifier> VelocityBoundsScalingOperatorParameter {
+      get { return (IConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters["VelocityBoundsScalingOperator"]; }
     }
     public IValueLookupParameter<DoubleValue> VelocityBoundsStartValueParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters["VelocityBoundsStartValue"]; }
@@ -161,8 +161,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     private DoubleValue VelocityBoundsStartValue {
       get { return VelocityBoundsStartValueParameter.ActualValue; }
     }
-    private IDiscreteDoubleValueModifier VelocityBoundsScalingOperator {
+    public IDiscreteDoubleValueModifier VelocityBoundsScalingOperator {
       get { return VelocityBoundsScalingOperatorParameter.Value; }
+      set { VelocityBoundsScalingOperatorParameter.Value = value; }
     }
     private ResultCollection Results {
       get { return ResultsParameter.ActualValue; }

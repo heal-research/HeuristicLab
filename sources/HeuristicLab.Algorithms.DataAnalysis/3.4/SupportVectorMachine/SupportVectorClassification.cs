@@ -45,11 +45,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string GammaParameterName = "Gamma";
 
     #region parameter properties
-    public IValueParameter<StringValue> SvmTypeParameter {
-      get { return (IValueParameter<StringValue>)Parameters[SvmTypeParameterName]; }
+    public IConstrainedValueParameter<StringValue> SvmTypeParameter {
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[SvmTypeParameterName]; }
     }
-    public IValueParameter<StringValue> KernelTypeParameter {
-      get { return (IValueParameter<StringValue>)Parameters[KernelTypeParameterName]; }
+    public IConstrainedValueParameter<StringValue> KernelTypeParameter {
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[KernelTypeParameterName]; }
     }
     public IValueParameter<DoubleValue> NuParameter {
       get { return (IValueParameter<DoubleValue>)Parameters[NuParameterName]; }
@@ -64,9 +64,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region properties
     public StringValue SvmType {
       get { return SvmTypeParameter.Value; }
+      set { SvmTypeParameter.Value = value; }
     }
     public StringValue KernelType {
       get { return KernelTypeParameter.Value; }
+      set { KernelTypeParameter.Value = value; }
     }
     public DoubleValue Nu {
       get { return NuParameter.Value; }

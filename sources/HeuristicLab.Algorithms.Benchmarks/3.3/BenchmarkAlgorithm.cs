@@ -200,8 +200,8 @@ namespace HeuristicLab.Algorithms.Benchmarks {
     }
 
     #region Parameter Properties
-    public ConstrainedValueParameter<IBenchmark> BenchmarkParameter {
-      get { return (ConstrainedValueParameter<IBenchmark>)Parameters["Benchmark"]; }
+    public IConstrainedValueParameter<IBenchmark> BenchmarkParameter {
+      get { return (IConstrainedValueParameter<IBenchmark>)Parameters["Benchmark"]; }
     }
     private ValueParameter<IntValue> ChunkSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["ChunkSize"]; }

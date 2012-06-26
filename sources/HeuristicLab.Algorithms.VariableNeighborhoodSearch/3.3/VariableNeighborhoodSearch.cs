@@ -57,11 +57,11 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     private FixedValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (FixedValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    public ConstrainedValueParameter<ILocalImprovementOperator> LocalImprovementParameter {
-      get { return (ConstrainedValueParameter<ILocalImprovementOperator>)Parameters["LocalImprovement"]; }
+    public IConstrainedValueParameter<ILocalImprovementOperator> LocalImprovementParameter {
+      get { return (IConstrainedValueParameter<ILocalImprovementOperator>)Parameters["LocalImprovement"]; }
     }
-    public ConstrainedValueParameter<IMultiNeighborhoodShakingOperator> ShakingOperatorParameter {
-      get { return (ConstrainedValueParameter<IMultiNeighborhoodShakingOperator>)Parameters["ShakingOperator"]; }
+    public IConstrainedValueParameter<IMultiNeighborhoodShakingOperator> ShakingOperatorParameter {
+      get { return (IConstrainedValueParameter<IMultiNeighborhoodShakingOperator>)Parameters["ShakingOperator"]; }
     }
     private FixedValueParameter<IntValue> MaximumIterationsParameter {
       get { return (FixedValueParameter<IntValue>)Parameters["MaximumIterations"]; }
@@ -293,7 +293,11 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
       if (Problem == null) {
         LocalImprovementParameter.ValidValues.Clear();
       } else {
-        LocalImprovementParameter.ValidValues.RemoveWhere(x => !x.ProblemType.IsAssignableFrom(Problem.GetType()));
+        foreach (var entry in LocalImprovementParameter.ValidValues.ToList()) {
+          if (!entry.ProblemType.IsAssignableFrom(Problem.GetType())) {
+            LocalImprovementParameter.ValidValues.Remove(entry);
+          }
+        }
         foreach (ILocalImprovementOperator op in ApplicationManager.Manager.GetInstances<ILocalImprovementOperator>().Where(x => x.ProblemType.IsAssignableFrom(Problem.GetType()))) {
           if (!LocalImprovementParameter.ValidValues.Any(x => x.GetType() == op.GetType()))
             LocalImprovementParameter.ValidValues.Add(op);

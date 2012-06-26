@@ -63,17 +63,17 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<IntValue> PopulationSizeParameter {
       get { return (ValueParameter<IntValue>)Parameters["PopulationSize"]; }
     }
-    public ConstrainedValueParameter<ISelector> SelectorParameter {
-      get { return (ConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
+    public IConstrainedValueParameter<ISelector> SelectorParameter {
+      get { return (IConstrainedValueParameter<ISelector>)Parameters["Selector"]; }
     }
-    public ConstrainedValueParameter<ICrossover> CrossoverParameter {
-      get { return (ConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
+    public IConstrainedValueParameter<ICrossover> CrossoverParameter {
+      get { return (IConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
     private ValueParameter<PercentValue> MutationProbabilityParameter {
       get { return (ValueParameter<PercentValue>)Parameters["MutationProbability"]; }
     }
-    public OptionalConstrainedValueParameter<IManipulator> MutatorParameter {
-      get { return (OptionalConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
+    public IConstrainedValueParameter<IManipulator> MutatorParameter {
+      get { return (IConstrainedValueParameter<IManipulator>)Parameters["Mutator"]; }
     }
     private ValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
