@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Hive.Jobs;
@@ -41,37 +40,7 @@ namespace HeuristicLab.Clients.Hive.Views {
       InitializeComponent();
     }
 
-    #region Register Content Events
-    protected override void DeregisterContentEvents() {
-      // TODO: Deregister your event handlers on the Content here
-      base.DeregisterContentEvents();
-    }
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      // TODO: Register your event handlers on the Content here
-    }
-    #endregion
-
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content == null) {
-        // TODO: Put code here when content is null
-      } else {
-        // TODO: Put code here when content has been changed and is not null
-      }
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      // TODO: Put code here to enable or disable controls based on whether the Content is/not null or the view is ReadOnly
-    }
-
-    #region Event Handlers
-    // TODO: Put event handlers here
-    #endregion
-
-    #region Child Control Events
-    protected override void addButton_Click(object sender, EventArgs e) {
+    protected override void AddItem() {
       IOptimizer optimizer = CreateItem<IOptimizer>();
       if (optimizer != null) {
         if (treeView.SelectedNode == null) {
@@ -87,23 +56,17 @@ namespace HeuristicLab.Clients.Hive.Views {
       }
     }
 
-    protected override void removeButton_Click(object sender, EventArgs e) {
-      base.removeButton_Click(sender, e);
-
-      if (treeView.SelectedNode != null) {
-        var selectedItem = (HiveTask)treeView.SelectedNode.Tag;
-        var parentItem = GetParentItem(selectedItem);
-        if (parentItem == null) {
-          Content.Remove((HiveTask)treeView.SelectedNode.Tag);
-        } else {
-          var experiment = parentItem.ItemTask.Item as Experiment;
-          if (experiment != null) {
-            experiment.Optimizers.Remove(((OptimizerTask)selectedItem.ItemTask).Item);
-          }
+    protected override void RemoveItem(HiveTask item) {
+      var parentItem = GetParentItem(item);
+      if (parentItem == null) {
+        Content.Remove(item);
+      } else {
+        var experiment = parentItem.ItemTask.Item as Experiment;
+        if (experiment != null) {
+          experiment.Optimizers.Remove(((OptimizerTask)item.ItemTask).Item);
         }
       }
     }
-    #endregion
 
     protected override ICollection<IItemTreeNodeAction<HiveTask>> GetTreeNodeItemActions(HiveTask selectedItem) {
       return base.GetTreeNodeItemActions(selectedItem);

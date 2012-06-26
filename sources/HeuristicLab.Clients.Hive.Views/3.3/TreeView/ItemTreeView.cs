@@ -35,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Clients.Hive.Views {
   [View("ItemTree View")]
   [Content(typeof(ItemCollection<>), IsDefaultView = false)]
-  public partial class ItemTreeView<T> : ItemView where T : class, IItemTree<T> {
+  public abstract partial class ItemTreeView<T> : ItemView where T : class, IItemTree<T> {
     public new ItemCollection<T> Content {
       get { return (ItemCollection<T>)base.Content; }
       set { base.Content = value; }
@@ -359,16 +359,19 @@ namespace HeuristicLab.Clients.Hive.Views {
     }
 
     protected virtual void addButton_Click(object sender, EventArgs e) {
-      T item = CreateItem<T>();
-      if (item != null)
-        Content.Add(item);
+      AddItem();
     }
 
     protected virtual void removeButton_Click(object sender, EventArgs e) {
       if (treeView.SelectedNode != null) {
+        RemoveItem(treeView.SelectedNode.Tag as T);
         detailsViewHost.Content = null;
       }
     }
+
+    protected abstract void AddItem();
+
+    protected abstract void RemoveItem(T item);
 
     protected virtual void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (showDetailsCheckBox.Checked) {
