@@ -136,6 +136,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         itemsListView.Items.Remove(item);
     }
 
+    protected override void showDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (showDetailsCheckBox.Checked && itemsListView.SelectedItems.Count == 1 && itemsListView.SelectedItems[0].Tag is Type) {
+        Type viewType = (Type)itemsListView.SelectedItems[0].Tag;
+        viewHost.ViewType = viewType;
+        viewHost.Content = Content;
+        splitContainer.Panel2Collapsed = false;
+        detailsGroupBox.Enabled = true;
+      } else base.showDetailsCheckBox_CheckedChanged(sender, e);
+    }
+
     #region drag and drop
     protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
