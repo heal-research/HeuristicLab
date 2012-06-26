@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -76,18 +77,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public IEnumerable<ISymbolicExpressionTreeNode> IterateNodesBreadth() {
       if (root == null)
-        return new SymbolicExpressionTreeNode[0];
+        return Enumerable.Empty<SymbolicExpressionTreeNode>();
       return root.IterateNodesBreadth();
     }
 
     public IEnumerable<ISymbolicExpressionTreeNode> IterateNodesPrefix() {
       if (root == null)
-        return new SymbolicExpressionTreeNode[0];
+        return Enumerable.Empty<SymbolicExpressionTreeNode>();
       return root.IterateNodesPrefix();
     }
     public IEnumerable<ISymbolicExpressionTreeNode> IterateNodesPostfix() {
       if (root == null)
-        return new SymbolicExpressionTreeNode[0];
+        return Enumerable.Empty<SymbolicExpressionTreeNode>();
       return root.IterateNodesPostfix();
     }
 

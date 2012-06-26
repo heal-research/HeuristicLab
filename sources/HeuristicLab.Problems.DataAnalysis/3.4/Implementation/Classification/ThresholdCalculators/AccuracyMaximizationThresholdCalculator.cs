@@ -53,10 +53,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public static void CalculateThresholds(IClassificationProblemData problemData, IEnumerable<double> estimatedValues, IEnumerable<double> targetClassValues, out double[] classValues, out double[] thresholds) {
       int slices = 100;
+      double minThresholdInc = 10e-5; // necessary to prevent infinite loop when maxEstimated - minEstimated is effectively zero (constant model)
       List<double> estimatedValuesList = estimatedValues.ToList();
       double maxEstimatedValue = estimatedValuesList.Max();
       double minEstimatedValue = estimatedValuesList.Min();
-      double thresholdIncrement = (maxEstimatedValue - minEstimatedValue) / slices;
+      double thresholdIncrement = Math.Max((maxEstimatedValue - minEstimatedValue) / slices, minThresholdInc);
       var estimatedAndTargetValuePairs =
         estimatedValuesList.Zip(targetClassValues, (x, y) => new { EstimatedValue = x, TargetClassValue = y })
         .OrderBy(x => x.EstimatedValue)
@@ -69,8 +70,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       // thresholds[thresholds.Length - 1] = double.PositiveInfinity;
 
       // incrementally calculate accuracy of all possible thresholds
-      int[,] confusionMatrix = new int[nClasses, nClasses];
-
       for (int i = 1; i < thresholds.Length; i++) {
         double lowerThreshold = thresholds[i - 1];
         double actualThreshold = Math.Max(lowerThreshold, minEstimatedValue);

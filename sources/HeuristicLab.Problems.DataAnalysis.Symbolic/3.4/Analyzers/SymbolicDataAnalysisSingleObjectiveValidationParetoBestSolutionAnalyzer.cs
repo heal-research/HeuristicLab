@@ -136,7 +136,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       IList<int> nonDominatedIndexes = new List<int>();
 
       List<double> complexities;
-      if (ComplexityParameter.ActualValue != null) {
+      if (ComplexityParameter.ActualValue != null && ComplexityParameter.ActualValue.Length == trainingQuality.Length) {
         complexities = ComplexityParameter.ActualValue.Select(x => x.Value).ToList();
       } else {
         complexities = tree.Select(t => (double)t.Length).ToList();

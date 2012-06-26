@@ -99,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       List<double> qualities = Quality.Select(x => x.Value).ToList();
 
       List<double> complexities;
-      if (ComplexityParameter.ActualValue != null) {
+      if (ComplexityParameter.ActualValue != null && ComplexityParameter.ActualValue.Length == qualities.Count) {
         complexities = ComplexityParameter.ActualValue.Select(x => x.Value).ToList();
       } else {
         complexities = tree.Select(t => (double)t.Length).ToList();
