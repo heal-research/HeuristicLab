@@ -68,6 +68,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       UpdateEstimationLimits();
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // compatibility
+      bool changed = false;
+      if (!Operators.OfType<SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer>().Any()) {
+        Operators.Add(new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer());
+        changed = true;
+      }
+      if (!Operators.OfType<SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer>().Any()) {
+        Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
+        changed = true;
+      }
+      if (changed) {
+        ParameterizeOperators();
+      }
+    }
+
     private void ConfigureGrammarSymbols() {
       var grammar = SymbolicExpressionTreeGrammar as TypeCoherentExpressionGrammar;
       if (grammar != null) grammar.ConfigureAsDefaultRegressionGrammar();
