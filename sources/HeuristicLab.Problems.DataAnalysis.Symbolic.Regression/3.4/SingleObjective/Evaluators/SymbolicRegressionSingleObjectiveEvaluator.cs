@@ -85,10 +85,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       //calculate the quality by using the passed online calculator
       targetValuesEnumerator = targetValues.GetEnumerator();
-      var scaledBoundedEstimatedValuesEnumerator = (from r in Enumerable.Range(0, i)
-                                                    select cache[r] * beta + alpha)
-        .LimitToRange(lowerEstimationLimit, upperEstimationLimit)
-        .GetEnumerator();
+      var scaledBoundedEstimatedValuesEnumerator = Enumerable.Range(0, i).Select(x => cache[x] * beta + alpha)
+        .LimitToRange(lowerEstimationLimit, upperEstimationLimit).GetEnumerator();
+
       while (targetValuesEnumerator.MoveNext() & scaledBoundedEstimatedValuesEnumerator.MoveNext()) {
         calculator.Add(targetValuesEnumerator.Current, scaledBoundedEstimatedValuesEnumerator.Current);
       }
