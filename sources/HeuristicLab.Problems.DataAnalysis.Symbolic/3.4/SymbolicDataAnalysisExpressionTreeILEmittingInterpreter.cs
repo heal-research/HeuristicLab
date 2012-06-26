@@ -836,8 +836,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public static double Psi(double x) {
       if (double.IsNaN(x)) return double.NaN;
-      else if (x.IsAlmost(0.0)) return double.NaN;
-      else if ((Math.Floor(x) - x).IsAlmost(0.0)) return double.NaN;
+      else if (x <= 0 && (Math.Floor(x) - x).IsAlmost(0)) return double.NaN;
       return alglib.psi(x);
     }
 
@@ -864,7 +863,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (double.IsNaN(x)) return double.NaN;
       double shi, chi;
       alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
-      return chi;
+      return shi;
     }
 
     public static double HypCosIntegral(double x) {

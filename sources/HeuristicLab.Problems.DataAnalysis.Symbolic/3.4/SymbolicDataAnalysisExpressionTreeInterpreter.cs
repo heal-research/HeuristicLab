@@ -197,7 +197,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       { typeof(AiryB), OpCodes.AiryB },
       { typeof(Norm), OpCodes.Norm},
       { typeof(Erf), OpCodes.Erf},
-      { typeof(Bessel), OpCodes.Bessel}      
+      { typeof(Bessel), OpCodes.Bessel}
     };
 
     public override bool CanChangeName {
@@ -369,8 +369,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Psi: {
             var x = Evaluate(dataset, ref row, state);
             if (double.IsNaN(x)) return double.NaN;
-            else if (x.IsAlmost(0.0)) return double.NaN;
-            else if ((Math.Floor(x) - x).IsAlmost(0)) return double.NaN;
+            else if (x <= 0 && (Math.Floor(x) - x).IsAlmost(0)) return double.NaN;
             return alglib.psi(x);
           }
         case OpCodes.Dawson: {

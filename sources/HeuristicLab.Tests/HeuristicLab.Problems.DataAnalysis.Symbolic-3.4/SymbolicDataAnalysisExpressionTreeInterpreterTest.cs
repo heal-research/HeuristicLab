@@ -364,6 +364,75 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
       Evaluate(interpreter, ds, "(lag -2.0 (lagVariable 1.0 a 2)) ", 2, ds.GetDoubleValue("A", 2));
       Evaluate(interpreter, ds, "(lag -1.0 (* (lagVariable 1.0 a 1) (lagVariable 1.0 b 2)))", 1, ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 2));
       Evaluate(interpreter, ds, "(lag -2.0 3.0)", 1, 3.0);
+
+      {
+        // special functions
+        Action<double> checkAiry = (x) => {
+          double ai, aip, bi, bip;
+          alglib.airy(x, out ai, out aip, out bi, out bip);
+          Evaluate(interpreter, ds, "(airya " + x + ")", 0, ai);
+          Evaluate(interpreter, ds, "(airyb " + x + ")", 0, bi);
+        };
+
+        Action<double> checkBessel = (x) => {
+          Evaluate(interpreter, ds, "(bessel " + x + ")", 0, alglib.besseli0(x));
+        };
+
+        Action<double> checkSinCosIntegrals = (x) => {
+          double si, ci;
+          alglib.sinecosineintegrals(x, out si, out ci);
+          Evaluate(interpreter, ds, "(cosint " + x + ")", 0, ci);
+          Evaluate(interpreter, ds, "(sinint " + x + ")", 0, si);
+        };
+        Action<double> checkHypSinCosIntegrals = (x) => {
+          double shi, chi;
+          alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+          Evaluate(interpreter, ds, "(hypcosint " + x + ")", 0, chi);
+          Evaluate(interpreter, ds, "(hypsinint " + x + ")", 0, shi);
+        };
+        Action<double> checkFresnelSinCosIntegrals = (x) => {
+          double c = 0, s = 0;
+          alglib.fresnelintegral(x, ref c, ref s);
+          Evaluate(interpreter, ds, "(fresnelcosint " + x + ")", 0, c);
+          Evaluate(interpreter, ds, "(fresnelsinint " + x + ")", 0, s);
+        };
+        Action<double> checkNormErf = (x) => {
+          Evaluate(interpreter, ds, "(norm " + x + ")", 0, alglib.normaldistribution(x));
+          Evaluate(interpreter, ds, "(erf " + x + ")", 0, alglib.errorfunction(x));
+        };
+
+        Action<double> checkGamma = (x) => {
+          Evaluate(interpreter, ds, "(gamma " + x + ")", 0, alglib.gammafunction(x));
+        };
+        Action<double> checkPsi = (x) => {
+          try {
+            Evaluate(interpreter, ds, "(psi " + x + ")", 0, alglib.psi(x));
+          }
+          catch (alglib.alglibexception) { // ignore cases where alglib throws an exception
+          }
+        };
+        Action<double> checkDawson = (x) => {
+          Evaluate(interpreter, ds, "(dawson " + x + ")", 0, alglib.dawsonintegral(x));
+        };
+        Action<double> checkExpInt = (x) => {
+          Evaluate(interpreter, ds, "(expint " + x + ")", 0, alglib.exponentialintegralei(x));
+        };
+
+
+
+        foreach (var e in new[] { -2.0, -1.0, 0.0, 1.0, 2.0 }) {
+          checkAiry(e);
+          checkBessel(e);
+          checkSinCosIntegrals(e);
+          checkGamma(e);
+          checkExpInt(e);
+          checkDawson(e);
+          checkPsi(e);
+          checkNormErf(e);
+          checkFresnelSinCosIntegrals(e);
+          checkHypSinCosIntegrals(e);
+        }
+      }
     }
 
     private void Evaluate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds, string expr, int index, double expected) {
