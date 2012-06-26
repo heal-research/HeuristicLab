@@ -254,11 +254,11 @@ namespace HeuristicLab.Algorithms.LocalSearch {
             IAnalyzer clone = analyzer.Clone() as IAnalyzer;
             foreach (IScopeTreeLookupParameter param in clone.Parameters.OfType<IScopeTreeLookupParameter>())
               param.Depth = 0;
-            Analyzer.Operators.Add(clone, clone.EnabledByDefault);
+            Analyzer.Operators.Add(clone, false);
           }
         }
       }
-      Analyzer.Operators.Add(qualityAnalyzer, qualityAnalyzer.EnabledByDefault);
+      Analyzer.Operators.Add(qualityAnalyzer, false);
     }
 
     private void UpdateMoveOperators() {
