@@ -34,7 +34,6 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [View("OKBExperimentUpload View")]
-  [Content(typeof(RunCollection), false)]
   [Content(typeof(IOptimizer), false)]
   public partial class OKBExperimentUploadView : ItemView {
     public new IOptimizer Content {
