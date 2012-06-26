@@ -230,6 +230,66 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append("tan(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
+      } else if (node.Symbol is AiryA) {
+        stringBuilder.Append("airy(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is AiryB) {
+        stringBuilder.Append("airy(2, ");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is Bessel) {
+        stringBuilder.Append("besseli(0.0,");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is CosineIntegral) {
+        stringBuilder.Append("cosint(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is Dawson) {
+        stringBuilder.Append("dawson(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is Erf) {
+        stringBuilder.Append("erf(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is ExponentialIntegralEi) {
+        stringBuilder.Append("expint(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is FresnelCosineIntegral) {
+        stringBuilder.Append("FresnelC(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is FresnelSineIntegral) {
+        stringBuilder.Append("FresnelS(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is Gamma) {
+        stringBuilder.Append("gamma(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is HyperbolicCosineIntegral) {
+        stringBuilder.Append("Chi(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is HyperbolicSineIntegral) {
+        stringBuilder.Append("Shi(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is Norm) {
+        stringBuilder.Append("normpdf(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is Psi) {
+        stringBuilder.Append("psi(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
+      } else if (node.Symbol is SineIntegral) {
+        stringBuilder.Append("sinint(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(")");
       } else if (symbol is HeuristicLab.Problems.DataAnalysis.Symbolic.Variable) {
         VariableTreeNode variableTreeNode = node as VariableTreeNode;
         stringBuilder.Append(variableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));
