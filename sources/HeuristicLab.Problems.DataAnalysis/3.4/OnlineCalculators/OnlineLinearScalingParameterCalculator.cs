@@ -54,7 +54,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    private int cnt;
     private OnlineMeanAndVarianceCalculator targetMeanCalculator;
     private OnlineMeanAndVarianceCalculator originalMeanAndVarianceCalculator;
     private OnlineCovarianceCalculator originalTargetCovarianceCalculator;
@@ -67,7 +66,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public void Reset() {
-      cnt = 0;
       targetMeanCalculator.Reset();
       originalMeanAndVarianceCalculator.Reset();
       originalTargetCovarianceCalculator.Reset();
@@ -84,7 +82,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       originalMeanAndVarianceCalculator.Add(original);
       originalTargetCovarianceCalculator.Add(original, target);
 
-      cnt++;
     }
 
     /// <summary>

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -58,7 +59,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     [ThreadStatic]
     private static double[] cache;
 
-    protected static void CalculateWithScaling(IEnumerable<double> targetValues, IEnumerable<double> estimatedValues, IOnlineCalculator calculator, int maxRows) {
+    protected static void CalculateWithScaling(IEnumerable<double> targetValues, IEnumerable<double> estimatedValues,
+      double lowerEstimationLimit, double upperEstimationLimit,
+      IOnlineCalculator calculator, int maxRows) {
       if (cache == null || cache.GetLength(0) < maxRows) {
         cache = new double[maxRows];
       }
@@ -82,12 +85,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       //calculate the quality by using the passed online calculator
       targetValuesEnumerator = targetValues.GetEnumerator();
-      i = 0;
-      while (targetValuesEnumerator.MoveNext()) {
-        double target = targetValuesEnumerator.Current;
-        double estimated = cache[i] * beta + alpha;
-        calculator.Add(target, estimated);
-        i++;
+      var scaledBoundedEstimatedValuesEnumerator = (from r in Enumerable.Range(0, i)
+                                                    select cache[r] * beta + alpha)
+        .LimitToRange(lowerEstimationLimit, upperEstimationLimit)
+        .GetEnumerator();
+      while (targetValuesEnumerator.MoveNext() & scaledBoundedEstimatedValuesEnumerator.MoveNext()) {
+        calculator.Add(targetValuesEnumerator.Current, scaledBoundedEstimatedValuesEnumerator.Current);
       }
     }
   }

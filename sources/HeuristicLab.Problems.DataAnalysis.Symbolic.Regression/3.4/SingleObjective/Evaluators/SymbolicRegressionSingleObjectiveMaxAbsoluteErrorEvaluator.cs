@@ -55,18 +55,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
       OnlineCalculatorError errorState;
 
       double mse;
       if (applyLinearScaling) {
         var maeCalculator = new OnlineMaxAbsoluteErrorCalculator();
-        CalculateWithScaling(targetValues, boundedEstimatedValues, maeCalculator, problemData.Dataset.Rows);
+        CalculateWithScaling(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit, maeCalculator, problemData.Dataset.Rows);
         errorState = maeCalculator.ErrorState;
         mse = maeCalculator.MaxAbsoluteError;
-      } else
+      } else {
+        IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
         mse = OnlineMaxAbsoluteErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
-
+      }
       if (errorState != OnlineCalculatorError.None) return Double.NaN;
       else return mse;
     }

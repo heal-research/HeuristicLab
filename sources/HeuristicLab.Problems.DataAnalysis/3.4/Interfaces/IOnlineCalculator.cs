@@ -23,15 +23,15 @@
 using System;
 namespace HeuristicLab.Problems.DataAnalysis {
   [Flags]
-  public enum OnlineCalculatorError { 
+  public enum OnlineCalculatorError {
     /// <summary>
     /// No error occurred
     /// </summary>
-    None = 0, 
+    None = 0,
     /// <summary>
     /// An invalid value has been added (often +/- Infinity and NaN are invalid values)
     /// </summary>
-    InvalidValueAdded = 1, 
+    InvalidValueAdded = 1,
     /// <summary>
     /// The number of elements added to the evaluator is not sufficient to calculate the result value
     /// </summary>
