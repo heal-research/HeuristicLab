@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
   /// <summary>
   /// A genetic algorithm.
   /// </summary>
-  [Item("HungarianAlgorithm", "The Hungarian algorithm can be used to solve the linear assignment problem in O(n^3). It is also known as the Kuhn–Munkres algorithm or Munkres assignment algorithm.")]
+  [Item("Hungarian Algorithm", "The Hungarian algorithm can be used to solve the linear assignment problem in O(n^3). It is also known as the Kuhn–Munkres algorithm or Munkres assignment algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
   public sealed class HungarianAlgorithm : EngineAlgorithm {
