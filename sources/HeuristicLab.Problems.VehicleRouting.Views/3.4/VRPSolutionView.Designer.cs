@@ -99,6 +99,7 @@
       this.valueTextBox.Name = "valueTextBox";
       this.valueTextBox.Size = new System.Drawing.Size(403, 507);
       this.valueTextBox.TabIndex = 0;
+      this.valueTextBox.ReadOnly = true;
       // 
       // VRPSolutionView
       // 
