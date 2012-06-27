@@ -21,8 +21,11 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Management;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using HeuristicLab.Algorithms.Benchmarks;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -45,16 +48,26 @@ namespace HeuristicLab.Clients.Access {
       client.OperatingSystem = os;
       client.ProcessorType = GetCpuInfo();
       client.ClientType = cType;
-      //client.ClientConfiguration = GetClientConfiguration();
+      client.ClientConfiguration = GetClientConfiguration();
       client.Timestamp = DateTime.Now;
       client.PerformanceValue = RunBenchmark();
 
       return client;
     }
 
-    public static string GetClientConfiguration() {
-      //TODO: does it make sense to send the client configuration to the server? for what do we need this?
-      return string.Empty;
+    public static ClientConfiguration GetClientConfiguration() {
+      try {
+        string filePath = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+        byte[] fileContent = File.ReadAllBytes(filePath);
+        byte[] hashBytes;
+        using (SHA1 sha1 = SHA1.Create()) hashBytes = sha1.ComputeHash(fileContent);
+        StringBuilder sb = new StringBuilder();
+        foreach (byte b in hashBytes) sb.Append(b.ToString("x2"));
+        return new ClientConfiguration { Hash = sb.ToString() };
+      }
+      catch {
+        return null;
+      }
     }
 
     public static string GetHLVersion() {
