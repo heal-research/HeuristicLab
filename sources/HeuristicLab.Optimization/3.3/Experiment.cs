@@ -341,7 +341,7 @@ namespace HeuristicLab.Optimization {
       if (ExecutionState != ExecutionState.Started) OnStarted();
     }
 
-    private object locker;
+    private readonly object locker = new object();
     private void optimizer_Stopped(object sender, EventArgs e) {
       lock (locker) {
         if (experimentStopped) {
