@@ -96,7 +96,8 @@ namespace HeuristicLab.CodeEditor {
           if (completionData != null) {
             AddCompletionData(resultList, completionData);
           }
-        } catch (NullReferenceException x) { }
+        }
+        catch (NullReferenceException) { }
       }
       return resultList.ToArray();
     }
