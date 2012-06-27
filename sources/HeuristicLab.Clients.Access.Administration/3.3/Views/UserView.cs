@@ -61,6 +61,15 @@ namespace HeuristicLab.Clients.Access.Administration {
       }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      if (Content == null) {
+        resetPasswordButton.Enabled = false;
+      } else {
+        resetPasswordButton.Enabled = Content.Id != Guid.Empty;
+      }
+    }
+
     private void fullNameTextBox_TextChanged(object sender, System.EventArgs e) {
       if (Content.FullName != fullNameTextBox.Text)
         Content.FullName = fullNameTextBox.Text;
