@@ -51,7 +51,7 @@ namespace HeuristicLab.Clients.OKB.Query {
 
     private void valueComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
       if (Content != null) {
-        Content.Value = valueComboBox.SelectedItem == "true" ? true : false;
+        Content.Value = valueComboBox.SelectedItem.ToString() == "true";
       }
     }
   }

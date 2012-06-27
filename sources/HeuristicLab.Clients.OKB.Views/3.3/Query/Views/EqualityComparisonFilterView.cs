@@ -53,9 +53,9 @@ namespace HeuristicLab.Clients.OKB.Query {
 
     private void comparisonComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
       if (Content != null) {
-        if (comparisonComboBox.SelectedItem == "=")
+        if (comparisonComboBox.SelectedItem.ToString() == "=")
           Content.Comparison = EqualityComparison.Equal;
-        else if (comparisonComboBox.SelectedItem == "<>")
+        else if (comparisonComboBox.SelectedItem.ToString() == "<>")
           Content.Comparison = EqualityComparison.NotEqual;
       }
     }

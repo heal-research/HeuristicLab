@@ -62,17 +62,17 @@ namespace HeuristicLab.Clients.OKB.Query {
 
     private void comparisonComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
       if (Content != null) {
-        if (comparisonComboBox.SelectedItem == "<")
+        if (comparisonComboBox.SelectedItem.ToString() == "<")
           Content.Comparison = OrdinalComparison.Less;
-        else if (comparisonComboBox.SelectedItem == "<=")
+        else if (comparisonComboBox.SelectedItem.ToString() == "<=")
           Content.Comparison = OrdinalComparison.LessOrEqual;
-        else if (comparisonComboBox.SelectedItem == "=")
+        else if (comparisonComboBox.SelectedItem.ToString() == "=")
           Content.Comparison = OrdinalComparison.Equal;
-        else if (comparisonComboBox.SelectedItem == ">=")
+        else if (comparisonComboBox.SelectedItem.ToString() == ">=")
           Content.Comparison = OrdinalComparison.GreaterOrEqual;
-        else if (comparisonComboBox.SelectedItem == ">")
+        else if (comparisonComboBox.SelectedItem.ToString() == ">")
           Content.Comparison = OrdinalComparison.Greater;
-        else if (comparisonComboBox.SelectedItem == "<>")
+        else if (comparisonComboBox.SelectedItem.ToString() == "<>")
           Content.Comparison = OrdinalComparison.NotEqual;
       }
     }
