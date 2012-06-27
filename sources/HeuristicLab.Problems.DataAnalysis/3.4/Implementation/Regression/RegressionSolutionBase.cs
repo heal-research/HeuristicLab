@@ -137,27 +137,27 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (!ContainsKey(TrainingMeanAbsoluteErrorResultName)) {
         OnlineCalculatorError errorState;
         Add(new Result(TrainingMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the training partition", new DoubleValue()));
-        double trainingMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes), out errorState);
+        double trainingMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices), out errorState);
         TrainingMeanAbsoluteError = errorState == OnlineCalculatorError.None ? trainingMAE : double.NaN;
       }
 
       if (!ContainsKey(TestMeanAbsoluteErrorResultName)) {
         OnlineCalculatorError errorState;
         Add(new Result(TestMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the test partition", new DoubleValue()));
-        double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes), out errorState);
+        double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices), out errorState);
         TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
       }
 
       if (!ContainsKey(TrainingMeanErrorResultName)) {
         OnlineCalculatorError errorState;
         Add(new Result(TrainingMeanErrorResultName, "Mean of errors of the model on the training partition", new DoubleValue()));
-        double trainingME = OnlineMeanErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes), out errorState);
+        double trainingME = OnlineMeanErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices), out errorState);
         TrainingMeanError = errorState == OnlineCalculatorError.None ? trainingME : double.NaN;
       }
       if (!ContainsKey(TestMeanErrorResultName)) {
         OnlineCalculatorError errorState;
         Add(new Result(TestMeanErrorResultName, "Mean of errors of the model on the test partition", new DoubleValue()));
-        double testME = OnlineMeanErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes), out errorState);
+        double testME = OnlineMeanErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices), out errorState);
         TestMeanError = errorState == OnlineCalculatorError.None ? testME : double.NaN;
       }
       #endregion
@@ -165,9 +165,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected void CalculateResults() {
       IEnumerable<double> estimatedTrainingValues = EstimatedTrainingValues; // cache values
-      IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
+      IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices);
       IEnumerable<double> estimatedTestValues = EstimatedTestValues; // cache values
-      IEnumerable<double> originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes);
+      IEnumerable<double> originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices);
 
       OnlineCalculatorError errorState;
       double trainingMSE = OnlineMeanSquaredErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);

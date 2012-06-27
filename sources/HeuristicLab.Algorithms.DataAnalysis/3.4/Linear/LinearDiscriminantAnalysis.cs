@@ -67,7 +67,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
-      IEnumerable<int> rows = problemData.TrainingIndizes;
+      IEnumerable<int> rows = problemData.TrainingIndices;
       int nClasses = problemData.ClassNames.Count();
       double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))

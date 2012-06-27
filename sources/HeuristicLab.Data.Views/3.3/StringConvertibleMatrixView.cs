@@ -34,8 +34,8 @@ namespace HeuristicLab.Data.Views {
   [View("StringConvertibleMatrix View")]
   [Content(typeof(IStringConvertibleMatrix), true)]
   public partial class StringConvertibleMatrixView : AsynchronousContentView {
-    private int[] virtualRowIndizes;
-    private List<KeyValuePair<int, SortOrder>> sortedColumnIndizes;
+    private int[] virtualRowIndices;
+    private List<KeyValuePair<int, SortOrder>> sortedColumnIndices;
     private RowComparer rowComparer;
 
     public new IStringConvertibleMatrix Content {
@@ -81,7 +81,7 @@ namespace HeuristicLab.Data.Views {
       errorProvider.SetIconPadding(rowsTextBox, 2);
       errorProvider.SetIconAlignment(columnsTextBox, ErrorIconAlignment.MiddleLeft);
       errorProvider.SetIconPadding(columnsTextBox, 2);
-      sortedColumnIndizes = new List<KeyValuePair<int, SortOrder>>();
+      sortedColumnIndices = new List<KeyValuePair<int, SortOrder>>();
       rowComparer = new RowComparer();
     }
 
@@ -107,7 +107,7 @@ namespace HeuristicLab.Data.Views {
         columnsTextBox.Text = "";
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
-        virtualRowIndizes = new int[0];
+        virtualRowIndices = new int[0];
       } else
         UpdateData();
     }
@@ -127,7 +127,7 @@ namespace HeuristicLab.Data.Views {
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();
       columnsTextBox.Enabled = true;
-      virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
+      virtualRowIndices = Enumerable.Range(0, Content.Rows).ToArray();
 
       if (Content.Columns == 0 && dataGridView.ColumnCount != Content.Columns && !Content.ReadOnly)
         Content.Columns = dataGridView.ColumnCount;
@@ -177,8 +177,8 @@ namespace HeuristicLab.Data.Views {
       int count = dataGridView.DisplayedRowCount(true);
 
       while (updatedRows < count) {
-        if (virtualRowIndizes[index] < Content.RowNames.Count())
-          dataGridView.Rows[index].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndizes[index]);
+        if (virtualRowIndices[index] < Content.RowNames.Count())
+          dataGridView.Rows[index].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndices[index]);
         else
           dataGridView.Rows[index].HeaderCell.Value = "Row " + (index + 1);
         if (dataGridView.Rows[index].Visible)
@@ -272,7 +272,7 @@ namespace HeuristicLab.Data.Views {
     private void dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e) {
       if (!dataGridView.ReadOnly) {
         string value = e.Value.ToString();
-        int rowIndex = virtualRowIndizes[e.RowIndex];
+        int rowIndex = virtualRowIndices[e.RowIndex];
         e.ParsingApplied = Content.SetValue(value, rowIndex, e.ColumnIndex);
         if (e.ParsingApplied) e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
       }
@@ -282,7 +282,7 @@ namespace HeuristicLab.Data.Views {
     }
     private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
       if (Content != null && e.RowIndex < Content.Rows && e.ColumnIndex < Content.Columns) {
-        int rowIndex = virtualRowIndizes[e.RowIndex];
+        int rowIndex = virtualRowIndices[e.RowIndex];
         e.Value = Content.GetValue(rowIndex, e.ColumnIndex);
       }
     }
@@ -339,7 +339,7 @@ namespace HeuristicLab.Data.Views {
       }
 
       for (int i = minRowIndex; i <= maxRowIndex; i++) {
-        int rowIndex = this.virtualRowIndizes[i];
+        int rowIndex = this.virtualRowIndices[i];
         if (addRowNames) {
           s.Append(Content.RowNames.ElementAt(rowIndex));
           s.Append('\t');
@@ -398,39 +398,39 @@ namespace HeuristicLab.Data.Views {
     private void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (Content != null) {
         if (e.Button == MouseButtons.Left && Content.SortableView) {
-          bool addToSortedIndizes = (Control.ModifierKeys & Keys.Control) == Keys.Control;
+          bool addToSortedIndices = (Control.ModifierKeys & Keys.Control) == Keys.Control;
           SortOrder newSortOrder = SortOrder.Ascending;
-          if (sortedColumnIndizes.Any(x => x.Key == e.ColumnIndex)) {
-            SortOrder oldSortOrder = sortedColumnIndizes.Where(x => x.Key == e.ColumnIndex).First().Value;
+          if (sortedColumnIndices.Any(x => x.Key == e.ColumnIndex)) {
+            SortOrder oldSortOrder = sortedColumnIndices.Where(x => x.Key == e.ColumnIndex).First().Value;
             int enumLength = Enum.GetValues(typeof(SortOrder)).Length;
             newSortOrder = oldSortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), ((((int)oldSortOrder) + 1) % enumLength).ToString());
           }
 
-          if (!addToSortedIndizes)
-            sortedColumnIndizes.Clear();
+          if (!addToSortedIndices)
+            sortedColumnIndices.Clear();
 
-          if (sortedColumnIndizes.Any(x => x.Key == e.ColumnIndex)) {
-            int sortedIndex = sortedColumnIndizes.FindIndex(x => x.Key == e.ColumnIndex);
+          if (sortedColumnIndices.Any(x => x.Key == e.ColumnIndex)) {
+            int sortedIndex = sortedColumnIndices.FindIndex(x => x.Key == e.ColumnIndex);
             if (newSortOrder != SortOrder.None)
-              sortedColumnIndizes[sortedIndex] = new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder);
+              sortedColumnIndices[sortedIndex] = new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder);
             else
-              sortedColumnIndizes.RemoveAt(sortedIndex);
+              sortedColumnIndices.RemoveAt(sortedIndex);
           } else
             if (newSortOrder != SortOrder.None)
-              sortedColumnIndizes.Add(new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder));
+              sortedColumnIndices.Add(new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder));
           Sort();
         }
       }
     }
 
     protected virtual void ClearSorting() {
-      virtualRowIndizes = Enumerable.Range(0, Content.Rows).ToArray();
-      sortedColumnIndizes.Clear();
+      virtualRowIndices = Enumerable.Range(0, Content.Rows).ToArray();
+      sortedColumnIndices.Clear();
       UpdateSortGlyph();
     }
 
     private void Sort() {
-      virtualRowIndizes = Sort(sortedColumnIndizes);
+      virtualRowIndices = Sort(sortedColumnIndices);
       UpdateSortGlyph();
       UpdateRowHeaders();
       dataGridView.Invalidate();
@@ -438,7 +438,7 @@ namespace HeuristicLab.Data.Views {
     protected virtual int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {
       int[] newSortedIndex = Enumerable.Range(0, Content.Rows).ToArray();
       if (sortedColumns.Count() != 0) {
-        rowComparer.SortedIndizes = sortedColumns;
+        rowComparer.SortedIndices = sortedColumns;
         rowComparer.Matrix = Content;
         Array.Sort(newSortedIndex, rowComparer);
       }
@@ -447,7 +447,7 @@ namespace HeuristicLab.Data.Views {
     private void UpdateSortGlyph() {
       foreach (DataGridViewColumn col in this.dataGridView.Columns)
         col.HeaderCell.SortGlyphDirection = SortOrder.None;
-      foreach (KeyValuePair<int, SortOrder> p in sortedColumnIndizes)
+      foreach (KeyValuePair<int, SortOrder> p in sortedColumnIndices)
         this.dataGridView.Columns[p.Key].HeaderCell.SortGlyphDirection = p.Value;
     }
     #endregion
@@ -456,10 +456,10 @@ namespace HeuristicLab.Data.Views {
       public RowComparer() {
       }
 
-      private List<KeyValuePair<int, SortOrder>> sortedIndizes;
-      public IEnumerable<KeyValuePair<int, SortOrder>> SortedIndizes {
-        get { return this.sortedIndizes; }
-        set { sortedIndizes = new List<KeyValuePair<int, SortOrder>>(value); }
+      private List<KeyValuePair<int, SortOrder>> sortedIndices;
+      public IEnumerable<KeyValuePair<int, SortOrder>> SortedIndices {
+        get { return this.sortedIndices; }
+        set { sortedIndices = new List<KeyValuePair<int, SortOrder>>(value); }
       }
       private IStringConvertibleMatrix matrix;
       public IStringConvertibleMatrix Matrix {
@@ -476,10 +476,10 @@ namespace HeuristicLab.Data.Views {
 
         if (matrix == null)
           throw new InvalidOperationException("Could not sort IStringConvertibleMatrix if the matrix member is null.");
-        if (sortedIndizes == null)
+        if (sortedIndices == null)
           return 0;
 
-        foreach (KeyValuePair<int, SortOrder> pair in sortedIndizes.Where(p => p.Value != SortOrder.None)) {
+        foreach (KeyValuePair<int, SortOrder> pair in sortedIndices.Where(p => p.Value != SortOrder.None)) {
           string1 = matrix.GetValue(x, pair.Key);
           string2 = matrix.GetValue(y, pair.Key);
           if (double.TryParse(string1, out double1) && double.TryParse(string2, out double2))

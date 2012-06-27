@@ -72,22 +72,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         return;
       }
 
-      int[] indizes;
+      int[] indices;
       double[] estimatedClassValues;
 
       switch (SamplesComboBox.SelectedItem.ToString()) {
         case SamplesComboBoxAllSamples: {
-            indizes = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray();
+            indices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray();
             estimatedClassValues = Content.EstimatedClassValues.ToArray();
             break;
           }
         case SamplesComboBoxTrainingSamples: {
-            indizes = Content.ProblemData.TrainingIndizes.ToArray();
+            indices = Content.ProblemData.TrainingIndices.ToArray();
             estimatedClassValues = Content.EstimatedTrainingClassValues.ToArray();
             break;
           }
         case SamplesComboBoxTestSamples: {
-            indizes = Content.ProblemData.TestIndizes.ToArray();
+            indices = Content.ProblemData.TestIndices.ToArray();
             estimatedClassValues = Content.EstimatedTestClassValues.ToArray();
             break;
           }
@@ -97,13 +97,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       int classValuesCount = Content.ProblemData.ClassValues.Count;
       int solutionsCount = Content.ClassificationSolutions.Count();
-      string[,] values = new string[indizes.Length, 5 + classValuesCount + solutionsCount];
+      string[,] values = new string[indices.Length, 5 + classValuesCount + solutionsCount];
       double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
-      List<List<double?>> estimatedValuesVector = GetEstimatedValues(SamplesComboBox.SelectedItem.ToString(), indizes,
+      List<List<double?>> estimatedValuesVector = GetEstimatedValues(SamplesComboBox.SelectedItem.ToString(), indices,
                                                             Content.ClassificationSolutions);
 
-      for (int i = 0; i < indizes.Length; i++) {
-        int row = indizes[i];
+      for (int i = 0; i < indices.Length; i++) {
+        int row = indices[i];
         values[i, 0] = row.ToString();
         values[i, 1] = target[i].ToString();
         //display only indices and target values if no models are present

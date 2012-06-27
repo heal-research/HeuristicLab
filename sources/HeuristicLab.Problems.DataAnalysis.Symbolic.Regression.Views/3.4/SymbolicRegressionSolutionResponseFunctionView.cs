@@ -141,37 +141,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
         return true;
       };
 
-      var mainTrainingIndizes = (from row in Content.ProblemData.TrainingIndizes
+      var mainTrainingIndices = (from row in Content.ProblemData.TrainingIndices
                                  where NearMedianValue(row)
                                  select row)
         .ToArray();
-      var mainTestIndizes = (from row in Content.ProblemData.TestIndizes
+      var mainTestIndices = (from row in Content.ProblemData.TestIndices
                              where NearMedianValue(row)
                              select row)
         .ToArray();
 
-      var freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, mainTrainingIndizes).ToArray();
+      var freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, mainTrainingIndices).ToArray();
       var trainingValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable,
-                                                                     mainTrainingIndizes).ToArray();
+                                                                     mainTrainingIndices).ToArray();
       Array.Sort(freeVariableValues, trainingValues);
       responseChart.Series["Training Data"].Points.DataBindXY(freeVariableValues, trainingValues);
 
-      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, mainTestIndizes).ToArray();
+      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, mainTestIndices).ToArray();
       var testValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable,
-                                                                     mainTestIndizes).ToArray();
+                                                                     mainTestIndices).ToArray();
       Array.Sort(freeVariableValues, testValues);
       responseChart.Series["Test Data"].Points.DataBindXY(freeVariableValues, testValues);
 
       // draw scatter plots of remaining values
-      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TrainingIndizes).ToArray();
+      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TrainingIndices).ToArray();
       trainingValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable,
-                                                                     Content.ProblemData.TrainingIndizes).ToArray();
+                                                                     Content.ProblemData.TrainingIndices).ToArray();
       Array.Sort(freeVariableValues, trainingValues);
       responseChart.Series["Training Data (edge)"].Points.DataBindXY(freeVariableValues, trainingValues);
 
-      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TestIndizes).ToArray();
+      freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TestIndices).ToArray();
       testValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable,
-                                                                     Content.ProblemData.TestIndizes).ToArray();
+                                                                     Content.ProblemData.TestIndices).ToArray();
       Array.Sort(freeVariableValues, testValues);
       responseChart.Series["Test Data (edge)"].Points.DataBindXY(freeVariableValues, testValues);
 
@@ -186,10 +186,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     private void UpdateResponseSeries() {
       string freeVariable = (string)comboBox.SelectedItem;
 
-      var freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TrainingIndizes).ToArray();
+      var freeVariableValues = Content.ProblemData.Dataset.GetDoubleValues(freeVariable, Content.ProblemData.TrainingIndices).ToArray();
       var responseValues = Content.Model.Interpreter.GetSymbolicExpressionTreeValues(clonedTree,
                                                                               Content.ProblemData.Dataset,
-                                                                              Content.ProblemData.TrainingIndizes)
+                                                                              Content.ProblemData.TrainingIndices)
                                                                               .ToArray();
       Array.Sort(freeVariableValues, responseValues);
       responseChart.Series["Model Response"].Points.DataBindXY(freeVariableValues, responseValues);

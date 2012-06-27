@@ -124,7 +124,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public static void Scale(SymbolicDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
       var dataset = problemData.Dataset;
       var targetVariable = problemData.TargetVariable;
-      var rows = problemData.TrainingIndizes;
+      var rows = problemData.TrainingIndices;
       var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
       var targetValues = dataset.GetDoubleValues(targetVariable, rows);
       double alpha;

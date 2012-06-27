@@ -67,13 +67,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public virtual IEnumerable<int> TrainingClusterValues {
       get {
-        return GetClusterValues(ProblemData.TrainingIndizes);
+        return GetClusterValues(ProblemData.TrainingIndices);
       }
     }
 
     public virtual IEnumerable<int> TestClusterValues {
       get {
-        return GetClusterValues(ProblemData.TestIndizes);
+        return GetClusterValues(ProblemData.TestIndices);
       }
     }
 

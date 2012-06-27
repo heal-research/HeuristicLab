@@ -139,7 +139,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       out double trainingR2, out double testR2, out int nSv) {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
-      IEnumerable<int> rows = problemData.TrainingIndizes;
+      IEnumerable<int> rows = problemData.TrainingIndices;
 
       //extract SVM parameters from scope and set them
       SVM.Parameter parameter = new SVM.Parameter();

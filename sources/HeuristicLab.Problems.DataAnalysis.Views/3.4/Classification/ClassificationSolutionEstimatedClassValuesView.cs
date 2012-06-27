@@ -95,13 +95,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
           var estimatedTraining = Content.EstimatedTrainingClassValues.GetEnumerator();
           estimatedTraining.MoveNext();
-          foreach (var trainingRow in Content.ProblemData.TrainingIndizes) {
+          foreach (var trainingRow in Content.ProblemData.TrainingIndices) {
             values[trainingRow, 3] = estimatedTraining.Current.ToString();
             estimatedTraining.MoveNext();
           }
           var estimatedTest = Content.EstimatedTestClassValues.GetEnumerator();
           estimatedTest.MoveNext();
-          foreach (var testRow in Content.ProblemData.TestIndizes) {
+          foreach (var testRow in Content.ProblemData.TestIndices) {
             values[testRow, 4] = estimatedTest.Current.ToString();
             estimatedTest.MoveNext();
           }

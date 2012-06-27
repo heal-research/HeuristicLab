@@ -72,7 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public static void Scale(SymbolicRegressionModel model, IRegressionProblemData problemData) {
       var dataset = problemData.Dataset;
       var targetVariable = problemData.TargetVariable;
-      var rows = problemData.TrainingIndizes;
+      var rows = problemData.TrainingIndices;
       var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
       var targetValues = dataset.GetDoubleValues(targetVariable, rows);
       double alpha;

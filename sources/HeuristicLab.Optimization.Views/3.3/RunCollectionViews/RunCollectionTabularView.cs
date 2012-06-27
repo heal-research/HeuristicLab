@@ -163,7 +163,7 @@ namespace HeuristicLab.Optimization.Views {
       int[] newSortedIndex = Enumerable.Range(0, Content.Count).ToArray();
       RunCollectionRowComparer rowComparer = new RunCollectionRowComparer();
       if (sortedColumns.Count() != 0) {
-        rowComparer.SortedIndizes = sortedColumns;
+        rowComparer.SortedIndices = sortedColumns;
         rowComparer.Matrix = Content;
         Array.Sort(newSortedIndex, rowComparer);
       }
@@ -193,10 +193,10 @@ namespace HeuristicLab.Optimization.Views {
       public RunCollectionRowComparer() {
       }
 
-      private List<KeyValuePair<int, SortOrder>> sortedIndizes;
-      public IEnumerable<KeyValuePair<int, SortOrder>> SortedIndizes {
-        get { return this.sortedIndizes; }
-        set { sortedIndizes = new List<KeyValuePair<int, SortOrder>>(value); }
+      private List<KeyValuePair<int, SortOrder>> sortedIndices;
+      public IEnumerable<KeyValuePair<int, SortOrder>> SortedIndices {
+        get { return this.sortedIndices; }
+        set { sortedIndices = new List<KeyValuePair<int, SortOrder>>(value); }
       }
       private RunCollection matrix;
       public RunCollection Matrix {
@@ -211,10 +211,10 @@ namespace HeuristicLab.Optimization.Views {
 
         if (matrix == null)
           throw new InvalidOperationException("Could not sort IStringConvertibleMatrix if the matrix member is null.");
-        if (sortedIndizes == null)
+        if (sortedIndices == null)
           return 0;
 
-        foreach (KeyValuePair<int, SortOrder> pair in sortedIndizes.Where(p => p.Value != SortOrder.None)) {
+        foreach (KeyValuePair<int, SortOrder> pair in sortedIndices.Where(p => p.Value != SortOrder.None)) {
           value1 = matrix.GetValue(x, pair.Key);
           value2 = matrix.GetValue(y, pair.Key);
           comparable1 = value1 as IComparable;

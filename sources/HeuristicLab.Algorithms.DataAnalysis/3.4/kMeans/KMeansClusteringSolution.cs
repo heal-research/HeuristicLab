@@ -51,8 +51,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public KMeansClusteringSolution(KMeansClusteringModel model, IClusteringProblemData problemData)
       : base(model, problemData) {
-      double trainingIntraClusterSumOfSquares = KMeansClusteringUtil.CalculateIntraClusterSumOfSquares(model, problemData.Dataset, problemData.TrainingIndizes);
-      double testIntraClusterSumOfSquares = KMeansClusteringUtil.CalculateIntraClusterSumOfSquares(model, problemData.Dataset, problemData.TestIndizes);
+      double trainingIntraClusterSumOfSquares = KMeansClusteringUtil.CalculateIntraClusterSumOfSquares(model, problemData.Dataset, problemData.TrainingIndices);
+      double testIntraClusterSumOfSquares = KMeansClusteringUtil.CalculateIntraClusterSumOfSquares(model, problemData.Dataset, problemData.TestIndices);
       this.Add(new Result(TrainingIntraClusterSumOfSquaresResultName, "The sum of squared distances of points of the training partition to the cluster center (is minimized by k-Means).", new DoubleValue(trainingIntraClusterSumOfSquares)));
       this.Add(new Result(TestIntraClusterSumOfSquaresResultName, "The sum of squared distances of points of the test partition to the cluster center (is minimized by k-Means).", new DoubleValue(testIntraClusterSumOfSquares)));
     }

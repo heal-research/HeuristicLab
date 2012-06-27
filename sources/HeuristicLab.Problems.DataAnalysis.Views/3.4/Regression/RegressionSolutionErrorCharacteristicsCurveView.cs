@@ -168,10 +168,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       IEnumerable<double> originalValues;
       switch (cmbSamples.SelectedItem.ToString()) {
         case TrainingSamples:
-          originalValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
+          originalValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices);
           break;
         case TestSamples:
-          originalValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes);
+          originalValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices);
           break;
         case AllSamples:
           originalValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable);
@@ -233,7 +233,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private IRegressionSolution CreateConstantModel() {
-      double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).Average();
+      double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average();
       var solution = new ConstantRegressionModel(averageTrainingTarget).CreateRegressionSolution(ProblemData);
       solution.Name = "Baseline";
       return solution;

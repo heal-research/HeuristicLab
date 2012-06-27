@@ -100,9 +100,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         IEnumerable<int> rows;
 
         if (cmbSamples.SelectedItem.ToString() == TrainingSamples) {
-          rows = Content.ProblemData.TrainingIndizes;
+          rows = Content.ProblemData.TrainingIndices;
         } else if (cmbSamples.SelectedItem.ToString() == TestSamples) {
-          rows = Content.ProblemData.TestIndizes;
+          rows = Content.ProblemData.TestIndices;
         } else throw new InvalidOperationException();
 
         double[] estimatedValues = Content.GetEstimatedValues(rows).ToArray();

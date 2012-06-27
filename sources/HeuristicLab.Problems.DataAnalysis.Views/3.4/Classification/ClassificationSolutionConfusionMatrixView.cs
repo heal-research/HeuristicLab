@@ -106,10 +106,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
         double[] predictedValues;
         if (cmbSamples.SelectedItem.ToString() == TrainingSamples) {
-          rows = Content.ProblemData.TrainingIndizes;
+          rows = Content.ProblemData.TrainingIndices;
           predictedValues = Content.EstimatedTrainingClassValues.ToArray();
         } else if (cmbSamples.SelectedItem.ToString() == TestSamples) {
-          rows = Content.ProblemData.TestIndizes;
+          rows = Content.ProblemData.TestIndices;
           predictedValues = Content.EstimatedTestClassValues.ToArray();
         } else throw new InvalidOperationException();
 

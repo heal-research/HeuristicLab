@@ -96,7 +96,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
-      IEnumerable<int> rows = problemData.TrainingIndizes;
+      IEnumerable<int> rows = problemData.TrainingIndices;
       double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Random forest classification does not support NaN or infinity values in the input dataset.");
@@ -110,12 +110,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[] classValues = dataset.GetDoubleValues(targetVariable).Distinct().OrderBy(x => x).ToArray();
       int nClasses = classValues.Count();
       // map original class values to values [0..nClasses-1]
-      Dictionary<double, double> classIndizes = new Dictionary<double, double>();
+      Dictionary<double, double> classIndices = new Dictionary<double, double>();
       for (int i = 0; i < nClasses; i++) {
-        classIndizes[classValues[i]] = i;
+        classIndices[classValues[i]] = i;
       }
       for (int row = 0; row < nRows; row++) {
-        inputMatrix[row, nCols - 1] = classIndizes[inputMatrix[row, nCols - 1]];
+        inputMatrix[row, nCols - 1] = classIndices[inputMatrix[row, nCols - 1]];
       }
       // execute random forest algorithm
       alglib.dfbuildrandomdecisionforest(inputMatrix, nRows, nCols - 1, nClasses, nTrees, r, out info, out dforest, out rep);

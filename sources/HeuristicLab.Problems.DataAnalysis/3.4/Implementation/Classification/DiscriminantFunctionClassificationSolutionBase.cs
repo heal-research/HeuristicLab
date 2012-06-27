@@ -102,9 +102,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected void CalculateRegressionResults() {
       double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
-      double[] originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).ToArray();
+      double[] originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToArray();
       double[] estimatedTestValues = EstimatedTestValues.ToArray(); // cache values
-      double[] originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndizes).ToArray();
+      double[] originalTestValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices).ToArray();
 
       OnlineCalculatorError errorState;
       double trainingMSE = OnlineMeanSquaredErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void SetAccuracyMaximizingThresholds() {
       double[] classValues;
       double[] thresholds;
-      var targetClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
+      var targetClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices);
       AccuracyMaximizationThresholdCalculator.CalculateThresholds(ProblemData, EstimatedTrainingValues, targetClassValues, out classValues, out thresholds);
 
       Model.SetThresholdsAndClassValues(thresholds, classValues);
@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public void SetClassDistibutionCutPointThresholds() {
       double[] classValues;
       double[] thresholds;
-      var targetClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes);
+      var targetClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices);
       NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(ProblemData, EstimatedTrainingValues, targetClassValues, out classValues, out thresholds);
 
       Model.SetThresholdsAndClassValues(thresholds, classValues);

@@ -136,7 +136,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       List<double> estimatedValues = Content.EstimatedValues.ToList();
       var targetValues = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToList();
 
-      foreach (int row in Content.ProblemData.TrainingIndizes) {
+      foreach (int row in Content.ProblemData.TrainingIndices) {
         double estimatedValue = estimatedValues[row];
         double targetValue = targetValues[row];
         if (targetValue.IsAlmost((double)series.Tag)) {
@@ -149,7 +149,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       }
 
-      foreach (int row in Content.ProblemData.TestIndizes) {
+      foreach (int row in Content.ProblemData.TestIndices) {
         double estimatedValue = estimatedValues[row];
         double targetValue = targetValues[row];
         if (targetValue.IsAlmost((double)series.Tag)) {

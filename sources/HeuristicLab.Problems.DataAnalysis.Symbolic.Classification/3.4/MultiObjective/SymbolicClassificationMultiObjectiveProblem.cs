@@ -80,8 +80,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     private void UpdateEstimationLimits() {
-      if (ProblemData.TrainingIndizes.Any()) {
-        var targetValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndizes).ToList();
+      if (ProblemData.TrainingIndices.Any()) {
+        var targetValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToList();
         var mean = targetValues.Average();
         var range = targetValues.Max() - targetValues.Min();
         EstimationLimits.Upper = mean + PunishmentFactor * range;

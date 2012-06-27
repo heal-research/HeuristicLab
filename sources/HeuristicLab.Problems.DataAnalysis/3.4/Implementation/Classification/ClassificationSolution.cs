@@ -50,10 +50,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return GetEstimatedClassValues(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
     }
     public override IEnumerable<double> EstimatedTrainingClassValues {
-      get { return GetEstimatedClassValues(ProblemData.TrainingIndizes); }
+      get { return GetEstimatedClassValues(ProblemData.TrainingIndices); }
     }
     public override IEnumerable<double> EstimatedTestClassValues {
-      get { return GetEstimatedClassValues(ProblemData.TestIndizes); }
+      get { return GetEstimatedClassValues(ProblemData.TestIndices); }
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IEnumerable<int> rows) {

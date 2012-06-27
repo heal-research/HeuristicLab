@@ -152,7 +152,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region Evaluation
     public override IEnumerable<double> EstimatedTrainingValues {
       get {
-        var rows = ProblemData.TrainingIndizes;
+        var rows = ProblemData.TrainingIndices;
         var estimatedValuesEnumerators = (from model in Model.Models
                                           select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, rows).GetEnumerator() })
                                          .ToList();
@@ -171,11 +171,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public override IEnumerable<double> EstimatedTestValues {
       get {
-        var rows = ProblemData.TestIndizes;
+        var rows = ProblemData.TestIndices;
         var estimatedValuesEnumerators = (from model in Model.Models
                                           select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, rows).GetEnumerator() })
                                          .ToList();
-        var rowsEnumerator = ProblemData.TestIndizes.GetEnumerator();
+        var rowsEnumerator = ProblemData.TestIndices.GetEnumerator();
         // aggregate to make sure that MoveNext is called for all enumerators 
         while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
           int currentRow = rowsEnumerator.Current;

@@ -35,8 +35,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IntRange TrainingPartition { get; }
     IntRange TestPartition { get; }
 
-    IEnumerable<int> TrainingIndizes { get; }
-    IEnumerable<int> TestIndizes { get; }
+    IEnumerable<int> TrainingIndices { get; }
+    IEnumerable<int> TestIndices { get; }
 
     bool IsTrainingSample(int index);
     bool IsTestSample(int index);

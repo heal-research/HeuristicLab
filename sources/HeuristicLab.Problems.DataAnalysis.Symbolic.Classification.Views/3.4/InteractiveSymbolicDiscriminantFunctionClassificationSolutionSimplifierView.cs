@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
     protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree) {
       var interpreter = Content.Model.Interpreter;
       var dataset = Content.ProblemData.Dataset;
-      var rows = Content.ProblemData.TrainingIndizes;
+      var rows = Content.ProblemData.TrainingIndices;
       string targetVariable = Content.ProblemData.TargetVariable;
       Dictionary<ISymbolicExpressionTreeNode, double> impactValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
       List<ISymbolicExpressionTreeNode> nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPostfix().ToList();
@@ -112,7 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       while (start.SubtreeCount > 0) start.RemoveSubtree(0);
       start.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
       var interpreter = Content.Model.Interpreter;
-      var rows = Content.ProblemData.TrainingIndizes;
+      var rows = Content.ProblemData.TrainingIndices;
       return interpreter.GetSymbolicExpressionTreeValues(tempTree, Content.ProblemData.Dataset, rows).Median();
     }
 

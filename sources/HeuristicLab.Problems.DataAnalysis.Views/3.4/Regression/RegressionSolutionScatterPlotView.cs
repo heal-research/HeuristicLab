@@ -147,10 +147,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             dataset.GetDoubleValues(targetVariableName).ToArray(), "");
         if (this.chart.Series[TRAINING_SERIES].Points.Count > 0)
           this.chart.Series[TRAINING_SERIES].Points.DataBindXY(Content.EstimatedTrainingValues.ToArray(), "",
-            dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TrainingIndizes).ToArray(), "");
+            dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TrainingIndices).ToArray(), "");
         if (this.chart.Series[TEST_SERIES].Points.Count > 0)
           this.chart.Series[TEST_SERIES].Points.DataBindXY(Content.EstimatedTestValues.ToArray(), "",
-           dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray(), "");
+           dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndices).ToArray(), "");
 
         double max = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Max();
         double min = Content.EstimatedTrainingValues.Concat(Content.EstimatedTestValues.Concat(Content.EstimatedValues.Concat(dataset.GetDoubleValues(targetVariableName)))).Min();
@@ -195,11 +195,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             break;
           case TRAINING_SERIES:
             predictedValues = Content.EstimatedTrainingValues.ToArray();
-            targetValues = Content.ProblemData.Dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TrainingIndizes).ToArray();
+            targetValues = Content.ProblemData.Dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TrainingIndices).ToArray();
             break;
           case TEST_SERIES:
             predictedValues = Content.EstimatedTestValues.ToArray();
-            targetValues = Content.ProblemData.Dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndizes).ToArray();
+            targetValues = Content.ProblemData.Dataset.GetDoubleValues(targetVariableName, Content.ProblemData.TestIndices).ToArray();
             break;
         }
         if (predictedValues.Length == targetValues.Length)
