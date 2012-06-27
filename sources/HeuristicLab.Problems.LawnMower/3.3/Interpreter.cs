@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.LawnMower {
@@ -50,19 +52,19 @@ namespace HeuristicLab.Problems.LawnMower {
       mowerState.Heading = Heading.South;
       mowerState.Energy = length * width * 2;
       lawn[mowerState.Position.Item1, mowerState.Position.Item2] = true;
-      EvaluateLawnMowerProgram(tree.Root, ref mowerState, lawn);
+      EvaluateLawnMowerProgram(tree.Root, ref mowerState, lawn, tree.Root.Subtrees.Skip(1).ToArray());
 
       return lawn;
     }
 
 
-    private static Tuple<int, int> EvaluateLawnMowerProgram(ISymbolicExpressionTreeNode node, ref MowerState mowerState, bool[,] lawn) {
+    private static Tuple<int, int> EvaluateLawnMowerProgram(ISymbolicExpressionTreeNode node, ref MowerState mowerState, bool[,] lawn, IEnumerable<ISymbolicExpressionTreeNode> adfs) {
       if (mowerState.Energy <= 0) return new Tuple<int, int>(0, 0);
 
       if (node.Symbol is ProgramRootSymbol) {
-        return EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn);
+        return EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
       } else if (node.Symbol is StartSymbol) {
-        return EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn);
+        return EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
       } else if (node.Symbol is Left) {
         switch (mowerState.Heading) {
           case Heading.East: mowerState.Heading = Heading.North;
@@ -103,15 +105,15 @@ namespace HeuristicLab.Problems.LawnMower {
         var constNode = node as ConstantTreeNode;
         return constNode.Value;
       } else if (node.Symbol is Sum) {
-        var p = EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn);
-        var q = EvaluateLawnMowerProgram(node.GetSubtree(1), ref mowerState, lawn);
+        var p = EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
+        var q = EvaluateLawnMowerProgram(node.GetSubtree(1), ref mowerState, lawn, adfs);
         return new Tuple<int, int>(p.Item1 + q.Item1,
           p.Item2 + q.Item2);
       } else if (node.Symbol is Prog) {
-        EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn);
-        return EvaluateLawnMowerProgram(node.GetSubtree(1), ref mowerState, lawn);
+        EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
+        return EvaluateLawnMowerProgram(node.GetSubtree(1), ref mowerState, lawn, adfs);
       } else if (node.Symbol is Frog) {
-        var p = EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn);
+        var p = EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
 
         uint newRow = (uint)((mowerState.Position.Item1 + lawn.GetLength(0) + p.Item1 % lawn.GetLength(0)) % lawn.GetLength(0));
         uint newCol = (uint)((mowerState.Position.Item2 + lawn.GetLength(1) + p.Item2 % lawn.GetLength(1)) % lawn.GetLength(1));
@@ -119,10 +121,31 @@ namespace HeuristicLab.Problems.LawnMower {
         mowerState.Energy = mowerState.Energy - 1;
         lawn[newRow, newCol] = true;
         return new Tuple<int, int>(0, 0);
+      } else if (node.Symbol is InvokeFunction) {
+        var invokeNode = node as InvokeFunctionTreeNode;
+
+        // find the function definition for the invoke call
+        var functionDefinition = (from adf in adfs.Cast<DefunTreeNode>()
+                                  where adf.FunctionName == invokeNode.Symbol.FunctionName
+                                  select adf).Single();
+        // clone the function definition because we are replacing the argument nodes
+        functionDefinition = (DefunTreeNode) functionDefinition.Clone();
+        // find the argument tree nodes and their parents in the original function definition
+        // toList is necessary to prevent that newly inserted branches are iterated
+        var argumentCutPoints = (from parent in functionDefinition.IterateNodesPrefix()
+                                 from subtree in parent.Subtrees
+                                 where subtree is ArgumentTreeNode
+                                 select new { Parent = parent, Argument = subtree.Symbol as Argument, ChildIndex = parent.IndexOfSubtree(subtree) })
+                                 .ToList();
+        // replace all argument tree ndoes with the matching argument of the invoke node
+        foreach (var cutPoint in argumentCutPoints) {
+          cutPoint.Parent.RemoveSubtree(cutPoint.ChildIndex);
+          cutPoint.Parent.InsertSubtree(cutPoint.ChildIndex, (SymbolicExpressionTreeNode)invokeNode.GetSubtree(cutPoint.Argument.ArgumentIndex).Clone());
+        }
+        return EvaluateLawnMowerProgram(functionDefinition.GetSubtree(0), ref mowerState, lawn, adfs);
       } else {
         throw new ArgumentException("Invalid symbol in the lawn mower program.");
       }
     }
-
   }
 }

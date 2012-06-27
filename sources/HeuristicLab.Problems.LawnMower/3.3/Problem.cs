@@ -41,6 +41,8 @@ namespace HeuristicLab.Problems.LawnMower {
     private const string MaxLawnMowerProgramLengthParameterName = "MaxProgramLength";
     private const string MaxLawnMowerProgramDepthParameterName = "MaxProgramDepth";
     private const string LawnMowerGrammarParameterName = "Grammar";
+    private const string MaxFunctionDefinitionsParameterName = "MaxFunctionDefinitions";
+    private const string MaxArgumentDefinitionsParameterName = "MaxArgumentDefinitions";
 
     public IFixedValueParameter<IntValue> LawnWidthParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[LawnWidthParameterName]; }
@@ -57,6 +59,12 @@ namespace HeuristicLab.Problems.LawnMower {
     public IValueParameter<Grammar> GrammarParameter {
       get { return (IValueParameter<Grammar>)Parameters[LawnMowerGrammarParameterName]; }
     }
+    public IFixedValueParameter<IntValue> MaxFunctionDefinitionsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[MaxFunctionDefinitionsParameterName]; }
+    }
+    public IFixedValueParameter<IntValue> MaxArgumentDefinitionsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[MaxArgumentDefinitionsParameterName]; }
+    }
 
     [StorableConstructor]
     protected Problem(bool deserializing)
@@ -72,6 +80,8 @@ namespace HeuristicLab.Problems.LawnMower {
       Parameters.Add(new FixedValueParameter<IntValue>(LawnLengthParameterName, "Length of the lawn.", new IntValue(8)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaxLawnMowerProgramDepthParameterName, "Maximal depth of the lawn mower program.", new IntValue(13)));
       Parameters.Add(new FixedValueParameter<IntValue>(MaxLawnMowerProgramLengthParameterName, "Maximal length of the lawn mower program.", new IntValue(1000)));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaxFunctionDefinitionsParameterName, "Maximal number of automatically defined functions (ADF).", new IntValue(3)));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaxArgumentDefinitionsParameterName, "Maximal number of automatically defined arguments.", new IntValue(3)));
       Parameters.Add(new ValueParameter<Grammar>(LawnMowerGrammarParameterName, "Grammar for the lawn mower program.",
                      new Grammar()));
       Maximization.Value = true;
@@ -104,9 +114,9 @@ namespace HeuristicLab.Problems.LawnMower {
       Evaluator.QualityParameter.ActualNameChanged += QualityParameterOnActualNameChanged;
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged +=
         SymbolicExpressionTreeParameterOnActualNameChanged;
+      MaxArgumentDefinitionsParameter.ValueChanged += ParameterizeGrammar;
+      MaxFunctionDefinitionsParameter.ValueChanged += ParameterizeGrammar;
     }
-
-
 
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
@@ -134,6 +144,11 @@ namespace HeuristicLab.Problems.LawnMower {
     private void QualityParameterOnActualNameChanged(object sender, EventArgs eventArgs) {
       ParameterizeAnalyzers();
       ParameterizeOperators();
+    }
+
+    private void ParameterizeGrammar(object sender, EventArgs eventArgs) {
+      GrammarParameter.Value.MaximumFunctionArguments = MaxArgumentDefinitionsParameter.Value.Value;
+      GrammarParameter.Value.MaximumFunctionDefinitions = MaxFunctionDefinitionsParameter.Value.Value;
     }
 
     private void ParameterizeAnalyzers() {
@@ -173,6 +188,10 @@ namespace HeuristicLab.Problems.LawnMower {
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeCreator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+      }
+      foreach (ISymbolicExpressionTreeArchitectureAlteringOperator op in operators.OfType<ISymbolicExpressionTreeArchitectureAlteringOperator>()) {
+        op.MaximumFunctionDefinitionsParameter.ActualName = MaxFunctionDefinitionsParameter.Name;
+        op.MaximumFunctionArgumentsParameter.ActualName = MaxArgumentDefinitionsParameter.Name;
       }
     }
   }
