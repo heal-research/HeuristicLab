@@ -27,6 +27,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Interface to represent a data analysis algorithm.
   /// </summary>
   public interface IDataAnalysisAlgorithm<T> : IAlgorithm where T : class, IDataAnalysisProblem {
-    new T Problem { get; }
+    new T Problem { get; set; }
   }
 }
