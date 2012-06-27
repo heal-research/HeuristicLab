@@ -136,7 +136,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         parentView.Locked = false;
         parentView.ReadOnly = false;
         foreach (Control c in this.parentView.Controls)
-          c.Enabled = false;
+          c.Enabled = true;
         DeregisterProgressEvents();
         Dispose();
       }
