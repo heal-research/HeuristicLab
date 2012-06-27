@@ -224,6 +224,9 @@
     <Reference Include="HeuristicLab.Problems.Knapsack-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Problems.Knapsack-3.3.dll</HintPath>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.LawnMower-3.3">
+      <HintPath>..\bin\HeuristicLab.Problems.LawnMower-3.3.dll</HintPath>
+    </Reference>
     <Reference Include="HeuristicLab.Problems.LinearAssignment-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Problems.LinearAssignment-3.3.dll</HintPath>
     </Reference>

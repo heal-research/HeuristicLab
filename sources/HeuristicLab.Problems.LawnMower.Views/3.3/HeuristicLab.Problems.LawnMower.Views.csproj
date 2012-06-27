@@ -96,6 +96,12 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -115,6 +121,7 @@
     <Compile Include="SolutionProgramView.Designer.cs">
       <DependentUpon>SolutionProgramView.cs</DependentUpon>
     </Compile>
+    <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <Compile Include="Plugin.cs" />

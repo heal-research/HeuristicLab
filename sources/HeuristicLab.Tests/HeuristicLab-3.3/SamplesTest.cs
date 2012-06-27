@@ -438,6 +438,33 @@ namespace HeuristicLab_33.Tests {
       return ga;
     }
     #endregion
+    #region LawnMower
+    [TestMethod]
+    public void RunGpLawnMowerSampleTest() {
+      var ga = CreateGpLawnMowerSample();
+      ga.SetSeedRandomly.Value = false;
+      RunAlgorithm(ga);
+    }
+
+    public GeneticAlgorithm CreateGpLawnMowerSample() {
+      GeneticAlgorithm ga = new GeneticAlgorithm();
+      #region Problem Configuration
+      var problem = new HeuristicLab.Problems.LawnMower.Problem();
+      #endregion
+      #region Algorithm Configuration
+      ga.Name = "Genetic Programming - Lawn Mower";
+      ga.Description = "A standard genetic programming algorithm to solve the lawn mower problem";
+      ga.Problem = problem;
+      ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeArchitectureManipulator>(
+        ga, 1000, 1, 50, 0.25, 5);
+      var mutator = (MultiSymbolicExpressionTreeArchitectureManipulator)ga.Mutator;
+      mutator.Operators.SetItemCheckedState(mutator.Operators
+        .OfType<OnePointShaker>()
+        .Single(), false);
+      #endregion
+      return ga;
+    }
+    #endregion
     #endregion
 
     #region ES
