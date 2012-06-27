@@ -49,9 +49,9 @@ namespace HeuristicLab.Clients.Access.Administration {
       } else {
         base.Content_Refreshed(sender, e);
         userListView.Enabled = true;
-        storeButton.Enabled = true;
         userListView.Content = Content.Users;
         if (Content.Users != null) {
+          storeButton.Enabled = true;
           Content.Users.ItemsRemoved += new Collections.CollectionItemsChangedEventHandler<Collections.IndexedItem<User>>(Users_ItemsRemoved);
         }
       }

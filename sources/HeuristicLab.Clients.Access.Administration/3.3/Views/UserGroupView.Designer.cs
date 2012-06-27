@@ -85,6 +85,7 @@
       // 
       // storeButton
       // 
+      this.storeButton.Enabled = false;
       this.storeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PublishToWeb;
       this.storeButton.Location = new System.Drawing.Point(31, 58);
       this.storeButton.Name = "storeButton";

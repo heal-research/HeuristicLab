@@ -49,9 +49,9 @@ namespace HeuristicLab.Clients.Access.Administration {
       } else {
         base.Content_Refreshed(sender, e);
         userGroupListView.Enabled = true;
-        storeButton.Enabled = true;
         userGroupListView.Content = Content.Groups;
         if (Content.Groups != null) {
+          storeButton.Enabled = true;
           Content.Groups.ItemsRemoved += new Collections.CollectionItemsChangedEventHandler<Collections.IndexedItem<UserGroup>>(Groups_ItemsRemoved);
         }
       }

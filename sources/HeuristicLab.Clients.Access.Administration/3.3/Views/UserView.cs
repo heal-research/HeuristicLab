@@ -56,7 +56,7 @@ namespace HeuristicLab.Clients.Access.Administration {
         idTextBox.Text = Content.Id.ToString();
         lastActivityTextBox.Text = Content.LastActivityDate.ToString();
         lastLoginTextBox.Text = Content.LastLoginDate.ToString();
-        refreshableRoleSelectionListView.Content = AccessAdministrationClient.Instance;
+        refreshableRoleSelectionListView.Content = Content.Id != Guid.Empty ? AccessAdministrationClient.Instance : null;
         refreshableRoleSelectionListView.CurrentUser = Content;
       }
     }

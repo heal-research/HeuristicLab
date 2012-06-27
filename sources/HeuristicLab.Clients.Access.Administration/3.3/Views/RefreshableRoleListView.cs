@@ -49,9 +49,9 @@ namespace HeuristicLab.Clients.Access.Administration {
       } else {
         base.Content_Refreshed(sender, e);
         roleListView.Enabled = true;
-        storeButton.Enabled = true;
         roleListView.Content = Content.Roles;
         if (Content.Roles != null) {
+          storeButton.Enabled = true;
           Content.Roles.ItemsRemoved += new Collections.CollectionItemsChangedEventHandler<Collections.IndexedItem<Role>>(Roles_ItemsRemoved);
         }
       }

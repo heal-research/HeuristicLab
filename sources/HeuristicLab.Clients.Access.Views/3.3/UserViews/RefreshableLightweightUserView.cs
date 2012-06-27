@@ -75,6 +75,7 @@ namespace HeuristicLab.Clients.Access.Views {
       base.Content_Refreshed(sender, e);
 
       lightweightUserView.Content = new ItemList<UserGroupBase>(Content.UsersAndGroups.Where(x => selectedUsers.Contains(x.Id)));
+      if (lightweightUserView.Content != null) OnStorableStateChanged();
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -106,6 +107,17 @@ namespace HeuristicLab.Clients.Access.Views {
         Invoke((MethodInvoker)OnSelectedUsersChanged);
       else {
         EventHandler handler = SelectedUsersChanged;
+        if (handler != null)
+          handler(this, EventArgs.Empty);
+      }
+    }
+
+    public event EventHandler StorableStateChanged;
+    protected virtual void OnStorableStateChanged() {
+      if (InvokeRequired)
+        Invoke((MethodInvoker)OnStorableStateChanged);
+      else {
+        EventHandler handler = StorableStateChanged;
         if (handler != null)
           handler(this, EventArgs.Empty);
       }

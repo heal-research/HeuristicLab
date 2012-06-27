@@ -37,6 +37,18 @@ namespace HeuristicLab.Clients.Access.Administration {
       InitializeComponent();
     }
 
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Access.AccessClient.Instance.Refreshing += new EventHandler(Content_Refreshing);
+      refreshableLightweightUserView.StorableStateChanged += new EventHandler(refreshableLightweightUserView_StorableStateChanged);
+    }
+
+    protected override void DeregisterContentEvents() {
+      Access.AccessClient.Instance.Refreshing -= new EventHandler(Content_Refreshing);
+      refreshableLightweightUserView.StorableStateChanged -= new EventHandler(refreshableLightweightUserView_StorableStateChanged);
+      base.DeregisterContentEvents();
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
 
@@ -50,8 +62,8 @@ namespace HeuristicLab.Clients.Access.Administration {
         groupNameTextBox.Text = Content.Name;
         idTextBox.Text = Content.Id.ToString();
 
-        refreshableLightweightUserView.Content = Access.AccessClient.Instance;
-        refreshableLightweightUserView.FetchSelectedUsers = new Func<List<Guid>>(delegate { return AccessAdministrationClient.CallAccessService<List<Guid>>(s => s.GetUserGroupIdsOfGroup(Content.Id)); });
+        refreshableLightweightUserView.Content = Content.Id != Guid.Empty ? Access.AccessClient.Instance : null;
+        refreshableLightweightUserView.FetchSelectedUsers = Content.Id != Guid.Empty ? new Func<List<Guid>>(delegate { return AccessAdministrationClient.CallAccessService<List<Guid>>(s => s.GetUserGroupIdsOfGroup(Content.Id)); }) : null;
       }
     }
 
@@ -75,6 +87,14 @@ namespace HeuristicLab.Clients.Access.Administration {
 
       AccessAdministrationClient.Instance.ExecuteActionAsync(storeAction, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
       AccessAdministrationClient.Instance.ExecuteActionAsync(deleteAction, PluginInfrastructure.ErrorHandling.ShowErrorDialog);
+    }
+
+    private void Content_Refreshing(object sender, EventArgs e) {
+      storeButton.Enabled = false;
+    }
+
+    private void refreshableLightweightUserView_StorableStateChanged(object sender, EventArgs e) {
+      storeButton.Enabled = true;
     }
   }
 }
