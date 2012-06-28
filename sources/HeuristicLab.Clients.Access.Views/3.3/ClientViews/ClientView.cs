@@ -57,7 +57,7 @@ namespace HeuristicLab.Clients.Access.Views {
         txtOS.Text = string.Empty;
       } else {
         if (Content.ClientConfiguration != null) {
-          txtClientConfiguration.Text = Content.ClientConfiguration.Description; //??
+          txtClientConfiguration.Text = Content.ClientConfiguration.Hash;
         }
         if (Content.ClientType != null) {
           txtClientType.Text = Content.ClientType.Name;
