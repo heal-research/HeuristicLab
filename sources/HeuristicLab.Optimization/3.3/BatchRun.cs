@@ -351,6 +351,8 @@ namespace HeuristicLab.Optimization {
     }
     private void Optimizer_Prepared(object sender, EventArgs e) {
       if (ExecutionState == ExecutionState.Stopped || !batchRunStarted) {
+        ExecutionTime = TimeSpan.Zero;
+        runsExecutionTime = TimeSpan.Zero;
         OnPrepared();
       }
     }
