@@ -138,6 +138,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       symbolicExpressionTree.Root.AddSubtree(defunNode);
       // the grammar in the newly defined function is a clone of the grammar of the originating branch
       defunNode.SetGrammar((ISymbolicExpressionTreeGrammar)selectedBody.Grammar.Clone());
+
+      var allowedChildSymbols = selectedBody.Grammar.GetAllowedChildSymbols(selectedBody.Symbol);
+      foreach (var allowedChildSymbol in allowedChildSymbols)
+        defunNode.Grammar.AddAllowedChildSymbol(defunNode.Symbol, allowedChildSymbol);
+      var maxSubtrees = selectedBody.Grammar.GetMaximumSubtreeCount(selectedBody.Symbol);
+      for (int i = 0; i < maxSubtrees; i++) {
+        foreach (var allowedChildSymbol in selectedBody.Grammar.GetAllowedChildSymbols(selectedBody.Symbol, i))
+          defunNode.Grammar.AddAllowedChildSymbol(defunNode.Symbol, allowedChildSymbol);
+      }
+
       // remove all argument symbols from grammar except that one contained in cutpoints
       var oldArgumentSymbols = selectedBody.Grammar.Symbols.OfType<Argument>().ToList();
       foreach (var oldArgSymb in oldArgumentSymbols)

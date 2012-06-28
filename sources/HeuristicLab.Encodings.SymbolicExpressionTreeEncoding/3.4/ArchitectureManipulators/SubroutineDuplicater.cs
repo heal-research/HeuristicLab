@@ -72,6 +72,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       duplicatedDefunBranch.FunctionName = newFunctionName;
       symbolicExpressionTree.Root.AddSubtree(duplicatedDefunBranch);
       duplicatedDefunBranch.SetGrammar((ISymbolicExpressionTreeGrammar)selectedBranch.Grammar.Clone());
+
+      var allowedChildSymbols = selectedBranch.Grammar.GetAllowedChildSymbols(selectedBranch.Symbol);
+      foreach (var allowedChildSymbol in allowedChildSymbols)
+        duplicatedDefunBranch.Grammar.AddAllowedChildSymbol(duplicatedDefunBranch.Symbol, allowedChildSymbol);
+      var maxSubtrees = selectedBranch.Grammar.GetMaximumSubtreeCount(selectedBranch.Symbol);
+      for (int i = 0; i < maxSubtrees; i++) {
+        foreach (var allowedChildSymbol in selectedBranch.Grammar.GetAllowedChildSymbols(selectedBranch.Symbol, i))
+          duplicatedDefunBranch.Grammar.AddAllowedChildSymbol(duplicatedDefunBranch.Symbol, allowedChildSymbol);
+      }
+
       // add an invoke symbol for each branch that is allowed to invoke the original function
       foreach (var subtree in symbolicExpressionTree.Root.Subtrees.OfType<SymbolicExpressionTreeTopLevelNode>()) {
         var matchingInvokeSymbol = (from symb in subtree.Grammar.Symbols.OfType<InvokeFunction>()
