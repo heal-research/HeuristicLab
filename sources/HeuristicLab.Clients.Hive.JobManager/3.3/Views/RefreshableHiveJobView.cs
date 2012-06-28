@@ -491,7 +491,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired) {
         Invoke(new Action(FinishProgressView));
       } else {
-        if (Content.Progress != null)
+        if (Content != null && Content.Progress != null)
           Content.Progress.Finish();
         SetEnabledStateOfControls();
       }
