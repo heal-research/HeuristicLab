@@ -80,6 +80,9 @@ namespace HeuristicLab.Optimization {
     }
 
     [Storable]
+    private TimeSpan runsExecutionTime;
+
+    [Storable]
     private IOptimizer optimizer;
     public IOptimizer Optimizer {
       get { return optimizer; }
@@ -159,6 +162,7 @@ namespace HeuristicLab.Optimization {
       description = ItemDescription;
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
+      runsExecutionTime = TimeSpan.Zero;
       repetitions = 10;
       repetitionsCounter = 0;
       Runs = new RunCollection();
@@ -168,6 +172,7 @@ namespace HeuristicLab.Optimization {
       description = ItemDescription;
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
+      runsExecutionTime = TimeSpan.Zero;
       repetitions = 10;
       repetitionsCounter = 0;
       Runs = new RunCollection();
@@ -176,6 +181,7 @@ namespace HeuristicLab.Optimization {
       : base(name, description) {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
+      runsExecutionTime = TimeSpan.Zero;
       repetitions = 10;
       repetitionsCounter = 0;
       Runs = new RunCollection();
@@ -191,6 +197,7 @@ namespace HeuristicLab.Optimization {
       : base(original, cloner) {
       executionState = original.executionState;
       executionTime = original.executionTime;
+      runsExecutionTime = original.runsExecutionTime;
       optimizer = cloner.Clone(original.optimizer);
       repetitions = original.repetitions;
       repetitionsCounter = original.repetitionsCounter;
@@ -217,6 +224,7 @@ namespace HeuristicLab.Optimization {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused) && (ExecutionState != ExecutionState.Stopped))
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizer != null) {
+        ExecutionTime = TimeSpan.Zero;
         repetitionsCounter = 0;
         if (clearRuns) runs.Clear();
         Optimizer.Prepare(clearRuns);
@@ -352,6 +360,8 @@ namespace HeuristicLab.Optimization {
     }
     private void Optimizer_Stopped(object sender, EventArgs e) {
       repetitionsCounter++;
+      ExecutionTime += runsExecutionTime;
+      runsExecutionTime = TimeSpan.Zero;
 
       if (batchRunStopped) OnStopped();
       else if (repetitionsCounter >= repetitions) OnStopped();
@@ -384,12 +394,6 @@ namespace HeuristicLab.Optimization {
       runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Runs_ItemsRemoved);
     }
     private void Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      foreach (IRun run in e.OldItems) {
-        IItem item;
-        run.Results.TryGetValue("Execution Time", out item);
-        TimeSpanValue executionTime = item as TimeSpanValue;
-        if (executionTime != null) ExecutionTime -= executionTime.Value;
-      }
       if (Optimizer != null) Optimizer.Runs.RemoveRange(e.OldItems);
       foreach (IRun run in e.Items) {
         IItem item;
@@ -403,16 +407,15 @@ namespace HeuristicLab.Optimization {
         IItem item;
         run.Results.TryGetValue("Execution Time", out item);
         TimeSpanValue executionTime = item as TimeSpanValue;
-        if (executionTime != null) ExecutionTime += executionTime.Value;
+        if (executionTime != null) {
+          if (Optimizer.ExecutionState == ExecutionState.Started)
+            runsExecutionTime += executionTime.Value;
+          else
+            ExecutionTime += executionTime.Value;
+        }
       }
     }
     private void Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      foreach (IRun run in e.Items) {
-        IItem item;
-        run.Results.TryGetValue("Execution Time", out item);
-        TimeSpanValue executionTime = item as TimeSpanValue;
-        if (executionTime != null) ExecutionTime -= executionTime.Value;
-      }
       if (Optimizer != null) Optimizer.Runs.RemoveRange(e.Items);
     }
     #endregion
