@@ -271,11 +271,11 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Prepared;
     protected virtual void OnPrepared() {
-      ExecutionState = ExecutionState.Prepared;
       ExecutionTime = TimeSpan.Zero;
       foreach (IStatefulItem statefulObject in this.GetObjectGraphObjects(new HashSet<string>() { "runs" }).OfType<IStatefulItem>()) {
         statefulObject.InitializeState();
       }
+      ExecutionState = ExecutionState.Prepared;
       EventHandler handler = Prepared;
       if (handler != null) handler(this, EventArgs.Empty);
     }
@@ -293,12 +293,12 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Stopped;
     protected virtual void OnStopped() {
-      ExecutionState = ExecutionState.Stopped;
       foreach (IStatefulItem statefulObject in this.GetObjectGraphObjects(new HashSet<string>() { "runs" }).OfType<IStatefulItem>()) {
         statefulObject.ClearState();
       }
       runsCounter++;
       runs.Add(new Run(string.Format("{0} Run {1}", Name, runsCounter), this));
+      ExecutionState = ExecutionState.Stopped;
       EventHandler handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
     }
