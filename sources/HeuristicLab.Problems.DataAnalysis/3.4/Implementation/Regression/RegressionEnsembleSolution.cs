@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Regression Ensemble Solution", "A regression solution that contains an ensemble of multiple regression models")]
   [Creatable("Data Analysis - Ensembles")]
   public sealed class RegressionEnsembleSolution : RegressionSolution, IRegressionEnsembleSolution {
+    private readonly Dictionary<int, double> trainingEstimatedValuesCache = new Dictionary<int, double>();
+    private readonly Dictionary<int, double> testEstimatedValuesCache = new Dictionary<int, double>();
+    private readonly Dictionary<int, double> estimatedValuesCache = new Dictionary<int, double>();
+
     public new IRegressionEnsembleModel Model {
       get { return (IRegressionEnsembleModel)base.Model; }
     }
@@ -151,41 +155,27 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region Evaluation
     public override IEnumerable<double> EstimatedTrainingValues {
-      get {
-        var rows = ProblemData.TrainingIndices;
-        var estimatedValuesEnumerators = (from model in Model.Models
-                                          select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, rows).GetEnumerator() })
-                                         .ToList();
-        var rowsEnumerator = rows.GetEnumerator();
-        // aggregate to make sure that MoveNext is called for all enumerators 
-        while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
-          int currentRow = rowsEnumerator.Current;
-
-          var selectedEnumerators = from pair in estimatedValuesEnumerators
-                                    where RowIsTrainingForModel(currentRow, pair.Model) && !RowIsTestForModel(currentRow, pair.Model)
-                                    select pair.EstimatedValuesEnumerator;
-          yield return AggregateEstimatedValues(selectedEnumerators.Select(x => x.Current));
-        }
-      }
+      get { return GetEstimatedValues(ProblemData.TrainingIndices, (r, m) => RowIsTrainingForModel(r, m) && !RowIsTestForModel(r, m)); }
     }
 
     public override IEnumerable<double> EstimatedTestValues {
-      get {
-        var rows = ProblemData.TestIndices;
-        var estimatedValuesEnumerators = (from model in Model.Models
-                                          select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, rows).GetEnumerator() })
-                                         .ToList();
-        var rowsEnumerator = ProblemData.TestIndices.GetEnumerator();
-        // aggregate to make sure that MoveNext is called for all enumerators 
-        while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
-          int currentRow = rowsEnumerator.Current;
+      get { return GetEstimatedValues(ProblemData.TestIndices, RowIsTestForModel); }
+    }
 
-          var selectedEnumerators = from pair in estimatedValuesEnumerators
-                                    where RowIsTestForModel(currentRow, pair.Model)
-                                    select pair.EstimatedValuesEnumerator;
+    private IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows, Func<int, IRegressionModel, bool> modelSelectionPredicate) {
+      var estimatedValuesEnumerators = (from model in Model.Models
+                                        select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedValues(ProblemData.Dataset, rows).GetEnumerator() })
+                                       .ToList();
+      var rowsEnumerator = rows.GetEnumerator();
+      // aggregate to make sure that MoveNext is called for all enumerators 
+      while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
+        int currentRow = rowsEnumerator.Current;
 
-          yield return AggregateEstimatedValues(selectedEnumerators.Select(x => x.Current));
-        }
+        var selectedEnumerators = from pair in estimatedValuesEnumerators
+                                  where modelSelectionPredicate(currentRow, pair.Model)
+                                  select pair.EstimatedValuesEnumerator;
+
+        yield return AggregateEstimatedValues(selectedEnumerators.Select(x => x.Current));
       }
     }
 
