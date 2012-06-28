@@ -31,6 +31,7 @@ namespace HeuristicLab.Clients.Hive.Views {
   [Content(typeof(OptimizerHiveTask), true)]
   public partial class OptimizerHiveTaskView : HiveTaskView {
     private ProgressView progressView;
+    private IProgress progress;
 
     public new OptimizerHiveTask Content {
       get { return (OptimizerHiveTask)base.Content; }
@@ -43,6 +44,7 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     public OptimizerHiveTaskView() {
       InitializeComponent();
+      progressView = new ProgressView(this);
     }
 
     protected override void Job_ItemChanged(object sender, EventArgs e) {
@@ -96,25 +98,25 @@ namespace HeuristicLab.Clients.Hive.Views {
     #endregion
 
     private void PauseTaskAsync() {
-      IProgress prog = new Progress();
-      prog.Status = "Pausing task. Please be patient for the command to take effect.";
-      SetProgressView(prog);
+      progress = new Progress();
+      progress.Status = "Pausing task. Please be patient for the command to take effect.";
+      SetProgressView(progress);
       Content.Pause();
       FinishProgressView();
     }
 
     private void StopTaskAsync() {
-      IProgress prog = new Progress();
-      prog.Status = "Stopping task. Please be patient for the command to take effect.";
-      SetProgressView(prog);
+      progress = new Progress();
+      progress.Status = "Stopping task. Please be patient for the command to take effect.";
+      SetProgressView(progress);
       Content.Stop();
       FinishProgressView();
     }
 
     private void ResumeTaskAsync() {
-      IProgress prog = new Progress();
-      prog.Status = "Resuming task. Please be patient for the command to take effect.";
-      SetProgressView(prog);
+      progress = new Progress();
+      progress.Status = "Resuming task. Please be patient for the command to take effect.";
+      SetProgressView(progress);
       Content.Restart();
       FinishProgressView();
     }
@@ -123,11 +125,7 @@ namespace HeuristicLab.Clients.Hive.Views {
       if (InvokeRequired) {
         Invoke(new Action<IProgress>(SetProgressView), progress);
       } else {
-        if (progressView == null) {
-          progressView = new ProgressView(this, progress);
-        } else {
-          progressView.Progress = progress;
-        }
+        progressView.Progress = progress;
       }
     }
 
@@ -135,11 +133,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       if (InvokeRequired) {
         Invoke(new Action(FinishProgressView));
       } else {
-        if (progressView != null) {
-          progressView.Finish();
-          progressView = null;
-          SetEnabledStateOfControls();
-        }
+        progress.Finish();
+        SetEnabledStateOfControls();
       }
     }
 

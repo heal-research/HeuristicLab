@@ -56,9 +56,11 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     Algorithm selectedAlgorithm = null;
     Problem selectedProblem = null;
     private ProgressView progressView;
+    private IProgress progress;
 
     public OKBExperimentUploadView() {
       InitializeComponent();
+      progressView = new ProgressView(this);
     }
 
     protected override void OnContentChanged() {
@@ -175,9 +177,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (InvokeRequired) {
         Invoke(new EventHandler(RunCreationClient_Refreshing), sender, e);
       } else {
-        IProgress prog = new Progress();
-        prog.Status = "Refreshing algorithms and problems...";
-        SetProgressView(prog);
+        progress = new Progress();
+        progress.Status = "Refreshing algorithms and problems...";
+        SetProgressView(progress);
       }
     }
 
@@ -199,13 +201,13 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     private void UploadAsync() {
-      IProgress prog = new Progress();
-      prog.Status = "Uploading runs to OKB...";
-      prog.ProgressValue = 0;
+      progress = new Progress();
+      progress.Status = "Uploading runs to OKB...";
+      progress.ProgressValue = 0;
       double count = dataGridView.Rows.Count;
       int i = 0;
 
-      SetProgressView(prog);
+      SetProgressView(progress);
       foreach (DataGridViewRow row in dataGridView.Rows) {
         selectedAlgorithm = algorithms.Where(x => x.Name == row.Cells[algorithmColumnIndex].Value.ToString()).FirstOrDefault();
         selectedProblem = problems.Where(x => x.Name == row.Cells[problemColumnIndex].Value.ToString()).FirstOrDefault();
@@ -216,7 +218,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         OKBRun run = new OKBRun(selectedAlgorithm.Id, selectedProblem.Id, row.Tag as IRun, UserInformation.Instance.User.Id);
         run.Store();
         i++;
-        prog.ProgressValue = ((double)i) / count;
+        progress.ProgressValue = ((double)i) / count;
       }
       FinishProgressView();
     }
@@ -225,11 +227,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (InvokeRequired) {
         Invoke(new Action<IProgress>(SetProgressView), progress);
       } else {
-        if (progressView == null) {
-          progressView = new ProgressView(this, progress);
-        } else {
-          progressView.Progress = progress;
-        }
+        progressView.Progress = progress;
       }
     }
 
@@ -237,12 +235,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (InvokeRequired) {
         Invoke(new Action(FinishProgressView));
       } else {
-        if (progressView != null) {
-          progressView.Finish();
-          progressView = null;
-          SetEnabledStateOfControls();
-          ClearRuns();
-        }
+        progress.Finish();
+        SetEnabledStateOfControls();
+        ClearRuns();
       }
     }
 

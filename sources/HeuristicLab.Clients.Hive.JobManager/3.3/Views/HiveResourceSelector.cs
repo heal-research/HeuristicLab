@@ -41,6 +41,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private ISet<TreeNode> mainTreeNodes;
     private ISet<TreeNode> filteredTreeNodes;
     private ISet<TreeNode> nodeStore;
+    private IProgress currentProgress;
 
     private ISet<Resource> selectedResources;
     public ISet<Resource> SelectedResources {
@@ -67,17 +68,16 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       selectedResources = new HashSet<Resource>();
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.MonitorLarge);
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.NetworkCenterLarge);
+      progressView = new ProgressView(this);
     }
 
     public void StartProgressView() {
       if (InvokeRequired) {
         Invoke(new Action(StartProgressView));
       } else {
-        if (progressView == null) {
-          IProgress prog = new Progress();
-          prog.Status = "Downloading resources. Please be patient.";
-          progressView = new ProgressView(this, prog);
-        }
+        currentProgress = new Progress();
+        currentProgress.Status = "Downloading resources. Please be patient.";
+        progressView.Progress = currentProgress;
       }
     }
 
@@ -85,11 +85,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired) {
         Invoke(new Action(FinishProgressView));
       } else {
-        if (progressView != null) {
-          progressView.Finish();
-          progressView = null;
-          SetEnabledStateOfControls();
-        }
+        currentProgress.Finish();
+        SetEnabledStateOfControls();
       }
     }
 

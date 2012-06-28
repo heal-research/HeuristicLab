@@ -36,6 +36,8 @@ namespace HeuristicLab.MainForm {
       }
     }
 
+    public bool CancelRequested { get; set; }
+
     private double progressValue;
     public double ProgressValue {
       get {
@@ -59,7 +61,20 @@ namespace HeuristicLab.MainForm {
       OnFinished();
     }
 
+    public void SignalSuccessfulCancelation() {
+      OnCanceled();
+    }
+
     #region Event Handler
+    public event EventHandler Canceled;
+    private void OnCanceled() {
+      var handler = Canceled;
+      try {
+        if (handler != null) handler(this, EventArgs.Empty);
+      }
+      catch (Exception) { }
+    }
+
     public event EventHandler Finished;
     private void OnFinished() {
       var handler = Finished;

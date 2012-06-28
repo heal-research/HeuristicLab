@@ -34,6 +34,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         DeregisterProgressEvents();
         progress = value;
         RegisterProgressEvents();
+        ShowProgress();
         OnProgressChanged();
       }
     }
@@ -47,22 +48,29 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    /// <param name="parentView">This is the view which will be locked while progress is made.</param>
-    public ProgressView(ContentView parentView, IProgress progress) {
+    private void ShowProgress() {
+      this.Left = (parentView.ClientRectangle.Width / 2) - (this.Width / 2);
+      this.Top = (parentView.ClientRectangle.Height / 2) - (this.Height / 2);
+      this.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+
+      LockBackground();
+
+      if (!parentView.Controls.Contains(this)) {
+        parentView.Controls.Add(this);
+      }
+
+      BringToFront();
+      Visible = true;
+    }
+
+    public ProgressView(ContentView parentView) {
       InitializeComponent();
-      Progress = progress;
       CancelEnabled = false;
 
       if (parentView != null) {
         this.parentView = parentView;
-        this.Left = (parentView.ClientRectangle.Width / 2) - (this.Width / 2);
-        this.Top = (parentView.ClientRectangle.Height / 2) - (this.Height / 2);
-        this.Anchor = AnchorStyles.Left | AnchorStyles.Top;
-
-        LockBackground();
-
-        parentView.Controls.Add(this);
-        BringToFront();
+      } else {
+        throw new ArgumentNullException("The parent view is null.");
       }
     }
 
@@ -71,6 +79,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       progress.Finished += new EventHandler(progress_Finished);
       progress.StatusChanged += new EventHandler(progress_StatusChanged);
       progress.ProgressValueChanged += new EventHandler(progress_ProgressValueChanged);
+      progress.Canceled += new EventHandler(progress_Canceled);
     }
 
     private void DeregisterProgressEvents() {
@@ -78,6 +87,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       progress.Finished -= new EventHandler(progress_Finished);
       progress.StatusChanged -= new EventHandler(progress_StatusChanged);
       progress.ProgressValueChanged -= new EventHandler(progress_ProgressValueChanged);
+      progress.Canceled -= new EventHandler(progress_Canceled);
     }
 
     private void progress_Finished(object sender, EventArgs e) {
@@ -90,6 +100,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private void progress_ProgressValueChanged(object sender, EventArgs e) {
       UpdateProgressValue();
+    }
+
+    void progress_Canceled(object sender, EventArgs e) {
+      Finish();
     }
 
     private void LockBackground() {
@@ -127,7 +141,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    public void Finish() {
+    private void Finish() {
       if (InvokeRequired) {
         Invoke(new Action(Finish));
       } else {
@@ -138,13 +152,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
         foreach (Control c in this.parentView.Controls)
           c.Enabled = true;
         DeregisterProgressEvents();
-        Dispose();
+        progress = null;
+        this.Visible = false;
       }
     }
 
     private void cancelButton_Click(object sender, EventArgs e) {
-      OnCanceled();
-      Finish();
+      if (progress != null) {
+        progress.CancelRequested = true;
+        cancelButton.Enabled = false;
+      }
     }
 
     private void SetCancelButtonVisibility() {
@@ -158,12 +175,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void OnProgressChanged() {
       UpdateProgressStatus();
       UpdateProgressValue();
-    }
-
-    public event EventHandler Canceled;
-    protected virtual void OnCanceled() {
-      var handler = Canceled;
-      if (handler != null) Canceled(this, EventArgs.Empty);
     }
   }
 }

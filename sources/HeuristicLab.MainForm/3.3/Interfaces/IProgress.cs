@@ -27,9 +27,15 @@ namespace HeuristicLab.MainForm {
     double ProgressValue { get; set; }
 
     void Finish();
+    void SignalSuccessfulCancelation();
 
     event EventHandler Finished;
     event EventHandler StatusChanged;
     event EventHandler ProgressValueChanged;
+
+    bool CancelRequested { get; set; }
+    event EventHandler Canceled;
+
+
   }
 }

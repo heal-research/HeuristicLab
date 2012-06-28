@@ -54,6 +54,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     /// </summary>
     public RefreshableHiveJobView() {
       InitializeComponent();
+      progressView = new ProgressView(this);
     }
 
     protected override void RegisterContentEvents() {
@@ -474,11 +475,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired) {
         Invoke(new Action(SetProgressView));
       } else {
-        if (progressView == null) {
-          progressView = new ProgressView(this, Content.Progress);
-        } else {
-          progressView.Progress = Content.Progress;
-        }
+        progressView.Progress = Content.Progress;
       }
     }
 
@@ -486,11 +483,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired) {
         Invoke(new Action<IProgress>(SetProgressView), progress);
       } else {
-        if (progressView == null) {
-          progressView = new ProgressView(this, progress);
-        } else {
-          progressView.Progress = progress;
-        }
+        progressView.Progress = progress;
       }
     }
 
@@ -498,11 +491,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired) {
         Invoke(new Action(FinishProgressView));
       } else {
-        if (progressView != null) {
-          progressView.Finish();
-          progressView = null;
-          SetEnabledStateOfControls();
-        }
+        if (Content.Progress != null)
+          Content.Progress.Finish();
+        SetEnabledStateOfControls();
       }
     }
     #endregion
