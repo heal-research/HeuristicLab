@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Classification Ensemble Solution", "A classification solution that contains an ensemble of multiple classification models")]
   [Creatable("Data Analysis - Ensembles")]
   public sealed class ClassificationEnsembleSolution : ClassificationSolution, IClassificationEnsembleSolution {
+    private readonly Dictionary<int, double> trainingEstimatedValuesCache = new Dictionary<int, double>();
+    private readonly Dictionary<int, double> testEstimatedValuesCache = new Dictionary<int, double>();
+    private readonly Dictionary<int, double> estimatedValuesCache = new Dictionary<int, double>();
+
     public new IClassificationEnsembleModel Model {
       get { return (IClassificationEnsembleModel)base.Model; }
     }
@@ -148,39 +152,47 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public override IEnumerable<double> EstimatedTrainingClassValues {
       get {
         var rows = ProblemData.TrainingIndices;
-        var estimatedValuesEnumerators = (from model in Model.Models
-                                          select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedClassValues(ProblemData.Dataset, rows).GetEnumerator() })
-                                         .ToList();
-        var rowsEnumerator = rows.GetEnumerator();
-        // aggregate to make sure that MoveNext is called for all enumerators 
-        while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
-          int currentRow = rowsEnumerator.Current;
+        var rowsToEvaluate = rows.Except(trainingEstimatedValuesCache.Keys);
+        var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+        var valuesEnumerator = GetEstimatedValues(rowsToEvaluate, (r, m) => RowIsTrainingForModel(r, m) && !RowIsTestForModel(r, m)).GetEnumerator();
 
-          var selectedEnumerators = from pair in estimatedValuesEnumerators
-                                    where RowIsTrainingForModel(currentRow, pair.Model) && !RowIsTestForModel(currentRow, pair.Model)
-                                    select pair.EstimatedValuesEnumerator;
-          yield return AggregateEstimatedClassValues(selectedEnumerators.Select(x => x.Current));
+        while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+          trainingEstimatedValuesCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
         }
+
+        return rows.Select(row => trainingEstimatedValuesCache[row]);
       }
     }
 
     public override IEnumerable<double> EstimatedTestClassValues {
       get {
         var rows = ProblemData.TestIndices;
-        var estimatedValuesEnumerators = (from model in Model.Models
-                                          select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedClassValues(ProblemData.Dataset, rows).GetEnumerator() })
-                                         .ToList();
-        var rowsEnumerator = ProblemData.TestIndices.GetEnumerator();
-        // aggregate to make sure that MoveNext is called for all enumerators 
-        while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
-          int currentRow = rowsEnumerator.Current;
+        var rowsToEvaluate = rows.Except(testEstimatedValuesCache.Keys);
+        var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+        var valuesEnumerator = GetEstimatedValues(rowsToEvaluate, RowIsTestForModel).GetEnumerator();
 
-          var selectedEnumerators = from pair in estimatedValuesEnumerators
-                                    where RowIsTestForModel(currentRow, pair.Model)
-                                    select pair.EstimatedValuesEnumerator;
-
-          yield return AggregateEstimatedClassValues(selectedEnumerators.Select(x => x.Current));
+        while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+          testEstimatedValuesCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
         }
+
+        return rows.Select(row => testEstimatedValuesCache[row]);
+      }
+    }
+
+    private IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows, Func<int, IClassificationModel, bool> modelSelectionPredicate) {
+      var estimatedValuesEnumerators = (from model in Model.Models
+                                        select new { Model = model, EstimatedValuesEnumerator = model.GetEstimatedClassValues(ProblemData.Dataset, rows).GetEnumerator() })
+                                       .ToList();
+      var rowsEnumerator = rows.GetEnumerator();
+      // aggregate to make sure that MoveNext is called for all enumerators 
+      while (rowsEnumerator.MoveNext() & estimatedValuesEnumerators.Select(en => en.EstimatedValuesEnumerator.MoveNext()).Aggregate(true, (acc, b) => acc & b)) {
+        int currentRow = rowsEnumerator.Current;
+
+        var selectedEnumerators = from pair in estimatedValuesEnumerators
+                                  where modelSelectionPredicate(currentRow, pair.Model)
+                                  select pair.EstimatedValuesEnumerator;
+
+        yield return AggregateEstimatedClassValues(selectedEnumerators.Select(x => x.Current));
       }
     }
 
@@ -195,8 +207,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(IEnumerable<int> rows) {
-      return from xs in GetEstimatedClassValueVectors(ProblemData.Dataset, rows)
-             select AggregateEstimatedClassValues(xs);
+      var rowsToEvaluate = rows.Except(estimatedValuesCache.Keys);
+      var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+      var valuesEnumerator = (from xs in GetEstimatedClassValueVectors(ProblemData.Dataset, rowsToEvaluate)
+                              select AggregateEstimatedClassValues(xs))
+                             .GetEnumerator();
+
+      while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+        estimatedValuesCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
+      }
+
+      return rows.Select(row => estimatedValuesCache[row]);
     }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows) {
@@ -222,6 +243,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     protected override void OnProblemDataChanged() {
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
+
       IClassificationProblemData problemData = new ClassificationProblemData(ProblemData.Dataset,
                                                                      ProblemData.AllowedInputVariables,
                                                                      ProblemData.TargetVariable);
@@ -250,9 +275,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void AddClassificationSolutions(IEnumerable<IClassificationSolution> solutions) {
       classificationSolutions.AddRange(solutions);
+
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
     }
     public void RemoveClassificationSolutions(IEnumerable<IClassificationSolution> solutions) {
       classificationSolutions.RemoveRange(solutions);
+
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
     }
 
     private void classificationSolutions_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IClassificationSolution> e) {
@@ -274,6 +307,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Model.Add(solution.Model);
       trainingPartitions[solution.Model] = solution.ProblemData.TrainingPartition;
       testPartitions[solution.Model] = solution.ProblemData.TestPartition;
+
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
     }
 
     private void RemoveClassificationSolution(IClassificationSolution solution) {
@@ -281,6 +318,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Model.Remove(solution.Model);
       trainingPartitions.Remove(solution.Model);
       testPartitions.Remove(solution.Model);
+
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
     }
   }
 }
