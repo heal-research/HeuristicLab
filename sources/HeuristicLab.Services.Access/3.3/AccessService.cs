@@ -743,15 +743,17 @@ namespace HeuristicLab.Services.Access {
       RoleVerifier.AuthenticateForAllRoles(AccessServiceRoles.Administrator);
       var g = group; //linq does not like vars called group
 
-      using (DA.AccessServiceDataContext context = new DA.AccessServiceDataContext()) {
-        var query = from ug in context.UserGroupBases.OfType<DA.UserGroup>()
-                    where ug.Id == g.Id
-                    select ug;
-        if (query.Count() > 0) {
-          context.UserGroupBases.DeleteOnSubmit(query.First());
-          context.SubmitChanges();
-        } else {
-          throw new Exception("UserGroup with id " + g.Id + " does not exist.");
+      if (g.Id != null && g.Id != Guid.Empty) {
+        using (DA.AccessServiceDataContext context = new DA.AccessServiceDataContext()) {
+          var query = from ug in context.UserGroupBases.OfType<DA.UserGroup>()
+                      where ug.Id == g.Id
+                      select ug;
+          if (query.Count() > 0) {
+            context.UserGroupBases.DeleteOnSubmit(query.First());
+            context.SubmitChanges();
+          } else {
+            throw new Exception("UserGroup with id " + g.Id + " does not exist.");
+          }
         }
       }
     }
