@@ -55,9 +55,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [Storable]
-    private Dictionary<IRegressionModel, IntRange> trainingPartitions;
+    private readonly Dictionary<IRegressionModel, IntRange> trainingPartitions;
     [Storable]
-    private Dictionary<IRegressionModel, IntRange> testPartitions;
+    private readonly Dictionary<IRegressionModel, IntRange> testPartitions;
 
     [StorableConstructor]
     private RegressionEnsembleSolution(bool deserializing)
@@ -155,11 +155,33 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region Evaluation
     public override IEnumerable<double> EstimatedTrainingValues {
-      get { return GetEstimatedValues(ProblemData.TrainingIndices, (r, m) => RowIsTrainingForModel(r, m) && !RowIsTestForModel(r, m)); }
+      get {
+        var rows = ProblemData.TrainingIndices;
+        var rowsToEvaluate = rows.Except(trainingEstimatedValuesCache.Keys);
+        var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+        var valuesEnumerator = GetEstimatedValues(rowsToEvaluate, (r, m) => RowIsTrainingForModel(r, m) && !RowIsTestForModel(r, m)).GetEnumerator();
+
+        while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+          trainingEstimatedValuesCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
+        }
+
+        return rows.Select(row => trainingEstimatedValuesCache[row]);
+      }
     }
 
     public override IEnumerable<double> EstimatedTestValues {
-      get { return GetEstimatedValues(ProblemData.TestIndices, RowIsTestForModel); }
+      get {
+        var rows = ProblemData.TestIndices;
+        var rowsToEvaluate = rows.Except(testEstimatedValuesCache.Keys);
+        var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+        var valuesEnumerator = GetEstimatedValues(rowsToEvaluate, RowIsTestForModel).GetEnumerator();
+
+        while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+          testEstimatedValuesCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
+        }
+
+        return rows.Select(row => testEstimatedValuesCache[row]);
+      }
     }
 
     private IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows, Func<int, IRegressionModel, bool> modelSelectionPredicate) {
@@ -190,8 +212,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {
-      return from xs in GetEstimatedValueVectors(ProblemData.Dataset, rows)
-             select AggregateEstimatedValues(xs);
+      var rowsToEvaluate = rows.Except(estimatedValuesCache.Keys);
+      var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+      var valuesEnumerator = (from xs in GetEstimatedValueVectors(ProblemData.Dataset, rowsToEvaluate)
+                              select AggregateEstimatedValues(xs))
+                             .GetEnumerator();
+
+      while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+        estimatedValuesCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
+      }
+
+      return rows.Select(row => estimatedValuesCache[row]);
     }
 
     public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows) {
@@ -212,6 +243,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     protected override void OnProblemDataChanged() {
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
       IRegressionProblemData problemData = new RegressionProblemData(ProblemData.Dataset,
                                                                      ProblemData.AllowedInputVariables,
                                                                      ProblemData.TargetVariable);
@@ -240,9 +274,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public void AddRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {
       regressionSolutions.AddRange(solutions);
+
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
     }
     public void RemoveRegressionSolutions(IEnumerable<IRegressionSolution> solutions) {
       regressionSolutions.RemoveRange(solutions);
+
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
     }
 
     private void regressionSolutions_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRegressionSolution> e) {
@@ -264,6 +306,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Model.Add(solution.Model);
       trainingPartitions[solution.Model] = solution.ProblemData.TrainingPartition;
       testPartitions[solution.Model] = solution.ProblemData.TestPartition;
+
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
     }
 
     private void RemoveRegressionSolution(IRegressionSolution solution) {
@@ -271,6 +317,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Model.Remove(solution.Model);
       trainingPartitions.Remove(solution.Model);
       testPartitions.Remove(solution.Model);
+
+      trainingEstimatedValuesCache.Clear();
+      testEstimatedValuesCache.Clear();
+      estimatedValuesCache.Clear();
     }
   }
 }
