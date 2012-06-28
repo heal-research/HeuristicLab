@@ -23,10 +23,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -58,33 +55,33 @@ namespace HeuristicLab_33.Tests {
 
       foreach (var parameterizedItem in ApplicationManager.Manager.GetInstances<IParameterizedItem>()) {
         foreach (var parameter in parameterizedItem.Parameters) {
-          if (parameter.GetType().IsGenericType && parameter.GetType().GetGenericTypeDefinition() == typeof(ConstrainedValueParameter<>) ||
-            parameter.GetType().IsGenericType && parameter.GetType().GetGenericTypeDefinition() == typeof(OptionalConstrainedValueParameter<>)) {
-            var parameterGenericTypeArgument = parameter.GetType().GetGenericArguments().First();
-            var parameterGenericTypeDefinition = typeof(IConstrainedValueParameter<>);
+          var parameterType = parameter.GetType().GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConstrainedValueParameter<>));
+          if (parameterType == null) continue;
 
-            var paramProperty = parameterizedItem.GetType().GetProperty(parameter.Name + "Parameter",
-              BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
-            var valueProperty = parameterizedItem.GetType().GetProperty(parameter.Name,
-                                                                   BindingFlags.GetProperty | BindingFlags.Instance |
-                                                                   BindingFlags.Public);
-            if (paramProperty == null)
-              errorMessage.Append(Environment.NewLine + parameterizedItem.GetType() +
-                ": public property " + parameter.Name + "Parameter is missing.");
-            else if (paramProperty.PropertyType.GetGenericTypeDefinition() != parameterGenericTypeDefinition)
-              errorMessage.Append(Environment.NewLine + parameterizedItem.GetType() +
-                ": public property " + parameter.Name + "Parameter type must be " + parameterGenericTypeDefinition.Name);
-            else if (paramProperty.PropertyType.GetGenericArguments().First() != parameterGenericTypeArgument)
-              errorMessage.Append(Environment.NewLine + parameterizedItem.GetType() +
-                ": public property " + parameter.Name + "Parameter generic type argument does not match the generic type argument of the parameter.");
+          var parameterGenericTypeArgument = parameterType.GetGenericArguments().First();
+          var parameterGenericTypeDefinition = typeof(IConstrainedValueParameter<>);
 
-            if (valueProperty == null)
-              TestContext.WriteLine(parameterizedItem.GetType() + ": public property " + parameter.Name + " is missing.");
-            else if (valueProperty.PropertyType != parameterGenericTypeArgument) {
-              TestContext.WriteLine(parameterizedItem.GetType() + ": " + parameter.Name + " property type does not match the generic type argument of the parameter.");
-            } else if (!valueProperty.CanRead || !valueProperty.CanWrite)
-              TestContext.WriteLine(parameterizedItem.GetType() + ": public property " + parameter.Name + " must have a getter and a setter.");
-          }
+          var paramProperty = parameterizedItem.GetType().GetProperty(parameter.Name + "Parameter",
+            BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
+          var valueProperty = parameterizedItem.GetType().GetProperty(parameter.Name,
+                                                                 BindingFlags.GetProperty | BindingFlags.Instance |
+                                                                 BindingFlags.Public);
+          if (paramProperty == null)
+            errorMessage.Append(Environment.NewLine + parameterizedItem.GetType() +
+              ": public property " + parameter.Name + "Parameter is missing.");
+          else if (paramProperty.PropertyType.GetGenericTypeDefinition() != parameterGenericTypeDefinition)
+            errorMessage.Append(Environment.NewLine + parameterizedItem.GetType() +
+              ": public property " + parameter.Name + "Parameter type must be " + parameterGenericTypeDefinition.Name);
+          else if (paramProperty.PropertyType.GetGenericArguments().First() != parameterGenericTypeArgument)
+            errorMessage.Append(Environment.NewLine + parameterizedItem.GetType() +
+              ": public property " + parameter.Name + "Parameter generic type argument does not match the generic type argument of the parameter.");
+
+          if (valueProperty == null)
+            TestContext.WriteLine(parameterizedItem.GetType() + ": public property " + parameter.Name + " is missing.");
+          else if (valueProperty.PropertyType != parameterGenericTypeArgument) {
+            TestContext.WriteLine(parameterizedItem.GetType() + ": " + parameter.Name + " property type does not match the generic type argument of the parameter.");
+          } else if (!valueProperty.CanRead || !valueProperty.CanWrite)
+            TestContext.WriteLine(parameterizedItem.GetType() + ": public property " + parameter.Name + " must have a getter and a setter.");
         }
       }
       Assert.IsTrue(errorMessage.Length == 0, errorMessage.ToString());
