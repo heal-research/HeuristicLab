@@ -68,7 +68,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       selectedResources = new HashSet<Resource>();
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.MonitorLarge);
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.NetworkCenterLarge);
-      progressView = new ProgressView(this);
     }
 
     public void StartProgressView() {
@@ -77,6 +76,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       } else {
         currentProgress = new Progress();
         currentProgress.Status = "Downloading resources. Please be patient.";
+        if (progressView == null) {
+          progressView = new ProgressView(this);
+        }
         progressView.Progress = currentProgress;
       }
     }

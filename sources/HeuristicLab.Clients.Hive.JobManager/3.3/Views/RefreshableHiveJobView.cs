@@ -463,10 +463,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (this.InvokeRequired) {
         Invoke(new EventHandler(Content_IsProgressingChanged), sender, e);
       } else {
-        if (Content != null && Content.IsProgressing) {
+        if (Content != null && Content.Progress != null && Content.IsProgressing) {
           SetProgressView();
         } else {
-          FinishProgressView();
+          progressView.Progress = null;
         }
       }
     }

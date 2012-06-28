@@ -257,9 +257,8 @@ namespace HeuristicLab.Clients.Hive {
     private static object pluginLocker = new object();
     private void UploadJob(RefreshableJob refreshableJob, CancellationToken cancellationToken) {
       try {
-        refreshableJob.Progress = new Progress("Connecting to server...");
         refreshableJob.IsProgressing = true;
-
+        refreshableJob.Progress = new Progress("Connecting to server...");
         IEnumerable<string> resourceNames = ToResourceNameList(refreshableJob.Job.ResourceNames);
         var resourceIds = new List<Guid>();
         foreach (var resourceName in resourceNames) {
@@ -315,6 +314,7 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.Job.Modified = false;
       }
       finally {
+        refreshableJob.Progress.Finish();
         refreshableJob.IsProgressing = false;
       }
     }
@@ -426,10 +426,10 @@ namespace HeuristicLab.Clients.Hive {
     #region Download Experiment
     public static void LoadJob(RefreshableJob refreshableJob) {
       var hiveExperiment = refreshableJob.Job;
+      refreshableJob.IsProgressing = true;
       refreshableJob.Progress = new Progress();
 
       try {
-        refreshableJob.IsProgressing = true;
         int totalJobCount = 0;
         IEnumerable<LightweightTask> allTasks;
 
@@ -470,6 +470,7 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.OnLoaded();
       }
       finally {
+        refreshableJob.Progress.Finish();
         refreshableJob.IsProgressing = false;
       }
     }

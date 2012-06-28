@@ -30,10 +30,12 @@ using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Clients.Hive {
-  public class RefreshableJob : IHiveItem, IDeepCloneable, IContent, IProgressReporter, IComparable<RefreshableJob> {
+  public class RefreshableJob : IHiveItem, IDeepCloneable, IContent, IComparable<RefreshableJob> {
     private JobResultPoller jobResultPoller;
     private ConcurrentTaskDownloader<ItemTask> jobDownloader;
     private static object locker = new object();
+
+    public bool IsProgressing { get; set; }
 
     private Job job;
     public Job Job {
@@ -164,22 +166,15 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    private bool isProgressing;
-    public bool IsProgressing {
-      get { return isProgressing; }
-      set {
-        if (isProgressing != value) {
-          isProgressing = value;
-          OnIsProgressingChanged();
-        }
-      }
-    }
-
     private IProgress progress;
     public IProgress Progress {
       get { return progress; }
-      set { this.progress = value; }
+      set {
+        this.progress = value;
+        OnIsProgressingChanged();
+      }
     }
+
 
     private ThreadSafeLog log;
     public ILog Log {
@@ -228,7 +223,6 @@ namespace HeuristicLab.Clients.Hive {
     #endregion
 
     #region JobResultPoller Events
-
     public void StartResultPolling() {
       if (jobResultPoller == null) {
         jobResultPoller = new JobResultPoller(job.Id, Settings.Default.ResultPollingInterval);
@@ -409,12 +403,6 @@ namespace HeuristicLab.Clients.Hive {
       if (handler != null) handler(this, e);
     }
 
-    public event EventHandler IsProgressingChanged;
-    protected virtual void OnIsProgressingChanged() {
-      var handler = IsProgressingChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
     public event EventHandler IsDownloadableChanged;
     private void OnIsDownloadableChanged() {
       var handler = IsDownloadableChanged;
@@ -472,6 +460,11 @@ namespace HeuristicLab.Clients.Hive {
     public event EventHandler TaskReceived;
     protected virtual void OnTaskReceived() {
       var handler = TaskReceived;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler IsProgressingChanged;
+    private void OnIsProgressingChanged() {
+      var handler = IsProgressingChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     #endregion

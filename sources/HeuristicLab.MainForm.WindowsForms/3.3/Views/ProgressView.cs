@@ -31,7 +31,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       get { return progress; }
       set {
         if (progress == value) return;
-        DeregisterProgressEvents();
+        Finish();
         progress = value;
         RegisterProgressEvents();
         ShowProgress();
@@ -49,18 +49,20 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void ShowProgress() {
-      this.Left = (parentView.ClientRectangle.Width / 2) - (this.Width / 2);
-      this.Top = (parentView.ClientRectangle.Height / 2) - (this.Height / 2);
-      this.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+      if (progress != null) {
+        this.Left = (parentView.ClientRectangle.Width / 2) - (this.Width / 2);
+        this.Top = (parentView.ClientRectangle.Height / 2) - (this.Height / 2);
+        this.Anchor = AnchorStyles.Left | AnchorStyles.Top;
 
-      LockBackground();
+        LockBackground();
 
-      if (!parentView.Controls.Contains(this)) {
-        parentView.Controls.Add(this);
+        if (!parentView.Controls.Contains(this)) {
+          parentView.Controls.Add(this);
+        }
+
+        BringToFront();
+        Visible = true;
       }
-
-      BringToFront();
-      Visible = true;
     }
 
     public ProgressView(ContentView parentView) {
@@ -122,13 +124,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void UpdateProgressValue() {
       if (InvokeRequired) Invoke((Action)UpdateProgressValue);
       else {
-        double progressValue = progress.ProgressValue;
-        if (progressValue < progressBar.Minimum || progressValue > progressBar.Maximum) {
-          progressBar.Style = ProgressBarStyle.Marquee;
-          progressBar.Value = progressBar.Minimum;
-        } else {
-          progressBar.Style = ProgressBarStyle.Blocks;
-          progressBar.Value = (int)Math.Round(progressBar.Minimum + progressValue * (progressBar.Maximum - progressBar.Minimum));
+        if (progress != null) {
+          double progressValue = progress.ProgressValue;
+          if (progressValue < progressBar.Minimum || progressValue > progressBar.Maximum) {
+            progressBar.Style = ProgressBarStyle.Marquee;
+            progressBar.Value = progressBar.Minimum;
+          } else {
+            progressBar.Style = ProgressBarStyle.Blocks;
+            progressBar.Value = (int)Math.Round(progressBar.Minimum + progressValue * (progressBar.Maximum - progressBar.Minimum));
+          }
         }
       }
     }
@@ -136,8 +140,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void UpdateProgressStatus() {
       if (InvokeRequired) Invoke((Action)UpdateProgressStatus);
       else {
-        string status = progress.Status;
-        statusLabel.Text = progress.Status;
+        if (progress != null) {
+          string status = progress.Status;
+          statusLabel.Text = progress.Status;
+        }
       }
     }
 

@@ -29,13 +29,11 @@ namespace HeuristicLab.MainForm {
     void Finish();
     void SignalSuccessfulCancelation();
 
+    bool CancelRequested { get; set; }
+
     event EventHandler Finished;
     event EventHandler StatusChanged;
     event EventHandler ProgressValueChanged;
-
-    bool CancelRequested { get; set; }
     event EventHandler Canceled;
-
-
   }
 }
