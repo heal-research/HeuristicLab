@@ -470,7 +470,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       } else {
         if (Content != null && Content.Progress != null && Content.IsProgressing) {
           progressView.Content = Content.Progress;
-        } else {
+        } else if (Content != null) {
           progressView.Content = progress;
         }
       }
