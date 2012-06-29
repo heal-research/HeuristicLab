@@ -108,69 +108,82 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     private void DisplayRuns(RunCollection runs) {
       if (RunCreationClient.Instance.Algorithms == null || RunCreationClient.Instance.Algorithms.Count() == 0) {
-        RunCreationClient.Instance.RefreshAsync(DisplayError);
+        Action a = new Action(delegate {
+          RunCreationClient.Instance.Refresh();
+          CreateUI(runs);
+        });
+
+        Task.Factory.StartNew(a).ContinueWith((t) => { DisplayError(t.Exception); }, TaskContinuationOptions.OnlyOnFaulted);
       } else {
         CreateUI(runs);
       }
     }
 
     private void CreateUI(RunCollection runs) {
-      if (problems.Count == 0)
-        problems.AddRange(RunCreationClient.Instance.Problems);
-      if (algorithms.Count == 0)
-        algorithms.AddRange(RunCreationClient.Instance.Algorithms);
+      if (InvokeRequired) {
+        Invoke(new Action<RunCollection>(CreateUI), runs);
+      } else {
+        if (problems.Count == 0)
+          problems.AddRange(RunCreationClient.Instance.Problems);
+        if (algorithms.Count == 0)
+          algorithms.AddRange(RunCreationClient.Instance.Algorithms);
 
-      IItem algorithmType;
-      IItem problemType;
-      IItem algorithmName;
-      IItem problemName;
+        IItem algorithmType;
+        IItem problemType;
+        IItem algorithmName;
+        IItem problemName;
 
-      DataGridViewComboBoxColumn cmbAlgorithm = dataGridView.Columns[algorithmColumnIndex] as DataGridViewComboBoxColumn;
-      cmbAlgorithm.DataSource = algorithms;
-      cmbAlgorithm.DisplayMember = "Name";
+        DataGridViewComboBoxColumn cmbAlgorithm = dataGridView.Columns[algorithmColumnIndex] as DataGridViewComboBoxColumn;
+        cmbAlgorithm.DataSource = algorithms;
+        cmbAlgorithm.DisplayMember = "Name";
 
-      DataGridViewComboBoxColumn cmbProblem = dataGridView.Columns[problemColumnIndex] as DataGridViewComboBoxColumn;
-      cmbProblem.DataSource = problems;
-      cmbProblem.DisplayMember = "Name";
+        DataGridViewComboBoxColumn cmbProblem = dataGridView.Columns[problemColumnIndex] as DataGridViewComboBoxColumn;
+        cmbProblem.DataSource = problems;
+        cmbProblem.DisplayMember = "Name";
 
-      foreach (IRun run in runs) {
-        int idx = dataGridView.Rows.Add(run.Name);
-        DataGridViewRow curRow = dataGridView.Rows[idx];
-        curRow.Tag = run;
+        foreach (IRun run in runs) {
+          int idx = dataGridView.Rows.Add(run.Name);
+          DataGridViewRow curRow = dataGridView.Rows[idx];
+          curRow.Tag = run;
 
-        if (run.Parameters.TryGetValue(algorithmTypeParameterName, out algorithmType)) {
-          HeuristicLab.Data.StringValue algStr = algorithmType as HeuristicLab.Data.StringValue;
-          if (algStr != null) {
-            curRow.Cells[1].Value = algStr;
+          if (run.Parameters.TryGetValue(algorithmTypeParameterName, out algorithmType)) {
+            HeuristicLab.Data.StringValue algStr = algorithmType as HeuristicLab.Data.StringValue;
+            if (algStr != null) {
+              curRow.Cells[1].Value = algStr;
+            }
           }
-        }
 
-        if (run.Parameters.TryGetValue(algorithmNameParameterName, out algorithmName)) {
-          HeuristicLab.Data.StringValue algStr = algorithmName as HeuristicLab.Data.StringValue;
-          if (algStr != null) {
-            curRow.Cells[2].Value = algStr;
+          if (run.Parameters.TryGetValue(algorithmNameParameterName, out algorithmName)) {
+            HeuristicLab.Data.StringValue algStr = algorithmName as HeuristicLab.Data.StringValue;
+            if (algStr != null) {
+              curRow.Cells[2].Value = algStr;
+            }
           }
-        }
 
-        if (run.Parameters.TryGetValue(problemTypeParameterName, out problemType)) {
-          HeuristicLab.Data.StringValue prbStr = problemType as HeuristicLab.Data.StringValue;
-          if (prbStr != null) {
-            curRow.Cells[4].Value = prbStr;
+          if (run.Parameters.TryGetValue(problemTypeParameterName, out problemType)) {
+            HeuristicLab.Data.StringValue prbStr = problemType as HeuristicLab.Data.StringValue;
+            if (prbStr != null) {
+              curRow.Cells[4].Value = prbStr;
+            }
           }
-        }
 
-        if (run.Parameters.TryGetValue(problemNameParameterName, out problemName)) {
-          HeuristicLab.Data.StringValue prbStr = problemName as HeuristicLab.Data.StringValue;
-          if (prbStr != null) {
-            curRow.Cells[5].Value = prbStr;
+          if (run.Parameters.TryGetValue(problemNameParameterName, out problemName)) {
+            HeuristicLab.Data.StringValue prbStr = problemName as HeuristicLab.Data.StringValue;
+            if (prbStr != null) {
+              curRow.Cells[5].Value = prbStr;
+            }
           }
         }
       }
     }
 
     private void ClearRuns() {
-      dataGridView.Rows.Clear();
-      runs.Clear();
+      if (InvokeRequired) {
+        Invoke(new Action(ClearRuns));
+      } else {
+        dataGridView.Rows.Clear();
+        runs.Clear();
+      }
     }
 
     private void RunCreationClient_Refreshing(object sender, EventArgs e) {
@@ -221,6 +234,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         progress.ProgressValue = ((double)i) / count;
       }
       FinishProgressView();
+      ClearRuns();
     }
 
     private void SetProgressView(IProgress progress) {
@@ -237,7 +251,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       } else {
         progress.Finish();
         SetEnabledStateOfControls();
-        ClearRuns();
       }
     }
 
