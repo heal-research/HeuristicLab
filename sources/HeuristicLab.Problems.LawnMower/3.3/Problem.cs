@@ -119,21 +119,21 @@ namespace HeuristicLab.Problems.LawnMower {
     }
 
     protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
       Evaluator.LawnMowerProgramParameter.ActualName = LawnMowerProgramParameterName;
       Evaluator.LawnLengthParameter.ActualName = LawnLengthParameterName;
       Evaluator.LawnWidthParameter.ActualName = LawnWidthParameterName;
       Evaluator.QualityParameter.ActualNameChanged += QualityParameterOnActualNameChanged;
       ParameterizeAnalyzers();
       ParameterizeOperators();
+      base.OnEvaluatorChanged();
     }
 
     protected override void OnSolutionCreatorChanged() {
-      base.OnSolutionCreatorChanged();
       SolutionCreator.SymbolicExpressionTreeParameter.ActualName = LawnMowerProgramParameterName;
       SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += SymbolicExpressionTreeParameterOnActualNameChanged;
       ParameterizeAnalyzers();
       ParameterizeOperators();
+      base.OnSolutionCreatorChanged();
     }
 
     private void SymbolicExpressionTreeParameterOnActualNameChanged(object sender, EventArgs eventArgs) {

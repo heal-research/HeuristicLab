@@ -63,12 +63,12 @@ namespace HeuristicLab.Problems.LawnMower {
 
       // define grammar rules
       foreach (var s in allSymbols) {
-        AddAllowedChildSymbol(sum, s, 0);
-        AddAllowedChildSymbol(sum, s, 1);
-        AddAllowedChildSymbol(prog, s, 0);
-        AddAllowedChildSymbol(prog, s, 1);
-        AddAllowedChildSymbol(frog, s, 0);
-        AddAllowedChildSymbol(StartSymbol, s, 0);
+        AddAllowedChildSymbol(sum, s);
+        AddAllowedChildSymbol(sum, s);
+        AddAllowedChildSymbol(prog, s);
+        AddAllowedChildSymbol(prog, s);
+        AddAllowedChildSymbol(frog, s);
+        AddAllowedChildSymbol(StartSymbol, s);
       }
     }
   }

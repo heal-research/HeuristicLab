@@ -52,19 +52,19 @@ namespace HeuristicLab.Problems.LawnMower {
       mowerState.Heading = Heading.South;
       mowerState.Energy = length * width * 2;
       lawn[mowerState.Position.Item1, mowerState.Position.Item2] = true;
-      EvaluateLawnMowerProgram(tree.Root, ref mowerState, lawn, tree.Root.Subtrees.Skip(1).ToArray());
+      EvaluateLawnMowerProgram(tree.Root, mowerState, lawn, tree.Root.Subtrees.Skip(1).ToArray());
 
       return lawn;
     }
 
 
-    private static Tuple<int, int> EvaluateLawnMowerProgram(ISymbolicExpressionTreeNode node, ref MowerState mowerState, bool[,] lawn, IEnumerable<ISymbolicExpressionTreeNode> adfs) {
+    private static Tuple<int, int> EvaluateLawnMowerProgram(ISymbolicExpressionTreeNode node, MowerState mowerState, bool[,] lawn, IEnumerable<ISymbolicExpressionTreeNode> adfs) {
       if (mowerState.Energy <= 0) return new Tuple<int, int>(0, 0);
 
       if (node.Symbol is ProgramRootSymbol) {
-        return EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
+        return EvaluateLawnMowerProgram(node.GetSubtree(0), mowerState, lawn, adfs);
       } else if (node.Symbol is StartSymbol) {
-        return EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
+        return EvaluateLawnMowerProgram(node.GetSubtree(0), mowerState, lawn, adfs);
       } else if (node.Symbol is Left) {
         switch (mowerState.Heading) {
           case Heading.East: mowerState.Heading = Heading.North;
@@ -105,15 +105,15 @@ namespace HeuristicLab.Problems.LawnMower {
         var constNode = node as ConstantTreeNode;
         return constNode.Value;
       } else if (node.Symbol is Sum) {
-        var p = EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
-        var q = EvaluateLawnMowerProgram(node.GetSubtree(1), ref mowerState, lawn, adfs);
+        var p = EvaluateLawnMowerProgram(node.GetSubtree(0), mowerState, lawn, adfs);
+        var q = EvaluateLawnMowerProgram(node.GetSubtree(1), mowerState, lawn, adfs);
         return new Tuple<int, int>(p.Item1 + q.Item1,
           p.Item2 + q.Item2);
       } else if (node.Symbol is Prog) {
-        EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
-        return EvaluateLawnMowerProgram(node.GetSubtree(1), ref mowerState, lawn, adfs);
+        EvaluateLawnMowerProgram(node.GetSubtree(0), mowerState, lawn, adfs);
+        return EvaluateLawnMowerProgram(node.GetSubtree(1), mowerState, lawn, adfs);
       } else if (node.Symbol is Frog) {
-        var p = EvaluateLawnMowerProgram(node.GetSubtree(0), ref mowerState, lawn, adfs);
+        var p = EvaluateLawnMowerProgram(node.GetSubtree(0), mowerState, lawn, adfs);
 
         uint newRow = (uint)((mowerState.Position.Item1 + lawn.GetLength(0) + p.Item1 % lawn.GetLength(0)) % lawn.GetLength(0));
         uint newCol = (uint)((mowerState.Position.Item2 + lawn.GetLength(1) + p.Item2 % lawn.GetLength(1)) % lawn.GetLength(1));
@@ -142,7 +142,7 @@ namespace HeuristicLab.Problems.LawnMower {
           cutPoint.Parent.RemoveSubtree(cutPoint.ChildIndex);
           cutPoint.Parent.InsertSubtree(cutPoint.ChildIndex, (SymbolicExpressionTreeNode)invokeNode.GetSubtree(cutPoint.Argument.ArgumentIndex).Clone());
         }
-        return EvaluateLawnMowerProgram(functionDefinition.GetSubtree(0), ref mowerState, lawn, adfs);
+        return EvaluateLawnMowerProgram(functionDefinition.GetSubtree(0), mowerState, lawn, adfs);
       } else {
         throw new ArgumentException("Invalid symbol in the lawn mower program.");
       }
