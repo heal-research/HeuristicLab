@@ -148,16 +148,17 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (Content != null) {
         bool alreadyUploaded = Content.Id != Guid.Empty;
         bool jobsLoaded = Content.HiveTasks != null && Content.HiveTasks.All(x => x.Task.Id != Guid.Empty);
+        tabControl.Enabled = !Content.IsProgressing;
 
-        this.nameTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded;
-        this.resourceNamesTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded;
-        this.searchButton.Enabled = Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded);
-        this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded;
+        this.nameTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
+        this.resourceNamesTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
+        this.searchButton.Enabled = (Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded)) || !Content.IsProgressing;
+        this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
 
-        this.isPrivilegedCheckBox.Enabled = Content.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded); // TODO: check if user has the rights to do this
-        this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && Content.ExecutionState == ExecutionState.Started;
-        this.refreshButton.Enabled = Content.IsDownloadable && alreadyUploaded;
-        this.Locked = !Content.IsControllable || Content.ExecutionState == ExecutionState.Started;
+        this.isPrivilegedCheckBox.Enabled = Content.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded) && !Content.IsProgressing;
+        this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
+        this.refreshButton.Enabled = Content.IsDownloadable && alreadyUploaded && !Content.IsProgressing;
+        this.Locked = !Content.IsControllable || Content.ExecutionState == ExecutionState.Started || Content.IsProgressing;
       }
       SetEnabledStateOfExecutableButtons();
       tabControl_SelectedIndexChanged(this, EventArgs.Empty); // ensure sharing tabpage is disabled
@@ -450,9 +451,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (Content == null) {
         startButton.Enabled = pauseButton.Enabled = stopButton.Enabled = resetButton.Enabled = false;
       } else {
-        startButton.Enabled = Content.IsControllable && Content.HiveTasks != null && Content.HiveTasks.Count > 0 && (Content.ExecutionState == ExecutionState.Prepared || Content.ExecutionState == ExecutionState.Paused);
-        pauseButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started;
-        stopButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started;
+        startButton.Enabled = Content.IsControllable && Content.HiveTasks != null && Content.HiveTasks.Count > 0 && (Content.ExecutionState == ExecutionState.Prepared || Content.ExecutionState == ExecutionState.Paused) && !Content.IsProgressing;
+        pauseButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
+        stopButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
         resetButton.Enabled = false;
       }
     }

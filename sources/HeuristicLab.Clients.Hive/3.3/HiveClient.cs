@@ -314,8 +314,8 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.Job.Modified = false;
       }
       finally {
-        refreshableJob.Progress.Finish();
         refreshableJob.IsProgressing = false;
+        refreshableJob.Progress.Finish();
       }
     }
 
@@ -470,8 +470,8 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.OnLoaded();
       }
       finally {
-        refreshableJob.Progress.Finish();
         refreshableJob.IsProgressing = false;
+        refreshableJob.Progress.Finish();
       }
     }
 

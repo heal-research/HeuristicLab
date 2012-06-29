@@ -114,8 +114,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       } else {
         parentView.Locked = true;
         parentView.ReadOnly = true;
-        foreach (Control c in this.parentView.Controls)
-          c.Enabled = false;
         Enabled = true;
         ReadOnly = false;
       }
@@ -155,11 +153,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
         parentView.Controls.Remove(this);
         parentView.Locked = false;
         parentView.ReadOnly = false;
-        foreach (Control c in this.parentView.Controls)
-          c.Enabled = true;
         DeregisterProgressEvents();
         progress = null;
-        this.Visible = false;
+        Visible = false;
       }
     }
 
