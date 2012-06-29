@@ -34,7 +34,6 @@ namespace HeuristicLab_33.Tests {
     private static Dictionary<Assembly, Type> loadedPlugins;
     private static Dictionary<string, string> pluginNames;
     private static Dictionary<string, Assembly> pluginFilesToPluginLookup = new Dictionary<string, Assembly>();
-    //private static Dictionary<string, string> pluginToPluginFilesLookup = new Dictionary<string, string>();
 
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize]
@@ -90,8 +89,8 @@ namespace HeuristicLab_33.Tests {
           if (referencedPluginAssemblies.Any(a => pluginNames[a.FullName] == pluginDependencyName)) continue;
 
           var referencedNonPluginAssemblies = pluginAssembly.GetReferencedAssemblies().Where(a => !IsPluginAssemblyName(a));
-          bool found = (from referencedNonPluginAssemblie in referencedNonPluginAssemblies
-                        select referencedNonPluginAssemblie.Name into assemblyName
+          bool found = (from referencedNonPluginAssembly in referencedNonPluginAssemblies
+                        select referencedNonPluginAssembly.Name into assemblyName
                         where pluginFilesToPluginLookup.ContainsKey(assemblyName)
                         select GetPluginFromAssembly(pluginFilesToPluginLookup[assemblyName]) into pluginType
                         select GetPluginName(pluginType)).Any(pluginName => pluginName == pluginDependencyName);
