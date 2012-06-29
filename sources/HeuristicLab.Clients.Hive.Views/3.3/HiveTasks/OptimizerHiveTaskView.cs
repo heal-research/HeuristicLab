@@ -134,7 +134,6 @@ namespace HeuristicLab.Clients.Hive.Views {
         Invoke(new Action(FinishProgressView));
       } else {
         progress.Finish();
-        SetEnabledStateOfControls();
       }
     }
 

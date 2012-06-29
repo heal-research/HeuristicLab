@@ -88,7 +88,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         Invoke(new Action(FinishProgressView));
       } else {
         currentProgress.Finish();
-        SetEnabledStateOfControls();
       }
     }
 

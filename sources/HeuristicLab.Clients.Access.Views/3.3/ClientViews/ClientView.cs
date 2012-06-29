@@ -94,7 +94,6 @@ namespace HeuristicLab.Clients.Access.Views {
         Invoke(new Action(FinishProgressView));
       } else {
         progress.Finish();
-        SetEnabledStateOfControls();
       }
     }
   }

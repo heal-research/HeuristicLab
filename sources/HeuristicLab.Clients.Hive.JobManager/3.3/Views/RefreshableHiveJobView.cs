@@ -494,7 +494,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       } else {
         if (Content != null && Content.Progress != null)
           Content.Progress.Finish();
-        SetEnabledStateOfControls();
       }
     }
     #endregion

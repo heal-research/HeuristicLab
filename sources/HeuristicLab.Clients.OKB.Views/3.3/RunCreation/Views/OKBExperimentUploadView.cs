@@ -250,7 +250,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         Invoke(new Action(FinishProgressView));
       } else {
         progress.Finish();
-        SetEnabledStateOfControls();
       }
     }
 
