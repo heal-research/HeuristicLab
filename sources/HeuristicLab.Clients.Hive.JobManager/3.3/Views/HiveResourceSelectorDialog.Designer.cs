@@ -72,7 +72,6 @@
       this.hiveResourceSelector.Content = null;
       this.hiveResourceSelector.Location = new System.Drawing.Point(12, 12);
       this.hiveResourceSelector.Name = "hiveResourceSelector";
-      this.hiveResourceSelector.ProgressView = null;
       this.hiveResourceSelector.ReadOnly = false;
       this.hiveResourceSelector.Size = new System.Drawing.Size(549, 591);
       this.hiveResourceSelector.TabIndex = 0;

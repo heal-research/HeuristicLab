@@ -38,9 +38,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
   public partial class OKBExperimentUploadView : ItemView {
     public new IOptimizer Content {
       get { return (IOptimizer)base.Content; }
-      set {
-        base.Content = value;
-      }
+      set { base.Content = value; }
     }
 
     private const string algorithmTypeParameterName = "Algorithm Type";
@@ -55,12 +53,15 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private List<Algorithm> algorithms = new List<Algorithm>();
     Algorithm selectedAlgorithm = null;
     Problem selectedProblem = null;
-    private ProgressView progressView;
-    private IProgress progress;
+    private ProgressView progressView; // this has to be disposed manually!
+    private Progress progress;
 
     public OKBExperimentUploadView() {
       InitializeComponent();
-      progressView = new ProgressView(this);
+      progress = new Progress() {
+        CanBeCanceled = false,
+        ProgressState = ProgressState.Finished
+      };
     }
 
     protected override void OnContentChanged() {
@@ -94,11 +95,17 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       base.RegisterContentEvents();
       RunCreationClient.Instance.Refreshing += new EventHandler(RunCreationClient_Refreshing);
       RunCreationClient.Instance.Refreshed += new EventHandler(RunCreationClient_Refreshed);
+      progressView = new ProgressView(this, progress);
     }
 
     protected override void DeregisterContentEvents() {
       RunCreationClient.Instance.Refreshing -= new EventHandler(RunCreationClient_Refreshing);
       RunCreationClient.Instance.Refreshed -= new EventHandler(RunCreationClient_Refreshed);
+      if (progressView != null) {
+        progressView.Content = null;
+        progressView.Dispose();
+        progressView = null;
+      }
       base.DeregisterContentEvents();
     }
 
@@ -190,9 +197,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (InvokeRequired) {
         Invoke(new EventHandler(RunCreationClient_Refreshing), sender, e);
       } else {
-        progress = new Progress();
         progress.Status = "Refreshing algorithms and problems...";
-        SetProgressView(progress);
+        progress.ProgressState = ProgressState.Started;
       }
     }
 
@@ -200,7 +206,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (InvokeRequired) {
         Invoke(new EventHandler(RunCreationClient_Refreshed), sender, e);
       } else {
-        FinishProgressView();
+        progress.Finish();
         SetEnabledStateOfControls();
       }
     }
@@ -208,49 +214,32 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private void btnUpload_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(UploadAsync);
       task.ContinueWith((t) => {
-        FinishProgressView();
+        progress.Finish();
         PluginInfrastructure.ErrorHandling.ShowErrorDialog("An exception occured while uploading the runs to the OKB.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private void UploadAsync() {
-      progress = new Progress();
       progress.Status = "Uploading runs to OKB...";
       progress.ProgressValue = 0;
       double count = dataGridView.Rows.Count;
       int i = 0;
 
-      SetProgressView(progress);
-      foreach (DataGridViewRow row in dataGridView.Rows) {
-        selectedAlgorithm = algorithms.Where(x => x.Name == row.Cells[algorithmColumnIndex].Value.ToString()).FirstOrDefault();
-        selectedProblem = problems.Where(x => x.Name == row.Cells[problemColumnIndex].Value.ToString()).FirstOrDefault();
-        if (selectedAlgorithm == null || selectedProblem == null) {
-          throw new ArgumentException("Can't retrieve the algorithm/problem to upload");
+      using (var view = new ProgressView(this, progress)) {
+        foreach (DataGridViewRow row in dataGridView.Rows) {
+          selectedAlgorithm = algorithms.Where(x => x.Name == row.Cells[algorithmColumnIndex].Value.ToString()).FirstOrDefault();
+          selectedProblem = problems.Where(x => x.Name == row.Cells[problemColumnIndex].Value.ToString()).FirstOrDefault();
+          if (selectedAlgorithm == null || selectedProblem == null) {
+            throw new ArgumentException("Can't retrieve the algorithm/problem to upload");
+          }
+
+          OKBRun run = new OKBRun(selectedAlgorithm.Id, selectedProblem.Id, row.Tag as IRun, UserInformation.Instance.User.Id);
+          run.Store();
+          i++;
+          progress.ProgressValue = ((double)i) / count;
         }
-
-        OKBRun run = new OKBRun(selectedAlgorithm.Id, selectedProblem.Id, row.Tag as IRun, UserInformation.Instance.User.Id);
-        run.Store();
-        i++;
-        progress.ProgressValue = ((double)i) / count;
       }
-      FinishProgressView();
       ClearRuns();
-    }
-
-    private void SetProgressView(IProgress progress) {
-      if (InvokeRequired) {
-        Invoke(new Action<IProgress>(SetProgressView), progress);
-      } else {
-        progressView.Progress = progress;
-      }
-    }
-
-    private void FinishProgressView() {
-      if (InvokeRequired) {
-        Invoke(new Action(FinishProgressView));
-      } else {
-        progress.Finish();
-      }
     }
 
     private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {

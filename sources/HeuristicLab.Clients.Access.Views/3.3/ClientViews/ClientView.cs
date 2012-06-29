@@ -34,11 +34,28 @@ namespace HeuristicLab.Clients.Access.Views {
     }
 
     private ProgressView progressView;
-    IProgress progress;
+    private Progress progress;
 
     public ClientView() {
       InitializeComponent();
-      progressView = new ProgressView(this);
+      progress = new Progress() {
+        CanBeCanceled = false,
+        ProgressState = ProgressState.Finished
+      };
+    }
+
+    protected override void DeregisterContentEvents() {
+      if (progressView != null) {
+        progressView.Content = null;
+        progressView.Dispose();
+        progressView = null;
+      }
+      base.DeregisterContentEvents();
+    }
+
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      progressView = new ProgressView(this, progress);
     }
 
     protected override void OnContentChanged() {
@@ -83,9 +100,8 @@ namespace HeuristicLab.Clients.Access.Views {
       if (InvokeRequired) {
         Invoke(new Action(StartProgressView));
       } else {
-        progress = new Progress();
         progress.Status = "Downloading client information. Please be patient.";
-        progressView.Progress = progress;
+        progress.ProgressState = ProgressState.Started;
       }
     }
 

@@ -41,6 +41,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
   [View("Hive Job View")]
   [Content(typeof(RefreshableJob), true)]
   public partial class RefreshableHiveJobView : HeuristicLab.Core.Views.ItemView {
+    private Progress progress;
     private ProgressView progressView;
     private HiveResourceSelectorDialog hiveResourceSelectorDialog;
 
@@ -54,7 +55,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     /// </summary>
     public RefreshableHiveJobView() {
       InitializeComponent();
-      progressView = new ProgressView(this);
+      progress = new Progress() {
+        CanBeCanceled = true,
+        ProgressState = ProgressState.Finished
+      };
     }
 
     protected override void RegisterContentEvents() {
@@ -72,6 +76,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       Content.IsAllowedPrivilegedChanged += new EventHandler(Content_IsAllowedPrivilegedChanged);
       Content.Loaded += new EventHandler(Content_Loaded);
       Content.TaskReceived += new EventHandler(Content_TaskReceived);
+      progressView = new ProgressView(this, progress);
     }
 
     protected override void DeregisterContentEvents() {
@@ -87,6 +92,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.Loaded -= new EventHandler(Content_Loaded);
       Content.TaskReceived -= new EventHandler(Content_TaskReceived);
+      if (progressView != null) {
+        progressView.Content = null;
+        progressView.Dispose();
+        progressView = null;
+      }
       base.DeregisterContentEvents();
     }
 
@@ -355,7 +365,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       } else if (Content.ExecutionState == ExecutionState.Paused) {
         var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeJobAsync, Content);
         task.ContinueWith((t) => {
-          FinishProgressView();
+          progress.Finish();
           MessageBox.Show("An error occured resuming the job. See the log for more information.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
           Content.Log.LogException(t.Exception);
         }, TaskContinuationOptions.OnlyOnFaulted);
@@ -367,7 +377,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void pauseButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(PauseJobAsync, Content);
       task.ContinueWith((t) => {
-        FinishProgressView();
+        progress.Finish();
         MessageBox.Show("An error occured pausing the job. See the log for more information.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
         Content.Log.LogException(t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
@@ -376,7 +386,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void stopButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(StopJobAsync, Content);
       task.ContinueWith((t) => {
-        FinishProgressView();
+        progress.Finish();
         MessageBox.Show("An error occured stopping the job. See the log for more information.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
         Content.Log.LogException(t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
@@ -384,27 +394,21 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private void resetButton_Click(object sender, EventArgs e) { }
 
     private void PauseJobAsync(object job) {
-      IProgress prog = new Progress();
-      prog.Status = "Pausing job...";
-      SetProgressView(prog);
+      progress.Status = "Pausing job...";
+      progress.ProgressState = ProgressState.Started;
       HiveClient.PauseJob((RefreshableJob)job);
-      FinishProgressView();
     }
 
     private void StopJobAsync(object job) {
-      IProgress prog = new Progress();
-      prog.Status = "Stopping job...";
-      SetProgressView(prog);
+      progress.Status = "Stopping job...";
+      progress.ProgressState = ProgressState.Started;
       HiveClient.StopJob((RefreshableJob)job);
-      FinishProgressView();
     }
 
     private void ResumeJobAsync(object job) {
-      IProgress prog = new Progress();
-      prog.Status = "Resuming job...";
-      SetProgressView(prog);
+      progress.Status = "Resuming job...";
+      progress.ProgressState = ProgressState.Started;
       HiveClient.ResumeJob((RefreshableJob)job);
-      FinishProgressView();
     }
 
     private void nameTextBox_Validated(object sender, EventArgs e) {
@@ -465,35 +469,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         Invoke(new EventHandler(Content_IsProgressingChanged), sender, e);
       } else {
         if (Content != null && Content.Progress != null && Content.IsProgressing) {
-          SetProgressView();
+          progressView.Content = Content.Progress;
         } else {
-          progressView.Progress = null;
+          progressView.Content = progress;
         }
-      }
-    }
-
-    private void SetProgressView() {
-      if (InvokeRequired) {
-        Invoke(new Action(SetProgressView));
-      } else {
-        progressView.Progress = Content.Progress;
-      }
-    }
-
-    private void SetProgressView(IProgress progress) {
-      if (InvokeRequired) {
-        Invoke(new Action<IProgress>(SetProgressView), progress);
-      } else {
-        progressView.Progress = progress;
-      }
-    }
-
-    private void FinishProgressView() {
-      if (InvokeRequired) {
-        Invoke(new Action(FinishProgressView));
-      } else {
-        if (Content != null && Content.Progress != null)
-          Content.Progress.Finish();
       }
     }
     #endregion

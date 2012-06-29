@@ -30,8 +30,7 @@ namespace HeuristicLab.Clients.Hive.Views {
   [View("OptimizerHiveTask View")]
   [Content(typeof(OptimizerHiveTask), true)]
   public partial class OptimizerHiveTaskView : HiveTaskView {
-    private ProgressView progressView;
-    private IProgress progress;
+    private Progress progress;
 
     public new OptimizerHiveTask Content {
       get { return (OptimizerHiveTask)base.Content; }
@@ -44,7 +43,9 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     public OptimizerHiveTaskView() {
       InitializeComponent();
-      progressView = new ProgressView(this);
+      progress = new Progress() {
+        CanBeCanceled = false
+      };
     }
 
     protected override void Job_ItemChanged(object sender, EventArgs e) {
@@ -75,7 +76,7 @@ namespace HeuristicLab.Clients.Hive.Views {
     private void restartButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeTaskAsync);
       task.ContinueWith((t) => {
-        FinishProgressView();
+        progress.Finish();
         ErrorHandling.ShowErrorDialog(this, "An error occured while resuming the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
@@ -83,7 +84,7 @@ namespace HeuristicLab.Clients.Hive.Views {
     private void pauseButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(PauseTaskAsync);
       task.ContinueWith((t) => {
-        FinishProgressView();
+        progress.Finish();
         ErrorHandling.ShowErrorDialog(this, "An error occured while pausing the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
@@ -91,49 +92,33 @@ namespace HeuristicLab.Clients.Hive.Views {
     private void stopButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(StopTaskAsync);
       task.ContinueWith((t) => {
-        FinishProgressView();
+        progress.Finish();
         ErrorHandling.ShowErrorDialog(this, "An error occured while stopping the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
     #endregion
 
     private void PauseTaskAsync() {
-      progress = new Progress();
       progress.Status = "Pausing task. Please be patient for the command to take effect.";
-      SetProgressView(progress);
-      Content.Pause();
-      FinishProgressView();
-    }
-
-    private void StopTaskAsync() {
-      progress = new Progress();
-      progress.Status = "Stopping task. Please be patient for the command to take effect.";
-      SetProgressView(progress);
-      Content.Stop();
-      FinishProgressView();
-    }
-
-    private void ResumeTaskAsync() {
-      progress = new Progress();
-      progress.Status = "Resuming task. Please be patient for the command to take effect.";
-      SetProgressView(progress);
-      Content.Restart();
-      FinishProgressView();
-    }
-
-    private void SetProgressView(IProgress progress) {
-      if (InvokeRequired) {
-        Invoke(new Action<IProgress>(SetProgressView), progress);
-      } else {
-        progressView.Progress = progress;
+      progress.ProgressState = ProgressState.Started;
+      using (var view = new ProgressView(this, progress)) {
+        Content.Pause();
       }
     }
 
-    private void FinishProgressView() {
-      if (InvokeRequired) {
-        Invoke(new Action(FinishProgressView));
-      } else {
-        progress.Finish();
+    private void StopTaskAsync() {
+      progress.Status = "Stopping task. Please be patient for the command to take effect.";
+      progress.ProgressState = ProgressState.Started;
+      using (var view = new ProgressView(this, progress)) {
+        Content.Stop();
+      }
+    }
+
+    private void ResumeTaskAsync() {
+      progress.Status = "Resuming task. Please be patient for the command to take effect.";
+      progress.ProgressState = ProgressState.Started;
+      using (var view = new ProgressView(this, progress)) {
+        Content.Restart();
       }
     }
 

@@ -41,18 +41,13 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private ISet<TreeNode> mainTreeNodes;
     private ISet<TreeNode> filteredTreeNodes;
     private ISet<TreeNode> nodeStore;
-    private IProgress currentProgress;
+    private Progress progress;
+    private ProgressView progressView;
 
     private ISet<Resource> selectedResources;
     public ISet<Resource> SelectedResources {
       get { return selectedResources; }
       set { selectedResources = value; }
-    }
-
-    private ProgressView progressView;
-    public ProgressView ProgressView {
-      get { return progressView; }
-      set { progressView = value; }
     }
 
     public new IItemList<Resource> Content {
@@ -68,18 +63,32 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       selectedResources = new HashSet<Resource>();
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.MonitorLarge);
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.NetworkCenterLarge);
+      progress = new Progress() {
+        CanBeCanceled = false,
+        ProgressState = ProgressState.Finished
+      };
+    }
+
+    protected override void DeregisterContentEvents() {
+      if (progressView != null) {
+        progressView.Content = null;
+        progressView.Dispose();
+        progressView = null;
+      }
+      base.DeregisterContentEvents();
+    }
+
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      progressView = new ProgressView(this, progress);
     }
 
     public void StartProgressView() {
       if (InvokeRequired) {
         Invoke(new Action(StartProgressView));
       } else {
-        currentProgress = new Progress();
-        currentProgress.Status = "Downloading resources. Please be patient.";
-        if (progressView == null) {
-          progressView = new ProgressView(this);
-        }
-        progressView.Progress = currentProgress;
+        progress.Status = "Downloading resources. Please be patient.";
+        progress.ProgressState = ProgressState.Started;
       }
     }
 
@@ -87,7 +96,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired) {
         Invoke(new Action(FinishProgressView));
       } else {
-        currentProgress.Finish();
+        progress.Finish();
       }
     }
 

@@ -1,6 +1,6 @@
 ﻿
 namespace HeuristicLab.MainForm.WindowsForms {
-  partial class ProgressView : View {
+  partial class ProgressView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -24,10 +24,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.progressBar = new System.Windows.Forms.ProgressBar();
       this.statusLabel = new System.Windows.Forms.Label();
       this.cancelButton = new System.Windows.Forms.Button();
       this.panel = new System.Windows.Forms.Panel();
+      this.cancelButtonTimer = new System.Windows.Forms.Timer(this.components);
       this.panel.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -74,9 +76,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.panel.Size = new System.Drawing.Size(360, 88);
       this.panel.TabIndex = 3;
       // 
+      // cancelButtonTimer
+      // 
+      this.cancelButtonTimer.Tick += new System.EventHandler(this.cancelButtonTimer_Tick);
+      // 
       // ProgressView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.panel);
       this.Name = "ProgressView";
@@ -92,5 +97,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private System.Windows.Forms.Label statusLabel;
     private System.Windows.Forms.Button cancelButton;
     private System.Windows.Forms.Panel panel;
+    private System.Windows.Forms.Timer cancelButtonTimer;
   }
 }
