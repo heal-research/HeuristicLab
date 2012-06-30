@@ -325,23 +325,28 @@ namespace HeuristicLab.Optimization {
       optimizer.Runs.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(optimizer_Runs_ItemsAdded);
       optimizer.Runs.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(optimizer_Runs_ItemsRemoved);
     }
-    private void optimizer_ExceptionOccurred(object sender, EventArgs<Exception> e) {
-      OnExceptionOccurred(e.Value);
-    }
-    private void optimizer_ExecutionTimeChanged(object sender, EventArgs e) {
-      ExecutionTime = Optimizers.Aggregate(TimeSpan.Zero, (t, o) => t + o.ExecutionTime);
-    }
-    private void optimizer_Paused(object sender, EventArgs e) {
-      if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started)) OnPaused();
-    }
-    private void optimizer_Prepared(object sender, EventArgs e) {
-      if (Optimizers.All(x => x.ExecutionState == ExecutionState.Prepared)) OnPrepared();
-    }
-    private void optimizer_Started(object sender, EventArgs e) {
-      if (ExecutionState != ExecutionState.Started) OnStarted();
-    }
 
     private readonly object locker = new object();
+    private void optimizer_ExceptionOccurred(object sender, EventArgs<Exception> e) {
+      lock (locker)
+        OnExceptionOccurred(e.Value);
+    }
+    private void optimizer_ExecutionTimeChanged(object sender, EventArgs e) {
+      lock (locker)
+        ExecutionTime = Optimizers.Aggregate(TimeSpan.Zero, (t, o) => t + o.ExecutionTime);
+    }
+    private void optimizer_Paused(object sender, EventArgs e) {
+      lock (locker)
+        if (Optimizers.All(x => x.ExecutionState != ExecutionState.Started)) OnPaused();
+    }
+    private void optimizer_Prepared(object sender, EventArgs e) {
+      lock (locker)
+        if (Optimizers.All(x => x.ExecutionState == ExecutionState.Prepared)) OnPrepared();
+    }
+    private void optimizer_Started(object sender, EventArgs e) {
+      lock (locker)
+        if (ExecutionState != ExecutionState.Started) OnStarted();
+    }
     private void optimizer_Stopped(object sender, EventArgs e) {
       lock (locker) {
         if (experimentStopped) {
@@ -355,14 +360,18 @@ namespace HeuristicLab.Optimization {
       }
     }
     private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      Runs.RemoveRange(e.OldItems);
-      Runs.AddRange(e.Items);
+      lock (locker) {
+        Runs.RemoveRange(e.OldItems);
+        Runs.AddRange(e.Items);
+      }
     }
     private void optimizer_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      Runs.AddRange(e.Items);
+      lock (locker)
+        Runs.AddRange(e.Items);
     }
     private void optimizer_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      Runs.RemoveRange(e.Items);
+      lock (locker)
+        Runs.RemoveRange(e.Items);
     }
 
     private void RegisterRunsEvents() {
