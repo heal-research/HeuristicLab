@@ -32,14 +32,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// </summary>
   [Item("SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer", "An operator that collects the validation Pareto-best symbolic classification solutions for single objective symbolic classification problems.")]
   [StorableClass]
-  public sealed class SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer<ISymbolicClassificationSolution, ISymbolicClassificationSingleObjectiveEvaluator, IClassificationProblemData>,
-  ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator {
-    private const string EstimationLimitsParameterName = "EstimationLimits";
+  public sealed class SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer<ISymbolicClassificationSolution, ISymbolicClassificationSingleObjectiveEvaluator, IClassificationProblemData> {
     private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     #region parameter properties
-    public IValueLookupParameter<DoubleLimit> EstimationLimitsParameter {
-      get { return (IValueLookupParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
-    }
     public IValueParameter<BoolValue> ApplyLinearScalingParameter {
       get { return (IValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
     }
@@ -56,7 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer(SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSingleObjectiveValidationParetoBestSolutionAnalyzer()
       : base() {
-      Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic classification model."));
       Parameters.Add(new ValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the produced symbolic classification solution should be linearly scaled.", new BoolValue(false)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {

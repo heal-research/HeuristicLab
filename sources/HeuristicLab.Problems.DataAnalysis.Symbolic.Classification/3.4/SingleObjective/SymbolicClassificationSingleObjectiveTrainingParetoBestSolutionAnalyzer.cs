@@ -32,22 +32,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// </summary>
   [Item("SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer", "An operator that collects the training Pareto-best symbolic classification solutions for single objective symbolic classification problems.")]
   [StorableClass]
-  public sealed class SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<ISymbolicClassificationSolution>,
-  ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator {
-    private const string ProblemDataParameterName = "ProblemData";
-    private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicDataAnalysisTreeInterpreter";
-    private const string EstimationLimitsParameterName = "EstimationLimits";
+  public sealed class SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<IClassificationProblemData, ISymbolicClassificationSolution> {
     private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     #region parameter properties
-    public ILookupParameter<IClassificationProblemData> ProblemDataParameter {
-      get { return (ILookupParameter<IClassificationProblemData>)Parameters[ProblemDataParameterName]; }
-    }
-    public ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> SymbolicDataAnalysisTreeInterpreterParameter {
-      get { return (ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[SymbolicDataAnalysisTreeInterpreterParameterName]; }
-    }
-    public IValueLookupParameter<DoubleLimit> EstimationLimitsParameter {
-      get { return (IValueLookupParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
-    }
     public IValueParameter<BoolValue> ApplyLinearScalingParameter {
       get { return (IValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
     }
@@ -64,9 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer(SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer()
       : base() {
-      Parameters.Add(new LookupParameter<IClassificationProblemData>(ProblemDataParameterName, "The problem data for the symbolic classification solution."));
-      Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The symbolic data analysis tree interpreter for the symbolic expression tree."));
-      Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic classification model."));
       Parameters.Add(new ValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the produced symbolic classification solution should be linearly scaled.", new BoolValue(false)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {

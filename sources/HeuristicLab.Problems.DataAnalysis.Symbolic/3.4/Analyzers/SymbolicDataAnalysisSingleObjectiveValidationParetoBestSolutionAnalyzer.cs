@@ -19,17 +19,16 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -37,13 +36,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// </summary>
   [Item("SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer", "An operator that analyzes the Pareto-best symbolic data analysis solution for single objective symbolic data analysis problems.")]
   [StorableClass]
-  public abstract class SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer<S, T, U> : SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<T, U>
+  public abstract class SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer<S, T, U> : SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<T, U>, ISymbolicDataAnalysisBoundedOperator
     where S : class, ISymbolicDataAnalysisSolution
     where T : class, ISymbolicDataAnalysisSingleObjectiveEvaluator<U>
     where U : class, IDataAnalysisProblemData {
     private const string ValidationBestSolutionsParameterName = "Best validation solutions";
     private const string ValidationBestSolutionQualitiesParameterName = "Best validation solution qualities";
     private const string ComplexityParameterName = "Complexity";
+    private const string EstimationLimitsParameterName = "EstimationLimits";
 
     public override bool EnabledByDefault {
       get { return false; }
@@ -59,6 +59,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IScopeTreeLookupParameter<DoubleValue> ComplexityParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters[ComplexityParameterName]; }
     }
+    public IValueLookupParameter<DoubleLimit> EstimationLimitsParameter {
+      get { return (IValueLookupParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
+    }
+
     #endregion
     #region properties
     public ItemList<S> ValidationBestSolutions {
@@ -79,6 +83,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<ItemList<S>>(ValidationBestSolutionsParameterName, "The validation best (Pareto-optimal) symbolic data analysis solutions."));
       Parameters.Add(new LookupParameter<ItemList<DoubleArray>>(ValidationBestSolutionQualitiesParameterName, "The qualities of the validation best (Pareto-optimal) solutions."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(ComplexityParameterName, "The complexity of each tree."));
+      Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic classification model."));
     }
 
     public override IOperation Apply() {

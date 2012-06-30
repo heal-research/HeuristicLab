@@ -202,7 +202,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Operators.AddRange(ApplicationManager.Manager.GetInstances<ISymbolicDataAnalysisExpressionCrossover<T>>());
       Operators.Add(new SymbolicExpressionSymbolFrequencyAnalyzer());
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
-      Operators.Add(new SymbolicDataAnalysisComplexityAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
       Operators.Add(new SymbolicExpressionTreeLengthAnalyzer());
       ParameterizeOperators();

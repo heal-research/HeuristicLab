@@ -19,17 +19,16 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -37,11 +36,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// </summary>
   [Item("SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer", "An operator that analyzes the Pareto-best symbolic data analysis solution for single objective symbolic data analysis problems.")]
   [StorableClass]
-  public abstract class SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<T> : SymbolicDataAnalysisSingleObjectiveAnalyzer
-    where T : class, ISymbolicDataAnalysisSolution {
+  public abstract class SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<S, T> : SymbolicDataAnalysisSingleObjectiveAnalyzer, ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator
+    where T : class, ISymbolicDataAnalysisSolution
+    where S : class, IDataAnalysisProblemData {
+    private const string ProblemDataParameterName = "ProblemData";
     private const string TrainingBestSolutionsParameterName = "Best training solutions";
     private const string TrainingBestSolutionQualitiesParameterName = "Best training solution qualities";
     private const string ComplexityParameterName = "Complexity";
+    private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicDataAnalysisTreeInterpreter";
+    private const string EstimationLimitsParameterName = "EstimationLimits";
 
     public override bool EnabledByDefault {
       get { return false; }
@@ -57,6 +60,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IScopeTreeLookupParameter<DoubleValue> ComplexityParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters[ComplexityParameterName]; }
     }
+    public ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> SymbolicDataAnalysisTreeInterpreterParameter {
+      get { return (ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[SymbolicDataAnalysisTreeInterpreterParameterName]; }
+    }
+    public ILookupParameter<S> ProblemDataParameter {
+      get { return (ILookupParameter<S>)Parameters[ProblemDataParameterName]; }
+    }
+    public IValueLookupParameter<DoubleLimit> EstimationLimitsParameter {
+      get { return (IValueLookupParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
+    }
     #endregion
     #region properties
     public ItemList<T> TrainingBestSolutions {
@@ -71,12 +83,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     [StorableConstructor]
     protected SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
-    protected SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer(SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<T> original, Cloner cloner) : base(original, cloner) { }
+    protected SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer(SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<S, T> original, Cloner cloner) : base(original, cloner) { }
     public SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer()
       : base() {
+      Parameters.Add(new LookupParameter<S>(ProblemDataParameterName, "The problem data for the symbolic data analysis solution."));
       Parameters.Add(new LookupParameter<ItemList<T>>(TrainingBestSolutionsParameterName, "The training best (Pareto-optimal) symbolic data analysis solutions."));
       Parameters.Add(new LookupParameter<ItemList<DoubleArray>>(TrainingBestSolutionQualitiesParameterName, "The qualities of the training best (Pareto-optimal) solutions."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(ComplexityParameterName, "The complexity of each tree."));
+      Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The symbolic data analysis tree interpreter for the symbolic expression tree."));
+      Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic classification model."));
     }
 
     public override IOperation Apply() {
