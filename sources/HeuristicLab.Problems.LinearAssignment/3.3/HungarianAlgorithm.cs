@@ -36,7 +36,9 @@ namespace HeuristicLab.Problems.LinearAssignment {
   [Item("Hungarian Algorithm", "The Hungarian algorithm can be used to solve the linear assignment problem in O(n^3). It is also known as the Kuhn–Munkres algorithm or Munkres assignment algorithm.")]
   [Creatable("Algorithms")]
   [StorableClass]
-  public sealed class HungarianAlgorithm : EngineAlgorithm {
+  public sealed class HungarianAlgorithm : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
+
     #region Problem Properties
     public override Type ProblemType {
       get { return typeof(LinearAssignmentProblem); }
@@ -67,7 +69,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private HungarianAlgorithm(bool deserializing) : base(deserializing) { }
     private HungarianAlgorithm(HungarianAlgorithm original, Cloner cloner)
       : base(original, cloner) {
-      AttachEventHandlers();
+      RegisterEventHandlers();
     }
     public HungarianAlgorithm()
       : base() {
@@ -82,7 +84,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
       solver.Successor = placeholder;
 
       UpdateAnalyzers();
-      AttachEventHandlers();
+      RegisterEventHandlers();
 
       Problem = new LinearAssignmentProblem();
     }
@@ -120,7 +122,11 @@ namespace HeuristicLab.Problems.LinearAssignment {
 
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
-    private void AttachEventHandlers() {
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
       if (Problem != null) {
         Problem.SolutionCreatorChanged += new EventHandler(Problem_SolutionCreatorChanged);
         Problem.EvaluatorChanged += new EventHandler(Problem_EvaluatorChanged);

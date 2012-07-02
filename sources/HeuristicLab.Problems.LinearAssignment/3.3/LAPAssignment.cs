@@ -29,7 +29,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LAP Assignment", "Represents a solution to the LAP.")]
   [StorableClass]
-  public sealed class LAPAssignment : Item, INotifyPropertyChanged {
+  public sealed class LAPAssignment : Item, INotifyPropertyChanged, IStorableContent {
+    public string Filename { get; set; }
 
     [Storable]
     private DoubleMatrix costs;
@@ -92,6 +93,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
       : base(original, cloner) {
       costs = cloner.Clone(original.costs);
       assignment = cloner.Clone(original.assignment);
+      rowNames = cloner.Clone(original.rowNames);
+      columnNames = cloner.Clone(original.columnNames);
       quality = cloner.Clone(original.quality);
     }
     public LAPAssignment(DoubleMatrix costs, Permutation assignment) {
@@ -115,7 +118,6 @@ namespace HeuristicLab.Problems.LinearAssignment {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LAPAssignment(this, cloner);
     }
-
 
     public event PropertyChangedEventHandler PropertyChanged;
     private void OnPropertyChanged(string propertyName) {

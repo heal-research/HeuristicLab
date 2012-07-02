@@ -35,10 +35,12 @@ namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LinearAssignmentProblem", "In the linear assignment problem (LAP) an assignment of workers to jobs has to be found such that each worker is assigned to exactly one job, each job is assigned to exactly one worker and the sum of the resulting costs needs to be minimal.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator> {
+  public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator>, IStorableContent {
     public static readonly string CostsDescription = "The cost matrix that describes the assignment of rows to columns.";
     public static readonly string RowNamesDescription = "The elements represented by the rows of the costs matrix.";
     public static readonly string ColumnNamesDescription = "The elements represented by the columns of the costs matrix.";
+
+    public string Filename { get; set; }
 
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -107,11 +109,11 @@ namespace HeuristicLab.Problems.LinearAssignment {
       ((OptionalValueParameter<StringArray>)RowNamesParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
       ((OptionalValueParameter<StringArray>)ColumnNamesParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
 
-      RowNames = new StringArray(new string[] { "Human", "Von Neumann machine", "Quantum computer" });
-      ColumnNames = new StringArray(new string[] { "Find a person's e-mail address", "Compute first 1000 decimals of Pi", "Factorize large integers" });
-      Costs[0, 0] = 1; Costs[0, 1] = 10; Costs[0, 2] = 100;
-      Costs[1, 0] = 10; Costs[1, 1] = 1; Costs[1, 2] = 100;
-      Costs[2, 0] = 100; Costs[2, 1] = 10; Costs[2, 1] = 1;
+      RowNames = new StringArray(new string[] { "Eric", "Robert", "Allison" });
+      ColumnNames = new StringArray(new string[] { "MRI", "Blood test", "Angiogram" });
+      Costs[0, 0] = 4; Costs[0, 1] = 5; Costs[0, 2] = 3;
+      Costs[1, 0] = 6; Costs[1, 1] = 6; Costs[1, 2] = 4;
+      Costs[2, 0] = 5; Costs[2, 1] = 5; Costs[2, 2] = 1;
 
       bestLAPSolutionAnalyzer = new BestLAPSolutionAnalyzer();
       SolutionCreator.PermutationParameter.ActualName = "Assignment";
