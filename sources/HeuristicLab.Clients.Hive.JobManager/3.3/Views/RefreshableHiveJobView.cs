@@ -56,7 +56,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     public RefreshableHiveJobView() {
       InitializeComponent();
       progress = new Progress() {
-        CanBeCanceled = true,
+        CanBeCanceled = false,
         ProgressState = ProgressState.Finished
       };
     }
@@ -397,18 +397,21 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       progress.Status = "Pausing job...";
       progress.ProgressState = ProgressState.Started;
       HiveClient.PauseJob((RefreshableJob)job);
+      progress.Finish();
     }
 
     private void StopJobAsync(object job) {
       progress.Status = "Stopping job...";
       progress.ProgressState = ProgressState.Started;
       HiveClient.StopJob((RefreshableJob)job);
+      progress.Finish();
     }
 
     private void ResumeJobAsync(object job) {
       progress.Status = "Resuming job...";
       progress.ProgressState = ProgressState.Started;
       HiveClient.ResumeJob((RefreshableJob)job);
+      progress.Finish();
     }
 
     private void nameTextBox_Validated(object sender, EventArgs e) {

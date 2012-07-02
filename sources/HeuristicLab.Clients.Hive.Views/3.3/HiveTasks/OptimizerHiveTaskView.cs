@@ -45,7 +45,8 @@ namespace HeuristicLab.Clients.Hive.Views {
     public OptimizerHiveTaskView() {
       InitializeComponent();
       progress = new Progress() {
-        CanBeCanceled = false
+        CanBeCanceled = false,
+        ProgressState = ProgressState.Finished
       };
     }
 
@@ -109,18 +110,21 @@ namespace HeuristicLab.Clients.Hive.Views {
       progress.Status = "Pausing task. Please be patient for the command to take effect.";
       progress.ProgressState = ProgressState.Started;
       Content.Pause();
+      progress.Finish();
     }
 
     private void StopTaskAsync() {
       progress.Status = "Stopping task. Please be patient for the command to take effect.";
       progress.ProgressState = ProgressState.Started;
       Content.Stop();
+      progress.Finish();
     }
 
     private void ResumeTaskAsync() {
       progress.Status = "Resuming task. Please be patient for the command to take effect.";
       progress.ProgressState = ProgressState.Started;
       Content.Restart();
+      progress.Finish();
     }
 
     protected override void SetEnabledStateOfControls() {

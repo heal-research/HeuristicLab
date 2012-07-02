@@ -237,6 +237,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         i++;
         progress.ProgressValue = ((double)i) / count;
       }
+      progress.Finish();
       ClearRuns();
     }
 
