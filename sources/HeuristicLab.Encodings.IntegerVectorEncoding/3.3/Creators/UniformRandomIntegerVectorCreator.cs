@@ -45,8 +45,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     /// </summary>
     /// <param name="random">The random number generator.</param>
     /// <param name="length">The length of the int vector.</param>
-    /// <param name="min">The minimum value of the sampling range for each vector element (inclusive).</param>
-    /// <param name="max">The maximum value of the sampling range for each vector element (exclusive).</param>
+    /// <param name="bounds">A matrix containing the inclusive lower and inclusive upper bound in the first and second column and a step size in the third column.
+    /// Each line represents the bounds for a certain dimension. If fewer lines are given, the lines are cycled.</param>
     /// <returns>The newly created integer vector.</returns>
     public static IntegerVector Apply(IRandom random, int length, IntMatrix bounds) {
       var result = new IntegerVector(length);

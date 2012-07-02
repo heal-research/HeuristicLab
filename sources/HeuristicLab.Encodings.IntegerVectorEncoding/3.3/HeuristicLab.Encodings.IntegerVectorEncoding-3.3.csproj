@@ -121,6 +121,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Crossovers\RoundedUniformArithmeticCrossover.cs" />
+    <Compile Include="IntegerVectorOperator.cs" />
     <Compile Include="Interfaces\IBoundedIntegerVectorOperator.cs" />
     <Compile Include="Interfaces\IIntegerVectorCreator.cs" />
     <Compile Include="Interfaces\IIntegerVectorCrossover.cs" />

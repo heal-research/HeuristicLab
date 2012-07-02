@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("BoundedIntegerVectorManipulator", "Base class for bounded integer vector manipulators.")]
   [StorableClass]
   public abstract class BoundedIntegerVectorManipulator : IntegerVectorManipulator, IBoundedIntegerVectorOperator {
-    
+
     public IValueLookupParameter<IntMatrix> BoundsParameter {
       get { return (IValueLookupParameter<IntMatrix>)Parameters["Bounds"]; }
     }
@@ -44,20 +44,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     protected sealed override void Manipulate(IRandom random, IntegerVector integerVector) {
-      if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("UniformSomePositionsManipulator: Parameter " + BoundsParameter.ActualName + " could not be found.");
+      if (BoundsParameter.ActualValue == null) throw new InvalidOperationException("BoundedIntegerVectorManipulator: Parameter " + BoundsParameter.ActualName + " could not be found.");
       ManipulateBounded(random, integerVector, BoundsParameter.ActualValue);
     }
 
     protected abstract void ManipulateBounded(IRandom random, IntegerVector integerVector, IntMatrix bounds);
-
-    protected static int RoundFeasible(int min, int max, int step, double value) {
-      return Math.Max(min, Math.Min(max, (int)Math.Round((value - min) / (double)step) * step + min));
-    }
-    protected static int FloorFeasible(int min, int max, int step, double value) {
-      return Math.Max(min, Math.Min(max, (int)Math.Floor((value - min) / (double)step) * step + min));
-    }
-    protected static int CeilingFeasible(int min, int max, int step, double value) {
-      return Math.Max(min, Math.Min(max, (int)Math.Ceiling((value - min) / (double)step) * step + min));
-    }
   }
 }

@@ -21,7 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -32,7 +31,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// </summary>
   [Item("IntegerVectorCrossover", "A base class for operators that perform a crossover of int-valued vectors.")]
   [StorableClass]
-  public abstract class IntegerVectorCrossover : SingleSuccessorOperator, IIntegerVectorCrossover, IStochasticOperator {
+  public abstract class IntegerVectorCrossover : IntegerVectorOperator, IIntegerVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }

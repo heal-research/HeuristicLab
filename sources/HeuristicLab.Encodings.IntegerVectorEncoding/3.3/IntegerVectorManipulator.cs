@@ -21,7 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -32,7 +31,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// </summary>
   [Item("IntegerVectorManipulator", "A base class for operators that manipulate int-valued vectors.")]
   [StorableClass]
-  public abstract class IntegerVectorManipulator : SingleSuccessorOperator, IIntegerVectorManipulator, IStochasticOperator {
+  public abstract class IntegerVectorManipulator : IntegerVectorOperator, IIntegerVectorManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }

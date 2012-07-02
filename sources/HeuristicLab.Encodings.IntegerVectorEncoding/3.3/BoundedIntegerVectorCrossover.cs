@@ -49,15 +49,5 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
 
     protected abstract IntegerVector CrossBounded(IRandom random, ItemArray<IntegerVector> parents, IntMatrix bounds);
-
-    protected static int RoundFeasible(int min, int max, int step, double value) {
-      return Math.Max(min, Math.Min(max, (int)Math.Round((value - min) / (double)step) * step + min));
-    }
-    protected static int FloorFeasible(int min, int max, int step, double value) {
-      return Math.Max(min, Math.Min(max, (int)Math.Floor((value - min) / (double)step) * step + min));
-    }
-    protected static int CeilingFeasible(int min, int max, int step, double value) {
-      return Math.Max(min, Math.Min(max, (int)Math.Ceiling((value - min) / (double)step) * step + min));
-    }
   }
 }
