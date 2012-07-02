@@ -550,8 +550,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
             var asm = (from assembly in assemblies
                        where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
                        select assembly)
-                      .Single();
-
+                      .SingleOrDefault();
+            if (asm == null) throw new InvalidPluginException("Could not assembly " + assemblyLocation + " for plugin " + desc.Name);
             foreach (Type pluginType in asm.GetTypes()) {
               if (typeof(IPlugin).IsAssignableFrom(pluginType) && !pluginType.IsAbstract && !pluginType.IsInterface && !pluginType.HasElementType) {
                 IPlugin plugin = (IPlugin)Activator.CreateInstance(pluginType);
