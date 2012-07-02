@@ -47,7 +47,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     #endregion
     [StorableConstructor]
     protected SymbolicClassificationSingleObjectiveProblem(bool deserializing) : base(deserializing) { }
-    protected SymbolicClassificationSingleObjectiveProblem(SymbolicClassificationSingleObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
+    protected SymbolicClassificationSingleObjectiveProblem(SymbolicClassificationSingleObjectiveProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicClassificationSingleObjectiveProblem(this, cloner); }
 
     public SymbolicClassificationSingleObjectiveProblem()
@@ -59,8 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;
 
-      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
-
+      RegisterEventHandlers();
       ConfigureGrammarSymbols();
       InitializeOperators();
       UpdateEstimationLimits();
@@ -68,6 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      RegisterEventHandlers();
       // compatibility
       bool changed = false;
       if (!Operators.OfType<SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer>().Any()) {
@@ -79,6 +82,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         changed = true;
       }
       if (changed) ParameterizeOperators();
+    }
+
+    private void RegisterEventHandlers() {
+      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
     }
 
     private void ConfigureGrammarSymbols() {

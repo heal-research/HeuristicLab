@@ -48,7 +48,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     #endregion
     [StorableConstructor]
     protected SymbolicClassificationMultiObjectiveProblem(bool deserializing) : base(deserializing) { }
-    protected SymbolicClassificationMultiObjectiveProblem(SymbolicClassificationMultiObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
+    protected SymbolicClassificationMultiObjectiveProblem(SymbolicClassificationMultiObjectiveProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicClassificationMultiObjectiveProblem(this, cloner); }
 
     public SymbolicClassificationMultiObjectiveProblem()
@@ -61,11 +64,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;
 
-      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
 
+      RegisterEventHandlers();
       ConfigureGrammarSymbols();
       InitializeOperators();
       UpdateEstimationLimits();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
+      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
     }
 
     private void ConfigureGrammarSymbols() {

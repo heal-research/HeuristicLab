@@ -52,7 +52,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     [StorableConstructor]
     protected SymbolicRegressionMultiObjectiveProblem(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionMultiObjectiveProblem(SymbolicRegressionMultiObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
+    protected SymbolicRegressionMultiObjectiveProblem(SymbolicRegressionMultiObjectiveProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionMultiObjectiveProblem(this, cloner); }
 
     public SymbolicRegressionMultiObjectiveProblem()
@@ -65,11 +68,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;
 
-      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
-
+      RegisterEventHandlers();
       ConfigureGrammarSymbols();
       InitializeOperators();
       UpdateEstimationLimits();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
+      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
     }
 
     private void ConfigureGrammarSymbols() {

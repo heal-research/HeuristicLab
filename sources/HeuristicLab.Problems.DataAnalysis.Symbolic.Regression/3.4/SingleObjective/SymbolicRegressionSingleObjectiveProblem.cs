@@ -48,7 +48,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
     [StorableConstructor]
     protected SymbolicRegressionSingleObjectiveProblem(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionSingleObjectiveProblem(SymbolicRegressionSingleObjectiveProblem original, Cloner cloner) : base(original, cloner) { }
+    protected SymbolicRegressionSingleObjectiveProblem(SymbolicRegressionSingleObjectiveProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
     public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionSingleObjectiveProblem(this, cloner); }
 
     public SymbolicRegressionSingleObjectiveProblem()
@@ -61,8 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;
 
-      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
-
+      RegisterEventHandlers();
       ConfigureGrammarSymbols();
       InitializeOperators();
       UpdateEstimationLimits();
@@ -70,6 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      RegisterEventHandlers();
       // compatibility
       bool changed = false;
       if (!Operators.OfType<SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer>().Any()) {
@@ -83,6 +86,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (changed) {
         ParameterizeOperators();
       }
+    }
+
+    private void RegisterEventHandlers() {
+      SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
     }
 
     private void ConfigureGrammarSymbols() {
