@@ -41,11 +41,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// approximate amount of bins 
     /// </summary>
     protected const double bins = 25;
-    /// <summary>
-    ///  keeps for all series a list for every bin with the position of the bin, the relative frequency of the
-    ///  residuals and the beginning and the end of the interval of the bin
-    ///  </summary>
-    protected readonly Dictionary<string, List<List<double>>> relativeFrequencies;
     #endregion
 
     public new IRegressionSolution Content {
@@ -56,7 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     public RegressionSolutionResidualHistogram()
       : base() {
       InitializeComponent();
-      relativeFrequencies = new Dictionary<string, List<List<double>>>();
       foreach (string series in new List<String>() { ALL_SAMPLES, TRAINING_SAMPLES, TEST_SAMPLES }) {
         chart.Series.Add(series);
         chart.Series[series].LegendText = series;
@@ -66,7 +60,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         chart.Series[series].BorderDashStyle = ChartDashStyle.Solid;
         chart.Series[series].BorderColor = Color.Black;
         chart.Series[series].ToolTip = series + " Y = #VALY from #CUSTOMPROPERTY(from) to #CUSTOMPROPERTY(to)";
-        relativeFrequencies[series] = new List<List<double>>();
       }
       //configure axis 
       chart.CustomizeAllChartAreas();
@@ -84,32 +77,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void RedrawChart() {
       foreach (Series series in chart.Series) {
         series.Points.Clear();
-        relativeFrequencies[series.Name].Clear();
       }
       if (Content != null) {
-        List<double> residuals = CalculateResiduals();
-        double realMax = Math.Max(Math.Abs(residuals.Min()), Math.Abs(residuals.Max()));
-        double roundedMax = HumanRoundMax(realMax);
-        double intervalWidth = (roundedMax * 2.0) / bins;
-        intervalWidth = HumanRoundMax(intervalWidth);
-        // sets roundedMax to a value, so that zero will be in the middle of the x axis
-        double help = realMax / intervalWidth;
-        help = help % 1 < 0.5 ? (int)help : (int)help + 1;
-        roundedMax = help * intervalWidth;
+        List<double> residuals = CalculateResiduals(Content);
 
+        double max = 0.0;
         foreach (Series series in chart.Series) {
-          CalculateFrequencies(residuals, series.Name, roundedMax, intervalWidth);
-          if (!series.Equals(ALL_SAMPLES))
-            ShowValues(series);
+          CalculateFrequencies(residuals, series);
+          double seriesMax = series.Points.Select(p => p.YValues.First()).Max();
+          max = max < seriesMax ? seriesMax : max;
         }
+
+        // ALL_SAMPLES has to be calculated to know its highest frequency, but it is not shown in the beginning
+        chart.Series.Where(s => s.Name.Equals(ALL_SAMPLES)).First().Points.Clear();
+
+        double roundedMax, intervalWidth;
+        CalculateResidualParameters(residuals, out roundedMax, out intervalWidth);
 
         ChartArea chartArea = chart.ChartAreas[0];
         chartArea.AxisX.Minimum = -roundedMax - intervalWidth;
         chartArea.AxisX.Maximum = roundedMax + intervalWidth;
         // get the highest frequency of a residual of any series
-        chartArea.AxisY.Maximum = (from series in relativeFrequencies.Values
-                                   select (from residual in series
-                                           select residual.ElementAt(1)).Max()).Max();
+        chartArea.AxisY.Maximum = max;
         if (chartArea.AxisY.Maximum < 0.1) {
           chartArea.AxisY.Interval = 0.01;
           chartArea.AxisY.Maximum = Math.Ceiling(chartArea.AxisY.Maximum * 100) / 100;
@@ -127,48 +116,43 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private List<double> CalculateResiduals() {
+    private List<double> CalculateResiduals(IRegressionSolution solution) {
       List<double> residuals = new List<double>();
 
-      IRegressionProblemData problemdata = Content.ProblemData;
+      IRegressionProblemData problemdata = solution.ProblemData;
       List<double> targetValues = problemdata.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToList();
-      List<double> estimatedValues = Content.EstimatedValues.ToList();
+      List<double> estimatedValues = solution.EstimatedValues.ToList();
 
-      for (int i = 0; i < Content.ProblemData.Dataset.Rows; i++) {
+      for (int i = 0; i < solution.ProblemData.Dataset.Rows; i++) {
         double residual = estimatedValues[i] - targetValues[i];
         residuals.Add(residual);
       }
       return residuals;
     }
 
-    private void CalculateFrequencies(List<double> residualValues, string series, double max, double intervalWidth) {
+    private void CalculateFrequencies(List<double> residualValues, Series series) {
+      double roundedMax, intervalWidth;
+      CalculateResidualParameters(residualValues, out roundedMax, out intervalWidth);
+
       IEnumerable<double> relevantResiduals = residualValues;
       IRegressionProblemData problemdata = Content.ProblemData;
-      if (series.Equals(TRAINING_SAMPLES)) {
+      if (series.Name.Equals(TRAINING_SAMPLES)) {
         relevantResiduals = residualValues.Skip(problemdata.TrainingPartition.Start).Take(problemdata.TrainingPartition.Size);
-      } else if (series.Equals(TEST_SAMPLES)) {
+      } else if (series.Name.Equals(TEST_SAMPLES)) {
         relevantResiduals = residualValues.Skip(problemdata.TestPartition.Start).Take(problemdata.TestPartition.Size);
       }
 
       double intervalCenter = intervalWidth / 2.0;
       double sampleCount = relevantResiduals.Count();
-      double current = -max;
+      double current = -roundedMax;
+      DataPointCollection seriesPoints = series.Points;
 
       for (int i = 0; i <= bins; i++) {
         IEnumerable<double> help = relevantResiduals.Where(x => x >= (current - intervalCenter) && x < (current + intervalCenter));
-        relativeFrequencies[series].Add(new List<double>() { current, help.Count() / sampleCount, current - intervalCenter, current + intervalCenter });
+        seriesPoints.AddXY(current, help.Count() / sampleCount);
+        seriesPoints[seriesPoints.Count - 1]["from"] = (current - intervalCenter).ToString();
+        seriesPoints[seriesPoints.Count - 1]["to"] = (current + intervalCenter).ToString();
         current += intervalWidth;
-      }
-    }
-
-    private void ShowValues(Series series) {
-      List<List<double>> relativeSeriesFrequencies = relativeFrequencies[series.Name];
-      DataPointCollection seriesPoints = series.Points;
-
-      foreach (var valueList in relativeSeriesFrequencies) {
-        seriesPoints.AddXY(valueList[0], valueList[1]);
-        seriesPoints[seriesPoints.Count - 1]["from"] = valueList[2].ToString();
-        seriesPoints[seriesPoints.Count - 1]["to"] = valueList[3].ToString();
       }
     }
 
@@ -178,13 +162,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           series.Points.Clear();
         }
       } else if (Content != null) {
-        ShowValues(series);
+        List<double> residuals = CalculateResiduals(Content);
+        CalculateFrequencies(residuals, series);
         chart.Legends[series.Legend].ForeColor = Color.Black;
         chart.Refresh();
       }
     }
 
-    private double HumanRoundMax(double max) {
+    private static void CalculateResidualParameters(List<double> residuals, out double roundedMax, out double intervalWidth) {
+      double realMax = Math.Max(Math.Abs(residuals.Min()), Math.Abs(residuals.Max()));
+      roundedMax = HumanRoundMax(realMax);
+      intervalWidth = (roundedMax * 2.0) / bins;
+      intervalWidth = HumanRoundMax(intervalWidth);
+      // sets roundedMax to a value, so that zero will be in the middle of the x axis
+      double help = realMax / intervalWidth;
+      help = help % 1 < 0.5 ? (int)help : (int)help + 1;
+      roundedMax = help * intervalWidth;
+    }
+
+    private static double HumanRoundMax(double max) {
       double base10;
       if (max > 0) base10 = Math.Pow(10.0, Math.Floor(Math.Log10(max)));
       else base10 = Math.Pow(10.0, Math.Ceiling(Math.Log10(-max)));
