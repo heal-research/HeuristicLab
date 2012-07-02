@@ -22,6 +22,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class ClassificationCSVInstanceProvider : ClassificationInstanceProvider {
@@ -40,8 +42,36 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return ""; }
     }
 
+    public override bool CanSaveData {
+      get { return true; }
+    }
+
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       return new List<IDataDescriptor>();
+    }
+
+    public override void SaveData(IClassificationProblemData instance, string path) {
+      StringBuilder strBuilder = new StringBuilder();
+
+      foreach (var variable in instance.InputVariables) {
+        strBuilder.Append(variable + ";");
+      }
+      strBuilder.Remove(strBuilder.Length - 1, 1);
+      strBuilder.AppendLine();
+
+      Dataset dataset = instance.Dataset;
+
+      for (int i = 0; i < dataset.Rows; i++) {
+        for (int j = 0; j < dataset.Columns; j++) {
+          strBuilder.Append(dataset.GetValue(i, j) + ";");
+        }
+        strBuilder.Remove(strBuilder.Length - 1, 1);
+        strBuilder.AppendLine();
+      }
+
+      using (StreamWriter writer = new StreamWriter(path)) {
+        writer.Write(strBuilder);
+      }
     }
 
     public override IClassificationProblemData LoadData(IDataDescriptor descriptor) {

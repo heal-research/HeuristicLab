@@ -105,9 +105,6 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     }
 
     protected abstract T LoadData(Stream stream);
-    public override void SaveData(T instance, string path) {
-      throw new NotSupportedException();
-    }
 
     public IVRPData LoadData(string vrpFile, string tourFile) {
       var data = LoadData(vrpFile);

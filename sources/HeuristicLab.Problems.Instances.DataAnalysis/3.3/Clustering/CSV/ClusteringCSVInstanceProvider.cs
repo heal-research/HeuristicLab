@@ -21,6 +21,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -42,6 +44,34 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       return new List<IDataDescriptor>();
+    }
+
+    public override bool CanSaveData {
+      get { return true; }
+    }
+
+    public override void SaveData(IClusteringProblemData instance, string path) {
+      var strBuilder = new StringBuilder();
+
+      foreach (var variable in instance.InputVariables) {
+        strBuilder.Append(variable + ";");
+      }
+      strBuilder.Remove(strBuilder.Length - 1, 1);
+      strBuilder.AppendLine();
+
+      var dataset = instance.Dataset;
+
+      for (int i = 0; i < dataset.Rows; i++) {
+        for (int j = 0; j < dataset.Columns; j++) {
+          strBuilder.Append(dataset.GetValue(i, j) + ";");
+        }
+        strBuilder.Remove(strBuilder.Length - 1, 1);
+        strBuilder.AppendLine();
+      }
+
+      using (var writer = new StreamWriter(path)) {
+        writer.Write(strBuilder);
+      }
     }
 
     public override IClusteringProblemData LoadData(IDataDescriptor descriptor) {

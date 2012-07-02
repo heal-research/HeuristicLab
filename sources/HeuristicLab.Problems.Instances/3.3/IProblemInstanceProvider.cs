@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.Instances {
     TData LoadData(IDataDescriptor descriptor);
     TData LoadData(string path);
 
+    bool CanSaveData { get; }
     void SaveData(TData instance, string path);
   }
 }

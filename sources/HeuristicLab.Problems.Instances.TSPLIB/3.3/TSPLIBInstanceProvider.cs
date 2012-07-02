@@ -93,10 +93,6 @@ ORSA Journal on Computing, 3, pp. 376-384.";
       return LoadInstance(new TSPLIBParser(path));
     }
 
-    public override void SaveData(T instance, string path) {
-      throw new NotSupportedException();
-    }
-
     protected virtual string GetResourceName(string fileName) {
       return Assembly.GetExecutingAssembly().GetManifestResourceNames()
               .Where(x => Regex.Match(x, @".*\.Data\." + fileName).Success).SingleOrDefault();

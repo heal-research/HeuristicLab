@@ -19,17 +19,14 @@
  */
 #endregion
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ClassificationInstanceProvider : IProblemInstanceProvider<IClassificationProblemData> {
-    public IClassificationProblemData LoadData(string path) {
+  public abstract class ClassificationInstanceProvider : ProblemInstanceProvider<IClassificationProblemData> {
+    public override IClassificationProblemData LoadData(string path) {
       TableFileParser csvFileParser = new TableFileParser();
 
       csvFileParser.Parse(path);
@@ -55,37 +52,5 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       return claData;
     }
-
-    public void SaveData(IClassificationProblemData instance, string path) {
-      StringBuilder strBuilder = new StringBuilder();
-
-      foreach (var variable in instance.InputVariables) {
-        strBuilder.Append(variable + ";");
-      }
-      strBuilder.Remove(strBuilder.Length - 1, 1);
-      strBuilder.AppendLine();
-
-      Dataset dataset = instance.Dataset;
-
-      for (int i = 0; i < dataset.Rows; i++) {
-        for (int j = 0; j < dataset.Columns; j++) {
-          strBuilder.Append(dataset.GetValue(i, j) + ";");
-        }
-        strBuilder.Remove(strBuilder.Length - 1, 1);
-        strBuilder.AppendLine();
-      }
-
-      using (StreamWriter writer = new StreamWriter(path)) {
-        writer.Write(strBuilder);
-      }
-    }
-
-    public abstract IEnumerable<IDataDescriptor> GetDataDescriptors();
-    public abstract IClassificationProblemData LoadData(IDataDescriptor descriptor);
-
-    public abstract string Name { get; }
-    public abstract string Description { get; }
-    public abstract Uri WebLink { get; }
-    public abstract string ReferencePublication { get; }
   }
 }

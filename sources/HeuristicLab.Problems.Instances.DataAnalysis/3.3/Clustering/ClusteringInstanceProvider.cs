@@ -19,15 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ClusteringInstanceProvider : IProblemInstanceProvider<IClusteringProblemData> {
-    public IClusteringProblemData LoadData(string path) {
+  public abstract class ClusteringInstanceProvider : ProblemInstanceProvider<IClusteringProblemData> {
+    public override IClusteringProblemData LoadData(string path) {
       var csvFileParser = new TableFileParser();
 
       csvFileParser.Parse(path);
@@ -50,37 +46,5 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       return claData;
     }
-
-    public void SaveData(IClusteringProblemData instance, string path) {
-      var strBuilder = new StringBuilder();
-
-      foreach (var variable in instance.InputVariables) {
-        strBuilder.Append(variable + ";");
-      }
-      strBuilder.Remove(strBuilder.Length - 1, 1);
-      strBuilder.AppendLine();
-
-      var dataset = instance.Dataset;
-
-      for (int i = 0; i < dataset.Rows; i++) {
-        for (int j = 0; j < dataset.Columns; j++) {
-          strBuilder.Append(dataset.GetValue(i, j) + ";");
-        }
-        strBuilder.Remove(strBuilder.Length - 1, 1);
-        strBuilder.AppendLine();
-      }
-
-      using (var writer = new StreamWriter(path)) {
-        writer.Write(strBuilder);
-      }
-    }
-
-    public abstract IEnumerable<IDataDescriptor> GetDataDescriptors();
-    public abstract IClusteringProblemData LoadData(IDataDescriptor descriptor);
-
-    public abstract string Name { get; }
-    public abstract string Description { get; }
-    public abstract Uri WebLink { get; }
-    public abstract string ReferencePublication { get; }
   }
 }

@@ -167,7 +167,7 @@ Journal of Global Optimization, 10, pp. 391-403.";
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
         using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
           foreach (var entry in GetZipContents(solutionsZipFile))
-              solutions.Add(Path.GetFileNameWithoutExtension(entry) + ".dat", entry);
+            solutions.Add(Path.GetFileNameWithoutExtension(entry) + ".dat", entry);
         }
       }
       var instanceArchiveName = GetResourceName(FileName + @"\.dat\.zip");
@@ -225,10 +225,6 @@ Journal of Global Optimization, 10, pp. 391-403.";
       instance.Name = Path.GetFileName(path);
       instance.Description = "Loaded from file \"" + path + "\" on " + DateTime.Now.ToString();
       return instance;
-    }
-
-    public override void SaveData(QAPData instance, string path) {
-      throw new NotSupportedException();
     }
 
     private QAPData Load(QAPLIBParser parser) {

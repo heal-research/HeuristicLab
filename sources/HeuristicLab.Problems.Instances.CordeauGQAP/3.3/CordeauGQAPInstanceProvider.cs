@@ -91,10 +91,6 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
       return instance;
     }
 
-    public override void SaveData(GQAPData instance, string path) {
-      throw new NotSupportedException();
-    }
-
     private GQAPData Load(CordeauGQAPParser parser) {
       var instance = new GQAPData();
       instance.BestKnownQuality = parser.BestKnownQuality;

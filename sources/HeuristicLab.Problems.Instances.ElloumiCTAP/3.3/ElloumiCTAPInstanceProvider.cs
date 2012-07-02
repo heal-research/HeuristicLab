@@ -111,10 +111,6 @@ PhD Thesis. Conservatoire National des Arts et Métiers, Paris.";
       return instance;
     }
 
-    public override void SaveData(CTAPData instance, string path) {
-      throw new NotSupportedException();
-    }
-
     private CTAPData Load(ElloumiCTAPParser parser) {
       var instance = new CTAPData();
       instance.Processors = parser.Processors;

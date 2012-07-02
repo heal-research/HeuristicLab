@@ -92,7 +92,8 @@ namespace HeuristicLab.Problems.Instances.Views {
       problemInstanceProviderComboBox.Enabled = !ReadOnly && !Locked && Content != null && problemInstanceProviderComboBox.Items.Count > 0;
       libraryInfoButton.Enabled = SelectedProvider != null && SelectedProvider.WebLink != null;
       importButton.Enabled = !ReadOnly && !Locked && Content != null && Consumer != null;
-      exportButton.Enabled = !ReadOnly && !Locked && Content != null && Exporter != null;
+      exportButton.Enabled = !ReadOnly && !Locked && Content != null && Exporter != null &&
+                             GenericSelectedProvider != null && GenericSelectedProvider.CanSaveData;
       problemInstanceProviderSplitContainer.Panel2Collapsed = !exportButton.Enabled;
     }
 
