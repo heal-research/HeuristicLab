@@ -228,6 +228,9 @@ namespace HeuristicLab.Optimization {
         repetitionsCounter = 0;
         if (clearRuns) runs.Clear();
         Optimizer.Prepare(clearRuns);
+        batchRunStarted = false;
+        batchRunPaused = false;
+        batchRunStopped = false;
       } else {
         ExecutionState = ExecutionState.Stopped;
       }
@@ -371,6 +374,9 @@ namespace HeuristicLab.Optimization {
       else if (batchRunStarted) {
         Optimizer.Prepare();
         Optimizer.Start();
+      } else if (executionState == ExecutionState.Started) {
+        // if the batch run hasn't been started but the inner optimizer was run then pause
+        OnPaused();
       } else OnStopped();
     }
     private void Optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
