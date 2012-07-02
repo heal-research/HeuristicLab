@@ -87,6 +87,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
         testPartitions[cloner.Clone(pair.Key)] = cloner.Clone(pair.Value);
       }
 
+      trainingEvaluationCache = new Dictionary<int, double>(original.ProblemData.TrainingIndices.Count());
+      testEvaluationCache = new Dictionary<int, double>(original.ProblemData.TestIndices.Count());
+
       classificationSolutions = cloner.Clone(original.classificationSolutions);
       RegisterClassificationSolutionsEventHandler();
     }
@@ -129,6 +132,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (modelEnumerator.MoveNext() | trainingPartitionEnumerator.MoveNext() | testPartitionEnumerator.MoveNext()) {
         throw new ArgumentException();
       }
+
+      trainingEvaluationCache = new Dictionary<int, double>(problemData.TrainingIndices.Count());
+      testEvaluationCache = new Dictionary<int, double>(problemData.TestIndices.Count());
 
       RegisterClassificationSolutionsEventHandler();
       classificationSolutions.AddRange(solutions);
