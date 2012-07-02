@@ -318,8 +318,7 @@ namespace HeuristicLab.Optimizer {
           var treeViewNodes = instancesTreeView.Nodes.OfType<TreeNode>().SelectMany(x => x.Nodes.OfType<TreeNode>());
           selectAllCheckBox.Checked = treeViewNodes.Count() == instances.SelectMany(x => x.Value).Count();
           selectNoneCheckBox.Checked = !treeViewNodes.Any(x => x.Checked);
-        }
-        finally { suppressCheckAllNoneEventHandling = false; }
+        } finally { suppressCheckAllNoneEventHandling = false; }
         UpdateVariationsLabel();
       }
     }
@@ -333,8 +332,7 @@ namespace HeuristicLab.Optimizer {
             SyncInstanceNode(n, false);
           }
         }
-      }
-      finally { suppressTreeViewEventHandling = false; }
+      } finally { suppressTreeViewEventHandling = false; }
     }
 
     private void SyncInstanceNode(TreeNode node, bool providerCheck = true) {
@@ -356,8 +354,7 @@ namespace HeuristicLab.Optimizer {
         suppressTreeViewEventHandling = true;
         try {
           node.Parent.Checked = allChecked;
-        }
-        finally { suppressTreeViewEventHandling = false; }
+        } finally { suppressTreeViewEventHandling = false; }
       }
     }
 
@@ -365,8 +362,7 @@ namespace HeuristicLab.Optimizer {
       if (!suppressCheckAllNoneEventHandling) {
         if (selectAllCheckBox.Checked) {
           suppressCheckAllNoneEventHandling = true;
-          try { selectNoneCheckBox.Checked = false; }
-          finally { suppressCheckAllNoneEventHandling = false; }
+          try { selectNoneCheckBox.Checked = false; } finally { suppressCheckAllNoneEventHandling = false; }
           try {
             suppressTreeViewEventHandling = true;
             foreach (TreeNode node in instancesTreeView.Nodes) {
@@ -375,8 +371,7 @@ namespace HeuristicLab.Optimizer {
                 SyncProviderNode(node);
               }
             }
-          }
-          finally { suppressTreeViewEventHandling = false; }
+          } finally { suppressTreeViewEventHandling = false; }
         }
         UpdateVariationsLabel();
       }
@@ -386,8 +381,7 @@ namespace HeuristicLab.Optimizer {
       if (!suppressCheckAllNoneEventHandling) {
         if (selectNoneCheckBox.Checked) {
           suppressCheckAllNoneEventHandling = true;
-          try { selectAllCheckBox.Checked = false; }
-          finally { suppressCheckAllNoneEventHandling = false; }
+          try { selectAllCheckBox.Checked = false; } finally { suppressCheckAllNoneEventHandling = false; }
           try {
             suppressTreeViewEventHandling = true;
             foreach (TreeNode node in instancesTreeView.Nodes) {
@@ -396,8 +390,7 @@ namespace HeuristicLab.Optimizer {
                 SyncProviderNode(node);
               }
             }
-          }
-          finally { suppressTreeViewEventHandling = false; }
+          } finally { suppressTreeViewEventHandling = false; }
         }
         UpdateVariationsLabel();
       }
@@ -720,7 +713,6 @@ namespace HeuristicLab.Optimizer {
           AddParameterVariations(Optimizer, localExperiment, ref counter, totalVariations);
         } catch (OperationCanceledException) {
           e.Cancel = true;
-          localExperiment = null;
           return;
         }
         experimentCreationBackgroundWorker.ReportProgress(100, string.Empty);
@@ -740,25 +732,22 @@ namespace HeuristicLab.Optimizer {
                 AddParameterVariations(algorithm, localExperiment, ref counter, totalVariations);
               } catch (OperationCanceledException) {
                 e.Cancel = true;
-                localExperiment = null;
                 return;
               }
             } else experimentCreationBackgroundWorker.ReportProgress((int)Math.Round((100.0 * counter) / totalVariations), "Loading failed (" + descriptor.Name + ")");
           }
         }
       }
-      if (localExperiment != null) {
-        // this step can take some time
-        SetMode(DialogMode.PreparingExperiment);
-        experimentCreationBackgroundWorker.ReportProgress(-1);
-        localExperiment.Prepare(true);
-        experimentCreationBackgroundWorker.ReportProgress(100);
-      }
+      // this step can take some time
+      SetMode(DialogMode.PreparingExperiment);
+      experimentCreationBackgroundWorker.ReportProgress(-1);
+      localExperiment.Prepare(true);
+      experimentCreationBackgroundWorker.ReportProgress(100);
       Experiment = localExperiment;
     }
 
     private void AddParameterVariations(IOptimizer optimizer, Experiment localExperiment, ref int counter, int totalVariations) {
-      var variations = experimentCreationBackgroundWorker_CalculateParameterVariations(optimizer);
+      var variations = CalculateParameterVariations(optimizer);
       foreach (var v in variations) {
         if (experimentCreationBackgroundWorker.CancellationPending)
           throw new OperationCanceledException();
@@ -768,7 +757,7 @@ namespace HeuristicLab.Optimizer {
       }
     }
 
-    private IEnumerable<IOptimizer> experimentCreationBackgroundWorker_CalculateParameterVariations(IOptimizer optimizer) {
+    private IEnumerable<IOptimizer> CalculateParameterVariations(IOptimizer optimizer) {
       if (!boolParameters.Any() && !intParameters.Any() && !doubleParameters.Any() && !multipleChoiceParameters.Any()) {
         var o = (IOptimizer)optimizer.Clone();
         o.Runs.Clear();
@@ -884,8 +873,7 @@ namespace HeuristicLab.Optimizer {
           DialogResult = System.Windows.Forms.DialogResult.OK;
           Close();
         }
-      }
-      catch { }
+      } catch { }
     }
     #endregion
     #endregion
