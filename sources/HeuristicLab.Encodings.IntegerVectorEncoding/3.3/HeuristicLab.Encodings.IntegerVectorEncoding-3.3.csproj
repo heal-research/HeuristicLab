@@ -137,9 +137,9 @@
     <Compile Include="Manipulators\UniformSomePositionsManipulator.cs" />
     <Compile Include="Manipulators\RoundedNormalAllPositionsManipulator.cs" />
     <Compile Include="Manipulators\SelfAdaptiveRoundedNormalAllPositionsManipulator.cs" />
-    <Compile Include="Manipulators\StdDevStrategyVectorCreator.cs" />
-    <Compile Include="Manipulators\StdDevStrategyVectorCrossover.cs" />
-    <Compile Include="Manipulators\StdDevStrategyVectorManipulator.cs" />
+    <Compile Include="StrategyParameters\StdDevStrategyVectorCreator.cs" />
+    <Compile Include="StrategyParameters\StdDevStrategyVectorCrossover.cs" />
+    <Compile Include="StrategyParameters\StdDevStrategyVectorManipulator.cs" />
     <Compile Include="Manipulators\UniformOnePositionManipulator.cs">
       <SubType>Code</SubType>
     </Compile>
