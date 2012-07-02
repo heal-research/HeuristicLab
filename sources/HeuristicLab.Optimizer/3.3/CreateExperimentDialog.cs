@@ -682,7 +682,6 @@ namespace HeuristicLab.Optimizer {
       if (instanceDiscoveryProgressBar.Value != e.ProgressPercentage)
         instanceDiscoveryProgressBar.Value = e.ProgressPercentage;
       instanceDiscoveryProgressLabel.Text = (string)e.UserState;
-      Application.DoEvents();
     }
 
     private void instanceDiscoveryBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
@@ -861,7 +860,6 @@ namespace HeuristicLab.Optimizer {
       } else {
         experimentCreationProgressBar.Style = ProgressBarStyle.Marquee;
       }
-      Application.DoEvents();
     }
 
     private void experimentCreationBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
