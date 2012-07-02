@@ -53,7 +53,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private List<Algorithm> algorithms = new List<Algorithm>();
     Algorithm selectedAlgorithm = null;
     Problem selectedProblem = null;
-    private ProgressView progressView; // this has to be disposed manually!
+    private ProgressView progressView;
     private Progress progress;
 
     public OKBExperimentUploadView() {
@@ -222,22 +222,20 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private void UploadAsync() {
       progress.Status = "Uploading runs to OKB...";
       progress.ProgressValue = 0;
+      progress.ProgressState = ProgressState.Started;
       double count = dataGridView.Rows.Count;
       int i = 0;
-
-      using (var view = new ProgressView(this, progress)) {
-        foreach (DataGridViewRow row in dataGridView.Rows) {
-          selectedAlgorithm = algorithms.Where(x => x.Name == row.Cells[algorithmColumnIndex].Value.ToString()).FirstOrDefault();
-          selectedProblem = problems.Where(x => x.Name == row.Cells[problemColumnIndex].Value.ToString()).FirstOrDefault();
-          if (selectedAlgorithm == null || selectedProblem == null) {
-            throw new ArgumentException("Can't retrieve the algorithm/problem to upload");
-          }
-
-          OKBRun run = new OKBRun(selectedAlgorithm.Id, selectedProblem.Id, row.Tag as IRun, UserInformation.Instance.User.Id);
-          run.Store();
-          i++;
-          progress.ProgressValue = ((double)i) / count;
+      foreach (DataGridViewRow row in dataGridView.Rows) {
+        selectedAlgorithm = algorithms.Where(x => x.Name == row.Cells[algorithmColumnIndex].Value.ToString()).FirstOrDefault();
+        selectedProblem = problems.Where(x => x.Name == row.Cells[problemColumnIndex].Value.ToString()).FirstOrDefault();
+        if (selectedAlgorithm == null || selectedProblem == null) {
+          throw new ArgumentException("Can't retrieve the algorithm/problem to upload");
         }
+
+        OKBRun run = new OKBRun(selectedAlgorithm.Id, selectedProblem.Id, row.Tag as IRun, UserInformation.Instance.User.Id);
+        run.Store();
+        i++;
+        progress.ProgressValue = ((double)i) / count;
       }
       ClearRuns();
     }

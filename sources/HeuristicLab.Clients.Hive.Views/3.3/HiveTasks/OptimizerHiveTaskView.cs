@@ -31,6 +31,7 @@ namespace HeuristicLab.Clients.Hive.Views {
   [Content(typeof(OptimizerHiveTask), true)]
   public partial class OptimizerHiveTaskView : HiveTaskView {
     private Progress progress;
+    private ProgressView progressView;
 
     public new OptimizerHiveTask Content {
       get { return (OptimizerHiveTask)base.Content; }
@@ -59,10 +60,16 @@ namespace HeuristicLab.Clients.Hive.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.IsControllableChanged += new EventHandler(Content_IsControllableChanged);
+      progressView = new ProgressView(this, progress);
     }
 
     protected override void DeregisterContentEvents() {
       Content.IsControllableChanged -= new EventHandler(Content_IsControllableChanged);
+      if (progressView != null) {
+        progressView.Content = null;
+        progressView.Dispose();
+        progressView = null;
+      }
       base.DeregisterContentEvents();
     }
 
@@ -101,25 +108,19 @@ namespace HeuristicLab.Clients.Hive.Views {
     private void PauseTaskAsync() {
       progress.Status = "Pausing task. Please be patient for the command to take effect.";
       progress.ProgressState = ProgressState.Started;
-      using (var view = new ProgressView(this, progress)) {
-        Content.Pause();
-      }
+      Content.Pause();
     }
 
     private void StopTaskAsync() {
       progress.Status = "Stopping task. Please be patient for the command to take effect.";
       progress.ProgressState = ProgressState.Started;
-      using (var view = new ProgressView(this, progress)) {
-        Content.Stop();
-      }
+      Content.Stop();
     }
 
     private void ResumeTaskAsync() {
       progress.Status = "Resuming task. Please be patient for the command to take effect.";
       progress.ProgressState = ProgressState.Started;
-      using (var view = new ProgressView(this, progress)) {
-        Content.Restart();
-      }
+      Content.Restart();
     }
 
     protected override void SetEnabledStateOfControls() {
