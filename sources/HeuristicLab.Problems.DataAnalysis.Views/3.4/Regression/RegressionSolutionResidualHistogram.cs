@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
 
         // ALL_SAMPLES has to be calculated to know its highest frequency, but it is not shown in the beginning
-        chart.Series.Where(s => s.Name.Equals(ALL_SAMPLES)).First().Points.Clear();
+        chart.Series.First(s => s.Name.Equals(ALL_SAMPLES)).Points.Clear();
 
         double roundedMax, intervalWidth;
         CalculateResidualParameters(residuals, out roundedMax, out intervalWidth);
