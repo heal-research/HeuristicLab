@@ -54,7 +54,7 @@ namespace HeuristicLab.Optimization.Views {
       // startButton
       // 
       this.startButton.Location = new System.Drawing.Point(0, 459);
-      this.toolTip.SetToolTip(this.startButton, "Start/Resume Experiment");
+      this.toolTip.SetToolTip(this.startButton, "Start/Resume Batchrun");
       // 
       // executionTimeTextBox
       // 
@@ -67,17 +67,17 @@ namespace HeuristicLab.Optimization.Views {
       // pauseButton
       // 
       this.pauseButton.Location = new System.Drawing.Point(30, 459);
-      this.toolTip.SetToolTip(this.pauseButton, "Pause Experiment");
+      this.toolTip.SetToolTip(this.pauseButton, "Pause Batchrun");
       // 
       // stopButton
       // 
       this.stopButton.Location = new System.Drawing.Point(60, 459);
-      this.toolTip.SetToolTip(this.stopButton, "Stop Experiment");
+      this.toolTip.SetToolTip(this.stopButton, "Stop Batchrun");
       // 
       // resetButton
       // 
       this.resetButton.Location = new System.Drawing.Point(90, 458);
-      this.toolTip.SetToolTip(this.resetButton, "Reset Experiment");
+      this.toolTip.SetToolTip(this.resetButton, "Reset Batchrun");
       // 
       // nameTextBox
       // 

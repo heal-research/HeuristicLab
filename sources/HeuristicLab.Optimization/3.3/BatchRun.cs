@@ -152,6 +152,7 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    private bool batchRunPrepared = false;
     private bool batchRunStarted = false;
     private bool batchRunPaused = false;
     private bool batchRunStopped = false;
@@ -205,6 +206,7 @@ namespace HeuristicLab.Optimization {
       batchRunStarted = original.batchRunStarted;
       batchRunPaused = original.batchRunPaused;
       batchRunStopped = original.batchRunStopped;
+      batchRunPrepared = original.batchRunPrepared;
       Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -227,10 +229,11 @@ namespace HeuristicLab.Optimization {
         ExecutionTime = TimeSpan.Zero;
         repetitionsCounter = 0;
         if (clearRuns) runs.Clear();
-        Optimizer.Prepare(clearRuns);
+        batchRunPrepared = true;
         batchRunStarted = false;
         batchRunPaused = false;
         batchRunStopped = false;
+        Optimizer.Prepare(clearRuns);
       } else {
         ExecutionState = ExecutionState.Stopped;
       }
@@ -240,6 +243,7 @@ namespace HeuristicLab.Optimization {
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizer == null) return;
 
+      batchRunPrepared = false;
       batchRunStarted = true;
       batchRunPaused = false;
       batchRunStopped = false;
@@ -252,6 +256,7 @@ namespace HeuristicLab.Optimization {
       if (Optimizer == null) return;
       if (Optimizer.ExecutionState != ExecutionState.Started) return;
 
+      batchRunPrepared = false;
       batchRunStarted = false;
       batchRunPaused = true;
       batchRunStopped = false;
@@ -261,7 +266,12 @@ namespace HeuristicLab.Optimization {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizer == null) return;
-      if (Optimizer.ExecutionState != ExecutionState.Started && Optimizer.ExecutionState != ExecutionState.Paused) return;
+      if (Optimizer.ExecutionState != ExecutionState.Started && Optimizer.ExecutionState != ExecutionState.Paused) {
+        OnStopped();
+        return;
+      }
+
+      batchRunPrepared = false;
       batchRunStarted = false;
       batchRunPaused = false;
       batchRunStopped = true;
@@ -291,24 +301,29 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Prepared;
     private void OnPrepared() {
+      batchRunPrepared = false;
       ExecutionState = ExecutionState.Prepared;
       EventHandler handler = Prepared;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Started;
     private void OnStarted() {
+      //TODO add coment
       ExecutionState = ExecutionState.Started;
       EventHandler handler = Started;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Paused;
     private void OnPaused() {
+      batchRunPaused = false;
       ExecutionState = ExecutionState.Paused;
       EventHandler handler = Paused;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Stopped;
     private void OnStopped() {
+      //reset flags because it cannot be done if the optimizer gets prepared
+      batchRunStopped = false;
       ExecutionState = ExecutionState.Stopped;
       EventHandler handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
@@ -353,9 +368,10 @@ namespace HeuristicLab.Optimization {
       }
     }
     private void Optimizer_Prepared(object sender, EventArgs e) {
-      if (ExecutionState == ExecutionState.Stopped || !batchRunStarted) {
+      if (batchRunPrepared || (ExecutionState == ExecutionState.Stopped)) {
         ExecutionTime = TimeSpan.Zero;
         runsExecutionTime = TimeSpan.Zero;
+        repetitionsCounter = 0;
         OnPrepared();
       }
     }

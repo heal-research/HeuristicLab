@@ -72,7 +72,7 @@ namespace HeuristicLab.Optimization.Views {
       this.startButton.Name = "startButton";
       this.startButton.Size = new System.Drawing.Size(24, 24);
       this.startButton.TabIndex = 10;
-      this.toolTip.SetToolTip(this.startButton, "Start/Resume Experiment");
+      this.toolTip.SetToolTip(this.startButton, "Start/Resume Optimizer");
       this.startButton.UseVisualStyleBackColor = true;
       this.startButton.Click += new System.EventHandler(this.startButton_Click);
       // 
@@ -103,7 +103,7 @@ namespace HeuristicLab.Optimization.Views {
       this.pauseButton.Name = "pauseButton";
       this.pauseButton.Size = new System.Drawing.Size(24, 24);
       this.pauseButton.TabIndex = 11;
-      this.toolTip.SetToolTip(this.pauseButton, "Pause Experiment");
+      this.toolTip.SetToolTip(this.pauseButton, "Pause Optimizer");
       this.pauseButton.UseVisualStyleBackColor = true;
       this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
       // 
@@ -115,7 +115,7 @@ namespace HeuristicLab.Optimization.Views {
       this.stopButton.Name = "stopButton";
       this.stopButton.Size = new System.Drawing.Size(24, 24);
       this.stopButton.TabIndex = 12;
-      this.toolTip.SetToolTip(this.stopButton, "Stop Experiment");
+      this.toolTip.SetToolTip(this.stopButton, "Stop Optimizer");
       this.stopButton.UseVisualStyleBackColor = true;
       this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
       // 
@@ -127,7 +127,7 @@ namespace HeuristicLab.Optimization.Views {
       this.resetButton.Name = "resetButton";
       this.resetButton.Size = new System.Drawing.Size(24, 24);
       this.resetButton.TabIndex = 13;
-      this.toolTip.SetToolTip(this.resetButton, "Reset Experiment");
+      this.toolTip.SetToolTip(this.resetButton, "Reset Optimizer");
       this.resetButton.UseVisualStyleBackColor = true;
       this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
       // 
