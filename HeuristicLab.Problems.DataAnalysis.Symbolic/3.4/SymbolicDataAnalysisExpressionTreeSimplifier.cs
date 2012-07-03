@@ -1,0 +1,971 @@
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Common;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  /// <summary>
+  /// Simplifier for symbolic expressions
+  /// </summary>
+  public class SymbolicDataAnalysisExpressionTreeSimplifier {
+    private Addition addSymbol = new Addition();
+    private Subtraction subSymbol = new Subtraction();
+    private Multiplication mulSymbol = new Multiplication();
+    private Division divSymbol = new Division();
+    private Constant constSymbol = new Constant();
+    private Variable varSymbol = new Variable();
+    private Logarithm logSymbol = new Logarithm();
+    private Exponential expSymbol = new Exponential();
+    private Root rootSymbol = new Root();
+    private Square sqrSymbol = new Square();
+    private SquareRoot sqrtSymbol = new SquareRoot();
+    private Power powSymbol = new Power();
+    private Sine sineSymbol = new Sine();
+    private Cosine cosineSymbol = new Cosine();
+    private Tangent tanSymbol = new Tangent();
+    private IfThenElse ifThenElseSymbol = new IfThenElse();
+    private And andSymbol = new And();
+    private Or orSymbol = new Or();
+    private Not notSymbol = new Not();
+    private GreaterThan gtSymbol = new GreaterThan();
+    private LessThan ltSymbol = new LessThan();
+
+    public ISymbolicExpressionTree Simplify(ISymbolicExpressionTree originalTree) {
+      var clone = (ISymbolicExpressionTreeNode)originalTree.Root.Clone();
+      // macro expand (initially no argument trees)
+      var macroExpandedTree = MacroExpand(clone, clone.GetSubtree(0), new List<ISymbolicExpressionTreeNode>());
+      ISymbolicExpressionTreeNode rootNode = (new ProgramRootSymbol()).CreateTreeNode();
+      rootNode.AddSubtree(GetSimplifiedTree(macroExpandedTree));
+      return new SymbolicExpressionTree(rootNode);
+    }
+
+    // the argumentTrees list contains already expanded trees used as arguments for invocations
+    private ISymbolicExpressionTreeNode MacroExpand(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode node, IList<ISymbolicExpressionTreeNode> argumentTrees) {
+      List<ISymbolicExpressionTreeNode> subtrees = new List<ISymbolicExpressionTreeNode>(node.Subtrees);
+      while (node.SubtreeCount > 0) node.RemoveSubtree(0);
+      if (node.Symbol is InvokeFunction) {
+        var invokeSym = node.Symbol as InvokeFunction;
+        var defunNode = FindFunctionDefinition(root, invokeSym.FunctionName);
+        var macroExpandedArguments = new List<ISymbolicExpressionTreeNode>();
+        foreach (var subtree in subtrees) {
+          macroExpandedArguments.Add(MacroExpand(root, subtree, argumentTrees));
+        }
+        return MacroExpand(root, defunNode, macroExpandedArguments);
+      } else if (node.Symbol is Argument) {
+        var argSym = node.Symbol as Argument;
+        // return the correct argument sub-tree (already macro-expanded)
+        return (SymbolicExpressionTreeNode)argumentTrees[argSym.ArgumentIndex].Clone();
+      } else {
+        // recursive application
+        foreach (var subtree in subtrees) {
+          node.AddSubtree(MacroExpand(root, subtree, argumentTrees));
+        }
+        return node;
+      }
+    }
+
+    private ISymbolicExpressionTreeNode FindFunctionDefinition(ISymbolicExpressionTreeNode root, string functionName) {
+      foreach (var subtree in root.Subtrees.OfType<DefunTreeNode>()) {
+        if (subtree.FunctionName == functionName) return subtree.GetSubtree(0);
+      }
+
+      throw new ArgumentException("Definition of function " + functionName + " not found.");
+    }
+
+
+    #region symbol predicates
+    // arithmetic
+    private bool IsDivision(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Division;
+    }
+
+    private bool IsMultiplication(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Multiplication;
+    }
+
+    private bool IsSubtraction(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Subtraction;
+    }
+
+    private bool IsAddition(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Addition;
+    }
+
+    private bool IsAverage(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Average;
+    }
+    // exponential
+    private bool IsLog(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Logarithm;
+    }
+    private bool IsExp(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Exponential;
+    }
+    private bool IsRoot(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Root;
+    }
+    private bool IsSquare(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Square;
+    }
+    private bool IsSquareRoot(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is SquareRoot;
+    }
+    private bool IsPower(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Power;
+    }
+    // trigonometric
+    private bool IsSine(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Sine;
+    }
+    private bool IsCosine(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Cosine;
+    }
+    private bool IsTangent(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Tangent;
+    }
+    // boolean
+    private bool IsIfThenElse(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is IfThenElse;
+    }
+    private bool IsAnd(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is And;
+    }
+    private bool IsOr(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Or;
+    }
+    private bool IsNot(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Not;
+    }
+    // comparison
+    private bool IsGreaterThan(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is GreaterThan;
+    }
+    private bool IsLessThan(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is LessThan;
+    }
+
+    private bool IsBoolean(ISymbolicExpressionTreeNode node) {
+      return
+        node.Symbol is GreaterThan ||
+        node.Symbol is LessThan ||
+        node.Symbol is And ||
+        node.Symbol is Or;
+    }
+
+    // terminals
+    private bool IsVariable(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Variable;
+    }
+
+    private bool IsConstant(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Constant;
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Creates a new simplified tree
+    /// </summary>
+    /// <param name="original"></param>
+    /// <returns></returns>
+    public ISymbolicExpressionTreeNode GetSimplifiedTree(ISymbolicExpressionTreeNode original) {
+      if (IsConstant(original) || IsVariable(original)) {
+        return (ISymbolicExpressionTreeNode)original.Clone();
+      } else if (IsAddition(original)) {
+        return SimplifyAddition(original);
+      } else if (IsSubtraction(original)) {
+        return SimplifySubtraction(original);
+      } else if (IsMultiplication(original)) {
+        return SimplifyMultiplication(original);
+      } else if (IsDivision(original)) {
+        return SimplifyDivision(original);
+      } else if (IsAverage(original)) {
+        return SimplifyAverage(original);
+      } else if (IsLog(original)) {
+        return SimplifyLog(original);
+      } else if (IsExp(original)) {
+        return SimplifyExp(original);
+      } else if (IsSquare(original)) {
+        return SimplifySquare(original);
+      } else if (IsSquareRoot(original)) {
+        return SimplifySquareRoot(original);
+      } else if (IsPower(original)) {
+        return SimplifyPower(original);
+      } else if (IsRoot(original)) {
+        return SimplifyRoot(original);
+      } else if (IsSine(original)) {
+        return SimplifySine(original);
+      } else if (IsCosine(original)) {
+        return SimplifyCosine(original);
+      } else if (IsTangent(original)) {
+        return SimplifyTangent(original);
+      } else if (IsIfThenElse(original)) {
+        return SimplifyIfThenElse(original);
+      } else if (IsGreaterThan(original)) {
+        return SimplifyGreaterThan(original);
+      } else if (IsLessThan(original)) {
+        return SimplifyLessThan(original);
+      } else if (IsAnd(original)) {
+        return SimplifyAnd(original);
+      } else if (IsOr(original)) {
+        return SimplifyOr(original);
+      } else if (IsNot(original)) {
+        return SimplifyNot(original);
+      } else {
+        return SimplifyAny(original);
+      }
+    }
+
+
+    #region specific simplification routines
+    private ISymbolicExpressionTreeNode SimplifyAny(ISymbolicExpressionTreeNode original) {
+      // can't simplify this function but simplify all subtrees 
+      List<ISymbolicExpressionTreeNode> subtrees = new List<ISymbolicExpressionTreeNode>(original.Subtrees);
+      while (original.Subtrees.Count() > 0) original.RemoveSubtree(0);
+      var clone = (SymbolicExpressionTreeNode)original.Clone();
+      List<ISymbolicExpressionTreeNode> simplifiedSubtrees = new List<ISymbolicExpressionTreeNode>();
+      foreach (var subtree in subtrees) {
+        simplifiedSubtrees.Add(GetSimplifiedTree(subtree));
+        original.AddSubtree(subtree);
+      }
+      foreach (var simplifiedSubtree in simplifiedSubtrees) {
+        clone.AddSubtree(simplifiedSubtree);
+      }
+      if (simplifiedSubtrees.TrueForAll(t => IsConstant(t))) {
+        SimplifyConstantExpression(clone);
+      }
+      return clone;
+    }
+
+    private ISymbolicExpressionTreeNode SimplifyConstantExpression(ISymbolicExpressionTreeNode original) {
+      // not yet implemented
+      return original;
+    }
+
+    private ISymbolicExpressionTreeNode SimplifyAverage(ISymbolicExpressionTreeNode original) {
+      if (original.Subtrees.Count() == 1) {
+        return GetSimplifiedTree(original.GetSubtree(0));
+      } else {
+        // simplify expressions x0..xn
+        // make sum(x0..xn) / n
+        var sum = original.Subtrees
+          .Select(x => GetSimplifiedTree(x))
+          .Aggregate((a, b) => MakeSum(a, b));
+        return MakeFraction(sum, MakeConstant(original.Subtrees.Count()));
+      }
+    }
+
+    private ISymbolicExpressionTreeNode SimplifyDivision(ISymbolicExpressionTreeNode original) {
+      if (original.Subtrees.Count() == 1) {
+        return Invert(GetSimplifiedTree(original.GetSubtree(0)));
+      } else {
+        // simplify expressions x0..xn
+        // make multiplication (x0 * 1/(x1 * x1 * .. * xn))
+        var simplifiedTrees = original.Subtrees.Select(x => GetSimplifiedTree(x));
+        return
+          MakeProduct(simplifiedTrees.First(), Invert(simplifiedTrees.Skip(1).Aggregate((a, b) => MakeProduct(a, b))));
+      }
+    }
+
+    private ISymbolicExpressionTreeNode SimplifyMultiplication(ISymbolicExpressionTreeNode original) {
+      if (original.Subtrees.Count() == 1) {
+        return GetSimplifiedTree(original.GetSubtree(0));
+      } else {
+        return original.Subtrees
+          .Select(x => GetSimplifiedTree(x))
+          .Aggregate((a, b) => MakeProduct(a, b));
+      }
+    }
+
+    private ISymbolicExpressionTreeNode SimplifySubtraction(ISymbolicExpressionTreeNode original) {
+      if (original.Subtrees.Count() == 1) {
+        return Negate(GetSimplifiedTree(original.GetSubtree(0)));
+      } else {
+        // simplify expressions x0..xn
+        // make addition (x0,-x1..-xn)
+        var simplifiedTrees = original.Subtrees.Select(x => GetSimplifiedTree(x));
+        return simplifiedTrees.Take(1)
+          .Concat(simplifiedTrees.Skip(1).Select(x => Negate(x)))
+          .Aggregate((a, b) => MakeSum(a, b));
+      }
+    }
+
+    private ISymbolicExpressionTreeNode SimplifyAddition(ISymbolicExpressionTreeNode original) {
+      if (original.Subtrees.Count() == 1) {
+        return GetSimplifiedTree(original.GetSubtree(0));
+      } else {
+        // simplify expression x0..xn
+        // make addition (x0..xn)
+        return original.Subtrees
+          .Select(x => GetSimplifiedTree(x))
+          .Aggregate((a, b) => MakeSum(a, b));
+      }
+    }
+
+    private ISymbolicExpressionTreeNode SimplifyNot(ISymbolicExpressionTreeNode original) {
+      return MakeNot(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifyOr(ISymbolicExpressionTreeNode original) {
+      return original.Subtrees
+        .Select(x => GetSimplifiedTree(x))
+        .Aggregate((a, b) => MakeOr(a, b));
+    }
+    private ISymbolicExpressionTreeNode SimplifyAnd(ISymbolicExpressionTreeNode original) {
+      return original.Subtrees
+        .Select(x => GetSimplifiedTree(x))
+        .Aggregate((a, b) => MakeAnd(a, b));
+    }
+    private ISymbolicExpressionTreeNode SimplifyLessThan(ISymbolicExpressionTreeNode original) {
+      return MakeLessThan(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
+    }
+    private ISymbolicExpressionTreeNode SimplifyGreaterThan(ISymbolicExpressionTreeNode original) {
+      return MakeGreaterThan(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
+    }
+    private ISymbolicExpressionTreeNode SimplifyIfThenElse(ISymbolicExpressionTreeNode original) {
+      return MakeIfThenElse(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)), GetSimplifiedTree(original.GetSubtree(2)));
+    }
+    private ISymbolicExpressionTreeNode SimplifyTangent(ISymbolicExpressionTreeNode original) {
+      return MakeTangent(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifyCosine(ISymbolicExpressionTreeNode original) {
+      return MakeCosine(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifySine(ISymbolicExpressionTreeNode original) {
+      return MakeSine(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifyExp(ISymbolicExpressionTreeNode original) {
+      return MakeExp(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifySquare(ISymbolicExpressionTreeNode original) {
+      return MakeSquare(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifySquareRoot(ISymbolicExpressionTreeNode original) {
+      return MakeSquareRoot(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+
+    private ISymbolicExpressionTreeNode SimplifyLog(ISymbolicExpressionTreeNode original) {
+      return MakeLog(GetSimplifiedTree(original.GetSubtree(0)));
+    }
+    private ISymbolicExpressionTreeNode SimplifyRoot(ISymbolicExpressionTreeNode original) {
+      return MakeRoot(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
+    }
+
+    private ISymbolicExpressionTreeNode SimplifyPower(ISymbolicExpressionTreeNode original) {
+      return MakePower(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
+    }
+    #endregion
+
+    #region low level tree restructuring
+    private ISymbolicExpressionTreeNode MakeNot(ISymbolicExpressionTreeNode t) {
+      if (IsConstant(t)) {
+        var constNode = t as ConstantTreeNode;
+        if (constNode.Value > 0) return MakeConstant(-1.0);
+        else return MakeConstant(1.0);
+      } else if (IsNot(t)) {
+        return t.GetSubtree(0);
+      } else if (!IsBoolean(t)) {
+        var gtNode = gtSymbol.CreateTreeNode();
+        gtNode.AddSubtree(t); gtNode.AddSubtree(MakeConstant(0.0));
+        var notNode = notSymbol.CreateTreeNode();
+        notNode.AddSubtree(gtNode);
+        return notNode;
+      } else {
+        var notNode = notSymbol.CreateTreeNode();
+        notNode.AddSubtree(t);
+        return notNode;
+      }
+    }
+
+    private ISymbolicExpressionTreeNode MakeOr(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        var constA = a as ConstantTreeNode;
+        var constB = b as ConstantTreeNode;
+        if (constA.Value > 0.0 || constB.Value > 0.0) {
+          return MakeConstant(1.0);
+        } else {
+          return MakeConstant(-1.0);
+        }
+      } else if (IsConstant(a)) {
+        return MakeOr(b, a);
+      } else if (IsConstant(b)) {
+        var constT = b as ConstantTreeNode;
+        if (constT.Value > 0.0) {
+          // boolean expression is necessarily true
+          return MakeConstant(1.0);
+        } else {
+          // the constant value has no effect on the result of the boolean condition so we can drop the constant term
+          var orNode = orSymbol.CreateTreeNode();
+          orNode.AddSubtree(a);
+          return orNode;
+        }
+      } else {
+        var orNode = orSymbol.CreateTreeNode();
+        orNode.AddSubtree(a);
+        orNode.AddSubtree(b);
+        return orNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeAnd(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        var constA = a as ConstantTreeNode;
+        var constB = b as ConstantTreeNode;
+        if (constA.Value > 0.0 && constB.Value > 0.0) {
+          return MakeConstant(1.0);
+        } else {
+          return MakeConstant(-1.0);
+        }
+      } else if (IsConstant(a)) {
+        return MakeAnd(b, a);
+      } else if (IsConstant(b)) {
+        var constB = b as ConstantTreeNode;
+        if (constB.Value > 0.0) {
+          // the constant value has no effect on the result of the boolean condition so we can drop the constant term
+          var andNode = andSymbol.CreateTreeNode();
+          andNode.AddSubtree(a);
+          return andNode;
+        } else {
+          // boolean expression is necessarily false
+          return MakeConstant(-1.0);
+        }
+      } else {
+        var andNode = andSymbol.CreateTreeNode();
+        andNode.AddSubtree(a);
+        andNode.AddSubtree(b);
+        return andNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeLessThan(ISymbolicExpressionTreeNode leftSide, ISymbolicExpressionTreeNode rightSide) {
+      if (IsConstant(leftSide) && IsConstant(rightSide)) {
+        var lsConst = leftSide as ConstantTreeNode;
+        var rsConst = rightSide as ConstantTreeNode;
+        if (lsConst.Value < rsConst.Value) return MakeConstant(1.0);
+        else return MakeConstant(-1.0);
+      } else {
+        var ltNode = ltSymbol.CreateTreeNode();
+        ltNode.AddSubtree(leftSide);
+        ltNode.AddSubtree(rightSide);
+        return ltNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeGreaterThan(ISymbolicExpressionTreeNode leftSide, ISymbolicExpressionTreeNode rightSide) {
+      if (IsConstant(leftSide) && IsConstant(rightSide)) {
+        var lsConst = leftSide as ConstantTreeNode;
+        var rsConst = rightSide as ConstantTreeNode;
+        if (lsConst.Value > rsConst.Value) return MakeConstant(1.0);
+        else return MakeConstant(-1.0);
+      } else {
+        var gtNode = gtSymbol.CreateTreeNode();
+        gtNode.AddSubtree(leftSide);
+        gtNode.AddSubtree(rightSide);
+        return gtNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeIfThenElse(ISymbolicExpressionTreeNode condition, ISymbolicExpressionTreeNode trueBranch, ISymbolicExpressionTreeNode falseBranch) {
+      if (IsConstant(condition)) {
+        var constT = condition as ConstantTreeNode;
+        if (constT.Value > 0.0) return trueBranch;
+        else return falseBranch;
+      } else {
+        var ifNode = ifThenElseSymbol.CreateTreeNode();
+        if (IsBoolean(condition)) {
+          ifNode.AddSubtree(condition);
+        } else {
+          var gtNode = gtSymbol.CreateTreeNode();
+          gtNode.AddSubtree(condition); gtNode.AddSubtree(MakeConstant(0.0));
+          ifNode.AddSubtree(gtNode);
+        }
+        ifNode.AddSubtree(trueBranch);
+        ifNode.AddSubtree(falseBranch);
+        return ifNode;
+      }
+    }
+
+    private ISymbolicExpressionTreeNode MakeSine(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Sin(constT.Value));
+      } else {
+        var sineNode = sineSymbol.CreateTreeNode();
+        sineNode.AddSubtree(node);
+        return sineNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeTangent(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Tan(constT.Value));
+      } else {
+        var tanNode = tanSymbol.CreateTreeNode();
+        tanNode.AddSubtree(node);
+        return tanNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeCosine(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Cos(constT.Value));
+      } else {
+        var cosNode = cosineSymbol.CreateTreeNode();
+        cosNode.AddSubtree(node);
+        return cosNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeExp(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Exp(constT.Value));
+      } else if (IsLog(node)) {
+        return node.GetSubtree(0);
+      } else if (IsAddition(node)) {
+        return node.Subtrees.Select(s => MakeExp(s)).Aggregate((s, t) => MakeProduct(s, t));
+      } else if (IsSubtraction(node)) {
+        return node.Subtrees.Select(s => MakeExp(s)).Aggregate((s, t) => MakeProduct(s, Negate(t)));
+      } else {
+        var expNode = expSymbol.CreateTreeNode();
+        expNode.AddSubtree(node);
+        return expNode;
+      }
+    }
+
+    private ISymbolicExpressionTreeNode MakeSquare(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(constT.Value * constT.Value);
+      } else if (IsSquareRoot(node)) {
+        return node.GetSubtree(0);
+      } else {
+        var sqrNode = sqrSymbol.CreateTreeNode();
+        sqrNode.AddSubtree(node);
+        return sqrNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeSquareRoot(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Sqrt(constT.Value));
+      } else if (IsSquare(node)) {
+        return node.GetSubtree(0);
+      } else {
+        var sqrtNode = sqrtSymbol.CreateTreeNode();
+        sqrtNode.AddSubtree(node);
+        return sqrtNode;
+      }
+    }
+
+    private ISymbolicExpressionTreeNode MakeLog(ISymbolicExpressionTreeNode node) {
+      if (IsConstant(node)) {
+        var constT = node as ConstantTreeNode;
+        return MakeConstant(Math.Log(constT.Value));
+      } else if (IsExp(node)) {
+        return node.GetSubtree(0);
+      } else if (IsSquareRoot(node)) {
+        return MakeFraction(MakeLog(node.GetSubtree(0)), MakeConstant(2.0));
+      } else {
+        var logNode = logSymbol.CreateTreeNode();
+        logNode.AddSubtree(node);
+        return logNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakeRoot(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        var constA = a as ConstantTreeNode;
+        var constB = b as ConstantTreeNode;
+        return MakeConstant(Math.Pow(constA.Value, 1.0 / Math.Round(constB.Value)));
+      } else if (IsConstant(b)) {
+        var constB = b as ConstantTreeNode;
+        var constBValue = Math.Round(constB.Value);
+        if (constBValue.IsAlmost(1.0)) {
+          return a;
+        } else if (constBValue.IsAlmost(0.0)) {
+          return MakeConstant(1.0);
+        } else if (constBValue.IsAlmost(-1.0)) {
+          return MakeFraction(MakeConstant(1.0), a);
+        } else if (constBValue < 0) {
+          var rootNode = rootSymbol.CreateTreeNode();
+          rootNode.AddSubtree(a);
+          rootNode.AddSubtree(MakeConstant(-1.0 * constBValue));
+          return MakeFraction(MakeConstant(1.0), rootNode);
+        } else {
+          var rootNode = rootSymbol.CreateTreeNode();
+          rootNode.AddSubtree(a);
+          rootNode.AddSubtree(MakeConstant(constBValue));
+          return rootNode;
+        }
+      } else {
+        var rootNode = rootSymbol.CreateTreeNode();
+        rootNode.AddSubtree(a);
+        rootNode.AddSubtree(b);
+        return rootNode;
+      }
+    }
+    private ISymbolicExpressionTreeNode MakePower(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        var constA = a as ConstantTreeNode;
+        var constB = b as ConstantTreeNode;
+        return MakeConstant(Math.Pow(constA.Value, Math.Round(constB.Value)));
+      } else if (IsConstant(b)) {
+        var constB = b as ConstantTreeNode;
+        double exponent = Math.Round(constB.Value);
+        if (exponent.IsAlmost(0.0)) {
+          return MakeConstant(1.0);
+        } else if (exponent.IsAlmost(1.0)) {
+          return a;
+        } else if (exponent.IsAlmost(-1.0)) {
+          return MakeFraction(MakeConstant(1.0), a);
+        } else if (exponent < 0) {
+          var powNode = powSymbol.CreateTreeNode();
+          powNode.AddSubtree(a);
+          powNode.AddSubtree(MakeConstant(-1.0 * exponent));
+          return MakeFraction(MakeConstant(1.0), powNode);
+        } else {
+          var powNode = powSymbol.CreateTreeNode();
+          powNode.AddSubtree(a);
+          powNode.AddSubtree(MakeConstant(exponent));
+          return powNode;
+        }
+      } else {
+        var powNode = powSymbol.CreateTreeNode();
+        powNode.AddSubtree(a);
+        powNode.AddSubtree(b);
+        return powNode;
+      }
+    }
+
+
+    // MakeFraction, MakeProduct and MakeSum take two already simplified trees and create a new simplified tree
+    private ISymbolicExpressionTreeNode MakeFraction(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        // fold constants
+        return MakeConstant(((ConstantTreeNode)a).Value / ((ConstantTreeNode)b).Value);
+      } if (IsConstant(a) && !((ConstantTreeNode)a).Value.IsAlmost(1.0)) {
+        return MakeFraction(MakeConstant(1.0), MakeProduct(b, Invert(a)));
+      } else if (IsVariable(a) && IsConstant(b)) {
+        // merge constant values into variable weights
+        var constB = ((ConstantTreeNode)b).Value;
+        ((VariableTreeNode)a).Weight /= constB;
+        return a;
+      } else if (IsVariable(a) && IsVariable(b) && AreSameVariable(a, b)) {
+        // cancel variables
+        var aVar = a as VariableTreeNode;
+        var bVar = b as VariableTreeNode;
+        return MakeConstant(aVar.Weight / bVar.Weight);
+      } else if (IsAddition(a) && IsConstant(b)) {
+        return a.Subtrees
+          .Select(x => GetSimplifiedTree(x))
+         .Select(x => MakeFraction(x, b))
+         .Aggregate((c, d) => MakeSum(c, d));
+      } else if (IsMultiplication(a) && IsConstant(b)) {
+        return MakeProduct(a, Invert(b));
+      } else if (IsDivision(a) && IsConstant(b)) {
+        // (a1 / a2) / c => (a1 / (a2 * c))
+        return MakeFraction(a.GetSubtree(0), MakeProduct(a.GetSubtree(1), b));
+      } else if (IsDivision(a) && IsDivision(b)) {
+        // (a1 / a2) / (b1 / b2) => 
+        return MakeFraction(MakeProduct(a.GetSubtree(0), b.GetSubtree(1)), MakeProduct(a.GetSubtree(1), b.GetSubtree(0)));
+      } else if (IsDivision(a)) {
+        // (a1 / a2) / b => (a1 / (a2 * b))
+        return MakeFraction(a.GetSubtree(0), MakeProduct(a.GetSubtree(1), b));
+      } else if (IsDivision(b)) {
+        // a / (b1 / b2) => (a * b2) / b1
+        return MakeFraction(MakeProduct(a, b.GetSubtree(1)), b.GetSubtree(0));
+      } else {
+        var div = divSymbol.CreateTreeNode();
+        div.AddSubtree(a);
+        div.AddSubtree(b);
+        return div;
+      }
+    }
+
+    private ISymbolicExpressionTreeNode MakeSum(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        // fold constants
+        ((ConstantTreeNode)a).Value += ((ConstantTreeNode)b).Value;
+        return a;
+      } else if (IsConstant(a)) {
+        // c + x => x + c
+        // b is not constant => make sure constant is on the right
+        return MakeSum(b, a);
+      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(0.0)) {
+        // x + 0 => x
+        return a;
+      } else if (IsAddition(a) && IsAddition(b)) {
+        // merge additions
+        var add = addSymbol.CreateTreeNode();
+        // add all sub trees except for the last
+        for (int i = 0; i < a.Subtrees.Count() - 1; i++) add.AddSubtree(a.GetSubtree(i));
+        for (int i = 0; i < b.Subtrees.Count() - 1; i++) add.AddSubtree(b.GetSubtree(i));
+        if (IsConstant(a.Subtrees.Last()) && IsConstant(b.Subtrees.Last())) {
+          add.AddSubtree(MakeSum(a.Subtrees.Last(), b.Subtrees.Last()));
+        } else if (IsConstant(a.Subtrees.Last())) {
+          add.AddSubtree(b.Subtrees.Last());
+          add.AddSubtree(a.Subtrees.Last());
+        } else {
+          add.AddSubtree(a.Subtrees.Last());
+          add.AddSubtree(b.Subtrees.Last());
+        }
+        MergeVariablesInSum(add);
+        if (add.Subtrees.Count() == 1) {
+          return add.GetSubtree(0);
+        } else {
+          return add;
+        }
+      } else if (IsAddition(b)) {
+        return MakeSum(b, a);
+      } else if (IsAddition(a) && IsConstant(b)) {
+        // a is an addition and b is a constant => append b to a and make sure the constants are merged
+        var add = addSymbol.CreateTreeNode();
+        // add all sub trees except for the last
+        for (int i = 0; i < a.Subtrees.Count() - 1; i++) add.AddSubtree(a.GetSubtree(i));
+        if (IsConstant(a.Subtrees.Last()))
+          add.AddSubtree(MakeSum(a.Subtrees.Last(), b));
+        else {
+          add.AddSubtree(a.Subtrees.Last());
+          add.AddSubtree(b);
+        }
+        return add;
+      } else if (IsAddition(a)) {
+        // a is already an addition => append b
+        var add = addSymbol.CreateTreeNode();
+        add.AddSubtree(b);
+        foreach (var subtree in a.Subtrees) {
+          add.AddSubtree(subtree);
+        }
+        MergeVariablesInSum(add);
+        if (add.Subtrees.Count() == 1) {
+          return add.GetSubtree(0);
+        } else {
+          return add;
+        }
+      } else {
+        var add = addSymbol.CreateTreeNode();
+        add.AddSubtree(a);
+        add.AddSubtree(b);
+        MergeVariablesInSum(add);
+        if (add.Subtrees.Count() == 1) {
+          return add.GetSubtree(0);
+        } else {
+          return add;
+        }
+      }
+    }
+
+    // makes sure variable symbols in sums are combined
+    // possible improvement: combine sums of products where the products only reference the same variable
+    private void MergeVariablesInSum(ISymbolicExpressionTreeNode sum) {
+      var subtrees = new List<ISymbolicExpressionTreeNode>(sum.Subtrees);
+      while (sum.Subtrees.Count() > 0) sum.RemoveSubtree(0);
+      var groupedVarNodes = from node in subtrees.OfType<VariableTreeNode>()
+                            let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
+                            group node by node.VariableName + lag into g
+                            select g;
+      var unchangedSubtrees = subtrees.Where(t => !(t is VariableTreeNode));
+
+      foreach (var variableNodeGroup in groupedVarNodes) {
+        var weightSum = variableNodeGroup.Select(t => t.Weight).Sum();
+        var representative = variableNodeGroup.First();
+        representative.Weight = weightSum;
+        sum.AddSubtree(representative);
+      }
+      foreach (var unchangedSubtree in unchangedSubtrees)
+        sum.AddSubtree(unchangedSubtree);
+    }
+
+
+    private ISymbolicExpressionTreeNode MakeProduct(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      if (IsConstant(a) && IsConstant(b)) {
+        // fold constants
+        ((ConstantTreeNode)a).Value *= ((ConstantTreeNode)b).Value;
+        return a;
+      } else if (IsConstant(a)) {
+        // a * $ => $ * a
+        return MakeProduct(b, a);
+      } else if (IsConstant(b) && ((ConstantTreeNode)b).Value.IsAlmost(1.0)) {
+        // $ * 1.0 => $
+        return a;
+      } else if (IsConstant(b) && IsVariable(a)) {
+        // multiply constants into variables weights
+        ((VariableTreeNode)a).Weight *= ((ConstantTreeNode)b).Value;
+        return a;
+      } else if (IsConstant(b) && IsAddition(a)) {
+        // multiply constants into additions
+        return a.Subtrees.Select(x => MakeProduct(x, b)).Aggregate((c, d) => MakeSum(c, d));
+      } else if (IsDivision(a) && IsDivision(b)) {
+        // (a1 / a2) * (b1 / b2) => (a1 * b1) / (a2 * b2)
+        return MakeFraction(MakeProduct(a.GetSubtree(0), b.GetSubtree(0)), MakeProduct(a.GetSubtree(1), b.GetSubtree(1)));
+      } else if (IsDivision(a)) {
+        // (a1 / a2) * b => (a1 * b) / a2
+        return MakeFraction(MakeProduct(a.GetSubtree(0), b), a.GetSubtree(1));
+      } else if (IsDivision(b)) {
+        // a * (b1 / b2) => (b1 * a) / b2
+        return MakeFraction(MakeProduct(b.GetSubtree(0), a), b.GetSubtree(1));
+      } else if (IsMultiplication(a) && IsMultiplication(b)) {
+        // merge multiplications (make sure constants are merged)
+        var mul = mulSymbol.CreateTreeNode();
+        for (int i = 0; i < a.Subtrees.Count(); i++) mul.AddSubtree(a.GetSubtree(i));
+        for (int i = 0; i < b.Subtrees.Count(); i++) mul.AddSubtree(b.GetSubtree(i));
+        MergeVariablesAndConstantsInProduct(mul);
+        return mul;
+      } else if (IsMultiplication(b)) {
+        return MakeProduct(b, a);
+      } else if (IsMultiplication(a)) {
+        // a is already an multiplication => append b
+        a.AddSubtree(b);
+        MergeVariablesAndConstantsInProduct(a);
+        return a;
+      } else {
+        var mul = mulSymbol.CreateTreeNode();
+        mul.AddSubtree(a);
+        mul.AddSubtree(b);
+        MergeVariablesAndConstantsInProduct(mul);
+        return mul;
+      }
+    }
+    #endregion
+
+
+    #region helper functions
+
+    private bool AreSameVariable(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
+      var aLaggedVar = a as LaggedVariableTreeNode;
+      var bLaggedVar = b as LaggedVariableTreeNode;
+      if (aLaggedVar != null && bLaggedVar != null) {
+        return aLaggedVar.VariableName == bLaggedVar.VariableName &&
+          aLaggedVar.Lag == bLaggedVar.Lag;
+      }
+      var aVar = a as VariableTreeNode;
+      var bVar = b as VariableTreeNode;
+      if (aVar != null && bVar != null) {
+        return aVar.VariableName == bVar.VariableName;
+      }
+      return false;
+    }
+
+    // helper to combine the constant factors in products and to combine variables (powers of 2, 3...)
+    private void MergeVariablesAndConstantsInProduct(ISymbolicExpressionTreeNode prod) {
+      var subtrees = new List<ISymbolicExpressionTreeNode>(prod.Subtrees);
+      while (prod.Subtrees.Count() > 0) prod.RemoveSubtree(0);
+      var groupedVarNodes = from node in subtrees.OfType<VariableTreeNode>()
+                            let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
+                            group node by node.VariableName + lag into g
+                            orderby g.Count()
+                            select g;
+      var constantProduct = (from node in subtrees.OfType<VariableTreeNode>()
+                             select node.Weight)
+                            .Concat(from node in subtrees.OfType<ConstantTreeNode>()
+                                    select node.Value)
+                            .DefaultIfEmpty(1.0)
+                            .Aggregate((c1, c2) => c1 * c2);
+
+      var unchangedSubtrees = from tree in subtrees
+                              where !(tree is VariableTreeNode)
+                              where !(tree is ConstantTreeNode)
+                              select tree;
+
+      foreach (var variableNodeGroup in groupedVarNodes) {
+        var representative = variableNodeGroup.First();
+        representative.Weight = 1.0;
+        if (variableNodeGroup.Count() > 1) {
+          var poly = mulSymbol.CreateTreeNode();
+          for (int p = 0; p < variableNodeGroup.Count(); p++) {
+            poly.AddSubtree((ISymbolicExpressionTreeNode)representative.Clone());
+          }
+          prod.AddSubtree(poly);
+        } else {
+          prod.AddSubtree(representative);
+        }
+      }
+
+      foreach (var unchangedSubtree in unchangedSubtrees)
+        prod.AddSubtree(unchangedSubtree);
+
+      if (!constantProduct.IsAlmost(1.0)) {
+        prod.AddSubtree(MakeConstant(constantProduct));
+      }
+    }
+
+
+    /// <summary>
+    /// x => x * -1
+    /// Doesn't create new trees and manipulates x
+    /// </summary>
+    /// <param name="x"></param>
+    /// <returns>-x</returns>
+    private ISymbolicExpressionTreeNode Negate(ISymbolicExpressionTreeNode x) {
+      if (IsConstant(x)) {
+        ((ConstantTreeNode)x).Value *= -1;
+      } else if (IsVariable(x)) {
+        var variableTree = (VariableTreeNode)x;
+        variableTree.Weight *= -1.0;
+      } else if (IsAddition(x)) {
+        // (x0 + x1 + .. + xn) * -1 => (-x0 + -x1 + .. + -xn)        
+        List<ISymbolicExpressionTreeNode> subtrees = new List<ISymbolicExpressionTreeNode>(x.Subtrees);
+        while (x.Subtrees.Count() > 0) x.RemoveSubtree(0);
+        foreach (var subtree in subtrees) {
+          x.AddSubtree(Negate(subtree));
+        }
+      } else if (IsMultiplication(x) || IsDivision(x)) {
+        // x0 * x1 * .. * xn * -1 => x0 * x1 * .. * -xn
+        var lastSubTree = x.Subtrees.Last();
+        x.RemoveSubtree(x.SubtreeCount - 1);
+        x.AddSubtree(Negate(lastSubTree)); // last is maybe a constant, prefer to negate the constant
+      } else {
+        // any other function
+        return MakeProduct(x, MakeConstant(-1));
+      }
+      return x;
+    }
+
+    /// <summary>
+    /// x => 1/x
+    /// Doesn't create new trees and manipulates x
+    /// </summary>
+    /// <param name="x"></param>
+    /// <returns></returns>
+    private ISymbolicExpressionTreeNode Invert(ISymbolicExpressionTreeNode x) {
+      if (IsConstant(x)) {
+        return MakeConstant(1.0 / ((ConstantTreeNode)x).Value);
+      } else if (IsDivision(x)) {
+        return MakeFraction(x.GetSubtree(1), x.GetSubtree(0));
+      } else {
+        // any other function
+        return MakeFraction(MakeConstant(1), x);
+      }
+    }
+
+    private ISymbolicExpressionTreeNode MakeConstant(double value) {
+      ConstantTreeNode constantTreeNode = (ConstantTreeNode)(constSymbol.CreateTreeNode());
+      constantTreeNode.Value = value;
+      return constantTreeNode;
+    }
+
+    private ISymbolicExpressionTreeNode MakeVariable(double weight, string name) {
+      var tree = (VariableTreeNode)varSymbol.CreateTreeNode();
+      tree.Weight = weight;
+      tree.VariableName = name;
+      return tree;
+    }
+    #endregion
+  }
+}
