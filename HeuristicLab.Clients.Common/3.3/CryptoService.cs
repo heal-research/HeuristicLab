@@ -54,9 +54,6 @@ namespace HeuristicLab.Clients.Common {
       catch (FormatException) {
         return encryptedData;
       }
-      catch (Exception ex) {
-        throw ex;
-      }
     }
   }
 }
