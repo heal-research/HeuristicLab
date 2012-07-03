@@ -21,6 +21,10 @@
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
   public interface IVRPInstanceProvider {
-    IVRPData LoadData(string vrpFile, string tourFile);
+    bool CanImportData { get; }
+    IVRPData Import(string vrpFile, string tourFile);
+
+    bool CanExportData { get; }
+    void Export(IVRPData instance, string path);
   }
 }

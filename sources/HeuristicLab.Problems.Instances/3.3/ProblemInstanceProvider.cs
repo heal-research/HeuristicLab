@@ -32,12 +32,18 @@ namespace HeuristicLab.Problems.Instances {
     public abstract IEnumerable<IDataDescriptor> GetDataDescriptors();
 
     public abstract TData LoadData(IDataDescriptor descriptor);
-    public abstract TData LoadData(string path);
 
-    public virtual bool CanSaveData {
+    public virtual bool CanImportData {
       get { return false; }
     }
-    public virtual void SaveData(TData instance, string path) {
+    public virtual TData ImportData(string path) {
+      throw new NotSupportedException();
+    }
+
+    public virtual bool CanExportData {
+      get { return false; }
+    }
+    public virtual void ExportData(TData instance, string path) {
       throw new NotSupportedException();
     }
   }

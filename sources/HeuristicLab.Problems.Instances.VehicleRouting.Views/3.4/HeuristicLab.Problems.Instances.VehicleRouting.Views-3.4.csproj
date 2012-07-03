@@ -114,11 +114,11 @@
   <ItemGroup>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VRPInstanceProviderView.cs">
+    <Compile Include="VRPInstanceConsumerView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="VRPInstanceProviderView.designer.cs">
-      <DependentUpon>VRPInstanceProviderView.cs</DependentUpon>
+    <Compile Include="VRPInstanceConsumerView.designer.cs">
+      <DependentUpon>VRPInstanceConsumerView.cs</DependentUpon>
     </Compile>
     <Compile Include="VRPImportDialog.cs">
       <SubType>Form</SubType>

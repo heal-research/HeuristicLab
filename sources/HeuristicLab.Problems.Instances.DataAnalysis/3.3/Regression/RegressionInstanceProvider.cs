@@ -19,39 +19,9 @@
  */
 #endregion
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public abstract class RegressionInstanceProvider : ProblemInstanceProvider<IRegressionProblemData> {
-
-    public override IRegressionProblemData LoadData(string path) {
-      TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(path);
-
-      Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      string targetVar = csvFileParser.VariableNames.Where(x => dataset.DoubleVariables.Contains(x)).Last();
-
-      IEnumerable<string> allowedInputVars = dataset.DoubleVariables.Where(x => !x.Equals(targetVar));
-
-      IRegressionProblemData regData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
-
-      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
-      regData.TrainingPartition.Start = 0;
-      regData.TrainingPartition.End = trainingPartEnd;
-      regData.TestPartition.Start = trainingPartEnd;
-      regData.TestPartition.End = csvFileParser.Rows;
-
-      int pos = path.LastIndexOf('\\');
-      if (pos < 0)
-        regData.Name = path;
-      else {
-        pos++;
-        regData.Name = path.Substring(pos, path.Length - pos);
-      }
-      return regData;
-    }
   }
 }

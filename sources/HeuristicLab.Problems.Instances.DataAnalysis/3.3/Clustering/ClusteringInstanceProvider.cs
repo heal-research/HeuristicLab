@@ -23,28 +23,5 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public abstract class ClusteringInstanceProvider : ProblemInstanceProvider<IClusteringProblemData> {
-    public override IClusteringProblemData LoadData(string path) {
-      var csvFileParser = new TableFileParser();
-
-      csvFileParser.Parse(path);
-
-      var dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      var claData = new ClusteringProblemData(dataset, dataset.DoubleVariables);
-
-      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
-      claData.TrainingPartition.Start = 0;
-      claData.TrainingPartition.End = trainingPartEnd;
-      claData.TestPartition.Start = trainingPartEnd;
-      claData.TestPartition.End = csvFileParser.Rows;
-      int pos = path.LastIndexOf('\\');
-      if (pos < 0)
-        claData.Name = path;
-      else {
-        pos++;
-        claData.Name = path.Substring(pos, path.Length - pos);
-      }
-
-      return claData;
-    }
   }
 }

@@ -89,7 +89,10 @@ ORSA Journal on Computing, 3, pp. 376-384.";
       }
     }
 
-    public override T LoadData(string path) {
+    public override bool CanImportData {
+      get { return true; }
+    }
+    public override T ImportData(string path) {
       return LoadInstance(new TSPLIBParser(path));
     }
 

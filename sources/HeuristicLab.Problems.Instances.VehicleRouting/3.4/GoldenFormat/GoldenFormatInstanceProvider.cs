@@ -20,13 +20,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
-using HeuristicLab.Problems.Instances.TSPLIB;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
   public abstract class GoldenFormatInstanceProvider : VRPInstanceProvider<CVRPTWData> {
@@ -34,7 +28,10 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       return LoadInstance(new GoldenParser(stream));
     }
 
-    public override CVRPTWData LoadData(string path) {
+    public override bool CanImportData {
+      get { return true; }
+    }
+    public override CVRPTWData ImportData(string path) {
       return LoadInstance(new GoldenParser(path));
     }
 
@@ -65,7 +62,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
         instance.DueTimes[i] = double.MaxValue;
       }
 
-      if(parser.Distance > 0)
+      if (parser.Distance > 0)
         instance.DueTimes[0] = parser.Distance;
 
       if (parser.Vehicles > 0)

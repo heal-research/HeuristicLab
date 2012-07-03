@@ -54,29 +54,34 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.exportButton = new System.Windows.Forms.Button();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-      this.problemInstanceProviderSplitContainer = new System.Windows.Forms.SplitContainer();
-      ((System.ComponentModel.ISupportInitialize)(this.problemInstanceProviderSplitContainer)).BeginInit();
-      this.problemInstanceProviderSplitContainer.Panel1.SuspendLayout();
-      this.problemInstanceProviderSplitContainer.Panel2.SuspendLayout();
-      this.problemInstanceProviderSplitContainer.SuspendLayout();
+      this.ProviderExportSplitContainer = new System.Windows.Forms.SplitContainer();
+      this.ProviderImportSplitContainer = new System.Windows.Forms.SplitContainer();
+      ((System.ComponentModel.ISupportInitialize)(this.ProviderExportSplitContainer)).BeginInit();
+      this.ProviderExportSplitContainer.Panel1.SuspendLayout();
+      this.ProviderExportSplitContainer.Panel2.SuspendLayout();
+      this.ProviderExportSplitContainer.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.ProviderImportSplitContainer)).BeginInit();
+      this.ProviderImportSplitContainer.Panel1.SuspendLayout();
+      this.ProviderImportSplitContainer.Panel2.SuspendLayout();
+      this.ProviderImportSplitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
       // problemInstanceProviderComboBox
       // 
-      this.problemInstanceProviderComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.problemInstanceProviderComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.problemInstanceProviderComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.problemInstanceProviderComboBox.FormattingEnabled = true;
       this.problemInstanceProviderComboBox.Location = new System.Drawing.Point(50, 1);
       this.problemInstanceProviderComboBox.Name = "problemInstanceProviderComboBox";
-      this.problemInstanceProviderComboBox.Size = new System.Drawing.Size(171, 21);
+      this.problemInstanceProviderComboBox.Size = new System.Drawing.Size(174, 21);
       this.problemInstanceProviderComboBox.TabIndex = 16;
       this.problemInstanceProviderComboBox.SelectedIndexChanged += new System.EventHandler(this.problemInstanceProviderComboBox_SelectedIndexChanged);
       // 
       // libraryInfoButton
       // 
       this.libraryInfoButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.libraryInfoButton.Location = new System.Drawing.Point(227, -1);
+      this.libraryInfoButton.Location = new System.Drawing.Point(230, -1);
       this.libraryInfoButton.Name = "libraryInfoButton";
       this.libraryInfoButton.Size = new System.Drawing.Size(24, 24);
       this.libraryInfoButton.TabIndex = 17;
@@ -87,7 +92,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       // libraryLabel
       // 
       this.libraryLabel.AutoSize = true;
-      this.libraryLabel.Location = new System.Drawing.Point(4, 4);
+      this.libraryLabel.Location = new System.Drawing.Point(3, 5);
       this.libraryLabel.Name = "libraryLabel";
       this.libraryLabel.Size = new System.Drawing.Size(41, 13);
       this.libraryLabel.TabIndex = 15;
@@ -95,8 +100,8 @@ namespace HeuristicLab.Problems.Instances.Views {
       // 
       // problemInstanceProviderViewHost
       // 
-      this.problemInstanceProviderViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.problemInstanceProviderViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
       this.problemInstanceProviderViewHost.Caption = "View";
       this.problemInstanceProviderViewHost.Content = null;
       this.problemInstanceProviderViewHost.Enabled = false;
@@ -111,7 +116,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       // importButton
       // 
       this.importButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.importButton.Location = new System.Drawing.Point(257, -1);
+      this.importButton.Location = new System.Drawing.Point(1, -1);
       this.importButton.Name = "importButton";
       this.importButton.Size = new System.Drawing.Size(24, 24);
       this.importButton.TabIndex = 18;
@@ -139,39 +144,61 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.saveFileDialog.Filter = "CSV files|*.csv|All files|*.*";
       this.saveFileDialog.Title = "Save RegressionInstance...";
       // 
-      // problemInstanceProviderSplitContainer
+      // ProviderExportSplitContainer
       // 
-      this.problemInstanceProviderSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-      this.problemInstanceProviderSplitContainer.IsSplitterFixed = true;
-      this.problemInstanceProviderSplitContainer.Location = new System.Drawing.Point(0, 0);
-      this.problemInstanceProviderSplitContainer.Name = "problemInstanceProviderSplitContainer";
+      this.ProviderExportSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+      this.ProviderExportSplitContainer.IsSplitterFixed = true;
+      this.ProviderExportSplitContainer.Location = new System.Drawing.Point(0, 0);
+      this.ProviderExportSplitContainer.Name = "ProviderExportSplitContainer";
       // 
-      // problemInstanceProviderSplitContainer.Panel1
+      // ProviderExportSplitContainer.Panel1
       // 
-      this.problemInstanceProviderSplitContainer.Panel1.Controls.Add(this.problemInstanceProviderComboBox);
-      this.problemInstanceProviderSplitContainer.Panel1.Controls.Add(this.importButton);
-      this.problemInstanceProviderSplitContainer.Panel1.Controls.Add(this.libraryLabel);
-      this.problemInstanceProviderSplitContainer.Panel1.Controls.Add(this.libraryInfoButton);
+      this.ProviderExportSplitContainer.Panel1.Controls.Add(this.ProviderImportSplitContainer);
       // 
-      // problemInstanceProviderSplitContainer.Panel2
+      // ProviderExportSplitContainer.Panel2
       // 
-      this.problemInstanceProviderSplitContainer.Panel2.Controls.Add(this.exportButton);
-      this.problemInstanceProviderSplitContainer.Size = new System.Drawing.Size(312, 22);
-      this.problemInstanceProviderSplitContainer.SplitterDistance = 280;
-      this.problemInstanceProviderSplitContainer.TabIndex = 20;
+      this.ProviderExportSplitContainer.Panel2.Controls.Add(this.exportButton);
+      this.ProviderExportSplitContainer.Size = new System.Drawing.Size(312, 22);
+      this.ProviderExportSplitContainer.SplitterDistance = 283;
+      this.ProviderExportSplitContainer.TabIndex = 20;
+      // 
+      // ProviderImportSplitContainer
+      // 
+      this.ProviderImportSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.ProviderImportSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+      this.ProviderImportSplitContainer.IsSplitterFixed = true;
+      this.ProviderImportSplitContainer.Location = new System.Drawing.Point(0, 0);
+      this.ProviderImportSplitContainer.Name = "ProviderImportSplitContainer";
+      // 
+      // ProviderImportSplitContainer.Panel1
+      // 
+      this.ProviderImportSplitContainer.Panel1.Controls.Add(this.libraryLabel);
+      this.ProviderImportSplitContainer.Panel1.Controls.Add(this.problemInstanceProviderComboBox);
+      this.ProviderImportSplitContainer.Panel1.Controls.Add(this.libraryInfoButton);
+      // 
+      // ProviderImportSplitContainer.Panel2
+      // 
+      this.ProviderImportSplitContainer.Panel2.Controls.Add(this.importButton);
+      this.ProviderImportSplitContainer.Size = new System.Drawing.Size(282, 23);
+      this.ProviderImportSplitContainer.SplitterDistance = 253;
+      this.ProviderImportSplitContainer.TabIndex = 21;
       // 
       // ProblemInstanceConsumerViewGeneric
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Controls.Add(this.problemInstanceProviderSplitContainer);
+      this.Controls.Add(this.ProviderExportSplitContainer);
       this.Controls.Add(this.problemInstanceProviderViewHost);
       this.Name = "ProblemInstanceConsumerViewGeneric";
-      this.problemInstanceProviderSplitContainer.Panel1.ResumeLayout(false);
-      this.problemInstanceProviderSplitContainer.Panel1.PerformLayout();
-      this.problemInstanceProviderSplitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.problemInstanceProviderSplitContainer)).EndInit();
-      this.problemInstanceProviderSplitContainer.ResumeLayout(false);
+      this.ProviderExportSplitContainer.Panel1.ResumeLayout(false);
+      this.ProviderExportSplitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.ProviderExportSplitContainer)).EndInit();
+      this.ProviderExportSplitContainer.ResumeLayout(false);
+      this.ProviderImportSplitContainer.Panel1.ResumeLayout(false);
+      this.ProviderImportSplitContainer.Panel1.PerformLayout();
+      this.ProviderImportSplitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.ProviderImportSplitContainer)).EndInit();
+      this.ProviderImportSplitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -179,14 +206,15 @@ namespace HeuristicLab.Problems.Instances.Views {
     #endregion
 
     protected System.Windows.Forms.ComboBox problemInstanceProviderComboBox;
-    private System.Windows.Forms.Button libraryInfoButton;
-    private System.Windows.Forms.Label libraryLabel;
+    protected System.Windows.Forms.Button libraryInfoButton;
+    protected System.Windows.Forms.Label libraryLabel;
     protected MainForm.WindowsForms.ViewHost problemInstanceProviderViewHost;
-    private System.Windows.Forms.ToolTip toolTip;
-    private System.Windows.Forms.Button importButton;
-    private System.Windows.Forms.Button exportButton;
+    protected System.Windows.Forms.ToolTip toolTip;
+    protected System.Windows.Forms.Button importButton;
+    protected System.Windows.Forms.Button exportButton;
     protected System.Windows.Forms.SaveFileDialog saveFileDialog;
     protected System.Windows.Forms.OpenFileDialog openFileDialog;
-    private System.Windows.Forms.SplitContainer problemInstanceProviderSplitContainer;
+    protected System.Windows.Forms.SplitContainer ProviderExportSplitContainer;
+    protected System.Windows.Forms.SplitContainer ProviderImportSplitContainer;
   }
 }

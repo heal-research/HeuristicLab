@@ -106,12 +106,16 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
 
     protected abstract T LoadData(Stream stream);
 
-    public IVRPData LoadData(string vrpFile, string tourFile) {
-      var data = LoadData(vrpFile);
+    public IVRPData Import(string vrpFile, string tourFile) {
+      var data = ImportData(vrpFile);
       if (!String.IsNullOrEmpty(tourFile)) {
         LoadSolution(tourFile, data);
       }
       return data;
+    }
+
+    public void Export(IVRPData instance, string path) {
+      ExportData((T)instance, path);
     }
 
     protected virtual string GetResourceName(string fileName) {

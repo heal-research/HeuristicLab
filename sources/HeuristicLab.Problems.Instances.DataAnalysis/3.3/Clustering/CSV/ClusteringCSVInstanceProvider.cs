@@ -46,11 +46,41 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return new List<IDataDescriptor>();
     }
 
-    public override bool CanSaveData {
-      get { return true; }
+    public override IClusteringProblemData LoadData(IDataDescriptor descriptor) {
+      throw new NotImplementedException();
     }
 
-    public override void SaveData(IClusteringProblemData instance, string path) {
+    public override bool CanImportData {
+      get { return true; }
+    }
+    public override IClusteringProblemData ImportData(string path) {
+      var csvFileParser = new TableFileParser();
+
+      csvFileParser.Parse(path);
+
+      var dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
+      var claData = new ClusteringProblemData(dataset, dataset.DoubleVariables);
+
+      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
+      claData.TrainingPartition.Start = 0;
+      claData.TrainingPartition.End = trainingPartEnd;
+      claData.TestPartition.Start = trainingPartEnd;
+      claData.TestPartition.End = csvFileParser.Rows;
+      int pos = path.LastIndexOf('\\');
+      if (pos < 0)
+        claData.Name = path;
+      else {
+        pos++;
+        claData.Name = path.Substring(pos, path.Length - pos);
+      }
+
+      return claData;
+    }
+
+    public override bool CanExportData {
+      get { return true; }
+    }
+    public override void ExportData(IClusteringProblemData instance, string path) {
       var strBuilder = new StringBuilder();
 
       foreach (var variable in instance.InputVariables) {
@@ -72,10 +102,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       using (var writer = new StreamWriter(path)) {
         writer.Write(strBuilder);
       }
-    }
-
-    public override IClusteringProblemData LoadData(IDataDescriptor descriptor) {
-      throw new NotImplementedException();
     }
   }
 }

@@ -80,7 +80,10 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
       }
     }
 
-    public override GQAPData LoadData(string path) {
+    public override bool CanImportData {
+      get { return true; }
+    }
+    public override GQAPData ImportData(string path) {
       var parser = new CordeauGQAPParser();
       parser.Parse(path);
       var instance = Load(parser);

@@ -19,14 +19,7 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
-using HeuristicLab.Problems.Instances.TSPLIB;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
   public abstract class TaillardFormatInstanceProvider : VRPInstanceProvider<CVRPData> {
@@ -34,7 +27,10 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       return LoadInstance(new TaillardParser(stream));
     }
 
-    public override CVRPData LoadData(string path) {
+    public override bool CanImportData {
+      get { return true; }
+    }
+    public override CVRPData ImportData(string path) {
       return LoadInstance(new TaillardParser(path));
     }
 

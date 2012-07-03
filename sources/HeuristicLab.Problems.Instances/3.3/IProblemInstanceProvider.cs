@@ -34,9 +34,11 @@ namespace HeuristicLab.Problems.Instances {
   public interface IProblemInstanceProvider<TData> : IProblemInstanceProvider {
     IEnumerable<IDataDescriptor> GetDataDescriptors();
     TData LoadData(IDataDescriptor descriptor);
-    TData LoadData(string path);
 
-    bool CanSaveData { get; }
-    void SaveData(TData instance, string path);
+    bool CanImportData { get; }
+    TData ImportData(string path);
+
+    bool CanExportData { get; }
+    void ExportData(TData instance, string path);
   }
 }

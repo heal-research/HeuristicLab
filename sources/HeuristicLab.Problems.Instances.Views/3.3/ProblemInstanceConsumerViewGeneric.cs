@@ -91,10 +91,12 @@ namespace HeuristicLab.Problems.Instances.Views {
       base.SetEnabledStateOfControls();
       problemInstanceProviderComboBox.Enabled = !ReadOnly && !Locked && Content != null && problemInstanceProviderComboBox.Items.Count > 0;
       libraryInfoButton.Enabled = SelectedProvider != null && SelectedProvider.WebLink != null;
-      importButton.Enabled = !ReadOnly && !Locked && Content != null && Consumer != null;
+      importButton.Enabled = !ReadOnly && !Locked && Content != null && Consumer != null &&
+                             GenericSelectedProvider != null && GenericSelectedProvider.CanImportData;
+      ProviderImportSplitContainer.Panel2Collapsed = !importButton.Enabled;
       exportButton.Enabled = !ReadOnly && !Locked && Content != null && Exporter != null &&
-                             GenericSelectedProvider != null && GenericSelectedProvider.CanSaveData;
-      problemInstanceProviderSplitContainer.Panel2Collapsed = !exportButton.Enabled;
+                             GenericSelectedProvider != null && GenericSelectedProvider.CanExportData;
+      ProviderExportSplitContainer.Panel2Collapsed = !exportButton.Enabled;
     }
 
     protected virtual void problemInstanceProviderComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
@@ -131,7 +133,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
         T instance = default(T);
         try {
-          instance = GenericSelectedProvider.LoadData(openFileDialog.FileName);
+          instance = GenericSelectedProvider.ImportData(openFileDialog.FileName);
         }
         catch (Exception ex) {
           MessageBox.Show(String.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -146,10 +148,10 @@ namespace HeuristicLab.Problems.Instances.Views {
       }
     }
 
-    protected void exportButton_Click(object sender, EventArgs e) {
+    protected virtual void exportButton_Click(object sender, EventArgs e) {
       if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
         try {
-          GenericSelectedProvider.SaveData(GenericExporter.Export(), saveFileDialog.FileName);
+          GenericSelectedProvider.ExportData(GenericExporter.Export(), saveFileDialog.FileName);
         }
         catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);

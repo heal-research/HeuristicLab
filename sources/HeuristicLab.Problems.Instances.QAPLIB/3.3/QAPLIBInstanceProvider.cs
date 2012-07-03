@@ -218,7 +218,10 @@ Journal of Global Optimization, 10, pp. 391-403.";
       }
     }
 
-    public override QAPData LoadData(string path) {
+    public override bool CanImportData {
+      get { return true; }
+    }
+    public override QAPData ImportData(string path) {
       var parser = new QAPLIBParser();
       parser.Parse(path);
       var instance = Load(parser);

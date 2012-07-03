@@ -19,12 +19,13 @@
  */
 #endregion
 
-
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Problems.DataAnalysis;
+
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class RegressionCSVInstanceProvider : RegressionInstanceProvider {
     public override string Name {
@@ -42,15 +43,47 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return ""; }
     }
 
-    public override bool CanSaveData {
-      get { return true; }
-    }
-
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       return new List<IDataDescriptor>();
     }
+    public override IRegressionProblemData LoadData(IDataDescriptor descriptor) {
+      throw new NotImplementedException();
+    }
 
-    public override void SaveData(IRegressionProblemData instance, string path) {
+    public override bool CanImportData {
+      get { return true; }
+    }
+    public override IRegressionProblemData ImportData(string path) {
+      TableFileParser csvFileParser = new TableFileParser();
+      csvFileParser.Parse(path);
+
+      Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
+      string targetVar = csvFileParser.VariableNames.Where(x => dataset.DoubleVariables.Contains(x)).Last();
+
+      IEnumerable<string> allowedInputVars = dataset.DoubleVariables.Where(x => !x.Equals(targetVar));
+
+      IRegressionProblemData regData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
+
+      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
+      regData.TrainingPartition.Start = 0;
+      regData.TrainingPartition.End = trainingPartEnd;
+      regData.TestPartition.Start = trainingPartEnd;
+      regData.TestPartition.End = csvFileParser.Rows;
+
+      int pos = path.LastIndexOf('\\');
+      if (pos < 0)
+        regData.Name = path;
+      else {
+        pos++;
+        regData.Name = path.Substring(pos, path.Length - pos);
+      }
+      return regData;
+    }
+
+    public override bool CanExportData {
+      get { return true; }
+    }
+    public override void ExportData(IRegressionProblemData instance, string path) {
       StringBuilder strBuilder = new StringBuilder();
 
       foreach (var variable in instance.InputVariables) {
@@ -72,10 +105,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       using (StreamWriter writer = new StreamWriter(path)) {
         writer.Write(strBuilder);
       }
-    }
-
-    public override IRegressionProblemData LoadData(IDataDescriptor descriptor) {
-      throw new NotImplementedException();
     }
   }
 }
