@@ -250,7 +250,14 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         SolutionCreator.LengthParameter.Value = new IntValue(DistanceMatrix.Rows);
       else if (Evaluator is ITSPCoordinatesPathEvaluator && Coordinates != null)
         SolutionCreator.LengthParameter.Value = new IntValue(Coordinates.Rows);
-      else SolutionCreator.LengthParameter.Value = null;
+      else {
+        SolutionCreator.LengthParameter.Value = null;
+        string error = "The given problem does not support the selected evaluator.";
+        if (Evaluator is ITSPDistanceMatrixEvaluator)
+          error += Environment.NewLine + "Please review that the " + DistanceMatrixParameter.Name + " parameter is defined or choose another evaluator.";
+        else error += Environment.NewLine + "Please review that the " + CoordinatesParameter.Name + " parameter is defined or choose another evaluator.";
+        PluginInfrastructure.ErrorHandling.ShowErrorDialog(error, null);
+      }
       SolutionCreator.LengthParameter.Hidden = SolutionCreator.LengthParameter.Value != null;
       SolutionCreator.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.RelativeUndirected);
       SolutionCreator.PermutationTypeParameter.Hidden = true;
@@ -399,8 +406,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (data.BestKnownTour != null) {
         try {
           EvaluateAndLoadTour(data.BestKnownTour);
-        }
-        catch (InvalidOperationException) {
+        } catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)
             BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
         }
