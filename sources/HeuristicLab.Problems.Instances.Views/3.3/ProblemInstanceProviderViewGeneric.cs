@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Common.Resources;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
@@ -50,9 +49,6 @@ namespace HeuristicLab.Problems.Instances.Views {
 
     public ProblemInstanceProviderViewGeneric() {
       InitializeComponent();
-      loadButton.Text = String.Empty;
-      loadButton.Image = VSImageLibrary.RefreshDocument;
-      toolTip.SetToolTip(loadButton, "Load the selected problem.");
     }
 
     protected override void OnContentChanged() {
@@ -72,29 +68,15 @@ namespace HeuristicLab.Problems.Instances.Views {
       if (show) {
         instanceLabel.Show();
         instancesComboBox.Show();
-        loadButton.Show();
       } else {
         instanceLabel.Hide();
         instancesComboBox.Hide();
-        loadButton.Hide();
       }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       instancesComboBox.Enabled = !ReadOnly && !Locked && Content != null && GenericConsumer != null;
-      loadButton.Enabled = !ReadOnly && !Locked && Content != null && GenericConsumer != null && instancesComboBox.SelectedIndex >= 0;
-    }
-
-    protected virtual void loadButton_Click(object sender, EventArgs e) {
-      var descriptor = (IDataDescriptor)instancesComboBox.SelectedItem;
-      T instance = Content.LoadData(descriptor);
-      try {
-        GenericConsumer.Load(instance);
-      }
-      catch (Exception ex) {
-        MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", descriptor.Name, Environment.NewLine + ex.Message), "Cannot load instance");
-      }
     }
 
     private void instancesComboBox_DataSourceChanged(object sender, EventArgs e) {
@@ -103,8 +85,17 @@ namespace HeuristicLab.Problems.Instances.Views {
         comboBox.Items.Clear();
     }
 
-    private void instancesComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
-      SetEnabledStateOfControls();
+    private void instancesComboBox_SelectionChangeCommitted(object sender, System.EventArgs e) {
+      if (instancesComboBox.SelectedIndex >= 0) {
+        var descriptor = (IDataDescriptor)instancesComboBox.SelectedItem;
+        T instance = Content.LoadData(descriptor);
+        try {
+          GenericConsumer.Load(instance);
+        }
+        catch (Exception ex) {
+          MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", descriptor.Name, Environment.NewLine + ex.Message), "Cannot load instance");
+        }
+      }
     }
   }
 }

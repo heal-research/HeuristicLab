@@ -45,24 +45,11 @@ namespace HeuristicLab.Problems.Instances.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      this.loadButton = new System.Windows.Forms.Button();
       this.instanceLabel = new System.Windows.Forms.Label();
       this.instancesComboBox = new System.Windows.Forms.ComboBox();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.SuspendLayout();
-      // 
-      // loadButton
-      // 
-      this.loadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.loadButton.Location = new System.Drawing.Point(667, -1);
-      this.loadButton.Name = "loadButton";
-      this.loadButton.Size = new System.Drawing.Size(24, 24);
-      this.loadButton.TabIndex = 6;
-      this.loadButton.Text = "Load";
-      this.loadButton.UseVisualStyleBackColor = true;
-      this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
       // 
       // instanceLabel
       // 
@@ -75,16 +62,16 @@ namespace HeuristicLab.Problems.Instances.Views {
       // 
       // instancesComboBox
       // 
-      this.instancesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.instancesComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.instancesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.instancesComboBox.FormattingEnabled = true;
       this.instancesComboBox.Location = new System.Drawing.Point(60, 1);
       this.instancesComboBox.Name = "instancesComboBox";
-      this.instancesComboBox.Size = new System.Drawing.Size(601, 21);
+      this.instancesComboBox.Size = new System.Drawing.Size(632, 21);
       this.instancesComboBox.TabIndex = 7;
       this.instancesComboBox.DataSourceChanged += new System.EventHandler(this.instancesComboBox_DataSourceChanged);
-      this.instancesComboBox.SelectedIndexChanged += new System.EventHandler(this.instancesComboBox_SelectedIndexChanged);
+      this.instancesComboBox.SelectionChangeCommitted += new System.EventHandler(instancesComboBox_SelectionChangeCommitted);
       // 
       // openFileDialog
       // 
@@ -101,19 +88,15 @@ namespace HeuristicLab.Problems.Instances.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.instanceLabel);
       this.Controls.Add(this.instancesComboBox);
-      this.Controls.Add(this.loadButton);
       this.Name = "ProblemInstanceProviderViewGeneric";
       this.Size = new System.Drawing.Size(694, 21);
       this.ResumeLayout(false);
       this.PerformLayout();
 
     }
-
     #endregion
 
     protected System.Windows.Forms.OpenFileDialog openFileDialog;
-    protected System.Windows.Forms.ToolTip toolTip;
-    protected System.Windows.Forms.Button loadButton;
     protected System.Windows.Forms.Label instanceLabel;
     protected System.Windows.Forms.ComboBox instancesComboBox;
     protected System.Windows.Forms.SaveFileDialog saveFileDialog;
