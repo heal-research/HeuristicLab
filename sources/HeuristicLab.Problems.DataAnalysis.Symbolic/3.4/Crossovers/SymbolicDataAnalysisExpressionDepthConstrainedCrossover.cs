@@ -40,8 +40,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string DepthRangeParameterName = "DepthRange";
 
     #region Parameter properties
-    public ConstrainedValueParameter<StringValue> DepthRangeParameter {
-      get { return (ConstrainedValueParameter<StringValue>)Parameters[DepthRangeParameterName]; }
+    public IConstrainedValueParameter<StringValue> DepthRangeParameter {
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[DepthRangeParameterName]; }
     }
     #endregion
 
@@ -88,16 +88,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       int depth = parent0.Root.GetDepth() - 1; // substract 1 because the tree levels are counted from 0 
       var depthRange = new IntRange();
       const int depthOffset = 2; // skip the first 2 levels (root + startNode)
-      switch ((int)Enum.Parse(typeof(Ranges), mode)) {
-        case (int)Ranges.HighLevel:
+      switch ((Ranges)Enum.Parse(typeof(Ranges), mode)) {
+        case Ranges.HighLevel:
           depthRange.Start = depthOffset; // skip the first 2 levels (root + startNode)
           depthRange.End = depthRange.Start + (int)Math.Round(depth * 0.25);
           break;
-        case (int)Ranges.Standard:
+        case Ranges.Standard:
           depthRange.Start = depthOffset + (int)Math.Round(depth * 0.25);
           depthRange.End = depthRange.Start + (int)Math.Round(depth * 0.5);
           break;
-        case (int)Ranges.LowLevel:
+        case Ranges.LowLevel:
           depthRange.Start = depthOffset + (int)Math.Round(depth * 0.75);
           depthRange.End = Math.Max(depthRange.Start, depth);
           break;
