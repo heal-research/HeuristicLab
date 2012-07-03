@@ -43,20 +43,19 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
+using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Problems.Instances.TSPLIB;
+using HeuristicLab.Problems.Instances.VehicleRouting;
 using HeuristicLab.Problems.Knapsack;
 using HeuristicLab.Problems.TestFunctions;
 using HeuristicLab.Problems.TravelingSalesman;
 using HeuristicLab.Problems.VehicleRouting;
 using HeuristicLab.Problems.VehicleRouting.Encodings.General;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HeuristicLab.Problems.Instances.VehicleRouting;
-using HeuristicLab.Problems.Instances;
 
 
 namespace HeuristicLab_33.Tests {
@@ -132,7 +131,7 @@ namespace HeuristicLab_33.Tests {
       VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
 
       SolomonFormatInstanceProvider instanceProvider = new SolomonInstanceProvider();
-      IVRPData data = instanceProvider.LoadData("C101.txt", "C101.opt.txt");
+      IVRPData data = instanceProvider.Import("C101.txt", "C101.opt.txt");
       vrpProblem.Load(data);
       vrpProblem.Name = "C101 VRP (imported from Solomon)";
       vrpProblem.Description = "Represents a Vehicle Routing Problem.";
