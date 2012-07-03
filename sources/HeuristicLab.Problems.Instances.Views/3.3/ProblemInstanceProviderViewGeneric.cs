@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.Instances.Views {
           GenericConsumer.Load(instance);
         }
         catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}: {1}", descriptor.Name, Environment.NewLine + ex.Message), ex);
+          ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), ex);
         }
       }
     }
