@@ -89,12 +89,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       if (instancesComboBox.SelectedIndex >= 0) {
         var descriptor = (IDataDescriptor)instancesComboBox.SelectedItem;
         T instance = Content.LoadData(descriptor);
-        try {
-          GenericConsumer.Load(instance);
-        }
-        catch (Exception ex) {
-          MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", descriptor.Name, Environment.NewLine + ex.Message), "Cannot load instance");
-        }
+        GenericConsumer.Load(instance);
       }
     }
   }
