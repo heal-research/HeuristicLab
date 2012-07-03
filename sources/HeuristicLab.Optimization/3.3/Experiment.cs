@@ -177,9 +177,10 @@ namespace HeuristicLab.Optimization {
 
       experimentStarted = false;
       experimentStopped = false;
-      foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started))
-        //if (clearRuns || optimizer.ExecutionState != ExecutionState.Prepared)
-        optimizer.Prepare(clearRuns);
+      foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started)) {
+        // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+        try { optimizer.Prepare(clearRuns); } catch (InvalidOperationException) { }
+      }
     }
     public void Start() {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
@@ -189,7 +190,10 @@ namespace HeuristicLab.Optimization {
       experimentStarted = true;
       experimentStopped = false;
       IOptimizer optimizer = Optimizers.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
-      if (optimizer != null) optimizer.Start();
+      if (optimizer != null) {
+        // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+        try { optimizer.Start(); } catch (InvalidOperationException) { }
+      }
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
@@ -198,8 +202,10 @@ namespace HeuristicLab.Optimization {
 
       experimentStarted = false;
       experimentStopped = false;
-      foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState == ExecutionState.Started))
-        optimizer.Pause();
+      foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState == ExecutionState.Started)) {
+        // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+        try { optimizer.Pause(); } catch (InvalidOperationException) { }
+      }
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
@@ -209,8 +215,10 @@ namespace HeuristicLab.Optimization {
       experimentStarted = false;
       experimentStopped = true;
       if (Optimizers.Any(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused))) {
-        foreach (IOptimizer optimizer in Optimizers.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused)))
-          optimizer.Stop();
+        foreach (var optimizer in Optimizers.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused))) {
+          // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+          try { optimizer.Stop(); } catch (InvalidOperationException) { }
+        }
       } else {
         OnStopped();
       }

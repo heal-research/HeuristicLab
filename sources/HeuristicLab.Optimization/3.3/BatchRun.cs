@@ -29,6 +29,8 @@ using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
+  internal enum BatchRunAction { None, Prepare, Start, Pause, Stop };
+
   /// <summary>
   /// A run in which an optimizer is executed a given number of times.
   /// </summary>
@@ -152,10 +154,7 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    private bool batchRunPrepared = false;
-    private bool batchRunStarted = false;
-    private bool batchRunPaused = false;
-    private bool batchRunStopped = false;
+    private BatchRunAction batchRunAction = BatchRunAction.None;
 
     public BatchRun()
       : base() {
@@ -203,10 +202,7 @@ namespace HeuristicLab.Optimization {
       repetitions = original.repetitions;
       repetitionsCounter = original.repetitionsCounter;
       runs = cloner.Clone(original.runs);
-      batchRunStarted = original.batchRunStarted;
-      batchRunPaused = original.batchRunPaused;
-      batchRunStopped = original.batchRunStopped;
-      batchRunPrepared = original.batchRunPrepared;
+      batchRunAction = original.batchRunAction;
       Initialize();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -229,11 +225,9 @@ namespace HeuristicLab.Optimization {
         ExecutionTime = TimeSpan.Zero;
         repetitionsCounter = 0;
         if (clearRuns) runs.Clear();
-        batchRunPrepared = true;
-        batchRunStarted = false;
-        batchRunPaused = false;
-        batchRunStopped = false;
-        Optimizer.Prepare(clearRuns);
+        batchRunAction = BatchRunAction.Prepare;
+        // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+        try { Optimizer.Prepare(clearRuns); } catch (InvalidOperationException) { }
       } else {
         ExecutionState = ExecutionState.Stopped;
       }
@@ -242,40 +236,31 @@ namespace HeuristicLab.Optimization {
       if ((ExecutionState != ExecutionState.Prepared) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Start not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizer == null) return;
-
-      batchRunPrepared = false;
-      batchRunStarted = true;
-      batchRunPaused = false;
-      batchRunStopped = false;
+      batchRunAction = BatchRunAction.Start;
       if (Optimizer.ExecutionState == ExecutionState.Stopped) Optimizer.Prepare();
-      Optimizer.Start();
+      // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+      try { Optimizer.Start(); } catch (InvalidOperationException) { }
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
         throw new InvalidOperationException(string.Format("Pause not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizer == null) return;
+      batchRunAction = BatchRunAction.Pause;
       if (Optimizer.ExecutionState != ExecutionState.Started) return;
-
-      batchRunPrepared = false;
-      batchRunStarted = false;
-      batchRunPaused = true;
-      batchRunStopped = false;
-      Optimizer.Pause();
+      // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+      try { Optimizer.Pause(); } catch (InvalidOperationException) { }
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
         throw new InvalidOperationException(string.Format("Stop not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizer == null) return;
+      batchRunAction = BatchRunAction.Stop;
       if (Optimizer.ExecutionState != ExecutionState.Started && Optimizer.ExecutionState != ExecutionState.Paused) {
         OnStopped();
         return;
       }
-
-      batchRunPrepared = false;
-      batchRunStarted = false;
-      batchRunPaused = false;
-      batchRunStopped = true;
-      Optimizer.Stop();
+      // a race-condition may occur when the optimizer has changed the state by itself in the meantime
+      try { Optimizer.Stop(); } catch (InvalidOperationException) { }
     }
 
     #region Events
@@ -301,29 +286,28 @@ namespace HeuristicLab.Optimization {
     }
     public event EventHandler Prepared;
     private void OnPrepared() {
-      batchRunPrepared = false;
+      batchRunAction = BatchRunAction.None;
       ExecutionState = ExecutionState.Prepared;
       EventHandler handler = Prepared;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Started;
     private void OnStarted() {
-      //TODO add coment
+      // no reset of BatchRunAction.Started, because we need to differ which of the two was started by the user
       ExecutionState = ExecutionState.Started;
       EventHandler handler = Started;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Paused;
     private void OnPaused() {
-      batchRunPaused = false;
+      batchRunAction = BatchRunAction.None;
       ExecutionState = ExecutionState.Paused;
       EventHandler handler = Paused;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Stopped;
     private void OnStopped() {
-      //reset flags because it cannot be done if the optimizer gets prepared
-      batchRunStopped = false;
+      batchRunAction = BatchRunAction.None;
       ExecutionState = ExecutionState.Stopped;
       EventHandler handler = Stopped;
       if (handler != null) handler(this, EventArgs.Empty);
@@ -368,7 +352,7 @@ namespace HeuristicLab.Optimization {
       }
     }
     private void Optimizer_Prepared(object sender, EventArgs e) {
-      if (batchRunPrepared || (ExecutionState == ExecutionState.Stopped)) {
+      if (batchRunAction == BatchRunAction.Prepare || ExecutionState == ExecutionState.Stopped) {
         ExecutionTime = TimeSpan.Zero;
         runsExecutionTime = TimeSpan.Zero;
         repetitionsCounter = 0;
@@ -384,10 +368,10 @@ namespace HeuristicLab.Optimization {
       ExecutionTime += runsExecutionTime;
       runsExecutionTime = TimeSpan.Zero;
 
-      if (batchRunStopped) OnStopped();
+      if (batchRunAction == BatchRunAction.Stop) OnStopped();
       else if (repetitionsCounter >= repetitions) OnStopped();
-      else if (batchRunPaused) OnPaused();
-      else if (batchRunStarted) {
+      else if (batchRunAction == BatchRunAction.Pause) OnPaused();
+      else if (batchRunAction == BatchRunAction.Start) {
         Optimizer.Prepare();
         Optimizer.Start();
       } else if (executionState == ExecutionState.Started) {
