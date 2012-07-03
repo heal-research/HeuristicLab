@@ -311,8 +311,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisExpressionCrossover<T>>()) {
         op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameterName;
-      }
-      foreach (var op in operators.OfType<ISymbolicDataAnalysisExpressionCrossover<T>>()) {
         op.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
         op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameter.Name;
         op.RelativeNumberOfEvaluatedSamplesParameter.ActualName = RelativeNumberOfEvaluatedSamplesParameter.Name;
