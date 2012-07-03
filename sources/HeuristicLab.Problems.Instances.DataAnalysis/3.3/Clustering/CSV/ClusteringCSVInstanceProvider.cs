@@ -28,7 +28,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class ClusteringCSVInstanceProvider : ClusteringInstanceProvider {
     public override string Name {
-      get { return "CSV Problem Provider"; }
+      get { return "Comma-separated Values File"; }
     }
     public override string Description {
       get {

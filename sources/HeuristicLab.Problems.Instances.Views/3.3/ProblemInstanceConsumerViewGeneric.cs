@@ -166,7 +166,7 @@ namespace HeuristicLab.Problems.Instances.Views {
     #region ToolTip
     protected void SetTooltip() {
       toolTip.SetToolTip(problemInstanceProviderComboBox, GetProviderToolTip());
-      toolTip.SetToolTip(importButton, "Open a " + GetProblemType() + " problem from file.");
+      toolTip.SetToolTip(importButton, "Import a " + GetProblemType() + " problem from file.");
       toolTip.SetToolTip(exportButton, "Export currently loaded " + GetProblemType() + " problem to a file.");
       if (SelectedProvider.WebLink != null)
         toolTip.SetToolTip(libraryInfoButton, "Browse to " + SelectedProvider.WebLink.ToString());
