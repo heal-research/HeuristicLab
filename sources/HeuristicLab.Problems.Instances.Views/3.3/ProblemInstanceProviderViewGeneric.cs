@@ -25,6 +25,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Instances.Views {
   [View("ProblemInstanceProviderViewGeneric")]
@@ -89,7 +90,12 @@ namespace HeuristicLab.Problems.Instances.Views {
       if (instancesComboBox.SelectedIndex >= 0) {
         var descriptor = (IDataDescriptor)instancesComboBox.SelectedItem;
         T instance = Content.LoadData(descriptor);
-        GenericConsumer.Load(instance);
+        try {
+          GenericConsumer.Load(instance);
+        }
+        catch (Exception ex) {
+          ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}: {1}", descriptor.Name, Environment.NewLine + ex.Message), ex);
+        }
       }
     }
   }
