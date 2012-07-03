@@ -138,6 +138,15 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       get { return Files.Where(f => f.Type == PluginFileType.Assembly).Select(f => f.Name); }
     }
 
+    /// <summary>
+    /// Gets and sets the list of assembly names for this plugin. Assembly names are only available after the plugin has been loaded.
+    /// </summary>
+    private List<string> assemblyNames;
+    public IEnumerable<string> AssemblyNames {
+      get { return assemblyNames; }
+      set { this.assemblyNames = new List<string>(value); }
+    }
+
     internal PluginDescription() {
       pluginState = PluginState.Undefined;
     }

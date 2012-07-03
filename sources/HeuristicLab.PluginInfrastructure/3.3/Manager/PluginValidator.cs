@@ -505,6 +505,8 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       // load all loadable plugins (all dependencies available) into the execution context
       foreach (var desc in PluginDescriptionIterator.IterateDependenciesBottomUp(pluginDescriptions
                                                                                 .Where(x => x.PluginState != PluginState.Disabled))) {
+        // store the assembly names so that we can later retrieve the assemblies loaded in the appdomain by name
+        var assemblyNames = new List<string>();
         foreach (string assemblyLocation in desc.AssemblyLocations) {
           if (desc.PluginState != PluginState.Disabled) {
             try {
@@ -514,7 +516,9 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
               // now load the assemblies into the execution context  
               // this can still lead to an exception
               // even when the assemby was successfully loaded into the reflection only context before 
-              var asm = Assembly.Load(assemblyName);
+              // when loading the assembly using it's assemblyName it can be loaded from a different location than before (e.g. the GAC)
+              Assembly.Load(assemblyName);
+              assemblyNames.Add(assemblyName);
             }
             catch (BadImageFormatException) {
               desc.Disable(Path.GetFileName(assemblyLocation) + " is not a valid assembly.");
@@ -534,6 +538,7 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
             }
           }
         }
+        desc.AssemblyNames = assemblyNames;
       }
     }
 
@@ -546,12 +551,12 @@ namespace HeuristicLab.PluginInfrastructure.Manager {
       foreach (var desc in pluginDescriptions) {
         if (desc.PluginState == PluginState.Enabled) {
           // cannot use ApplicationManager to retrieve types because it is not yet instantiated
-          foreach (string assemblyLocation in desc.AssemblyLocations) {
+          foreach (string assemblyName in desc.AssemblyNames) {
             var asm = (from assembly in assemblies
-                       where string.Equals(Path.GetFullPath(assembly.Location), Path.GetFullPath(assemblyLocation), StringComparison.CurrentCultureIgnoreCase)
+                       where assembly.FullName == assemblyName
                        select assembly)
                       .SingleOrDefault();
-            if (asm == null) throw new InvalidPluginException("Could not assembly " + assemblyLocation + " for plugin " + desc.Name);
+            if (asm == null) throw new InvalidPluginException("Could not assembly " + assemblyName + " for plugin " + desc.Name);
             foreach (Type pluginType in asm.GetTypes()) {
               if (typeof(IPlugin).IsAssignableFrom(pluginType) && !pluginType.IsAbstract && !pluginType.IsInterface && !pluginType.HasElementType) {
                 IPlugin plugin = (IPlugin)Activator.CreateInstance(pluginType);
