@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return ""; }
     }
     public override Uri WebLink {
-      get { return new Uri("http://groups.csail.mit.edu/EVO-DesignOpt/GPBenchmarks/"); }
+      get { return new Uri("http://www.gpbenchmarks.org/wiki/index.php?title=Problem_Classification#Vladislavleva_et_al"); }
     }
     public override string ReferencePublication {
       get { return ""; }
