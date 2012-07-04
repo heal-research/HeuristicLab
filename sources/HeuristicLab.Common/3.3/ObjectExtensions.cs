@@ -85,7 +85,7 @@ namespace HeuristicLab.Common {
       if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) {
         PropertyInfo info = type.GetProperty("Value");
         object value = info.GetValue(obj, null);
-        if (value != null && excludedMembers.Contains(value, comparer))
+        if (value != null && !excludedMembers.Contains(value, comparer))
           yield return value;
       } else if (type.IsSubclassOfRawGeneric(typeof(Dictionary<,>)) ||
            type.IsSubclassOfRawGeneric(typeof(SortedDictionary<,>)) ||
@@ -115,8 +115,7 @@ namespace HeuristicLab.Common {
           object fieldValue;
           try {
             fieldValue = f.GetValue(obj);
-          }
-          catch (SecurityException) {
+          } catch (SecurityException) {
             continue;
           }
           if (excludedMembers.Contains(fieldValue, comparer)) continue;
