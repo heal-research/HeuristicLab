@@ -34,9 +34,9 @@ namespace HeuristicLab.Common {
       yield return obj;
     }
 
-    public static IEnumerable<object> GetObjectGraphObjects(this object obj, HashSet<string> excludedMembers = null, bool excludeStaticMembers = false) {
+    public static IEnumerable<object> GetObjectGraphObjects(this object obj, HashSet<object> excludedMembers = null, bool excludeStaticMembers = false) {
       if (obj == null) return Enumerable.Empty<object>();
-      if (excludedMembers == null) excludedMembers = new HashSet<string>();
+      if (excludedMembers == null) excludedMembers = new HashSet<object>();
 
       var objects = new HashSet<object>();
       var stack = new Stack<object>();
@@ -77,13 +77,16 @@ namespace HeuristicLab.Common {
              type == typeof(DateTime[]) ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
-    private static IEnumerable<object> GetChildObjects(object obj, HashSet<string> excludedMembers, bool excludeStaticMembers) {
+
+    private static ReferenceEqualityComparer comparer = new ReferenceEqualityComparer();
+    private static IEnumerable<object> GetChildObjects(object obj, HashSet<object> excludedMembers, bool excludeStaticMembers) {
       Type type = obj.GetType();
 
       if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) {
         PropertyInfo info = type.GetProperty("Value");
         object value = info.GetValue(obj, null);
-        if (value != null) yield return value;
+        if (value != null && excludedMembers.Contains(value, comparer))
+          yield return value;
       } else if (type.IsSubclassOfRawGeneric(typeof(Dictionary<,>)) ||
            type.IsSubclassOfRawGeneric(typeof(SortedDictionary<,>)) ||
            type.IsSubclassOfRawGeneric(typeof(SortedList<,>)) ||
@@ -92,17 +95,22 @@ namespace HeuristicLab.Common {
            obj is ListDictionary ||
            obj is Hashtable) {
         var dictionary = obj as IDictionary;
-        foreach (object value in dictionary.Keys)
+        foreach (object value in dictionary.Keys) {
+          if (excludedMembers.Contains(value, comparer)) continue;
           yield return value;
-        foreach (object value in dictionary.Values)
+        }
+        foreach (object value in dictionary.Values) {
+          if (excludedMembers.Contains(value, comparer)) continue;
           yield return value;
+        }
       } else if (type.IsArray || type.IsSubclassOfRawGeneric(typeof(HashSet<>))) {
         var enumerable = obj as IEnumerable;
-        foreach (var value in enumerable)
+        foreach (var value in enumerable) {
+          if (excludedMembers.Contains(value, comparer)) continue;
           yield return value;
+        }
       } else {
         foreach (FieldInfo f in type.GetAllFields()) {
-          if (excludedMembers.Contains(f.Name)) continue;
           if (excludeStaticMembers && f.IsStatic) continue;
           object fieldValue;
           try {
@@ -111,6 +119,7 @@ namespace HeuristicLab.Common {
           catch (SecurityException) {
             continue;
           }
+          if (excludedMembers.Contains(fieldValue, comparer)) continue;
           yield return fieldValue;
         }
       }
