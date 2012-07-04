@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
@@ -160,14 +161,20 @@ namespace HeuristicLab.Problems.Instances.Views {
     }
 
     protected string GetProblemType() {
+      var item = Content as IItem;
+      if (item != null)
+        return item.ItemName;
+      return "problem";
+    }
+    protected string GetProviderFormatInfo() {
       return SelectedProvider.Name;
     }
 
     #region ToolTip
     protected void SetTooltip() {
       toolTip.SetToolTip(problemInstanceProviderComboBox, GetProviderToolTip());
-      toolTip.SetToolTip(importButton, "Import a " + GetProblemType() + " problem from file.");
-      toolTip.SetToolTip(exportButton, "Export currently loaded " + GetProblemType() + " problem to a file.");
+      toolTip.SetToolTip(importButton, "Import a " + GetProblemType() + " from a file in the " + GetProviderFormatInfo() + " format.");
+      toolTip.SetToolTip(exportButton, "Export currently loaded " + GetProblemType() + " to a file in the " + GetProviderFormatInfo() + " format.");
       if (SelectedProvider.WebLink != null)
         toolTip.SetToolTip(libraryInfoButton, "Browse to " + SelectedProvider.WebLink.ToString());
       else toolTip.SetToolTip(libraryInfoButton, "Library does not have a web reference.");
