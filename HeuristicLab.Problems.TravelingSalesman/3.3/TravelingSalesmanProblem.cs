@@ -111,11 +111,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       : base(new TSPRoundedEuclideanPathEvaluator(), new RandomPermutationCreator()) {
       Parameters.Add(new OptionalValueParameter<DoubleMatrix>("Coordinates", "The x- and y-Coordinates of the cities."));
       Parameters.Add(new OptionalValueParameter<DistanceMatrix>("DistanceMatrix", "The matrix which contains the distances between the cities."));
-      Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if a distance matrix should be calculated and used for evaluation, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ValueParameter<BoolValue>("UseDistanceMatrix", "True if the coordinates based evaluators should calculate the distance matrix from the coordinates and use it for evaluation similar to the distance matrix evaluator, otherwise false.", new BoolValue(true)));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution of this TSP instance."));
 
       Maximization.Value = false;
       MaximizationParameter.Hidden = true;
+      UseDistanceMatrixParameter.Hidden = true;
       DistanceMatrixParameter.ReactOnValueToStringChangedAndValueItemImageChanged = false;
 
       Coordinates = new DoubleMatrix(new double[,] {
@@ -150,22 +151,29 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       ParameterizeSolutionCreator();
       UpdateMoveEvaluators();
       ParameterizeAnalyzers();
-      ClearDistanceMatrix();
+      if (Evaluator is ITSPCoordinatesPathEvaluator && Coordinates != null)
+        ClearDistanceMatrix();
     }
     private void CoordinatesParameter_ValueChanged(object sender, EventArgs e) {
       if (Coordinates != null) {
         Coordinates.ItemChanged += new EventHandler<EventArgs<int, int>>(Coordinates_ItemChanged);
         Coordinates.Reset += new EventHandler(Coordinates_Reset);
       }
-      ParameterizeSolutionCreator();
-      ClearDistanceMatrix();
+      if (Evaluator is ITSPCoordinatesPathEvaluator) {
+        ParameterizeSolutionCreator();
+        ClearDistanceMatrix();
+      }
     }
     private void Coordinates_ItemChanged(object sender, EventArgs<int, int> e) {
-      ClearDistanceMatrix();
+      if (Evaluator is ITSPCoordinatesPathEvaluator) {
+        ClearDistanceMatrix();
+      }
     }
     private void Coordinates_Reset(object sender, EventArgs e) {
-      ParameterizeSolutionCreator();
-      ClearDistanceMatrix();
+      if (Evaluator is ITSPCoordinatesPathEvaluator) {
+        ParameterizeSolutionCreator();
+        ClearDistanceMatrix();
+      }
     }
     private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeEvaluator();
@@ -345,8 +353,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     private void ClearDistanceMatrix() {
-      if (!(Evaluator is ITSPDistanceMatrixEvaluator))
-        DistanceMatrixParameter.Value = null;
+      DistanceMatrixParameter.Value = null;
     }
     #endregion
 
@@ -364,9 +371,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Name = data.Name;
       Description = data.Description;
 
+      bool clearCoordinates = false, clearDistanceMatrix = false;
       if (data.Coordinates != null && data.Coordinates.GetLength(0) > 0)
         Coordinates = new DoubleMatrix(data.Coordinates);
-      else Coordinates = null;
+      else clearCoordinates = true;
 
       TSPEvaluator evaluator;
       if (data.DistanceMeasure == DistanceMeasure.Att
@@ -381,7 +389,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         UseDistanceMatrix = new BoolValue(true);
         DistanceMatrix = new DistanceMatrix(data.Distances);
       } else {
-        DistanceMatrix = null;
+        clearDistanceMatrix = true;
         UseDistanceMatrix = new BoolValue(data.Dimension <= DistanceMatrixSizeLimit);
         switch (data.DistanceMeasure) {
           case DistanceMeasure.Euclidean:
@@ -399,6 +407,10 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       }
       evaluator.QualityParameter.ActualName = "TSPTourLength";
       Evaluator = evaluator;
+
+      // reset them after assigning the evaluator
+      if (clearCoordinates) Coordinates = null;
+      if (clearDistanceMatrix) DistanceMatrix = null;
 
       BestKnownSolution = null;
       BestKnownQuality = null;

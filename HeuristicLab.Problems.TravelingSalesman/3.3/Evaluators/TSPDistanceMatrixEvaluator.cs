@@ -58,8 +58,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     public static double Apply(DistanceMatrix distances, Permutation tour) {
       if (distances == null || distances.Rows == 0 || distances.Columns == 0
         || distances.Rows != distances.Columns)
-        throw new InvalidOperationException("The distance matrix is empty or not square");
-      if (tour == null) throw new ArgumentNullException("tour", "No tour is given.");
+        throw new InvalidOperationException("TSPDistanceMatrixEvaluator: The distance matrix is empty or not square");
+      if (tour == null) throw new ArgumentNullException("tour", "TSPDistanceMatrixEvaluator: No tour is given.");
       Permutation p = tour;
       double length = 0;
       for (int i = 0; i < p.Length - 1; i++)
