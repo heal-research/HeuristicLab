@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       get { return new Uri("http://www.gpbenchmarks.org/wiki/index.php?title=Problem_Classification#Vladislavleva_et_al"); }
     }
     public override string ReferencePublication {
-      get { return ""; }
+      get { return "McDermott et al., 2012 \"Genetic Programming Needs Better Benchmarks\", in Proc. of GECCO 2012."; }
     }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {

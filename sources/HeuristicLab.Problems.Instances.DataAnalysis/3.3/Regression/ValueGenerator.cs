@@ -28,19 +28,48 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public static class ValueGenerator {
     private static FastRandom rand = new FastRandom();
 
+    /// <summary>
+    /// Generates a sequence of evenly spaced points between start and end (inclusive!).
+    /// </summary>
+    /// <param name="start">The smallest and first value of the sequence.</param>
+    /// <param name="end">The largest and last value of the sequence.</param>
+    /// <param name="stepWidth">The step size between subsequent values.</param>
+    /// <returns>An sequence of values from start to end (inclusive)</returns>
     public static IEnumerable<double> GenerateSteps(double start, double end, double stepWidth) {
-      int steps = (int)Math.Round(((end - start) / stepWidth) + 1);
-      for (int i = 0; i < steps; i++)
-        yield return start + i * stepWidth;
+      if (start > end) throw new ArgumentException("start must be less than or equal end.");
+      if (stepWidth <= 0) throw new ArgumentException("stepwith must be larger than zero.", "stepWidth");
+      double x = start;
+      while (x <= end) {
+        yield return x;
+        x += stepWidth;
+      }
     }
 
-    public static IEnumerable<double> GenerateUniformDistributedValues(int amount, double start, double end) {
-      for (int i = 0; i < amount; i++)
-        yield return rand.NextDouble() * (end - start) + start;
+    /// <summary>
+    /// Generates uniformly distributed values between start and end (inclusive!) 
+    /// </summary>
+    /// <param name="n">Number of values to generate.</param>
+    /// <param name="start">The lower value (inclusive)</param>
+    /// <param name="end">The upper value (inclusive)</param>
+    /// <returns>An enumerable including n values in [start, end]</returns>
+    public static IEnumerable<double> GenerateUniformDistributedValues(int n, double start, double end) {
+      for (int i = 0; i < n; i++) {
+        // we need to return a random value including end.
+        // so we cannot use rand.NextDouble() as it returns a value strictly smaller than 1.
+        double r = rand.NextUInt() / (double)uint.MaxValue;    // r \in [0,1]
+        yield return r * (end - start) + start;
+      }
     }
 
-    public static IEnumerable<double> GenerateNormalDistributedValues(int amount, double mu, double sigma) {
-      for (int i = 0; i < amount; i++)
+    /// <summary>
+    /// Generates normally distributed values sampling from N(mu, sigma) 
+    /// </summary>
+    /// <param name="n">Number of values to generate.</param>
+    /// <param name="mu">The mu parameter of the normal distribution</param>
+    /// <param name="sigma">The sigma parameter of the normal distribution</param>
+    /// <returns>An enumerable including n values ~ N(mu, sigma)</returns>
+    public static IEnumerable<double> GenerateNormalDistributedValues(int n, double mu, double sigma) {
+      for (int i = 0; i < n; i++)
         yield return NormalDistributedRandom.NextDouble(rand, mu, sigma);
     }
 
@@ -81,66 +110,5 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         allCombinations[i].Add(enumerators[i].Current);
       }
     }
-
-    //recursive approach
-    /*public static IEnumerable<IEnumerable<double>> GenerateAllCombinationsOfValuesInLists(List<List<double>> lists) {
-      int cur = 0;
-      List<double> curCombination = new List<double>();
-      List<List<double>> allCombinations = new List<List<double>>();
-      for (int i = 0; i < lists.Count; i++) {
-        allCombinations.Add(new List<double>());
-      }
-      if (lists.Count() > cur) {
-        foreach (var item in lists[cur]) {
-          curCombination.Clear();
-          curCombination.Add(item);
-          GetCombination(lists, cur + 1, curCombination, allCombinations);
-        }
-      }
-      return allCombinations;
-    }
-
-    private static void GetCombination(List<List<double>> lists, int cur, List<double> curCombinations, List<List<double>> allCombinations) {
-      if (lists.Count > cur) {
-        foreach (var item in lists[cur]) {
-          if (curCombinations.Count > cur) {
-            curCombinations.RemoveAt(cur);
-          }
-          curCombinations.Add(item);
-          GetCombination(lists, cur + 1, curCombinations, allCombinations);
-        }
-      } else {
-        for (int i = 0; i < curCombinations.Count; i++) {
-          allCombinations[i].Add(curCombinations[i]);
-        }
-      }
-    }         */
-
-    //original
-    /*public static IEnumerable<IEnumerable<double>> GenerateAllCombinationsOfValuesInLists(List<List<double>> sets) {
-
-      var combinations = new List<List<double>>();
-
-      foreach (var value in sets[0])
-        combinations.Add(new List<double> { value });
-
-      foreach (var set in sets.Skip(1))
-        combinations = AddListToCombinations(combinations, set);
-
-      IEnumerable<IEnumerable<double>> res = (from i in Enumerable.Range(0, sets.Count)
-                                              select (from list in combinations
-                                                      select list.ElementAt(i)));
-
-      return res;
-    }
-
-    private static List<List<double>> AddListToCombinations
-         (List<List<double>> combinations, List<double> set) {
-      var newCombinations = from value in set
-                            from combination in combinations
-                            select new List<double>(combination) { value };
-
-      return newCombinations.ToList();
-    }    */
   }
 }
