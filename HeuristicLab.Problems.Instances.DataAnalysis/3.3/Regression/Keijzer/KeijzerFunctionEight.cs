@@ -24,9 +24,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerFunctionNine : ArtificialRegressionDataDescriptor {
+  public class KeijzerFunctionEight : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 9 f(x) = sqrt(x)"; } }
+    public override string Name { get { return "Keijzer 8 f(x) = sqrt(x)"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine
