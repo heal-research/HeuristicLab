@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Services.Hive.DataAccess {
-  [Plugin("HeuristicLab.Services.Hive.DataAccess", "3.3.6.$WCREV$")]
+  [Plugin("HeuristicLab.Services.Hive.DataAccess", "3.3.7.$WCREV$")]
   [PluginFile("HeuristicLab.Services.Hive.DataAccess-3.3.dll", PluginFileType.Assembly)]  
   public class HeuristicLabServicesHiveDataAccessPlugin : PluginBase {
   }

@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.Benchmark plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.Benchmarks", "Provides different performance benchmark algorithms.", "3.3.6.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.Benchmarks", "Provides different performance benchmark algorithms.", "3.3.7.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.Benchmarks-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
