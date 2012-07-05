@@ -24,40 +24,37 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerFunctionSix : ArtificialRegressionDataDescriptor {
+  public class KeijzerFunctionSeven : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 6 f(x) = (30 * x * z) / ((x - 10)  * y^2)"; } }
+    public override string Name { get { return "Keijzer 7 f(x) = Sum(1 / i) From 1 to X"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine
         + "Authors: Maarten Keijzer" + Environment.NewLine
-        + "Function: f(x) = (30 * x * z) / ((x - 10)  * y^2)" + Environment.NewLine
-        + "range(train): 1000 points x,z = rnd(-1, 1), y = rnd(1, 2)" + Environment.NewLine
-        + "range(test): 10000 points x,z = rnd(-1, 1), y = rnd(1, 2)" + Environment.NewLine
+        + "Function: f(x) = (30 * x * y) / ((x - 10)  * y^2)" + Environment.NewLine
+        + "range(train): x = [1:1:50]" + Environment.NewLine
+        + "range(test): x = [1:1:120]" + Environment.NewLine
         + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)";
       }
     }
     protected override string TargetVariable { get { return "F"; } }
-    protected override string[] InputVariables { get { return new string[] { "X", "Y", "Z", "F" }; } }
-    protected override string[] AllowedInputVariables { get { return new string[] { "X", "Y", "Z" }; } }
+    protected override string[] InputVariables { get { return new string[] { "X", "F" }; } }
+    protected override string[] AllowedInputVariables { get { return new string[] { "X" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
-    protected override int TrainingPartitionEnd { get { return 1000; } }
-    protected override int TestPartitionStart { get { return 1000; } }
-    protected override int TestPartitionEnd { get { return 11000; } }
+    protected override int TrainingPartitionEnd { get { return 50; } }
+    protected override int TestPartitionStart { get { return 50; } }
+    protected override int TestPartitionEnd { get { return 170; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -1, 1).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, 1, 2).ToList());
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -1, 1).ToList());
+      data.Add(ValueGenerator.GenerateSteps(1, 50, 1).ToList());
+      data[0].AddRange(ValueGenerator.GenerateSteps(1, 120, 1));
 
-      double x, y, z;
+      double x;
       List<double> results = new List<double>();
       for (int i = 0; i < data[0].Count; i++) {
         x = data[0][i];
-        y = data[1][i];
-        z = data[2][i];
-        results.Add((30 * x * z) / ((x - 10) * Math.Pow(y, 2)));
+        results.Add(Enumerable.Range(1, (int)x).Sum(j => 1.0 / j));
       }
       data.Add(results);
 
