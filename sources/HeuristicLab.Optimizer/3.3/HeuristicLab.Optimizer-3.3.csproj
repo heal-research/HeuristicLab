@@ -123,6 +123,7 @@
     <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />
     <EmbeddedResource Include="Documents\VNS_TSP.hl" />
     <EmbeddedResource Include="Documents\PSO_Schwefel.hl" />
+    <EmbeddedResource Include="Documents\TS_VRP.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="DefineArithmeticProgressionDialog.cs">
       <SubType>Form</SubType>
