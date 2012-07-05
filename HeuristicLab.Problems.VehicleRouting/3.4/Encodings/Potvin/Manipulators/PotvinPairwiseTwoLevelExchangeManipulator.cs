@@ -27,7 +27,7 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("PotvinPairwiseTwoLevelExchangeManipulator", "The 2M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.  It was adapted to the PDP formulation.")]
+  [Item("PotvinPairwiseTwoLevelExchangeManipulator", "The 2M operator which manipulates a VRP representation.   It has been adapted to pickup and delivery from Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.  It was adapted to the PDP formulation.")]
   [StorableClass]
   public sealed class PotvinPairwiseTwoLevelExchangeManipulator : PotvinManipulator {
     [StorableConstructor]
