@@ -40,12 +40,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
       descriptorList.Add(new KotanchekFunction());
-      descriptorList.Add(new RationalPolynomialTwoDimensional());
-      descriptorList.Add(new RationalPolynomialThreeDimensional());
-      descriptorList.Add(new RippleFunction());
       descriptorList.Add(new SalutowiczFunctionOneDimensional());
       descriptorList.Add(new SalutowiczFunctionTwoDimensional());
       descriptorList.Add(new UnwrappedBallFunctionFiveDimensional());
+      descriptorList.Add(new RationalPolynomialThreeDimensional());
+      descriptorList.Add(new SineCosineFunction());
+      descriptorList.Add(new RippleFunction());
+      descriptorList.Add(new RationalPolynomialTwoDimensional());
       return descriptorList;
     }
   }
