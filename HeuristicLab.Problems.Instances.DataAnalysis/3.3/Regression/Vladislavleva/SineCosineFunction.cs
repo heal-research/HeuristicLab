@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Function: F6(X1, X2) = 6 * sin(X1) * cos(X2)" + Environment.NewLine
         + "Training Data: 30 points X1, X2 = Rand(0.1, 5.9)" + Environment.NewLine
         + "Test Data: 961 points X1, X2 = (-0.05:0.02:6.05)" + Environment.NewLine
-        + "Function Set: +, -, *, /, sqaure, x^real, x + real, x + real, e^x, e^-x";
+        + "Function Set: +, -, *, /, square, e^x, e^-x, x^eps, x + eps, x * eps";
       }
     }
     protected override string TargetVariable { get { return "Y"; } }

@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Function: F3(X1, X2) = exp(-X1) * X1³ * cos(X1) * sin(X1) * (cos(X1)sin(X1)² - 1)(X2 - 5)" + Environment.NewLine
         + "Training Data: 601 points X1 = (0.05:0.1:10), X2 = (0.05:2:10.05)" + Environment.NewLine
         + "Test Data: 4840 points X1 = (-0.5:0.05:10.5), X2 = (-0.5:0.5:10.5)" + Environment.NewLine
-        + "Function Set: +, -, *, /, square, x^real, x + real, x + real, e^x, e^-x, sin(x), cos(x)";
+        + "Function Set: +, -, *, /, square, e^x, e^-x, sin(x), cos(x), x^eps, x + eps, x + eps";
       }
     }
     protected override string TargetVariable { get { return "Y"; } }

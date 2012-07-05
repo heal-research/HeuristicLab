@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Function: F8(X1, X2) = ((X1 - 3)^4 + (X2 - 3)³ - (X2 -3)) / ((X2 - 2)^4 + 10)" + Environment.NewLine
         + "Training Data: 50 points X1, X2 = Rand(0.05, 6.05)" + Environment.NewLine
         + "Test Data: 1157 points X1, X2 = (-0.25:0.2:6.35)" + Environment.NewLine
-        + "Function Set: +, -, *, /, sqaure, x^real, x + real, x + real";
+        + "Function Set: +, -, *, /, square, x^eps, x + eps, x * eps";
       }
     }
     protected override string TargetVariable { get { return "Y"; } }
