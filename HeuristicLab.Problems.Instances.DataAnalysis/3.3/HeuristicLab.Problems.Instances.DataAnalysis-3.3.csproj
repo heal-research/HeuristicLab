@@ -129,14 +129,14 @@
     <Compile Include="Regression\CSV\RegressionCSVInstanceProvider.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFourteen.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionEleven.cs" />
-    <Compile Include="Regression\Keijzer\KeijzerFunctionNine.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFive.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionEight.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFifteen.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFour.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionOne.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionSeven.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionSix.cs" />
-    <Compile Include="Regression\Keijzer\KeijzerFunctionSixteen.cs" />
+    <Compile Include="Regression\Keijzer\KeijzerFunctionTen.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionThirteen.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionTwelve.cs" />
     <Compile Include="Regression\Keijzer\KeijzerInstanceProvider.cs" />

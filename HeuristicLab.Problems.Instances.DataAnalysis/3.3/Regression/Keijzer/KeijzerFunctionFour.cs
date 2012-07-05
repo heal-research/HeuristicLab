@@ -24,37 +24,38 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerFunctionFour : ArtificialRegressionDataDescriptor {
+  public class KeijzerFunctionFive : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 4 f(x) = 0.3 * x *sin(2 * PI * x)"; } }
+    public override string Name { get { return "Keijzer 5 f(x) = x ^ 3  * exp(-x) * cos(x) * sin(x) * (sin(x) ^ 2 * cos(x) - 1)"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine
         + "Authors: Maarten Keijzer" + Environment.NewLine
-        + "Function: f(x) = 0.3 * x *sin(2 * PI * x)" + Environment.NewLine
-        + "range(train): x = [-1:0.1:1]" + Environment.NewLine
-        + "range(test): x = [-1:0.001:1]" + Environment.NewLine
-        + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)";
+        + "Function: f(x) = x ^ 3  * exp(-x) * cos(x) * sin(x) * (sin(x) ^ 2 * cos(x) - 1)" + Environment.NewLine
+        + "range(train): x = [0:0.05:10]" + Environment.NewLine
+        + "range(test): x = [0.05:0.05:10.05]" + Environment.NewLine
+        + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine
+        + "Note: {exp, log, sin, cos}, 100000 evals";
       }
     }
     protected override string TargetVariable { get { return "F"; } }
     protected override string[] InputVariables { get { return new string[] { "X", "F" }; } }
     protected override string[] AllowedInputVariables { get { return new string[] { "X" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
-    protected override int TrainingPartitionEnd { get { return 21; } }
-    protected override int TestPartitionStart { get { return 21; } }
-    protected override int TestPartitionEnd { get { return 2022; } }
+    protected override int TrainingPartitionEnd { get { return 201; } }
+    protected override int TestPartitionStart { get { return 201; } }
+    protected override int TestPartitionEnd { get { return 402; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateSteps(-1, 1, 0.1).ToList());
-      data[0].AddRange(ValueGenerator.GenerateSteps(-1, 1, 0.001));
+      data.Add(ValueGenerator.GenerateSteps(0, 10, 0.05).ToList());
+      data[0].AddRange(ValueGenerator.GenerateSteps(0.05, 10.05, 0.05));
 
       double x;
       List<double> results = new List<double>();
       for (int i = 0; i < data[0].Count; i++) {
         x = data[0][i];
-        results.Add(0.3 * x * Math.Sin(2 * Math.PI * x));
+        results.Add(Math.Pow(x, 3) * Math.Exp(-x) * Math.Cos(x) * Math.Sin(x) * (Math.Pow(Math.Sin(x), 2) * Math.Cos(x) - 1));
       }
       data.Add(results);
 

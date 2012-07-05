@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerFunctionTwelve : ArtificialRegressionDataDescriptor {
+  public class KeijzerFunctionThirteen : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 12 f(x, y) = xy + sin((x - 1)(y - 1))"; } }
+    public override string Name { get { return "Keijzer 13 f(x, y) = x^4 - x^3 + y^2 / 2 - y"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine
         + "Authors: Maarten Keijzer" + Environment.NewLine
-        + "Function: f(x, y) = xy + sin((x - 1)(y - 1))" + Environment.NewLine
+        + "Function: f(x, y) = x^4 - x^3 + y^2 / 2 - y" + Environment.NewLine
         + "range(train): 20 Training cases x,y = rnd(-3, 3)" + Environment.NewLine
         + "range(test): x,y = [-3:0.01:3]" + Environment.NewLine
         + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine + Environment.NewLine
@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       for (int i = 0; i < data[0].Count; i++) {
         x = data[0][i];
         y = data[1][i];
-        results.Add(x * y + Math.Sin((x - 1) * (y - 1)));
+        results.Add(Math.Pow(x, 4) - Math.Pow(x, 3) + Math.Pow(y, 2) / 2 - y);
       }
       data.Add(results);
 
