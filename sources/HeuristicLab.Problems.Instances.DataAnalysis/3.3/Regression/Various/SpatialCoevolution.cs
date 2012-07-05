@@ -26,38 +26,39 @@ using System.Linq;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class SpatialCoevolution : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Spatial co-evolution F(x,y) = 1/(1+power(x,-4)) + 1/(1+pow(y,-4))"; } }
+    public override string Name { get { return "Spatial co-evolution F(x,y) = 1/(1 + x^(-4)) + 1/(1 + y^(-4))"; } }
     public override string Description {
       get {
         return "Paper: Evolutionary consequences of coevolving targets" + Environment.NewLine
         + "Authors: Ludo Pagie and Paulien Hogeweg" + Environment.NewLine
-        + "Function: F(x,y) = 1/(1+power(x,-4)) + 1/(1+pow(y,-4))" + Environment.NewLine
-        + "Terminal set: x, y" + Environment.NewLine
+        + "Function: F(x,y) = 1/(1 + x^(-4)) + 1/(1 + y^(-4))" + Environment.NewLine
+        + "Non-terminals: +, -, *, % (protected division), sin, cos, exp, ln(|x|) (protected log)" + Environment.NewLine
+        + "Terminals: only variables (no random constants)" + Environment.NewLine
         + "The fitness of a solution is defined as the mean of the absolute differences between "
         + "the target function and the solution over all problems on the basis of which it is evaluated. "
         + "A solution is considered completely ’correct’ if, for all 676 problems in the ’complete’ "
         + "problem set used in the static evaluation scheme, the absolute difference between "
-        + "solution and target function is less than 0:01 (this is a so-called hit).";
+        + "solution and target function is less than 0.01 (this is a so-called hit).";
       }
     }
     protected override string TargetVariable { get { return "F"; } }
     protected override string[] InputVariables { get { return new string[] { "X", "Y", "F" }; } }
     protected override string[] AllowedInputVariables { get { return new string[] { "X", "Y" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
-    protected override int TrainingPartitionEnd { get { return 1000; } }
-    protected override int TestPartitionStart { get { return 1000; } }
+    protected override int TrainingPartitionEnd { get { return 676; } }
+    protected override int TestPartitionStart { get { return 676; } }
     protected override int TestPartitionEnd { get { return 1676; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
-      List<double> oneVariableTestData = ValueGenerator.GenerateSteps(-5, 5, 0.4).ToList();
-      List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
-      var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
+      List<double> evenlySpacedSequence = ValueGenerator.GenerateSteps(-5, 5, 0.4).ToList();
+      List<List<double>> trainingData = new List<List<double>>() { evenlySpacedSequence, evenlySpacedSequence };
+      var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(trainingData).ToList();
 
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(1000, -5, 5).ToList());
-        data[i].AddRange(combinations[i]);
+        data.Add(combinations[i].ToList());
+        data[i].AddRange(ValueGenerator.GenerateUniformDistributedValues(1000, -5, 5).ToList());
       }
 
       double x, y;
