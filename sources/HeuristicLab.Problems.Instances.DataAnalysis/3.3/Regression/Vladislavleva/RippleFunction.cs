@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Function: F7(X1, X2) = (X1 - 3)(X2 - 3) + 2 * sin((X1 - 4)(X2 - 4))" + Environment.NewLine
         + "Training Data: 300 points X1, X2 = Rand(0.05, 6.05)" + Environment.NewLine
         + "Test Data: 1000 points X1, X2 = Rand(-0.25, 6.35)" + Environment.NewLine
-        + "Function Set: +, -, *, /, sqaure, x^real, x + real, x + real, e^x, e^-x, sin(x), cos(x)";
+        + "Function Set: +, -, *, /, square, e^x, e^-x, sin(x), cos(x), x^eps, x + eps, x + eps";
       }
     }
     protected override string TargetVariable { get { return "Y"; } }
