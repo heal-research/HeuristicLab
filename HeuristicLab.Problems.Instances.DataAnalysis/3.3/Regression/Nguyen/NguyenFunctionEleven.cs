@@ -32,16 +32,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         return "Paper: Semantically-based Crossover in Genetic Programming: Application to Real-valued Symbolic Regression" + Environment.NewLine
         + "Authors: Nguyen Quang Uy · Nguyen Xuan Hoai · Michael O’Neill · R.I. McKay · Edgar Galvan-Lopez" + Environment.NewLine
         + "Function: F11 = x^y" + Environment.NewLine
-        + "Fitcases: 100 random points ⊆ [0, 1]x[0, 1]" + Environment.NewLine
-        + "Non-terminals: +, -, *, /, sin, cos, exp, log (protected version)" + Environment.NewLine
-        + "Terminals: X, 1 for single variable problems, and X, Y for bivariable problems";
+        + "Fitcases: 20 random points in [0, 1]x[0, 1]" + Environment.NewLine
+        + "Non-terminals: +, -, *, % (protected division), sin, cos, exp, ln(|x|) (protected log)" + Environment.NewLine
+        + "Terminals: only variables (no random constants)";
       }
     }
     protected override string TargetVariable { get { return "Z"; } }
     protected override string[] InputVariables { get { return new string[] { "X", "Y", "Z" }; } }
     protected override string[] AllowedInputVariables { get { return new string[] { "X", "Y" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
-    protected override int TrainingPartitionEnd { get { return 100; } }
+    protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 500; } }
     protected override int TestPartitionEnd { get { return 1000; } }
 

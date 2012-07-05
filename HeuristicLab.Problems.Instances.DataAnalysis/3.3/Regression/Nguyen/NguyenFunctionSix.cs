@@ -26,15 +26,15 @@ using System.Linq;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class NguyenFunctionSix : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Nguyen F6 = sin(x) + sin(x + x^2)"; } }
+    public override string Name { get { return "Nguyen F6 = sin(x) + sin(x + x²)"; } }
     public override string Description {
       get {
         return "Paper: Semantically-based Crossover in Genetic Programming: Application to Real-valued Symbolic Regression" + Environment.NewLine
         + "Authors: Nguyen Quang Uy · Nguyen Xuan Hoai · Michael O’Neill · R.I. McKay · Edgar Galvan-Lopez" + Environment.NewLine
-        + "Function: F6 = sin(x) + sin(x + x^2)" + Environment.NewLine
-        + "Fitcases: 20 random points ⊆ [-1, 1]" + Environment.NewLine
-        + "Non-terminals: +, -, *, /, sin, cos, exp, log (protected version)" + Environment.NewLine
-        + "Terminals: X, 1 for single variable problems, and X, Y for bivariable problems";
+        + "Function: F6 = sin(x) + sin(x + x²)" + Environment.NewLine
+        + "Fitcases: 20 random points in [-1, 1]" + Environment.NewLine
+        + "Non-terminals: +, -, *, % (protected division), sin, cos, exp, ln(|x|) (protected log)" + Environment.NewLine
+        + "Terminals: only variables (no random constants)";
       }
     }
     protected override string TargetVariable { get { return "Y"; } }
