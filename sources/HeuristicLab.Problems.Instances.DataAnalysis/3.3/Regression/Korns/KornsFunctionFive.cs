@@ -52,9 +52,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
-      }
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, 0, 50).ToList()); // note: range is only [0,50] to prevent NaN values (deviates from gp benchmark paper)
 
       double x4;
       List<double> results = new List<double>();
