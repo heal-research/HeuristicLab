@@ -24,9 +24,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerFunctionEleven : ArtificialRegressionDataDescriptor {
+  public class KeijzerFunctionTen : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 11 f(x, y) = x ^ y"; } }
+    public override string Name { get { return "Keijzer 10 f(x, y) = x ^ y"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 100; } }
     protected override int TestPartitionStart { get { return 100; } }
-    protected override int TestPartitionEnd { get { return 10301; } }
+    protected override int TestPartitionEnd { get { return 10100; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();

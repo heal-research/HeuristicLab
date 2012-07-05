@@ -24,9 +24,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerFunctionFourteen : ArtificialRegressionDataDescriptor {
+  public class KeijzerFunctionThirteen : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 14 f(x, y) = 6 * sin(x) * cos(y)"; } }
+    public override string Name { get { return "Keijzer 13 f(x, y) = 6 * sin(x) * cos(y)"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine
@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "range(train): 20 Train cases x,y = rnd(-3, 3)" + Environment.NewLine
         + "range(test): x,y = [-3:0.01:3]" + Environment.NewLine
         + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine + Environment.NewLine
-        + "Note: Test partition has been adjusted to only 100 random uniformly distributed test cases in the intercal [-3, 3] (not ca. 360000 as described) "
+        + "Note: Test partition has been adjusted to only 100 random uniformly distributed test cases in the interval [-3, 3] (not ca. 360000 as described) "
         + ", but 5000 cases are created";
       }
     }
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 20; } }
     protected override int TestPartitionStart { get { return 2500; } }
-    protected override int TestPartitionEnd { get { return 5000; } }
+    protected override int TestPartitionEnd { get { return 2600; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();

@@ -39,18 +39,21 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
+      descriptorList.Add(new KeijzerFunctionOne());
+      descriptorList.Add(new KeijzerFunctionTwo());
+      descriptorList.Add(new KeijzerFunctionThree());
       descriptorList.Add(new KeijzerFunctionFour());
       descriptorList.Add(new KeijzerFunctionFive());
       descriptorList.Add(new KeijzerFunctionSix());
       descriptorList.Add(new KeijzerFunctionSeven());
       descriptorList.Add(new KeijzerFunctionEight());
       descriptorList.Add(new KeijzerFunctionNine());
+      descriptorList.Add(new KeijzerFunctionTen());
       descriptorList.Add(new KeijzerFunctionEleven());
       descriptorList.Add(new KeijzerFunctionTwelve());
       descriptorList.Add(new KeijzerFunctionThirteen());
       descriptorList.Add(new KeijzerFunctionFourteen());
       descriptorList.Add(new KeijzerFunctionFifteen());
-      descriptorList.Add(new KeijzerFunctionSixteen());
       return descriptorList;
     }
   }

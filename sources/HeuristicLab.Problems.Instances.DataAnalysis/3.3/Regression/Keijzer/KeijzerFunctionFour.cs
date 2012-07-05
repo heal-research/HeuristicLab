@@ -24,14 +24,14 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class KeijzerFunctionFive : ArtificialRegressionDataDescriptor {
+  public class KeijzerFunctionFour : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 5 f(x) = x ^ 3  * exp(-x) * cos(x) * sin(x) * (sin(x) ^ 2 * cos(x) - 1)"; } }
+    public override string Name { get { return "Keijzer 4 f(x) = x³  * exp(-x) * cos(x) * sin(x) * (sin(x)² * cos(x) - 1)"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine
         + "Authors: Maarten Keijzer" + Environment.NewLine
-        + "Function: f(x) = x ^ 3  * exp(-x) * cos(x) * sin(x) * (sin(x) ^ 2 * cos(x) - 1)" + Environment.NewLine
+        + "Function: f(x) = x³  * exp(-x) * cos(x) * sin(x) * (sin(x)² * cos(x) - 1)" + Environment.NewLine
         + "range(train): x = [0:0.05:10]" + Environment.NewLine
         + "range(test): x = [0.05:0.05:10.05]" + Environment.NewLine
         + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine
