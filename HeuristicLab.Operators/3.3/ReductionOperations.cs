@@ -21,11 +21,12 @@
 
 namespace HeuristicLab.Operators {
   public enum ReductionOperations {
-    Assign,
     Sum,
-    Prod,
+    Product,
+    Count,
     Min,
     Max,
-    Avg
+    Avg,
+    Assign
   }
 }

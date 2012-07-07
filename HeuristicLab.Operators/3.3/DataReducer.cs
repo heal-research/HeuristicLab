@@ -69,18 +69,12 @@ namespace HeuristicLab.Operators {
     public override IOperation Apply() {
       var values = ParameterToReduce.ActualValue;
       if (values.Count() > 0) {
-        if (values.All(x => x.GetType() == typeof(IntValue))) {
-          List<IntValue> intValues = new List<IntValue>();
-          values.ForEach(x => intValues.Add((IntValue)x));
-          CalculateResult(intValues);
-        } else if (values.All(x => x.GetType() == typeof(DoubleValue))) {
-          List<DoubleValue> doubleValues = new List<DoubleValue>();
-          values.ForEach(x => doubleValues.Add((DoubleValue)x));
-          CalculateResult(doubleValues);
-        } else if (values.All(x => x.GetType() == typeof(TimeSpanValue))) {
-          List<TimeSpanValue> timeSpanValues = new List<TimeSpanValue>();
-          values.ForEach(x => timeSpanValues.Add((TimeSpanValue)x));
-          CalculateResult(timeSpanValues);
+        if (values.All(x => typeof(IntValue).IsAssignableFrom(x.GetType()))) {
+          CalculateResult(values.OfType<IntValue>().Select(x => x.Value), values.First().GetType());
+        } else if (values.All(x => typeof(DoubleValue).IsAssignableFrom(x.GetType()))) {
+          CalculateResult(values.OfType<DoubleValue>().Select(x => x.Value), values.First().GetType());
+        } else if (values.All(x => typeof(TimeSpanValue).IsAssignableFrom(x.GetType()))) {
+          CalculateResult(values.OfType<TimeSpanValue>().Select(x => x.Value), values.First().GetType());
         } else {
           throw new ArgumentException(string.Format("Type {0} is not supported by the DataReducer.", values.First().GetType()));
         }
@@ -88,121 +82,191 @@ namespace HeuristicLab.Operators {
       return base.Apply();
     }
 
-    private void CalculateResult(List<IntValue> values) {
-      int result = 1;
-      if (TargetParameter.ActualValue == null) TargetParameter.ActualValue = new IntValue();
-      IntValue target = (IntValue)TargetParameter.ActualValue;
-
+    #region integer reduction
+    private void CalculateResult(IEnumerable<int> values, Type targetType) {
+      int result;
       switch (ReductionOperation.Value.Value) {
         case ReductionOperations.Sum:
-          result = values.Sum(x => x.Value);
+          result = values.Sum();
           break;
-        case ReductionOperations.Prod:
-          values.ForEach(x => result *= x.Value);
+        case ReductionOperations.Product:
+          result = values.Aggregate(1, (x, y) => x * y);
           break;
-        case ReductionOperations.Avg:
-          result = (int)Math.Round(values.Average(x => x.Value));
+        case ReductionOperations.Count:
+          result = values.Count();
           break;
         case ReductionOperations.Min:
-          result = values.Min(x => x.Value);
+          result = values.Min();
           break;
         case ReductionOperations.Max:
-          result = values.Max(x => x.Value);
+          result = values.Max();
+          break;
+        case ReductionOperations.Avg:
+          result = (int)Math.Round(values.Average());
+          break;
+        case ReductionOperations.Assign:
+          result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, result.GetType()));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, typeof(IntValue)));
       }
 
+      IntValue target;
       switch (TargetOperation.Value.Value) {
-        case ReductionOperations.Assign:
-          target.Value = result;
-          break;
         case ReductionOperations.Sum:
+          target = InitializeTarget<IntValue, int>(targetType, 0);
           target.Value += result;
           break;
-        case ReductionOperations.Prod:
-          if (target.Value == 0) target.Value = 1;
-          target.Value *= result;
+        case ReductionOperations.Product:
+          target = InitializeTarget<IntValue, int>(targetType, 1);
+          target.Value = target.Value * result;
+          break;
+        case ReductionOperations.Min:
+          target = InitializeTarget<IntValue, int>(targetType, int.MaxValue);
+          target.Value = Math.Min(target.Value, result);
+          break;
+        case ReductionOperations.Max:
+          target = InitializeTarget<IntValue, int>(targetType, int.MinValue);
+          target.Value = Math.Max(target.Value, result);
+          break;
+        case ReductionOperations.Avg:
+          target = InitializeTarget<IntValue, int>(targetType, result);
+          target.Value = (int)Math.Round((target.Value + result) / 2.0);
+          break;
+        case ReductionOperations.Assign:
+          target = InitializeTarget<IntValue, int>(targetType, 0);
+          target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, result.GetType()));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, typeof(IntValue)));
       }
     }
+    #endregion
 
-    private void CalculateResult(List<DoubleValue> values) {
-      double result = 1.0;
-      if (TargetParameter.ActualValue == null) TargetParameter.ActualValue = new DoubleValue();
-      DoubleValue target = (DoubleValue)TargetParameter.ActualValue;
-
+    #region double reduction
+    private void CalculateResult(IEnumerable<double> values, Type targetType) {
+      double result;
       switch (ReductionOperation.Value.Value) {
         case ReductionOperations.Sum:
-          result = values.Sum(x => x.Value);
+          result = values.Sum();
           break;
-        case ReductionOperations.Prod:
-          values.ForEach(x => result *= x.Value);
+        case ReductionOperations.Product:
+          result = values.Aggregate(1.0, (x, y) => x * y);
           break;
-        case ReductionOperations.Avg:
-          result = values.Average(x => x.Value);
+        case ReductionOperations.Count:
+          result = values.Count();
           break;
         case ReductionOperations.Min:
-          result = values.Min(x => x.Value);
+          result = values.Min();
           break;
         case ReductionOperations.Max:
-          result = values.Max(x => x.Value);
+          result = values.Max();
+          break;
+        case ReductionOperations.Avg:
+          result = values.Average();
+          break;
+        case ReductionOperations.Assign:
+          result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, result.GetType()));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, typeof(DoubleValue)));
       }
 
+      DoubleValue target;
       switch (TargetOperation.Value.Value) {
-        case ReductionOperations.Assign:
-          target.Value = result;
-          break;
         case ReductionOperations.Sum:
+          target = InitializeTarget<DoubleValue, double>(targetType, 0.0);
           target.Value += result;
           break;
-        case ReductionOperations.Prod:
-          if (target.Value == 0.0) target.Value = 1.0;
-          target.Value *= result;
+        case ReductionOperations.Product:
+          target = InitializeTarget<DoubleValue, double>(targetType, 1.0);
+          target.Value = target.Value * result;
+          break;
+        case ReductionOperations.Min:
+          target = InitializeTarget<DoubleValue, double>(targetType, double.MaxValue);
+          target.Value = Math.Min(target.Value, result);
+          break;
+        case ReductionOperations.Max:
+          target = InitializeTarget<DoubleValue, double>(targetType, double.MinValue);
+          target.Value = Math.Max(target.Value, result);
+          break;
+        case ReductionOperations.Avg:
+          target = InitializeTarget<DoubleValue, double>(targetType, result);
+          target.Value = (target.Value + result) / 2.0;
+          break;
+        case ReductionOperations.Assign:
+          target = InitializeTarget<DoubleValue, double>(targetType, 0.0);
+          target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, result.GetType()));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, typeof(DoubleValue)));
       }
     }
+    #endregion
 
-    private void CalculateResult(List<TimeSpanValue> values) {
-      TimeSpan result = TimeSpan.Zero;
-      if (TargetParameter.ActualValue == null) TargetParameter.ActualValue = new TimeSpanValue();
-      TimeSpanValue target = (TimeSpanValue)TargetParameter.ActualValue;
-
+    #region TimeSpan reduction
+    private void CalculateResult(IEnumerable<TimeSpan> values, Type targetType) {
+      TimeSpan result;
       switch (ReductionOperation.Value.Value) {
         case ReductionOperations.Sum:
-          values.ForEach(x => result = result.Add(x.Value));
-          break;
-        case ReductionOperations.Avg:
-          double avg = values.Average(x => x.Value.TotalMilliseconds);
-          result = TimeSpan.FromMilliseconds(avg);
+          result = values.Aggregate(new TimeSpan(), (x, y) => x + y);
           break;
         case ReductionOperations.Min:
-          result = values.Min(x => x.Value);
+          result = values.Min();
           break;
         case ReductionOperations.Max:
-          result = values.Max(x => x.Value);
+          result = values.Max();
+          break;
+        case ReductionOperations.Avg:
+          result = TimeSpan.FromMilliseconds(values.Average(x => x.TotalMilliseconds));
+          break;
+        case ReductionOperations.Assign:
+          result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, result.GetType()));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, typeof(TimeSpanValue)));
       }
 
+      TimeSpanValue target;
       switch (TargetOperation.Value.Value) {
-        case ReductionOperations.Assign:
-          target.Value = result;
-          break;
         case ReductionOperations.Sum:
+          target = InitializeTarget<TimeSpanValue, TimeSpan>(targetType, new TimeSpan());
           target.Value += result;
           break;
+        case ReductionOperations.Min:
+          target = InitializeTarget<TimeSpanValue, TimeSpan>(targetType, TimeSpan.MaxValue);
+          target.Value = target.Value < result ? target.Value : result;
+          break;
+        case ReductionOperations.Max:
+          target = InitializeTarget<TimeSpanValue, TimeSpan>(targetType, TimeSpan.MinValue);
+          target.Value = target.Value > result ? target.Value : result;
+          break;
+        case ReductionOperations.Avg:
+          target = InitializeTarget<TimeSpanValue, TimeSpan>(targetType, result);
+          target.Value = TimeSpan.FromMilliseconds((target.Value.TotalMilliseconds + result.TotalMilliseconds) / 2);
+          break;
+        case ReductionOperations.Assign:
+          target = InitializeTarget<TimeSpanValue, TimeSpan>(targetType, new TimeSpan());
+          target.Value = result;
+          break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, result.GetType()));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, typeof(TimeSpanValue)));
       }
     }
+    #endregion
+
+    #region helpers
+    private T1 InitializeTarget<T1, T2>(Type targetType, T2 initialValue)
+      where T1 : ValueTypeValue<T2>
+      where T2 : struct {
+      T1 target = (T1)TargetParameter.ActualValue;
+      if (target == null) {
+        target = (T1)Activator.CreateInstance(targetType);
+        TargetParameter.ActualValue = target;
+        target.Value = initialValue;
+      }
+      return target;
+    }
+    #endregion
   }
 }
