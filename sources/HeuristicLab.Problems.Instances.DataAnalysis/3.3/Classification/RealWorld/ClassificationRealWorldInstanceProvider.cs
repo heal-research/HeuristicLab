@@ -46,7 +46,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
-      descriptorList.Add(new Iris());
       descriptorList.Add(new Mammography());
       var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
