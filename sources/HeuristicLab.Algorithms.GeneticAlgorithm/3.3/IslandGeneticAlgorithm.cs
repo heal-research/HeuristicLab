@@ -469,6 +469,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       qualityAnalyzer.ResultsParameter.Hidden = true;
       qualityAnalyzer.QualityParameter.Depth = 2;
 
+      ParameterizeStochasticOperator(qualityAnalyzer);
+      ParameterizeStochasticOperatorForIsland(islandQualityAnalyzer);
+
       if (Problem != null) {
         islandQualityAnalyzer.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
         islandQualityAnalyzer.MaximizationParameter.Hidden = true;
