@@ -108,7 +108,7 @@ namespace HeuristicLab.Operators {
           result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, typeof(IntValue)));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, targetType));
       }
 
       IntValue target;
@@ -138,11 +138,10 @@ namespace HeuristicLab.Operators {
           target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, typeof(IntValue)));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, targetType));
       }
     }
     #endregion
-
     #region double reduction
     private void CalculateResult(IEnumerable<double> values, Type targetType) {
       double result;
@@ -169,7 +168,7 @@ namespace HeuristicLab.Operators {
           result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, typeof(DoubleValue)));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, targetType));
       }
 
       DoubleValue target;
@@ -199,11 +198,10 @@ namespace HeuristicLab.Operators {
           target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, typeof(DoubleValue)));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, targetType));
       }
     }
     #endregion
-
     #region TimeSpan reduction
     private void CalculateResult(IEnumerable<TimeSpan> values, Type targetType) {
       TimeSpan result;
@@ -224,7 +222,7 @@ namespace HeuristicLab.Operators {
           result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, typeof(TimeSpanValue)));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, targetType));
       }
 
       TimeSpanValue target;
@@ -250,7 +248,7 @@ namespace HeuristicLab.Operators {
           target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, typeof(TimeSpanValue)));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, targetType));
       }
     }
     #endregion
