@@ -1,4 +1,4 @@
-set target=C:\Program Files\HeuristicLab 3.3
+set target=C:\Program Files\HeuristicLab 3.3.7
 
 FOR /F "skip=1 tokens=1 delims= usebackq" %%G IN ("%ProjectDir%\Files.txt") DO copy "%Outdir%\%%G" "%target%" >nul
 
