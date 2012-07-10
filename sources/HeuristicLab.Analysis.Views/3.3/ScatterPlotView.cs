@@ -181,10 +181,12 @@ namespace HeuristicLab.Analysis.Views {
       if (Content.VisualProperties.AxisTitleFont != null) area.AxisX.TitleFont = Content.VisualProperties.AxisTitleFont;
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisX.TitleForeColor = Content.VisualProperties.AxisTitleColor;
       area.AxisX.Title = Content.VisualProperties.XAxisTitle;
+      area.AxisX.MajorGrid.Enabled = Content.VisualProperties.XAxisGrid;
 
       if (Content.VisualProperties.AxisTitleFont != null) area.AxisY.TitleFont = Content.VisualProperties.AxisTitleFont;
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisY.TitleForeColor = Content.VisualProperties.AxisTitleColor;
       area.AxisY.Title = Content.VisualProperties.YAxisTitle;
+      area.AxisY.MajorGrid.Enabled = Content.VisualProperties.YAxisGrid;
     }
 
     private void RecalculateAxesScale(ChartArea area) {

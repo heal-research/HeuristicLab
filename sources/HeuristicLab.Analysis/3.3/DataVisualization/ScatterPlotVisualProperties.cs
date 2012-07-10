@@ -106,6 +106,28 @@ namespace HeuristicLab.Analysis {
       }
     }
 
+    private bool xAxisGrid;
+    public bool XAxisGrid {
+      get { return xAxisGrid; }
+      set {
+        if (xAxisGrid != value) {
+          xAxisGrid = value;
+          OnPropertyChanged("XAxisGrid");
+        }
+      }
+    }
+
+    private bool yAxisGrid;
+    public bool YAxisGrid {
+      get { return yAxisGrid; }
+      set {
+        if (yAxisGrid != value) {
+          yAxisGrid = value;
+          OnPropertyChanged("YAxisGrid");
+        }
+      }
+    }
+
     private bool xAxisMinimumAuto;
     public bool XAxisMinimumAuto {
       get { return xAxisMinimumAuto; }
@@ -234,6 +256,16 @@ namespace HeuristicLab.Analysis {
       get { return yAxisTitle; }
       set { yAxisTitle = value; }
     }
+    [Storable(Name = "XAxisGrid")]
+    private bool StorableXAxisGrid {
+      get { return xAxisGrid; }
+      set { xAxisGrid = value; }
+    }
+    [Storable(Name = "YAxisGrid")]
+    private bool StorableYAxisGrid {
+      get { return yAxisGrid; }
+      set { yAxisGrid = value; }
+    }
     [Storable(Name = "XAxisMinimumAuto")]
     private bool StorableXAxisMinimumAuto {
       get { return xAxisMinimumAuto; }
@@ -287,6 +319,8 @@ namespace HeuristicLab.Analysis {
       this.title = original.title;
       this.xAxisTitle = original.xAxisTitle;
       this.yAxisTitle = original.yAxisTitle;
+      this.xAxisGrid = original.xAxisGrid;
+      this.yAxisGrid = original.yAxisGrid;
       this.xAxisMinimumAuto = original.xAxisMinimumAuto;
       this.xAxisMinimumFixedValue = original.xAxisMinimumFixedValue;
       this.xAxisMaximumAuto = original.xAxisMaximumAuto;
@@ -302,6 +336,8 @@ namespace HeuristicLab.Analysis {
       this.title = string.Empty;
       this.xAxisTitle = string.Empty;
       this.yAxisTitle = string.Empty;
+      this.xAxisGrid = true;
+      this.yAxisGrid = true;
       this.xAxisMinimumAuto = true;
       this.xAxisMinimumFixedValue = double.NaN;
       this.xAxisMaximumAuto = true;
