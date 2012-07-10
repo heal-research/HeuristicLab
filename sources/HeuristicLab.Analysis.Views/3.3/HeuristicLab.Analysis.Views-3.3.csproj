@@ -121,6 +121,12 @@
     <Compile Include="ScatterPlotView.Designer.cs">
       <DependentUpon>ScatterPlotView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ScatterPlotHistoryView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScatterPlotHistoryView.Designer.cs">
+      <DependentUpon>ScatterPlotHistoryView.cs</DependentUpon>
+    </Compile>
     <None Include="Plugin.cs.frame" />
     <Compile Include="AlleleFrequencyCollectionView.cs">
       <SubType>UserControl</SubType>

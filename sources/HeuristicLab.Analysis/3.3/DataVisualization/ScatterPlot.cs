@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using HeuristicLab.Collections;
@@ -37,102 +38,196 @@ namespace HeuristicLab.Analysis {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
 
-    [Storable]
-    private ObservableList<PointF> points;
-    public ObservableList<PointF> Points {
-      get { return points; }
-    }
-
-    [Storable]
-    private string xAxisName;
-    public string XAxisName {
-      get { return xAxisName; }
+    private ScatterPlotVisualProperties visualProperties;
+    public ScatterPlotVisualProperties VisualProperties {
+      get { return visualProperties; }
       set {
-        if (value == xAxisName) return;
-        xAxisName = value;
-        OnAxesNameChanged();
+        if (visualProperties != value) {
+          if (value == null) throw new ArgumentNullException("VisualProperties");
+          if (visualProperties != null) visualProperties.PropertyChanged -= new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+          visualProperties = value;
+          visualProperties.PropertyChanged += new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+          OnVisualPropertiesChanged();
+        }
       }
     }
 
-    [Storable]
-    private string yAxisName;
-    public string YAxisName {
-      get { return yAxisName; }
-      set {
-        if (value == yAxisName) return;
-        yAxisName = value;
-        OnAxesNameChanged();
+    private NamedItemCollection<ScatterPlotDataRow> rows;
+    public NamedItemCollection<ScatterPlotDataRow> Rows {
+      get { return rows; }
+      private set {
+        if (rows != null) throw new InvalidOperationException("Rows already set");
+        rows = value;
+        if (rows != null) RegisterRowsEvents();
       }
     }
+
+    #region Persistence Properties
+    [Storable(Name = "VisualProperties")]
+    private ScatterPlotVisualProperties StorableVisualProperties {
+      get { return visualProperties; }
+      set {
+        visualProperties = value;
+        visualProperties.PropertyChanged += new PropertyChangedEventHandler(VisualProperties_PropertyChanged);
+      }
+    }
+    [Storable(Name = "Rows")]
+    private IEnumerable<ScatterPlotDataRow> StorableRows {
+      get { return rows; }
+      set { Rows = new NamedItemCollection<ScatterPlotDataRow>(value); }
+    }
+    #endregion
 
     [StorableConstructor]
     protected ScatterPlot(bool deserializing) : base(deserializing) { }
     protected ScatterPlot(ScatterPlot original, Cloner cloner)
       : base(original, cloner) {
-      points = new ObservableList<PointF>(original.points);
-      xAxisName = original.xAxisName;
-      yAxisName = original.yAxisName;
+      VisualProperties = cloner.Clone(original.visualProperties);
+      Rows = cloner.Clone(original.rows);
     }
     public ScatterPlot()
       : base() {
-      this.points = new ObservableList<PointF>();
-    }
-    public ScatterPlot(string name)
-      : base(name) {
-      this.points = new ObservableList<PointF>();
+      VisualProperties = new ScatterPlotVisualProperties();
+      Rows = new NamedItemCollection<ScatterPlotDataRow>();
     }
     public ScatterPlot(string name, string description)
       : base(name, description) {
-      this.points = new ObservableList<PointF>();
+      VisualProperties = new ScatterPlotVisualProperties(name);
+      Rows = new NamedItemCollection<ScatterPlotDataRow>();
     }
-    public ScatterPlot(string name, string description, string xAxisName, string yAxisName)
+    public ScatterPlot(string name, string description, ScatterPlotVisualProperties visualProperties)
       : base(name, description) {
-      this.points = new ObservableList<PointF>();
-      this.xAxisName = xAxisName;
-      this.yAxisName = yAxisName;
+      VisualProperties = visualProperties;
+      Rows = new NamedItemCollection<ScatterPlotDataRow>();
     }
-    public ScatterPlot(IEnumerable<PointF> points)
-      : base() {
-      this.points = new ObservableList<PointF>(points);
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
+    private ObservableList<PointF> points;
+    [Storable(Name = "points")]
+    private ObservableList<PointF> StorablePoints {
+      set { points = value; }
     }
-    public ScatterPlot(IEnumerable<PointF> points, string name)
-      : base(name) {
-      this.points = new ObservableList<PointF>(points);
+    private string xAxisName;
+    [Storable(Name = "xAxisName")]
+    private string StorableXAxisName {
+      set { xAxisName = value; }
     }
-    public ScatterPlot(IEnumerable<PointF> points, string name, string description)
-      : base(name, description) {
-      this.points = new ObservableList<PointF>(points);
+    private string yAxisName;
+    [Storable(Name = "yAxisName")]
+    private string StorableYAxisName {
+      set { yAxisName = value; }
     }
-    public ScatterPlot(IEnumerable<PointF> points, string name, string description, string xAxisName, string yAxisName)
-      : base(name, description) {
-      this.points = new ObservableList<PointF>(points);
-      this.xAxisName = xAxisName;
-      this.yAxisName = yAxisName;
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (VisualProperties == null) VisualProperties = new ScatterPlotVisualProperties(name);
+      if (string.IsNullOrEmpty(VisualProperties.XAxisTitle) && !string.IsNullOrEmpty(xAxisName)) VisualProperties.XAxisTitle = xAxisName;
+      if (string.IsNullOrEmpty(VisualProperties.YAxisTitle) && !string.IsNullOrEmpty(yAxisName)) VisualProperties.YAxisTitle = yAxisName;
+      if (rows == null) Rows = new NamedItemCollection<ScatterPlotDataRow>();
+      if ((Rows.Count == 0) && (points != null)) Rows.Add(new ScatterPlotDataRow(name, null, points.Select(p => new Point2D<double>(p.X, p.Y))));
     }
+    #endregion
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ScatterPlot(this, cloner);
     }
 
-    public event EventHandler AxisNameChanged;
-    protected virtual void OnAxesNameChanged() {
-      EventHandler handler = AxisNameChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+    public event EventHandler VisualPropertiesChanged;
+    protected virtual void OnVisualPropertiesChanged() {
+      EventHandler handler = VisualPropertiesChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    private void VisualProperties_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      OnVisualPropertiesChanged();
+    }
+
+    protected virtual void RegisterRowsEvents() {
+      rows.ItemsAdded += new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(rows_ItemsAdded);
+      rows.ItemsRemoved += new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(rows_ItemsRemoved);
+      rows.ItemsReplaced += new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(rows_ItemsReplaced);
+      rows.CollectionReset += new CollectionItemsChangedEventHandler<ScatterPlotDataRow>(rows_CollectionReset);
+    }
+    private void rows_ItemsAdded(object sender, CollectionItemsChangedEventArgs<ScatterPlotDataRow> e) {
+      foreach (ScatterPlotDataRow row in e.Items)
+        this.RegisterRowEvents(row);
+
+      this.OnColumnsChanged();
+      this.OnColumnNamesChanged();
+      this.OnReset();
+    }
+    private void rows_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<ScatterPlotDataRow> e) {
+      foreach (ScatterPlotDataRow row in e.Items)
+        this.DeregisterRowEvents(row);
+
+      this.OnColumnsChanged();
+      this.OnColumnNamesChanged();
+      this.OnReset();
+    }
+    private void rows_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<ScatterPlotDataRow> e) {
+      foreach (ScatterPlotDataRow row in e.OldItems)
+        this.DeregisterRowEvents(row);
+      foreach (ScatterPlotDataRow row in e.Items)
+        this.RegisterRowEvents(row);
+
+      this.OnColumnsChanged();
+      this.OnColumnNamesChanged();
+      this.OnReset();
+    }
+    private void rows_CollectionReset(object sender, CollectionItemsChangedEventArgs<ScatterPlotDataRow> e) {
+      foreach (ScatterPlotDataRow row in e.OldItems)
+        this.DeregisterRowEvents(row);
+      foreach (ScatterPlotDataRow row in e.Items)
+        this.RegisterRowEvents(row);
+
+      if (e.OldItems.Count() != e.Items.Count())
+        this.OnColumnsChanged();
+      this.OnColumnNamesChanged();
+      this.OnReset();
+    }
+
+    protected virtual void RegisterRowEvents(ScatterPlotDataRow row) {
+      row.Points.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_ItemsAdded);
+      row.Points.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_ItemsMoved);
+      row.Points.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_ItemsRemoved);
+      row.Points.ItemsReplaced += new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_ItemsReplaced);
+      row.Points.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_CollectionReset);
+    }
+    protected virtual void DeregisterRowEvents(ScatterPlotDataRow row) {
+      row.Points.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_ItemsAdded);
+      row.Points.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_ItemsMoved);
+      row.Points.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_ItemsRemoved);
+      row.Points.ItemsReplaced -= new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_ItemsReplaced);
+      row.Points.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<Point2D<double>>>(Points_CollectionReset);
+    }
+
+    private void Points_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<Point2D<double>>> e) {
+      this.OnReset();
+    }
+    private void Points_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Point2D<double>>> e) {
+      this.OnReset();
+    }
+    private void Points_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Point2D<double>>> e) {
+      this.OnReset();
+    }
+    private void Points_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<Point2D<double>>> e) {
+      this.OnReset();
+    }
+    private void Points_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<Point2D<double>>> e) {
+      this.OnReset();
     }
 
     #region IStringConvertibleMatrix Members
-
     int IStringConvertibleMatrix.Rows {
-      get { return points.Count; }
+      get { return rows.Count == 0 ? 0 : rows.Max(r => r.Points.Count); }
       set { throw new NotSupportedException(); }
     }
     int IStringConvertibleMatrix.Columns {
-      get { return 2; }
+      get { return rows.Count; }
       set { throw new NotSupportedException(); }
     }
     IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
-      get { return new string[] { xAxisName, yAxisName }; }
+      get { return rows.Select(r => r.Name); }
       set { throw new NotSupportedException(); }
     }
     IEnumerable<string> IStringConvertibleMatrix.RowNames {
@@ -141,7 +236,7 @@ namespace HeuristicLab.Analysis {
     }
 
     bool IStringConvertibleMatrix.SortableView {
-      get { return false; }
+      get { return true; }
       set { throw new NotSupportedException(); }
     }
     bool IStringConvertibleMatrix.ReadOnly {
@@ -149,8 +244,10 @@ namespace HeuristicLab.Analysis {
     }
 
     string IStringConvertibleMatrix.GetValue(int rowIndex, int columnIndex) {
-      if (rowIndex < points.Count && columnIndex < 2) {
-        return columnIndex == 0 ? points[rowIndex].X.ToString() : points[rowIndex].Y.ToString();
+      if (columnIndex < rows.Count) {
+        string columnName = ((IStringConvertibleMatrix)this).ColumnNames.ElementAt(columnIndex);
+        if (rows.ContainsKey(columnName) && rowIndex < rows[columnName].Points.Count)
+          return string.Format("{0};{1}", rows[columnName].Points[rowIndex].X, rows[columnName].Points[rowIndex].Y);
       }
       return string.Empty;
     }

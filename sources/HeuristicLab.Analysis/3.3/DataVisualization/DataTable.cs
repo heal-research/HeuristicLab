@@ -58,6 +58,11 @@ namespace HeuristicLab.Analysis {
     private NamedItemCollection<DataRow> rows;
     public NamedItemCollection<DataRow> Rows {
       get { return rows; }
+      private set {
+        if (rows != null) throw new InvalidOperationException("Rows already set");
+        rows = value;
+        if (rows != null) RegisterRowsEvents();
+      }
     }
 
     #region Persistence Properties
@@ -72,7 +77,7 @@ namespace HeuristicLab.Analysis {
     [Storable(Name = "rows")]
     private IEnumerable<DataRow> StorableRows {
       get { return rows; }
-      set { rows = new NamedItemCollection<DataRow>(value); }
+      set { Rows = new NamedItemCollection<DataRow>(value); }
     }
     #endregion
 
@@ -80,27 +85,23 @@ namespace HeuristicLab.Analysis {
     protected DataTable(bool deserializing) : base(deserializing) { }
     protected DataTable(DataTable original, Cloner cloner)
       : base(original, cloner) {
-      this.VisualProperties = (DataTableVisualProperties)cloner.Clone(original.visualProperties);
-      this.rows = cloner.Clone(original.rows);
-      this.RegisterRowsEvents();
+      VisualProperties = (DataTableVisualProperties)cloner.Clone(original.visualProperties);
+      Rows = cloner.Clone(original.rows);
     }
     public DataTable()
       : base() {
       VisualProperties = new DataTableVisualProperties();
-      rows = new NamedItemCollection<DataRow>();
-      this.RegisterRowsEvents();
+      Rows = new NamedItemCollection<DataRow>();
     }
     public DataTable(string name)
       : base(name) {
       VisualProperties = new DataTableVisualProperties(name);
-      rows = new NamedItemCollection<DataRow>();
-      this.RegisterRowsEvents();
+      Rows = new NamedItemCollection<DataRow>();
     }
     public DataTable(string name, string description)
       : base(name, description) {
       VisualProperties = new DataTableVisualProperties(name);
-      rows = new NamedItemCollection<DataRow>();
-      this.RegisterRowsEvents();
+      Rows = new NamedItemCollection<DataRow>();
     }
 
     // BackwardsCompatibility3.3
@@ -216,7 +217,7 @@ namespace HeuristicLab.Analysis {
       set { throw new NotSupportedException(); }
     }
     IEnumerable<string> IStringConvertibleMatrix.RowNames {
-      get { return new List<string>(); }
+      get { return Enumerable.Empty<string>(); }
       set { throw new NotSupportedException(); }
     }
 

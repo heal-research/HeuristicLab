@@ -124,6 +124,10 @@
     <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollection.cs" />
     <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollectionHistory.cs" />
     <Compile Include="BestScopeSolutionAnalyzer.cs" />
+    <Compile Include="DataVisualization\ScatterPlotDataRowVisualProperties.cs" />
+    <Compile Include="DataVisualization\ScatterPlotDataRow.cs" />
+    <Compile Include="DataVisualization\ScatterPlotVisualProperties.cs" />
+    <Compile Include="DataVisualization\ScatterPlotHistory.cs" />
     <Compile Include="DataVisualization\DataRow.cs" />
     <Compile Include="DataVisualization\DataRowVisualProperties.cs" />
     <Compile Include="DataVisualization\DataTable.cs" />

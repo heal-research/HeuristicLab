@@ -25,7 +25,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Analysis.Views {
-  [View("DataRow Visual Properties")]
+  [View("DataTable Visual Properties")]
   public partial class DataTableVisualPropertiesControl : UserControl {
     protected bool SuppressEvents { get; set; }
 
