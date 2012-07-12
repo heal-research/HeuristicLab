@@ -114,6 +114,7 @@
     <Compile Include="MultiObjective\FastNonDominatedSort.cs" />
     <Compile Include="MultiObjective\RankAndCrowdingSorter.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="ProgrammableAnalyzer.cs" />
     <Compile Include="ShakingOperator.cs" />
     <Compile Include="UserDefinedCrossover.cs" />
     <Compile Include="UserDefinedEvaluator.cs" />
@@ -160,6 +161,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj">
+      <Project>{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}</Project>
+      <Name>HeuristicLab.Operators.Programmable-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">

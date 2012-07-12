@@ -32,6 +32,7 @@ namespace HeuristicLab.Optimization.Operators {
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
+  [PluginDependency("HeuristicLab.Operators.Programmable", "3.3")]
   [PluginDependency("HeuristicLab.Optimization","3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
