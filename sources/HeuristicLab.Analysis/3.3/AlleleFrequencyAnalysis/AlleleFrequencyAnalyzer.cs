@@ -169,41 +169,6 @@ namespace HeuristicLab.Analysis {
           results = (ResultCollection)ResultsParameter.ActualValue[Name + " Results"].Value;
         }
 
-        // calculate scatter plot of contained relevant alleles and relative quality
-        double avgContainedReleventAlleles = 0;
-        if (bestKnownAlleles != null) {
-          double qualityRange = Math.Abs(qualities.Max() - qualities.Min());
-          var points = solutions.Select((s, index) => new Point2D<double>(CalculateAlleles(s).Intersect(bestKnownAlleles, new AlleleIdEqualityComparer()).Count(),
-                                                                          Math.Abs(qualities[index] - qualities[bestIndex]) / qualityRange));
-          avgContainedReleventAlleles = points.Select(x => x.X).Average();
-          var plot = new ScatterPlot("Contained Alleles of Best Known Solution and Relative Solution Qualtiy", null);
-          plot.VisualProperties.XAxisTitle = "Contained Alleles of Best Known Solution";
-          plot.VisualProperties.YAxisTitle = "Relative Solution Quality";
-          plot.VisualProperties.XAxisMinimumAuto = false;
-          plot.VisualProperties.XAxisMinimumFixedValue = 0.0;
-          plot.VisualProperties.XAxisMaximumAuto = false;
-          plot.VisualProperties.XAxisMaximumFixedValue = bestKnownAlleles.Length;
-          plot.VisualProperties.YAxisMinimumAuto = false;
-          plot.VisualProperties.YAxisMinimumFixedValue = 0.0;
-          plot.VisualProperties.YAxisMaximumAuto = false;
-          plot.VisualProperties.YAxisMaximumFixedValue = 1.0;
-          var row = new ScatterPlotDataRow("Solutions of Current Generation", null, points);
-          row.VisualProperties.PointStyle = ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle.Circle;
-          row.VisualProperties.PointSize = 5;
-          plot.Rows.Add(row);
-
-          if (!results.ContainsKey("Scatter Plot"))
-            results.Add(new Result("Scatter Plot", plot));
-          else
-            results["Scatter Plot"].Value = plot;
-          if (storeHistory) {
-            if (!results.ContainsKey("Scatter Plot History")) {
-              results.Add(new Result("Scatter Plot History", new ScatterPlotHistory()));
-            }
-            ((ScatterPlotHistory)results["Scatter Plot History"].Value).Add(plot);
-          }
-        }
-
         // store allele frequencies
         AlleleFrequencyCollection frequenciesCollection = new AlleleFrequencyCollection(frequencies);
         if (!results.ContainsKey("Allele Frequencies"))
@@ -249,10 +214,6 @@ namespace HeuristicLab.Analysis {
           allelesTable.Rows["Lost Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
           allelesTable.Rows["Lost Alleles of Best Known Solution"].VisualProperties.StartIndexZero = true;
 
-          allelesTable.Rows.Add(new DataRow("Average Contained Alleles of Best Known Solution", null));
-          allelesTable.Rows["Average Contained Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
-          allelesTable.Rows["Average Contained Alleles of Best Known Solution"].VisualProperties.StartIndexZero = true;
-
           results.Add(new Result("Alleles", allelesTable));
         } else {
           allelesTable = (DataTable)results["Alleles"].Value;
@@ -269,7 +230,6 @@ namespace HeuristicLab.Analysis {
         allelesTable.Rows["Fixed Alleles"].Values.Add(fixedAllelesCount);
         allelesTable.Rows["Fixed Alleles of Best Known Solution"].Values.Add(fixedRelevantAllelesCount);
         allelesTable.Rows["Lost Alleles of Best Known Solution"].Values.Add(lostRelevantAllelesCount);
-        allelesTable.Rows["Average Contained Alleles of Best Known Solution"].Values.Add(avgContainedReleventAlleles);
 
         // store alleles values
         if (!results.ContainsKey("Unique Alleles"))
@@ -296,6 +256,53 @@ namespace HeuristicLab.Analysis {
           results.Add(new Result("Lost Alleles of Best Known Solution", new DoubleValue(lostRelevantAllelesCount)));
         else
           ((DoubleValue)results["Lost Alleles of Best Known Solution"].Value).Value = lostRelevantAllelesCount;
+
+        // calculate contained alleles of best known solution and relative quality
+        if (bestKnownAlleles != null) {
+          double qualityRange = Math.Abs(qualities.Max() - qualities.Min());
+          var points = solutions.Select((s, index) => new Point2D<double>(CalculateAlleles(s).Intersect(bestKnownAlleles, new AlleleIdEqualityComparer()).Count(),
+                                                                          Math.Abs(qualities[index] - qualities[bestIndex]) / qualityRange));
+          var avgContainedReleventAlleles = points.Select(x => x.X).Average();
+
+          var plot = new ScatterPlot("Contained Alleles of Best Known Solution and Relative Solution Qualtiy", null);
+          plot.VisualProperties.XAxisTitle = "Contained Alleles of Best Known Solution";
+          plot.VisualProperties.YAxisTitle = "Relative Solution Quality";
+          plot.VisualProperties.XAxisMinimumAuto = false;
+          plot.VisualProperties.XAxisMinimumFixedValue = 0.0;
+          plot.VisualProperties.XAxisMaximumAuto = false;
+          plot.VisualProperties.XAxisMaximumFixedValue = bestKnownAlleles.Length;
+          plot.VisualProperties.YAxisMinimumAuto = false;
+          plot.VisualProperties.YAxisMinimumFixedValue = 0.0;
+          plot.VisualProperties.YAxisMaximumAuto = false;
+          plot.VisualProperties.YAxisMaximumFixedValue = 1.0;
+          var row = new ScatterPlotDataRow("Solutions of Current Generation", null, points);
+          row.VisualProperties.PointStyle = ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle.Circle;
+          row.VisualProperties.PointSize = 5;
+          plot.Rows.Add(row);
+
+          if (!results.ContainsKey("Scatter Plot"))
+            results.Add(new Result("Scatter Plot", plot));
+          else
+            results["Scatter Plot"].Value = plot;
+          if (storeHistory) {
+            if (!results.ContainsKey("Scatter Plot History")) {
+              results.Add(new Result("Scatter Plot History", new ScatterPlotHistory()));
+            }
+            ((ScatterPlotHistory)results["Scatter Plot History"].Value).Add(plot);
+          }
+
+          if (!allelesTable.Rows.ContainsKey("Average Contained Alleles of Best Known Solution")) {
+            allelesTable.Rows.Add(new DataRow("Average Contained Alleles of Best Known Solution", null));
+            allelesTable.Rows["Average Contained Alleles of Best Known Solution"].VisualProperties.SecondYAxis = true;
+            allelesTable.Rows["Average Contained Alleles of Best Known Solution"].VisualProperties.StartIndexZero = true;
+          }
+          allelesTable.Rows["Average Contained Alleles of Best Known Solution"].Values.Add(avgContainedReleventAlleles);
+
+          if (!results.ContainsKey("Average Contained Alleles of Best Known Solution"))
+            results.Add(new Result("Average Contained Alleles of Best Known Solution", new DoubleValue(avgContainedReleventAlleles)));
+          else
+            ((DoubleValue)results["Average Contained Alleles of Best Known Solution"].Value).Value = avgContainedReleventAlleles;
+        }
       }
       return base.Apply();
     }
