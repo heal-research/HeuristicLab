@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  [PluginDependency("HeuristicLab.ProtobufCS", "0.9.1")]
+  [PluginDependency("HeuristicLab.ProtobufCS", "2.4.1.473")]
   public class HeuristicLabProblemsExternalEvaluationPlugin : PluginBase {
   }
 }

@@ -1,6 +1,4 @@
-cd "%ProjectDir%"Protos
-
-for %%i in (*.proto) do (
-  "%SolutionDir%"protoc -otmp %%i
-  "%SolutionDir%"ProtoGen tmp
-  del tmp)
+for %%i in ("%ProjectDir%Protos\*.proto") do (
+  echo Processing %%i
+  ProtoGen --proto_path="%ProjectDir%\Protos" %%i --include_imports -output_directory="%ProjectDir%Protos"
+)
