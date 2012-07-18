@@ -110,18 +110,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public override void Send(IMessage message) {
       try {
         streamingChannel.Send(message);
-      }
-      catch {
+      } catch {
         Close();
         throw;
       }
     }
 
-    public override IMessage Receive(IBuilder builder) {
+    public override IMessage Receive(IBuilder builder, ExtensionRegistry extensions) {
       try {
-        return streamingChannel.Receive(builder);
-      }
-      catch {
+        return streamingChannel.Receive(builder, extensions);
+      } catch {
         Close();
         throw;
       }
@@ -137,8 +135,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
               process.CloseMainWindow();
               process.WaitForExit(1000);
               process.Close();
-            }
-            catch { }
+            } catch { }
           }
           // for some reasons the event process_Exited does not fire
           OnProcessExited();

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -34,6 +35,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ExternalEvaluationValuesCollector", "Creates a solution message, and communicates it via the driver to receive a quality message.")]
   [StorableClass]
   public class ExternalEvaluator : ValuesCollector, IExternalEvaluationProblemEvaluator {
+    protected HashSet<IEvaluationServiceClient> activeClients = new HashSet<IEvaluationServiceClient>();
+    protected object clientLock = new object();
 
     #region Parameters
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -47,18 +50,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     #endregion
 
-    #region Parameter Values
+    #region Parameter Properties
     protected SolutionMessageBuilder MessageBuilder {
       get { return MessageBuilderParameter.Value; }
     }
     protected CheckedItemCollection<IEvaluationServiceClient> Clients {
       get { return ClientsParameter.ActualValue; }
     }
-    #endregion
-
-    #region Fields
-    protected HashSet<IEvaluationServiceClient> activeClients = new HashSet<IEvaluationServiceClient>();
-    protected object clientLock = new object();
     #endregion
 
     #region Construction & Cloning
@@ -102,7 +100,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       return base.Apply();
     }
 
-    protected QualityMessage EvaluateOnNextAvailableClient(SolutionMessage message) {
+    protected virtual QualityMessage EvaluateOnNextAvailableClient(SolutionMessage message) {
       IEvaluationServiceClient client = null;
       lock (clientLock) {
         client = Clients.CheckedItems.FirstOrDefault(c => !activeClients.Contains(c));
@@ -114,7 +112,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           activeClients.Add(client);
       }
       try {
-        return client.Evaluate(message);
+        return client.Evaluate(message, GetQualityMessageExtensions());
       } finally {
         lock (clientLock) {
           activeClients.Remove(client);
@@ -123,7 +121,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    protected SolutionMessage BuildSolutionMessage() {
+    protected virtual ExtensionRegistry GetQualityMessageExtensions() {
+      return ExtensionRegistry.CreateInstance();
+    }
+
+    protected virtual SolutionMessage BuildSolutionMessage() {
       lock (clientLock) {
         SolutionMessage.Builder protobufBuilder = SolutionMessage.CreateBuilder();
         protobufBuilder.SolutionId = 0;

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using Google.ProtocolBuffers;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
@@ -28,13 +29,15 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     /// Evaluates a given solution in a blocking manner.
     /// </summary>
     /// <param name="solution">The solution message that should be evaluated.</param>
+    /// <param name="qualityExtensions">An extension registry for the quality message that specifies additional custom fields.</param>
     /// <returns>The resulting quality message from the external process.</returns>
-    QualityMessage Evaluate(SolutionMessage solution);
+    QualityMessage Evaluate(SolutionMessage solution, ExtensionRegistry qualityExtensions);
     /// <summary>
     /// Evaluates a given solution in a non-blocking manner.
     /// </summary>
     /// <param name="solution">The solution message that should be evaluated.</param>
+    /// <param name="qualityExtensions">An extension registry for the quality message that specifies additional custom fields.</param>
     /// <param name="callback">The callback method that is invoked when evaluation is finished.</param>
-    void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback);
+    void EvaluateAsync(SolutionMessage solution, ExtensionRegistry qualityExtensions, Action<QualityMessage> callback);
   }
 }

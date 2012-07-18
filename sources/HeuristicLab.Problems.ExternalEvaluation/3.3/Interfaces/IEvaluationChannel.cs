@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     /// </summary>
     /// <param name="builder">The builder that must match the message type that is to be received.</param>
     /// <returns>The received message.</returns>
-    IMessage Receive(IBuilder builder);
+    IMessage Receive(IBuilder builder, ExtensionRegistry extensions);
     /// <summary>
     /// Tells the channel to close down and terminate open connections.
     /// </summary>

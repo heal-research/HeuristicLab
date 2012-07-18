@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.IO;
+using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -72,7 +74,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region IEvaluationServiceClient Members
-    public QualityMessage Evaluate(SolutionMessage solution) {
+    public QualityMessage Evaluate(SolutionMessage solution, ExtensionRegistry qualityExtensions) {
       int tries = 0, maxTries = RetryParameter.Value.Value;
       bool success = false;
       QualityMessage result = null;
@@ -81,7 +83,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           tries++;
           CheckAndOpenChannel();
           Channel.Send(solution);
-          result = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder());
+          result = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder(), qualityExtensions);
           success = true;
         } catch (InvalidOperationException) {
           throw;
@@ -90,10 +92,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
             throw;
         }
       }
+      if (result != null && result.SolutionId != solution.SolutionId) throw new InvalidDataException(Name + ": Received a quality for a different solution.");
       return result;
     }
 
-    public void EvaluateAsync(SolutionMessage solution, Action<QualityMessage> callback) {
+    public void EvaluateAsync(SolutionMessage solution, ExtensionRegistry qualityExtensions, Action<QualityMessage> callback) {
       int tries = 0, maxTries = RetryParameter.Value.Value;
       bool success = false;
       while (!success) {
@@ -109,7 +112,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
             throw;
         }
       }
-      System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ReceiveAsync), callback);
+      System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(ReceiveAsync), new ReceiveAsyncInfo(solution, callback, qualityExtensions));
     }
     #endregion
 
@@ -125,12 +128,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    private void ReceiveAsync(object callback) {
+    private void ReceiveAsync(object callbackInfo) {
+      var info = (ReceiveAsyncInfo)callbackInfo;
       QualityMessage message = null;
       try {
-        message = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder());
+        message = (QualityMessage)Channel.Receive(QualityMessage.CreateBuilder(), info.QualityExtensions);
       } catch { }
-      ((Action<QualityMessage>)callback).Invoke(message);
+      if (message != null && message.SolutionId != info.SolutionMessage.SolutionId) throw new InvalidDataException(Name + ": Received a quality for a different solution.");
+      info.CallbackDelegate.Invoke(message);
     }
 
     private void RegisterEvents() {
@@ -145,5 +150,16 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       OnNameChanged();
     }
     #endregion
+
+    private class ReceiveAsyncInfo {
+      public SolutionMessage SolutionMessage { get; set; }
+      public Action<QualityMessage> CallbackDelegate { get; set; }
+      public ExtensionRegistry QualityExtensions { get; set; }
+      public ReceiveAsyncInfo(SolutionMessage solutionMessage, Action<QualityMessage> callbackDelegate, ExtensionRegistry qualityExtensions) {
+        SolutionMessage = solutionMessage;
+        CallbackDelegate = callbackDelegate;
+        QualityExtensions = qualityExtensions;
+      }
+    }
   }
 }

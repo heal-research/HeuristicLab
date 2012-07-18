@@ -59,10 +59,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    public override IMessage Receive(IBuilder builder) {
+    public override IMessage Receive(IBuilder builder, ExtensionRegistry extensions) {
       QualityMessage message;
       lock (input) { // only one thread can read from the stream at one time
-        message = QualityMessage.ParseDelimitedFrom(input);
+        message = QualityMessage.ParseDelimitedFrom(input, extensions);
       }
       return message;
     }

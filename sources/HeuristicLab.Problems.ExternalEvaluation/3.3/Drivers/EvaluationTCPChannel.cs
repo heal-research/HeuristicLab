@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     #endregion
 
-    
+
 
     #region IExternalEvaluationChannel Members
 
@@ -104,12 +104,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       try {
         byte[] buffer = EncodeDelimited(message);
         socket.Send(buffer);
-      }
-      catch (SocketException) {
+      } catch (SocketException) {
         Close();
         throw;
-      }
-      catch (ObjectDisposedException) {
+      } catch (ObjectDisposedException) {
         socket = null;
         Close();
         throw;
@@ -137,16 +135,14 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       return sizeByteCount;
     }
 
-    public override IMessage Receive(IBuilder builder) {
+    public override IMessage Receive(IBuilder builder, ExtensionRegistry extensions) {
       try {
         byte[] buffer = GetMessageBuffer();
-        return builder.WeakMergeFrom(ByteString.CopyFrom(buffer)).WeakBuild();
-      }
-      catch (SocketException) {
+        return builder.WeakMergeFrom(ByteString.CopyFrom(buffer), extensions).WeakBuild();
+      } catch (SocketException) {
         Close();
         throw;
-      }
-      catch (ObjectDisposedException) {
+      } catch (ObjectDisposedException) {
         socket = null;
         Close();
         throw;
@@ -185,8 +181,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
           if (socket.Connected)
             socket.Disconnect(false);
           socket.Close();
-        }
-        catch { }
+        } catch { }
         socket = null;
       }
       bool wasInitialized = IsInitialized;

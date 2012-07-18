@@ -66,6 +66,8 @@ message SolutionMessage {
 message QualityMessage {
   required int32 solutionId = 1;
   required double quality = 2;
+
+  extensions 1000 to max;
 }
   
 service EvaluationService {

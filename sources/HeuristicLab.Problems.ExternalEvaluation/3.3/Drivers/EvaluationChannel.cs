@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
 
     public abstract void Send(IMessage message);
 
-    public abstract IMessage Receive(IBuilder builder);
+    public abstract IMessage Receive(IBuilder builder, ExtensionRegistry extensions);
 
     public virtual void Close() {
       IsInitialized = false;
