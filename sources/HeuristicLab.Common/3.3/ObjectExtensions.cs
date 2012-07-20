@@ -47,8 +47,10 @@ namespace HeuristicLab.Common {
         objects.Add(current);
 
         foreach (object o in GetChildObjects(current, excludedMembers, excludeStaticMembers)) {
-          if (o != null && !objects.Contains(o) && !ExcludeType(o.GetType()))
-            stack.Push(o);
+          if (o == null) continue;
+          if (ExcludeType(o.GetType())) continue;
+          if (objects.Contains(o)) continue;
+          stack.Push(o);
         }
       }
 
@@ -62,30 +64,28 @@ namespace HeuristicLab.Common {
     ///   * Primitives (Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, Single)
     ///   * string, decimal, DateTime
     ///   * Arrays of types not collected
-    ///   
-    /// Dictionaries and HashSets are treated specially, because it is cheaper to iterate over their keys and values
-    /// compared to traverse their internal data structures.
     /// </summary>
     private static bool ExcludeType(Type type) {
       return type.IsPrimitive ||
              type == typeof(string) ||
+             type == typeof(string[]) ||
              type == typeof(decimal) ||
+             type == typeof(decimal[]) ||
              type == typeof(DateTime) ||
+             type == typeof(DateTime[]) ||
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
-             type == typeof(string[]) ||
-             type == typeof(DateTime[]) ||
+             type == typeof(System.Reflection.Emit.SignatureHelper) ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 
-    private static ReferenceEqualityComparer comparer = new ReferenceEqualityComparer();
     private static IEnumerable<object> GetChildObjects(object obj, HashSet<object> excludedMembers, bool excludeStaticMembers) {
       Type type = obj.GetType();
 
       if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) {
         PropertyInfo info = type.GetProperty("Value");
         object value = info.GetValue(obj, null);
-        if (value != null && !excludedMembers.Contains(value, comparer))
+        if (value != null && !excludedMembers.Contains(value))
           yield return value;
       } else if (type.IsSubclassOfRawGeneric(typeof(Dictionary<,>)) ||
            type.IsSubclassOfRawGeneric(typeof(SortedDictionary<,>)) ||
@@ -96,17 +96,17 @@ namespace HeuristicLab.Common {
            obj is Hashtable) {
         var dictionary = obj as IDictionary;
         foreach (object value in dictionary.Keys) {
-          if (excludedMembers.Contains(value, comparer)) continue;
+          if (excludedMembers.Contains(value)) continue;
           yield return value;
         }
         foreach (object value in dictionary.Values) {
-          if (excludedMembers.Contains(value, comparer)) continue;
+          if (excludedMembers.Contains(value)) continue;
           yield return value;
         }
       } else if (type.IsArray || type.IsSubclassOfRawGeneric(typeof(HashSet<>))) {
         var enumerable = obj as IEnumerable;
         foreach (var value in enumerable) {
-          if (excludedMembers.Contains(value, comparer)) continue;
+          if (excludedMembers.Contains(value)) continue;
           yield return value;
         }
       } else {
@@ -115,10 +115,11 @@ namespace HeuristicLab.Common {
           object fieldValue;
           try {
             fieldValue = f.GetValue(obj);
-          } catch (SecurityException) {
+          }
+          catch (SecurityException) {
             continue;
           }
-          if (excludedMembers.Contains(fieldValue, comparer)) continue;
+          if (excludedMembers.Contains(fieldValue)) continue;
           yield return fieldValue;
         }
       }

@@ -48,10 +48,10 @@ namespace HeuristicLab.Common {
     }
 
     public static IEnumerable<FieldInfo> GetAllFields(this Type type) {
-      foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+      foreach (var field in type.GetFields(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic))
         yield return field;
 
-      foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+      foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic))
         yield return field;
 
       if (type.BaseType != null) {
