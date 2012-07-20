@@ -58,7 +58,7 @@ namespace HeuristicLab_33.Tests {
 
       TestContext.WriteLine("Time elapsed {0}", watch.Elapsed);
       TestContext.WriteLine("Objects discovered: {0}", objects.Count());
-      TestContext.WriteLine("HL objects discovered: {0}", objects.Where(o => o.GetType().Namespace.StartsWith("HeuristicLab")).Count());
+      TestContext.WriteLine("HL objects discovered: {0}", objects.Count(o => o.GetType().Namespace.StartsWith("HeuristicLab")));
       TestContext.WriteLine("");
 
       Dictionary<Type, List<object>> objs = new Dictionary<Type, List<object>>();
@@ -69,7 +69,7 @@ namespace HeuristicLab_33.Tests {
       }
 
       foreach (string s in objects.Select(o => o.GetType().Namespace).Distinct().OrderBy(s => s)) {
-        TestContext.WriteLine("{0}: {1}", s, objects.Where(o => o.GetType().Namespace == s).Count());
+        TestContext.WriteLine("{0}: {1}", s, objects.Count(o => o.GetType().Namespace == s));
       }
       TestContext.WriteLine("");
 
