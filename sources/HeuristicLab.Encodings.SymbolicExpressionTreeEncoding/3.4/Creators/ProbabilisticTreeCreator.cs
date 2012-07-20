@@ -175,8 +175,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         FillExtensionLengths(x, maxDepth);
         extensionPoints.Add(x);
       }
-      long minExtensionPointsLength = extensionPoints.Select(x => x.MinimumExtensionLength).Sum();
-      long maxExtensionPointsLength = extensionPoints.Select(x => x.MaximumExtensionLength).Sum();
+      //necessary to use long data type as the extension point length could be int.MaxValue
+      long minExtensionPointsLength = extensionPoints.Select(x => (long)x.MinimumExtensionLength).Sum();
+      long maxExtensionPointsLength = extensionPoints.Select(x => (long)x.MaximumExtensionLength).Sum();
 
       // while there are pending extension points and we have not reached the limit of adding new extension points
       while (extensionPoints.Count > 0 && minExtensionPointsLength + currentLength <= targetLength) {
