@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Collections {
   public class CollectionItemsChangedEventArgs<T> : EventArgs {
@@ -35,7 +36,7 @@ namespace HeuristicLab.Collections {
 
     public CollectionItemsChangedEventArgs(IEnumerable<T> items) {
       this.items = items;
-      this.oldItems = null;
+      this.oldItems = Enumerable.Empty<T>();
     }
     public CollectionItemsChangedEventArgs(IEnumerable<T> items, IEnumerable<T> oldItems) {
       this.items = items;
