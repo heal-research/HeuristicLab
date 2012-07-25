@@ -44,5 +44,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       return matrix;
     }
+    public static double[,] PrepareAndScaleInputMatrix(Dataset dataset, IEnumerable<string> variables, IEnumerable<int> rows, Scaling scaling) {
+      List<string> variablesList = variables.ToList();
+      List<int> rowsList = rows.ToList();
+
+      double[,] matrix = new double[rowsList.Count, variablesList.Count];
+
+      int col = 0;
+      foreach (string column in variables) {
+        var values = scaling.GetScaledValues(dataset, column, rows);
+        int row = 0;
+        foreach (var value in values) {
+          matrix[row, col] = value;
+          row++;
+        }
+        col++;
+      }
+
+      return matrix;
+    }
   }
 }

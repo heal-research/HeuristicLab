@@ -121,6 +121,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="GaussianProcess\Util.cs" />
+    <Compile Include="GaussianProcess\MeanZero.cs" />
+    <Compile Include="GaussianProcess\MeanConst.cs" />
+    <Compile Include="GaussianProcess\IMeanFunction.cs" />
+    <Compile Include="GaussianProcess\CovarianceSEard.cs" />
+    <Compile Include="GaussianProcess\CovarianceSEiso.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessModel.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessRegression.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessRegressionSolution.cs" />
+    <Compile Include="GaussianProcess\ICovarianceFunction.cs" />
+    <Compile Include="Interfaces\IGaussianProcessModel.cs" />
+    <Compile Include="Interfaces\IGaussianProcessSolution.cs" />
     <Compile Include="Interfaces\INearestNeighbourClassificationSolution.cs" />
     <Compile Include="Interfaces\INearestNeighbourRegressionSolution.cs" />
     <Compile Include="Interfaces\INearestNeighbourModel.cs" />
@@ -143,6 +155,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Linear\AlglibUtil.cs" />
+    <Compile Include="Linear\Scaling.cs" />
     <Compile Include="Linear\LinearDiscriminantAnalysis.cs" />
     <Compile Include="Linear\LinearRegression.cs">
       <SubType>Code</SubType>
@@ -186,6 +199,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -260,6 +277,10 @@
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

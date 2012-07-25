@@ -278,6 +278,7 @@
     <Compile Include="HeuristicLab-3.3\CollectObjectGraphTest.cs" />
     <Compile Include="HeuristicLab-3.3\ContentViewTests.cs" />
     <Compile Include="HeuristicLab-3.3\ParameterVisibilityTest.cs" />
+    <Compile Include="HeuristicLab-3.3\GaussianProcessRegressionTest.cs" />
     <Compile Include="HeuristicLab-3.3\DeepCloneableCloningTest.cs" />
     <Compile Include="HeuristicLab-3.3\GeneticAlgorithmTest.cs" />
     <Compile Include="HeuristicLab-3.3\InstantiateCreatablesTest.cs" />

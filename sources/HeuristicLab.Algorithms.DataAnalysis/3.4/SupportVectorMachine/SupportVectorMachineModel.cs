@@ -161,7 +161,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private IEnumerable<double> GetEstimatedValuesHelper(Dataset dataset, IEnumerable<int> rows) {
       // calculate predictions for the currently requested rows
       SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
-      SVM.Problem scaledProblem = Scaling.Scale(RangeTransform, problem);
+      SVM.Problem scaledProblem = SVM.Scaling.Scale(RangeTransform, problem);
 
       for (int i = 0; i < scaledProblem.Count; i++) {
         yield return SVM.Prediction.Predict(Model, scaledProblem.X[i]);

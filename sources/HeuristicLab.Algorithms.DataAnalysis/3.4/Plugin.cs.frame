@@ -27,6 +27,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   [Plugin("HeuristicLab.Algorithms.DataAnalysis", "Provides wrappers for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.3.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.DataAnalysis-3.4.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Analysis", "3.3.0")]
   [PluginDependency("HeuristicLab.ALGLIB", "3.5.0")]
   [PluginDependency("HeuristicLab.LibSVM", "1.6.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
@@ -42,6 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Classification", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression", "3.4")]
+  [PluginDependency("HeuristicLab.Random", "3.3.0")]
   public class HeuristicLabAlgorithmsDataAnalysisPlugin : PluginBase {
   }
 }
