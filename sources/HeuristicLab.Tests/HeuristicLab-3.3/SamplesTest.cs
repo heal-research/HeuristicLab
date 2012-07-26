@@ -189,8 +189,8 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(67, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(45.813, GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(81, GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(48.19, GetDoubleResult(ga, "CurrentAverageQuality"));
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
@@ -240,8 +240,8 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.78855594192122458, GetDoubleResult(ga, "BestQuality"), 1E-8);
-      Assert.AreEqual(0.61395271071681523, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(0.84966698918060757, GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(0.59815405391256571, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
@@ -345,9 +345,9 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.13775264138895371, GetDoubleResult(ga, "BestQuality"), 1E-8);
-      Assert.AreEqual(14.232802217120254, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-      Assert.AreEqual(104.24339008411457, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+      Assert.AreEqual(0.14458636369766503, GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(2.5613992769560352, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
     }
 
