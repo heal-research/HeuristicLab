@@ -536,10 +536,13 @@ namespace HeuristicLab.Analysis.Views {
 
       double intervalCenter = intervalWidth / 2;
 
-      double min = 0.0;
+      double min = 0.0, max = 0.0;
       if (!Double.IsNaN(Content.VisualProperties.XAxisMinimumFixedValue) && !Content.VisualProperties.XAxisMinimumAuto)
         min = Content.VisualProperties.XAxisMinimumFixedValue;
       else min = minValue;
+      if (!Double.IsNaN(Content.VisualProperties.XAxisMaximumFixedValue) && !Content.VisualProperties.XAxisMaximumAuto)
+        max = Content.VisualProperties.XAxisMaximumFixedValue;
+      else max = maxValue + intervalWidth;
 
       double axisInterval = intervalWidth / row.VisualProperties.ScaleFactor;
 
@@ -549,7 +552,7 @@ namespace HeuristicLab.Analysis.Views {
       series.SetCustomProperty("PointWidth", "1"); // 0.8 is the default value
 
       // get the range or intervals which define the grouping of the frequency values
-      var doubleRange = DoubleRange(min, maxValue + intervalWidth, intervalWidth).Skip(1).ToList();
+      var doubleRange = DoubleRange(min, max, intervalWidth).Skip(1).ToList();
 
       // aggregate the row values by unique key and frequency value
       var valueFrequencies = (from v in row.Values
