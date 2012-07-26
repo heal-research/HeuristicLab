@@ -229,6 +229,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     private void InitializeOperators() {
+      Operators.Add(new TSPImprovementOperator());
+      Operators.Add(new TSPMultipleGuidesPathRelinker());
+      Operators.Add(new TSPPathRelinker());
+      Operators.Add(new TSPSimultaneousPathRelinker());
+      Operators.Add(new TSPSimilarityCalculator());
+
       Operators.Add(new BestTSPSolutionAnalyzer());
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
       Operators.Add(new TSPPopulationDiversityAnalyzer());
@@ -349,6 +355,18 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       foreach (IPermutationMultiNeighborhoodShakingOperator op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>()) {
         op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
         op.PermutationParameter.Hidden = true;
+      }
+      foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
+        op.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.SolutionParameter.Hidden = true;
+      }
+      foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
+        op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+        op.ParentsParameter.Hidden = true;
+      }
+      foreach (TSPSimilarityCalculator op in Operators.OfType<TSPSimilarityCalculator>()) {
+        op.SolutionVariableName = SolutionCreator.PermutationParameter.ActualName;
+        op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }
 

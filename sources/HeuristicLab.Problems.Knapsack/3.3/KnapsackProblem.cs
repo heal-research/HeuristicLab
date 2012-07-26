@@ -243,6 +243,11 @@ namespace HeuristicLab.Problems.Knapsack {
       BestKnapsackSolutionAnalyzer.ValuesParameter.Hidden = true;
     }
     private void InitializeOperators() {
+      Operators.Add(new KnapsackImprovementOperator());
+      Operators.Add(new KnapsackPathRelinker());
+      Operators.Add(new KnapsackSimultaneousPathRelinker());
+      Operators.Add(new KnapsackSimilarityCalculator());
+
       Operators.Add(new BestKnapsackSolutionAnalyzer());
       ParameterizeAnalyzer();
       foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
@@ -285,9 +290,21 @@ namespace HeuristicLab.Problems.Knapsack {
         op.ValuesParameter.ActualName = ValuesParameter.Name;
         op.ValuesParameter.Hidden = true;
       }
-      foreach (var op in Operators.OfType<IBinaryVectorMultiNeighborhoodShakingOperator>()) {
+      foreach (IBinaryVectorMultiNeighborhoodShakingOperator op in Operators.OfType<IBinaryVectorMultiNeighborhoodShakingOperator>()) {
         op.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
         op.BinaryVectorParameter.Hidden = true;
+      }
+      foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
+        op.SolutionParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        op.SolutionParameter.Hidden = true;
+      }
+      foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
+        op.ParentsParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        op.ParentsParameter.Hidden = true;
+      }
+      foreach (KnapsackSimilarityCalculator op in Operators.OfType<KnapsackSimilarityCalculator>()) {
+        op.SolutionVariableName = SolutionCreator.BinaryVectorParameter.ActualName;
+        op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }
     #endregion

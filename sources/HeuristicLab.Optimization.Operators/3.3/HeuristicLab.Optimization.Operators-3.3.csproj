@@ -104,18 +104,22 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SingleObjectiveSolutionSimilarityCalculator.cs" />
     <Compile Include="GeneralizedExponentialDiscreteDoubleValueModifier.cs" />
     <Compile Include="MultiObjective\CrowdedComparisonSorter.cs" />
     <Compile Include="MultiObjective\CrowdingDistanceAssignment.cs" />
     <Compile Include="ParentCopyCrossover.cs" />
     <Compile Include="MultiObjective\FastNonDominatedSort.cs" />
     <Compile Include="MultiObjective\RankAndCrowdingSorter.cs" />
+    <Compile Include="SingleObjectivePathRelinker.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ProgrammableAnalyzer.cs" />
     <Compile Include="ShakingOperator.cs" />
+    <Compile Include="SolutionSimilarityCalculator.cs" />
     <Compile Include="UserDefinedCrossover.cs" />
     <Compile Include="UserDefinedEvaluator.cs" />
     <Compile Include="UserDefinedManipulator.cs" />

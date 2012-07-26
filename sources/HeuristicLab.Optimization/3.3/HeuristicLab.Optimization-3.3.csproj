@@ -113,6 +113,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\ISingleObjectivePathRelinker.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveImprovementOperator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveSolutionSimilarityCalculator.cs" />
+    <Compile Include="Interfaces\IImprovementOperator.cs" />
+    <Compile Include="Interfaces\IPathRelinker.cs" />
+    <Compile Include="Interfaces\ISimilarityBasedOperator.cs" />
+    <Compile Include="Interfaces\ISolutionSimilarityCalculator.cs" />
     <Compile Include="RunCollectionModification\RunCollectionRunRemover.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="RunCollectionModification\RunCollectionDiscretizer.cs" />

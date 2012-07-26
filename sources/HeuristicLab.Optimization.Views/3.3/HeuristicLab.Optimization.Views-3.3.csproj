@@ -141,6 +141,12 @@
     <Compile Include="ExperimentListView.Designer.cs">
       <DependentUpon>ExperimentListView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ISimilarityCalculatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ISimilarityCalculatorView.Designer.cs">
+      <DependentUpon>ISimilarityCalculatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="ProblemView.cs">
       <SubType>UserControl</SubType>

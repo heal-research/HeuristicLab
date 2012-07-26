@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,25 +21,24 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.TravelingSalesman {
+namespace HeuristicLab.Algorithms.ScatterSearch {
   /// <summary>
-  /// Plugin class for HeuristicLab.Problems.TravelingSalesman plugin
+  /// Plugin class for HeuristicLab.Algorithms.ScatterSearch plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Problems.TravelingSalesman", "3.3.7.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.TravelingSalesman-3.3.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.Algorithms.ScatterSearch", "3.3.6.$WCREV$")]
+  [PluginFile("HeuristicLab.Algorithms.ScatterSearch-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.PermutationEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
-  public class HeuristicLabProblemsTravelingSalesmanPlugin : PluginBase {
+  [PluginDependency("HeuristicLab.Random", "3.3")]
+  [PluginDependency("HeuristicLab.Selection", "3.3")]
+  public class HeuristicLabAlgorithmsScatterSearchPlugin : PluginBase {
   }
 }

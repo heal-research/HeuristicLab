@@ -256,6 +256,10 @@ namespace HeuristicLab.Problems.TestFunctions {
       BestSingleObjectiveTestFunctionSolutionAnalyzer.BoundsParameter.ActualName = BoundsParameter.Name;
     }
     private void InitializeOperators() {
+      Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
+      Operators.Add(new SingleObjectiveTestFunctionPathRelinker());
+      Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
+
       Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
       ParameterizeAnalyzers();
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
@@ -358,9 +362,22 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.MaximizationParameter.ActualName = MaximizationParameter.Name;
         op.MaximizationParameter.Hidden = true;
       }
-      foreach (var op in Operators.OfType<IRealVectorMultiNeighborhoodShakingOperator>()) {
+      foreach (IRealVectorMultiNeighborhoodShakingOperator op in Operators.OfType<IRealVectorMultiNeighborhoodShakingOperator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
+      }
+      foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
+        op.SolutionParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.SolutionParameter.Hidden = true;
+      }
+      foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
+        op.ParentsParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        op.ParentsParameter.Hidden = true;
+      }
+      foreach (SingleObjectiveTestFunctionSimilarityCalculator op in Operators.OfType<SingleObjectiveTestFunctionSimilarityCalculator>()) {
+        op.SolutionVariableName = SolutionCreator.RealVectorParameter.ActualName;
+        op.QualityVariableName = Evaluator.QualityParameter.ActualName;
+        op.Bounds = Bounds;
       }
     }
     private void UpdateStrategyVectorBounds() {

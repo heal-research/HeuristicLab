@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.Knapsack {
   [PluginDependency("HeuristicLab.Encodings.BinaryVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Optimization.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   public class HeuristicLabProblemsKnapsackPlugin : PluginBase {

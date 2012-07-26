@@ -1,40 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D767C38D-8014-46B0-9A32-03A3AECCE34A}</ProjectGuid>
+    <ProjectGuid>{5FEE5DB4-7FD9-4CBD-BEC2-3FEE17B31A94}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Problems.TravelingSalesman</RootNamespace>
-    <AssemblyName>HeuristicLab.Problems.TravelingSalesman-3.3</AssemblyName>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <RootNamespace>HeuristicLab.Algorithms.ScatterSearch</RootNamespace>
+    <AssemblyName>HeuristicLab.Algorithms.ScatterSearch-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,8 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -55,9 +30,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -72,8 +44,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -92,60 +62,39 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyzers\BestTSPSolutionAnalyzer.cs" />
-    <Compile Include="Analyzers\TSPPopulationDiversityAnalyzer.cs" />
-    <Compile Include="Analyzers\TSPAlleleFrequencyAnalyzer.cs" />
-    <Compile Include="DistanceMatrix.cs" />
-    <Compile Include="Evaluators\TSPDistanceMatrixEvaluator.cs" />
-    <Compile Include="Evaluators\TSPEuclideanPathEvaluator.cs" />
-    <Compile Include="Evaluators\TSPGeoPathEvaluator.cs" />
-    <Compile Include="Improvers\TSPImprovementOperator.cs" />
-    <Compile Include="Interfaces\ITSPDistanceMatrixEvaluator.cs" />
-    <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveEuclideanPathEvaluator.cs" />
-    <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveGeoPathEvaluator.cs" />
-    <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMovePathEvaluator.cs" />
-    <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveRoundedEuclideanPathEvaluator.cs" />
-    <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveEuclideanPathEvaluator.cs" />
-    <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveGeoPathEvaluator.cs" />
-    <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMovePathEvaluator.cs" />
-    <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveRoundedEuclideanPathEvaluator.cs" />
-    <Compile Include="PathRelinkers\TSPMultipleGuidesPathRelinker.cs" />
-    <Compile Include="PathRelinkers\TSPPathRelinker.cs" />
-    <Compile Include="PathRelinkers\TSPSimultaneousPathRelinker.cs" />
+    <Compile Include="OffspringProcessor.cs" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="SimilarityCalculators\TSPSimilarityCalculator.cs" />
-    <Compile Include="TravelingSalesmanProblem.cs" />
-    <Compile Include="PathTSPTour.cs" />
-    <Compile Include="Evaluators\TSPCoordinatesPathEvaluator.cs" />
-    <Compile Include="Evaluators\TSPEvaluator.cs" />
-    <Compile Include="Evaluators\TSPRoundedEuclideanPathEvaluator.cs" />
-    <Compile Include="Interfaces\ITSPCoordinatesPathEvaluator.cs" />
-    <Compile Include="Interfaces\ITSPEvaluator.cs" />
-    <Compile Include="Interfaces\ITSPMoveEvaluator.cs" />
-    <Compile Include="Interfaces\ITSPPathEvaluator.cs" />
-    <Compile Include="Interfaces\ITSPPathMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\TSPPathMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\TSPMoveEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <Compile Include="ReferenceSetUpdateMethod.cs" />
+    <Compile Include="PopulationRebuildMethod.cs" />
+    <Compile Include="ScatterSearch.cs" />
+    <Compile Include="ScatterSearchMainLoop.cs" />
+    <Compile Include="SolutionPoolUpdateMethod.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
@@ -156,11 +105,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
-      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
-      <Name>HeuristicLab.Common.Resources-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
@@ -178,11 +122,6 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
-      <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
-      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
@@ -191,6 +130,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
       <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
       <Name>HeuristicLab.Optimization.Operators-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
@@ -212,42 +152,18 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
-      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
-      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
+      <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
+      <Name>HeuristicLab.Selection-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="HeuristicLab.snk" />
-    <None Include="Plugin.cs.frame" />
-    <None Include="Properties\AssemblyInfo.cs.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
@@ -257,4 +173,11 @@ set Outdir=$(Outdir)
 call PreBuildEvent.cmd
 </PreBuildEvent>
   </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>
