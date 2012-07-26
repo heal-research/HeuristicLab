@@ -151,6 +151,7 @@
     <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeSizeConstraintOperator.cs" />
     <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
     <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeManipulator.cs" />
+    <Compile Include="Manipulators\RemoveBranchManipulation.cs" />
     <Compile Include="Manipulators\ReplaceBranchManipulation.cs" />
     <Compile Include="Manipulators\FullTreeShaker.cs" />
     <Compile Include="Manipulators\MultiSymbolicExpressionTreeManipulator.cs" />
