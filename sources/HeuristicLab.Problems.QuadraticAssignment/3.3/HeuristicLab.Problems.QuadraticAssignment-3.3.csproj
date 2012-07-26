@@ -124,7 +124,10 @@
     </Compile>
     <Compile Include="Interfaces\IQAPEvaluator.cs" />
     <Compile Include="Interfaces\IQAPMoveEvaluator.cs" />
+    <Compile Include="LocalImprovement\QAPExhaustiveInsertionLocalImprovement.cs" />
+    <Compile Include="LocalImprovement\QAPStochasticScrambleLocalImprovement.cs" />
     <Compile Include="LocalImprovement\QAPExhaustiveSwap2LocalImprovement.cs" />
+    <Compile Include="LocalImprovement\QAPExhaustiveInversionLocalImprovement.cs" />
     <Compile Include="QAPAssignment.cs" />
     <Compile Include="QAPPermutationProximityCalculator.cs" />
     <Compile Include="QuadraticAssignmentProblem.cs" />

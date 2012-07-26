@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -38,35 +40,33 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       return new ExhaustiveInsertionMoveGenerator(this, cloner);
     }
 
-    public static TranslocationMove[] Apply(Permutation permutation) {
+    public static IEnumerable<TranslocationMove> Generate(Permutation permutation) {
       int length = permutation.Length;
       if (length == 1) throw new ArgumentException("ExhaustiveInsertionMoveGenerator: There cannot be an insertion move given a permutation of length 1.", "permutation");
-      TranslocationMove[] moves = null;
-      int count = 0;
+
       if (permutation.PermutationType == PermutationTypes.Absolute) {
-        moves = new TranslocationMove[length * (length - 1)];
         for (int i = 0; i < length; i++) {
           for (int j = 1; j <= length - 1; j++) {
-            moves[count++] = new TranslocationMove(i, i, (i + j) % length);
+            yield return new TranslocationMove(i, i, (i + j) % length);
           }
         }
       } else {
         if (length > 2) {
-          moves = new TranslocationMove[length * (length - 1) - 2];
           for (int i = 0; i < length; i++) {
             for (int j = 1; j <= length - 1; j++) {
               if (i == 0 && j == length - 1
                 || i == length - 1 && j == 1) continue;
-              moves[count++] = new TranslocationMove(i, i, (i + j) % length);
+              yield return new TranslocationMove(i, i, (i + j) % length);
             }
           }
         } else { // doesn't make sense, but just create a dummy move to not crash the algorithms
-          moves = new TranslocationMove[1];
-          moves[0] = new TranslocationMove(0, 0, 1);
+          yield return new TranslocationMove(0, 0, 1);
         }
       }
-      System.Diagnostics.Debug.Assert(count == moves.Length);
-      return moves;
+    }
+
+    public static TranslocationMove[] Apply(Permutation permutation) {
+      return Generate(permutation).ToArray();
     }
 
     protected override TranslocationMove[] GenerateMoves(Permutation permutation) {

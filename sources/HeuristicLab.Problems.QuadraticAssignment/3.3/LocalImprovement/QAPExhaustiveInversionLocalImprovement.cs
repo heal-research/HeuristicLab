@@ -31,9 +31,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
-  [Item("QAPExhaustiveSwap2LocalImprovement", "Takes a solution and finds the local optimum with respect to the swap2 neighborhood by decending along the steepest gradient.")]
+  [Item("QAPExhaustiveInversionLocalImprovement", "Takes a solution and finds the local optimum with respect to the inversion neighborhood by decending along the steepest gradient.")]
   [StorableClass]
-  public class QAPExhaustiveSwap2LocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator {
+  public class QAPExhaustiveInversionLocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator {
 
     public Type ProblemType {
       get { return typeof(QuadraticAssignmentProblem); }
@@ -83,12 +83,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     [StorableConstructor]
-    protected QAPExhaustiveSwap2LocalImprovement(bool deserializing) : base(deserializing) { }
-    protected QAPExhaustiveSwap2LocalImprovement(QAPExhaustiveSwap2LocalImprovement original, Cloner cloner)
+    protected QAPExhaustiveInversionLocalImprovement(bool deserializing) : base(deserializing) { }
+    protected QAPExhaustiveInversionLocalImprovement(QAPExhaustiveInversionLocalImprovement original, Cloner cloner)
       : base(original, cloner) {
       this.problem = cloner.Clone(original.problem);
     }
-    public QAPExhaustiveSwap2LocalImprovement()
+    public QAPExhaustiveInversionLocalImprovement()
       : base() {
       Parameters.Add(new LookupParameter<IntValue>("LocalIterations", "The number of iterations that have already been performed."));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum amount of iterations that should be performed (note that this operator will abort earlier when a local optimum is reached).", new IntValue(10000)));
@@ -102,37 +102,26 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new QAPExhaustiveSwap2LocalImprovement(this, cloner);
+      return new QAPExhaustiveInversionLocalImprovement(this, cloner);
     }
-
-    // BackwardsCompatibility3.3
-    #region Backwards compatible code, remove with 3.4
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      if (!Parameters.ContainsKey("LocalIterations"))
-        Parameters.Add(new LookupParameter<IntValue>("LocalIterations", "The number of iterations that have already been performed."));
-    }
-    #endregion
 
     public static void Improve(Permutation assignment, DoubleMatrix weights, DoubleMatrix distances, DoubleValue quality, IntValue localIterations, IntValue evaluatedSolutions, bool maximization, int maxIterations, CancellationToken cancellation) {
-      double evalSolPerMove = 4.0 / assignment.Length;
-
       for (int i = localIterations.Value; i < maxIterations; i++) {
-        Swap2Move bestMove = null;
+        InversionMove bestMove = null;
         double bestQuality = 0; // we have to make an improvement, so 0 is the baseline
         double evaluations = 0.0;
-        foreach (Swap2Move move in ExhaustiveSwap2MoveGenerator.Generate(assignment)) {
-          double moveQuality = QAPSwap2MoveEvaluator.Apply(assignment, move, weights, distances);
-          evaluations += evalSolPerMove;
+        foreach (var move in ExhaustiveInversionMoveGenerator.Generate(assignment)) {
+          double moveQuality = QAPInversionMoveEvaluator.Apply(assignment, move, weights, distances);
+          evaluations += 2 * (move.Index2 - move.Index1 + 1) / (double)assignment.Length;
           if (maximization && moveQuality > bestQuality
             || !maximization && moveQuality < bestQuality) {
             bestQuality = moveQuality;
             bestMove = move;
           }
         }
-        evaluatedSolutions.Value += (int)Math.Ceiling(evaluations);
+        evaluatedSolutions.Value = (int)Math.Ceiling(evaluations);
         if (bestMove == null) break;
-        Swap2Manipulator.Apply(assignment, bestMove.Index1, bestMove.Index2);
+        InversionManipulator.Apply(assignment, bestMove.Index1, bestMove.Index2);
         quality.Value += bestQuality;
         localIterations.Value++;
         cancellation.ThrowIfCancellationRequested();
@@ -146,14 +135,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       var weights = WeightsParameter.ActualValue;
       var distances = DistancesParameter.ActualValue;
       var quality = QualityParameter.ActualValue;
-      var localIterations = LocalIterationsParameter.ActualValue;
+      var locationIterations = LocalIterationsParameter.ActualValue;
       var evaluations = EvaluatedSolutionsParameter.ActualValue;
-      if (localIterations == null) {
-        localIterations = new IntValue(0);
-        LocalIterationsParameter.ActualValue = localIterations;
+      if (locationIterations == null) {
+        locationIterations = new IntValue(0);
+        LocalIterationsParameter.ActualValue = locationIterations;
       }
 
-      Improve(assignment, weights, distances, quality, localIterations, evaluations, maximization, maxIterations, CancellationToken);
+      Improve(assignment, weights, distances, quality, locationIterations, evaluations, maximization, maxIterations, CancellationToken);
       return base.Apply();
     }
   }

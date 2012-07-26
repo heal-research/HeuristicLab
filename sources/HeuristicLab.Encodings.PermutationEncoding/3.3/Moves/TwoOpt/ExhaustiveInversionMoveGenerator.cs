@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -39,34 +41,32 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     public static InversionMove[] Apply(Permutation permutation) {
+      return Generate(permutation).ToArray();
+    }
+
+    public static IEnumerable<InversionMove> Generate(Permutation permutation) {
       int length = permutation.Length;
       if (length == 1) throw new ArgumentException("ExhaustiveInversionMoveGenerator: There cannot be an inversion move given a permutation of length 1.", "permutation");
       int totalMoves = (length) * (length - 1) / 2;
-      InversionMove[] moves = null;
-      int count = 0;
 
       if (permutation.PermutationType == PermutationTypes.RelativeUndirected) {
         if (totalMoves - 3 > 0) {
-          moves = new InversionMove[totalMoves - 3];
           for (int i = 0; i < length - 1; i++) {
             for (int j = i + 1; j < length; j++) {
               // doesn't make sense to inverse the whole permutation or the whole but one in case of relative undirected permutations
               if (j - i >= length - 2) continue;
-              moves[count++] = new InversionMove(i, j);
+              yield return new InversionMove(i, j);
             }
           }
         } else { // when length is 3 or less, there's actually no difference, but for the sake of not crashing the algorithm create a dummy move
-          moves = new InversionMove[1];
-          moves[0] = new InversionMove(0, 1);
+          yield return new InversionMove(0, 1);
         }
       } else {
-        moves = new InversionMove[totalMoves];
         for (int i = 0; i < length - 1; i++)
           for (int j = i + 1; j < length; j++) {
-            moves[count++] = new InversionMove(i, j);
+            yield return new InversionMove(i, j);
           }
       }
-      return moves;
     }
 
     protected override InversionMove[] GenerateMoves(Permutation permutation) {
