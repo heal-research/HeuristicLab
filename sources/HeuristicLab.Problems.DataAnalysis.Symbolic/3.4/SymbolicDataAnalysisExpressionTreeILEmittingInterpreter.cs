@@ -805,11 +805,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private byte MapSymbolToOpCode(ISymbolicExpressionTreeNode treeNode) {
-      if (symbolToOpcode.ContainsKey(treeNode.Symbol.GetType()))
-        return symbolToOpcode[treeNode.Symbol.GetType()];
-      else
+      byte opCode;
+      if (!symbolToOpcode.TryGetValue(treeNode.Symbol.GetType(), out opCode))
         throw new NotSupportedException("Symbol: " + treeNode.Symbol);
+      return opCode;
     }
+
 
     public static double AiryA(double x) {
       if (double.IsNaN(x)) return double.NaN;
