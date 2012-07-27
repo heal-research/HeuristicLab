@@ -26,7 +26,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
-using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -38,6 +37,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
   [StorableClass]
   public sealed class ReferenceSetUpdateMethod : SingleSuccessorOperator, ISimilarityBasedOperator {
     #region ISimilarityBasedOperator Members
+    [Storable]
     public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
     #endregion
 
@@ -61,7 +61,10 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
     [StorableConstructor]
     private ReferenceSetUpdateMethod(bool deserializing) : base(deserializing) { }
-    private ReferenceSetUpdateMethod(ReferenceSetUpdateMethod original, Cloner cloner) : base(original, cloner) { }
+    private ReferenceSetUpdateMethod(ReferenceSetUpdateMethod original, Cloner cloner)
+      : base(original, cloner) {
+      this.SimilarityCalculator = cloner.Clone(original.SimilarityCalculator);
+    }
     public ReferenceSetUpdateMethod()
       : base() {
       #region Create parameters
