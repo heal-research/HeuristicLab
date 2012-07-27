@@ -58,6 +58,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<ISymbolicExpressionTree>(ParentsParameterName, "The parent symbolic expression trees which should be crossed."));
       Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(ChildParameterName, "The child symbolic expression tree resulting from the crossover."));
+      ParentsParameter.ActualName = "SymbolicExpressionTree";
+      ChildParameter.ActualName = "SymbolicExpressionTree";
     }
 
     public sealed override IOperation Apply() {
