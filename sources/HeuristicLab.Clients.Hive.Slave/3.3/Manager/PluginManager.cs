@@ -26,15 +26,15 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using HeuristicLab.Clients.Hive.SlaveCore.Properties;
 using HeuristicLab.Core;
+using CoreProperties = HeuristicLab.Clients.Hive.SlaveCore.Properties;
 
 namespace HeuristicLab.Clients.Hive.SlaveCore {
   public class PluginManager {
     private static object locker = new object();
-    private string lastUsedFileName = Settings.Default.LastUsedFileName;
+    private string lastUsedFileName = CoreProperties.Settings.Default.LastUsedFileName;
     //maximum number of days after which a plugin gets deleted if not used
-    private int pluginLifetime = Settings.Default.PluginLifetime;
+    private int pluginLifetime = CoreProperties.Settings.Default.PluginLifetime;
 
     private string PluginCacheDir { get; set; }
     public string PluginTempBaseDir { get; set; }
@@ -45,9 +45,28 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public PluginManager(IPluginProvider pluginService, ILog log) {
       this.pluginService = pluginService;
       this.log = log;
-      PluginCacheDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Settings.Default.PluginCacheDir);
-      PluginTempBaseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Settings.Default.PluginTempBaseDir);
+      CheckWorkingDirectories();
+      PluginCacheDir = CoreProperties.Settings.Default.PluginCacheDir;
+      PluginTempBaseDir = CoreProperties.Settings.Default.PluginTempBaseDir;
       DoUpdateRun();
+    }
+
+    /// <summary>
+    /// Normally the configuration file just contains the folder names of the PluginCache and the AppDomain working directory. 
+    /// This means that these folders are created in the current directory which is ok for the console client and the windows service. 
+    /// For the HL client we can't do that because the plugin infrastructure gets confused when starting HeuristicLab. 
+    /// Therefore if there is only a relative path in the config, we change that to the temp path. 
+    /// </summary>
+    private void CheckWorkingDirectories() {
+      if (!Path.IsPathRooted(CoreProperties.Settings.Default.PluginCacheDir)) {
+        CoreProperties.Settings.Default.PluginCacheDir = Path.Combine(Path.GetTempPath(), CoreProperties.Settings.Default.PluginCacheDir);
+        CoreProperties.Settings.Default.Save();
+      }
+
+      if (!Path.IsPathRooted(CoreProperties.Settings.Default.PluginTempBaseDir)) {
+        CoreProperties.Settings.Default.PluginTempBaseDir = Path.Combine(Path.GetTempPath(), CoreProperties.Settings.Default.PluginTempBaseDir);
+        CoreProperties.Settings.Default.Save();
+      }
     }
 
     /// <summary>
@@ -84,7 +103,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
           File.Copy(filePath, Path.Combine(targetDir, Path.GetFileName(filePath)));
         }
 
-        if (requestedPlugin.Name == Settings.Default.ConfigurationName) {
+        if (requestedPlugin.Name == CoreProperties.Settings.Default.ConfigurationName) {
           // configuration plugin consists only of 1 file (usually the "HeuristicLab X.X.exe.config")
           configFileName = Path.Combine(targetDir, Path.GetFileName(filePaths.SingleOrDefault()));
         }
@@ -92,15 +111,15 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
       // copy files from PluginInfrastructure (which are not declared in any plugins)
       string baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-      CopyFile(baseDir, targetDir, Settings.Default.PluginInfrastructureDll);
-      CopyFile(baseDir, targetDir, Settings.Default.SharpZipLibDll);
-      CopyFile(baseDir, targetDir, Settings.Default.SharpZipLibLicense);
+      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.PluginInfrastructureDll);
+      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.SharpZipLibDll);
+      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.SharpZipLibLicense);
 
       // copy slave plugins, otherwise its not possible to register the UnhandledException handler to the appdomain        
-      CopyFile(baseDir, targetDir, Settings.Default.ClientsHiveSlaveCoreDll);
-      CopyFile(baseDir, targetDir, Settings.Default.ClientsHiveDll);
-      CopyFile(baseDir, targetDir, Settings.Default.HiveDll);
-      CopyFile(baseDir, targetDir, Settings.Default.ClientsCommonDll);
+      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsHiveSlaveCoreDll);
+      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsHiveDll);
+      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.HiveDll);
+      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsCommonDll);
     }
 
     private static DirectoryInfo RecreateDirectory(String targetDir) {
@@ -108,7 +127,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       if (di.Exists) Directory.Delete(targetDir, true);
       di.Refresh();
       while (di.Exists) {
-        Thread.Sleep(Settings.Default.DirOpSleepTime);
+        Thread.Sleep(CoreProperties.Settings.Default.DirOpSleepTime);
         di.Refresh();
       }
       return SafelyCreateDirectory(targetDir);
@@ -119,7 +138,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       if (!di.Exists) {
         di = Directory.CreateDirectory(targetDir);
         while (!di.Exists) {
-          Thread.Sleep(Settings.Default.DirOpSleepTime);
+          Thread.Sleep(CoreProperties.Settings.Default.DirOpSleepTime);
           di.Refresh();
         }
       }
@@ -278,7 +297,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public void DeletePluginsForJob(Guid id) {
       try {
         log.LogMessage("Deleting plugins...");
-        int tries = Settings.Default.PluginDeletionRetries;
+        int tries = CoreProperties.Settings.Default.PluginDeletionRetries;
         string path = Path.Combine(PluginTempBaseDir, id.ToString());
         while (tries > 0) {
           try {
@@ -286,7 +305,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
             tries = 0;
           }
           catch (Exception) {
-            Thread.Sleep(Settings.Default.PluginDeletionTimeout);
+            Thread.Sleep(CoreProperties.Settings.Default.PluginDeletionTimeout);
             tries--;
             if (tries == 0) throw;
           }
