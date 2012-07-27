@@ -504,6 +504,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           IOptimizer newOptimizer = null;
           if (e.Effect.HasFlag(DragDropEffects.Copy)) {
             newOptimizer = (IOptimizer)optimizer.Clone();
+            newOptimizer.Runs.Clear();
           } else {
             newOptimizer = optimizer;
           }
