@@ -22,6 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinSequenceBasedCrossover", "The SBX crossover for a VRP representations.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -41,13 +42,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
-      bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
-
+    public static PotvinEncoding Apply(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2, IVRPProblemInstance problemInstance, bool allowInfeasible) {
       PotvinEncoding child = parent1.Clone() as PotvinEncoding;
       Tour newTour = new Tour();
 
-      int cities = ProblemInstance.Cities.Value;
+      int cities = problemInstance.Cities.Value;
 
       if (cities > 0) {
         int breakPoint1 = random.Next(1, cities + 1);
@@ -76,7 +75,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           if (FindRoute(child, city) == null && !child.Unrouted.Contains(city))
             child.Unrouted.Add(city);
 
-        if (Repair(random, child, newTour, ProblemInstance, allowInfeasible) || allowInfeasible) {
+        if (Repair(random, child, newTour, problemInstance, allowInfeasible) || allowInfeasible) {
           return child;
         } else {
           if (random.NextDouble() < 0.5)
@@ -87,6 +86,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       } else {
         return child;
       }
+    }
+
+    protected override PotvinEncoding Crossover(IRandom random, PotvinEncoding parent1, PotvinEncoding parent2) {
+      return Apply(random, parent1, parent2, ProblemInstance, AllowInfeasibleSolutions.Value.Value);
     }
   }
 }

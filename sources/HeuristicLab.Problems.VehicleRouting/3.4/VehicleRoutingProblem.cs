@@ -177,20 +177,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void AttachProblemInstanceEventHandlers() {
-      var solutionCreatorParameter = SolutionCreatorParameter as ConstrainedValueParameter<IVRPCreator>;
-      solutionCreatorParameter.ValidValues.Clear();
-
       if (ProblemInstance != null) {
         EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
-        IVRPCreator defaultCreator = null;
-        foreach (IVRPCreator creator in Operators.Where(o => o is IVRPCreator)) {
-          solutionCreatorParameter.ValidValues.Add(creator);
-          if (creator is Encodings.Alba.RandomCreator)
-            defaultCreator = creator;
-        }
-        if (defaultCreator != null)
-          solutionCreatorParameter.Value = defaultCreator;
-
         ProblemInstance.EvaluationChanged += new EventHandler(ProblemInstance_EvaluationChanged);
       }
     }
@@ -245,12 +233,25 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private void InitializeOperators() {
+      var solutionCreatorParameter = SolutionCreatorParameter as ConstrainedValueParameter<IVRPCreator>;
+      solutionCreatorParameter.ValidValues.Clear();
+
       Operators.Clear();
 
       if (ProblemInstance != null) {
         Operators.AddRange(
         ProblemInstance.Operators.Concat(
           ApplicationManager.Manager.GetInstances<IGeneralVRPOperator>().Cast<IOperator>()).OrderBy(op => op.Name));
+        Operators.Add(new VRPSimilarityCalculator());
+
+        IVRPCreator defaultCreator = null;
+        foreach (IVRPCreator creator in Operators.Where(o => o is IVRPCreator)) {
+          solutionCreatorParameter.ValidValues.Add(creator);
+          if (creator is Encodings.Alba.RandomCreator)
+            defaultCreator = creator;
+        }
+        if (defaultCreator != null)
+          solutionCreatorParameter.Value = defaultCreator;
       }
 
       ParameterizeOperators();
@@ -262,7 +263,23 @@ namespace HeuristicLab.Problems.VehicleRouting {
           (op as IMultiVRPOperator).SetOperators(Operators.OfType<IOperator>());
         }
       }
+      if (ProblemInstance != null) {
+        foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
+          op.SolutionParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+          op.SolutionParameter.Hidden = true;
+        }
+        foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
+          op.ParentsParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
+          op.ParentsParameter.Hidden = true;
+        }
+        foreach (VRPSimilarityCalculator op in Operators.OfType<VRPSimilarityCalculator>()) {
+          op.SolutionVariableName = SolutionCreator.VRPToursParameter.ActualName;
+          op.QualityVariableName = ProblemInstance.SolutionEvaluator.QualityParameter.ActualName;
+          op.ProblemInstance = ProblemInstance;
+        }
+      }
     }
+
     #endregion
 
     private void InitializeRandomVRPInstance() {

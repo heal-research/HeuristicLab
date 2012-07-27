@@ -138,12 +138,14 @@
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveTabuMaker.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMultiMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarSingleMoveGenerator.cs" />
+    <Compile Include="Improver\VRPImprovementOperator.cs" />
     <Compile Include="Interfaces\IVRPLocalSearchManipulator.cs" />
     <Compile Include="Interpreters\MDCVRPTWInterpreter.cs" />
     <Compile Include="Interpreters\PDPTWInterpreter.cs" />
     <Compile Include="Interpreters\CVRPTWInterpreter.cs" />
     <Compile Include="Interpreters\CVRPInterpreter.cs" />
     <Compile Include="Interpreters\IVRPDataInterpreter.cs" />
+    <Compile Include="PathRelinkers\VRPPathRelinker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Encodings\Alba\AlbaEncoding.cs" />
     <Compile Include="Encodings\Alba\Creators\RandomCreator.cs" />
@@ -335,6 +337,7 @@
     <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPPDTW\CVRPPDTWEvaluation.cs" />
     <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPPDTW\CVRPPDTWEvaluator.cs" />
     <Compile Include="ProblemInstances\SingleDepotVRP\SingleDepotVRPEvaluator.cs" />
+    <Compile Include="SimilarityCalculators\VRPSimilarityCalculator.cs" />
     <Compile Include="SolutionParser.cs" />
     <Compile Include="Variants\Capacitated\Heterogenous\IHeterogenousCapacitatedProblemInstance.cs" />
     <Compile Include="Variants\Capacitated\Heterogenous\IHeterogenousCapacitatedOperator.cs" />

@@ -315,10 +315,8 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
     #region Helpers
     private void Initialize() {
-      if (Problem != null) {
+      if (Problem != null)
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      }
-      ParameterizeMainLoop();
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();

@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         out route, out place);
     }
 
-    protected Tour FindRoute(PotvinEncoding solution, int city) {
+    protected static Tour FindRoute(PotvinEncoding solution, int city) {
       Tour found = null;
 
       foreach (Tour tour in solution.Tours) {
