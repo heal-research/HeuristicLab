@@ -254,7 +254,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       base.Problem_EvaluatorChanged(sender, e);
     }
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
-      foreach (IOperator op in Problem.Operators) ParameterizeStochasticOperator(op);
+      foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeIterationBasedOperators();
       UpdateCrossovers();
       UpdateMutators();
