@@ -274,11 +274,10 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       ParameterizeBestSelector();
       UpdateAnalyzers();
       UpdateCrossovers();
+      UpdateImprovers();
       UpdatePathRelinkers();
       UpdateSimilarityCalculators();
-      UpdateImprovers();
       ParameterizeMainLoop();
-      UpdateSimilarityCalculators();
       Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       base.OnProblemChanged();
     }
