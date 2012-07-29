@@ -31,7 +31,6 @@ namespace HeuristicLab.Netron.CustomTools {
     private Point previousMouseLocation = Point.Empty;
 
     public CustomPanTool() : base(ToolName) { }
-
     public CustomPanTool(string toolName) : base(toolName) { }
 
     protected override void OnActivateTool() {
@@ -51,14 +50,10 @@ namespace HeuristicLab.Netron.CustomTools {
       if (!IsSuspended && IsActive) {
         IDiagramControl control = Controller.ParentControl;
         Point origin = Controller.View.Origin;
-
         Point offset = new Point(previousMouseLocation.X - currentLocation.X, previousMouseLocation.Y - currentLocation.Y);
-
         origin.Offset(offset);
 
         if (origin.X < 0) origin.X = 0;
-
-
         if (origin.Y < 0) origin.Y = 0;
 
         control.AutoScrollPosition = origin;
@@ -67,23 +62,16 @@ namespace HeuristicLab.Netron.CustomTools {
       }
     }
 
-    public void MouseUp(MouseEventArgs e) {
-      //if (IsActive && !IsSuspended) this.previousMouseLocation = Point.Empty;
-    }
+    public void MouseUp(MouseEventArgs e) { }
     #endregion
 
     #region IKeyboardListener Members
     public void KeyDown(KeyEventArgs e) {
       if (e.KeyCode == Keys.Escape)
         DeactivateTool();
-      else if (e.KeyCode == Keys.Space)
-        ActivateTool();
     }
 
-    public void KeyUp(KeyEventArgs e) {
-      if (e.KeyCode == Keys.Space)
-        DeactivateTool();
-    }
+    public void KeyUp(KeyEventArgs e) { }
 
     public void KeyPress(KeyPressEventArgs e) { }
     #endregion
