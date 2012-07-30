@@ -52,7 +52,7 @@ namespace HeuristicLab.Operators {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("Accumulate"))
-        Parameters.Add(new ValueParameter<BoolValue>("Accumulate", ".", new BoolValue(true)));
+        Parameters.Add(new ValueParameter<BoolValue>("Accumulate", "True if the number of direct sub-scopes should be accumulated, false if the number should be assigned.", new BoolValue(true)));
       #endregion
     }
 
