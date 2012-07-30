@@ -44,7 +44,7 @@ namespace HeuristicLab.Operators {
     }
     public SubScopesCounter() {
       Parameters.Add(new LookupParameter<IntValue>("Value", "The value that should be incremented by the number of direct sub-scopes. It will be created in the current scope if the value is not found."));
-      Parameters.Add(new ValueParameter<BoolValue>("Accumulate", ".", new BoolValue(true)));
+      Parameters.Add(new ValueParameter<BoolValue>("Accumulate", "True if the number of direct sub-scopes should be accumulated, false if the number should be assigned.", new BoolValue(true)));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
