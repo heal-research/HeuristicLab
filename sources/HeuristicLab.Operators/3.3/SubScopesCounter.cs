@@ -33,6 +33,9 @@ namespace HeuristicLab.Operators {
     public ILookupParameter<IntValue> ValueParameter {
       get { return (ILookupParameter<IntValue>)Parameters["Value"]; }
     }
+    public IValueParameter<BoolValue> AccumulateParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["Accumulate"]; }
+    }
 
     [StorableConstructor]
     protected SubScopesCounter(bool deserializing) : base(deserializing) { }
@@ -41,6 +44,13 @@ namespace HeuristicLab.Operators {
     }
     public SubScopesCounter() {
       Parameters.Add(new LookupParameter<IntValue>("Value", "The value that should be incremented by the number of direct sub-scopes. It will be created in the current scope if the value is not found."));
+      Parameters.Add(new ValueParameter<BoolValue>("Accumulate", ".", new BoolValue(true)));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("Accumulate"))
+        Parameters.Add(new ValueParameter<BoolValue>("Accumulate", ".", new BoolValue(true)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -48,9 +58,10 @@ namespace HeuristicLab.Operators {
     }
 
     public override IOperation Apply() {
-      int increment = ExecutionContext.Scope.SubScopes.Count;
+      int count = ExecutionContext.Scope.SubScopes.Count;
       if (ValueParameter.ActualValue == null) ValueParameter.ActualValue = new IntValue();
-      ValueParameter.ActualValue.Value += increment;
+      if (AccumulateParameter.Value.Value) ValueParameter.ActualValue.Value += count;
+      else ValueParameter.ActualValue.Value = count;
       return base.Apply();
     }
   }
