@@ -49,8 +49,11 @@ namespace HeuristicLab.Operators {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("Accumulate"))
         Parameters.Add(new ValueParameter<BoolValue>("Accumulate", ".", new BoolValue(true)));
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
