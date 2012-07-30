@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     /// <summary>
-    /// Calculates midranks. Source: Numerical Recipes in C.
+    /// Calculates midranks. Source: Numerical Recipes in C. p 642
     /// </summary>
     /// <param name="w">Sorted array of elements, replaces the elements by their rank, including midranking of ties</param>
     /// <returns></returns>
@@ -116,15 +116,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
           i++;
         } else {
           int j;
-          for (j = i + 1; j < n && w[j] <= w[i]; j++) ; // how far does it go (<= effectively means == as w must be sorted)
-          double rank = 0.5 * (i + j - 1);
+          for (j = i + 1; j < n && w[j] <= w[i]; j++) ; // how far does it go (<= effectively means == as w must be sorted, side-step equality for double values)
+          double rank = 1 + 0.5 * (i + j - 1);
           int k;
-          for (k = i; k < j - 1; k++) w[k] = rank; // set the rank for all tied entries
+          for (k = i; k < j; k++) w[k] = rank; // set the rank for all tied entries
           i = j;
         }
       }
 
-      if (i == n - 1) w[n - 1] = n - 1;   // if the last element was not tied, this is its rank
+      if (i == n - 1) w[n - 1] = n;   // if the last element was not tied, this is its rank
     }
   }
 }
