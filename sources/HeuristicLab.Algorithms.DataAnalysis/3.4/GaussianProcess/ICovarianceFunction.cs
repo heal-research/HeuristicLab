@@ -2,7 +2,7 @@
 
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface ICovarianceFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] hyp, double[,] x);

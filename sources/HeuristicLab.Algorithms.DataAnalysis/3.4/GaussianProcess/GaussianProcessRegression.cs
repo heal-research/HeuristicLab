@@ -20,12 +20,14 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -33,19 +35,27 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   ///Gaussian process regression data analysis algorithm.
   /// </summary>
   [Item("Gaussian Process Regression", "Gaussian process regression data analysis algorithm.")]
   [Creatable("Data Analysis")]
   [StorableClass]
-  public sealed class GaussianProcessRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
+  public sealed class GaussianProcessRegression : EngineAlgorithm, IStorableContent {
+    public string Filename { get; set; }
+
+    public override Type ProblemType { get { return typeof(IRegressionProblem); } }
+    public new IRegressionProblem Problem {
+      get { return (IRegressionProblem)base.Problem; }
+      set { base.Problem = value; }
+    }
+
     private const string MeanFunctionParameterName = "MeanFunction";
     private const string CovarianceFunctionParameterName = "CovarianceFunction";
-    private const string MinimizationIterationsParameterName = "MinimizationIterations";
-    private const string NegativeLogLikelihoodTableParameterName = "NegativeLogLikelihoodTable";
-    private const string HyperParametersTableParameterName = "HyperParametersTable";
+    private const string MinimizationIterationsParameterName = "Iterations";
+    //private const string NegativeLogLikelihoodTableParameterName = "NegativeLogLikelihoodTable";
+    //private const string HyperParametersTableParameterName = "HyperParametersTable";
 
     #region parameter properties
     public IConstrainedValueParameter<IMeanFunction> MeanFunctionParameter {
@@ -94,9 +104,46 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
         new ItemSet<IMeanFunction>(meanFunctions), meanFunctions.First()));
       Parameters.Add(new ConstrainedValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.",
         new ItemSet<ICovarianceFunction>(covFunctions), covFunctions.First()));
-      Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization.", new IntValue(20)));
+      Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with BFGS.", new IntValue(20)));
       //Parameters.Add(new LookupParameter<DataTable>(NegativeLogLikelihoodTableParameterName, "The negative log likelihood values over the whole run."));
       //Parameters.Add(new LookupParameter<DataTable>(HyperParametersTableParameterName, "The values of the hyper-parameters over the whole run."));
+
+      var setParameterLength = new GaussianProcessSetHyperparameterLength();
+      var initializer = new BFGSInitializer();
+      var makeStep = new BFGSMakeStep();
+      var branch = new ConditionalBranch();
+      var modelCreator = new GaussianProcessRegressionModelCreator();
+      var updateResults = new BFGSUpdateResults();
+
+      OperatorGraph.InitialOperator = setParameterLength;
+
+      setParameterLength.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
+      setParameterLength.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
+      setParameterLength.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
+      setParameterLength.Successor = initializer;
+
+      initializer.IterationsParameter.ActualName = MinimizationIterationsParameterName;
+      initializer.NumberOfHyperparameterParameter.ActualName = setParameterLength.NumberOfHyperparameterParameter.Name;
+      initializer.Successor = makeStep;
+
+      makeStep.BFGSStateParameter.ActualName = initializer.BFGSStateParameter.Name;
+      makeStep.HyperparameterParameter.ActualName = initializer.NumberOfHyperparameterParameter.Name;
+      makeStep.Successor = branch;
+
+      branch.ConditionParameter.ActualName = makeStep.TerminationCriterionParameter.Name;
+      branch.FalseBranch = modelCreator;
+
+      modelCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
+      modelCreator.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
+      modelCreator.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
+      modelCreator.HyperparameterParameter.ActualName = initializer.HyperparameterParameter.Name;
+      modelCreator.Successor = updateResults;
+
+      updateResults.BFGSStateParameter.ActualName = initializer.BFGSStateParameter.Name;
+      updateResults.FunctionValueParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
+      updateResults.HyperparameterGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
+      updateResults.Successor = makeStep;
+
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
@@ -104,7 +151,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GaussianProcessRegression(this, cloner);
     }
-
+    /*
     #region Gaussian process regression
     protected override void Run() {
       IRegressionProblemData problemData = Problem.ProblemData;
@@ -214,5 +261,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
     }
 
     #endregion
+     */
   }
 }

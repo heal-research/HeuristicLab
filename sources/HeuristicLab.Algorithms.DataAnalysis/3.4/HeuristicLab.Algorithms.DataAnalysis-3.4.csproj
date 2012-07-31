@@ -121,7 +121,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="GaussianProcess\BFGSInitializer.cs" />
+    <Compile Include="GaussianProcess\BFGSState.cs" />
+    <Compile Include="GaussianProcess\BFGSUpdateResults.cs" />
+    <Compile Include="GaussianProcess\BFGSMakeStep.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessSetHyperparameterLength.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessRegressionModelCreator.cs" />
     <Compile Include="GaussianProcess\CovarianceLinear.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessModelCreator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GaussianProcess\MeanLinear.cs" />
     <Compile Include="GaussianProcess\Util.cs" />
     <Compile Include="GaussianProcess\MeanZero.cs" />
@@ -235,6 +244,14 @@
       <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>

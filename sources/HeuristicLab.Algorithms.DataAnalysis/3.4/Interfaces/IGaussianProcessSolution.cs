@@ -21,7 +21,7 @@
 
 using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a Gaussian process solution (either regression or classification)
   /// </summary>

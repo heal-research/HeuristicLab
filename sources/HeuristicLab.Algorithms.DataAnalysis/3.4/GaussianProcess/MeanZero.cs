@@ -5,7 +5,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "MeanZero", Description = "Constant zero mean function for Gaussian processes.")]
   public class MeanZero : Item, IMeanFunction {

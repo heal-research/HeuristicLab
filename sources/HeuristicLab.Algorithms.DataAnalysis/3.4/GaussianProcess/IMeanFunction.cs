@@ -1,7 +1,7 @@
 ﻿
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface IMeanFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] hyp, double[,] x);

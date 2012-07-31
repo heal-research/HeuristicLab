@@ -24,10 +24,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.DataAnalysis;
-using HeuristicLab.Algorithms.DataAnalysis.GaussianProcess;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.SequentialEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab_33.Tests {
@@ -58,12 +58,17 @@ namespace HeuristicLab_33.Tests {
       ex = null;
 
       var cv = new CrossValidation();
-      cv.Algorithm = new GaussianProcessRegression();
+      var alg = new GaussianProcessRegression();
+      alg.Engine = new SequentialEngine();
+      cv.Algorithm = alg;
+
+      cv.Problem = new RegressionProblem();
       var rand = new HeuristicLab.Random.MersenneTwister();
       double[,] data = GenerateData(100, rand);
       List<string> variables = new List<string>() { "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "y" };
       Dataset ds = new Dataset(variables, data);
       cv.Problem.ProblemDataParameter.ActualValue = new RegressionProblemData(ds, variables.Take(10), variables.Last());
+      cv.Algorithm.Prepare();
       cv.Folds.Value = 5;
       cv.SamplesStart.Value = 0;
       cv.SamplesEnd.Value = 99;

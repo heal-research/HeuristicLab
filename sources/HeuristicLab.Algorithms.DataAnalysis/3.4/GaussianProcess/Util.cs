@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   public static class Util {
     public static double ScalarProd(IEnumerable<double> v, IEnumerable<double> u) {
       return v.Zip(u, (vi, ui) => vi * ui).Sum();
@@ -16,7 +16,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
     }
 
     public static double SqrDist(IEnumerable<double> x, IEnumerable<double> y) {
-      return Math.Max(x.Zip(y, (a, b) => (a - b) * (a - b)).Sum(), 0);
+      return x.Zip(y, SqrDist).Sum();
     }
 
     public static IEnumerable<double> GetRow(double[,] x, int r) {

@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a Gaussian process posterior
   /// </summary>
@@ -31,5 +31,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
     IMeanFunction MeanFunction { get; }
     ICovarianceFunction CovarianceFunction { get; }
     IEnumerable<double> Hyperparameters { get; }
+    double[] GetHyperparameterGradients();
   }
 }
