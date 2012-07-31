@@ -20,8 +20,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
     protected MeanLinear(bool deserializing) : base(deserializing) { }
     protected MeanLinear(MeanLinear original, Cloner cloner)
       : base(original, cloner) {
-      this.alpha = new double[original.alpha.Length];
-      Array.Copy(original.alpha, alpha, original.alpha.Length);
+      if (original.alpha != null) {
+        this.alpha = new double[original.alpha.Length];
+        Array.Copy(original.alpha, alpha, original.alpha.Length);
+      }
       this.n = original.n;
     }
     public MeanLinear()
