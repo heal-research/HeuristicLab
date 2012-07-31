@@ -28,11 +28,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
       this.n = x.GetLength(0);
     }
 
-    public double[] GetMean() {
+    public double[] GetMean(double[,] x) {
       return Enumerable.Repeat(0.0, n).ToArray();
     }
 
-    public double[] GetGradients(int k) {
+    public double[] GetGradients(int k, double[,] x) {
       if (k > 0) throw new ArgumentException();
       return Enumerable.Repeat(0.0, n).ToArray();
     }

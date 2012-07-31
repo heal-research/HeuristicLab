@@ -23,5 +23,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
       int cols = x.GetLength(1);
       return Enumerable.Range(0, cols).Select(c => x[r, c]);
     }
+    public static IEnumerable<double> GetCol(double[,] x, int c) {
+      int rows = x.GetLength(0);
+      return Enumerable.Range(0, rows).Select(r => x[r, c]);
+    }
   }
 }

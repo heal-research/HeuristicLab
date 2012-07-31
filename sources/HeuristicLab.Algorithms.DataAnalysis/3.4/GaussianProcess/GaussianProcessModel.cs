@@ -137,7 +137,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
       covarianceFunction.SetParameter(covHyp, x);
 
       // calculate means and covariances
-      double[] m = meanFunction.GetMean();
+      double[] m = meanFunction.GetMean(x);
       for (int i = 0; i < n; i++) {
 
         for (int j = i; j < n; j++) {
@@ -187,20 +187,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
 
       double[] meanGradients = new double[meanFunction.GetNumberOfParameters(nAllowedVariables)];
       for (int i = 0; i < meanGradients.Length; i++) {
-        var meanGrad = meanFunction.GetGradients(i);
+        var meanGrad = meanFunction.GetGradients(i, x);
         meanGradients[i] = -Util.ScalarProd(meanGrad, alpha);
       }
 
       double[] covGradients = new double[covarianceFunction.GetNumberOfParameters(nAllowedVariables)];
-      for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-          var covDeriv = covarianceFunction.GetGradient(i, j);
-          for (int k = 0; k < covGradients.Length; k++) {
-            covGradients[k] += q[i, j] * covDeriv[k];
+      if (covGradients.Length > 0) {
+        for (int i = 0; i < n; i++) {
+          for (int j = 0; j < n; j++) {
+            var covDeriv = covarianceFunction.GetGradient(i, j);
+            for (int k = 0; k < covGradients.Length; k++) {
+              covGradients[k] += q[i, j] * covDeriv[k];
+            }
           }
         }
+        covGradients = covGradients.Select(g => g / 2.0).ToArray();
       }
-      covGradients = covGradients.Select(g => g / 2.0).ToArray();
 
       return new double[] { noiseGradient }
         .Concat(meanGradients)
@@ -245,7 +247,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
 
       covarianceFunction.SetParameter(covHyp, x, newX);
       meanFunction.SetParameter(meanHyp, newX);
-      var ms = meanFunction.GetMean();
+      var ms = meanFunction.GetMean(newX);
       for (int i = 0; i < newN; i++) {
 
         for (int j = 0; j < n; j++) {

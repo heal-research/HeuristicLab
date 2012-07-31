@@ -121,6 +121,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="GaussianProcess\CovarianceLinear.cs" />
+    <Compile Include="GaussianProcess\MeanLinear.cs" />
     <Compile Include="GaussianProcess\Util.cs" />
     <Compile Include="GaussianProcess\MeanZero.cs" />
     <Compile Include="GaussianProcess\MeanConst.cs" />
