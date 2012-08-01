@@ -280,7 +280,6 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
       uniformSubScopesProcessor1.DepthParameter.Value = new IntValue(1);
       uniformSubScopesProcessor1.Operator = executePathRelinkingBranch;
-      uniformSubScopesProcessor1.ParallelParameter.Value = new BoolValue(true);
       uniformSubScopesProcessor1.Successor = solutionPoolUpdateMethod;
 
       executePathRelinkingBranch.Name = "ExecutePathRelinkingChecker";
