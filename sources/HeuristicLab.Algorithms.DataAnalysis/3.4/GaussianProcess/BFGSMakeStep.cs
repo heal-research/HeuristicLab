@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item(Name = "BFGSMakeStep", Description = "Makes a step in the BFGS optimization algorithm.")]
   public sealed class BFGSMakeStep : SingleSuccessorOperator {
     private const string TerminationCriterionParameterName = "TerminationCriterion";
-    private const string HyperparameterParameterName = "Hyperparameter";
+    private const string PointParameterName = "Point";
     private const string BFGSStateParameterName = "BFGSState";
 
     #region Parameter Properties
@@ -44,14 +44,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ILookupParameter<BoolValue> TerminationCriterionParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[TerminationCriterionParameterName]; }
     }
-    public ILookupParameter<DoubleArray> HyperparameterParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters[HyperparameterParameterName]; }
+    public ILookupParameter<DoubleArray> PointParameter {
+      get { return (ILookupParameter<DoubleArray>)Parameters[PointParameterName]; }
     }
     #endregion
 
 
     #region Properties
-    public BFGSState BFGSState { get { return BFGSStateParameter.ActualValue; } }
+    private BFGSState BFGSState { get { return BFGSStateParameter.ActualValue; } }
     #endregion
 
     [StorableConstructor]
@@ -63,7 +63,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new LookupParameter<BFGSState>(BFGSStateParameterName, "The state of the BFGS algorithm."));
       // out
       Parameters.Add(new LookupParameter<BoolValue>(TerminationCriterionParameterName, "The termination criterion indicating that the BFGS optimization algorithm should stop."));
-      Parameters.Add(new LookupParameter<DoubleArray>(HyperparameterParameterName, "The parameters of the function to optimize."));
+      Parameters.Add(new LookupParameter<DoubleArray>(PointParameterName, "The next point that should be evaluated in the BFGS algorithm."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -72,15 +72,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IOperation Apply() {
       var state = BFGSState;
-      bool stop = alglib.minlbfgs.minlbfgsiteration(state.State);
-      TerminationCriterionParameter.ActualValue = new BoolValue(stop);
-      if (!stop) {
-        HyperparameterParameter.ActualValue = new DoubleArray(state.State.x);
+      bool @continue = alglib.minlbfgs.minlbfgsiteration(state.State);
+      TerminationCriterionParameter.ActualValue = new BoolValue(!@continue);
+      if (@continue) {
+        PointParameter.ActualValue = new DoubleArray(state.State.x);
       } else {
         double[] x = new double[state.State.x.Length];
         alglib.minlbfgs.minlbfgsreport rep = new alglib.minlbfgs.minlbfgsreport();
         alglib.minlbfgs.minlbfgsresults(state.State, ref x, rep);
-        HyperparameterParameter.ActualValue = new DoubleArray(x);
+        PointParameter.ActualValue = new DoubleArray(x);
       }
       return base.Apply();
     }

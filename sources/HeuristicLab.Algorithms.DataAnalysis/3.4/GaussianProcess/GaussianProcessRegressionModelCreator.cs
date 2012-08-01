@@ -44,7 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region Properties
-    public IRegressionProblemData ProblemData {
+    private IRegressionProblemData ProblemData {
       get { return ProblemDataParameter.ActualValue; }
     }
     #endregion

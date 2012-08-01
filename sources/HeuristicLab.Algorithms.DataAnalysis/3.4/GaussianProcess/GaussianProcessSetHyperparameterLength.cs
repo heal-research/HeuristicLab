@@ -57,9 +57,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region Properties
-    public IMeanFunction MeanFunction { get { return MeanFunctionParameter.ActualValue; } }
-    public ICovarianceFunction CovarianceFunction { get { return CovarianceFunctionParameter.ActualValue; } }
-    public IDataAnalysisProblemData ProblemData { get { return ProblemDataParameter.ActualValue; } }
+    private IMeanFunction MeanFunction { get { return MeanFunctionParameter.ActualValue; } }
+    private ICovarianceFunction CovarianceFunction { get { return CovarianceFunctionParameter.ActualValue; } }
+    private IDataAnalysisProblemData ProblemData { get { return ProblemDataParameter.ActualValue; } }
     #endregion
 
     [StorableConstructor]

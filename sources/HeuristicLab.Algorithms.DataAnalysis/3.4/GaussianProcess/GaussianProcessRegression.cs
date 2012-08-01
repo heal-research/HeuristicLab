@@ -54,8 +54,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string MeanFunctionParameterName = "MeanFunction";
     private const string CovarianceFunctionParameterName = "CovarianceFunction";
     private const string MinimizationIterationsParameterName = "Iterations";
-    //private const string NegativeLogLikelihoodTableParameterName = "NegativeLogLikelihoodTable";
-    //private const string HyperParametersTableParameterName = "HyperParametersTable";
 
     #region parameter properties
     public IConstrainedValueParameter<IMeanFunction> MeanFunctionParameter {
@@ -67,12 +65,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<IntValue> MinimizationIterationsParameter {
       get { return (IValueParameter<IntValue>)Parameters[MinimizationIterationsParameterName]; }
     }
-    //public ILookupParameter<DataTable> NegativeLogLikelihoodTableParameter {
-    //  get { return (ILookupParameter<DataTable>)Parameters[NegativeLogLikelihoodTableParameterName]; }
-    //}
-    //public ILookupParameter<DataTable> HyperParametersTableParameter {
-    //  get { return (ILookupParameter<DataTable>)Parameters[HyperParametersTableParameterName]; }
-    //}
     #endregion
     #region properties
     public IMeanFunction MeanFunction {
@@ -105,8 +97,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new ConstrainedValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.",
         new ItemSet<ICovarianceFunction>(covFunctions), covFunctions.First()));
       Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with BFGS.", new IntValue(20)));
-      //Parameters.Add(new LookupParameter<DataTable>(NegativeLogLikelihoodTableParameterName, "The negative log likelihood values over the whole run."));
-      //Parameters.Add(new LookupParameter<DataTable>(HyperParametersTableParameterName, "The values of the hyper-parameters over the whole run."));
 
       var setParameterLength = new GaussianProcessSetHyperparameterLength();
       var initializer = new BFGSInitializer();
@@ -114,6 +104,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var branch = new ConditionalBranch();
       var modelCreator = new GaussianProcessRegressionModelCreator();
       var updateResults = new BFGSUpdateResults();
+      var analyzer = new BFGSAnalyzer();
+      var finalModelCreator = new GaussianProcessRegressionModelCreator();
+      var finalAnalyzer = new BFGSAnalyzer();
+      var solutionCreator = new GaussianProcessRegressionSolutionCreator();
 
       OperatorGraph.InitialOperator = setParameterLength;
 
@@ -123,144 +117,60 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       setParameterLength.Successor = initializer;
 
       initializer.IterationsParameter.ActualName = MinimizationIterationsParameterName;
-      initializer.NumberOfHyperparameterParameter.ActualName = setParameterLength.NumberOfHyperparameterParameter.Name;
+      initializer.DimensionParameter.ActualName = setParameterLength.NumberOfHyperparameterParameter.Name;
+      initializer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
       initializer.Successor = makeStep;
 
       makeStep.BFGSStateParameter.ActualName = initializer.BFGSStateParameter.Name;
-      makeStep.HyperparameterParameter.ActualName = initializer.NumberOfHyperparameterParameter.Name;
+      makeStep.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
       makeStep.Successor = branch;
 
       branch.ConditionParameter.ActualName = makeStep.TerminationCriterionParameter.Name;
       branch.FalseBranch = modelCreator;
+      branch.TrueBranch = finalModelCreator;
 
       modelCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
       modelCreator.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
       modelCreator.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
-      modelCreator.HyperparameterParameter.ActualName = initializer.HyperparameterParameter.Name;
       modelCreator.Successor = updateResults;
 
       updateResults.BFGSStateParameter.ActualName = initializer.BFGSStateParameter.Name;
-      updateResults.FunctionValueParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
-      updateResults.HyperparameterGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
-      updateResults.Successor = makeStep;
+      updateResults.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
+      updateResults.QualityGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
+      updateResults.Successor = analyzer;
 
+      analyzer.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
+      analyzer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
+      analyzer.QualityGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
+      analyzer.BFGSStateParameter.ActualName = initializer.BFGSStateParameter.Name;
+      analyzer.PointsTableParameter.ActualName = "Hyperparameter table";
+      analyzer.QualityGradientsTableParameter.ActualName = "Gradients table";
+      analyzer.QualitiesTableParameter.ActualName = "Negative log likelihood table";
+      analyzer.Successor = makeStep;
+
+      finalModelCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
+      finalModelCreator.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
+      finalModelCreator.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
+      finalModelCreator.HyperparameterParameter.ActualName = initializer.PointParameter.ActualName;
+      finalModelCreator.Successor = finalAnalyzer;
+
+      finalAnalyzer.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
+      finalAnalyzer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
+      finalAnalyzer.QualityGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
+      finalAnalyzer.PointsTableParameter.ActualName = analyzer.PointsTableParameter.ActualName;
+      finalAnalyzer.QualityGradientsTableParameter.ActualName = analyzer.QualityGradientsTableParameter.ActualName;
+      finalAnalyzer.QualitiesTableParameter.ActualName = analyzer.QualitiesTableParameter.ActualName;
+      finalAnalyzer.Successor = solutionCreator;
+
+      solutionCreator.ModelParameter.ActualName = finalModelCreator.ModelParameter.Name;
+      solutionCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
     }
+
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GaussianProcessRegression(this, cloner);
     }
-    /*
-    #region Gaussian process regression
-    protected override void Run() {
-      IRegressionProblemData problemData = Problem.ProblemData;
-
-      int nAllowedVariables = problemData.AllowedInputVariables.Count();
-      var mt = new MersenneTwister();
-
-      var hyp0 =
-        Enumerable.Range(0,
-                         1 + MeanFunction.GetNumberOfParameters(nAllowedVariables) +
-                         CovarianceFunction.GetNumberOfParameters(nAllowedVariables))
-          .Select(i => mt.NextDouble())
-          .ToArray();
-
-      double[] hyp;
-
-      // find hyperparameters
-
-      double epsg = 0;
-      double epsf = 0.00001;
-      double epsx = 0;
-
-      alglib.minlbfgsstate state;
-      alglib.minlbfgsreport rep;
-
-      alglib.minlbfgscreate(1, hyp0, out state);
-      alglib.minlbfgssetcond(state, epsg, epsf, epsx, MinimizationIterations);
-      alglib.minlbfgssetxrep(state, true);
-      alglib.minlbfgsoptimize(state, OptimizeGaussianProcessParameters, Report, new object[] { MeanFunction, CovarianceFunction, problemData });
-      alglib.minlbfgsresults(state, out hyp, out rep);
-
-
-      double trainR2, testR2, negativeLogLikelihood;
-      var solution = CreateGaussianProcessSolution(problemData, hyp, MeanFunction, CovarianceFunction,
-        out negativeLogLikelihood, out trainR2, out testR2);
-
-      Results.Add(new Result("Gaussian process regression solution", "The Gaussian process regression solution.", solution));
-      Results.Add(new Result("Training R²", "The Pearson's R² of the Gaussian process solution on the training partition.", new DoubleValue(trainR2)));
-      Results.Add(new Result("Test R²", "The Pearson's R² of the Gaussian process solution on the test partition.", new DoubleValue(testR2)));
-      Results.Add(new Result("Negative log likelihood", "The negative log likelihood of the Gaussian process.", new DoubleValue(negativeLogLikelihood)));
-    }
-
-    public static GaussianProcessRegressionSolution CreateGaussianProcessSolution(IRegressionProblemData problemData,
-      IEnumerable<double> hyp, IMeanFunction mean, ICovarianceFunction cov,
-      out double negativeLogLikelihood, out double trainingR2, out double testR2) {
-
-      Dataset dataset = problemData.Dataset;
-      var allowedInputVariables = problemData.AllowedInputVariables;
-      string targetVariable = problemData.TargetVariable;
-      IEnumerable<int> rows = problemData.TrainingIndices;
-
-      var model = new GaussianProcessModel(dataset, targetVariable, allowedInputVariables, rows, hyp, mean, cov);
-      var solution = new GaussianProcessRegressionSolution(model, (IRegressionProblemData)problemData.Clone());
-      negativeLogLikelihood = model.NegativeLogLikelihood;
-      trainingR2 = solution.TrainingRSquared;
-      testR2 = solution.TestRSquared;
-      return solution;
-    }
-
-    private static void OptimizeGaussianProcessParameters(double[] hyp, ref double func, double[] grad, object obj) {
-      var objArr = (object[])obj;
-      var meanFunction = (IMeanFunction)objArr[0];
-      var covarianceFunction = (ICovarianceFunction)objArr[1];
-      var problemData = (RegressionProblemData)objArr[2];
-      IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
-
-      Dataset ds = problemData.Dataset;
-      string targetVariable = problemData.TargetVariable;
-      IEnumerable<int> rows = problemData.TrainingIndices;
-
-
-      IEnumerable<double> dHyp;
-      var model = new GaussianProcessModel(ds, targetVariable, allowedInputVariables, rows, hyp, meanFunction,
-                                           covarianceFunction);
-      dHyp = model.GetHyperparameterGradients();
-
-      int i = 0;
-      foreach (var e in dHyp) {
-        grad[i++] = e;
-      }
-      func = model.NegativeLogLikelihood;
-    }
-
-    public void Report(double[] arg, double func, object obj) {
-      if (!Results.ContainsKey(NegativeLogLikelihoodTableParameterName)) {
-        Results.Add(new Result(NegativeLogLikelihoodTableParameterName, new DataTable()));
-      }
-      if (!Results.ContainsKey(HyperParametersTableParameterName)) {
-        Results.Add(new Result(HyperParametersTableParameterName, new DataTable()));
-      }
-
-      var nllTable = (DataTable)Results[NegativeLogLikelihoodTableParameterName].Value;
-      if (!nllTable.Rows.ContainsKey("Negative log likelihood"))
-        nllTable.Rows.Add(new DataRow("Negative log likelihood"));
-      var nllRow = nllTable.Rows["Negative log likelihood"];
-
-      nllRow.Values.Add(func);
-
-      var hypTable = (DataTable)Results[HyperParametersTableParameterName].Value;
-      if (hypTable.Rows.Count == 0) {
-        for (int i = 0; i < arg.Length; i++)
-          hypTable.Rows.Add(new DataRow(i.ToString()));
-      }
-      for (int i = 0; i < arg.Length; i++) {
-        hypTable.Rows[i.ToString()].Values.Add(arg[i]);
-      }
-    }
-
-    #endregion
-     */
   }
 }

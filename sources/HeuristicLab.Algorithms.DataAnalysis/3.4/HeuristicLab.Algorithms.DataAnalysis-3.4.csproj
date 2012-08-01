@@ -125,6 +125,8 @@
     <Compile Include="GaussianProcess\BFGSState.cs" />
     <Compile Include="GaussianProcess\BFGSUpdateResults.cs" />
     <Compile Include="GaussianProcess\BFGSMakeStep.cs" />
+    <Compile Include="GaussianProcess\BFGSAnalyzer.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessRegressionSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessSetHyperparameterLength.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionModelCreator.cs" />
     <Compile Include="GaussianProcess\CovarianceLinear.cs" />

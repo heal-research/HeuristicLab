@@ -33,16 +33,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "BFGSUpdateResults", Description = "Sets the results (function value and gradients) for the next optimization step in the BFGS algorithm.")]
   public sealed class BFGSUpdateResults : SingleSuccessorOperator {
-    private const string HyperparameterGradientsParameterName = "HyperparameterGradients";
-    private const string FunctionValueParameterName = "NegativeLogLikelihood";
+    private const string QualityGradientsParameterName = "QualityGradients";
+    private const string QualityParameterName = "Quality";
     private const string BFGSStateParameterName = "BFGSState";
 
     #region Parameter Properties
-    public ILookupParameter<DoubleArray> HyperparameterGradientsParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters[HyperparameterGradientsParameterName]; }
+    public ILookupParameter<DoubleArray> QualityGradientsParameter {
+      get { return (ILookupParameter<DoubleArray>)Parameters[QualityGradientsParameterName]; }
     }
-    public ILookupParameter<DoubleValue> FunctionValueParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters[FunctionValueParameterName]; }
+    public ILookupParameter<DoubleValue> QualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
     public ILookupParameter<BFGSState> BFGSStateParameter {
       get { return (ILookupParameter<BFGSState>)Parameters[BFGSStateParameterName]; }
@@ -50,9 +50,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region Properties
-    public DoubleArray HyperparameterGradients { get { return HyperparameterGradientsParameter.ActualValue; } }
-    public DoubleValue FunctionValue { get { return FunctionValueParameter.ActualValue; } }
-    public BFGSState BFGSState { get { return BFGSStateParameter.ActualValue; } }
+    private DoubleArray QualityGradients { get { return QualityGradientsParameter.ActualValue; } }
+    private DoubleValue Quality { get { return QualityParameter.ActualValue; } }
+    private BFGSState BFGSState { get { return BFGSStateParameter.ActualValue; } }
     #endregion
 
     [StorableConstructor]
@@ -61,8 +61,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public BFGSUpdateResults()
       : base() {
       // in
-      Parameters.Add(new LookupParameter<DoubleArray>(HyperparameterGradientsParameterName, "The function gradients for the parameters of the function to optimize."));
-      Parameters.Add(new LookupParameter<DoubleValue>(FunctionValueParameterName, "The value of the function to optimize."));
+      Parameters.Add(new LookupParameter<DoubleArray>(QualityGradientsParameterName, "The gradients at the evaluated point of the function to optimize."));
+      Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The value at the evaluated point of the function to optimize."));
       // in & out
       Parameters.Add(new LookupParameter<BFGSState>(BFGSStateParameterName, "The state of the BFGS algorithm."));
     }
@@ -73,8 +73,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IOperation Apply() {
       var state = BFGSState;
-      var f = FunctionValue.Value;
-      var g = HyperparameterGradients.ToArray();
+      var f = Quality.Value;
+      var g = QualityGradients.ToArray();
       state.State.f = f;
       state.State.g = g;
       return base.Apply();
