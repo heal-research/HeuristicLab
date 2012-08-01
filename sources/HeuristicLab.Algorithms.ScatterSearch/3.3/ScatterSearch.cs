@@ -211,6 +211,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       solutionsCreator.Successor = uniformSubScopesProcessor;
 
       uniformSubScopesProcessor.Operator = solutionImprover;
+      uniformSubScopesProcessor.ParallelParameter.Value = new BoolValue(true);
       uniformSubScopesProcessor.Successor = variableCreator;
 
       solutionImprover.Name = "SolutionImprover";

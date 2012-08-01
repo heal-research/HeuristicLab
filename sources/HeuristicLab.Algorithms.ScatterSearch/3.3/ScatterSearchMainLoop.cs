@@ -280,6 +280,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
       uniformSubScopesProcessor1.DepthParameter.Value = new IntValue(1);
       uniformSubScopesProcessor1.Operator = executePathRelinkingBranch;
+      uniformSubScopesProcessor1.ParallelParameter.Value = new BoolValue(true);
       uniformSubScopesProcessor1.Successor = solutionPoolUpdateMethod;
 
       executePathRelinkingBranch.Name = "ExecutePathRelinkingChecker";
@@ -308,6 +309,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
       uniformSubScopesProcessor2.DepthParameter.Value = new IntValue(2);
       uniformSubScopesProcessor2.Operator = solutionImprover1;
+      uniformSubScopesProcessor2.ParallelParameter.Value = new BoolValue(true);
       uniformSubScopesProcessor2.Successor = subScopesProcessor4;
 
       solutionImprover1.Name = "SolutionImprover";
@@ -350,6 +352,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
       uniformSubScopesProcessor3.DepthParameter.Value = new IntValue(1);
       uniformSubScopesProcessor3.Operator = solutionImprover2;
+      uniformSubScopesProcessor3.ParallelParameter.Value = new BoolValue(true);
       uniformSubScopesProcessor3.Successor = dataReducer2;
 
       solutionImprover2.Name = "SolutionImprover";
