@@ -58,10 +58,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private const string MaxIterationsParameterName = "MaxIterations";
     private const string ApproximateGradientsParameterName = "ApproximateGradients";
+    private const string SeedParameterName = "Seed";
+    private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
 
     #region parameter properties
     public IValueParameter<IntValue> MaxIterationsParameter {
       get { return (IValueParameter<IntValue>)Parameters[MaxIterationsParameterName]; }
+    }
+    public IValueParameter<IntValue> SeedParameter {
+      get { return (IValueParameter<IntValue>)Parameters[SeedParameterName]; }
+    }
+    public IValueParameter<BoolValue> SetSeedRandomlyParameter {
+      get { return (IValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
     }
     #endregion
     #region properties
@@ -69,7 +77,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       set { MaxIterationsParameter.Value.Value = value; }
       get { return MaxIterationsParameter.Value.Value; }
     }
+    public int Seed { get { return SeedParameter.Value.Value; } set { SeedParameter.Value.Value = value; } }
+    public bool SetSeedRandomly { get { return SetSeedRandomlyParameter.Value.Value; } set { SetSeedRandomlyParameter.Value.Value = value; } }
     #endregion
+
     [StorableConstructor]
     private LbfgsAlgorithm(bool deserializing) : base(deserializing) { }
     private LbfgsAlgorithm(LbfgsAlgorithm original, Cloner cloner)
@@ -83,6 +94,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Problem = new SingleObjectiveTestFunctionProblem();
 
       Parameters.Add(new ValueParameter<IntValue>(MaxIterationsParameterName, "The maximal number of iterations for.", new IntValue(20)));
+      Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
+      Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<BoolValue>(ApproximateGradientsParameterName, "Indicates that gradients should be approximated.", new BoolValue(true)));
       Parameters[ApproximateGradientsParameterName].Hidden = true; // should not be changed
 
@@ -98,6 +111,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       OperatorGraph.InitialOperator = randomCreator;
 
+      randomCreator.SeedParameter.ActualName = SeedParameterName;
+      randomCreator.SeedParameter.Value = null;
+      randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameterName;
+      randomCreator.SetSeedRandomlyParameter.Value = null;
       randomCreator.Successor = solutionCreator;
 
       solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
