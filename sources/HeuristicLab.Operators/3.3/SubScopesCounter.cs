@@ -26,7 +26,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
-  [Item("SubScopesCounter", "Counts the number of direct sub-scopes and increments the value given in the parameter.")]
+  [Item("SubScopesCounter", "Counts the number of direct sub-scopes and increments or assigns it to the value given in the parameter.")]
   [StorableClass]
   public class SubScopesCounter : SingleSuccessorOperator {
 
@@ -43,7 +43,7 @@ namespace HeuristicLab.Operators {
       : base(original, cloner) {
     }
     public SubScopesCounter() {
-      Parameters.Add(new LookupParameter<IntValue>("Value", "The value that should be incremented by the number of direct sub-scopes. It will be created in the current scope if the value is not found."));
+      Parameters.Add(new LookupParameter<IntValue>("Value", "The value that should be incremented by the number of direct sub-scopes. It will be created in the current scope if the value is not found. If Accumulate is set to false, the number of direct sub-scopes is assigned and not accumulated."));
       Parameters.Add(new ValueParameter<BoolValue>("Accumulate", "True if the number of direct sub-scopes should be accumulated, false if the number should be assigned.", new BoolValue(true)));
     }
 
