@@ -24,6 +24,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
@@ -33,8 +34,8 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "BFGSAnalyzer", Description = "Analyzer to collect results for the BFGS algorithm.")]
-  public sealed class BFGSAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  [Item(Name = "LBFGS Analyzer", Description = "Analyzer to collect results for the LM-BFGS algorithm.")]
+  public sealed class LbfgsAnalyzer : SingleSuccessorOperator, IAnalyzer {
     private const string PointParameterName = "Point";
     private const string QualityGradientsParameterName = "QualityGradients";
     private const string QualityParameterName = "Quality";
@@ -42,14 +43,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string QualitiesTableParameterName = "Qualities";
     private const string PointsTableParameterName = "PointTable";
     private const string QualityGradientsTableParameterName = "QualityGradientsTable";
-    private const string BFGSStateParameterName = "BFGSState";
+    private const string StateParameterName = "State";
+    private const string ApproximateGradientsParameterName = "ApproximateGradients";
 
     #region Parameter Properties
-    public ILookupParameter<DoubleArray> QualityGradientsParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters[QualityGradientsParameterName]; }
+    public ILookupParameter<RealVector> QualityGradientsParameter {
+      get { return (ILookupParameter<RealVector>)Parameters[QualityGradientsParameterName]; }
     }
-    public ILookupParameter<DoubleArray> PointParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters[PointParameterName]; }
+    public ILookupParameter<RealVector> PointParameter {
+      get { return (ILookupParameter<RealVector>)Parameters[PointParameterName]; }
     }
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
@@ -66,16 +68,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ILookupParameter<DataTable> QualityGradientsTableParameter {
       get { return (ILookupParameter<DataTable>)Parameters[QualityGradientsTableParameterName]; }
     }
-    public ILookupParameter<BFGSState> BFGSStateParameter {
-      get { return (ILookupParameter<BFGSState>)Parameters[BFGSStateParameterName]; }
+    public ILookupParameter<LbfgsState> StateParameter {
+      get { return (ILookupParameter<LbfgsState>)Parameters[StateParameterName]; }
+    }
+    public ILookupParameter<BoolValue> ApproximateGradientsParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[ApproximateGradientsParameterName]; }
     }
     #endregion
 
     #region Properties
-    private DoubleArray QualityGradients { get { return QualityGradientsParameter.ActualValue; } }
-    private DoubleArray Point { get { return PointParameter.ActualValue; } }
+    private RealVector QualityGradients { get { return QualityGradientsParameter.ActualValue; } }
+    private RealVector Point { get { return PointParameter.ActualValue; } }
     private DoubleValue Quality { get { return QualityParameter.ActualValue; } }
     private ResultCollection ResultCollection { get { return ResultCollectionParameter.ActualValue; } }
+    private BoolValue ApproximateGradients { get { return ApproximateGradientsParameter.ActualValue; } }
 
     public bool EnabledByDefault {
       get { return true; }
@@ -84,30 +90,38 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private BFGSAnalyzer(bool deserializing) : base(deserializing) { }
-    private BFGSAnalyzer(BFGSAnalyzer original, Cloner cloner) : base(original, cloner) { }
-    public BFGSAnalyzer()
+    private LbfgsAnalyzer(bool deserializing) : base(deserializing) { }
+    private LbfgsAnalyzer(LbfgsAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public LbfgsAnalyzer()
       : base() {
       // in
-      Parameters.Add(new LookupParameter<DoubleArray>(PointParameterName, "The current point of the function to optimize."));
-      Parameters.Add(new LookupParameter<DoubleArray>(QualityGradientsParameterName, "The current gradients of the function to optimize."));
+      Parameters.Add(new LookupParameter<RealVector>(PointParameterName, "The current point of the function to optimize."));
+      Parameters.Add(new LookupParameter<RealVector>(QualityGradientsParameterName, "The current gradients of the function to optimize."));
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The current value of the function to optimize."));
       Parameters.Add(new LookupParameter<DataTable>(QualitiesTableParameterName, "The table of all visited quality values."));
       Parameters.Add(new LookupParameter<DataTable>(PointsTableParameterName, "The table of all visited points."));
       Parameters.Add(new LookupParameter<DataTable>(QualityGradientsTableParameterName, "The table of all visited gradient values."));
-      Parameters.Add(new LookupParameter<BFGSState>(BFGSStateParameterName, "The state of the BFGS optimization algorithm."));
+      Parameters.Add(new LookupParameter<LbfgsState>(StateParameterName, "The state of the LM-BFGS optimization algorithm."));
+      Parameters.Add(new LookupParameter<BoolValue>(ApproximateGradientsParameterName,
+                                              "Flag that indicates if gradients should be approximated."));
+
       // in & out
       Parameters.Add(new LookupParameter<ResultCollection>(ResultCollectionParameterName, "The result collection of the algorithm."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BFGSAnalyzer(this, cloner);
+      return new LbfgsAnalyzer(this, cloner);
     }
 
     public override IOperation Apply() {
-      if (BFGSStateParameter.ActualValue.State.xupdated) {
+      if (StateParameter.ActualValue.State.xupdated) {
         var f = Quality.Value;
-        var g = QualityGradients.ToArray();
+        double[] g;
+        if (ApproximateGradients.Value) {
+          g = StateParameter.ActualValue.State.g;
+        } else {
+          g = QualityGradients.ToArray();
+        }
         var x = Point.ToArray();
         var resultCollection = ResultCollection;
 

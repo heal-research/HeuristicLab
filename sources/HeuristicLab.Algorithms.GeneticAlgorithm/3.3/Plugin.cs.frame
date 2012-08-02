@@ -39,6 +39,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
   [PluginDependency("HeuristicLab.Selection", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.TestFunctions", "3.3")]
   public class HeuristicLabAlgorithmsGeneticAlgorithmPlugin : PluginBase {
   }
 }

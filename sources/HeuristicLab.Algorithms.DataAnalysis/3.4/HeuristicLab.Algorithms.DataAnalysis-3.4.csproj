@@ -121,13 +121,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
-    <Compile Include="GaussianProcess\BFGSInitializer.cs" />
-    <Compile Include="GaussianProcess\BFGSState.cs" />
-    <Compile Include="GaussianProcess\BFGSUpdateResults.cs" />
-    <Compile Include="GaussianProcess\BFGSMakeStep.cs" />
-    <Compile Include="GaussianProcess\BFGSAnalyzer.cs" />
+    <Compile Include="GaussianProcess\Lbfgs.cs" />
+    <Compile Include="GaussianProcess\LbfgsInitializer.cs" />
+    <Compile Include="GaussianProcess\LbfgsState.cs" />
+    <Compile Include="GaussianProcess\LbfgsUpdateResults.cs" />
+    <Compile Include="GaussianProcess\LbfgsMakeStep.cs" />
+    <Compile Include="GaussianProcess\LbfgsAnalyzer.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessHyperparameterInitializer.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolutionCreator.cs" />
-    <Compile Include="GaussianProcess\GaussianProcessSetHyperparameterLength.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionModelCreator.cs" />
     <Compile Include="GaussianProcess\CovarianceLinear.cs" />
     <Compile Include="GaussianProcess\GaussianProcessModelCreator.cs">
@@ -242,6 +243,10 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
+      <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
+      <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
       <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
@@ -299,6 +304,10 @@
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.TestFunctions\3.3\HeuristicLab.Problems.TestFunctions-3.3.csproj">
+      <Project>{88B9B0E3-344E-4196-82A3-0F9732506FE8}</Project>
+      <Name>HeuristicLab.Problems.TestFunctions-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>

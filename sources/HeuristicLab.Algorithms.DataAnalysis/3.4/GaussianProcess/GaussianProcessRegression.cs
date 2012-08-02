@@ -27,6 +27,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -54,6 +55,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string MeanFunctionParameterName = "MeanFunction";
     private const string CovarianceFunctionParameterName = "CovarianceFunction";
     private const string MinimizationIterationsParameterName = "Iterations";
+    private const string ApproximateGradientsParameterName = "ApproximateGradients";
 
     #region parameter properties
     public IConstrainedValueParameter<IMeanFunction> MeanFunctionParameter {
@@ -87,6 +89,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public GaussianProcessRegression()
       : base() {
+      this.name = ItemName;
+      this.description = ItemDescription;
+
       Problem = new RegressionProblem();
 
       List<IMeanFunction> meanFunctions = ApplicationManager.Manager.GetInstances<IMeanFunction>().ToList();
@@ -96,32 +101,35 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         new ItemSet<IMeanFunction>(meanFunctions), meanFunctions.First()));
       Parameters.Add(new ConstrainedValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.",
         new ItemSet<ICovarianceFunction>(covFunctions), covFunctions.First()));
-      Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with BFGS.", new IntValue(20)));
+      Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with LM-BFGS.", new IntValue(20)));
+      Parameters.Add(new ValueParameter<BoolValue>(ApproximateGradientsParameterName, "Indicates that gradients should not be approximated (necessary for LM-BFGS).", new BoolValue(false)));
+      Parameters[ApproximateGradientsParameterName].Hidden = true; // should not be changed
 
-      var setParameterLength = new GaussianProcessSetHyperparameterLength();
-      var initializer = new BFGSInitializer();
-      var makeStep = new BFGSMakeStep();
+      var gpInitializer = new GaussianProcessHyperparameterInitializer();
+      var bfgsInitializer = new LbfgsInitializer();
+      var makeStep = new LbfgsMakeStep();
       var branch = new ConditionalBranch();
       var modelCreator = new GaussianProcessRegressionModelCreator();
-      var updateResults = new BFGSUpdateResults();
-      var analyzer = new BFGSAnalyzer();
+      var updateResults = new LbfgsUpdateResults();
+      var analyzer = new LbfgsAnalyzer();
       var finalModelCreator = new GaussianProcessRegressionModelCreator();
-      var finalAnalyzer = new BFGSAnalyzer();
+      var finalAnalyzer = new LbfgsAnalyzer();
       var solutionCreator = new GaussianProcessRegressionSolutionCreator();
 
-      OperatorGraph.InitialOperator = setParameterLength;
+      OperatorGraph.InitialOperator = gpInitializer;
 
-      setParameterLength.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
-      setParameterLength.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
-      setParameterLength.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
-      setParameterLength.Successor = initializer;
+      gpInitializer.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
+      gpInitializer.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
+      gpInitializer.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
+      gpInitializer.HyperparameterParameter.ActualName = modelCreator.HyperparameterParameter.Name;
+      gpInitializer.Successor = bfgsInitializer;
 
-      initializer.IterationsParameter.ActualName = MinimizationIterationsParameterName;
-      initializer.DimensionParameter.ActualName = setParameterLength.NumberOfHyperparameterParameter.Name;
-      initializer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
-      initializer.Successor = makeStep;
+      bfgsInitializer.IterationsParameter.ActualName = MinimizationIterationsParameterName;
+      bfgsInitializer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
+      bfgsInitializer.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
+      bfgsInitializer.Successor = makeStep;
 
-      makeStep.BFGSStateParameter.ActualName = initializer.BFGSStateParameter.Name;
+      makeStep.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
       makeStep.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
       makeStep.Successor = branch;
 
@@ -134,15 +142,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       modelCreator.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
       modelCreator.Successor = updateResults;
 
-      updateResults.BFGSStateParameter.ActualName = initializer.BFGSStateParameter.Name;
+      updateResults.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
       updateResults.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
       updateResults.QualityGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
+      updateResults.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
       updateResults.Successor = analyzer;
 
       analyzer.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
       analyzer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
       analyzer.QualityGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
-      analyzer.BFGSStateParameter.ActualName = initializer.BFGSStateParameter.Name;
+      analyzer.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
       analyzer.PointsTableParameter.ActualName = "Hyperparameter table";
       analyzer.QualityGradientsTableParameter.ActualName = "Gradients table";
       analyzer.QualitiesTableParameter.ActualName = "Negative log likelihood table";
@@ -151,7 +160,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       finalModelCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
       finalModelCreator.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
       finalModelCreator.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
-      finalModelCreator.HyperparameterParameter.ActualName = initializer.PointParameter.ActualName;
+      finalModelCreator.HyperparameterParameter.ActualName = bfgsInitializer.PointParameter.ActualName;
       finalModelCreator.Successor = finalAnalyzer;
 
       finalAnalyzer.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;

@@ -23,6 +23,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -31,56 +32,56 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "BFGSMakeStep", Description = "Makes a step in the BFGS optimization algorithm.")]
-  public sealed class BFGSMakeStep : SingleSuccessorOperator {
+  [Item(Name = "LBFGS MakeStep", Description = "Makes a step in the LM-BFGS optimization algorithm.")]
+  public sealed class LbfgsMakeStep : SingleSuccessorOperator {
     private const string TerminationCriterionParameterName = "TerminationCriterion";
     private const string PointParameterName = "Point";
-    private const string BFGSStateParameterName = "BFGSState";
+    private const string StateParameterName = "State";
 
     #region Parameter Properties
-    public ILookupParameter<BFGSState> BFGSStateParameter {
-      get { return (ILookupParameter<BFGSState>)Parameters[BFGSStateParameterName]; }
+    public ILookupParameter<LbfgsState> StateParameter {
+      get { return (ILookupParameter<LbfgsState>)Parameters[StateParameterName]; }
     }
     public ILookupParameter<BoolValue> TerminationCriterionParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[TerminationCriterionParameterName]; }
     }
-    public ILookupParameter<DoubleArray> PointParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters[PointParameterName]; }
+    public ILookupParameter<RealVector> PointParameter {
+      get { return (ILookupParameter<RealVector>)Parameters[PointParameterName]; }
     }
     #endregion
 
 
     #region Properties
-    private BFGSState BFGSState { get { return BFGSStateParameter.ActualValue; } }
+    private LbfgsState State { get { return StateParameter.ActualValue; } }
     #endregion
 
     [StorableConstructor]
-    private BFGSMakeStep(bool deserializing) : base(deserializing) { }
-    private BFGSMakeStep(BFGSMakeStep original, Cloner cloner) : base(original, cloner) { }
-    public BFGSMakeStep()
+    private LbfgsMakeStep(bool deserializing) : base(deserializing) { }
+    private LbfgsMakeStep(LbfgsMakeStep original, Cloner cloner) : base(original, cloner) { }
+    public LbfgsMakeStep()
       : base() {
       // in & out
-      Parameters.Add(new LookupParameter<BFGSState>(BFGSStateParameterName, "The state of the BFGS algorithm."));
+      Parameters.Add(new LookupParameter<LbfgsState>(StateParameterName, "The state of the LM-BFGS algorithm."));
       // out
-      Parameters.Add(new LookupParameter<BoolValue>(TerminationCriterionParameterName, "The termination criterion indicating that the BFGS optimization algorithm should stop."));
-      Parameters.Add(new LookupParameter<DoubleArray>(PointParameterName, "The next point that should be evaluated in the BFGS algorithm."));
+      Parameters.Add(new LookupParameter<BoolValue>(TerminationCriterionParameterName, "The termination criterion indicating that the LM-BFGS optimization algorithm should stop."));
+      Parameters.Add(new LookupParameter<RealVector>(PointParameterName, "The next point that should be evaluated in the LM-BFGS algorithm."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BFGSMakeStep(this, cloner);
+      return new LbfgsMakeStep(this, cloner);
     }
 
     public override IOperation Apply() {
-      var state = BFGSState;
+      var state = State;
       bool @continue = alglib.minlbfgs.minlbfgsiteration(state.State);
       TerminationCriterionParameter.ActualValue = new BoolValue(!@continue);
       if (@continue) {
-        PointParameter.ActualValue = new DoubleArray(state.State.x);
+        PointParameter.ActualValue = new RealVector(state.State.x);
       } else {
         double[] x = new double[state.State.x.Length];
         alglib.minlbfgs.minlbfgsreport rep = new alglib.minlbfgs.minlbfgsreport();
         alglib.minlbfgs.minlbfgsresults(state.State, ref x, rep);
-        PointParameter.ActualValue = new DoubleArray(x);
+        PointParameter.ActualValue = new RealVector(x);
       }
       return base.Apply();
     }

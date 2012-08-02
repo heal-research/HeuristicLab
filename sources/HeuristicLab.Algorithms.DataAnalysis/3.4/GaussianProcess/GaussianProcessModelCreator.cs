@@ -22,6 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -41,8 +42,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region Parameter Properties
     // in
-    public ILookupParameter<DoubleArray> HyperparameterParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters[HyperparameterParameterName]; }
+    public ILookupParameter<RealVector> HyperparameterParameter {
+      get { return (ILookupParameter<RealVector>)Parameters[HyperparameterParameterName]; }
     }
     public ILookupParameter<IMeanFunction> MeanFunctionParameter {
       get { return (ILookupParameter<IMeanFunction>)Parameters[MeanFunctionParameterName]; }
@@ -54,8 +55,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ILookupParameter<IGaussianProcessModel> ModelParameter {
       get { return (ILookupParameter<IGaussianProcessModel>)Parameters[ModelParameterName]; }
     }
-    public ILookupParameter<DoubleArray> HyperparameterGradientsParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters[HyperparameterGradientsParameterName]; }
+    public ILookupParameter<RealVector> HyperparameterGradientsParameter {
+      get { return (ILookupParameter<RealVector>)Parameters[HyperparameterGradientsParameterName]; }
     }
     public ILookupParameter<DoubleValue> NegativeLogLikelihoodParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[NegativeLogLikelihoodParameterName]; }
@@ -64,7 +65,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region Properties
-    protected DoubleArray Hyperparameter { get { return HyperparameterParameter.ActualValue; } }
+    protected RealVector Hyperparameter { get { return HyperparameterParameter.ActualValue; } }
     protected IMeanFunction MeanFunction { get { return MeanFunctionParameter.ActualValue; } }
     protected ICovarianceFunction CovarianceFunction { get { return CovarianceFunctionParameter.ActualValue; } }
     #endregion
@@ -75,12 +76,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected GaussianProcessModelCreator()
       : base() {
       // in
-      Parameters.Add(new LookupParameter<DoubleArray>(HyperparameterParameterName, "The hyperparameters for the Gaussian process model."));
+      Parameters.Add(new LookupParameter<RealVector>(HyperparameterParameterName, "The hyperparameters for the Gaussian process model."));
       Parameters.Add(new LookupParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function for the Gaussian process model."));
       Parameters.Add(new LookupParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function for the Gaussian process model."));
       // out
       Parameters.Add(new LookupParameter<IGaussianProcessModel>(ModelParameterName, "The resulting Gaussian process model"));
-      Parameters.Add(new LookupParameter<DoubleArray>(HyperparameterGradientsParameterName, "The gradients of the hyperparameters for the produced Gaussian process model (necessary for hyperparameter optimization)"));
+      Parameters.Add(new LookupParameter<RealVector>(HyperparameterGradientsParameterName, "The gradients of the hyperparameters for the produced Gaussian process model (necessary for hyperparameter optimization)"));
       Parameters.Add(new LookupParameter<DoubleValue>(NegativeLogLikelihoodParameterName, "The negative log-likelihood of the produced Gaussian process model given the data."));
     }
   }

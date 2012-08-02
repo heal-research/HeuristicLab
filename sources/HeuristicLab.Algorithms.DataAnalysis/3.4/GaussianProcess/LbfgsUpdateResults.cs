@@ -23,6 +23,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -31,52 +32,61 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "BFGSUpdateResults", Description = "Sets the results (function value and gradients) for the next optimization step in the BFGS algorithm.")]
-  public sealed class BFGSUpdateResults : SingleSuccessorOperator {
+  [Item(Name = "LBFGS UpdateResults", Description = "Sets the results (function value and gradients) for the next optimization step in the LM-BFGS algorithm.")]
+  public sealed class LbfgsUpdateResults : SingleSuccessorOperator {
     private const string QualityGradientsParameterName = "QualityGradients";
     private const string QualityParameterName = "Quality";
-    private const string BFGSStateParameterName = "BFGSState";
+    private const string StateParameterName = "State";
+    private const string ApproximateGradientsParameterName = "ApproximateGradients";
 
     #region Parameter Properties
-    public ILookupParameter<DoubleArray> QualityGradientsParameter {
-      get { return (ILookupParameter<DoubleArray>)Parameters[QualityGradientsParameterName]; }
+    public ILookupParameter<BoolValue> ApproximateGradientsParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[ApproximateGradientsParameterName]; }
+    }
+    public ILookupParameter<RealVector> QualityGradientsParameter {
+      get { return (ILookupParameter<RealVector>)Parameters[QualityGradientsParameterName]; }
     }
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
-    public ILookupParameter<BFGSState> BFGSStateParameter {
-      get { return (ILookupParameter<BFGSState>)Parameters[BFGSStateParameterName]; }
+    public ILookupParameter<LbfgsState> StateParameter {
+      get { return (ILookupParameter<LbfgsState>)Parameters[StateParameterName]; }
     }
     #endregion
 
     #region Properties
-    private DoubleArray QualityGradients { get { return QualityGradientsParameter.ActualValue; } }
+    private BoolValue ApproximateGradients { get { return ApproximateGradientsParameter.ActualValue; } }
+    private RealVector QualityGradients { get { return QualityGradientsParameter.ActualValue; } }
     private DoubleValue Quality { get { return QualityParameter.ActualValue; } }
-    private BFGSState BFGSState { get { return BFGSStateParameter.ActualValue; } }
+    private LbfgsState State { get { return StateParameter.ActualValue; } }
     #endregion
 
     [StorableConstructor]
-    private BFGSUpdateResults(bool deserializing) : base(deserializing) { }
-    private BFGSUpdateResults(BFGSUpdateResults original, Cloner cloner) : base(original, cloner) { }
-    public BFGSUpdateResults()
+    private LbfgsUpdateResults(bool deserializing) : base(deserializing) { }
+    private LbfgsUpdateResults(LbfgsUpdateResults original, Cloner cloner) : base(original, cloner) { }
+    public LbfgsUpdateResults()
       : base() {
       // in
-      Parameters.Add(new LookupParameter<DoubleArray>(QualityGradientsParameterName, "The gradients at the evaluated point of the function to optimize."));
+      Parameters.Add(new LookupParameter<RealVector>(QualityGradientsParameterName, "The gradients at the evaluated point of the function to optimize."));
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The value at the evaluated point of the function to optimize."));
+      Parameters.Add(new LookupParameter<BoolValue>(ApproximateGradientsParameterName,
+                                                    "Flag that indicates if gradients should be approximated."));
       // in & out
-      Parameters.Add(new LookupParameter<BFGSState>(BFGSStateParameterName, "The state of the BFGS algorithm."));
+      Parameters.Add(new LookupParameter<LbfgsState>(StateParameterName, "The state of the LM-BFGS algorithm."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BFGSUpdateResults(this, cloner);
+      return new LbfgsUpdateResults(this, cloner);
     }
 
     public override IOperation Apply() {
-      var state = BFGSState;
+      var state = State;
       var f = Quality.Value;
-      var g = QualityGradients.ToArray();
       state.State.f = f;
-      state.State.g = g;
+      if (!ApproximateGradients.Value) {
+        var g = QualityGradients.ToArray();
+        state.State.g = g;
+      }
       return base.Apply();
     }
   }

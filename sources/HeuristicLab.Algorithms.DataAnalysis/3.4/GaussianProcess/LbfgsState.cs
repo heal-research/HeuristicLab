@@ -33,17 +33,17 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item("BFGSState", "Internal state for the BFGS optimization algorithm.")]
-  public sealed class BFGSState : Item {
+  [Item("LbfgsState", "Internal state for the limited-memory BFGS optimization algorithm.")]
+  public sealed class LbfgsState : Item {
     private alglib.minlbfgs.minlbfgsstate state;
     public alglib.minlbfgs.minlbfgsstate State { get { return state; } }
 
     [StorableConstructor]
-    private BFGSState(bool deserializing)
+    private LbfgsState(bool deserializing)
       : base(deserializing) {
       state = new alglib.minlbfgs.minlbfgsstate();
     }
-    private BFGSState(BFGSState original, Cloner cloner)
+    private LbfgsState(LbfgsState original, Cloner cloner)
       : base(original, cloner) {
       this.state = new alglib.minlbfgs.minlbfgsstate();
       this.state.autobuf = CopyArray(original.state.autobuf);
@@ -124,13 +124,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.state.yk = CopyArray(original.state.yk);
     }
 
-    public BFGSState(alglib.minlbfgs.minlbfgsstate state)
+    public LbfgsState(alglib.minlbfgs.minlbfgsstate state)
       : base() {
       this.state = state;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BFGSState(this, cloner);
+      return new LbfgsState(this, cloner);
     }
 
 

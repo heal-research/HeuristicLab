@@ -23,6 +23,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -31,13 +32,13 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "GaussianProcessSetHyperparameterLength",
-    Description = "Determines the length of the hyperparameter vector based on the mean function, covariance function, and number of allowed input variables.")]
-  public sealed class GaussianProcessSetHyperparameterLength : SingleSuccessorOperator {
+  [Item(Name = "GaussianProcessHyperparameterInitializer",
+    Description = "Initializers the hyperparameter vector based on the mean function, covariance function, and number of allowed input variables.")]
+  public sealed class GaussianProcessHyperparameterInitializer : SingleSuccessorOperator {
     private const string MeanFunctionParameterName = "MeanFunction";
     private const string CovarianceFunctionParameterName = "CovarianceFunction";
     private const string ProblemDataParameterName = "ProblemData";
-    private const string NumberOfHyperparameterParameterName = "NumberOfHyperparameter";
+    private const string HyperparameterParameterName = "Hyperparameter";
 
     #region Parameter Properties
     // in
@@ -51,8 +52,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return (ILookupParameter<IDataAnalysisProblemData>)Parameters[ProblemDataParameterName]; }
     }
     // out
-    public ILookupParameter<IntValue> NumberOfHyperparameterParameter {
-      get { return (ILookupParameter<IntValue>)Parameters[NumberOfHyperparameterParameterName]; }
+    public ILookupParameter<RealVector> HyperparameterParameter {
+      get { return (ILookupParameter<RealVector>)Parameters[HyperparameterParameterName]; }
     }
     #endregion
 
@@ -63,28 +64,27 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     [StorableConstructor]
-    private GaussianProcessSetHyperparameterLength(bool deserializing) : base(deserializing) { }
-    private GaussianProcessSetHyperparameterLength(GaussianProcessSetHyperparameterLength original, Cloner cloner) : base(original, cloner) { }
-    public GaussianProcessSetHyperparameterLength()
+    private GaussianProcessHyperparameterInitializer(bool deserializing) : base(deserializing) { }
+    private GaussianProcessHyperparameterInitializer(GaussianProcessHyperparameterInitializer original, Cloner cloner) : base(original, cloner) { }
+    public GaussianProcessHyperparameterInitializer()
       : base() {
       // in
       Parameters.Add(new LookupParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function for the Gaussian process model."));
       Parameters.Add(new LookupParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function for the Gaussian process model."));
       Parameters.Add(new LookupParameter<IDataAnalysisProblemData>(ProblemDataParameterName, "The input data for the Gaussian process."));
       // out
-      Parameters.Add(new LookupParameter<IntValue>(NumberOfHyperparameterParameterName, "The length of the hyperparameter vector for the Gaussian process model."));
+      Parameters.Add(new LookupParameter<RealVector>(HyperparameterParameterName, "The initial hyperparameter vector for the Gaussian process model."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new GaussianProcessSetHyperparameterLength(this, cloner);
+      return new GaussianProcessHyperparameterInitializer(this, cloner);
     }
 
-    public override IOperation Apply()
-    {
+    public override IOperation Apply() {
       var inputVariablesCount = ProblemData.AllowedInputVariables.Count();
       int l = 1 + MeanFunction.GetNumberOfParameters(inputVariablesCount) +
               CovarianceFunction.GetNumberOfParameters(inputVariablesCount);
-      NumberOfHyperparameterParameter.ActualValue = new IntValue(l);
+      HyperparameterParameter.ActualValue = new RealVector(l);
       return base.Apply();
     }
   }

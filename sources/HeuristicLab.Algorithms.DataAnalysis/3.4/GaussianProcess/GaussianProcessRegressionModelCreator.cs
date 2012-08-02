@@ -24,6 +24,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
@@ -64,7 +65,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var model = Create(ProblemData, Hyperparameter.ToArray(), MeanFunction, CovarianceFunction);
       ModelParameter.ActualValue = model;
       NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(model.NegativeLogLikelihood);
-      HyperparameterGradientsParameter.ActualValue = new DoubleArray(model.GetHyperparameterGradients());
+      HyperparameterGradientsParameter.ActualValue = new RealVector(model.GetHyperparameterGradients());
       return base.Apply();
     }
 
