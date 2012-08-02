@@ -25,14 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Algorithms.DataAnalysis {
+namespace HeuristicLab.Algorithms.GradientDescent {
   [StorableClass]
   [Item(Name = "LBFGS Analyzer", Description = "Analyzer to collect results for the LM-BFGS algorithm.")]
   public sealed class LbfgsAnalyzer : SingleSuccessorOperator, IAnalyzer {

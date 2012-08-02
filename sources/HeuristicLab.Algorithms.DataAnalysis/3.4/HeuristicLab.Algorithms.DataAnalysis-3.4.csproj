@@ -112,21 +112,13 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrossValidation.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
-    <Compile Include="GaussianProcess\Lbfgs.cs" />
-    <Compile Include="GaussianProcess\LbfgsInitializer.cs" />
-    <Compile Include="GaussianProcess\LbfgsState.cs" />
-    <Compile Include="GaussianProcess\LbfgsUpdateResults.cs" />
-    <Compile Include="GaussianProcess\LbfgsMakeStep.cs" />
-    <Compile Include="GaussianProcess\LbfgsAnalyzer.cs" />
     <Compile Include="GaussianProcess\GaussianProcessHyperparameterInitializer.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionModelCreator.cs" />
@@ -213,6 +205,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent.csproj">
+      <Project>{1256B945-EEA9-4BE4-9880-76B5B113F089}</Project>
+      <Name>HeuristicLab.Algorithms.GradientDescent</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
@@ -246,6 +243,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
       <Project>{BB6D334A-4BB6-4674-9883-31A6EBB32CAB}</Project>
       <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
       <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
@@ -255,10 +253,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
-      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
-      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
@@ -303,15 +298,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.TestFunctions\3.3\HeuristicLab.Problems.TestFunctions-3.3.csproj">
-      <Project>{88B9B0E3-344E-4196-82A3-0F9732506FE8}</Project>
-      <Name>HeuristicLab.Problems.TestFunctions-3.3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
-      <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

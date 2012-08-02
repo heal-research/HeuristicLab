@@ -21,23 +21,17 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.TestFunctions;
 using HeuristicLab.Random;
 
-namespace HeuristicLab.Algorithms.DataAnalysis {
+namespace HeuristicLab.Algorithms.GradientDescent {
   /// <summary>
   /// Limited-Memory BFGS optimization algorithm.
   /// </summary>
