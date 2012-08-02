@@ -72,9 +72,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.xt = xt;
       this.symmetric = false;
 
-      this.l = new double[hyp.Length - 1];
-      Array.Copy(hyp, l, l.Length);
+      this.l = hyp.Take(hyp.Length - 1).Select(Math.Exp).ToArray();
       this.sf2 = Math.Exp(2 * hyp[hyp.Length - 1]);
+      sf2 = Math.Min(10E6, sf2); // upper limit for the scale
+
       sd = null;
     }
 
@@ -89,7 +90,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int rows = x.GetLength(0);
       var sd = new double[rows];
       for (int i = 0; i < rows; i++) {
-        sd[i] = Util.SqrDist(Util.GetRow(x, i).Select((e, k) => e / l[k]), Util.GetRow(xt, i).Select((e, k) => e / l[k]));
+        sd[i] = Util.SqrDist(
+          Util.GetRow(x, i).Select((e, k) => e / l[k]),
+          Util.GetRow(xt, i).Select((e, k) => e / l[k]));
       }
       return sd.Select(d => sf2 * Math.Exp(-d / 2.0)).ToArray();
     }
