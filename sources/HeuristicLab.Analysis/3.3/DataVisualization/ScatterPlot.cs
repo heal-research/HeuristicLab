@@ -107,16 +107,19 @@ namespace HeuristicLab.Analysis {
     [Storable(Name = "points")]
     private ObservableList<PointF> StorablePoints {
       set { points = value; }
+      get { return points; }
     }
     private string xAxisName;
     [Storable(Name = "xAxisName")]
     private string StorableXAxisName {
       set { xAxisName = value; }
+      get { return xAxisName; }
     }
     private string yAxisName;
     [Storable(Name = "yAxisName")]
     private string StorableYAxisName {
       set { yAxisName = value; }
+      get { return yAxisName; }
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
