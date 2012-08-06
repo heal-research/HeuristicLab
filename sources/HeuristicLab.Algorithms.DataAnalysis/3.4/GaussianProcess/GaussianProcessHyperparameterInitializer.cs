@@ -37,6 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string CovarianceFunctionParameterName = "CovarianceFunction";
     private const string ProblemDataParameterName = "ProblemData";
     private const string HyperparameterParameterName = "Hyperparameter";
+    private const string RandomParameterName = "Random";
 
     #region Parameter Properties
     // in
@@ -48,6 +49,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public ILookupParameter<IDataAnalysisProblemData> ProblemDataParameter {
       get { return (ILookupParameter<IDataAnalysisProblemData>)Parameters[ProblemDataParameterName]; }
+    }
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }
     }
     // out
     public ILookupParameter<RealVector> HyperparameterParameter {
@@ -70,6 +74,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new LookupParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function for the Gaussian process model."));
       Parameters.Add(new LookupParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function for the Gaussian process model."));
       Parameters.Add(new LookupParameter<IDataAnalysisProblemData>(ProblemDataParameterName, "The input data for the Gaussian process."));
+      Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The pseudo random number generator to use for initializing the hyperparameter vector."));
       // out
       Parameters.Add(new LookupParameter<RealVector>(HyperparameterParameterName, "The initial hyperparameter vector for the Gaussian process model."));
     }
@@ -82,7 +87,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var inputVariablesCount = ProblemData.AllowedInputVariables.Count();
       int l = 1 + MeanFunction.GetNumberOfParameters(inputVariablesCount) +
               CovarianceFunction.GetNumberOfParameters(inputVariablesCount);
-      HyperparameterParameter.ActualValue = new RealVector(l);
+      var r = new RealVector(l);
+      var rand = RandomParameter.ActualValue;
+      for (int i = 0; i < r.Length; i++)
+        r[i] = rand.NextDouble() * 4 - 2;
+
+      HyperparameterParameter.ActualValue = r;
       return base.Apply();
     }
   }

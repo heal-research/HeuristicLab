@@ -54,6 +54,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string CovarianceFunctionParameterName = "CovarianceFunction";
     private const string MinimizationIterationsParameterName = "Iterations";
     private const string ApproximateGradientsParameterName = "ApproximateGradients";
+    private const string SeedParameterName = "Seed";
+    private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
 
     #region parameter properties
     public IConstrainedValueParameter<IMeanFunction> MeanFunctionParameter {
@@ -64,6 +66,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public IValueParameter<IntValue> MinimizationIterationsParameter {
       get { return (IValueParameter<IntValue>)Parameters[MinimizationIterationsParameterName]; }
+    }
+    public IValueParameter<IntValue> SeedParameter {
+      get { return (IValueParameter<IntValue>)Parameters[SeedParameterName]; }
+    }
+    public IValueParameter<BoolValue> SetSeedRandomlyParameter {
+      get { return (IValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
     }
     #endregion
     #region properties
@@ -79,7 +87,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       set { MinimizationIterationsParameter.Value.Value = value; }
       get { return MinimizationIterationsParameter.Value.Value; }
     }
+    public int Seed { get { return SeedParameter.Value.Value; } set { SeedParameter.Value.Value = value; } }
+    public bool SetSeedRandomly { get { return SetSeedRandomlyParameter.Value.Value; } set { SetSeedRandomlyParameter.Value.Value = value; } }
     #endregion
+
     [StorableConstructor]
     private GaussianProcessRegression(bool deserializing) : base(deserializing) { }
     private GaussianProcessRegression(GaussianProcessRegression original, Cloner cloner)
@@ -100,9 +111,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new ConstrainedValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.",
         new ItemSet<ICovarianceFunction>(covFunctions), covFunctions.First()));
       Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with LM-BFGS.", new IntValue(20)));
+      Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
+      Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
+
       Parameters.Add(new ValueParameter<BoolValue>(ApproximateGradientsParameterName, "Indicates that gradients should not be approximated (necessary for LM-BFGS).", new BoolValue(false)));
       Parameters[ApproximateGradientsParameterName].Hidden = true; // should not be changed
 
+      var randomCreator = new HeuristicLab.Random.RandomCreator();
       var gpInitializer = new GaussianProcessHyperparameterInitializer();
       var bfgsInitializer = new LbfgsInitializer();
       var makeStep = new LbfgsMakeStep();
@@ -114,12 +129,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var finalAnalyzer = new LbfgsAnalyzer();
       var solutionCreator = new GaussianProcessRegressionSolutionCreator();
 
-      OperatorGraph.InitialOperator = gpInitializer;
+      OperatorGraph.InitialOperator = randomCreator;
+      randomCreator.SeedParameter.ActualName = SeedParameterName;
+      randomCreator.SeedParameter.Value = null;
+      randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameterName;
+      randomCreator.SetSeedRandomlyParameter.Value = null;
+      randomCreator.Successor = gpInitializer;
 
       gpInitializer.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
       gpInitializer.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
       gpInitializer.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
       gpInitializer.HyperparameterParameter.ActualName = modelCreator.HyperparameterParameter.Name;
+      gpInitializer.RandomParameter.ActualName = randomCreator.RandomParameter.Name;
       gpInitializer.Successor = bfgsInitializer;
 
       bfgsInitializer.IterationsParameter.ActualName = MinimizationIterationsParameterName;
