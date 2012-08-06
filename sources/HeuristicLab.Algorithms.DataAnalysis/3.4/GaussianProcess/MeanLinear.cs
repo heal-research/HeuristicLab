@@ -30,8 +30,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public class MeanLinear : Item, IMeanFunction {
     [Storable]
     private double[] alpha;
-    [Storable]
-    private int n;
     public int GetNumberOfParameters(int numberOfVariables) {
       return numberOfVariables;
     }
@@ -43,21 +41,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.alpha = new double[original.alpha.Length];
         Array.Copy(original.alpha, alpha, original.alpha.Length);
       }
-      this.n = original.n;
     }
     public MeanLinear()
       : base() {
     }
 
-    public void SetParameter(double[] hyp, double[,] x) {
-      if (hyp.Length != x.GetLength(1)) throw new ArgumentException("Number of hyper-parameters must match the number of variables.", "hyp");
+    public void SetParameter(double[] hyp) {
       this.alpha = new double[hyp.Length];
       Array.Copy(hyp, alpha, hyp.Length);
-      this.n = x.GetLength(0);
+    }
+    public void SetData(double[,] x) {
+      // nothing to do
     }
 
     public double[] GetMean(double[,] x) {
+      // sanity check
+      if (alpha.Length != x.GetLength(1)) throw new ArgumentException("The number of hyperparameters must match the number of variables for the linear mean function.");
       int cols = x.GetLength(1);
+      int n = x.GetLength(0);
       return (from i in Enumerable.Range(0, n)
               let rowVector = from j in Enumerable.Range(0, cols)
                               select x[i, j]
@@ -67,6 +68,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public double[] GetGradients(int k, double[,] x) {
       int cols = x.GetLength(1);
+      int n = x.GetLength(0);
       if (k > cols) throw new ArgumentException();
       return (from r in Enumerable.Range(0, n)
               select x[r, k]).ToArray();

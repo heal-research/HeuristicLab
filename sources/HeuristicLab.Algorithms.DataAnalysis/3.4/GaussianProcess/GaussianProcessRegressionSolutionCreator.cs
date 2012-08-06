@@ -82,11 +82,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       SolutionParameter.ActualValue = s;
       var results = ResultsParameter.ActualValue;
       if (!results.ContainsKey(SolutionParameterName)) {
-        results.Add(new Result(ResultsParameterName, "The Gaussian process regression solution", s));
+        results.Add(new Result(SolutionParameterName, "The Gaussian process regression solution", s));
         results.Add(new Result(TrainingRSquaredResultName, "The Pearson's R² of the Gaussian process solution on the training partition.", new DoubleValue(s.TrainingRSquared)));
         results.Add(new Result(TestRSquaredResultName, "The Pearson's R² of the Gaussian process solution on the test partition.", new DoubleValue(s.TestRSquared)));
       } else {
-        results[ResultsParameterName].Value = s;
+        results[SolutionParameterName].Value = s;
         results[TrainingRSquaredResultName].Value = new DoubleValue(s.TrainingRSquared);
         results[TestRSquaredResultName].Value = new DoubleValue(s.TestRSquared);
       }

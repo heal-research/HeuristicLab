@@ -117,6 +117,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CovarianceProdView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CovarianceProdView.Designer.cs">
+      <DependentUpon>CovarianceProdView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CovarianceSumView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CovarianceSumView.Designer.cs">
+      <DependentUpon>CovarianceSumView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GaussianProcessModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GaussianProcessModelView.Designer.cs">
+      <DependentUpon>GaussianProcessModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="KMeansClusteringModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>

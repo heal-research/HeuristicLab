@@ -1,10 +1,30 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceSum",
     Description = "Sum covariance function for Gaussian processes.")]
@@ -25,11 +45,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
 
     protected CovarianceSum(CovarianceSum original, Cloner cloner)
       : base(original, cloner) {
-      this.terms = cloner.Clone(terms);
+      this.terms = cloner.Clone(original.terms);
+      this.numberOfVariables = original.numberOfVariables;
     }
 
     public CovarianceSum()
       : base() {
+      this.terms = new ItemList<ICovarianceFunction>();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -41,68 +63,30 @@ namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
       return terms.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
     }
 
-    public void SetParameter(double[] hyp, double[,] x) {
+    public void SetParameter(double[] hyp) {
       int offset = 0;
       foreach (var t in terms) {
-        t.SetParameter(hyp.Skip(offset).Take(t.GetNumberOfParameters(numberOfVariables)), x);
-        offset += numberOfVariables;
+        var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
+        t.SetParameter(hyp.Skip(offset).Take(numberOfParameters).ToArray());
+        offset += numberOfParameters;
       }
     }
+    public void SetData(double[,] x) {
+      SetData(x, x);
+    }
 
-
-    public void SetParameter(double[] hyp, double[,] x, double[,] xt) {
-      this.l = Math.Exp(hyp[0]);
-      this.sf2 = Math.Exp(2 * hyp[1]);
-
-      this.symmetric = false;
-      this.x = x;
-      this.xt = xt;
-      sd = null;
+    public void SetData(double[,] x, double[,] xt) {
+      foreach (var t in terms) {
+        t.SetData(x, xt);
+      }
     }
 
     public double GetCovariance(int i, int j) {
-      if (sd == null) CalculateSquaredDistances();
-      return sf2 * Math.Exp(-sd[i, j] / 2.0);
+      return terms.Select(t => t.GetCovariance(i, j)).Sum();
     }
-
-
-    public double[] GetDiagonalCovariances() {
-      if (x != xt) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      var sd = new double[rows];
-      for (int i = 0; i < rows; i++) {
-        sd[i] = Util.SqrDist(Util.GetRow(x, i).Select(e => e / l), Util.GetRow(xt, i).Select(e => e / l));
-      }
-      return sd.Select(d => sf2 * Math.Exp(-d / 2.0)).ToArray();
-    }
-
 
     public double[] GetGradient(int i, int j) {
-      var res = new double[2];
-      res[0] = sf2 * Math.Exp(-sd[i, j] / 2.0) * sd[i, j];
-      res[1] = 2.0 * sf2 * Math.Exp(-sd[i, j] / 2.0);
-      return res;
-    }
-
-    private void CalculateSquaredDistances() {
-      if (x.GetLength(1) != xt.GetLength(1)) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      int cols = xt.GetLength(0);
-      sd = new double[rows, cols];
-      if (symmetric) {
-        for (int i = 0; i < rows; i++) {
-          for (int j = i; j < rows; j++) {
-            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e / l), Util.GetRow(xt, j).Select(e => e / l));
-            sd[j, i] = sd[i, j];
-          }
-        }
-      } else {
-        for (int i = 0; i < rows; i++) {
-          for (int j = 0; j < cols; j++) {
-            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e / l), Util.GetRow(xt, j).Select(e => e / l));
-          }
-        }
-      }
+      return terms.Select(t => t.GetGradient(i, j)).SelectMany(seq => seq).ToArray();
     }
   }
 }

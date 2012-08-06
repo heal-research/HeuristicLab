@@ -29,6 +29,7 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
+  [Item(Name = "Scaling", Description = "Contains information about scaling of variables for data-analysis algorithms.")]
   public class Scaling : Item {
     [Storable]
     private Dictionary<string, Tuple<double, double>> scalingParameters = new Dictionary<string, Tuple<double, double>>();

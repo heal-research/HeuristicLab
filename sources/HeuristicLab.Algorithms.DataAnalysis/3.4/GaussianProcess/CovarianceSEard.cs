@@ -48,11 +48,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected CovarianceSEard(bool deserializing) : base(deserializing) { }
     protected CovarianceSEard(CovarianceSEard original, Cloner cloner)
       : base(original, cloner) {
-      // note: using shallow copies here!
-      this.x = original.x;
-      this.xt = original.xt;
+      if (original.x != null) {
+        this.x = new double[original.x.GetLength(0), original.x.GetLength(1)];
+        Array.Copy(original.x, this.x, x.Length);
+
+        this.xt = new double[original.xt.GetLength(0), original.xt.GetLength(1)];
+        Array.Copy(original.xt, this.xt, xt.Length);
+
+        this.sd = new double[original.sd.GetLength(0), original.sd.GetLength(1)];
+        Array.Copy(original.sd, this.sd, sd.Length);
+
+        this.l = new double[original.l.Length];
+        Array.Copy(original.l, this.l, l.Length);
+      }
       this.sf2 = original.sf2;
-      this.l = original.l;
+      this.symmetric = original.symmetric;
     }
     public CovarianceSEard()
       : base() {
@@ -62,16 +72,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new CovarianceSEard(this, cloner);
     }
 
-    public void SetParameter(double[] hyp, double[,] x) {
-      SetParameter(hyp, x, x);
-      this.symmetric = true;
-    }
-
-    public void SetParameter(double[] hyp, double[,] x, double[,] xt) {
-      this.x = x;
-      this.xt = xt;
-      this.symmetric = false;
-
+    public void SetParameter(double[] hyp) {
       this.l = hyp.Take(hyp.Length - 1).Select(Math.Exp).ToArray();
       this.sf2 = Math.Exp(2 * hyp[hyp.Length - 1]);
       sf2 = Math.Min(10E6, sf2); // upper limit for the scale
@@ -79,22 +80,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       sd = null;
     }
 
+    public void SetData(double[,] x) {
+      SetData(x, x);
+      this.symmetric = true;
+    }
+
+    public void SetData(double[,] x, double[,] xt) {
+      this.x = x;
+      this.xt = xt;
+      this.symmetric = false;
+
+      sd = null;
+    }
+
     public double GetCovariance(int i, int j) {
       if (sd == null) CalculateSquaredDistances();
       return sf2 * Math.Exp(-sd[i, j] / 2.0);
-    }
-
-
-    public double[] GetDiagonalCovariances() {
-      if (x != xt) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      var sd = new double[rows];
-      for (int i = 0; i < rows; i++) {
-        sd[i] = Util.SqrDist(
-          Util.GetRow(x, i).Select((e, k) => e / l[k]),
-          Util.GetRow(xt, i).Select((e, k) => e / l[k]));
-      }
-      return sd.Select(d => sf2 * Math.Exp(-d / 2.0)).ToArray();
     }
 
     public double[] GetGradient(int i, int j) {

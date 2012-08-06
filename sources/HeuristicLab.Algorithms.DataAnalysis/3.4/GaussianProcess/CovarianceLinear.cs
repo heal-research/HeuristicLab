@@ -28,11 +28,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceLinear", Description = "Linear covariance function with for Gaussian processes.")]
   public class CovarianceLinear : Item, ICovarianceFunction {
+    private static readonly double[] emptyArray = new double[0];
+
     [Storable]
     private double[,] x;
     [Storable]
     private double[,] xt;
-
 
     private double[,] k;
     private bool symmetric;
@@ -44,10 +45,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected CovarianceLinear(bool deserializing) : base(deserializing) { }
     protected CovarianceLinear(CovarianceLinear original, Cloner cloner)
       : base(original, cloner) {
-      // note: using shallow copies here!
-      this.x = original.x;
-      this.xt = original.xt;
+      if (original.x != null) {
+        this.x = new double[original.x.GetLength(0), original.x.GetLength(1)];
+        Array.Copy(original.x, this.x, x.Length);
 
+        this.xt = new double[original.xt.GetLength(0), original.xt.GetLength(1)];
+        Array.Copy(original.xt, this.xt, xt.Length);
+
+        this.k = new double[original.k.GetLength(0), original.k.GetLength(1)];
+        Array.Copy(original.k, this.k, k.Length);
+      }
+      this.symmetric = original.symmetric;
     }
     public CovarianceLinear()
       : base() {
@@ -57,13 +65,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new CovarianceLinear(this, cloner);
     }
 
-    public void SetParameter(double[] hyp, double[,] x) {
-      if (hyp.Length > 0) throw new ArgumentException();
-      SetParameter(hyp, x, x);
+    public void SetParameter(double[] hyp) {
+      if (hyp.Length > 0) throw new ArgumentException("No hyperparameters are allowed for the linear covariance function.");
+      k = null;
+    }
+
+    public void SetData(double[,] x) {
+      SetData(x, x);
       this.symmetric = true;
     }
 
-    public void SetParameter(double[] hyp, double[,] x, double[,] xt) {
+    public void SetData(double[,] x, double[,] xt) {
       this.x = x;
       this.xt = xt;
       this.symmetric = false;
@@ -76,23 +88,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return k[i, j];
     }
 
-
-    public double[] GetDiagonalCovariances() {
-      if (x != xt) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      int cols = x.GetLength(1);
-      var k = new double[rows];
-      for (int i = 0; i < rows; i++) {
-        k[i] = 0;
-        for (int j = 0; j < cols; j++) {
-          k[i] += x[i, j] * x[i, j];
-        }
-      }
-      return k;
-    }
-
     public double[] GetGradient(int i, int j) {
-      throw new NotSupportedException();
+      return emptyArray;
     }
 
 

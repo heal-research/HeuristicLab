@@ -19,16 +19,34 @@
  */
 #endregion
 
-using HeuristicLab.Core;
+using System.Windows.Forms;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Algorithms.DataAnalysis {
-  public interface ICovarianceFunction : IItem {
-    int GetNumberOfParameters(int numberOfVariables);
-    void SetParameter(double[] hyp);
-    void SetData(double[,] x);
-    void SetData(double[,] x, double[,] xt);
+namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+  [View("Covariance Sum View")]
+  [Content(typeof(CovarianceSum), true)]
+  public partial class CovarianceSumView : AsynchronousContentView {
 
-    double GetCovariance(int i, int j);
-    double[] GetGradient(int i, int j);
+    public new CovarianceSum Content {
+      get { return (CovarianceSum)base.Content; }
+      set { base.Content = value; }
+    }
+
+    public CovarianceSumView()
+      : base() {
+      InitializeComponent();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
+        // clear
+        this.itemListView.Content = null;
+      } else {
+        // update
+        this.itemListView.Content = Content.Terms;
+      }
+    }
   }
 }

@@ -31,8 +31,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public class MeanConst : Item, IMeanFunction {
     [Storable]
     private double c;
-    [Storable]
-    private int n;
     public int GetNumberOfParameters(int numberOfVariables) {
       return 1;
     }
@@ -41,25 +39,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected MeanConst(MeanConst original, Cloner cloner)
       : base(original, cloner) {
       this.c = original.c;
-      this.n = original.n;
     }
     public MeanConst()
       : base() {
     }
 
-    public void SetParameter(double[] hyp, double[,] x) {
+    public void SetParameter(double[] hyp) {
       if (hyp.Length != 1) throw new ArgumentException("Only one hyper-parameter allowed for constant mean function.", "hyp");
       this.c = hyp[0];
-      this.n = x.GetLength(0);
+    }
+    public void SetData(double[,] x) {
+      // nothing to do
     }
 
     public double[] GetMean(double[,] x) {
-      return Enumerable.Repeat(c, n).ToArray();
+      return Enumerable.Repeat(c, x.GetLength(0)).ToArray();
     }
 
     public double[] GetGradients(int k, double[,] x) {
       if (k > 0) throw new ArgumentException();
-      return Enumerable.Repeat(1.0, n).ToArray();
+      return Enumerable.Repeat(1.0, x.GetLength(0)).ToArray();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

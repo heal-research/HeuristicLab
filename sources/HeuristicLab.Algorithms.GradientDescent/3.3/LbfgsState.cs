@@ -268,7 +268,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     [Storable]
     private double[] RstateRa { get { return state.rstate.ra; } set { state.rstate.ra = value; } }
     [Storable]
-    private int RstateStage { get { return state.rstate.stage; } set { state.p = value; } }
+    private int RstateStage { get { return state.rstate.stage; } set { state.rstate.stage = value; } }
     [Storable]
     private double[] S { get { return state.s; } set { state.s = value; } }
     [Storable]

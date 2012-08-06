@@ -49,9 +49,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     protected CovarianceSEiso(CovarianceSEiso original, Cloner cloner)
       : base(original, cloner) {
-      // note: using shallow copies here
-      this.x = original.x;
-      this.xt = original.xt;
+      if (original.x != null) {
+        this.x = new double[original.x.GetLength(0), original.x.GetLength(1)];
+        Array.Copy(original.x, this.x, x.Length);
+
+        this.xt = new double[original.xt.GetLength(0), original.xt.GetLength(1)];
+        Array.Copy(original.xt, this.xt, xt.Length);
+
+        this.sd = new double[original.sd.GetLength(0), original.sd.GetLength(1)];
+        Array.Copy(original.sd, this.sd, sd.Length);
+        this.sf2 = original.sf2;
+      }
       this.sf2 = original.sf2;
       this.l = original.l;
       this.symmetric = original.symmetric;
@@ -69,16 +77,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return 2;
     }
 
-    public void SetParameter(double[] hyp, double[,] x) {
-      SetParameter(hyp, x, x);
+    public void SetParameter(double[] hyp) {
+      this.l = Math.Exp(hyp[0]);
+      this.sf2 = Math.Min(1E6, Math.Exp(2 * hyp[1])); // upper limit for scale
+      sd = null;
+    }
+    public void SetData(double[,] x) {
+      SetData(x, x);
       this.symmetric = true;
     }
 
 
-    public void SetParameter(double[] hyp, double[,] x, double[,] xt) {
-      this.l = Math.Exp(hyp[0]);
-      this.sf2 = Math.Exp(2 * hyp[1]);
-
+    public void SetData(double[,] x, double[,] xt) {
       this.symmetric = false;
       this.x = x;
       this.xt = xt;
@@ -89,18 +99,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (sd == null) CalculateSquaredDistances();
       return sf2 * Math.Exp(-sd[i, j] / 2.0);
     }
-
-
-    public double[] GetDiagonalCovariances() {
-      if (x != xt) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      var sd = new double[rows];
-      for (int i = 0; i < rows; i++) {
-        sd[i] = Util.SqrDist(Util.GetRow(x, i).Select(e => e / l), Util.GetRow(xt, i).Select(e => e / l));
-      }
-      return sd.Select(d => sf2 * Math.Exp(-d / 2.0)).ToArray();
-    }
-
 
     public double[] GetGradient(int i, int j) {
       var res = new double[2];

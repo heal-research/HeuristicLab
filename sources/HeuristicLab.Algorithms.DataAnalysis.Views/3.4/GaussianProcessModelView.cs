@@ -19,16 +19,32 @@
  */
 #endregion
 
-using HeuristicLab.Core;
+using System.Windows.Forms;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
-namespace HeuristicLab.Algorithms.DataAnalysis {
-  public interface ICovarianceFunction : IItem {
-    int GetNumberOfParameters(int numberOfVariables);
-    void SetParameter(double[] hyp);
-    void SetData(double[,] x);
-    void SetData(double[,] x, double[,] xt);
+namespace HeuristicLab.Algorithms.DataAnalysis.Views {
+  [View("Gaussian Process Model")]
+  [Content(typeof(IGaussianProcessModel), true)]
+  public partial class GaussianProcessModelView : AsynchronousContentView {
 
-    double GetCovariance(int i, int j);
-    double[] GetGradient(int i, int j);
+    public new IGaussianProcessModel Content {
+      get { return (IGaussianProcessModel)base.Content; }
+      set { base.Content = value; }
+    }
+
+    public GaussianProcessModelView()
+      : base() {
+      InitializeComponent();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content == null) {
+        // clear
+      } else {
+        // update
+      }
+    }
   }
 }

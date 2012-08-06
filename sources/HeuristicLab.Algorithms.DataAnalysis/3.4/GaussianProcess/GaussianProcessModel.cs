@@ -36,7 +36,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public sealed class GaussianProcessModel : NamedItem, IGaussianProcessModel {
     [Storable]
     private double negativeLogLikelihood;
-
     public double NegativeLogLikelihood {
       get { return negativeLogLikelihood; }
     }
@@ -50,11 +49,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private IMeanFunction meanFunction;
     public IMeanFunction MeanFunction {
       get { return meanFunction; }
-    }
-    [Storable]
-    private double[] hyp;
-    public IEnumerable<double> Hyperparameters {
-      get { return hyp; }
     }
     [Storable]
     private string targetVariable;
@@ -71,10 +65,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[] alpha;
     [Storable]
     private double sqrSigmaNoise;
-    [Storable]
-    private double[] meanHyp;
-    [Storable]
-    private double[] covHyp;
 
     [Storable]
     private double[,] l;
@@ -89,17 +79,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private GaussianProcessModel(bool deserializing) : base(deserializing) { }
     private GaussianProcessModel(GaussianProcessModel original, Cloner cloner)
       : base(original, cloner) {
-      this.hyp = original.hyp;
       this.meanFunction = cloner.Clone(original.meanFunction);
       this.covarianceFunction = cloner.Clone(original.covarianceFunction);
+      this.scaling = cloner.Clone(original.scaling);
       this.negativeLogLikelihood = original.negativeLogLikelihood;
       this.targetVariable = original.targetVariable;
+      this.sqrSigmaNoise = original.sqrSigmaNoise;
+
+      // shallow copies of arrays because they cannot be modified
       this.allowedInputVariables = original.allowedInputVariables;
       this.alpha = original.alpha;
-      this.sqrSigmaNoise = original.sqrSigmaNoise;
-      this.scaling = cloner.Clone(original.scaling);
-      this.meanHyp = original.meanHyp;
-      this.covHyp = original.covHyp;
       this.l = original.l;
       this.x = original.x;
     }
@@ -108,22 +97,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
-      this.hyp = hyp.ToArray();
-      this.meanFunction = meanFunction;
-      this.covarianceFunction = covarianceFunction;
+      this.meanFunction = (IMeanFunction)meanFunction.Clone();
+      this.covarianceFunction = (ICovarianceFunction)covarianceFunction.Clone();
       this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
-      int nAllowedVariables = allowedInputVariables.Count();
 
       sqrSigmaNoise = Math.Exp(2.0 * hyp.First());
       sqrSigmaNoise = Math.Max(10E-6, sqrSigmaNoise); // lower limit for the noise level
-      meanHyp = hyp.Skip(1).Take(meanFunction.GetNumberOfParameters(nAllowedVariables)).ToArray();
-      covHyp = hyp.Skip(1 + meanFunction.GetNumberOfParameters(nAllowedVariables)).Take(covarianceFunction.GetNumberOfParameters(nAllowedVariables)).ToArray();
 
-      CalculateModel(ds, targetVariable, allowedInputVariables, rows);
+      int nVariables = this.allowedInputVariables.Length;
+      this.meanFunction.SetParameter(hyp.Skip(1)
+        .Take(this.meanFunction.GetNumberOfParameters(nVariables))
+        .ToArray());
+      this.covarianceFunction.SetParameter(hyp.Skip(1 + this.meanFunction.GetNumberOfParameters(nVariables))
+        .Take(this.covarianceFunction.GetNumberOfParameters(nVariables))
+        .ToArray());
+
+      CalculateModel(ds, rows);
     }
 
-    private void CalculateModel(Dataset ds, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows) {
+    private void CalculateModel(Dataset ds, IEnumerable<int> rows) {
       scaling = new Scaling(ds, allowedInputVariables, rows);
       x = AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputVariables, rows, scaling);
 
@@ -132,8 +125,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int n = x.GetLength(0);
       l = new double[n, n];
 
-      meanFunction.SetParameter(meanHyp, x);
-      covarianceFunction.SetParameter(covHyp, x);
+      meanFunction.SetData(x);
+      covarianceFunction.SetData(x);
 
       // calculate means and covariances
       double[] m = meanFunction.GetMean(x);
@@ -244,8 +237,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       //covarianceFunction.SetParameter(covHyp, newX);
       //kss = covarianceFunction.GetDiagonalCovariances();
 
-      covarianceFunction.SetParameter(covHyp, x, newX);
-      meanFunction.SetParameter(meanHyp, newX);
+      covarianceFunction.SetData(x, newX);
+      meanFunction.SetData(newX);
       var ms = meanFunction.GetMean(newX);
       for (int i = 0; i < newN; i++) {
 
@@ -267,14 +260,5 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
     }
-
-    #region events
-    public event EventHandler Changed;
-    private void OnChanged(EventArgs e) {
-      var handlers = Changed;
-      if (handlers != null)
-        handlers(this, e);
-    }
-    #endregion
   }
 }

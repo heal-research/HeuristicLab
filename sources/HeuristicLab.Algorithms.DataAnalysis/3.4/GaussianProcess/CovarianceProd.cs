@@ -1,57 +1,92 @@
-﻿using System.Collections.Generic;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
 using System.Linq;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.DataAnalysis.GaussianProcess {
-  public class CovarianceProd : ICovarianceFunction {
-    private IList<ICovarianceFunction> covariances;
+namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableClass]
+  [Item(Name = "CovarianceProd",
+    Description = "Product covariance function for Gaussian processes.")]
+  public class CovarianceProd : Item, ICovarianceFunction {
+    [Storable]
+    private ItemList<ICovarianceFunction> factors;
 
-    public int NumberOfParameters {
-      get { return covariances.Sum(c => c.NumberOfParameters); }
+    [Storable]
+    private int numberOfVariables;
+    public ItemList<ICovarianceFunction> Factors {
+      get { return factors; }
     }
 
-    public CovarianceProd(IEnumerable<ICovarianceFunction> covariances) {
-      this.covariances = covariances.ToList();
+    [StorableConstructor]
+    protected CovarianceProd(bool deserializing)
+      : base(deserializing) {
     }
 
-    public void SetMatrix(double[,] x) {
-      foreach (var covariance in covariances) {
-        covariance.SetMatrix(x, x);
+    protected CovarianceProd(CovarianceProd original, Cloner cloner)
+      : base(original, cloner) {
+      this.factors = cloner.Clone(original.factors);
+      this.numberOfVariables = original.numberOfVariables;
+    }
+
+    public CovarianceProd()
+      : base() {
+      this.factors = new ItemList<ICovarianceFunction>();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CovarianceProd(this, cloner);
+    }
+
+    public int GetNumberOfParameters(int numberOfVariables) {
+      this.numberOfVariables = numberOfVariables;
+      return factors.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
+    }
+
+    public void SetParameter(double[] hyp) {
+      int offset = 0;
+      foreach (var t in factors) {
+        var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
+        t.SetParameter(hyp.Skip(offset).Take(numberOfParameters).ToArray());
+        offset += numberOfParameters;
       }
     }
-
-    public void SetMatrix(double[,] x, double[,] xt) {
-      foreach (var covariance in covariances) {
-        covariance.SetMatrix(x, xt);
-      }
+    public void SetData(double[,] x) {
+      SetData(x, x);
     }
 
-    public void SetHyperparamter(double[] hyp) {
-      int i = 0;
-      foreach (var covariance in covariances) {
-        int n = covariance.NumberOfParameters;
-        covariance.SetHyperparamter(hyp.Skip(i).Take(n).ToArray());
-        i += n;
+    public void SetData(double[,] x, double[,] xt) {
+      foreach (var t in factors) {
+        t.SetData(x, xt);
       }
     }
 
     public double GetCovariance(int i, int j) {
-      return covariances.Select(c => c.GetCovariance(i, j))
-        .Aggregate((a, b) => a * b);
+      return factors.Select(t => t.GetCovariance(i, j)).Aggregate((a, b) => a * b);
     }
 
-
-    public double[] GetDiagonalCovariances() {
-      return covariances
-        .Select(c => c.GetDiagonalCovariances())
-        .Aggregate((s, d) => s.Zip(d, (a, b) => a * b).ToArray())
-        .ToArray();
-    }
-
-    public double[] GetDerivatives(int i, int j) {
-      return covariances
-        .Select(c => c.GetDerivatives(i, j))
-        .Aggregate(Enumerable.Empty<double>(), (h0, h1) => h0.Concat(h1))
-        .ToArray();
+    public double[] GetGradient(int i, int j) {
+      return factors.Select(t => t.GetGradient(i, j)).SelectMany(seq => seq).ToArray();
     }
   }
 }
