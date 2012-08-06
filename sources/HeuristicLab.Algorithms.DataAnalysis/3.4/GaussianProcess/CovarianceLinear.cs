@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceLinear", Description = "Linear covariance function with for Gaussian processes.")]
+  [Item(Name = "CovarianceLinear", Description = "Linear covariance function for Gaussian processes.")]
   public class CovarianceLinear : Item, ICovarianceFunction {
     private static readonly double[] emptyArray = new double[0];
 

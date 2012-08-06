@@ -121,6 +121,7 @@
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
     <Compile Include="GaussianProcess\CovarianceProd.cs" />
     <Compile Include="GaussianProcess\CovarianceSum.cs" />
+    <Compile Include="GaussianProcess\CovariancePeriodic.cs" />
     <Compile Include="GaussianProcess\GaussianProcessHyperparameterInitializer.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionModelCreator.cs" />
