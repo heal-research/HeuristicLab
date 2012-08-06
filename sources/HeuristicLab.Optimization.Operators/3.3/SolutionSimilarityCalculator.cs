@@ -68,8 +68,9 @@ namespace HeuristicLab.Optimization.Operators {
         throw new ArgumentException("Cannot calculate similarity because the provided crowd is empty.");
 
       var similarityMatrix = new double[individuals.Count][];
+      for (int i = 0; i < individuals.Count; i++) similarityMatrix[i] = new double[individuals.Count];
+
       for (int i = 0; i < individuals.Count; i++) {
-        similarityMatrix[i] = new double[individuals.Count];
         for (int j = i; j < individuals.Count; j++) {
           similarityMatrix[i][j] = similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
         }
