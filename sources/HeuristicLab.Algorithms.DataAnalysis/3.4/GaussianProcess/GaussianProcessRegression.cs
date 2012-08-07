@@ -107,9 +107,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       List<ICovarianceFunction> covFunctions = ApplicationManager.Manager.GetInstances<ICovarianceFunction>().ToList();
 
       Parameters.Add(new ConstrainedValueParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function to use.",
-        new ItemSet<IMeanFunction>(meanFunctions), meanFunctions.First()));
+        new ItemSet<IMeanFunction>(meanFunctions), meanFunctions.OfType<MeanConst>().First()));
       Parameters.Add(new ConstrainedValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.",
-        new ItemSet<ICovarianceFunction>(covFunctions), covFunctions.First()));
+        new ItemSet<ICovarianceFunction>(covFunctions), covFunctions.OfType<CovarianceSEiso>().First()));
       Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with LM-BFGS.", new IntValue(20)));
       Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
