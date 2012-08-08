@@ -289,6 +289,7 @@
     <Compile Include="HeuristicLab-3.3\SupportVectorMachineTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
     <Compile Include="HeuristicLab-3.3\ToStringTest.cs" />
+    <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessFunctionsTest.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\MultidimensionalScalingTest.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\NPointCrossoverTest.cs" />

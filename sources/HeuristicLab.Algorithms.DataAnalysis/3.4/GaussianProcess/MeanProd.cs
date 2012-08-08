@@ -18,7 +18,6 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -26,41 +25,36 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceProd",
-    Description = "Product covariance function for Gaussian processes.")]
-  public class CovarianceProd : Item, ICovarianceFunction {
+  [Item(Name = "MeanProd", Description = "Product of mean functions for Gaussian processes.")]
+  public class MeanProd : Item, IMeanFunction {
     [Storable]
-    private ItemList<ICovarianceFunction> factors;
+    private ItemList<IMeanFunction> factors;
 
     [Storable]
     private int numberOfVariables;
-    public ItemList<ICovarianceFunction> Factors {
+
+    public ItemList<IMeanFunction> Factors {
       get { return factors; }
-    }
-
-    [StorableConstructor]
-    protected CovarianceProd(bool deserializing)
-      : base(deserializing) {
-    }
-
-    protected CovarianceProd(CovarianceProd original, Cloner cloner)
-      : base(original, cloner) {
-      this.factors = cloner.Clone(original.factors);
-      this.numberOfVariables = original.numberOfVariables;
-    }
-
-    public CovarianceProd()
-      : base() {
-      this.factors = new ItemList<ICovarianceFunction>();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new CovarianceProd(this, cloner);
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
       this.numberOfVariables = numberOfVariables;
       return factors.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
+    }
+
+    [StorableConstructor]
+    protected MeanProd(bool deserializing)
+      : base(deserializing) {
+    }
+
+    protected MeanProd(MeanProd original, Cloner cloner)
+      : base(original, cloner) {
+      this.factors = cloner.Clone(original.factors);
+      this.numberOfVariables = original.numberOfVariables;
+    }
+
+    public MeanProd() {
+      this.factors = new ItemList<IMeanFunction>();
     }
 
     public void SetParameter(double[] hyp) {
@@ -71,37 +65,41 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         offset += numberOfParameters;
       }
     }
+
     public void SetData(double[,] x) {
-      SetData(x, x);
+      foreach (var t in factors) t.SetData(x);
     }
 
-    public void SetData(double[,] x, double[,] xt) {
-      foreach (var t in factors) {
-        t.SetData(x, xt);
+    public double[] GetMean(double[,] x) {
+      var res = factors.First().GetMean(x);
+      foreach (var t in factors.Skip(1)) {
+        var a = t.GetMean(x);
+        for (int i = 0; i < res.Length; i++) res[i] *= a[i];
       }
+      return res;
     }
 
-    public double GetCovariance(int i, int j) {
-      return factors.Select(t => t.GetCovariance(i, j)).Aggregate((a, b) => a * b);
-    }
-
-    public double[] GetGradient(int i, int j) {
-      return Enumerable.Range(0, GetNumberOfParameters(numberOfVariables)).Select(k => GetGradient(i, j, k)).ToArray();
-    }
-    public double GetGradient(int i, int j, int k) {
-      // map from parameter index to factor
-      var vi = factors.Select((f, idx) => Enumerable.Repeat(idx, f.GetNumberOfParameters(numberOfVariables))).SelectMany(x => x).ToArray();
-      double res = 1.0;
-      int jj = Enumerable.Range(0, k).Count(e => vi[e] == vi[k]);
-      for (int ii = 0; ii < factors.Count; ii++) {
-        var f = factors[ii];
-        if (ii == vi[k]) {
-          res *= f.GetGradient(i, j)[jj];
+    public double[] GetGradients(int k, double[,] x) {
+      double[] res = Enumerable.Repeat(1.0, x.GetLength(0)).ToArray();
+      foreach (var f in factors) {
+        var numParam = f.GetNumberOfParameters(numberOfVariables);
+        if (k >= 0 && k < numParam) {
+          // multiply gradient
+          var g = f.GetGradients(k, x);
+          for (int i = 0; i < res.Length; i++) res[i] *= g[i];
+          k -= numParam;
         } else {
-          res *= f.GetCovariance(i, j);
+          // multiply mean
+          var m = f.GetMean(x);
+          for (int i = 0; i < res.Length; i++) res[i] *= m[i];
+          k -= numParam;
         }
       }
       return res;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MeanProd(this, cloner);
     }
   }
 }
