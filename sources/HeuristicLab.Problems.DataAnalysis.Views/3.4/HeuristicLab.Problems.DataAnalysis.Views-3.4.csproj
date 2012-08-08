@@ -92,6 +92,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ALGLIB-3.6.0, Version=3.6.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\..\bin\ALGLIB-3.6.0.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -120,6 +124,12 @@
     </Compile>
     <Compile Include="Classification\ClassificationEnsembleSolutionModelView.Designer.cs">
       <DependentUpon>ClassificationEnsembleSolutionModelView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Clustering\ClusteringSolutionVisualizationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Clustering\ClusteringSolutionVisualizationView.Designer.cs">
+      <DependentUpon>ClusteringSolutionVisualizationView.cs</DependentUpon>
     </Compile>
     <Compile Include="DataAnalysisSolutionEvaluationView.cs">
       <SubType>UserControl</SubType>
@@ -262,6 +272,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis.Views\3.3\HeuristicLab.Analysis.Views-3.3.csproj">
+      <Project>{76945D76-CA61-4147-9DC2-0ACDCDDF87F9}</Project>
+      <Name>HeuristicLab.Analysis.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
