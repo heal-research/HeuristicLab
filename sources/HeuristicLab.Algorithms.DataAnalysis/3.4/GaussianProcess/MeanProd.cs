@@ -81,18 +81,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public double[] GetGradients(int k, double[,] x) {
       double[] res = Enumerable.Repeat(1.0, x.GetLength(0)).ToArray();
-      foreach (var f in factors) {
-        var numParam = f.GetNumberOfParameters(numberOfVariables);
-        if (k >= 0 && k < numParam) {
+      // find index of factor for the given k
+      int j = 0;
+      while (k >= factors[j].GetNumberOfParameters(numberOfVariables)) {
+        k -= factors[j].GetNumberOfParameters(numberOfVariables);
+        j++;
+      }
+      for (int i = 0; i < factors.Count; i++) {
+        var f = factors[i];
+        if (i == j) {
           // multiply gradient
           var g = f.GetGradients(k, x);
-          for (int i = 0; i < res.Length; i++) res[i] *= g[i];
-          k -= numParam;
+          for (int ii = 0; ii < res.Length; ii++) res[ii] *= g[ii];
         } else {
           // multiply mean
           var m = f.GetMean(x);
-          for (int i = 0; i < res.Length; i++) res[i] *= m[i];
-          k -= numParam;
+          for (int ii = 0; ii < res.Length; ii++) res[ii] *= m[ii];
         }
       }
       return res;

@@ -101,21 +101,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return sf2 * Math.Exp(-2.0 * k);
     }
 
-
-    public double[] GetDiagonalCovariances() {
-      if (x != xt) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      var cov = new double[rows];
-      for (int i = 0; i < rows; i++) {
-        double k = Math.Sqrt(Util.SqrDist(Util.GetRow(x, i), Util.GetRow(xt, i)));
-        k = Math.PI * k / p;
-        k = Math.Sin(k) / l;
-        k = k * k;
-        cov[i] = sf2 * Math.Exp(-2.0 * k);
-      }
-      return cov;
-    }
-
     public double GetGradient(int i, int j, int k) {
       double v = Math.PI * sd[i, j] / p;
       switch (k) {

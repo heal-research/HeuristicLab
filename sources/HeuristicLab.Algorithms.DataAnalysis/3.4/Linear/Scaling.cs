@@ -58,5 +58,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double max = scalingParameters[variable].Item2;
       return ds.GetDoubleValues(variable, rows).Select(x => (x - min) / (max - min));
     }
+
+    public void GetScalingParameters(string variable, out double min, out double max) {
+      min = scalingParameters[variable].Item1;
+      max = scalingParameters[variable].Item2;
+    }
   }
 }

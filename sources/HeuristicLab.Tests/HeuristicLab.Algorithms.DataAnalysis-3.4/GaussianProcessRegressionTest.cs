@@ -20,18 +20,17 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.Common;
-using HeuristicLab.Core;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.SequentialEngine;
+using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
   [TestClass]
+  [DeploymentItem(@"HeuristicLab.Algorithms.DataAnalysis-3.4/co2.txt")]
   public class GaussianProcessRegressionTest {
     public GaussianProcessRegressionTest() { }
 
@@ -57,49 +56,31 @@ namespace HeuristicLab_33.Tests {
     public void GaussianProcessRegressionPerformanceTest() {
       ex = null;
 
-      var cv = new CrossValidation();
       var alg = new GaussianProcessRegression();
-      alg.Engine = new SequentialEngine();
-      cv.Algorithm = alg;
+      alg.Engine = new HeuristicLab.SequentialEngine.SequentialEngine();
 
-      cv.Problem = new RegressionProblem();
-      var rand = new HeuristicLab.Random.MersenneTwister();
-      double[,] data = GenerateData(100, rand);
-      List<string> variables = new List<string>() { "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9", "x10", "y" };
-      Dataset ds = new Dataset(variables, data);
-      cv.Problem.ProblemDataParameter.ActualValue = new RegressionProblemData(ds, variables.Take(10), variables.Last());
-      cv.Algorithm.Prepare();
-      cv.Folds.Value = 5;
-      cv.SamplesStart.Value = 0;
-      cv.SamplesEnd.Value = 99;
+      alg.Problem = new RegressionProblem();
+      var provider = new RegressionCSVInstanceProvider();
+      var problemData = (RegressionProblemData)provider.ImportData("co2.txt");
+      problemData.TargetVariableParameter.ActualValue = problemData.TargetVariableParameter.ValidValues.First(x => x.Value == "interpolated");
+      problemData.InputVariables.SetItemCheckedState(problemData.InputVariables.First(x => x.Value == "year"), false);
+      problemData.InputVariables.SetItemCheckedState(problemData.InputVariables.First(x => x.Value == "month"), false);
+      problemData.InputVariables.SetItemCheckedState(problemData.InputVariables.First(x => x.Value == "average"), false);
+      problemData.InputVariables.SetItemCheckedState(problemData.InputVariables.First(x => x.Value == "interpolated"), false);
+      problemData.InputVariables.SetItemCheckedState(problemData.InputVariables.First(x => x.Value == "trend"), false);
+      problemData.InputVariables.SetItemCheckedState(problemData.InputVariables.First(x => x.Value == "#days"), false);
 
-      cv.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(cv_ExceptionOccurred);
-      cv.Stopped += new EventHandler(cv_Stopped);
+      alg.Problem.ProblemDataParameter.Value = problemData;
 
-      cv.Prepare();
-      cv.Start();
+      alg.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(cv_ExceptionOccurred);
+      alg.Stopped += new EventHandler(cv_Stopped);
+
+      alg.Prepare();
+      alg.Start();
       trigger.WaitOne();
       if (ex != null) throw ex;
 
-      TestContext.WriteLine("Runtime: {0}", cv.ExecutionTime.ToString());
-
-    }
-
-    // poly-10: y = x1 x2 + x3 x4 + x5 x6 + x1 x7 x9 + x3 x6 x10
-    private double[,] GenerateData(int n, IRandom random) {
-      double[,] data = new double[n, 11];
-      for (int i = 0; i < n; i++) {
-        for (int c = 0; c < 10; c++) {
-          data[i, c] = random.NextDouble() * 2.0 - 1.0;
-        }
-        data[i, 10] =
-          data[i, 0] * data[i, 1] +
-          data[i, 2] * data[i, 3] +
-          data[i, 4] * data[i, 5] +
-          data[i, 0] * data[i, 6] * data[i, 8] +
-          data[i, 2] * data[i, 5] * data[i, 9];
-      }
-      return data;
+      TestContext.WriteLine("Runtime: {0}", alg.ExecutionTime.ToString());
     }
 
     private void cv_ExceptionOccurred(object sender, EventArgs<Exception> e) {

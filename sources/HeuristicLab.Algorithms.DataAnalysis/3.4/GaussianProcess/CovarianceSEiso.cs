@@ -113,17 +113,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int rows = x.GetLength(0);
       int cols = xt.GetLength(0);
       sd = new double[rows, cols];
+      double lInv = 1.0 / l;
       if (symmetric) {
         for (int i = 0; i < rows; i++) {
           for (int j = i; j < rows; j++) {
-            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e / l), Util.GetRow(xt, j).Select(e => e / l));
+            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
             sd[j, i] = sd[i, j];
           }
         }
       } else {
         for (int i = 0; i < rows; i++) {
           for (int j = 0; j < cols; j++) {
-            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e / l), Util.GetRow(xt, j).Select(e => e / l));
+            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
           }
         }
       }

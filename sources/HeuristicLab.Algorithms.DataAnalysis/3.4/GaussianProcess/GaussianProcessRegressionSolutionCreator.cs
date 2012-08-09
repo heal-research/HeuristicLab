@@ -74,8 +74,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IOperation Apply() {
-      var m = ModelParameter.ActualValue;
-      var data = ProblemDataParameter.ActualValue;
+      var m = (IGaussianProcessModel)ModelParameter.ActualValue.Clone();
+      var data = (IRegressionProblemData)ProblemDataParameter.ActualValue.Clone();
       var s = new GaussianProcessRegressionSolution(m, data);
 
 

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,11 +30,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static double SqrDist(double x, double y) {
       double d = x - y;
-      return Math.Max(d * d, 0.0);
+      return d * d;
     }
 
     public static double SqrDist(IEnumerable<double> x, IEnumerable<double> y) {
-      return x.Zip(y, SqrDist).Sum();
+      return x.Zip(y, (a, b) => (a - b) * (a - b)).Sum();
     }
 
     public static IEnumerable<double> GetRow(double[,] x, int r) {

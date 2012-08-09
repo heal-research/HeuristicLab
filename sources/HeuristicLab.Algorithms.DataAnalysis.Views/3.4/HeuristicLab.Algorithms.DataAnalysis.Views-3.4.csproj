@@ -117,6 +117,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeanProdView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MeanProdView.Designer.cs">
+      <DependentUpon>MeanProdView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MeanSumView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MeanSumView.Designer.cs">
+      <DependentUpon>MeanSumView.cs</DependentUpon>
+    </Compile>
     <Compile Include="CovarianceProdView.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -90,7 +90,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var r = new RealVector(l);
       var rand = RandomParameter.ActualValue;
       for (int i = 0; i < r.Length; i++)
-        r[i] = rand.NextDouble() * 4 - 2;
+        r[i] = rand.NextDouble() * 2 - 1;
 
       HyperparameterParameter.ActualValue = r;
       return base.Apply();

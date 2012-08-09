@@ -72,7 +72,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[,] x;
     [Storable]
-    private Scaling scaling;
+    private Scaling inputScaling;
+    [Storable]
+    private Scaling targetScaling;
 
 
     [StorableConstructor]
@@ -81,7 +83,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(original, cloner) {
       this.meanFunction = cloner.Clone(original.meanFunction);
       this.covarianceFunction = cloner.Clone(original.covarianceFunction);
-      this.scaling = cloner.Clone(original.scaling);
+      this.inputScaling = cloner.Clone(original.inputScaling);
+      this.targetScaling = cloner.Clone(original.targetScaling);
       this.negativeLogLikelihood = original.negativeLogLikelihood;
       this.targetVariable = original.targetVariable;
       this.sqrSigmaNoise = original.sqrSigmaNoise;
@@ -117,10 +120,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private void CalculateModel(Dataset ds, IEnumerable<int> rows) {
-      scaling = new Scaling(ds, allowedInputVariables, rows);
-      x = AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputVariables, rows, scaling);
+      inputScaling = new Scaling(ds, allowedInputVariables, rows);
+      x = AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputVariables, rows, inputScaling);
 
-      var y = ds.GetDoubleValues(targetVariable, rows).ToArray();
+
+      targetScaling = new Scaling(ds, new string[] { targetVariable }, rows);
+      var y = targetScaling.GetScaledValues(ds, targetVariable, rows);
 
       int n = x.GetLength(0);
       l = new double[n, n];
@@ -161,21 +166,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // derivatives
       int n = x.GetLength(0);
       int nAllowedVariables = x.GetLength(1);
-      double[,] q = new double[n, n];
-      double[,] eye = new double[n, n];
-      for (int i = 0; i < n; i++) eye[i, i] = 1.0;
 
       int info;
-      alglib.densesolverreport denseSolveRep;
+      alglib.matinvreport matInvRep;
 
-      alglib.spdmatrixcholeskysolvem(l, n, false, eye, n, out info, out denseSolveRep, out q);
-      // double[,] a2 = outerProd(alpha, alpha);
+      alglib.spdmatrixcholeskyinverse(ref l, n, false, out info, out matInvRep);
+      if (info != 1) throw new ArgumentException("Can't invert matrix to calculate gradients.");
       for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++)
-          q[i, j] = q[i, j] / sqrSigmaNoise - alpha[i] * alpha[j]; // a2[i, j];
+        for (int j = 0; j <= i; j++)
+          l[i, j] = l[i, j] / sqrSigmaNoise - alpha[i] * alpha[j];
       }
 
-      double noiseGradient = sqrSigmaNoise * Enumerable.Range(0, n).Select(i => q[i, i]).Sum();
+      double noiseGradient = sqrSigmaNoise * Enumerable.Range(0, n).Select(i => l[i, i]).Sum();
 
       double[] meanGradients = new double[meanFunction.GetNumberOfParameters(nAllowedVariables)];
       for (int i = 0; i < meanGradients.Length; i++) {
@@ -186,13 +188,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[] covGradients = new double[covarianceFunction.GetNumberOfParameters(nAllowedVariables)];
       if (covGradients.Length > 0) {
         for (int i = 0; i < n; i++) {
-          for (int j = 0; j < n; j++) {
-            for (int k = 0; k < covGradients.Length; k++) {
-              covGradients[k] += q[i, j] * covarianceFunction.GetGradient(i, j, k);
+          for (int k = 0; k < covGradients.Length; k++) {
+            for (int j = 0; j < i; j++) {
+              covGradients[k] += l[i, j] * covarianceFunction.GetGradient(i, j, k);
             }
+            covGradients[k] += 0.5 * l[i, i] * covarianceFunction.GetGradient(i, i, k);
           }
         }
-        covGradients = covGradients.Select(g => g / 2.0).ToArray();
       }
 
       return new double[] { noiseGradient }
@@ -218,7 +220,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     private IEnumerable<double> GetEstimatedValuesHelper(Dataset dataset, IEnumerable<int> rows) {
-      var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, scaling);
+      var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, inputScaling);
       int newN = newX.GetLength(0);
       int n = x.GetLength(0);
       // var predMean = new double[newN];
@@ -250,13 +252,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // for stddev 
       // alglib.rmatrixsolvem(l, n, sWKs, newN, true, out info, out denseSolveRep, out v);
 
-
-      for (int i = 0; i < newN; i++) {
-        // predMean[i] = ms[i] + prod(GetRow(Ks, i), alpha);
-        yield return ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha);
-        // var sumV2 = prod(GetCol(v, i), GetCol(v, i));
-        // predVar[i] = kss[i] - sumV2;
-      }
+      double targetScaleMin, targetScaleMax;
+      targetScaling.GetScalingParameters(targetVariable, out targetScaleMin, out targetScaleMax);
+      return Enumerable.Range(0, newN)
+        .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha))
+        .Select(m => m * (targetScaleMax - targetScaleMin) + targetScaleMin);
+      //for (int i = 0; i < newN; i++) {
+      //  // predMean[i] = ms[i] + prod(GetRow(Ks, i), alpha);
+      //  // var sumV2 = prod(GetCol(v, i), GetCol(v, i));
+      //  // predVar[i] = kss[i] - sumV2;
+      //}
 
     }
   }

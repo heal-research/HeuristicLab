@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -47,11 +49,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(original, cloner) {
       this.terms = cloner.Clone(original.terms);
       this.numberOfVariables = original.numberOfVariables;
+      AttachEventHandlers();
     }
 
     public CovarianceSum()
       : base() {
       this.terms = new ItemList<ICovarianceFunction>();
+      AttachEventHandlers();
+    }
+
+    private void AttachEventHandlers() {
+      this.terms.CollectionReset += (sender, args) => ClearCache();
+      this.terms.ItemsAdded += (sender, args) => ClearCache();
+      this.terms.ItemsRemoved += (sender, args) => ClearCache();
+      this.terms.ItemsReplaced += (sender, args) => ClearCache();
+      this.terms.ItemsMoved += (sender, args) => ClearCache();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -85,12 +97,27 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return terms.Select(t => t.GetCovariance(i, j)).Sum();
     }
 
+    private Dictionary<int, Tuple<int, int>> cachedParameterMap;
     public double GetGradient(int i, int j, int k) {
-      int ii = 0;
-      while (k > terms[ii].GetNumberOfParameters(numberOfVariables)) {
-        k -= terms[ii].GetNumberOfParameters(numberOfVariables);
+      if (cachedParameterMap == null) {
+        CalculateParameterMap();
       }
-      return terms[ii].GetGradient(i, j, k);
+      int ti = cachedParameterMap[k].Item1;
+      k = cachedParameterMap[k].Item2;
+      return terms[ti].GetGradient(i, j, k);
+    }
+    private void ClearCache() {
+      cachedParameterMap = null;
+    }
+
+    private void CalculateParameterMap() {
+      cachedParameterMap = new Dictionary<int, Tuple<int, int>>();
+      int k = 0;
+      for (int ti = 0; ti < terms.Count; ti++) {
+        for (int ti_k = 0; ti_k < terms[ti].GetNumberOfParameters(numberOfVariables); ti_k++) {
+          cachedParameterMap[k++] = Tuple.Create(ti, ti_k);
+        }
+      }
     }
   }
 }
