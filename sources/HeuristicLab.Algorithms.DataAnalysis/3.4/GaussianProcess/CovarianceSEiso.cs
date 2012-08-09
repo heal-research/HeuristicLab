@@ -100,11 +100,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return sf2 * Math.Exp(-sd[i, j] / 2.0);
     }
 
-    public double[] GetGradient(int i, int j) {
-      var res = new double[2];
-      res[0] = sf2 * Math.Exp(-sd[i, j] / 2.0) * sd[i, j];
-      res[1] = 2.0 * sf2 * Math.Exp(-sd[i, j] / 2.0);
-      return res;
+    public double GetGradient(int i, int j, int k) {
+      switch (k) {
+        case 0: return sf2 * Math.Exp(-sd[i, j] / 2.0) * sd[i, j];
+        case 1: return 2.0 * sf2 * Math.Exp(-sd[i, j] / 2.0);
+        default: throw new ArgumentException("CovarianceSEiso has two hyperparameters", "k");
+      }
     }
 
     private void CalculateSquaredDistances() {

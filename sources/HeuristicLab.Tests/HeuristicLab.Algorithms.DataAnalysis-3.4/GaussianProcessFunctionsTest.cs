@@ -804,9 +804,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
 
       for (int i = 0; i < rows0; i++)
         for (int j = 0; j < rows1; j++) {
-          var g = cf.GetGradient(i, j);
           for (int k = 0; k < nHyp; k++)
-            Assert.AreEqual(expectedGradients[k][i, j], g[k], 5E-3);
+            Assert.AreEqual(expectedGradients[k][i, j], cf.GetGradient(i, j, k), 5E-3);
         }
     }
 

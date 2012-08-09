@@ -187,9 +187,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (covGradients.Length > 0) {
         for (int i = 0; i < n; i++) {
           for (int j = 0; j < n; j++) {
-            var covDeriv = covarianceFunction.GetGradient(i, j);
             for (int k = 0; k < covGradients.Length; k++) {
-              covGradients[k] += q[i, j] * covDeriv[k];
+              covGradients[k] += q[i, j] * covarianceFunction.GetGradient(i, j, k);
             }
           }
         }

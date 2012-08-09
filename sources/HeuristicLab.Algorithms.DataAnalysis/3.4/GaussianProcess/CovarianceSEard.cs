@@ -98,15 +98,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return sf2 * Math.Exp(-sd[i, j] / 2.0);
     }
 
-    public double[] GetGradient(int i, int j) {
-      var res = new double[l.Length + 1];
-      for (int k = 0; k < l.Length; k++) {
+    public double GetGradient(int i, int j, int k) {
+      if (k < l.Length) {
         double sqrDist = Util.SqrDist(x[i, k] / l[k], xt[j, k] / l[k]);
-
-        res[k] = sf2 * Math.Exp(-sd[i, j] / 2.0) * sqrDist;
+        return sf2 * Math.Exp(-sd[i, j] / 2.0) * sqrDist;
+      } else if (k == l.Length) {
+        return 2.0 * sf2 * Math.Exp(-sd[i, j] / 2.0);
+      } else {
+        throw new ArgumentException("CovarianceSEard has dimension+1 hyperparameters.", "k");
       }
-      res[res.Length - 1] = 2.0 * sf2 * Math.Exp(-sd[i, j] / 2.0);
-      return res;
     }
 
 

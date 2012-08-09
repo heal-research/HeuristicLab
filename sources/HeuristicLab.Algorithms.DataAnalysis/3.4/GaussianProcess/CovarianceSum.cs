@@ -85,8 +85,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return terms.Select(t => t.GetCovariance(i, j)).Sum();
     }
 
-    public double[] GetGradient(int i, int j) {
-      return terms.Select(t => t.GetGradient(i, j)).SelectMany(seq => seq).ToArray();
+    public double GetGradient(int i, int j, int k) {
+      int ii = 0;
+      while (k > terms[ii].GetNumberOfParameters(numberOfVariables)) {
+        k -= terms[ii].GetNumberOfParameters(numberOfVariables);
+      }
+      return terms[ii].GetGradient(i, j, k);
     }
   }
 }

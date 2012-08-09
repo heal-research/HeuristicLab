@@ -28,8 +28,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceLinear", Description = "Linear covariance function for Gaussian processes.")]
   public class CovarianceLinear : Item, ICovarianceFunction {
-    private static readonly double[] emptyArray = new double[0];
-
     [Storable]
     private double[,] x;
     [Storable]
@@ -88,8 +86,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return k[i, j];
     }
 
-    public double[] GetGradient(int i, int j) {
-      return emptyArray;
+    public double GetGradient(int i, int j, int k) {
+      throw new NotSupportedException("CovarianceLinear does not have hyperparameters.");
     }
 
 

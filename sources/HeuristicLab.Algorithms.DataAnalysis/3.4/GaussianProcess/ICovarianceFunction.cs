@@ -29,6 +29,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     void SetData(double[,] x, double[,] xt);
 
     double GetCovariance(int i, int j);
-    double[] GetGradient(int i, int j);
+    double GetGradient(int i, int j, int k);
   }
 }

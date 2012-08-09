@@ -85,9 +85,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return factors.Select(t => t.GetCovariance(i, j)).Aggregate((a, b) => a * b);
     }
 
-    public double[] GetGradient(int i, int j) {
-      return Enumerable.Range(0, GetNumberOfParameters(numberOfVariables)).Select(k => GetGradient(i, j, k)).ToArray();
-    }
     public double GetGradient(int i, int j, int k) {
       // map from parameter index to factor
       var vi = factors.Select((f, idx) => Enumerable.Repeat(idx, f.GetNumberOfParameters(numberOfVariables))).SelectMany(x => x).ToArray();
@@ -96,7 +93,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       for (int ii = 0; ii < factors.Count; ii++) {
         var f = factors[ii];
         if (ii == vi[k]) {
-          res *= f.GetGradient(i, j)[jj];
+          res *= f.GetGradient(i, j, jj);
         } else {
           res *= f.GetCovariance(i, j);
         }

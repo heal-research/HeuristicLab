@@ -116,27 +116,28 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-    public double[] GetGradient(int i, int j) {
+    public double GetGradient(int i, int j, int k) {
+      double v = Math.PI * sd[i, j] / p;
+      switch (k) {
+        case 0: {
+            double newK = Math.Sin(v) / l;
+            newK = newK * newK;
+            return 4 * sf2 * Math.Exp(-2 * newK) * newK;
+          }
+        case 1: {
+            double r = Math.Sin(v) / l;
+            return 4 * sf2 / l * Math.Exp(-2 * r * r) * r * Math.Cos(v) * v;
+          }
+        case 2: {
+            double newK = Math.Sin(v) / l;
+            newK = newK * newK;
+            return 2 * sf2 * Math.Exp(-2 * newK);
 
-      var res = new double[3];
-      double k = sd[i, j];
-      k = Math.PI * k / p;
-      {
-        double newK = Math.Sin(k) / l;
-        newK = newK * newK;
-        res[0] = 4 * sf2 * Math.Exp(-2 * newK) * newK;
+          }
+        default: {
+            throw new ArgumentException("CovariancePeriodic only has three hyperparameters.", "k");
+          }
       }
-      {
-        double r = Math.Sin(k) / l;
-        res[1] = 4 * sf2 / l * Math.Exp(-2 * r * r) * r * Math.Cos(k) * k;
-      }
-      {
-        double newK = Math.Sin(k) / l;
-        newK = newK * newK;
-        res[2] = 2 * sf2 * Math.Exp(-2 * newK);
-      }
-
-      return res;
     }
 
     private void CalculateSquaredDistances() {
