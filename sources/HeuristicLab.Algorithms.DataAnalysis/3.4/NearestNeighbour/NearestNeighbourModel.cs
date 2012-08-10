@@ -96,6 +96,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.classValues = (double[])original.classValues.Clone();
     }
     public NearestNeighbourModel(Dataset dataset, IEnumerable<int> rows, int k, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null) {
+      Name = ItemName;
+      Description = ItemDescription;
       this.k = k;
       this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
