@@ -146,6 +146,8 @@
     <Compile Include="GaussianProcess\ICovarianceFunction.cs" />
     <Compile Include="Interfaces\IGaussianProcessModel.cs" />
     <Compile Include="Interfaces\IGaussianProcessSolution.cs" />
+    <Compile Include="Interfaces\INcaClassificationSolution.cs" />
+    <Compile Include="Interfaces\INcaModel.cs" />
     <Compile Include="Interfaces\INearestNeighbourClassificationSolution.cs" />
     <Compile Include="Interfaces\INearestNeighbourRegressionSolution.cs" />
     <Compile Include="Interfaces\INearestNeighbourModel.cs" />
@@ -176,6 +178,14 @@
     <Compile Include="Linear\MultinomialLogitClassification.cs" />
     <Compile Include="Linear\MultinomialLogitClassificationSolution.cs" />
     <Compile Include="Linear\MultinomialLogitModel.cs" />
+    <Compile Include="Nca\Initialization\INcaInitializer.cs" />
+    <Compile Include="Nca\Initialization\LdaInitializer.cs" />
+    <Compile Include="Nca\Initialization\PcaInitializer.cs" />
+    <Compile Include="Nca\Initialization\RandomInitializer.cs" />
+    <Compile Include="Nca\Matrix.cs" />
+    <Compile Include="Nca\NcaAlgorithm.cs" />
+    <Compile Include="Nca\NcaClassificationSolution.cs" />
+    <Compile Include="Nca\NcaModel.cs" />
     <Compile Include="NearestNeighbour\NearestNeighbourClassification.cs" />
     <Compile Include="NearestNeighbour\NearestNeighbourClassificationSolution.cs" />
     <Compile Include="NearestNeighbour\NearestNeighbourModel.cs" />
