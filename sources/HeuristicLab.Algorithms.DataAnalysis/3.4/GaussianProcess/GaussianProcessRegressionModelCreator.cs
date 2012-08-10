@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -59,10 +60,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IOperation Apply() {
-      var model = Create(ProblemData, Hyperparameter.ToArray(), MeanFunction, CovarianceFunction);
-      ModelParameter.ActualValue = model;
-      NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(model.NegativeLogLikelihood);
-      HyperparameterGradientsParameter.ActualValue = new RealVector(model.GetHyperparameterGradients());
+      try {
+        var model = Create(ProblemData, Hyperparameter.ToArray(), MeanFunction, CovarianceFunction);
+        ModelParameter.ActualValue = model;
+        NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(model.NegativeLogLikelihood);
+        HyperparameterGradientsParameter.ActualValue = new RealVector(model.GetHyperparameterGradients());
+        return base.Apply();
+      }
+      catch (ArgumentException) { }
+      catch (alglib.alglibexception) { }
+      NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(1E300);
+      HyperparameterGradientsParameter.ActualValue = new RealVector(Hyperparameter.Count());
       return base.Apply();
     }
 

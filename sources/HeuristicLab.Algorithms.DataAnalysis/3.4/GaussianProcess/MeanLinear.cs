@@ -30,6 +30,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public class MeanLinear : Item, IMeanFunction {
     [Storable]
     private double[] alpha;
+    public double[] Weights {
+      get {
+        if (alpha == null) return new double[0];
+        var copy = new double[alpha.Length];
+        Array.Copy(alpha, copy, copy.Length);
+        return copy;
+      }
+    }
     public int GetNumberOfParameters(int numberOfVariables) {
       return numberOfVariables;
     }

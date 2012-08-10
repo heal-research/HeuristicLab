@@ -31,6 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public class CovarianceConst : Item, ICovarianceFunction {
     [Storable]
     private double sf2;
+    public double Scale { get { return sf2; } }
 
     [StorableConstructor]
     protected CovarianceConst(bool deserializing)
@@ -55,7 +56,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void SetParameter(double[] hyp) {
-      this.sf2 = Math.Min(1E6, Math.Exp(2 * hyp[0])); // upper limit for scale
+      this.sf2 = Math.Exp(2 * hyp[0]);
     }
     public void SetData(double[,] x) {
       // nothing to do

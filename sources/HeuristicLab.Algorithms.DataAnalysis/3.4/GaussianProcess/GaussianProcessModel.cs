@@ -73,8 +73,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[,] x;
     [Storable]
     private Scaling inputScaling;
-    [Storable]
-    private Scaling targetScaling;
 
 
     [StorableConstructor]
@@ -84,7 +82,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.meanFunction = cloner.Clone(original.meanFunction);
       this.covarianceFunction = cloner.Clone(original.covarianceFunction);
       this.inputScaling = cloner.Clone(original.inputScaling);
-      this.targetScaling = cloner.Clone(original.targetScaling);
       this.negativeLogLikelihood = original.negativeLogLikelihood;
       this.targetVariable = original.targetVariable;
       this.sqrSigmaNoise = original.sqrSigmaNoise;
@@ -105,16 +102,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
 
-      sqrSigmaNoise = Math.Exp(2.0 * hyp.First());
-      sqrSigmaNoise = Math.Max(10E-6, sqrSigmaNoise); // lower limit for the noise level
 
       int nVariables = this.allowedInputVariables.Length;
-      this.meanFunction.SetParameter(hyp.Skip(1)
+      this.meanFunction.SetParameter(hyp
         .Take(this.meanFunction.GetNumberOfParameters(nVariables))
         .ToArray());
-      this.covarianceFunction.SetParameter(hyp.Skip(1 + this.meanFunction.GetNumberOfParameters(nVariables))
+      this.covarianceFunction.SetParameter(hyp.Skip(this.meanFunction.GetNumberOfParameters(nVariables))
         .Take(this.covarianceFunction.GetNumberOfParameters(nVariables))
         .ToArray());
+      sqrSigmaNoise = Math.Exp(2.0 * hyp.Last());
 
       CalculateModel(ds, rows);
     }
@@ -122,10 +118,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void CalculateModel(Dataset ds, IEnumerable<int> rows) {
       inputScaling = new Scaling(ds, allowedInputVariables, rows);
       x = AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputVariables, rows, inputScaling);
-
-
-      targetScaling = new Scaling(ds, new string[] { targetVariable }, rows);
-      var y = targetScaling.GetScaledValues(ds, targetVariable, rows);
+      var y = ds.GetDoubleValues(targetVariable, rows);
 
       int n = x.GetLength(0);
       l = new double[n, n];
@@ -148,7 +141,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       alglib.densesolverreport denseSolveRep;
 
       var res = alglib.trfac.spdmatrixcholesky(ref l, n, false);
-      if (!res) throw new InvalidOperationException("Matrix is not positive semidefinite");
+      if (!res) throw new ArgumentException("Matrix is not positive semidefinite");
 
       // calculate sum of diagonal elements for likelihood
       double diagSum = Enumerable.Range(0, n).Select(i => Math.Log(l[i, i])).Sum();
@@ -197,9 +190,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
 
-      return new double[] { noiseGradient }
-        .Concat(meanGradients)
-        .Concat(covGradients).ToArray();
+      return
+        meanGradients
+        .Concat(covGradients)
+        .Concat(new double[] { noiseGradient }).ToArray();
     }
 
 
@@ -230,7 +224,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       // var kss = new double[newN];
       var Ks = new double[newN, n];
-      double[,] sWKs = new double[n, newN];
+      //double[,] sWKs = new double[n, newN];
       // double[,] v;
 
 
@@ -242,27 +236,61 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       meanFunction.SetData(newX);
       var ms = meanFunction.GetMean(newX);
       for (int i = 0; i < newN; i++) {
-
         for (int j = 0; j < n; j++) {
           Ks[i, j] = covarianceFunction.GetCovariance(j, i);
-          sWKs[j, i] = Ks[i, j] / Math.Sqrt(sqrSigmaNoise);
+          //sWKs[j, i] = Ks[i, j] / Math.Sqrt(sqrSigmaNoise);
         }
       }
 
       // for stddev 
       // alglib.rmatrixsolvem(l, n, sWKs, newN, true, out info, out denseSolveRep, out v);
 
-      double targetScaleMin, targetScaleMax;
-      targetScaling.GetScalingParameters(targetVariable, out targetScaleMin, out targetScaleMax);
       return Enumerable.Range(0, newN)
-        .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha))
-        .Select(m => m * (targetScaleMax - targetScaleMin) + targetScaleMin);
+        .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha));
       //for (int i = 0; i < newN; i++) {
       //  // predMean[i] = ms[i] + prod(GetRow(Ks, i), alpha);
       //  // var sumV2 = prod(GetCol(v, i), GetCol(v, i));
       //  // predVar[i] = kss[i] - sumV2;
       //}
 
+    }
+
+    public IEnumerable<double> GetEstimatedVariance(Dataset dataset, IEnumerable<int> rows) {
+      var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, inputScaling);
+      int newN = newX.GetLength(0);
+      int n = x.GetLength(0);
+
+      var kss = new double[newN];
+      double[,] sWKs = new double[n, newN];
+
+
+      // for stddev 
+      covarianceFunction.SetData(newX);
+      for (int i = 0; i < newN; i++)
+        kss[i] = covarianceFunction.GetCovariance(i, i);
+
+      covarianceFunction.SetData(x, newX);
+      for (int i = 0; i < n; i++) {
+        for (int j = 0; j < newN; j++) {
+          sWKs[i, j] = covarianceFunction.GetCovariance(i, j) / Math.Sqrt(sqrSigmaNoise);
+        }
+      }
+
+      // for stddev 
+      int info;
+      alglib.densesolverreport denseSolveRep;
+      double[,] v;
+      double[,] lTrans = new double[l.GetLength(1), l.GetLength(0)];
+      for (int i = 0; i < lTrans.GetLength(0); i++)
+        for (int j = 0; j < lTrans.GetLength(1); j++)
+          lTrans[i, j] = l[j, i];
+      alglib.rmatrixsolvem(lTrans, n, sWKs, newN, true, out info, out denseSolveRep, out v); // not working!
+      // alglib.spdmatrixcholeskysolvem(lTrans, n, true, sWKs, newN, out info, out denseSolveRep, out v);
+
+      for (int i = 0; i < newN; i++) {
+        var sumV2 = Util.ScalarProd(Util.GetCol(v, i), Util.GetCol(v, i));
+        yield return kss[i] - sumV2;
+      }
     }
   }
 }

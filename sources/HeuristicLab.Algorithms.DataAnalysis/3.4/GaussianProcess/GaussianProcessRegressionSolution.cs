@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -49,6 +51,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GaussianProcessRegressionSolution(this, cloner);
+    }
+
+    public IEnumerable<double> EstimatedVariance {
+      get { return GetEstimatedVariance(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
+    }
+    public IEnumerable<double> EstimatedTrainingVariance {
+      get { return GetEstimatedVariance(ProblemData.TrainingIndices); }
+    }
+    public IEnumerable<double> EstimatedTestVariance {
+      get { return GetEstimatedVariance(ProblemData.TestIndices); }
+    }
+
+    public IEnumerable<double> GetEstimatedVariance(IEnumerable<int> rows) {
+      return Model.GetEstimatedVariance(ProblemData.Dataset, rows);
     }
   }
 }

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -30,5 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     IMeanFunction MeanFunction { get; }
     ICovarianceFunction CovarianceFunction { get; }
     double[] GetHyperparameterGradients();
+
+    IEnumerable<double> GetEstimatedVariance(Dataset ds, IEnumerable<int> rows);
   }
 }

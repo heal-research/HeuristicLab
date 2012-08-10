@@ -35,8 +35,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[,] xt;
     [Storable]
     private double sf2;
+    public double Scale { get { return sf2; } }
+
     [Storable]
     private double[] l;
+    public double[] Length {
+      get {
+        if (l == null) return new double[0];
+        var copy = new double[l.Length];
+        Array.Copy(l, copy, copy.Length);
+        return copy;
+      }
+    }
 
     private double[,] sd;
     private bool symmetric;
@@ -75,7 +85,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public void SetParameter(double[] hyp) {
       this.l = hyp.Take(hyp.Length - 1).Select(Math.Exp).ToArray();
       this.sf2 = Math.Exp(2 * hyp[hyp.Length - 1]);
-      sf2 = Math.Min(10E6, sf2); // upper limit for the scale
+      // sf2 = Math.Min(10E6, sf2); // upper limit for the scale
 
       sd = null;
     }

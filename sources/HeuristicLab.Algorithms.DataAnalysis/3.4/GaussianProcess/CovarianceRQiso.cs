@@ -27,9 +27,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceSEiso",
-    Description = "Isotropic squared exponential covariance function for Gaussian processes.")]
-  public class CovarianceSEiso : Item, ICovarianceFunction {
+  [Item(Name = "CovarianceRQiso",
+    Description = "Isotropic rational quadratic covariance function for Gaussian processes.")]
+  public class CovarianceRQiso : Item, ICovarianceFunction {
     [Storable]
     private double[,] x;
     [Storable]
@@ -41,15 +41,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double l;
     public double Length { get { return l; } }
     [Storable]
+    private double alpha;
+    public double Shape { get { return alpha; } }
+    [Storable]
     private bool symmetric;
-    private double[,] sd;
+    private double[,] d2;
 
     [StorableConstructor]
-    protected CovarianceSEiso(bool deserializing)
+    protected CovarianceRQiso(bool deserializing)
       : base(deserializing) {
     }
 
-    protected CovarianceSEiso(CovarianceSEiso original, Cloner cloner)
+    protected CovarianceRQiso(CovarianceRQiso original, Cloner cloner)
       : base(original, cloner) {
       if (original.x != null) {
         this.x = new double[original.x.GetLength(0), original.x.GetLength(1)];
@@ -58,31 +61,33 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.xt = new double[original.xt.GetLength(0), original.xt.GetLength(1)];
         Array.Copy(original.xt, this.xt, xt.Length);
 
-        this.sd = new double[original.sd.GetLength(0), original.sd.GetLength(1)];
-        Array.Copy(original.sd, this.sd, sd.Length);
+        this.d2 = new double[original.d2.GetLength(0), original.d2.GetLength(1)];
+        Array.Copy(original.d2, this.d2, d2.Length);
         this.sf2 = original.sf2;
       }
       this.sf2 = original.sf2;
       this.l = original.l;
+      this.alpha = original.alpha;
       this.symmetric = original.symmetric;
     }
 
-    public CovarianceSEiso()
+    public CovarianceRQiso()
       : base() {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new CovarianceSEiso(this, cloner);
+      return new CovarianceRQiso(this, cloner);
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
-      return 2;
+      return 3;
     }
 
     public void SetParameter(double[] hyp) {
       this.l = Math.Exp(hyp[0]);
       this.sf2 = Math.Exp(2 * hyp[1]);
-      sd = null;
+      this.alpha = Math.Exp(hyp[2]);
+      d2 = null;
     }
     public void SetData(double[,] x) {
       SetData(x, x);
@@ -94,19 +99,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.symmetric = false;
       this.x = x;
       this.xt = xt;
-      sd = null;
+      d2 = null;
     }
 
     public double GetCovariance(int i, int j) {
-      if (sd == null) CalculateSquaredDistances();
-      return sf2 * Math.Exp(-sd[i, j] / 2.0);
+      if (d2 == null) CalculateSquaredDistances();
+      return sf2 * Math.Pow(1 + 0.5 * d2[i, j] / alpha, -alpha);
     }
 
     public double GetGradient(int i, int j, int k) {
       switch (k) {
-        case 0: return sf2 * Math.Exp(-sd[i, j] / 2.0) * sd[i, j];
-        case 1: return 2.0 * sf2 * Math.Exp(-sd[i, j] / 2.0);
-        default: throw new ArgumentException("CovarianceSEiso has two hyperparameters", "k");
+        case 0: return sf2 * Math.Pow(1 + 0.5 * d2[i, j] / alpha, -alpha - 1) * d2[i, j];
+        case 1: return 2 * sf2 * Math.Pow((1 + 0.5 * d2[i, j] / alpha), (-alpha));
+        case 2: {
+            double g = (1 + 0.5 * d2[i, j] / alpha);
+            g = sf2 * Math.Pow(g, -alpha) * (0.5 * d2[i, j] / g - alpha * Math.Log(g));
+            return g;
+          }
+        default: throw new ArgumentException("CovarianceRQiso has three hyperparameters", "k");
       }
     }
 
@@ -114,19 +124,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (x.GetLength(1) != xt.GetLength(1)) throw new InvalidOperationException();
       int rows = x.GetLength(0);
       int cols = xt.GetLength(0);
-      sd = new double[rows, cols];
+      d2 = new double[rows, cols];
       double lInv = 1.0 / l;
       if (symmetric) {
         for (int i = 0; i < rows; i++) {
           for (int j = i; j < rows; j++) {
-            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
-            sd[j, i] = sd[i, j];
+            d2[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
+            d2[j, i] = d2[i, j];
           }
         }
       } else {
         for (int i = 0; i < rows; i++) {
           for (int j = 0; j < cols; j++) {
-            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
+            d2[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
           }
         }
       }

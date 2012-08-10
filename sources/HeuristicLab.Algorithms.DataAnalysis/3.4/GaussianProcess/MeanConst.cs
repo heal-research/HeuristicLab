@@ -31,6 +31,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public class MeanConst : Item, IMeanFunction {
     [Storable]
     private double c;
+    public double Value { get { return c; } }
+
     public int GetNumberOfParameters(int numberOfVariables) {
       return 1;
     }

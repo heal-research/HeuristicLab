@@ -34,10 +34,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[,] xt;
     [Storable]
     private double sf2;
+    public double Scale { get { return sf2; } }
     [Storable]
     private double l;
+    public double Length { get { return l; } }
     [Storable]
     private double p;
+    public double Period { get { return p; } }
 
     private bool symmetric;
 
@@ -73,8 +76,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.l = Math.Exp(hyp[0]);
       this.p = Math.Exp(hyp[1]);
       this.sf2 = Math.Exp(2 * hyp[2]);
-
-      sf2 = Math.Min(10E6, sf2); // upper limit for the scale
+      // sf2 = Math.Min(10E6, sf2); // upper limit for the scale
 
       sd = null;
     }
