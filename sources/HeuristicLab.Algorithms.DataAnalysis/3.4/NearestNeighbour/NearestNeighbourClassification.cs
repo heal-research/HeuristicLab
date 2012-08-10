@@ -20,18 +20,14 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -83,31 +79,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static IClassificationSolution CreateNearestNeighbourClassificationSolution(IClassificationProblemData problemData, int k) {
-      Dataset dataset = problemData.Dataset;
-      string targetVariable = problemData.TargetVariable;
-      IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
-      IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
-        throw new NotSupportedException("Nearest neighbour classification does not support NaN or infinity values in the input dataset.");
+      var problemDataClone = (IClassificationProblemData)problemData.Clone();
+      return new NearestNeighbourClassificationSolution(problemDataClone, Train(problemDataClone, k));
+    }
 
-      alglib.nearestneighbor.kdtree kdtree = new alglib.nearestneighbor.kdtree();
-
-      int nRows = inputMatrix.GetLength(0);
-      int nFeatures = inputMatrix.GetLength(1) - 1;
-      double[] classValues = dataset.GetDoubleValues(targetVariable).Distinct().OrderBy(x => x).ToArray();
-      int nClasses = classValues.Count();
-      // map original class values to values [0..nClasses-1]
-      Dictionary<double, double> classIndices = new Dictionary<double, double>();
-      for (int i = 0; i < nClasses; i++) {
-        classIndices[classValues[i]] = i;
-      }
-      for (int row = 0; row < nRows; row++) {
-        inputMatrix[row, nFeatures] = classIndices[inputMatrix[row, nFeatures]];
-      }
-      alglib.nearestneighbor.kdtreebuild(inputMatrix, nRows, inputMatrix.GetLength(1) - 1, 1, 2, kdtree);
-      var problemDataClone = (IClassificationProblemData) problemData.Clone();
-      return new NearestNeighbourClassificationSolution(problemDataClone, new NearestNeighbourModel(kdtree, k, targetVariable, allowedInputVariables, problemDataClone.ClassValues.ToArray()));
+    public static INearestNeighbourModel Train(IClassificationProblemData problemData, int k) {
+      return new NearestNeighbourModel(problemData.Dataset,
+        problemData.TrainingIndices,
+        k,
+        problemData.TargetVariable,
+        problemData.AllowedInputVariables,
+        problemData.ClassValues.ToArray());
     }
     #endregion
   }

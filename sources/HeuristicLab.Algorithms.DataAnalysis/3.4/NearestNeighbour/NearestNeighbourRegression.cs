@@ -20,18 +20,13 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -83,21 +78,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static IRegressionSolution CreateNearestNeighbourRegressionSolution(IRegressionProblemData problemData, int k) {
-      Dataset dataset = problemData.Dataset;
-      string targetVariable = problemData.TargetVariable;
-      IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
-      IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
-        throw new NotSupportedException("Nearest neighbour regression does not support NaN or infinity values in the input dataset.");
+      var clonedProblemData = (IRegressionProblemData)problemData.Clone();
+      return new NearestNeighbourRegressionSolution(clonedProblemData, Train(problemData, k));
+    }
 
-      alglib.nearestneighbor.kdtree kdtree = new alglib.nearestneighbor.kdtree();
-
-      int nRows = inputMatrix.GetLength(0);
-
-      alglib.nearestneighbor.kdtreebuild(inputMatrix, nRows, inputMatrix.GetLength(1) - 1, 1, 2, kdtree);
-
-      return new NearestNeighbourRegressionSolution((IRegressionProblemData)problemData.Clone(), new NearestNeighbourModel(kdtree, k, targetVariable, allowedInputVariables));
+    public static INearestNeighbourModel Train(IRegressionProblemData problemData, int k) {
+      return new NearestNeighbourModel(problemData.Dataset,
+        problemData.TrainingIndices,
+        k,
+        problemData.TargetVariable,
+        problemData.AllowedInputVariables);
     }
     #endregion
   }

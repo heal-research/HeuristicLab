@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Represents a nearest neighbour model for regression and classification
   /// </summary>
   [StorableClass]
-  [Item("NearestNeighbourModel", "Represents a neural network for regression and classification.")]
+  [Item("NearestNeighbourModel", "Represents a nearest neighbour model for regression and classification.")]
   public sealed class NearestNeighbourModel : NamedItem, INearestNeighbourModel {
 
     private alglib.nearestneighbor.kdtree kdTree;
@@ -55,6 +55,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[] classValues;
     [Storable]
     private int k;
+
     [StorableConstructor]
     private NearestNeighbourModel(bool deserializing)
       : base(deserializing) {
@@ -94,16 +95,37 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
     }
-    public NearestNeighbourModel(alglib.nearestneighbor.kdtree kdTree, int k, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null)
-      : base() {
-      this.name = ItemName;
-      this.description = ItemDescription;
-      this.kdTree = kdTree;
+    public NearestNeighbourModel(Dataset dataset, IEnumerable<int> rows, int k, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null) {
       this.k = k;
       this.targetVariable = targetVariable;
       this.allowedInputVariables = allowedInputVariables.ToArray();
-      if (classValues != null)
+
+      var inputMatrix = AlglibUtil.PrepareInputMatrix(dataset,
+                                   allowedInputVariables.Concat(new string[] { targetVariable }),
+                                   rows);
+
+      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+        throw new NotSupportedException(
+          "Nearest neighbour classification does not support NaN or infinity values in the input dataset.");
+
+      this.kdTree = new alglib.nearestneighbor.kdtree();
+
+      var nRows = inputMatrix.GetLength(0);
+      var nFeatures = inputMatrix.GetLength(1) - 1;
+
+      if (classValues != null) {
         this.classValues = (double[])classValues.Clone();
+        int nClasses = classValues.Length;
+        // map original class values to values [0..nClasses-1]
+        var classIndices = new Dictionary<double, double>();
+        for (int i = 0; i < nClasses; i++)
+          classIndices[classValues[i]] = i;
+
+        for (int row = 0; row < nRows; row++) {
+          inputMatrix[row, nFeatures] = classIndices[inputMatrix[row, nFeatures]];
+        }
+      }
+      alglib.nearestneighbor.kdtreebuild(inputMatrix, nRows, inputMatrix.GetLength(1) - 1, 1, 2, kdTree);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -139,6 +161,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+      if (classValues == null) throw new InvalidOperationException("No class values are defined.");
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
