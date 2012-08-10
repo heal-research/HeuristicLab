@@ -94,6 +94,7 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void valueTextBox_Validating(object sender, CancelEventArgs e) {
+      if (ReadOnly) return;
       string errorMessage;
       if (!Content.Validate(valueTextBox.Text, out errorMessage)) {
         e.Cancel = true;
@@ -102,6 +103,7 @@ namespace HeuristicLab.Data.Views {
       }
     }
     private void valueTextBox_Validated(object sender, EventArgs e) {
+      if (ReadOnly) return;
       if (!Content.ReadOnly) Content.SetValue(valueTextBox.Text);
       errorProvider.SetError(valueTextBox, string.Empty);
       valueTextBox.Text = Content.GetValue();
