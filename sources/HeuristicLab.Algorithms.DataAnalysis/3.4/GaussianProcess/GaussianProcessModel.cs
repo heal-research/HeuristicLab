@@ -129,7 +129,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // calculate means and covariances
       double[] m = meanFunction.GetMean(x);
       for (int i = 0; i < n; i++) {
-
         for (int j = i; j < n; j++) {
           l[j, i] = covarianceFunction.GetCovariance(i, j) / sqrSigmaNoise;
           if (j == i) l[j, i] += 1.0;
@@ -162,15 +161,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       int info;
       alglib.matinvreport matInvRep;
+      double[,] lCopy = new double[l.GetLength(0), l.GetLength(1)];
+      Array.Copy(l, lCopy, lCopy.Length);
 
-      alglib.spdmatrixcholeskyinverse(ref l, n, false, out info, out matInvRep);
+      alglib.spdmatrixcholeskyinverse(ref lCopy, n, false, out info, out matInvRep);
       if (info != 1) throw new ArgumentException("Can't invert matrix to calculate gradients.");
       for (int i = 0; i < n; i++) {
         for (int j = 0; j <= i; j++)
-          l[i, j] = l[i, j] / sqrSigmaNoise - alpha[i] * alpha[j];
+          lCopy[i, j] = lCopy[i, j] / sqrSigmaNoise - alpha[i] * alpha[j];
       }
 
-      double noiseGradient = sqrSigmaNoise * Enumerable.Range(0, n).Select(i => l[i, i]).Sum();
+      double noiseGradient = sqrSigmaNoise * Enumerable.Range(0, n).Select(i => lCopy[i, i]).Sum();
 
       double[] meanGradients = new double[meanFunction.GetNumberOfParameters(nAllowedVariables)];
       for (int i = 0; i < meanGradients.Length; i++) {
@@ -183,9 +184,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int i = 0; i < n; i++) {
           for (int k = 0; k < covGradients.Length; k++) {
             for (int j = 0; j < i; j++) {
-              covGradients[k] += l[i, j] * covarianceFunction.GetGradient(i, j, k);
+              covGradients[k] += lCopy[i, j] * covarianceFunction.GetGradient(i, j, k);
             }
-            covGradients[k] += 0.5 * l[i, i] * covarianceFunction.GetGradient(i, i, k);
+            covGradients[k] += 0.5 * lCopy[i, i] * covarianceFunction.GetGradient(i, i, k);
           }
         }
       }
@@ -263,16 +264,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var kss = new double[newN];
       double[,] sWKs = new double[n, newN];
 
-
       // for stddev 
       covarianceFunction.SetData(newX);
       for (int i = 0; i < newN; i++)
         kss[i] = covarianceFunction.GetCovariance(i, i);
 
       covarianceFunction.SetData(x, newX);
-      for (int i = 0; i < n; i++) {
-        for (int j = 0; j < newN; j++) {
-          sWKs[i, j] = covarianceFunction.GetCovariance(i, j) / Math.Sqrt(sqrSigmaNoise);
+      for (int i = 0; i < newN; i++) {
+        for (int j = 0; j < n; j++) {
+          sWKs[j, i] = covarianceFunction.GetCovariance(j, i) / Math.Sqrt(sqrSigmaNoise);
         }
       }
 
@@ -280,17 +280,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int info;
       alglib.densesolverreport denseSolveRep;
       double[,] v;
-      double[,] lTrans = new double[l.GetLength(1), l.GetLength(0)];
-      for (int i = 0; i < lTrans.GetLength(0); i++)
-        for (int j = 0; j < lTrans.GetLength(1); j++)
-          lTrans[i, j] = l[j, i];
-      alglib.rmatrixsolvem(lTrans, n, sWKs, newN, true, out info, out denseSolveRep, out v); // not working!
-      // alglib.spdmatrixcholeskysolvem(lTrans, n, true, sWKs, newN, out info, out denseSolveRep, out v);
+
+      alglib.rmatrixsolvem(l, n, sWKs, newN, false, out info, out denseSolveRep, out v);
 
       for (int i = 0; i < newN; i++) {
-        var sumV2 = Util.ScalarProd(Util.GetCol(v, i), Util.GetCol(v, i));
-        yield return kss[i] - sumV2;
+        var sumV = Util.ScalarProd(Util.GetCol(v, i), Util.GetCol(v, i));
+        kss[i] -= sumV;
+        if (kss[i] < 0) kss[i] = 0;
       }
+      return kss;
     }
   }
 }

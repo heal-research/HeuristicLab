@@ -62,11 +62,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         this.chart.ChartAreas[0].AxisX.Minimum = 0;
         this.chart.ChartAreas[0].AxisX.Maximum = Content.ProblemData.Dataset.Rows - 1;
 
-        this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable;
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray(),
-          Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray());
         // training series
         this.chart.Series.Add(ESTIMATEDVALUES_TRAINING_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].LegendText = ESTIMATEDVALUES_TRAINING_SERIES_NAME;
@@ -74,11 +69,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Color;
         var mean = Content.EstimatedTrainingValues.ToArray();
         var s2 = Content.EstimatedTrainingVariance.ToArray();
-        var lower = mean.Zip(s2, (m, s) => m - s).ToArray();
-        var upper = mean.Zip(s2, (m, s) => m + s).ToArray();
+        var lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
+        var upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TrainingIndices.ToArray(), lower, upper);
         this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Tag = Content;
+
         // test series
         this.chart.Series.Add(ESTIMATEDVALUES_TEST_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].LegendText = ESTIMATEDVALUES_TEST_SERIES_NAME;
@@ -86,11 +82,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
         mean = Content.EstimatedTestValues.ToArray();
         s2 = Content.EstimatedTestVariance.ToArray();
-        lower = mean.Zip(s2, (m, s) => m - s).ToArray();
-        upper = mean.Zip(s2, (m, s) => m + s).ToArray();
+        lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
+        upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TestIndices.ToArray(), lower, upper);
         this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Tag = Content;
+
         // series of remaining points
         int[] allIndices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
         var estimatedValues = Content.EstimatedValues.ToArray();
@@ -101,6 +98,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIndices, allEstimatedValues);
         this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Tag = Content;
+
+        // target
+        this.chart.Series.Add(TARGETVARIABLE_SERIES_NAME);
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].LegendText = Content.ProblemData.TargetVariable;
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
+        this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.DataBindXY(Enumerable.Range(0, Content.ProblemData.Dataset.Rows).ToArray(),
+          Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray());
+
         this.ToggleSeriesData(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
 
         UpdateCursorInterval();
@@ -242,8 +247,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             indices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
             mean = Content.EstimatedValues.ToArray();
             s2 = Content.EstimatedVariance.ToArray();
-            lower = mean.Zip(s2, (m, s) => m - s).ToArray();
-            upper = mean.Zip(s2, (m, s) => m + s).ToArray();
+            lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
+            upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
             lower = indices.Select(index => lower[index]).ToArray();
             upper = indices.Select(index => upper[index]).ToArray();
             break;
@@ -251,8 +256,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             indices = Content.ProblemData.TrainingIndices.ToArray();
             mean = Content.EstimatedTrainingValues.ToArray();
             s2 = Content.EstimatedTrainingVariance.ToArray();
-            lower = mean.Zip(s2, (m, s) => m - s).ToArray();
-            upper = mean.Zip(s2, (m, s) => m + s).ToArray();
+            lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
+            upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
             break;
           case ESTIMATEDVALUES_TEST_SERIES_NAME:
             indices = Content.ProblemData.TestIndices.ToArray();
