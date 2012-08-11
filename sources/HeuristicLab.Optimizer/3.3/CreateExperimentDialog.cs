@@ -472,9 +472,10 @@ namespace HeuristicLab.Optimizer {
 
     private void AddOptimizer(IOptimizer optimizer, Experiment experiment) {
       if (createBatchRun) {
-        var batchRun = new BatchRun();
-        batchRun.Repetitions = repetitions;
-        batchRun.Optimizer = optimizer;
+        var batchRun = new BatchRun(repetitions.ToString() + "x " + optimizer.Name) {
+          Repetitions = repetitions,
+          Optimizer = optimizer
+        };
         experiment.Optimizers.Add(batchRun);
       } else {
         experiment.Optimizers.Add(optimizer);
@@ -707,7 +708,8 @@ namespace HeuristicLab.Optimizer {
       var localExperiment = new Experiment();
 
       int counter = 0, totalVariations = GetNumberOfVariations();
-      if (instances.Count == 0) {
+      int totalInstances = instances.Values.SelectMany(x => x).Count();
+      if (totalInstances == 0) {
         try {
           AddParameterVariations(Optimizer, localExperiment, ref counter, totalVariations);
         } catch (OperationCanceledException) {
@@ -728,7 +730,13 @@ namespace HeuristicLab.Optimizer {
             }
             if (!failed) {
               try {
-                AddParameterVariations(algorithm, localExperiment, ref counter, totalVariations);
+                if (totalInstances > 1 && totalVariations / totalInstances > 1) {
+                  var experiment = new Experiment(descriptor.Name);
+                  AddParameterVariations(algorithm, experiment, ref counter, totalVariations);
+                  localExperiment.Optimizers.Add(experiment);
+                } else {
+                  AddParameterVariations(algorithm, localExperiment, ref counter, totalVariations);
+                }
               } catch (OperationCanceledException) {
                 e.Cancel = true;
                 return;
