@@ -142,6 +142,7 @@
     <Compile Include="MultiObjective\ParetoFrontAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PopulationDiversityAnalysis\PopulationDiversityAnalyzer.cs" />
+    <Compile Include="PopulationDiversityAnalysis\SingleObjectivePopulationDiversityAnalyzer.cs" />
     <Compile Include="QualityAnalysis\BestAverageWorstQualityAnalyzer.cs" />
     <Compile Include="QualityAnalysis\BestAverageWorstQualityCalculator.cs" />
     <Compile Include="QualityAnalysis\BestQualityMemorizer.cs" />

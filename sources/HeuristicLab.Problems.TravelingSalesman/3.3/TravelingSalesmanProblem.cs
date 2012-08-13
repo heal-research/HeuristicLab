@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -82,6 +83,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     private TSPPopulationDiversityAnalyzer TSPPopulationDiversityAnalyzer {
       get { return Operators.OfType<TSPPopulationDiversityAnalyzer>().FirstOrDefault(); }
+    }
+    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
+      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -237,7 +241,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       Operators.Add(new BestTSPSolutionAnalyzer());
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
-      Operators.Add(new TSPPopulationDiversityAnalyzer());
+      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
       ParameterizeAnalyzers();
       var operators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
         new OrderCrossover2(),
@@ -323,6 +327,13 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         TSPPopulationDiversityAnalyzer.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
         TSPPopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         TSPPopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
+      }
+
+      if (SingleObjectivePopulationDiversityAnalyzer != null) {
+        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
+        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<TSPSimilarityCalculator>().SingleOrDefault();
       }
     }
     private void ParameterizeOperators() {
