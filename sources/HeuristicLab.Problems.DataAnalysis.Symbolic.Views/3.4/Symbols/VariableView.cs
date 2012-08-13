@@ -91,6 +91,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
+      enabledCheckBox.Enabled = Content != null && Content.VariableNames.Any() && !Locked && !ReadOnly;
       weightInitializationMuTextBox.Enabled = Content != null;
       weightInitializationMuTextBox.ReadOnly = ReadOnly;
       weightInitializationSigmaTextBox.Enabled = Content != null;

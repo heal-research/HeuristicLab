@@ -180,8 +180,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     #region IStatefulItem methods
-    void IStatefulItem.InitializeState()
-    {
+    void IStatefulItem.InitializeState() {
       ReadOnly = false;
     }
     void IStatefulItem.ClearState() {
@@ -244,7 +243,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
         var groupSymbol = s as GroupSymbol;
         if (groupSymbol != null) RegisterGroupSymbolEvents(groupSymbol);
-        else symbol.Changed += new EventHandler(Symbol_Changed);
+        else s.Changed += new EventHandler(Symbol_Changed);
       }
     }
     private void DeregisterSymbolEvents(ISymbol symbol) {
@@ -254,7 +253,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
         var groupSymbol = s as GroupSymbol;
         if (groupSymbol != null) DeregisterGroupSymbolEvents(groupSymbol);
-        else symbol.Changed -= new EventHandler(Symbol_Changed);
+        else s.Changed -= new EventHandler(Symbol_Changed);
       }
     }
 

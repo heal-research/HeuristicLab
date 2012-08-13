@@ -174,7 +174,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     protected System.Windows.Forms.Label initialFrequencyLabel;
     protected System.Windows.Forms.TextBox initialFrequencyTextBox;
-    private System.Windows.Forms.CheckBox enabledCheckBox;
+    protected System.Windows.Forms.CheckBox enabledCheckBox;
     protected System.Windows.Forms.Label minimumArityLabel;
     protected System.Windows.Forms.Label maximumArityLabel;
     protected System.Windows.Forms.TextBox minimumArityTextBox;
