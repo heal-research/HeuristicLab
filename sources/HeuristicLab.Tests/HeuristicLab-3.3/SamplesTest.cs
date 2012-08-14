@@ -96,13 +96,6 @@ namespace HeuristicLab_33.Tests {
       ga.Problem = tspProblem;
       ConfigureGeneticAlgorithmParameters<ProportionalSelector, OrderCrossover2, InversionManipulator>(
         ga, 100, 1, 1000, 0.05);
-
-      ga.Analyzer.Operators.SetItemCheckedState(ga.Analyzer.Operators
-        .OfType<TSPAlleleFrequencyAnalyzer>()
-        .Single(), false);
-      ga.Analyzer.Operators.SetItemCheckedState(ga.Analyzer.Operators
-        .OfType<TSPPopulationDiversityAnalyzer>()
-        .Single(), false);
       #endregion
       return ga;
     }
@@ -554,13 +547,6 @@ namespace HeuristicLab_33.Tests {
       ConfigureIslandGeneticAlgorithmParameters<ProportionalSelector, OrderCrossover2, InversionManipulator,
         UnidirectionalRingMigrator, BestSelector, WorstReplacer>(
         ga, 100, 1, 1000, 0.05, 5, 50, 0.25);
-
-      ga.Analyzer.Operators.SetItemCheckedState(ga.Analyzer.Operators
-        .OfType<TSPAlleleFrequencyAnalyzer>()
-        .Single(), false);
-      ga.Analyzer.Operators.SetItemCheckedState(ga.Analyzer.Operators
-        .OfType<TSPPopulationDiversityAnalyzer>()
-        .Single(), false);
       #endregion
       return ga;
     }
@@ -835,12 +821,6 @@ namespace HeuristicLab_33.Tests {
       ts.TabuMaker = tabuMaker;
       ts.TabuTenure.Value = 60;
 
-      ts.Analyzer.Operators.SetItemCheckedState(ts.Analyzer.Operators
-        .OfType<TSPAlleleFrequencyAnalyzer>()
-        .Single(), false);
-      ts.Analyzer.Operators.SetItemCheckedState(ts.Analyzer.Operators
-        .OfType<TSPPopulationDiversityAnalyzer>()
-        .Single(), false);
       #endregion
       ts.Engine = new ParallelEngine();
       return ts;
@@ -919,12 +899,6 @@ namespace HeuristicLab_33.Tests {
         .OfType<Swap3Manipulator>()
         .Single(), false);
       vns.ShakingOperator = shakingOperator;
-      vns.Analyzer.Operators.SetItemCheckedState(vns.Analyzer.Operators
-        .OfType<TSPAlleleFrequencyAnalyzer>()
-        .Single(), false);
-      vns.Analyzer.Operators.SetItemCheckedState(vns.Analyzer.Operators
-        .OfType<TSPPopulationDiversityAnalyzer>()
-        .Single(), false);
       #endregion
       vns.Engine = new ParallelEngine();
       return vns;
