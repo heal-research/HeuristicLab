@@ -88,8 +88,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         this.chart.Series.Add(ESTIMATEDVALUES_ALL_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].LegendText = ESTIMATEDVALUES_ALL_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIndices, allEstimatedValues);
-        this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
+        if (allEstimatedValues.Count > 0) {
+          this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIndices, allEstimatedValues);
+          this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
+        }
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Tag = Content;
         this.ToggleSeriesData(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
 
@@ -223,12 +225,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         string targetVariableName = Content.ProblemData.TargetVariable;
 
         IEnumerable<int> indices = null;
-        IEnumerable<double> predictedValues = null;
+        double[] predictedValues = null;
         switch (series.Name) {
           case ESTIMATEDVALUES_ALL_SERIES_NAME:
             indices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
             var estimatedValues = Content.EstimatedValues.ToArray();
-            predictedValues = indices.Select(index => estimatedValues[index]).ToList();
+            predictedValues = indices.Select(index => estimatedValues[index]).ToArray();
             break;
           case ESTIMATEDVALUES_TRAINING_SERIES_NAME:
             indices = Content.ProblemData.TrainingIndices.ToArray();
@@ -239,8 +241,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             predictedValues = Content.EstimatedTestValues.ToArray();
             break;
         }
-        series.Points.DataBindXY(indices, predictedValues);
-        this.InsertEmptyPoints(series);
+        if (predictedValues.Length > 0) {
+          series.Points.DataBindXY(indices, predictedValues);
+          this.InsertEmptyPoints(series);
+        }
         chart.Legends[series.Legend].ForeColor = Color.Black;
         UpdateCursorInterval();
         chart.Refresh();
