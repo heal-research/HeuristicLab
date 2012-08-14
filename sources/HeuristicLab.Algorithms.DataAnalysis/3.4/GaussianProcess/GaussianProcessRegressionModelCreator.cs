@@ -64,7 +64,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var model = Create(ProblemData, Hyperparameter.ToArray(), MeanFunction, CovarianceFunction);
         ModelParameter.ActualValue = model;
         NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(model.NegativeLogLikelihood);
-        HyperparameterGradientsParameter.ActualValue = new RealVector(model.GetHyperparameterGradients());
+        HyperparameterGradientsParameter.ActualValue = new RealVector(model.HyperparameterGradients);
         return base.Apply();
       }
       catch (ArgumentException) { }

@@ -903,21 +903,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
       int nHyp = cf.GetNumberOfParameters(x.GetLength(1));
       var hyp = Enumerable.Repeat(hypValue, nHyp).ToArray();
       cf.SetParameter(hyp);
-      cf.SetData(x, xt);
 
       int rows0 = x.GetLength(0);
       int rows1 = xt.GetLength(0);
       var actualCov = new double[rows0, rows1];
       for (int i = 0; i < rows0; i++)
         for (int j = 0; j < rows1; j++)
-          actualCov[i, j] = cf.GetCovariance(i, j);
+          actualCov[i, j] = cf.GetCrossCovariance(x, xt, i, j);
 
       AssertEqual(expectedCov, actualCov, delta);
 
       for (int i = 0; i < rows0; i++)
         for (int j = 0; j < rows1; j++) {
+          var g = cf.GetGradient(x, i, j).ToArray();
           for (int k = 0; k < nHyp; k++)
-            Assert.AreEqual(expectedGradients[k][i, j], cf.GetGradient(i, j, k), delta);
+            Assert.AreEqual(expectedGradients[k][i, j], g[k], delta);
         }
     }
 

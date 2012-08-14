@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -58,26 +59,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public void SetParameter(double[] hyp) {
       this.sf2 = Math.Exp(2 * hyp[0]);
     }
-    public void SetData(double[,] x) {
-      // nothing to do
+
+    public double GetCovariance(double[,] x, int i, int j) {
+      return sf2;
     }
 
-
-    public void SetData(double[,] x, double[,] xt) {
-      // nothing to do
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+      yield return 2 * sf2;
     }
 
-    public double GetCovariance(int i, int j) {
-      if (i == j) return sf2;
-      else return 0.0;
-    }
-
-    public double GetGradient(int i, int j, int k) {
-      if (k != 0) throw new ArgumentException("CovarianceConst has only one hyperparameters", "k");
-      if (i == j)
-        return 2 * sf2;
-      else
-        return 0.0;
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+      return 0.0;
     }
   }
 }

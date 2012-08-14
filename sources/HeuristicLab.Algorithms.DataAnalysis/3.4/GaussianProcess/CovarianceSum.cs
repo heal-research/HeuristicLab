@@ -76,6 +76,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void SetParameter(double[] hyp) {
+      if (terms.Count == 0) throw new ArgumentException("At least one term is needed for sum covariance function.");
       int offset = 0;
       foreach (var t in terms) {
         var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
@@ -83,41 +84,38 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         offset += numberOfParameters;
       }
     }
-    public void SetData(double[,] x) {
-      SetData(x, x);
-    }
 
-    public void SetData(double[,] x, double[,] xt) {
-      foreach (var t in terms) {
-        t.SetData(x, xt);
-      }
-    }
-
-    public double GetCovariance(int i, int j) {
-      return terms.Select(t => t.GetCovariance(i, j)).Sum();
+    public double GetCovariance(double[,] x, int i, int j) {
+      return terms.Select(t => t.GetCovariance(x, i, j)).Sum();
     }
 
     private Dictionary<int, Tuple<int, int>> cachedParameterMap;
-    public double GetGradient(int i, int j, int k) {
-      if (cachedParameterMap == null) {
-        CalculateParameterMap();
-      }
-      int ti = cachedParameterMap[k].Item1;
-      k = cachedParameterMap[k].Item2;
-      return terms[ti].GetGradient(i, j, k);
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+      //if (cachedParameterMap == null) {
+      //  CalculateParameterMap();
+      //}
+      //int ti = cachedParameterMap[k].Item1;
+      //k = cachedParameterMap[k].Item2;
+      //return terms[ti].GetGradient(x, i, j, k);
+      return terms.Select(t => t.GetGradient(x, i, j)).Aggregate(Enumerable.Concat);
     }
+
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+      return terms.Select(t => t.GetCrossCovariance(x, xt, i, j)).Sum();
+    }
+
     private void ClearCache() {
       cachedParameterMap = null;
     }
 
-    private void CalculateParameterMap() {
-      cachedParameterMap = new Dictionary<int, Tuple<int, int>>();
-      int k = 0;
-      for (int ti = 0; ti < terms.Count; ti++) {
-        for (int ti_k = 0; ti_k < terms[ti].GetNumberOfParameters(numberOfVariables); ti_k++) {
-          cachedParameterMap[k++] = Tuple.Create(ti, ti_k);
-        }
-      }
-    }
+    //private void CalculateParameterMap() {
+    //  cachedParameterMap = new Dictionary<int, Tuple<int, int>>();
+    //  int k = 0;
+    //  for (int ti = 0; ti < terms.Count; ti++) {
+    //    for (int ti_k = 0; ti_k < terms[ti].GetNumberOfParameters(numberOfVariables); ti_k++) {
+    //      cachedParameterMap[k++] = Tuple.Create(ti, ti_k);
+    //    }
+    //  }
+    //}
   }
 }

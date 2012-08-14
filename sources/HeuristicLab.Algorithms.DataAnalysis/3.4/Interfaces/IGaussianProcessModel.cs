@@ -30,7 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     double NegativeLogLikelihood { get; }
     IMeanFunction MeanFunction { get; }
     ICovarianceFunction CovarianceFunction { get; }
-    double[] GetHyperparameterGradients();
+    double[] HyperparameterGradients { get; }
 
     IEnumerable<double> GetEstimatedVariance(Dataset ds, IEnumerable<int> rows);
   }

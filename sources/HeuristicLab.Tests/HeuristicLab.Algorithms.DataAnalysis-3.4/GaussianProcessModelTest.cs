@@ -54,7 +54,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
                                              covarianceFunction);
         Assert.AreEqual(4.3170e+004, model.NegativeLogLikelihood, 1);
 
-        var dHyp = model.GetHyperparameterGradients();
+        var dHyp = model.HyperparameterGradients;
         Assert.AreEqual(-248.7932, dHyp[0], 1E-2);
         var dHypCovExpected = new double[] { -0.5550e4, -5.5533e4, -0.2511e4, -2.7625e4, -1.3033e4, 0.0289e4, -2.7625e4 };
         AssertEqual(dHypCovExpected, dHyp.Skip(1).Take(7).ToArray(), 1);
@@ -75,7 +75,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
                                              covarianceFunction);
         Assert.AreEqual(872.8448, model.NegativeLogLikelihood, 1e-3);
 
-        var dHyp = model.GetHyperparameterGradients();
+        var dHyp = model.HyperparameterGradients;
         Assert.AreEqual(-0.0046, dHyp[0], 1e-3);
         var dHypCovExpected = new double[] { 0.2652, -0.2386, 0.1706, -0.1744, 0.0000, 0.0000, -0.1744 };
         AssertEqual(dHypCovExpected, dHyp.Skip(1).Take(7).ToArray(), 1e-3);

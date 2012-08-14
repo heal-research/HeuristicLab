@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -28,14 +29,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceLinear", Description = "Linear covariance function for Gaussian processes.")]
   public class CovarianceLinear : Item, ICovarianceFunction {
-    [Storable]
-    private double[,] x;
-    [Storable]
-    private double[,] xt;
-
-    private double[,] k;
-    private bool symmetric;
-
     public int GetNumberOfParameters(int numberOfVariables) {
       return 0;
     }
@@ -43,17 +36,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected CovarianceLinear(bool deserializing) : base(deserializing) { }
     protected CovarianceLinear(CovarianceLinear original, Cloner cloner)
       : base(original, cloner) {
-      if (original.x != null) {
-        this.x = new double[original.x.GetLength(0), original.x.GetLength(1)];
-        Array.Copy(original.x, this.x, x.Length);
-
-        this.xt = new double[original.xt.GetLength(0), original.xt.GetLength(1)];
-        Array.Copy(original.xt, this.xt, xt.Length);
-
-        this.k = new double[original.k.GetLength(0), original.k.GetLength(1)];
-        Array.Copy(original.k, this.k, k.Length);
-      }
-      this.symmetric = original.symmetric;
     }
     public CovarianceLinear()
       : base() {
@@ -65,53 +47,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public void SetParameter(double[] hyp) {
       if (hyp.Length > 0) throw new ArgumentException("No hyperparameters are allowed for the linear covariance function.");
-      k = null;
     }
 
-    public void SetData(double[,] x) {
-      SetData(x, x);
-      this.symmetric = true;
+    public double GetCovariance(double[,] x, int i, int j) {
+      return Util.ScalarProd(Util.GetRow(x, i), Util.GetRow(x, j));
     }
 
-    public void SetData(double[,] x, double[,] xt) {
-      this.x = x;
-      this.xt = xt;
-      this.symmetric = false;
-
-      k = null;
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+      yield break;
     }
 
-    public double GetCovariance(int i, int j) {
-      if (k == null) CalculateInnerProduct();
-      return k[i, j];
-    }
-
-    public double GetGradient(int i, int j, int k) {
-      throw new NotSupportedException("CovarianceLinear does not have hyperparameters.");
-    }
-
-
-    private void CalculateInnerProduct() {
-      if (x.GetLength(1) != xt.GetLength(1)) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      int cols = xt.GetLength(0);
-      k = new double[rows, cols];
-      if (symmetric) {
-        for (int i = 0; i < rows; i++) {
-          for (int j = i; j < cols; j++) {
-            k[i, j] = Util.ScalarProd(Util.GetRow(x, i),
-                                      Util.GetRow(x, j));
-            k[j, i] = k[i, j];
-          }
-        }
-      } else {
-        for (int i = 0; i < rows; i++) {
-          for (int j = 0; j < cols; j++) {
-            k[i, j] = Util.ScalarProd(Util.GetRow(x, i),
-                                      Util.GetRow(xt, j));
-          }
-        }
-      }
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+      return Util.ScalarProd(Util.GetRow(x, i), Util.GetRow(xt, j));
     }
   }
 }

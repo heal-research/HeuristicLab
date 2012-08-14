@@ -90,13 +90,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
         // series of remaining points
         int[] allIndices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
-        var estimatedValues = Content.EstimatedValues.ToArray();
-        List<double> allEstimatedValues = allIndices.Select(index => estimatedValues[index]).ToList();
+        mean = Content.EstimatedValues.ToArray();
+        s2 = Content.EstimatedVariance.ToArray();
+        lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
+        upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
+        List<double> allLower = allIndices.Select(index => lower[index]).ToList();
+        List<double> allUpper = allIndices.Select(index => upper[index]).ToList();
         this.chart.Series.Add(ESTIMATEDVALUES_ALL_SERIES_NAME);
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].LegendText = ESTIMATEDVALUES_ALL_SERIES_NAME;
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].ChartType = SeriesChartType.Range;
-        this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIndices, allEstimatedValues);
-        this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
+        if (allIndices.Count() > 0) {
+          this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.DataBindXY(allIndices, allLower, allUpper);
+          this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
+        }
         this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Tag = Content;
 
         // target
@@ -126,7 +132,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         // check for consecutive indices
         if ((int)p2.XValue - (int)p1.XValue != 1) {
           // insert an empty point between p1 and p2 so that the line will be invisible (transparent)
-          var p = new DataPoint((int)((p1.XValue + p2.XValue) / 2), 0.0) { IsEmpty = true };
+          var p = new DataPoint((int)((p1.XValue + p2.XValue) / 2), new double[] { 0.0, 0.0 }) { IsEmpty = true };
+          // insert 
           series.Points.Insert(i + 1, p);
         }
         ++i;
@@ -235,7 +242,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
           ClearPointsQuick(series.Points);
         }
       } else if (Content != null) {
-        string targetVariableName = Content.ProblemData.TargetVariable;
 
         IEnumerable<int> indices = null;
         IEnumerable<double> mean = null;
@@ -267,11 +273,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             upper = mean.Zip(s2, (m, s) => m + s).ToArray();
             break;
         }
-        series.Points.DataBindXY(indices, lower, upper);
-        this.InsertEmptyPoints(series);
-        chart.Legends[series.Legend].ForeColor = Color.Black;
-        UpdateCursorInterval();
-        chart.Refresh();
+        if (indices.Count() > 0) {
+          series.Points.DataBindXY(indices, lower, upper);
+          this.InsertEmptyPoints(series);
+          chart.Legends[series.Legend].ForeColor = Color.Black;
+          UpdateCursorInterval();
+          chart.Refresh();
+        }
       }
     }
 
@@ -299,10 +307,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     private void chart_CustomizeLegend(object sender, CustomizeLegendEventArgs e) {
       if (chart.Series.Count != 4) return;
-      e.LegendItems[0].Cells[1].ForeColor = this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.Count == 0 ? Color.Gray : Color.Black;
-      e.LegendItems[1].Cells[1].ForeColor = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.Count == 0 ? Color.Gray : Color.Black;
-      e.LegendItems[2].Cells[1].ForeColor = this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.Count == 0 ? Color.Gray : Color.Black;
-      e.LegendItems[3].Cells[1].ForeColor = this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.Count == 0 ? Color.Gray : Color.Black;
+      e.LegendItems[0].Cells[1].ForeColor = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.Count == 0 ? Color.Gray : Color.Black;
+      e.LegendItems[1].Cells[1].ForeColor = this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.Count == 0 ? Color.Gray : Color.Black;
+      e.LegendItems[2].Cells[1].ForeColor = this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME].Points.Count == 0 ? Color.Gray : Color.Black;
+      e.LegendItems[3].Cells[1].ForeColor = this.chart.Series[TARGETVARIABLE_SERIES_NAME].Points.Count == 0 ? Color.Gray : Color.Black;
     }
   }
 }

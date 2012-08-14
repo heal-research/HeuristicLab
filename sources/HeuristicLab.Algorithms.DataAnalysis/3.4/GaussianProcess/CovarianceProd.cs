@@ -72,10 +72,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public int GetNumberOfParameters(int numberOfVariables) {
       this.numberOfVariables = numberOfVariables;
-      return factors.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
+      return factors.Select(f => f.GetNumberOfParameters(numberOfVariables)).Sum();
     }
 
     public void SetParameter(double[] hyp) {
+      if (factors.Count == 0) throw new ArgumentException("at least one factor is necessary for the product covariance function.");
       int offset = 0;
       foreach (var t in factors) {
         var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
@@ -83,39 +84,43 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         offset += numberOfParameters;
       }
     }
-    public void SetData(double[,] x) {
-      SetData(x, x);
+
+    public double GetCovariance(double[,] x, int i, int j) {
+      return factors.Select(f => f.GetCovariance(x, i, j)).Aggregate((a, b) => a * b);
     }
 
-    public void SetData(double[,] x, double[,] xt) {
-      foreach (var t in factors) {
-        t.SetData(x, xt);
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+      //if (cachedParameterMap == null) {
+      //  CalculateParameterMap();
+      //}
+      //int ti = cachedParameterMap[k].Item1;
+      //k = cachedParameterMap[k].Item2;
+      //double gradient = 1.0;
+      //for (int ii = 0; ii < factors.Count; ii++) {
+      //  var f = factors[ii];
+      //  if (ii == ti) {
+      //    gradient *= f.GetGradient(x, i, j, k);
+      //  } else {
+      //    gradient *= f.GetCovariance(x, i, j);
+      //  }
+      //}
+      //return gradient;
+      var covariances = factors.Select(f => f.GetCovariance(x, i, j)).ToArray();
+      for (int ii = 0; ii < factors.Count; ii++) {
+        foreach (var g in factors[ii].GetGradient(x, i, j)) {
+          double res = g;
+          for (int jj = 0; jj < covariances.Length; jj++)
+            if (ii != jj) res *= covariances[jj];
+          yield return res;
+        }
       }
     }
 
-    public double GetCovariance(int i, int j) {
-      return factors.Select(t => t.GetCovariance(i, j)).Aggregate((a, b) => a * b);
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+      return factors.Select(f => f.GetCrossCovariance(x, xt, i, j)).Aggregate((a, b) => a * b);
     }
 
     private Dictionary<int, Tuple<int, int>> cachedParameterMap;
-    public double GetGradient(int i, int j, int k) {
-      if (cachedParameterMap == null) {
-        CalculateParameterMap();
-      }
-      int ti = cachedParameterMap[k].Item1;
-      k = cachedParameterMap[k].Item2;
-      double res = 1.0;
-      for (int ii = 0; ii < factors.Count; ii++) {
-        var f = factors[ii];
-        if (ii == ti) {
-          res *= f.GetGradient(i, j, k);
-        } else {
-          res *= f.GetCovariance(i, j);
-        }
-      }
-      return res;
-    }
-
     private void ClearCache() {
       cachedParameterMap = null;
     }

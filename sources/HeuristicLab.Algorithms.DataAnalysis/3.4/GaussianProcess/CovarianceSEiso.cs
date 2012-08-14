@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,18 +32,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     Description = "Isotropic squared exponential covariance function for Gaussian processes.")]
   public class CovarianceSEiso : Item, ICovarianceFunction {
     [Storable]
-    private double[,] x;
-    [Storable]
-    private double[,] xt;
-    [Storable]
     private double sf2;
     public double Scale { get { return sf2; } }
     [Storable]
     private double l;
     public double Length { get { return l; } }
-    [Storable]
-    private bool symmetric;
-    private double[,] sd;
 
     [StorableConstructor]
     protected CovarianceSEiso(bool deserializing)
@@ -51,20 +45,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     protected CovarianceSEiso(CovarianceSEiso original, Cloner cloner)
       : base(original, cloner) {
-      if (original.x != null) {
-        this.x = new double[original.x.GetLength(0), original.x.GetLength(1)];
-        Array.Copy(original.x, this.x, x.Length);
-
-        this.xt = new double[original.xt.GetLength(0), original.xt.GetLength(1)];
-        Array.Copy(original.xt, this.xt, xt.Length);
-
-        this.sd = new double[original.sd.GetLength(0), original.sd.GetLength(1)];
-        Array.Copy(original.sd, this.sd, sd.Length);
-        this.sf2 = original.sf2;
-      }
       this.sf2 = original.sf2;
       this.l = original.l;
-      this.symmetric = original.symmetric;
     }
 
     public CovarianceSEiso()
@@ -80,56 +62,34 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void SetParameter(double[] hyp) {
+      if (hyp.Length != 2) throw new ArgumentException("CovarianceSEiso has two hyperparameters", "k");
       this.l = Math.Exp(hyp[0]);
       this.sf2 = Math.Exp(2 * hyp[1]);
-      sd = null;
-    }
-    public void SetData(double[,] x) {
-      SetData(x, x);
-      this.symmetric = true;
     }
 
 
-    public void SetData(double[,] x, double[,] xt) {
-      this.symmetric = false;
-      this.x = x;
-      this.xt = xt;
-      sd = null;
-    }
-
-    public double GetCovariance(int i, int j) {
-      if (sd == null) CalculateSquaredDistances();
-      return sf2 * Math.Exp(-sd[i, j] / 2.0);
-    }
-
-    public double GetGradient(int i, int j, int k) {
-      switch (k) {
-        case 0: return sf2 * Math.Exp(-sd[i, j] / 2.0) * sd[i, j];
-        case 1: return 2.0 * sf2 * Math.Exp(-sd[i, j] / 2.0);
-        default: throw new ArgumentException("CovarianceSEiso has two hyperparameters", "k");
-      }
-    }
-
-    private void CalculateSquaredDistances() {
-      if (x.GetLength(1) != xt.GetLength(1)) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      int cols = xt.GetLength(0);
-      sd = new double[rows, cols];
+    public double GetCovariance(double[,] x, int i, int j) {
       double lInv = 1.0 / l;
-      if (symmetric) {
-        for (int i = 0; i < rows; i++) {
-          for (int j = i; j < rows; j++) {
-            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
-            sd[j, i] = sd[i, j];
-          }
-        }
-      } else {
-        for (int i = 0; i < rows; i++) {
-          for (int j = 0; j < cols; j++) {
-            sd[i, j] = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
-          }
-        }
-      }
+      double d = i == j
+                   ? 0.0
+                   : Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(x, j).Select(e => e * lInv));
+      return sf2 * Math.Exp(-d / 2.0);
+    }
+
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+      double lInv = 1.0 / l;
+      double d = i == j
+                   ? 0.0
+                   : Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(x, j).Select(e => e * lInv));
+      double g = Math.Exp(-d / 2.0);
+      yield return sf2 * g * d;
+      yield return 2.0 * sf2 * g;
+    }
+
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+      double lInv = 1.0 / l;
+      double d = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
+      return sf2 * Math.Exp(-d / 2.0);
     }
   }
 }

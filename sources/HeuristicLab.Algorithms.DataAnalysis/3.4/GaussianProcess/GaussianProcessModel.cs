@@ -41,6 +41,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [Storable]
+    private double[] hyperparameterGradients;
+    public double[] HyperparameterGradients {
+      get {
+        var copy = new double[hyperparameterGradients.Length];
+        Array.Copy(hyperparameterGradients, copy, copy.Length);
+        return copy;
+      }
+    }
+
+    [Storable]
     private ICovarianceFunction covarianceFunction;
     public ICovarianceFunction CovarianceFunction {
       get { return covarianceFunction; }
@@ -124,13 +134,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       l = new double[n, n];
 
       meanFunction.SetData(x);
-      covarianceFunction.SetData(x);
 
       // calculate means and covariances
       double[] m = meanFunction.GetMean(x);
       for (int i = 0; i < n; i++) {
         for (int j = i; j < n; j++) {
-          l[j, i] = covarianceFunction.GetCovariance(i, j) / sqrSigmaNoise;
+          l[j, i] = covarianceFunction.GetCovariance(x, i, j) / sqrSigmaNoise;
           if (j == i) l[j, i] += 1.0;
         }
       }
@@ -152,14 +161,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       for (int i = 0; i < alpha.Length; i++)
         alpha[i] = alpha[i] / sqrSigmaNoise;
       negativeLogLikelihood = 0.5 * Util.ScalarProd(ym, alpha) + diagSum + (n / 2.0) * Math.Log(2.0 * Math.PI * sqrSigmaNoise);
-    }
 
-    public double[] GetHyperparameterGradients() {
       // derivatives
-      int n = x.GetLength(0);
       int nAllowedVariables = x.GetLength(1);
 
-      int info;
       alglib.matinvreport matInvRep;
       double[,] lCopy = new double[l.GetLength(0), l.GetLength(1)];
       Array.Copy(l, lCopy, lCopy.Length);
@@ -182,19 +187,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[] covGradients = new double[covarianceFunction.GetNumberOfParameters(nAllowedVariables)];
       if (covGradients.Length > 0) {
         for (int i = 0; i < n; i++) {
-          for (int k = 0; k < covGradients.Length; k++) {
-            for (int j = 0; j < i; j++) {
-              covGradients[k] += lCopy[i, j] * covarianceFunction.GetGradient(i, j, k);
+          for (int j = 0; j < i; j++) {
+            var g = covarianceFunction.GetGradient(x, i, j).ToArray();
+            for (int k = 0; k < covGradients.Length; k++) {
+              covGradients[k] += lCopy[i, j] * g[k];
             }
-            covGradients[k] += 0.5 * lCopy[i, i] * covarianceFunction.GetGradient(i, i, k);
+          }
+
+          var gDiag = covarianceFunction.GetGradient(x, i, i).ToArray();
+          for (int k = 0; k < covGradients.Length; k++) {
+            // diag
+            covGradients[k] += 0.5 * lCopy[i, i] * gDiag[k];
           }
         }
       }
 
-      return
+      hyperparameterGradients =
         meanGradients
         .Concat(covGradients)
         .Concat(new double[] { noiseGradient }).ToArray();
+
     }
 
 
@@ -218,42 +230,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, inputScaling);
       int newN = newX.GetLength(0);
       int n = x.GetLength(0);
-      // var predMean = new double[newN];
-      // predVar = new double[newN];
-
-
-
-      // var kss = new double[newN];
       var Ks = new double[newN, n];
-      //double[,] sWKs = new double[n, newN];
-      // double[,] v;
-
-
-      // for stddev 
-      //covarianceFunction.SetParameter(covHyp, newX);
-      //kss = covarianceFunction.GetDiagonalCovariances();
-
-      covarianceFunction.SetData(x, newX);
       meanFunction.SetData(newX);
       var ms = meanFunction.GetMean(newX);
       for (int i = 0; i < newN; i++) {
         for (int j = 0; j < n; j++) {
-          Ks[i, j] = covarianceFunction.GetCovariance(j, i);
-          //sWKs[j, i] = Ks[i, j] / Math.Sqrt(sqrSigmaNoise);
+          Ks[i, j] = covarianceFunction.GetCrossCovariance(x, newX, j, i);
         }
       }
 
-      // for stddev 
-      // alglib.rmatrixsolvem(l, n, sWKs, newN, true, out info, out denseSolveRep, out v);
-
       return Enumerable.Range(0, newN)
         .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha));
-      //for (int i = 0; i < newN; i++) {
-      //  // predMean[i] = ms[i] + prod(GetRow(Ks, i), alpha);
-      //  // var sumV2 = prod(GetCol(v, i), GetCol(v, i));
-      //  // predVar[i] = kss[i] - sumV2;
-      //}
-
     }
 
     public IEnumerable<double> GetEstimatedVariance(Dataset dataset, IEnumerable<int> rows) {
@@ -265,26 +252,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[,] sWKs = new double[n, newN];
 
       // for stddev 
-      covarianceFunction.SetData(newX);
       for (int i = 0; i < newN; i++)
-        kss[i] = covarianceFunction.GetCovariance(i, i);
+        kss[i] = covarianceFunction.GetCovariance(newX, i, i);
 
-      covarianceFunction.SetData(x, newX);
       for (int i = 0; i < newN; i++) {
         for (int j = 0; j < n; j++) {
-          sWKs[j, i] = covarianceFunction.GetCovariance(j, i) / Math.Sqrt(sqrSigmaNoise);
+          sWKs[j, i] = covarianceFunction.GetCrossCovariance(x, newX, j, i) / Math.Sqrt(sqrSigmaNoise);
         }
       }
 
       // for stddev 
-      int info;
-      alglib.densesolverreport denseSolveRep;
-      double[,] v;
-
-      alglib.rmatrixsolvem(l, n, sWKs, newN, false, out info, out denseSolveRep, out v);
+      alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
 
       for (int i = 0; i < newN; i++) {
-        var sumV = Util.ScalarProd(Util.GetCol(v, i), Util.GetCol(v, i));
+        var sumV = Util.ScalarProd(Util.GetCol(sWKs, i), Util.GetCol(sWKs, i));
         kss[i] -= sumV;
         if (kss[i] < 0) kss[i] = 0;
       }
