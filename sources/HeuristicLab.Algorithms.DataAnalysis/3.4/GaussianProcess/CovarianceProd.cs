@@ -49,21 +49,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(original, cloner) {
       this.factors = cloner.Clone(original.factors);
       this.numberOfVariables = original.numberOfVariables;
-      AttachEventHandlers();
     }
 
     public CovarianceProd()
       : base() {
       this.factors = new ItemList<ICovarianceFunction>();
-      AttachEventHandlers();
-    }
-
-    private void AttachEventHandlers() {
-      this.factors.CollectionReset += (sender, args) => ClearCache();
-      this.factors.ItemsAdded += (sender, args) => ClearCache();
-      this.factors.ItemsRemoved += (sender, args) => ClearCache();
-      this.factors.ItemsReplaced += (sender, args) => ClearCache();
-      this.factors.ItemsMoved += (sender, args) => ClearCache();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -90,21 +80,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      //if (cachedParameterMap == null) {
-      //  CalculateParameterMap();
-      //}
-      //int ti = cachedParameterMap[k].Item1;
-      //k = cachedParameterMap[k].Item2;
-      //double gradient = 1.0;
-      //for (int ii = 0; ii < factors.Count; ii++) {
-      //  var f = factors[ii];
-      //  if (ii == ti) {
-      //    gradient *= f.GetGradient(x, i, j, k);
-      //  } else {
-      //    gradient *= f.GetCovariance(x, i, j);
-      //  }
-      //}
-      //return gradient;
       var covariances = factors.Select(f => f.GetCovariance(x, i, j)).ToArray();
       for (int ii = 0; ii < factors.Count; ii++) {
         foreach (var g in factors[ii].GetGradient(x, i, j)) {
@@ -118,21 +93,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
       return factors.Select(f => f.GetCrossCovariance(x, xt, i, j)).Aggregate((a, b) => a * b);
-    }
-
-    private Dictionary<int, Tuple<int, int>> cachedParameterMap;
-    private void ClearCache() {
-      cachedParameterMap = null;
-    }
-
-    private void CalculateParameterMap() {
-      cachedParameterMap = new Dictionary<int, Tuple<int, int>>();
-      int k = 0;
-      for (int ti = 0; ti < factors.Count; ti++) {
-        for (int ti_k = 0; ti_k < factors[ti].GetNumberOfParameters(numberOfVariables); ti_k++) {
-          cachedParameterMap[k++] = Tuple.Create(ti, ti_k);
-        }
-      }
     }
   }
 }

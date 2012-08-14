@@ -87,9 +87,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       for (int ii = 0; ii < l.Length; ii++) {
         double sqrDist = Util.SqrDist(x[i, ii] / l[ii], x[j, ii] / l[ii]);
-        yield return sf2 * Math.Exp(d / 2.0) * sqrDist;
+        yield return sf2 * Math.Exp(-d / 2.0) * sqrDist;
       }
-      yield return 2.0 * sf2 * Math.Exp(d / 2.0);
+      yield return 2.0 * sf2 * Math.Exp(-d / 2.0);
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
