@@ -37,6 +37,31 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return x.Zip(y, (a, b) => (a - b) * (a - b)).Sum();
     }
 
+    public static double SqrDist(double[,] x, int i, int j, double scale = 1.0) {
+      return SqrDist(x, i, x, j, scale);
+    }
+
+    public static double SqrDist(double[,] x, int i, double[,] xt, int j, double scale = 1.0) {
+      double ss = 0.0;
+      for (int k = 0; k < x.GetLength(1); k++) {
+        double d = x[i, k] - xt[j, k];
+        ss += d * d;
+      }
+      return scale * scale * ss;
+    }
+    public static double SqrDist(double[,] x, int i, int j, double[] scale) {
+      return SqrDist(x, i, x, j, scale);
+    }
+
+    public static double SqrDist(double[,] x, int i, double[,] xt, int j, double[] scale) {
+      double ss = 0.0;
+      for (int k = 0; k < x.GetLength(1); k++) {
+        double d = x[i, k] - xt[j, k];
+        ss += d * d * scale[k] * scale[k];
+      }
+      return ss;
+    }
+
     public static IEnumerable<double> GetRow(double[,] x, int r) {
       int cols = x.GetLength(1);
       return Enumerable.Range(0, cols).Select(c => x[r, c]);

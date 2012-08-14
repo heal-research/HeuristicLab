@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -35,8 +34,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double sf2;
     public double Scale { get { return sf2; } }
     [Storable]
-    private double l;
-    public double Length { get { return l; } }
+    private double inverseLength;
+    public double InverseLength { get { return inverseLength; } }
 
     [StorableConstructor]
     protected CovarianceSEiso(bool deserializing)
@@ -46,7 +45,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected CovarianceSEiso(CovarianceSEiso original, Cloner cloner)
       : base(original, cloner) {
       this.sf2 = original.sf2;
-      this.l = original.l;
+      this.inverseLength = original.inverseLength;
     }
 
     public CovarianceSEiso()
@@ -63,32 +62,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public void SetParameter(double[] hyp) {
       if (hyp.Length != 2) throw new ArgumentException("CovarianceSEiso has two hyperparameters", "k");
-      this.l = Math.Exp(hyp[0]);
+      this.inverseLength = 1.0 / Math.Exp(hyp[0]);
       this.sf2 = Math.Exp(2 * hyp[1]);
     }
 
 
     public double GetCovariance(double[,] x, int i, int j) {
-      double lInv = 1.0 / l;
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(x, j).Select(e => e * lInv));
+                   : Util.SqrDist(x, i, j, inverseLength);
       return sf2 * Math.Exp(-d / 2.0);
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      double lInv = 1.0 / l;
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(x, j).Select(e => e * lInv));
+                   : Util.SqrDist(x, i, j, inverseLength);
       double g = Math.Exp(-d / 2.0);
       yield return sf2 * g * d;
       yield return 2.0 * sf2 * g;
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      double lInv = 1.0 / l;
-      double d = Util.SqrDist(Util.GetRow(x, i).Select(e => e * lInv), Util.GetRow(xt, j).Select(e => e * lInv));
+      double d = Util.SqrDist(x, i, xt, j, inverseLength);
       return sf2 * Math.Exp(-d / 2.0);
     }
   }

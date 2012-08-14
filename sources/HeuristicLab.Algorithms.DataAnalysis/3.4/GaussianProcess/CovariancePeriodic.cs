@@ -33,8 +33,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double sf2;
     public double Scale { get { return sf2; } }
     [Storable]
-    private double l;
-    public double Length { get { return l; } }
+    private double inverseLength;
+    public double InverseLength { get { return inverseLength; } }
     [Storable]
     private double p;
     public double Period { get { return p; } }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected CovariancePeriodic(CovariancePeriodic original, Cloner cloner)
       : base(original, cloner) {
       sf2 = original.sf2;
-      l = original.l;
+      inverseLength = original.inverseLength;
       p = original.p;
     }
     public CovariancePeriodic()
@@ -60,7 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public void SetParameter(double[] hyp) {
       if (hyp.Length != 3) throw new ArgumentException();
-      this.l = Math.Exp(hyp[0]);
+      this.inverseLength = 1.0 / Math.Exp(hyp[0]);
       this.p = Math.Exp(hyp[1]);
       this.sf2 = Math.Exp(2 * hyp[2]);
     }
@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public double GetCovariance(double[,] x, int i, int j) {
       double k = i == j ? 0.0 : GetDistance(x, x, i, j);
       k = Math.PI * k / p;
-      k = Math.Sin(k) / l;
+      k = Math.Sin(k) * inverseLength;
       k = k * k;
 
       return sf2 * Math.Exp(-2.0 * k);
@@ -76,25 +76,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
       double v = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j) / p;
-      double gradient = Math.Sin(v) / l;
+      double gradient = Math.Sin(v) * inverseLength;
       gradient *= gradient;
       yield return 4.0 * sf2 * Math.Exp(-2.0 * gradient) * gradient;
-      double r = Math.Sin(v) / l;
-      yield return 4.0 * sf2 / l * Math.Exp(-2 * r * r) * r * Math.Cos(v) * v;
+      double r = Math.Sin(v) * inverseLength;
+      yield return 4.0 * sf2 * inverseLength * Math.Exp(-2 * r * r) * r * Math.Cos(v) * v;
       yield return 2.0 * sf2 * Math.Exp(-2 * gradient);
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
       double k = GetDistance(x, xt, i, j);
       k = Math.PI * k / p;
-      k = Math.Sin(k) / l;
+      k = Math.Sin(k) * inverseLength;
       k = k * k;
 
       return sf2 * Math.Exp(-2.0 * k);
     }
 
     private double GetDistance(double[,] x, double[,] xt, int i, int j) {
-      return Math.Sqrt(Util.SqrDist(Util.GetRow(x, i), Util.GetRow(xt, j)));
+      return Math.Sqrt(Util.SqrDist(x, i, xt, j));
     }
   }
 }

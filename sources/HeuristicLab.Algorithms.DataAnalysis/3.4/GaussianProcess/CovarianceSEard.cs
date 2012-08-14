@@ -35,12 +35,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public double Scale { get { return sf2; } }
 
     [Storable]
-    private double[] l;
+    private double[] inverseLength;
     public double[] Length {
       get {
-        if (l == null) return new double[0];
-        var copy = new double[l.Length];
-        Array.Copy(l, copy, copy.Length);
+        if (inverseLength == null) return new double[0];
+        var copy = new double[inverseLength.Length];
+        Array.Copy(inverseLength, copy, copy.Length);
         return copy;
       }
     }
@@ -52,9 +52,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected CovarianceSEard(bool deserializing) : base(deserializing) { }
     protected CovarianceSEard(CovarianceSEard original, Cloner cloner)
       : base(original, cloner) {
-      if (original.l != null) {
-        this.l = new double[original.l.Length];
-        Array.Copy(original.l, this.l, l.Length);
+      if (original.inverseLength != null) {
+        this.inverseLength = new double[original.inverseLength.Length];
+        Array.Copy(original.inverseLength, this.inverseLength, inverseLength.Length);
       }
       this.sf2 = original.sf2;
     }
@@ -67,33 +67,31 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void SetParameter(double[] hyp) {
-      this.l = hyp.Take(hyp.Length - 1).Select(Math.Exp).ToArray();
+      this.inverseLength = hyp.Take(hyp.Length - 1).Select(p => 1.0 / Math.Exp(p)).ToArray();
       this.sf2 = Math.Exp(2 * hyp[hyp.Length - 1]);
     }
 
     public double GetCovariance(double[,] x, int i, int j) {
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(Util.GetRow(x, i).Select((e, k) => e / l[k]),
-                                  Util.GetRow(x, j).Select((e, k) => e / l[k]));
+                   : Util.SqrDist(x, i, j, inverseLength);
       return sf2 * Math.Exp(-d / 2.0);
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(Util.GetRow(x, i).Select((e, ii) => e / l[ii]),
-                                  Util.GetRow(x, j).Select((e, ii) => e / l[ii]));
+                   : Util.SqrDist(x, i, j, inverseLength);
 
-      for (int ii = 0; ii < l.Length; ii++) {
-        double sqrDist = Util.SqrDist(x[i, ii] / l[ii], x[j, ii] / l[ii]);
+      for (int ii = 0; ii < inverseLength.Length; ii++) {
+        double sqrDist = Util.SqrDist(x[i, ii] * inverseLength[ii], x[j, ii] * inverseLength[ii]);
         yield return sf2 * Math.Exp(-d / 2.0) * sqrDist;
       }
       yield return 2.0 * sf2 * Math.Exp(-d / 2.0);
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      double d = Util.SqrDist(Util.GetRow(x, i).Select((e, k) => e / l[k]), Util.GetRow(xt, j).Select((e, k) => e / l[k]));
+      double d = Util.SqrDist(x, i, xt, j, inverseLength);
       return sf2 * Math.Exp(-d / 2.0);
     }
   }

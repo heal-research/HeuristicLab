@@ -85,43 +85,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
         Assert.AreEqual(315.3692, predTrain[0], 1e-3);
         Assert.AreEqual(356.6076, predTrain[1], 1e-3);
       }
-
-      /*
-      {
-        // example from GPML book
-        var hyp = new double[] { 
-          341.0, // mean 341 ppm
-          // SE iso (long term trend)
-          Math.Log(67.0 / 45.0), // length scale 67 years
-          Math.Log(Math.Sqrt(66)), // magnitude 66ppm
-                    
-          // product of SEiso and periodic
-          Math.Log(90.0 / 45.0), // decay-time 90 years
-          Math.Log(Math.Sqrt(2.4)), // magnitude 2.4ppm
-
-          Math.Log(1.3), // smoothness
-          Math.Log(1), // period 1 year
-          Math.Log(Math.Sqrt(2.4)), // magnitude 2.4ppm
-
-          // short term variation
-          Math.Log(1.2 / 45.0), // typical length 1.2 years
-          Math.Log(Math.Sqrt(0.66)), // magnitude 0.66ppm
-          Math.Log(0.78), // shape (very small)
-
-          // SEiso (correlated noise)
-          Math.Log(1.6 / 45.0 / 12.0), // 1.6 months
-          Math.Log(Math.Sqrt(0.18)), // amplitude of correlated noise 0.18ppm
-          Math.Log(Math.Sqrt(0.19)),  // theta11 0.19ppm noise
-          };
-
-        covarianceFunction.Terms.Add(new CovarianceRQiso());
-        covarianceFunction.Terms.Add(new CovarianceSEiso()); // correlated noise
-        var model = new GaussianProcessModel(problemData.Dataset, targetVariable, allowedInputVariables, Enumerable.Range(0, 545), hyp,
-                                             new MeanConst(),
-                                             covarianceFunction);
-        Assert.AreEqual(-108.5, model.NegativeLogLikelihood, 1);
-      }
-       */
     }
 
 
