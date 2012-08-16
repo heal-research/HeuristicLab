@@ -21,8 +21,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Algorithms.GradientDescent;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,7 +29,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -58,10 +55,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
 
     #region parameter properties
-    public IConstrainedValueParameter<IMeanFunction> MeanFunctionParameter {
+    public IValueParameter<IMeanFunction> MeanFunctionParameter {
       get { return (IConstrainedValueParameter<IMeanFunction>)Parameters[MeanFunctionParameterName]; }
     }
-    public IConstrainedValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
+    public IValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
       get { return (IConstrainedValueParameter<ICovarianceFunction>)Parameters[CovarianceFunctionParameterName]; }
     }
     public IValueParameter<IntValue> MinimizationIterationsParameter {
@@ -103,13 +100,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       Problem = new RegressionProblem();
 
-      List<IMeanFunction> meanFunctions = ApplicationManager.Manager.GetInstances<IMeanFunction>().ToList();
-      List<ICovarianceFunction> covFunctions = ApplicationManager.Manager.GetInstances<ICovarianceFunction>().ToList();
-
-      Parameters.Add(new ConstrainedValueParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function to use.",
-        new ItemSet<IMeanFunction>(meanFunctions), meanFunctions.OfType<MeanConst>().First()));
-      Parameters.Add(new ConstrainedValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.",
-        new ItemSet<ICovarianceFunction>(covFunctions), covFunctions.OfType<CovarianceSEiso>().First()));
+      Parameters.Add(new ValueParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function to use.", new MeanConst()));
+      Parameters.Add(new ValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.", new CovarianceSEiso()));
       Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with LM-BFGS.", new IntValue(20)));
       Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));

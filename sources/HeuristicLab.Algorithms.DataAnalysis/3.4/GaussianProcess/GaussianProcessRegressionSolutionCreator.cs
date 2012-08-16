@@ -74,21 +74,27 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IOperation Apply() {
-      var m = (IGaussianProcessModel)ModelParameter.ActualValue.Clone();
-      var data = (IRegressionProblemData)ProblemDataParameter.ActualValue.Clone();
-      var s = new GaussianProcessRegressionSolution(m, data);
+      if (ModelParameter.ActualValue != null) {
+        var m = (IGaussianProcessModel)ModelParameter.ActualValue.Clone();
+        var data = (IRegressionProblemData)ProblemDataParameter.ActualValue.Clone();
+        var s = new GaussianProcessRegressionSolution(m, data);
 
 
-      SolutionParameter.ActualValue = s;
-      var results = ResultsParameter.ActualValue;
-      if (!results.ContainsKey(SolutionParameterName)) {
-        results.Add(new Result(SolutionParameterName, "The Gaussian process regression solution", s));
-        results.Add(new Result(TrainingRSquaredResultName, "The Pearson's R² of the Gaussian process solution on the training partition.", new DoubleValue(s.TrainingRSquared)));
-        results.Add(new Result(TestRSquaredResultName, "The Pearson's R² of the Gaussian process solution on the test partition.", new DoubleValue(s.TestRSquared)));
-      } else {
-        results[SolutionParameterName].Value = s;
-        results[TrainingRSquaredResultName].Value = new DoubleValue(s.TrainingRSquared);
-        results[TestRSquaredResultName].Value = new DoubleValue(s.TestRSquared);
+        SolutionParameter.ActualValue = s;
+        var results = ResultsParameter.ActualValue;
+        if (!results.ContainsKey(SolutionParameterName)) {
+          results.Add(new Result(SolutionParameterName, "The Gaussian process regression solution", s));
+          results.Add(new Result(TrainingRSquaredResultName,
+                                 "The Pearson's R² of the Gaussian process solution on the training partition.",
+                                 new DoubleValue(s.TrainingRSquared)));
+          results.Add(new Result(TestRSquaredResultName,
+                                 "The Pearson's R² of the Gaussian process solution on the test partition.",
+                                 new DoubleValue(s.TestRSquared)));
+        } else {
+          results[SolutionParameterName].Value = s;
+          results[TrainingRSquaredResultName].Value = new DoubleValue(s.TrainingRSquared);
+          results[TestRSquaredResultName].Value = new DoubleValue(s.TestRSquared);
+        }
       }
       return base.Apply();
     }
