@@ -56,10 +56,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region parameter properties
     public IValueParameter<IMeanFunction> MeanFunctionParameter {
-      get { return (IConstrainedValueParameter<IMeanFunction>)Parameters[MeanFunctionParameterName]; }
+      get { return (IValueParameter<IMeanFunction>)Parameters[MeanFunctionParameterName]; }
     }
     public IValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
-      get { return (IConstrainedValueParameter<ICovarianceFunction>)Parameters[CovarianceFunctionParameterName]; }
+      get { return (IValueParameter<ICovarianceFunction>)Parameters[CovarianceFunctionParameterName]; }
     }
     public IValueParameter<IntValue> MinimizationIterationsParameter {
       get { return (IValueParameter<IntValue>)Parameters[MinimizationIterationsParameterName]; }
