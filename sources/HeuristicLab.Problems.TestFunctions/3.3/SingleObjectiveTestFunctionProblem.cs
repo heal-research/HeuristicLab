@@ -138,15 +138,17 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
-      ParameterizeEvaluator();
+      bool problemSizeChange = ProblemSize.Value < Evaluator.MinimumProblemSize
+        || ProblemSize.Value > Evaluator.MaximumProblemSize;
+      if (problemSizeChange) {
+        ProblemSize.Value = Math.Max(Evaluator.MinimumProblemSize, Math.Min(ProblemSize.Value, Evaluator.MaximumProblemSize));
+      } else {
+        ParameterizeEvaluator();
+      }
       UpdateMoveEvaluators();
       ParameterizeAnalyzers();
       Maximization.Value = Evaluator.Maximization;
       BoundsParameter.Value = Evaluator.Bounds;
-      if (ProblemSize.Value < Evaluator.MinimumProblemSize)
-        ProblemSize.Value = Evaluator.MinimumProblemSize;
-      else if (ProblemSize.Value > Evaluator.MaximumProblemSize)
-        ProblemSize.Value = Evaluator.MaximumProblemSize;
       BestKnownQuality = new DoubleValue(Evaluator.BestKnownQuality);
       Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
       Evaluator_QualityParameter_ActualNameChanged(null, EventArgs.Empty);
@@ -311,7 +313,12 @@ namespace HeuristicLab.Problems.TestFunctions {
     private void ParameterizeEvaluator() {
       Evaluator.PointParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
       Evaluator.PointParameter.Hidden = true;
-      BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
+      try {
+        BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
+      } catch (ArgumentException e) {
+        ErrorHandling.ShowErrorDialog(e);
+        ProblemSize.Value = Evaluator.MinimumProblemSize;
+      }
     }
     private void ParameterizeOperators() {
       foreach (IRealVectorCrossover op in Operators.OfType<IRealVectorCrossover>()) {
