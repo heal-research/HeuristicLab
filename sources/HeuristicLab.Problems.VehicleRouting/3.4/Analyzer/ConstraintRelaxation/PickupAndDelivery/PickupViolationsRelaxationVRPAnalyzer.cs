@@ -59,6 +59,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public IValueParameter<DoubleValue> MinPenaltyFactorParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["MinPenaltyFactor"]; }
     }
+    public IValueParameter<DoubleValue> MaxPenaltyFactorParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["MaxPenaltyFactor"]; }
+    }
 
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
@@ -79,9 +82,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("PickupViolations", "The pickup violation of the VRP solutions which should be analyzed."));
 
-      Parameters.Add(new ValueParameter<DoubleValue>("Sigma", "The sigma applied to the penalty factor.", new DoubleValue(0.04)));
-      Parameters.Add(new ValueParameter<DoubleValue>("Phi", "The phi applied to the penalty factor.", new DoubleValue(0.01)));
+      Parameters.Add(new ValueParameter<DoubleValue>("Sigma", "The sigma applied to the penalty factor.", new DoubleValue(0.5)));
+      Parameters.Add(new ValueParameter<DoubleValue>("Phi", "The phi applied to the penalty factor.", new DoubleValue(0.5)));
       Parameters.Add(new ValueParameter<DoubleValue>("MinPenaltyFactor", "The minimum penalty factor.", new DoubleValue(0.01)));
+      Parameters.Add(new ValueParameter<DoubleValue>("MaxPenaltyFactor", "The maximum penalty factor.", new DoubleValue(100000)));
 
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best VRP solution should be stored."));
     }
@@ -94,6 +98,16 @@ namespace HeuristicLab.Problems.VehicleRouting {
       : base(original, cloner) {
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("MaxPenaltyFactor")) {
+        Parameters.Add(new ValueParameter<DoubleValue>("MaxPenaltyFactor", "The maximum penalty factor.", new DoubleValue(100000)));
+      }
+      #endregion
+    }
+
     public override IOperation Apply() {
       IPickupAndDeliveryProblemInstance pdp = ProblemInstanceParameter.ActualValue as IPickupAndDeliveryProblemInstance;
       ResultCollection results = ResultsParameter.ActualValue;
@@ -104,6 +118,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       double sigma = SigmaParameter.Value.Value;
       double phi = PhiParameter.Value.Value;
       double minPenalty = MinPenaltyFactorParameter.Value.Value;
+      double maxPenalty = MaxPenaltyFactorParameter.Value.Value;
 
       for (int j = 0; j < qualities.Length; j++) {
         qualities[j].Value -= pickupViolations[j].Value * pdp.PickupViolationPenalty.Value;
@@ -123,6 +138,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       pdp.PickupViolationPenalty = new DoubleValue(min + (max - min) * factor);
       if (pdp.PickupViolationPenalty.Value < minPenalty)
         pdp.PickupViolationPenalty.Value = minPenalty;
+      if (pdp.PickupViolationPenalty.Value > maxPenalty)
+        pdp.PickupViolationPenalty.Value = maxPenalty;
 
       for (int j = 0; j < qualities.Length; j++) {
         qualities[j].Value += pickupViolations[j].Value * pdp.PickupViolationPenalty.Value;

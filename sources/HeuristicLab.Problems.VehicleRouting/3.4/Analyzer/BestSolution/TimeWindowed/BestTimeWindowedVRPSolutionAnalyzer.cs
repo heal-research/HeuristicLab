@@ -29,6 +29,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -90,6 +91,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override IOperation Apply() {
+      IVRPProblemInstance problemInstance = ProblemInstanceParameter.ActualValue;
       ItemArray<IVRPEncoding> solutions = VRPToursParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
 
@@ -105,7 +107,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
           results.Add(new Result("Best VRP Solution Tardiness", new DoubleValue(tardinesses[i].Value)));
           results.Add(new Result("Best VRP Solution TravelTime", new DoubleValue(travelTimes[i].Value)));
         } else {
-          if (qualities[i].Value <= solution.Quality.Value) {
+          VRPEvaluation eval = problemInstance.Evaluate(solution.Solution);
+          if (qualities[i].Value <= eval.Quality) {
             (results["Best VRP Solution Tardiness"].Value as DoubleValue).Value = tardinesses[i].Value;
             (results["Best VRP Solution TravelTime"].Value as DoubleValue).Value = travelTimes[i].Value;
           }

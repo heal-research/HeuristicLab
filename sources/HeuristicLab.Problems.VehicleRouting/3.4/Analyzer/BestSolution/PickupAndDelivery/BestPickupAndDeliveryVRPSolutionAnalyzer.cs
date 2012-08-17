@@ -29,6 +29,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
+using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
@@ -86,6 +87,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override IOperation Apply() {
+      IVRPProblemInstance problemInstance = ProblemInstanceParameter.ActualValue;
       ItemArray<IVRPEncoding> solutions = VRPToursParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
 
@@ -100,7 +102,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
         if (!results.ContainsKey("Best VRP Solution PickupViolations")) {
           results.Add(new Result("Best VRP Solution PickupViolations", new DoubleValue(pickupViolations[i].Value)));
         } else {
-          if (qualities[i].Value <= solution.Quality.Value) {
+          VRPEvaluation eval = problemInstance.Evaluate(solution.Solution);
+          if (qualities[i].Value <= eval.Quality) {
             (results["Best VRP Solution PickupViolations"].Value as DoubleValue).Value = pickupViolations[i].Value;
           }
         }
