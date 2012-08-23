@@ -140,13 +140,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var classes = data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices).ToArray();
       var attributes = scaledData.GetLength(1);
 
+      var penalties = new Dictionary<double, Dictionary<double, double>>();
+      foreach (var c in data.ClassValues) {
+        penalties[c] = new Dictionary<double, double>();
+        foreach (var r in data.ClassValues)
+          penalties[c][r] = data.GetClassificationPenalty(c, r);
+      }
+
       alglib.mincgstate state;
       alglib.mincgreport rep;
       alglib.mincgcreate(matrix, out state);
       alglib.mincgsetcond(state, 0, 0, 0, iterations);
       alglib.mincgsetxrep(state, true);
       int neighborSampleSize = neighborSamples;
-      Optimize(state, scaledData, classes, dimensions, neighborSampleSize, cancellation, reporter);
+      Optimize(state, scaledData, classes, penalties, dimensions, neighborSampleSize, cancellation, reporter);
       alglib.mincgresults(state, out matrix, out rep);
 
       var transformationMatrix = new double[attributes, dimensions];
@@ -158,11 +165,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new NcaModel(k, transformationMatrix, data.Dataset, data.TrainingIndices, data.TargetVariable, data.AllowedInputVariables, scaling, data.ClassValues.ToArray());
     }
 
-    private static void Optimize(alglib.mincgstate state, double[,] data, double[] classes, int dimensions, int neighborSampleSize, CancellationToken cancellation, Reporter reporter) {
+    private static void Optimize(alglib.mincgstate state, double[,] data, double[] classes, Dictionary<double, Dictionary<double, double>> penalties, int dimensions, int neighborSampleSize, CancellationToken cancellation, Reporter reporter) {
       while (alglib.mincgiteration(state)) {
         if (cancellation.IsCancellationRequested) break;
         if (state.needfg) {
-          Gradient(state.x, ref state.innerobj.f, state.innerobj.g, data, classes, dimensions, neighborSampleSize);
+          Gradient(state.x, ref state.innerobj.f, state.innerobj.g, data, classes, penalties, dimensions, neighborSampleSize);
           continue;
         }
         if (state.innerobj.xupdated) {
@@ -174,7 +181,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    private static void Gradient(double[] A, ref double func, double[] grad, double[,] data, double[] classes, int dimensions, int neighborSampleSize) {
+    private static void Gradient(double[] A, ref double func, double[] grad, double[,] data, double[] classes, Dictionary<double, Dictionary<double, double>> penalties, int dimensions, int neighborSampleSize) {
       var instances = data.GetLength(0);
       var attributes = data.GetLength(1);
 
@@ -207,26 +214,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int t0 = 0, t1 = 0, r, c;
       double val;
       var pi = new double[instances];
+      func = 0;
       while (alglib.sparseenumerate(probabilities, ref t0, ref t1, out r, out c, out val)) {
-        if (classes[r].IsAlmost(classes[c])) {
-          pi[r] += val;
-        }
+        double vp = val * penalties[classes[r]][classes[c]];
+        pi[r] += vp;
+        func += vp;
       }
 
+      t0 = 0; t1 = 0;
       var innerSum = new double[attributes, attributes];
       while (alglib.sparseenumerate(probabilities, ref t0, ref t1, out r, out c, out val)) {
         var vector = new Matrix(GetRow(data, r)).Subtract(new Matrix(GetRow(data, c)));
         vector.OuterProduct(vector).Multiply(val * pi[r]).AddTo(innerSum);
-
-        if (classes[r].IsAlmost(classes[c])) {
-          vector.OuterProduct(vector).Multiply(-val).AddTo(innerSum);
-        }
+        vector.OuterProduct(vector).Multiply(-val * penalties[classes[r]][classes[c]]).AddTo(innerSum);
       }
 
-      func = -pi.Sum();
-
       r = 0;
-      var newGrad = AMatrix.Multiply(-2.0).Transpose().Multiply(new Matrix(innerSum)).Transpose();
+      var newGrad = AMatrix.Multiply(2.0).Transpose().Multiply(new Matrix(innerSum)).Transpose();
       foreach (var g in newGrad) {
         grad[r++] = g;
       }
@@ -237,14 +241,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       DataTable qualities;
       if (!Results.ContainsKey("Optimization")) {
         qualities = new DataTable("Optimization");
-        qualities.Rows.Add(new DataRow("Quality", string.Empty));
+        qualities.Rows.Add(new DataRow("Penalty", string.Empty));
         Results.Add(new Result("Optimization", qualities));
       } else qualities = (DataTable)Results["Optimization"].Value;
-      qualities.Rows["Quality"].Values.Add(-func / instances);
+      qualities.Rows["Penalty"].Values.Add(func / instances);
 
-      if (!Results.ContainsKey("Quality")) {
-        Results.Add(new Result("Quality", new DoubleValue(-func / instances)));
-      } else ((DoubleValue)Results["Quality"].Value).Value = -func / instances;
+      if (!Results.ContainsKey("Penalty")) {
+        Results.Add(new Result("Penalty", new DoubleValue(func / instances)));
+      } else ((DoubleValue)Results["Penalty"].Value).Value = func / instances;
     }
 
     private static IEnumerable<double> GetRow(double[,] data, int row) {
