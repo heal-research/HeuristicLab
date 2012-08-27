@@ -103,6 +103,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterClassificationSolutionsEventHandler();
     }
 
+    public ClassificationEnsembleSolution(IClassificationProblemData problemData) :
+      this(Enumerable.Empty<IClassificationModel>(), problemData) { }
+
     public ClassificationEnsembleSolution(IEnumerable<IClassificationModel> models, IClassificationProblemData problemData)
       : this(models, problemData,
              models.Select(m => (IntRange)problemData.TrainingPartition.Clone()),

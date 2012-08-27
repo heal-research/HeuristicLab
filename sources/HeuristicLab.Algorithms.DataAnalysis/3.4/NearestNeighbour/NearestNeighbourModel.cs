@@ -201,13 +201,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public INearestNeighbourRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new NearestNeighbourRegressionSolution(problemData, this);
+      return new NearestNeighbourRegressionSolution(new RegressionProblemData(problemData), this);
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
     }
     public INearestNeighbourClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new NearestNeighbourClassificationSolution(problemData, this);
+      return new NearestNeighbourClassificationSolution(new ClassificationProblemData(problemData), this);
     }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);

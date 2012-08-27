@@ -123,7 +123,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return GetEstimatedValuesHelper(dataset, rows);
     }
     public SupportVectorRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new SupportVectorRegressionSolution(this, problemData);
+      return new SupportVectorRegressionSolution(this, new RegressionProblemData(problemData));
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
@@ -152,7 +152,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public SupportVectorClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new SupportVectorClassificationSolution(this, problemData);
+      return new SupportVectorClassificationSolution(this, new ClassificationProblemData(problemData));
     }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);

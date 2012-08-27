@@ -276,6 +276,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public ClassificationProblemData() : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable) { }
+
+    public ClassificationProblemData(IClassificationProblemData classificationProblemData)
+      : this(classificationProblemData.Dataset, classificationProblemData.AllowedInputVariables, classificationProblemData.TargetVariable) {
+      TrainingPartition.Start = classificationProblemData.TrainingPartition.Start;
+      TrainingPartition.End = classificationProblemData.TrainingPartition.End;
+      TestPartition.Start = classificationProblemData.TestPartition.Start;
+      TestPartition.End = classificationProblemData.TestPartition.End;
+    }
+
     public ClassificationProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
       : base(dataset, allowedInputVariables) {
       var validTargetVariableValues = CheckVariablesForPossibleTargetVariables(dataset).Select(x => new StringValue(x).AsReadOnly()).ToList();

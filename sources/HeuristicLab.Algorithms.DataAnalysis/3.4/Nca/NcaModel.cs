@@ -81,7 +81,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public INcaClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new NcaClassificationSolution(problemData, this);
+      return new NcaClassificationSolution(new ClassificationProblemData(problemData), this);
     }
 
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {

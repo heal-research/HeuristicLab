@@ -120,6 +120,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public RegressionProblemData()
       : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable) {
     }
+    public RegressionProblemData(IRegressionProblemData regressionProblemData)
+      : this(regressionProblemData.Dataset, regressionProblemData.AllowedInputVariables, regressionProblemData.TargetVariable) {
+      TrainingPartition.Start = regressionProblemData.TrainingPartition.Start;
+      TrainingPartition.End = regressionProblemData.TrainingPartition.End;
+      TestPartition.Start = regressionProblemData.TestPartition.Start;
+      TestPartition.End = regressionProblemData.TestPartition.End;
+    }
 
     public RegressionProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
       : base(dataset, allowedInputVariables) {

@@ -129,13 +129,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public INeuralNetworkEnsembleRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new NeuralNetworkEnsembleRegressionSolution(problemData, this);
+      return new NeuralNetworkEnsembleRegressionSolution(new RegressionEnsembleProblemData(problemData), this);
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
     }
     public INeuralNetworkEnsembleClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new NeuralNetworkEnsembleClassificationSolution(problemData, this);
+      return new NeuralNetworkEnsembleClassificationSolution(new ClassificationEnsembleProblemData(problemData), this);
     }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);

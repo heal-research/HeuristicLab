@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     public ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new SymbolicClassificationSolution(this, problemData);
+      return new SymbolicClassificationSolution(this, new ClassificationProblemData(problemData));
     }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);

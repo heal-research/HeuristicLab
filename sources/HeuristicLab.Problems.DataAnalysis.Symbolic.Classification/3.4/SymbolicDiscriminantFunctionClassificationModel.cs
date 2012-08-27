@@ -104,7 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     public SymbolicDiscriminantFunctionClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new SymbolicDiscriminantFunctionClassificationSolution(this, problemData);
+      return new SymbolicDiscriminantFunctionClassificationSolution(this, new ClassificationProblemData(problemData));
     }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);

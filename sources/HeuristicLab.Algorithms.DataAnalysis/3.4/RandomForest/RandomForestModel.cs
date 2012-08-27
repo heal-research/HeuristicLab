@@ -131,13 +131,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IRandomForestRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new RandomForestRegressionSolution(problemData, this);
+      return new RandomForestRegressionSolution(new RegressionProblemData(problemData), this);
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
     }
     public IRandomForestClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new RandomForestClassificationSolution(problemData, this);
+      return new RandomForestClassificationSolution(new ClassificationProblemData(problemData), this);
     }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);

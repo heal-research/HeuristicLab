@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new SymbolicRegressionSolution(this, problemData);
+      return new SymbolicRegressionSolution(this, new RegressionProblemData(problemData));
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);

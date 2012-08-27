@@ -446,11 +446,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         problemDataClone.TrainingPartition.Start = SamplesStart.Value; problemDataClone.TrainingPartition.End = SamplesEnd.Value;
         problemDataClone.TestPartition.Start = SamplesStart.Value; problemDataClone.TestPartition.End = SamplesEnd.Value;
         // clone models
-        var ensembleSolution = new ClassificationEnsembleSolution(
-          solutions.Value.Select(x => cloner.Clone(x.Model)),
-          problemDataClone,
-          solutions.Value.Select(x => cloner.Clone(x.ProblemData.TrainingPartition)),
-          solutions.Value.Select(x => cloner.Clone(x.ProblemData.TestPartition)));
+        var ensembleSolution = new ClassificationEnsembleSolution(problemDataClone);
+        ensembleSolution.AddClassificationSolutions(solutions.Value);
 
         aggregatedResults.Add(new Result(solutions.Key + " (ensemble)", ensembleSolution));
       }

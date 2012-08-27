@@ -219,7 +219,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return GetEstimatedValuesHelper(dataset, rows);
     }
     public GaussianProcessRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new GaussianProcessRegressionSolution(this, problemData);
+      return new GaussianProcessRegressionSolution(this, new RegressionProblemData(problemData));
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);

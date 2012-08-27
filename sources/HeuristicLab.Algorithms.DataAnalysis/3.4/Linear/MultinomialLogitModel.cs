@@ -108,7 +108,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public MultinomialLogitClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new MultinomialLogitClassificationSolution(problemData, this);
+      return new MultinomialLogitClassificationSolution(new ClassificationProblemData(problemData), this);
     }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);

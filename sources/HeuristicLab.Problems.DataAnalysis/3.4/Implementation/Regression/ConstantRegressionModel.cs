@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new ConstantRegressionSolution(this, problemData);
+      return new ConstantRegressionSolution(this, new RegressionProblemData(problemData));
     }
   }
 }

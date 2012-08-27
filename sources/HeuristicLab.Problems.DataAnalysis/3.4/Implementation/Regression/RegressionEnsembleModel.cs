@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public RegressionEnsembleSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new RegressionEnsembleSolution(this.Models, problemData);
+      return new RegressionEnsembleSolution(this.Models, new RegressionEnsembleProblemData(problemData));
     }
     IRegressionSolution IRegressionModel.CreateRegressionSolution(IRegressionProblemData problemData) {
       return CreateRegressionSolution(problemData);
