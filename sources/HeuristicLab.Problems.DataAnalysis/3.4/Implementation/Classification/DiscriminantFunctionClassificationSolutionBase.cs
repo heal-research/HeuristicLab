@@ -95,7 +95,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected override void OnModelChanged() {
       DeregisterEventHandler();
-      SetAccuracyMaximizingThresholds();
       RegisterEventHandler();
       base.OnModelChanged();
     }
@@ -134,24 +133,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     private void Model_ThresholdsChanged(object sender, EventArgs e) {
       OnModelThresholdsChanged(e);
-    }
-
-    public void SetAccuracyMaximizingThresholds() {
-      double[] classValues;
-      double[] thresholds;
-      var targetClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices);
-      AccuracyMaximizationThresholdCalculator.CalculateThresholds(ProblemData, EstimatedTrainingValues, targetClassValues, out classValues, out thresholds);
-
-      Model.SetThresholdsAndClassValues(thresholds, classValues);
-    }
-
-    public void SetClassDistibutionCutPointThresholds() {
-      double[] classValues;
-      double[] thresholds;
-      var targetClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices);
-      NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(ProblemData, EstimatedTrainingValues, targetClassValues, out classValues, out thresholds);
-
-      Model.SetThresholdsAndClassValues(thresholds, classValues);
     }
 
     protected virtual void OnModelThresholdsChanged(EventArgs e) {

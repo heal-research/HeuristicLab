@@ -110,7 +110,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       IClassificationProblemData problemData,
       IEnumerable<int> rows) {
-      return new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter);
+      var model = new SymbolicDiscriminantFunctionClassificationModel(tree, interpreter);
+      SymbolicDiscriminantFunctionClassificationModel.SetAccuracyMaximizingThresholds(model, problemData);
+      return model;
     }
   }
 }

@@ -66,8 +66,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public SymbolicDiscriminantFunctionClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
       : base(tree, interpreter) {
-      thresholds = new double[] { double.NegativeInfinity };
-      classValues = new double[] { 0.0 };
+      this.thresholds = new double[0];
+      this.classValues = new double[0];
       this.lowerEstimationLimit = lowerEstimationLimit;
       this.upperEstimationLimit = upperEstimationLimit;
     }
@@ -87,11 +87,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
-      return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows)
-        .LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+      return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows).LimitToRange(lowerEstimationLimit, upperEstimationLimit);
     }
 
     public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+      if (!Thresholds.Any() && !ClassValues.Any()) throw new ArgumentException("No thresholds and class values were set for the current symbolic classification model.");
       foreach (var x in GetEstimatedValues(dataset, rows)) {
         int classIndex = 0;
         // find first threshold value which is larger than x => class index = threshold index + 1
@@ -120,6 +120,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       if (listener != null) listener(this, e);
     }
     #endregion
+
+    public static void SetAccuracyMaximizingThresholds(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
+      double[] classValues;
+      double[] thresholds;
+      var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
+      var estimatedTrainingValues = model.GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
+      AccuracyMaximizationThresholdCalculator.CalculateThresholds(problemData, estimatedTrainingValues, targetClassValues, out classValues, out thresholds);
+
+      model.SetThresholdsAndClassValues(thresholds, classValues);
+    }
+
+    public static void SetClassDistibutionCutPointThresholds(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
+      double[] classValues;
+      double[] thresholds;
+      var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
+      var estimatedTrainingValues = model.GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
+      NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(problemData, estimatedTrainingValues, targetClassValues, out classValues, out thresholds);
+
+      model.SetThresholdsAndClassValues(thresholds, classValues);
+    }
 
     public static void Scale(SymbolicDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
       var dataset = problemData.Dataset;

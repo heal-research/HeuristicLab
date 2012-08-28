@@ -104,6 +104,7 @@ namespace HeuristicLab.Common {
     }
 
     public static IEnumerable<double> LimitToRange(this IEnumerable<double> values, double min, double max) {
+      if (min > max) throw new ArgumentException(string.Format("Minimum {0} is larger than maximum {1}.", min, max));
       foreach (var x in values) {
         if (double.IsNaN(x)) yield return (max + min) / 2.0;
         else if (x < min) yield return min;

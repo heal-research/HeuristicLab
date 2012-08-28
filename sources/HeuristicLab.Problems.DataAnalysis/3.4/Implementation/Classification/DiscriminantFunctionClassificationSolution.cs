@@ -50,8 +50,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(model, problemData) {
       valueEvaluationCache = new Dictionary<int, double>();
       classValueEvaluationCache = new Dictionary<int, double>();
-
-      SetAccuracyMaximizingThresholds();
     }
 
     public override IEnumerable<double> EstimatedClassValues {
