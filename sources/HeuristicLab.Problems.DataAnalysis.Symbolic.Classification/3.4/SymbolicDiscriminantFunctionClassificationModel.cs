@@ -131,7 +131,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       model.SetThresholdsAndClassValues(thresholds, classValues);
     }
 
-    public static void SetClassDistibutionCutPointThresholds(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
+    public static void SetClassDistributionCutPointThresholds(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
       double[] classValues;
       double[] thresholds;
       var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
