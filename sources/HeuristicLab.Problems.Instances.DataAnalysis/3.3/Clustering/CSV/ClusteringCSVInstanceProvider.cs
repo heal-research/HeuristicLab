@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using HeuristicLab.Problems.DataAnalysis;
@@ -84,18 +85,18 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var strBuilder = new StringBuilder();
 
       foreach (var variable in instance.InputVariables) {
-        strBuilder.Append(variable + ";");
+        strBuilder.Append(variable + CultureInfo.CurrentCulture.TextInfo.ListSeparator);
       }
-      strBuilder.Remove(strBuilder.Length - 1, 1);
+      strBuilder.Remove(strBuilder.Length - CultureInfo.CurrentCulture.TextInfo.ListSeparator.Length, CultureInfo.CurrentCulture.TextInfo.ListSeparator.Length);
       strBuilder.AppendLine();
 
       var dataset = instance.Dataset;
 
       for (int i = 0; i < dataset.Rows; i++) {
         for (int j = 0; j < dataset.Columns; j++) {
-          strBuilder.Append(dataset.GetValue(i, j) + ";");
+          if (j > 0) strBuilder.Append(CultureInfo.CurrentCulture.TextInfo.ListSeparator);
+          strBuilder.Append(dataset.GetValue(i, j));
         }
-        strBuilder.Remove(strBuilder.Length - 1, 1);
         strBuilder.AppendLine();
       }
 
