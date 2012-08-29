@@ -74,8 +74,7 @@ namespace HeuristicLab.PluginInfrastructure {
       List<object> instances = new List<object>();
       foreach (Type t in GetTypes(type)) {
         object instance = null;
-        try { instance = Activator.CreateInstance(t); }
-        catch { }
+        try { instance = Activator.CreateInstance(t); } catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;
@@ -137,11 +136,9 @@ namespace HeuristicLab.PluginInfrastructure {
         return from t in buildTypes
                where includeGenericTypeDefinitions || !t.IsGenericTypeDefinition
                select t;
-      }
-      catch (TypeLoadException) {
+      } catch (TypeLoadException) {
         return Enumerable.Empty<Type>();
-      }
-      catch (ReflectionTypeLoadException) {
+      } catch (ReflectionTypeLoadException) {
         return Enumerable.Empty<Type>();
       }
     }
@@ -165,14 +162,6 @@ namespace HeuristicLab.PluginInfrastructure {
         int i = 0;
         foreach (var genericArgument in typeGenericArguments) {
           if (otherGenericArguments[i].IsGenericParameter) {
-            //check class contraint on generic type parameter
-            if (otherGenericArguments[i].GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint))
-              if (!genericArgument.IsClass) return false;
-
-            //check default constructor constraint on generic type parameter
-            if (otherGenericArguments[i].GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint))
-              if (!genericArgument.IsValueType && genericArgument.GetConstructor(Type.EmptyTypes) == null) return false;
-
             foreach (var constraint in otherGenericArguments[i].GetGenericParameterConstraints())
               if (!constraint.IsAssignableFrom(genericArgument)) return false;
           } else if (genericArgument != otherGenericArguments[i]) return false;
@@ -183,8 +172,7 @@ namespace HeuristicLab.PluginInfrastructure {
           var otherGenericTypeDefinition = other.GetGenericTypeDefinition();
           if (type.IsAssignableFrom(otherGenericTypeDefinition.MakeGenericType(typeGenericArguments)))
             return true;
-        }
-        catch (Exception) { }
+        } catch (Exception) { }
       }
       return false;
     }

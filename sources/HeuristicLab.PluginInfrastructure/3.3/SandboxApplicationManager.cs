@@ -292,14 +292,6 @@ namespace HeuristicLab.PluginInfrastructure {
         int i = 0;
         foreach (var genericArgument in typeGenericArguments) {
           if (otherGenericArguments[i].IsGenericParameter) {
-            //check class contraint on generic type parameter
-            if (otherGenericArguments[i].GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint))
-              if (!genericArgument.IsClass) return false;
-
-            //check default constructor constraint on generic type parameter
-            if (otherGenericArguments[i].GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint))
-              if (!genericArgument.IsValueType && genericArgument.GetConstructor(Type.EmptyTypes) == null) return false;
-
             foreach (var constraint in otherGenericArguments[i].GetGenericParameterConstraints())
               if (!constraint.IsAssignableFrom(genericArgument)) return false;
           } else if (genericArgument != otherGenericArguments[i]) return false;
