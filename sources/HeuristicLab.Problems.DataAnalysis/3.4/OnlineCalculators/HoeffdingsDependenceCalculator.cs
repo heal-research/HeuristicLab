@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public class HoeffdingsDependenceCalculator {

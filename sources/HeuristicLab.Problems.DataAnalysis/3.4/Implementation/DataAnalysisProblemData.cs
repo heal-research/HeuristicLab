@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string InputVariablesParameterName = "InputVariables";
     protected const string TrainingPartitionParameterName = "TrainingPartition";
     protected const string TestPartitionParameterName = "TestPartition";
+    protected const string DatasetCorrelationParameterName = "Dataset Correlation";
 
     #region parameter properites
     public IFixedValueParameter<Dataset> DatasetParameter {
@@ -49,6 +50,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public IFixedValueParameter<IntRange> TestPartitionParameter {
       get { return (IFixedValueParameter<IntRange>)Parameters[TestPartitionParameterName]; }
+    }
+    public IFixedValueParameter<FeatureCorrelation> DatasetCorrelationParameter {
+      get { return (IFixedValueParameter<FeatureCorrelation>)Parameters[DatasetCorrelationParameterName]; }
     }
     #endregion
 
@@ -72,6 +76,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public IntRange TestPartition {
       get { return TestPartitionParameter.Value; }
+    }
+    public FeatureCorrelation DatasetCorrelation {
+      get { return DatasetCorrelationParameter.Value; }
     }
 
     public virtual IEnumerable<int> TrainingIndices {
@@ -106,9 +113,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     [StorableConstructor]
     protected DataAnalysisProblemData(bool deserializing) : base(deserializing) { }
+
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(DatasetCorrelationParameterName)) {
+        Parameters.Add(new FixedValueParameter<FeatureCorrelation>(DatasetCorrelationParameterName, "", new FeatureCorrelation(this)));
+      }
+      #endregion
     }
 
     protected DataAnalysisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables) {
@@ -131,6 +144,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, "", inputVariables.AsReadOnly()));
       Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", new IntRange(trainingPartitionStart, trainingPartitionEnd)));
       Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", new IntRange(testPartitionStart, testPartitionEnd)));
+      Parameters.Add(new FixedValueParameter<FeatureCorrelation>(DatasetCorrelationParameterName, "", new FeatureCorrelation(this)));
 
       ((ValueParameter<Dataset>)DatasetParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
       RegisterEventHandlers();

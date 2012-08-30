@@ -137,6 +137,12 @@
     <Compile Include="DataAnalysisSolutionEvaluationView.Designer.cs">
       <DependentUpon>DataAnalysisSolutionEvaluationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="FeatureCorrelationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FeatureCorrelationView.Designer.cs">
+      <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Regression\RegressionEnsembleSolutionModelView.cs">
       <SubType>UserControl</SubType>
@@ -266,6 +272,12 @@
     <Compile Include="Solution Views\RegressionSolutionView.Designer.cs">
       <DependentUpon>RegressionSolutionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimeframeFeatureCorrelationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimeframeFeatureCorrelationView.Designer.cs">
+      <DependentUpon>TimeframeFeatureCorrelationView.cs</DependentUpon>
+    </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
@@ -387,6 +399,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="obj\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FeatureCorrelationView.resx">
+      <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeframeFeatureCorrelationView.resx">
+      <DependentUpon>TimeframeFeatureCorrelationView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
