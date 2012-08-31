@@ -48,7 +48,7 @@ namespace HeuristicLab_33.Tests {
         }
       }
 
-      Assert.IsTrue(!exceptions.Any());
+      Assert.IsTrue(!exceptions.Any(), string.Join(Environment.NewLine, exceptions));
     }
   }
 }
