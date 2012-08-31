@@ -51,13 +51,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var estimations = model.GetEstimatedClassValues(problemData.Dataset, rows).GetEnumerator();
       if (!estimations.MoveNext()) return double.NaN;
 
-      double penalty = 0.0;
+      var penalty = 0.0;
+      var count = 0;
       foreach (var r in rows) {
         var actualClass = problemData.Dataset.GetDoubleValue(problemData.TargetVariable, r);
         penalty += problemData.GetClassificationPenalty(actualClass, estimations.Current);
         estimations.MoveNext();
+        count++;
       }
-      return penalty;
+      return penalty / count;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IClassificationProblemData problemData, IEnumerable<int> rows) {
