@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       EstimationLimitsParameter.ExecutionContext = context;
 
       var model = new SymbolicDiscriminantFunctionClassificationModel(tree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      SymbolicDiscriminantFunctionClassificationModel.SetAccuracyMaximizingThresholds(model, problemData);
+      model.SetAccuracyMaximizingThresholds(problemData);
       double penalty = Calculate(model, problemData, rows);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
