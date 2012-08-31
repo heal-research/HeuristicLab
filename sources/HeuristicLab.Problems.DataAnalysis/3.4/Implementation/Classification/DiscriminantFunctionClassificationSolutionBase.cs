@@ -93,12 +93,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandler();
     }
 
-    protected override void OnModelChanged() {
-      DeregisterEventHandler();
-      RegisterEventHandler();
-      base.OnModelChanged();
-    }
-
     protected void CalculateRegressionResults() {
       double[] estimatedTrainingValues = EstimatedTrainingValues.ToArray(); // cache values
       double[] originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToArray();
@@ -136,8 +130,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     protected virtual void OnModelThresholdsChanged(EventArgs e) {
-      CalculateResults();
-      CalculateRegressionResults();
+      OnModelChanged();
     }
 
     public abstract IEnumerable<double> EstimatedValues { get; }
