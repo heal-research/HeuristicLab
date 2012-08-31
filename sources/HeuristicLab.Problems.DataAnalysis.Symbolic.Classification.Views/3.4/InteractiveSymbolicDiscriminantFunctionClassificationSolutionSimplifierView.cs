@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       // This is rather slow to calculate and can lead to a very laggy UI in the interactive solution simplifier.
       // However, since we automatically prune sub-trees based on the threshold reaching the maximum accuracy we must
       // also use maximum accuracy threshold calculation here in order to prevent incoherent behavior of the simplifier.
-      SymbolicDiscriminantFunctionClassificationModel.SetAccuracyMaximizingThresholds(model, Content.ProblemData);
+      model.SetAccuracyMaximizingThresholds(Content.ProblemData);
       Content.Model = model;
     }
 

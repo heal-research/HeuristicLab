@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var model = new SymbolicDiscriminantFunctionClassificationModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
       if (ApplyLinearScaling.Value) SymbolicDiscriminantFunctionClassificationModel.Scale(model, ProblemDataParameter.ActualValue);
 
-      SymbolicDiscriminantFunctionClassificationModel.SetAccuracyMaximizingThresholds(model, ProblemDataParameter.ActualValue);
+      model.SetAccuracyMaximizingThresholds(ProblemDataParameter.ActualValue);
       return new SymbolicDiscriminantFunctionClassificationSolution(model, (IClassificationProblemData)ProblemDataParameter.ActualValue.Clone());
     }
   }

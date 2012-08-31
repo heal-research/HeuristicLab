@@ -237,6 +237,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       int classIndex = (int)e.Annotation.Tag;
       double[] thresholds = Content.Model.Thresholds.ToArray();
       thresholds[classIndex] = e.NewLocationY;
+      Array.Sort(thresholds);
       Content.Model.SetThresholdsAndClassValues(thresholds, Content.Model.ClassValues);
     }
 

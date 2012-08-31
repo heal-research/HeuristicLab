@@ -121,24 +121,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
     #endregion
 
-    public static void SetAccuracyMaximizingThresholds(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
+    public void SetAccuracyMaximizingThresholds(IClassificationProblemData problemData) {
       double[] classValues;
       double[] thresholds;
       var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
-      var estimatedTrainingValues = model.GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
+      var estimatedTrainingValues = GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
       AccuracyMaximizationThresholdCalculator.CalculateThresholds(problemData, estimatedTrainingValues, targetClassValues, out classValues, out thresholds);
 
-      model.SetThresholdsAndClassValues(thresholds, classValues);
+      SetThresholdsAndClassValues(thresholds, classValues);
     }
 
-    public static void SetClassDistributionCutPointThresholds(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
+    public void SetClassDistributionCutPointThresholds(IClassificationProblemData problemData) {
       double[] classValues;
       double[] thresholds;
       var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
-      var estimatedTrainingValues = model.GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
+      var estimatedTrainingValues = GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
       NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(problemData, estimatedTrainingValues, targetClassValues, out classValues, out thresholds);
 
-      model.SetThresholdsAndClassValues(thresholds, classValues);
+      SetThresholdsAndClassValues(thresholds, classValues);
     }
 
     public static void Scale(SymbolicDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
