@@ -64,9 +64,13 @@ namespace HeuristicLab.Problems.Instances.QAPLIB {
       "esc16i",
       "esc16j",
       "esc32a",
+      "esc32b",
+      "esc32c",
+      "esc32d",
       "esc32e",
       "esc32f",
       "esc32g",
+      "esc32h",
       "had12",
       "had14",
       "had16",
@@ -125,8 +129,11 @@ namespace HeuristicLab.Problems.Instances.QAPLIB {
       "tai256c",
       "tai25a",
       "tai25b",
+      "tai30a",
       "tai30b",
+      "tai35a",
       "tai35b",
+      "tai40a",
       "tai40b",
       "tai50a",
       "tai50b",
@@ -203,7 +210,7 @@ Journal of Global Optimization, 10, pp. 391-403.";
                 if (slnParser.Error != null) throw slnParser.Error;
 
                 int[] assignment = slnParser.Assignment;
-                if (reversedSolutions.Contains(instance.Name)) {
+                if (assignment != null && reversedSolutions.Contains(instance.Name)) {
                   assignment = (int[])slnParser.Assignment.Clone();
                   for (int i = 0; i < assignment.Length; i++)
                     assignment[slnParser.Assignment[i]] = i;

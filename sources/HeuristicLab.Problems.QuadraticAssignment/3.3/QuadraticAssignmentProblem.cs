@@ -411,6 +411,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Name = data.Name;
       Description = data.Description;
       Load(weights, distances);
+      if (data.BestKnownQuality.HasValue) BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
       EvaluateAndLoadAssignment(data.BestKnownAssignment);
       OnReset();
     }
@@ -425,6 +426,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Name = data.Name;
       Description = data.Description;
       Load(weights, distances);
+      if (data.BestKnownQuality.HasValue) BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
       EvaluateAndLoadAssignment(data.BestKnownTour);
       OnReset();
     }

@@ -89,12 +89,14 @@ namespace HeuristicLab.Problems.Instances.QAPLIB {
         while (!reader.EndOfStream) {
           string valLine = reader.ReadLine();
           string[] vals = valLine.Split(delim, StringSplitOptions.RemoveEmptyEntries);
+          if (vals.Length == 0) continue;
           for (int j = 0; j < vals.Length; j++) {
             if (valueAsLocation)
               Assignment[int.Parse(vals[j]) - 1] = read++;
             else Assignment[read++] = int.Parse(vals[j]) - 1;
           }
         }
+        if (read < Size) Assignment = null;
         return true;
       } catch (Exception e) {
         Error = e;
