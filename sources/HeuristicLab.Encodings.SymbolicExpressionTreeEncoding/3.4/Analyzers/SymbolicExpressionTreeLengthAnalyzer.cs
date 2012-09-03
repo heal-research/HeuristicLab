@@ -87,7 +87,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     [StorableConstructor]
-    private SymbolicExpressionTreeLengthAnalyzer(bool deserializing) : base() { }
+    private SymbolicExpressionTreeLengthAnalyzer(bool deserializing) : base(deserializing) { }
     private SymbolicExpressionTreeLengthAnalyzer(SymbolicExpressionTreeLengthAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }
