@@ -66,12 +66,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private BackgroundWorker bw;
     private BackgroundWorkerInfo bwInfo;
 
-    public FeatureCorrelation() {
-      this.Title = "Feature Correlation";
-      this.columnNames = problemData.Dataset.DoubleVariables.ToList();
-      this.rowNames = problemData.Dataset.DoubleVariables.ToList();
-      sortableView = true;
-    }
     public FeatureCorrelation(IDataAnalysisProblemData problemData)
       : base() {
       this.problemData = problemData;
