@@ -27,8 +27,14 @@ using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab_33.Tests {
+
   [TestClass]
   public class InstantiateCreatablesTest {
+    // Use ClassInitialize to run code before running the first test in the class
+    [ClassInitialize]
+    public static void MyClassInitialize(TestContext testContext) {
+      PluginLoader.Assemblies.Any();
+    }
     [TestMethod]
     public void InstantiateAllCreatables() {
       var exceptions = new List<string>();
