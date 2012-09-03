@@ -84,21 +84,21 @@ namespace HeuristicLab.Problems.DataAnalysis {
           foreach (var pair in estimatedAndTargetValuePairs) {
             //all positives
             if (pair.TargetClassValue.IsAlmost(classValues[i - 1])) {
-              if (pair.EstimatedValue > lowerThreshold && pair.EstimatedValue < actualThreshold)
+              if (pair.EstimatedValue > lowerThreshold && pair.EstimatedValue <= actualThreshold)
                 //true positive
-                classificationScore += problemData.GetClassificationPenalty(classValues[i - 1], classValues[i - 1]);
+                classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, pair.TargetClassValue);
               else
                 //false negative
-                classificationScore += problemData.GetClassificationPenalty(classValues[i], classValues[i - 1]);
+                classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, classValues[i]);
             }
               //all negatives
             else {
-              if (pair.EstimatedValue > lowerThreshold && pair.EstimatedValue < actualThreshold)
+              if (pair.EstimatedValue > lowerThreshold && pair.EstimatedValue <= actualThreshold)
                 //false positive
-                classificationScore += problemData.GetClassificationPenalty(classValues[i - 1], classValues[i]);
+                classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, classValues[i - 1]);
               else
                 //true negative, consider only upper class
-                classificationScore += problemData.GetClassificationPenalty(classValues[i], classValues[i]);
+                classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, pair.TargetClassValue);
             }
           }
 

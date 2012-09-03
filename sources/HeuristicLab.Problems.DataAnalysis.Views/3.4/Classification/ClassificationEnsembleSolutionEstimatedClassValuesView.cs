@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           throw new ArgumentException();
       }
 
-      int classValuesCount = Content.ProblemData.ClassValues.Count;
+      int classValuesCount = Content.ProblemData.Classes;
       int solutionsCount = Content.ClassificationSolutions.Count();
       string[,] values = new string[indices.Length, 5 + classValuesCount + solutionsCount];
       double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
@@ -113,10 +113,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           var groups =
             estimatedValuesVector[i].GroupBy(x => x).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
           var estimationCount = groups.Where(g => g.Key != null).Select(g => g.Count).Sum();
-          values[i, 4] =
-            (((double)groups.Where(g => g.Key == estimatedClassValues[i]).Single().Count) / estimationCount).ToString();
-          for (int classIndex = 0; classIndex < Content.ProblemData.ClassValues.Count; classIndex++) {
-            var group = groups.Where(g => g.Key == Content.ProblemData.ClassValues[classIndex]).SingleOrDefault();
+          values[i, 4] = (((double)groups.Where(g => g.Key == estimatedClassValues[i]).Single().Count) / estimationCount).ToString();
+          for (int classIndex = 0; classIndex < Content.ProblemData.Classes; classIndex++) {
+            var group = groups.Where(g => g.Key == Content.ProblemData.ClassValues.ElementAt(classIndex)).SingleOrDefault();
             if (group == null) values[i, 5 + classIndex] = 0.ToString();
             else values[i, 5 + classIndex] = group.Count.ToString();
           }

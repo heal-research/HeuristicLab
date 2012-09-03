@@ -342,6 +342,9 @@ namespace HeuristicLab_33.Tests {
       Assert.AreEqual(2.5613992769560352, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
       Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
+      var bestTrainingSolution = (IClassificationSolution)ga.Results["Best training solution"].Value;
+      Assert.AreEqual(0.80625, bestTrainingSolution.TrainingAccuracy, 1E-8);
+      Assert.AreEqual(0.782608695652174, bestTrainingSolution.TestAccuracy, 1E-8);
     }
 
     private GeneticAlgorithm CreateGpSymbolicClassificationSample() {

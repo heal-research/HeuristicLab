@@ -222,40 +222,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return TargetVariableParameter.Value.Value; }
     }
 
-    private List<double> classValues;
-    public List<double> ClassValues {
+    private List<double> classValuesCache;
+    private List<double> ClassValuesCache {
       get {
-        if (classValues == null) {
-          classValues = Dataset.GetDoubleValues(TargetVariableParameter.Value.Value).Distinct().ToList();
-          classValues.Sort();
+        if (classValuesCache == null) {
+          classValuesCache = Dataset.GetDoubleValues(TargetVariableParameter.Value.Value).Distinct().OrderBy(x => x).ToList();
         }
-        return classValues;
+        return classValuesCache;
       }
     }
-    IEnumerable<double> IClassificationProblemData.ClassValues {
-      get { return ClassValues; }
+    public IEnumerable<double> ClassValues {
+      get { return ClassValuesCache; }
     }
-
     public int Classes {
-      get { return ClassValues.Count; }
+      get { return ClassValuesCache.Count; }
     }
 
-    private List<string> classNames;
-    public List<string> ClassNames {
+    private List<string> classNamesCache;
+    private List<string> ClassNamesCache {
       get {
-        if (classNames == null) {
-          classNames = new List<string>();
+        if (classNamesCache == null) {
+          classNamesCache = new List<string>();
           for (int i = 0; i < ClassNamesParameter.Value.Rows; i++)
-            classNames.Add(ClassNamesParameter.Value[i, 0]);
+            classNamesCache.Add(ClassNamesParameter.Value[i, 0]);
         }
-        return classNames;
+        return classNamesCache;
       }
     }
-    IEnumerable<string> IClassificationProblemData.ClassNames {
-      get { return ClassNames; }
+    public IEnumerable<string> ClassNames {
+      get { return ClassNamesCache; }
     }
-
-    private Dictionary<Tuple<double, double>, double> classificationPenaltiesCache = new Dictionary<Tuple<double, double>, double>();
     #endregion
 
 
@@ -318,16 +314,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void ResetTargetVariableDependentMembers() {
       DeregisterParameterEvents();
 
-      classNames = null;
       ((IStringConvertibleMatrix)ClassNamesParameter.Value).Columns = 1;
-      ((IStringConvertibleMatrix)ClassNamesParameter.Value).Rows = ClassValues.Count;
+      ((IStringConvertibleMatrix)ClassNamesParameter.Value).Rows = ClassValuesCache.Count;
       for (int i = 0; i < Classes; i++)
-        ClassNamesParameter.Value[i, 0] = "Class " + ClassValues[i];
+        ClassNamesParameter.Value[i, 0] = "Class " + ClassValuesCache[i];
       ClassNamesParameter.Value.ColumnNames = new List<string>() { "ClassNames" };
       ClassNamesParameter.Value.RowNames = ClassValues.Select(s => "ClassValue: " + s);
 
-      classificationPenaltiesCache.Clear();
-      ((ValueParameter<DoubleMatrix>)ClassificationPenaltiesParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
       ((IStringConvertibleMatrix)ClassificationPenaltiesParameter.Value).Rows = Classes;
       ((IStringConvertibleMatrix)ClassificationPenaltiesParameter.Value).Columns = Classes;
       ClassificationPenaltiesParameter.Value.RowNames = ClassNames.Select(name => "Actual " + name);
@@ -338,46 +331,40 @@ namespace HeuristicLab.Problems.DataAnalysis {
           else ClassificationPenaltiesParameter.Value[i, j] = 0;
         }
       }
-      ((ValueParameter<DoubleMatrix>)ClassificationPenaltiesParameter).ReactOnValueToStringChangedAndValueItemImageChanged = true;
       RegisterParameterEvents();
     }
 
     public string GetClassName(double classValue) {
-      if (!ClassValues.Contains(classValue)) throw new ArgumentException();
-      int index = ClassValues.IndexOf(classValue);
-      return ClassNames[index];
+      if (!ClassValuesCache.Contains(classValue)) throw new ArgumentException();
+      int index = ClassValuesCache.IndexOf(classValue);
+      return ClassNamesCache[index];
     }
     public double GetClassValue(string className) {
-      if (!ClassNames.Contains(className)) throw new ArgumentException();
-      int index = ClassNames.IndexOf(className);
-      return ClassValues[index];
+      if (!ClassNamesCache.Contains(className)) throw new ArgumentException();
+      int index = ClassNamesCache.IndexOf(className);
+      return ClassValuesCache[index];
     }
     public void SetClassName(double classValue, string className) {
-      if (!classValues.Contains(classValue)) throw new ArgumentException();
-      int index = ClassValues.IndexOf(classValue);
-      ClassNames[index] = className;
+      if (!ClassValuesCache.Contains(classValue)) throw new ArgumentException();
+      int index = ClassValuesCache.IndexOf(classValue);
       ClassNamesParameter.Value[index, 0] = className;
+      // updating of class names cache is not necessary here as the parameter value fires a changed event which updates the cache
     }
 
     public double GetClassificationPenalty(string correctClassName, string estimatedClassName) {
       return GetClassificationPenalty(GetClassValue(correctClassName), GetClassValue(estimatedClassName));
     }
     public double GetClassificationPenalty(double correctClassValue, double estimatedClassValue) {
-      var key = Tuple.Create(correctClassValue, estimatedClassValue);
-      if (!classificationPenaltiesCache.ContainsKey(key)) {
-        int correctClassIndex = ClassValues.IndexOf(correctClassValue);
-        int estimatedClassIndex = ClassValues.IndexOf(estimatedClassValue);
-        classificationPenaltiesCache[key] = ClassificationPenaltiesParameter.Value[correctClassIndex, estimatedClassIndex];
-      }
-      return classificationPenaltiesCache[key];
+      int correctClassIndex = ClassValuesCache.IndexOf(correctClassValue);
+      int estimatedClassIndex = ClassValuesCache.IndexOf(estimatedClassValue);
+      return ClassificationPenaltiesParameter.Value[correctClassIndex, estimatedClassIndex];
     }
     public void SetClassificationPenalty(string correctClassName, string estimatedClassName, double penalty) {
       SetClassificationPenalty(GetClassValue(correctClassName), GetClassValue(estimatedClassName), penalty);
     }
     public void SetClassificationPenalty(double correctClassValue, double estimatedClassValue, double penalty) {
-      var key = Tuple.Create(correctClassValue, estimatedClassValue);
-      int correctClassIndex = ClassValues.IndexOf(correctClassValue);
-      int estimatedClassIndex = ClassValues.IndexOf(estimatedClassValue);
+      int correctClassIndex = ClassValuesCache.IndexOf(correctClassValue);
+      int estimatedClassIndex = ClassValuesCache.IndexOf(estimatedClassValue);
 
       ClassificationPenaltiesParameter.Value[correctClassIndex, estimatedClassIndex] = penalty;
     }
@@ -387,26 +374,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TargetVariableParameter.ValueChanged += new EventHandler(TargetVariableParameter_ValueChanged);
       ClassNamesParameter.Value.Reset += new EventHandler(Parameter_ValueChanged);
       ClassNamesParameter.Value.ItemChanged += new EventHandler<EventArgs<int, int>>(MatrixParameter_ItemChanged);
-      ClassificationPenaltiesParameter.Value.Reset += new EventHandler(Parameter_ValueChanged);
-      ClassificationPenaltiesParameter.Value.ItemChanged += new EventHandler<EventArgs<int, int>>(MatrixParameter_ItemChanged);
     }
     private void DeregisterParameterEvents() {
       TargetVariableParameter.ValueChanged -= new EventHandler(TargetVariableParameter_ValueChanged);
       ClassNamesParameter.Value.Reset -= new EventHandler(Parameter_ValueChanged);
       ClassNamesParameter.Value.ItemChanged -= new EventHandler<EventArgs<int, int>>(MatrixParameter_ItemChanged);
-      ClassificationPenaltiesParameter.Value.Reset -= new EventHandler(Parameter_ValueChanged);
-      ClassificationPenaltiesParameter.Value.ItemChanged -= new EventHandler<EventArgs<int, int>>(MatrixParameter_ItemChanged);
     }
 
     private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
-      classValues = null;
+      classValuesCache = null;
+      classNamesCache = null;
       ResetTargetVariableDependentMembers();
       OnChanged();
     }
     private void Parameter_ValueChanged(object sender, EventArgs e) {
+      classNamesCache = null;
       OnChanged();
     }
     private void MatrixParameter_ItemChanged(object sender, EventArgs<int, int> e) {
+      classNamesCache = null;
       OnChanged();
     }
     #endregion
