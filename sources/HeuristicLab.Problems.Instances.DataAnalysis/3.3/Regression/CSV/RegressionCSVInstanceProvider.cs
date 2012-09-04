@@ -25,6 +25,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -59,26 +60,28 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       csvFileParser.Parse(path);
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      string targetVar = csvFileParser.VariableNames.Where(x => dataset.DoubleVariables.Contains(x)).Last();
+      string targetVar = dataset.DoubleVariables.Last();
 
-      IEnumerable<string> allowedInputVars = dataset.DoubleVariables.Where(x => !x.Equals(targetVar));
-
-      IRegressionProblemData regData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
-
-      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
-      regData.TrainingPartition.Start = 0;
-      regData.TrainingPartition.End = trainingPartEnd;
-      regData.TestPartition.Start = trainingPartEnd;
-      regData.TestPartition.End = csvFileParser.Rows;
-
-      int pos = path.LastIndexOf('\\');
-      if (pos < 0)
-        regData.Name = path;
-      else {
-        pos++;
-        regData.Name = path.Substring(pos, path.Length - pos);
+      // turn of input variables that are constant in the training partition
+      var allowedInputVars = new List<string>();
+      var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
+      foreach (var variableName in dataset.DoubleVariables) {
+        if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+          variableName != targetVar)
+          allowedInputVars.Add(variableName);
       }
-      return regData;
+
+      IRegressionProblemData regressionData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
+
+      var trainingPartEnd = trainingIndizes.Last();
+      regressionData.TrainingPartition.Start = trainingIndizes.First();
+      regressionData.TrainingPartition.End = trainingPartEnd;
+      regressionData.TestPartition.Start = trainingPartEnd;
+      regressionData.TestPartition.End = csvFileParser.Rows;
+
+      regressionData.Name = Path.GetFileName(path);
+
+      return regressionData;
     }
 
     public override bool CanExportData {

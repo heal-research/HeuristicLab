@@ -25,6 +25,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -61,25 +62,28 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       csvFileParser.Parse(path);
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      string targetVar = csvFileParser.VariableNames.Where(x => dataset.DoubleVariables.Contains(x)).Last();
-      IEnumerable<string> allowedInputVars = dataset.DoubleVariables.Where(x => !x.Equals(targetVar));
+      string targetVar = dataset.DoubleVariables.Last();
 
-      ClassificationProblemData claData = new ClassificationProblemData(dataset, allowedInputVars, targetVar);
-
-      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
-      claData.TrainingPartition.Start = 0;
-      claData.TrainingPartition.End = trainingPartEnd;
-      claData.TestPartition.Start = trainingPartEnd;
-      claData.TestPartition.End = csvFileParser.Rows;
-      int pos = path.LastIndexOf('\\');
-      if (pos < 0)
-        claData.Name = path;
-      else {
-        pos++;
-        claData.Name = path.Substring(pos, path.Length - pos);
+      // turn of input variables that are constant in the training partition
+      var allowedInputVars = new List<string>();
+      var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
+      foreach (var variableName in dataset.DoubleVariables) {
+        if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+          variableName != targetVar)
+          allowedInputVars.Add(variableName);
       }
 
-      return claData;
+      ClassificationProblemData classificationData = new ClassificationProblemData(dataset, allowedInputVars, targetVar);
+
+      int trainingPartEnd = trainingIndizes.Last();
+      classificationData.TrainingPartition.Start = trainingIndizes.First();
+      classificationData.TrainingPartition.End = trainingPartEnd;
+      classificationData.TestPartition.Start = trainingPartEnd;
+      classificationData.TestPartition.End = csvFileParser.Rows;
+
+      classificationData.Name = Path.GetFileName(path);
+
+      return classificationData;
     }
 
     public override bool CanExportData {

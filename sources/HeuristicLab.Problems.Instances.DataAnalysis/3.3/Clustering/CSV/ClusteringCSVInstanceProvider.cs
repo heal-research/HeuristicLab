@@ -23,7 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -60,22 +62,26 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       csvFileParser.Parse(path);
 
       var dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      var claData = new ClusteringProblemData(dataset, dataset.DoubleVariables);
 
-      int trainingPartEnd = csvFileParser.Rows * 2 / 3;
-      claData.TrainingPartition.Start = 0;
-      claData.TrainingPartition.End = trainingPartEnd;
-      claData.TestPartition.Start = trainingPartEnd;
-      claData.TestPartition.End = csvFileParser.Rows;
-      int pos = path.LastIndexOf('\\');
-      if (pos < 0)
-        claData.Name = path;
-      else {
-        pos++;
-        claData.Name = path.Substring(pos, path.Length - pos);
+      // turn of input variables that are constant in the training partition
+      var allowedInputVars = new List<string>();
+      var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
+      foreach (var variableName in dataset.DoubleVariables) {
+        if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0)
+          allowedInputVars.Add(variableName);
       }
 
-      return claData;
+      var clusteringData = new ClusteringProblemData(dataset, allowedInputVars);
+
+      int trainingPartEnd = trainingIndizes.Last();
+      clusteringData.TrainingPartition.Start = trainingIndizes.First();
+      clusteringData.TrainingPartition.End = trainingPartEnd;
+      clusteringData.TestPartition.Start = trainingPartEnd;
+      clusteringData.TestPartition.End = csvFileParser.Rows;
+
+      clusteringData.Name = Path.GetFileName(path);
+
+      return clusteringData;
     }
 
     public override bool CanExportData {
