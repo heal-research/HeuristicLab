@@ -222,6 +222,9 @@
     <Compile Include="Advanced\PluginView.Designer.cs">
       <DependentUpon>PluginView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ArgumentHandling\ArgumentHandling.cs" />
+    <Compile Include="ArgumentHandling\Arguments.cs" />
+    <Compile Include="ArgumentHandling\IArgument.cs" />
     <Compile Include="Attributes\ApplicationAttribute.cs" />
     <Compile Include="Attributes\ContactInformationAttribute.cs" />
     <Compile Include="Attributes\NonDiscoverableTypeAttribute.cs" />

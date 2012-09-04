@@ -25,10 +25,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Advanced;
 using HeuristicLab.PluginInfrastructure.Manager;
-using System.Threading.Tasks;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
   /// <summary>
@@ -45,6 +45,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private PluginManager pluginManager;
     private SplashScreen splashScreen;
     private bool updatesAvailable = false;
+    private string[] arguments;
+
     /// <summary>
     /// Initializes an instance of the starter form.
     /// The starter form shows a splashscreen and initializes the plugin infrastructure.
@@ -123,6 +125,33 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
                         "HeuristicLab",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
+      }
+    }
+
+    /// <summary>
+    /// Creates a new StarterForm and passes the arguments in <paramref name="args"/>.
+    /// </summary>
+    /// <param name="args">The arguments that should be processed</param>
+    public StarterForm(string[] args)
+      : this() {
+      this.arguments = args;
+    }
+
+    private void StarterForm_Shown(object sender, EventArgs e) {
+      foreach (var argument in ArgumentHandling.GetArguments(arguments)) {
+        if (argument is StartArgument) {
+          var appDesc = (from desc in pluginManager.Applications
+                         where desc.Name == argument.Value
+                         select desc).SingleOrDefault();
+          if (appDesc != null) {
+            StartApplication(appDesc);
+          } else {
+            MessageBox.Show("Cannot start application " + argument.Value + ".",
+                            "HeuristicLab",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+          }
+        }
       }
     }
 
@@ -258,7 +287,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       }
     }
 
-    private void MainForm_FormClosing(object sender, FormClosingEventArgs e) {
+    private void StarterForm_FormClosing(object sender, FormClosingEventArgs e) {
       splashScreen.Close();
       abortRequested = true;
     }

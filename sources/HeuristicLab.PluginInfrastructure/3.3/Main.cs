@@ -41,7 +41,7 @@ namespace HeuristicLab.PluginInfrastructure {
         try {
           Application.EnableVisualStyles();
           Application.SetCompatibleTextRenderingDefault(false);
-          Application.Run(new StarterForm());
+          Application.Run(new StarterForm(args));
         }
         catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(ex);

@@ -180,7 +180,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.Icon = HeuristicLab.PluginInfrastructure.Resources.HeuristicLab;
       this.Name = "StarterForm";
       this.Text = "HeuristicLab Starter";
-      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StarterForm_FormClosing);
+      this.Shown += new System.EventHandler(this.StarterForm_Shown);
       this.ResumeLayout(false);
 
     }
