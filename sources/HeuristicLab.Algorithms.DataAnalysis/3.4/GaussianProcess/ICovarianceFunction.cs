@@ -29,10 +29,5 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     double GetCovariance(double[,] x, int i, int j);
     IEnumerable<double> GetGradient(double[,] x, int i, int j);
     double GetCrossCovariance(double[,] x, double[,] xt, int i, int j);
-    //void SetData(double[,] x);
-    //void SetData(double[,] x, double[,] xt);
-
-    //double GetCovariance(int i, int j);
-    //double GetGradient(int i, int j, int k);
   }
 }

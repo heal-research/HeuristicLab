@@ -28,13 +28,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return v.Zip(u, (vi, ui) => vi * ui).Sum();
     }
 
+    public static double SqrDist(IEnumerable<double> x, IEnumerable<double> y) {
+      return x.Zip(y, (a, b) => (a - b) * (a - b)).Sum();
+    }
+
     public static double SqrDist(double x, double y) {
       double d = x - y;
       return d * d;
-    }
-
-    public static double SqrDist(IEnumerable<double> x, IEnumerable<double> y) {
-      return x.Zip(y, (a, b) => (a - b) * (a - b)).Sum();
     }
 
     public static double SqrDist(double[,] x, int i, int j, double scale = 1.0) {
@@ -49,6 +49,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       return scale * scale * ss;
     }
+
     public static double SqrDist(double[,] x, int i, int j, double[] scale) {
       return SqrDist(x, i, x, j, scale);
     }
@@ -60,6 +61,28 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         ss += d * d * scale[k] * scale[k];
       }
       return ss;
+    }
+    public static double ScalarProd(double[,] x, int i, int j, double scale = 1.0) {
+      return ScalarProd(x, i, x, j, scale);
+    }
+
+    public static double ScalarProd(double[,] x, int i, double[,] xt, int j, double scale = 1.0) {
+      double sum = 0.0;
+      for (int k = 0; k < x.GetLength(1); k++) {
+        sum += x[i, k] * xt[j, k];
+      }
+      return scale * scale * sum;
+    }
+    public static double ScalarProd(double[,] x, int i, int j, double[] scale) {
+      return ScalarProd(x, i, x, j, scale);
+    }
+
+    public static double ScalarProd(double[,] x, int i, double[,] xt, int j, double[] scale) {
+      double sum = 0.0;
+      for (int k = 0; k < x.GetLength(1); k++) {
+        sum += x[i, k] * scale[k] * xt[j, k] * scale[k];
+      }
+      return sum;
     }
 
     public static IEnumerable<double> GetRow(double[,] x, int r) {

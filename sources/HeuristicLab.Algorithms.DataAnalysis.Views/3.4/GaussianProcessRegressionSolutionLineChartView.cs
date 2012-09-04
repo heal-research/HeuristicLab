@@ -114,6 +114,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
         this.ToggleSeriesData(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
 
+        // the series have been added in different order than in the normal line chart 
+        // --> adapt coloring;
+        var s1Color = chart.Series[0].Color;
+        var s2Color = chart.Series[1].Color;
+        var s3Color = chart.Series[2].Color;
+        var s4Color = chart.Series[3].Color;
+
+        chart.Series[3].Color = s1Color;
+        chart.Series[0].Color = s2Color;
+        chart.Series[1].Color = s3Color;
+        chart.Series[2].Color = s4Color;
+
         UpdateCursorInterval();
         this.UpdateStripLines();
       }

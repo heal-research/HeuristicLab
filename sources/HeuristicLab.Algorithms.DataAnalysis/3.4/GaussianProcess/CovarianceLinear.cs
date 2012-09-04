@@ -50,7 +50,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double GetCovariance(double[,] x, int i, int j) {
-      return Util.ScalarProd(Util.GetRow(x, i), Util.GetRow(x, j));
+      return Util.ScalarProd(x, i, j);
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
@@ -58,7 +58,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      return Util.ScalarProd(Util.GetRow(x, i), Util.GetRow(xt, j));
+      return Util.ScalarProd(x, i, xt, j);
     }
   }
 }

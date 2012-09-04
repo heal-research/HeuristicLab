@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,44 +32,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     Description = "Linear covariance function with automatic relevance determination for Gaussian processes.")]
   public class CovarianceLinearArd : Item, ICovarianceFunction {
     [Storable]
-    private double[,] x;
-    [Storable]
-    private double[,] xt;
-
-    [Storable]
-    private double[] l;
-    public double[] Length {
+    private double[] inverseLength;
+    public double[] InverseLength {
       get {
-        double[] res = new double[l.Length];
-        Array.Copy(l, res, res.Length);
+        if (inverseLength == null) return null;
+        double[] res = new double[inverseLength.Length];
+        Array.Copy(inverseLength, res, res.Length);
         return res;
       }
     }
 
-    private double[,] k;
-    private bool symmetric;
-
-
     public int GetNumberOfParameters(int numberOfVariables) {
       return numberOfVariables;
     }
+
     [StorableConstructor]
     protected CovarianceLinearArd(bool deserializing) : base(deserializing) { }
     protected CovarianceLinearArd(CovarianceLinearArd original, Cloner cloner)
       : base(original, cloner) {
-      if (original.x != null) {
-        this.x = new double[original.x.GetLength(0), original.x.GetLength(1)];
-        Array.Copy(original.x, this.x, x.Length);
-
-        this.xt = new double[original.xt.GetLength(0), original.xt.GetLength(1)];
-        Array.Copy(original.xt, this.xt, xt.Length);
-
-        this.k = new double[original.k.GetLength(0), original.k.GetLength(1)];
-        Array.Copy(original.k, this.k, k.Length);
-        this.l = new double[original.l.GetLength(0)];
-        Array.Copy(original.l, this.l, l.Length);
-      }
-      this.symmetric = original.symmetric;
+      this.inverseLength = original.InverseLength;  // array is copied in the getter
     }
     public CovarianceLinearArd()
       : base() {
@@ -79,54 +61,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public void SetParameter(double[] hyp) {
-      l = hyp.Select(Math.Exp).ToArray();
+      inverseLength = hyp.Select(e => 1.0 / Math.Exp(e)).ToArray();
     }
 
-    public void SetData(double[,] x) {
-      SetData(x, x);
-      this.symmetric = true;
+    public double GetCovariance(double[,] x, int i, int j) {
+      return Util.ScalarProd(x, i, j, inverseLength);
     }
 
-    public void SetData(double[,] x, double[,] xt) {
-      this.x = x;
-      this.xt = xt;
-      this.symmetric = false;
-
-      k = null;
-    }
-
-    public double GetCovariance(int i, int j) {
-      if (k == null) CalculateInnerProduct();
-      return k[i, j];
-    }
-
-    public double GetGradient(int i, int j, int k) {
-
-    }
-
-
-    private void CalculateInnerProduct() {
-      if (x.GetLength(1) != xt.GetLength(1)) throw new InvalidOperationException();
-      int rows = x.GetLength(0);
-      int cols = xt.GetLength(0);
-      k = new double[rows, cols];
-      if (symmetric) {
-        for (int i = 0; i < rows; i++) {
-          for (int j = i; j < cols; j++) {
-
-            k[i, j] = Util.ScalarProd(Util.GetRow(x, i).Select((e, k) => e / l[k]),
-                                      Util.GetRow(x, j).Select((e, k) => e / l[k]));
-            k[j, i] = k[i, j];
-          }
-        }
-      } else {
-        for (int i = 0; i < rows; i++) {
-          for (int j = 0; j < cols; j++) {
-            k[i, j] = Util.ScalarProd(Util.GetRow(x, i).Select((e, k) => e / l[k]),
-                                      Util.GetRow(xt, j).Select((e, k) => e / l[k]));
-          }
-        }
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+      for (int k = 0; k < inverseLength.Length; k++) {
+        yield return -2.0 * x[i, k] * x[j, k] * inverseLength[k] * inverseLength[k];
       }
+    }
+
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+      return Util.ScalarProd(x, i, xt, j, inverseLength);
     }
   }
 }
