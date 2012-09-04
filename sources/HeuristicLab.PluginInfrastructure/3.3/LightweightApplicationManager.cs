@@ -74,7 +74,8 @@ namespace HeuristicLab.PluginInfrastructure {
       List<object> instances = new List<object>();
       foreach (Type t in GetTypes(type)) {
         object instance = null;
-        try { instance = Activator.CreateInstance(t); } catch { }
+        try { instance = Activator.CreateInstance(t); }
+        catch { }
         if (instance != null) instances.Add(instance);
       }
       return instances;
@@ -126,61 +127,23 @@ namespace HeuristicLab.PluginInfrastructure {
         // instead of later when the enumerable is iterated?
         var assemblyTypes = assembly.GetTypes();
 
-        var buildTypes = from t in assembly.GetTypes()
-                         where CheckTypeCompatibility(type, t)
-                         where !IsNonDiscoverableType(t)
-                         where onlyInstantiable == false ||
-                               (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
-                         select BuildType(t, type);
+        var matchingTypes = from assemblyType in assembly.GetTypes()
+                            let t = assemblyType.BuildType(type)
+                            where t != null
+                            where t.IsSubTypeOf(type)
+                            where !t.IsNonDiscoverableType()
+                            where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
+                            where includeGenericTypeDefinitions || !t.IsGenericTypeDefinition
+                            select t;
 
-        return from t in buildTypes
-               where includeGenericTypeDefinitions || !t.IsGenericTypeDefinition
-               select t;
-      } catch (TypeLoadException) {
-        return Enumerable.Empty<Type>();
-      } catch (ReflectionTypeLoadException) {
+        return matchingTypes;
+      }
+      catch (TypeLoadException) {
         return Enumerable.Empty<Type>();
       }
-    }
-
-    private static bool IsNonDiscoverableType(Type t) {
-      return t.GetCustomAttributes(typeof(NonDiscoverableTypeAttribute), false).Any();
-    }
-
-    private static bool CheckTypeCompatibility(Type type, Type other) {
-      if (type.IsAssignableFrom(other))
-        return true;
-      if (type.IsGenericType && other.IsGenericType) {
-        var otherGenericArguments = other.GetGenericArguments();
-        var typeGenericArguments = type.GetGenericArguments();
-
-        //check type arguments count
-        if (otherGenericArguments.Length != typeGenericArguments.Length)
-          return false;
-
-        //check type arguments & constraints
-        int i = 0;
-        foreach (var genericArgument in typeGenericArguments) {
-          if (otherGenericArguments[i].IsGenericParameter) {
-            foreach (var constraint in otherGenericArguments[i].GetGenericParameterConstraints())
-              if (!constraint.IsAssignableFrom(genericArgument)) return false;
-          } else if (genericArgument != otherGenericArguments[i]) return false;
-          i++;
-        }
-        //check types
-        try {
-          var otherGenericTypeDefinition = other.GetGenericTypeDefinition();
-          if (type.IsAssignableFrom(otherGenericTypeDefinition.MakeGenericType(typeGenericArguments)))
-            return true;
-        } catch (Exception) { }
+      catch (ReflectionTypeLoadException) {
+        return Enumerable.Empty<Type>();
       }
-      return false;
-    }
-    private static Type BuildType(Type type, Type protoType) {
-      if (type.IsGenericType && protoType.IsGenericType)
-        return type.GetGenericTypeDefinition().MakeGenericType(protoType.GetGenericArguments());
-      else
-        return type;
     }
 
     /// <summary>
