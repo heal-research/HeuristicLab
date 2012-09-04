@@ -46,6 +46,24 @@ namespace HeuristicLab.Common {
       }
     }
 
+    /// <summary>
+    /// Calculates the range (max - min) of the enumeration.
+    /// </summary>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static double Range(this IEnumerable<double> values) {
+      double min = double.PositiveInfinity;
+      double max = double.NegativeInfinity;
+      int i = 0;
+      foreach (var e in values) {
+        if (min > e) min = e;
+        if (max < e) max = e;
+        i++;
+      }
+      if (i <= 2) throw new ArgumentException("The enumerable must contain at least two elements", "values");
+      return max - min;
+    }
+
 
     /// <summary>
     /// Calculates the standard deviation of values.

@@ -31,7 +31,7 @@ using System.Text;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class TableFileParser {
-    private const int BUFFER_SIZE = 1024;
+    private const int BUFFER_SIZE = 65536;
     private static readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t' };
     private Tokenizer tokenizer;
     private List<List<object>> rowValues;
