@@ -28,68 +28,79 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceSEard", Description = "Squared exponential covariance function with automatic relevance determination for Gaussian processes.")]
-  public class CovarianceSEard : Item, ICovarianceFunction {
+  [Item(Name = "CovarianceRQArd",
+    Description = "Rational quadratic covariance function with automatic relevance determination for Gaussian processes.")]
+  public class CovarianceRQArd : Item, ICovarianceFunction {
     [Storable]
     private double sf2;
     public double Scale { get { return sf2; } }
-
     [Storable]
     private double[] inverseLength;
     public double[] InverseLength {
       get {
-        if (inverseLength == null) return new double[0];
-        var copy = new double[inverseLength.Length];
-        Array.Copy(inverseLength, copy, copy.Length);
-        return copy;
+        if (inverseLength == null) return null;
+        double[] res = new double[inverseLength.Length];
+        Array.Copy(inverseLength, res, res.Length);
+        return res;
       }
     }
+    [Storable]
+    private double alpha;
+    public double Shape { get { return alpha; } }
 
-    public int GetNumberOfParameters(int numberOfVariables) {
-      return numberOfVariables + 1;
-    }
     [StorableConstructor]
-    protected CovarianceSEard(bool deserializing) : base(deserializing) { }
-    protected CovarianceSEard(CovarianceSEard original, Cloner cloner)
-      : base(original, cloner) {
-      this.inverseLength = original.InverseLength; // array is cloned in the getter
-      this.sf2 = original.sf2;
+    protected CovarianceRQArd(bool deserializing)
+      : base(deserializing) {
     }
-    public CovarianceSEard()
+
+    protected CovarianceRQArd(CovarianceRQArd original, Cloner cloner)
+      : base(original, cloner) {
+      this.sf2 = original.sf2;
+      this.inverseLength = original.InverseLength; // array is cloned in the getter
+      this.alpha = original.alpha;
+    }
+
+    public CovarianceRQArd()
       : base() {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new CovarianceSEard(this, cloner);
+      return new CovarianceRQArd(this, cloner);
+    }
+
+    public int GetNumberOfParameters(int numberOfVariables) {
+      return numberOfVariables + 2;
     }
 
     public void SetParameter(double[] hyp) {
-      this.inverseLength = hyp.Take(hyp.Length - 1).Select(p => 1.0 / Math.Exp(p)).ToArray();
-      this.sf2 = Math.Exp(2 * hyp[hyp.Length - 1]);
+      this.inverseLength = hyp.Take(hyp.Length - 2).Select(e => 1.0 / Math.Exp(e)).ToArray();
+      this.sf2 = Math.Exp(2 * hyp[hyp.Length - 2]);
+      this.alpha = Math.Exp(hyp[hyp.Length - 1]);
     }
+
 
     public double GetCovariance(double[,] x, int i, int j) {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength);
-      return sf2 * Math.Exp(-d / 2.0);
+      return sf2 * Math.Pow(1 + 0.5 * d / alpha, -alpha);
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength);
-
-      for (int ii = 0; ii < inverseLength.Length; ii++) {
-        double sqrDist = Util.SqrDist(x[i, ii] * inverseLength[ii], x[j, ii] * inverseLength[ii]);
-        yield return sf2 * Math.Exp(-d / 2.0) * sqrDist;
+      double b = 1 + 0.5 * d / alpha;
+      for (int k = 0; k < inverseLength.Length; k++) {
+        yield return sf2 * Math.Pow(b, -alpha - 1) * Util.SqrDist(x[i, k] * inverseLength[k], x[j, k] * inverseLength[k]);
       }
-      yield return 2.0 * sf2 * Math.Exp(-d / 2.0);
+      yield return 2 * sf2 * Math.Pow(b, -alpha);
+      yield return sf2 * Math.Pow(b, -alpha) * (0.5 * d / b - alpha * Math.Log(b));
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
       double d = Util.SqrDist(x, i, xt, j, inverseLength);
-      return sf2 * Math.Exp(-d / 2.0);
+      return sf2 * Math.Pow(1 + 0.5 * d / alpha, -alpha);
     }
   }
 }
