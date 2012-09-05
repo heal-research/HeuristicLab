@@ -26,41 +26,112 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
-using HeuristicLab.Core.Views;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
+using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Feature Correlation View")]
-  [Content(typeof(FeatureCorrelation), true)]
-  public partial class FeatureCorrelationView : ItemView {
+  [Content(typeof(DataAnalysisProblemData), false)]
+  public abstract partial class AbstractFeatureCorrelationView : AsynchronousContentView {
 
     private int[] virtualRowIndices;
     private List<KeyValuePair<int, SortOrder>> sortedColumnIndices;
     private StringConvertibleMatrixView.RowComparer rowComparer;
 
-    public new FeatureCorrelation Content {
-      get { return (FeatureCorrelation)base.Content; }
+    protected FeatureCorrelationCalculator fcc;
+    protected HeatMap currentCorrelation;
+
+    public new DataAnalysisProblemData Content {
+      get { return (DataAnalysisProblemData)base.Content; }
       set { base.Content = value; }
     }
 
-    public FeatureCorrelationView() {
+    public AbstractFeatureCorrelationView() {
       InitializeComponent();
       sortedColumnIndices = new List<KeyValuePair<int, SortOrder>>();
       rowComparer = new StringConvertibleMatrixView.RowComparer();
+      fcc = new FeatureCorrelationCalculator();
+      var calculatorList = FCE.EnumToList<FCE.CorrelationCalculators>().Select(x => new KeyValuePair<FCE.CorrelationCalculators, string>(x, FCE.GetEnumDescription(x))).ToList();
+      CorrelationCalcComboBox.ValueMember = "Key";
+      CorrelationCalcComboBox.DisplayMember = "Value";
+      CorrelationCalcComboBox.DataSource = new BindingList<KeyValuePair<FCE.CorrelationCalculators, string>>(calculatorList);
+      var partitionList = FCE.EnumToList<FCE.Partitions>().Select(x => new KeyValuePair<FCE.Partitions, string>(x, FCE.GetEnumDescription(x))).ToList();
+      PartitionComboBox.ValueMember = "Key";
+      PartitionComboBox.DisplayMember = "Value";
+      PartitionComboBox.DataSource = new BindingList<KeyValuePair<FCE.Partitions, string>>(partitionList);
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ProgressCalculation += new DataAnalysis.FeatureCorrelation.ProgressCalculationHandler(Content_ProgressCalculation);
-      Content.CorrelationCalculationFinished += new System.EventHandler(Content_CorrelationCalculationFinished);
+      fcc.ProgressCalculation += new DataAnalysis.FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
+      fcc.CorrelationCalculationFinished += new DataAnalysis.FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
     }
 
     protected override void DeregisterContentEvents() {
-      Content.CorrelationCalculationFinished -= new System.EventHandler(Content_CorrelationCalculationFinished);
-      Content.ProgressCalculation -= new DataAnalysis.FeatureCorrelation.ProgressCalculationHandler(Content_ProgressCalculation);
+      fcc.CorrelationCalculationFinished += new DataAnalysis.FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
+      fcc.ProgressCalculation += new DataAnalysis.FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
       base.DeregisterContentEvents();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content != null) {
+        fcc.ProblemData = Content;
+        CalculateCorrelation();
+      } else {
+        DataGridView.Columns.Clear();
+        DataGridView.Rows.Clear();
+      }
+    }
+
+    protected void CorrelationMeasureComboBox_SelectedChangeCommitted(object sender, System.EventArgs e) {
+      CalculateCorrelation();
+    }
+    protected void PartitionComboBox_SelectedChangeCommitted(object sender, System.EventArgs e) {
+      CalculateCorrelation();
+    }
+
+    protected abstract void CalculateCorrelation();
+
+    protected void UpdateDataGrid() {
+      virtualRowIndices = Enumerable.Range(0, currentCorrelation.Rows).ToArray();
+      DataGridViewColumn[] columns = new DataGridViewColumn[currentCorrelation.Columns];
+      for (int i = 0; i < columns.Length; ++i) {
+        var column = new DataGridViewTextBoxColumn();
+        column.FillWeight = 1;
+        columns[i] = column;
+      }
+
+      DataGridView.Columns.Clear();
+      DataGridView.Columns.AddRange(columns);
+
+      DataGridView.RowCount = currentCorrelation.Rows;
+
+      ClearSorting();
+      UpdateColumnHeaders();
+      UpdateRowHeaders();
+
+      maximumLabel.Text = currentCorrelation.Maximum.ToString();
+      minimumLabel.Text = currentCorrelation.Minimum.ToString();
+
+      DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
+      DataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
+      DataGridView.Enabled = true;
+    }
+
+    protected virtual void UpdateColumnHeaders() {
+      for (int i = 0; i < DataGridView.ColumnCount; i++) {
+        DataGridView.Columns[i].HeaderText = currentCorrelation.ColumnNames.ElementAt(i);
+      }
+    }
+    protected virtual void UpdateRowHeaders() {
+      for (int i = 0; i < DataGridView.RowCount; i++) {
+        DataGridView.Rows[i].HeaderCell.Value = currentCorrelation.RowNames.ElementAt(virtualRowIndices[i]);
+      }
     }
 
     protected void Content_ProgressCalculation(object sender, ProgressChangedEventArgs e) {
@@ -72,93 +143,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       HeatMapProgressBar.Value = e.ProgressPercentage;
     }
 
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content != null) {
-        CorrelationCalcComboBox.DataSource = Content.CorrelationCalculators;
-        PartitionComboBox.DataSource = Content.Partitions;
-        CalculateCorrelation();
-      } else {
-        DataGridView.Columns.Clear();
-        DataGridView.Rows.Clear();
-      }
-    }
-
-    protected void CorrelationMeasureComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
-      CalculateCorrelation();
-    }
-    protected void PartitionComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
-      CalculateCorrelation();
-    }
-
-    protected virtual void CalculateCorrelation() {
-      string calc = (string)CorrelationCalcComboBox.SelectedItem;
-      string partition = (string)PartitionComboBox.SelectedItem;
-      if (calc != null && partition != null) {
-        DataGridView.Columns.Clear();
-        DataGridView.Enabled = false;
-        Content.Recalculate(calc, partition);
-      }
-    }
-
-    protected void UpdateDataGrid() {
-      virtualRowIndices = Enumerable.Range(0, Content.Rows).ToArray();
-      DataGridViewColumn[] columns = new DataGridViewColumn[Content.Columns];
-      for (int i = 0; i < columns.Length; ++i) {
-        var column = new DataGridViewTextBoxColumn();
-        column.FillWeight = 1;
-        columns[i] = column;
-      }
-
-      DataGridView.Columns.Clear();
-      DataGridView.Columns.AddRange(columns);
-
-      DataGridView.RowCount = Content.Rows;
-
-      ClearSorting();
-      UpdateColumnHeaders();
-      UpdateRowHeaders();
-
-      maximumLabel.Text = Content.Maximum.ToString();
-      minimumLabel.Text = Content.Minimum.ToString();
-
-      DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader);
-      DataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
-      DataGridView.Enabled = true;
-    }
-
-    protected virtual void UpdateColumnHeaders() {
-      for (int i = 0; i < DataGridView.ColumnCount; i++) {
-        DataGridView.Columns[i].HeaderText = Content.ColumnNames.ElementAt(i);
-      }
-    }
-    protected void UpdateRowHeaders() {
-      for (int i = 0; i < DataGridView.RowCount; i++) {
-        DataGridView.Rows[i].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndices[i]);
-      }
-    }
-
-    protected void Content_CorrelationCalculationFinished(object sender, System.EventArgs e) {
-      if (InvokeRequired) {
-        Invoke(new EventHandler(Content_CorrelationCalculationFinished), sender, e);
-      } else {
-        UpdateDataGrid();
-      }
-    }
+    protected abstract void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e);
 
     protected void DataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
       if (Content == null) return;
       int rowIndex = virtualRowIndices[e.RowIndex];
-      e.Value = Content[rowIndex, e.ColumnIndex];
+      e.Value = currentCorrelation[rowIndex, e.ColumnIndex];
     }
 
     protected void DataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e) {
-      //if (Content != null && DataGridView.Enabled && e.RowIndex >= 0 && e.ColumnIndex >= 0 && e.PaintParts.HasFlag(DataGridViewPaintParts.Background)) {
-      //  int rowIndex = virtualRowIndices[e.RowIndex];
-      //e.CellStyle.BackColor = GetDataPointColor(Content[rowIndex, e.ColumnIndex], Content.Minimum, Content.Maximum);
-      //}
-      //e.Paint(e.CellBounds, e.PaintParts);
-
       if (Content == null) return;
       if (e.RowIndex < 0) return;
       if (e.ColumnIndex < 0) return;
@@ -166,7 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (!e.PaintParts.HasFlag(DataGridViewPaintParts.Background)) return;
 
       int rowIndex = virtualRowIndices[e.RowIndex];
-      Color backColor = GetDataPointColor(Content[rowIndex, e.ColumnIndex], Content.Minimum, Content.Maximum);
+      Color backColor = GetDataPointColor(currentCorrelation[rowIndex, e.ColumnIndex], currentCorrelation.Minimum, currentCorrelation.Maximum);
       using (Brush backColorBrush = new SolidBrush(backColor)) {
         e.Graphics.FillRectangle(backColorBrush, e.CellBounds);
       }
@@ -185,7 +178,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     #region sort
     protected void DataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (Content != null) {
-        if (e.Button == MouseButtons.Left && Content.SortableView) {
+        if (e.Button == MouseButtons.Left) {
           bool addToSortedIndices = (Control.ModifierKeys & Keys.Control) == Keys.Control;
           SortOrder newSortOrder = SortOrder.Ascending;
           if (sortedColumnIndices.Any(x => x.Key == e.ColumnIndex)) {
@@ -212,7 +205,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected virtual void ClearSorting() {
-      virtualRowIndices = Enumerable.Range(0, Content.Rows).ToArray();
+      virtualRowIndices = Enumerable.Range(0, currentCorrelation.Rows).ToArray();
       sortedColumnIndices.Clear();
       UpdateSortGlyph();
     }
@@ -225,10 +218,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected virtual int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {
-      int[] newSortedIndex = Enumerable.Range(0, Content.Rows).ToArray();
+      int[] newSortedIndex = Enumerable.Range(0, currentCorrelation.Rows).ToArray();
       if (sortedColumns.Count() != 0) {
         rowComparer.SortedIndices = sortedColumns;
-        rowComparer.Matrix = Content;
+        rowComparer.Matrix = currentCorrelation;
         Array.Sort(newSortedIndex, rowComparer);
       }
       return newSortedIndex;
@@ -242,7 +235,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     #endregion
 
     #region copy
-    private void DataGridView_KeyDown(object sender, KeyEventArgs e) {
+    protected void DataGridView_KeyDown(object sender, KeyEventArgs e) {
       if (e.Control && e.KeyCode == Keys.C)
         CopyValuesFromDataGridView();
     }
@@ -266,8 +259,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         maxColIndex = temp;
       }
 
-      bool addRowNames = DataGridView.AreAllCellsSelected(false) && Content.RowNames.Count() > 0;
-      bool addColumnNames = DataGridView.AreAllCellsSelected(false) && Content.ColumnNames.Count() > 0;
+      bool addRowNames = DataGridView.AreAllCellsSelected(false) && currentCorrelation.RowNames.Count() > 0;
+      bool addColumnNames = DataGridView.AreAllCellsSelected(false) && currentCorrelation.ColumnNames.Count() > 0;
 
       //add colum names
       if (addColumnNames) {
@@ -287,7 +280,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       for (int i = minRowIndex; i <= maxRowIndex; i++) {
         int rowIndex = this.virtualRowIndices[i];
         if (addRowNames) {
-          s.Append(Content.RowNames.ElementAt(rowIndex));
+          s.Append(currentCorrelation.RowNames.ElementAt(rowIndex));
           s.Append('\t');
         }
 
@@ -295,7 +288,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         while (column != null) {
           DataGridViewCell cell = DataGridView[column.Index, i];
           if (cell.Selected) {
-            s.Append(Content[rowIndex, column.Index]);
+            s.Append(currentCorrelation[rowIndex, column.Index]);
             s.Append('\t');
           }
 

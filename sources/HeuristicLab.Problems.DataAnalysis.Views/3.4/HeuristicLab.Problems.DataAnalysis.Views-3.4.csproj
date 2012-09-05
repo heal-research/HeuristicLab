@@ -131,19 +131,33 @@
     <Compile Include="Clustering\ClusteringSolutionVisualizationView.Designer.cs">
       <DependentUpon>ClusteringSolutionVisualizationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="FeatureCorrelation\AbstractFeatureCorrelationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FeatureCorrelation\AbstractFeatureCorrelationView.Designer.cs">
+      <DependentUpon>AbstractFeatureCorrelationView.cs</DependentUpon>
+    </Compile>
     <Compile Include="DataAnalysisSolutionEvaluationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DataAnalysisSolutionEvaluationView.Designer.cs">
       <DependentUpon>DataAnalysisSolutionEvaluationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="FeatureCorrelationView.cs">
+    <Compile Include="FeatureCorrelation\FeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="FeatureCorrelationView.Designer.cs">
+    <Compile Include="FeatureCorrelation\FeatureCorrelationView.Designer.cs">
       <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="FeatureCorrelation\FeatureCorrelationCache.cs" />
+    <Compile Include="FeatureCorrelation\FeatureCorrelationTimeframeCache.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="ProblemDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ProblemDataView.Designer.cs">
+      <DependentUpon>ProblemDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Regression\RegressionEnsembleSolutionModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -272,10 +286,10 @@
     <Compile Include="Solution Views\RegressionSolutionView.Designer.cs">
       <DependentUpon>RegressionSolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimeframeFeatureCorrelationView.cs">
+    <Compile Include="FeatureCorrelation\TimeframeFeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TimeframeFeatureCorrelationView.Designer.cs">
+    <Compile Include="FeatureCorrelation\TimeframeFeatureCorrelationView.Designer.cs">
       <DependentUpon>TimeframeFeatureCorrelationView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLab.snk" />
@@ -397,15 +411,10 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="obj\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="FeatureCorrelationView.resx">
-      <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TimeframeFeatureCorrelationView.resx">
-      <DependentUpon>TimeframeFeatureCorrelationView.cs</DependentUpon>
+    <EmbeddedResource Include="FeatureCorrelation\AbstractFeatureCorrelationView.resx">
+      <DependentUpon>AbstractFeatureCorrelationView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

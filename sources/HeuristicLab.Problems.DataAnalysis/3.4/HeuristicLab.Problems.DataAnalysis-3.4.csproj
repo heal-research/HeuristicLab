@@ -127,7 +127,8 @@
     <Compile Include="Implementation\Clustering\ClusteringProblem.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblemData.cs" />
     <Compile Include="Implementation\Clustering\ClusteringSolution.cs" />
-    <Compile Include="Implementation\FeatureCorrelation.cs" />
+    <Compile Include="Implementation\FeatureCorrelation\FeatureCorrelationCalculator.cs" />
+    <Compile Include="Implementation\FeatureCorrelation\FeatureCorrelationEnums.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionModel.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionEnsembleProblemData.cs" />

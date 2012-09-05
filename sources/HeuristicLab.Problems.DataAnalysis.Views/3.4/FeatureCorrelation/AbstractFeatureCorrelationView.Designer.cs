@@ -21,7 +21,7 @@
 
 #endregion
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  partial class FeatureCorrelationView {
+  partial class AbstractFeatureCorrelationView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FeatureCorrelationView));
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AbstractFeatureCorrelationView));
       this.DataGridView = new System.Windows.Forms.DataGridView();
       this.HeatMapProgressBar = new System.Windows.Forms.ProgressBar();
       this.PartitionComboBox = new System.Windows.Forms.ComboBox();
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.PartitionComboBox.Name = "PartitionComboBox";
       this.PartitionComboBox.Size = new System.Drawing.Size(142, 21);
       this.PartitionComboBox.TabIndex = 8;
-      this.PartitionComboBox.SelectedIndexChanged += new System.EventHandler(this.PartitionComboBox_SelectedIndexChanged);
+      this.PartitionComboBox.SelectionChangeCommitted += new System.EventHandler(this.PartitionComboBox_SelectedChangeCommitted);
       // 
       // CorrelationCalcLabel
       // 
@@ -120,7 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.CorrelationCalcComboBox.Name = "CorrelationCalcComboBox";
       this.CorrelationCalcComboBox.Size = new System.Drawing.Size(163, 21);
       this.CorrelationCalcComboBox.TabIndex = 6;
-      this.CorrelationCalcComboBox.SelectedIndexChanged += new System.EventHandler(this.CorrelationMeasureComboBox_SelectedIndexChanged);
+      this.CorrelationCalcComboBox.SelectionChangeCommitted += new System.EventHandler(this.CorrelationMeasureComboBox_SelectedChangeCommitted);
       // 
       // PartitionLabel
       // 
@@ -211,7 +211,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.CalculatingLabel.TabIndex = 10;
       this.CalculatingLabel.Text = "Calculating correlation...";
       // 
-      // FeatureCorrelationView
+      // AbstractFeatureCorrelationView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -219,7 +219,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Controls.Add(this.minimumLabel);
       this.Controls.Add(this.PictureBox);
       this.Controls.Add(this.maximumLabel);
-      this.Name = "FeatureCorrelationView";
+      this.Name = "AbstractFeatureCorrelationView";
       this.Size = new System.Drawing.Size(569, 336);
       ((System.ComponentModel.ISupportInitialize)(this.DataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).EndInit();

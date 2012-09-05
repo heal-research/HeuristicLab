@@ -17,88 +17,65 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #endregion
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using HeuristicLab.Analysis;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [StorableClass]
-  [Item("FeatureCorrelation", "Represents the correlation of features in a data set.")]
-  public class FeatureCorrelation : HeatMap {
-    private const string PearsonsR = "Pearsons R";
-    private const string PearsonsRSquared = "Pearsons R Squared";
-    private const string HoeffdingsDependence = "Hoeffdings Dependence";
-    private const string SpearmansRank = "Spearmans Rank";
-    public IEnumerable<string> CorrelationCalculators {
-      get { return new List<string>() { PearsonsR, PearsonsRSquared, HoeffdingsDependence, SpearmansRank }; }
-    }
-
-    private const string AllSamples = "All Samples";
-    private const string TrainingSamples = "Training Samples";
-    private const string TestSamples = "Test Samples";
-    public IEnumerable<string> Partitions {
-      get { return new List<string>() { AllSamples, TrainingSamples, TestSamples }; }
-    }
-
-    private IDataAnalysisProblemData problemData;
-    [Storable]
-    public IDataAnalysisProblemData ProblemData {
-      get { return problemData; }
-      set {
-        if (problemData != value) {
-          problemData = value;
-          columnNames = value.Dataset.DoubleVariables.ToList();
-          rowNames = value.Dataset.DoubleVariables.ToList();
-          OnProblemDataChanged();
-        }
-      }
-    }
+  public class FeatureCorrelationCalculator : Object {
 
     private BackgroundWorker bw;
     private BackgroundWorkerInfo bwInfo;
 
-    public FeatureCorrelation(IDataAnalysisProblemData problemData)
+    private IDataAnalysisProblemData problemData;
+    public IDataAnalysisProblemData ProblemData {
+      set {
+        if (bw != null) {
+          bw.CancelAsync();
+        }
+        problemData = value;
+      }
+    }
+
+    public FeatureCorrelationCalculator()
+      : base() { }
+
+    public FeatureCorrelationCalculator(IDataAnalysisProblemData problemData)
       : base() {
       this.problemData = problemData;
-      this.Title = "Feature Correlation";
-      this.columnNames = problemData.Dataset.DoubleVariables.ToList();
-      this.rowNames = problemData.Dataset.DoubleVariables.ToList();
-      sortableView = true;
-    }
-    protected FeatureCorrelation(FeatureCorrelation original, Cloner cloner)
-      : base(original, cloner) {
-      this.problemData = cloner.Clone(original.problemData);
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new FeatureCorrelation(this, cloner);
     }
 
-    [StorableConstructor]
-    protected FeatureCorrelation(bool deserializing) : base(deserializing) { }
-
-    public void Recalculate(string calc, string partition) {
+    public void CalculateElements(FCE.CorrelationCalculators calc, FCE.Partitions partition) {
       CalculateElements(problemData.Dataset, calc, partition);
     }
 
-    public void CalculateTimeframeElements(string calc, string partition, string variable, int frames) {
-      CalculateElements(problemData.Dataset, calc, partition, variable, frames);
+    // returns if any calculation takes place
+    public bool CalculateTimeframeElements(FCE.CorrelationCalculators calc, FCE.Partitions partition, string variable, int frames, double[,] correlation = null) {
+      if (correlation == null || correlation.GetLength(1) <= frames) {
+        CalculateElements(problemData.Dataset, calc, partition, variable, frames, correlation);
+        return true;
+      } else {
+        return false;
+      }
     }
 
-    private void CalculateElements(Dataset dataset) {
-      CalculateElements(dataset, CorrelationCalculators.First(), Partitions.First());
+    private double[,] GetElementsOfCorrelation(double[,] corr, int frames) {
+      double[,] elements = new double[corr.GetLength(0), frames + 1];
+      for (int i = 0; i < corr.GetLength(0); i++) {
+        for (int j = 0; j <= frames; j++) {
+          elements[i, j] = corr[i, j];
+        }
+      }
+      return elements;
     }
 
-    private void CalculateElements(Dataset dataset, string calc, string partition, string variable = null, int frames = 0) {
-      bwInfo = new BackgroundWorkerInfo { Dataset = dataset, Calculator = calc, Partition = partition, Variable = variable, Frames = frames };
+    private void CalculateElements(Dataset dataset, FCE.CorrelationCalculators calc, FCE.Partitions partition, string variable = null, int frames = 0, double[,] alreadyCalculated = null) {
+      bwInfo = new BackgroundWorkerInfo { Dataset = dataset, Calculator = calc, Partition = partition, Variable = variable, Frames = frames, AlreadyCalculated = alreadyCalculated };
       if (bw == null) {
         bw = new BackgroundWorker();
         bw.WorkerReportsProgress = true;
@@ -111,16 +88,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
         bw.CancelAsync();
       } else {
         bw.RunWorkerAsync(bwInfo);
-      }
-      if (calc.Equals(PearsonsR) || calc.Equals(SpearmansRank)) {
-        Maximum = 1.0;
-        Minimum = -1.0;
-      } else if (calc.Equals(HoeffdingsDependence)) {
-        Maximum = 1.0;
-        Minimum = -0.5;
-      } else {
-        Maximum = 1.0;
-        Minimum = 0.0;
       }
     }
 
@@ -139,8 +106,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       BackgroundWorkerInfo bwInfo = (BackgroundWorkerInfo)e.Argument;
       Dataset dataset = bwInfo.Dataset;
-      string partition = bwInfo.Partition;
-      string calc = bwInfo.Calculator;
+      FCE.Partitions partition = bwInfo.Partition;
+      FCE.CorrelationCalculators calc = bwInfo.Calculator;
 
       IList<string> doubleVariableNames = dataset.DoubleVariables.ToList();
       OnlineCalculatorError error;
@@ -178,10 +145,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       BackgroundWorkerInfo bwInfo = (BackgroundWorkerInfo)e.Argument;
       Dataset dataset = bwInfo.Dataset;
-      string partition = bwInfo.Partition;
-      string calc = bwInfo.Calculator;
+      FCE.Partitions partition = bwInfo.Partition;
+      FCE.CorrelationCalculators calc = bwInfo.Calculator;
       string variable = bwInfo.Variable;
       int frames = bwInfo.Frames;
+      double[,] alreadyCalculated = bwInfo.AlreadyCalculated;
 
       IList<string> doubleVariableNames = dataset.DoubleVariables.ToList();
       OnlineCalculatorError error;
@@ -191,8 +159,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       worker.ReportProgress(0);
 
+      int start = 0;
+      if (alreadyCalculated != null) {
+        for (int i = 0; i < alreadyCalculated.GetLength(0); i++) {
+          Array.Copy(alreadyCalculated, i * alreadyCalculated.GetLength(1), elements, i * elements.GetLength(1), alreadyCalculated.GetLength(1));
+        }
+        start = alreadyCalculated.GetLength(1);
+      }
+
       for (int i = 0; i < length; i++) {
-        for (int j = 0; j <= frames; j++) {
+        for (int j = start; j <= frames; j++) {
           if (worker.CancellationPending) {
             e.Cancel = true;
             return;
@@ -218,22 +194,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
       e.Result = elements;
     }
 
-    private IEnumerable<double> GetRelevantValues(IDataAnalysisProblemData problemData, string partition, string variable) {
+    private IEnumerable<double> GetRelevantValues(IDataAnalysisProblemData problemData, FCE.Partitions partition, string variable) {
       IEnumerable<double> var = problemData.Dataset.GetDoubleValues(variable);
-      if (partition.Equals(TrainingSamples)) {
+      if (partition.Equals(FCE.Partitions.TrainingSamples)) {
         var = var.Skip(problemData.TrainingPartition.Start).Take(problemData.TrainingPartition.End - problemData.TrainingPartition.Start);
-      } else if (partition.Equals(TestSamples)) {
+      } else if (partition.Equals(FCE.Partitions.TestSamples)) {
         var = var.Skip(problemData.TestPartition.Start).Take(problemData.TestPartition.End - problemData.TestPartition.Start);
       }
       return var;
     }
 
-    private double CalculateElementWithCalculator(string calc, IEnumerable<double> var1, IEnumerable<double> var2, out OnlineCalculatorError error) {
-      if (calc.Equals(HoeffdingsDependence)) {
+    private double CalculateElementWithCalculator(FCE.CorrelationCalculators calc, IEnumerable<double> var1, IEnumerable<double> var2, out OnlineCalculatorError error) {
+      if (calc.Equals(FCE.CorrelationCalculators.HoeffdingsDependence)) {
         return HoeffdingsDependenceCalculator.Calculate(var1, var2, out error);
-      } else if (calc.Equals(SpearmansRank)) {
+      } else if (calc.Equals(FCE.CorrelationCalculators.SpearmansRank)) {
         return SpearmansRankCorrelationCoefficientCalculator.Calculate(var1, var2, out error);
-      } else if (calc.Equals(PearsonsRSquared)) {
+      } else if (calc.Equals(FCE.CorrelationCalculators.PearsonsRSquared)) {
         return OnlinePearsonsRSquaredCalculator.Calculate(var1, var2, out error);
       } else {
         return Math.Sqrt(OnlinePearsonsRSquaredCalculator.Calculate(var1, var2, out error));
@@ -246,8 +222,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         if (!(e.Error == null)) {
           ErrorHandling.ShowErrorDialog(e.Error);
         } else {
-          matrix = (double[,])e.Result;
-          OnCorrelationCalculationFinished();
+          OnCorrelationCalculationFinished((double[,])e.Result, bwInfo.Calculator, bwInfo.Partition, bwInfo.Variable);
         }
       } else {
         bw.RunWorkerAsync(bwInfo);
@@ -256,11 +231,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     #region events
-    public event EventHandler CorrelationCalculationFinished;
-    protected virtual void OnCorrelationCalculationFinished() {
-      EventHandler handler = CorrelationCalculationFinished;
+    public class CorrelationCalculationFinishedArgs : EventArgs {
+      public double[,] Correlation { get; private set; }
+      public FCE.CorrelationCalculators Calculcator { get; private set; }
+      public FCE.Partitions Partition { get; private set; }
+      public string Variable { get; private set; }
+
+      public CorrelationCalculationFinishedArgs(double[,] correlation, FCE.CorrelationCalculators calculator, FCE.Partitions partition, string variable = null) {
+        this.Correlation = correlation;
+        this.Calculcator = calculator;
+        this.Partition = partition;
+        this.Variable = variable;
+      }
+    }
+    public delegate void CorrelationCalculationFinishedHandler(object sender, CorrelationCalculationFinishedArgs e);
+    public event CorrelationCalculationFinishedHandler CorrelationCalculationFinished;
+    protected virtual void OnCorrelationCalculationFinished(double[,] correlation, FCE.CorrelationCalculators calculator, FCE.Partitions partition, string variable = null) {
+      var handler = CorrelationCalculationFinished;
       if (handler != null)
-        handler(this, EventArgs.Empty);
+        handler(this, new CorrelationCalculationFinishedArgs(correlation, calculator, partition, variable));
     }
 
     public delegate void ProgressCalculationHandler(object sender, ProgressChangedEventArgs e);
@@ -271,21 +260,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
         ProgressCalculation(sender, e);
       }
     }
-
-    public event EventHandler ProblemDataChanged;
-    protected virtual void OnProblemDataChanged() {
-      EventHandler handler = ProblemDataChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
-    }
     #endregion
 
     protected class BackgroundWorkerInfo {
       public Dataset Dataset { get; set; }
-      public string Calculator { get; set; }
-      public string Partition { get; set; }
+      public FCE.CorrelationCalculators Calculator { get; set; }
+      public FCE.Partitions Partition { get; set; }
       public string Variable { get; set; }
       public int Frames { get; set; }
+      public double[,] AlreadyCalculated { get; set; }
     }
   }
 }

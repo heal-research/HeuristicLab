@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.VariableSelectionComboBox.Name = "VariableSelectionComboBox";
       this.VariableSelectionComboBox.Size = new System.Drawing.Size(163, 21);
       this.VariableSelectionComboBox.TabIndex = 17;
-      this.VariableSelectionComboBox.SelectedIndexChanged += new System.EventHandler(this.VariableSelectionComboBox_SelectedIndexChanged);
+      this.VariableSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.VariableSelectionComboBox_SelectedChangeCommitted);
       // 
       // TimeFrameLabel
       // 
@@ -122,7 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.TimeframeComboBox.Name = "TimeframeComboBox";
       this.TimeframeComboBox.Size = new System.Drawing.Size(131, 21);
       this.TimeframeComboBox.TabIndex = 19;
-      this.TimeframeComboBox.SelectedIndexChanged += new System.EventHandler(this.TimeframeComboBox_SelectedIndexChanged);
+      this.TimeframeComboBox.SelectionChangeCommitted += new System.EventHandler(this.TimeframeComboBox_SelectedChangeCommitted);
       // 
       // TimeframeFeatureCorrelationView
       // 

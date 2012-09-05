@@ -36,7 +36,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string InputVariablesParameterName = "InputVariables";
     protected const string TrainingPartitionParameterName = "TrainingPartition";
     protected const string TestPartitionParameterName = "TestPartition";
-    protected const string DatasetCorrelationParameterName = "Dataset Correlation";
 
     #region parameter properites
     public IFixedValueParameter<Dataset> DatasetParameter {
