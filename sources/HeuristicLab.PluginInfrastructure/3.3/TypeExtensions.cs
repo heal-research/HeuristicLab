@@ -109,7 +109,7 @@ namespace HeuristicLab.PluginInfrastructure {
         var subTypeGenericArgument = subTypeGenericArguments[i];
 
         if (baseTypeGenericArgument.IsGenericParameter ^ subTypeGenericArgument.IsGenericParameter) return false;
-        if (baseTypeGenericArgument.IsAssignableFrom(subTypeGenericArgument)) continue;
+        if (baseTypeGenericArgument == subTypeGenericArgument) continue;
         if (!baseTypeGenericArgument.IsGenericParameter && !subTypeGenericArgument.IsGenericParameter) return false;
 
         if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint) &&

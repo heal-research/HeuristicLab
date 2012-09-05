@@ -40,10 +40,13 @@ namespace HeuristicLab.PluginInfraStructure.Tests {
 
       Assert.IsTrue(typeof(List<int>).IsSubTypeOf(typeof(IList)));
       Assert.IsTrue(typeof(List<>).IsSubTypeOf(typeof(IList)));
+      Assert.IsFalse(typeof(NamedItemCollection<>).IsSubTypeOf(typeof(ICollection<IItem>)));
+      Assert.IsFalse(typeof(NamedItemCollection<>).IsSubTypeOf(typeof(ICollection<NamedItem>)));
 
-      Assert.IsTrue(typeof(IList<IItem>).IsSubTypeOf(typeof(IList<IItem>)));
-      Assert.IsTrue(typeof(List<IntValue>).IsSubTypeOf(typeof(IList<IItem>)));
-      Assert.IsTrue(typeof(List<IntValue>).IsSubTypeOf(typeof(List<IItem>)));
+
+      Assert.IsTrue(typeof(List<IItem>).IsSubTypeOf(typeof(IList<IItem>)));
+      Assert.IsFalse(typeof(IList<IntValue>).IsSubTypeOf(typeof(IList<IItem>)));
+      Assert.IsTrue(typeof(List<IItem>).IsSubTypeOf(typeof(IList<IItem>)));
       Assert.IsFalse(typeof(ItemList<>).IsSubTypeOf(typeof(IList<IItem>)));
       Assert.IsFalse(typeof(ItemList<>).IsSubTypeOf(typeof(List<IItem>)));
 
