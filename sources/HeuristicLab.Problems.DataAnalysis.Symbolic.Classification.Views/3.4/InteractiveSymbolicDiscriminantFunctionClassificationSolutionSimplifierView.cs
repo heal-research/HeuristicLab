@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
     }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
-      var model = new SymbolicDiscriminantFunctionClassificationModel(tree, Content.Model.Interpreter);
+      var model = new SymbolicDiscriminantFunctionClassificationModel(tree, Content.Model.Interpreter, Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit);
       // the default policy for setting thresholds in classification models is the accuarcy maximizing policy.
       // This is rather slow to calculate and can lead to a very laggy UI in the interactive solution simplifier.
       // However, since we automatically prune sub-trees based on the threshold reaching the maximum accuracy we must
