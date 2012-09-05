@@ -21,76 +21,131 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovariancePeriodic", Description = "Periodic covariance function for Gaussian processes.")]
-  public class CovariancePeriodic : Item, ICovarianceFunction {
+  public class CovariancePeriodic : CovarianceFunction {
+    public IValueParameter<DoubleValue> ScaleParameter {
+      get { return scaleParameter; }
+    }
+    public IValueParameter<DoubleValue> InverseLengthParameter {
+      get { return inverseLengthParameter; }
+    }
+    public IValueParameter<DoubleValue> PeriodParameter {
+      get { return periodParameter; }
+    }
+
     [Storable]
-    private double sf2;
-    public double Scale { get { return sf2; } }
+    private HyperParameter<DoubleValue> scaleParameter;
+    [Storable]
+    private HyperParameter<DoubleValue> inverseLengthParameter;
+    [Storable]
+    private HyperParameter<DoubleValue> periodParameter;
+
+    [Storable]
+    private double scale;
     [Storable]
     private double inverseLength;
-    public double InverseLength { get { return inverseLength; } }
     [Storable]
-    private double p;
-    public double Period { get { return p; } }
+    private double period;
 
-    public int GetNumberOfParameters(int numberOfVariables) {
-      return 3;
-    }
+
     [StorableConstructor]
     protected CovariancePeriodic(bool deserializing) : base(deserializing) { }
     protected CovariancePeriodic(CovariancePeriodic original, Cloner cloner)
       : base(original, cloner) {
-      sf2 = original.sf2;
-      inverseLength = original.inverseLength;
-      p = original.p;
+      this.scaleParameter = cloner.Clone(original.scaleParameter);
+      this.inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
+      this.periodParameter = cloner.Clone(original.periodParameter);
+      this.scale = original.scale;
+      this.inverseLength = original.inverseLength;
+      this.period = original.period;
+
+      RegisterEvents();
     }
+
     public CovariancePeriodic()
       : base() {
+      scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale of the periodic covariance function.");
+      inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter for the periodic covariance function.");
+      periodParameter = new HyperParameter<DoubleValue>("Period", "The period parameter for the periodic covariance function.");
+      Parameters.Add(scaleParameter);
+      Parameters.Add(inverseLengthParameter);
+      Parameters.Add(periodParameter);
+
+      RegisterEvents();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovariancePeriodic(this, cloner);
     }
 
-    public void SetParameter(double[] hyp) {
-      if (hyp.Length != 3) throw new ArgumentException();
-      this.inverseLength = 1.0 / Math.Exp(hyp[0]);
-      this.p = Math.Exp(hyp[1]);
-      this.sf2 = Math.Exp(2 * hyp[2]);
+    // caching
+    private void RegisterEvents() {
+      AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { scale = scaleParameter.Value.Value; });
+      AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
+      AttachValueChangeHandler<DoubleValue, double>(periodParameter, () => { period = periodParameter.Value.Value; });
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
+    public override int GetNumberOfParameters(int numberOfVariables) {
+      return
+        (new[] { scaleParameter, inverseLengthParameter, periodParameter }).Count(p => !p.Fixed);
+    }
+
+    public override void SetParameter(double[] hyp) {
+      int i = 0;
+      if (!inverseLengthParameter.Fixed) {
+        inverseLengthParameter.SetValue(new DoubleValue(1.0 / Math.Exp(hyp[i])));
+        i++;
+      }
+      if (!periodParameter.Fixed) {
+        periodParameter.SetValue(new DoubleValue(Math.Exp(hyp[i])));
+        i++;
+      }
+      if (!scaleParameter.Fixed) {
+        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[i])));
+        i++;
+      }
+      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePeriod", "hyp");
+    }
+
+    public override double GetCovariance(double[,] x, int i, int j) {
       double k = i == j ? 0.0 : GetDistance(x, x, i, j);
-      k = Math.PI * k / p;
+      k = Math.PI * k / period;
       k = Math.Sin(k) * inverseLength;
       k = k * k;
 
-      return sf2 * Math.Exp(-2.0 * k);
+      return scale * Math.Exp(-2.0 * k);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      double v = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j) / p;
+    public override IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+      double v = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j) / period;
       double gradient = Math.Sin(v) * inverseLength;
       gradient *= gradient;
-      yield return 4.0 * sf2 * Math.Exp(-2.0 * gradient) * gradient;
+      yield return 4.0 * scale * Math.Exp(-2.0 * gradient) * gradient;
       double r = Math.Sin(v) * inverseLength;
-      yield return 4.0 * sf2 * inverseLength * Math.Exp(-2 * r * r) * r * Math.Cos(v) * v;
-      yield return 2.0 * sf2 * Math.Exp(-2 * gradient);
+      yield return 4.0 * scale * inverseLength * Math.Exp(-2 * r * r) * r * Math.Cos(v) * v;
+      yield return 2.0 * scale * Math.Exp(-2 * gradient);
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+    public override double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
       double k = GetDistance(x, xt, i, j);
-      k = Math.PI * k / p;
+      k = Math.PI * k / period;
       k = Math.Sin(k) * inverseLength;
       k = k * k;
 
-      return sf2 * Math.Exp(-2.0 * k);
+      return scale * Math.Exp(-2.0 * k);
     }
 
     private double GetDistance(double[,] x, double[,] xt, int i, int j) {

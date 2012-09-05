@@ -75,6 +75,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private double[] alpha;
     [Storable]
     private double sqrSigmaNoise;
+    public double SigmaNoise {
+      get { return Math.Sqrt(sqrSigmaNoise); }
+    }
 
     [Storable]
     private double[,] l;

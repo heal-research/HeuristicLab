@@ -19,6 +19,8 @@
  */
 #endregion
 
+using HeuristicLab.Optimization.Views;
+
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   partial class GaussianProcessModelView {
     /// <summary> 
@@ -44,12 +46,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.resultCollectionView = new ResultCollectionView();
       this.SuspendLayout();
+      // 
+      // resultCollectionView
+      // 
+      this.resultCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.resultCollectionView.Location = new System.Drawing.Point(0, 0);
+      this.resultCollectionView.Name = "resultCollectionView";
+      this.resultCollectionView.Size = new System.Drawing.Size(253, 251);
+      this.resultCollectionView.TabIndex = 0;
       // 
       // GaussianProcessModelView
       // 
       this.AllowDrop = true;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.resultCollectionView);
       this.Name = "GaussianProcessModelView";
       this.Size = new System.Drawing.Size(253, 251);
       this.ResumeLayout(false);
@@ -58,7 +70,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     #endregion
 
-
+    private ResultCollectionView resultCollectionView;
 
   }
 }

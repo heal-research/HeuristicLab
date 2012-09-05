@@ -24,57 +24,83 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceLinearArd",
     Description = "Linear covariance function with automatic relevance determination for Gaussian processes.")]
-  public class CovarianceLinearArd : Item, ICovarianceFunction {
-    [Storable]
-    private double[] inverseLength;
-    public double[] InverseLength {
-      get {
-        if (inverseLength == null) return null;
-        double[] res = new double[inverseLength.Length];
-        Array.Copy(inverseLength, res, res.Length);
-        return res;
-      }
+  public class CovarianceLinearArd : CovarianceFunction {
+    public IValueParameter<DoubleArray> InverseLengthParameter {
+      get { return inverseLengthParameter; }
     }
 
-    public int GetNumberOfParameters(int numberOfVariables) {
-      return numberOfVariables;
-    }
+    [Storable]
+    private HyperParameter<DoubleArray> inverseLengthParameter;
+
+    [Storable]
+    private double[] inverseLength;
 
     [StorableConstructor]
     protected CovarianceLinearArd(bool deserializing) : base(deserializing) { }
     protected CovarianceLinearArd(CovarianceLinearArd original, Cloner cloner)
       : base(original, cloner) {
-      this.inverseLength = original.InverseLength;  // array is copied in the getter
+      inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
+      if (original.inverseLength != null) {
+        this.inverseLength = new double[original.inverseLength.Length];
+        Array.Copy(original.inverseLength, inverseLength, inverseLength.Length);
+      }
+
+      RegisterEvents();
     }
     public CovarianceLinearArd()
       : base() {
+      inverseLengthParameter = new HyperParameter<DoubleArray>("InverseLength",
+                                                               "The inverse length parameter for ARD.");
+      Parameters.Add(inverseLengthParameter);
+      RegisterEvents();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceLinearArd(this, cloner);
     }
 
-    public void SetParameter(double[] hyp) {
-      inverseLength = hyp.Select(e => 1.0 / Math.Exp(e)).ToArray();
+    // caching
+    private void RegisterEvents() {
+      AttachArrayChangeHandler<DoubleArray, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.ToArray(); });
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
+
+    public override int GetNumberOfParameters(int numberOfVariables) {
+      if (!inverseLengthParameter.Fixed)
+        return numberOfVariables;
+      else
+        return 0;
+    }
+
+    public override void SetParameter(double[] hyp) {
+      if (!inverseLengthParameter.Fixed && hyp.Length > 0) {
+        inverseLengthParameter.SetValue(new DoubleArray(hyp.Select(e => 1.0 / Math.Exp(e)).ToArray()));
+      } else throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceLinearArd", "hyp");
+    }
+
+    public override double GetCovariance(double[,] x, int i, int j) {
       return Util.ScalarProd(x, i, j, inverseLength);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public override IEnumerable<double> GetGradient(double[,] x, int i, int j) {
       for (int k = 0; k < inverseLength.Length; k++) {
         yield return -2.0 * x[i, k] * x[j, k] * inverseLength[k] * inverseLength[k];
       }
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+    public override double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
       return Util.ScalarProd(x, i, xt, j, inverseLength);
     }
   }

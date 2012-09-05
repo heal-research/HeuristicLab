@@ -119,6 +119,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="GaussianProcess\HyperParameter.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunction.cs" />
     <Compile Include="GaussianProcess\CovarianceRQArd.cs" />
     <Compile Include="GaussianProcess\CovarianceMaternIso.cs" />
     <Compile Include="GaussianProcess\CovarianceLinearArd.cs" />

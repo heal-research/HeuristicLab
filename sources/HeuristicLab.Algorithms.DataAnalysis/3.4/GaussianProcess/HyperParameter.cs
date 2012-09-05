@@ -20,45 +20,51 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceLinear", Description = "Linear covariance function for Gaussian processes.")]
-  public class CovarianceLinear : CovarianceFunction {
-    public override int GetNumberOfParameters(int numberOfVariables) {
-      return 0;
+  [Item(Name = "HyperParameter", Description = "Represents a hyperparameter for Gaussian processes.")]
+  public class HyperParameter<T> : OptionalValueParameter<T>, IValueParameter<T> where T : class, IItem {
+
+    [Storable]
+    private bool @fixed = false;
+    public bool Fixed {
+      get { return @fixed; }
     }
+
     [StorableConstructor]
-    protected CovarianceLinear(bool deserializing) : base(deserializing) { }
-    protected CovarianceLinear(CovarianceLinear original, Cloner cloner)
+    protected HyperParameter(bool deserializing) : base(deserializing) { }
+    protected HyperParameter(HyperParameter<T> original, Cloner cloner)
       : base(original, cloner) {
+      this.@fixed = original.@fixed;
     }
-    public CovarianceLinear()
-      : base() {
+    public HyperParameter(string name, string description)
+      : base(name, description) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new CovarianceLinear(this, cloner);
+      return new HyperParameter<T>(this, cloner);
     }
 
-    public override void SetParameter(double[] hyp) {
-      if (hyp.Length > 0) throw new ArgumentException("No hyperparameters are allowed for the linear covariance function.");
+    // if a value is set through this property then we fix the value of the hyperparameter 
+    public override T Value {
+      get {
+        return base.Value;
+      }
+      set {
+        base.Value = value;
+        @fixed = value != null;
+      }
     }
 
-    public override double GetCovariance(double[,] x, int i, int j) {
-      return Util.ScalarProd(x, i, j);
-    }
-
-    public override IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      yield break;
-    }
-
-    public override double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      return Util.ScalarProd(x, i, xt, j);
+    // in the optimization we are allowed to set the value of non-fixed parameters
+    public void SetValue(T value) {
+      if (@fixed) throw new InvalidOperationException("Can't set the value of a fixed hyperparameter");
+      base.Value = value;
     }
   }
 }

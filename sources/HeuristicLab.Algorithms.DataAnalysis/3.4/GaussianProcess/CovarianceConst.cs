@@ -23,16 +23,24 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceConst",
     Description = "Constant covariance function for Gaussian processes.")]
-  public class CovarianceConst : Item, ICovarianceFunction {
+  public class CovarianceConst : CovarianceFunction {
+
+    public IValueParameter<DoubleValue> ScaleParameter {
+      get { return scaleParameter; }
+    }
+
     [Storable]
-    private double sf2;
-    public double Scale { get { return sf2; } }
+    private readonly HyperParameter<DoubleValue> scaleParameter;
+
+    [Storable]
+    private double scale;
 
     [StorableConstructor]
     protected CovarianceConst(bool deserializing)
@@ -41,37 +49,56 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     protected CovarianceConst(CovarianceConst original, Cloner cloner)
       : base(original, cloner) {
-      this.sf2 = original.sf2;
+      this.scaleParameter = cloner.Clone(original.scaleParameter);
+      this.scale = original.scale;
+
+      RegisterEvents();
     }
 
     public CovarianceConst()
       : base() {
+      scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale of the constant covariance function.");
+      Parameters.Add(scaleParameter);
+      RegisterEvents();
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    // caching
+    private void RegisterEvents() {
+      AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { scale = scaleParameter.Value.Value; });
+    }
+
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceConst(this, cloner);
     }
 
-    public int GetNumberOfParameters(int numberOfVariables) {
-      return 1;
+    public override int GetNumberOfParameters(int numberOfVariables) {
+      return scaleParameter.Fixed ? 0 : 1;
     }
 
-    public void SetParameter(double[] hyp) {
-      if (hyp.Length != 1) throw new ArgumentException("CovarianceConst has only one hyperparameter", "k");
-      this.sf2 = Math.Exp(2 * hyp[0]);
+    public override void SetParameter(double[] hyp) {
+      if (!scaleParameter.Fixed && hyp.Length == 1) {
+        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[0])));
+      } else {
+        throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceConst", "hyp");
+      }
     }
 
-
-    public double GetCovariance(double[,] x, int i, int j) {
-      return sf2;
+    public override double GetCovariance(double[,] x, int i, int j) {
+      return scale;
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      yield return 2 * sf2;
+    public override IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+      yield return 2.0 * scale;
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      return sf2;
+    public override double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+      return scale;
     }
   }
 }

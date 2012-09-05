@@ -28,6 +28,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// </summary>
   public interface IGaussianProcessModel : IRegressionModel {
     double NegativeLogLikelihood { get; }
+    double SigmaNoise { get; }
     IMeanFunction MeanFunction { get; }
     ICovarianceFunction CovarianceFunction { get; }
     double[] HyperparameterGradients { get; }

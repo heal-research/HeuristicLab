@@ -20,8 +20,10 @@
 #endregion
 
 using System.Windows.Forms;
+using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Gaussian Process Model")]
@@ -30,7 +32,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
     public new IGaussianProcessModel Content {
       get { return (IGaussianProcessModel)base.Content; }
-      set { base.Content = value; }
+      set {
+        base.Content = value;
+      }
     }
 
     public GaussianProcessModelView()
@@ -42,9 +46,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
       base.OnContentChanged();
       if (Content == null) {
         // clear
+        resultCollectionView.Content = null;
       } else {
-        // update
+        resultCollectionView.Content = CreateResultCollection(Content);
       }
+    }
+
+    private ResultCollection CreateResultCollection(IGaussianProcessModel gaussianProcessModel) {
+      var res = new ResultCollection();
+      res.Add(new Result("Mean Function", gaussianProcessModel.MeanFunction));
+      res.Add(new Result("Covariance Function", gaussianProcessModel.CovarianceFunction));
+      res.Add(new Result("Noise sigma", new DoubleValue(gaussianProcessModel.SigmaNoise)));
+      return res;
     }
   }
 }
