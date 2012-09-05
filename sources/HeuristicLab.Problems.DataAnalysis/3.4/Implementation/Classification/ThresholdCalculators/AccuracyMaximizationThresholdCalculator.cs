@@ -93,12 +93,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
             }
               //all negatives
             else {
+              //false positive
               if (pair.EstimatedValue > lowerThreshold && pair.EstimatedValue <= actualThreshold)
-                //false positive
                 classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, classValues[i - 1]);
-              else
-                //true negative, consider only upper class
-                classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, pair.TargetClassValue);
+              else if (pair.EstimatedValue <= lowerThreshold)
+                classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, classValues[i - 2]);
+              else if (pair.EstimatedValue > actualThreshold) {
+                if (pair.TargetClassValue < classValues[i - 1]) //negative in wrong class, consider upper class
+                  classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, classValues[i]);
+                else //true negative, must be optimized by the other thresholds
+                  classificationScore += problemData.GetClassificationPenalty(pair.TargetClassValue, pair.TargetClassValue);
+              }
             }
           }
 
