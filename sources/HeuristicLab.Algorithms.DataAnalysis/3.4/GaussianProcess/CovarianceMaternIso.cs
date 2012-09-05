@@ -82,6 +82,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       validDValues.Add((IntValue)new IntValue(3).AsReadOnly());
       validDValues.Add((IntValue)new IntValue(5).AsReadOnly());
       dParameter = new ConstrainedValueParameter<IntValue>("D", "The d parameter (allowed values: 1, 3, or 5) of the isometric Matern covariance function.", validDValues, validDValues.First());
+      d = dParameter.Value.Value;
 
       Parameters.Add(inverseLengthParameter);
       Parameters.Add(scaleParameter);

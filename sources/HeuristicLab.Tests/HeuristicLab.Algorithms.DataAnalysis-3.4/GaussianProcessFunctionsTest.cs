@@ -593,7 +593,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
     [TestMethod]
     public void CovMaternIsoTest() {
       var cov = new CovarianceMaternIso();
-      cov.D = 1;
+      cov.DParameter.Value = cov.DParameter.ValidValues.Single(x => x.Value == 1);
       TestCovarianceFunction(cov, 0,
         new double[,]
           {
@@ -638,7 +638,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
       );
 
       cov = new CovarianceMaternIso();
-      cov.D = 1;
+      cov.DParameter.Value = cov.DParameter.ValidValues.Single(x => x.Value == 1);
       TestCovarianceFunction(cov, 1,
          new double[,]
            {
@@ -683,7 +683,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
        );
 
       cov = new CovarianceMaternIso();
-      cov.D = 5;
+      cov.DParameter.Value = cov.DParameter.ValidValues.Single(x => x.Value == 5);
       TestCovarianceFunction(cov, 0,
          new double[,]
            {
@@ -728,7 +728,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
        );
 
       cov = new CovarianceMaternIso();
-      cov.D = 5;
+      cov.DParameter.Value = cov.DParameter.ValidValues.Single(x => x.Value == 5);
       TestCovarianceFunction(cov, 1,
          new double[,]
            {
