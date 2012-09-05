@@ -114,17 +114,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
         this.ToggleSeriesData(this.chart.Series[ESTIMATEDVALUES_ALL_SERIES_NAME]);
 
+
         // the series have been added in different order than in the normal line chart 
         // --> adapt coloring;
-        var s1Color = chart.Series[0].Color;
-        var s2Color = chart.Series[1].Color;
-        var s3Color = chart.Series[2].Color;
-        var s4Color = chart.Series[3].Color;
-
-        chart.Series[3].Color = s1Color;
-        chart.Series[0].Color = s2Color;
-        chart.Series[1].Color = s3Color;
-        chart.Series[2].Color = s4Color;
+        chart.ApplyPaletteColors();
+        this.chart.Palette = ChartColorPalette.None;
+        var s0Color = chart.Series[0].Color;
+        var s1Color = chart.Series[1].Color;
+        var s2Color = chart.Series[2].Color;
+        var s3Color = chart.Series[3].Color;
+        this.chart.PaletteCustomColors = new Color[] { s1Color, s2Color, s3Color, s0Color };
 
         UpdateCursorInterval();
         this.UpdateStripLines();
@@ -281,8 +280,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             indices = Content.ProblemData.TestIndices.ToArray();
             mean = Content.EstimatedTestValues.ToArray();
             s2 = Content.EstimatedTestVariance.ToArray();
-            lower = mean.Zip(s2, (m, s) => m - s).ToArray();
-            upper = mean.Zip(s2, (m, s) => m + s).ToArray();
+            lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
+            upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
             break;
         }
         if (indices.Count() > 0) {
