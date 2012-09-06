@@ -32,16 +32,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [Storable]
     private bool @fixed = false;
+
     public bool Fixed {
       get { return @fixed; }
     }
 
     [StorableConstructor]
-    protected HyperParameter(bool deserializing) : base(deserializing) { }
+    protected HyperParameter(bool deserializing)
+      : base(deserializing) {
+    }
+
     protected HyperParameter(HyperParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       this.@fixed = original.@fixed;
     }
+
+    public HyperParameter() : base("HyperParameter", "Represents a hyperparameter for Gaussian processes.") { }
+
     public HyperParameter(string name, string description)
       : base(name, description) {
     }
