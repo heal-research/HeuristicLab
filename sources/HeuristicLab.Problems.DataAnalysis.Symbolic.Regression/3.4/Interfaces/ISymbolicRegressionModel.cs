@@ -19,8 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   public interface ISymbolicRegressionModel : IRegressionModel, ISymbolicDataAnalysisModel {
+    double LowerEstimationLimit { get; }
+    double UpperEstimationLimit { get; }
   }
 }
