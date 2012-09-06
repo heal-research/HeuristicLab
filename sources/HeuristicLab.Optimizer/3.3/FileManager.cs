@@ -142,12 +142,13 @@ namespace HeuristicLab.Optimizer {
 
     private static void SetEnabledStateOfContentViews(IStorableContent content, bool enabled) {
       HeuristicLab.MainForm.WindowsForms.MainForm mainForm = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>();
-      if (mainForm.InvokeRequired)
-        mainForm.Invoke((Action<IStorableContent, bool>)SetEnabledStateOfContentViews, content, enabled);
-      else {
+      #region Mono Compatibility
+      // removed the InvokeRequired check because of Mono
+      mainForm.Invoke((Action)delegate {
         var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
         views.ForEach(v => v.Enabled = enabled);
-      }
+      });
+      #endregion
     }
   }
 }

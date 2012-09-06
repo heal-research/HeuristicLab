@@ -196,7 +196,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
     protected override void OnSizeChanged(EventArgs e) {
       //mkommend: solution to resizing issues. taken from http://support.microsoft.com/kb/953934
       //not implemented with a panel to reduce the number of nested controls
-      if (Handle != null)
+      //also cf. http://connect.microsoft.com/VisualStudio/feedback/details/98368/csc-incorrectly-allows-comparison-between-intptr-and-null
+      if (Handle != IntPtr.Zero)
         this.BeginInvoke((Action<EventArgs>)OnSizeChangedHelper, e);
     }
     private void OnSizeChangedHelper(EventArgs e) {

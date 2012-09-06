@@ -98,9 +98,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.Analysis-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -151,7 +148,7 @@
     <Compile Include="ProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProblemView.designer.cs">
+    <Compile Include="ProblemView.Designer.cs">
       <DependentUpon>ProblemView.cs</DependentUpon>
     </Compile>
     <Compile Include="RunCollectionModifierListView.cs">
@@ -383,6 +380,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
       <Project>{315BDA09-3F4F-49B3-9790-B37CFC1C5750}</Project>
       <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

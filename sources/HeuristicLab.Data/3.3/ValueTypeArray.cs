@@ -42,13 +42,16 @@ namespace HeuristicLab.Data {
 
     public virtual int Length {
       get { return array.Length; }
-      protected set {
+      #region Mono Compatibility
+      // this setter should be protected, but the Mono compiler couldn't handle it
+      set {
         if (ReadOnly) throw new NotSupportedException("Length cannot be set. ValueTypeArray is read-only.");
         if (value != Length) {
           Array.Resize<T>(ref array, value);
           OnReset();
         }
       }
+      #endregion
     }
     public virtual T this[int index] {
       get { return array[index]; }

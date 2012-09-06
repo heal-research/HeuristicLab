@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
       get { return (RealVector)Parameters["s^2s"].ActualValue; }
       set { Parameters["s^2s"].ActualValue = value; }
     }
-    private static Random Random = new Random();
+    private static System.Random Random = new System.Random();
 
     private Dictionary<int, List<RealVector>> stdCenters;
     public IEnumerable<RealVector> Centers(int nDim) {

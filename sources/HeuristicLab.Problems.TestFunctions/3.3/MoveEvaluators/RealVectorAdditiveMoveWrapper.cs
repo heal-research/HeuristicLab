@@ -65,9 +65,12 @@ namespace HeuristicLab.Problems.TestFunctions {
       get {
         return vector.Length;
       }
-      protected set {
+      #region Mono Compatibility
+      // this setter should be protected, but the Mono compiler couldn't handle it
+      set {
         throw new System.NotSupportedException("Error: Setting the lenght of the wrapper is not allowed.");
       }
+      #endregion
     }
   }
 }
