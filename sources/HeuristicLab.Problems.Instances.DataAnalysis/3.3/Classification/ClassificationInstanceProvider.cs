@@ -22,6 +22,6 @@
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ClassificationInstanceProvider : ProblemInstanceProvider<IClassificationProblemData> {
+  public abstract class ClassificationInstanceProvider : DataAnalysisInstanceProvider<IClassificationProblemData> {
   }
 }

@@ -122,6 +122,8 @@
     <Compile Include="Classification\UCI\Wine.cs" />
     <Compile Include="Clustering\ClusteringInstanceProvider.cs" />
     <Compile Include="Clustering\CSV\ClusteringCSVInstanceProvider.cs" />
+    <Compile Include="DataAnalysisImportType.cs" />
+    <Compile Include="DataAnalysisInstanceProvider.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Regression\ArtificialRegressionDataDescriptor.cs" />

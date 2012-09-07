@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -62,6 +63,40 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       csvFileParser.Parse(path);
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
+      string targetVar = dataset.DoubleVariables.Last();
+
+      // turn of input variables that are constant in the training partition
+      var allowedInputVars = new List<string>();
+      var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
+      foreach (var variableName in dataset.DoubleVariables) {
+        if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+          variableName != targetVar)
+          allowedInputVars.Add(variableName);
+      }
+
+      ClassificationProblemData classificationData = new ClassificationProblemData(dataset, allowedInputVars, targetVar);
+
+      int trainingPartEnd = trainingIndizes.Last();
+      classificationData.TrainingPartition.Start = trainingIndizes.First();
+      classificationData.TrainingPartition.End = trainingPartEnd;
+      classificationData.TestPartition.Start = trainingPartEnd;
+      classificationData.TestPartition.End = csvFileParser.Rows;
+
+      classificationData.Name = Path.GetFileName(path);
+
+      return classificationData;
+    }
+
+    public override IClassificationProblemData ImportData(string path, DataAnalysisImportType type) {
+      TableFileParser csvFileParser = new TableFileParser();
+      csvFileParser.Parse(path);
+
+      List<IList> values = csvFileParser.Values;
+      if (type.Shuffle) {
+        values = Shuffle(values);
+      }
+
+      Dataset dataset = new Dataset(csvFileParser.VariableNames, values);
       string targetVar = dataset.DoubleVariables.Last();
 
       // turn of input variables that are constant in the training partition

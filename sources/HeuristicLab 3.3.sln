@@ -345,6 +345,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.Sca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.GradientDescent", "HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent.csproj", "{1256B945-EEA9-4BE4-9880-76B5B113F089}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3", "HeuristicLab.Problems.Instances.DataAnalysis.Views\3.3\HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3.csproj", "{72232235-B6CF-4E6C-B086-9E9E11AA0717}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1687,6 +1689,14 @@ Global
 		{1256B945-EEA9-4BE4-9880-76B5B113F089}.Release|x64.Build.0 = Release|x64
 		{1256B945-EEA9-4BE4-9880-76B5B113F089}.Release|x86.ActiveCfg = Release|x86
 		{1256B945-EEA9-4BE4-9880-76B5B113F089}.Release|x86.Build.0 = Release|x86
+		{72232235-B6CF-4E6C-B086-9E9E11AA0717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72232235-B6CF-4E6C-B086-9E9E11AA0717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72232235-B6CF-4E6C-B086-9E9E11AA0717}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{72232235-B6CF-4E6C-B086-9E9E11AA0717}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{72232235-B6CF-4E6C-B086-9E9E11AA0717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72232235-B6CF-4E6C-B086-9E9E11AA0717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72232235-B6CF-4E6C-B086-9E9E11AA0717}.Release|x64.ActiveCfg = Release|Any CPU
+		{72232235-B6CF-4E6C-B086-9E9E11AA0717}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

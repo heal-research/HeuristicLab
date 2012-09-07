@@ -19,9 +19,16 @@
  */
 #endregion
 
-using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ClusteringInstanceProvider : DataAnalysisInstanceProvider<IClusteringProblemData> {
+namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
+  [Plugin("HeuristicLab.Problems.Instances.DataAnalysis.Views", "3.3.7.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.MainForm", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Instances.DataAnalysis", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Instances.Views", "3.3")]
+  public class HeuristicLabProblemsInstancesDataAnalysisViewsPlugin : PluginBase {
   }
 }

@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
-#endregion
-
-using HeuristicLab.Problems.DataAnalysis;
+#endregion;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ClusteringInstanceProvider : DataAnalysisInstanceProvider<IClusteringProblemData> {
+  public class DataAnalysisImportType {
+    public bool Shuffle { get; set; }
+    public int Training { get; set; }
   }
 }

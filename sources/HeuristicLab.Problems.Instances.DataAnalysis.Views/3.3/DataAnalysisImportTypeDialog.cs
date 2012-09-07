@@ -19,9 +19,15 @@
  */
 #endregion
 
-using HeuristicLab.Problems.DataAnalysis;
+using System.Windows.Forms;
 
-namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ClusteringInstanceProvider : DataAnalysisInstanceProvider<IClusteringProblemData> {
+namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
+  public partial class DataAnalysisImportTypeDialog : Form {
+
+    public bool Shuffel { get { return ShuffelDataCheckbox.Checked; } }
+
+    public DataAnalysisImportTypeDialog() {
+      InitializeComponent();
+    }
   }
 }
