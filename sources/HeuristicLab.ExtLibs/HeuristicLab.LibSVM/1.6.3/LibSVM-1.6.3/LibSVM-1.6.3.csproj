@@ -155,7 +155,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>
+   <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
 </Project>
