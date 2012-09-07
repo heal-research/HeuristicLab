@@ -115,11 +115,11 @@
     <Compile Include="Classification\ArtificialClassificationInstanceProvider.cs" />
     <Compile Include="Classification\ClassificationInstanceProvider.cs" />
     <Compile Include="Classification\CSV\ClassifiactionCSVInstanceProvider.cs" />
-    <Compile Include="Classification\RealWorld\Iris.cs" />
-    <Compile Include="Classification\RealWorld\Mammography.cs" />
-    <Compile Include="Classification\RealWorld\ClassificationRealWorldInstanceProvider.cs" />
     <Compile Include="Classification\ResourceClassificationDataDescriptor.cs" />
     <Compile Include="Classification\ResourceClassificationInstanceProvider.cs" />
+    <Compile Include="Classification\UCI\Mammography.cs" />
+    <Compile Include="Classification\UCI\UCIInstanceProvider.cs" />
+    <Compile Include="Classification\UCI\Wine.cs" />
     <Compile Include="Clustering\ClusteringInstanceProvider.cs" />
     <Compile Include="Clustering\CSV\ClusteringCSVInstanceProvider.cs" />
     <Compile Include="Plugin.cs" />
@@ -195,7 +195,7 @@
     <Compile Include="TableFileParser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Classification\Data\ClassificationRealWorld.zip" />
+    <EmbeddedResource Include="Classification\Data\UCI.zip" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

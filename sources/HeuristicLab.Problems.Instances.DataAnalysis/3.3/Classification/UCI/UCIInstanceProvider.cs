@@ -26,9 +26,9 @@ using System.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class ClassificationRealWorldInstanceProvider : ResourceClassificationInstanceProvider {
+  public class UCIInstanceProvider : ResourceClassificationInstanceProvider {
     public override string Name {
-      get { return "Real World Benchmark Problems"; }
+      get { return "UCI Problems"; }
     }
     public override string Description {
       get {
@@ -36,17 +36,18 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       }
     }
     public override Uri WebLink {
-      get { return null; }
+      get { return new Uri("http://archive.ics.uci.edu/ml/datasets.html"); }
     }
     public override string ReferencePublication {
       get { return ""; }
     }
 
-    protected override string FileName { get { return "ClassificationRealWorld"; } }
+    protected override string FileName { get { return "UCI"; } }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
       descriptorList.Add(new Mammography());
+      descriptorList.Add(new Wine());
       var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
         using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
