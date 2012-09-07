@@ -60,7 +60,7 @@ namespace HeuristicLab.Common {
         if (max < e) max = e;
         i++;
       }
-      if (i <= 2) throw new ArgumentException("The enumerable must contain at least two elements", "values");
+      if (i < 1) throw new ArgumentException("The enumerable must contain at least two elements", "values");
       return max - min;
     }
 
