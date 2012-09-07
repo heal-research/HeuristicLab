@@ -27,6 +27,13 @@
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
+      // parameterCollectionView
+      // 
+      this.parameterCollectionView.AllowDrop = true;
+      this.parameterCollectionView.DragDrop += new System.Windows.Forms.DragEventHandler(this.parameterCollectionView_DragDrop);
+      this.parameterCollectionView.DragEnter += new System.Windows.Forms.DragEventHandler(this.parameterCollectionView_DragEnterOver);
+      this.parameterCollectionView.DragOver += new System.Windows.Forms.DragEventHandler(this.parameterCollectionView_DragEnterOver);
+      // 
       // nameTextBox
       // 
       this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
