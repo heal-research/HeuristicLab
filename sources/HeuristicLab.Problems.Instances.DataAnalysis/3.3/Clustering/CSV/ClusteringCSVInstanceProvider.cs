@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var allowedInputVars = new List<string>();
       var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
       foreach (var variableName in dataset.DoubleVariables) {
-        if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+        if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
           variableName != targetVar)
           allowedInputVars.Add(variableName);
       }
@@ -100,17 +100,17 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       // turn of input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
-      var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
+      int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
+      var trainingIndizes = Enumerable.Range(0, trainingPartEnd);
       foreach (var variableName in dataset.DoubleVariables) {
-        if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+        if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
           variableName != targetVar)
           allowedInputVars.Add(variableName);
       }
 
       ClusteringProblemData clusteringData = new ClusteringProblemData(dataset, allowedInputVars);
 
-      int trainingPartEnd = trainingIndizes.Last();
-      clusteringData.TrainingPartition.Start = trainingIndizes.First();
+      clusteringData.TrainingPartition.Start = 0;
       clusteringData.TrainingPartition.End = trainingPartEnd;
       clusteringData.TestPartition.Start = trainingPartEnd;
       clusteringData.TestPartition.End = csvFileParser.Rows;

@@ -24,10 +24,22 @@ using System.Windows.Forms;
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   public partial class DataAnalysisImportTypeDialog : Form {
 
-    public bool Shuffel { get { return ShuffelDataCheckbox.Checked; } }
+    public DataAnalysisImportType ImportType {
+      get {
+        return new DataAnalysisImportType() {
+          Shuffle = ShuffelDataCheckbox.Checked,
+          Training = TrainingTestTrackBar.Value
+        };
+      }
+    }
 
     public DataAnalysisImportTypeDialog() {
       InitializeComponent();
+    }
+
+    private void TrainingTestTrackBar_ValueChanged(object sender, System.EventArgs e) {
+      TrainingLabel.Text = "Training: " + TrainingTestTrackBar.Value + " %";
+      TestLabel.Text = "Test: " + (TrainingTestTrackBar.Maximum - TrainingTestTrackBar.Value) + " %";
     }
   }
 }

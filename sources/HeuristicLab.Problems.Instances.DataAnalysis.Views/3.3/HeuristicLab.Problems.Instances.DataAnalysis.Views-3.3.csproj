@@ -54,7 +54,9 @@
     <Compile Include="DataAnalysisImportTypeDialog.Designer.cs">
       <DependentUpon>DataAnalysisImportTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataAnalysisInstanceConsumerView.cs" />
+    <Compile Include="DataAnalysisInstanceConsumerView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="DataAnalysisInstanceConsumerView.Designer.cs">
       <DependentUpon>DataAnalysisInstanceConsumerView.cs</DependentUpon>
     </Compile>

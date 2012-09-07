@@ -24,8 +24,6 @@ using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.Instances.DataAnalysis;
-using HeuristicLab.Problems.Instances.DataAnalysis.Views;
 using HeuristicLab.Problems.Instances.Views;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
@@ -54,7 +52,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
           try {
             DataAnalysisImportTypeDialog importTypeDialog = new DataAnalysisImportTypeDialog();
             if (importTypeDialog.ShowDialog() == DialogResult.OK) {
-              instance = provider.ImportData(openFileDialog.FileName, new DataAnalysisImportType() { Shuffle = importTypeDialog.Shuffel });
+              instance = provider.ImportData(openFileDialog.FileName, importTypeDialog.ImportType);
             } else {
               return;
             }

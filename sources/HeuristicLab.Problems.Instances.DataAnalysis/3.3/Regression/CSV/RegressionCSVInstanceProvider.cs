@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var allowedInputVars = new List<string>();
       var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
       foreach (var variableName in dataset.DoubleVariables) {
-        if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+        if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
           variableName != targetVar)
           allowedInputVars.Add(variableName);
       }
@@ -98,17 +98,17 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       // turn of input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
-      var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
+      int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
+      var trainingIndizes = Enumerable.Range(0, trainingPartEnd);
       foreach (var variableName in dataset.DoubleVariables) {
-        if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+        if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
           variableName != targetVar)
           allowedInputVars.Add(variableName);
       }
 
       RegressionProblemData regressionData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
 
-      int trainingPartEnd = trainingIndizes.Last();
-      regressionData.TrainingPartition.Start = trainingIndizes.First();
+      regressionData.TrainingPartition.Start = 0;
       regressionData.TrainingPartition.End = trainingPartEnd;
       regressionData.TestPartition.Start = trainingPartEnd;
       regressionData.TestPartition.End = csvFileParser.Rows;
