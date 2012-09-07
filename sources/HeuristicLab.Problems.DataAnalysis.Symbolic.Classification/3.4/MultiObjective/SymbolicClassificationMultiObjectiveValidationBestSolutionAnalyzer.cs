@@ -33,7 +33,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic classification solution for multi objective symbolic classification problems.")]
   [StorableClass]
   public sealed class SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer : SymbolicDataAnalysisMultiObjectiveValidationBestSolutionAnalyzer<ISymbolicClassificationSolution, ISymbolicClassificationMultiObjectiveEvaluator, IClassificationProblemData>,
-  ISymbolicDataAnalysisBoundedOperator {
+  ISymbolicDataAnalysisBoundedOperator, ISymbolicClassificationModelCreatorOperator {
+    private const string ModelCreatorParameterName = "ModelCreator";
     private const string EstimationLimitsParameterName = "EstimationLimits";
     private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
 
@@ -43,6 +44,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
     public IValueParameter<BoolValue> ApplyLinearScalingParameter {
       get { return (IValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
+    }
+    public IValueLookupParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter {
+      get { return (IValueLookupParameter<ISymbolicClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
+    }
+    ILookupParameter<ISymbolicClassificationModelCreator> ISymbolicClassificationModelCreatorOperator.ModelCreatorParameter {
+      get { return ModelCreatorParameter; }
     }
     #endregion
 
@@ -58,17 +65,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The loewr and upper limit for the estimated values produced by the symbolic classification model."));
       Parameters.Add(new ValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the produced symbolic classification solution should be linearly scaled.", new BoolValue(false)));
+      Parameters.Add(new ValueLookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, ""));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer(this, cloner);
     }
 
-    protected override ISymbolicClassificationSolution CreateSolution(ISymbolicExpressionTree bestTree, double[] bestQualities) {
-      var model = new SymbolicDiscriminantFunctionClassificationModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      if (ApplyLinearScaling.Value) SymbolicDiscriminantFunctionClassificationModel.Scale(model, ProblemDataParameter.ActualValue);
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ModelCreatorParameterName))
+        Parameters.Add(new ValueLookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, ""));
+    }
 
-      model.SetAccuracyMaximizingThresholds(ProblemDataParameter.ActualValue);
-      return new SymbolicDiscriminantFunctionClassificationSolution(model, (IClassificationProblemData)ProblemDataParameter.ActualValue.Clone());
+    protected override ISymbolicClassificationSolution CreateSolution(ISymbolicExpressionTree bestTree, double[] bestQualities) {
+      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      if (ApplyLinearScaling.Value) SymbolicClassificationModel.Scale(model, ProblemDataParameter.ActualValue);
+
+      model.RecalculateModelParameters(ProblemDataParameter.ActualValue, ProblemDataParameter.ActualValue.TrainingIndices);
+      return model.CreateClassificationSolution((IClassificationProblemData)ProblemDataParameter.ActualValue.Clone());
     }
   }
 }

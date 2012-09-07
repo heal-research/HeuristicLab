@@ -111,7 +111,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\ISymbolicClassificationModelCreatorOperator.cs" />
+    <Compile Include="Interfaces\ISymbolicDiscriminantFunctionClassificationModelCreator.cs" />
+    <Compile Include="Interfaces\ISymbolicClassificationModelCreator.cs" />
     <Compile Include="Interfaces\ISymbolicDiscriminantFunctionClassificationModel.cs" />
+    <Compile Include="ModelCreators\AccuracyMaximizingThresholdsModelCreator.cs" />
+    <Compile Include="ModelCreators\NormalDistributedThresholdsModelCreator.cs" />
     <Compile Include="MultiObjective\SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="SingleObjective\SymbolicClassificationSingleObjectivePenaltyScoreEvaluator.cs" />
@@ -175,6 +180,10 @@
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
       <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>

@@ -31,31 +31,107 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// </summary>
   [StorableClass]
   [Item(Name = "SymbolicClassificationModel", Description = "Represents a symbolic classification model.")]
-  public class SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
+  public abstract class SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
+    [Storable]
+    private double lowerEstimationLimit;
+    public double LowerEstimationLimit { get { return lowerEstimationLimit; } }
+    [Storable]
+    private double upperEstimationLimit;
+    public double UpperEstimationLimit { get { return upperEstimationLimit; } }
+
     [StorableConstructor]
     protected SymbolicClassificationModel(bool deserializing) : base(deserializing) { }
     protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner)
       : base(original, cloner) {
+      lowerEstimationLimit = original.lowerEstimationLimit;
+      upperEstimationLimit = original.upperEstimationLimit;
     }
-    public SymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter)
+    protected SymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
       : base(tree, interpreter) {
+      this.lowerEstimationLimit = lowerEstimationLimit;
+      this.upperEstimationLimit = upperEstimationLimit;
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicClassificationModel(this, cloner);
-    }
+    public abstract IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows);
+    public abstract void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);
 
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
-      return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows);
-    }
+    public abstract ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
 
-    public ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new SymbolicClassificationSolution(this, new ClassificationProblemData(problemData));
-    }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);
     }
 
+    #region scaling
+    public static void Scale(ISymbolicClassificationModel model, IClassificationProblemData problemData) {
+      var dataset = problemData.Dataset;
+      var targetVariable = problemData.TargetVariable;
+      var rows = problemData.TrainingIndices;
+      var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
+      var targetValues = dataset.GetDoubleValues(targetVariable, rows);
+      double alpha;
+      double beta;
+      OnlineCalculatorError errorState;
+      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta, out errorState);
+      if (errorState != OnlineCalculatorError.None) return;
 
+      ConstantTreeNode alphaTreeNode = null;
+      ConstantTreeNode betaTreeNode = null;
+      // check if model has been scaled previously by analyzing the structure of the tree
+      var startNode = model.SymbolicExpressionTree.Root.GetSubtree(0);
+      if (startNode.GetSubtree(0).Symbol is Addition) {
+        var addNode = startNode.GetSubtree(0);
+        if (addNode.SubtreeCount == 2 && addNode.GetSubtree(0).Symbol is Multiplication && addNode.GetSubtree(1).Symbol is Constant) {
+          alphaTreeNode = addNode.GetSubtree(1) as ConstantTreeNode;
+          var mulNode = addNode.GetSubtree(0);
+          if (mulNode.SubtreeCount == 2 && mulNode.GetSubtree(1).Symbol is Constant) {
+            betaTreeNode = mulNode.GetSubtree(1) as ConstantTreeNode;
+          }
+        }
+      }
+      // if tree structure matches the structure necessary for linear scaling then reuse the existing tree nodes
+      if (alphaTreeNode != null && betaTreeNode != null) {
+        betaTreeNode.Value *= beta;
+        alphaTreeNode.Value *= beta;
+        alphaTreeNode.Value += alpha;
+      } else {
+        var mainBranch = startNode.GetSubtree(0);
+        startNode.RemoveSubtree(0);
+        var scaledMainBranch = MakeSum(MakeProduct(mainBranch, beta), alpha);
+        startNode.AddSubtree(scaledMainBranch);
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeSum(ISymbolicExpressionTreeNode treeNode, double alpha) {
+      if (alpha.IsAlmost(0.0)) {
+        return treeNode;
+      } else {
+        var addition = new Addition();
+        var node = addition.CreateTreeNode();
+        var alphaConst = MakeConstant(alpha);
+        node.AddSubtree(treeNode);
+        node.AddSubtree(alphaConst);
+        return node;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeProduct(ISymbolicExpressionTreeNode treeNode, double beta) {
+      if (beta.IsAlmost(1.0)) {
+        return treeNode;
+      } else {
+        var multipliciation = new Multiplication();
+        var node = multipliciation.CreateTreeNode();
+        var betaConst = MakeConstant(beta);
+        node.AddSubtree(treeNode);
+        node.AddSubtree(betaConst);
+        return node;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeConstant(double c) {
+      var node = (ConstantTreeNode)(new Constant()).CreateTreeNode();
+      node.Value = c;
+      return node;
+    }
+    #endregion
   }
 }

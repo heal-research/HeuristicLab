@@ -1,4 +1,5 @@
 ﻿#region License Information
+
 /* HeuristicLab
  * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -17,14 +18,13 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #endregion
 
-using System.Collections.Generic;
+using HeuristicLab.Core;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  public interface ISymbolicClassificationModel : IClassificationModel, ISymbolicDataAnalysisModel {
-    double LowerEstimationLimit { get; }
-    double UpperEstimationLimit { get; }
-    void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);
-    new ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
+  public interface ISymbolicClassificationModelCreatorOperator : IOperator {
+    ILookupParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter { get; }
   }
 }

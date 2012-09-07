@@ -34,15 +34,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private const int InitialMaximumTreeLength = 25;
     private const string EstimationLimitsParameterName = "EstimationLimits";
     private const string EstimationLimitsParameterDescription = "The lower and upper limit for the estimated value that can be returned by the symbolic classification model.";
+    private const string ModelCreatorParameterName = "ModelCreator";
 
     #region parameter properties
     public IFixedValueParameter<DoubleLimit> EstimationLimitsParameter {
       get { return (IFixedValueParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
     }
+    public IValueParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter {
+      get { return (IValueParameter<ISymbolicClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
+    }
     #endregion
     #region properties
     public DoubleLimit EstimationLimits {
       get { return EstimationLimitsParameter.Value; }
+    }
+    public ISymbolicClassificationModelCreator ModelCreator {
+      get { return ModelCreatorParameter.Value; }
     }
     #endregion
     [StorableConstructor]
@@ -56,6 +63,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public SymbolicClassificationSingleObjectiveProblem()
       : base(new ClassificationProblemData(), new SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator(), new SymbolicDataAnalysisExpressionTreeCreator()) {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
+      Parameters.Add(new ValueParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, "", new AccuracyMaximizingThresholdsModelCreator()));
 
       EstimationLimitsParameter.Hidden = true;
 
@@ -70,8 +78,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      RegisterEventHandlers();
-      // compatibility
+
+      if (!Parameters.ContainsKey(ModelCreatorParameterName))
+        Parameters.Add(new ValueParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, "", new AccuracyMaximizingThresholdsModelCreator()));
+
       bool changed = false;
       if (!Operators.OfType<SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer>().Any()) {
         Operators.Add(new SymbolicClassificationSingleObjectiveTrainingParetoBestSolutionAnalyzer());
@@ -82,10 +92,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         changed = true;
       }
       if (changed) ParameterizeOperators();
+      RegisterEventHandlers();
     }
 
     private void RegisterEventHandlers() {
       SymbolicExpressionTreeGrammarParameter.ValueChanged += (o, e) => ConfigureGrammarSymbols();
+      ModelCreatorParameter.NameChanged += (o, e) => ParameterizeOperators();
     }
 
     private void ConfigureGrammarSymbols() {
@@ -124,9 +136,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       base.ParameterizeOperators();
       if (Parameters.ContainsKey(EstimationLimitsParameterName)) {
         var operators = Parameters.OfType<IValueParameter>().Select(p => p.Value).OfType<IOperator>().Union(Operators);
-        foreach (var op in operators.OfType<ISymbolicDataAnalysisBoundedOperator>()) {
+        foreach (var op in operators.OfType<ISymbolicDataAnalysisBoundedOperator>())
           op.EstimationLimitsParameter.ActualName = EstimationLimitsParameter.Name;
-        }
+        foreach (var op in operators.OfType<ISymbolicClassificationModelCreatorOperator>())
+          op.ModelCreatorParameter.ActualName = ModelCreatorParameter.Name;
       }
     }
   }

@@ -24,22 +24,41 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Penalty Score Evaluator", "Calculates the penalty score of a symbolic classification solution.")]
   [StorableClass]
-  public class SymbolicClassificationSingleObjectivePenaltyScoreEvaluator : SymbolicClassificationSingleObjectiveEvaluator {
+  public class SymbolicClassificationSingleObjectivePenaltyScoreEvaluator : SymbolicClassificationSingleObjectiveEvaluator, ISymbolicClassificationModelCreatorOperator {
+    private const string ModelCreatorParameterName = "ModelCreator";
     public override bool Maximization { get { return false; } }
+
+    public IValueLookupParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter {
+      get { return (IValueLookupParameter<ISymbolicClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
+    }
+    ILookupParameter<ISymbolicClassificationModelCreator> ISymbolicClassificationModelCreatorOperator.ModelCreatorParameter {
+      get { return ModelCreatorParameter; }
+    }
 
     [StorableConstructor]
     protected SymbolicClassificationSingleObjectivePenaltyScoreEvaluator(bool deserializing) : base(deserializing) { }
     protected SymbolicClassificationSingleObjectivePenaltyScoreEvaluator(SymbolicClassificationSingleObjectivePenaltyScoreEvaluator original, Cloner cloner) : base(original, cloner) { }
-    public SymbolicClassificationSingleObjectivePenaltyScoreEvaluator() : base() { }
+    public SymbolicClassificationSingleObjectivePenaltyScoreEvaluator()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, ""));
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicClassificationSingleObjectivePenaltyScoreEvaluator(this, cloner);
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ModelCreatorParameterName))
+        Parameters.Add(new ValueLookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, ""));
+    }
+
 
     public override IOperation Apply() {
       double quality = Evaluate(ExecutionContext, SymbolicExpressionTreeParameter.ActualValue, ProblemDataParameter.ActualValue, GenerateRowsToEvaluate());
@@ -65,13 +84,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IClassificationProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
+      ModelCreatorParameter.ExecutionContext = context;
 
-      var model = new SymbolicDiscriminantFunctionClassificationModel(tree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      model.SetAccuracyMaximizingThresholds(problemData);
+      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(tree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      model.RecalculateModelParameters(problemData, rows);
       double penalty = Calculate(model, problemData, rows);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
+      ModelCreatorParameter.ExecutionContext = null;
 
       return penalty;
     }

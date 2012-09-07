@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// </summary>
   [StorableClass]
   [Item(Name = "SymbolicDiscriminantFunctionClassificationModel", Description = "Represents a symbolic classification model unsing a discriminant function.")]
-  public class SymbolicDiscriminantFunctionClassificationModel : SymbolicDataAnalysisModel, ISymbolicDiscriminantFunctionClassificationModel {
+  public class SymbolicDiscriminantFunctionClassificationModel : SymbolicClassificationModel, ISymbolicDiscriminantFunctionClassificationModel {
 
     [Storable]
     private double[] thresholds;
@@ -47,12 +47,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       get { return (IEnumerable<double>)classValues.Clone(); }
       private set { classValues = value.ToArray(); }
     }
+
+    private IDiscriminantFunctionThresholdCalculator thresholdCalculator;
     [Storable]
-    private double lowerEstimationLimit;
-    public double LowerEstimationLimit { get { return lowerEstimationLimit; } }
-    [Storable]
-    private double upperEstimationLimit;
-    public double UpperEstimationLimit { get { return upperEstimationLimit; } }
+    public IDiscriminantFunctionThresholdCalculator ThresholdCalculator {
+      get { return thresholdCalculator; }
+      private set { thresholdCalculator = value; }
+    }
+
 
     [StorableConstructor]
     protected SymbolicDiscriminantFunctionClassificationModel(bool deserializing) : base(deserializing) { }
@@ -60,16 +62,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       : base(original, cloner) {
       classValues = (double[])original.classValues.Clone();
       thresholds = (double[])original.thresholds.Clone();
-      lowerEstimationLimit = original.lowerEstimationLimit;
-      upperEstimationLimit = original.upperEstimationLimit;
+      thresholdCalculator = cloner.Clone(original.thresholdCalculator);
     }
-    public SymbolicDiscriminantFunctionClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+    public SymbolicDiscriminantFunctionClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDiscriminantFunctionThresholdCalculator thresholdCalculator,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter) {
+      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.thresholds = new double[0];
       this.classValues = new double[0];
-      this.lowerEstimationLimit = lowerEstimationLimit;
-      this.upperEstimationLimit = upperEstimationLimit;
+      this.ThresholdCalculator = thresholdCalculator;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (ThresholdCalculator == null) ThresholdCalculator = new AccuracyMaximizationThresholdCalculator();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -86,11 +91,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       OnThresholdsChanged(EventArgs.Empty);
     }
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
-      return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows).LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+    public override void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows) {
+      double[] classValues;
+      double[] thresholds;
+      var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      var estimatedTrainingValues = GetEstimatedValues(problemData.Dataset, rows);
+      thresholdCalculator.Calculate(problemData, estimatedTrainingValues, targetClassValues, out classValues, out thresholds);
+      SetThresholdsAndClassValues(thresholds, classValues);
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+      return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows).LimitToRange(LowerEstimationLimit, UpperEstimationLimit);
+    }
+
+    public override IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
       if (!Thresholds.Any() && !ClassValues.Any()) throw new ArgumentException("No thresholds and class values were set for the current symbolic classification model.");
       foreach (var x in GetEstimatedValues(dataset, rows)) {
         int classIndex = 0;
@@ -103,14 +117,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       }
     }
 
-    public SymbolicDiscriminantFunctionClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+
+    public override ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return CreateDiscriminantClassificationSolution(problemData);
+    }
+    public SymbolicDiscriminantFunctionClassificationSolution CreateDiscriminantClassificationSolution(IClassificationProblemData problemData) {
       return new SymbolicDiscriminantFunctionClassificationSolution(this, new ClassificationProblemData(problemData));
     }
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+      return CreateDiscriminantClassificationSolution(problemData);
     }
     IDiscriminantFunctionClassificationSolution IDiscriminantFunctionClassificationModel.CreateDiscriminantFunctionClassificationSolution(IClassificationProblemData problemData) {
-      return CreateClassificationSolution(problemData);
+      return CreateDiscriminantClassificationSolution(problemData);
     }
 
     #region events
@@ -120,96 +138,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       if (listener != null) listener(this, e);
     }
     #endregion
-
-    public void SetAccuracyMaximizingThresholds(IClassificationProblemData problemData) {
-      double[] classValues;
-      double[] thresholds;
-      var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
-      var estimatedTrainingValues = GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
-      AccuracyMaximizationThresholdCalculator.CalculateThresholds(problemData, estimatedTrainingValues, targetClassValues, out classValues, out thresholds);
-
-      SetThresholdsAndClassValues(thresholds, classValues);
-    }
-
-    public void SetClassDistributionCutPointThresholds(IClassificationProblemData problemData) {
-      double[] classValues;
-      double[] thresholds;
-      var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
-      var estimatedTrainingValues = GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices);
-      NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(problemData, estimatedTrainingValues, targetClassValues, out classValues, out thresholds);
-
-      SetThresholdsAndClassValues(thresholds, classValues);
-    }
-
-    public static void Scale(SymbolicDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData) {
-      var dataset = problemData.Dataset;
-      var targetVariable = problemData.TargetVariable;
-      var rows = problemData.TrainingIndices;
-      var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
-      var targetValues = dataset.GetDoubleValues(targetVariable, rows);
-      double alpha;
-      double beta;
-      OnlineCalculatorError errorState;
-      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta, out errorState);
-      if (errorState != OnlineCalculatorError.None) return;
-
-      ConstantTreeNode alphaTreeNode = null;
-      ConstantTreeNode betaTreeNode = null;
-      // check if model has been scaled previously by analyzing the structure of the tree
-      var startNode = model.SymbolicExpressionTree.Root.GetSubtree(0);
-      if (startNode.GetSubtree(0).Symbol is Addition) {
-        var addNode = startNode.GetSubtree(0);
-        if (addNode.SubtreeCount == 2 && addNode.GetSubtree(0).Symbol is Multiplication && addNode.GetSubtree(1).Symbol is Constant) {
-          alphaTreeNode = addNode.GetSubtree(1) as ConstantTreeNode;
-          var mulNode = addNode.GetSubtree(0);
-          if (mulNode.SubtreeCount == 2 && mulNode.GetSubtree(1).Symbol is Constant) {
-            betaTreeNode = mulNode.GetSubtree(1) as ConstantTreeNode;
-          }
-        }
-      }
-      // if tree structure matches the structure necessary for linear scaling then reuse the existing tree nodes
-      if (alphaTreeNode != null && betaTreeNode != null) {
-        betaTreeNode.Value *= beta;
-        alphaTreeNode.Value *= beta;
-        alphaTreeNode.Value += alpha;
-      } else {
-        var mainBranch = startNode.GetSubtree(0);
-        startNode.RemoveSubtree(0);
-        var scaledMainBranch = MakeSum(MakeProduct(mainBranch, beta), alpha);
-        startNode.AddSubtree(scaledMainBranch);
-      }
-    }
-
-    private static ISymbolicExpressionTreeNode MakeSum(ISymbolicExpressionTreeNode treeNode, double alpha) {
-      if (alpha.IsAlmost(0.0)) {
-        return treeNode;
-      } else {
-        var addition = new Addition();
-        var node = addition.CreateTreeNode();
-        var alphaConst = MakeConstant(alpha);
-        node.AddSubtree(treeNode);
-        node.AddSubtree(alphaConst);
-        return node;
-      }
-    }
-
-    private static ISymbolicExpressionTreeNode MakeProduct(ISymbolicExpressionTreeNode treeNode, double beta) {
-      if (beta.IsAlmost(1.0)) {
-        return treeNode;
-      } else {
-        var multipliciation = new Multiplication();
-        var node = multipliciation.CreateTreeNode();
-        var betaConst = MakeConstant(beta);
-        node.AddSubtree(treeNode);
-        node.AddSubtree(betaConst);
-        return node;
-      }
-    }
-
-    private static ISymbolicExpressionTreeNode MakeConstant(double c) {
-      var node = (ConstantTreeNode)(new Constant()).CreateTreeNode();
-      node.Value = c;
-      return node;
-    }
   }
 }

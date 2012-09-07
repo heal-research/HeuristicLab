@@ -19,10 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   public interface ISymbolicDiscriminantFunctionClassificationModel : IDiscriminantFunctionClassificationModel, ISymbolicClassificationModel {
-    double LowerEstimationLimit { get; }
-    double UpperEstimationLimit { get; }
+    IDiscriminantFunctionThresholdCalculator ThresholdCalculator { get; }
   }
 }

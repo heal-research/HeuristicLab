@@ -33,14 +33,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic classification solution for single objective symbolic classification problems.")]
   [StorableClass]
   public sealed class SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<ISymbolicClassificationSolution>,
-    ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator {
+    ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator, ISymbolicClassificationModelCreatorOperator {
     private const string ProblemDataParameterName = "ProblemData";
+    private const string ModelCreatorParameterName = "ModelCreator";
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicDataAnalysisTreeInterpreter";
     private const string EstimationLimitsParameterName = "UpperEstimationLimit";
     private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     #region parameter properties
     public ILookupParameter<IClassificationProblemData> ProblemDataParameter {
       get { return (ILookupParameter<IClassificationProblemData>)Parameters[ProblemDataParameterName]; }
+    }
+    public IValueLookupParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter {
+      get { return (IValueLookupParameter<ISymbolicClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
+    }
+    ILookupParameter<ISymbolicClassificationModelCreator> ISymbolicClassificationModelCreatorOperator.ModelCreatorParameter {
+      get { return ModelCreatorParameter; }
     }
     public ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> SymbolicDataAnalysisTreeInterpreterParameter {
       get { return (ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[SymbolicDataAnalysisTreeInterpreterParameterName]; }
@@ -64,20 +71,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<IClassificationProblemData>(ProblemDataParameterName, "The problem data for the symbolic classification solution."));
+      Parameters.Add(new ValueLookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, ""));
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The symbolic data analysis tree interpreter for the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic classification model."));
       Parameters.Add(new ValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the produced symbolic classification solution should be linearly scaled.", new BoolValue(false)));
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicClassificationSingleObjectiveTrainingBestSolutionAnalyzer(this, cloner);
     }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ModelCreatorParameterName))
+        Parameters.Add(new ValueLookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, ""));
+    }
 
     protected override ISymbolicClassificationSolution CreateSolution(ISymbolicExpressionTree bestTree, double bestQuality) {
-      var model = new SymbolicDiscriminantFunctionClassificationModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      if (ApplyLinearScaling.Value) SymbolicDiscriminantFunctionClassificationModel.Scale(model, ProblemDataParameter.ActualValue);
+      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      if (ApplyLinearScaling.Value) SymbolicClassificationModel.Scale(model, ProblemDataParameter.ActualValue);
 
-      model.SetAccuracyMaximizingThresholds(ProblemDataParameter.ActualValue);
-      return new SymbolicDiscriminantFunctionClassificationSolution(model, (IClassificationProblemData)ProblemDataParameter.ActualValue.Clone());
+      model.RecalculateModelParameters(ProblemDataParameter.ActualValue, ProblemDataParameter.ActualValue.TrainingIndices);
+      return model.CreateClassificationSolution((IClassificationProblemData)ProblemDataParameter.ActualValue.Clone());
     }
   }
 }
