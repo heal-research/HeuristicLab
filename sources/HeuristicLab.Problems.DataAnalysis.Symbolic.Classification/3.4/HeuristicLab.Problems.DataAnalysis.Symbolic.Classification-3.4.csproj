@@ -116,8 +116,10 @@
     <Compile Include="Interfaces\ISymbolicClassificationModelCreator.cs" />
     <Compile Include="Interfaces\ISymbolicDiscriminantFunctionClassificationModel.cs" />
     <Compile Include="ModelCreators\AccuracyMaximizingThresholdsModelCreator.cs" />
+    <Compile Include="ModelCreators\NearestNeighborModelCreator.cs" />
     <Compile Include="ModelCreators\NormalDistributedThresholdsModelCreator.cs" />
     <Compile Include="MultiObjective\SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer.cs" />
+    <Compile Include="SymbolicNearestNeighbourClassificationModel.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="SingleObjective\SymbolicClassificationSingleObjectivePenaltyScoreEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicClassificationSingleObjectiveBoundedMeanSquaredErrorEvaluator.cs" />
