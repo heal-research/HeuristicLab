@@ -353,7 +353,7 @@ namespace HeuristicLab_33.Tests {
       SymbolicClassificationSingleObjectiveProblem symbClassProblem = new SymbolicClassificationSingleObjectiveProblem();
       symbClassProblem.Name = "Mammography Classification Problem";
       symbClassProblem.Description = "Mammography dataset imported from the UCI machine learning repository (http://archive.ics.uci.edu/ml/datasets/Mammographic+Mass)";
-      ClassificationRealWorldInstanceProvider provider = new ClassificationRealWorldInstanceProvider();
+      UCIInstanceProvider provider = new UCIInstanceProvider();
       var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("Mammography")).Single();
       var mammoData = (ClassificationProblemData)provider.LoadData(instance);
       mammoData.TargetVariableParameter.Value = mammoData.TargetVariableParameter.ValidValues

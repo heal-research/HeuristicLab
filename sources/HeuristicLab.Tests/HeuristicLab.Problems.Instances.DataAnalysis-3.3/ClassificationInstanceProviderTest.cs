@@ -29,8 +29,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
   public class ClassificationInstanceProviderTest {
 
     [TestMethod()]
-    public void GetRealWorldInstanceTest() {
-      var target = new ClassificationRealWorldInstanceProvider();
+    public void UCIInstanceTest() {
+      var target = new UCIInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
       int count = 0;
       foreach (var id in target.GetDataDescriptors()) {
