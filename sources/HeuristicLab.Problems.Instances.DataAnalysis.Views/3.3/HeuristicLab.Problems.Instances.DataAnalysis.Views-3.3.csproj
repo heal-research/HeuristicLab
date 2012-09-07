@@ -113,6 +113,11 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DataAnalysisImportTypeDialog.resx">
+      <DependentUpon>DataAnalysisImportTypeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)

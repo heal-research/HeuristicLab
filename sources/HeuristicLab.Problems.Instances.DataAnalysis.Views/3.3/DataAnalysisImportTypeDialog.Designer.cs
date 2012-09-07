@@ -68,6 +68,7 @@
       // 
       this.TrainingTestTrackBar.Location = new System.Drawing.Point(6, 19);
       this.TrainingTestTrackBar.Maximum = 100;
+      this.TrainingTestTrackBar.Minimum = 1;
       this.TrainingTestTrackBar.Name = "TrainingTestTrackBar";
       this.TrainingTestTrackBar.Size = new System.Drawing.Size(210, 45);
       this.TrainingTestTrackBar.TabIndex = 4;

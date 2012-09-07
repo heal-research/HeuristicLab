@@ -99,11 +99,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       // turn of input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
       int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
+      trainingPartEnd = trainingPartEnd > 0 ? trainingPartEnd : 1;
       var trainingIndizes = Enumerable.Range(0, trainingPartEnd);
-      foreach (var variableName in dataset.DoubleVariables) {
-        if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
-          variableName != targetVar)
-          allowedInputVars.Add(variableName);
+      if (trainingIndizes.Count() >= 2) {
+        foreach (var variableName in dataset.DoubleVariables) {
+          if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+            variableName != targetVar)
+            allowedInputVars.Add(variableName);
+        }
+      } else {
+        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => x.Equals(targetVar)));
       }
 
       RegressionProblemData regressionData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
