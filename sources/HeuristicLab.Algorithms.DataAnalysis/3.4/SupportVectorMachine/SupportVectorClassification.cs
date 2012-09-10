@@ -44,6 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string CostParameterName = "Cost";
     private const string NuParameterName = "Nu";
     private const string GammaParameterName = "Gamma";
+    private const string DegreeParameterName = "Degree";
 
     #region parameter properties
     public IConstrainedValueParameter<StringValue> SvmTypeParameter {
@@ -60,6 +61,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public IValueParameter<DoubleValue> GammaParameter {
       get { return (IValueParameter<DoubleValue>)Parameters[GammaParameterName]; }
+    }
+    public IValueParameter<IntValue> DegreeParameter {
+      get { return (IValueParameter<IntValue>)Parameters[DegreeParameterName]; }
     }
     #endregion
     #region properties
@@ -79,6 +83,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public DoubleValue Gamma {
       get { return GammaParameter.Value; }
+    }
+    public IntValue Degree {
+      get { return DegreeParameter.Value; }
     }
     #endregion
     [StorableConstructor]
@@ -103,9 +110,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new ValueParameter<DoubleValue>(NuParameterName, "The value of the nu parameter nu-SVC.", new DoubleValue(0.5)));
       Parameters.Add(new ValueParameter<DoubleValue>(CostParameterName, "The value of the C (cost) parameter of C-SVC.", new DoubleValue(1.0)));
       Parameters.Add(new ValueParameter<DoubleValue>(GammaParameterName, "The value of the gamma parameter in the kernel function.", new DoubleValue(1.0)));
+      Parameters.Add(new ValueParameter<IntValue>(DegreeParameterName, "The degree parameter for the polynomial kernel function.", new IntValue(3)));
     }
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+    private void AfterDeserialization() {
+      #region backwards compatibility (change with 3.4)
+      if (!Parameters.ContainsKey(DegreeParameterName))
+        Parameters.Add(new ValueParameter<IntValue>(DegreeParameterName, "The degree parameter for the polynomial kernel function.", new IntValue(3)));
+      #endregion
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SupportVectorClassification(this, cloner);
@@ -118,7 +131,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double trainingAccuracy, testAccuracy;
       int nSv;
       var solution = CreateSupportVectorClassificationSolution(problemData, selectedInputVariables,
-        SvmType.Value, KernelType.Value, Cost.Value, Nu.Value, Gamma.Value,
+        SvmType.Value, KernelType.Value, Cost.Value, Nu.Value, Gamma.Value, Degree.Value,
         out trainingAccuracy, out testAccuracy, out nSv);
 
       Results.Add(new Result("Support vector classification solution", "The support vector classification solution.", solution));
@@ -128,7 +141,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static SupportVectorClassificationSolution CreateSupportVectorClassificationSolution(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
-      string svmType, string kernelType, double cost, double nu, double gamma,
+      string svmType, string kernelType, double cost, double nu, double gamma, int degree,
       out double trainingAccuracy, out double testAccuracy, out int nSv) {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
@@ -144,7 +157,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       parameter.cache_size = 500;
       parameter.probability = 0;
       parameter.eps = 0.001;
-      parameter.degree = 3;
+      parameter.degree = degree;
       parameter.shrinking = 1;
       parameter.coef0 = 0;
 
