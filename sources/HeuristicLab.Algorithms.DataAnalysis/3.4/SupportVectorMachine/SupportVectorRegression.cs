@@ -29,6 +29,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -142,27 +143,46 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<int> rows = problemData.TrainingIndices;
 
       //extract SVM parameters from scope and set them
-      SVM.Parameter parameter = new SVM.Parameter();
-      parameter.SvmType = (SVM.SvmType)Enum.Parse(typeof(SVM.SvmType), svmType, true);
-      parameter.KernelType = (SVM.KernelType)Enum.Parse(typeof(SVM.KernelType), kernelType, true);
+      svm_parameter parameter = new svm_parameter();
+      parameter.svm_type = GetSvmType(svmType);
+      parameter.kernel_type = GetKernelType(kernelType);
       parameter.C = cost;
-      parameter.Nu = nu;
-      parameter.Gamma = gamma;
-      parameter.P = epsilon;
-      parameter.CacheSize = 500;
-      parameter.Probability = false;
+      parameter.nu = nu;
+      parameter.gamma = gamma;
+      parameter.p = epsilon;
+      parameter.cache_size = 500;
+      parameter.probability = 0;
+      parameter.eps = 0.001;
+      parameter.degree = 3;
+      parameter.shrinking = 1;
+      parameter.coef0 = 0;
 
 
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
-      SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
-      SVM.Problem scaledProblem = SVM.Scaling.Scale(rangeTransform, problem);
-      var svmModel = SVM.Training.Train(scaledProblem, parameter);
-      nSv = svmModel.SupportVectorCount;
+
+      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
+      RangeTransform rangeTransform = RangeTransform.Compute(problem);
+      svm_problem scaledProblem = rangeTransform.Scale(problem);
+      var svmModel = svm.svm_train(scaledProblem, parameter);
+      nSv = svmModel.SV.Length;
       var model = new SupportVectorMachineModel(svmModel, rangeTransform, targetVariable, allowedInputVariables);
       var solution = new SupportVectorRegressionSolution(model, (IRegressionProblemData)problemData.Clone());
       trainingR2 = solution.TrainingRSquared;
       testR2 = solution.TestRSquared;
       return solution;
+    }
+
+    private static int GetSvmType(string svmType) {
+      if (svmType == "NU_SVR") return svm_parameter.NU_SVR;
+      if (svmType == "EPSILON_SVR") return svm_parameter.EPSILON_SVR;
+      throw new ArgumentException("Unknown SVM type");
+    }
+
+    private static int GetKernelType(string kernelType) {
+      if (kernelType == "LINEAR") return svm_parameter.LINEAR;
+      if (kernelType == "POLY") return svm_parameter.POLY;
+      if (kernelType == "SIGMOID") return svm_parameter.SIGMOID;
+      if (kernelType == "RBF") return svm_parameter.RBF;
+      throw new ArgumentException("Unknown kernel type");
     }
     #endregion
   }

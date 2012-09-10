@@ -28,7 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using SVM;
+using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -38,11 +38,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("SupportVectorMachineModel", "Represents a support vector machine model.")]
   public sealed class SupportVectorMachineModel : NamedItem, ISupportVectorMachineModel {
 
-    private SVM.Model model;
+    private svm_model model;
     /// <summary>
     /// Gets or sets the SVM model.
     /// </summary>
-    public SVM.Model Model {
+    public svm_model Model {
       get { return model; }
       set {
         if (value != model) {
@@ -56,8 +56,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <summary>
     /// Gets or sets the range transformation for the model.
     /// </summary>
-    private SVM.RangeTransform rangeTransform;
-    public SVM.RangeTransform RangeTransform {
+    private RangeTransform rangeTransform;
+    public RangeTransform RangeTransform {
       get { return rangeTransform; }
       set {
         if (value != rangeTransform) {
@@ -70,11 +70,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public Dataset SupportVectors {
       get {
-        var data = new double[Model.SupportVectorCount, allowedInputVariables.Count()];
-        for (int i = 0; i < Model.SupportVectorCount; i++) {
-          var sv = Model.SupportVectors[i];
+        var data = new double[Model.sv_coef.Length, allowedInputVariables.Count()];
+        for (int i = 0; i < Model.sv_coef.Length; i++) {
+          var sv = Model.SV[i];
           for (int j = 0; j < sv.Length; j++) {
-            data[i, j] = sv[j].Value;
+            data[i, j] = sv[j].value;
           }
         }
         return new Dataset(allowedInputVariables, data);
@@ -100,11 +100,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
     }
-    public SupportVectorMachineModel(SVM.Model model, SVM.RangeTransform rangeTransform, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<double> classValues)
+    public SupportVectorMachineModel(svm_model model, RangeTransform rangeTransform, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<double> classValues)
       : this(model, rangeTransform, targetVariable, allowedInputVariables) {
       this.classValues = classValues.ToArray();
     }
-    public SupportVectorMachineModel(SVM.Model model, SVM.RangeTransform rangeTransform, string targetVariable, IEnumerable<string> allowedInputVariables)
+    public SupportVectorMachineModel(svm_model model, RangeTransform rangeTransform, string targetVariable, IEnumerable<string> allowedInputVariables)
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
@@ -160,11 +160,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
     private IEnumerable<double> GetEstimatedValuesHelper(Dataset dataset, IEnumerable<int> rows) {
       // calculate predictions for the currently requested rows
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
-      SVM.Problem scaledProblem = SVM.Scaling.Scale(RangeTransform, problem);
+      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
+      svm_problem scaledProblem = rangeTransform.Scale(problem);
 
-      for (int i = 0; i < scaledProblem.Count; i++) {
-        yield return SVM.Prediction.Predict(Model, scaledProblem.X[i]);
+      for (int i = 0; i < problem.l; i++) {
+        yield return svm.svm_predict(Model, scaledProblem.x[i]);
       }
     }
 
@@ -182,7 +182,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private string ModelAsString {
       get {
         using (MemoryStream stream = new MemoryStream()) {
-          SVM.Model.Write(stream, Model);
+          svm.svm_save_model(new StreamWriter(stream), Model);
           stream.Seek(0, System.IO.SeekOrigin.Begin);
           StreamReader reader = new StreamReader(stream);
           return reader.ReadToEnd();
@@ -190,7 +190,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       set {
         using (MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(value))) {
-          model = SVM.Model.Read(stream);
+          model = svm.svm_load_model(new StreamReader(stream));
         }
       }
     }
@@ -198,7 +198,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private string RangeTransformAsString {
       get {
         using (MemoryStream stream = new MemoryStream()) {
-          SVM.RangeTransform.Write(stream, RangeTransform);
+          RangeTransform.Write(stream, RangeTransform);
           stream.Seek(0, System.IO.SeekOrigin.Begin);
           StreamReader reader = new StreamReader(stream);
           return reader.ReadToEnd();
@@ -206,7 +206,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
       set {
         using (MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(value))) {
-          RangeTransform = SVM.RangeTransform.Read(stream);
+          RangeTransform = RangeTransform.Read(stream);
         }
       }
     }

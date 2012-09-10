@@ -19,18 +19,16 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Core;
-using System.Collections.Generic;
+using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Interface to represent a support vector machine model
   /// </summary>
   public interface ISupportVectorMachineModel : IDataAnalysisModel, IRegressionModel, IClassificationModel {
-    SVM.Model Model { get; }
-    SVM.RangeTransform RangeTransform { get; }
+    svm_model Model { get; }
+    RangeTransform RangeTransform { get; }
     Dataset SupportVectors { get; }
   }
 }

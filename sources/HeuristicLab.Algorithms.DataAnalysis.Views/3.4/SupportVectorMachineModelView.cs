@@ -23,6 +23,7 @@ using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("SVM Model")]
@@ -65,14 +66,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         writer.WriteLine("RangeTransform:");
         writer.Flush();
         using (MemoryStream memStream = new MemoryStream()) {
-          SVM.RangeTransform.Write(memStream, Content.RangeTransform);
+          RangeTransform.Write(memStream, Content.RangeTransform);
           memStream.Seek(0, SeekOrigin.Begin);
           memStream.WriteTo(s);
         }
         writer.WriteLine("Model:");
         writer.Flush();
         using (MemoryStream memStream = new MemoryStream()) {
-          SVM.Model.Write(memStream, Content.Model);
+          svm.svm_save_model(new StreamWriter(memStream), Content.Model);
           memStream.Seek(0, SeekOrigin.Begin);
           memStream.WriteTo(s);
         }

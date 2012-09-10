@@ -22,6 +22,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
+using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public class SupportVectorMachineUtil {
@@ -31,24 +32,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="problemData">The problem data to transform</param>
     /// <param name="rowIndices">The rows of the dataset that should be contained in the resulting SVM-problem</param>
     /// <returns>A problem data type that can be used to train a support vector machine.</returns>
-    public static SVM.Problem CreateSvmProblem(Dataset dataset, string targetVariable, IEnumerable<string> inputVariables, IEnumerable<int> rowIndices) {
+    public static svm_problem CreateSvmProblem(Dataset dataset, string targetVariable, IEnumerable<string> inputVariables, IEnumerable<int> rowIndices) {
       double[] targetVector =
         dataset.GetDoubleValues(targetVariable, rowIndices).ToArray();
 
-      SVM.Node[][] nodes = new SVM.Node[targetVector.Length][];
-      List<SVM.Node> tempRow;
+      svm_node[][] nodes = new svm_node[targetVector.Length][];
+      List<svm_node> tempRow;
       int maxNodeIndex = 0;
       int svmProblemRowIndex = 0;
       List<string> inputVariablesList = inputVariables.ToList();
       foreach (int row in rowIndices) {
-        tempRow = new List<SVM.Node>();
+        tempRow = new List<svm_node>();
         int colIndex = 1; // make sure the smallest node index for SVM = 1
         foreach (var inputVariable in inputVariablesList) {
           double value = dataset.GetDoubleValue(inputVariable, row);
           // SVM also works with missing values
           // => don't add NaN values in the dataset to the sparse SVM matrix representation
           if (!double.IsNaN(value)) {
-            tempRow.Add(new SVM.Node(colIndex, value)); // nodes must be sorted in ascending ordered by column index
+            tempRow.Add(new svm_node() { index = colIndex, value = value }); // nodes must be sorted in ascending ordered by column index
             if (colIndex > maxNodeIndex) maxNodeIndex = colIndex;
           }
           colIndex++;
@@ -56,7 +57,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         nodes[svmProblemRowIndex++] = tempRow.ToArray();
       }
 
-      return new SVM.Problem(targetVector.Length, targetVector, nodes, maxNodeIndex);
+      return new svm_problem() { l = targetVector.Length, y = targetVector, x = nodes };
     }
   }
 }

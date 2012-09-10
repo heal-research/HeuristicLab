@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Data.Views", "3.3")]
-  [PluginDependency("HeuristicLab.LibSVM", "1.6.3")]
+  [PluginDependency("HeuristicLab.LibSVM", "3.12")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")] 
   [PluginDependency("HeuristicLab.Optimization", "3.3")]

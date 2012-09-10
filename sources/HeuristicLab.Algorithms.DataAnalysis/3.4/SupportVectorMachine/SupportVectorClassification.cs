@@ -29,6 +29,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
+using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -122,7 +123,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       Results.Add(new Result("Support vector classification solution", "The support vector classification solution.", solution));
       Results.Add(new Result("Training accuracy", "The accuracy of the SVR solution on the training partition.", new DoubleValue(trainingAccuracy)));
-      Results.Add(new Result("Test R²", "The accuracy of the SVR solution on the test partition.", new DoubleValue(testAccuracy)));
+      Results.Add(new Result("Test accuracy", "The accuracy of the SVR solution on the test partition.", new DoubleValue(testAccuracy)));
       Results.Add(new Result("Number of support vectors", "The number of support vectors of the SVR solution.", new IntValue(nSv)));
     }
 
@@ -134,15 +135,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       IEnumerable<int> rows = problemData.TrainingIndices;
 
       //extract SVM parameters from scope and set them
-      SVM.Parameter parameter = new SVM.Parameter();
-      parameter.SvmType = (SVM.SvmType)Enum.Parse(typeof(SVM.SvmType), svmType, true);
-      parameter.KernelType = (SVM.KernelType)Enum.Parse(typeof(SVM.KernelType), kernelType, true);
+      svm_parameter parameter = new svm_parameter();
+      parameter.svm_type = GetSvmType(svmType);
+      parameter.kernel_type = GetKernelType(kernelType);
       parameter.C = cost;
-      parameter.Nu = nu;
-      parameter.Gamma = gamma;
-      parameter.CacheSize = 500;
-      parameter.Probability = false;
+      parameter.nu = nu;
+      parameter.gamma = gamma;
+      parameter.cache_size = 500;
+      parameter.probability = 0;
+      parameter.eps = 0.001;
+      parameter.degree = 3;
+      parameter.shrinking = 1;
+      parameter.coef0 = 0;
 
+
+      var weightLabels = new List<int>();
+      var weights = new List<double>();
       foreach (double c in problemData.ClassValues) {
         double wSum = 0.0;
         foreach (double otherClass in problemData.ClassValues) {
@@ -150,22 +158,39 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             wSum += problemData.GetClassificationPenalty(c, otherClass);
           }
         }
-        parameter.Weights.Add((int)c, wSum);
+        weightLabels.Add((int)c);
+        weights.Add(wSum);
       }
+      parameter.weight_label = weightLabels.ToArray();
+      parameter.weight = weights.ToArray();
 
 
-      SVM.Problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
-      SVM.RangeTransform rangeTransform = SVM.RangeTransform.Compute(problem);
-      SVM.Problem scaledProblem = SVM.Scaling.Scale(rangeTransform, problem);
-      var svmModel = SVM.Training.Train(scaledProblem, parameter);
+      svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
+      RangeTransform rangeTransform = RangeTransform.Compute(problem);
+      svm_problem scaledProblem = rangeTransform.Scale(problem);
+      var svmModel = svm.svm_train(scaledProblem, parameter);
       var model = new SupportVectorMachineModel(svmModel, rangeTransform, targetVariable, allowedInputVariables, problemData.ClassValues);
       var solution = new SupportVectorClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
 
-      nSv = svmModel.SupportVectorCount;
+      nSv = svmModel.SV.Length;
       trainingAccuracy = solution.TrainingAccuracy;
       testAccuracy = solution.TestAccuracy;
 
       return solution;
+    }
+
+    private static int GetSvmType(string svmType) {
+      if (svmType == "NU_SVC") return svm_parameter.NU_SVC;
+      if (svmType == "C_SVC") return svm_parameter.C_SVC;
+      throw new ArgumentException("Unknown SVM type");
+    }
+
+    private static int GetKernelType(string kernelType) {
+      if (kernelType == "LINEAR") return svm_parameter.LINEAR;
+      if (kernelType == "POLY") return svm_parameter.POLY;
+      if (kernelType == "SIGMOID") return svm_parameter.SIGMOID;
+      if (kernelType == "RBF") return svm_parameter.RBF;
+      throw new ArgumentException("Unknown kernel type");
     }
     #endregion
   }

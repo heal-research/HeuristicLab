@@ -104,8 +104,8 @@
       <HintPath>..\..\bin\ALGLIB-3.6.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="LibSVM-1.6.3, Version=1.6.3.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\LibSVM-1.6.3.dll</HintPath>
+    <Reference Include="LibSVM-3.12, Version=3.12.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\..\bin\LibSVM-3.12.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -360,14 +360,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
