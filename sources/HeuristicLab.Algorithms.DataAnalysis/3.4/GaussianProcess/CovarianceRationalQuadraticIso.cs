@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -29,63 +28,54 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceRQArd",
-    Description = "Rational quadratic covariance function with automatic relevance determination for Gaussian processes.")]
-  public sealed class CovarianceRQArd : ParameterizedNamedItem, ICovarianceFunction {
+  [Item(Name = "CovarianceRationalQuadraticIso",
+    Description = "Isotropic rational quadratic covariance function for Gaussian processes.")]
+  public sealed class CovarianceRationalQuadraticIso : ParameterizedNamedItem, ICovarianceFunction {
     [Storable]
     private double sf2;
     [Storable]
     private readonly HyperParameter<DoubleValue> scaleParameter;
-    public IValueParameter<DoubleValue> ScaleParameter {
-      get { return scaleParameter; }
-    }
+    public IValueParameter<DoubleValue> ScaleParameter { get { return scaleParameter; } }
 
     [Storable]
-    private double[] inverseLength;
+    private double inverseLength;
     [Storable]
-    private readonly HyperParameter<DoubleArray> inverseLengthParameter;
-    public IValueParameter<DoubleArray> InverseLengthParameter {
-      get { return inverseLengthParameter; }
-    }
+    private readonly HyperParameter<DoubleValue> inverseLengthParameter;
+    public IValueParameter<DoubleValue> InverseLengthParameter { get { return inverseLengthParameter; } }
 
     [Storable]
     private double shape;
     [Storable]
     private readonly HyperParameter<DoubleValue> shapeParameter;
-    public IValueParameter<DoubleValue> ShapeParameter {
-      get { return shapeParameter; }
-    }
+    public IValueParameter<DoubleValue> ShapeParameter { get { return shapeParameter; } }
 
     [StorableConstructor]
-    private CovarianceRQArd(bool deserializing)
+    private CovarianceRationalQuadraticIso(bool deserializing)
       : base(deserializing) {
     }
 
-    private CovarianceRQArd(CovarianceRQArd original, Cloner cloner)
+    private CovarianceRationalQuadraticIso(CovarianceRationalQuadraticIso original, Cloner cloner)
       : base(original, cloner) {
-      this.scaleParameter = cloner.Clone(original.scaleParameter);
       this.sf2 = original.sf2;
+      this.scaleParameter = cloner.Clone(original.scaleParameter);
 
+      this.inverseLength = original.inverseLength;
       this.inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
-      if (original.inverseLength != null) {
-        this.inverseLength = new double[original.inverseLength.Length];
-        Array.Copy(original.inverseLength, inverseLength, inverseLength.Length);
-      }
 
-      this.shapeParameter = cloner.Clone(original.shapeParameter);
       this.shape = original.shape;
+      this.shapeParameter = cloner.Clone(original.shapeParameter);
 
       RegisterEvents();
     }
 
-    public CovarianceRQArd()
+    public CovarianceRationalQuadraticIso()
       : base() {
       Name = ItemName;
       Description = ItemDescription;
 
-      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter of the rational quadratic covariance function with ARD.");
-      this.inverseLengthParameter = new HyperParameter<DoubleArray>("InverseLength", "The inverse length parameter for automatic relevance determination.");
-      this.shapeParameter = new HyperParameter<DoubleValue>("Shape", "The shape parameter (alpha) of the rational quadratic covariance function with ARD.");
+      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter of the isometric rational quadratic covariance function.");
+      this.inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter of the isometric rational quadratic covariance function.");
+      this.shapeParameter = new HyperParameter<DoubleValue>("Shape", "The shape parameter (alpha) of the isometric rational quadratic covariance function.");
 
       Parameters.Add(scaleParameter);
       Parameters.Add(inverseLengthParameter);
@@ -95,7 +85,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new CovarianceRQArd(this, cloner);
+      return new CovarianceRationalQuadraticIso(this, cloner);
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -105,15 +95,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void RegisterEvents() {
       Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
+      Util.AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
       Util.AttachValueChangeHandler<DoubleValue, double>(shapeParameter, () => { shape = shapeParameter.Value.Value; });
-      Util.AttachArrayChangeHandler<DoubleArray, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.ToArray(); });
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
       return
         (scaleParameter.Fixed ? 0 : 1) +
-        (shapeParameter.Fixed ? 0 : 1) +
-        (inverseLengthParameter.Fixed ? 0 : numberOfVariables);
+        (inverseLengthParameter.Fixed ? 0 : 1) +
+        (shapeParameter.Fixed ? 0 : 1);
     }
 
     public void SetParameter(double[] hyp) {
@@ -127,10 +117,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         i++;
       }
       if (!inverseLengthParameter.Fixed) {
-        inverseLengthParameter.SetValue(new DoubleArray(hyp.Skip(i).Select(e => 1.0 / Math.Exp(e)).ToArray()));
-        i += hyp.Skip(i).Count();
+        inverseLengthParameter.SetValue(new DoubleValue(1.0 / Math.Exp(hyp[i])));
+        i++;
       }
-      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceRQArd", "hyp");
+      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceRationalQuadraticIso", "hyp");
     }
 
 
@@ -145,10 +135,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength);
+
       double b = 1 + 0.5 * d / shape;
-      for (int k = 0; k < inverseLength.Length; k++) {
-        yield return sf2 * Math.Pow(b, -shape - 1) * Util.SqrDist(x[i, k] * inverseLength[k], x[j, k] * inverseLength[k]);
-      }
+      yield return sf2 * Math.Pow(b, -shape - 1) * d;
       yield return 2 * sf2 * Math.Pow(b, -shape);
       yield return sf2 * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b));
     }

@@ -167,7 +167,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
 
     [TestMethod]
     public void CovSeIsoTest() {
-      TestCovarianceFunction(new CovarianceSEiso(), 0,
+      TestCovarianceFunction(new CovarianceSquaredExponentialIso(), 0,
         new double[,]
           {
 {    0.5771,    0.5404,    0.8569,    0.5612,    0.7545,    0.4980,    0.6649,    0.7484,    0.6564,    0.8184},
@@ -209,7 +209,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
           }
           }
       );
-      TestCovarianceFunction(new CovarianceSEiso(), 1,
+      TestCovarianceFunction(new CovarianceSquaredExponentialIso(), 1,
          new double[,]
            {
 {    6.8592,    6.7985,    7.2362,    6.8334,    7.1127,    6.7239,    6.9920,    7.1048,    6.9798,    7.1914},
@@ -255,7 +255,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
 
     [TestMethod]
     public void CovRQIsoTest() {
-      TestCovarianceFunction(new CovarianceRQiso(), 0,
+      TestCovarianceFunction(new CovarianceRationalQuadraticIso(), 0,
         new double[,]
           {
 {    0.6452,    0.6190,    0.8662,    0.6338,    0.7802,    0.5893,    0.7102,    0.7753,    0.7037,    0.8331},
@@ -309,7 +309,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
           }
           }
       );
-      TestCovarianceFunction(new CovarianceRQiso(), 1,
+      TestCovarianceFunction(new CovarianceRationalQuadraticIso(), 1,
          new double[,]
            {
 {    6.8660,    6.8070,    7.2367,    6.8409,    7.1145,    6.7347,    6.9959,    7.1068,    6.9839,    7.1923},
@@ -368,7 +368,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
 
     [TestMethod]
     public void CovRQArdTest() {
-      TestCovarianceFunction(new CovarianceRQArd(), 0,
+      TestCovarianceFunction(new CovarianceRationalQuadraticArd(), 0,
         new double[,]
           {
 {    0.6452,    0.6190,    0.8662,    0.6338,    0.7802,    0.5893,    0.7102,    0.7753,    0.7037,    0.8331},
@@ -478,7 +478,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
           }
       );
 
-      TestCovarianceFunction(new CovarianceRQArd(), 1,
+      TestCovarianceFunction(new CovarianceRationalQuadraticArd(), 1,
        new double[,]
           {
 {    6.8660,    6.8070,    7.2367,    6.8409,    7.1145,    6.7347,    6.9959,    7.1068,    6.9839,    7.1923},
@@ -1089,7 +1089,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
 
     [TestMethod]
     public void CovSEardTest() {
-      TestCovarianceFunction(new CovarianceSEard(), 0,
+      TestCovarianceFunction(new CovarianceSquaredExponentialArd(), 0,
         new double[,]
           {
 {    0.5771,    0.5404,    0.8569,    0.5612,    0.7545,    0.4980,    0.6649,    0.7484,    0.6564,    0.8184},
@@ -1186,7 +1186,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
               },
           }
       );
-      TestCovarianceFunction(new CovarianceSEard(), 1,
+      TestCovarianceFunction(new CovarianceSquaredExponentialArd(), 1,
         new double[,]
           {
 {    6.8592,    6.7985,    7.2362,    6.8334,    7.1127,    6.7239,    6.9920,    7.1048,    6.9798,    7.1914},
@@ -1287,7 +1287,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
     [TestMethod]
     public void CovSumTest() {
       var cov = new CovarianceSum();
-      cov.Terms.Add(new CovarianceSEiso());
+      cov.Terms.Add(new CovarianceSquaredExponentialIso());
       cov.Terms.Add(new CovarianceLinear());
       TestCovarianceFunction(cov, 0,
         new double[,]
@@ -1381,7 +1381,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
     [TestMethod]
     public void CovProdTest() {
       var cov = new CovarianceProd();
-      cov.Factors.Add(new CovarianceSEiso());
+      cov.Factors.Add(new CovarianceSquaredExponentialIso());
       cov.Factors.Add(new CovarianceLinear());
       TestCovarianceFunction(cov, 0,
         new double[,]

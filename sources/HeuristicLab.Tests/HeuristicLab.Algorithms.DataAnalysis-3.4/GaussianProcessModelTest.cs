@@ -41,9 +41,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
 
       var meanFunction = new MeanConst();
       var covarianceFunction = new CovarianceSum();
-      covarianceFunction.Terms.Add(new CovarianceSEiso());
+      covarianceFunction.Terms.Add(new CovarianceSquaredExponentialIso());
       var prod = new CovarianceProd();
-      prod.Factors.Add(new CovarianceSEiso());
+      prod.Factors.Add(new CovarianceSquaredExponentialIso());
       prod.Factors.Add(new CovariancePeriodic());
       covarianceFunction.Terms.Add(prod);
 

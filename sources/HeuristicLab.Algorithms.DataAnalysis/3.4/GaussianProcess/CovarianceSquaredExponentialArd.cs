@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,9 +29,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceSEiso",
-    Description = "Isotropic squared exponential covariance function for Gaussian processes.")]
-  public sealed class CovarianceSEiso : ParameterizedNamedItem, ICovarianceFunction {
+  [Item(Name = "CovarianceSquaredExponentialArd", Description = "Squared exponential covariance function with automatic relevance determination for Gaussian processes.")]
+  public sealed class CovarianceSquaredExponentialArd : ParameterizedNamedItem, ICovarianceFunction {
     [Storable]
     private double sf2;
     [Storable]
@@ -38,34 +38,33 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<DoubleValue> ScaleParameter { get { return scaleParameter; } }
 
     [Storable]
-    private double inverseLength;
+    private double[] inverseLength;
     [Storable]
-    private readonly HyperParameter<DoubleValue> inverseLengthParameter;
-    public IValueParameter<DoubleValue> InverseLengthParameter { get { return inverseLengthParameter; } }
+    private readonly HyperParameter<DoubleArray> inverseLengthParameter;
+    public IValueParameter<DoubleArray> InverseLengthParameter { get { return inverseLengthParameter; } }
 
     [StorableConstructor]
-    private CovarianceSEiso(bool deserializing)
-      : base(deserializing) {
-    }
-
-    private CovarianceSEiso(CovarianceSEiso original, Cloner cloner)
+    private CovarianceSquaredExponentialArd(bool deserializing) : base(deserializing) { }
+    private CovarianceSquaredExponentialArd(CovarianceSquaredExponentialArd original, Cloner cloner)
       : base(original, cloner) {
       this.sf2 = original.sf2;
       this.scaleParameter = cloner.Clone(original.scaleParameter);
 
-      this.inverseLength = original.inverseLength;
+      if (original.inverseLength != null) {
+        this.inverseLength = new double[original.inverseLength.Length];
+        Array.Copy(original.inverseLength, this.inverseLength, this.inverseLength.Length);
+      }
       this.inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
 
       RegisterEvents();
     }
-
-    public CovarianceSEiso()
+    public CovarianceSquaredExponentialArd()
       : base() {
       Name = ItemName;
       Description = ItemDescription;
 
-      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter of the isometric squared exponential covariance function.");
-      this.inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter of the isometric squared exponential covariance function.");
+      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter of the squared exponential covariance function with ARD.");
+      this.inverseLengthParameter = new HyperParameter<DoubleArray>("InverseLength", "The inverse length parameter for automatic relevance determination.");
 
       Parameters.Add(scaleParameter);
       Parameters.Add(inverseLengthParameter);
@@ -74,7 +73,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new CovarianceSEiso(this, cloner);
+      return new CovarianceSquaredExponentialArd(this, cloner);
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -84,28 +83,31 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void RegisterEvents() {
       Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
-      Util.AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
+      Util.AttachArrayChangeHandler<DoubleArray, double>(inverseLengthParameter, () => {
+        inverseLength =
+          inverseLengthParameter.Value.ToArray();
+      });
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
       return
         (scaleParameter.Fixed ? 0 : 1) +
-        (inverseLengthParameter.Fixed ? 0 : 1);
+        (inverseLengthParameter.Fixed ? 0 : numberOfVariables);
     }
+
 
     public void SetParameter(double[] hyp) {
       int i = 0;
-      if (!inverseLengthParameter.Fixed) {
-        inverseLengthParameter.SetValue(new DoubleValue(1.0 / Math.Exp(hyp[i])));
-        i++;
-      }
       if (!scaleParameter.Fixed) {
         scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[i])));
         i++;
       }
-      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSEiso", "hyp");
+      if (!inverseLengthParameter.Fixed) {
+        inverseLengthParameter.SetValue(new DoubleArray(hyp.Skip(i).Select(e => 1.0 / Math.Exp(e)).ToArray()));
+        i += hyp.Skip(i).Count();
+      }
+      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSquaredExponentialArd", "hyp");
     }
-
 
     public double GetCovariance(double[,] x, int i, int j) {
       double d = i == j
@@ -118,9 +120,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength);
-      double g = Math.Exp(-d / 2.0);
-      yield return sf2 * g * d;
-      yield return 2.0 * sf2 * g;
+
+      for (int ii = 0; ii < inverseLength.Length; ii++) {
+        double sqrDist = Util.SqrDist(x[i, ii] * inverseLength[ii], x[j, ii] * inverseLength[ii]);
+        yield return sf2 * Math.Exp(-d / 2.0) * sqrDist;
+      }
+      yield return 2.0 * sf2 * Math.Exp(-d / 2.0);
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
