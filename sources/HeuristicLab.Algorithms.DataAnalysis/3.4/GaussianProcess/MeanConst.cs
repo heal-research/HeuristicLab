@@ -23,35 +23,59 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "MeanConst", Description = "Constant mean function for Gaussian processes.")]
-  public class MeanConst : Item, IMeanFunction {
+  public sealed class MeanConst : ParameterizedNamedItem, IMeanFunction {
     [Storable]
     private double c;
-    public double Value { get { return c; } }
+    [Storable]
+    private readonly HyperParameter<DoubleValue> valueParameter;
+    public IValueParameter<DoubleValue> ValueParameter { get { return valueParameter; } }
 
-    public int GetNumberOfParameters(int numberOfVariables) {
-      return 1;
-    }
     [StorableConstructor]
-    protected MeanConst(bool deserializing) : base(deserializing) { }
-    protected MeanConst(MeanConst original, Cloner cloner)
+    private MeanConst(bool deserializing) : base(deserializing) { }
+    private MeanConst(MeanConst original, Cloner cloner)
       : base(original, cloner) {
       this.c = original.c;
+      this.valueParameter = cloner.Clone(original.valueParameter);
+      RegisterEvents();
     }
     public MeanConst()
       : base() {
+      this.name = ItemName;
+      this.description = ItemDescription;
+
+      this.valueParameter = new HyperParameter<DoubleValue>("Value", "The constant value for the constant mean function.");
+      Parameters.Add(valueParameter);
+      RegisterEvents();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MeanConst(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
+      Util.AttachValueChangeHandler<DoubleValue, double>(valueParameter, () => { c = valueParameter.Value.Value; });
+    }
+
+    public int GetNumberOfParameters(int numberOfVariables) {
+      return valueParameter.Fixed ? 0 : 1;
     }
 
     public void SetParameter(double[] hyp) {
-      if (hyp.Length != 1) throw new ArgumentException("Only one hyper-parameter allowed for constant mean function.", "hyp");
-      this.c = hyp[0];
-    }
-    public void SetData(double[,] x) {
-      // nothing to do
+      if (!valueParameter.Fixed) {
+        valueParameter.SetValue(new DoubleValue(hyp[0]));
+      } else if (hyp.Length > 0)
+        throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for the constant mean function.", "hyp");
     }
 
     public double[] GetMean(double[,] x) {
@@ -61,10 +85,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public double[] GetGradients(int k, double[,] x) {
       if (k > 0) throw new ArgumentException();
       return Enumerable.Repeat(1.0, x.GetLength(0)).ToArray();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new MeanConst(this, cloner);
     }
   }
 }

@@ -23,47 +23,87 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceSEiso",
     Description = "Isotropic squared exponential covariance function for Gaussian processes.")]
-  public class CovarianceSEiso : Item, ICovarianceFunction {
+  public sealed class CovarianceSEiso : ParameterizedNamedItem, ICovarianceFunction {
     [Storable]
     private double sf2;
-    public double Scale { get { return sf2; } }
+    [Storable]
+    private readonly HyperParameter<DoubleValue> scaleParameter;
+    public IValueParameter<DoubleValue> ScaleParameter { get { return scaleParameter; } }
+
     [Storable]
     private double inverseLength;
-    public double InverseLength { get { return inverseLength; } }
+    [Storable]
+    private readonly HyperParameter<DoubleValue> inverseLengthParameter;
+    public IValueParameter<DoubleValue> InverseLengthParameter { get { return inverseLengthParameter; } }
 
     [StorableConstructor]
-    protected CovarianceSEiso(bool deserializing)
+    private CovarianceSEiso(bool deserializing)
       : base(deserializing) {
     }
 
-    protected CovarianceSEiso(CovarianceSEiso original, Cloner cloner)
+    private CovarianceSEiso(CovarianceSEiso original, Cloner cloner)
       : base(original, cloner) {
       this.sf2 = original.sf2;
+      this.scaleParameter = cloner.Clone(original.scaleParameter);
+
       this.inverseLength = original.inverseLength;
+      this.inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
+
+      RegisterEvents();
     }
 
     public CovarianceSEiso()
       : base() {
+      Name = ItemName;
+      Description = ItemDescription;
+
+      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter of the isometric squared exponential covariance function.");
+      this.inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter of the isometric squared exponential covariance function.");
+
+      Parameters.Add(scaleParameter);
+      Parameters.Add(inverseLengthParameter);
+
+      RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceSEiso(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
+      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
+      Util.AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
+    }
+
     public int GetNumberOfParameters(int numberOfVariables) {
-      return 2;
+      return
+        (scaleParameter.Fixed ? 0 : 1) +
+        (inverseLengthParameter.Fixed ? 0 : 1);
     }
 
     public void SetParameter(double[] hyp) {
-      if (hyp.Length != 2) throw new ArgumentException("CovarianceSEiso has two hyperparameters", "k");
-      this.inverseLength = 1.0 / Math.Exp(hyp[0]);
-      this.sf2 = Math.Exp(2 * hyp[1]);
+      int i = 0;
+      if (!inverseLengthParameter.Fixed) {
+        inverseLengthParameter.SetValue(new DoubleValue(1.0 / Math.Exp(hyp[i])));
+        i++;
+      }
+      if (!scaleParameter.Fixed) {
+        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[i])));
+        i++;
+      }
+      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSEiso", "hyp");
     }
 
 

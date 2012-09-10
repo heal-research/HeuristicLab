@@ -30,7 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceProd",
     Description = "Product covariance function for Gaussian processes.")]
-  public class CovarianceProd : Item, ICovarianceFunction {
+  public sealed class CovarianceProd : Item, ICovarianceFunction {
     [Storable]
     private ItemList<ICovarianceFunction> factors;
 
@@ -41,11 +41,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected CovarianceProd(bool deserializing)
+    private CovarianceProd(bool deserializing)
       : base(deserializing) {
     }
 
-    protected CovarianceProd(CovarianceProd original, Cloner cloner)
+    private CovarianceProd(CovarianceProd original, Cloner cloner)
       : base(original, cloner) {
       this.factors = cloner.Clone(original.factors);
       this.numberOfVariables = original.numberOfVariables;

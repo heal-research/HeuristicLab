@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "MeanProd", Description = "Product of mean functions for Gaussian processes.")]
-  public class MeanProd : Item, IMeanFunction {
+  public sealed class MeanProd : Item, IMeanFunction {
     [Storable]
     private ItemList<IMeanFunction> factors;
 
@@ -37,17 +37,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return factors; }
     }
 
-    public int GetNumberOfParameters(int numberOfVariables) {
-      this.numberOfVariables = numberOfVariables;
-      return factors.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
-    }
-
     [StorableConstructor]
-    protected MeanProd(bool deserializing)
+    private MeanProd(bool deserializing)
       : base(deserializing) {
     }
 
-    protected MeanProd(MeanProd original, Cloner cloner)
+    private MeanProd(MeanProd original, Cloner cloner)
       : base(original, cloner) {
       this.factors = cloner.Clone(original.factors);
       this.numberOfVariables = original.numberOfVariables;
@@ -55,6 +50,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public MeanProd() {
       this.factors = new ItemList<IMeanFunction>();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MeanProd(this, cloner);
+    }
+
+    public int GetNumberOfParameters(int numberOfVariables) {
+      this.numberOfVariables = numberOfVariables;
+      return factors.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
     }
 
     public void SetParameter(double[] hyp) {
@@ -64,10 +67,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         t.SetParameter(hyp.Skip(offset).Take(numberOfParameters).ToArray());
         offset += numberOfParameters;
       }
-    }
-
-    public void SetData(double[,] x) {
-      foreach (var t in factors) t.SetData(x);
     }
 
     public double[] GetMean(double[,] x) {
@@ -100,10 +99,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
       return res;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new MeanProd(this, cloner);
     }
   }
 }

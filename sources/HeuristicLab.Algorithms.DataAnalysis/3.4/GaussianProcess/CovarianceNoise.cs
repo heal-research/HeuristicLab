@@ -23,41 +23,70 @@ using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceNoise",
     Description = "Noise covariance function for Gaussian processes.")]
-  public class CovarianceNoise : Item, ICovarianceFunction {
+  public sealed class CovarianceNoise : ParameterizedNamedItem, ICovarianceFunction {
+
+
     [Storable]
     private double sf2;
-    public double Scale { get { return sf2; } }
+    [Storable]
+    private readonly HyperParameter<DoubleValue> scaleParameter;
+    public IValueParameter<DoubleValue> ScaleParameter {
+      get { return scaleParameter; }
+    }
 
     [StorableConstructor]
-    protected CovarianceNoise(bool deserializing)
+    private CovarianceNoise(bool deserializing)
       : base(deserializing) {
     }
 
-    protected CovarianceNoise(CovarianceNoise original, Cloner cloner)
+    private CovarianceNoise(CovarianceNoise original, Cloner cloner)
       : base(original, cloner) {
+      this.scaleParameter = cloner.Clone(original.scaleParameter);
       this.sf2 = original.sf2;
+      RegisterEvents();
     }
 
     public CovarianceNoise()
       : base() {
+      Name = ItemName;
+      Description = ItemDescription;
+
+      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale of noise.");
+      Parameters.Add(this.scaleParameter);
+
+      RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceNoise(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
+      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
+    }
+
     public int GetNumberOfParameters(int numberOfVariables) {
-      return 1;
+      return scaleParameter.Fixed ? 0 : 1;
     }
 
     public void SetParameter(double[] hyp) {
-      this.sf2 = Math.Exp(2 * hyp[0]);
+      if (!scaleParameter.Fixed) {
+        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[0])));
+      } else {
+        if (hyp.Length > 0) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceNoise", "hyp");
+      }
     }
 
     public double GetCovariance(double[,] x, int i, int j) {

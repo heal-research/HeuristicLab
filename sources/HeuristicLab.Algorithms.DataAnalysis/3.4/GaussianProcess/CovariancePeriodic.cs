@@ -30,35 +30,36 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovariancePeriodic", Description = "Periodic covariance function for Gaussian processes.")]
-  public class CovariancePeriodic : CovarianceFunction {
-    public IValueParameter<DoubleValue> ScaleParameter {
-      get { return scaleParameter; }
-    }
-    public IValueParameter<DoubleValue> InverseLengthParameter {
-      get { return inverseLengthParameter; }
-    }
-    public IValueParameter<DoubleValue> PeriodParameter {
-      get { return periodParameter; }
-    }
-
-    [Storable]
-    private HyperParameter<DoubleValue> scaleParameter;
-    [Storable]
-    private HyperParameter<DoubleValue> inverseLengthParameter;
-    [Storable]
-    private HyperParameter<DoubleValue> periodParameter;
+  public sealed class CovariancePeriodic : ParameterizedNamedItem, ICovarianceFunction {
 
     [Storable]
     private double scale;
     [Storable]
+    private readonly HyperParameter<DoubleValue> scaleParameter;
+    public IValueParameter<DoubleValue> ScaleParameter {
+      get { return scaleParameter; }
+    }
+
+    [Storable]
     private double inverseLength;
     [Storable]
+    private readonly HyperParameter<DoubleValue> inverseLengthParameter;
+    public IValueParameter<DoubleValue> InverseLengthParameter {
+      get { return inverseLengthParameter; }
+    }
+
+    [Storable]
     private double period;
+    [Storable]
+    private readonly HyperParameter<DoubleValue> periodParameter;
+    public IValueParameter<DoubleValue> PeriodParameter {
+      get { return periodParameter; }
+    }
 
 
     [StorableConstructor]
-    protected CovariancePeriodic(bool deserializing) : base(deserializing) { }
-    protected CovariancePeriodic(CovariancePeriodic original, Cloner cloner)
+    private CovariancePeriodic(bool deserializing) : base(deserializing) { }
+    private CovariancePeriodic(CovariancePeriodic original, Cloner cloner)
       : base(original, cloner) {
       this.scaleParameter = cloner.Clone(original.scaleParameter);
       this.inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
@@ -72,6 +73,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public CovariancePeriodic()
       : base() {
+      Name = ItemName;
+      Description = ItemDescription;
+      
       scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale of the periodic covariance function.");
       inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter for the periodic covariance function.");
       periodParameter = new HyperParameter<DoubleValue>("Period", "The period parameter for the periodic covariance function.");
@@ -93,17 +97,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // caching
     private void RegisterEvents() {
-      AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { scale = scaleParameter.Value.Value; });
-      AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
-      AttachValueChangeHandler<DoubleValue, double>(periodParameter, () => { period = periodParameter.Value.Value; });
+      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { scale = scaleParameter.Value.Value; });
+      Util.AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
+      Util.AttachValueChangeHandler<DoubleValue, double>(periodParameter, () => { period = periodParameter.Value.Value; });
     }
 
-    public override int GetNumberOfParameters(int numberOfVariables) {
+    public int GetNumberOfParameters(int numberOfVariables) {
       return
         (new[] { scaleParameter, inverseLengthParameter, periodParameter }).Count(p => !p.Fixed);
     }
 
-    public override void SetParameter(double[] hyp) {
+    public void SetParameter(double[] hyp) {
       int i = 0;
       if (!inverseLengthParameter.Fixed) {
         inverseLengthParameter.SetValue(new DoubleValue(1.0 / Math.Exp(hyp[i])));
@@ -120,7 +124,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePeriod", "hyp");
     }
 
-    public override double GetCovariance(double[,] x, int i, int j) {
+    public double GetCovariance(double[,] x, int i, int j) {
       double k = i == j ? 0.0 : GetDistance(x, x, i, j);
       k = Math.PI * k / period;
       k = Math.Sin(k) * inverseLength;
@@ -129,7 +133,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return scale * Math.Exp(-2.0 * k);
     }
 
-    public override IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
       double v = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j) / period;
       double gradient = Math.Sin(v) * inverseLength;
       gradient *= gradient;
@@ -139,7 +143,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       yield return 2.0 * scale * Math.Exp(-2 * gradient);
     }
 
-    public override double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
       double k = GetDistance(x, xt, i, j);
       k = Math.PI * k / period;
       k = Math.Sin(k) * inverseLength;

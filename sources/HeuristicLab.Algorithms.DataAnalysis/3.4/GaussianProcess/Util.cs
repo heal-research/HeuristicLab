@@ -19,11 +19,14 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  public static class Util {
+  internal static class Util {
     public static double ScalarProd(IEnumerable<double> v, IEnumerable<double> u) {
       return v.Zip(u, (vi, ui) => vi * ui).Sum();
     }
@@ -92,6 +95,37 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static IEnumerable<double> GetCol(double[,] x, int c) {
       int rows = x.GetLength(0);
       return Enumerable.Range(0, rows).Select(r => x[r, c]);
+    }
+
+
+    public static void AttachValueChangeHandler<T, U>(IValueParameter<T> parameter, Action action)
+      where T : ValueTypeValue<U>
+      where U : struct {
+      parameter.ValueChanged += (sender, args) => {
+        if (parameter.Value != null) {
+          parameter.Value.ValueChanged += (s, a) => action();
+          action();
+        }
+      };
+      if (parameter.Value != null) {
+        parameter.Value.ValueChanged += (s, a) => action();
+      }
+    }
+
+    public static void AttachArrayChangeHandler<T, U>(IValueParameter<T> parameter, Action action)
+      where T : ValueTypeArray<U>
+      where U : struct {
+      parameter.ValueChanged += (sender, args) => {
+        if (parameter.Value != null) {
+          parameter.Value.ItemChanged += (s, a) => action();
+          parameter.Value.Reset += (s, a) => action();
+          action();
+        }
+      };
+      if (parameter.Value != null) {
+        parameter.Value.ItemChanged += (s, a) => action();
+        parameter.Value.Reset += (s, a) => action();
+      }
     }
   }
 }

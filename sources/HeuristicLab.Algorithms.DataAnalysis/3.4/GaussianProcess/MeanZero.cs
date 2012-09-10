@@ -27,24 +27,25 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "MeanZero", Description = "Constant zero mean function for Gaussian processes.")]
-  public class MeanZero : Item, IMeanFunction {
-    public int GetNumberOfParameters(int numberOfVariables) {
-      return 0;
-    }
+  public sealed class MeanZero : Item, IMeanFunction {
     [StorableConstructor]
-    protected MeanZero(bool deserializing) : base(deserializing) { }
-    protected MeanZero(MeanZero original, Cloner cloner)
+    private MeanZero(bool deserializing) : base(deserializing) { }
+    private MeanZero(MeanZero original, Cloner cloner)
       : base(original, cloner) {
     }
     public MeanZero() {
     }
 
-    public void SetParameter(double[] hyp) {
-      if (hyp.Length > 0) throw new ArgumentException("No hyper-parameters allowed for zero mean function.", "hyp");
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MeanZero(this, cloner);
     }
 
-    public void SetData(double[,] x) {
-      // do nothing
+    public int GetNumberOfParameters(int numberOfVariables) {
+      return 0;
+    }
+
+    public void SetParameter(double[] hyp) {
+      if (hyp.Length > 0) throw new ArgumentException("No hyper-parameters allowed for zero mean function.", "hyp");
     }
 
     public double[] GetMean(double[,] x) {
@@ -54,9 +55,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public double[] GetGradients(int k, double[,] x) {
       if (k > 0) throw new ArgumentException();
       return Enumerable.Repeat(0.0, x.GetLength(0)).ToArray();
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new MeanZero(this, cloner);
     }
   }
 }

@@ -32,37 +32,38 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceMaternIso",
     Description = "Matern covariance function for Gaussian processes.")]
-  public class CovarianceMaternIso : CovarianceFunction {
-    public IValueParameter<DoubleValue> ScaleParameter {
-      get { return scaleParameter; }
-    }
+  public sealed class CovarianceMaternIso : ParameterizedNamedItem, ICovarianceFunction {
+    [Storable]
+    private double inverseLength;
+    [Storable]
+    private readonly HyperParameter<DoubleValue> inverseLengthParameter;
     public IValueParameter<DoubleValue> InverseLengthParameter {
       get { return inverseLengthParameter; }
     }
+
+    [Storable]
+    private double sf2;
+    [Storable]
+    private readonly HyperParameter<DoubleValue> scaleParameter;
+    public IValueParameter<DoubleValue> ScaleParameter {
+      get { return scaleParameter; }
+    }
+
+    [Storable]
+    private int d;
+    [Storable]
+    private readonly ConstrainedValueParameter<IntValue> dParameter;
     public IConstrainedValueParameter<IntValue> DParameter {
       get { return dParameter; }
     }
 
-    [Storable]
-    private readonly HyperParameter<DoubleValue> inverseLengthParameter;
-    [Storable]
-    private readonly HyperParameter<DoubleValue> scaleParameter;
-    [Storable]
-    private readonly ConstrainedValueParameter<IntValue> dParameter;
-
-    [Storable]
-    private double inverseLength;
-    [Storable]
-    private double sf2;
-    [Storable]
-    private int d;
 
     [StorableConstructor]
-    protected CovarianceMaternIso(bool deserializing)
+    private CovarianceMaternIso(bool deserializing)
       : base(deserializing) {
     }
 
-    protected CovarianceMaternIso(CovarianceMaternIso original, Cloner cloner)
+    private CovarianceMaternIso(CovarianceMaternIso original, Cloner cloner)
       : base(original, cloner) {
       this.scaleParameter = cloner.Clone(original.scaleParameter);
       this.sf2 = original.sf2;
@@ -75,6 +76,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public CovarianceMaternIso()
       : base() {
+      Name = ItemName;
+      Description = ItemDescription;
+
       inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter of the isometric Matern covariance function.");
       scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter of the isometric Matern covariance function.");
       var validDValues = new ItemSet<IntValue>();
@@ -102,18 +106,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     // caching
     private void RegisterEvents() {
-      AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
-      AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
-      AttachValueChangeHandler<IntValue, int>(dParameter, () => { d = dParameter.Value.Value; });
+      Util.AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
+      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
+      Util.AttachValueChangeHandler<IntValue, int>(dParameter, () => { d = dParameter.Value.Value; });
     }
 
-    public override int GetNumberOfParameters(int numberOfVariables) {
+    public int GetNumberOfParameters(int numberOfVariables) {
       return
         (inverseLengthParameter.Fixed ? 0 : 1) +
         (scaleParameter.Fixed ? 0 : 1);
     }
 
-    public override void SetParameter(double[] hyp) {
+    public void SetParameter(double[] hyp) {
       int i = 0;
       if (!inverseLengthParameter.Fixed) {
         inverseLengthParameter.SetValue(new DoubleValue(1.0 / Math.Exp(hyp[i])));
@@ -149,14 +153,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return df * t * Math.Exp(-t);
     }
 
-    public override double GetCovariance(double[,] x, int i, int j) {
+    public double GetCovariance(double[,] x, int i, int j) {
       double dist = i == j
                    ? 0.0
                    : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength));
       return sf2 * m(dist);
     }
 
-    public override IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
       double dist = i == j
                    ? 0.0
                    : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength));
@@ -165,7 +169,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       yield return 2 * sf2 * m(dist);
     }
 
-    public override double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
       double dist = Math.Sqrt(Util.SqrDist(x, i, xt, j, Math.Sqrt(d) * inverseLength));
       return sf2 * m(dist);
     }

@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "MeanSum", Description = "Sum of mean functions for Gaussian processes.")]
-  public class MeanSum : Item, IMeanFunction {
+  public sealed class MeanSum : Item, IMeanFunction {
     [Storable]
     private ItemList<IMeanFunction> terms;
 
@@ -36,19 +36,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return terms; }
     }
 
-    public int GetNumberOfParameters(int numberOfVariables) {
-      this.numberOfVariables = numberOfVariables;
-      return terms.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
-    }
     [StorableConstructor]
-    protected MeanSum(bool deserializing) : base(deserializing) { }
-    protected MeanSum(MeanSum original, Cloner cloner)
+    private MeanSum(bool deserializing) : base(deserializing) { }
+    private MeanSum(MeanSum original, Cloner cloner)
       : base(original, cloner) {
       this.terms = cloner.Clone(original.terms);
       this.numberOfVariables = original.numberOfVariables;
     }
     public MeanSum() {
       this.terms = new ItemList<IMeanFunction>();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MeanSum(this, cloner);
+    }
+
+    public int GetNumberOfParameters(int numberOfVariables) {
+      this.numberOfVariables = numberOfVariables;
+      return terms.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
     }
 
     public void SetParameter(double[] hyp) {
@@ -58,10 +63,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         t.SetParameter(hyp.Skip(offset).Take(numberOfParameters).ToArray());
         offset += numberOfParameters;
       }
-    }
-
-    public void SetData(double[,] x) {
-      foreach (var t in terms) t.SetData(x);
     }
 
     public double[] GetMean(double[,] x) {
@@ -80,10 +81,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         i++;
       }
       return terms[i].GetGradients(k, x);
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new MeanSum(this, cloner);
     }
   }
 }

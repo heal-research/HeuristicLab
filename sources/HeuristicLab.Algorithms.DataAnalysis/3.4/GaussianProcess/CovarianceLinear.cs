@@ -28,13 +28,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceLinear", Description = "Linear covariance function for Gaussian processes.")]
-  public class CovarianceLinear : CovarianceFunction {
-    public override int GetNumberOfParameters(int numberOfVariables) {
-      return 0;
-    }
+  public sealed class CovarianceLinear : Item, ICovarianceFunction {
     [StorableConstructor]
-    protected CovarianceLinear(bool deserializing) : base(deserializing) { }
-    protected CovarianceLinear(CovarianceLinear original, Cloner cloner)
+    private CovarianceLinear(bool deserializing) : base(deserializing) { }
+    private CovarianceLinear(CovarianceLinear original, Cloner cloner)
       : base(original, cloner) {
     }
     public CovarianceLinear()
@@ -45,19 +42,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new CovarianceLinear(this, cloner);
     }
 
-    public override void SetParameter(double[] hyp) {
+    public int GetNumberOfParameters(int numberOfVariables) {
+      return 0;
+    }
+
+    public void SetParameter(double[] hyp) {
       if (hyp.Length > 0) throw new ArgumentException("No hyperparameters are allowed for the linear covariance function.");
     }
 
-    public override double GetCovariance(double[,] x, int i, int j) {
+    public double GetCovariance(double[,] x, int i, int j) {
       return Util.ScalarProd(x, i, j);
     }
 
-    public override IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
       yield break;
     }
 
-    public override double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
       return Util.ScalarProd(x, i, xt, j);
     }
   }

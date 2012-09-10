@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "HyperParameter", Description = "Represents a hyperparameter for Gaussian processes.")]
-  public class HyperParameter<T> : OptionalValueParameter<T>, IValueParameter<T> where T : class, IItem {
+  internal class HyperParameter<T> : OptionalValueParameter<T>, IValueParameter<T> where T : class, IItem {
 
     [Storable]
     private bool @fixed = false;

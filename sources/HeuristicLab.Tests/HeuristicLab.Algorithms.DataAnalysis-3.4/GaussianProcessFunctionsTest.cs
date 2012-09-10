@@ -1508,7 +1508,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
       int nHyp = mf.GetNumberOfParameters(x.GetLength(1));
       var hyp = Enumerable.Repeat(hypValue, nHyp).ToArray();
       mf.SetParameter(hyp);
-      mf.SetData(x);
 
       var m = mf.GetMean(xt);
 

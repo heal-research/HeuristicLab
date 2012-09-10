@@ -136,8 +136,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int n = x.GetLength(0);
       l = new double[n, n];
 
-      meanFunction.SetData(x);
-
       // calculate means and covariances
       double[] m = meanFunction.GetMean(x);
       for (int i = 0; i < n; i++) {
@@ -234,7 +232,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int newN = newX.GetLength(0);
       int n = x.GetLength(0);
       var Ks = new double[newN, n];
-      meanFunction.SetData(newX);
       var ms = meanFunction.GetMean(newX);
       for (int i = 0; i < newN; i++) {
         for (int j = 0; j < n; j++) {

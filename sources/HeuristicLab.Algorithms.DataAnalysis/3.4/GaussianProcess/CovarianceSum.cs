@@ -30,7 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceSum",
     Description = "Sum covariance function for Gaussian processes.")]
-  public class CovarianceSum : Item, ICovarianceFunction {
+  public sealed class CovarianceSum : Item, ICovarianceFunction {
     [Storable]
     private ItemList<ICovarianceFunction> terms;
 
@@ -41,11 +41,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected CovarianceSum(bool deserializing)
+    private CovarianceSum(bool deserializing)
       : base(deserializing) {
     }
 
-    protected CovarianceSum(CovarianceSum original, Cloner cloner)
+    private CovarianceSum(CovarianceSum original, Cloner cloner)
       : base(original, cloner) {
       this.terms = cloner.Clone(original.terms);
       this.numberOfVariables = original.numberOfVariables;

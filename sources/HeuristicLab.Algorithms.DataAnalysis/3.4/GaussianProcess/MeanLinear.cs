@@ -18,59 +18,75 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "MeanLinear", Description = "Linear mean function for Gaussian processes.")]
-  public class MeanLinear : Item, IMeanFunction {
+  public sealed class MeanLinear : ParameterizedNamedItem, IMeanFunction {
     [Storable]
-    private double[] alpha;
-    public double[] Weights {
-      get {
-        if (alpha == null) return new double[0];
-        var copy = new double[alpha.Length];
-        Array.Copy(alpha, copy, copy.Length);
-        return copy;
-      }
-    }
-    public int GetNumberOfParameters(int numberOfVariables) {
-      return numberOfVariables;
-    }
+    private double[] weights;
+    [Storable]
+    private readonly HyperParameter<DoubleArray> weightsParameter;
+    public IValueParameter<DoubleArray> WeightsParameter { get { return weightsParameter; } }
+
     [StorableConstructor]
-    protected MeanLinear(bool deserializing) : base(deserializing) { }
-    protected MeanLinear(MeanLinear original, Cloner cloner)
+    private MeanLinear(bool deserializing) : base(deserializing) { }
+    private MeanLinear(MeanLinear original, Cloner cloner)
       : base(original, cloner) {
-      if (original.alpha != null) {
-        this.alpha = new double[original.alpha.Length];
-        Array.Copy(original.alpha, alpha, original.alpha.Length);
+      if (original.weights != null) {
+        this.weights = new double[original.weights.Length];
+        Array.Copy(original.weights, weights, original.weights.Length);
       }
+      weightsParameter = cloner.Clone(original.weightsParameter);
+      RegisterEvents();
     }
     public MeanLinear()
       : base() {
+      this.weightsParameter = new HyperParameter<DoubleArray>("Weights", "The weights parameter for the linear mean function.");
+      Parameters.Add(weightsParameter);
+      RegisterEvents();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MeanLinear(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
+      Util.AttachArrayChangeHandler<DoubleArray, double>(weightsParameter, () => {
+        weights = weightsParameter.Value.ToArray();
+      });
+    }
+
+    public int GetNumberOfParameters(int numberOfVariables) {
+      return weightsParameter.Fixed ? 0 : numberOfVariables;
     }
 
     public void SetParameter(double[] hyp) {
-      this.alpha = new double[hyp.Length];
-      Array.Copy(hyp, alpha, hyp.Length);
-    }
-    public void SetData(double[,] x) {
-      // nothing to do
+      if (!weightsParameter.Fixed) {
+        weightsParameter.SetValue(new DoubleArray(hyp));
+      } else if (hyp.Length != 0) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for the linear mean function.", "hyp");
     }
 
     public double[] GetMean(double[,] x) {
       // sanity check
-      if (alpha.Length != x.GetLength(1)) throw new ArgumentException("The number of hyperparameters must match the number of variables for the linear mean function.");
+      if (weights.Length != x.GetLength(1)) throw new ArgumentException("The number of hyperparameters must match the number of variables for the linear mean function.");
       int cols = x.GetLength(1);
       int n = x.GetLength(0);
       return (from i in Enumerable.Range(0, n)
-              let rowVector = from j in Enumerable.Range(0, cols)
-                              select x[i, j]
-              select Util.ScalarProd(alpha, rowVector))
+              let rowVector = Enumerable.Range(0, cols).Select(j => x[i, j])
+              select Util.ScalarProd(weights, rowVector))
         .ToArray();
     }
 
@@ -78,12 +94,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int cols = x.GetLength(1);
       int n = x.GetLength(0);
       if (k > cols) throw new ArgumentException();
-      return (from r in Enumerable.Range(0, n)
-              select x[r, k]).ToArray();
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new MeanLinear(this, cloner);
+      return (Enumerable.Range(0, n).Select(r => x[r, k])).ToArray();
     }
   }
 }

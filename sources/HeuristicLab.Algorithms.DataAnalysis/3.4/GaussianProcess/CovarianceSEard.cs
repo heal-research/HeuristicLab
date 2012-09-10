@@ -24,48 +24,89 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "CovarianceSEard", Description = "Squared exponential covariance function with automatic relevance determination for Gaussian processes.")]
-  public class CovarianceSEard : Item, ICovarianceFunction {
+  public sealed class CovarianceSEard : ParameterizedNamedItem, ICovarianceFunction {
     [Storable]
     private double sf2;
-    public double Scale { get { return sf2; } }
+    [Storable]
+    private readonly HyperParameter<DoubleValue> scaleParameter;
+    public IValueParameter<DoubleValue> ScaleParameter { get { return scaleParameter; } }
 
     [Storable]
     private double[] inverseLength;
-    public double[] InverseLength {
-      get {
-        if (inverseLength == null) return new double[0];
-        var copy = new double[inverseLength.Length];
-        Array.Copy(inverseLength, copy, copy.Length);
-        return copy;
-      }
-    }
+    [Storable]
+    private readonly HyperParameter<DoubleArray> inverseLengthParameter;
+    public IValueParameter<DoubleArray> InverseLengthParameter { get { return inverseLengthParameter; } }
 
-    public int GetNumberOfParameters(int numberOfVariables) {
-      return numberOfVariables + 1;
-    }
     [StorableConstructor]
-    protected CovarianceSEard(bool deserializing) : base(deserializing) { }
-    protected CovarianceSEard(CovarianceSEard original, Cloner cloner)
+    private CovarianceSEard(bool deserializing) : base(deserializing) { }
+    private CovarianceSEard(CovarianceSEard original, Cloner cloner)
       : base(original, cloner) {
-      this.inverseLength = original.InverseLength; // array is cloned in the getter
       this.sf2 = original.sf2;
+      this.scaleParameter = cloner.Clone(original.scaleParameter);
+
+      if (original.inverseLength != null) {
+        this.inverseLength = new double[original.inverseLength.Length];
+        Array.Copy(original.inverseLength, this.inverseLength, this.inverseLength.Length);
+      }
+      this.inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
+
+      RegisterEvents();
     }
     public CovarianceSEard()
       : base() {
+      Name = ItemName;
+      Description = ItemDescription;
+
+      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter of the squared exponential covariance function with ARD.");
+      this.inverseLengthParameter = new HyperParameter<DoubleArray>("InverseLength", "The inverse length parameter for automatic relevance determination.");
+
+      Parameters.Add(scaleParameter);
+      Parameters.Add(inverseLengthParameter);
+
+      RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceSEard(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
+
+    private void RegisterEvents() {
+      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
+      Util.AttachArrayChangeHandler<DoubleArray, double>(inverseLengthParameter, () => {
+        inverseLength =
+          inverseLengthParameter.Value.ToArray();
+      });
+    }
+
+    public int GetNumberOfParameters(int numberOfVariables) {
+      return
+        (scaleParameter.Fixed ? 0 : 1) +
+        (inverseLengthParameter.Fixed ? 0 : numberOfVariables);
+    }
+
+
     public void SetParameter(double[] hyp) {
-      this.inverseLength = hyp.Take(hyp.Length - 1).Select(p => 1.0 / Math.Exp(p)).ToArray();
-      this.sf2 = Math.Exp(2 * hyp[hyp.Length - 1]);
+      int i = 0;
+      if (!scaleParameter.Fixed) {
+        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[i])));
+        i++;
+      }
+      if (!inverseLengthParameter.Fixed) {
+        inverseLengthParameter.SetValue(new DoubleArray(hyp.Skip(i).Select(e => 1.0 / Math.Exp(e)).ToArray()));
+        i += hyp.Skip(i).Count();
+      }
+      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancSEard", "hyp");
     }
 
     public double GetCovariance(double[,] x, int i, int j) {

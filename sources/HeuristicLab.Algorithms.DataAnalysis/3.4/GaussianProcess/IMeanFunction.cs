@@ -24,7 +24,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface IMeanFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] hyp);
-    void SetData(double[,] x);
     double[] GetMean(double[,] x);
     double[] GetGradients(int k, double[,] x);
   }
