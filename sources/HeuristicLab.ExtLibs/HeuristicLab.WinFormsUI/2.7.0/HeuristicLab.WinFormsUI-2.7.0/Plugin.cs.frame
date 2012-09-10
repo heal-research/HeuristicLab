@@ -29,7 +29,7 @@ namespace HeuristicLab.WinFormsUI {
   [Plugin("HeuristicLab.WinFormsUI", "2.7.0.$WCREV$")]
   [PluginFile("HeuristicLab.WinFormsUI-2.7.0.dll", PluginFileType.Assembly)]
   [PluginFile("WeifenLuo.WinFormsUI.Docking-2.7.0.dll", PluginFileType.Assembly)]
-  [PluginFile("WeifenLuo.WinFormsUI.Docking License.txt",PluginFileType.License)]
+  [PluginFile("WeifenLuo.WinFormsUI.Docking License-2.7.0.txt",PluginFileType.License)]
   public class HeuristicLabWinFormsUIPlugin : PluginBase {
   }
 }

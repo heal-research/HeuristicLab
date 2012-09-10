@@ -115,7 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
-    <None Include="WeifenLuo.WinFormsUI.Docking License.txt">
+    <None Include="WeifenLuo.WinFormsUI.Docking License-2.7.0.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
