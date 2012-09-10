@@ -21,6 +21,6 @@
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   public interface ISymbolicDiscriminantFunctionClassificationModel : IDiscriminantFunctionClassificationModel, ISymbolicClassificationModel {
-    IDiscriminantFunctionThresholdCalculator ThresholdCalculator { get; }
+
   }
 }

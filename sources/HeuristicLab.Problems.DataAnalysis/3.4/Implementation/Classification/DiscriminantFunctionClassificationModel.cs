@@ -50,6 +50,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       private set { thresholds = value.ToArray(); }
     }
 
+    private IDiscriminantFunctionThresholdCalculator thresholdCalculator;
+    [Storable]
+    public IDiscriminantFunctionThresholdCalculator ThresholdCalculator {
+      get { return thresholdCalculator; }
+      private set { thresholdCalculator = value; }
+    }
+
 
     [StorableConstructor]
     protected DiscriminantFunctionClassificationModel(bool deserializing) : base(deserializing) { }
@@ -60,13 +67,19 @@ namespace HeuristicLab.Problems.DataAnalysis {
       thresholds = (double[])original.thresholds.Clone();
     }
 
-    public DiscriminantFunctionClassificationModel(IRegressionModel model)
+    public DiscriminantFunctionClassificationModel(IRegressionModel model, IDiscriminantFunctionThresholdCalculator thresholdCalculator)
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
       this.model = model;
-      this.classValues = new double[] { 0.0 };
-      this.thresholds = new double[] { double.NegativeInfinity };
+      this.classValues = new double[0];
+      this.thresholds = new double[0];
+      this.thresholdCalculator = thresholdCalculator;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (ThresholdCalculator == null) ThresholdCalculator = new AccuracyMaximizationThresholdCalculator();
     }
 
     public void SetThresholdsAndClassValues(IEnumerable<double> thresholds, IEnumerable<double> classValues) {
@@ -79,11 +92,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnThresholdsChanged(EventArgs.Empty);
     }
 
+    public virtual void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows) {
+      double[] classValues;
+      double[] thresholds;
+      var targetClassValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      var estimatedTrainingValues = GetEstimatedValues(problemData.Dataset, rows);
+      thresholdCalculator.Calculate(problemData, estimatedTrainingValues, targetClassValues, out classValues, out thresholds);
+      SetThresholdsAndClassValues(thresholds, classValues);
+    }
+
+
     public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
       return model.GetEstimatedValues(dataset, rows);
     }
 
     public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+      if (!Thresholds.Any() && !ClassValues.Any()) throw new ArgumentException("No thresholds and class values were set for the current classification model.");
       foreach (var x in GetEstimatedValues(dataset, rows)) {
         int classIndex = 0;
         // find first threshold value which is larger than x => class index = threshold index + 1

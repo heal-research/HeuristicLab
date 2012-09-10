@@ -227,6 +227,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     #endregion
 
+
     private IEnumerable<double> GetEstimatedValuesHelper(Dataset dataset, IEnumerable<int> rows) {
       var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, inputScaling);
       int newN = newX.GetLength(0);

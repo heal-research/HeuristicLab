@@ -31,7 +31,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// </summary>
   [StorableClass]
   [Item(Name = "SymbolicClassificationModel", Description = "Represents a symbolic classification model.")]
-  public abstract class SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
+  public abstract class
+    SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
     [Storable]
     private double lowerEstimationLimit;
     public double LowerEstimationLimit { get { return lowerEstimationLimit; } }
