@@ -119,7 +119,7 @@ namespace HeuristicLab.Collections {
     #endregion
 
     #region Events
-    protected void RegisterEvents() {
+    private void RegisterEvents() {
       list.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsAdded);
       ((IObservableCollection<T>)list).ItemsAdded += new CollectionItemsChangedEventHandler<T>(list_ItemsAdded);
       list.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<T>>(list_ItemsRemoved);

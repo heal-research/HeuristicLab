@@ -47,10 +47,9 @@ namespace HeuristicLab.Core {
 
     [StorableConstructor]
     protected ReadOnlyItemList(bool deserializing) : base(deserializing) { }
-    protected ReadOnlyItemList(ReadOnlyItemList<T> original, Cloner cloner) {
+    protected ReadOnlyItemList(ReadOnlyItemList<T> original, Cloner cloner)
+      : base(cloner.Clone((IItemList<T>)original.list)) {
       cloner.RegisterClonedObject(original, this);
-      list = cloner.Clone((IItemList<T>)original.list);
-      RegisterEvents();
     }
     public ReadOnlyItemList() : base(new ItemList<T>()) { }
     public ReadOnlyItemList(IItemList<T> list) : base(list) { }

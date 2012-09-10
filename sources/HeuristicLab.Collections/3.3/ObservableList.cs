@@ -157,12 +157,12 @@ namespace HeuristicLab.Collections {
     public void Add(T item) {
       int capacity = list.Capacity;
       list.Add(item);
+      OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(list.Count - 1, item) });
+      OnItemsAdded(new T[] { item });
       if (list.Capacity != capacity)
         OnPropertyChanged("Capacity");
       OnPropertyChanged("Item[]");
       OnPropertyChanged("Count");
-      OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(list.Count - 1, item) });
-      OnItemsAdded(new T[] { item });
     }
     public void AddRange(IEnumerable<T> collection) {
       int capacity = list.Capacity;
@@ -174,24 +174,24 @@ namespace HeuristicLab.Collections {
         index++;
       }
       if (items.Count > 0) {
+        OnItemsAdded(items);
+        OnItemsAdded(collection);
         if (list.Capacity != capacity)
           OnPropertyChanged("Capacity");
         OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
-        OnItemsAdded(items);
-        OnItemsAdded(collection);
       }
     }
 
     public void Insert(int index, T item) {
       int capacity = list.Capacity;
       list.Insert(index, item);
+      OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
+      OnItemsAdded(new T[] { item });
       if (list.Capacity != capacity)
         OnPropertyChanged("Capacity");
       OnPropertyChanged("Item[]");
       OnPropertyChanged("Count");
-      OnItemsAdded(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
-      OnItemsAdded(new T[] { item });
     }
     public void InsertRange(int index, IEnumerable<T> collection) {
       int capacity = list.Capacity;
@@ -202,12 +202,12 @@ namespace HeuristicLab.Collections {
         index++;
       }
       if (items.Count > 0) {
+        OnItemsAdded(items);
+        OnItemsAdded(collection);
         if (list.Capacity != capacity)
           OnPropertyChanged("Capacity");
         OnPropertyChanged("Item[]");
         OnPropertyChanged("Count");
-        OnItemsAdded(items);
-        OnItemsAdded(collection);
       }
     }
 
@@ -228,20 +228,20 @@ namespace HeuristicLab.Collections {
       if (list.Any()) items = list.Select((x, i) => new IndexedItem<T>(i, x)).ToList();
       else items = new List<IndexedItem<T>>();
 
+      OnItemsReplaced(items, oldItems);
       if (oldCapacity != list.Capacity) OnPropertyChanged("Capacity");
       OnPropertyChanged("Item[]");
       if (oldItems.Count != items.Count) OnPropertyChanged("Count");
-      OnItemsReplaced(items, oldItems);
     }
 
     public bool Remove(T item) {
       int index = list.IndexOf(item);
       if (index != -1) {
         list.RemoveAt(index);
-        OnPropertyChanged("Item[]");
-        OnPropertyChanged("Count");
         OnItemsRemoved(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
         OnItemsRemoved(new T[] { item });
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
         return true;
       }
       return false;
@@ -259,20 +259,20 @@ namespace HeuristicLab.Collections {
       int result = 0;
       if (indexedItems.Count > 0) {
         result = list.RemoveAll(match);
-        OnPropertyChanged("Item[]");
-        OnPropertyChanged("Count");
         OnItemsRemoved(indexedItems);
         OnItemsRemoved(items);
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
       }
       return result;
     }
     public void RemoveAt(int index) {
       T item = list[index];
       list.RemoveAt(index);
-      OnPropertyChanged("Item[]");
-      OnPropertyChanged("Count");
       OnItemsRemoved(new IndexedItem<T>[] { new IndexedItem<T>(index, item) });
       OnItemsRemoved(new T[] { item });
+      OnPropertyChanged("Item[]");
+      OnPropertyChanged("Count");
     }
     public void RemoveRange(int index, int count) {
       if (count > 0) {
@@ -280,10 +280,10 @@ namespace HeuristicLab.Collections {
         T[] items = new T[count];
         list.CopyTo(index, items, 0, count);
         list.RemoveRange(index, count);
-        OnPropertyChanged("Item[]");
-        OnPropertyChanged("Count");
         OnItemsRemoved(indexedItems);
         OnItemsRemoved(items);
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
       }
     }
 
@@ -292,10 +292,10 @@ namespace HeuristicLab.Collections {
         IndexedItem<T>[] indexedItems = GetIndexedItems();
         T[] items = list.ToArray();
         list.Clear();
-        OnPropertyChanged("Item[]");
-        OnPropertyChanged("Count");
         OnCollectionReset(new IndexedItem<T>[0], indexedItems);
         OnCollectionReset(new T[0], items);
+        OnPropertyChanged("Item[]");
+        OnPropertyChanged("Count");
       }
     }
 
@@ -303,16 +303,16 @@ namespace HeuristicLab.Collections {
       if (list.Count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems();
         list.Reverse();
-        OnPropertyChanged("Item[]");
         OnItemsMoved(GetIndexedItems(), oldItems);
+        OnPropertyChanged("Item[]");
       }
     }
     public void Reverse(int index, int count) {
       if (count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems(index, count);
         list.Reverse(index, count);
-        OnPropertyChanged("Item[]");
         OnItemsMoved(GetIndexedItems(index, count), oldItems);
+        OnPropertyChanged("Item[]");
       }
     }
 
@@ -320,32 +320,32 @@ namespace HeuristicLab.Collections {
       if (list.Count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems();
         list.Sort();
-        OnPropertyChanged("Item[]");
         OnItemsMoved(GetIndexedItems(), oldItems);
+        OnPropertyChanged("Item[]");
       }
     }
     public void Sort(Comparison<T> comparison) {
       if (list.Count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems();
         list.Sort(comparison);
-        OnPropertyChanged("Item[]");
         OnItemsMoved(GetIndexedItems(), oldItems);
+        OnPropertyChanged("Item[]");
       }
     }
     public void Sort(IComparer<T> comparer) {
       if (list.Count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems();
         list.Sort(comparer);
-        OnPropertyChanged("Item[]");
         OnItemsMoved(GetIndexedItems(), oldItems);
+        OnPropertyChanged("Item[]");
       }
     }
     public void Sort(int index, int count, IComparer<T> comparer) {
       if (count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems(index, count);
         list.Sort(index, count, comparer);
-        OnPropertyChanged("Item[]");
         OnItemsMoved(GetIndexedItems(index, count), oldItems);
+        OnPropertyChanged("Item[]");
       }
     }
     #endregion
@@ -354,6 +354,7 @@ namespace HeuristicLab.Collections {
     public ReadOnlyObservableList<T> AsReadOnly() {
       return new ReadOnlyObservableList<T>(this);
     }
+
     public T[] ToArray() {
       return list.ToArray();
     }

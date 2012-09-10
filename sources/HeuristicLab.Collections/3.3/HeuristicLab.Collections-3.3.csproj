@@ -113,11 +113,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
+    <Compile Include="ReadOnlyObservableKeyedList.cs" />
     <Compile Include="INotifyObservableListItemsChanged.cs" />
     <Compile Include="INotifyObservableKeyedCollectionItemsChanged.cs" />
     <Compile Include="INotifyObservableDictionaryItemsChanged.cs" />
     <Compile Include="INotifyObservableCollectionItemsChanged.cs" />
     <Compile Include="INotifyObservableArrayItemsChanged.cs" />
+    <Compile Include="IObservableKeyedList.cs" />
+    <Compile Include="ObservableKeyedList.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ReadOnlyObservableArray.cs" />
     <Compile Include="ObservableArray.cs" />
@@ -188,14 +191,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
