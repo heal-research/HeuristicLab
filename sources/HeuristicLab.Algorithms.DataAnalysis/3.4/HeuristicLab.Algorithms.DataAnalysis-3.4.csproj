@@ -119,6 +119,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="GaussianProcess\CovarianceProduct.cs" />
+    <Compile Include="GaussianProcess\CovarianceScale.cs" />
     <Compile Include="GaussianProcess\CovarianceRationalQuadraticArd.cs" />
     <Compile Include="GaussianProcess\CovarianceRationalQuadraticIso.cs" />
     <Compile Include="GaussianProcess\CovarianceSquaredExponentialArd.cs" />
@@ -128,9 +130,8 @@
     <Compile Include="GaussianProcess\CovarianceLinearArd.cs" />
     <Compile Include="GaussianProcess\CovarianceNoise.cs" />
     <Compile Include="GaussianProcess\CovarianceConst.cs" />
-    <Compile Include="GaussianProcess\MeanProd.cs" />
+    <Compile Include="GaussianProcess\MeanProduct.cs" />
     <Compile Include="GaussianProcess\MeanSum.cs" />
-    <Compile Include="GaussianProcess\CovarianceProd.cs" />
     <Compile Include="GaussianProcess\CovarianceSum.cs" />
     <Compile Include="GaussianProcess\CovariancePeriodic.cs" />
     <Compile Include="GaussianProcess\GaussianProcessHyperparameterInitializer.cs" />

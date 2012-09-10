@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
       var meanFunction = new MeanConst();
       var covarianceFunction = new CovarianceSum();
       covarianceFunction.Terms.Add(new CovarianceSquaredExponentialIso());
-      var prod = new CovarianceProd();
+      var prod = new CovarianceProduct();
       prod.Factors.Add(new CovarianceSquaredExponentialIso());
       prod.Factors.Add(new CovariancePeriodic());
       covarianceFunction.Terms.Add(prod);

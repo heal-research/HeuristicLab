@@ -25,8 +25,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "MeanProd", Description = "Product of mean functions for Gaussian processes.")]
-  public sealed class MeanProd : Item, IMeanFunction {
+  [Item(Name = "MeanProduct", Description = "Product of mean functions for Gaussian processes.")]
+  public sealed class MeanProduct : Item, IMeanFunction {
     [Storable]
     private ItemList<IMeanFunction> factors;
 
@@ -38,21 +38,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private MeanProd(bool deserializing)
+    private MeanProduct(bool deserializing)
       : base(deserializing) {
     }
 
-    private MeanProd(MeanProd original, Cloner cloner)
+    private MeanProduct(MeanProduct original, Cloner cloner)
       : base(original, cloner) {
       this.factors = cloner.Clone(original.factors);
       this.numberOfVariables = original.numberOfVariables;
     }
 
-    public MeanProd() {
+    public MeanProduct() {
       this.factors = new ItemList<IMeanFunction>();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MeanProd(this, cloner);
+      return new MeanProduct(this, cloner);
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {

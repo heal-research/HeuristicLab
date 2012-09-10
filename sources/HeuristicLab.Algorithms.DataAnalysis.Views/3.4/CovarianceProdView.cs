@@ -25,11 +25,11 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Covariance Prod View")]
-  [Content(typeof(CovarianceProd), true)]
+  [Content(typeof(CovarianceProduct), true)]
   public partial class CovarianceProdView : AsynchronousContentView {
 
-    public new CovarianceProd Content {
-      get { return (CovarianceProd)base.Content; }
+    public new CovarianceProduct Content {
+      get { return (CovarianceProduct)base.Content; }
       set { base.Content = value; }
     }
 

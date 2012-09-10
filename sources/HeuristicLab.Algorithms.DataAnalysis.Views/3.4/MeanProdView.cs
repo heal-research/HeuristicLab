@@ -25,11 +25,11 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Mean Product View")]
-  [Content(typeof(MeanProd), true)]
+  [Content(typeof(MeanProduct), true)]
   public partial class MeanProdView : AsynchronousContentView {
 
-    public new MeanProd Content {
-      get { return (MeanProd)base.Content; }
+    public new MeanProduct Content {
+      get { return (MeanProduct)base.Content; }
       set { base.Content = value; }
     }
 

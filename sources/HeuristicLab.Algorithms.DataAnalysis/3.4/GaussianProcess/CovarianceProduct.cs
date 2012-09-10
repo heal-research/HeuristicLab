@@ -28,9 +28,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceProd",
+  [Item(Name = "CovarianceProduct",
     Description = "Product covariance function for Gaussian processes.")]
-  public sealed class CovarianceProd : Item, ICovarianceFunction {
+  public sealed class CovarianceProduct : Item, ICovarianceFunction {
     [Storable]
     private ItemList<ICovarianceFunction> factors;
 
@@ -41,23 +41,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceProd(bool deserializing)
+    private CovarianceProduct(bool deserializing)
       : base(deserializing) {
     }
 
-    private CovarianceProd(CovarianceProd original, Cloner cloner)
+    private CovarianceProduct(CovarianceProduct original, Cloner cloner)
       : base(original, cloner) {
       this.factors = cloner.Clone(original.factors);
       this.numberOfVariables = original.numberOfVariables;
     }
 
-    public CovarianceProd()
+    public CovarianceProduct()
       : base() {
       this.factors = new ItemList<ICovarianceFunction>();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new CovarianceProd(this, cloner);
+      return new CovarianceProduct(this, cloner);
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
