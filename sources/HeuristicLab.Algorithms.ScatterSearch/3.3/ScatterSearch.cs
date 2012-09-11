@@ -388,7 +388,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       ISingleObjectiveSolutionSimilarityCalculator defaultSimilarityCalculator = Problem.Operators.OfType<ISingleObjectiveSolutionSimilarityCalculator>().FirstOrDefault();
 
       SimilarityCalculatorParameter.ValidValues.Add(new QualitySimilarityCalculator { QualityVariableName = Problem.Evaluator.QualityParameter.ActualName });
-      SimilarityCalculatorParameter.ValidValues.Add(new BlindSimilarityCalculator());
+      SimilarityCalculatorParameter.ValidValues.Add(new NoSimilarityCalculator());
 
       foreach (ISingleObjectiveSolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISingleObjectiveSolutionSimilarityCalculator>())
         SimilarityCalculatorParameter.ValidValues.Add(similarityCalculator);

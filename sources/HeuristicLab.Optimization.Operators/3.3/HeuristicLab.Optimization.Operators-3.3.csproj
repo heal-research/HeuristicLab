@@ -108,6 +108,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NoSimilarityCalculator.cs" />
+    <Compile Include="QualitySimilarityCalculator.cs" />
     <Compile Include="SingleObjectiveSolutionSimilarityCalculator.cs" />
     <Compile Include="GeneralizedExponentialDiscreteDoubleValueModifier.cs" />
     <Compile Include="MultiObjective\CrowdedComparisonSorter.cs" />
