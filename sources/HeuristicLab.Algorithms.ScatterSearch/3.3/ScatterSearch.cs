@@ -87,8 +87,8 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     public IValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (IValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    public IConstrainedValueParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
-      get { return (IConstrainedValueParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
+    public IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator> SimilarityCalculatorParameter {
+      get { return (IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
     }
     #endregion
 
@@ -137,7 +137,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       get { return SetSeedRandomlyParameter.Value; }
       set { SetSeedRandomlyParameter.Value = value; }
     }
-    public ISolutionSimilarityCalculator SimilarityCalculator {
+    public ISingleObjectiveSolutionSimilarityCalculator SimilarityCalculator {
       get { return SimilarityCalculatorParameter.Value; }
       set { SimilarityCalculatorParameter.Value = value; }
     }
@@ -183,7 +183,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       Parameters.Add(new ValueParameter<IntValue>("ReferenceSetSize", "The size of the reference set.", new IntValue(20)));
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions."));
+      Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions."));
       #endregion
 
       #region Create operators
@@ -306,15 +306,20 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       ParameterizeAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
+    private void SimilarityCalculatorParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizeMainLoop();
+    }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
       ParameterizeAnalyzers();
       ParameterizeBestSelector();
+      ParameterizeSimilarityCalculators();
     }
     #endregion
 
     #region Helpers
     private void Initialize() {
+      SimilarityCalculatorParameter.ValueChanged += new EventHandler(SimilarityCalculatorParameter_ValueChanged);
       if (Problem != null)
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
     }
@@ -378,15 +383,18 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
         PathRelinkerParameter.Value = defaultPathRelinker;
     }
     private void UpdateSimilarityCalculators() {
-      ISolutionSimilarityCalculator oldSimilarityCalculator = SimilarityCalculatorParameter.Value;
+      ISingleObjectiveSolutionSimilarityCalculator oldSimilarityCalculator = SimilarityCalculatorParameter.Value;
       SimilarityCalculatorParameter.ValidValues.Clear();
-      ISolutionSimilarityCalculator defaultSimilarityCalculator = Problem.Operators.OfType<ISolutionSimilarityCalculator>().FirstOrDefault();
+      ISingleObjectiveSolutionSimilarityCalculator defaultSimilarityCalculator = Problem.Operators.OfType<ISingleObjectiveSolutionSimilarityCalculator>().FirstOrDefault();
 
-      foreach (ISolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISolutionSimilarityCalculator>())
+      SimilarityCalculatorParameter.ValidValues.Add(new QualitySimilarityCalculator { QualityVariableName = Problem.Evaluator.QualityParameter.ActualName });
+      SimilarityCalculatorParameter.ValidValues.Add(new BlindSimilarityCalculator());
+
+      foreach (ISingleObjectiveSolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISingleObjectiveSolutionSimilarityCalculator>())
         SimilarityCalculatorParameter.ValidValues.Add(similarityCalculator);
 
       if (oldSimilarityCalculator != null) {
-        ISolutionSimilarityCalculator similarityCalculator = SimilarityCalculatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSimilarityCalculator.GetType());
+        ISingleObjectiveSolutionSimilarityCalculator similarityCalculator = SimilarityCalculatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSimilarityCalculator.GetType());
         if (similarityCalculator != null) SimilarityCalculatorParameter.Value = similarityCalculator;
         else oldSimilarityCalculator = null;
       }
@@ -431,6 +439,11 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       } else {
         qualityAnalyzer.MaximizationParameter.Hidden = false;
         qualityAnalyzer.BestKnownQualityParameter.Hidden = false;
+      }
+    }
+    private void ParameterizeSimilarityCalculators() {
+      foreach (ISingleObjectiveSolutionSimilarityCalculator calc in SimilarityCalculatorParameter.ValidValues) {
+        calc.QualityVariableName = Problem.Evaluator.QualityParameter.ActualName;
       }
     }
     private ScatterSearchMainLoop FindMainLoop(IOperator start) {
