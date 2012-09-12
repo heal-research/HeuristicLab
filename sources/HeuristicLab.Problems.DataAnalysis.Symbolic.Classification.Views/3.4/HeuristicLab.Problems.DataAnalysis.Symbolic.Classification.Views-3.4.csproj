@@ -109,6 +109,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InteractiveSymbolicClassificationSolutionSimplifierView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InteractiveSymbolicClassificationSolutionSimplifierView.Designer.cs">
+      <DependentUpon>InteractiveSymbolicClassificationSolutionSimplifierView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolicClassificationSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SymbolicClassificationSolutionView.Designer.cs">
+      <DependentUpon>SymbolicClassificationSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InteractiveSymbolicClassificationSolutionSimplifierViewBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InteractiveSymbolicClassificationSolutionSimplifierViewBase.Designer.cs">
+      <DependentUpon>InteractiveSymbolicClassificationSolutionSimplifierViewBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="SymbolicDiscriminantFunctionClassificationSolutionView.cs">
       <SubType>UserControl</SubType>
@@ -245,14 +263,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 

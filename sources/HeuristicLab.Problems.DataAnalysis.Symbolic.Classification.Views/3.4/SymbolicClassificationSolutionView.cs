@@ -19,22 +19,28 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using System;
+using System.Windows.Forms;
+using HeuristicLab.MainForm;
+using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
-  public partial class InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView : InteractiveSymbolicClassificationSolutionSimplifierViewBase {
+  [Content(typeof(SymbolicClassificationSolution), false)]
+  [View("SymbolicDiscriminantFunctionClassificationSolution View")]
+  public partial class SymbolicClassificationSolutionView : ClassificationSolutionView {
+    public SymbolicClassificationSolutionView() {
+      InitializeComponent();
+    }
 
-    public new SymbolicDiscriminantFunctionClassificationSolution Content {
-      get { return (SymbolicDiscriminantFunctionClassificationSolution)base.Content; }
+    protected new SymbolicClassificationSolution Content {
+      get { return (SymbolicClassificationSolution)base.Content; }
       set { base.Content = value; }
     }
 
-    public InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView() : base() { }
-
-    protected override void UpdateModel(ISymbolicExpressionTree tree) {
-      var model = CreateModel(tree);
-      model.RecalculateModelParameters(Content.ProblemData, Content.ProblemData.TrainingIndices);
-      Content.Model = (ISymbolicDiscriminantFunctionClassificationModel)model;
+    private void btn_SimplifyModel_Click(object sender, EventArgs e) {
+      var view = new InteractiveSymbolicClassificationSolutionSimplifierView();
+      view.Content = (SymbolicClassificationSolution)this.Content.Clone();
+      view.Show();
     }
   }
 }
