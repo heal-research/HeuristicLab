@@ -57,19 +57,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
       OnlineCalculatorError errorState;
 
-      double mse;
+      double mae;
       if (applyLinearScaling) {
         var maeCalculator = new OnlineMeanAbsoluteErrorCalculator();
         CalculateWithScaling(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit, maeCalculator, problemData.Dataset.Rows);
         errorState = maeCalculator.ErrorState;
-        mse = maeCalculator.MeanAbsoluteError;
+        mae = maeCalculator.MeanAbsoluteError;
       } else {
-        IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit,
-                                                                                  upperEstimationLimit);
-        mse = OnlineMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
+        IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+        mae = OnlineMeanAbsoluteErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
       }
       if (errorState != OnlineCalculatorError.None) return Double.NaN;
-      else return mse;
+      else return mae;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
