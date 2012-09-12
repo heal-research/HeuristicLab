@@ -48,6 +48,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       tempTree = new SymbolicExpressionTree(root);
     }
 
+    /// <summary>
+    /// It is necessary to create new models of an unknown type with new trees in the simplifier.
+    /// For this purpose the cloner is used by registering the new tree as already cloned object and invoking the clone mechanism.
+    /// This results in a new model of the same type as the old one with an exchanged tree.
+    /// </summary>
+    /// <param name="tree">The new tree that should be included in the new object</param>
+    /// <returns></returns>
     protected ISymbolicClassificationModel CreateModel(ISymbolicExpressionTree tree) {
       var cloner = new Cloner();
       cloner.RegisterClonedObject(Content.Model.SymbolicExpressionTree, tree);
