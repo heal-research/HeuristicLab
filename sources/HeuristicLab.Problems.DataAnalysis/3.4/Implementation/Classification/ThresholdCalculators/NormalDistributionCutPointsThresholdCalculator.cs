@@ -52,9 +52,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public static void CalculateThresholds(IClassificationProblemData problemData, IEnumerable<double> estimatedValues, IEnumerable<double> targetClassValues, out double[] classValues, out double[] thresholds) {
-      double maxEstimatedValue = estimatedValues.Max();
-      double minEstimatedValue = estimatedValues.Min();
       var estimatedTargetValues = Enumerable.Zip(estimatedValues, targetClassValues, (e, t) => new { EstimatedValue = e, TargetValue = t }).ToList();
+      double estimatedValuesRange = estimatedValues.Range();
 
       Dictionary<double, double> classMean = new Dictionary<double, double>();
       Dictionary<double, double> classStdDev = new Dictionary<double, double>();
@@ -81,8 +80,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
           double class1 = originalClasses[j];
           // calculate all thresholds
           CalculateCutPoints(classMean[class0], classStdDev[class0], classMean[class1], classStdDev[class1], out x1, out x2);
-          if (!thresholdList.Any(x => x.IsAlmost(x1))) thresholdList.Add(x1);
-          if (!thresholdList.Any(x => x.IsAlmost(x2))) thresholdList.Add(x2);
+
+          // if the two cut points are too close (for instance because the stdDev=0)
+          // then move them by 0.1% of the range of estimated values
+          if (x1.IsAlmost(x2)) {
+            x1 -= 0.001 * estimatedValuesRange;
+            x2 += 0.001 * estimatedValuesRange;
+          }
+          if (!double.IsInfinity(x1) && !thresholdList.Any(x => x.IsAlmost(x1))) thresholdList.Add(x1);
+          if (!double.IsInfinity(x2) && !thresholdList.Any(x => x.IsAlmost(x2))) thresholdList.Add(x2);
         }
       }
       thresholdList.Sort();
@@ -91,28 +97,36 @@ namespace HeuristicLab.Problems.DataAnalysis {
       // determine class values for each partition separated by a threshold by calculating the density of all class distributions
       // all points in the partition are classified as the class with the maximal density in the parition
       List<double> classValuesList = new List<double>();
-      for (int i = 0; i < thresholdList.Count; i++) {
-        double m;
-        if (double.IsNegativeInfinity(thresholdList[i])) {
-          m = thresholdList[i + 1] - 1.0; // smaller than the smalles non-infinity threshold
-        } else if (i == thresholdList.Count - 1) {
-          // last threshold
-          m = thresholdList[i] + 1.0; // larger than the last threshold
-        } else {
-          m = thresholdList[i] + (thresholdList[i + 1] - thresholdList[i]) / 2.0; // middle of partition
-        }
-
-        // determine class with maximal probability density in m
-        double maxDensity = double.MinValue;
-        double maxDensityClassValue = -1;
-        foreach (var classValue in originalClasses) {
-          double density = LogNormalDensity(m, classMean[classValue], classStdDev[classValue]);
-          if (density > maxDensity) {
-            maxDensity = density;
-            maxDensityClassValue = classValue;
+      if (thresholdList.Count == 1) {
+        // this happens if there are no thresholds (distributions for all classes are exactly the same)
+        // -> all samples should be classified as the first class
+        classValuesList.Add(originalClasses[0]);
+      } else {
+        // at least one reasonable threshold ...
+        // find the most likely class for the points between thresholds m
+        for (int i = 0; i < thresholdList.Count; i++) {
+          double m;
+          if (double.IsNegativeInfinity(thresholdList[i])) {
+            m = thresholdList[i + 1] - 1.0; // smaller than the smallest non-infinity threshold
+          } else if (i == thresholdList.Count - 1) {
+            // last threshold
+            m = thresholdList[i] + 1.0; // larger than the last threshold
+          } else {
+            m = thresholdList[i] + (thresholdList[i + 1] - thresholdList[i]) / 2.0; // middle of partition
           }
+
+          // determine class with maximal probability density in m
+          double maxDensity = LogNormalDensity(m, classMean[originalClasses[0]], classStdDev[originalClasses[0]]);
+          double maxDensityClassValue = originalClasses[0];
+          foreach (var classValue in originalClasses.Skip(1)) {
+            double density = LogNormalDensity(m, classMean[classValue], classStdDev[classValue]);
+            if (density > maxDensity) {
+              maxDensity = density;
+              maxDensityClassValue = classValue;
+            }
+          }
+          classValuesList.Add(maxDensityClassValue);
         }
-        classValuesList.Add(maxDensityClassValue);
       }
 
       // only keep thresholds at which the class changes 
@@ -129,7 +143,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       filteredThresholds.Add(thresholdList[0]);
       filteredClassValues.Add(classValuesList[0]);
       for (int i = 0; i < classValuesList.Count - 1; i++) {
-        if (classValuesList[i] != classValuesList[i + 1]) {
+        if (!classValuesList[i].IsAlmost(classValuesList[i + 1])) {
           filteredThresholds.Add(thresholdList[i + 1]);
           filteredClassValues.Add(classValuesList[i + 1]);
         }
@@ -139,13 +153,38 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     private static double LogNormalDensity(double x, double mu, double sigma) {
+      if (sigma.IsAlmost(0.0))
+        if (mu.IsAlmost(x)) return 0.0; // (log(1))
+        else return double.NegativeInfinity;
       return -0.5 * Math.Log(2.0 * Math.PI * sigma * sigma) - ((x - mu) * (x - mu)) / (2.0 * sigma * sigma);
     }
 
     private static void CalculateCutPoints(double m1, double s1, double m2, double s2, out double x1, out double x2) {
-      double a = (s1 * s1 - s2 * s2);
-      x1 = -(-m2 * s1 * s1 + m1 * s2 * s2 + Math.Sqrt(s1 * s1 * s2 * s2 * ((m1 - m2) * (m1 - m2) + 2.0 * (-s1 * s1 + s2 * s2) * Math.Log(s2 / s1)))) / a;
-      x2 = (m2 * s1 * s1 - m1 * s2 * s2 + Math.Sqrt(s1 * s1 * s2 * s2 * ((m1 - m2) * (m1 - m2) + 2.0 * (-s1 * s1 + s2 * s2) * Math.Log(s2 / s1)))) / a;
+      if (s1.IsAlmost(s2)) {
+        if (m1.IsAlmost(m2)) {
+          x1 = double.NegativeInfinity;
+          x2 = double.NegativeInfinity;
+        } else {
+          x1 = (m1 + m2) / 2;
+          x2 = double.NegativeInfinity;
+        }
+      } else if (s1.IsAlmost(0.0)) {
+        x1 = m1;
+        x2 = m1;
+      } else if (s2.IsAlmost(0.0)) {
+        x1 = m2;
+        x2 = m2;
+      } else {
+        // scale s1 and s2 for numeric stability
+        s2 = s2 / s1;
+        s1 = 1.0;
+        double a = (s1 + s2) * (s1 - s2);
+        double g = Math.Sqrt(s1 * s1 * s2 * s2 * ((m1 - m2) * (m1 - m2) + 2.0 * (s1 * s1 + s2 * s2) * Math.Log(s2 / s1)));
+        double m1s2 = m1 * s2 * s2;
+        double m2s1 = m2 * s1 * s1;
+        x1 = -(-m2s1 + m1s2 + g) / a;
+        x2 = (m2s1 - m1s2 + g) / a;
+      }
     }
   }
 }
