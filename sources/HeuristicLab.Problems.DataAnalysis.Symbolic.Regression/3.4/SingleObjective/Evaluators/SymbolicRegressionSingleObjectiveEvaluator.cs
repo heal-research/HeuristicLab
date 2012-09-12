@@ -73,15 +73,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var linearScalingCalculator = new OnlineLinearScalingParameterCalculator();
       var targetValuesEnumerator = targetValues.GetEnumerator();
       var estimatedValuesEnumerator = estimatedValues.GetEnumerator();
-      while (targetValuesEnumerator.MoveNext() && estimatedValuesEnumerator.MoveNext()) {
+      while (targetValuesEnumerator.MoveNext() & estimatedValuesEnumerator.MoveNext()) {
         double target = targetValuesEnumerator.Current;
         double estimated = estimatedValuesEnumerator.Current;
         cache[i] = estimated;
         linearScalingCalculator.Add(estimated, target);
         i++;
       }
+      if (linearScalingCalculator.ErrorState == OnlineCalculatorError.None && (targetValuesEnumerator.MoveNext() || estimatedValuesEnumerator.MoveNext()))
+        throw new ArgumentException("Number of elements in target and estimated values enumeration do not match.");
+
       double alpha = linearScalingCalculator.Alpha;
       double beta = linearScalingCalculator.Beta;
+      if (linearScalingCalculator.ErrorState != OnlineCalculatorError.None) {
+        alpha = 0.0;
+        beta = 1.0;
+      }
 
       //calculate the quality by using the passed online calculator
       targetValuesEnumerator = targetValues.GetEnumerator();
