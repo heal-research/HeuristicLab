@@ -1,40 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{25087811-F74C-4128-BC86-8324271DA13E}</ProjectGuid>
+    <ProjectGuid>{B03C4E41-1D01-4C60-B0F4-DBB257D98CA8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Optimization.Operators</RootNamespace>
-    <AssemblyName>HeuristicLab.Optimization.Operators-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Algorithms.RAPGA</RootNamespace>
+    <AssemblyName>HeuristicLab.Algorithms.RAPGA-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,7 +32,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DocumentationFile>
     </DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -100,49 +78,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExpressionCalculator.cs" />
-    <Compile Include="NoSimilarityCalculator.cs" />
-    <Compile Include="QualitySimilarityCalculator.cs" />
-    <Compile Include="SingleObjectiveSolutionSimilarityCalculator.cs" />
-    <Compile Include="GeneralizedExponentialDiscreteDoubleValueModifier.cs" />
-    <Compile Include="MultiObjective\CrowdedComparisonSorter.cs" />
-    <Compile Include="MultiObjective\CrowdingDistanceAssignment.cs" />
-    <Compile Include="ParentCopyCrossover.cs" />
-    <Compile Include="MultiObjective\FastNonDominatedSort.cs" />
-    <Compile Include="MultiObjective\RankAndCrowdingSorter.cs" />
-    <Compile Include="SingleObjectivePathRelinker.cs" />
+    <Compile Include="Analyzers\SelectionPressureAnalyzer.cs" />
+    <Compile Include="Analyzers\OffspringSuccessAnalyzer.cs" />
+    <Compile Include="Analyzers\PopulationSizeAnalyzer.cs" />
+    <Compile Include="DuplicatesSelector.cs" />
+    <Compile Include="ProgressiveOffspringPreserver.cs" />
+    <Compile Include="ScopeRestorer.cs" />
+    <Compile Include="RAPGA.cs" />
+    <Compile Include="RAPGAMainLoop.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="ProgrammableAnalyzer.cs" />
-    <Compile Include="ShakingOperator.cs" />
-    <Compile Include="SolutionSimilarityCalculator.cs" />
-    <Compile Include="UserDefinedCrossover.cs" />
-    <Compile Include="UserDefinedEvaluator.cs" />
-    <Compile Include="UserDefinedManipulator.cs" />
-    <Compile Include="UserDefinedOperator.cs" />
-    <Compile Include="UserDefinedSolutionCreator.cs" />
-    <Compile Include="ProbabilisticQualityComparator.cs" />
-    <Compile Include="ResultsCollector.cs" />
-    <Compile Include="SASEGASAReunificator.cs" />
-    <Compile Include="SquareRootDiscreteDoubleValueModifier.cs" />
-    <Compile Include="DiscreteDoubleValueModifier.cs" />
-    <Compile Include="ExponentialDiscreteDoubleValueModifier.cs" />
-    <Compile Include="LinearDiscreteDoubleValueModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ChildrenCreator.cs" />
-    <Compile Include="QuadraticDiscreteDoubleValueModifier.cs" />
-    <Compile Include="QualityComparator.cs" />
-    <Compile Include="SolutionsCreator.cs" />
-    <Compile Include="TabuMaker.cs" />
-    <Compile Include="UnidirectionalRingMigrator.cs" />
-    <Compile Include="WeightedParentsQualityComparator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -150,6 +100,11 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -170,14 +125,14 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj">
-      <Project>{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}</Project>
-      <Name>HeuristicLab.Operators.Programmable-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
@@ -200,31 +155,19 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
       <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
       <Name>HeuristicLab.Selection-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
