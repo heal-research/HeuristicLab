@@ -54,8 +54,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IClassificationProblemData problemData, IEnumerable<int> rows) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> originalValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      IEnumerable<double> boundedEstimationValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
       OnlineCalculatorError errorState;
-      double r2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedValues, originalValues, out errorState);
+      double r2 = OnlinePearsonsRSquaredCalculator.Calculate(boundedEstimationValues, originalValues, out errorState);
       if (errorState != OnlineCalculatorError.None) return 0.0;
       else return r2;
     }
