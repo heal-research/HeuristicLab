@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -75,11 +76,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var rows = problemData.TrainingIndices;
       var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
       var targetValues = dataset.GetDoubleValues(targetVariable, rows);
-      double alpha;
-      double beta;
-      OnlineCalculatorError errorState;
-      OnlineLinearScalingParameterCalculator.Calculate(estimatedValues, targetValues, out alpha, out beta, out errorState);
-      if (errorState != OnlineCalculatorError.None) return;
+
+      var linearScalingCalculator = new OnlineLinearScalingParameterCalculator();
+      var targetValuesEnumerator = targetValues.GetEnumerator();
+      var estimatedValuesEnumerator = estimatedValues.GetEnumerator();
+      while (targetValuesEnumerator.MoveNext() & estimatedValuesEnumerator.MoveNext()) {
+        double target = targetValuesEnumerator.Current;
+        double estimated = estimatedValuesEnumerator.Current;
+        if (!double.IsNaN(estimated) && !double.IsInfinity(estimated))
+          linearScalingCalculator.Add(estimated, target);
+      }
+      if (linearScalingCalculator.ErrorState == OnlineCalculatorError.None && (targetValuesEnumerator.MoveNext() || estimatedValuesEnumerator.MoveNext()))
+        throw new ArgumentException("Number of elements in target and estimated values enumeration do not match.");
+
+      double alpha = linearScalingCalculator.Alpha;
+      double beta = linearScalingCalculator.Beta;
+      if (linearScalingCalculator.ErrorState != OnlineCalculatorError.None) return;
 
       ConstantTreeNode alphaTreeNode = null;
       ConstantTreeNode betaTreeNode = null;

@@ -77,7 +77,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         double target = targetValuesEnumerator.Current;
         double estimated = estimatedValuesEnumerator.Current;
         cache[i] = estimated;
-        linearScalingCalculator.Add(estimated, target);
+        if (!double.IsNaN(estimated) && !double.IsInfinity(estimated))
+          linearScalingCalculator.Add(estimated, target);
         i++;
       }
       if (linearScalingCalculator.ErrorState == OnlineCalculatorError.None && (targetValuesEnumerator.MoveNext() || estimatedValuesEnumerator.MoveNext()))
