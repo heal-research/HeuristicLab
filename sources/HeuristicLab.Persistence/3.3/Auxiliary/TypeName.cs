@@ -40,14 +40,19 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// </summary>
     /// <value>The namespace.</value>
     [Storable]
-    public string Namespace { get; private set; }
+    #region Mono Compatibility
+    // mono: setting the namespace is needed for generating ObjectEqualityComparer type names in the TypeLoader
+    public string Namespace { get; internal set; }
+    #endregion
 
     /// <summary>
     /// Gets or sets the name of the class.
     /// </summary>
     /// <value>The name of the class.</value>
     [Storable]
-    public string ClassName { get; private set; }
+    #region Mono Compatibility
+    public string ClassName { get; internal set; }
+    #endregion
 
     /// <summary>
     /// Gets or sets the generic args.
@@ -234,7 +239,8 @@ namespace HeuristicLab.Persistence.Auxiliary {
             return true;
         }
         return false;
-      } catch (KeyNotFoundException) {
+      }
+      catch (KeyNotFoundException) {
         throw new Exception("Could not extract version information from type string");
       }
     }
@@ -271,7 +277,8 @@ namespace HeuristicLab.Persistence.Auxiliary {
             return false;
         }
         return true;
-      } catch (KeyNotFoundException) {
+      }
+      catch (KeyNotFoundException) {
         throw new Exception("Could not extract version infomration from type string");
       }
     }

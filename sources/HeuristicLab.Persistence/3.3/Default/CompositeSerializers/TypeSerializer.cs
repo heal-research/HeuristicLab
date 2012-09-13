@@ -40,12 +40,17 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     }
 
     public bool CanSerialize(Type type) {
+      #region Mono Compatibility
       return type == typeof(Type) ||
-             type.VersionInvariantName() == "System.RuntimeType, mscorlib";
+        type.VersionInvariantName() == "System.RuntimeType, mscorlib" ||
+        type.VersionInvariantName() == "System.MonoType, mscorlib";
+      #endregion
     }
 
     public string JustifyRejection(Type type) {
-      return "not System.Type nor System.RuntimeType";
+      #region Mono Compatibility
+      return "not System.Type, System.RuntimeType, System.MonoType";
+      #endregion
     }
 
     public IEnumerable<Tag> CreateMetaInfo(object o) {
