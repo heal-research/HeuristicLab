@@ -74,6 +74,12 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Calendar.DayView, Version=1.0.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\..\bin\Calendar.DayView.dll</HintPath>
@@ -227,13 +233,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd</PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 

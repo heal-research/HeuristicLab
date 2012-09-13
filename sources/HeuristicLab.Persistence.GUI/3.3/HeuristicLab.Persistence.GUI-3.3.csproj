@@ -97,6 +97,12 @@
     </DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -123,6 +129,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="PersistenceAnalysis.cs" />
     <Compile Include="PersistenceConfigurationForm.cs">
@@ -173,14 +180,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
