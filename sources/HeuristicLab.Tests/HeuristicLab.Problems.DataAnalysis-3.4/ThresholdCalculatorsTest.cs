@@ -110,6 +110,80 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
         AssertEqual(expectedTresholds, thresholds);
       }
 
+
+      {
+        // normal operation
+        double[] estimatedValues = new double[]
+                                     {
+                                       2.9937,
+                                       2.9861,
+                                       1.0202,
+                                       0.9844,
+                                       1.9912,
+                                       1.9970,
+                                       0.9776,
+                                       0.9611,
+                                       1.9882,
+                                       1.9953,
+                                       2.0147,
+                                       2.0106,
+                                       2.9949,
+                                       0.9925,
+                                       3.0050,
+                                       1.9987,
+                                       2.9973,
+                                       1.0110,
+                                       2.0160,
+                                       2.9559,
+                                       1.9943,
+                                       2.9477,
+                                       2.0158,
+                                       2.0026,
+                                       1.9837,
+                                       3.0185,
+                                     };
+        double[] targetClassValues = new double[]
+                                       {
+                                          3,
+                                          3,
+                                          1,
+                                          1,
+                                          2,
+                                          2,
+                                          1,
+                                          1,
+                                          2,
+                                          2,
+                                          2,
+                                          2,
+                                          3,
+                                          1,
+                                          3,
+                                          2,
+                                          3,
+                                          1,
+                                          2,
+                                          3,
+                                          2,
+                                          3,
+                                          2,
+                                          2,
+                                          2,
+                                          3,
+                                       };
+
+        double[] classValues;
+        double[] thresholds;
+        NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(null, estimatedValues, targetClassValues,
+                                                                           out classValues, out thresholds);
+
+
+        var expectedClassValues = new double[] { 2.0, 1.0, 2.0, 3.0 };
+        var expectedTresholds = new double[] { double.NegativeInfinity, -18.365068542315438, 1.6573010498191565, 2.314962133866949 };
+
+        AssertEqual(expectedClassValues, classValues);
+        AssertEqual(expectedTresholds, thresholds);
+      }
     }
 
 
