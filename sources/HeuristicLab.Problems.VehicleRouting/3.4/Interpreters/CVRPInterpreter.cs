@@ -23,17 +23,23 @@ using HeuristicLab.Data;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
-  public class CVRPInterpreter : IVRPDataInterpreter<CVRPData> {
-    public VRPInstanceDescription Interpret(IVRPData data) {
+  public class CVRPInterpreter : VRPInterpreter, IVRPDataInterpreter<CVRPData> {
+    public override Type GetDataType() {
+      return typeof(CVRPData);
+    }
+    
+    protected override IVRPProblemInstance CreateProblemInstance() {
+      return new CVRPProblemInstance();
+    }
+
+    protected override void Interpret(IVRPData data, IVRPProblemInstance problemInstance) {
       CVRPData cvrpData = data as CVRPData;
-
-      VRPInstanceDescription result = new VRPInstanceDescription();
-      result.Name = cvrpData.Name;
-      result.Description = cvrpData.Description;
-
-      CVRPProblemInstance problem = new CVRPProblemInstance();
+      CVRPProblemInstance problem = problemInstance as CVRPProblemInstance;
+      
       if (cvrpData.Coordinates != null)
         problem.Coordinates = new DoubleMatrix(cvrpData.Coordinates);
       if (cvrpData.MaximumVehicles != null)
@@ -46,25 +52,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
         problem.UseDistanceMatrix.Value = true;
         problem.DistanceMatrix = new DoubleMatrix(cvrpData.GetDistanceMatrix());
       }
-      result.ProblemInstance = problem;
-
-      result.BestKnownQuality = cvrpData.BestKnownQuality;
-      if (cvrpData.BestKnownTour != null) {
-        PotvinEncoding solution = new PotvinEncoding(problem);
-
-        for (int i = 0; i < cvrpData.BestKnownTour.GetLength(0); i++) {
-          Tour tour = new Tour();
-          solution.Tours.Add(tour);
-
-          foreach (int stop in cvrpData.BestKnownTour[i]) {
-            tour.Stops.Add(stop + 1);
-          }
-        }
-
-        result.BestKnownSolution = solution;
-      }
-
-      return result;
     }
   }
 }

@@ -141,6 +141,8 @@
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarSingleMoveGenerator.cs" />
     <Compile Include="Improver\VRPImprovementOperator.cs" />
     <Compile Include="Interfaces\IVRPLocalSearchManipulator.cs" />
+    <Compile Include="Interpreters\MDCVRPInterpreter.cs" />
+    <Compile Include="Interpreters\VRPInterpreter.cs" />
     <Compile Include="Interpreters\MDCVRPTWInterpreter.cs" />
     <Compile Include="Interpreters\PDPTWInterpreter.cs" />
     <Compile Include="Interpreters\CVRPTWInterpreter.cs" />

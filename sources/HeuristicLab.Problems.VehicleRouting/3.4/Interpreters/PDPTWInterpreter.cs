@@ -23,52 +23,26 @@ using HeuristicLab.Data;
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
-  public class PDPTWInterpreter : IVRPDataInterpreter<PDPTWData> {
-    public VRPInstanceDescription Interpret(IVRPData data) {
-      PDPTWData cvrpData = data as PDPTWData;
+  public class PDPTWInterpreter : CVRPTWInterpreter, IVRPDataInterpreter<PDPTWData> {
+    public override Type GetDataType() {
+      return typeof(PDPTWData);
+    }
+    
+    protected override IVRPProblemInstance CreateProblemInstance() {
+      return new CVRPPDTWProblemInstance();
+    }
 
-      VRPInstanceDescription result = new VRPInstanceDescription();
-      result.Name = cvrpData.Name;
-      result.Description = cvrpData.Description;
+    protected override void Interpret(IVRPData data, IVRPProblemInstance problemInstance) {
+      base.Interpret(data, problemInstance);
 
-      CVRPPDTWProblemInstance problem = new CVRPPDTWProblemInstance();
-      if (cvrpData.Coordinates != null)
-        problem.Coordinates = new DoubleMatrix(cvrpData.Coordinates);
-      if (cvrpData.MaximumVehicles != null)
-        problem.Vehicles.Value = (int)cvrpData.MaximumVehicles;
-      else
-        problem.Vehicles.Value = cvrpData.Dimension - 1;
-      problem.Capacity.Value = cvrpData.Capacity;
-      problem.Demand = new DoubleArray(cvrpData.Demands);
-      if (cvrpData.DistanceMeasure != DistanceMeasure.Euclidean) {
-        problem.UseDistanceMatrix.Value = true;
-        problem.DistanceMatrix = new DoubleMatrix(cvrpData.GetDistanceMatrix());
-      }
-      problem.ReadyTime = new DoubleArray(cvrpData.ReadyTimes);
-      problem.ServiceTime = new DoubleArray(cvrpData.ServiceTimes);
-      problem.DueTime = new DoubleArray(cvrpData.DueTimes);
-      problem.PickupDeliveryLocation = new IntArray(cvrpData.PickupDeliveryLocations);
-      result.ProblemInstance = problem;
+      PDPTWData pdpData = data as PDPTWData;
+      CVRPPDTWProblemInstance problem = problemInstance as CVRPPDTWProblemInstance;
 
-      result.BestKnownQuality = cvrpData.BestKnownQuality;
-      if (cvrpData.BestKnownTour != null) {
-        PotvinEncoding solution = new PotvinEncoding(problem);
-
-        for (int i = 0; i < cvrpData.BestKnownTour.GetLength(0); i++) {
-          Tour tour = new Tour();
-          solution.Tours.Add(tour);
-
-          foreach (int stop in cvrpData.BestKnownTour[i]) {
-            tour.Stops.Add(stop + 1);
-          }
-        }
-
-        result.BestKnownSolution = solution;
-      }
-
-      return result;
+      problem.PickupDeliveryLocation = new IntArray(pdpData.PickupDeliveryLocations);
     }
   }
 }

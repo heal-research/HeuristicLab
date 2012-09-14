@@ -21,6 +21,7 @@
 
 using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
+using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
   public struct VRPInstanceDescription {
@@ -32,6 +33,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
   }
 
   public interface IVRPDataInterpreter {
+    Type GetDataType();
     VRPInstanceDescription Interpret(IVRPData data);
   }
 

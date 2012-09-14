@@ -27,24 +27,34 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
-  public class MDCVRPTWInterpreter : MDCVRPInterpreter, IVRPDataInterpreter<MDCVRPTWData> {
+  public class MDCVRPInterpreter : VRPInterpreter, IVRPDataInterpreter<MDCVRPData> {
     public override Type GetDataType() {
-      return typeof(MDCVRPTWData);
+      return typeof(MDCVRPData);
     }
     
     protected override IVRPProblemInstance CreateProblemInstance() {
-      return new MDCVRPTWProblemInstance();
+      return new MDCVRPProblemInstance();
     }
 
     protected override void Interpret(IVRPData data, IVRPProblemInstance problemInstance) {
-      base.Interpret(data, problemInstance);
+      MDCVRPData cvrpData = data as MDCVRPData;
+      MDCVRPProblemInstance problem = problemInstance as MDCVRPProblemInstance;
 
-      MDCVRPTWData cvrptwData = data as MDCVRPTWData;
-      MDCVRPTWProblemInstance problem = problemInstance as MDCVRPTWProblemInstance;
+      if (cvrpData.Coordinates != null)
+        problem.Coordinates = new DoubleMatrix(cvrpData.Coordinates);
+      if (cvrpData.MaximumVehicles != null)
+        problem.Vehicles.Value = (int)cvrpData.MaximumVehicles;
+      else
+        problem.Vehicles.Value = cvrpData.Dimension - 1;
+      problem.Capacity = new DoubleArray(cvrpData.Capacity);
+      problem.Demand = new DoubleArray(cvrpData.Demands);
+      if (cvrpData.DistanceMeasure != DistanceMeasure.Euclidean) {
+        problem.UseDistanceMatrix.Value = true;
+        problem.DistanceMatrix = new DoubleMatrix(cvrpData.GetDistanceMatrix());
+      }
 
-      problem.ReadyTime = new DoubleArray(cvrptwData.ReadyTimes);
-      problem.ServiceTime = new DoubleArray(cvrptwData.ServiceTimes);
-      problem.DueTime = new DoubleArray(cvrptwData.DueTimes);
+      problem.Depots.Value = cvrpData.Depots;
+      problem.VehicleDepotAssignment = new IntArray(cvrpData.VehicleDepotAssignment);
     }
   }
 }
