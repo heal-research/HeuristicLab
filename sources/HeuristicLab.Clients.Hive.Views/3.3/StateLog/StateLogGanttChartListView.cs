@@ -43,30 +43,24 @@ namespace HeuristicLab.Clients.Hive.Views {
     public StateLogGanttChartListView() {
       InitializeComponent();
       invisibleLegendItems = new List<LegendItem>();
-    }
-
-    protected override void DeregisterContentEvents() {
-      // Deregister your event handlers here
-      ganttChart.chart.MouseMove -= new System.Windows.Forms.MouseEventHandler(chart_MouseDown);
-      ganttChart.chart.MouseDown -= new System.Windows.Forms.MouseEventHandler(chart_MouseDown);
-      ganttChart.chart.CustomizeLegend -= new EventHandler<CustomizeLegendEventArgs>(chart_CustomizeLegend);
-      base.DeregisterContentEvents();
-    }
-
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      // Register your event handlers here
       ganttChart.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(chart_MouseMove);
       ganttChart.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(chart_MouseDown);
       ganttChart.chart.CustomizeLegend += new EventHandler<CustomizeLegendEventArgs>(chart_CustomizeLegend);
     }
 
+    protected override void DeregisterContentEvents() {
+      base.DeregisterContentEvents();
+    }
+
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        ganttChart.Reset();
-      } else {
-        ganttChart.Reset();
+
+      ganttChart.Reset();
+      if (Content != null) {
         SetupCategories(ganttChart);
         if (Content.Count > 0) {
           DateTime maxValue = Content.Max(x => x.Count > 0 ? x.Max(y => y.DateTime) : DateTime.MinValue);
