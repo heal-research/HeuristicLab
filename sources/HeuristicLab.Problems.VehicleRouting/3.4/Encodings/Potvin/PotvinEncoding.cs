@@ -68,14 +68,15 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
       foreach (Tour tour in toBeRemoved) {
         int index = Tours.IndexOf(tour);
+        Tours.Remove(tour);
         if (index < VehicleAssignment.Length) {
           int vehicle = VehicleAssignment[index];
+          int max = System.Math.Min(VehicleAssignment.Length - 1, Tours.Count);
 
-          Tours.Remove(tour);
-          for (int i = index; i < VehicleAssignment.Length - 1; i++) {
+          for (int i = index; i < max; i++) {
             VehicleAssignment[i] = VehicleAssignment[i + 1];
           }
-          VehicleAssignment[VehicleAssignment.Length - 1] = vehicle;
+          VehicleAssignment[max] = vehicle;
         }
       }
 
