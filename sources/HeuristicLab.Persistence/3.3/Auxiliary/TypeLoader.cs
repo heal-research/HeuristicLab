@@ -46,15 +46,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
       Type type;
       try {
         type = Type.GetType(typeNameString, true);
-        #region Mono Compatibility
-        // mono: workaround until Mono bug #580 (http://bugzilla.xamarin.com/show_bug.cgi?id=580) is fixed
-        if (type.AssemblyQualifiedName != typeNameString)
-          throw new TypeLoadException(
-            String.Format(
-            @"Could not load requested type ""{0}"", loaded ""{1}"" instead.",
-            typeNameString, type.AssemblyQualifiedName));
-        #endregion
-      }
+      }      
       catch (Exception) {
         Logger.Warn(String.Format(
           "Cannot load type \"{0}\", falling back to partial name", typeNameString));
