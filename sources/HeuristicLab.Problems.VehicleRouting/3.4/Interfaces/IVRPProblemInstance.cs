@@ -26,7 +26,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interfaces {
-  public interface IVRPProblemInstance : IItem {
+  public interface IVRPProblemInstance : IParameterizedNamedItem {
     IVRPEvaluator SolutionEvaluator { get; set; }
     IVRPEvaluator MoveEvaluator { get; }
     IEnumerable<IOperator> Operators { get; }
