@@ -161,6 +161,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {
         Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, ApplyLinearScalingParameterDescription, new BoolValue(false)));
         ApplyLinearScalingParameter.Hidden = true;
+
+        //it is assumed that for all symbolic regression algorithms linear scaling was set to true
+        //there is no possibility to determine the previous value of the parameter as it was stored in the evaluator
+        if (GetType().Name.Contains("SymbolicRegression"))
+          ApplyLinearScaling.Value = true;
       }
 
       RegisterEventHandlers();
