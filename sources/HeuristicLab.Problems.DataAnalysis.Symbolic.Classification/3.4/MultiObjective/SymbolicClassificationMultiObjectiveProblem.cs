@@ -67,6 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       Parameters.Add(new FixedValueParameter<DoubleLimit>(EstimationLimitsParameterName, EstimationLimitsParameterDescription));
       Parameters.Add(new ValueParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, "", new AccuracyMaximizingThresholdsModelCreator()));
 
+      ApplyLinearScalingParameter.Value.Value = false;
       EstimationLimitsParameter.Hidden = true;
 
       Maximization = new BoolArray(new bool[] { false, false });

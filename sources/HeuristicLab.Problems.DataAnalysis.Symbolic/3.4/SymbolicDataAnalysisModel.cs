@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -65,5 +66,88 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       this.symbolicExpressionTree = tree;
       this.interpreter = interpreter;
     }
+
+    #region Scaling
+    public static void Scale(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, string targetVariable) {
+      var dataset = problemData.Dataset;
+      var rows = problemData.TrainingIndices;
+      var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
+      var targetValues = dataset.GetDoubleValues(targetVariable, rows);
+
+      var linearScalingCalculator = new OnlineLinearScalingParameterCalculator();
+      var targetValuesEnumerator = targetValues.GetEnumerator();
+      var estimatedValuesEnumerator = estimatedValues.GetEnumerator();
+      while (targetValuesEnumerator.MoveNext() & estimatedValuesEnumerator.MoveNext()) {
+        double target = targetValuesEnumerator.Current;
+        double estimated = estimatedValuesEnumerator.Current;
+        if (!double.IsNaN(estimated) && !double.IsInfinity(estimated))
+          linearScalingCalculator.Add(estimated, target);
+      }
+      if (linearScalingCalculator.ErrorState == OnlineCalculatorError.None && (targetValuesEnumerator.MoveNext() || estimatedValuesEnumerator.MoveNext()))
+        throw new ArgumentException("Number of elements in target and estimated values enumeration do not match.");
+
+      double alpha = linearScalingCalculator.Alpha;
+      double beta = linearScalingCalculator.Beta;
+      if (linearScalingCalculator.ErrorState != OnlineCalculatorError.None) return;
+
+      ConstantTreeNode alphaTreeNode = null;
+      ConstantTreeNode betaTreeNode = null;
+      // check if model has been scaled previously by analyzing the structure of the tree
+      var startNode = model.SymbolicExpressionTree.Root.GetSubtree(0);
+      if (startNode.GetSubtree(0).Symbol is Addition) {
+        var addNode = startNode.GetSubtree(0);
+        if (addNode.SubtreeCount == 2 && addNode.GetSubtree(0).Symbol is Multiplication && addNode.GetSubtree(1).Symbol is Constant) {
+          alphaTreeNode = addNode.GetSubtree(1) as ConstantTreeNode;
+          var mulNode = addNode.GetSubtree(0);
+          if (mulNode.SubtreeCount == 2 && mulNode.GetSubtree(1).Symbol is Constant) {
+            betaTreeNode = mulNode.GetSubtree(1) as ConstantTreeNode;
+          }
+        }
+      }
+      // if tree structure matches the structure necessary for linear scaling then reuse the existing tree nodes
+      if (alphaTreeNode != null && betaTreeNode != null) {
+        betaTreeNode.Value *= beta;
+        alphaTreeNode.Value *= beta;
+        alphaTreeNode.Value += alpha;
+      } else {
+        var mainBranch = startNode.GetSubtree(0);
+        startNode.RemoveSubtree(0);
+        var scaledMainBranch = MakeSum(MakeProduct(mainBranch, beta), alpha);
+        startNode.AddSubtree(scaledMainBranch);
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeSum(ISymbolicExpressionTreeNode treeNode, double alpha) {
+      if (alpha.IsAlmost(0.0)) {
+        return treeNode;
+      } else {
+        var addition = new Addition();
+        var node = addition.CreateTreeNode();
+        var alphaConst = MakeConstant(alpha);
+        node.AddSubtree(treeNode);
+        node.AddSubtree(alphaConst);
+        return node;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeProduct(ISymbolicExpressionTreeNode treeNode, double beta) {
+      if (beta.IsAlmost(1.0)) {
+        return treeNode;
+      } else {
+        var multipliciation = new Multiplication();
+        var node = multipliciation.CreateTreeNode();
+        var betaConst = MakeConstant(beta);
+        node.AddSubtree(treeNode);
+        node.AddSubtree(betaConst);
+        return node;
+      }
+    }
+
+    private static ISymbolicExpressionTreeNode MakeConstant(double c) {
+      var node = (ConstantTreeNode)(new Constant()).CreateTreeNode();
+      node.Value = c;
+      return node;
+    }
+    #endregion
   }
 }

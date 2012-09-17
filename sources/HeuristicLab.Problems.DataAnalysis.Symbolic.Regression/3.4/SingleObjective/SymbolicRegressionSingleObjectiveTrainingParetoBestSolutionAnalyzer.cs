@@ -21,9 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
@@ -33,34 +31,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer", "An operator that collects the training Pareto-best symbolic regression solutions for single objective symbolic regression problems.")]
   [StorableClass]
   public sealed class SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer : SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer<IRegressionProblemData, ISymbolicRegressionSolution> {
-    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
-    #region parameter properties
-    public IValueParameter<BoolValue> ApplyLinearScalingParameter {
-      get { return (IValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
-    }
-    #endregion
-
-    #region properties
-    public BoolValue ApplyLinearScaling {
-      get { return ApplyLinearScalingParameter.Value; }
-    }
-    #endregion
 
     [StorableConstructor]
     private SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer(bool deserializing) : base(deserializing) { }
     private SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer(SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
-    public SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer()
-      : base() {
-      Parameters.Add(new ValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the produced symbolic regression solution should be linearly scaled.", new BoolValue(true)));
-    }
+    public SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer() : base() { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer(this, cloner);
     }
 
     protected override ISymbolicRegressionSolution CreateSolution(ISymbolicExpressionTree bestTree) {
       var model = new SymbolicRegressionModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      if (ApplyLinearScaling.Value)
-        SymbolicRegressionModel.Scale(model, ProblemDataParameter.ActualValue);
+      if (ApplyLinearScalingParameter.ActualValue.Value) SymbolicRegressionModel.Scale(model, ProblemDataParameter.ActualValue, ProblemDataParameter.ActualValue.TargetVariable);
       return new SymbolicRegressionSolution(model, (IRegressionProblemData)ProblemDataParameter.ActualValue.Clone());
     }
   }

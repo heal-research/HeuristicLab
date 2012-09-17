@@ -21,7 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -38,7 +37,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private const string ModelCreatorParameterName = "ModelCreator";
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicDataAnalysisTreeInterpreter";
     private const string EstimationLimitsParameterName = "EstimationLimits";
-    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
 
     #region parameter properties
     public ILookupParameter<IClassificationProblemData> ProblemDataParameter {
@@ -56,15 +54,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public IValueLookupParameter<DoubleLimit> EstimationLimitsParameter {
       get { return (IValueLookupParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
     }
-    public IValueParameter<BoolValue> ApplyLinearScalingParameter {
-      get { return (IValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
-    }
-    #endregion
-
-    #region properties
-    public BoolValue ApplyLinearScaling {
-      get { return ApplyLinearScalingParameter.Value; }
-    }
     #endregion
 
     [StorableConstructor]
@@ -76,7 +65,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       Parameters.Add(new ValueLookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, ""));
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The symbolic data analysis tree interpreter for the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic classification model."));
-      Parameters.Add(new ValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the produced symbolic classification solution should be linearly scaled.", new BoolValue(false)));
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer(this, cloner);
@@ -90,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     protected override ISymbolicClassificationSolution CreateSolution(ISymbolicExpressionTree bestTree, double[] bestQuality) {
       var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      if (ApplyLinearScaling.Value) SymbolicClassificationModel.Scale(model, ProblemDataParameter.ActualValue);
+      if (ApplyLinearScalingParameter.ActualValue.Value) SymbolicClassificationModel.Scale(model, ProblemDataParameter.ActualValue, ProblemDataParameter.ActualValue.TargetVariable);
 
       model.RecalculateModelParameters(ProblemDataParameter.ActualValue, ProblemDataParameter.ActualValue.TrainingIndices);
       return model.CreateClassificationSolution((IClassificationProblemData)ProblemDataParameter.ActualValue.Clone());

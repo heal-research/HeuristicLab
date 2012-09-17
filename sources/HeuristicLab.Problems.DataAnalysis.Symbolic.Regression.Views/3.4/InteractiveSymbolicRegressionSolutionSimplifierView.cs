@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       var model = new SymbolicRegressionModel(tree, Content.Model.Interpreter, Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit);
-      SymbolicRegressionModel.Scale(model, Content.ProblemData);
+      SymbolicRegressionModel.Scale(model, Content.ProblemData, Content.ProblemData.TargetVariable);
       Content.Model = model;
     }
 
@@ -121,7 +121,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     }
 
     protected override void btnOptimizeConstants_Click(object sender, EventArgs e) {
-      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(Content.Model.Interpreter, Content.Model.SymbolicExpressionTree, Content.ProblemData, Content.ProblemData.TrainingIndices, 0.001, 0, 0.0001);
+      var model = Content.Model;
+      SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(Content.Model.Interpreter, Content.Model.SymbolicExpressionTree, Content.ProblemData, Content.ProblemData.TrainingIndices,
+        applyLinearScaling: true, improvement: 0.001, iterations: 0, differentialStep: 0.0001, upperEstimationLimit: model.UpperEstimationLimit, lowerEstimationLimit: model.LowerEstimationLimit);
       UpdateModel(Content.Model.SymbolicExpressionTree);
     }
   }

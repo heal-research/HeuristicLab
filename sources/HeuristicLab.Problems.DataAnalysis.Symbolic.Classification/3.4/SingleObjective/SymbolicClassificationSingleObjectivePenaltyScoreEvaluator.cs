@@ -85,14 +85,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
       ModelCreatorParameter.ExecutionContext = context;
+      ApplyLinearScalingParameter.ExecutionContext = context;
 
       var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(tree, SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
+      if (ApplyLinearScalingParameter.ActualValue.Value) SymbolicClassificationModel.Scale(model, problemData, problemData.TargetVariable);
       model.RecalculateModelParameters(problemData, rows);
       double penalty = Calculate(model, problemData, rows);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
       ModelCreatorParameter.ExecutionContext = null;
+      ApplyLinearScalingParameter.ExecutionContext = null;
 
       return penalty;
     }

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -46,29 +47,40 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override IOperation Apply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
+      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value);
       QualityParameter.ActualValue = new DoubleValue(quality);
       return base.Apply();
     }
 
-    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IClassificationProblemData problemData, IEnumerable<int> rows) {
+    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IClassificationProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
-      IEnumerable<double> originalValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      IEnumerable<double> boundedEstimationValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+      IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
       OnlineCalculatorError errorState;
-      double mse = OnlineMeanSquaredErrorCalculator.Calculate(originalValues, boundedEstimationValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) return double.NaN;
-      else return mse;
+
+      double mse;
+      if (applyLinearScaling) {
+        var mseCalculator = new OnlineMeanSquaredErrorCalculator();
+        CalculateWithScaling(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit, mseCalculator, problemData.Dataset.Rows);
+        errorState = mseCalculator.ErrorState;
+        mse = mseCalculator.MeanSquaredError;
+      } else {
+        IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+        mse = OnlineMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
+      }
+      if (errorState != OnlineCalculatorError.None) return Double.NaN;
+      return mse;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IClassificationProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
+      ApplyLinearScalingParameter.ExecutionContext = context;
 
-      double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
+      double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
+      ApplyLinearScalingParameter.ExecutionContext = null;
 
       return mse;
     }

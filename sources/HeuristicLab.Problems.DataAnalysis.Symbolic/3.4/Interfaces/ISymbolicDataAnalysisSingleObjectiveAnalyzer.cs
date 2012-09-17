@@ -27,5 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public interface ISymbolicDataAnalysisSingleObjectiveAnalyzer : ISymbolicDataAnalysisAnalyzer {
     IScopeTreeLookupParameter<DoubleValue> QualityParameter { get; }
     ILookupParameter<BoolValue> MaximizationParameter { get; }
+    ILookupParameter<BoolValue> ApplyLinearScalingParameter { get; }
   }
 }

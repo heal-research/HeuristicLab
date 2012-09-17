@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string EstimationLimitsParameterName = "EstimationLimits";
     private const string EvaluationPartitionParameterName = "EvaluationPartition";
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
+    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
 
     public override bool CanChangeName { get { return false; } }
 
@@ -69,6 +70,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IValueLookupParameter<PercentValue> RelativeNumberOfEvaluatedSamplesParameter {
       get { return (IValueLookupParameter<PercentValue>)Parameters[RelativeNumberOfEvaluatedSamplesParameterName]; }
     }
+    public ILookupParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
+    }
     #endregion
 
 
@@ -86,6 +90,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new ValueLookupParameter<IntRange>(EvaluationPartitionParameterName, "The start index of the dataset partition on which the symbolic data analysis solution should be evaluated."));
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The upper and lower limit that should be used as cut off value for the output values of symbolic data analysis trees."));
       Parameters.Add(new ValueLookupParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation between the start and end index."));
+      Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the individual should be linearly scaled before evaluating."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (Parameters.ContainsKey(ApplyLinearScalingParameterName) && !(Parameters[ApplyLinearScalingParameterName] is LookupParameter<BoolValue>))
+        Parameters.Remove(ApplyLinearScalingParameterName);
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName))
+        Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the individual should be linearly scaled before evaluating."));
     }
 
     protected IEnumerable<int> GenerateRowsToEvaluate() {
@@ -93,8 +106,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     protected IEnumerable<int> GenerateRowsToEvaluate(double percentageOfRows) {
-
-
       IEnumerable<int> rows;
       int samplesStart = EvaluationPartitionParameter.ActualValue.Start;
       int samplesEnd = EvaluationPartitionParameter.ActualValue.End;
@@ -113,6 +124,50 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
 
       return rows.Where(i => i < testPartitionStart || testPartitionEnd <= i);
+    }
+
+    [ThreadStatic]
+    private static double[] cache;
+    protected static void CalculateWithScaling(IEnumerable<double> targetValues, IEnumerable<double> estimatedValues,
+      double lowerEstimationLimit, double upperEstimationLimit,
+      IOnlineCalculator calculator, int maxRows) {
+      if (cache == null || cache.GetLength(0) < maxRows) {
+        cache = new double[maxRows];
+      }
+
+      //calculate linear scaling
+      //the static methods of the calculator could not be used as it performs a check if the enumerators have an equal amount of elements
+      //this is not true if the cache is used
+      int i = 0;
+      var linearScalingCalculator = new OnlineLinearScalingParameterCalculator();
+      var targetValuesEnumerator = targetValues.GetEnumerator();
+      var estimatedValuesEnumerator = estimatedValues.GetEnumerator();
+      while (targetValuesEnumerator.MoveNext() & estimatedValuesEnumerator.MoveNext()) {
+        double target = targetValuesEnumerator.Current;
+        double estimated = estimatedValuesEnumerator.Current;
+        cache[i] = estimated;
+        if (!double.IsNaN(estimated) && !double.IsInfinity(estimated))
+          linearScalingCalculator.Add(estimated, target);
+        i++;
+      }
+      if (linearScalingCalculator.ErrorState == OnlineCalculatorError.None && (targetValuesEnumerator.MoveNext() || estimatedValuesEnumerator.MoveNext()))
+        throw new ArgumentException("Number of elements in target and estimated values enumeration do not match.");
+
+      double alpha = linearScalingCalculator.Alpha;
+      double beta = linearScalingCalculator.Beta;
+      if (linearScalingCalculator.ErrorState != OnlineCalculatorError.None) {
+        alpha = 0.0;
+        beta = 1.0;
+      }
+
+      //calculate the quality by using the passed online calculator
+      targetValuesEnumerator = targetValues.GetEnumerator();
+      var scaledBoundedEstimatedValuesEnumerator = Enumerable.Range(0, i).Select(x => cache[x] * beta + alpha)
+        .LimitToRange(lowerEstimationLimit, upperEstimationLimit).GetEnumerator();
+
+      while (targetValuesEnumerator.MoveNext() & scaledBoundedEstimatedValuesEnumerator.MoveNext()) {
+        calculator.Add(targetValuesEnumerator.Current, scaledBoundedEstimatedValuesEnumerator.Current);
+      }
     }
   }
 }

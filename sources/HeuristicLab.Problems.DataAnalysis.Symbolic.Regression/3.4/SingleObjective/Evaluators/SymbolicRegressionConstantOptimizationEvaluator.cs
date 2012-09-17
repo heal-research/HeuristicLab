@@ -105,16 +105,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (RandomParameter.ActualValue.NextDouble() < ConstantOptimizationProbability.Value) {
         IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(ConstantOptimizationRowsPercentage.Value);
         quality = OptimizeConstants(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue,
-           constantOptimizationRows, ConstantOptimizationImprovement.Value, ConstantOptimizationIterations.Value, 0.001,
+           constantOptimizationRows, ApplyLinearScalingParameter.ActualValue.Value, ConstantOptimizationImprovement.Value, ConstantOptimizationIterations.Value, 0.001,
            EstimationLimitsParameter.ActualValue.Upper, EstimationLimitsParameter.ActualValue.Lower,
           EvaluatedTreesParameter.ActualValue, EvaluatedTreeNodesParameter.ActualValue);
         if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
           var evaluationRows = GenerateRowsToEvaluate();
-          quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows);
+          quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows, ApplyLinearScalingParameter.ActualValue.Value);
         }
       } else {
         var evaluationRows = GenerateRowsToEvaluate();
-        quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows);
+        quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows, ApplyLinearScalingParameter.ActualValue.Value);
       }
       QualityParameter.ActualValue = new DoubleValue(quality);
       EvaluatedTreesParameter.ActualValue.Value += 1;
@@ -144,17 +144,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
+      ApplyLinearScalingParameter.ExecutionContext = context;
 
-      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
+      double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
+      ApplyLinearScalingParameter.ExecutionContext = context;
 
       return r2;
     }
 
     public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData,
-      IEnumerable<int> rows, double improvement, int iterations, double differentialStep, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
+      IEnumerable<int> rows, bool applyLinearScaling, double improvement, int iterations, double differentialStep, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
       List<SymbolicExpressionTreeTerminalNode> terminalNodes = tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>().ToList();
       double[] c = new double[terminalNodes.Count];
       int treeLength = tree.Length;
@@ -178,7 +180,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       alglib.minlmcreatev(1, c, diffstep, out state);
       alglib.minlmsetcond(state, epsg, epsf, epsx, maxits);
-      alglib.minlmoptimize(state, CreateCallBack(interpreter, tree, problemData, rows, upperEstimationLimit, lowerEstimationLimit, treeLength, evaluatedTrees, evaluatedTreeNodes), null, terminalNodes);
+      alglib.minlmoptimize(state, CreateCallBack(interpreter, tree, problemData, rows, applyLinearScaling, upperEstimationLimit, lowerEstimationLimit, treeLength, evaluatedTrees, evaluatedTreeNodes), null, terminalNodes);
       alglib.minlmresults(state, out c, out report);
 
       for (int i = 0; i < c.Length; i++) {
@@ -191,7 +193,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return (state.fi[0] - 1) * -1;
     }
 
-    private static alglib.ndimensional_fvec CreateCallBack(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, double upperEstimationLimit, double lowerEstimationLimit, int treeLength, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
+    private static alglib.ndimensional_fvec CreateCallBack(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, double upperEstimationLimit, double lowerEstimationLimit, int treeLength, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
       return (double[] arg, double[] fi, object obj) => {
         // update constants of tree
         List<SymbolicExpressionTreeTerminalNode> terminalNodes = (List<SymbolicExpressionTreeTerminalNode>)obj;
@@ -202,7 +204,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           if (variableTreeNode != null) variableTreeNode.Weight = arg[i];
         }
 
-        double quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows);
+        double quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
 
         fi[0] = 1 - quality;
         if (evaluatedTrees != null) evaluatedTrees.Value++;

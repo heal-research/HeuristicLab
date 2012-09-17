@@ -47,29 +47,41 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
+      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
       return base.Apply();
     }
 
-    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows) {
+    public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
-      IEnumerable<double> originalValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
       OnlineCalculatorError errorState;
-      double r2 = OnlinePearsonsRSquaredCalculator.Calculate(estimatedValues, originalValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) return 0.0;
-      else return r2;
+
+      double r2;
+      if (applyLinearScaling) {
+        var r2Calculator = new OnlinePearsonsRSquaredCalculator();
+        CalculateWithScaling(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit, r2Calculator, problemData.Dataset.Rows);
+        errorState = r2Calculator.ErrorState;
+        r2 = r2Calculator.RSquared;
+      } else {
+        IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+        r2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
+      }
+      if (errorState != OnlineCalculatorError.None) return double.NaN;
+      return r2;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
+      ApplyLinearScalingParameter.ExecutionContext = context;
 
-      double r2 = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows);
+      double r2 = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
+      ApplyLinearScalingParameter.ExecutionContext = null;
 
       return r2;
     }

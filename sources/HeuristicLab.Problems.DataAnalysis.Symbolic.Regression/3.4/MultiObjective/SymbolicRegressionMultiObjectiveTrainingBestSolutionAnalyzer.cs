@@ -21,7 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -37,7 +36,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string ProblemDataParameterName = "ProblemData";
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicDataAnalysisTreeInterpreter";
     private const string EstimationLimitsParameterName = "EstimationLimits";
-    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     #region parameter properties
     public ILookupParameter<IRegressionProblemData> ProblemDataParameter {
       get { return (ILookupParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName]; }
@@ -47,15 +45,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
     public IValueLookupParameter<DoubleLimit> EstimationLimitsParameter {
       get { return (IValueLookupParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
-    }
-    public IValueParameter<BoolValue> ApplyLinearScalingParameter {
-      get { return (IValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
-    }
-    #endregion
-
-    #region properties
-    public BoolValue ApplyLinearScaling {
-      get { return ApplyLinearScalingParameter.Value; }
     }
     #endregion
 
@@ -67,7 +56,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new LookupParameter<IRegressionProblemData>(ProblemDataParameterName, "The problem data for the symbolic regression solution."));
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The symbolic data analysis tree interpreter for the symbolic expression tree."));
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic regression model."));
-      Parameters.Add(new ValueParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the produced symbolic regression solution should be linearly scaled.", new BoolValue(true)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -76,8 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     protected override ISymbolicRegressionSolution CreateSolution(ISymbolicExpressionTree bestTree, double[] bestQuality) {
       var model = new SymbolicRegressionModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      if (ApplyLinearScaling.Value)
-        SymbolicRegressionModel.Scale(model, ProblemDataParameter.ActualValue);
+      if (ApplyLinearScalingParameter.ActualValue.Value) SymbolicRegressionModel.Scale(model, ProblemDataParameter.ActualValue, ProblemDataParameter.ActualValue.TargetVariable);
       return new SymbolicRegressionSolution(model, (IRegressionProblemData)ProblemDataParameter.ActualValue.Clone());
     }
   }

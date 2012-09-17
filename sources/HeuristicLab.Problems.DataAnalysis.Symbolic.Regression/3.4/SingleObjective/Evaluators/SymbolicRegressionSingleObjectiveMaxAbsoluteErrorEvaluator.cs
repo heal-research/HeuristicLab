@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -46,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScaling);
+      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
       return base.Apply();
@@ -67,18 +66,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
         mse = OnlineMaxAbsoluteErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
       }
-      if (errorState != OnlineCalculatorError.None) return Double.NaN;
-      else return mse;
+      if (errorState != OnlineCalculatorError.None) return double.NaN;
+      return mse;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
+      ApplyLinearScalingParameter.ExecutionContext = context;
 
-      double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScaling);
+      double mse = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
+      ApplyLinearScalingParameter.ExecutionContext = null;
 
       return mse;
     }

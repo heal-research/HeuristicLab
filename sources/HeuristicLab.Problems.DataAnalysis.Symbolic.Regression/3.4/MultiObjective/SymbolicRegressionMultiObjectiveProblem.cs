@@ -64,6 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       EstimationLimitsParameter.Hidden = true;
 
+      ApplyLinearScalingParameter.Value.Value = true;
       Maximization = new BoolArray(new bool[] { true, false });
       MaximumSymbolicExpressionTreeDepth.Value = InitialMaximumTreeDepth;
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;

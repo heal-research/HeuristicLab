@@ -28,6 +28,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
     IValueLookupParameter<IntRange> EvaluationPartitionParameter { get; }
     IValueLookupParameter<PercentValue> RelativeNumberOfEvaluatedSamplesParameter { get; }
+    ILookupParameter<BoolValue> ApplyLinearScalingParameter { get; }
 
     IValueLookupParameter<T> ProblemDataParameter { get; }
   }

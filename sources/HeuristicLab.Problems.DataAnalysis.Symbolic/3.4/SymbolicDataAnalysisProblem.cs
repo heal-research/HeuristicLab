@@ -52,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
     private const string FitnessCalculationPartitionParameterName = "FitnessCalculationPartition";
     private const string ValidationPartitionParameterName = "ValidationPartition";
+    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
 
     private const string ProblemDataParameterDescription = "";
     private const string SymbolicExpressionTreeGrammarParameterDescription = "The grammar that should be used for symbolic expression tree.";
@@ -63,6 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string RelativeNumberOfEvaluatedSamplesParameterDescription = "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation.";
     private const string FitnessCalculationPartitionParameterDescription = "The partition of the problem data training partition, that should be used to calculate the fitness of an individual.";
     private const string ValidationPartitionParameterDescription = "The partition of the problem data training partition, that should be used to select the best model from (optional).";
+    private const string ApplyLinearScalingParameterDescription = "Flag that indicates if the individual should be linearly scaled before evaluating.";
     #endregion
 
     #region parameter properties
@@ -98,6 +100,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public IFixedValueParameter<IntRange> ValidationPartitionParameter {
       get { return (IFixedValueParameter<IntRange>)Parameters[ValidationPartitionParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
     }
     #endregion
 
@@ -144,12 +149,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public IntRange ValidationPartition {
       get { return ValidationPartitionParameter.Value; }
     }
+    public BoolValue ApplyLinearScaling {
+      get { return ApplyLinearScalingParameter.Value; }
+    }
     #endregion
 
     [StorableConstructor]
     protected SymbolicDataAnalysisProblem(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, ApplyLinearScalingParameterDescription, new BoolValue(false)));
+        ApplyLinearScalingParameter.Hidden = true;
+      }
+
       RegisterEventHandlers();
     }
     protected SymbolicDataAnalysisProblem(SymbolicDataAnalysisProblem<T, U, V> original, Cloner cloner)
@@ -169,10 +182,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new FixedValueParameter<IntRange>(FitnessCalculationPartitionParameterName, FitnessCalculationPartitionParameterDescription));
       Parameters.Add(new FixedValueParameter<IntRange>(ValidationPartitionParameterName, ValidationPartitionParameterDescription));
       Parameters.Add(new FixedValueParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, RelativeNumberOfEvaluatedSamplesParameterDescription, new PercentValue(1)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(ApplyLinearScalingParameterName, ApplyLinearScalingParameterDescription, new BoolValue(false)));
 
       SymbolicExpressionTreeInterpreterParameter.Hidden = true;
       MaximumFunctionArgumentsParameter.Hidden = true;
       MaximumFunctionDefinitionsParameter.Hidden = true;
+      ApplyLinearScalingParameter.Hidden = true;
 
       SymbolicExpressionTreeGrammar = new TypeCoherentExpressionGrammar();
       SymbolicExpressionTreeInterpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
@@ -273,21 +288,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var operators = Parameters.OfType<IValueParameter>().Select(p => p.Value).OfType<IOperator>().Union(Operators).ToList();
 
       foreach (var op in operators.OfType<ISymbolicExpressionTreeGrammarBasedOperator>()) {
-        op.SymbolicExpressionTreeGrammarParameter.ActualName = SymbolicExpressionTreeGrammarParameterName;
+        op.SymbolicExpressionTreeGrammarParameter.ActualName = SymbolicExpressionTreeGrammarParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeSizeConstraintOperator>()) {
-        op.MaximumSymbolicExpressionTreeDepthParameter.ActualName = MaximumSymbolicExpressionTreeDepthParameterName;
-        op.MaximumSymbolicExpressionTreeLengthParameter.ActualName = MaximumSymbolicExpressionTreeLengthParameterName;
+        op.MaximumSymbolicExpressionTreeDepthParameter.ActualName = MaximumSymbolicExpressionTreeDepthParameter.Name;
+        op.MaximumSymbolicExpressionTreeLengthParameter.ActualName = MaximumSymbolicExpressionTreeLengthParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeArchitectureAlteringOperator>()) {
-        op.MaximumFunctionArgumentsParameter.ActualName = MaximumFunctionArgumentsParameterName;
-        op.MaximumFunctionDefinitionsParameter.ActualName = MaximumFunctionDefinitionsParameterName;
+        op.MaximumFunctionArgumentsParameter.ActualName = MaximumFunctionArgumentsParameter.Name;
+        op.MaximumFunctionDefinitionsParameter.ActualName = MaximumFunctionDefinitionsParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisEvaluator<T>>()) {
         op.ProblemDataParameter.ActualName = ProblemDataParameterName;
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameter.Name;
         op.RelativeNumberOfEvaluatedSamplesParameter.ActualName = RelativeNumberOfEvaluatedSamplesParameter.Name;
+        op.ApplyLinearScalingParameter.ActualName = ApplyLinearScalingParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
@@ -299,6 +315,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var op in operators.OfType<ISymbolicExpressionTreeAnalyzer>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
+      foreach (var op in operators.OfType<ISymbolicDataAnalysisSingleObjectiveAnalyzer>()) {
+        op.ApplyLinearScalingParameter.ActualName = ApplyLinearScalingParameter.Name;
+      }
+      foreach (var op in operators.OfType<ISymbolicDataAnalysisMultiObjectiveAnalyzer>()) {
+        op.ApplyLinearScalingParameter.ActualName = ApplyLinearScalingParameter.Name;
+      }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisAnalyzer>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
@@ -307,10 +329,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         op.ValidationPartitionParameter.ActualName = ValidationPartitionParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisInterpreterOperator>()) {
-        op.SymbolicDataAnalysisTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameterName;
+        op.SymbolicDataAnalysisTreeInterpreterParameter.ActualName = SymbolicExpressionTreeInterpreterParameter.Name;
       }
       foreach (var op in operators.OfType<ISymbolicDataAnalysisExpressionCrossover<T>>()) {
-        op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameterName;
+        op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameter.Name;
         op.ProblemDataParameter.ActualName = ProblemDataParameter.Name;
         op.EvaluationPartitionParameter.ActualName = FitnessCalculationPartitionParameter.Name;
         op.RelativeNumberOfEvaluatedSamplesParameter.ActualName = RelativeNumberOfEvaluatedSamplesParameter.Name;

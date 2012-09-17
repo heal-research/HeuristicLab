@@ -19,16 +19,11 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -38,12 +33,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public abstract class SymbolicDataAnalysisSingleObjectiveAnalyzer : SymbolicDataAnalysisAnalyzer, ISymbolicDataAnalysisSingleObjectiveAnalyzer {
     private const string QualityParameterName = "Quality";
     private const string MaximizationParameterName = "Maximization";
+    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
+
     #region parameter properties
     public IScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters[QualityParameterName]; }
     }
     public ILookupParameter<BoolValue> MaximizationParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[MaximizationParameterName]; }
+    }
+    public ILookupParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
     }
     #endregion
     #region properties
@@ -63,6 +63,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(QualityParameterName, "The qualities of the trees that should be analyzed."));
       Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The direction of optimization."));
+      Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the individual should be linearly scaled before evaluating."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (Parameters.ContainsKey(ApplyLinearScalingParameterName) && !(Parameters[ApplyLinearScalingParameterName] is LookupParameter<BoolValue>))
+        Parameters.Remove(ApplyLinearScalingParameterName);
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName))
+        Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the individual should be linearly scaled before evaluating."));
     }
   }
 }
