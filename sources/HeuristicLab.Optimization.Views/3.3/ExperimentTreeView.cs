@@ -109,6 +109,8 @@ namespace HeuristicLab.Optimization.Views {
         algorithm.ProblemChanged += new EventHandler(algorithm_ProblemChanged);
       } else if (batchRun != null) {
         batchRun.OptimizerChanged += new EventHandler(batchRun_OptimizerChanged);
+        batchRun.RepetetionsCounterChanged += new EventHandler(batchRun_RepetitionsCounterChanged);
+        batchRun.RepetitionsChanged += new EventHandler(batchRun_RepetitionsChanged);
       } else if (experiment != null) {
         experiment.Optimizers.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsAdded);
         experiment.Optimizers.ItemsMoved += new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsMoved);
@@ -131,6 +133,8 @@ namespace HeuristicLab.Optimization.Views {
         algorithm.ProblemChanged -= new EventHandler(algorithm_ProblemChanged);
       } else if (batchRun != null) {
         batchRun.OptimizerChanged -= new EventHandler(batchRun_OptimizerChanged);
+        batchRun.RepetetionsCounterChanged -= new EventHandler(batchRun_RepetitionsCounterChanged);
+        batchRun.RepetitionsChanged += new EventHandler(batchRun_RepetitionsChanged);
       } else if (experiment != null) {
         experiment.Optimizers.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsAdded);
         experiment.Optimizers.ItemsMoved -= new CollectionItemsChangedEventHandler<IndexedItem<IOptimizer>>(Optimizers_ItemsMoved);
@@ -222,6 +226,13 @@ namespace HeuristicLab.Optimization.Views {
       }
       RebuildImageList();
       UpdateDetailsViewHost();
+    }
+
+    private void batchRun_RepetitionsCounterChanged(object sender, EventArgs e) {
+      namedItem_ToStringChanged(sender, e);
+    }
+    private void batchRun_RepetitionsChanged(object sender, EventArgs e) {
+      namedItem_ToStringChanged(sender, e);
     }
 
     private void Optimizers_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<IOptimizer>> e) {
@@ -361,8 +372,12 @@ namespace HeuristicLab.Optimization.Views {
         return;
       }
       var namedItem = (INamedItem)sender;
-      foreach (TreeNode node in treeNodeTagMapping[namedItem])
+      foreach (TreeNode node in treeNodeTagMapping[namedItem]) {
         node.Text = namedItem.ToString();
+        var batchRun = namedItem as BatchRun;
+        if (batchRun != null)
+          node.Text += string.Format(" {0}/{1}", batchRun.RepetitionsCounter, batchRun.Repetitions);
+      }
     }
 
     private void namedItem_ItemImageChanged(object sender, EventArgs e) {
@@ -809,6 +824,10 @@ namespace HeuristicLab.Optimization.Views {
       if (algorithm != null) {
         foreach (TreeNode childNode in CreateAlgorithmChildNodes(algorithm))
           node.Nodes.Add(childNode);
+      }
+      var batchRun = optimizer as BatchRun;
+      if (batchRun != null) {
+        node.Text += string.Format(" {0}/{1}", batchRun.RepetitionsCounter, batchRun.Repetitions);
       }
 
       List<TreeNode> nodes;

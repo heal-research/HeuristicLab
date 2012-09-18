@@ -129,6 +129,15 @@ namespace HeuristicLab.Optimization {
     }
     [Storable]
     private int repetitionsCounter;
+    public int RepetitionsCounter {
+      get { return repetitionsCounter; }
+      private set {
+        if (value != repetitionsCounter) {
+          repetitionsCounter = value;
+          OnRepetitionsCounterChanged();
+        }
+      }
+    }
 
     [Storable]
     private RunCollection runs;
@@ -223,11 +232,12 @@ namespace HeuristicLab.Optimization {
         throw new InvalidOperationException(string.Format("Prepare not allowed in execution state \"{0}\".", ExecutionState));
       if (Optimizer != null) {
         ExecutionTime = TimeSpan.Zero;
-        repetitionsCounter = 0;
+        RepetitionsCounter = 0;
         if (clearRuns) runs.Clear();
         batchRunAction = BatchRunAction.Prepare;
         // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-        try { Optimizer.Prepare(clearRuns); } catch (InvalidOperationException) { }
+        try { Optimizer.Prepare(clearRuns); }
+        catch (InvalidOperationException) { }
       } else {
         ExecutionState = ExecutionState.Stopped;
       }
@@ -239,7 +249,8 @@ namespace HeuristicLab.Optimization {
       batchRunAction = BatchRunAction.Start;
       if (Optimizer.ExecutionState == ExecutionState.Stopped) Optimizer.Prepare();
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Start(); } catch (InvalidOperationException) { }
+      try { Optimizer.Start(); }
+      catch (InvalidOperationException) { }
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
@@ -248,7 +259,8 @@ namespace HeuristicLab.Optimization {
       batchRunAction = BatchRunAction.Pause;
       if (Optimizer.ExecutionState != ExecutionState.Started) return;
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Pause(); } catch (InvalidOperationException) { }
+      try { Optimizer.Pause(); }
+      catch (InvalidOperationException) { }
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
@@ -260,7 +272,8 @@ namespace HeuristicLab.Optimization {
         return;
       }
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Stop(); } catch (InvalidOperationException) { }
+      try { Optimizer.Stop(); }
+      catch (InvalidOperationException) { }
     }
 
     #region Events
@@ -282,6 +295,11 @@ namespace HeuristicLab.Optimization {
     public event EventHandler RepetitionsChanged;
     private void OnRepetitionsChanged() {
       EventHandler handler = RepetitionsChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler RepetetionsCounterChanged;
+    private void OnRepetitionsCounterChanged() {
+      EventHandler handler = RepetetionsCounterChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     public event EventHandler Prepared;
@@ -355,7 +373,7 @@ namespace HeuristicLab.Optimization {
       if (batchRunAction == BatchRunAction.Prepare || ExecutionState == ExecutionState.Stopped) {
         ExecutionTime = TimeSpan.Zero;
         runsExecutionTime = TimeSpan.Zero;
-        repetitionsCounter = 0;
+        RepetitionsCounter = 0;
         OnPrepared();
       }
     }
@@ -364,7 +382,7 @@ namespace HeuristicLab.Optimization {
         OnStarted();
     }
     private void Optimizer_Stopped(object sender, EventArgs e) {
-      repetitionsCounter++;
+      RepetitionsCounter++;
       ExecutionTime += runsExecutionTime;
       runsExecutionTime = TimeSpan.Zero;
 
