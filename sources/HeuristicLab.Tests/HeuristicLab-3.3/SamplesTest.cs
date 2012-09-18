@@ -233,8 +233,8 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.847170741142629, GetDoubleResult(ga, "BestQuality"), 1E-8);
-      Assert.AreEqual(0.58487147022708, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(0.790111952286997, GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(0.547381191721895, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
