@@ -161,15 +161,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       else return f(upper) - f(lower);
     }
 
-    private static double LogNormalDensity(double x, double mu, double sigma) {
-      if (sigma.IsAlmost(0.0)) {
-        if (x.IsAlmost(mu)) return 0.0; // log(1);
-        else return double.NegativeInfinity;
-      }
-
-      return -0.5 * Math.Log(2.0 * Math.PI * sigma * sigma) - Math.Pow(x - mu, 2) / (2.0 * sigma * sigma);
-    }
-
     private static void CalculateCutPoints(double m1, double s1, double m2, double s2, out double x1, out double x2) {
       if (s1.IsAlmost(s2)) {
         if (m1.IsAlmost(m2)) {
@@ -190,9 +181,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
           // make sure s2 is the larger std.dev.
           CalculateCutPoints(m2, s2, m1, s1, out x1, out x2);
         } else {
-          // scale s1 and s2 for numeric stability
-          //s2 = s2 / s1;
-          //s1 = 1.0;
           double a = (s1 + s2) * (s1 - s2);
           double g = Math.Sqrt(s1 * s1 * s2 * s2 * ((m1 - m2) * (m1 - m2) + 2.0 * (s1 * s1 + s2 * s2) * Math.Log(s2 / s1)));
           double m1s2 = m1 * s2 * s2;
