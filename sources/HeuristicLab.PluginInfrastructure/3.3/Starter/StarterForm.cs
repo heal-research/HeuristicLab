@@ -110,25 +110,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     /// <summary>
-    /// Creates a new StarterForm and tries to start application with <paramref name="appName"/> immediately.
-    /// </summary>
-    /// <param name="appName">Name of the application</param>
-    public StarterForm(string appName)
-      : this() {
-      var appDesc = (from desc in pluginManager.Applications
-                     where desc.Name == appName
-                     select desc).SingleOrDefault();
-      if (appDesc != null) {
-        StartApplication(appDesc);
-      } else {
-        MessageBox.Show("Cannot start application " + appName + ".",
-                        "HeuristicLab",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-      }
-    }
-
-    /// <summary>
     /// Creates a new StarterForm and passes the arguments in <paramref name="args"/>.
     /// </summary>
     /// <param name="args">The arguments that should be processed</param>
@@ -138,20 +119,25 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     private void StarterForm_Shown(object sender, EventArgs e) {
-      foreach (var argument in ArgumentHandling.GetArguments(arguments)) {
-        if (argument is StartArgument) {
-          var appDesc = (from desc in pluginManager.Applications
-                         where desc.Name == argument.Value
-                         select desc).SingleOrDefault();
-          if (appDesc != null) {
-            StartApplication(appDesc);
-          } else {
-            MessageBox.Show("Cannot start application " + argument.Value + ".",
-                            "HeuristicLab",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning);
+      try {
+        foreach (var argument in ArgumentHandling.GetArguments(arguments)) {
+          if (argument.Token == Argument.START) {
+            var appDesc = (from desc in pluginManager.Applications
+                           where desc.Name == argument.Value
+                           select desc).SingleOrDefault();
+            if (appDesc != null) {
+              StartApplication(appDesc);
+            } else {
+              MessageBox.Show("Cannot start application " + argument.Value + ".",
+                              "HeuristicLab",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Warning);
+            }
           }
         }
+      }
+      catch (AggregateException ex) {
+        ErrorHandling.ShowErrorDialog(this, "One or more errors occurred while initializing the application.", ex);
       }
     }
 

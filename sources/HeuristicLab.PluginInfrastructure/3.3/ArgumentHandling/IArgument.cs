@@ -21,6 +21,7 @@
 
 namespace HeuristicLab.PluginInfrastructure {
   public interface IArgument {
+    string Token { get; }
     string Value { get; }
     bool Valid { get; }
   }
