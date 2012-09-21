@@ -26,8 +26,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface ICovarianceFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
     void SetParameter(double[] hyp);
-    double GetCovariance(double[,] x, int i, int j);
-    IEnumerable<double> GetGradient(double[,] x, int i, int j);
-    double GetCrossCovariance(double[,] x, double[,] xt, int i, int j);
+    double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices = null);
+    IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices = null);
+    double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices = null);
   }
 }

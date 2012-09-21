@@ -91,18 +91,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       } else throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceLinearArd", "hyp");
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
-      return Util.ScalarProd(x, i, j, inverseLength);
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      return Util.ScalarProd(x, i, j, inverseLength, columnIndices);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      for (int k = 0; k < inverseLength.Length; k++) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
+
+      foreach (int k in columnIndices) {
         yield return -2.0 * x[i, k] * x[j, k] * inverseLength[k] * inverseLength[k];
       }
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      return Util.ScalarProd(x, i, xt, j, inverseLength);
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      return Util.ScalarProd(x, i, xt, j, inverseLength, columnIndices);
     }
   }
 }

@@ -75,16 +75,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
-      return terms.Select(t => t.GetCovariance(x, i, j)).Sum();
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      return terms.Select(t => t.GetCovariance(x, i, j, columnIndices)).Sum();
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      return terms.Select(t => t.GetGradient(x, i, j)).Aggregate(Enumerable.Concat);
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      return terms.Select(t => t.GetGradient(x, i, j, columnIndices)).Aggregate(Enumerable.Concat);
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      return terms.Select(t => t.GetCrossCovariance(x, xt, i, j)).Sum();
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      return terms.Select(t => t.GetCrossCovariance(x, xt, i, j, columnIndices)).Sum();
     }
   }
 }

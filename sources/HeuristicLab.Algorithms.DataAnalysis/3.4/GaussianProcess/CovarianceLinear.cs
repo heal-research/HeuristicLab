@@ -50,15 +50,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (hyp.Length > 0) throw new ArgumentException("No hyperparameters are allowed for the linear covariance function.");
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
-      return Util.ScalarProd(x, i, j);
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      return Util.ScalarProd(x, i, j, 1, columnIndices);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       yield break;
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
       return Util.ScalarProd(x, i, xt, j);
     }
   }

@@ -75,14 +75,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
-      return factors.Select(f => f.GetCovariance(x, i, j)).Aggregate((a, b) => a * b);
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      return factors.Select(f => f.GetCovariance(x, i, j, columnIndices)).Aggregate((a, b) => a * b);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      var covariances = factors.Select(f => f.GetCovariance(x, i, j)).ToArray();
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      var covariances = factors.Select(f => f.GetCovariance(x, i, j, columnIndices)).ToArray();
       for (int ii = 0; ii < factors.Count; ii++) {
-        foreach (var g in factors[ii].GetGradient(x, i, j)) {
+        foreach (var g in factors[ii].GetGradient(x, i, j, columnIndices)) {
           double res = g;
           for (int jj = 0; jj < covariances.Length; jj++)
             if (ii != jj) res *= covariances[jj];
@@ -91,8 +91,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      return factors.Select(f => f.GetCrossCovariance(x, xt, i, j)).Aggregate((a, b) => a * b);
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      return factors.Select(f => f.GetCrossCovariance(x, xt, i, j, columnIndices)).Aggregate((a, b) => a * b);
     }
   }
 }

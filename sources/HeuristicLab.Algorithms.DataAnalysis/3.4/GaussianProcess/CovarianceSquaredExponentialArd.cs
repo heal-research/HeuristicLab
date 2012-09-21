@@ -109,17 +109,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSquaredExponentialArd", "hyp");
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(x, i, j, inverseLength);
+                   : Util.SqrDist(x, i, j, inverseLength, columnIndices);
       return sf2 * Math.Exp(-d / 2.0);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(x, i, j, inverseLength);
+                   : Util.SqrDist(x, i, j, inverseLength, columnIndices);
 
       for (int ii = 0; ii < inverseLength.Length; ii++) {
         double sqrDist = Util.SqrDist(x[i, ii] * inverseLength[ii], x[j, ii] * inverseLength[ii]);
@@ -128,8 +128,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       yield return 2.0 * sf2 * Math.Exp(-d / 2.0);
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      double d = Util.SqrDist(x, i, xt, j, inverseLength);
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      double d = Util.SqrDist(x, i, xt, j, inverseLength, columnIndices);
       return sf2 * Math.Exp(-d / 2.0);
     }
   }

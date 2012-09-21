@@ -75,7 +75,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base() {
       Name = ItemName;
       Description = ItemDescription;
-      
+
       scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale of the periodic covariance function.");
       inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter for the periodic covariance function.");
       periodParameter = new HyperParameter<DoubleValue>("Period", "The period parameter for the periodic covariance function.");
@@ -124,8 +124,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePeriod", "hyp");
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
-      double k = i == j ? 0.0 : GetDistance(x, x, i, j);
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      if (columnIndices == null || columnIndices.Count() != 1)
+        throw new ArgumentException("The periodic covariance function can only be used for one dimension.", "columnIndices");
+      double k = i == j ? 0.0 : GetDistance(x, x, i, j, columnIndices);
       k = Math.PI * k / period;
       k = Math.Sin(k) * inverseLength;
       k = k * k;
@@ -133,8 +135,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return scale * Math.Exp(-2.0 * k);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
-      double v = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j) / period;
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      if (columnIndices == null || columnIndices.Count() != 1)
+        throw new ArgumentException("The periodic covariance function can only be used for one dimension.", "columnIndices");
+      double v = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j, columnIndices) / period;
       double gradient = Math.Sin(v) * inverseLength;
       gradient *= gradient;
       yield return 4.0 * scale * Math.Exp(-2.0 * gradient) * gradient;
@@ -143,8 +147,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       yield return 2.0 * scale * Math.Exp(-2 * gradient);
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      double k = GetDistance(x, xt, i, j);
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      if (columnIndices == null || columnIndices.Count() != 1)
+        throw new ArgumentException("The periodic covariance function can only be used for one dimension.", "columnIndices");
+      double k = GetDistance(x, xt, i, j, columnIndices);
       k = Math.PI * k / period;
       k = Math.Sin(k) * inverseLength;
       k = k * k;
@@ -152,8 +158,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return scale * Math.Exp(-2.0 * k);
     }
 
-    private double GetDistance(double[,] x, double[,] xt, int i, int j) {
-      return Math.Sqrt(Util.SqrDist(x, i, xt, j));
+    private double GetDistance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      return Math.Sqrt(Util.SqrDist(x, i, xt, j, 1, columnIndices));
     }
   }
 }

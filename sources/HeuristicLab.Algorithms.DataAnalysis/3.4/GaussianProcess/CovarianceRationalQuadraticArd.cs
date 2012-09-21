@@ -134,17 +134,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    public double GetCovariance(double[,] x, int i, int j) {
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(x, i, j, inverseLength);
+                   : Util.SqrDist(x, i, j, inverseLength, columnIndices);
       return sf2 * Math.Pow(1 + 0.5 * d / shape, -shape);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       double d = i == j
                    ? 0.0
-                   : Util.SqrDist(x, i, j, inverseLength);
+                   : Util.SqrDist(x, i, j, inverseLength, columnIndices);
       double b = 1 + 0.5 * d / shape;
       for (int k = 0; k < inverseLength.Length; k++) {
         yield return sf2 * Math.Pow(b, -shape - 1) * Util.SqrDist(x[i, k] * inverseLength[k], x[j, k] * inverseLength[k]);
@@ -153,8 +153,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       yield return sf2 * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b));
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      double d = Util.SqrDist(x, i, xt, j, inverseLength);
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      double d = Util.SqrDist(x, i, xt, j, inverseLength, columnIndices);
       return sf2 * Math.Pow(1 + 0.5 * d / shape, -shape);
     }
   }

@@ -90,15 +90,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       return scale;
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       yield return 2.0 * scale;
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
       return scale;
     }
   }

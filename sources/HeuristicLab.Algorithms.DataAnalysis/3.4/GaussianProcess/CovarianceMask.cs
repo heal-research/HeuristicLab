@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -30,15 +29,15 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "CovarianceScale",
-    Description = "Scale covariance function for Gaussian processes.")]
-  public sealed class CovarianceScale : ParameterizedNamedItem, ICovarianceFunction {
+  [Item(Name = "CovarianceMask",
+    Description = "Masking covariance function for dimension selection can be used to apply a covariance function only on certain input dimensions.")]
+  public sealed class CovarianceMask : ParameterizedNamedItem, ICovarianceFunction {
     [Storable]
-    private double sf2;
+    private int[] selectedDimensions;
     [Storable]
-    private readonly HyperParameter<DoubleValue> scaleParameter;
-    public IValueParameter<DoubleValue> ScaleParameter {
-      get { return scaleParameter; }
+    private readonly ValueParameter<IntArray> selectedDimensionsParameter;
+    public IValueParameter<IntArray> SelectedDimensionsParameter {
+      get { return selectedDimensionsParameter; }
     }
 
     [Storable]
@@ -50,37 +49,37 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private CovarianceScale(bool deserializing)
+    private CovarianceMask(bool deserializing)
       : base(deserializing) {
     }
 
-    private CovarianceScale(CovarianceScale original, Cloner cloner)
+    private CovarianceMask(CovarianceMask original, Cloner cloner)
       : base(original, cloner) {
-      this.scaleParameter = cloner.Clone(original.scaleParameter);
-      this.sf2 = original.sf2;
+      this.selectedDimensionsParameter = cloner.Clone(original.selectedDimensionsParameter);
+      this.selectedDimensions = (int[])original.selectedDimensions.Clone();
 
       this.covParameter = cloner.Clone(original.covParameter);
       this.cov = cloner.Clone(original.cov);
       RegisterEvents();
     }
 
-    public CovarianceScale()
+    public CovarianceMask()
       : base() {
       Name = ItemName;
       Description = ItemDescription;
 
-      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter.");
+      this.selectedDimensionsParameter = new ValueParameter<IntArray>("SelectedDimensions", "The dimensions on which the specified covariance function should be applied to.");
       this.covParameter = new ValueParameter<ICovarianceFunction>("CovarianceFunction", "The covariance function that should be scaled.", new CovarianceSquaredExponentialIso());
       cov = covParameter.Value;
 
-      Parameters.Add(this.scaleParameter);
+      Parameters.Add(selectedDimensionsParameter);
       Parameters.Add(covParameter);
 
       RegisterEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new CovarianceScale(this, cloner);
+      return new CovarianceMask(this, cloner);
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -89,35 +88,35 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private void RegisterEvents() {
-      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
+      Util.AttachArrayChangeHandler<IntArray, int>(selectedDimensionsParameter, () => {
+        selectedDimensions = selectedDimensionsParameter.Value
+          .OrderBy(x => x)
+          .Distinct()
+          .ToArray();
+        if (selectedDimensions.Length == 0) selectedDimensions = null;
+      });
       covParameter.ValueChanged += (sender, args) => { cov = covParameter.Value; };
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
-      return (scaleParameter.Fixed ? 0 : 1) + cov.GetNumberOfParameters(numberOfVariables);
+      if (selectedDimensions == null) return cov.GetNumberOfParameters(numberOfVariables);
+      else return cov.GetNumberOfParameters(selectedDimensions.Length);
     }
 
     public void SetParameter(double[] hyp) {
-      int i = 0;
-      if (!scaleParameter.Fixed) {
-        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[i])));
-        i++;
-      }
-      cov.SetParameter(hyp.Skip(i).ToArray());
+      cov.SetParameter(hyp);
     }
 
     public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      return sf2 * cov.GetCovariance(x, i, j, columnIndices);
+      return cov.GetCovariance(x, i, j, selectedDimensions);
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      yield return 2 * sf2 * cov.GetCovariance(x, i, j, columnIndices);
-      foreach (var g in cov.GetGradient(x, i, j, columnIndices))
-        yield return sf2 * g;
+      return cov.GetGradient(x, i, j, selectedDimensions);
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      return sf2 * cov.GetCrossCovariance(x, xt, i, j, columnIndices);
+      return cov.GetCrossCovariance(x, xt, i, j, selectedDimensions);
     }
   }
 }

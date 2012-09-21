@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Views {
-  [View("Line Chart 2")]
+  [View("Line Chart (95% confidence interval)")]
   [Content(typeof(GaussianProcessRegressionSolution))]
   public partial class GaussianProcessRegressionSolutionLineChartView : DataAnalysisSolutionEvaluationView {
     private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";

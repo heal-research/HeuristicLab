@@ -153,24 +153,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return df * t * Math.Exp(-t);
     }
 
-    public double GetCovariance(double[,] x, int i, int j) {
+    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       double dist = i == j
                    ? 0.0
-                   : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength));
+                   : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength, columnIndices));
       return sf2 * m(dist);
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j) {
+    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
       double dist = i == j
                    ? 0.0
-                   : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength));
+                   : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength, columnIndices));
 
       yield return sf2 * dm(dist);
       yield return 2 * sf2 * m(dist);
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j) {
-      double dist = Math.Sqrt(Util.SqrDist(x, i, xt, j, Math.Sqrt(d) * inverseLength));
+    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      double dist = Math.Sqrt(Util.SqrDist(x, i, xt, j, Math.Sqrt(d) * inverseLength, columnIndices));
       return sf2 * m(dist);
     }
   }
