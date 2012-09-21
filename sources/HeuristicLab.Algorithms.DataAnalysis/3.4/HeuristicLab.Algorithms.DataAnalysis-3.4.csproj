@@ -119,8 +119,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
-    <Compile Include="GaussianProcess\GaussianProcessDiscriminantFunctionClassificationSolution.cs" />
-    <Compile Include="GaussianProcess\GaussianProcessDiscriminantFunctionClassificationModel.cs" />
+    <Compile Include="GaussianProcess\CovarianceMask.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassificationSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassificationModelCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassification.cs" />

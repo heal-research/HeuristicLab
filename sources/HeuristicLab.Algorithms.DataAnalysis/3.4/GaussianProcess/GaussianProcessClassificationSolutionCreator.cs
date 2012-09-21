@@ -77,7 +77,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (ModelParameter.ActualValue != null) {
         var m = (IGaussianProcessModel)ModelParameter.ActualValue.Clone();
         var data = (IClassificationProblemData)ProblemDataParameter.ActualValue.Clone();
-        var model = new GaussianProcessDiscriminantFunctionClassificationModel(m, new NormalDistributionCutPointsThresholdCalculator());
+        var model = new DiscriminantFunctionClassificationModel(m, new NormalDistributionCutPointsThresholdCalculator());
         model.RecalculateModelParameters(data, data.TrainingIndices);
         var s = model.CreateDiscriminantFunctionClassificationSolution(data);
 

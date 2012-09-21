@@ -32,9 +32,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("DiscriminantFunctionClassificationModel", "Represents a classification model that uses a discriminant function and classification thresholds.")]
-  public abstract class DiscriminantFunctionClassificationModel : NamedItem, IDiscriminantFunctionClassificationModel {
+  public class DiscriminantFunctionClassificationModel : NamedItem, IDiscriminantFunctionClassificationModel {
     [Storable]
     private IRegressionModel model;
+    public IRegressionModel Model {
+      get { return model; }
+      private set { model = value; }
+    }
 
     [Storable]
     private double[] classValues;
@@ -82,6 +86,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (ThresholdCalculator == null) ThresholdCalculator = new AccuracyMaximizationThresholdCalculator();
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DiscriminantFunctionClassificationModel(this, cloner);
+    }
+
     public void SetThresholdsAndClassValues(IEnumerable<double> thresholds, IEnumerable<double> classValues) {
       var classValuesArr = classValues.ToArray();
       var thresholdsArr = thresholds.ToArray();
@@ -126,7 +134,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    public abstract IDiscriminantFunctionClassificationSolution CreateDiscriminantFunctionClassificationSolution(IClassificationProblemData problemData);
-    public abstract IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
+    public virtual IDiscriminantFunctionClassificationSolution CreateDiscriminantFunctionClassificationSolution(IClassificationProblemData problemData) {
+      return new DiscriminantFunctionClassificationSolution(this, problemData);
+    }
+
+    public virtual IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return CreateDiscriminantFunctionClassificationSolution(problemData);
+    }
   }
 }

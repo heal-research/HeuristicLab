@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("DiscriminantFunctionClassificationSolution", "Represents a classification solution that uses a discriminant function and classification thresholds.")]
-  public abstract class DiscriminantFunctionClassificationSolution : DiscriminantFunctionClassificationSolutionBase {
+  public class DiscriminantFunctionClassificationSolution : DiscriminantFunctionClassificationSolutionBase {
     protected readonly Dictionary<int, double> valueEvaluationCache;
     protected readonly Dictionary<int, double> classValueEvaluationCache;
 
@@ -46,10 +46,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       valueEvaluationCache = new Dictionary<int, double>(original.valueEvaluationCache);
       classValueEvaluationCache = new Dictionary<int, double>(original.classValueEvaluationCache);
     }
-    protected DiscriminantFunctionClassificationSolution(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData)
+    public DiscriminantFunctionClassificationSolution(IDiscriminantFunctionClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
       valueEvaluationCache = new Dictionary<int, double>();
       classValueEvaluationCache = new Dictionary<int, double>();
+      RecalculateResults();
     }
 
     public override IEnumerable<double> EstimatedClassValues {
@@ -110,6 +111,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       valueEvaluationCache.Clear();
       classValueEvaluationCache.Clear();
       base.OnProblemDataChanged();
+    }
+
+    protected override void RecalculateResults() {
+      CalculateResults();
+      CalculateRegressionResults();
     }
   }
 }
