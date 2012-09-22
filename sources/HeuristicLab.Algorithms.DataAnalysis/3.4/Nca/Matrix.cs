@@ -69,8 +69,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public Matrix Transpose() {
-      var result = new Matrix(Transpose(values, Columns, Rows), Columns, Rows);
-      return result;
+      return new Matrix(Transpose(values, Columns, Rows), Columns, Rows);
     }
 
     private IEnumerable<double> Transpose(IEnumerable<double> values, int rows, int columns) {
@@ -124,18 +123,35 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new Matrix(values.Select(x => x * value), Rows, Columns);
     }
 
-    public double VectorLength() {
-      return Math.Sqrt(SquaredVectorLength());
+    public double EuclideanNorm() {
+      return Math.Sqrt(SumOfSquares());
     }
 
-    public double SquaredVectorLength() {
-      if (Rows != 1) throw new ArgumentException("Length only works on vectors.");
+    public double SumOfSquares() {
       return values.Sum(x => x * x);
     }
 
     public Matrix OuterProduct(Matrix other) {
       if (Rows != 1 || other.Rows != 1) throw new ArgumentException("OuterProduct can only be applied to vectors.");
       return Transpose().Multiply(other);
+    }
+
+    public IEnumerable<double> ColumnSums() {
+      return Transpose().RowSums();
+    }
+
+    public IEnumerable<double> RowSums() {
+      var sum = 0.0;
+      int counter = 0;
+      foreach (var v in values) {
+        sum += v;
+        counter++;
+        if (counter == Rows) {
+          yield return sum;
+          sum = 0.0;
+          counter = 0;
+        }
+      }
     }
 
     public Matrix Negate() {
