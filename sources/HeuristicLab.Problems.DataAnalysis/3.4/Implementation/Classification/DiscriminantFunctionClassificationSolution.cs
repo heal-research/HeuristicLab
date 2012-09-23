@@ -53,6 +53,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RecalculateResults();
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new DiscriminantFunctionClassificationSolution(this, cloner);
+    }
+
     public override IEnumerable<double> EstimatedClassValues {
       get { return GetEstimatedClassValues(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
     }
