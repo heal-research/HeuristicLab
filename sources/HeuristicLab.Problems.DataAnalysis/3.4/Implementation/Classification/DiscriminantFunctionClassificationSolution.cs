@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(model, problemData) {
       valueEvaluationCache = new Dictionary<int, double>();
       classValueEvaluationCache = new Dictionary<int, double>();
-      RecalculateResults();
+      CalculateDiscriminantFunctionClassificationResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -117,9 +117,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       base.OnProblemDataChanged();
     }
 
-    protected override void RecalculateResults() {
+
+    private void CalculateDiscriminantFunctionClassificationResults() {
       CalculateResults();
       CalculateRegressionResults();
+    }
+
+    protected override void RecalculateResults() {
+      CalculateDiscriminantFunctionClassificationResults();
     }
   }
 }

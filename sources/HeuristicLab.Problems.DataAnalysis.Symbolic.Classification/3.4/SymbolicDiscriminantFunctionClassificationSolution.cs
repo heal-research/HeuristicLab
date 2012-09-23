@@ -65,18 +65,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       : base(model, problemData) {
       Add(new Result(ModelLengthResultName, "Length of the symbolic classification model.", new IntValue()));
       Add(new Result(ModelDepthResultName, "Depth of the symbolic classification model.", new IntValue()));
-      RecalculateResults();
+      CalculateSymbolicDiscriminantFunctionClassificationResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDiscriminantFunctionClassificationSolution(this, cloner);
     }
 
-    protected override void RecalculateResults() {
+    private void CalculateSymbolicDiscriminantFunctionClassificationResults() {
       CalculateResults();
       CalculateRegressionResults();
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
+    }
+
+    protected override void RecalculateResults() {
+      CalculateSymbolicDiscriminantFunctionClassificationResults();
     }
   }
 }
