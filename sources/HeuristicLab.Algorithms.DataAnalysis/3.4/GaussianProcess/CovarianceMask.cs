@@ -56,7 +56,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private CovarianceMask(CovarianceMask original, Cloner cloner)
       : base(original, cloner) {
       this.selectedDimensionsParameter = cloner.Clone(original.selectedDimensionsParameter);
-      this.selectedDimensions = (int[])original.selectedDimensions.Clone();
+      if (original.selectedDimensions != null) {
+        this.selectedDimensions = (int[])original.selectedDimensions.Clone();
+      }
 
       this.covParameter = cloner.Clone(original.covParameter);
       this.cov = cloner.Clone(original.cov);
