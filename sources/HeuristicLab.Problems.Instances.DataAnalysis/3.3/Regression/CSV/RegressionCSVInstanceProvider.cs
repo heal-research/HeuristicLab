@@ -128,18 +128,18 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
     public override void ExportData(IRegressionProblemData instance, string path) {
       var strBuilder = new StringBuilder();
-
-      foreach (var variable in instance.InputVariables) {
-        strBuilder.Append(variable + CultureInfo.CurrentCulture.TextInfo.ListSeparator);
+      var colSep = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+      foreach (var variable in instance.Dataset.VariableNames) {
+        strBuilder.Append(variable.Replace(colSep, String.Empty) + colSep);
       }
-      strBuilder.Remove(strBuilder.Length - CultureInfo.CurrentCulture.TextInfo.ListSeparator.Length, CultureInfo.CurrentCulture.TextInfo.ListSeparator.Length);
+      strBuilder.Remove(strBuilder.Length - colSep.Length, colSep.Length);
       strBuilder.AppendLine();
 
       var dataset = instance.Dataset;
 
       for (int i = 0; i < dataset.Rows; i++) {
         for (int j = 0; j < dataset.Columns; j++) {
-          if (j > 0) strBuilder.Append(CultureInfo.CurrentCulture.TextInfo.ListSeparator);
+          if (j > 0) strBuilder.Append(colSep);
           strBuilder.Append(dataset.GetValue(i, j));
         }
         strBuilder.AppendLine();
