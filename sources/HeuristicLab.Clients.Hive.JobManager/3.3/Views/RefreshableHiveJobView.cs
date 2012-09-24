@@ -162,7 +162,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         this.nameTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
         this.resourceNamesTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
-        this.searchButton.Enabled = (Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded)) || !Content.IsProgressing;
+        this.searchButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Prepared && !alreadyUploaded && !Content.IsProgressing;
         this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
 
         this.isPrivilegedCheckBox.Enabled = Content.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded) && !Content.IsProgressing;
