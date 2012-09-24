@@ -356,6 +356,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           sb.Append(";");
         }
         resourceNamesTextBox.Text = sb.ToString();
+        if (Content.Job.ResourceNames != resourceNamesTextBox.Text)
+          Content.Job.ResourceNames = resourceNamesTextBox.Text;
       }
     }
 
