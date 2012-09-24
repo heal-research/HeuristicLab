@@ -19,24 +19,28 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.MainForm;
 
-namespace HeuristicLab.Problems.DataAnalysis {
-  public class SpearmansRankCorrelationCoefficientCalculator {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
+  [View("Regression Feature Correlation View")]
+  [Content(typeof(RegressionProblemData), false)]
+  public partial class RegressionFeatureCorrelationView : FeatureCorrelationView {
 
-    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      double rs = double.NaN;
-      try {
-        rs = alglib.basestat.spearmancorr2(originalValues.ToArray(), estimatedValues.ToArray(), originalValues.Count());
-        errorState = OnlineCalculatorError.None;
-      }
-      catch (Exception ex) {
-        errorState = OnlineCalculatorError.InvalidValueAdded;
-      }
+    public new RegressionProblemData Content {
+      get { return (RegressionProblemData)base.Content; }
+      set { base.Content = value; }
+    }
 
-      return rs;
+    public RegressionFeatureCorrelationView() {
+      InitializeComponent();
+    }
+
+    protected override bool[] SetInitialVisibilityOfColumns() {
+      int i = Content.Dataset.DoubleVariables.ToList().FindIndex(x => x == Content.TargetVariable);
+      var initialVisibility = base.SetInitialVisibilityOfColumns();
+      initialVisibility[i] = true;
+      return initialVisibility;
     }
   }
 }

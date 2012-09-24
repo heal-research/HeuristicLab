@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Data.Views;
+using HeuristicLab.DataAnalysis.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
@@ -39,6 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public abstract partial class AbstractFeatureCorrelationView : AsynchronousContentView {
 
     private int[] virtualRowIndices;
+    private VariableVisibilityDialog variableVisibility;
     private List<KeyValuePair<int, SortOrder>> sortedColumnIndices;
     private StringConvertibleMatrixView.RowComparer rowComparer;
 
@@ -81,12 +83,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       base.OnContentChanged();
       if (Content != null) {
         fcc.ProblemData = Content;
+        bool[] initialVisibility = SetInitialVisibilityOfColumns();
+
+        variableVisibility = new VariableVisibilityDialog(Content.Dataset.DoubleVariables, initialVisibility);
+        variableVisibility.VariableVisibilityChanged += new ItemCheckEventHandler(variableVisibility_VariableVisibilityChanged);
         CalculateCorrelation();
       } else {
         DataGridView.Columns.Clear();
         DataGridView.Rows.Clear();
       }
     }
+
+    protected virtual bool[] SetInitialVisibilityOfColumns() {
+      bool[] initialVisibility = new bool[Content.Dataset.DoubleVariables.Count()];
+      int i = 0;
+      foreach (var variable in Content.Dataset.DoubleVariables) {
+        initialVisibility[i] = Content.AllowedInputVariables.Contains(variable);
+        i++;
+      }
+      return initialVisibility;
+    }
+
+    protected abstract void variableVisibility_VariableVisibilityChanged(object sender, ItemCheckEventArgs e);
 
     protected void CorrelationMeasureComboBox_SelectedChangeCommitted(object sender, System.EventArgs e) {
       CalculateCorrelation();
@@ -126,11 +144,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected virtual void UpdateColumnHeaders() {
       for (int i = 0; i < DataGridView.ColumnCount; i++) {
         DataGridView.Columns[i].HeaderText = currentCorrelation.ColumnNames.ElementAt(i);
+        DataGridView.Columns[i].Visible = variableVisibility.Visibility[i];
       }
     }
     protected virtual void UpdateRowHeaders() {
       for (int i = 0; i < DataGridView.RowCount; i++) {
         DataGridView.Rows[i].HeaderCell.Value = currentCorrelation.RowNames.ElementAt(virtualRowIndices[i]);
+        DataGridView.Rows[i].Visible = variableVisibility.Visibility[virtualRowIndices[i]];
       }
     }
 
@@ -168,6 +188,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected virtual Color GetDataPointColor(double value, double min, double max) {
+      if (double.IsNaN(value)) {
+        return Color.DarkGray;
+      }
       IList<Color> colors = ColorGradient.Colors;
       int index = (int)((colors.Count - 1) * (value - min) / (max - min));
       if (index >= colors.Count) index = colors.Count - 1;
@@ -300,5 +323,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Clipboard.SetText(s.ToString());
     }
     #endregion
+
+    protected void ShowHideColumns_Click(object sender, EventArgs e) {
+      variableVisibility.ShowDialog();
+    }
+
+    protected void DataGridView_MouseClick(object sender, MouseEventArgs e) {
+      if (Content == null) return;
+      if (e.Button == MouseButtons.Right && DataGridView.Columns.Count != 0)
+        contextMenu.Show(MousePosition);
+    }
+
+    protected int GetRowIndexOfVirtualindex(int virtualIndex) {
+      if (virtualIndex < 0 || virtualIndex >= virtualRowIndices.Length) {
+        throw new ArgumentException("Virtual index is out of bounds");
+      }
+
+      for (int i = 0; i < virtualRowIndices.Length; i++) {
+        if (virtualRowIndices[i] == virtualIndex) {
+          return i;
+        }
+      }
+      throw new ArgumentException("Virtual index was not found!");
+    }
   }
 }

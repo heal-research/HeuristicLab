@@ -106,5 +106,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         DataGridView.Columns[i].HeaderText = i.ToString();
       }
     }
+
+    protected override void variableVisibility_VariableVisibilityChanged(object sender, ItemCheckEventArgs e) {
+      DataGridView.Rows[GetRowIndexOfVirtualindex(e.Index)].Visible = e.NewValue == CheckState.Checked;
+    }
   }
 }

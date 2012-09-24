@@ -110,7 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       FCE.CorrelationCalculators calc = bwInfo.Calculator;
 
       IList<string> doubleVariableNames = dataset.DoubleVariables.ToList();
-      OnlineCalculatorError error;
+      OnlineCalculatorError error = OnlineCalculatorError.None;
       int length = doubleVariableNames.Count;
       double[,] elements = new double[length, length];
       double calculations = (Math.Pow(length, 2) + length) / 2;
@@ -123,17 +123,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
             e.Cancel = true;
             return;
           }
-
           IEnumerable<double> var1 = GetRelevantValues(problemData, partition, doubleVariableNames[i]);
           IEnumerable<double> var2 = GetRelevantValues(problemData, partition, doubleVariableNames[j]);
 
           elements[i, j] = CalculateElementWithCalculator(calc, var1, var2, out error);
 
-          elements[j, i] = elements[i, j];
           if (!error.Equals(OnlineCalculatorError.None)) {
-            worker.ReportProgress(100);
-            throw new ArgumentException("Calculator returned " + error + Environment.NewLine + "Maybe try another calculator.");
+            elements[i, j] = double.NaN;
           }
+          elements[j, i] = elements[i, j];
           worker.ReportProgress((int)Math.Round((((Math.Pow(i, 2) + i) / 2 + j + 1.0) / calculations) * 100));
         }
       }
@@ -152,7 +150,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double[,] alreadyCalculated = bwInfo.AlreadyCalculated;
 
       IList<string> doubleVariableNames = dataset.DoubleVariables.ToList();
-      OnlineCalculatorError error;
+      OnlineCalculatorError error = OnlineCalculatorError.None;
       int length = doubleVariableNames.Count;
       double[,] elements = new double[length, frames + 1];
       double calculations = (frames + 1) * length;
@@ -185,8 +183,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           elements[i, j] = CalculateElementWithCalculator(calc, var1, var2, out error);
 
           if (!error.Equals(OnlineCalculatorError.None)) {
-            worker.ReportProgress(100);
-            throw new ArgumentException("Calculator returned " + error + Environment.NewLine + "Maybe try another calculator.");
+            elements[i, j] = double.NaN;
           }
           worker.ReportProgress((int)((100.0 / calculations) * (i * (frames + 1) + j + 1)));
         }

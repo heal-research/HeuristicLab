@@ -44,10 +44,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected void FeatureCorrelationButton_Click(object sender, System.EventArgs e) {
-      ViewHost viewHost = new ViewHost();
-      viewHost.Content = (DataAnalysisProblemData)this.Content.Clone();
-      viewHost.ViewType = typeof(FeatureCorrelationView);
-      viewHost.Show();
+      Type viewType = MainFormManager.GetViewTypes(this.Content.GetType(), true).FirstOrDefault(t => typeof(AbstractFeatureCorrelationView).IsAssignableFrom(t));
+      MainFormManager.MainForm.ShowContent(Content, viewType);
     }
 
     protected void parameterCollectionView_DragDrop(object sender, DragEventArgs e) {

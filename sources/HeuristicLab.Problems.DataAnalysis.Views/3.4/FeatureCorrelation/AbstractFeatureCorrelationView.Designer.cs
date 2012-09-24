@@ -45,6 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AbstractFeatureCorrelationView));
       this.DataGridView = new System.Windows.Forms.DataGridView();
       this.HeatMapProgressBar = new System.Windows.Forms.ProgressBar();
@@ -58,6 +59,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.SplitContainer = new System.Windows.Forms.SplitContainer();
       this.CalculatingPanel = new System.Windows.Forms.Panel();
       this.CalculatingLabel = new System.Windows.Forms.Label();
+      this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.ShowHideColumns = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.DataGridView)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).BeginInit();
@@ -65,6 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.SplitContainer.Panel2.SuspendLayout();
       this.SplitContainer.SuspendLayout();
       this.CalculatingPanel.SuspendLayout();
+      this.contextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // DataGridView
@@ -83,6 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.DataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.DataGridView_CellValueNeeded);
       this.DataGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView_ColumnHeaderMouseClick);
       this.DataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridView_KeyDown);
+      this.DataGridView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.DataGridView_MouseClick);
       // 
       // HeatMapProgressBar
       // 
@@ -211,6 +216,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.CalculatingLabel.TabIndex = 10;
       this.CalculatingLabel.Text = "Calculating correlation...";
       // 
+      // contextMenu
+      // 
+      this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowHideColumns});
+      this.contextMenu.Name = "contextMenu";
+      this.contextMenu.Size = new System.Drawing.Size(191, 26);
+      // 
+      // ShowHideColumns
+      // 
+      this.ShowHideColumns.Name = "ShowHideColumns";
+      this.ShowHideColumns.Size = new System.Drawing.Size(190, 22);
+      this.ShowHideColumns.Text = "Show / Hide Columns";
+      this.ShowHideColumns.Click += new System.EventHandler(this.ShowHideColumns_Click);
+      // 
       // AbstractFeatureCorrelationView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -230,6 +249,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.SplitContainer.ResumeLayout(false);
       this.CalculatingPanel.ResumeLayout(false);
       this.CalculatingPanel.PerformLayout();
+      this.contextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -248,6 +268,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected System.Windows.Forms.SplitContainer SplitContainer;
     protected System.Windows.Forms.Panel CalculatingPanel;
     protected System.Windows.Forms.Label CalculatingLabel;
+    protected System.Windows.Forms.ContextMenuStrip contextMenu;
+    protected System.Windows.Forms.ToolStripMenuItem ShowHideColumns;
 
   }
 }
