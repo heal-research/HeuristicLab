@@ -40,19 +40,14 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// </summary>
     /// <value>The namespace.</value>
     [Storable]
-    #region Mono Compatibility
-    // mono: setting the namespace is needed for generating ObjectEqualityComparer type names in the TypeLoader
-    public string Namespace { get; internal set; }
-    #endregion
+    public string Namespace { get; private set; }
 
     /// <summary>
     /// Gets or sets the name of the class.
     /// </summary>
     /// <value>The name of the class.</value>
     [Storable]
-    #region Mono Compatibility
-    public string ClassName { get; internal set; }
-    #endregion
+    public string ClassName { get; private set; }
 
     /// <summary>
     /// Gets or sets the generic args.
@@ -115,6 +110,19 @@ namespace HeuristicLab.Persistence.Auxiliary {
       AssemblyAttribues = new Dictionary<string, string>();
     }
 
+    internal TypeName(TypeName typeName, string className = null, string nameSpace = null) {
+      Namespace = typeName.Namespace;
+      ClassName = typeName.ClassName;
+      GenericArgs = new List<TypeName>(typeName.GenericArgs);
+      AssemblyAttribues = new Dictionary<string, string>(typeName.AssemblyAttribues);
+      MemoryMagic = typeName.MemoryMagic;
+      AssemblyName = typeName.AssemblyName;
+      IsReference = typeName.IsReference;
+      if (nameSpace != null)
+        Namespace = nameSpace;
+      if (className != null)
+        ClassName = className;
+    }
 
     /// <summary>
     /// Returns a <see cref="System.String"/> that represents this instance.

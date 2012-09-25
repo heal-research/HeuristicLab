@@ -20,45 +20,70 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Tracing;
 
 namespace HeuristicLab.Persistence.Auxiliary {
   internal class TypeLoader {
+    #region Mono Compatibility
+    private static TypeName cachedRuntimeType;
+    private static TypeName cachedObjectEqualityComparerType;
+
+    static TypeLoader() {
+      // we use Int32 here because we get all the information about Mono's mscorlib and just have to change the class name
+      cachedRuntimeType = TypeNameParser.Parse(typeof(System.Int32).AssemblyQualifiedName);
+      cachedRuntimeType = new TypeName(cachedRuntimeType, "MonoType");
+
+      // we need the information about the Persistence assembly, so we use TypeName here because it is contained in this assembly
+      cachedObjectEqualityComparerType = TypeNameParser.Parse(typeof(TypeName).AssemblyQualifiedName);
+      cachedObjectEqualityComparerType = new TypeName(cachedObjectEqualityComparerType, "ObjectEqualityComparer", "HeuristicLab.Persistence.Mono");
+    }
+    #endregion
+
     public static Type Load(string typeNameString) {
+      TypeName typeName = null;
+      try {
+        typeName = TypeNameParser.Parse(typeNameString);
+      }
+      catch (Exception) {
+        throw new PersistenceException(String.Format(
+           "Could not parse type string \"{0}\"",
+           typeNameString));
+      }
+
       try {
         // try to load type normally
-        return LoadInternal(typeNameString);
+        return LoadInternal(typeName);
       }
       catch (PersistenceException) {
         #region Mono Compatibility
         // if that fails, try to load Mono type
-        string monoTypeNameString = GetMonoType(typeNameString);
+        TypeName monoTypeName = GetMonoType(typeName);
         Logger.Info(String.Format(@"Trying to load Mono type ""{0}"" instead of type ""{1}""",
-                                  monoTypeNameString, typeNameString));
-        return LoadInternal(monoTypeNameString);
+                                  monoTypeName, typeNameString));
+        return LoadInternal(monoTypeName);
       }
         #endregion
     }
 
-    private static Type LoadInternal(string typeNameString) {
+    private static Type LoadInternal(TypeName typeName) {
       Type type;
       try {
-        type = Type.GetType(typeNameString, true);
-      }      
+        type = Type.GetType(typeName.ToString(true, true), true);
+      }
       catch (Exception) {
         Logger.Warn(String.Format(
-          "Cannot load type \"{0}\", falling back to partial name", typeNameString));
-        type = LoadWithPartialName(typeNameString);
-        CheckCompatibility(typeNameString, type);
+          "Cannot load type \"{0}\", falling back to partial name", typeName.ToString(true, true)));
+        type = LoadWithPartialName(typeName);
+        CheckCompatibility(typeName, type);
       }
       return type;
     }
 
-    private static Type LoadWithPartialName(string typeNameString) {
+    private static Type LoadWithPartialName(TypeName typeName) {
       try {
-        TypeName typeName = TypeNameParser.Parse(typeNameString);
 #pragma warning disable 0618
         Assembly a = Assembly.LoadWithPartialName(typeName.AssemblyName);
         // the suggested Assembly.Load() method fails to load assemblies outside the GAC
@@ -68,23 +93,22 @@ namespace HeuristicLab.Persistence.Auxiliary {
       catch (Exception) {
         throw new PersistenceException(String.Format(
           "Could not load type \"{0}\"",
-          typeNameString));
+          typeName.ToString(true, true)));
       }
     }
 
-    private static void CheckCompatibility(string typeNameString, Type type) {
+    private static void CheckCompatibility(TypeName typeName, Type type) {
       try {
-        TypeName requestedTypeName = TypeNameParser.Parse(typeNameString);
         TypeName loadedTypeName = TypeNameParser.Parse(type.AssemblyQualifiedName);
-        if (!requestedTypeName.IsCompatible(loadedTypeName))
+        if (!typeName.IsCompatible(loadedTypeName))
           throw new PersistenceException(String.Format(
             "Serialized type is incompatible with available type: serialized: {0}, loaded: {1}",
-            typeNameString,
+            typeName.ToString(true, true),
             type.AssemblyQualifiedName));
-        if (requestedTypeName.IsNewerThan(loadedTypeName))
+        if (typeName.IsNewerThan(loadedTypeName))
           throw new PersistenceException(String.Format(
             "Serialized type is newer than available type: serialized: {0}, loaded: {1}",
-            typeNameString,
+            typeName.ToString(true, true),
             type.AssemblyQualifiedName));
       }
       catch (PersistenceException) {
@@ -93,7 +117,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
       catch (Exception e) {
         Logger.Warn(String.Format(
           "Could not perform version check requested type was {0} while loaded type is {1}:",
-          typeNameString,
+          typeName.ToString(true, true),
           type.AssemblyQualifiedName),
                     e);
       }
@@ -106,27 +130,17 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// <returns>
     /// The remapped typeNameString, or the original string if no mapping was found
     /// </returns>
-    private static string GetMonoType(string typeNameString) {
-      TypeName typeName = TypeNameParser.Parse(typeNameString);
-
+    private static TypeName GetMonoType(TypeName typeName) {
       // map System.RuntimeType to System.MonoType
       if (typeName.Namespace == "System" && typeName.ClassName == "RuntimeType") {
-        // we use Int32 here because we get all the information about Mono's mscorlib and just have to change the class name
-        typeName = TypeNameParser.Parse(typeof(System.Int32).AssemblyQualifiedName);
-        typeName.ClassName = "MonoType";
+        return cachedRuntimeType;
+        // map System.Collections.Generic.ObjectEqualityComparer to HeuristicLab.Mono.ObjectEqualityComparer
       } else if (typeName.Namespace == "System.Collections.Generic" && typeName.ClassName == "ObjectEqualityComparer") {
-        // map System.Collections.Generic.ObjectEqualityComparer to HeuristicLab.Mono.ObjectEqualityComparer       
-        // we need the information about the Persistence assembly, so we use TypeName here because it is contained in this assembly
-        TypeName oecInfo = TypeNameParser.Parse(typeof(TypeName).AssemblyQualifiedName);
-        typeName.Namespace = "HeuristicLab.Persistence.Mono";
-        typeName.AssemblyName = oecInfo.AssemblyName;
-        typeName.AssemblyAttribues.Clear();
-        typeName.AssemblyAttribues["Version"] = oecInfo.AssemblyAttribues["Version"];
-        typeName.AssemblyAttribues["Culture"] = oecInfo.AssemblyAttribues["Culture"];
-        typeName.AssemblyAttribues["PublicKeyToken"] = oecInfo.AssemblyAttribues["PublicKeyToken"];
+        TypeName newTypeName = new TypeName(cachedObjectEqualityComparerType);
+        newTypeName.GenericArgs = new List<TypeName>(typeName.GenericArgs);
+        return newTypeName;
       }
-
-      return typeName.ToString(true, true);
+      return typeName;
     }
     #endregion
   }
