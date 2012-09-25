@@ -95,6 +95,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       TableFileParser csvFileParser = new TableFileParser();
       csvFileParser.Parse(path);
 
+      int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
       List<IList> values = csvFileParser.Values;
       if (type.Shuffle) {
         values = Shuffle(values);
@@ -105,7 +106,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       // turn of input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
-      int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
       var trainingIndizes = Enumerable.Range(0, trainingPartEnd);
       foreach (var variableName in dataset.DoubleVariables) {
         if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&

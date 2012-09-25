@@ -46,16 +46,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected override void importButton_Click(object sender, EventArgs e) {
       var provider = SelectedProvider as DataAnalysisInstanceProvider<T>;
       if (provider != null) {
-        openFileDialog.FileName = GetProblemType() + " instance";
-        if (openFileDialog.ShowDialog() == DialogResult.OK) {
+        DataAnalysisImportTypeDialog importTypeDialog = new DataAnalysisImportTypeDialog();
+        if (importTypeDialog.ShowDialog() == DialogResult.OK) {
           T instance = default(T);
           try {
-            DataAnalysisImportTypeDialog importTypeDialog = new DataAnalysisImportTypeDialog();
-            if (importTypeDialog.ShowDialog() == DialogResult.OK) {
-              instance = provider.ImportData(openFileDialog.FileName, importTypeDialog.ImportType);
-            } else {
-              return;
-            }
+            instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType);
+
           }
           catch (Exception ex) {
             MessageBox.Show(String.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -65,8 +61,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
             GenericConsumer.Load(instance);
           }
           catch (Exception ex) {
-            MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
+            MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(importTypeDialog.Path), Environment.NewLine + ex.Message), "Cannot load instance");
           }
+        } else {
+          return;
         }
       } else {
         base.importButton_Click(sender, e);

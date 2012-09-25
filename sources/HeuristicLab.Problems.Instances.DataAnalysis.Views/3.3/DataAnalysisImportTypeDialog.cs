@@ -24,10 +24,14 @@ using System.Windows.Forms;
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   public partial class DataAnalysisImportTypeDialog : Form {
 
+    public string Path {
+      get { return ProblemTextBox.Text; }
+    }
+
     public DataAnalysisImportType ImportType {
       get {
         return new DataAnalysisImportType() {
-          Shuffle = ShuffelDataCheckbox.Checked,
+          Shuffle = ShuffleDataCheckbox.Checked,
           Training = TrainingTestTrackBar.Value
         };
       }
@@ -40,6 +44,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     private void TrainingTestTrackBar_ValueChanged(object sender, System.EventArgs e) {
       TrainingLabel.Text = "Training: " + TrainingTestTrackBar.Value + " %";
       TestLabel.Text = "Test: " + (TrainingTestTrackBar.Maximum - TrainingTestTrackBar.Value) + " %";
+    }
+
+    private void openFileButton_Click(object sender, System.EventArgs e) {
+      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
+        ProblemTextBox.Text = openFileDialog.FileName;
+        OkButton.Enabled = true;
+      }
     }
   }
 }
