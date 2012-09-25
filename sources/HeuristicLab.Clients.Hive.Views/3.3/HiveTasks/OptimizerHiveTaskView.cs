@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive.Views {
@@ -52,7 +53,9 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     protected override void Job_ItemChanged(object sender, EventArgs e) {
       if (Content != null && Content.Task != null && Content.ItemTask.Item != null) {
-        runCollectionViewHost.Content = Content.ItemTask.Item.Runs;
+        RunCollection runs = new RunCollection();
+        TaskUtil.GetAllRunsFromHiveTask(runs, Content);
+        runCollectionViewHost.Content = runs;
       } else {
         runCollectionViewHost.Content = null;
       }

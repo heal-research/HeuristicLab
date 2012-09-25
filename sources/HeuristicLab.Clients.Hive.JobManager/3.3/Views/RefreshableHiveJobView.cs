@@ -533,25 +533,12 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (job != null) {
         RunCollection runs = new RunCollection();
 
-        foreach (HiveTask subTask in job.HiveTasks) {
-          GetAllRunsFromHiveTask(runs, subTask);
+        foreach (HiveTask hiveTask in job.HiveTasks) {
+          TaskUtil.GetAllRunsFromHiveTask(runs, hiveTask);
         }
         return runs;
       } else {
         return null;
-      }
-    }
-
-    private void GetAllRunsFromHiveTask(RunCollection runs, HiveTask task) {
-      foreach (HiveTask subTask in task.ChildHiveTasks) {
-        GetAllRunsFromHiveTask(runs, subTask);
-      }
-
-      if (task.ChildHiveTasks.Count == 0) {
-        if (task is OptimizerHiveTask) {
-          OptimizerHiveTask ohTask = task as OptimizerHiveTask;
-          runs.AddRange(ohTask.ItemTask.Item.Runs);
-        }
       }
     }
   }
