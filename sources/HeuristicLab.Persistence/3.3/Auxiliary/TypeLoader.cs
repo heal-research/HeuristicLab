@@ -128,7 +128,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// Returns the corresponding type for the Mono runtime
     /// </summary>
     /// <returns>
-    /// The remapped typeNameString, or the original string if no mapping was found
+    /// The remapped typeName, or the original typeName if no mapping was found
     /// </returns>
     private static TypeName GetMonoType(TypeName typeName) {
       // map System.RuntimeType to System.MonoType
