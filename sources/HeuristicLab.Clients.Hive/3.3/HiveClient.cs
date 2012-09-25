@@ -482,8 +482,8 @@ namespace HeuristicLab.Clients.Hive {
                                                 select job;
       foreach (LightweightTask task in childTasks) {
         HiveTask childHiveTask = allHiveTasks[task.Id];
-        parentHiveTask.AddChildHiveTask(childHiveTask);
         BuildHiveJobTree(childHiveTask, allTasks, allHiveTasks);
+        parentHiveTask.AddChildHiveTask(childHiveTask);
       }
     }
     #endregion

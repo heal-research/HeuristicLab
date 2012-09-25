@@ -129,7 +129,6 @@
     <Compile Include="ServiceClients\JobPermission.cs" />
     <Compile Include="StateLogList.cs" />
     <Compile Include="StateLogListList.cs" />
-    <Compile Include="Util\TaskUtil.cs" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
