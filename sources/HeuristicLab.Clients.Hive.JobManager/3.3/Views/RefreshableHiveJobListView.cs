@@ -42,6 +42,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       }
       this.itemsListView.HeaderStyle = ColumnHeaderStyle.Clickable;
       this.itemsListView.FullRowSelect = true;
+
+      this.itemsListView.ListViewItemSorter = new ListViewDateComparer(0, SortOrder.Ascending);
       this.itemsListView.Sorting = SortOrder.Ascending;
       this.itemsListView.Sort();
     }
@@ -57,7 +59,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (result == DialogResult.Yes) {
         System.Windows.Forms.ListView.SelectedListViewItemCollection selectedItems = itemsListView.SelectedItems;
         bool inProgress = false;
-        foreach (ListViewItem item in selectedItems) {                                  
+        foreach (ListViewItem item in selectedItems) {
           RefreshableJob job = item.Tag as RefreshableJob;
           if (job != null && job.IsProgressing) {
             inProgress = true;
