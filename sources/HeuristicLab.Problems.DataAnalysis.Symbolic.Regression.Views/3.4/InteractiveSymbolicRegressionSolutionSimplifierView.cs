@@ -123,7 +123,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     protected override void btnOptimizeConstants_Click(object sender, EventArgs e) {
       var model = Content.Model;
       SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(Content.Model.Interpreter, Content.Model.SymbolicExpressionTree, Content.ProblemData, Content.ProblemData.TrainingIndices,
-        applyLinearScaling: true, improvement: 0.001, iterations: 0, differentialStep: 0.0001, upperEstimationLimit: model.UpperEstimationLimit, lowerEstimationLimit: model.LowerEstimationLimit);
+        applyLinearScaling: true, maxIterations: 50, upperEstimationLimit: model.UpperEstimationLimit, lowerEstimationLimit: model.LowerEstimationLimit);
       UpdateModel(Content.Model.SymbolicExpressionTree);
     }
   }

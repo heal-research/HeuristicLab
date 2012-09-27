@@ -19,8 +19,10 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoDiff;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -99,13 +101,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public override IOperation Apply() {
       AddResults();
-      int seed = RandomParameter.ActualValue.Next();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       double quality;
       if (RandomParameter.ActualValue.NextDouble() < ConstantOptimizationProbability.Value) {
         IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(ConstantOptimizationRowsPercentage.Value);
         quality = OptimizeConstants(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue,
-           constantOptimizationRows, ApplyLinearScalingParameter.ActualValue.Value, ConstantOptimizationImprovement.Value, ConstantOptimizationIterations.Value, 0.001,
+           constantOptimizationRows, ApplyLinearScalingParameter.ActualValue.Value, ConstantOptimizationIterations.Value,
            EstimationLimitsParameter.ActualValue.Upper, EstimationLimitsParameter.ActualValue.Lower,
           EvaluatedTreesParameter.ActualValue, EvaluatedTreeNodesParameter.ActualValue);
         if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
@@ -156,61 +157,210 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData,
-      IEnumerable<int> rows, bool applyLinearScaling, double improvement, int iterations, double differentialStep, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
+      IEnumerable<int> rows, bool applyLinearScaling, int maxIterations, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
+
+      List<AutoDiff.Variable> variables = new List<AutoDiff.Variable>();
+      List<AutoDiff.Variable> parameters = new List<AutoDiff.Variable>();
+      List<string> variableNames = new List<string>();
+
+      AutoDiff.Term func;
+      if (!TryTransformToAutoDiff(tree.Root.GetSubtree(0), variables, parameters, variableNames, out func)) return 0.0;
+      if (variableNames.Count == 0) return 0.0;
+
+      AutoDiff.IParametricCompiledTerm compiledFunc = AutoDiff.TermUtils.Compile(func, variables.ToArray(), parameters.ToArray());
+
       List<SymbolicExpressionTreeTerminalNode> terminalNodes = tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>().ToList();
-      double[] c = new double[terminalNodes.Count];
-      int treeLength = tree.Length;
+      double[] c = new double[variables.Count];
 
-      //extract inital constants
-      for (int i = 0; i < terminalNodes.Count; i++) {
-        ConstantTreeNode constantTreeNode = terminalNodes[i] as ConstantTreeNode;
-        if (constantTreeNode != null) c[i] = constantTreeNode.Value;
-        VariableTreeNode variableTreeNode = terminalNodes[i] as VariableTreeNode;
-        if (variableTreeNode != null) c[i] = variableTreeNode.Weight;
+      {
+        c[0] = 0.0;
+        c[1] = 1.0;
+        //extract inital constants
+        int i = 2;
+        foreach (var node in terminalNodes) {
+          ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
+          VariableTreeNode variableTreeNode = node as VariableTreeNode;
+          if (constantTreeNode != null)
+            c[i++] = constantTreeNode.Value;
+          else if (variableTreeNode != null && !variableTreeNode.Weight.IsAlmost(1.0))
+            c[i++] = variableTreeNode.Weight;
+        }
       }
 
-      double epsg = 0;
-      double epsf = improvement;
-      double epsx = 0;
-      int maxits = iterations;
-      double diffstep = differentialStep;
+      alglib.lsfitstate state;
+      alglib.lsfitreport rep;
+      int info;
 
-      alglib.minlmstate state;
-      alglib.minlmreport report;
+      Dataset ds = problemData.Dataset;
+      double[,] x = new double[rows.Count(), variableNames.Count];
+      int row = 0;
+      foreach (var r in rows) {
+        for (int col = 0; col < variableNames.Count; col++) {
+          x[row, col] = ds.GetDoubleValue(variableNames[col], r);
+        }
+        row++;
+      }
+      double[] y = ds.GetDoubleValues(problemData.TargetVariable, rows).ToArray();
+      int n = x.GetLength(0);
+      int m = x.GetLength(1);
+      int k = c.Length;
 
-      alglib.minlmcreatev(1, c, diffstep, out state);
-      alglib.minlmsetcond(state, epsg, epsf, epsx, maxits);
-      alglib.minlmoptimize(state, CreateCallBack(interpreter, tree, problemData, rows, applyLinearScaling, upperEstimationLimit, lowerEstimationLimit, treeLength, evaluatedTrees, evaluatedTreeNodes), null, terminalNodes);
-      alglib.minlmresults(state, out c, out report);
+      alglib.ndimensional_pfunc function_cx_1_func = CreatePFunc(compiledFunc);
+      alglib.ndimensional_pgrad function_cx_1_grad = CreatePGrad(compiledFunc);
 
-      for (int i = 0; i < c.Length; i++) {
-        ConstantTreeNode constantTreeNode = terminalNodes[i] as ConstantTreeNode;
-        if (constantTreeNode != null) constantTreeNode.Value = c[i];
-        VariableTreeNode variableTreeNode = terminalNodes[i] as VariableTreeNode;
-        if (variableTreeNode != null) variableTreeNode.Weight = c[i];
+      try {
+        alglib.lsfitcreatefg(x, y, c, n, m, k, false, out state);
+        alglib.lsfitsetcond(state, 0, 0, maxIterations);
+        alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, null, null);
+        alglib.lsfitresults(state, out info, out c, out rep);
+
+      }
+      catch (alglib.alglibexception) {
+        return 0.0;
+      }
+      {
+        // only when no error occurred
+        // set constants in tree
+        int i = 2;
+        foreach (var node in terminalNodes) {
+          ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
+          VariableTreeNode variableTreeNode = node as VariableTreeNode;
+          if (constantTreeNode != null)
+            constantTreeNode.Value = c[i++];
+          else if (variableTreeNode != null && !variableTreeNode.Weight.IsAlmost(1.0))
+            variableTreeNode.Weight = c[i++];
+        }
       }
 
-      return (state.fi[0] - 1) * -1;
+      return SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
     }
 
-    private static alglib.ndimensional_fvec CreateCallBack(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, double upperEstimationLimit, double lowerEstimationLimit, int treeLength, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
-      return (double[] arg, double[] fi, object obj) => {
-        // update constants of tree
-        List<SymbolicExpressionTreeTerminalNode> terminalNodes = (List<SymbolicExpressionTreeTerminalNode>)obj;
-        for (int i = 0; i < terminalNodes.Count; i++) {
-          ConstantTreeNode constantTreeNode = terminalNodes[i] as ConstantTreeNode;
-          if (constantTreeNode != null) constantTreeNode.Value = arg[i];
-          VariableTreeNode variableTreeNode = terminalNodes[i] as VariableTreeNode;
-          if (variableTreeNode != null) variableTreeNode.Weight = arg[i];
-        }
-
-        double quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
-
-        fi[0] = 1 - quality;
-        if (evaluatedTrees != null) evaluatedTrees.Value++;
-        if (evaluatedTreeNodes != null) evaluatedTreeNodes.Value += treeLength;
+    private static alglib.ndimensional_pfunc CreatePFunc(AutoDiff.IParametricCompiledTerm compiledFunc) {
+      return (double[] c, double[] x, ref double func, object o) => {
+        func = compiledFunc.Evaluate(c, x);
       };
     }
 
+    private static alglib.ndimensional_pgrad CreatePGrad(AutoDiff.IParametricCompiledTerm compiledFunc) {
+      return (double[] c, double[] x, ref double func, double[] grad, object o) => {
+        var tupel = compiledFunc.Differentiate(c, x);
+        func = tupel.Item2;
+        Array.Copy(tupel.Item1, grad, grad.Length);
+      };
+    }
+
+    private static bool TryTransformToAutoDiff(ISymbolicExpressionTreeNode node, List<AutoDiff.Variable> variables, List<AutoDiff.Variable> parameters, List<string> variableNames, out AutoDiff.Term term) {
+      if (node.Symbol is Constant) {
+        var var = new AutoDiff.Variable();
+        variables.Add(var);
+        term = var;
+        return true;
+      }
+      if (node.Symbol is Variable) {
+        // don't tune weights with a value of 1.0 because it was probably set by the simplifier
+        var varNode = node as VariableTreeNode;
+        var par = new AutoDiff.Variable();
+        parameters.Add(par);
+        variableNames.Add(varNode.VariableName);
+        if (!varNode.Weight.IsAlmost(1.0)) {
+          var w = new AutoDiff.Variable();
+          variables.Add(w);
+          term = AutoDiff.TermBuilder.Product(w, par);
+        } else {
+          term = par;
+        }
+        return true;
+      }
+      if (node.Symbol is Addition) {
+        List<AutoDiff.Term> terms = new List<Term>();
+        foreach (var subTree in node.Subtrees) {
+          AutoDiff.Term t;
+          if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, out t)) {
+            term = null;
+            return false;
+          }
+          terms.Add(t);
+        }
+        term = AutoDiff.TermBuilder.Sum(terms);
+        return true;
+      }
+      if (node.Symbol is Multiplication) {
+        AutoDiff.Term a, b;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out a) ||
+          !TryTransformToAutoDiff(node.GetSubtree(1), variables, parameters, variableNames, out b)) {
+          term = null;
+          return false;
+        } else {
+          List<AutoDiff.Term> factors = new List<Term>();
+          foreach (var subTree in node.Subtrees.Skip(2)) {
+            AutoDiff.Term f;
+            if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, out f)) {
+              term = null;
+              return false;
+            }
+            factors.Add(f);
+          }
+          term = AutoDiff.TermBuilder.Product(a, b, factors.ToArray());
+          return true;
+        }
+      }
+      if (node.Symbol is Division) {
+        // only works for at least two subtrees
+        AutoDiff.Term a, b;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out a) ||
+          !TryTransformToAutoDiff(node.GetSubtree(1), variables, parameters, variableNames, out b)) {
+          term = null;
+          return false;
+        } else {
+          List<AutoDiff.Term> factors = new List<Term>();
+          foreach (var subTree in node.Subtrees.Skip(2)) {
+            AutoDiff.Term f;
+            if (!TryTransformToAutoDiff(subTree, variables, parameters, variableNames, out f)) {
+              term = null;
+              return false;
+            }
+            factors.Add(1.0 / f);
+          }
+          term = AutoDiff.TermBuilder.Product(a, 1.0 / b, factors.ToArray());
+          return true;
+        }
+      }
+      if (node.Symbol is Logarithm) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = AutoDiff.TermBuilder.Log(t);
+          return true;
+        }
+      }
+      if (node.Symbol is Exponential) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = AutoDiff.TermBuilder.Exp(t);
+          return true;
+        }
+      }
+      if (node.Symbol is StartSymbol) {
+        var alpha = new AutoDiff.Variable();
+        var beta = new AutoDiff.Variable();
+        variables.Add(beta);
+        variables.Add(alpha);
+        AutoDiff.Term branchTerm;
+        if (TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out branchTerm)) {
+          term = branchTerm * alpha + beta;
+          return true;
+        } else {
+          term = null;
+          return false;
+        }
+      }
+      term = null;
+      return false;
+    }
   }
 }
