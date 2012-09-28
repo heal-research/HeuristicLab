@@ -28,36 +28,41 @@ namespace HeuristicLab.Clients.Hive.JobManager {
   /// Comparer for sorting items in a list view by date
   /// See: http://msdn.microsoft.com/en-us/library/ms996467.aspx
   /// </summary>
-  public class ListViewDateComparer : IComparer {
+  public class ListViewItemComparer : IComparer {
     private int col;
     private SortOrder order;
 
-    public ListViewDateComparer() {
+    public ListViewItemComparer() {
       col = 0;
       order = SortOrder.Ascending;
     }
 
-    public ListViewDateComparer(int column, SortOrder order) {
+    public ListViewItemComparer(int column, SortOrder order) {
       col = column;
       this.order = order;
     }
 
     public int Compare(object x, object y) {
       int returnVal;
+      bool result;
+      DateTime firstDate, secondDate;
+      ListViewItem listViewItemX, listViewItemY;
+      listViewItemX = x as ListViewItem;
+      listViewItemY = y as ListViewItem;
 
-      if (!(x is ListViewItem) || !(y is ListViewItem)) {
-        throw new InvalidCastException(string.Format("The ListViewDateComparer expects ListViewItems but received {0} and {1}.",
+      if (listViewItemX == null || listViewItemY == null) {
+        throw new ArgumentException(string.Format("The ListViewItemComparer expects ListViewItems but received {0} and {1}.",
           x.GetType().ToString(), y.GetType().ToString()));
       }
 
-      try {
-        DateTime firstDate = DateTime.Parse(((ListViewItem)x).SubItems[col].Text);
-        DateTime secondDate = DateTime.Parse(((ListViewItem)y).SubItems[col].Text);
+      result = DateTime.TryParse(listViewItemX.SubItems[col].Text, out firstDate);
+      result = DateTime.TryParse(listViewItemY.SubItems[col].Text, out secondDate) && result;
+
+      if (result) {
         returnVal = DateTime.Compare(firstDate, secondDate);
-      }
-      // if neither compared object has a valid date format, compare as a string
-      catch {
-        returnVal = String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
+      } else {
+        // if neither compared object has a valid date format, compare as a string
+        returnVal = String.Compare(listViewItemX.SubItems[col].Text, listViewItemY.SubItems[col].Text);
       }
 
       if (order == SortOrder.Descending) {

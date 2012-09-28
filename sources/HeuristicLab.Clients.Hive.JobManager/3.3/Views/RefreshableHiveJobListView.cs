@@ -43,7 +43,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.itemsListView.HeaderStyle = ColumnHeaderStyle.Clickable;
       this.itemsListView.FullRowSelect = true;
 
-      this.itemsListView.ListViewItemSorter = new ListViewDateComparer(0, SortOrder.Ascending);
+      this.itemsListView.ListViewItemSorter = new ListViewItemComparer(0, SortOrder.Ascending);
       this.itemsListView.Sorting = SortOrder.Ascending;
       this.itemsListView.Sort();
     }
