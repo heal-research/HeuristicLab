@@ -279,6 +279,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TrainingPartition.End = classificationProblemData.TrainingPartition.End;
       TestPartition.Start = classificationProblemData.TestPartition.Start;
       TestPartition.End = classificationProblemData.TestPartition.End;
+
+      for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
+        ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
     }
 
     public ClassificationProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
@@ -373,12 +376,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void RegisterParameterEvents() {
       TargetVariableParameter.ValueChanged += new EventHandler(TargetVariableParameter_ValueChanged);
       ClassNamesParameter.Value.Reset += new EventHandler(Parameter_ValueChanged);
-      ClassNamesParameter.Value.ItemChanged += new EventHandler<EventArgs<int, int>>(MatrixParameter_ItemChanged);
+      ClassNamesParameter.Value.ItemChanged += new EventHandler<EventArgs<int, int>>(Parameter_ValueChanged);
     }
     private void DeregisterParameterEvents() {
       TargetVariableParameter.ValueChanged -= new EventHandler(TargetVariableParameter_ValueChanged);
       ClassNamesParameter.Value.Reset -= new EventHandler(Parameter_ValueChanged);
-      ClassNamesParameter.Value.ItemChanged -= new EventHandler<EventArgs<int, int>>(MatrixParameter_ItemChanged);
+      ClassNamesParameter.Value.ItemChanged -= new EventHandler<EventArgs<int, int>>(Parameter_ValueChanged);
     }
 
     private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
@@ -388,10 +391,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnChanged();
     }
     private void Parameter_ValueChanged(object sender, EventArgs e) {
-      classNamesCache = null;
-      OnChanged();
-    }
-    private void MatrixParameter_ItemChanged(object sender, EventArgs<int, int> e) {
       classNamesCache = null;
       OnChanged();
     }
