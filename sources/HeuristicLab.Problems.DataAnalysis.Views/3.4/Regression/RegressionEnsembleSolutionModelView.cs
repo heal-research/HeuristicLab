@@ -19,9 +19,11 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -82,8 +84,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             Cloner cloner = new Cloner();
             solutions = solutions.Select(s => cloner.Clone(s));
           }
-          foreach (var solution in solutions)
-            Content.Add(solution);
+          var solutionCollection = Content as ItemCollection<IRegressionSolution>;
+          if (solutionCollection != null) {
+            solutionCollection.AddRange(solutions);
+          } else {
+            foreach (var solution in solutions)
+              Content.Add(solution);
+          }
+        }
+      }
+      protected override void itemsListView_KeyDown(object sender, KeyEventArgs e) {
+        var solutionCollection = Content as ItemCollection<IRegressionSolution>;
+        if (e.KeyCode == Keys.Delete && solutionCollection != null) {
+          if ((itemsListView.SelectedItems.Count > 0) && !Content.IsReadOnly && !ReadOnly) {
+            solutionCollection.RemoveRange(itemsListView.SelectedItems.Cast<ListViewItem>().Select(x => (IRegressionSolution)x.Tag));
+          }
+        } else {
+          base.itemsListView_KeyDown(sender, e);
+        }
+      }
+      protected override void removeButton_Click(object sender, EventArgs e) {
+        var solutionCollection = Content as ItemCollection<IRegressionSolution>;
+        if (itemsListView.SelectedItems.Count > 0 && solutionCollection != null) {
+          solutionCollection.RemoveRange(itemsListView.SelectedItems.Cast<ListViewItem>().Select(x => (IRegressionSolution)x.Tag));
+          itemsListView.SelectedItems.Clear();
+        } else {
+          base.removeButton_Click(sender, e);
         }
       }
     }
