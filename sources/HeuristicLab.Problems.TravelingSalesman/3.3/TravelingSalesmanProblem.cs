@@ -81,9 +81,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private TSPAlleleFrequencyAnalyzer TSPAlleleFrequencyAnalyzer {
       get { return Operators.OfType<TSPAlleleFrequencyAnalyzer>().FirstOrDefault(); }
     }
-    private TSPPopulationDiversityAnalyzer TSPPopulationDiversityAnalyzer {
-      get { return Operators.OfType<TSPPopulationDiversityAnalyzer>().FirstOrDefault(); }
-    }
     private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
       get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
@@ -322,13 +319,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         TSPAlleleFrequencyAnalyzer.ResultsParameter.ActualName = "Results";
       }
 
-      if (TSPPopulationDiversityAnalyzer != null) {
-        TSPPopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        TSPPopulationDiversityAnalyzer.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        TSPPopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        TSPPopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
-      }
-
       if (SingleObjectivePopulationDiversityAnalyzer != null) {
         SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
         SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
@@ -447,7 +437,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (data.BestKnownTour != null) {
         try {
           EvaluateAndLoadTour(data.BestKnownTour);
-        } catch (InvalidOperationException) {
+        }
+        catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)
             BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
         }

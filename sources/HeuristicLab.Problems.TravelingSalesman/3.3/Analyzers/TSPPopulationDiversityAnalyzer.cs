@@ -19,16 +19,22 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
+  // BackwardsCompatibility3.3
+  #region Backwards compatible code, remove with 3.4
   /// <summary>
   /// An operator for analyzing the diversity of solutions of Traveling Salesman Problems given in path representation.
   /// </summary>
+  [Obsolete]
+  [NonDiscoverableType]
   [Item("TSPPopulationDiversityAnalyzer", "An operator for analyzing the diversity of solutions of Traveling Salesman Problems given in path representation.")]
   [StorableClass]
   public sealed class TSPPopulationDiversityAnalyzer : PopulationDiversityAnalyzer<Permutation> {
@@ -78,4 +84,5 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return ((double)identicalEdges) / edgesA.Length;
     }
   }
+  #endregion
 }

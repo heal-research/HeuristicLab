@@ -30,9 +30,13 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
+  // use HeuristicLab.Analysis.SingleObjectivePopulationDiversityAnalyzer instead
+  // BackwardsCompatibility3.3
+  #region Backwards compatible code, remove with 3.4
   /// <summary>
   /// An operator for analyzing the solution diversity in a population.
   /// </summary>
+  [Obsolete]
   [Item("PopulationDiversityAnalyzer", "An operator for analyzing the solution diversity in a population.")]
   [StorableClass]
   public abstract class PopulationDiversityAnalyzer<T> : SingleSuccessorOperator, IAnalyzer where T : class, IItem {
@@ -244,4 +248,5 @@ namespace HeuristicLab.Analysis {
 
     protected abstract double[,] CalculateSimilarities(T[] solutions);
   }
+  #endregion
 }

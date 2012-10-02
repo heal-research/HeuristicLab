@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -110,6 +111,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public IVRPCreator SolutionCreator {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
+    }
+    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
+      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -243,6 +247,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
         ProblemInstance.Operators.Concat(
           ApplicationManager.Manager.GetInstances<IGeneralVRPOperator>().Cast<IOperator>()).OrderBy(op => op.Name));
         Operators.Add(new VRPSimilarityCalculator());
+        Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
 
         IVRPCreator defaultCreator = null;
         foreach (IVRPCreator creator in Operators.Where(o => o is IVRPCreator)) {
@@ -276,6 +281,12 @@ namespace HeuristicLab.Problems.VehicleRouting {
           op.SolutionVariableName = SolutionCreator.VRPToursParameter.ActualName;
           op.QualityVariableName = ProblemInstance.SolutionEvaluator.QualityParameter.ActualName;
           op.ProblemInstance = ProblemInstance;
+        }
+        if (SingleObjectivePopulationDiversityAnalyzer != null) {
+          SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+          SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = ProblemInstance.SolutionEvaluator.QualityParameter.ActualName;
+          SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
+          SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<VRPSimilarityCalculator>().SingleOrDefault();
         }
       }
     }

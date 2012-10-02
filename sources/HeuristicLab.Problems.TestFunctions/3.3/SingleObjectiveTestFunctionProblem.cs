@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -68,6 +69,9 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private BestSingleObjectiveTestFunctionSolutionAnalyzer BestSingleObjectiveTestFunctionSolutionAnalyzer {
       get { return Operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
+    }
+    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
+      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -248,14 +252,23 @@ namespace HeuristicLab.Problems.TestFunctions {
       strategyVectorCreator.StrategyParameterParameter.ActualNameChanged += new EventHandler(strategyVectorCreator_StrategyParameterParameter_ActualNameChanged);
     }
     private void ParameterizeAnalyzers() {
-      BestSingleObjectiveTestFunctionSolutionAnalyzer.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
-      BestSingleObjectiveTestFunctionSolutionAnalyzer.ResultsParameter.ActualName = "Results";
-      BestSingleObjectiveTestFunctionSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-      BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
-      BestSingleObjectiveTestFunctionSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      BestSingleObjectiveTestFunctionSolutionAnalyzer.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
-      BestSingleObjectiveTestFunctionSolutionAnalyzer.BoundsParameter.ActualName = BoundsParameter.Name;
+      if (BestSingleObjectiveTestFunctionSolutionAnalyzer != null) {
+        BestSingleObjectiveTestFunctionSolutionAnalyzer.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        BestSingleObjectiveTestFunctionSolutionAnalyzer.ResultsParameter.ActualName = "Results";
+        BestSingleObjectiveTestFunctionSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+        BestSingleObjectiveTestFunctionSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+        BestSingleObjectiveTestFunctionSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        BestSingleObjectiveTestFunctionSolutionAnalyzer.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
+        BestSingleObjectiveTestFunctionSolutionAnalyzer.BoundsParameter.ActualName = BoundsParameter.Name;
+      }
+
+      if (SingleObjectivePopulationDiversityAnalyzer != null) {
+        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
+        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<SingleObjectiveTestFunctionSimilarityCalculator>().SingleOrDefault();
+      }
     }
     private void InitializeOperators() {
       Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
@@ -263,6 +276,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
 
       Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
+      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
       ParameterizeAnalyzers();
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
       Operators.Add(strategyVectorCreator);
@@ -315,7 +329,8 @@ namespace HeuristicLab.Problems.TestFunctions {
       Evaluator.PointParameter.Hidden = true;
       try {
         BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
-      } catch (ArgumentException e) {
+      }
+      catch (ArgumentException e) {
         ErrorHandling.ShowErrorDialog(e);
         ProblemSize.Value = Evaluator.MinimumProblemSize;
       }

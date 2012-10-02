@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -79,6 +80,9 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     private BestKnapsackSolutionAnalyzer BestKnapsackSolutionAnalyzer {
       get { return Operators.OfType<BestKnapsackSolutionAnalyzer>().FirstOrDefault(); }
+    }
+    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
+      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -227,20 +231,29 @@ namespace HeuristicLab.Problems.Knapsack {
       }
     }
     private void ParameterizeAnalyzer() {
-      BestKnapsackSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-      BestKnapsackSolutionAnalyzer.MaximizationParameter.Hidden = true;
-      BestKnapsackSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      BestKnapsackSolutionAnalyzer.BestKnownQualityParameter.Hidden = true;
-      BestKnapsackSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
-      BestKnapsackSolutionAnalyzer.BestKnownSolutionParameter.Hidden = true;
-      BestKnapsackSolutionAnalyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
-      BestKnapsackSolutionAnalyzer.BinaryVectorParameter.Hidden = true;
-      BestKnapsackSolutionAnalyzer.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
-      BestKnapsackSolutionAnalyzer.KnapsackCapacityParameter.Hidden = true;
-      BestKnapsackSolutionAnalyzer.WeightsParameter.ActualName = WeightsParameter.Name;
-      BestKnapsackSolutionAnalyzer.WeightsParameter.Hidden = true;
-      BestKnapsackSolutionAnalyzer.ValuesParameter.ActualName = ValuesParameter.Name;
-      BestKnapsackSolutionAnalyzer.ValuesParameter.Hidden = true;
+      if (BestKnapsackSolutionAnalyzer != null) {
+        BestKnapsackSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        BestKnapsackSolutionAnalyzer.MaximizationParameter.Hidden = true;
+        BestKnapsackSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
+        BestKnapsackSolutionAnalyzer.BestKnownQualityParameter.Hidden = true;
+        BestKnapsackSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
+        BestKnapsackSolutionAnalyzer.BestKnownSolutionParameter.Hidden = true;
+        BestKnapsackSolutionAnalyzer.BinaryVectorParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
+        BestKnapsackSolutionAnalyzer.BinaryVectorParameter.Hidden = true;
+        BestKnapsackSolutionAnalyzer.KnapsackCapacityParameter.ActualName = KnapsackCapacityParameter.Name;
+        BestKnapsackSolutionAnalyzer.KnapsackCapacityParameter.Hidden = true;
+        BestKnapsackSolutionAnalyzer.WeightsParameter.ActualName = WeightsParameter.Name;
+        BestKnapsackSolutionAnalyzer.WeightsParameter.Hidden = true;
+        BestKnapsackSolutionAnalyzer.ValuesParameter.ActualName = ValuesParameter.Name;
+        BestKnapsackSolutionAnalyzer.ValuesParameter.Hidden = true;
+      }
+
+      if (SingleObjectivePopulationDiversityAnalyzer != null) {
+        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
+        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
+        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
+        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<KnapsackSimilarityCalculator>().SingleOrDefault();
+      }
     }
     private void InitializeOperators() {
       Operators.Add(new KnapsackImprovementOperator());
@@ -249,6 +262,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Operators.Add(new KnapsackSimilarityCalculator());
 
       Operators.Add(new BestKnapsackSolutionAnalyzer());
+      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
       ParameterizeAnalyzer();
       foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
         if (!(op is ISingleObjectiveMoveEvaluator) || (op is IKnapsackMoveEvaluator)) {

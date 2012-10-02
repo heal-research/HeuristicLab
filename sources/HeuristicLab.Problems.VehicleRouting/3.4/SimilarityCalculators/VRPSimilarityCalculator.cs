@@ -91,10 +91,13 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {
-      var sol1 = leftSolution.Variables[SolutionVariableName].Value as PotvinEncoding;
-      var sol2 = rightSolution.Variables[SolutionVariableName].Value as PotvinEncoding;
+      var sol1 = leftSolution.Variables[SolutionVariableName].Value as IVRPEncoding;
+      var sol2 = rightSolution.Variables[SolutionVariableName].Value as IVRPEncoding;
 
-      return CalculateSimilarity(sol1, sol2);
+      var potvinSol1 = sol1 is PotvinEncoding ? sol1 as PotvinEncoding : PotvinEncoding.ConvertFrom(sol1, ProblemInstance);
+      var potvinSol2 = sol2 is PotvinEncoding ? sol2 as PotvinEncoding : PotvinEncoding.ConvertFrom(sol2, ProblemInstance);
+
+      return CalculateSimilarity(potvinSol1, potvinSol2);
     }
   }
 }
