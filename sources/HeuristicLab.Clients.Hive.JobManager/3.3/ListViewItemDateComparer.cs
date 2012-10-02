@@ -28,16 +28,16 @@ namespace HeuristicLab.Clients.Hive.JobManager {
   /// Comparer for sorting items in a list view by date
   /// See: http://msdn.microsoft.com/en-us/library/ms996467.aspx
   /// </summary>
-  public class ListViewItemComparer : IComparer {
+  public class ListViewItemDateComparer : IComparer {
     private int col;
     private SortOrder order;
 
-    public ListViewItemComparer() {
+    public ListViewItemDateComparer() {
       col = 0;
       order = SortOrder.Ascending;
     }
 
-    public ListViewItemComparer(int column, SortOrder order) {
+    public ListViewItemDateComparer(int column, SortOrder order) {
       col = column;
       this.order = order;
     }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Clients.Hive.JobManager {
       listViewItemY = y as ListViewItem;
 
       if (listViewItemX == null || listViewItemY == null) {
-        throw new ArgumentException(string.Format("The ListViewItemComparer expects ListViewItems but received {0} and {1}.",
+        throw new ArgumentException(string.Format("The ListViewItemDateComparer expects ListViewItems but received {0} and {1}.",
           x.GetType().ToString(), y.GetType().ToString()));
       }
 
@@ -61,8 +61,8 @@ namespace HeuristicLab.Clients.Hive.JobManager {
       if (result) {
         returnVal = DateTime.Compare(firstDate, secondDate);
       } else {
-        // if neither compared object has a valid date format, compare as a string
-        returnVal = String.Compare(listViewItemX.SubItems[col].Text, listViewItemY.SubItems[col].Text);
+        throw new ArgumentException(string.Format("The ListViewItemDateComparer expects DateTimes. Can't parse {0} and {1}.",
+           listViewItemX.SubItems[col].Text, listViewItemY.SubItems[col].Text));
       }
 
       if (order == SortOrder.Descending) {

@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods\TreeNodeExtensions.cs" />
-    <Compile Include="ListViewItemComparer.cs" />
+    <Compile Include="ListViewItemDateComparer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Views\HiveJobManagerView.cs">
       <SubType>UserControl</SubType>
