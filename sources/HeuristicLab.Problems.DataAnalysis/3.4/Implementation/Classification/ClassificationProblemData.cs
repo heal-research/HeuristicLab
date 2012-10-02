@@ -282,6 +282,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
         ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
+
+      for (int i = 0; i < Classes; i++) {
+        for (int j = 0; j < Classes; j++) {
+          ClassificationPenaltiesParameter.Value[i, j] = classificationProblemData.GetClassificationPenalty(i, j);
+        }
+      }
     }
 
     public ClassificationProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
@@ -377,11 +383,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TargetVariableParameter.ValueChanged += new EventHandler(TargetVariableParameter_ValueChanged);
       ClassNamesParameter.Value.Reset += new EventHandler(Parameter_ValueChanged);
       ClassNamesParameter.Value.ItemChanged += new EventHandler<EventArgs<int, int>>(Parameter_ValueChanged);
+      ClassificationPenaltiesParameter.Value.ItemChanged += new EventHandler<EventArgs<int, int>>(Parameter_ValueChanged);
+      ClassificationPenaltiesParameter.Value.Reset += new EventHandler(Parameter_ValueChanged);
     }
     private void DeregisterParameterEvents() {
       TargetVariableParameter.ValueChanged -= new EventHandler(TargetVariableParameter_ValueChanged);
       ClassNamesParameter.Value.Reset -= new EventHandler(Parameter_ValueChanged);
       ClassNamesParameter.Value.ItemChanged -= new EventHandler<EventArgs<int, int>>(Parameter_ValueChanged);
+      ClassificationPenaltiesParameter.Value.ItemChanged -= new EventHandler<EventArgs<int, int>>(Parameter_ValueChanged);
+      ClassificationPenaltiesParameter.Value.Reset -= new EventHandler(Parameter_ValueChanged);
     }
 
     private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
@@ -392,6 +402,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     private void Parameter_ValueChanged(object sender, EventArgs e) {
       classNamesCache = null;
+      ClassificationPenaltiesParameter.Value.RowNames = ClassNames.Select(name => "Actual " + name);
+      ClassificationPenaltiesParameter.Value.ColumnNames = ClassNames.Select(name => "Estimated " + name);
       OnChanged();
     }
     #endregion
