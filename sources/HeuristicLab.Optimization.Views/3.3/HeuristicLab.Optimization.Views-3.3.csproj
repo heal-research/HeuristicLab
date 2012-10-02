@@ -129,6 +129,12 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ISingleObjectiveSolutionSimilarityCalculatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ISingleObjectiveSolutionSimilarityCalculatorView.Designer.cs">
+      <DependentUpon>ISingleObjectiveSolutionSimilarityCalculatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExperimentListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
