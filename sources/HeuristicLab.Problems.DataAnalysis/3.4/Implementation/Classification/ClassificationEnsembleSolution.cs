@@ -35,9 +35,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Classification Ensemble Solution", "A classification solution that contains an ensemble of multiple classification models")]
   [Creatable("Data Analysis - Ensembles")]
-  public sealed class ClassificationEnsembleSolution : ClassificationSolution, IClassificationEnsembleSolution {
+  public sealed class ClassificationEnsembleSolution : ClassificationSolutionBase, IClassificationEnsembleSolution {
     private readonly Dictionary<int, double> trainingEvaluationCache = new Dictionary<int, double>();
     private readonly Dictionary<int, double> testEvaluationCache = new Dictionary<int, double>();
+    private readonly Dictionary<int, double> evaluationCache = new Dictionary<int, double>();
 
     public new IClassificationEnsembleModel Model {
       get { return (IClassificationEnsembleModel)base.Model; }
@@ -154,6 +155,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
     #region Evaluation
+    public override IEnumerable<double> EstimatedClassValues {
+      get { return GetEstimatedClassValues(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
+    }
+
     public override IEnumerable<double> EstimatedTrainingClassValues {
       get {
         var rows = ProblemData.TrainingIndices;
