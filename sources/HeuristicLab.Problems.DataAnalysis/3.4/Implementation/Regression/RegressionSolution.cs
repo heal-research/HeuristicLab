@@ -44,11 +44,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected RegressionSolution(IRegressionModel model, IRegressionProblemData problemData)
       : base(model, problemData) {
       evaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
+      CalculateRegressionResults();
     }
 
-    protected override void RecalculateResults() {
-      CalculateResults();
-    }
 
     public override IEnumerable<double> EstimatedValues {
       get { return GetEstimatedValues(Enumerable.Range(0, ProblemData.Dataset.Rows)); }

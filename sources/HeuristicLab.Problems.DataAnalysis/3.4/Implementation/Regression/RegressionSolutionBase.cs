@@ -163,7 +163,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       #endregion
     }
 
-    protected void CalculateResults() {
+    protected override void RecalculateResults() {
+      CalculateRegressionResults();
+    }
+
+    protected void CalculateRegressionResults() {
       IEnumerable<double> estimatedTrainingValues = EstimatedTrainingValues; // cache values
       IEnumerable<double> originalTrainingValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices);
       IEnumerable<double> estimatedTestValues = EstimatedTestValues; // cache values

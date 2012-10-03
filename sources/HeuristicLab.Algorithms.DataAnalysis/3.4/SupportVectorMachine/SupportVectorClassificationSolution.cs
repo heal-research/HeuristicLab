@@ -44,15 +44,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public SupportVectorClassificationSolution(SupportVectorMachineModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SupportVectorClassificationSolution(this, cloner);
-    }
-
-    protected override void RecalculateResults() {
-      CalculateResults();
     }
   }
 }

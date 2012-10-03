@@ -84,7 +84,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestMeanSquaredErrorResultName, "Mean of squared errors of the model on the test partition", new DoubleValue()));
       Add(new Result(TrainingRSquaredResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the training partition", new DoubleValue()));
       Add(new Result(TestRSquaredResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the test partition", new DoubleValue()));
-
       RegisterEventHandler();
     }
 
@@ -138,5 +137,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public abstract IEnumerable<double> EstimatedTestValues { get; }
 
     public abstract IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows);
+
+    protected override void RecalculateResults() {
+      base.RecalculateResults();
+      CalculateRegressionResults();
+    }
   }
 }

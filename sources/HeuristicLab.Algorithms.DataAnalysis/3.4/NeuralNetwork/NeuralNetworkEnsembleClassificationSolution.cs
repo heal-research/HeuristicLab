@@ -44,15 +44,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NeuralNetworkEnsembleClassificationSolution(IClassificationProblemData problemData, INeuralNetworkEnsembleModel nnModel)
       : base(nnModel, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NeuralNetworkEnsembleClassificationSolution(this, cloner);
-    }
-
-    protected override void RecalculateResults() {
-      CalculateResults();
     }
   }
 }

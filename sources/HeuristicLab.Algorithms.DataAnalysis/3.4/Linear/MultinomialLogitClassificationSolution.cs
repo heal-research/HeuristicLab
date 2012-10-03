@@ -44,15 +44,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public MultinomialLogitClassificationSolution(IClassificationProblemData problemData, MultinomialLogitModel logitModel)
       : base(logitModel, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultinomialLogitClassificationSolution(this, cloner);
-    }
-
-    protected override void RecalculateResults() {
-      CalculateResults();
     }
   }
 }

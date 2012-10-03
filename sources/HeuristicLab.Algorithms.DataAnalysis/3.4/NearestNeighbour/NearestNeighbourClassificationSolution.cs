@@ -44,15 +44,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NearestNeighbourClassificationSolution(IClassificationProblemData problemData, INearestNeighbourModel nnModel)
       : base(nnModel, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NearestNeighbourClassificationSolution(this, cloner);
-    }
-
-    protected override void RecalculateResults() {
-      CalculateResults();
     }
   }
 }

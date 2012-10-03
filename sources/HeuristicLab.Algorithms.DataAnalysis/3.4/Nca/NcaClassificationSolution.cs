@@ -41,15 +41,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NcaClassificationSolution(IClassificationProblemData problemData, INcaModel ncaModel)
       : base(ncaModel, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NcaClassificationSolution(this, cloner);
-    }
-
-    protected override void RecalculateResults() {
-      CalculateResults();
     }
   }
 }

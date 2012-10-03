@@ -154,10 +154,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       regressionSolutions.CollectionReset += new CollectionItemsChangedEventHandler<IRegressionSolution>(regressionSolutions_CollectionReset);
     }
 
-    protected override void RecalculateResults() {
-      CalculateResults();
-    }
-
     #region Evaluation
     public override IEnumerable<double> EstimatedTrainingValues {
       get {

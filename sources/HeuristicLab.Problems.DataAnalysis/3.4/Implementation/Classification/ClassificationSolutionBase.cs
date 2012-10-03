@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         Add(new Result(TestNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the test partition.", new DoubleValue()));
     }
 
-    protected void CalculateResults() {
+    protected void CalculateClassificationResults() {
       double[] estimatedTrainingClassValues = EstimatedTrainingClassValues.ToArray(); // cache values
       double[] originalTrainingClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToArray();
       double[] estimatedTestClassValues = EstimatedTestClassValues.ToArray(); // cache values
@@ -113,5 +113,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public abstract IEnumerable<double> EstimatedTestClassValues { get; }
 
     public abstract IEnumerable<double> GetEstimatedClassValues(IEnumerable<int> rows);
+
+    protected override void RecalculateResults() {
+      CalculateClassificationResults();
+    }
   }
 }

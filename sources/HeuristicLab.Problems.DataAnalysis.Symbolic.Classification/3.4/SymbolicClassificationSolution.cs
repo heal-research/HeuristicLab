@@ -70,9 +70,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     protected override void RecalculateResults() {
+      base.RecalculateResults();
       ModelLength = Model.SymbolicExpressionTree.Length;
       ModelDepth = Model.SymbolicExpressionTree.Depth;
-      CalculateResults();
     }
   }
 }

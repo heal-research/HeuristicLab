@@ -152,9 +152,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       classificationSolutions.CollectionReset += new CollectionItemsChangedEventHandler<IClassificationSolution>(classificationSolutions_CollectionReset);
     }
 
-    protected override void RecalculateResults() {
-      CalculateResults();
-    }
 
     #region Evaluation
     public override IEnumerable<double> EstimatedTrainingClassValues {

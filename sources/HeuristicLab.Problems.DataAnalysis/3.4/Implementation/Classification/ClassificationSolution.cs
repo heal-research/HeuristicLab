@@ -44,6 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public ClassificationSolution(IClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
       evaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
+      CalculateClassificationResults();
     }
 
     public override IEnumerable<double> EstimatedClassValues {

@@ -44,15 +44,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public RandomForestClassificationSolution(IClassificationProblemData problemData, IRandomForestModel randomForestModel)
       : base(randomForestModel, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RandomForestClassificationSolution(this, cloner);
-    }
-
-    protected override void RecalculateResults() {
-      CalculateResults();
     }
   }
 }
