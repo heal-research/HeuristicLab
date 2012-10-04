@@ -117,7 +117,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       start.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
       var interpreter = Content.Model.Interpreter;
       var rows = Content.ProblemData.TrainingIndices;
-      return interpreter.GetSymbolicExpressionTreeValues(tempTree, Content.ProblemData.Dataset, rows).Median();
+      return interpreter.GetSymbolicExpressionTreeValues(tempTree, Content.ProblemData.Dataset, rows)
+             .LimitToRange(Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit).Median();
     }
 
 

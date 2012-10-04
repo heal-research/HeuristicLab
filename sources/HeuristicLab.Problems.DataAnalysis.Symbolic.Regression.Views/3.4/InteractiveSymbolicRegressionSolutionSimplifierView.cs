@@ -69,8 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       string targetVariable = Content.ProblemData.TargetVariable;
       Dictionary<ISymbolicExpressionTreeNode, double> impactValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
       List<ISymbolicExpressionTreeNode> nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPostfix().ToList();
-      var originalOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows)
-        .ToArray();
+      var originalOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows).LimitToRange(Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit).ToArray();
       var targetValues = dataset.GetDoubleValues(targetVariable, rows);
       OnlineCalculatorError errorState;
       double originalR2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, originalOutput, out errorState);
@@ -81,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
         constantNode.Value = CalculateReplacementValue(node, tree);
         ISymbolicExpressionTreeNode replacementNode = constantNode;
         SwitchNode(parent, node, replacementNode);
-        var newOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows);
+        var newOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows).LimitToRange(Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit);
         double newR2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, newOutput, out errorState);
         if (errorState != OnlineCalculatorError.None) newR2 = 0.0;
 
@@ -106,7 +105,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       start.AddSubtree((ISymbolicExpressionTreeNode)node.Clone());
       var interpreter = Content.Model.Interpreter;
       var rows = Content.ProblemData.TrainingIndices;
-      return interpreter.GetSymbolicExpressionTreeValues(tempTree, Content.ProblemData.Dataset, rows).Median();
+      return interpreter.GetSymbolicExpressionTreeValues(tempTree, Content.ProblemData.Dataset, rows)
+                         .LimitToRange(Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit)
+                         .Median();
     }
 
 
