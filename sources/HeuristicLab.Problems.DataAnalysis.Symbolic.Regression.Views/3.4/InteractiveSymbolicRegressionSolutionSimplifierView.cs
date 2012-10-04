@@ -123,14 +123,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
     protected override void OnModelChanged() {
       base.OnModelChanged();
-      btnOptimizeConstants.Enabled =
-        SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(Content.Model.SymbolicExpressionTree);
+      if (Content != null)
+        btnOptimizeConstants.Enabled =
+          SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(Content.Model.SymbolicExpressionTree);
+      else
+        btnOptimizeConstants.Enabled = false;
     }
     protected override void OnContentChanged() {
       base.OnContentChanged();
       base.OnModelChanged();
-      btnOptimizeConstants.Enabled =
-        SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(Content.Model.SymbolicExpressionTree);
+      if (Content != null)
+        btnOptimizeConstants.Enabled =
+          SymbolicRegressionConstantOptimizationEvaluator.CanOptimizeConstants(Content.Model.SymbolicExpressionTree);
+      else
+        btnOptimizeConstants.Enabled = false;
     }
 
 
