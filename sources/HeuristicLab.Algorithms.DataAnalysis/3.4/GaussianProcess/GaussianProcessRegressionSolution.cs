@@ -33,6 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("GaussianProcessRegressionSolution", "Represents a Gaussian process solution for a regression problem which can be visualized in the GUI.")]
   [StorableClass]
   public sealed class GaussianProcessRegressionSolution : RegressionSolution, IGaussianProcessSolution {
+    private new readonly Dictionary<int, double> evaluationCache;
 
     public new IGaussianProcessModel Model {
       get { return (IGaussianProcessModel)base.Model; }
@@ -40,12 +41,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private GaussianProcessRegressionSolution(bool deserializing) : base(deserializing) { }
+    private GaussianProcessRegressionSolution(bool deserializing)
+      : base(deserializing) {
+      evaluationCache = new Dictionary<int, double>();
+
+    }
     private GaussianProcessRegressionSolution(GaussianProcessRegressionSolution original, Cloner cloner)
       : base(original, cloner) {
+      evaluationCache = new Dictionary<int, double>(original.evaluationCache);
     }
     public GaussianProcessRegressionSolution(IGaussianProcessModel model, IRegressionProblemData problemData)
       : base(model, problemData) {
+
+      evaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
       RecalculateResults();
     }
 
@@ -64,7 +72,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetEstimatedVariance(IEnumerable<int> rows) {
-      return Model.GetEstimatedVariance(ProblemData.Dataset, rows);
+      var rowsToEvaluate = rows.Except(evaluationCache.Keys);
+      var rowsEnumerator = rowsToEvaluate.GetEnumerator();
+      var valuesEnumerator = Model.GetEstimatedVariance(ProblemData.Dataset, rowsToEvaluate).GetEnumerator();
+
+      while (rowsEnumerator.MoveNext() & valuesEnumerator.MoveNext()) {
+        evaluationCache.Add(rowsEnumerator.Current, valuesEnumerator.Current);
+      }
+
+      return rows.Select(row => evaluationCache[row]);
+    }
+
+    protected override void OnModelChanged() {
+      evaluationCache.Clear();
+      base.OnModelChanged();
+    }
+    protected override void OnProblemDataChanged() {
+      evaluationCache.Clear();
+      base.OnProblemDataChanged();
     }
   }
 }
