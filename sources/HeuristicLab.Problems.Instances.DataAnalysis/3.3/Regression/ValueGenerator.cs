@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -39,7 +40,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       if (start > end) throw new ArgumentException("start must be less than or equal end.");
       if (stepWidth <= 0) throw new ArgumentException("stepwith must be larger than zero.", "stepWidth");
       double x = start;
-      while (x <= end) {
+      // x<=end could skip the last value because of numerical problems
+      while (x < end || x.IsAlmost(end)) {
         yield return x;
         x += stepWidth;
       }
