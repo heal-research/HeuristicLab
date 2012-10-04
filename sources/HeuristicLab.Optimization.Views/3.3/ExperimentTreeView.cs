@@ -624,11 +624,6 @@ namespace HeuristicLab.Optimization.Views {
       var namedItem = (INamedItem)treeNode.Tag;
       var optimizer = namedItem as IOptimizer;
 
-      if (e.KeyCode == Keys.F2 && !treeNode.IsEditing) {
-        treeNode.BeginEdit();
-        return;
-      }
-
       if (e.KeyCode == Keys.Delete && optimizer != null) {
         if (treeNode.Parent == null)
           Content.Optimizers.Remove(optimizer);
@@ -678,21 +673,6 @@ namespace HeuristicLab.Optimization.Views {
       CollapseAllToolStripMenuItem.Enabled = CollapseAllToolStripMenuItem.Visible = treeView.Nodes.OfType<TreeNode>().Any(x => x.IsExpanded);
       if (contextMenuStrip.Items.Cast<ToolStripMenuItem>().Any(item => item.Enabled))
         contextMenuStrip.Show(Cursor.Position);
-    }
-
-    private void treeView_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e) {
-      if (Locked) e.CancelEdit = true;
-      if (ReadOnly) e.CancelEdit = true;
-      if (e.Node.Tag == null) e.CancelEdit = true;
-      var namedItem = e.Node.Tag as INamedItem;
-      if (namedItem == null) e.CancelEdit = true;
-      else if (!namedItem.CanChangeName) e.CancelEdit = true;
-    }
-    private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e) {
-      if (e.Label == null) return;
-      e.Node.EndEdit(false);
-      var namedItem = (INamedItem)e.Node.Tag;
-      namedItem.Name = e.Label;
     }
 
     private void ExpandToolStripMenuItem_Click(object sender, EventArgs e) {
