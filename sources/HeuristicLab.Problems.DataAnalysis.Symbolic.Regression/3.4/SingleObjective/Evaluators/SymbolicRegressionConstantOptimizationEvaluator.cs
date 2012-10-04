@@ -156,6 +156,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return r2;
     }
 
+    // create function factory for arctangent
+    private readonly Func<Term, UnaryFunc> arctan = UnaryFunc.Factory(
+        x => Math.Atan(x),      // evaluate
+        x => 1 / (1 + x * x));  // derivative of atan
+
+    private static readonly Func<Term, UnaryFunc> sin = UnaryFunc.Factory(
+      x => Math.Sin(x),
+      x => Math.Cos(x));
+    private static readonly Func<Term, UnaryFunc> cos = UnaryFunc.Factory(
+      x => Math.Cos(x),
+      x => -Math.Sin(x));
+    private static readonly Func<Term, UnaryFunc> tan = UnaryFunc.Factory(
+      x => Math.Tan(x),
+      x => 1 + Math.Tan(x) * Math.Tan(x));
+    private static readonly Func<Term, UnaryFunc> square = UnaryFunc.Factory(
+      x => x * x,
+      x => 2 * x);
+    private static readonly Func<Term, UnaryFunc> erf = UnaryFunc.Factory(
+      x => alglib.errorfunction(x),
+      x => 2.0 * Math.Exp(-(x * x)) / Math.Sqrt(Math.PI));
+
+    private static readonly Func<Term, UnaryFunc> norm = UnaryFunc.Factory(
+      x => alglib.normaldistribution(x),
+      x => -(Math.Exp(-(x * x)) * Math.Sqrt(Math.Exp(x * x)) * x) / Math.Sqrt(2 * Math.PI)
+      );
+
+
     public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData,
       IEnumerable<int> rows, bool applyLinearScaling, int maxIterations, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
 
@@ -214,6 +241,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, null, null);
         alglib.lsfitresults(state, out info, out c, out rep);
 
+      }
+      catch (ArithmeticException) {
+        return 0.0;
       }
       catch (alglib.alglibexception) {
         return 0.0;
@@ -344,6 +374,61 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           term = AutoDiff.TermBuilder.Exp(t);
           return true;
         }
+      } if (node.Symbol is Sine) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = sin(t);
+          return true;
+        }
+      } if (node.Symbol is Cosine) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = cos(t);
+          return true;
+        }
+      } if (node.Symbol is Tangent) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = tan(t);
+          return true;
+        }
+      }
+      if (node.Symbol is Square) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = square(t);
+          return true;
+        }
+      } if (node.Symbol is Erf) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = erf(t);
+          return true;
+        }
+      } if (node.Symbol is Norm) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = norm(t);
+          return true;
+        }
       }
       if (node.Symbol is StartSymbol) {
         var alpha = new AutoDiff.Variable();
@@ -361,6 +446,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       term = null;
       return false;
+    }
+
+    public static bool CanOptimizeConstants(ISymbolicExpressionTree tree) {
+      var containsUnknownSymbol = (
+        from n in tree.Root.GetSubtree(0).IterateNodesPrefix()
+        where
+         !(n.Symbol is Variable) &&
+         !(n.Symbol is Constant) &&
+         !(n.Symbol is Addition) &&
+         !(n.Symbol is Subtraction) &&
+         !(n.Symbol is Multiplication) &&
+         !(n.Symbol is Division) &&
+         !(n.Symbol is Logarithm) &&
+         !(n.Symbol is Exponential) &&
+         !(n.Symbol is Sine) &&
+         !(n.Symbol is Cosine) &&
+         !(n.Symbol is Tangent) &&
+         !(n.Symbol is Square) &&
+         !(n.Symbol is Erf) &&
+         !(n.Symbol is Norm) &&
+         !(n.Symbol is StartSymbol)
+        select n).
+      Any();
+      return !containsUnknownSymbol;
     }
   }
 }
