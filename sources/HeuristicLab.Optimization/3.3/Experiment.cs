@@ -116,7 +116,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      Runs = new RunCollection();
+      Runs = new RunCollection { AlgorithmName = Name };
       Initialize();
     }
     public Experiment(string name)
@@ -125,7 +125,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      Runs = new RunCollection();
+      Runs = new RunCollection { AlgorithmName = Name };
       Initialize();
     }
     public Experiment(string name, string description)
@@ -133,7 +133,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      Runs = new RunCollection();
+      Runs = new RunCollection { AlgorithmName = Name };
       Initialize();
     }
     [StorableConstructor]
@@ -179,7 +179,8 @@ namespace HeuristicLab.Optimization {
       experimentStopped = false;
       foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState != ExecutionState.Started)) {
         // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-        try { optimizer.Prepare(clearRuns); } catch (InvalidOperationException) { }
+        try { optimizer.Prepare(clearRuns); }
+        catch (InvalidOperationException) { }
       }
     }
     public void Start() {
@@ -192,7 +193,8 @@ namespace HeuristicLab.Optimization {
       IOptimizer optimizer = Optimizers.FirstOrDefault(x => (x.ExecutionState == ExecutionState.Prepared) || (x.ExecutionState == ExecutionState.Paused));
       if (optimizer != null) {
         // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-        try { optimizer.Start(); } catch (InvalidOperationException) { }
+        try { optimizer.Start(); }
+        catch (InvalidOperationException) { }
       }
     }
     public void Pause() {
@@ -204,7 +206,8 @@ namespace HeuristicLab.Optimization {
       experimentStopped = false;
       foreach (IOptimizer optimizer in Optimizers.Where(x => x.ExecutionState == ExecutionState.Started)) {
         // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-        try { optimizer.Pause(); } catch (InvalidOperationException) { }
+        try { optimizer.Pause(); }
+        catch (InvalidOperationException) { }
       }
     }
     public void Stop() {
@@ -217,7 +220,8 @@ namespace HeuristicLab.Optimization {
       if (Optimizers.Any(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused))) {
         foreach (var optimizer in Optimizers.Where(x => (x.ExecutionState == ExecutionState.Started) || (x.ExecutionState == ExecutionState.Paused))) {
           // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-          try { optimizer.Stop(); } catch (InvalidOperationException) { }
+          try { optimizer.Stop(); }
+          catch (InvalidOperationException) { }
         }
       } else {
         OnStopped();
@@ -225,6 +229,11 @@ namespace HeuristicLab.Optimization {
     }
 
     #region Events
+    protected override void OnNameChanged() {
+      base.OnNameChanged();
+      Runs.AlgorithmName = Name;
+    }
+
     public event EventHandler ExecutionStateChanged;
     private void OnExecutionStateChanged() {
       EventHandler handler = ExecutionStateChanged;

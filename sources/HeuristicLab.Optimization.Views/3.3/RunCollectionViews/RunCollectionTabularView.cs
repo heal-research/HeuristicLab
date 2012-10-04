@@ -54,6 +54,7 @@ namespace HeuristicLab.Optimization.Views {
         runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
         UpdateRowAttributes();
       }
+      UpdateCaption();
     }
 
     #region events
@@ -63,6 +64,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.AlgorithmNameChanged += new EventHandler(Content_AlgorithmNameChanged);
       RegisterRunEvents(Content);
     }
     private void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -75,6 +77,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.AlgorithmNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
       DeregisterRunEvents(Content);
     }
     private void DeregisterRunEvents(IEnumerable<IRun> runs) {
@@ -91,6 +94,11 @@ namespace HeuristicLab.Optimization.Views {
     private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
     }
+    private void Content_AlgorithmNameChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_AlgorithmNameChanged), sender, e);
+      else UpdateCaption();
+    }
     private void run_Changed(object sender, EventArgs e) {
       if (InvokeRequired)
         this.Invoke(new EventHandler(run_Changed), sender, e);
@@ -100,6 +108,10 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     #endregion
+
+    private void UpdateCaption() {
+      Caption = Content != null ? Content.AlgorithmName + "Tabular View" : ViewAttribute.GetViewName(GetType());
+    }
 
     protected override void UpdateColumnHeaders() {
       HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()

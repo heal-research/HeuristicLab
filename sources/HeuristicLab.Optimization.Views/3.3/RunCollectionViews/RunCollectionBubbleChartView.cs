@@ -92,6 +92,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.AlgorithmNameChanged += new EventHandler(Content_AlgorithmNameChanged);
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
@@ -102,6 +103,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.AlgorithmNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
       DeregisterRunEvents(Content);
     }
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -162,12 +164,17 @@ namespace HeuristicLab.Optimization.Views {
       this.categoricalMapping.Clear();
       UpdateComboBoxes();
       UpdateDataPoints();
+      UpdateCaption();
     }
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ColumnNamesChanged), sender, e);
       else
         UpdateComboBoxes();
+    }
+
+    private void UpdateCaption() {
+      Caption = Content != null ? Content.AlgorithmName + "Bubble Chart" : ViewAttribute.GetViewName(GetType());
     }
 
     private void UpdateComboBoxes() {
@@ -214,6 +221,12 @@ namespace HeuristicLab.Optimization.Views {
         suppressUpdates = Content.UpdateOfRunsInProgress;
         if (!suppressUpdates) UpdateDataPoints();
       }
+    }
+
+    private void Content_AlgorithmNameChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_AlgorithmNameChanged), sender, e);
+      else UpdateCaption();
     }
 
     private void Content_Reset(object sender, EventArgs e) {

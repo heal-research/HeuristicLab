@@ -62,12 +62,14 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.AlgorithmNameChanged += new EventHandler(Content_AlgorithmNameChanged);
     }
     protected override void DeregisterContentEvents() {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.AlgorithmNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
       base.DeregisterContentEvents();
     }
 
@@ -92,6 +94,11 @@ namespace HeuristicLab.Optimization.Views {
       }
       RemoveRuns(e.OldItems);
       AddRuns(e.Items);
+    }
+    private void Content_AlgorithmNameChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_AlgorithmNameChanged), sender, e);
+      else UpdateCaption();
     }
     private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
       if (InvokeRequired) {
@@ -122,6 +129,7 @@ namespace HeuristicLab.Optimization.Views {
       combinedDataTable.Rows.Clear();
       runMapping.Clear();
 
+      UpdateCaption();
       if (Content != null) {
         UpdateDataTableComboBox();
       }
@@ -192,6 +200,10 @@ namespace HeuristicLab.Optimization.Views {
 
       dataTableComboBox.Items.AddRange(dataTables);
       if (dataTableComboBox.Items.Count > 0) dataTableComboBox.SelectedItem = dataTableComboBox.Items[0];
+    }
+
+    private void UpdateCaption() {
+      Caption = Content != null ? Content.AlgorithmName + "Data Table" : ViewAttribute.GetViewName(GetType());
     }
 
     private void UpdateDataRowComboBox() {

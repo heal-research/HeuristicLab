@@ -43,7 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       description = ItemDescription;
 
       executionState = ExecutionState.Stopped;
-      runs = new RunCollection();
+      runs = new RunCollection { AlgorithmName = name };
       runsCounter = 0;
 
       algorithm = null;
@@ -244,6 +244,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
     #endregion
+
+    protected override void OnNameChanged() {
+      base.OnNameChanged();
+      Runs.AlgorithmName = Name;
+    }
 
     public void Prepare() {
       if (ExecutionState == ExecutionState.Started)

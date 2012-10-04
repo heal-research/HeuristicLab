@@ -174,7 +174,7 @@ namespace HeuristicLab.Optimization {
       runsExecutionTime = TimeSpan.Zero;
       repetitions = 10;
       repetitionsCounter = 0;
-      Runs = new RunCollection();
+      Runs = new RunCollection { AlgorithmName = Name };
     }
     public BatchRun(string name)
       : base(name) {
@@ -184,7 +184,7 @@ namespace HeuristicLab.Optimization {
       runsExecutionTime = TimeSpan.Zero;
       repetitions = 10;
       repetitionsCounter = 0;
-      Runs = new RunCollection();
+      Runs = new RunCollection { AlgorithmName = Name };
     }
     public BatchRun(string name, string description)
       : base(name, description) {
@@ -193,7 +193,7 @@ namespace HeuristicLab.Optimization {
       runsExecutionTime = TimeSpan.Zero;
       repetitions = 10;
       repetitionsCounter = 0;
-      Runs = new RunCollection();
+      Runs = new RunCollection { AlgorithmName = Name };
     }
     [StorableConstructor]
     private BatchRun(bool deserializing) : base(deserializing) { }
@@ -277,6 +277,11 @@ namespace HeuristicLab.Optimization {
     }
 
     #region Events
+    protected override void OnNameChanged() {
+      base.OnNameChanged();
+      runs.AlgorithmName = Name;
+    }
+
     public event EventHandler ExecutionStateChanged;
     private void OnExecutionStateChanged() {
       EventHandler handler = ExecutionStateChanged;

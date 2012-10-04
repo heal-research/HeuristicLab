@@ -43,6 +43,8 @@ namespace HeuristicLab.Optimization {
     protected RunCollection(RunCollection original, Cloner cloner)
       : base(original, cloner) {
       updateOfRunsInProgress = false;
+      algorithmName = original.algorithmName;
+
       resultNames = new List<string>(original.resultNames);
       parameterNames = new List<string>(original.parameterNames);
       dataTypes = new Dictionary<string, HashSet<Type>>();
@@ -103,6 +105,18 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    private string algorithmName = string.Empty;
+    [Storable]
+    public string AlgorithmName {
+      get { return algorithmName; }
+      set {
+        if (value != algorithmName && !string.IsNullOrEmpty(value)) {
+          algorithmName = value;
+          OnAlgorithmNameChanged();
+        }
+      }
+    }
+
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (constraints == null) constraints = new RunCollectionConstraintCollection();
@@ -119,6 +133,12 @@ namespace HeuristicLab.Optimization {
     public event EventHandler UpdateOfRunsInProgressChanged;
     protected virtual void OnUpdateOfRunsInProgressChanged() {
       var handler = UpdateOfRunsInProgressChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    public event EventHandler AlgorithmNameChanged;
+    protected virtual void OnAlgorithmNameChanged() {
+      var handler = AlgorithmNameChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
 

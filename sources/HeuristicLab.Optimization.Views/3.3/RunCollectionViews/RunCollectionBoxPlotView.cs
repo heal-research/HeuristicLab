@@ -74,6 +74,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.AlgorithmNameChanged += new EventHandler(Content_AlgorithmNameChanged);
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
@@ -84,6 +85,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
+      Content.AlgorithmNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
       DeregisterRunEvents(Content);
     }
 
@@ -138,6 +140,12 @@ namespace HeuristicLab.Optimization.Views {
         UpdateDataPoints();
       }
     }
+
+    private void Content_AlgorithmNameChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_AlgorithmNameChanged), sender, e);
+      else UpdateCaption();
+    }
     #endregion
 
     #region update comboboxes, datapoints, runs
@@ -146,6 +154,11 @@ namespace HeuristicLab.Optimization.Views {
       this.categoricalMapping.Clear();
       UpdateComboBoxes();
       UpdateDataPoints();
+      UpdateCaption();
+    }
+
+    private void UpdateCaption() {
+      Caption = Content != null ? Content.AlgorithmName + "Box Plots" : ViewAttribute.GetViewName(GetType());
     }
 
     private void UpdateComboBoxes() {
