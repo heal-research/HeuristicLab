@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,10 +28,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
       double rs = double.NaN;
       try {
-        rs = alglib.basestat.spearmancorr2(originalValues.ToArray(), estimatedValues.ToArray(), originalValues.Count());
+        var original = originalValues.ToArray();
+        var estimated = estimatedValues.ToArray();
+        rs = alglib.basestat.spearmancorr2(original, estimated, original.Length);
         errorState = OnlineCalculatorError.None;
       }
-      catch (Exception ex) {
+      catch (alglib.alglibexception) {
         errorState = OnlineCalculatorError.InvalidValueAdded;
       }
 
