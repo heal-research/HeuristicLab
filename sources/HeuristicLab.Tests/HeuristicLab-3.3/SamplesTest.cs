@@ -925,7 +925,6 @@ namespace HeuristicLab_33.Tests {
       RunAlgorithm(gpr);
       Assert.AreEqual(-940.48768748097029, GetDoubleResult(gpr, "NegativeLogLikelihood"));
       Assert.AreEqual(0.99561947047986976, GetDoubleResult(gpr, "Training R²"));
-      Assert.AreEqual(0.99564766805508775, GetDoubleResult(gpr, "Test R²"));
     }
 
     private GaussianProcessRegression CreateGaussianProcessRegressionSample() {
