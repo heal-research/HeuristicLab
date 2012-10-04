@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Algorithms.LocalSearch;
@@ -907,6 +908,46 @@ namespace HeuristicLab_33.Tests {
       return vns;
     }
     #endregion
+    #endregion
+
+
+    #region Gaussian Process Regression
+    [TestMethod]
+    public void CreateGaussianProcessRegressionSampleTest() {
+      var vns = CreateGaussianProcessRegressionSample();
+      XmlGenerator.Serialize(vns, "../../GaussianProcessRegression.hl");
+    }
+    [TestMethod]
+    public void RunGaussianProcessRegressionSample() {
+      var gpr = CreateGaussianProcessRegressionSample();
+      gpr.SetSeedRandomly = false;
+      gpr.Seed = 1618551877;
+      RunAlgorithm(gpr);
+      Assert.AreEqual(-940.48768748097029, GetDoubleResult(gpr, "NegativeLogLikelihood"));
+      Assert.AreEqual(0.99561947047986976, GetDoubleResult(gpr, "Training R²"));
+      Assert.AreEqual(0.99564766805508775, GetDoubleResult(gpr, "Test R²"));
+    }
+
+    private GaussianProcessRegression CreateGaussianProcessRegressionSample() {
+      var gpr = new GaussianProcessRegression();
+      var provider = new VariousInstanceProvider();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name.Contains("Spatial co-evolution")).Single();
+      var regProblem = new RegressionProblem();
+      regProblem.Load(provider.LoadData(instance));
+      #region Algorithm Configuration
+      gpr.Name = "Gaussian Process Regression";
+      gpr.Description = "A Gaussian process regression algorithm applied to the spatial co-evolution benchmark problem.";
+      gpr.Problem = regProblem;
+
+      gpr.CovarianceFunction = new CovarianceSquaredExponentialIso();
+      gpr.MeanFunction = new MeanConst();
+      gpr.MinimizationIterations = 20;
+      gpr.Seed = 0;
+      gpr.SetSeedRandomly = true;
+      #endregion
+      gpr.Engine = new ParallelEngine();
+      return gpr;
+    }
     #endregion
 
     #region Helpers
