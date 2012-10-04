@@ -24,9 +24,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using HeuristicLab.PluginInfrastructure;
-using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
 
-namespace HeuristicLab.Problems.DataAnalysis {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
+  [NonDiscoverableType]
   public class FeatureCorrelationCalculator : Object {
 
     private BackgroundWorker bw;
@@ -50,12 +50,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.problemData = problemData;
     }
 
-    public void CalculateElements(FCE.CorrelationCalculators calc, FCE.Partitions partition) {
+    public void CalculateElements(FeatureCorrelationEnums.CorrelationCalculators calc, FeatureCorrelationEnums.Partitions partition) {
       CalculateElements(problemData.Dataset, calc, partition);
     }
 
     // returns if any calculation takes place
-    public bool CalculateTimeframeElements(FCE.CorrelationCalculators calc, FCE.Partitions partition, string variable, int frames, double[,] correlation = null) {
+    public bool CalculateTimeframeElements(FeatureCorrelationEnums.CorrelationCalculators calc, FeatureCorrelationEnums.Partitions partition, string variable, int frames, double[,] correlation = null) {
       if (correlation == null || correlation.GetLength(1) <= frames) {
         CalculateElements(problemData.Dataset, calc, partition, variable, frames, correlation);
         return true;
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return elements;
     }
 
-    private void CalculateElements(Dataset dataset, FCE.CorrelationCalculators calc, FCE.Partitions partition, string variable = null, int frames = 0, double[,] alreadyCalculated = null) {
+    private void CalculateElements(Dataset dataset, FeatureCorrelationEnums.CorrelationCalculators calc, FeatureCorrelationEnums.Partitions partition, string variable = null, int frames = 0, double[,] alreadyCalculated = null) {
       bwInfo = new BackgroundWorkerInfo { Dataset = dataset, Calculator = calc, Partition = partition, Variable = variable, Frames = frames, AlreadyCalculated = alreadyCalculated };
       if (bw == null) {
         bw = new BackgroundWorker();
@@ -106,8 +106,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       BackgroundWorkerInfo bwInfo = (BackgroundWorkerInfo)e.Argument;
       Dataset dataset = bwInfo.Dataset;
-      FCE.Partitions partition = bwInfo.Partition;
-      FCE.CorrelationCalculators calc = bwInfo.Calculator;
+      FeatureCorrelationEnums.Partitions partition = bwInfo.Partition;
+      FeatureCorrelationEnums.CorrelationCalculators calc = bwInfo.Calculator;
 
       IList<string> doubleVariableNames = dataset.DoubleVariables.ToList();
       OnlineCalculatorError error = OnlineCalculatorError.None;
@@ -143,8 +143,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       BackgroundWorkerInfo bwInfo = (BackgroundWorkerInfo)e.Argument;
       Dataset dataset = bwInfo.Dataset;
-      FCE.Partitions partition = bwInfo.Partition;
-      FCE.CorrelationCalculators calc = bwInfo.Calculator;
+      FeatureCorrelationEnums.Partitions partition = bwInfo.Partition;
+      FeatureCorrelationEnums.CorrelationCalculators calc = bwInfo.Calculator;
       string variable = bwInfo.Variable;
       int frames = bwInfo.Frames;
       double[,] alreadyCalculated = bwInfo.AlreadyCalculated;
@@ -191,22 +191,22 @@ namespace HeuristicLab.Problems.DataAnalysis {
       e.Result = elements;
     }
 
-    private IEnumerable<double> GetRelevantValues(IDataAnalysisProblemData problemData, FCE.Partitions partition, string variable) {
+    private IEnumerable<double> GetRelevantValues(IDataAnalysisProblemData problemData, FeatureCorrelationEnums.Partitions partition, string variable) {
       IEnumerable<double> var = problemData.Dataset.GetDoubleValues(variable);
-      if (partition.Equals(FCE.Partitions.TrainingSamples)) {
+      if (partition.Equals(FeatureCorrelationEnums.Partitions.TrainingSamples)) {
         var = var.Skip(problemData.TrainingPartition.Start).Take(problemData.TrainingPartition.End - problemData.TrainingPartition.Start);
-      } else if (partition.Equals(FCE.Partitions.TestSamples)) {
+      } else if (partition.Equals(FeatureCorrelationEnums.Partitions.TestSamples)) {
         var = var.Skip(problemData.TestPartition.Start).Take(problemData.TestPartition.End - problemData.TestPartition.Start);
       }
       return var;
     }
 
-    private double CalculateElementWithCalculator(FCE.CorrelationCalculators calc, IEnumerable<double> var1, IEnumerable<double> var2, out OnlineCalculatorError error) {
-      if (calc.Equals(FCE.CorrelationCalculators.HoeffdingsDependence)) {
+    private double CalculateElementWithCalculator(FeatureCorrelationEnums.CorrelationCalculators calc, IEnumerable<double> var1, IEnumerable<double> var2, out OnlineCalculatorError error) {
+      if (calc.Equals(FeatureCorrelationEnums.CorrelationCalculators.HoeffdingsDependence)) {
         return HoeffdingsDependenceCalculator.Calculate(var1, var2, out error);
-      } else if (calc.Equals(FCE.CorrelationCalculators.SpearmansRank)) {
+      } else if (calc.Equals(FeatureCorrelationEnums.CorrelationCalculators.SpearmansRank)) {
         return SpearmansRankCorrelationCoefficientCalculator.Calculate(var1, var2, out error);
-      } else if (calc.Equals(FCE.CorrelationCalculators.PearsonsRSquared)) {
+      } else if (calc.Equals(FeatureCorrelationEnums.CorrelationCalculators.PearsonsRSquared)) {
         return OnlinePearsonsRSquaredCalculator.Calculate(var1, var2, out error);
       } else {
         return Math.Sqrt(OnlinePearsonsRSquaredCalculator.Calculate(var1, var2, out error));
@@ -230,20 +230,21 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region events
     public class CorrelationCalculationFinishedArgs : EventArgs {
       public double[,] Correlation { get; private set; }
-      public FCE.CorrelationCalculators Calculcator { get; private set; }
-      public FCE.Partitions Partition { get; private set; }
+      public FeatureCorrelationEnums.CorrelationCalculators Calculcator { get; private set; }
+      public FeatureCorrelationEnums.Partitions Partition { get; private set; }
       public string Variable { get; private set; }
 
-      public CorrelationCalculationFinishedArgs(double[,] correlation, FCE.CorrelationCalculators calculator, FCE.Partitions partition, string variable = null) {
+      public CorrelationCalculationFinishedArgs(double[,] correlation, FeatureCorrelationEnums.CorrelationCalculators calculator, FeatureCorrelationEnums.Partitions partition, string variable = null) {
         this.Correlation = correlation;
         this.Calculcator = calculator;
         this.Partition = partition;
         this.Variable = variable;
       }
     }
+
     public delegate void CorrelationCalculationFinishedHandler(object sender, CorrelationCalculationFinishedArgs e);
     public event CorrelationCalculationFinishedHandler CorrelationCalculationFinished;
-    protected virtual void OnCorrelationCalculationFinished(double[,] correlation, FCE.CorrelationCalculators calculator, FCE.Partitions partition, string variable = null) {
+    protected virtual void OnCorrelationCalculationFinished(double[,] correlation, FeatureCorrelationEnums.CorrelationCalculators calculator, FeatureCorrelationEnums.Partitions partition, string variable = null) {
       var handler = CorrelationCalculationFinished;
       if (handler != null)
         handler(this, new CorrelationCalculationFinishedArgs(correlation, calculator, partition, variable));
@@ -259,10 +260,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    protected class BackgroundWorkerInfo {
+    private class BackgroundWorkerInfo {
       public Dataset Dataset { get; set; }
-      public FCE.CorrelationCalculators Calculator { get; set; }
-      public FCE.Partitions Partition { get; set; }
+      public FeatureCorrelationEnums.CorrelationCalculators Calculator { get; set; }
+      public FeatureCorrelationEnums.Partitions Partition { get; set; }
       public string Variable { get; set; }
       public int Frames { get; set; }
       public double[,] AlreadyCalculated { get; set; }

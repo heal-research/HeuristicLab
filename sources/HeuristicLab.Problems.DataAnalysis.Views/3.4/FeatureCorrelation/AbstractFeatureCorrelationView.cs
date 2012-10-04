@@ -32,7 +32,6 @@ using HeuristicLab.Data.Views;
 using HeuristicLab.DataAnalysis.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Feature Correlation View")]
@@ -52,30 +51,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set { base.Content = value; }
     }
 
-    public AbstractFeatureCorrelationView() {
+    protected AbstractFeatureCorrelationView() {
       InitializeComponent();
       sortedColumnIndices = new List<KeyValuePair<int, SortOrder>>();
       rowComparer = new StringConvertibleMatrixView.RowComparer();
       fcc = new FeatureCorrelationCalculator();
-      var calculatorList = FCE.EnumToList<FCE.CorrelationCalculators>().Select(x => new KeyValuePair<FCE.CorrelationCalculators, string>(x, FCE.GetEnumDescription(x))).ToList();
+      var calculatorList = FeatureCorrelationEnums.EnumToList<FeatureCorrelationEnums.CorrelationCalculators>().Select(x => new KeyValuePair<FeatureCorrelationEnums.CorrelationCalculators, string>(x, FeatureCorrelationEnums.GetEnumDescription(x))).ToList();
       CorrelationCalcComboBox.ValueMember = "Key";
       CorrelationCalcComboBox.DisplayMember = "Value";
-      CorrelationCalcComboBox.DataSource = new BindingList<KeyValuePair<FCE.CorrelationCalculators, string>>(calculatorList);
-      var partitionList = FCE.EnumToList<FCE.Partitions>().Select(x => new KeyValuePair<FCE.Partitions, string>(x, FCE.GetEnumDescription(x))).ToList();
+      CorrelationCalcComboBox.DataSource = new BindingList<KeyValuePair<FeatureCorrelationEnums.CorrelationCalculators, string>>(calculatorList);
+      var partitionList = FeatureCorrelationEnums.EnumToList<FeatureCorrelationEnums.Partitions>().Select(x => new KeyValuePair<FeatureCorrelationEnums.Partitions, string>(x, FeatureCorrelationEnums.GetEnumDescription(x))).ToList();
       PartitionComboBox.ValueMember = "Key";
       PartitionComboBox.DisplayMember = "Value";
-      PartitionComboBox.DataSource = new BindingList<KeyValuePair<FCE.Partitions, string>>(partitionList);
+      PartitionComboBox.DataSource = new BindingList<KeyValuePair<FeatureCorrelationEnums.Partitions, string>>(partitionList);
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      fcc.ProgressCalculation += new DataAnalysis.FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
-      fcc.CorrelationCalculationFinished += new DataAnalysis.FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
+      fcc.ProgressCalculation += new FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
+      fcc.CorrelationCalculationFinished += new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
     }
 
     protected override void DeregisterContentEvents() {
-      fcc.CorrelationCalculationFinished += new DataAnalysis.FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
-      fcc.ProgressCalculation += new DataAnalysis.FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
+      fcc.CorrelationCalculationFinished += new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
+      fcc.ProgressCalculation += new FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
       base.DeregisterContentEvents();
     }
 
@@ -114,6 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected abstract void CalculateCorrelation();
+    protected abstract void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e);
 
     protected void UpdateDataGrid() {
       virtualRowIndices = Enumerable.Range(0, currentCorrelation.Rows).ToArray();
@@ -162,8 +162,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
       HeatMapProgressBar.Value = e.ProgressPercentage;
     }
-
-    protected abstract void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e);
 
     protected void DataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
       if (Content == null) return;

@@ -23,12 +23,11 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.PluginInfrastructure;
-using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [NonDiscoverableType]
   internal class FeatureCorrelationCache : Object {
-    private Dictionary<FCE.CorrelationCalculators, Dictionary<FCE.Partitions, double[,]>> correlationsCache;
+    private Dictionary<FeatureCorrelationEnums.CorrelationCalculators, Dictionary<FeatureCorrelationEnums.Partitions, double[,]>> correlationsCache;
 
     public FeatureCorrelationCache()
       : base() {
@@ -36,9 +35,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void InitializeCaches() {
-      correlationsCache = new Dictionary<FCE.CorrelationCalculators, Dictionary<FCE.Partitions, double[,]>>();
-      foreach (var calc in FCE.EnumToList<FCE.CorrelationCalculators>()) {
-        correlationsCache.Add(calc, new Dictionary<FCE.Partitions, double[,]>());
+      correlationsCache = new Dictionary<FeatureCorrelationEnums.CorrelationCalculators, Dictionary<FeatureCorrelationEnums.Partitions, double[,]>>();
+      foreach (var calc in FeatureCorrelationEnums.EnumToList<FeatureCorrelationEnums.CorrelationCalculators>()) {
+        correlationsCache.Add(calc, new Dictionary<FeatureCorrelationEnums.Partitions, double[,]>());
       }
     }
 
@@ -46,13 +45,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeCaches();
     }
 
-    public double[,] GetCorrelation(FCE.CorrelationCalculators calc, FCE.Partitions partition) {
+    public double[,] GetCorrelation(FeatureCorrelationEnums.CorrelationCalculators calc, FeatureCorrelationEnums.Partitions partition) {
       double[,] corr;
       correlationsCache[calc].TryGetValue(partition, out corr);
       return corr;
     }
 
-    public void SetCorrelation(FCE.CorrelationCalculators calc, FCE.Partitions partition, double[,] correlation) {
+    public void SetCorrelation(FeatureCorrelationEnums.CorrelationCalculators calc, FeatureCorrelationEnums.Partitions partition, double[,] correlation) {
       correlationsCache[calc][partition] = correlation;
     }
   }

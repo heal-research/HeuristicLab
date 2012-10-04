@@ -25,7 +25,6 @@ using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
-using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Timeframe Feature Correlation View")]
@@ -58,8 +57,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected override void CalculateCorrelation() {
       string variable = (string)VariableSelectionComboBox.SelectedItem;
       if (CorrelationCalcComboBox.SelectedItem != null && PartitionComboBox.SelectedItem != null && variable != null) {
-        FCE.CorrelationCalculators calc = (FCE.CorrelationCalculators)CorrelationCalcComboBox.SelectedValue;
-        FCE.Partitions partition = (FCE.Partitions)PartitionComboBox.SelectedValue;
+        FeatureCorrelationEnums.CorrelationCalculators calc = (FeatureCorrelationEnums.CorrelationCalculators)CorrelationCalcComboBox.SelectedValue;
+        FeatureCorrelationEnums.Partitions partition = (FeatureCorrelationEnums.Partitions)PartitionComboBox.SelectedValue;
         DataGridView.Columns.Clear();
         DataGridView.Enabled = false;
         int frames = (int)TimeframeComboBox.SelectedItem;
@@ -75,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private void SetNewCorrelation(double[,] elements, FCE.CorrelationCalculators calc, int frames) {
+    private void SetNewCorrelation(double[,] elements, FeatureCorrelationEnums.CorrelationCalculators calc, int frames) {
       double[,] neededValues = new double[elements.GetLength(0), frames + 1];
       for (int i = 0; i < elements.GetLength(0); i++) {
         Array.Copy(elements, i * elements.GetLength(1), neededValues, i * neededValues.GetLength(1), frames + 1);
@@ -83,8 +82,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       SetNewCorrelation(neededValues, calc);
     }
 
-    private void SetNewCorrelation(double[,] elements, FCE.CorrelationCalculators calc) {
-      DoubleRange range = FCE.calculatorInterval[calc];
+    private void SetNewCorrelation(double[,] elements, FeatureCorrelationEnums.CorrelationCalculators calc) {
+      DoubleRange range = FeatureCorrelationEnums.calculatorInterval[calc];
       HeatMap hm = new HeatMap(elements, "", range.End, range.Start);
       hm.RowNames = Content.Dataset.DoubleVariables;
       hm.ColumnNames = Enumerable.Range(0, elements.GetLength(1)).Select(x => x.ToString());

@@ -24,7 +24,6 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
-using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Feature Correlation View")]
@@ -46,8 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void CalculateCorrelation() {
       if (CorrelationCalcComboBox.SelectedItem != null && PartitionComboBox.SelectedItem != null) {
-        FCE.CorrelationCalculators calc = (FCE.CorrelationCalculators)CorrelationCalcComboBox.SelectedValue;
-        FCE.Partitions partition = (FCE.Partitions)PartitionComboBox.SelectedValue;
+        FeatureCorrelationEnums.CorrelationCalculators calc = (FeatureCorrelationEnums.CorrelationCalculators)CorrelationCalcComboBox.SelectedValue;
+        FeatureCorrelationEnums.Partitions partition = (FeatureCorrelationEnums.Partitions)PartitionComboBox.SelectedValue;
         DataGridView.Columns.Clear();
         DataGridView.Enabled = false;
         double[,] corr = correlationCache.GetCorrelation(calc, partition);
@@ -60,8 +59,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private void SetNewCorrelation(double[,] elements, FCE.CorrelationCalculators calc) {
-      DoubleRange range = FCE.calculatorInterval[calc];
+    private void SetNewCorrelation(double[,] elements, FeatureCorrelationEnums.CorrelationCalculators calc) {
+      DoubleRange range = FeatureCorrelationEnums.calculatorInterval[calc];
       HeatMap hm = new HeatMap(elements, "", range.End, range.Start);
       hm.RowNames = Content.Dataset.DoubleVariables;
       hm.ColumnNames = Content.Dataset.DoubleVariables;

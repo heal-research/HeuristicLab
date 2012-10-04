@@ -25,9 +25,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using HeuristicLab.Data;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.DataAnalysis {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   // see http://blog.spontaneouspublicity.com/associating-strings-with-enums-in-c
+  [NonDiscoverableType]
   public class FeatureCorrelationEnums {
     public enum Partitions {
       [Description("All Samples")]

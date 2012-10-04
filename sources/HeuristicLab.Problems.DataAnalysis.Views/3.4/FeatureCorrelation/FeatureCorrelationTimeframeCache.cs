@@ -23,12 +23,11 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.PluginInfrastructure;
-using FCE = HeuristicLab.Problems.DataAnalysis.FeatureCorrelationEnums;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [NonDiscoverableType]
   internal class FeatureCorrelationTimeframeCache : Object {
-    private Dictionary<FCE.CorrelationCalculators, Dictionary<FCE.Partitions, Dictionary<string, double[,]>>> timeFrameCorrelationsCache;
+    private Dictionary<FeatureCorrelationEnums.CorrelationCalculators, Dictionary<FeatureCorrelationEnums.Partitions, Dictionary<string, double[,]>>> timeFrameCorrelationsCache;
 
     public FeatureCorrelationTimeframeCache()
       : base() {
@@ -36,10 +35,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void InitializeCaches() {
-      timeFrameCorrelationsCache = new Dictionary<FCE.CorrelationCalculators, Dictionary<FCE.Partitions, Dictionary<string, double[,]>>>();
-      foreach (var calc in FCE.EnumToList<FCE.CorrelationCalculators>()) {
-        timeFrameCorrelationsCache.Add(calc, new Dictionary<FCE.Partitions, Dictionary<string, double[,]>>());
-        foreach (var part in FCE.EnumToList<FCE.Partitions>()) {
+      timeFrameCorrelationsCache = new Dictionary<FeatureCorrelationEnums.CorrelationCalculators, Dictionary<FeatureCorrelationEnums.Partitions, Dictionary<string, double[,]>>>();
+      foreach (var calc in FeatureCorrelationEnums.EnumToList<FeatureCorrelationEnums.CorrelationCalculators>()) {
+        timeFrameCorrelationsCache.Add(calc, new Dictionary<FeatureCorrelationEnums.Partitions, Dictionary<string, double[,]>>());
+        foreach (var part in FeatureCorrelationEnums.EnumToList<FeatureCorrelationEnums.Partitions>()) {
           timeFrameCorrelationsCache[calc].Add(part, new Dictionary<string, double[,]>());
         }
       }
@@ -49,13 +48,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeCaches();
     }
 
-    public double[,] GetTimeframeCorrelation(FCE.CorrelationCalculators calc, FCE.Partitions partition, string variable) {
+    public double[,] GetTimeframeCorrelation(FeatureCorrelationEnums.CorrelationCalculators calc, FeatureCorrelationEnums.Partitions partition, string variable) {
       double[,] corr;
       timeFrameCorrelationsCache[calc][partition].TryGetValue(variable, out corr);
       return corr;
     }
 
-    public void SetTimeframeCorrelation(FCE.CorrelationCalculators calc, FCE.Partitions partition, string variable, double[,] correlation) {
+    public void SetTimeframeCorrelation(FeatureCorrelationEnums.CorrelationCalculators calc, FeatureCorrelationEnums.Partitions partition, string variable, double[,] correlation) {
       timeFrameCorrelationsCache[calc][partition][variable] = correlation;
     }
   }
