@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       // update variable impacts matrix
       var orderedImpacts = (from row in datatable.Rows
-                            select new { Name = row.Name, Impact = datatable.Rows[row.Name].Values.Average() })
+                            select new { Name = row.Name, Impact = Math.Round(datatable.Rows[row.Name].Values.Average(), 3) })
                            .OrderByDescending(p => p.Impact)
                            .ToList();
       var impacts = new DoubleMatrix();
