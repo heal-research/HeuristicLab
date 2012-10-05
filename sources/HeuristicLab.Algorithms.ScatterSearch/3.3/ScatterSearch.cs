@@ -261,7 +261,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     }
 
     public override void Prepare() {
-      if (Problem != null && Improver != null && PathRelinker != null && SimilarityCalculator != null)
+      if (Problem != null && Improver != null && (PathRelinker != null || ExecutePathRelinking.Value == false) && SimilarityCalculator != null)
         base.Prepare();
     }
 
