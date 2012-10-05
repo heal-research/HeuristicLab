@@ -181,7 +181,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       this.Name = "StarterForm";
       this.Text = "HeuristicLab Starter";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.StarterForm_FormClosing);
-      this.Shown += new System.EventHandler(this.StarterForm_Shown);
+      this.Load += new System.EventHandler(this.StarterForm_Load);
       this.ResumeLayout(false);
 
     }

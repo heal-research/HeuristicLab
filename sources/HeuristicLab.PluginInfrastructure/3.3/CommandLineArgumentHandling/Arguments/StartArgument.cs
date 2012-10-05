@@ -20,26 +20,15 @@
 #endregion
 
 namespace HeuristicLab.PluginInfrastructure {
-  public class Argument : IArgument {
-    public const string START = "start";
+  public class StartArgument : CommandLineArgument<string> {
+    public const string TOKEN = "start";
 
-    public string Token { get; private set; }
-    public string Value { get; private set; }
-    public bool Valid { get { return !string.IsNullOrEmpty(Value); } }
-
-    public Argument(string token, string value) {
-      Token = token;
+    public StartArgument(string value) {
       Value = value;
     }
 
-    public override bool Equals(object obj) {
-      if (obj == null || this.GetType() != obj.GetType()) return false;
-      var other = (Argument)obj;
-      return this.Token == other.Token && this.Value == other.Value;
-    }
-
-    public override int GetHashCode() {
-      return GetType().GetHashCode();
+    protected override bool CheckValidity() {
+      return !string.IsNullOrEmpty(Value) && !string.IsNullOrWhiteSpace(Value);
     }
   }
 }

@@ -25,9 +25,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace HeuristicLab.PluginInfrastructure {
-  public static class ArgumentHandling {
-    public static IArgument[] GetArguments(string[] args) {
-      var arguments = new HashSet<IArgument>();
+  public static class CommandLineArgumentHandling {
+    public static ICommandLineArgument[] GetArguments(string[] args) {
+      var arguments = new HashSet<ICommandLineArgument>();
       var exceptions = new List<Exception>();
 
       foreach (var entry in args) {
@@ -40,14 +40,18 @@ namespace HeuristicLab.PluginInfrastructure {
       return arguments.ToArray();
     }
 
-    private static Argument ParseArgument(string entry) {
-      var regex = new Regex(@"^/[a-z]+(:[A-Za-z0-9\s]+)?$");
+    private static ICommandLineArgument ParseArgument(string entry) {
+      var regex = new Regex(@"^/[A-Za-z]+(:[A-Za-z0-9\s]+)?$");
       if (!regex.IsMatch(entry)) return null;
       entry = entry.Remove(0, 1);
       var parts = entry.Split(':');
-      string key = parts[0];
+      string key = parts[0].Trim();
       string value = parts.Length == 2 ? parts[1].Trim() : string.Empty;
-      return new Argument(key.ToLower(), value);
+      switch (key) {
+        case StartArgument.TOKEN: return new StartArgument(value);
+        case HideStarterArgument.TOKEN: return new HideStarterArgument(value);
+        default: return null;
+      }
     }
   }
 }

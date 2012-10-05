@@ -20,9 +20,21 @@
 #endregion
 
 namespace HeuristicLab.PluginInfrastructure {
-  public interface IArgument {
-    string Token { get; }
-    string Value { get; }
-    bool Valid { get; }
+  public abstract class CommandLineArgument<T> : ICommandLineArgument<T> {
+    object ICommandLineArgument.Value { get { return Value; } }
+    public T Value { get; protected set; }
+    public bool Valid { get { return CheckValidity(); } }
+
+    public override bool Equals(object obj) {
+      if (obj == null || this.GetType() != obj.GetType()) return false;
+      var other = (ICommandLineArgument<T>)obj;
+      return this.Value.Equals(other.Value);
+    }
+
+    public override int GetHashCode() {
+      return GetType().GetHashCode() ^ Value.GetHashCode();
+    }
+
+    protected abstract bool CheckValidity();
   }
 }

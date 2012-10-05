@@ -39,13 +39,13 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private const string pluginManagerItemName = "Plugin Manager";
     private const string updatePluginsItemName = "Updates Available";
 
+    private readonly ICommandLineArgument[] arguments;
 
     private ListViewItem pluginManagerListViewItem;
     private bool abortRequested;
     private PluginManager pluginManager;
     private SplashScreen splashScreen;
     private bool updatesAvailable = false;
-    private string[] arguments;
 
     /// <summary>
     /// Initializes an instance of the starter form.
@@ -64,6 +64,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       string pluginPath = Path.GetFullPath(Application.StartupPath);
       pluginManager = new PluginManager(pluginPath);
       splashScreen = new SplashScreen(pluginManager, 1000);
+      splashScreen.VisibleChanged += new EventHandler(splashScreen_VisibleChanged);
       splashScreen.Show(this, "Loading HeuristicLab...");
 
       pluginManager.DiscoverAndCheckPlugins();
@@ -72,73 +73,33 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       CheckUpdatesAvailableAsync();
     }
 
-    private void CheckUpdatesAvailableAsync() {
-      string pluginPath = Path.GetFullPath(Application.StartupPath);
-      var task = Task.Factory.StartNew<bool>(() => {
-        var installationManager = new InstallationManager(pluginPath);
-        IEnumerable<IPluginDescription> installedPlugins = pluginManager.Plugins.OfType<IPluginDescription>();
-        var remotePlugins = installationManager.GetRemotePluginList();
-        // if there is a local plugin with same name and same major and minor version then it's an update
-        var pluginsToUpdate = from remotePlugin in remotePlugins
-                              let matchingLocalPlugins = from installedPlugin in installedPlugins
-                                                         where installedPlugin.Name == remotePlugin.Name
-                                                         where installedPlugin.Version.Major == remotePlugin.Version.Major
-                                                         where installedPlugin.Version.Minor == remotePlugin.Version.Minor
-                                                         where Util.IsNewerThan(remotePlugin, installedPlugin)
-                                                         select installedPlugin
-                              where matchingLocalPlugins.Count() > 0
-                              select remotePlugin;
-        return pluginsToUpdate.Count() > 0;
-      });
-      task.ContinueWith(t => {
-        try {
-          t.Wait();
-          updatesAvailable = t.Result;
-          UpdateApplicationsList();
-        }
-        catch (AggregateException ae) {
-          ae.Handle(ex => {
-            if (ex is InstallationManagerException) {
-              // this is expected when no internet connection is available => do nothing 
-              return true;
-            } else {
-              return false;
-            }
-          });
-        }
-      });
-    }
-
     /// <summary>
     /// Creates a new StarterForm and passes the arguments in <paramref name="args"/>.
     /// </summary>
     /// <param name="args">The arguments that should be processed</param>
     public StarterForm(string[] args)
       : this() {
-      this.arguments = args;
+      arguments = CommandLineArgumentHandling.GetArguments(args);
     }
 
-    private void StarterForm_Shown(object sender, EventArgs e) {
-      try {
-        foreach (var argument in ArgumentHandling.GetArguments(arguments)) {
-          if (argument.Token == Argument.START) {
-            var appDesc = (from desc in pluginManager.Applications
-                           where desc.Name == argument.Value
-                           select desc).SingleOrDefault();
-            if (appDesc != null) {
-              StartApplication(appDesc);
-            } else {
-              MessageBox.Show("Cannot start application " + argument.Value + ".",
-                              "HeuristicLab",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Warning);
-            }
-          }
-        }
-      }
-      catch (AggregateException ex) {
-        ErrorHandling.ShowErrorDialog(this, "One or more errors occurred while initializing the application.", ex);
-      }
+    protected override void SetVisibleCore(bool value) {
+      value &= !arguments.OfType<HideStarterArgument>().Any();
+      if (!value) HandleArguments();
+      base.SetVisibleCore(value);
+    }
+
+    #region Events
+    private void StarterForm_Load(object sender, EventArgs e) {
+      HandleArguments();
+    }
+
+    private void StarterForm_FormClosing(object sender, FormClosingEventArgs e) {
+      splashScreen.Close();
+      abortRequested = true;
+    }
+
+    private void applicationsListView_SelectedIndexChanged(object sender, EventArgs e) {
+      startButton.Enabled = applicationsListView.SelectedItems.Count > 0;
     }
 
     private void applicationsListView_ItemActivate(object sender, EventArgs e) {
@@ -187,6 +148,34 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       }
     }
 
+    private void largeIconsButton_Click(object sender, EventArgs e) {
+      applicationsListView.View = View.LargeIcon;
+    }
+
+    private void detailsButton_Click(object sender, EventArgs e) {
+      applicationsListView.View = View.Details;
+      foreach (ColumnHeader column in applicationsListView.Columns) {
+        if (applicationsListView.Items.Count > 0)
+          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+      }
+    }
+
+    private void aboutButton_Click(object sender, EventArgs e) {
+      List<IPluginDescription> plugins = new List<IPluginDescription>(pluginManager.Plugins.OfType<IPluginDescription>());
+      using (var dialog = new AboutDialog(plugins)) {
+        dialog.ShowDialog();
+      }
+    }
+
+    private void splashScreen_VisibleChanged(object sender, EventArgs e) {
+      // close hidden starter form
+      if (!splashScreen.Visible && arguments != null && arguments.OfType<HideStarterArgument>().Any())
+        Close();
+    }
+    #endregion
+
+    #region Helpers
     private void UpdateApplicationsList() {
       if (InvokeRequired) Invoke((Action)UpdateApplicationsList);
       else {
@@ -234,6 +223,66 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       }
     }
 
+    private void CheckUpdatesAvailableAsync() {
+      string pluginPath = Path.GetFullPath(Application.StartupPath);
+      var task = Task.Factory.StartNew<bool>(() => {
+        var installationManager = new InstallationManager(pluginPath);
+        IEnumerable<IPluginDescription> installedPlugins = pluginManager.Plugins.OfType<IPluginDescription>();
+        var remotePlugins = installationManager.GetRemotePluginList();
+        // if there is a local plugin with same name and same major and minor version then it's an update
+        var pluginsToUpdate = from remotePlugin in remotePlugins
+                              let matchingLocalPlugins = from installedPlugin in installedPlugins
+                                                         where installedPlugin.Name == remotePlugin.Name
+                                                         where installedPlugin.Version.Major == remotePlugin.Version.Major
+                                                         where installedPlugin.Version.Minor == remotePlugin.Version.Minor
+                                                         where Util.IsNewerThan(remotePlugin, installedPlugin)
+                                                         select installedPlugin
+                              where matchingLocalPlugins.Count() > 0
+                              select remotePlugin;
+        return pluginsToUpdate.Count() > 0;
+      });
+      task.ContinueWith(t => {
+        try {
+          t.Wait();
+          updatesAvailable = t.Result;
+          UpdateApplicationsList();
+        }
+        catch (AggregateException ae) {
+          ae.Handle(ex => {
+            if (ex is InstallationManagerException) {
+              // this is expected when no internet connection is available => do nothing 
+              return true;
+            } else {
+              return false;
+            }
+          });
+        }
+      });
+    }
+
+    private void HandleArguments() {
+      try {
+        foreach (var argument in arguments) {
+          if (argument is StartArgument) {
+            var appDesc = (from desc in pluginManager.Applications
+                           where desc.Name.Equals(argument.Value)
+                           select desc).SingleOrDefault();
+            if (appDesc != null) {
+              StartApplication(appDesc);
+            } else {
+              MessageBox.Show("Cannot start application " + argument.Value + ".",
+                              "HeuristicLab",
+                              MessageBoxButtons.OK,
+                              MessageBoxIcon.Warning);
+            }
+          }
+        }
+      }
+      catch (AggregateException ex) {
+        ErrorHandling.ShowErrorDialog(this, "One or more errors occurred while initializing the application.", ex);
+      }
+    }
+
     private void StartApplication(ApplicationDescription app) {
       splashScreen.Show("Loading " + app.Name);
       Thread t = new Thread(delegate() {
@@ -255,34 +304,6 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       t.SetApartmentState(ApartmentState.STA); // needed for the AdvancedOptimizationFrontent
       t.Start();
     }
-
-    private void applicationsListView_SelectedIndexChanged(object sender, EventArgs e) {
-      startButton.Enabled = applicationsListView.SelectedItems.Count > 0;
-    }
-
-    private void largeIconsButton_Click(object sender, EventArgs e) {
-      applicationsListView.View = View.LargeIcon;
-    }
-
-    private void detailsButton_Click(object sender, EventArgs e) {
-      applicationsListView.View = View.Details;
-      foreach (ColumnHeader column in applicationsListView.Columns) {
-        if (applicationsListView.Items.Count > 0)
-          column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        else column.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-      }
-    }
-
-    private void StarterForm_FormClosing(object sender, FormClosingEventArgs e) {
-      splashScreen.Close();
-      abortRequested = true;
-    }
-
-    private void aboutButton_Click(object sender, EventArgs e) {
-      List<IPluginDescription> plugins = new List<IPluginDescription>(pluginManager.Plugins.OfType<IPluginDescription>());
-      using (var dialog = new AboutDialog(plugins)) {
-        dialog.ShowDialog();
-      }
-    }
+    #endregion
   }
 }
