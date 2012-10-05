@@ -285,7 +285,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       for (int i = 0; i < Classes; i++) {
         for (int j = 0; j < Classes; j++) {
-          ClassificationPenaltiesParameter.Value[i, j] = classificationProblemData.GetClassificationPenalty(i, j);
+          ClassificationPenaltiesParameter.Value[i, j] = classificationProblemData.GetClassificationPenalty(ClassValuesCache[i], ClassValuesCache[j]);
         }
       }
     }
