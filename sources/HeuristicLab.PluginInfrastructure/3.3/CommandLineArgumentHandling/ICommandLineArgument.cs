@@ -25,7 +25,7 @@ namespace HeuristicLab.PluginInfrastructure {
     bool Valid { get; }
   }
 
-  public interface ICommandLineArgument<out T> : ICommandLineArgument {
+  public interface ICommandLineArgument<T> : ICommandLineArgument {
     new T Value { get; }
   }
 }
