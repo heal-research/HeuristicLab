@@ -4,12 +4,11 @@ using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab_33.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.PluginInfraStructure.Tests {
+namespace HeuristicLab.PluginInfrastructure.Tests {
   /// <summary>
   /// Summary description for TypeDiscoveryTest
   /// </summary>

@@ -155,6 +155,12 @@
     <Reference Include="HeuristicLab.Encodings.RealVectorEncoding-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Encodings.RealVectorEncoding-3.3.dll</HintPath>
     </Reference>
+    <Reference Include="HeuristicLab.Encodings.ScheduleEncoding-3.3">
+      <HintPath>..\bin\HeuristicLab.Encodings.ScheduleEncoding-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Encodings.ScheduleEncoding.Views-3.3">
+      <HintPath>..\bin\HeuristicLab.Encodings.ScheduleEncoding.Views-3.3.dll</HintPath>
+    </Reference>
     <Reference Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.dll</HintPath>
     </Reference>
@@ -235,6 +241,12 @@
     </Reference>
     <Reference Include="HeuristicLab.Problems.QuadraticAssignment-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Problems.QuadraticAssignment-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Problems.Scheduling-3.3">
+      <HintPath>..\bin\HeuristicLab.Problems.Scheduling-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Problems.Scheduling.Views-3.3">
+      <HintPath>..\bin\HeuristicLab.Problems.Scheduling.Views-3.3.dll</HintPath>
     </Reference>
     <Reference Include="HeuristicLab.Problems.TestFunctions-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Problems.TestFunctions-3.3.dll</HintPath>
@@ -337,6 +349,14 @@
     <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\SimulatedBinaryCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\SinglePointCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.RealVectorEncoding-3.3\UniformOnePositionManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\DirectScheduleGTCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\JSMJOXCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\JSMShiftChangeManipulatorTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\JSMSXXCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\PWRGOXCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\PWRPPXCrossoverTest.cs" />
+    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\TestRandom.cs" />
+    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\TestUtils.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\AllArchitectureAlteringOperatorsTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ArgumentCreaterTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ArgumentDeleterTest.cs" />
