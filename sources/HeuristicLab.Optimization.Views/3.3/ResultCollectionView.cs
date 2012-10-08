@@ -29,8 +29,9 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(ResultCollection), true)]
   [Content(typeof(IKeyedItemCollection<string, IResult>), false)]
   public partial class ResultCollectionView : NamedItemCollectionView<IResult> {
+
     public override bool ReadOnly {
-      get { return base.ReadOnly; }
+      get { return true; }
       set { /*not needed because results are always readonly */}
     }
 
@@ -38,7 +39,6 @@ namespace HeuristicLab.Optimization.Views {
       InitializeComponent();
       itemsGroupBox.Text = "Results";
       viewHost.ViewsLabelVisible = false;
-      base.ReadOnly = true;
     }
 
     protected override IResult CreateItem() {
