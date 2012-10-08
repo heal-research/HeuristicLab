@@ -150,7 +150,7 @@
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
-    <None Include="Properties\AssemblyInfo.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.ScheduleEncoding.Views\3.3\HeuristicLab.Encodings.ScheduleEncoding.Views-3.3.csproj">
