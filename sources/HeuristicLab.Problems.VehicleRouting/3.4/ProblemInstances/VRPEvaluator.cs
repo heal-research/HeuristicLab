@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return evaluation;
     }
 
-    public VRPEvaluation Evaluate(IVRPProblemInstance instance, IVRPEncoding solution) {
+    public virtual VRPEvaluation Evaluate(IVRPProblemInstance instance, IVRPEncoding solution) {
       VRPEvaluation evaluation = CreateTourEvaluation();
 
       foreach (Tour tour in solution.GetTours()) {
