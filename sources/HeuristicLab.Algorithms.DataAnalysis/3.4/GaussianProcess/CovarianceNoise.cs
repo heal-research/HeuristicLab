@@ -90,11 +90,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      return sf2;
+      return i == j ? sf2 : 0.0;
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      yield return 2 * sf2;
+      yield return i == j ? 2 * sf2 : 0.0;
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
