@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System.Text;
 
 namespace HeuristicLab.Optimization {
 
@@ -20,7 +20,7 @@ namespace HeuristicLab.Optimization {
 
     [Storable]
     public string Formula {
-      get { return string.Join(" ", tokens); }
+      get { return tokens == null ? string.Empty : string.Join(" ", tokens); }
       set { tokens = Tokenize(value).ToList(); }
     }
 
@@ -55,7 +55,7 @@ namespace HeuristicLab.Optimization {
       var stack = new Stack<object>();
       int i = 0;
       try {
-        for (; i<tokens.Count; i++) {
+        for (; i < tokens.Count; i++) {
           var token = tokens[i];
           double d;
           if (TryParse(token, out d)) {
@@ -63,15 +63,16 @@ namespace HeuristicLab.Optimization {
           } else if (token.StartsWith("\"")) {
             stack.Push(GetVariableValue(variables, token.Substring(1, token.Length - 2).Replace("\\\"", "\"")));
           } else if (token.StartsWith("'")) {
-            stack.Push(token.Substring(1, token.Length-2).Replace("\\'", "'"));
+            stack.Push(token.Substring(1, token.Length - 2).Replace("\\'", "'"));
           } else {
             Apply(token, stack, variables);
           }
         }
-      } catch (Exception x) {
+      }
+      catch (Exception x) {
         throw new Exception(string.Format(
           "Calculation of '{1}'{0}failed at token #{2}: {3} {0}current stack is: {0}{4}", Environment.NewLine,
-          Formula, i, TokenWithContext(tokens, i, 3), 
+          Formula, i, TokenWithContext(tokens, i, 3),
           string.Join(Environment.NewLine, stack.Select(AsString))),
           x);
       }
@@ -88,7 +89,7 @@ namespace HeuristicLab.Optimization {
 
     private string TokenWithContext(List<string> tokens, int i, int context) {
       var sb = new StringBuilder();
-      if (i > context+1)
+      if (i > context + 1)
         sb.Append("... ");
       int prefix = Math.Max(0, i - context);
       sb.Append(string.Join(" ", tokens.GetRange(prefix, i - prefix)));
@@ -103,8 +104,8 @@ namespace HeuristicLab.Optimization {
 
     private static void Apply(string token, Stack<object> stack, IDictionary<string, IItem> variables) {
       switch (token) {
-        case "null":  stack.Push(null); break;
-        case "true":  stack.Push(true); break;
+        case "null": stack.Push(null); break;
+        case "true": stack.Push(true); break;
         case "false": stack.Push(false); break;
 
         case "drop": stack.Pop(); break;
@@ -185,7 +186,8 @@ namespace HeuristicLab.Optimization {
       var a = stack.Pop();
       try {
         stack.Push(func(a));
-      } catch (Exception) {
+      }
+      catch (Exception) {
         stack.Push(a);
         throw;
       }
@@ -198,7 +200,8 @@ namespace HeuristicLab.Optimization {
       var a = stack.Pop();
       try {
         stack.Push(func(a, b));
-      } catch (Exception) {
+      }
+      catch (Exception) {
         stack.Push(b);
         stack.Push(a);
         throw;
@@ -213,7 +216,8 @@ namespace HeuristicLab.Optimization {
       var a = stack.Pop();
       try {
         stack.Push(func(a, b, c));
-      } catch (Exception) {
+      }
+      catch (Exception) {
         stack.Push(a);
         stack.Push(b);
         stack.Push(c);
