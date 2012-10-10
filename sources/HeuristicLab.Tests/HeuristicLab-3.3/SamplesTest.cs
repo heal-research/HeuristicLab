@@ -27,6 +27,7 @@ using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Algorithms.LocalSearch;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
+using HeuristicLab.Algorithms.RAPGA;
 using HeuristicLab.Algorithms.ScatterSearch;
 using HeuristicLab.Algorithms.SimulatedAnnealing;
 using HeuristicLab.Algorithms.TabuSearch;
@@ -35,6 +36,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
@@ -50,6 +52,7 @@ using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Problems.Instances.TSPLIB;
 using HeuristicLab.Problems.Instances.VehicleRouting;
 using HeuristicLab.Problems.Knapsack;
+using HeuristicLab.Problems.Scheduling;
 using HeuristicLab.Problems.TestFunctions;
 using HeuristicLab.Problems.TravelingSalesman;
 using HeuristicLab.Problems.VehicleRouting;
@@ -1000,6 +1003,44 @@ namespace HeuristicLab_33.Tests {
       ss.MaximumIterations.Value = 5;
       ss.Seed.Value = 0;
       return ss;
+      #endregion
+    }
+    #endregion
+    #endregion
+
+    #region RAPGA
+    #region Scheduling
+    [TestMethod]
+    public void CreateRAPGASchedulingSampleTest() {
+      var ss = CreateRAPGASchedulingSample();
+      XmlGenerator.Serialize(ss, "../../RAPGA_JSSP.hl");
+    }
+
+    [TestMethod]
+    public void RunRAPGASchedulingSampleTest() {
+      var rapga = CreateRAPGASchedulingSample();
+      rapga.SetSeedRandomly.Value = false;
+      RunAlgorithm(rapga);
+      Assert.AreEqual(982.00, GetDoubleResult(rapga, "BestQuality"));
+      Assert.AreEqual(982.00, GetDoubleResult(rapga, "CurrentAverageQuality"));
+      Assert.AreEqual(982.00, GetDoubleResult(rapga, "CurrentWorstQuality"));
+      Assert.AreEqual(29100, GetIntResult(rapga, "EvaluatedSolutions"));
+    }
+
+    private RAPGA CreateRAPGASchedulingSample() {
+      #region Problem Configuration
+      JobShopSchedulingProblem problem = new JobShopSchedulingProblem();
+      #endregion
+
+      #region Algorithm Configuration
+      RAPGA rapga = new RAPGA();
+      rapga.Engine = new SequentialEngine();
+      rapga.Name = "RAPGA - Job Shop Scheduling";
+      rapga.Description = "A relevant alleles preserving genetic algorithm which solves a job shop scheduling problem";
+      rapga.Problem = problem;
+      rapga.Mutator = rapga.MutatorParameter.ValidValues.OfType<JSMSwapManipulator>().First();
+      rapga.Seed.Value = 0;
+      return rapga;
       #endregion
     }
     #endregion
