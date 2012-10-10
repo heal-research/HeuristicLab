@@ -27,6 +27,7 @@ using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Algorithms.LocalSearch;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
+using HeuristicLab.Algorithms.ScatterSearch;
 using HeuristicLab.Algorithms.SimulatedAnnealing;
 using HeuristicLab.Algorithms.TabuSearch;
 using HeuristicLab.Algorithms.VariableNeighborhoodSearch;
@@ -56,6 +57,7 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Selection;
+using HeuristicLab.SequentialEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
@@ -947,6 +949,60 @@ namespace HeuristicLab_33.Tests {
       gpr.Engine = new ParallelEngine();
       return gpr;
     }
+    #endregion
+
+    #region Scatter Search
+    #region VRP
+    [TestMethod]
+    public void CreateScatterSearchVRPSampleTest() {
+      var ss = CreateScatterSearchVRPSample();
+      XmlGenerator.Serialize(ss, "../../SS_VRP.hl");
+    }
+
+    [TestMethod]
+    public void RunScatterSearchVRPSampleTest() {
+      var ss = CreateScatterSearchVRPSample();
+      ss.SetSeedRandomly.Value = false;
+      RunAlgorithm(ss);
+      Assert.AreEqual(749, GetDoubleResult(ss, "BestQuality"));
+      Assert.AreEqual(766.95, GetDoubleResult(ss, "CurrentAverageQuality"));
+      Assert.AreEqual(789, GetDoubleResult(ss, "CurrentWorstQuality"));
+      Assert.AreEqual(27400, GetIntResult(ss, "EvaluatedSolutions"));
+    }
+
+    private ScatterSearch CreateScatterSearchVRPSample() {
+      #region Problem Configuration
+      var provider = new AugeratInstanceProvider();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name == "A-n38-k5").Single();
+      VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
+      vrpProblem.Load(provider.LoadData(instance));
+      #endregion
+
+      #region Algorithm Configuration
+      ScatterSearch ss = new ScatterSearch();
+      ss.Engine = new SequentialEngine();
+      ss.Name = "Scatter Search - VRP";
+      ss.Description = "A Scatter Search algorithm which solves the \"A-n38-k5\" vehicle routing problem (imported from Augerat)";
+      ss.Problem = vrpProblem;
+
+      var improver = ss.Problem.Operators.OfType<VRPImprovementOperator>().First();
+      improver.ImprovementAttemptsParameter.Value.Value = 5;
+      improver.SampleSizeParameter.Value.Value = 5;
+      ss.Improver = improver;
+
+      var pathRelinker = ss.Problem.Operators.OfType<VRPPathRelinker>().First();
+      pathRelinker.IterationsParameter.Value.Value = 15;
+      ss.PathRelinker = pathRelinker;
+
+      var qualitySimCalc = ss.SimilarityCalculatorParameter.ValidValues.OfType<QualitySimilarityCalculator>().First();
+      ss.SimilarityCalculator = qualitySimCalc;
+
+      ss.MaximumIterations.Value = 5;
+      ss.Seed.Value = 0;
+      return ss;
+      #endregion
+    }
+    #endregion
     #endregion
 
     #region Helpers

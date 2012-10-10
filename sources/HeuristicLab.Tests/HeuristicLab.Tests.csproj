@@ -119,6 +119,12 @@
     <Reference Include="HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll</HintPath>
     </Reference>
+    <Reference Include="HeuristicLab.Algorithms.RAPGA-3.3">
+      <HintPath>..\bin\HeuristicLab.Algorithms.RAPGA-3.3.dll</HintPath>
+    </Reference>
+    <Reference Include="HeuristicLab.Algorithms.ScatterSearch-3.3">
+      <HintPath>..\bin\HeuristicLab.Algorithms.ScatterSearch-3.3.dll</HintPath>
+    </Reference>
     <Reference Include="HeuristicLab.Algorithms.SimulatedAnnealing-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Algorithms.SimulatedAnnealing-3.3.dll</HintPath>
     </Reference>
