@@ -203,7 +203,9 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       OperatorGraph.InitialOperator = randomCreator;
       randomCreator.RandomParameter.ActualName = "Random";
       randomCreator.SeedParameter.ActualName = SeedParameter.Name;
+      randomCreator.SeedParameter.Value = null;
       randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameter.Name;
+      randomCreator.SetSeedRandomlyParameter.Value = null;
       randomCreator.Successor = solutionsCreator;
 
       solutionsCreator.Name = "DiversificationGenerationMethod";
