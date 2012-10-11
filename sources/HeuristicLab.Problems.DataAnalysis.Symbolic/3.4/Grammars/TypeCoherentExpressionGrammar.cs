@@ -103,6 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       constant.MaxValue = 20;
       var variableSymbol = new Variable();
       var laggedVariable = new LaggedVariable();
+      var autoregressiveVariable = new AutoregressiveTargetVariable();
       #endregion
 
       #region group symbol declaration
@@ -121,7 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var booleanOperationSymbols = new GroupSymbol(BooleanOperatorsName, new List<ISymbol> { and, or, not });
       var conditionalSymbols = new GroupSymbol(ConditionalSymbolsName, new List<ISymbol> { conditionSymbols, comparisonSymbols, booleanOperationSymbols });
 
-      var timeSeriesSymbols = new GroupSymbol(TimeSeriesSymbolsName, new List<ISymbol> { timeLag, integral, derivative, laggedVariable });
+      var timeSeriesSymbols = new GroupSymbol(TimeSeriesSymbolsName, new List<ISymbol> { timeLag, integral, derivative, laggedVariable, autoregressiveVariable });
       #endregion
 
       AddSymbol(realValuedSymbols);
@@ -151,6 +152,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SetSubtreeCount(integral, 1, 1);
       SetSubtreeCount(derivative, 1, 1);
       SetSubtreeCount(laggedVariable, 0, 0);
+      SetSubtreeCount(autoregressiveVariable, 0, 0);
       #endregion
 
       #region allowed child symbols configuration
@@ -223,6 +225,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = false;
+    }
+
+    public void ConfigureAsDefaultTimeSeriesPrognosisGrammar() {
+      Symbols.First(s => s is Average).Enabled = false;
+      Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
+      Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;
+      Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
+
+      Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = true;
+      Symbols.First(s => s is Derivative).Enabled = false;
+      Symbols.First(s => s is Integral).Enabled = false;
+      Symbols.First(s => s is TimeLag).Enabled = false;
     }
   }
 }

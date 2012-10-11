@@ -115,6 +115,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DatasetExtensions.cs" />
     <Compile Include="DoubleLimit.cs" />
     <Compile Include="Implementation\Classification\ClassificationEnsembleModel.cs">
       <SubType>Code</SubType>
@@ -136,6 +137,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Implementation\Regression\RegressionEnsembleSolution.cs" />
+    <Compile Include="Implementation\TimeSeriesPrognosis\Models\ConstantTimeSeriesPrognosisModel.cs" />
+    <Compile Include="Implementation\TimeSeriesPrognosis\Models\TimeSeriesPrognosisAutoRegressiveModel.cs" />
+    <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisProblem.cs" />
+    <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisProblemData.cs" />
+    <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisResults.cs" />
+    <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisSolution.cs" />
+    <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisSolutionBase.cs" />
     <Compile Include="Interfaces\Classification\IClassificationEnsembleModel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -148,8 +156,15 @@
     </Compile>
     <Compile Include="Interfaces\Regression\IRegressionEnsembleSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionSolutionBase.cs" />
+    <Compile Include="Interfaces\TimeSeriesPrognosis\IOnlineTimeSeriesCalculator.cs" />
+    <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisModel.cs" />
+    <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblem.cs" />
+    <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblemData.cs" />
+    <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisSolution.cs" />
+    <Compile Include="OnlineCalculators\AutoCorrelationCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineBoundedMeanSquaredErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\HoeffdingsDependenceCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineDirectionalSymmetryCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMaxAbsoluteErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\NormalizedGiniCalculator.cs" />
@@ -188,6 +203,8 @@
     <Compile Include="OnlineCalculators\OnlineNormalizedMeanSquaredErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlinePearsonsRSquaredCalculator.cs" />
     <Compile Include="Implementation\Regression\RegressionSolution.cs" />
+    <Compile Include="OnlineCalculators\OnlineTheilsUStatisticCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineWeightedDirectionalSymmetryCalculator.cs" />
     <Compile Include="OnlineCalculators\SpearmansRankCorrelationCoefficientCalculator.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\AccuracyMaximizationThresholdCalculator.cs" />

@@ -28,18 +28,31 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   public abstract class RegressionSolutionBase : DataAnalysisSolution, IRegressionSolution {
-    private const string TrainingMeanSquaredErrorResultName = "Mean squared error (training)";
-    private const string TestMeanSquaredErrorResultName = "Mean squared error (test)";
-    private const string TrainingMeanAbsoluteErrorResultName = "Mean absolute error (training)";
-    private const string TestMeanAbsoluteErrorResultName = "Mean absolute error (test)";
-    private const string TrainingSquaredCorrelationResultName = "Pearson's R² (training)";
-    private const string TestSquaredCorrelationResultName = "Pearson's R² (test)";
-    private const string TrainingRelativeErrorResultName = "Average relative error (training)";
-    private const string TestRelativeErrorResultName = "Average relative error (test)";
-    private const string TrainingNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (training)";
-    private const string TestNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (test)";
-    private const string TrainingMeanErrorResultName = "Mean error (training)";
-    private const string TestMeanErrorResultName = "Mean error (test)";
+    protected const string TrainingMeanSquaredErrorResultName = "Mean squared error (training)";
+    protected const string TestMeanSquaredErrorResultName = "Mean squared error (test)";
+    protected const string TrainingMeanAbsoluteErrorResultName = "Mean absolute error (training)";
+    protected const string TestMeanAbsoluteErrorResultName = "Mean absolute error (test)";
+    protected const string TrainingSquaredCorrelationResultName = "Pearson's R² (training)";
+    protected const string TestSquaredCorrelationResultName = "Pearson's R² (test)";
+    protected const string TrainingRelativeErrorResultName = "Average relative error (training)";
+    protected const string TestRelativeErrorResultName = "Average relative error (test)";
+    protected const string TrainingNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (training)";
+    protected const string TestNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (test)";
+    protected const string TrainingMeanErrorResultName = "Mean error (training)";
+    protected const string TestMeanErrorResultName = "Mean error (test)";
+
+    protected const string TrainingMeanSquaredErrorResultDescription = "Mean of squared errors of the model on the training partition";
+    protected const string TestMeanSquaredErrorResultDescription = "Mean of squared errors of the model on the test partition";
+    protected const string TrainingMeanAbsoluteErrorResultDescription = "Mean of absolute errors of the model on the training partition";
+    protected const string TestMeanAbsoluteErrorResultDescription = "Mean of absolute errors of the model on the test partition";
+    protected const string TrainingSquaredCorrelationResultDescription = "Squared Pearson's correlation coefficient of the model output and the actual values on the training partition";
+    protected const string TestSquaredCorrelationResultDescription = "Squared Pearson's correlation coefficient of the model output and the actual values on the test partition";
+    protected const string TrainingRelativeErrorResultDescription = "Average of the relative errors of the model output and the actual values on the training partition";
+    protected const string TestRelativeErrorResultDescription = "Average of the relative errors of the model output and the actual values on the test partition";
+    protected const string TrainingNormalizedMeanSquaredErrorResultDescription = "Normalized mean of squared errors of the model on the training partition";
+    protected const string TestNormalizedMeanSquaredErrorResultDescription = "Normalized mean of squared errors of the model on the test partition";
+    protected const string TrainingMeanErrorResultDescription = "Mean of errors of the model on the training partition";
+    protected const string TestMeanErrorResultDescription = "Mean of errors of the model on the test partition";
 
     public new IRegressionModel Model {
       get { return (IRegressionModel)base.Model; }
@@ -114,18 +127,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     protected RegressionSolutionBase(IRegressionModel model, IRegressionProblemData problemData)
       : base(model, problemData) {
-      Add(new Result(TrainingMeanSquaredErrorResultName, "Mean of squared errors of the model on the training partition", new DoubleValue()));
-      Add(new Result(TestMeanSquaredErrorResultName, "Mean of squared errors of the model on the test partition", new DoubleValue()));
-      Add(new Result(TrainingMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the training partition", new DoubleValue()));
-      Add(new Result(TestMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the test partition", new DoubleValue()));
-      Add(new Result(TrainingSquaredCorrelationResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the training partition", new DoubleValue()));
-      Add(new Result(TestSquaredCorrelationResultName, "Squared Pearson's correlation coefficient of the model output and the actual values on the test partition", new DoubleValue()));
-      Add(new Result(TrainingRelativeErrorResultName, "Average of the relative errors of the model output and the actual values on the training partition", new PercentValue()));
-      Add(new Result(TestRelativeErrorResultName, "Average of the relative errors of the model output and the actual values on the test partition", new PercentValue()));
-      Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the training partition", new DoubleValue()));
-      Add(new Result(TestNormalizedMeanSquaredErrorResultName, "Normalized mean of squared errors of the model on the test partition", new DoubleValue()));
-      Add(new Result(TrainingMeanErrorResultName, "Mean of errors of the model on the training partition", new DoubleValue()));
-      Add(new Result(TestMeanErrorResultName, "Mean of errors of the model on the test partition", new DoubleValue()));
+      Add(new Result(TrainingMeanSquaredErrorResultName, TrainingMeanSquaredErrorResultDescription, new DoubleValue()));
+      Add(new Result(TestMeanSquaredErrorResultName, TestMeanSquaredErrorResultDescription, new DoubleValue()));
+      Add(new Result(TrainingMeanAbsoluteErrorResultName, TrainingMeanAbsoluteErrorResultDescription, new DoubleValue()));
+      Add(new Result(TestMeanAbsoluteErrorResultName, TestMeanAbsoluteErrorResultDescription, new DoubleValue()));
+      Add(new Result(TrainingSquaredCorrelationResultName, TrainingSquaredCorrelationResultDescription, new DoubleValue()));
+      Add(new Result(TestSquaredCorrelationResultName, TestSquaredCorrelationResultDescription, new DoubleValue()));
+      Add(new Result(TrainingRelativeErrorResultName, TrainingRelativeErrorResultDescription, new PercentValue()));
+      Add(new Result(TestRelativeErrorResultName, TestRelativeErrorResultDescription, new PercentValue()));
+      Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, TrainingNormalizedMeanSquaredErrorResultDescription, new DoubleValue()));
+      Add(new Result(TestNormalizedMeanSquaredErrorResultName, TestNormalizedMeanSquaredErrorResultDescription, new DoubleValue()));
+      Add(new Result(TrainingMeanErrorResultName, TrainingMeanErrorResultDescription, new DoubleValue()));
+      Add(new Result(TestMeanErrorResultName, TestMeanErrorResultDescription, new DoubleValue()));
     }
 
     [StorableHook(HookType.AfterDeserialization)]

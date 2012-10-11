@@ -115,17 +115,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var variableSymbol = new HeuristicLab.Problems.DataAnalysis.Symbolic.Variable();
       var laggedVariable = new LaggedVariable();
       laggedVariable.InitialFrequency = 0.0;
+      var autoregressiveVariable = new AutoregressiveTargetVariable();
+      autoregressiveVariable.InitialFrequency = 0.0;
+      autoregressiveVariable.Enabled = false;
 
       var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, square, pow, sqrt, root, exp,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
-        @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable, variableCondition };
+        @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable,autoregressiveVariable, variableCondition };
       var unaryFunctionSymbols = new List<Symbol>() { square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
       };
 
       var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, variableCondition };
       var ternarySymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
-      var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable };
+      var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable, autoregressiveVariable };
 
       foreach (var symb in allSymbols)
         AddSymbol(symb);

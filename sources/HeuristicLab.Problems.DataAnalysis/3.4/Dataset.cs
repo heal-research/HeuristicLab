@@ -192,8 +192,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       List<double> values = list as List<double>;
       if (values == null) throw new ArgumentException("The varialbe " + variableName + " is not a double variable.");
 
-      foreach (int index in rows)
-        yield return values[index];
+      return rows.Select(index => values[index]);
     }
 
     #region IStringConvertibleMatrix Members

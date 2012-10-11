@@ -36,21 +36,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       set { lag = value; }
     }
 
+    public override bool HasLocalParameters {
+      get { return true; }
+    }
+
     [StorableConstructor]
     private LaggedVariableTreeNode(bool deserializing) : base(deserializing) { }
     private LaggedVariableTreeNode(LaggedVariableTreeNode original, Cloner cloner)
       : base(original, cloner) {
       lag = original.lag;
     }
-    private LaggedVariableTreeNode() { }
 
     public LaggedVariableTreeNode(LaggedVariable variableSymbol) : base(variableSymbol) { }
 
-    public override bool HasLocalParameters {
-      get {
-        return true;
-      }
-    }
 
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);

@@ -46,3 +46,4 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public class HeuristicLabProblemsDataAnalysisViewsPlugin : PluginBase {
   }
 }
+

@@ -35,9 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected RegressionProblem(RegressionProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new RegressionProblem(this, cloner); }
 
-    public RegressionProblem()
-      : base() {
-      ProblemData = new RegressionProblemData();
-    }
+    public RegressionProblem() : base(new RegressionProblemData()) { }
+
   }
 }

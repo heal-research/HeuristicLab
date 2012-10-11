@@ -65,6 +65,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandlers();
     }
 
+    protected DataAnalysisProblem(T problemData)
+      : this() {
+      ProblemData = problemData;
+    }
+
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterEventHandlers();

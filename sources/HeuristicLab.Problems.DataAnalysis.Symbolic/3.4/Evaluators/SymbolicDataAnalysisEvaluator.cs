@@ -44,6 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string EvaluationPartitionParameterName = "EvaluationPartition";
     private const string RelativeNumberOfEvaluatedSamplesParameterName = "RelativeNumberOfEvaluatedSamples";
     private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
+    private const string ValidRowIndicatorParameterName = "ValidRowIndicator";
 
     public override bool CanChangeName { get { return false; } }
 
@@ -73,6 +74,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ILookupParameter<BoolValue> ApplyLinearScalingParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
     }
+    public IValueLookupParameter<StringValue> ValidRowIndicatorParameter {
+      get { return (IValueLookupParameter<StringValue>)Parameters[ValidRowIndicatorParameterName]; }
+    }
     #endregion
 
 
@@ -91,6 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The upper and lower limit that should be used as cut off value for the output values of symbolic data analysis trees."));
       Parameters.Add(new ValueLookupParameter<PercentValue>(RelativeNumberOfEvaluatedSamplesParameterName, "The relative number of samples of the dataset partition, which should be randomly chosen for evaluation between the start and end index."));
       Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the individual should be linearly scaled before evaluating."));
+      Parameters.Add(new ValueLookupParameter<StringValue>(ValidRowIndicatorParameterName, "An indicator variable in the data set that specifies which rows should be evaluated (those for which the indicator <> 0) (optional)."));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -99,6 +104,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         Parameters.Remove(ApplyLinearScalingParameterName);
       if (!Parameters.ContainsKey(ApplyLinearScalingParameterName))
         Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName, "Flag that indicates if the individual should be linearly scaled before evaluating."));
+      if (!Parameters.ContainsKey(ValidRowIndicatorParameterName))
+        Parameters.Add(new ValueLookupParameter<StringValue>(ValidRowIndicatorParameterName, "An indicator variable in the data set that specifies which rows should be evaluated (those for which the indicator <> 0) (optional)."));
     }
 
     protected IEnumerable<int> GenerateRowsToEvaluate() {
@@ -111,7 +118,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       int samplesEnd = EvaluationPartitionParameter.ActualValue.End;
       int testPartitionStart = ProblemDataParameter.ActualValue.TestPartition.Start;
       int testPartitionEnd = ProblemDataParameter.ActualValue.TestPartition.End;
-
       if (samplesEnd < samplesStart) throw new ArgumentException("Start value is larger than end value.");
 
       if (percentageOfRows.IsAlmost(1.0))
@@ -123,7 +129,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         rows = RandomEnumerable.SampleRandomNumbers(seed, samplesStart, samplesEnd, count);
       }
 
-      return rows.Where(i => i < testPartitionStart || testPartitionEnd <= i);
+      rows = rows.Where(i => i < testPartitionStart || testPartitionEnd <= i);
+      if (ValidRowIndicatorParameter.ActualValue != null) {
+        string indicatorVar = ValidRowIndicatorParameter.ActualValue.Value;
+        var problemData = ProblemDataParameter.ActualValue;
+        var indicatorRow = problemData.Dataset.GetReadOnlyDoubleValues(indicatorVar);
+        rows = rows.Where(r => !indicatorRow[r].IsAlmost(0.0));
+      }
+      return rows;
     }
 
     [ThreadStatic]

@@ -52,9 +52,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Solution_Views {
         view = null;
         contentType = Content.GetType();
         panel.Controls.Clear();
-        var viewType = MainFormManager.GetViewTypes(Content.GetType(), true).Where(t => typeof(DataAnalysisSolutionView).IsAssignableFrom(t)).FirstOrDefault();
+        var viewType = MainFormManager.GetViewTypes(Content.GetType(), true).FirstOrDefault(t => typeof(DataAnalysisSolutionView).IsAssignableFrom(t));
         if (viewType != null) {
-          view = (DataAnalysisSolutionView)Activator.CreateInstance(viewType);
+          view = (DataAnalysisSolutionView)MainFormManager.CreateView(viewType);
+          view.Locked = Locked;
+          view.ReadOnly = ReadOnly;
           view.Dock = DockStyle.Fill;
           view.Content = Content;
           panel.Controls.Add(view);

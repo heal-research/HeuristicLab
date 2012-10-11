@@ -24,16 +24,17 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  public class SymbolicExpressionTreeCompiler {
-    private Dictionary<string, ushort> entryPoint = new Dictionary<string, ushort>();
-    private List<Func<Instruction, Instruction>> postInstructionCompiledHooks = new List<Func<Instruction, Instruction>>();
+  public static class SymbolicExpressionTreeCompiler {
 
-    public Instruction[] Compile(ISymbolicExpressionTree tree, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper) {
+    public static Instruction[] Compile(ISymbolicExpressionTree tree, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper) {
+      return Compile(tree, opCodeMapper, Enumerable.Empty<Func<Instruction, Instruction>>());
+    }
+    public static Instruction[] Compile(ISymbolicExpressionTree tree, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper, IEnumerable<Func<Instruction, Instruction>> postInstructionCompiledHooks) {
+      Dictionary<string, ushort> entryPoint = new Dictionary<string, ushort>();
       List<Instruction> code = new List<Instruction>();
-      entryPoint.Clear();
       // compile main body branches
       foreach (var branch in tree.Root.GetSubtree(0).Subtrees) {
-        code.AddRange(Compile(branch, opCodeMapper));
+        code.AddRange(Compile(branch, opCodeMapper, postInstructionCompiledHooks));
       }
       // compile function branches
       var functionBranches = from node in tree.IterateNodesPrefix()
@@ -42,7 +43,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       foreach (DefunTreeNode branch in functionBranches) {
         if (code.Count > ushort.MaxValue) throw new ArgumentException("Code for the tree is too long (> ushort.MaxValue).");
         entryPoint[branch.FunctionName] = (ushort)code.Count;
-        code.AddRange(Compile(branch.GetSubtree(0), opCodeMapper));
+        code.AddRange(Compile(branch.GetSubtree(0), opCodeMapper, postInstructionCompiledHooks));
       }
       // address of all functions is fixed now
       // iterate through code again and fill in the jump locations
@@ -51,14 +52,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         if (instr.dynamicNode.Symbol is InvokeFunction) {
           var invokeNode = (InvokeFunctionTreeNode)instr.dynamicNode;
           instr.iArg0 = entryPoint[invokeNode.Symbol.FunctionName];
-          code[i] = instr;
         }
       }
 
       return code.ToArray();
     }
 
-    private IEnumerable<Instruction> Compile(ISymbolicExpressionTreeNode branch, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper) {
+    private static IEnumerable<Instruction> Compile(ISymbolicExpressionTreeNode branch, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper, IEnumerable<Func<Instruction, Instruction>> postInstructionCompiledHooks) {
       foreach (var node in branch.IterateNodesPrefix()) {
         Instruction instr = new Instruction();
         int subtreesCount = node.SubtreeCount;
@@ -75,15 +75,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         }
         yield return instr;
       }
-    }
-
-    /// <summary>
-    /// Adds a function that will be called every time an instruction is compiled.
-    /// The compiled will insert the instruction returned by the hook into the code.
-    /// </summary>
-    /// <param name="hook">The hook that should be called for each compiled instruction.</param>
-    public void AddInstructionPostProcessingHook(Func<Instruction, Instruction> hook) {
-      postInstructionCompiledHooks.Add(hook);
     }
   }
 }

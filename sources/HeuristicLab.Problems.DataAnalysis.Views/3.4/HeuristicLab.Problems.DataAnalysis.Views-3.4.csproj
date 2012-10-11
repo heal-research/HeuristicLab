@@ -330,6 +330,24 @@
     <Compile Include="FeatureCorrelation\TimeframeFeatureCorrelationView.Designer.cs">
       <DependentUpon>TimeframeFeatureCorrelationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Solution Views\TimeSeriesPrognosisSolutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Solution Views\TimeSeriesPrognosisSolutionView.Designer.cs">
+      <DependentUpon>TimeSeriesPrognosisSolutionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisResultsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisResultsView.Designer.cs">
+      <DependentUpon>TimeSeriesPrognosisResultsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimeSeriesPrognosis\TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.Designer.cs">
+      <DependentUpon>TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView.cs</DependentUpon>
+    </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

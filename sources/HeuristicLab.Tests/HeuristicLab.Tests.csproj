@@ -212,6 +212,9 @@
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.dll</HintPath>
     </Reference>
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.dll</HintPath>
+    </Reference>
     <Reference Include="HeuristicLab.Problems.Instances-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\HeuristicLab.Problems.Instances-3.3.dll</HintPath>
     </Reference>
@@ -385,6 +388,8 @@
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ThresholdCalculatorsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\StatisticCalculatorsTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4\Util.cs" />
     <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\RegressionInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\TableFileParserTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionCrossoverTest.cs" />

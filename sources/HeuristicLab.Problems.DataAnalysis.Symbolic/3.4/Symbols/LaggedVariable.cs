@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("LaggedVariable", "Represents a variable value with a time offset.")]
-  public sealed class LaggedVariable : Variable {
+  public class LaggedVariable : Variable {
     [Storable]
     private int minLag;
     public int MinLag {
@@ -40,15 +40,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       set { maxLag = value; }
     }
     [StorableConstructor]
-    private LaggedVariable(bool deserializing) : base(deserializing) { }
-    private LaggedVariable(LaggedVariable original, Cloner cloner)
+    protected LaggedVariable(bool deserializing) : base(deserializing) { }
+    protected LaggedVariable(LaggedVariable original, Cloner cloner)
       : base(original, cloner) {
       minLag = original.minLag;
       maxLag = original.maxLag;
     }
-    public LaggedVariable()
-      : base("LaggedVariable", "Represents a variable value with a time offset.") {
-      minLag = -1; maxLag = -1;
+    public LaggedVariable() : this("LaggedVariable", "Represents a variable value with a time offset.") { }
+    protected LaggedVariable(string name, string description)
+      : base(name, description) {
+      MinLag = -1;
+      MaxLag = -1;
     }
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {

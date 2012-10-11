@@ -29,9 +29,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public abstract class SymbolicExpressionTreeTerminalNode : SymbolicExpressionTreeNode {
     public override IEnumerable<ISymbolicExpressionTreeNode> Subtrees {
-      get {
-        return Enumerable.Empty<ISymbolicExpressionTreeNode>();
-      }
+      get { return Enumerable.Empty<ISymbolicExpressionTreeNode>(); }
     }
 
     [StorableConstructor]

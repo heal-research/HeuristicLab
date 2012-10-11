@@ -146,6 +146,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       } else base.showDetailsCheckBox_CheckedChanged(sender, e);
     }
 
+    protected override void RebuildImageList() {
+      itemsListView.SmallImageList.Images.Clear();
+      foreach (ListViewItem listViewItem in itemsListView.Items) {
+        IResult result = listViewItem.Tag as IResult;
+        Type viewType = listViewItem.Tag as Type;
+        if (result != null) itemsListView.SmallImageList.Images.Add(result.ItemImage);
+        else if (viewType != null && typeof(IDataAnalysisSolutionEvaluationView).IsAssignableFrom(viewType))
+          itemsListView.SmallImageList.Images.Add(((IDataAnalysisSolutionEvaluationView)Activator.CreateInstance(viewType)).ViewImage);
+        else itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Nothing);
+
+        listViewItem.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
+      }
+    }
+
     #region drag and drop
     protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;

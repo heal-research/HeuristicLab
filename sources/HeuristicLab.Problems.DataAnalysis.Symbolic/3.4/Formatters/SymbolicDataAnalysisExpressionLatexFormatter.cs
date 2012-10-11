@@ -32,7 +32,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("LaTeX String Formatter", "Formatter for symbolic expression trees for import into LaTeX documents.")]
   [StorableClass]
   public sealed class SymbolicDataAnalysisExpressionLatexFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
-    private List<double> constants;
+    private readonly List<double> constants;
+    private int targetCount;
     private int currentLag;
 
     [StorableConstructor]
@@ -97,7 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is Multiplication) {
       } else if (node.Symbol is Division) {
         if (node.SubtreeCount == 1) {
-          strBuilder.Append(@" \cfrac{1}{");
+          strBuilder.Append(@" \cfrac{1");
         } else {
           strBuilder.Append(@" \cfrac{ ");
         }
@@ -195,7 +196,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var invokeNode = node as InvokeFunctionTreeNode;
         strBuilder.Append(invokeNode.Symbol.FunctionName + @" \left( ");
       } else if (node.Symbol is StartSymbol) {
-        strBuilder.Append("Result & = ");
+        strBuilder.Append("target_" + (targetCount++) + "(t) & = ");
       } else if (node.Symbol is Argument) {
         var argSym = node.Symbol as Argument;
         strBuilder.Append(" ARG+" + argSym.ArgumentIndex + " ");
@@ -300,7 +301,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else if (node.Symbol is InvokeFunction) {
         strBuilder.Append(" , ");
       } else if (node.Symbol is StartSymbol) {
-        strBuilder.Append(@"\\" + Environment.NewLine + " & ");
+        strBuilder.Append(@"\\" + Environment.NewLine);
+        strBuilder.Append("target_" + (targetCount++) + "(t) & = ");
       } else if (node.Symbol is Power) {
         strBuilder.Append(@"\right) ^ { \operatorname{round} \left(");
       } else if (node.Symbol is Root) {

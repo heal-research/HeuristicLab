@@ -51,6 +51,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private Not notSymbol = new Not();
     private GreaterThan gtSymbol = new GreaterThan();
     private LessThan ltSymbol = new LessThan();
+    private Integral integralSymbol = new Integral();
+    private LaggedVariable laggedVariableSymbol = new LaggedVariable();
+    private TimeLag timeLagSymbol = new TimeLag();
 
     public ISymbolicExpressionTree Simplify(ISymbolicExpressionTree originalTree) {
       var clone = (ISymbolicExpressionTreeNode)originalTree.Root.Clone();
@@ -183,6 +186,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return node.Symbol is Constant;
     }
 
+    // dynamic
+    private bool IsTimeLag(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is TimeLag;
+    }
+    private bool IsIntegral(ISymbolicExpressionTreeNode node) {
+      return node.Symbol is Integral;
+    }
+
     #endregion
 
     /// <summary>
@@ -233,6 +244,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return SimplifyOr(original);
       } else if (IsNot(original)) {
         return SimplifyNot(original);
+      } else if (IsTimeLag(original)) {
+        return SimplifyTimeLag(original);
+      } else if (IsIntegral(original)) {
+        return SimplifyIntegral(original);
       } else {
         return SimplifyAny(original);
       }
@@ -375,9 +390,49 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private ISymbolicExpressionTreeNode SimplifyPower(ISymbolicExpressionTreeNode original) {
       return MakePower(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
     }
+    private ISymbolicExpressionTreeNode SimplifyTimeLag(ISymbolicExpressionTreeNode original) {
+      var laggedTreeNode = original as ILaggedTreeNode;
+      var simplifiedSubtree = GetSimplifiedTree(original.GetSubtree(0));
+      if (!ContainsVariableCondition(simplifiedSubtree)) {
+        return AddLagToDynamicNodes(simplifiedSubtree, laggedTreeNode.Lag);
+      } else {
+        return MakeTimeLag(simplifiedSubtree, laggedTreeNode.Lag);
+      }
+    }
+    private ISymbolicExpressionTreeNode SimplifyIntegral(ISymbolicExpressionTreeNode original) {
+      var laggedTreeNode = original as ILaggedTreeNode;
+      var simplifiedSubtree = GetSimplifiedTree(original.GetSubtree(0));
+      if (IsConstant(simplifiedSubtree)) {
+        return GetSimplifiedTree(MakeProduct(simplifiedSubtree, MakeConstant(-laggedTreeNode.Lag)));
+      } else {
+        return MakeIntegral(simplifiedSubtree, laggedTreeNode.Lag);
+      }
+    }
+
     #endregion
 
     #region low level tree restructuring
+    private ISymbolicExpressionTreeNode MakeTimeLag(ISymbolicExpressionTreeNode subtree, int lag) {
+      if (lag == 0) return subtree;
+      if (IsConstant(subtree)) return subtree;
+      var lagNode = (LaggedTreeNode)timeLagSymbol.CreateTreeNode();
+      lagNode.Lag = lag;
+      lagNode.AddSubtree(subtree);
+      return lagNode;
+    }
+
+    private ISymbolicExpressionTreeNode MakeIntegral(ISymbolicExpressionTreeNode subtree, int lag) {
+      if (lag == 0) return subtree;
+      else if (lag == -1 || lag == 1) {
+        return MakeSum(subtree, AddLagToDynamicNodes((ISymbolicExpressionTreeNode)subtree.Clone(), lag));
+      } else {
+        var node = (LaggedTreeNode)integralSymbol.CreateTreeNode();
+        node.Lag = lag;
+        node.AddSubtree(subtree);
+        return node;
+      }
+    }
+
     private ISymbolicExpressionTreeNode MakeNot(ISymbolicExpressionTreeNode t) {
       if (IsConstant(t)) {
         var constNode = t as ConstantTreeNode;
@@ -846,6 +901,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
 
     #region helper functions
+    private bool ContainsVariableCondition(ISymbolicExpressionTreeNode node) {
+      if (node.Symbol is VariableCondition) return true;
+      foreach (var subtree in node.Subtrees)
+        if (ContainsVariableCondition(subtree)) return true;
+      return false;
+    }
+
+    private ISymbolicExpressionTreeNode AddLagToDynamicNodes(ISymbolicExpressionTreeNode node, int lag) {
+      var laggedTreeNode = node as ILaggedTreeNode;
+      var variableNode = node as VariableTreeNode;
+      var variableConditionNode = node as VariableConditionTreeNode;
+      if (laggedTreeNode != null)
+        laggedTreeNode.Lag += lag;
+      else if (variableNode != null) {
+        var laggedVariableNode = (LaggedVariableTreeNode)laggedVariableSymbol.CreateTreeNode();
+        laggedVariableNode.Lag = lag;
+        laggedVariableNode.VariableName = variableNode.VariableName;
+        return laggedVariableNode;
+      } else if (variableConditionNode != null) {
+        throw new NotSupportedException("Removal of time lags around variable condition symbols is not allowed.");
+      }
+      var subtrees = new List<ISymbolicExpressionTreeNode>(node.Subtrees);
+      while (node.SubtreeCount > 0) node.RemoveSubtree(0);
+      foreach (var subtree in subtrees) {
+        node.AddSubtree(AddLagToDynamicNodes(subtree, lag));
+      }
+      return node;
+    }
 
     private bool AreSameVariable(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b) {
       var aLaggedVar = a as LaggedVariableTreeNode;

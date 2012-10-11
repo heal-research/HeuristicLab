@@ -84,8 +84,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #endregion
 
       var results = ResultCollection;
-      if (TrainingBestSolutionQuality == null ||
-        IsBetter(bestQuality, TrainingBestSolutionQuality.Value, Maximization.Value)) {
+      if (bestTree != null && (TrainingBestSolutionQuality == null ||
+        IsBetter(bestQuality, TrainingBestSolutionQuality.Value, Maximization.Value))) {
         TrainingBestSolution = CreateSolution(bestTree, bestQuality);
         TrainingBestSolutionQuality = new DoubleValue(bestQuality);
 

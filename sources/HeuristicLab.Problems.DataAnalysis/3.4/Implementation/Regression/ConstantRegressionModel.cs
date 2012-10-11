@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Constant Regression Model", "A model that always returns the same constant value regardless of the presented input data.")]
   public class ConstantRegressionModel : NamedItem, IRegressionModel {
     [Storable]
-    private double constant;
+    protected double constant;
     public double Constant {
       get { return constant; }
     }
