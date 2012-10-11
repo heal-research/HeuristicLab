@@ -104,7 +104,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       if (alpha.Value < 0) throw new ArgumentException("RoundedBlendAlphaBetaCrossover: Parameter alpha must be greater or equal to 0.", "alpha");
       if (beta.Value < 0) throw new ArgumentException("RoundedBlendAlphaBetaCrossover: Parameter beta must be greater or equal to 0.", "beta");
       if (bounds == null || bounds.Rows < 1 || bounds.Columns < 2) throw new ArgumentException("RoundedBlendAlphaBetaCrossover: Invalid bounds specified.", "bounds");
-      
+
       int length = betterParent.Length;
       double min, max, d;
       var result = new IntegerVector(length);
@@ -113,6 +113,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         minBound = bounds[i % bounds.Rows, 0];
         maxBound = bounds[i % bounds.Rows, 1];
         if (bounds.Columns > 2) step = bounds[i % bounds.Rows, 2];
+        maxBound = FloorFeasible(minBound, maxBound, step, maxBound - 1);
 
         d = Math.Abs(betterParent[i] - worseParent[i]);
         if (betterParent[i] <= worseParent[i]) {

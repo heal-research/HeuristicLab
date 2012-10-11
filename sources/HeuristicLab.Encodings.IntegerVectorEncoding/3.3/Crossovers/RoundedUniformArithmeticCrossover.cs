@@ -84,6 +84,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         if (random.NextDouble() < probability.Value) {
           int min = bounds[i % bounds.Rows, 0], max = bounds[i % bounds.Rows, 1], step = 1;
           if (bounds.Columns > 2) step = bounds[i % bounds.Rows, 2];
+          max = FloorFeasible(min, max, step, max - 1);
           double value = alpha.Value * parent1[i] + (1 - alpha.Value) * parent2[i];
           result[i] = RoundFeasible(min, max, step, value);
         } else result[i] = parent1[i];

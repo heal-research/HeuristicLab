@@ -66,6 +66,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
           avg /= parentsCount;
           int min = bounds[i % bounds.Rows, 0], max = bounds[i % bounds.Rows, 1], step = 1;
           if (bounds.Columns > 2) step = bounds[i % bounds.Rows, 2];
+          max = FloorFeasible(min, max, step, max - 1);
           result[i] = RoundFeasible(min, max, step, avg);
         }
       } catch (IndexOutOfRangeException) {

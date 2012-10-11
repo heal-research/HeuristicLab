@@ -84,19 +84,21 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       int length = parent1.Length;
       var result = new IntegerVector(length);
       double max = 0, min = 0, d = 0, resMin = 0, resMax = 0;
-      int minBounds, maxBounds, step = 1;
+      int minBound, maxBound, step = 1;
 
       for (int i = 0; i < length; i++) {
-        minBounds = bounds[i % bounds.Rows, 0];
-        maxBounds = bounds[i % bounds.Rows, 1];
+        minBound = bounds[i % bounds.Rows, 0];
+        maxBound = bounds[i % bounds.Rows, 1];
         if (bounds.Columns > 2) step = bounds[i % bounds.Rows, 2];
+        maxBound = FloorFeasible(minBound, maxBound, step, maxBound - 1);
+
         max = Math.Max(parent1[i], parent2[i]);
         min = Math.Min(parent1[i], parent2[i]);
         d = Math.Abs(max - min);
-        resMin = FloorFeasible(minBounds, maxBounds, step, min - d * alpha.Value);
-        resMax = CeilingFeasible(minBounds, maxBounds, step, max + d * alpha.Value);
+        resMin = FloorFeasible(minBound, maxBound, step, min - d * alpha.Value);
+        resMax = CeilingFeasible(minBound, maxBound, step, max + d * alpha.Value);
 
-        result[i] = RoundFeasible(minBounds, maxBounds, step, resMin + random.NextDouble() * Math.Abs(resMax - resMin));
+        result[i] = RoundFeasible(minBound, maxBound, step, resMin + random.NextDouble() * Math.Abs(resMax - resMin));
       }
       return result;
     }

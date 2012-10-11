@@ -84,8 +84,16 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     public static void Manipulate(IRandom random, IntegerVector vector, IntMatrix bounds, int index) {
       if (bounds == null || bounds.Rows == 0 || bounds.Columns < 2) throw new ArgumentException("UniformOnePositionManipulator: Invalid bounds specified", "bounds");
       int min = bounds[index % bounds.Rows, 0], max = bounds[index % bounds.Rows, 1], step = 1;
-      if (bounds.Columns > 2) step = bounds[index % bounds.Rows, 2];
-      vector[index] = RoundFeasible(min, max, step, random.Next(min, max + 1));
+      if (min == max) {
+        vector[index] = min;
+      } else {
+        if (bounds.Columns > 2) step = bounds[index % bounds.Rows, 2];
+        // max has to be rounded to the lower feasible value
+        // e.g. min...max / step = 0...100 / 5, max is exclusive so it would be 0..99
+        // but 99 is not a feasible value, so max needs to be adjusted => min = 0, max = 95
+        max = FloorFeasible(min, max, step, max - 1);
+        vector[index] = RoundFeasible(min, max, step, random.Next(min, max));
+      }
     }
 
     /// <summary>

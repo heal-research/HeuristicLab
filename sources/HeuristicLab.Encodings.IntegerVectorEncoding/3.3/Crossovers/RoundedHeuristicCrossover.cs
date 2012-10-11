@@ -87,6 +87,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         min = bounds[i % bounds.Rows, 0];
         max = bounds[i % bounds.Rows, 1];
         if (bounds.Columns > 2) step = bounds[i % bounds.Rows, 2];
+        max = FloorFeasible(min, max, step, max - 1);
         result[i] = RoundFeasible(min, max, step, betterParent[i] + factor * (betterParent[i] - worseParent[i]));
       }
       return result;
