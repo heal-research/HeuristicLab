@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableClass]
   public class SymbolicRegressionSingleObjectiveVariableImpactAnalyzer : SymbolicDataAnalysisVariableImpactAnalyzer<ISymbolicRegressionSingleObjectiveEvaluator, IRegressionProblemData> {
     [StorableConstructor]
-    private SymbolicRegressionSingleObjectiveVariableImpactAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSingleObjectiveVariableImpactAnalyzer(bool deserializing) : base(deserializing) { }
     protected SymbolicRegressionSingleObjectiveVariableImpactAnalyzer(SymbolicRegressionSingleObjectiveVariableImpactAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicRegressionSingleObjectiveVariableImpactAnalyzer(this, cloner);
