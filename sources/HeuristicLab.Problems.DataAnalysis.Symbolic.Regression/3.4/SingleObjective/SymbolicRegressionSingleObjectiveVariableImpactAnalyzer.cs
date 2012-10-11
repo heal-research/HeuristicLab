@@ -19,16 +19,24 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-    [Item("SymbolicRegressionSingleObjectiveVariableImpactAnalyzer", "TODO for stephan")]
-    [StorableClass]
-    public class SymbolicRegressionSingleObjectiveVariableImpactAnalyzer : SymbolicDataAnalysisVariableImpactAnalyzer<ISymbolicRegressionSingleObjectiveEvaluator,IRegressionProblemData>{
+  [Item("SymbolicRegressionSingleObjectiveVariableImpactAnalyzer", "TODO for stephan")]
+  [StorableClass]
+  public class SymbolicRegressionSingleObjectiveVariableImpactAnalyzer : SymbolicDataAnalysisVariableImpactAnalyzer<ISymbolicRegressionSingleObjectiveEvaluator, IRegressionProblemData> {
+    [StorableConstructor]
+    private SymbolicRegressionSingleObjectiveVariableImpactAnalyzer(bool deserializing) : base(deserializing) { }
+    protected SymbolicRegressionSingleObjectiveVariableImpactAnalyzer(SymbolicRegressionSingleObjectiveVariableImpactAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicRegressionSingleObjectiveVariableImpactAnalyzer(this, cloner);
     }
+
+    public SymbolicRegressionSingleObjectiveVariableImpactAnalyzer()
+      : base() {
+
+    }
+  }
 }
