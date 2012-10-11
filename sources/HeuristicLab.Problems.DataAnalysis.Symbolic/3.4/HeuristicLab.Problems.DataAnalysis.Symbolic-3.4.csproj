@@ -126,6 +126,7 @@
     </Compile>
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />
+    <Compile Include="Analyzers\SymbolicDataAnalysisVariablesImpactAnalyzer.cs" />
     <Compile Include="Creators\MultiSymbolicDataAnalysisExpressionCreator.cs" />
     <Compile Include="Creators\SymbolicDataAnalysisExpressionFullTreeCreator.cs" />
     <Compile Include="Creators\SymbolicDataAnalysisExpressionGrowTreeCreator.cs" />
@@ -333,14 +334,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
