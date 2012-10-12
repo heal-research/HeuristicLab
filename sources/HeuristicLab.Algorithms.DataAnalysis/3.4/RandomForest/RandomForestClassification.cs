@@ -133,9 +133,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (r <= 0 || r > 1) throw new ArgumentException("The R parameter in the random forest regression must be between 0 and 1.");
       if (m <= 0 || m > 1) throw new ArgumentException("The M parameter in the random forest regression must be between 0 and 1.");
 
-      lock (alglib.math.rndobject) {
-        alglib.math.rndobject = new System.Random(seed);
-      }
+      alglib.math.rndobject = new System.Random(seed);
 
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
