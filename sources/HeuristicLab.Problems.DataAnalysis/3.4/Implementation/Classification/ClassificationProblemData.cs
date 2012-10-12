@@ -299,8 +299,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, ""));
       Parameters.Add(new FixedValueParameter<DoubleMatrix>(ClassificationPenaltiesParameterName, ""));
 
-      ResetTargetVariableDependentMembers();
       RegisterParameterEvents();
+      ResetTargetVariableDependentMembers();
     }
 
     private static IEnumerable<string> CheckVariablesForPossibleTargetVariables(Dataset dataset) {
