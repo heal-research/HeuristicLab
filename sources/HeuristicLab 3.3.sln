@@ -364,6 +364,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Scheduling.Views-3.3", "HeuristicLab.Problems.Scheduling.Views\3.3\HeuristicLab.Problems.Scheduling.Views-3.3.csproj", "{78763A4E-E163-48C2-98EB-709760D06F25}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4", "HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.csproj", "{07486E68-1517-4B9D-A58D-A38E99AE71AB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5AC82412-911B-4FA2-A013-EDC5E3F3FCC2} = {5AC82412-911B-4FA2-A013-EDC5E3F3FCC2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views-3.4", "HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views\3.4\HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views-3.4.csproj", "{E6CB1FC5-78EC-4EB8-BF12-35303C36F962}"
 EndProject
