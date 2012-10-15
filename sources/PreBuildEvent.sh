@@ -2,7 +2,7 @@ export AIFile=$ProjectDir/Properties/AssemblyInfo.cs.frame
 export PluginFile=$ProjectDir/Plugin.cs.frame
 
 command_exists () {
-    type "$1" &> /dev/null ;
+    command -v "$1" 
 }
 
 if command_exists svnwcrev ; then   
@@ -26,3 +26,4 @@ else
 	 sed 's/\$WCREV\$/'0'/g' $PluginFile > $ProjectDir/Plugin.cs
 	fi
 fi
+
