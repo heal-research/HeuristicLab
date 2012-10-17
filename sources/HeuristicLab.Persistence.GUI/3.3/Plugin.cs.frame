@@ -12,7 +12,7 @@ namespace HeuristicLab.Persistence.GUI {
 
   [Application("Persistence Configuration", "Configure type mappings of persistence")]
   public class HeuristicLabPersistenceGUIApplication : ApplicationBase {
-    public override void Run() {
+    public override void Run(ICommandLineArgument[] args) {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
       Application.Run(new PersistenceConfigurationForm());

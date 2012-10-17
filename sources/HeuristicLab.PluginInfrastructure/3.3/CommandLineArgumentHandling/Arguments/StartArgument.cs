@@ -19,7 +19,10 @@
  */
 #endregion
 
+using System;
+
 namespace HeuristicLab.PluginInfrastructure {
+  [Serializable]
   public class StartArgument : CommandLineArgument<string> {
     public const string TOKEN = "start";
 

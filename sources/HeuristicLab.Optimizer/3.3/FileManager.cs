@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -58,12 +59,17 @@ namespace HeuristicLab.Optimizer {
       }
 
       if (openFileDialog.ShowDialog() == DialogResult.OK) {
-        foreach (string filename in openFileDialog.FileNames) {
-          ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
-          ContentManager.LoadAsync(filename, LoadingCompleted);
-        }
+        OpenFiles(openFileDialog.FileNames);
       }
     }
+
+    public static void OpenFiles(IEnumerable<string> fileNames) {
+      foreach (string filename in fileNames) {
+        ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
+        ContentManager.LoadAsync(filename, LoadingCompleted);
+      }
+    }
+
     private static void LoadingCompleted(IStorableContent content, Exception error) {
       try {
         if (error != null) throw error;

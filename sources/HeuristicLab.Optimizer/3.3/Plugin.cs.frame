@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Access;
 using HeuristicLab.Optimizer.Properties;
@@ -47,8 +48,8 @@ namespace HeuristicLab.Optimizer {
 
   [Application("Optimizer", "HeuristicLab Optimizer 3.3.7.$WCREV$")]
   internal class HeuristicLabOptimizerApplication : ApplicationBase {
-    public override void Run() {
-     HeuristicLab.MainForm.WindowsForms.MainForm mainForm = null;
+    public override void Run(ICommandLineArgument[] args) {
+      HeuristicLab.MainForm.WindowsForms.MainForm mainForm = null;
 
       if (Settings.Default.MainFormType == OptimizerMainFormTypes.DockingMainForm) {
         mainForm = new OptimizerDockingMainForm(typeof(IOptimizerUserInterfaceItemProvider));
@@ -63,6 +64,9 @@ namespace HeuristicLab.Optimizer {
         UserInformation.InitializeAsync();
 
         mainForm.ShowContentInViewHost = true;
+        mainForm.Arguments = args;
+        var filesToOpen = mainForm.Arguments.OfType<OpenArgument>().Select(x => x.Value);
+        mainForm.Load += (sender, eventArgs) => FileManager.OpenFiles(filesToOpen);
         Application.Run(mainForm);
       } else {
         MessageBox.Show("Error loading setting for the MainForm Type. Please check your configuration file!", "HeuristicLab", MessageBoxButtons.OK, MessageBoxIcon.Error);

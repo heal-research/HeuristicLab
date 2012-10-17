@@ -214,6 +214,7 @@
     <Compile Include="Advanced\PluginView.Designer.cs">
       <DependentUpon>PluginView.cs</DependentUpon>
     </Compile>
+    <Compile Include="CommandLineArgumentHandling\Arguments\OpenArgument.cs" />
     <Compile Include="CommandLineArgumentHandling\Arguments\HideStarterArgument.cs" />
     <Compile Include="CommandLineArgumentHandling\Arguments\StartArgument.cs" />
     <Compile Include="CommandLineArgumentHandling\CommandLineArgument.cs" />

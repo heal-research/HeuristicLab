@@ -38,6 +38,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
   public partial class StarterForm : Form {
     private const string pluginManagerItemName = "Plugin Manager";
     private const string updatePluginsItemName = "Updates Available";
+    private const string optimizerItemName = "Optimizer";
 
     private readonly ICommandLineArgument[] arguments;
 
@@ -83,7 +84,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     protected override void SetVisibleCore(bool value) {
-      value &= !arguments.OfType<HideStarterArgument>().Any();
+      value &= !(arguments.OfType<HideStarterArgument>().Any() || arguments.OfType<OpenArgument>().Any());
       if (!value) HandleArguments();
       base.SetVisibleCore(value);
     }
@@ -143,7 +144,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
           }
         } else {
           ApplicationDescription app = (ApplicationDescription)applicationsListView.SelectedItems[0].Tag;
-          StartApplication(app);
+          StartApplication(app, arguments);
         }
       }
     }
@@ -170,7 +171,8 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
     private void splashScreen_VisibleChanged(object sender, EventArgs e) {
       // close hidden starter form
-      if (!splashScreen.Visible && arguments != null && arguments.OfType<HideStarterArgument>().Any())
+      if (!splashScreen.Visible && arguments != null &&
+           (arguments.OfType<HideStarterArgument>().Any() || arguments.OfType<OpenArgument>().Any()))
         Close();
     }
     #endregion
@@ -262,19 +264,13 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
     private void HandleArguments() {
       try {
+        if (arguments.OfType<OpenArgument>().Any() && !arguments.OfType<StartArgument>().Any()) {
+          InitiateApplicationStart(optimizerItemName);
+        }
         foreach (var argument in arguments) {
           if (argument is StartArgument) {
-            var appDesc = (from desc in pluginManager.Applications
-                           where desc.Name.Equals(argument.Value)
-                           select desc).SingleOrDefault();
-            if (appDesc != null) {
-              StartApplication(appDesc);
-            } else {
-              MessageBox.Show("Cannot start application " + argument.Value + ".",
-                              "HeuristicLab",
-                              MessageBoxButtons.OK,
-                              MessageBoxIcon.Warning);
-            }
+            var arg = (StartArgument)argument;
+            InitiateApplicationStart(arg.Value);
           }
         }
       }
@@ -283,14 +279,28 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       }
     }
 
-    private void StartApplication(ApplicationDescription app) {
+    private void InitiateApplicationStart(string appName) {
+      var appDesc = (from desc in pluginManager.Applications
+                     where desc.Name.Equals(appName)
+                     select desc).SingleOrDefault();
+      if (appDesc != null) {
+        StartApplication(appDesc, arguments);
+      } else {
+        MessageBox.Show("Cannot start application " + appName + ".",
+                        "HeuristicLab",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+      }
+    }
+
+    private void StartApplication(ApplicationDescription app, ICommandLineArgument[] args) {
       splashScreen.Show("Loading " + app.Name);
       Thread t = new Thread(delegate() {
         bool stopped = false;
         do {
           try {
             if (!abortRequested) {
-              pluginManager.Run(app);
+              pluginManager.Run(app, args);
             }
             stopped = true;
           }

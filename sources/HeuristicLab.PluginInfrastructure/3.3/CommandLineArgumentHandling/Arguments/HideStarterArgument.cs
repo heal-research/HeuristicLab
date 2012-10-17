@@ -19,7 +19,10 @@
  */
 #endregion
 
+using System;
+
 namespace HeuristicLab.PluginInfrastructure {
+  [Serializable]
   public class HideStarterArgument : CommandLineArgument<bool> {
     public const string TOKEN = "hideStarter";
 

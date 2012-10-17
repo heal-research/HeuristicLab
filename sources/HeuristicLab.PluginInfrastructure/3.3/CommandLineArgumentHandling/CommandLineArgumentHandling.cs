@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -42,16 +43,19 @@ namespace HeuristicLab.PluginInfrastructure {
 
     private static ICommandLineArgument ParseArgument(string entry) {
       var regex = new Regex(@"^/[A-Za-z]+(:[A-Za-z0-9\s]+)?$");
-      if (!regex.IsMatch(entry)) return null;
-      entry = entry.Remove(0, 1);
-      var parts = entry.Split(':');
-      string key = parts[0].Trim();
-      string value = parts.Length == 2 ? parts[1].Trim() : string.Empty;
-      switch (key) {
-        case StartArgument.TOKEN: return new StartArgument(value);
-        case HideStarterArgument.TOKEN: return new HideStarterArgument(value);
-        default: return null;
-      }
+      bool isFile = File.Exists(entry);
+      if (!regex.IsMatch(entry) && !isFile) return null;
+      if (!isFile) {
+        entry = entry.Remove(0, 1);
+        var parts = entry.Split(':');
+        string key = parts[0].Trim();
+        string value = parts.Length == 2 ? parts[1].Trim() : string.Empty;
+        switch (key) {
+          case StartArgument.TOKEN: return new StartArgument(value);
+          case HideStarterArgument.TOKEN: return new HideStarterArgument(value);
+          default: return null;
+        }
+      } else return new OpenArgument(entry);
     }
   }
 }

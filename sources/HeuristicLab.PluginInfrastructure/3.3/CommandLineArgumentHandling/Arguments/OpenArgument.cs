@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,23 +19,18 @@
  */
 #endregion
 
+using System;
+using System.IO;
 
 namespace HeuristicLab.PluginInfrastructure {
-  /// <summary>
-  /// Interface that must be implemented by HeuristicLab applications.
-  /// </summary>
-  public interface IApplication {
-    /// <summary>
-    /// Gets the name of the application.
-    /// </summary>
-    string Name { get; }
-    /// <summary>
-    /// Gets the description of the application.
-    /// </summary>
-    string Description { get; }
-    /// <summary>
-    /// Main entry point for the application.
-    /// </summary>
-    void Run(ICommandLineArgument[] args);
+  [Serializable]
+  public class OpenArgument : CommandLineArgument<string> {
+    public OpenArgument(string value) {
+      Value = value;
+    }
+
+    protected override bool CheckValidity() {
+      return File.Exists(Value);
+    }
   }
 }

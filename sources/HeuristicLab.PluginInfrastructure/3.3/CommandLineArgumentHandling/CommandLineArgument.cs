@@ -19,7 +19,10 @@
  */
 #endregion
 
+using System;
+
 namespace HeuristicLab.PluginInfrastructure {
+  [Serializable]
   public abstract class CommandLineArgument<T> : ICommandLineArgument<T> {
     object ICommandLineArgument.Value { get { return Value; } }
     public T Value { get; protected set; }

@@ -114,10 +114,10 @@ namespace HeuristicLab.PluginInfrastructure {
     /// This is a synchronous call. When the application is terminated all plugins are unloaded.
     /// </summary>
     /// <param name="appInfo">Description of the application to run</param>
-    internal void Run(ApplicationDescription appInfo) {
+    internal void Run(ApplicationDescription appInfo, ICommandLineArgument[] args) {
       IApplication runnablePlugin = (IApplication)Activator.CreateInstance(appInfo.DeclaringAssemblyName, appInfo.DeclaringTypeName).Unwrap();
       try {
-        runnablePlugin.Run();
+        runnablePlugin.Run(args);
       }
       finally {
         // unload plugins in reverse order

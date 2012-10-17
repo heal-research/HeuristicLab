@@ -66,7 +66,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <summary>
     /// Runs the application.
     /// </summary>
-    public abstract void Run();
+    public abstract void Run(ICommandLineArgument[] args);
 
     #endregion
   }
