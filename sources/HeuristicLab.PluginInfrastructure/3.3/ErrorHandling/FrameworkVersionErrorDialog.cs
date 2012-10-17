@@ -42,10 +42,11 @@ namespace HeuristicLab.PluginInfrastructure {
 
     public static bool MonoCorrectVersionInstalled {
       get {
-        var version = MonoVersion;
-
+        var monoVersion = MonoVersion;
+        var minRequiredVersion = new Version(2, 11, 4);
+                                                                     
         //we need at least mono version 2.11.4
-        if (version != null && version.Major >= 2 && version.Minor >= 11 && version.Build >= 4) {
+        if (monoVersion != null && monoVersion >= minRequiredVersion) {
           return true;
         } else {
           return false;
