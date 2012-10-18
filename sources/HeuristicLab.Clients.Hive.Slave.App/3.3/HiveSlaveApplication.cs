@@ -28,7 +28,7 @@ namespace HeuristicLab.Clients.Hive.Slave.App {
   [Application("Hive Slave", "Runs the Hive Slave as a HeuristicLab application")]
   internal class HiveSlaveApplication : ApplicationBase {
     private HeuristicLab.Clients.Hive.SlaveCore.Core core;
-    public override void Run() {
+    public override void Run(ICommandLineArgument[] args) {
 
       core = new HeuristicLab.Clients.Hive.SlaveCore.Core();
       Thread coreThread = new Thread(core.Start);
