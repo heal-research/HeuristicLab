@@ -67,15 +67,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    private IEnumerable<ICommandLineArgument> arguments;
-    public IEnumerable<ICommandLineArgument> Arguments {
-      get { return arguments; }
-      set {
-        if (arguments == null) arguments = value;
-        else throw new InvalidOperationException("Arguments can only be set once and were already set.");
-      }
-    }
-
     public override Cursor Cursor {
       get { return base.Cursor; }
       set {

@@ -22,12 +22,10 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MainForm {
   public interface IMainForm {
     string Title { get; set; }
-    IEnumerable<ICommandLineArgument> Arguments { get; set; }
 
     IView ActiveView { get; }
     IEnumerable<IView> Views { get; }

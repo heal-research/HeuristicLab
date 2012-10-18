@@ -64,8 +64,7 @@ namespace HeuristicLab.Optimizer {
         UserInformation.InitializeAsync();
 
         mainForm.ShowContentInViewHost = true;
-        mainForm.Arguments = args;
-        var filesToOpen = mainForm.Arguments.OfType<OpenArgument>().Select(x => x.Value);
+        var filesToOpen = args.OfType<OpenArgument>().Select(x => x.Value);
         mainForm.Load += (sender, eventArgs) => FileManager.OpenFiles(filesToOpen);
         Application.Run(mainForm);
       } else {
