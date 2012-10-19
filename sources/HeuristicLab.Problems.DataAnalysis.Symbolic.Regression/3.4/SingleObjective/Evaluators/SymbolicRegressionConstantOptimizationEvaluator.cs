@@ -38,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string ConstantOptimizationImprovementParameterName = "ConstantOptimizationImprovement";
     private const string ConstantOptimizationProbabilityParameterName = "ConstantOptimizationProbability";
     private const string ConstantOptimizationRowsPercentageParameterName = "ConstantOptimizationRowsPercentage";
+    private const string UpdateConstantsInTreeParameterName = "UpdateConstantsInSymbolicExpressionTree";
 
     private const string EvaluatedTreesResultName = "EvaluatedTrees";
     private const string EvaluatedTreeNodesResultName = "EvaluatedTreeNodes";
@@ -61,6 +62,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IFixedValueParameter<PercentValue> ConstantOptimizationRowsPercentageParameter {
       get { return (IFixedValueParameter<PercentValue>)Parameters[ConstantOptimizationRowsPercentageParameterName]; }
     }
+    public IFixedValueParameter<BoolValue> UpdateConstantsInTreeParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateConstantsInTreeParameterName]; }
+    }
 
     public IntValue ConstantOptimizationIterations {
       get { return ConstantOptimizationIterationsParameter.Value; }
@@ -73,6 +77,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
     public PercentValue ConstantOptimizationRowsPercentage {
       get { return ConstantOptimizationRowsPercentageParameter.Value; }
+    }
+    public bool UpdateConstantsInTree {
+      get { return UpdateConstantsInTreeParameter.Value.Value; }
+      set { UpdateConstantsInTreeParameter.Value.Value = value; }
     }
 
     public override bool Maximization {
@@ -90,6 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Parameters.Add(new FixedValueParameter<DoubleValue>(ConstantOptimizationImprovementParameterName, "Determines the relative improvement which must be achieved in the constant optimization to continue with it (0 indicates other or default stopping criterion).", new DoubleValue(0), true));
       Parameters.Add(new FixedValueParameter<PercentValue>(ConstantOptimizationProbabilityParameterName, "Determines the probability that the constants are optimized", new PercentValue(1), true));
       Parameters.Add(new FixedValueParameter<PercentValue>(ConstantOptimizationRowsPercentageParameterName, "Determines the percentage of the rows which should be used for constant optimization", new PercentValue(1), true));
+      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateConstantsInTreeParameterName, "Determines if the constants in the tree should be overwritten by the optimized constants.", new BoolValue(true)));
 
       Parameters.Add(new LookupParameter<IntValue>(EvaluatedTreesResultName));
       Parameters.Add(new LookupParameter<IntValue>(EvaluatedTreeNodesResultName));
@@ -97,6 +106,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicRegressionConstantOptimizationEvaluator(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(UpdateConstantsInTreeParameterName))
+        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateConstantsInTreeParameterName, "Determines if the constants in the tree should be overwritten by the optimized constants.", new BoolValue(true)));
     }
 
     public override IOperation Apply() {
@@ -107,7 +122,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(ConstantOptimizationRowsPercentage.Value);
         quality = OptimizeConstants(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue,
            constantOptimizationRows, ApplyLinearScalingParameter.ActualValue.Value, ConstantOptimizationIterations.Value,
-           EstimationLimitsParameter.ActualValue.Upper, EstimationLimitsParameter.ActualValue.Lower,
+           EstimationLimitsParameter.ActualValue.Upper, EstimationLimitsParameter.ActualValue.Lower, UpdateConstantsInTree,
           EvaluatedTreesParameter.ActualValue, EvaluatedTreeNodesParameter.ActualValue);
         if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
           var evaluationRows = GenerateRowsToEvaluate();
@@ -156,35 +171,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return r2;
     }
 
+    #region derivations of functions
     // create function factory for arctangent
     private readonly Func<Term, UnaryFunc> arctan = UnaryFunc.Factory(
-        x => Math.Atan(x),      // evaluate
-        x => 1 / (1 + x * x));  // derivative of atan
-
+      eval: Math.Atan,
+      diff: x => 1 / (1 + x * x));
     private static readonly Func<Term, UnaryFunc> sin = UnaryFunc.Factory(
-      x => Math.Sin(x),
-      x => Math.Cos(x));
+      eval: Math.Sin,
+      diff: Math.Cos);
     private static readonly Func<Term, UnaryFunc> cos = UnaryFunc.Factory(
-      x => Math.Cos(x),
-      x => -Math.Sin(x));
+       eval: Math.Cos,
+       diff: x => -Math.Sin(x));
     private static readonly Func<Term, UnaryFunc> tan = UnaryFunc.Factory(
-      x => Math.Tan(x),
-      x => 1 + Math.Tan(x) * Math.Tan(x));
+      eval: Math.Tan,
+      diff: x => 1 + Math.Tan(x) * Math.Tan(x));
     private static readonly Func<Term, UnaryFunc> square = UnaryFunc.Factory(
-      x => x * x,
-      x => 2 * x);
+       eval: x => x * x,
+       diff: x => 2 * x);
     private static readonly Func<Term, UnaryFunc> erf = UnaryFunc.Factory(
-      x => alglib.errorfunction(x),
-      x => 2.0 * Math.Exp(-(x * x)) / Math.Sqrt(Math.PI));
-
+      eval: alglib.errorfunction,
+      diff: x => 2.0 * Math.Exp(-(x * x)) / Math.Sqrt(Math.PI));
     private static readonly Func<Term, UnaryFunc> norm = UnaryFunc.Factory(
-      x => alglib.normaldistribution(x),
-      x => -(Math.Exp(-(x * x)) * Math.Sqrt(Math.Exp(x * x)) * x) / Math.Sqrt(2 * Math.PI)
-      );
+      eval: alglib.normaldistribution,
+      diff: x => -(Math.Exp(-(x * x)) * Math.Sqrt(Math.Exp(x * x)) * x) / Math.Sqrt(2 * Math.PI));
+    #endregion
 
 
     public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData,
-      IEnumerable<int> rows, bool applyLinearScaling, int maxIterations, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
+      IEnumerable<int> rows, bool applyLinearScaling, int maxIterations, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, bool updateConstantsInTree = true, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
 
       List<AutoDiff.Variable> variables = new List<AutoDiff.Variable>();
       List<AutoDiff.Variable> parameters = new List<AutoDiff.Variable>();
@@ -248,11 +262,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       catch (alglib.alglibexception) {
         return 0.0;
       }
+      var newTree = tree;
+      if (!updateConstantsInTree) newTree = (ISymbolicExpressionTree)tree.Clone();
       {
         // only when no error occurred
         // set constants in tree
         int i = 2;
-        foreach (var node in terminalNodes) {
+        foreach (var node in newTree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
           ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
           VariableTreeNode variableTreeNode = node as VariableTreeNode;
           if (constantTreeNode != null)
@@ -260,9 +276,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           else if (variableTreeNode != null && !variableTreeNode.Weight.IsAlmost(1.0))
             variableTreeNode.Weight = c[i++];
         }
-      }
 
-      return SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
+      }
+      return SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, newTree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
     }
 
     private static alglib.ndimensional_pfunc CreatePFunc(AutoDiff.IParametricCompiledTerm compiledFunc) {
@@ -309,6 +325,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
             term = null;
             return false;
           }
+          terms.Add(t);
+        }
+        term = AutoDiff.TermBuilder.Sum(terms);
+        return true;
+      }
+      if (node.Symbol is Subtraction) {
+        List<AutoDiff.Term> terms = new List<Term>();
+        for (int i = 0; i < node.SubtreeCount; i++) {
+          AutoDiff.Term t;
+          if (!TryTransformToAutoDiff(node.GetSubtree(i), variables, parameters, variableNames, out t)) {
+            term = null;
+            return false;
+          }
+          if (i > 0) t = -t;
           terms.Add(t);
         }
         term = AutoDiff.TermBuilder.Sum(terms);
