@@ -269,13 +269,6 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
       UpdateAnalyzers();
     }
 
-    protected override void Problem_Reset(object sender, EventArgs e) {
-      base.Problem_Reset(sender, e);
-      UpdateProblemSpecificParameters();
-      ParameterizeOperators();
-      UpdateAnalyzers();
-    }
-
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
       ParameterizeOperators();
     }
