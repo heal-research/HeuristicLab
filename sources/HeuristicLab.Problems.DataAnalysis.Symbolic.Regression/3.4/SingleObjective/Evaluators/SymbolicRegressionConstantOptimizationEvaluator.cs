@@ -133,8 +133,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows, ApplyLinearScalingParameter.ActualValue.Value);
       }
       QualityParameter.ActualValue = new DoubleValue(quality);
-      EvaluatedTreesParameter.ActualValue.Value += 1;
-      EvaluatedTreeNodesParameter.ActualValue.Value += solution.Length;
+      lock (locker) {
+        EvaluatedTreesParameter.ActualValue.Value += 1;
+        EvaluatedTreeNodesParameter.ActualValue.Value += solution.Length;
+      }
 
       if (Successor != null)
         return ExecutionContext.CreateOperation(Successor);
@@ -142,18 +144,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         return null;
     }
 
+    private object locker = new object();
     private void AddResults() {
-      if (EvaluatedTreesParameter.ActualValue == null) {
-        var scope = ExecutionContext.Scope;
-        while (scope.Parent != null)
-          scope = scope.Parent;
-        scope.Variables.Add(new Core.Variable(EvaluatedTreesResultName, new IntValue()));
-      }
-      if (EvaluatedTreeNodesParameter.ActualValue == null) {
-        var scope = ExecutionContext.Scope;
-        while (scope.Parent != null)
-          scope = scope.Parent;
-        scope.Variables.Add(new Core.Variable(EvaluatedTreeNodesResultName, new IntValue()));
+      lock (locker) {
+        if (EvaluatedTreesParameter.ActualValue == null) {
+          var scope = ExecutionContext.Scope;
+          while (scope.Parent != null)
+            scope = scope.Parent;
+          scope.Variables.Add(new Core.Variable(EvaluatedTreesResultName, new IntValue()));
+        }
+        if (EvaluatedTreeNodesParameter.ActualValue == null) {
+          var scope = ExecutionContext.Scope;
+          while (scope.Parent != null)
+            scope = scope.Parent;
+          scope.Variables.Add(new Core.Variable(EvaluatedTreeNodesResultName, new IntValue()));
+        }
       }
     }
 
@@ -205,7 +210,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       List<string> variableNames = new List<string>();
 
       AutoDiff.Term func;
-      if (!TryTransformToAutoDiff(tree.Root.GetSubtree(0), variables, parameters, variableNames, out func)) return 0.0;
+      if (!TryTransformToAutoDiff(tree.Root.GetSubtree(0), variables, parameters, variableNames, out func))
+        throw new NotSupportedException("Could not optimize constants of symbolic expression tree due to not supported symbols used in the tree.");
       if (variableNames.Count == 0) return 0.0;
 
       AutoDiff.IParametricCompiledTerm compiledFunc = AutoDiff.TermUtils.Compile(func, variables.ToArray(), parameters.ToArray());
@@ -223,7 +229,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           VariableTreeNode variableTreeNode = node as VariableTreeNode;
           if (constantTreeNode != null)
             c[i++] = constantTreeNode.Value;
-          else if (variableTreeNode != null && !variableTreeNode.Weight.IsAlmost(1.0))
+          else if (variableTreeNode != null)
             c[i++] = variableTreeNode.Weight;
         }
       }
@@ -273,7 +279,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           VariableTreeNode variableTreeNode = node as VariableTreeNode;
           if (constantTreeNode != null)
             constantTreeNode.Value = c[i++];
-          else if (variableTreeNode != null && !variableTreeNode.Weight.IsAlmost(1.0))
+          else if (variableTreeNode != null)
             variableTreeNode.Weight = c[i++];
         }
 
@@ -303,18 +309,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         return true;
       }
       if (node.Symbol is Variable) {
-        // don't tune weights with a value of 1.0 because it was probably set by the simplifier
         var varNode = node as VariableTreeNode;
         var par = new AutoDiff.Variable();
         parameters.Add(par);
         variableNames.Add(varNode.VariableName);
-        if (!varNode.Weight.IsAlmost(1.0)) {
-          var w = new AutoDiff.Variable();
-          variables.Add(w);
-          term = AutoDiff.TermBuilder.Product(w, par);
-        } else {
-          term = par;
-        }
+        var w = new AutoDiff.Variable();
+        variables.Add(w);
+        term = AutoDiff.TermBuilder.Product(w, par);
         return true;
       }
       if (node.Symbol is Addition) {

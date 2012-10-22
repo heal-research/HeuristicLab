@@ -75,8 +75,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected SymbolicDataAnalysisSingleObjectiveValidationAnalyzer(SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<T, U> original, Cloner cloner)
       : base(original, cloner) {
     }
-    public SymbolicDataAnalysisSingleObjectiveValidationAnalyzer()
-      : base() {
+
+    protected SymbolicDataAnalysisSingleObjectiveValidationAnalyzer(): base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random generator."));
       Parameters.Add(new LookupParameter<U>(ProblemDataParameterName, "The problem data of the symbolic data analysis problem."));
       Parameters.Add(new LookupParameter<T>(EvaluatorParameterName, "The operator to use for fitness evaluation on the validation partition."));
