@@ -122,6 +122,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
         if (Content != null) {
           storeAlgorithmInEachRunCheckBox.Enabled = !ReadOnly;
+          openAlgorithmButton.Enabled = !ReadOnly;
+          newAlgorithmButton.Enabled = !ReadOnly;
 
           algorithmNamedItemView.Enabled = Content.Algorithm != null && (Content.ExecutionState == ExecutionState.Prepared || Content.ExecutionState == ExecutionState.Stopped);
           algorithmTabControl.Enabled = Content.Algorithm != null && (Content.ExecutionState == ExecutionState.Prepared || Content.ExecutionState == ExecutionState.Stopped);
