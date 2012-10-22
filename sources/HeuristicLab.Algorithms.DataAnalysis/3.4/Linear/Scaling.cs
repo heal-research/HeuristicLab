@@ -43,8 +43,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public Scaling(Dataset ds, IEnumerable<string> variables, IEnumerable<int> rows) {
       foreach (var variable in variables) {
         var values = ds.GetDoubleValues(variable, rows);
-        var min = values.Min();
-        var max = values.Max();
+        var min = values.Where(x => !double.IsNaN(x)).Min();
+        var max = values.Where(x => !double.IsNaN(x)).Max();
         scalingParameters[variable] = Tuple.Create(min, max);
       }
     }
@@ -56,7 +56,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IEnumerable<double> GetScaledValues(Dataset ds, string variable, IEnumerable<int> rows) {
       double min = scalingParameters[variable].Item1;
       double max = scalingParameters[variable].Item2;
-      return ds.GetDoubleValues(variable, rows).Select(x => (x - min) / (max - min));
+      if (min.IsAlmost(max)) return rows.Select(i => 0.0); // return enumerable of zeros
+      return ds.GetDoubleValues(variable, rows).Select(x => (x - min) / (max - min));  // scale to range [0..1]
     }
 
     public void GetScalingParameters(string variable, out double min, out double max) {
