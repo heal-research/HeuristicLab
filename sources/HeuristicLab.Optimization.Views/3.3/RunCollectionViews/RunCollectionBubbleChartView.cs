@@ -262,8 +262,6 @@ namespace HeuristicLab.Optimization.Views {
       var yAxis = chart.ChartAreas[0].AxisY;
       xTrackBar.Value = 0;
       yTrackBar.Value = 0;
-      SetAutomaticUpdateOfAxis(xAxis, true);
-      SetAutomaticUpdateOfAxis(yAxis, true);
     }
 
     private void UpdateMarkerSizes() {
@@ -283,11 +281,22 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+
+    private class AxisParameters {
+      public double min, max, majorGridInterval, majorTickMarkInterval, labelStyleInterval;
+    }
     private void UpdateDataPointJitter() {
       var xAxis = this.chart.ChartAreas[0].AxisX;
       var yAxis = this.chart.ChartAreas[0].AxisY;
-      SetAutomaticUpdateOfAxis(xAxis, false);
-      SetAutomaticUpdateOfAxis(yAxis, false);
+
+
+      // disable automatic update of axis
+      var disabledParameters = new AxisParameters();
+      disabledParameters.min = disabledParameters.max = disabledParameters.majorGridInterval = disabledParameters.majorTickMarkInterval = disabledParameters.labelStyleInterval = double.NaN;
+
+      AxisParameters savedXParameters, savedYParameters;
+      savedXParameters = SetAxisParameters(xAxis, disabledParameters);
+      savedYParameters = SetAxisParameters(yAxis, disabledParameters);
 
       foreach (DataPoint point in chart.Series[0].Points) {
         IRun run = (IRun)point.Tag;
@@ -295,30 +304,31 @@ namespace HeuristicLab.Optimization.Views {
         double yValue = GetValue(run, yAxisValue).Value;
 
         if (!xJitterFactor.IsAlmost(0.0))
-          xValue += 0.1 * GetXJitter(run) * xJitterFactor * (xAxis.Maximum - xAxis.Minimum);
+          xValue += 0.1 * GetXJitter(run) * xJitterFactor * (savedXParameters.max - savedXParameters.min);
         if (!yJitterFactor.IsAlmost(0.0))
-          yValue += 0.1 * GetYJitter(run) * yJitterFactor * (yAxis.Maximum - yAxis.Minimum);
+          yValue += 0.1 * GetYJitter(run) * yJitterFactor * (savedYParameters.max - savedYParameters.min);
 
         point.XValue = xValue;
         point.YValues[0] = yValue;
       }
+      SetAxisParameters(xAxis, savedXParameters);
+      SetAxisParameters(yAxis, savedYParameters);
     }
 
-    private void SetAutomaticUpdateOfAxis(Axis axis, bool enabled) {
-      if (enabled) {
-        axis.Maximum = double.NaN;
-        axis.Minimum = double.NaN;
-        axis.MajorGrid.Interval = double.NaN;
-        axis.MajorTickMark.Interval = double.NaN;
-        axis.LabelStyle.Interval = double.NaN;
-      } else {
-        axis.Minimum = axis.Minimum;
-        axis.Maximum = axis.Maximum;
-        axis.MajorGrid.Interval = axis.MajorGrid.Interval;
-        axis.MajorTickMark.Interval = axis.MajorTickMark.Interval;
-        axis.LabelStyle.Interval = axis.LabelStyle.Interval;
-      }
+    private AxisParameters SetAxisParameters(Axis axis, AxisParameters @new) {
+      var old = new AxisParameters();
+      old.min = axis.Minimum;
+      old.max = axis.Maximum;
+      old.majorGridInterval = axis.MajorGrid.Interval;
+      old.majorTickMarkInterval = axis.MajorTickMark.Interval;
+      old.labelStyleInterval = axis.LabelStyle.Interval;
 
+      axis.Maximum = @new.max;
+      axis.Minimum = @new.min;
+      axis.MajorGrid.Interval = @new.majorGridInterval;
+      axis.MajorTickMark.Interval = @new.majorTickMarkInterval;
+      axis.LabelStyle.Interval = @new.labelStyleInterval;
+      return old;
     }
 
     private void AddDataPoint(IRun run) {
