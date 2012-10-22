@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public abstract string Description { get; }
 
     protected abstract string TargetVariable { get; }
-    protected abstract string[] InputVariables { get; }
+    protected abstract string[] VariableNames { get; }
     protected abstract string[] AllowedInputVariables { get; }
     protected abstract int TrainingPartitionStart { get; }
     protected abstract int TrainingPartitionEnd { get; }
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected abstract int TestPartitionEnd { get; }
 
     public IRegressionProblemData GenerateRegressionData() {
-      Dataset dataset = new Dataset(InputVariables, this.GenerateValues());
+      Dataset dataset = new Dataset(VariableNames, this.GenerateValues());
 
       RegressionProblemData regData = new RegressionProblemData(dataset, AllowedInputVariables, TargetVariable);
       regData.Name = this.Name;

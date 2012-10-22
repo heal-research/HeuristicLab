@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       }
     }
     protected override string TargetVariable { get { return "Y"; } }
-    protected override string[] InputVariables { get { return new string[] { "X1", "X2", "Y" }; } }
+    protected override string[] VariableNames { get { return new string[] { "X1", "X2", "Y" }; } }
     protected override string[] AllowedInputVariables { get { return new string[] { "X1", "X2" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 100; } }
