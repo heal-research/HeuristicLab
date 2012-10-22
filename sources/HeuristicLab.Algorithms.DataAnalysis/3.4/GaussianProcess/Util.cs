@@ -55,15 +55,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static double SqrDist(double[,] x, int i, int j, double[] scale, IEnumerable<int> columnIndices = null) {
-      return SqrDist(x, i, x, j, scale);
+      return SqrDist(x, i, x, j, scale, columnIndices);
     }
 
     public static double SqrDist(double[,] x, int i, double[,] xt, int j, double[] scale, IEnumerable<int> columnIndices = null) {
       double ss = 0.0;
       if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
+      int scaleIndex = 0;
       foreach (int k in columnIndices) {
         double d = x[i, k] - xt[j, k];
-        ss += d * d * scale[k] * scale[k];
+        ss += d * d * scale[scaleIndex] * scale[scaleIndex];
+        scaleIndex++;
       }
       return ss;
     }
@@ -86,8 +88,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static double ScalarProd(double[,] x, int i, double[,] xt, int j, double[] scale, IEnumerable<int> columnIndices = null) {
       double sum = 0.0;
       if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
+      int scaleIndex = 0;
       foreach (int k in columnIndices) {
-        sum += x[i, k] * scale[k] * xt[j, k] * scale[k];
+        sum += x[i, k] * scale[scaleIndex] * xt[j, k] * scale[scaleIndex];
+        scaleIndex++;
       }
       return sum;
     }
