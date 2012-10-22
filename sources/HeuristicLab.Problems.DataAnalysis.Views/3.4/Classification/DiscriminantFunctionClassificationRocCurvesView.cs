@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         minThreshold -= thresholdIncrement;
         maxThreshold += thresholdIncrement;
 
-        List<double> classValues = Content.Model.ClassValues.ToList();
+        List<double> classValues = Content.ProblemData.ClassValues.ToList();
 
         foreach (double classValue in classValues) {
           List<ROCPoint> rocPoints = new List<ROCPoint>();
