@@ -161,22 +161,20 @@
     <Compile Include="DataAnalysisSolutionEvaluationView.Designer.cs">
       <DependentUpon>DataAnalysisSolutionEvaluationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="FeatureCorrelation\EnhancedStringConvertibleMatrixView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FeatureCorrelation\EnhancedStringConvertibleMatrixView.Designer.cs">
+      <DependentUpon>EnhancedStringConvertibleMatrixView.cs</DependentUpon>
+    </Compile>
     <Compile Include="FeatureCorrelation\FeatureCorrelationCalculator.cs" />
-    <Compile Include="FeatureCorrelation\FeatureCorrelationEnums.cs" />
-    <Compile Include="FeatureCorrelation\VariableVisibilityDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FeatureCorrelation\VariableVisibilityDialog.Designer.cs">
-      <DependentUpon>VariableVisibilityDialog.cs</DependentUpon>
-    </Compile>
+    <Compile Include="FeatureCorrelation\FeatureCorrelationHelpers.cs" />
     <Compile Include="FeatureCorrelation\FeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="FeatureCorrelation\FeatureCorrelationView.Designer.cs">
       <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="FeatureCorrelation\FeatureCorrelationCache.cs" />
-    <Compile Include="FeatureCorrelation\FeatureCorrelationTimeframeCache.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ProblemDataView.cs">
       <SubType>UserControl</SubType>

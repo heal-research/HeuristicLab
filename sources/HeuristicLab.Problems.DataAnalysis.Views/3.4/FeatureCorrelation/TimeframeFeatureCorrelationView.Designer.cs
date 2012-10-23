@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.VariableSelectionLabel = new System.Windows.Forms.Label();
       this.VariableSelectionComboBox = new System.Windows.Forms.ComboBox();
       this.TimeFrameLabel = new System.Windows.Forms.Label();
-      this.TimeframeComboBox = new System.Windows.Forms.ComboBox();
+      this.TimeframeTextbox = new System.Windows.Forms.TextBox();
       ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).BeginInit();
       this.SplitContainer.Panel1.SuspendLayout();
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // SplitContainer.Panel1
       // 
       this.SplitContainer.Panel1.Controls.Add(this.VariableSelectionComboBox);
-      this.SplitContainer.Panel1.Controls.Add(this.TimeframeComboBox);
+      this.SplitContainer.Panel1.Controls.Add(this.TimeframeTextbox);
       this.SplitContainer.Panel1.Controls.Add(this.TimeFrameLabel);
       this.SplitContainer.Panel1.Controls.Add(this.VariableSelectionLabel);
       this.SplitContainer.SplitterDistance = 52;
@@ -116,13 +116,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // TimeframeComboBox
       // 
-      this.TimeframeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.TimeframeComboBox.FormattingEnabled = true;
-      this.TimeframeComboBox.Location = new System.Drawing.Point(344, 30);
-      this.TimeframeComboBox.Name = "TimeframeComboBox";
-      this.TimeframeComboBox.Size = new System.Drawing.Size(131, 21);
-      this.TimeframeComboBox.TabIndex = 19;
-      this.TimeframeComboBox.SelectionChangeCommitted += new System.EventHandler(this.TimeframeComboBox_SelectedChangeCommitted);
+      this.TimeframeTextbox.Location = new System.Drawing.Point(344, 30);
+      this.TimeframeTextbox.Name = "TimeframeTextbox";
+      this.TimeframeTextbox.Size = new System.Drawing.Size(131, 21);
+      this.TimeframeTextbox.TabIndex = 19;
+      this.TimeframeTextbox.Text = "5";
+      this.TimeframeTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(TimeframeTextbox_KeyDown);
       // 
       // TimeframeFeatureCorrelationView
       // 
@@ -145,6 +144,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected System.Windows.Forms.Label VariableSelectionLabel;
     protected System.Windows.Forms.ComboBox VariableSelectionComboBox;
     protected System.Windows.Forms.Label TimeFrameLabel;
-    protected System.Windows.Forms.ComboBox TimeframeComboBox;
+    protected System.Windows.Forms.TextBox TimeframeTextbox;
   }
 }

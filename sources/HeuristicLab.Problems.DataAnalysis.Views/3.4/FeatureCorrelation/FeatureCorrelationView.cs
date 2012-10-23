@@ -19,11 +19,14 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Feature Correlation View")]
@@ -39,28 +42,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected override void OnContentChanged() {
+      if (Content != null) {
+        dataView.RowVisibility = SetInitialVariableVisibility();
+        dataView.ColumnVisibility = SetInitialVariableVisibility();
+      }
       correlationCache.Reset();
       base.OnContentChanged();
     }
 
     protected override void CalculateCorrelation() {
       if (CorrelationCalcComboBox.SelectedItem != null && PartitionComboBox.SelectedItem != null) {
-        FeatureCorrelationEnums.CorrelationCalculators calc = (FeatureCorrelationEnums.CorrelationCalculators)CorrelationCalcComboBox.SelectedValue;
-        FeatureCorrelationEnums.Partitions partition = (FeatureCorrelationEnums.Partitions)PartitionComboBox.SelectedValue;
-        DataGridView.Columns.Clear();
-        DataGridView.Enabled = false;
+        IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
+        string partition = (string)PartitionComboBox.SelectedValue;
+        dataView.Enabled = false;
         double[,] corr = correlationCache.GetCorrelation(calc, partition);
         if (corr == null) {
           fcc.CalculateElements(calc, partition);
         } else {
+          fcc.TryCancelCalculation();
           SetNewCorrelation(corr, calc);
-          UpdateDataGrid();
+          UpdateDataView();
         }
       }
     }
 
-    private void SetNewCorrelation(double[,] elements, FeatureCorrelationEnums.CorrelationCalculators calc) {
-      DoubleRange range = FeatureCorrelationEnums.calculatorInterval[calc];
+    private void SetNewCorrelation(double[,] elements, IDependencyCalculator calc) {
+      DoubleRange range = calc.Interval;
       HeatMap hm = new HeatMap(elements, "", range.End, range.Start);
       hm.RowNames = Content.Dataset.DoubleVariables;
       hm.ColumnNames = Content.Dataset.DoubleVariables;
@@ -73,13 +80,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       } else {
         correlationCache.SetCorrelation(e.Calculcator, e.Partition, e.Correlation);
         SetNewCorrelation(e.Correlation, e.Calculcator);
-        UpdateDataGrid();
+        UpdateDataView();
       }
     }
 
-    protected override void variableVisibility_VariableVisibilityChanged(object sender, ItemCheckEventArgs e) {
-      DataGridView.Columns[e.Index].Visible = e.NewValue == CheckState.Checked;
-      DataGridView.Rows[GetRowIndexOfVirtualindex(e.Index)].Visible = e.NewValue == CheckState.Checked;
+    [NonDiscoverableType]
+    private class FeatureCorrelationCache : Object {
+      private Dictionary<Tuple<IDependencyCalculator, string>, double[,]> correlationsCache;
+
+      public FeatureCorrelationCache()
+        : base() {
+        InitializeCaches();
+      }
+
+      private void InitializeCaches() {
+        correlationsCache = new Dictionary<Tuple<IDependencyCalculator, string>, double[,]>();
+      }
+
+      public void Reset() {
+        InitializeCaches();
+      }
+
+      public double[,] GetCorrelation(IDependencyCalculator calc, string partition) {
+        double[,] corr;
+        var key = new Tuple<IDependencyCalculator, string>(calc, partition);
+        correlationsCache.TryGetValue(key, out corr);
+        return corr;
+      }
+
+      public void SetCorrelation(IDependencyCalculator calc, string partition, double[,] correlation) {
+        var key = new Tuple<IDependencyCalculator, string>(calc, partition);
+        correlationsCache[key] = correlation;
+      }
     }
   }
 }

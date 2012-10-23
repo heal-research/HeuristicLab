@@ -20,11 +20,13 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Timeframe Feature Correlation View")]
@@ -35,13 +37,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public TimeframeFeatureCorrelationView() {
       InitializeComponent();
-      TimeframeComboBox.DataSource = Enumerable.Range(0, 16).ToList<int>();
       correlationTimeframCache = new FeatureCorrelationTimeframeCache();
     }
 
     protected override void OnContentChanged() {
       correlationTimeframCache.Reset();
       if (Content != null) {
+        dataView.RowVisibility = SetInitialVariableVisibility();
         VariableSelectionComboBox.DataSource = Content.Dataset.DoubleVariables.ToList();
       }
       base.OnContentChanged();
@@ -50,31 +52,50 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected void VariableSelectionComboBox_SelectedChangeCommitted(object sender, EventArgs e) {
       CalculateCorrelation();
     }
-    protected void TimeframeComboBox_SelectedChangeCommitted(object sender, EventArgs e) {
-      CalculateCorrelation();
+    protected void TimeframeTextbox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
+      if (e.KeyCode == Keys.Enter) {
+        CalculateCorrelation();
+      }
     }
 
     protected override void CalculateCorrelation() {
-      string variable = (string)VariableSelectionComboBox.SelectedItem;
-      if (CorrelationCalcComboBox.SelectedItem != null && PartitionComboBox.SelectedItem != null && variable != null) {
-        FeatureCorrelationEnums.CorrelationCalculators calc = (FeatureCorrelationEnums.CorrelationCalculators)CorrelationCalcComboBox.SelectedValue;
-        FeatureCorrelationEnums.Partitions partition = (FeatureCorrelationEnums.Partitions)PartitionComboBox.SelectedValue;
-        DataGridView.Columns.Clear();
-        DataGridView.Enabled = false;
-        int frames = (int)TimeframeComboBox.SelectedItem;
+      if (CorrelationCalcComboBox.SelectedItem != null && PartitionComboBox.SelectedItem != null
+        && VariableSelectionComboBox.SelectedItem != null && ValidateTimeframeTextbox()) {
+        string variable = (string)VariableSelectionComboBox.SelectedItem;
+        IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
+        string partition = (string)PartitionComboBox.SelectedValue;
+        int frames;
+        int.TryParse(TimeframeTextbox.Text, out frames);
+        dataView.Enabled = false;
         double[,] corr = correlationTimeframCache.GetTimeframeCorrelation(calc, partition, variable);
         if (corr == null) {
           fcc.CalculateTimeframeElements(calc, partition, variable, frames);
         } else if (corr.GetLength(1) <= frames) {
           fcc.CalculateTimeframeElements(calc, partition, variable, frames, corr);
         } else {
+          fcc.TryCancelCalculation();
           SetNewCorrelation(corr, calc, frames);
-          UpdateDataGrid();
+          UpdateDataView();
         }
       }
     }
 
-    private void SetNewCorrelation(double[,] elements, FeatureCorrelationEnums.CorrelationCalculators calc, int frames) {
+    protected bool ValidateTimeframeTextbox() {
+      int help;
+      if (!int.TryParse(TimeframeTextbox.Text, out help)) {
+        MessageBox.Show("Timeframe couldn't be parsed. Enter a valid integer value.", "Parse Error", MessageBoxButtons.OK);
+        return false;
+      } else {
+        if (help > 50) {
+          DialogResult dr = MessageBox.Show("The entered value is bigger than 50. Are you sure you want to calculate? " +
+                                            "The calculation could take some time.", "Huge Value Warning", MessageBoxButtons.YesNo);
+          return dr.Equals(DialogResult.Yes);
+        }
+      }
+      return true;
+    }
+
+    private void SetNewCorrelation(double[,] elements, IDependencyCalculator calc, int frames) {
       double[,] neededValues = new double[elements.GetLength(0), frames + 1];
       for (int i = 0; i < elements.GetLength(0); i++) {
         Array.Copy(elements, i * elements.GetLength(1), neededValues, i * neededValues.GetLength(1), frames + 1);
@@ -82,8 +103,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       SetNewCorrelation(neededValues, calc);
     }
 
-    private void SetNewCorrelation(double[,] elements, FeatureCorrelationEnums.CorrelationCalculators calc) {
-      DoubleRange range = FeatureCorrelationEnums.calculatorInterval[calc];
+    private void SetNewCorrelation(double[,] elements, IDependencyCalculator calc) {
+      DoubleRange range = calc.Interval;
       HeatMap hm = new HeatMap(elements, "", range.End, range.Start);
       hm.RowNames = Content.Dataset.DoubleVariables;
       hm.ColumnNames = Enumerable.Range(0, elements.GetLength(1)).Select(x => x.ToString());
@@ -96,18 +117,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       } else {
         correlationTimeframCache.SetTimeframeCorrelation(e.Calculcator, e.Partition, e.Variable, e.Correlation);
         SetNewCorrelation(e.Correlation, e.Calculcator);
-        UpdateDataGrid();
+        UpdateDataView();
       }
     }
 
-    protected override void UpdateColumnHeaders() {
-      for (int i = 0; i < DataGridView.ColumnCount; i++) {
-        DataGridView.Columns[i].HeaderText = i.ToString();
-      }
-    }
+    [NonDiscoverableType]
+    private class FeatureCorrelationTimeframeCache : Object {
+      private Dictionary<Tuple<IDependencyCalculator, string, string>, double[,]> timeFrameCorrelationsCache;
 
-    protected override void variableVisibility_VariableVisibilityChanged(object sender, ItemCheckEventArgs e) {
-      DataGridView.Rows[GetRowIndexOfVirtualindex(e.Index)].Visible = e.NewValue == CheckState.Checked;
+      public FeatureCorrelationTimeframeCache()
+        : base() {
+        InitializeCaches();
+      }
+
+      private void InitializeCaches() {
+        timeFrameCorrelationsCache = new Dictionary<Tuple<IDependencyCalculator, string, string>, double[,]>();
+      }
+
+      public void Reset() {
+        InitializeCaches();
+      }
+
+      public double[,] GetTimeframeCorrelation(IDependencyCalculator calc, string partition, string variable) {
+        double[,] corr;
+        var key = new Tuple<IDependencyCalculator, string, string>(calc, partition, variable);
+        timeFrameCorrelationsCache.TryGetValue(key, out corr);
+        return corr;
+      }
+
+      public void SetTimeframeCorrelation(IDependencyCalculator calc, string partition, string variable, double[,] correlation) {
+        var key = new Tuple<IDependencyCalculator, string, string>(calc, partition, variable);
+        timeFrameCorrelationsCache[key] = correlation;
+      }
     }
   }
 }

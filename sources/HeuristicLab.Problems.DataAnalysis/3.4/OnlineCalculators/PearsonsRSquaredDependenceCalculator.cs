@@ -19,28 +19,18 @@
  */
 #endregion
 
-using System.Linq;
-using HeuristicLab.MainForm;
+using System.Collections.Generic;
+using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Classification Feature Correlation View")]
-  [Content(typeof(ClassificationProblemData), false)]
-  public partial class ClassificationFeatureCorrelationView : FeatureCorrelationView {
+namespace HeuristicLab.Problems.DataAnalysis {
+  public class PearsonsRSquaredDependenceCalculator : IDependencyCalculator {
 
-    public new ClassificationProblemData Content {
-      get { return (ClassificationProblemData)base.Content; }
-      set { base.Content = value; }
-    }
+    public DoubleRange Interval { get { return new DoubleRange(1.0, 0.0); } }
 
-    public ClassificationFeatureCorrelationView() {
-      InitializeComponent();
-    }
+    public string Name { get { return "Pearsons R Squared"; } }
 
-    protected override bool[] SetInitialVariableVisibility() {
-      int i = Content.Dataset.DoubleVariables.ToList().FindIndex(x => x == Content.TargetVariable);
-      var initialVisibility = base.SetInitialVariableVisibility();
-      initialVisibility[i] = true;
-      return initialVisibility;
+    public double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      return OnlinePearsonsRSquaredCalculator.Calculate(originalValues, estimatedValues, out errorState);
     }
   }
 }

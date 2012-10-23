@@ -36,9 +36,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
-    protected override bool[] SetInitialVisibilityOfColumns() {
+    protected override bool[] SetInitialVariableVisibility() {
       int i = Content.Dataset.DoubleVariables.ToList().FindIndex(x => x == Content.TargetVariable);
-      var initialVisibility = base.SetInitialVisibilityOfColumns();
+      var initialVisibility = base.SetInitialVariableVisibility();
       initialVisibility[i] = true;
       return initialVisibility;
     }

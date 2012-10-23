@@ -20,6 +20,7 @@
  */
 
 #endregion
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class AbstractFeatureCorrelationView {
     /// <summary> 
@@ -47,7 +48,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AbstractFeatureCorrelationView));
-      this.DataGridView = new System.Windows.Forms.DataGridView();
       this.HeatMapProgressBar = new System.Windows.Forms.ProgressBar();
       this.PartitionComboBox = new System.Windows.Forms.ComboBox();
       this.CorrelationCalcLabel = new System.Windows.Forms.Label();
@@ -59,35 +59,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.SplitContainer = new System.Windows.Forms.SplitContainer();
       this.CalculatingPanel = new System.Windows.Forms.Panel();
       this.CalculatingLabel = new System.Windows.Forms.Label();
-      this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.ShowHideColumns = new System.Windows.Forms.ToolStripMenuItem();
-      ((System.ComponentModel.ISupportInitialize)(this.DataGridView)).BeginInit();
+      this.dataView = new HeuristicLab.Problems.DataAnalysis.Views.EnhancedStringConvertibleMatrixView();
       ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).BeginInit();
       this.SplitContainer.Panel1.SuspendLayout();
       this.SplitContainer.Panel2.SuspendLayout();
       this.SplitContainer.SuspendLayout();
       this.CalculatingPanel.SuspendLayout();
-      this.contextMenu.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // DataGridView
-      // 
-      this.DataGridView.AllowUserToAddRows = false;
-      this.DataGridView.AllowUserToDeleteRows = false;
-      this.DataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.DataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.DataGridView.Location = new System.Drawing.Point(0, 0);
-      this.DataGridView.Name = "DataGridView";
-      this.DataGridView.ReadOnly = true;
-      this.DataGridView.Size = new System.Drawing.Size(475, 301);
-      this.DataGridView.TabIndex = 0;
-      this.DataGridView.VirtualMode = true;
-      this.DataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.DataGridView_CellPainting);
-      this.DataGridView.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.DataGridView_CellValueNeeded);
-      this.DataGridView.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.DataGridView_ColumnHeaderMouseClick);
-      this.DataGridView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DataGridView_KeyDown);
-      this.DataGridView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.DataGridView_MouseClick);
       // 
       // HeatMapProgressBar
       // 
@@ -161,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // PictureBox
       // 
       this.PictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.PictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.PictureBox.Image = ((System.Drawing.Image)(resources.GetObject("PictureBox.Image")));
       this.PictureBox.Location = new System.Drawing.Point(507, 30);
@@ -174,8 +153,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // SplitContainer
       // 
       this.SplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.SplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
       this.SplitContainer.IsSplitterFixed = true;
       this.SplitContainer.Location = new System.Drawing.Point(3, 3);
@@ -192,7 +171,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // SplitContainer.Panel2
       // 
       this.SplitContainer.Panel2.Controls.Add(this.CalculatingPanel);
-      this.SplitContainer.Panel2.Controls.Add(this.DataGridView);
+      this.SplitContainer.Panel2.Controls.Add(this.dataView);
       this.SplitContainer.Size = new System.Drawing.Size(475, 330);
       this.SplitContainer.SplitterDistance = 25;
       this.SplitContainer.TabIndex = 16;
@@ -216,19 +195,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.CalculatingLabel.TabIndex = 10;
       this.CalculatingLabel.Text = "Calculating correlation...";
       // 
-      // contextMenu
+      // DataGridView
       // 
-      this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShowHideColumns});
-      this.contextMenu.Name = "contextMenu";
-      this.contextMenu.Size = new System.Drawing.Size(191, 26);
-      // 
-      // ShowHideColumns
-      // 
-      this.ShowHideColumns.Name = "ShowHideColumns";
-      this.ShowHideColumns.Size = new System.Drawing.Size(190, 22);
-      this.ShowHideColumns.Text = "Show / Hide Columns";
-      this.ShowHideColumns.Click += new System.EventHandler(this.ShowHideColumns_Click);
+      this.dataView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dataView.Location = new System.Drawing.Point(0, 0);
+      this.dataView.Name = "DataView";
+      this.dataView.ReadOnly = true;
+      this.dataView.Size = new System.Drawing.Size(475, 301);
+      this.dataView.TabIndex = 0;
       // 
       // AbstractFeatureCorrelationView
       // 
@@ -240,7 +214,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.Controls.Add(this.maximumLabel);
       this.Name = "AbstractFeatureCorrelationView";
       this.Size = new System.Drawing.Size(569, 336);
-      ((System.ComponentModel.ISupportInitialize)(this.DataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).EndInit();
       this.SplitContainer.Panel1.ResumeLayout(false);
       this.SplitContainer.Panel1.PerformLayout();
@@ -249,14 +222,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.SplitContainer.ResumeLayout(false);
       this.CalculatingPanel.ResumeLayout(false);
       this.CalculatingPanel.PerformLayout();
-      this.contextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    protected System.Windows.Forms.DataGridView DataGridView;
     protected System.Windows.Forms.ProgressBar HeatMapProgressBar;
     protected System.Windows.Forms.ComboBox PartitionComboBox;
     protected System.Windows.Forms.Label CorrelationCalcLabel;
@@ -268,8 +239,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected System.Windows.Forms.SplitContainer SplitContainer;
     protected System.Windows.Forms.Panel CalculatingPanel;
     protected System.Windows.Forms.Label CalculatingLabel;
-    protected System.Windows.Forms.ContextMenuStrip contextMenu;
-    protected System.Windows.Forms.ToolStripMenuItem ShowHideColumns;
+    protected HeuristicLab.Problems.DataAnalysis.Views.EnhancedStringConvertibleMatrixView dataView;
 
   }
 }

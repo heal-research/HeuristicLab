@@ -19,28 +19,24 @@
  */
 #endregion
 
-using System.Linq;
-using HeuristicLab.MainForm;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Classification Feature Correlation View")]
-  [Content(typeof(ClassificationProblemData), false)]
-  public partial class ClassificationFeatureCorrelationView : FeatureCorrelationView {
-
-    public new ClassificationProblemData Content {
-      get { return (ClassificationProblemData)base.Content; }
-      set { base.Content = value; }
-    }
-
-    public ClassificationFeatureCorrelationView() {
+namespace HeuristicLab.Data.Views {
+  public partial class StringConvertibleMatrixColumnVisibilityDialog : StringConvertibleMatrixVisibilityDialog<DataGridViewColumn> {
+    public StringConvertibleMatrixColumnVisibilityDialog() {
       InitializeComponent();
     }
 
-    protected override bool[] SetInitialVariableVisibility() {
-      int i = Content.Dataset.DoubleVariables.ToList().FindIndex(x => x == Content.TargetVariable);
-      var initialVisibility = base.SetInitialVariableVisibility();
-      initialVisibility[i] = true;
-      return initialVisibility;
+    public StringConvertibleMatrixColumnVisibilityDialog(IEnumerable<DataGridViewColumn> columns)
+      : base(columns) {
+    }
+
+    protected override void UpdateCheckBoxes() {
+      this.checkedListBox.Items.Clear();
+      foreach (DataGridViewColumn column in bands) {
+        checkedListBox.Items.Add(column.HeaderText, column.Visible);
+      }
     }
   }
 }

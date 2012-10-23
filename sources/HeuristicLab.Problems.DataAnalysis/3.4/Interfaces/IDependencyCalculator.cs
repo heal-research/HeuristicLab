@@ -19,28 +19,14 @@
  */
 #endregion
 
-using System.Linq;
-using HeuristicLab.MainForm;
+using System.Collections.Generic;
+using HeuristicLab.Data;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Regression Feature Correlation View")]
-  [Content(typeof(RegressionProblemData), false)]
-  public partial class RegressionFeatureCorrelationView : FeatureCorrelationView {
+namespace HeuristicLab.Problems.DataAnalysis {
+  public interface IDependencyCalculator {
+    DoubleRange Interval { get; }
+    string Name { get; }
 
-    public new RegressionProblemData Content {
-      get { return (RegressionProblemData)base.Content; }
-      set { base.Content = value; }
-    }
-
-    public RegressionFeatureCorrelationView() {
-      InitializeComponent();
-    }
-
-    protected override bool[] SetInitialVariableVisibility() {
-      int i = Content.Dataset.DoubleVariables.ToList().FindIndex(x => x == Content.TargetVariable);
-      var initialVisibility = base.SetInitialVariableVisibility();
-      initialVisibility[i] = true;
-      return initialVisibility;
-    }
+    double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState);
   }
 }

@@ -34,7 +34,7 @@ namespace HeuristicLab.Data.Views {
   [View("StringConvertibleMatrix View")]
   [Content(typeof(IStringConvertibleMatrix), true)]
   public partial class StringConvertibleMatrixView : AsynchronousContentView {
-    private int[] virtualRowIndices;
+    protected int[] virtualRowIndices;
     private List<KeyValuePair<int, SortOrder>> sortedColumnIndices;
     private RowComparer rowComparer;
 
@@ -170,7 +170,7 @@ namespace HeuristicLab.Data.Views {
         dataGridView.Columns[i].Visible = !invisibleColumnNames.Contains(dataGridView.Columns[i].HeaderText);
       }
     }
-    protected void UpdateRowHeaders() {
+    protected virtual void UpdateRowHeaders() {
       int index = dataGridView.FirstDisplayedScrollingRowIndex;
       if (index == -1) index = 0;
       int updatedRows = 0;
@@ -508,8 +508,8 @@ namespace HeuristicLab.Data.Views {
       if (e.Button == MouseButtons.Right && Content.ColumnNames.Count() != 0)
         contextMenu.Show(MousePosition);
     }
-    private void ShowHideColumns_Click(object sender, EventArgs e) {
-      new ColumnsVisibilityDialog(this.dataGridView.Columns.Cast<DataGridViewColumn>()).ShowDialog();
+    protected virtual void ShowHideColumns_Click(object sender, EventArgs e) {
+      new StringConvertibleMatrixColumnVisibilityDialog(this.dataGridView.Columns.Cast<DataGridViewColumn>()).ShowDialog();
     }
 
     private void UpdateVisibilityOfTextBoxes() {

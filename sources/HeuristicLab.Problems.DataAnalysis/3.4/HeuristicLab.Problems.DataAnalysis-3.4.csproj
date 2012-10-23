@@ -151,6 +151,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Classification\IDiscriminantFunctionThresholdCalculator.cs" />
+    <Compile Include="Interfaces\IDependencyCalculator.cs" />
     <Compile Include="Interfaces\Regression\IRegressionEnsembleModel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -205,6 +206,8 @@
     <Compile Include="Implementation\Regression\RegressionSolution.cs" />
     <Compile Include="OnlineCalculators\OnlineTheilsUStatisticCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineWeightedDirectionalSymmetryCalculator.cs" />
+    <Compile Include="OnlineCalculators\PearsonsRDependenceCalculator.cs" />
+    <Compile Include="OnlineCalculators\PearsonsRSquaredDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\SpearmansRankCorrelationCoefficientCalculator.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\AccuracyMaximizationThresholdCalculator.cs" />

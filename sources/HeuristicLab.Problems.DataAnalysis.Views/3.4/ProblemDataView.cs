@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected void FeatureCorrelationButton_Click(object sender, System.EventArgs e) {
-      Type viewType = MainFormManager.GetViewTypes(this.Content.GetType(), true).FirstOrDefault(t => typeof(AbstractFeatureCorrelationView).IsAssignableFrom(t));
+      Type viewType = MainFormManager.GetViewTypes(this.Content.GetType(), true).FirstOrDefault(t => typeof(FeatureCorrelationView).IsAssignableFrom(t));
       MainFormManager.MainForm.ShowContent(Content, viewType);
     }
 

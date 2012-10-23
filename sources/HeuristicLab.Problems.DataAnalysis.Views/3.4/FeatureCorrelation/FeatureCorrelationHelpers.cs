@@ -19,28 +19,16 @@
  */
 #endregion
 
-using System.Linq;
-using HeuristicLab.MainForm;
+using System.Collections.Generic;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
-  [View("Classification Feature Correlation View")]
-  [Content(typeof(ClassificationProblemData), false)]
-  public partial class ClassificationFeatureCorrelationView : FeatureCorrelationView {
+  [NonDiscoverableType]
+  public class FeatureCorrelationPartitions {
+    public const string ALLSAMPLES = "All Samples";
+    public const string TRAININGSAMPLES = "Training Samples";
+    public const string TESTSAMPLES = "Test Samples";
 
-    public new ClassificationProblemData Content {
-      get { return (ClassificationProblemData)base.Content; }
-      set { base.Content = value; }
-    }
-
-    public ClassificationFeatureCorrelationView() {
-      InitializeComponent();
-    }
-
-    protected override bool[] SetInitialVariableVisibility() {
-      int i = Content.Dataset.DoubleVariables.ToList().FindIndex(x => x == Content.TargetVariable);
-      var initialVisibility = base.SetInitialVariableVisibility();
-      initialVisibility[i] = true;
-      return initialVisibility;
-    }
+    public static readonly IList<string> Partitions = new List<string>() { ALLSAMPLES, TRAININGSAMPLES, TESTSAMPLES };
   }
 }

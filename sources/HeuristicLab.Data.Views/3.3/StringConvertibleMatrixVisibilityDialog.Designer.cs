@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.DataAnalysis.Views {
-  partial class VariableVisibilityDialog {
+namespace HeuristicLab.Data.Views {
+  partial class StringConvertibleMatrixVisibilityDialog<T> {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -105,8 +105,8 @@ namespace HeuristicLab.DataAnalysis.Views {
 
     #endregion
 
-    private System.Windows.Forms.CheckedListBox checkedListBox;
-    private System.Windows.Forms.Button btnShowAll;
-    private System.Windows.Forms.Button btnHideAll;
+    protected System.Windows.Forms.CheckedListBox checkedListBox;
+    protected System.Windows.Forms.Button btnShowAll;
+    protected System.Windows.Forms.Button btnHideAll;
   }
 }

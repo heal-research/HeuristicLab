@@ -22,11 +22,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class HoeffdingsDependenceCalculator {
+  public class HoeffdingsDependenceCalculator : IDependencyCalculator {
 
-    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+    public DoubleRange Interval { get { return new DoubleRange(1.0, -0.5); } }
+
+    public string Name { get { return "Hoeffdings Dependence"; } }
+
+    public double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      return HoeffdingsDependenceCalculator.CalculateHoeffdings(originalValues, estimatedValues, out errorState);
+    }
+
+    public static double CalculateHoeffdings(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
       double d = HoeffD(originalValues, estimatedValues, out errorState);
       if (errorState != OnlineCalculatorError.None) return double.NaN;
       return d;

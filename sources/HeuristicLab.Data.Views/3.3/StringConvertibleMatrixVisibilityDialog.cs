@@ -19,56 +19,46 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace HeuristicLab.DataAnalysis.Views {
-  public partial class VariableVisibilityDialog : Form {
-    public VariableVisibilityDialog() {
+namespace HeuristicLab.Data.Views {
+  public abstract partial class StringConvertibleMatrixVisibilityDialog<T> : Form where T : DataGridViewBand {
+    public StringConvertibleMatrixVisibilityDialog() {
       InitializeComponent();
     }
 
-    public VariableVisibilityDialog(IEnumerable<string> columns, IEnumerable<bool> visibility)
+    public StringConvertibleMatrixVisibilityDialog(IEnumerable<T> bands)
       : this() {
-      if (columns.Count() != visibility.Count()) {
-        throw new ArgumentException("There have to be as many variables as values for visibility!");
-      }
-      this.columns = columns.ToList();
-      this.visibility = visibility.ToList();
+      this.Bands = bands;
+      this.visibility = bands.Select(b => b.Visible).ToList();
       UpdateCheckBoxes();
     }
 
-    private List<string> columns;
-    public IList<string> Columns {
-      get { return this.columns; }
+    protected List<T> bands;
+    private IEnumerable<T> Bands {
+      get { return this.bands; }
+      set { this.bands = new List<T>(value); }
     }
+
     private List<bool> visibility;
     public IList<bool> Visibility {
       get { return this.visibility; }
     }
 
-    private void UpdateCheckBoxes() {
-      for (int i = 0; i < columns.Count; i++) {
-        checkedListBox.Items.Add(columns[i], visibility[i]);
-      }
-    }
+    protected abstract void UpdateCheckBoxes();
 
-    public event ItemCheckEventHandler VariableVisibilityChanged;
-
-    private void checkedListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
+    protected void checkedListBox_ItemCheck(object sender, ItemCheckEventArgs e) {
+      this.bands[e.Index].Visible = e.NewValue == CheckState.Checked;
       this.visibility[e.Index] = e.NewValue == CheckState.Checked;
-      if (VariableVisibilityChanged != null) {
-        VariableVisibilityChanged(this, e);
-      }
     }
 
-    private void btnShowAll_Click(object sender, System.EventArgs e) {
+    protected void btnShowAll_Click(object sender, System.EventArgs e) {
       for (int i = 0; i < checkedListBox.Items.Count; i++)
         checkedListBox.SetItemChecked(i, true);
     }
-    private void btnHideAll_Click(object sender, System.EventArgs e) {
+    protected void btnHideAll_Click(object sender, System.EventArgs e) {
       for (int i = 0; i < checkedListBox.Items.Count; i++)
         checkedListBox.SetItemChecked(i, false);
     }

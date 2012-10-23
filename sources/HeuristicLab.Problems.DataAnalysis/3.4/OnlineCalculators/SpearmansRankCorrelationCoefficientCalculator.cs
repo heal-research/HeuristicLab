@@ -21,11 +21,20 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class SpearmansRankCorrelationCoefficientCalculator {
+  public class SpearmansRankCorrelationCoefficientCalculator : IDependencyCalculator {
 
-    public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+    public DoubleRange Interval { get { return new DoubleRange(1.0, -1.0); } }
+
+    public string Name { get { return "Spearmans Rank"; } }
+
+    public double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      return SpearmansRankCorrelationCoefficientCalculator.CalculateSpearmansRank(originalValues, estimatedValues, out errorState);
+    }
+
+    public static double CalculateSpearmansRank(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
       double rs = double.NaN;
       try {
         var original = originalValues.ToArray();
