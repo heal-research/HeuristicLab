@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -310,8 +311,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           if (startedAlgorithms < NumberOfWorkers.Value) {
             if (clonedAlgorithm.ExecutionState == ExecutionState.Prepared ||
                 clonedAlgorithm.ExecutionState == ExecutionState.Paused) {
-              clonedAlgorithm.Start();
-              startedAlgorithms++;
+
+              // start and wait until the alg is started 
+              using (var signal = new ManualResetEvent(false)) {
+                EventHandler signalSetter = (sender, args) => { signal.Set(); };
+                clonedAlgorithm.Started += signalSetter;
+                clonedAlgorithm.Start();
+                signal.WaitOne();
+                clonedAlgorithm.Started -= signalSetter;
+
+                startedAlgorithms++;
+              }
             }
           }
         }
