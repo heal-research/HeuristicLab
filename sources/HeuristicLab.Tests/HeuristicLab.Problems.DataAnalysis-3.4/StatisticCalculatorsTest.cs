@@ -145,34 +145,34 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
       // direct perfect dependency
       var xs = new double[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0 };
       var ys = new double[] { 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 };
-      var d = HoeffdingsDependenceCalculator.Calculate(xs, ys, out error);
+      var d = HoeffdingsDependenceCalculator.CalculateHoeffdings(xs, ys, out error);
       Assert.AreEqual(error, OnlineCalculatorError.None);
       Assert.AreEqual(d, 1.0, 1E-5);
 
       // perfect negative dependency
       ys = xs.Select(x => -x).ToArray();
-      d = HoeffdingsDependenceCalculator.Calculate(xs, ys, out error);
+      d = HoeffdingsDependenceCalculator.CalculateHoeffdings(xs, ys, out error);
       Assert.AreEqual(error, OnlineCalculatorError.None);
       Assert.AreEqual(d, 1.0, 1E-5);
 
       // ties
       xs = new double[] { 1.0, 1.0, 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 5.0 };
       ys = new double[] { 2.0, 2.0, 3.0, 3.0, 4.0, 4.0, 5.0, 5.0, 6.0, 6.0, 6.0 };
-      d = HoeffdingsDependenceCalculator.Calculate(xs, ys, out error);
+      d = HoeffdingsDependenceCalculator.CalculateHoeffdings(xs, ys, out error);
       Assert.AreEqual(error, OnlineCalculatorError.None);
       Assert.AreEqual(d, 0.6783, 1E-5);
 
       // ties
       xs = new double[] { 1.0, 1.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 6.0, 6.0 };
       ys = xs.Select(x => x * x).ToArray();
-      d = HoeffdingsDependenceCalculator.Calculate(xs, ys, out error);
+      d = HoeffdingsDependenceCalculator.CalculateHoeffdings(xs, ys, out error);
       Assert.AreEqual(error, OnlineCalculatorError.None);
       Assert.AreEqual(d, 0.75, 1E-5);
 
       // degenerate
       xs = new double[] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
       ys = new double[] { 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0 };
-      d = HoeffdingsDependenceCalculator.Calculate(xs, ys, out error);
+      d = HoeffdingsDependenceCalculator.CalculateHoeffdings(xs, ys, out error);
       Assert.AreEqual(error, OnlineCalculatorError.None);
       Assert.AreEqual(d, -0.3516, 1E-4);
 
@@ -183,7 +183,7 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
       ys = Enumerable.Range(0, 1000).Select(i => normal.NextDouble()).ToArray();
 
       // independent
-      d = HoeffdingsDependenceCalculator.Calculate(xs, ys, out error);
+      d = HoeffdingsDependenceCalculator.CalculateHoeffdings(xs, ys, out error);
       Assert.AreEqual(error, OnlineCalculatorError.None);
       Assert.AreEqual(d, -0.00023, 1E-5);
 
@@ -191,12 +191,12 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
       xs = Enumerable.Range(0, 1000).Select(i => normal.NextDouble()).ToArray();
       ys = xs.Select(x => x * x).ToArray();
 
-      d = HoeffdingsDependenceCalculator.Calculate(xs, ys, out error);
+      d = HoeffdingsDependenceCalculator.CalculateHoeffdings(xs, ys, out error);
       Assert.AreEqual(error, OnlineCalculatorError.None);
       Assert.AreEqual(d, 0.25071, 1E-5);
 
       // symmetric?
-      d = HoeffdingsDependenceCalculator.Calculate(ys, xs, out error);
+      d = HoeffdingsDependenceCalculator.CalculateHoeffdings(ys, xs, out error);
       Assert.AreEqual(error, OnlineCalculatorError.None);
       Assert.AreEqual(d, 0.25071, 1E-5);
 
