@@ -258,8 +258,6 @@ namespace HeuristicLab.Optimization.Views {
           UpdateCursorInterval();
         }
       }
-      var xAxis = chart.ChartAreas[0].AxisX;
-      var yAxis = chart.ChartAreas[0].AxisY;
       xTrackBar.Value = 0;
       yTrackBar.Value = 0;
     }
@@ -289,14 +287,8 @@ namespace HeuristicLab.Optimization.Views {
       var xAxis = this.chart.ChartAreas[0].AxisX;
       var yAxis = this.chart.ChartAreas[0].AxisY;
 
-
-      // disable automatic update of axis
-      var disabledParameters = new AxisParameters();
-      disabledParameters.min = disabledParameters.max = disabledParameters.majorGridInterval = disabledParameters.majorTickMarkInterval = disabledParameters.labelStyleInterval = double.NaN;
-
-      AxisParameters savedXParameters, savedYParameters;
-      savedXParameters = SetAxisParameters(xAxis, disabledParameters);
-      savedYParameters = SetAxisParameters(yAxis, disabledParameters);
+      double xAxisRange = xAxis.Maximum - xAxis.Minimum;
+      double yAxisRange = yAxis.Maximum - yAxis.Minimum;
 
       foreach (DataPoint point in chart.Series[0].Points) {
         IRun run = (IRun)point.Tag;
@@ -304,31 +296,14 @@ namespace HeuristicLab.Optimization.Views {
         double yValue = GetValue(run, yAxisValue).Value;
 
         if (!xJitterFactor.IsAlmost(0.0))
-          xValue += 0.1 * GetXJitter(run) * xJitterFactor * (savedXParameters.max - savedXParameters.min);
+          xValue += 0.1 * GetXJitter(run) * xJitterFactor * (xAxisRange);
         if (!yJitterFactor.IsAlmost(0.0))
-          yValue += 0.1 * GetYJitter(run) * yJitterFactor * (savedYParameters.max - savedYParameters.min);
+          yValue += 0.1 * GetYJitter(run) * yJitterFactor * (yAxisRange);
 
         point.XValue = xValue;
         point.YValues[0] = yValue;
       }
-      SetAxisParameters(xAxis, savedXParameters);
-      SetAxisParameters(yAxis, savedYParameters);
-    }
 
-    private AxisParameters SetAxisParameters(Axis axis, AxisParameters @new) {
-      var old = new AxisParameters();
-      old.min = axis.Minimum;
-      old.max = axis.Maximum;
-      old.majorGridInterval = axis.MajorGrid.Interval;
-      old.majorTickMarkInterval = axis.MajorTickMark.Interval;
-      old.labelStyleInterval = axis.LabelStyle.Interval;
-
-      axis.Maximum = @new.max;
-      axis.Minimum = @new.min;
-      axis.MajorGrid.Interval = @new.majorGridInterval;
-      axis.MajorTickMark.Interval = @new.majorTickMarkInterval;
-      axis.LabelStyle.Interval = @new.labelStyleInterval;
-      return old;
     }
 
     private void AddDataPoint(IRun run) {
