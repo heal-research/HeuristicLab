@@ -148,9 +148,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         cache = new double[maxRows];
       }
 
-      //calculate linear scaling
-      //the static methods of the calculator could not be used as it performs a check if the enumerators have an equal amount of elements
-      //this is not true if the cache is used
+      // calculate linear scaling
+      // the static methods of the calculator are not used because the evaluated values should be cached for performance reasons
       int i = 0;
       var linearScalingCalculator = new OnlineLinearScalingParameterCalculator();
       var targetValuesEnumerator = targetValues.GetEnumerator();
