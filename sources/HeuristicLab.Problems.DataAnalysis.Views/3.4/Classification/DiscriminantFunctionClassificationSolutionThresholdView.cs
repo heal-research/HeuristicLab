@@ -39,6 +39,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private const string TrainingLabelText = "Training Samples";
     private const string TestLabelText = "Test Samples";
 
+    private const double ClassNameLeftOffset = 10.0;
+    private const double ClassNameBottomOffset = 5.0;
+
     public new IDiscriminantFunctionClassificationSolution Content {
       get { return (IDiscriminantFunctionClassificationSolution)base.Content; }
       set { base.Content = value; }
@@ -46,7 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private Dictionary<double, Series> classValueSeriesMapping;
     private Random random;
-    private bool updateInProgress;
+    private bool updateInProgress, updateThresholds;
 
     public DiscriminantFunctionClassificationSolutionThresholdView()
       : base() {
@@ -125,7 +128,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             classValueSeriesMapping.Add(classValueEnumerator.Current, series);
             FillSeriesWithDataPoints(series);
           }
-          AddThresholds();
+          updateThresholds = true;
         }
         chart.ChartAreas[0].RecalculateAxesScale();
         updateInProgress = false;
@@ -165,9 +168,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       UpdateCursorInterval();
     }
 
+    private void chart_PostPaint(object sender, ChartPaintEventArgs e) {
+      if (updateThresholds) {
+        AddThresholds();
+        updateThresholds = false;
+      }
+    }
+
     private void AddThresholds() {
       chart.Annotations.Clear();
       int classIndex = 1;
+      SizeF textSizeInPixel;
+      IClassificationProblemData problemData = Content.ProblemData;
+      var classValues = Content.Model.ClassValues.ToArray();
+      Graphics g = chart.CreateGraphics();
+      Axis y = chart.ChartAreas[0].AxisY;
+      Axis x = chart.ChartAreas[0].AxisX;
+      string name;
       foreach (double threshold in Content.Model.Thresholds) {
         if (!double.IsInfinity(threshold)) {
           HorizontalLineAnnotation annotation = new HorizontalLineAnnotation();
@@ -175,19 +192,58 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           annotation.AllowResizing = false;
           annotation.LineWidth = 2;
           annotation.LineColor = Color.Red;
-
           annotation.IsInfinitive = true;
           annotation.ClipToChartArea = chart.ChartAreas[0].Name;
           annotation.Tag = classIndex;  //save classIndex as Tag to avoid moving the threshold accross class bounderies
-
           annotation.AxisX = chart.ChartAreas[0].AxisX;
-          annotation.AxisY = chart.ChartAreas[0].AxisY;
+          annotation.AxisY = y;
           annotation.Y = threshold;
 
+          name = problemData.GetClassName(classValues[classIndex - 1]);
+          TextAnnotation beneathLeft = CreateTextAnnotation(name, classIndex, x, y);
+          beneathLeft.Y = threshold;
+          beneathLeft.X = x.Minimum;
+          TextAnnotation beneathRigth = CreateTextAnnotation(name, classIndex, x, y);
+          beneathRigth.Y = threshold;
+          textSizeInPixel = g.MeasureString(beneathRigth.Text, beneathRigth.Font);
+          double textWidthPixelPos = x.ValueToPixelPosition(x.Maximum) - textSizeInPixel.Width - ClassNameLeftOffset;
+          //check if position is within the position boundary
+          beneathRigth.X = textWidthPixelPos < 0 || textWidthPixelPos > chart.Width ? double.NaN : x.PixelPositionToValue(textWidthPixelPos);
+
+          name = problemData.GetClassName(classValues[classIndex]);
+          TextAnnotation aboveLeft = CreateTextAnnotation(name, classIndex, x, y);
+          textSizeInPixel = g.MeasureString(aboveLeft.Text, aboveLeft.Font);
+          double textHeightPixelPos = y.ValueToPixelPosition(threshold) - textSizeInPixel.Height - ClassNameBottomOffset;
+          //check if position is within the position boundary
+          aboveLeft.Y = textHeightPixelPos < 0 || textHeightPixelPos > chart.Height ? double.NaN : y.PixelPositionToValue(textHeightPixelPos);
+          aboveLeft.X = x.Minimum;
+          TextAnnotation aboveRight = CreateTextAnnotation(name, classIndex, x, y);
+          aboveRight.Y = aboveLeft.Y;
+          textWidthPixelPos = x.ValueToPixelPosition(x.Maximum) - textSizeInPixel.Width - ClassNameLeftOffset;
+          //check if position is within the position boundary
+          aboveRight.X = textWidthPixelPos < 0 || textWidthPixelPos > chart.Width ? double.NaN : x.PixelPositionToValue(textWidthPixelPos);
+
           chart.Annotations.Add(annotation);
+          chart.Annotations.Add(beneathLeft);
+          chart.Annotations.Add(aboveLeft);
+          chart.Annotations.Add(beneathRigth);
+          chart.Annotations.Add(aboveRight);
           classIndex++;
         }
       }
+    }
+
+    private TextAnnotation CreateTextAnnotation(string name, int classIndex, Axis x, Axis y) {
+      TextAnnotation annotation = new TextAnnotation();
+      annotation.Text = name;
+      annotation.AllowMoving = true;
+      annotation.AllowResizing = false;
+      annotation.AllowSelecting = false;
+      annotation.ClipToChartArea = chart.ChartAreas[0].Name;
+      annotation.Tag = classIndex;
+      annotation.AxisX = chart.ChartAreas[0].AxisX;
+      annotation.AxisY = y;
+      return annotation;
     }
 
     private void JitterTrackBar_ValueChanged(object sender, EventArgs e) {
