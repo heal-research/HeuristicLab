@@ -44,7 +44,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public SupportVectorRegressionSolution(SupportVectorMachineModel model, IRegressionProblemData problemData)
       : base(model, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

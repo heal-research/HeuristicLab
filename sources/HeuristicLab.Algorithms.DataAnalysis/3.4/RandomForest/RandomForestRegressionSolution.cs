@@ -44,7 +44,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public RandomForestRegressionSolution(IRegressionProblemData problemData, IRandomForestModel randomForestModel)
       : base(randomForestModel, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -44,7 +44,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NeuralNetworkRegressionSolution(IRegressionProblemData problemData, INeuralNetworkModel nnModel)
       : base(nnModel, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

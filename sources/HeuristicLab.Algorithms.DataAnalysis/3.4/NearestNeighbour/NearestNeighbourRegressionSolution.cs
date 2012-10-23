@@ -44,7 +44,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NearestNeighbourRegressionSolution(IRegressionProblemData problemData, INearestNeighbourModel nnModel)
       : base(nnModel, problemData) {
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

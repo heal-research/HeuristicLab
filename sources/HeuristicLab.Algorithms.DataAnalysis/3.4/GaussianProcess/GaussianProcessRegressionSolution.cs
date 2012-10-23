@@ -54,7 +54,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(model, problemData) {
 
       evaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
-      RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
