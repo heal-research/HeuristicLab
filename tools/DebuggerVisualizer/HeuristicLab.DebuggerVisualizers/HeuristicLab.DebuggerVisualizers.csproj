@@ -81,7 +81,7 @@
     <Reference Include="HeuristicLab.Persistence-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=x86">
       <HintPath>..\..\..\sources\bin\HeuristicLab.Persistence-3.3.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -100,7 +100,7 @@
   <PropertyGroup>
     <PostBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 
-xcopy "$(SolutionDir)$(ProjectName)\$(OutDir)$(TargetFileName)" "$(USERPROFILE)\Documents\Visual Studio 2010\Visualizers" /y
+xcopy "$(SolutionDir)$(ProjectName)\$(OutDir)$(TargetFileName)" "$(USERPROFILE)\Documents\Visual Studio 2012\Visualizers" /y
 xcopy "$(SolutionDir)$(ProjectName)\$(OutDir)HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.dll" "$(USERPROFILE)\Documents\Visual Studio 2010\Visualizers" /y
 xcopy "$(SolutionDir)$(ProjectName)\$(OutDir)HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views-3.4.dll" "$(USERPROFILE)\Documents\Visual Studio 2010\Visualizers" /y</PostBuildEvent>
   </PropertyGroup>

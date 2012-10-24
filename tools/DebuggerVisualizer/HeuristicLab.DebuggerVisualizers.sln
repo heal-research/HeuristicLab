@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDebuggerVisualizers", "TestDebuggerVisualizers\TestDebuggerVisualizers.csproj", "{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DebuggerVisualizers", "HeuristicLab.DebuggerVisualizers\HeuristicLab.DebuggerVisualizers.csproj", "{81995D7A-E5ED-4A5D-87DE-EF2B259997FE}"
@@ -21,7 +21,8 @@ Global
 		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Debug|x86.ActiveCfg = Debug|x86
 		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Debug|x86.Build.0 = Debug|x86
-		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Release|Any CPU.ActiveCfg = Release|x86
+		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Release|Mixed Platforms.Build.0 = Release|x86
 		{7F822D16-43E5-46DD-AD6C-BD92FF1FEDB6}.Release|x86.ActiveCfg = Release|x86
