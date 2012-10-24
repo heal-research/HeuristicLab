@@ -117,6 +117,7 @@
   <ItemGroup>
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="SingleObjective\ConstantOptimizationAnalyzer.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMaxAbsoluteErrorEvaluator.cs" />
