@@ -83,8 +83,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     #endregion
 
     [StorableConstructor]
-    protected ConstantOptimizationAnalyzer(bool deserializing) : base(deserializing) { }
-    protected ConstantOptimizationAnalyzer(ConstantOptimizationAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    private ConstantOptimizationAnalyzer(bool deserializing) : base(deserializing) { }
+    private ConstantOptimizationAnalyzer(ConstantOptimizationAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new ConstantOptimizationAnalyzer(this, cloner); }
     public ConstantOptimizationAnalyzer()
       : base() {
