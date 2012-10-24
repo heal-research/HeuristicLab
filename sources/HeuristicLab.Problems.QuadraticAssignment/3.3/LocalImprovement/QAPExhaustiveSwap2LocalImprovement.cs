@@ -82,6 +82,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Distances"]; }
     }
 
+    public IValueLookupParameter<BoolValue> UseFastEvaluationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["UseFastEvaluation"]; }
+    }
+
     [StorableConstructor]
     protected QAPExhaustiveSwap2LocalImprovement(bool deserializing) : base(deserializing) { }
     protected QAPExhaustiveSwap2LocalImprovement(QAPExhaustiveSwap2LocalImprovement original, Cloner cloner)
@@ -99,6 +103,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem should be maximized or minimized."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Weights", "The weights matrix."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Distances", "The distances matrix."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("UseFastEvaluation", "Enabling this option will use a NxN double matrix to save the last move qualities. The moves of the first iteration will then be evaluated in O(N) while all further moves will be evaluated in O(1).", new BoolValue(true)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -111,6 +116,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey("LocalIterations"))
         Parameters.Add(new LookupParameter<IntValue>("LocalIterations", "The number of iterations that have already been performed."));
+      if (!Parameters.ContainsKey("UseFastEvaluation"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("UseFastEvaluation", "Enabling this option will use a NxN double matrix to save the last move qualities. The moves of the first iteration will then be evaluated in O(N) while all further moves will be evaluated in O(1).", new BoolValue(false)));
     }
     #endregion
 
@@ -139,6 +146,44 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       }
     }
 
+    public static void ImproveFast(Permutation assignment, DoubleMatrix weights, DoubleMatrix distances, DoubleValue quality, IntValue localIterations, IntValue evaluatedSolutions, bool maximization, int maxIterations, CancellationToken cancellation) {
+      Swap2Move bestMove = null;
+      double evaluations = 0.0;
+      var lastQuality = new double[assignment.Length, assignment.Length];
+      for (int i = localIterations.Value; i < maxIterations; i++) {
+        double bestQuality = 0; // we have to make an improvement, so 0 is the baseline
+        var lastMove = bestMove;
+        bestMove = null;
+        foreach (Swap2Move move in ExhaustiveSwap2MoveGenerator.Generate(assignment)) {
+          double moveQuality;
+          if (lastMove == null) {
+            moveQuality = QAPSwap2MoveEvaluator.Apply(assignment, move, weights, distances);
+            evaluations += 4.0 / assignment.Length;
+          } else {
+            moveQuality = QAPSwap2MoveEvaluator.Apply(assignment, move, lastQuality[move.Index1, move.Index2], weights, distances, lastMove);
+            if (move.Index1 == lastMove.Index1 || move.Index2 == lastMove.Index1 || move.Index1 == lastMove.Index2 || move.Index2 == lastMove.Index2)
+              evaluations += 4.0 / assignment.Length;
+            else evaluations += 2.0 / (assignment.Length * assignment.Length);
+          }
+          lastQuality[move.Index1, move.Index2] = moveQuality;
+          if (maximization && moveQuality > bestQuality
+            || !maximization && moveQuality < bestQuality) {
+            bestQuality = moveQuality;
+            bestMove = move;
+          }
+        }
+        if (bestMove == null) break;
+        Swap2Manipulator.Apply(assignment, bestMove.Index1, bestMove.Index2);
+        quality.Value += bestQuality;
+        localIterations.Value++;
+        if (cancellation.IsCancellationRequested) {
+          evaluatedSolutions.Value += (int)Math.Round(evaluations);
+          throw new OperationCanceledException();
+        }
+      }
+      evaluatedSolutions.Value += (int)Math.Round(evaluations);
+    }
+
     public override IOperation Apply() {
       var maxIterations = MaximumIterationsParameter.ActualValue.Value;
       var assignment = AssignmentParameter.ActualValue;
@@ -153,7 +198,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         LocalIterationsParameter.ActualValue = localIterations;
       }
 
-      Improve(assignment, weights, distances, quality, localIterations, evaluations, maximization, maxIterations, CancellationToken);
+      if (UseFastEvaluationParameter.ActualValue.Value)
+        ImproveFast(assignment, weights, distances, quality, localIterations, evaluations, maximization, maxIterations, CancellationToken);
+      else Improve(assignment, weights, distances, quality, localIterations, evaluations, maximization, maxIterations, CancellationToken);
+
       return base.Apply();
     }
   }
