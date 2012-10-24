@@ -202,6 +202,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         ImproveFast(assignment, weights, distances, quality, localIterations, evaluations, maximization, maxIterations, CancellationToken);
       else Improve(assignment, weights, distances, quality, localIterations, evaluations, maximization, maxIterations, CancellationToken);
 
+      localIterations.Value = 0;
       return base.Apply();
     }
   }

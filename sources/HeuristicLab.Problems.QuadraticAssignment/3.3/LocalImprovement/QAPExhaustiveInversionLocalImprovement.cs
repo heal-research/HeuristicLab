@@ -135,14 +135,16 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       var weights = WeightsParameter.ActualValue;
       var distances = DistancesParameter.ActualValue;
       var quality = QualityParameter.ActualValue;
-      var locationIterations = LocalIterationsParameter.ActualValue;
+      var localIterations = LocalIterationsParameter.ActualValue;
       var evaluations = EvaluatedSolutionsParameter.ActualValue;
-      if (locationIterations == null) {
-        locationIterations = new IntValue(0);
-        LocalIterationsParameter.ActualValue = locationIterations;
+      if (localIterations == null) {
+        localIterations = new IntValue(0);
+        LocalIterationsParameter.ActualValue = localIterations;
       }
 
-      Improve(assignment, weights, distances, quality, locationIterations, evaluations, maximization, maxIterations, CancellationToken);
+      Improve(assignment, weights, distances, quality, localIterations, evaluations, maximization, maxIterations, CancellationToken);
+
+      localIterations.Value = 0;
       return base.Apply();
     }
   }

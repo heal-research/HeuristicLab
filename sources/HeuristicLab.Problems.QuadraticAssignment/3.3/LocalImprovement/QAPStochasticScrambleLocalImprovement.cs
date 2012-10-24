@@ -156,6 +156,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       }
 
       Improve(random, assignment, weights, distances, quality, localIterations, evaluations, maximization, maxIterations, neighborhoodSize, CancellationToken);
+
+      localIterations.Value = 0;
       return base.Apply();
     }
   }
