@@ -536,7 +536,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         foreach (HiveTask subTask in job.HiveTasks) {
           if (subTask is OptimizerHiveTask) {
             OptimizerHiveTask ohTask = subTask as OptimizerHiveTask;
-            runs.AddRange(ohTask.ItemTask.Item.Runs);
+            runs.AddRange(ohTask.GetRuns());
           }
         }
         return runs;

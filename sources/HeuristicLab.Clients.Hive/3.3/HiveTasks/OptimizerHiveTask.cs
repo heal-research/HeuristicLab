@@ -364,6 +364,16 @@ namespace HeuristicLab.Clients.Hive {
       finally { childHiveTasksLock.ExitReadLock(); }
     }
 
+    public RunCollection GetRuns() {
+      childHiveTasksLock.EnterReadLock();
+      try {
+        return this.ItemTask.Item.Runs;
+      }
+      finally {
+        childHiveTasksLock.ExitReadLock();
+      }
+    }
+
     #region Helpers
     /// <summary>
     /// Parses the run numbers out of runs and renames the run to the next number

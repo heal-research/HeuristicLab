@@ -52,7 +52,7 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     protected override void Job_ItemChanged(object sender, EventArgs e) {
       if (Content != null && Content.Task != null && Content.ItemTask.Item != null) {
-        runCollectionViewHost.Content = Content.ItemTask.Item.Runs;
+        runCollectionViewHost.Content = Content.GetRuns();
       } else {
         runCollectionViewHost.Content = null;
       }
