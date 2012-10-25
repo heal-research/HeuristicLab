@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   /// </summary>
   [Item("ConstantOptimizationAnalyzer", "An operator that performs a constant optimization on the best symbolic expression trees.")]
   [StorableClass]
-  public sealed class ConstantOptimizationAnalyzer : SymbolicDataAnalysisSingleObjectiveAnalyzer {
+  public sealed class ConstantOptimizationAnalyzer : SymbolicDataAnalysisSingleObjectiveAnalyzer, IStatefulItem {
     private const string PercentageOfBestSolutionsParameterName = "PercentageOfBestSolutions";
     private const string ConstantOptimizationEvaluatorParameterName = "ConstantOptimizationOperator";
 
@@ -98,6 +98,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     private double[] qualitiesBeforeCoOp = null;
     private int[] scopeIndexes = null;
+    void IStatefulItem.InitializeState() {
+      qualitiesBeforeCoOp = null;
+      scopeIndexes = null;
+    }
+    void IStatefulItem.ClearState() {
+      qualitiesBeforeCoOp = null;
+      scopeIndexes = null;
+    }
+
     public override IOperation Apply() {
       //code executed for first call of analyzer
       if (qualitiesBeforeCoOp == null) {
