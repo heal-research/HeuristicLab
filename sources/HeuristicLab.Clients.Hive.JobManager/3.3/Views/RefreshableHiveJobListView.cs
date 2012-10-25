@@ -127,7 +127,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     protected override ListViewItem CreateListViewItem(RefreshableJob item) {
       ListViewItem listViewItem = base.CreateListViewItem(item);
       listViewItem.SubItems.Clear();
-      listViewItem.SubItems.Insert(0, new ListViewItem.ListViewSubItem(listViewItem, item.Job.DateCreated.ToString("dd.MM.yyyy HH:mm")));
+      listViewItem.SubItems.Insert(0, new ListViewItem.ListViewSubItem(listViewItem, item.Job.DateCreated.ToString()));
       listViewItem.SubItems.Insert(1, new ListViewItem.ListViewSubItem(listViewItem, item.Job.Name));
       listViewItem.Group = GetListViewGroup(item.Job.OwnerUsername);
       return listViewItem;
