@@ -100,6 +100,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    private List<string> allVariableNames;
+    [Storable]
+    public IEnumerable<string> AllVariableNames {
+      get { return allVariableNames; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        allVariableNames.Clear();
+        allVariableNames.AddRange(value);
+        VariableNames = value;
+      }
+    }
+
     public override bool Enabled {
       get {
         if (variableNames.Count == 0) return false;
@@ -122,16 +134,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (allVariableNames == null || (allVariableNames.Count == 0 && variableNames.Count > 0)) {
+        allVariableNames = variableNames;
+      }
+    }
+
     [StorableConstructor]
     protected Variable(bool deserializing)
       : base(deserializing) {
       variableNames = new List<string>();
+      allVariableNames = new List<string>();
     }
     protected Variable(Variable original, Cloner cloner)
       : base(original, cloner) {
       weightMu = original.weightMu;
       weightSigma = original.weightSigma;
       variableNames = new List<string>(original.variableNames);
+      allVariableNames = new List<string>(original.allVariableNames);
       weightManipulatorMu = original.weightManipulatorMu;
       weightManipulatorSigma = original.weightManipulatorSigma;
       multiplicativeWeightManipulatorSigma = original.multiplicativeWeightManipulatorSigma;
@@ -145,6 +166,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       weightManipulatorSigma = 0.05;
       multiplicativeWeightManipulatorSigma = 0.03;
       variableNames = new List<string>();
+      allVariableNames = new List<string>();
     }
 
     protected override void OnChanged(EventArgs e) {

@@ -123,15 +123,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         variableNamesView.Content.Clear();
         RegisterVariableNamesViewContentEvents();
       } else {
-        var existingEntries = variableNamesView.Content.ToList();
-
         // temporarily deregister to prevent circular calling of events
         DeregisterVariableNamesViewContentEvents();
-        // add additional entries
-        foreach (var variableName in Content.VariableNames.Except(existingEntries.Select(x => x.Value)))
-          variableNamesView.Content.Add(new StringValue(variableName), true);
-        foreach (var oldEntry in existingEntries.Where(x => !Content.VariableNames.Contains(x.Value)))
-          variableNamesView.Content.Remove(oldEntry);
+        variableNamesView.Content.Clear();
+        foreach (var variableName in Content.AllVariableNames) {
+          variableNamesView.Content.Add(new StringValue(variableName), Content.VariableNames.Contains(variableName));
+        }
         RegisterVariableNamesViewContentEvents();
 
         thresholdInitializationMuTextBox.Text = Content.ThresholdInitializerMu.ToString();

@@ -90,6 +90,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
+    private List<string> allVariableNames;
+    [Storable]
+    public IEnumerable<string> AllVariableNames {
+      get { return allVariableNames; }
+      set {
+        if (value == null) throw new ArgumentNullException();
+        allVariableNames.Clear();
+        allVariableNames.AddRange(value);
+        VariableNames = value;
+      }
+    }
+
     [Storable]
     private double slopeInitializerMu;
     public double SlopeInitializerMu {
@@ -150,6 +162,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     #region persistence and cloning
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (allVariableNames == null || (allVariableNames.Count == 0 && variableNames.Count > 0)) {
+        allVariableNames = variableNames;
+      }
+    }
+
     [StorableConstructor]
     private VariableCondition(bool deserializing) : base(deserializing) { }
     private VariableCondition(VariableCondition original, Cloner cloner)
@@ -160,6 +179,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       thresholdManipulatorSigma = original.thresholdManipulatorSigma;
 
       variableNames = new List<string>(original.variableNames);
+      allVariableNames = new List<string>(original.allVariableNames);
 
       slopeInitializerMu = original.slopeInitializerMu;
       slopeInitializerSigma = original.slopeInitializerSigma;
@@ -180,6 +200,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       thresholdManipulatorSigma = 0.1;
 
       variableNames = new List<string>();
+      allVariableNames = new List<string>();
 
       slopeInitializerMu = 0.0;
       slopeInitializerSigma = 0.0;
