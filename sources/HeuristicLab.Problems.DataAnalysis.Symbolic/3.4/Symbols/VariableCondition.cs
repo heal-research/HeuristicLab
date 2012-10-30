@@ -85,7 +85,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return variableNames; }
       set {
         if (value == null) throw new ArgumentNullException();
-        variableNames = new List<string>(value);
+        variableNames.Clear();
+        variableNames.AddRange(value);
         OnChanged(EventArgs.Empty);
       }
     }
@@ -170,7 +171,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     [StorableConstructor]
-    private VariableCondition(bool deserializing) : base(deserializing) { }
+    private VariableCondition(bool deserializing)
+      : base(deserializing) {
+      variableNames = new List<string>();
+      allVariableNames = new List<string>();
+    }
     private VariableCondition(VariableCondition original, Cloner cloner)
       : base(original, cloner) {
       thresholdInitializerMu = original.thresholdInitializerMu;
