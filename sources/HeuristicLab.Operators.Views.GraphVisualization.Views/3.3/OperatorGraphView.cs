@@ -153,16 +153,18 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
     }
 
     void ParentControl_MouseDown(object sender, MouseEventArgs e) {
-      lastActiveTool = this.graphVisualizationInfoView.Controller.ActiveTool;
       if (e.Button == MouseButtons.Middle) {
-        if (!(lastActiveTool is CustomPanTool)) this.graphVisualizationInfoView.Controller.ActivateTool(CustomPanTool.ToolName);
+        lastActiveTool = graphVisualizationInfoView.Controller.ActiveTool;
+        graphVisualizationInfoView.Controller.ActivateTool(CustomPanTool.ToolName);
       }
     }
 
     void ParentControl_MouseUp(object sender, MouseEventArgs e) {
       if (e.Button == MouseButtons.Middle) {
-        if (lastActiveTool != null) this.graphVisualizationInfoView.Controller.ActivateTool(lastActiveTool.Name);
-        else this.graphVisualizationInfoView.Controller.DeactivateAllTools();
+        var activeTool = graphVisualizationInfoView.Controller.ActiveTool;
+        graphVisualizationInfoView.Controller.DeactivateTool(activeTool);
+        if (lastActiveTool != null && !(lastActiveTool is ZoomToolBase))
+          graphVisualizationInfoView.Controller.ActivateTool(lastActiveTool.Name);
       }
     }
 
