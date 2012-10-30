@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// <summary>
   /// An operator which analyzes the actual selection pressure.
   /// </summary>
-  [Item("PopulationSizeAnalyzer", "An operator which analyzes the actual selection pressure.")]
+  [Item("SelectionPressureAnalyzer", "An operator which analyzes the actual selection pressure.")]
   [StorableClass]
   public sealed class SelectionPressureAnalyzer : AlgorithmOperator, IAnalyzer {
     #region Parameter properties
