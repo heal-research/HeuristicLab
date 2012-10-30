@@ -105,15 +105,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       for (int i = 0; i < indices.Length; i++) {
         int row = indices[i];
         values[i, 0] = row.ToString();
-        values[i, 1] = target[i].ToString();
+        values[i, 1] = target[row].ToString();
         //display only indices and target values if no models are present
         if (solutionsCount > 0) {
           values[i, 2] = estimatedClassValues[i].ToString();
-          values[i, 3] = (target[i].IsAlmost(estimatedClassValues[i])).ToString();
+          values[i, 3] = (target[row].IsAlmost(estimatedClassValues[i])).ToString();
           var groups =
             estimatedValuesVector[i].GroupBy(x => x).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
           var estimationCount = groups.Where(g => g.Key != null).Select(g => g.Count).Sum();
-          values[i, 4] = (((double)groups.Where(g => g.Key == estimatedClassValues[i]).Single().Count) / estimationCount).ToString();
+          // take care of divide by zero
+          if (estimationCount != 0) {
+            values[i, 4] = (((double)groups.Where(g => g.Key == estimatedClassValues[i]).Single().Count) / estimationCount).ToString();
+          } else {
+            values[i, 4] = double.NaN.ToString();
+          }
           for (int classIndex = 0; classIndex < Content.ProblemData.Classes; classIndex++) {
             var group = groups.Where(g => g.Key == Content.ProblemData.ClassValues.ElementAt(classIndex)).SingleOrDefault();
             if (group == null) values[i, 5 + classIndex] = 0.ToString();
