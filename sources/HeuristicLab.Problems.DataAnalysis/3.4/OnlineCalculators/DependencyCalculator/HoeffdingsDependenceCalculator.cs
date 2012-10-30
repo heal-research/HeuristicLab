@@ -22,12 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public class HoeffdingsDependenceCalculator : IDependencyCalculator {
 
-    public DoubleRange Interval { get { return new DoubleRange(1.0, -0.5); } }
+    public double Maximum { get { return 1.0; } }
+
+    public double Minimum { get { return -0.5; } }
 
     public string Name { get { return "Hoeffdings Dependence"; } }
 

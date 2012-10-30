@@ -24,8 +24,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
+using HeuristicLab.Data;
 using HeuristicLab.Data.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
@@ -38,8 +38,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     // sets the visibility of its rows for the next time it is updated
     public IEnumerable<bool> RowVisibility { set { rowVisibility = value; } }
 
-    public new HeatMap Content {
-      get { return (HeatMap)base.Content; }
+    public double Maximum { get; set; }
+    public double Minimum { get; set; }
+
+    public new DoubleMatrix Content {
+      get { return (DoubleMatrix)base.Content; }
       set { base.Content = value; }
     }
 
@@ -93,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (!e.PaintParts.HasFlag(DataGridViewPaintParts.Background)) return;
 
       int rowIndex = virtualRowIndices[e.RowIndex];
-      Color backColor = GetDataPointColor(Content[rowIndex, e.ColumnIndex], Content.Minimum, Content.Maximum);
+      Color backColor = GetDataPointColor(Content[rowIndex, e.ColumnIndex], Minimum, Maximum);
       using (Brush backColorBrush = new SolidBrush(backColor)) {
         e.Graphics.FillRectangle(backColorBrush, e.CellBounds);
       }

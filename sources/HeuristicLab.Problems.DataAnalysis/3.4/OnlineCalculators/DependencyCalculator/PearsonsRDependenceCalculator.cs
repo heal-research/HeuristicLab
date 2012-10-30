@@ -19,18 +19,20 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class PearsonsRSquaredDependenceCalculator : IDependencyCalculator {
+  public class PearsonsRDependenceCalculator : IDependencyCalculator {
 
-    public DoubleRange Interval { get { return new DoubleRange(1.0, 0.0); } }
+    public double Maximum { get { return 1.0; } }
 
-    public string Name { get { return "Pearsons R Squared"; } }
+    public double Minimum { get { return -1.0; } }
+
+    public string Name { get { return "Pearsons R"; } }
 
     public double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      return OnlinePearsonsRSquaredCalculator.Calculate(originalValues, estimatedValues, out errorState);
+      return Math.Sqrt(OnlinePearsonsRSquaredCalculator.Calculate(originalValues, estimatedValues, out errorState));
     }
   }
 }

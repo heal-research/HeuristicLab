@@ -19,19 +19,35 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using HeuristicLab.Data;
+using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  public class PearsonsRDependenceCalculator : IDependencyCalculator {
+  public class SpearmansRankCorrelationCoefficientCalculator : IDependencyCalculator {
 
-    public DoubleRange Interval { get { return new DoubleRange(1.0, -1.0); } }
+    public double Maximum { get { return 1.0; } }
 
-    public string Name { get { return "Pearsons R"; } }
+    public double Minimum { get { return -1.0; } }
+
+    public string Name { get { return "Spearmans Rank"; } }
 
     public double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      return Math.Sqrt(OnlinePearsonsRSquaredCalculator.Calculate(originalValues, estimatedValues, out errorState));
+      return SpearmansRankCorrelationCoefficientCalculator.CalculateSpearmansRank(originalValues, estimatedValues, out errorState);
+    }
+
+    public static double CalculateSpearmansRank(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      double rs = double.NaN;
+      try {
+        var original = originalValues.ToArray();
+        var estimated = estimatedValues.ToArray();
+        rs = alglib.basestat.spearmancorr2(original, estimated, original.Length);
+        errorState = OnlineCalculatorError.None;
+      }
+      catch (alglib.alglibexception) {
+        errorState = OnlineCalculatorError.InvalidValueAdded;
+      }
+
+      return rs;
     }
   }
 }

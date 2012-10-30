@@ -163,8 +163,11 @@
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblemData.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisSolution.cs" />
     <Compile Include="OnlineCalculators\AutoCorrelationCalculator.cs" />
+    <Compile Include="OnlineCalculators\DependencyCalculator\HoeffdingsDependenceCalculator.cs" />
+    <Compile Include="OnlineCalculators\DependencyCalculator\PearsonsRDependenceCalculator.cs" />
+    <Compile Include="OnlineCalculators\DependencyCalculator\PearsonsRSquaredDependenceCalculator.cs" />
+    <Compile Include="OnlineCalculators\DependencyCalculator\SpearmansRankCorrelationCoefficientCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineBoundedMeanSquaredErrorCalculator.cs" />
-    <Compile Include="OnlineCalculators\HoeffdingsDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineDirectionalSymmetryCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMaxAbsoluteErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanErrorCalculator.cs" />
@@ -206,9 +209,6 @@
     <Compile Include="Implementation\Regression\RegressionSolution.cs" />
     <Compile Include="OnlineCalculators\OnlineTheilsUStatisticCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineWeightedDirectionalSymmetryCalculator.cs" />
-    <Compile Include="OnlineCalculators\PearsonsRDependenceCalculator.cs" />
-    <Compile Include="OnlineCalculators\PearsonsRSquaredDependenceCalculator.cs" />
-    <Compile Include="OnlineCalculators\SpearmansRankCorrelationCoefficientCalculator.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\AccuracyMaximizationThresholdCalculator.cs" />
     <Compile Include="Implementation\Classification\ThresholdCalculators\NormalDistributionCutPointsThresholdCalculator.cs" />

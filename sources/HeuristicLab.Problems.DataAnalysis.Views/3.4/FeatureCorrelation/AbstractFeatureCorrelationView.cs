@@ -22,7 +22,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Analysis;
+using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(DataAnalysisProblemData), false)]
   public abstract partial class AbstractFeatureCorrelationView : AsynchronousContentView {
     protected FeatureCorrelationCalculator fcc;
-    protected HeatMap currentCorrelation;
+    protected DoubleMatrix currentCorrelation;
 
     public new DataAnalysisProblemData Content {
       get { return (DataAnalysisProblemData)base.Content; }
@@ -71,6 +71,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         fcc.ProblemData = Content;
         CalculateCorrelation();
       } else {
+        dataView.Maximum = 0;
+        dataView.Minimum = 0;
         dataView.Content = null;
         dataView.ResetVisibility();
       }
@@ -97,10 +99,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected abstract void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e);
 
     protected void UpdateDataView() {
-      maximumLabel.Text = currentCorrelation.Maximum.ToString();
-      minimumLabel.Text = currentCorrelation.Minimum.ToString();
+      IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
+      maximumLabel.Text = calc.Maximum.ToString();
+      minimumLabel.Text = calc.Minimum.ToString();
 
       currentCorrelation.SortableView = true;
+      dataView.Maximum = calc.Maximum;
+      dataView.Minimum = calc.Minimum;
       dataView.Content = currentCorrelation;
       dataView.Enabled = true;
     }

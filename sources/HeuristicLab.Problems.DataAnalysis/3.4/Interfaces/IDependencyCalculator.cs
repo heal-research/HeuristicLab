@@ -20,11 +20,11 @@
 #endregion
 
 using System.Collections.Generic;
-using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDependencyCalculator {
-    DoubleRange Interval { get; }
+    double Maximum { get; }
+    double Minimum { get; }
     string Name { get; }
 
     double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState);

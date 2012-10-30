@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
@@ -100,15 +99,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       for (int i = 0; i < elements.GetLength(0); i++) {
         Array.Copy(elements, i * elements.GetLength(1), neededValues, i * neededValues.GetLength(1), frames + 1);
       }
-      SetNewCorrelation(neededValues, calc);
+      SetNewCorrelation(neededValues);
     }
 
-    private void SetNewCorrelation(double[,] elements, IDependencyCalculator calc) {
-      DoubleRange range = calc.Interval;
-      HeatMap hm = new HeatMap(elements, "", range.End, range.Start);
-      hm.RowNames = Content.Dataset.DoubleVariables;
-      hm.ColumnNames = Enumerable.Range(0, elements.GetLength(1)).Select(x => x.ToString());
-      currentCorrelation = hm;
+    private void SetNewCorrelation(double[,] elements) {
+      currentCorrelation = new DoubleMatrix(elements,
+                                            Enumerable.Range(0, elements.GetLength(1)).Select(x => x.ToString()),
+                                            Content.Dataset.DoubleVariables);
     }
 
     protected override void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e) {
@@ -116,7 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         Invoke(new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished), sender, e);
       } else {
         correlationTimeframCache.SetTimeframeCorrelation(e.Calculcator, e.Partition, e.Variable, e.Correlation);
-        SetNewCorrelation(e.Correlation, e.Calculcator);
+        SetNewCorrelation(e.Correlation);
         UpdateDataView();
       }
     }
