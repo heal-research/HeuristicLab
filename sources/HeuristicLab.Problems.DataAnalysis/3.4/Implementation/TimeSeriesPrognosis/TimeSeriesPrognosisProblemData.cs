@@ -1594,6 +1594,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterParameterEventHandlers();
     }
 
+    public TimeSeriesPrognosisProblemData(ITimeSeriesPrognosisProblemData timeseriesProblemData)
+      : this(timeseriesProblemData.Dataset, timeseriesProblemData.AllowedInputVariables, timeseriesProblemData.TargetVariable) {
+
+      TestHorizon = timeseriesProblemData.TestHorizon;
+      TrainingHorizon = timeseriesProblemData.TestHorizon;
+    }
+
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEventHandlers();

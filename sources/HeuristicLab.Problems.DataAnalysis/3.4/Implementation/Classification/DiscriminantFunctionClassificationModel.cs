@@ -135,7 +135,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     public virtual IDiscriminantFunctionClassificationSolution CreateDiscriminantFunctionClassificationSolution(IClassificationProblemData problemData) {
-      return new DiscriminantFunctionClassificationSolution(this, problemData);
+      return new DiscriminantFunctionClassificationSolution(this, new ClassificationProblemData(problemData));
     }
 
     public virtual IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {

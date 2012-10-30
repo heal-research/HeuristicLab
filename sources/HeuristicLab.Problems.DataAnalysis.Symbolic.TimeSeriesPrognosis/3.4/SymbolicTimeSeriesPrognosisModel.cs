@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     }
 
     public ISymbolicTimeSeriesPrognosisSolution CreateTimeSeriesPrognosisSolution(ITimeSeriesPrognosisProblemData problemData) {
-      return new SymbolicTimeSeriesPrognosisSolution(this, problemData);
+      return new SymbolicTimeSeriesPrognosisSolution(this, new TimeSeriesPrognosisProblemData(problemData));
     }
     ITimeSeriesPrognosisSolution ITimeSeriesPrognosisModel.CreateTimeSeriesPrognosisSolution(ITimeSeriesPrognosisProblemData problemData) {
       return CreateTimeSeriesPrognosisSolution(problemData);

@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public ITimeSeriesPrognosisSolution CreateTimeSeriesPrognosisSolution(ITimeSeriesPrognosisProblemData problemData) {
-      return new TimeSeriesPrognosisSolution(this, problemData);
+      return new TimeSeriesPrognosisSolution(this, new TimeSeriesPrognosisProblemData(problemData));
     }
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       throw new NotSupportedException();
