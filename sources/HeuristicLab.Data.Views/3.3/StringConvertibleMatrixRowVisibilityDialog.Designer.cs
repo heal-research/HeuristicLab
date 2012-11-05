@@ -25,7 +25,8 @@
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Text = "StringConvertibleMatrixRowVisibilityDialog";
+      this.Text = "Show/Hide Rows";
+      this.Name = "RowsVisibilityDialog";
     }
 
     #endregion

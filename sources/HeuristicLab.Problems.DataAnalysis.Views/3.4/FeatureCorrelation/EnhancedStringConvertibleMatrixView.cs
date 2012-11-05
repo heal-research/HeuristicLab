@@ -66,14 +66,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
     protected override void UpdateRowHeaders() {
-      base.UpdateRowHeaders();
       if (rowVisibility != null && Content != null && rowVisibility.Count() == dataGridView.RowCount) {
-        int i = 0;
-        foreach (var visibility in rowVisibility) {
-          dataGridView.Rows[i].Visible = visibility;
-          i++;
+        int[] realRowIndex = Enumerable.Range(0, Content.Rows).ToArray();
+        int[] helper = new int[virtualRowIndices.Length];
+        Array.Copy(virtualRowIndices, helper, virtualRowIndices.Length);
+        Array.Sort(helper, realRowIndex);
+        for (int i = 0; i < dataGridView.RowCount; i++) {
+          dataGridView.Rows[realRowIndex[i]].Visible = rowVisibility.ElementAt(i);
         }
       }
+      base.UpdateRowHeaders();
     }
 
     protected virtual void ShowHideRows_Click(object sender, EventArgs e) {

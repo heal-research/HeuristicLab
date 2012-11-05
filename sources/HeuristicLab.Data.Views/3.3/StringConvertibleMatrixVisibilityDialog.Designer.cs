@@ -98,7 +98,7 @@ namespace HeuristicLab.Data.Views {
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-      this.Text = "Show/Hide Columns";
+      this.Text = "Show/Hide";
       this.ResumeLayout(false);
 
     }

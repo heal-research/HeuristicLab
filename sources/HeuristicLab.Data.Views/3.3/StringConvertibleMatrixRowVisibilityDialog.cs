@@ -30,6 +30,7 @@ namespace HeuristicLab.Data.Views {
 
     public StringConvertibleMatrixRowVisibilityDialog(IEnumerable<DataGridViewRow> rows)
       : base(rows) {
+      InitializeComponent();
     }
 
     protected override void UpdateCheckBoxes() {
