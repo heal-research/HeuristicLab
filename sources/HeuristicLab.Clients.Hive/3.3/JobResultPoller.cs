@@ -81,8 +81,8 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     private void RunPolling() {
+      IsPolling = true;
       while (true) {
-        IsPolling = true;
         try {
           waitHandle = new AutoResetEvent(false);
           while (!stopRequested) {
@@ -91,15 +91,21 @@ namespace HeuristicLab.Clients.Hive {
             OnPollingFinished();
             waitHandle.WaitOne(Interval);
           }
-          waitHandle.Close();
+
+          if (stopRequested) {
+            waitHandle.Close();
+            IsPolling = false;
+            return;
+          }
         }
         catch (Exception e) {
           OnExceptionOccured(e);
-        } finally {
-          IsPolling = false;
+          if (!autoResumeOnException) {
+            waitHandle.Close();
+            IsPolling = false;
+            return;
+          }
         }
-        if (stopRequested) return;
-        if (!autoResumeOnException) return;
       }
     }
 

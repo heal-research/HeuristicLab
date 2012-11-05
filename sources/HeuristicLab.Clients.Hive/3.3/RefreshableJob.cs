@@ -227,7 +227,7 @@ namespace HeuristicLab.Clients.Hive {
       if (jobResultPoller == null) {
         jobResultPoller = new JobResultPoller(job.Id, Settings.Default.ResultPollingInterval);
         RegisterResultPollingEvents();
-        jobResultPoller.AutoResumeOnException = true;
+        jobResultPoller.AutoResumeOnException = false;
       }
 
       if (!jobResultPoller.IsPolling) {
