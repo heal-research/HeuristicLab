@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms.DataVisualization.Charting;
-namespace HeuristicLab.Problems.DataAnalysis.Views {
+﻿namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class DiscriminantFunctionClassificationSolutionThresholdView {
     /// <summary> 
     /// Required designer variable.
@@ -53,7 +52,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.chart.AnnotationPositionChanging += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.AnnotationPositionChangingEventArgs>(this.chart_AnnotationPositionChanging);
       this.chart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chart_MouseDown);
       this.chart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chart_MouseMove);
-      this.chart.PostPaint += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ChartPaintEventArgs>(chart_PostPaint);
       // 
       // JitterTrackBar
       // 

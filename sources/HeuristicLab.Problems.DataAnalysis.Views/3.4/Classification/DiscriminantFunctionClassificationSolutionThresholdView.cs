@@ -39,9 +39,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private const string TrainingLabelText = "Training Samples";
     private const string TestLabelText = "Test Samples";
 
-    private const double ClassNameLeftOffset = 10.0;
-    private const double ClassNameBottomOffset = 5.0;
-
     public new IDiscriminantFunctionClassificationSolution Content {
       get { return (IDiscriminantFunctionClassificationSolution)base.Content; }
       set { base.Content = value; }
@@ -49,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private Dictionary<double, Series> classValueSeriesMapping;
     private Random random;
-    private bool updateInProgress, updateThresholds;
+    private bool updateInProgress;
 
     public DiscriminantFunctionClassificationSolutionThresholdView()
       : base() {
@@ -67,6 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       AddCustomLabelToAxis(this.chart.ChartAreas[0].AxisX);
 
       this.chart.ChartAreas[0].AxisY.Title = "Estimated Values";
+      this.chart.ChartAreas[0].AxisY.IsStartedFromZero = false;
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
     }
@@ -128,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             classValueSeriesMapping.Add(classValueEnumerator.Current, series);
             FillSeriesWithDataPoints(series);
           }
-          updateThresholds = true;
+          AddThresholds();
         }
         chart.ChartAreas[0].RecalculateAxesScale();
         updateInProgress = false;
@@ -168,20 +166,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       UpdateCursorInterval();
     }
 
-    private void chart_PostPaint(object sender, ChartPaintEventArgs e) {
-      if (updateThresholds) {
-        AddThresholds();
-        updateThresholds = false;
-      }
-    }
-
     private void AddThresholds() {
       chart.Annotations.Clear();
       int classIndex = 1;
-      SizeF textSizeInPixel;
       IClassificationProblemData problemData = Content.ProblemData;
       var classValues = Content.Model.ClassValues.ToArray();
-      Graphics g = chart.CreateGraphics();
       Axis y = chart.ChartAreas[0].AxisY;
       Axis x = chart.ChartAreas[0].AxisX;
       string name;
@@ -200,49 +189,48 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           annotation.Y = threshold;
 
           name = problemData.GetClassName(classValues[classIndex - 1]);
-          TextAnnotation beneathLeft = CreateTextAnnotation(name, classIndex, x, y);
-          beneathLeft.Y = threshold;
-          beneathLeft.X = x.Minimum;
-          TextAnnotation beneathRigth = CreateTextAnnotation(name, classIndex, x, y);
-          beneathRigth.Y = threshold;
-          textSizeInPixel = g.MeasureString(beneathRigth.Text, beneathRigth.Font);
-          double textWidthPixelPos = x.ValueToPixelPosition(x.Maximum) - textSizeInPixel.Width - ClassNameLeftOffset;
-          //check if position is within the position boundary
-          beneathRigth.X = textWidthPixelPos < 0 || textWidthPixelPos > chart.Width ? double.NaN : x.PixelPositionToValue(textWidthPixelPos);
+          TextAnnotation beneathLeft = CreateTextAnnotation(name, classIndex, x, y, x.Minimum, threshold, ContentAlignment.TopLeft);
+          TextAnnotation beneathRight = CreateTextAnnotation(name, classIndex, x, y, x.Maximum, threshold, ContentAlignment.TopRight);
 
           name = problemData.GetClassName(classValues[classIndex]);
-          TextAnnotation aboveLeft = CreateTextAnnotation(name, classIndex, x, y);
-          textSizeInPixel = g.MeasureString(aboveLeft.Text, aboveLeft.Font);
-          double textHeightPixelPos = y.ValueToPixelPosition(threshold) - textSizeInPixel.Height - ClassNameBottomOffset;
-          //check if position is within the position boundary
-          aboveLeft.Y = textHeightPixelPos < 0 || textHeightPixelPos > chart.Height ? double.NaN : y.PixelPositionToValue(textHeightPixelPos);
-          aboveLeft.X = x.Minimum;
-          TextAnnotation aboveRight = CreateTextAnnotation(name, classIndex, x, y);
-          aboveRight.Y = aboveLeft.Y;
-          textWidthPixelPos = x.ValueToPixelPosition(x.Maximum) - textSizeInPixel.Width - ClassNameLeftOffset;
-          //check if position is within the position boundary
-          aboveRight.X = textWidthPixelPos < 0 || textWidthPixelPos > chart.Width ? double.NaN : x.PixelPositionToValue(textWidthPixelPos);
+          TextAnnotation aboveLeft = CreateTextAnnotation(name, classIndex, x, y, x.Minimum, threshold, ContentAlignment.BottomLeft);
+          TextAnnotation aboveRight = CreateTextAnnotation(name, classIndex, x, y, x.Maximum, threshold, ContentAlignment.BottomRight);
 
           chart.Annotations.Add(annotation);
           chart.Annotations.Add(beneathLeft);
           chart.Annotations.Add(aboveLeft);
-          chart.Annotations.Add(beneathRigth);
+          chart.Annotations.Add(beneathRight);
           chart.Annotations.Add(aboveRight);
+
+          beneathLeft.ResizeToContent();
+          beneathRight.ResizeToContent();
+          aboveLeft.ResizeToContent();
+          aboveRight.ResizeToContent();
+
+          beneathRight.Width = -beneathRight.Width;
+          aboveLeft.Height = -aboveLeft.Height;
+          aboveRight.Height = -aboveRight.Height;
+          aboveRight.Width = -aboveRight.Width;
+
           classIndex++;
         }
       }
     }
 
-    private TextAnnotation CreateTextAnnotation(string name, int classIndex, Axis x, Axis y) {
+    private TextAnnotation CreateTextAnnotation(string name, int classIndex, Axis axisX, Axis axisY, double x, double y, ContentAlignment alignment) {
       TextAnnotation annotation = new TextAnnotation();
       annotation.Text = name;
       annotation.AllowMoving = true;
       annotation.AllowResizing = false;
       annotation.AllowSelecting = false;
+      annotation.IsSizeAlwaysRelative = true;
       annotation.ClipToChartArea = chart.ChartAreas[0].Name;
       annotation.Tag = classIndex;
-      annotation.AxisX = chart.ChartAreas[0].AxisX;
-      annotation.AxisY = y;
+      annotation.AxisX = axisX;
+      annotation.AxisY = axisY;
+      annotation.Alignment = alignment;
+      annotation.X = x;
+      annotation.Y = y;
       return annotation;
     }
 
