@@ -50,12 +50,53 @@ namespace HeuristicLab.Optimization.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           return (IOptimizer)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
       return null;
+    }
+
+    protected override void DeregisterItemEvents(IOptimizer item) {
+      var batchRun = item as BatchRun;
+      if (batchRun != null) {
+        batchRun.RepetitionsChanged -= BatchRun_UpdateText;
+        batchRun.RepetetionsCounterChanged -= BatchRun_UpdateText;
+      }
+      base.DeregisterItemEvents(item);
+    }
+
+    protected override void RegisterItemEvents(IOptimizer item) {
+      base.RegisterItemEvents(item);
+      var batchRun = item as BatchRun;
+      if (batchRun != null) {
+        batchRun.RepetitionsChanged += BatchRun_UpdateText;
+        batchRun.RepetetionsCounterChanged += BatchRun_UpdateText;
+      }
+    }
+
+    protected override ListViewItem CreateListViewItem(IOptimizer item) {
+      var listViewItem = base.CreateListViewItem(item);
+      var batchRun = item as BatchRun;
+      if (batchRun != null) {
+        listViewItem.Text += string.Format(" {0}/{1}", batchRun.RepetitionsCounter, batchRun.Repetitions);
+      }
+      return listViewItem;
+    }
+
+    protected override void UpdateListViewItemText(ListViewItem listViewItem) {
+      base.UpdateListViewItemText(listViewItem);
+      var batchRun = listViewItem.Tag as BatchRun;
+      if (batchRun != null) {
+        listViewItem.Text = batchRun.ToString() + string.Format(" {0}/{1}", batchRun.RepetitionsCounter, batchRun.Repetitions);
+      }
+    }
+
+    protected virtual void BatchRun_UpdateText(object sender, EventArgs eventArgs) {
+      if (sender is BatchRun) {
+        foreach (var item in GetListViewItemsForItem(sender as BatchRun))
+          UpdateListViewItemText(item);
+      }
     }
   }
 }
