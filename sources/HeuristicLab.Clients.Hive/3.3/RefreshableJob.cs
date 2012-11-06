@@ -33,7 +33,8 @@ namespace HeuristicLab.Clients.Hive {
   public class RefreshableJob : IHiveItem, IDeepCloneable, IContent, IComparable<RefreshableJob> {
     private JobResultPoller jobResultPoller;
     private ConcurrentTaskDownloader<ItemTask> jobDownloader;
-    private static object locker = new object();
+    private object locker = new object();
+    private object downloadFinishedLocker = new object();
 
     public bool IsProgressing { get; set; }
 
@@ -257,6 +258,7 @@ namespace HeuristicLab.Clients.Hive {
         OnRefreshAutomaticallyChanged();
       }
     }
+
     private void jobResultPoller_JobResultReceived(object sender, EventArgs<IEnumerable<LightweightTask>> e) {
       foreach (LightweightTask lightweightTask in e.Value) {
         HiveTask hiveTask = GetHiveTaskById(lightweightTask.Id);
@@ -272,30 +274,28 @@ namespace HeuristicLab.Clients.Hive {
             log.LogMessage(string.Format("Downloading task {0}", lightweightTask.Id));
             hiveTask.IsDownloading = true;
             jobDownloader.DownloadTaskData(hiveTask.Task, (localJob, itemJob) => {
-              log.LogMessage(string.Format("Finished downloading task {0}", localJob.Id));
-              HiveTask localHiveTask = GetHiveTaskById(localJob.Id);
+              lock (downloadFinishedLocker) {
+                log.LogMessage(string.Format("Finished downloading task {0}", localJob.Id));
+                HiveTask localHiveTask = GetHiveTaskById(localJob.Id);
 
-              if (itemJob == null) {
-                localHiveTask.IsDownloading = false;
-              }
-
-              if (itemJob == null) {
-                // something bad happened to this task. bad task, BAAAD task!
-              } else {
-                // if the task is paused, download but don't integrate into parent optimizer (to avoid Prepare)
-
-                if (localJob.State == TaskState.Paused) {
-                  localHiveTask.ItemTask = itemJob;
+                if (itemJob == null) {
+                  // something bad happened to this task. bad task, BAAAD task!
+                  localHiveTask.IsDownloading = false;
                 } else {
-                  if (localJob.ParentTaskId.HasValue) {
-                    HiveTask parentHiveTask = GetHiveTaskById(localJob.ParentTaskId.Value);
-                    parentHiveTask.IntegrateChild(itemJob, localJob.Id);
-                  } else {
+                  // if the task is paused, download but don't integrate into parent optimizer (to avoid Prepare) 
+                  if (localJob.State == TaskState.Paused) {
                     localHiveTask.ItemTask = itemJob;
+                  } else {
+                    if (localJob.ParentTaskId.HasValue) {
+                      HiveTask parentHiveTask = GetHiveTaskById(localJob.ParentTaskId.Value);
+                      parentHiveTask.IntegrateChild(itemJob, localJob.Id);
+                    } else {
+                      localHiveTask.ItemTask = itemJob;
+                    }
                   }
+                  localHiveTask.IsDownloading = false;
+                  localHiveTask.Task.LastTaskDataUpdate = lightweightTask.LastTaskDataUpdate;
                 }
-                localHiveTask.IsDownloading = false;
-                localHiveTask.Task.LastTaskDataUpdate = localJob.LastTaskDataUpdate;
               }
             });
           }
@@ -333,7 +333,7 @@ namespace HeuristicLab.Clients.Hive {
       return this.GetAllHiveTasks().All(j => (j.Task.State == TaskState.Finished
                                                    || j.Task.State == TaskState.Aborted
                                                    || j.Task.State == TaskState.Failed)
-                                                   && j.IsFinishedTaskDownloaded);
+                                                   && !j.IsDownloading);
     }
 
     private void jobResultPoller_ExceptionOccured(object sender, EventArgs<Exception> e) {

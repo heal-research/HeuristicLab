@@ -333,15 +333,15 @@ namespace HeuristicLab.Clients.Hive {
 
     private void RegisterJobEvents() {
       if (task != null)
-        task.PropertyChanged += new PropertyChangedEventHandler(job_PropertyChanged);
+        task.PropertyChanged += new PropertyChangedEventHandler(task_PropertyChanged);
     }
 
     private void DeregisterJobEvents() {
       if (task != null)
-        task.PropertyChanged += new PropertyChangedEventHandler(job_PropertyChanged);
+        task.PropertyChanged += new PropertyChangedEventHandler(task_PropertyChanged);
     }
 
-    private void job_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+    private void task_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       if (e.PropertyName == "State") {
         IsFinishedTaskDownloaded = false;
       }
