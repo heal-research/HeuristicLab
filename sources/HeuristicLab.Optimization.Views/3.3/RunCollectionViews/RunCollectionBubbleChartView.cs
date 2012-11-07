@@ -279,10 +279,6 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-
-    private class AxisParameters {
-      public double min, max, majorGridInterval, majorTickMarkInterval, labelStyleInterval;
-    }
     private void UpdateDataPointJitter() {
       var xAxis = this.chart.ChartAreas[0].AxisX;
       var yAxis = this.chart.ChartAreas[0].AxisY;
