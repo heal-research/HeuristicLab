@@ -34,19 +34,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     where TData : class, IDataAnalysisProblemData
     where ImportType : DataAnalysisImportType {
 
-    // has to be implemented, if CanImportData is true
-    public TData ImportData(string path, ImportType type) {
-      TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(path);
-      return ImportData(path, type, csvFileParser);
-    }
+
     public TData ImportData(string path, ImportType type, DataAnalysisCSVFormat csvFormat) {
       TableFileParser csvFileParser = new TableFileParser();
       csvFileParser.Parse(path, csvFormat.NumberFormatInfo, csvFormat.DateTimeFormatInfo, csvFormat.Separator);
       return ImportData(path, type, csvFileParser);
     }
 
-    protected abstract TData ImportData(string path, ImportType type, TableFileParser csvFileParser);
+    protected virtual TData ImportData(string path, ImportType type, TableFileParser csvFileParser) {
+      throw new NotSupportedException();
+    }
 
     protected List<IList> Shuffle(List<IList> values) {
       int count = values.First().Count;
