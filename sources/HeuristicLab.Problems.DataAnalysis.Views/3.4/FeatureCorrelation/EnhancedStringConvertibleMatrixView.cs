@@ -30,13 +30,18 @@ using HeuristicLab.Data.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class EnhancedStringConvertibleMatrixView : StringConvertibleMatrixView {
-
-    protected IEnumerable<bool> columnVisibility, rowVisibility;
+    private bool[] columnVisibility, rowVisibility;
 
     // sets the visibility of its columns for the next time it is updated
-    public IEnumerable<bool> ColumnVisibility { set { columnVisibility = value; } }
+    public IEnumerable<bool> ColumnVisibility {
+      get { return columnVisibility; }
+      set { columnVisibility = value.ToArray(); }
+    }
     // sets the visibility of its rows for the next time it is updated
-    public IEnumerable<bool> RowVisibility { set { rowVisibility = value; } }
+    public IEnumerable<bool> RowVisibility {
+      get { return rowVisibility; }
+      set { rowVisibility = value.ToArray(); }
+    }
 
     public double Maximum { get; set; }
     public double Minimum { get; set; }
@@ -81,13 +86,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected virtual void ShowHideRows_Click(object sender, EventArgs e) {
       var dialog = new StringConvertibleMatrixRowVisibilityDialog(this.dataGridView.Rows.Cast<DataGridViewRow>());
       dialog.ShowDialog();
-      rowVisibility = dialog.Visibility;
+      RowVisibility = dialog.Visibility;
     }
 
     protected override void ShowHideColumns_Click(object sender, EventArgs e) {
       var dialog = new StringConvertibleMatrixColumnVisibilityDialog(this.dataGridView.Columns.Cast<DataGridViewColumn>());
       dialog.ShowDialog();
-      columnVisibility = dialog.Visibility;
+      ColumnVisibility = dialog.Visibility;
     }
 
     protected void dataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e) {

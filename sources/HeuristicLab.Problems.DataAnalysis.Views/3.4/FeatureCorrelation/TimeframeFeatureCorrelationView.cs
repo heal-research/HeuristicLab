@@ -48,10 +48,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       base.OnContentChanged();
     }
 
-    protected void VariableSelectionComboBox_SelectedChangeCommitted(object sender, EventArgs e) {
+    private void VariableSelectionComboBox_SelectedChangeCommitted(object sender, EventArgs e) {
       CalculateCorrelation();
     }
-    protected void TimeframeTextbox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
+
+    private void TimeframeTextbox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
       if (e.KeyCode == Keys.Enter) {
         CalculateCorrelation();
       }
@@ -73,13 +74,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           fcc.CalculateTimeframeElements(calc, partition, variable, frames, corr);
         } else {
           fcc.TryCancelCalculation();
-          SetNewCorrelation(corr, calc, frames);
-          UpdateDataView();
+          var columnNames = Enumerable.Range(0, corr.GetLength(1)).Select(x => x.ToString());
+          var correlation = new DoubleMatrix(corr, columnNames, Content.Dataset.DoubleVariables);
+          ((IStringConvertibleMatrix)correlation).Columns = frames + 1;
+          UpdateDataView(correlation);
         }
       }
     }
 
-    protected bool ValidateTimeframeTextbox() {
+    private bool ValidateTimeframeTextbox() {
       int help;
       if (!int.TryParse(TimeframeTextbox.Text, out help)) {
         MessageBox.Show("Timeframe couldn't be parsed. Enter a valid integer value.", "Parse Error", MessageBoxButtons.OK);
@@ -94,27 +97,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       return true;
     }
 
-    private void SetNewCorrelation(double[,] elements, IDependencyCalculator calc, int frames) {
-      double[,] neededValues = new double[elements.GetLength(0), frames + 1];
-      for (int i = 0; i < elements.GetLength(0); i++) {
-        Array.Copy(elements, i * elements.GetLength(1), neededValues, i * neededValues.GetLength(1), frames + 1);
-      }
-      SetNewCorrelation(neededValues);
-    }
-
-    private void SetNewCorrelation(double[,] elements) {
-      currentCorrelation = new DoubleMatrix(elements,
-                                            Enumerable.Range(0, elements.GetLength(1)).Select(x => x.ToString()),
-                                            Content.Dataset.DoubleVariables);
-    }
 
     protected override void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e) {
       if (InvokeRequired) {
         Invoke(new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished), sender, e);
       } else {
         correlationTimeframCache.SetTimeframeCorrelation(e.Calculcator, e.Partition, e.Variable, e.Correlation);
-        SetNewCorrelation(e.Correlation);
-        UpdateDataView();
+        var columnNames = Enumerable.Range(0, e.Correlation.GetLength(1)).Select(x => x.ToString());
+        var correlation = new DoubleMatrix(e.Correlation, columnNames, Content.Dataset.DoubleVariables);
+        UpdateDataView(correlation);
       }
     }
 

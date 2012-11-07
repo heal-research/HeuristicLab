@@ -71,16 +71,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private double[,] GetElementsOfCorrelation(double[,] corr, int frames) {
-      double[,] elements = new double[corr.GetLength(0), frames + 1];
-      for (int i = 0; i < corr.GetLength(0); i++) {
-        for (int j = 0; j <= frames; j++) {
-          elements[i, j] = corr[i, j];
-        }
-      }
-      return elements;
-    }
-
     private void CalculateElements(Dataset dataset, IDependencyCalculator calc, string partition, string variable = null, int frames = 0, double[,] alreadyCalculated = null) {
       bwInfo = new BackgroundWorkerInfo { Dataset = dataset, Calculator = calc, Partition = partition, Variable = variable, Frames = frames, AlreadyCalculated = alreadyCalculated };
       if (bw == null) {
@@ -203,19 +193,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private IEnumerable<double> GetRelevantValues(IDataAnalysisProblemData problemData, string partition, string variable) {
-      IEnumerable<double> var = problemData.Dataset.GetDoubleValues(variable);
-      if (partition.Equals(FeatureCorrelationPartitions.TRAININGSAMPLES)) {
-        var = var.Skip(problemData.TrainingPartition.Start).Take(problemData.TrainingPartition.End - problemData.TrainingPartition.Start);
-      } else if (partition.Equals(FeatureCorrelationPartitions.TESTSAMPLES)) {
-        var = var.Skip(problemData.TestPartition.Start).Take(problemData.TestPartition.End - problemData.TestPartition.Start);
-      }
+      IEnumerable<double> var;
+      if (partition.Equals(FeatureCorrelationPartitions.TRAININGSAMPLES))
+        var = problemData.Dataset.GetDoubleValues(variable, problemData.TrainingIndices);
+      else if (partition.Equals(FeatureCorrelationPartitions.TESTSAMPLES))
+        var = problemData.Dataset.GetDoubleValues(variable, problemData.TestIndices);
+      else var = problemData.Dataset.GetDoubleValues(variable);
       return var;
     }
 
     private void BwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
       BackgroundWorker worker = sender as BackgroundWorker;
       if (!e.Cancelled && !worker.CancellationPending) {
-        if (!(e.Error == null)) {
+        if (e.Error != null) {
           ErrorHandling.ShowErrorDialog(e.Error);
         } else {
           OnCorrelationCalculationFinished((double[,])e.Result, bwInfo.Calculator, bwInfo.Partition, bwInfo.Variable);

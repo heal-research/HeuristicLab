@@ -36,8 +36,8 @@ namespace HeuristicLab.Data.Views {
       UpdateCheckBoxes();
     }
 
-    protected List<T> bands;
-    private IEnumerable<T> Bands {
+    private List<T> bands;
+    public IEnumerable<T> Bands {
       get { return this.bands; }
       set { this.bands = new List<T>(value); }
     }

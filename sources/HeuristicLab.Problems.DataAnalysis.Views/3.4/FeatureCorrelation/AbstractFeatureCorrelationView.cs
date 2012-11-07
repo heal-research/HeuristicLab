@@ -32,7 +32,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Content(typeof(DataAnalysisProblemData), false)]
   public abstract partial class AbstractFeatureCorrelationView : AsynchronousContentView {
     protected FeatureCorrelationCalculator fcc;
-    protected DoubleMatrix currentCorrelation;
 
     public new DataAnalysisProblemData Content {
       get { return (DataAnalysisProblemData)base.Content; }
@@ -98,15 +97,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected abstract void CalculateCorrelation();
     protected abstract void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e);
 
-    protected void UpdateDataView() {
+    protected void UpdateDataView(DoubleMatrix correlation) {
       IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
       maximumLabel.Text = calc.Maximum.ToString();
       minimumLabel.Text = calc.Minimum.ToString();
 
-      currentCorrelation.SortableView = true;
+      correlation.SortableView = true;
       dataView.Maximum = calc.Maximum;
       dataView.Minimum = calc.Minimum;
-      dataView.Content = currentCorrelation;
+      dataView.Content = correlation;
       dataView.Enabled = true;
     }
 

@@ -42,43 +42,39 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected override void OnContentChanged() {
       if (Content != null) {
-        dataView.RowVisibility = SetInitialVariableVisibility();
-        dataView.ColumnVisibility = SetInitialVariableVisibility();
+        dataView.ColumnVisibility = dataView.RowVisibility = SetInitialVariableVisibility();
       }
       correlationCache.Reset();
       base.OnContentChanged();
     }
 
     protected override void CalculateCorrelation() {
-      if (CorrelationCalcComboBox.SelectedItem != null && PartitionComboBox.SelectedItem != null) {
-        IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
-        string partition = (string)PartitionComboBox.SelectedValue;
-        dataView.Enabled = false;
-        double[,] corr = correlationCache.GetCorrelation(calc, partition);
-        if (corr == null) {
-          fcc.CalculateElements(calc, partition);
-        } else {
-          fcc.TryCancelCalculation();
-          SetNewCorrelation(corr);
-          UpdateDataView();
-        }
+      if (CorrelationCalcComboBox.SelectedItem == null) return;
+      if (PartitionComboBox.SelectedItem == null) return;
+
+      IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
+      string partition = (string)PartitionComboBox.SelectedValue;
+      dataView.Enabled = false;
+      double[,] corr = correlationCache.GetCorrelation(calc, partition);
+      if (corr == null) {
+        fcc.CalculateElements(calc, partition);
+      } else {
+        fcc.TryCancelCalculation();
+        var correlation = new DoubleMatrix(corr, Content.Dataset.DoubleVariables, Content.Dataset.DoubleVariables);
+        UpdateDataView(correlation);
       }
     }
 
-    private void SetNewCorrelation(double[,] elements) {
-      currentCorrelation = new DoubleMatrix(elements,
-                                            Content.Dataset.DoubleVariables,
-                                            Content.Dataset.DoubleVariables);
-    }
+
 
     protected override void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e) {
       if (InvokeRequired) {
         Invoke(new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished), sender, e);
-      } else {
-        correlationCache.SetCorrelation(e.Calculcator, e.Partition, e.Correlation);
-        SetNewCorrelation(e.Correlation);
-        UpdateDataView();
+        return;
       }
+      correlationCache.SetCorrelation(e.Calculcator, e.Partition, e.Correlation);
+      var correlation = new DoubleMatrix(e.Correlation, Content.Dataset.DoubleVariables, Content.Dataset.DoubleVariables);
+      UpdateDataView(correlation);
     }
 
     [NonDiscoverableType]

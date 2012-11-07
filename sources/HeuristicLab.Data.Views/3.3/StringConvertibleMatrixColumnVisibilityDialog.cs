@@ -35,7 +35,7 @@ namespace HeuristicLab.Data.Views {
 
     protected override void UpdateCheckBoxes() {
       this.checkedListBox.Items.Clear();
-      foreach (DataGridViewColumn column in bands) {
+      foreach (DataGridViewColumn column in Bands) {
         checkedListBox.Items.Add(column.HeaderText, column.Visible);
       }
     }
