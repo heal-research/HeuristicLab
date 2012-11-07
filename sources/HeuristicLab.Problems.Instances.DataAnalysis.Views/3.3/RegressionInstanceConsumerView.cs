@@ -24,33 +24,28 @@ using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.Instances.Views;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  [View("DataAnalysis InstanceProvider View")]
-  [Content(typeof(IProblemInstanceConsumer<IDataAnalysisProblemData>), IsDefaultView = true)]
-  [Content(typeof(IProblemInstanceConsumer<IClusteringProblemData>), IsDefaultView = true)]
-  public partial class DataAnalysisInstanceConsumerView<T> : ProblemInstanceConsumerViewGeneric<T>
-    where T : class, IDataAnalysisProblemData {
-    public new IProblemInstanceConsumer<T> Content {
-      get { return (IProblemInstanceConsumer<T>)base.Content; }
+  [View("Regression InstanceProvider View")]
+  [Content(typeof(IProblemInstanceConsumer<IRegressionProblemData>), IsDefaultView = true)]
+  public partial class RegressionInstanceConsumerView : DataAnalysisInstanceConsumerView<IRegressionProblemData> {
+    public new IProblemInstanceConsumer<IRegressionProblemData> Content {
+      get { return (IProblemInstanceConsumer<IRegressionProblemData>)base.Content; }
       set { base.Content = value; }
     }
 
-    public DataAnalysisInstanceConsumerView() {
+    public RegressionInstanceConsumerView() {
       InitializeComponent();
-
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var provider = SelectedProvider as DataAnalysisInstanceProvider<T, DataAnalysisImportType>;
+      var provider = SelectedProvider as RegressionInstanceProvider;
       if (provider != null) {
-        DataAnalysisImportTypeDialog importTypeDialog = new DataAnalysisImportTypeDialog();
+        RegressionImportTypeDialog importTypeDialog = new RegressionImportTypeDialog();
         if (importTypeDialog.ShowDialog() == DialogResult.OK) {
-          T instance = default(T);
+          IRegressionProblemData instance = null;
           try {
             instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
-
           }
           catch (Exception ex) {
             MessageBox.Show(String.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);

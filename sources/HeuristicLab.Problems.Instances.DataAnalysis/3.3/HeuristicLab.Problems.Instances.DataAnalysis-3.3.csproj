@@ -114,6 +114,7 @@
   <ItemGroup>
     <Compile Include="Classification\ArtificialClassificationDataDescriptor.cs" />
     <Compile Include="Classification\ArtificialClassificationInstanceProvider.cs" />
+    <Compile Include="Classification\ClassificationImportType.cs" />
     <Compile Include="Classification\ClassificationInstanceProvider.cs" />
     <Compile Include="Classification\CSV\ClassifiactionCSVInstanceProvider.cs" />
     <Compile Include="Classification\ResourceClassificationDataDescriptor.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Classification\UCI\Wine.cs" />
     <Compile Include="Clustering\ClusteringInstanceProvider.cs" />
     <Compile Include="Clustering\CSV\ClusteringCSVInstanceProvider.cs" />
+    <Compile Include="DataAnalysisCSVFormat.cs" />
     <Compile Include="DataAnalysisImportType.cs" />
     <Compile Include="DataAnalysisInstanceProvider.cs" />
     <Compile Include="Plugin.cs" />
@@ -178,6 +180,7 @@
     <Compile Include="Regression\Nguyen\NguyenFunctionTwo.cs" />
     <Compile Include="Regression\Nguyen\NguyenInstanceProvider.cs" />
     <Compile Include="Regression\RealWorld\RegressionRealWorldInstanceProvider.cs" />
+    <Compile Include="Regression\RegressionImportType.cs" />
     <Compile Include="Regression\RegressionInstanceProvider.cs" />
     <Compile Include="Regression\ResourceRegressionDataDescriptor.cs" />
     <Compile Include="Regression\ResourceRegressionInstanceProvider.cs" />

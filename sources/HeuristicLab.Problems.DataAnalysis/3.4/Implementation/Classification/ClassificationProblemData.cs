@@ -303,7 +303,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       ResetTargetVariableDependentMembers();
     }
 
-    private static IEnumerable<string> CheckVariablesForPossibleTargetVariables(Dataset dataset) {
+    public static IEnumerable<string> CheckVariablesForPossibleTargetVariables(Dataset dataset) {
       int maxSamples = Math.Min(InspectedRowsToDetermineTargets, dataset.Rows);
       var validTargetVariables = (from v in dataset.DoubleVariables
                                   let distinctValues = dataset.GetDoubleValues(v)

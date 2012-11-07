@@ -22,10 +22,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 
@@ -66,10 +64,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       // turn of input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
       var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
-      foreach (var variableName in dataset.DoubleVariables) {
-        if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
-          variableName != targetVar)
-          allowedInputVars.Add(variableName);
+      if (trainingIndizes.Count() >= 2) {
+        foreach (var variableName in dataset.DoubleVariables) {
+          if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+            variableName != targetVar)
+            allowedInputVars.Add(variableName);
+        }
+      } else {
+        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(targetVar)));
       }
 
       IRegressionProblemData regressionData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
@@ -85,16 +87,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return regressionData;
     }
 
-    public override IRegressionProblemData ImportData(string path, DataAnalysisImportType type) {
-      TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(path);
-
+    protected override IRegressionProblemData ImportData(string path, RegressionImportType type, TableFileParser csvFileParser) {
       List<IList> values = csvFileParser.Values;
       if (type.Shuffle) {
         values = Shuffle(values);
       }
       Dataset dataset = new Dataset(csvFileParser.VariableNames, values);
-      string targetVar = dataset.DoubleVariables.Last();
 
       // turn of input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
@@ -104,14 +102,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       if (trainingIndizes.Count() >= 2) {
         foreach (var variableName in dataset.DoubleVariables) {
           if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
-            variableName != targetVar)
+            variableName != type.TargetVariable)
             allowedInputVars.Add(variableName);
         }
       } else {
-        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => x.Equals(targetVar)));
+        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(type.TargetVariable)));
       }
 
-      RegressionProblemData regressionData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
+      RegressionProblemData regressionData = new RegressionProblemData(dataset, allowedInputVars, type.TargetVariable);
 
       regressionData.TrainingPartition.Start = 0;
       regressionData.TrainingPartition.End = trainingPartEnd;
@@ -121,33 +119,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       regressionData.Name = Path.GetFileName(path);
 
       return regressionData;
-    }
-
-    public override bool CanExportData {
-      get { return true; }
-    }
-    public override void ExportData(IRegressionProblemData instance, string path) {
-      var strBuilder = new StringBuilder();
-      var colSep = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
-      foreach (var variable in instance.Dataset.VariableNames) {
-        strBuilder.Append(variable.Replace(colSep, String.Empty) + colSep);
-      }
-      strBuilder.Remove(strBuilder.Length - colSep.Length, colSep.Length);
-      strBuilder.AppendLine();
-
-      var dataset = instance.Dataset;
-
-      for (int i = 0; i < dataset.Rows; i++) {
-        for (int j = 0; j < dataset.Columns; j++) {
-          if (j > 0) strBuilder.Append(colSep);
-          strBuilder.Append(dataset.GetValue(i, j));
-        }
-        strBuilder.AppendLine();
-      }
-
-      using (var writer = new StreamWriter(path)) {
-        writer.Write(strBuilder);
-      }
     }
   }
 }

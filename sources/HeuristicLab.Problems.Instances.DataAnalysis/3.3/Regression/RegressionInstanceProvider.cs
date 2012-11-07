@@ -22,6 +22,6 @@
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class RegressionInstanceProvider : DataAnalysisInstanceProvider<IRegressionProblemData> {
+  public abstract class RegressionInstanceProvider : DataAnalysisInstanceProvider<IRegressionProblemData, RegressionImportType> {
   }
 }

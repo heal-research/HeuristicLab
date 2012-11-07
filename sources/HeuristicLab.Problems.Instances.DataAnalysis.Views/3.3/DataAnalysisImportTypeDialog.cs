@@ -19,10 +19,35 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Core.Views;
+using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   public partial class DataAnalysisImportTypeDialog : Form {
+
+    public static readonly BindingList<KeyValuePair<DateTimeFormatInfo, string>> dateTimeFormats = new BindingList<KeyValuePair<DateTimeFormatInfo, string>>{
+      new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.GetInstance(new CultureInfo("de-DE")), "dd/mm/yyyy hh:MM:ss" ),
+      new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/dd/yyyy hh:MM:ss" ),
+      new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "yyyy/mm/dd hh:MM:ss" ),
+      new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/yyyy/dd hh:MM:ss" )
+    };
+
+    public static readonly BindingList<KeyValuePair<char, string>> POSSIBLE_SEPARATORS = new BindingList<KeyValuePair<char, string>>{
+      new KeyValuePair<char, string>(',', ", (Comma)" ),
+      new KeyValuePair<char, string>(';', "; (Semicolon)" ),
+      new KeyValuePair<char, string>('\t', "\\t (Tab)")
+    };
+
+    public static readonly BindingList<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS = new BindingList<KeyValuePair<NumberFormatInfo, string>>{
+      new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" ),
+      new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.GetInstance(new CultureInfo("de-DE")), ", (Comma)" )      
+    };
 
     public string Path {
       get { return ProblemTextBox.Text; }
@@ -37,8 +62,32 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       }
     }
 
+    public DataAnalysisCSVFormat CSVFormat {
+      get {
+        return new DataAnalysisCSVFormat() {
+          Separator = (char)SeparatorComboBox.SelectedValue,
+          NumberFormatInfo = (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
+          DateTimeFormatInfo = (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue
+        };
+      }
+    }
+
     public DataAnalysisImportTypeDialog() {
       InitializeComponent();
+      ToolTip.SetToolTip(SeparatorInfoLabel, (string)SeparatorInfoLabel.Tag);
+      ToolTip.SetToolTip(DecimalSeparatorInfoLabel, (string)DecimalSeparatorInfoLabel.Tag);
+      ToolTip.SetToolTip(DateTimeFormatInfoLabel, (string)DateTimeFormatInfoLabel.Tag);
+      ToolTip.SetToolTip(ShuffelInfoLabel, (string)ShuffelInfoLabel.Tag);
+
+      SeparatorComboBox.DataSource = POSSIBLE_SEPARATORS;
+      SeparatorComboBox.ValueMember = "Key";
+      SeparatorComboBox.DisplayMember = "Value";
+      DecimalSeparatorComboBox.DataSource = POSSIBLE_DECIMAL_SEPARATORS;
+      DecimalSeparatorComboBox.ValueMember = "Key";
+      DecimalSeparatorComboBox.DisplayMember = "Value";
+      DateTimeFormatComboBox.DataSource = dateTimeFormats;
+      DateTimeFormatComboBox.ValueMember = "Key";
+      DateTimeFormatComboBox.DisplayMember = "Value";
     }
 
     private void TrainingTestTrackBar_ValueChanged(object sender, System.EventArgs e) {
@@ -46,10 +95,71 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       TestLabel.Text = "Test: " + (TrainingTestTrackBar.Maximum - TrainingTestTrackBar.Value) + " %";
     }
 
-    private void openFileButton_Click(object sender, System.EventArgs e) {
-      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        ProblemTextBox.Text = openFileDialog.FileName;
+    protected virtual void OpenFileButtonClick(object sender, System.EventArgs e) {
+      if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
+
+      ProblemTextBox.Text = openFileDialog.FileName;
+      ParseCSVFile();
+    }
+
+    protected virtual void CSVFormatComboBoxSelectionChangeCommitted(object sender, EventArgs e) {
+      if (string.IsNullOrEmpty(ProblemTextBox.Text)) return;
+
+      ParseCSVFile();
+    }
+
+    protected void ParseCSVFile() {
+      PreviewDatasetMatrix.Content = null;
+      try {
+        TableFileParser csvParser = new TableFileParser();
+        csvParser.Parse(ProblemTextBox.Text,
+                        (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
+                        (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,
+                        (char)SeparatorComboBox.SelectedValue);
+        IEnumerable<string> variableNamesWithType = GetVariableNamesWithType(csvParser);
+        PreviewDatasetMatrix.Content = new Dataset(variableNamesWithType, csvParser.Values);
+
+        CheckAdditionalConstraints(csvParser);
+
+        ErrorTextBox.Text = String.Empty;
+        ErrorTextBox.Visible = false;
         OkButton.Enabled = true;
+      }
+      catch (Exception ex) {
+        OkButton.Enabled = false;
+        ErrorTextBox.Text = ex.Message;
+        ErrorTextBox.Visible = true;
+      }
+    }
+
+    protected virtual void CheckAdditionalConstraints(TableFileParser csvParser) {
+      if (!csvParser.Values.Any(x => x is List<double>)) {
+        throw new ArgumentException("No double column could be found!");
+      }
+    }
+
+    private IEnumerable<string> GetVariableNamesWithType(TableFileParser csvParser) {
+      IList<string> variableNamesWithType = csvParser.VariableNames.ToList();
+      for (int i = 0; i < csvParser.Values.Count; i++) {
+        if (csvParser.Values[i] is List<double>) {
+          variableNamesWithType[i] += " (Double)";
+        } else if (csvParser.Values[i] is List<string>) {
+          variableNamesWithType[i] += " (String)";
+        } else if (csvParser.Values[i] is List<DateTime>) {
+          variableNamesWithType[i] += " (DateTime)";
+        } else {
+          throw new ArgumentException("The variable values must be of type List<double>, List<string> or List<DateTime>");
+        }
+      }
+      return variableNamesWithType;
+    }
+
+    protected void ControlToolTip_DoubleClick(object sender, EventArgs e) {
+      Control control = sender as Control;
+      if (control != null) {
+        using (TextDialog dialog = new TextDialog(control.Name, (string)control.Tag, true)) {
+          dialog.ShowDialog(this);
+        }
       }
     }
   }

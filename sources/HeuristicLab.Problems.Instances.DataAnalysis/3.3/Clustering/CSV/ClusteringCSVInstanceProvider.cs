@@ -22,10 +22,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 
@@ -74,7 +72,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
             allowedInputVars.Add(variableName);
         }
       } else {
-        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => x.Equals(targetVar)));
+        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(targetVar)));
       }
 
       ClusteringProblemData clusteringData = new ClusteringProblemData(dataset, allowedInputVars);
@@ -90,10 +88,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return clusteringData;
     }
 
-    public override IClusteringProblemData ImportData(string path, DataAnalysisImportType type) {
-      TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(path);
-
+    protected override IClusteringProblemData ImportData(string path, DataAnalysisImportType type, TableFileParser csvFileParser) {
       List<IList> values = csvFileParser.Values;
       if (type.Shuffle) {
         values = Shuffle(values);
@@ -106,10 +101,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var allowedInputVars = new List<string>();
       int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
       var trainingIndizes = Enumerable.Range(0, trainingPartEnd);
-      foreach (var variableName in dataset.DoubleVariables) {
-        if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
-          variableName != targetVar)
-          allowedInputVars.Add(variableName);
+      if (trainingIndizes.Count() >= 2) {
+        foreach (var variableName in dataset.DoubleVariables) {
+          if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+            variableName != targetVar)
+            allowedInputVars.Add(variableName);
+        }
+      } else {
+        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(targetVar)));
       }
 
       ClusteringProblemData clusteringData = new ClusteringProblemData(dataset, allowedInputVars);
@@ -122,33 +121,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       clusteringData.Name = Path.GetFileName(path);
 
       return clusteringData;
-    }
-
-    public override bool CanExportData {
-      get { return true; }
-    }
-    public override void ExportData(IClusteringProblemData instance, string path) {
-      var strBuilder = new StringBuilder();
-      var colSep = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
-      foreach (var variable in instance.Dataset.VariableNames) {
-        strBuilder.Append(variable.Replace(colSep, String.Empty) + colSep);
-      }
-      strBuilder.Remove(strBuilder.Length - colSep.Length, colSep.Length);
-      strBuilder.AppendLine();
-
-      var dataset = instance.Dataset;
-
-      for (int i = 0; i < dataset.Rows; i++) {
-        for (int j = 0; j < dataset.Columns; j++) {
-          if (j > 0) strBuilder.Append(colSep);
-          strBuilder.Append(dataset.GetValue(i, j));
-        }
-        strBuilder.AppendLine();
-      }
-
-      using (var writer = new StreamWriter(path)) {
-        writer.Write(strBuilder);
-      }
     }
   }
 }

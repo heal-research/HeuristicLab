@@ -22,6 +22,6 @@
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ClusteringInstanceProvider : DataAnalysisInstanceProvider<IClusteringProblemData> {
+  public abstract class ClusteringInstanceProvider : DataAnalysisInstanceProvider<IClusteringProblemData, DataAnalysisImportType> {
   }
 }

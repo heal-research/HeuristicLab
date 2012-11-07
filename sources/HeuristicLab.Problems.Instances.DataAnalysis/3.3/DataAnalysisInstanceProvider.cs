@@ -22,21 +22,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class DataAnalysisInstanceProvider<TData> : ProblemInstanceProvider<TData>
-    where TData : class, IDataAnalysisProblemData {
+  public abstract class DataAnalysisInstanceProvider<TData, ImportType> : ProblemInstanceProvider<TData>
+    where TData : class, IDataAnalysisProblemData
+    where ImportType : DataAnalysisImportType {
 
     // has to be implemented, if CanImportData is true
-    public virtual TData ImportData(string path, DataAnalysisImportType type) {
-      throw new NotSupportedException();
+    public TData ImportData(string path, ImportType type) {
+      TableFileParser csvFileParser = new TableFileParser();
+      csvFileParser.Parse(path);
+      return ImportData(path, type, csvFileParser);
     }
+    public TData ImportData(string path, ImportType type, DataAnalysisCSVFormat csvFormat) {
+      TableFileParser csvFileParser = new TableFileParser();
+      csvFileParser.Parse(path, csvFormat.NumberFormatInfo, csvFormat.DateTimeFormatInfo, csvFormat.Separator);
+      return ImportData(path, type, csvFileParser);
+    }
+
+    protected abstract TData ImportData(string path, ImportType type, TableFileParser csvFileParser);
 
     protected List<IList> Shuffle(List<IList> values) {
       int count = values.First().Count;
-      int[] indices = GetRandomIndices(count);
+      int[] indices = Enumerable.Range(0, count).Shuffle(new FastRandom()).ToArray();
       List<IList> shuffeledValues = new List<IList>(values.Count);
       for (int col = 0; col < values.Count; col++) {
 
@@ -56,19 +70,31 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return shuffeledValues;
     }
 
-    //Fisher–Yates shuffle
-    private int[] GetRandomIndices(int amount) {
-      int[] randomIndices = Enumerable.Range(0, amount).ToArray();
-      System.Random rand = new System.Random();
-      int n = amount;
-      while (n > 1) {
-        n--;
-        int k = rand.Next(n + 1);
-        int value = randomIndices[k];
-        randomIndices[k] = randomIndices[n];
-        randomIndices[n] = value;
+    public override bool CanExportData {
+      get { return true; }
+    }
+    public override void ExportData(TData instance, string path) {
+      var strBuilder = new StringBuilder();
+      var colSep = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
+      foreach (var variable in instance.Dataset.VariableNames) {
+        strBuilder.Append(variable.Replace(colSep, String.Empty) + colSep);
       }
-      return randomIndices;
+      strBuilder.Remove(strBuilder.Length - colSep.Length, colSep.Length);
+      strBuilder.AppendLine();
+
+      var dataset = instance.Dataset;
+
+      for (int i = 0; i < dataset.Rows; i++) {
+        for (int j = 0; j < dataset.Columns; j++) {
+          if (j > 0) strBuilder.Append(colSep);
+          strBuilder.Append(dataset.GetValue(i, j));
+        }
+        strBuilder.AppendLine();
+      }
+
+      using (var writer = new StreamWriter(path)) {
+        writer.Write(strBuilder);
+      }
     }
   }
 }

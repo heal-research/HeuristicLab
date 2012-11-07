@@ -22,10 +22,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 
@@ -75,7 +73,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
             allowedInputVars.Add(variableName);
         }
       } else {
-        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => x.Equals(targetVar)));
+        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(targetVar)));
       }
 
       ClassificationProblemData classificationData = new ClassificationProblemData(dataset, allowedInputVars, targetVar);
@@ -91,29 +89,30 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return classificationData;
     }
 
-    public override IClassificationProblemData ImportData(string path, DataAnalysisImportType type) {
-      TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(path);
-
+    protected override IClassificationProblemData ImportData(string path, ClassificationImportType type, TableFileParser csvFileParser) {
       int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
       List<IList> values = csvFileParser.Values;
       if (type.Shuffle) {
-        values = Shuffle(values);
+        values = Shuffle(values, csvFileParser.VariableNames.ToList().FindIndex(x => x.Equals(type.TargetVariable)),
+                         type.Training, out trainingPartEnd);
       }
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, values);
-      string targetVar = dataset.DoubleVariables.Last();
 
       // turn of input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
       var trainingIndizes = Enumerable.Range(0, trainingPartEnd);
-      foreach (var variableName in dataset.DoubleVariables) {
-        if (trainingIndizes.Count() >= 2 && dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
-          variableName != targetVar)
-          allowedInputVars.Add(variableName);
+      if (trainingIndizes.Count() >= 2) {
+        foreach (var variableName in dataset.DoubleVariables) {
+          if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
+            variableName != type.TargetVariable)
+            allowedInputVars.Add(variableName);
+        }
+      } else {
+        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(type.TargetVariable)));
       }
 
-      ClassificationProblemData classificationData = new ClassificationProblemData(dataset, allowedInputVars, targetVar);
+      ClassificationProblemData classificationData = new ClassificationProblemData(dataset, allowedInputVars, type.TargetVariable);
 
       classificationData.TrainingPartition.Start = 0;
       classificationData.TrainingPartition.End = trainingPartEnd;
@@ -125,31 +124,58 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       return classificationData;
     }
 
-    public override bool CanExportData {
-      get { return true; }
-    }
-    public override void ExportData(IClassificationProblemData instance, string path) {
-      var strBuilder = new StringBuilder();
-      var colSep = CultureInfo.CurrentCulture.TextInfo.ListSeparator;
-      foreach (var variable in instance.Dataset.VariableNames) {
-        strBuilder.Append(variable.Replace(colSep, String.Empty) + colSep);
+    protected List<IList> Shuffle(List<IList> values, int target, int trainingPercentage, out int trainingPartEnd) {
+      IList targetValues = values[target];
+      var group = targetValues.Cast<double>().GroupBy(x => x).Select(g => new { Key = g.Key, Count = g.Count() }).ToList();
+      Dictionary<double, double> taken = new Dictionary<double, double>();
+      foreach (var classCount in group) {
+        taken[classCount.Key] = (classCount.Count * trainingPercentage) / 100.0;
       }
-      strBuilder.Remove(strBuilder.Length - colSep.Length, colSep.Length);
-      strBuilder.AppendLine();
 
-      var dataset = instance.Dataset;
+      List<IList> training = GetListOfIListCopy(values);
+      List<IList> test = GetListOfIListCopy(values);
 
-      for (int i = 0; i < dataset.Rows; i++) {
-        for (int j = 0; j < dataset.Columns; j++) {
-          if (j > 0) strBuilder.Append(colSep);
-          strBuilder.Append(dataset.GetValue(i, j));
+      for (int i = 0; i < targetValues.Count; i++) {
+        if (taken[(double)targetValues[i]] > 0) {
+          AddRow(training, values, i);
+          taken[(double)targetValues[i]]--;
+        } else {
+          AddRow(test, values, i);
         }
-        strBuilder.AppendLine();
       }
 
-      using (var writer = new StreamWriter(path)) {
-        writer.Write(strBuilder);
+      trainingPartEnd = training.First().Count;
+
+      training = Shuffle(training);
+      test = Shuffle(test);
+      for (int i = 0; i < training.Count; i++) {
+        for (int j = 0; j < test[i].Count; j++) {
+          training[i].Add(test[i][j]);
+        }
       }
+
+      return training;
+    }
+
+    private void AddRow(List<IList> destination, List<IList> source, int index) {
+      for (int i = 0; i < source.Count; i++) {
+        destination[i].Add(source[i][index]);
+      }
+    }
+
+    private List<IList> GetListOfIListCopy(List<IList> values) {
+      List<IList> newList = new List<IList>(values.Count);
+      foreach (IList t in values) {
+        if (t is List<double>)
+          newList.Add(new List<double>());
+        else if (t is List<DateTime>)
+          newList.Add(new List<DateTime>());
+        else if (t is List<string>)
+          newList.Add(new List<string>());
+        else
+          throw new InvalidOperationException();
+      }
+      return newList;
     }
   }
 }

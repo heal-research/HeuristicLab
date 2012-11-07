@@ -19,9 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Problems.DataAnalysis;
+using System.Globalization;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ClassificationInstanceProvider : DataAnalysisInstanceProvider<IClassificationProblemData, ClassificationImportType> {
+  public class DataAnalysisCSVFormat {
+    public char Separator { get; set; }
+    public NumberFormatInfo NumberFormatInfo { get; set; }
+    public DateTimeFormatInfo DateTimeFormatInfo { get; set; }
   }
 }
