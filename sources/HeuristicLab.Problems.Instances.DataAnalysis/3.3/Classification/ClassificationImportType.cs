@@ -22,5 +22,6 @@
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class ClassificationImportType : DataAnalysisImportType {
     public string TargetVariable { get; set; }
+    public bool UniformlyDistributeClasses { get; set; }
   }
 }

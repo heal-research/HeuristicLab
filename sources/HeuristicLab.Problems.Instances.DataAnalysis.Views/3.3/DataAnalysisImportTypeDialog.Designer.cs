@@ -1,4 +1,24 @@
-﻿
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   partial class DataAnalysisImportTypeDialog {
     /// <summary>
@@ -25,13 +45,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DataAnalysisImportTypeDialog));
       this.ShuffleDataCheckbox = new System.Windows.Forms.CheckBox();
       this.OkButton = new System.Windows.Forms.Button();
       this.TrainingTestTrackBar = new System.Windows.Forms.TrackBar();
       this.TestLabel = new System.Windows.Forms.Label();
       this.TrainingLabel = new System.Windows.Forms.Label();
-      this.CancelButton = new System.Windows.Forms.Button();
+      this.CancelationButton = new System.Windows.Forms.Button();
       this.OpenFileButton = new System.Windows.Forms.Button();
       this.ProblemFileLabel = new System.Windows.Forms.Label();
       this.ProblemTextBox = new System.Windows.Forms.TextBox();
@@ -73,7 +92,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.OkButton.Enabled = false;
-      this.OkButton.Location = new System.Drawing.Point(87, 407);
+      this.OkButton.Location = new System.Drawing.Point(303, 407);
       this.OkButton.Name = "OkButton";
       this.OkButton.Size = new System.Drawing.Size(75, 23);
       this.OkButton.TabIndex = 2;
@@ -83,7 +102,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // TrainingTestTrackBar
       // 
       this.TrainingTestTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.TrainingTestTrackBar.Location = new System.Drawing.Point(6, 43);
       this.TrainingTestTrackBar.Maximum = 100;
       this.TrainingTestTrackBar.Minimum = 1;
@@ -113,16 +132,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.TrainingLabel.TabIndex = 5;
       this.TrainingLabel.Text = "Training: 66 %";
       // 
-      // CancelButton
+      // CancelationButton
       // 
-      this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.CancelButton.Location = new System.Drawing.Point(318, 407);
-      this.CancelButton.Name = "CancelButton";
-      this.CancelButton.Size = new System.Drawing.Size(75, 23);
-      this.CancelButton.TabIndex = 3;
-      this.CancelButton.Text = "&Cancel";
-      this.CancelButton.UseVisualStyleBackColor = true;
+      this.CancelationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.CancelationButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+      this.CancelationButton.Location = new System.Drawing.Point(384, 407);
+      this.CancelationButton.Name = "CancelationButton";
+      this.CancelationButton.Size = new System.Drawing.Size(75, 23);
+      this.CancelationButton.TabIndex = 3;
+      this.CancelationButton.Text = "&Cancel";
+      this.CancelationButton.UseVisualStyleBackColor = true;
       // 
       // OpenFileButton
       // 
@@ -147,7 +166,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // ProblemTextBox
       // 
       this.ProblemTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.ProblemTextBox.Location = new System.Drawing.Point(91, 6);
       this.ProblemTextBox.Name = "ProblemTextBox";
       this.ProblemTextBox.ReadOnly = true;
@@ -161,7 +180,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // DateTimeFormatComboBox
       // 
       this.DateTimeFormatComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.DateTimeFormatComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.DateTimeFormatComboBox.FormattingEnabled = true;
       this.DateTimeFormatComboBox.Location = new System.Drawing.Point(111, 73);
@@ -173,7 +192,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // DecimalSeparatorComboBox
       // 
       this.DecimalSeparatorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.DecimalSeparatorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.DecimalSeparatorComboBox.FormattingEnabled = true;
       this.DecimalSeparatorComboBox.Location = new System.Drawing.Point(111, 46);
@@ -212,7 +231,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // SeparatorComboBox
       // 
       this.SeparatorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.SeparatorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.SeparatorComboBox.FormattingEnabled = true;
       this.SeparatorComboBox.Location = new System.Drawing.Point(111, 19);
@@ -224,7 +243,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // CSVSettingsGroupBox
       // 
       this.CSVSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.CSVSettingsGroupBox.Controls.Add(this.DateTimeFormatInfoLabel);
       this.CSVSettingsGroupBox.Controls.Add(this.DecimalSeparatorInfoLabel);
       this.CSVSettingsGroupBox.Controls.Add(this.SeparatorInfoLabel);
@@ -244,41 +263,44 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // DateTimeFormatInfoLabel
       // 
       this.DateTimeFormatInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.DateTimeFormatInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
       this.DateTimeFormatInfoLabel.Location = new System.Drawing.Point(421, 76);
-      this.DateTimeFormatInfoLabel.Name = "DateTime Format Info";
+      this.DateTimeFormatInfoLabel.Name = "DateTimeFormatInfoLabel";
       this.DateTimeFormatInfoLabel.Size = new System.Drawing.Size(16, 16);
       this.DateTimeFormatInfoLabel.TabIndex = 23;
       this.DateTimeFormatInfoLabel.Tag = "Select the date time format used in the csv file";
-      this.DateTimeFormatInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.ToolTip.SetToolTip(this.DateTimeFormatInfoLabel, "Select the date time format used in the csv file");
       this.DateTimeFormatInfoLabel.DoubleClick += new System.EventHandler(this.ControlToolTip_DoubleClick);
       // 
       // DecimalSeparatorInfoLabel
       // 
       this.DecimalSeparatorInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.DecimalSeparatorInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
       this.DecimalSeparatorInfoLabel.Location = new System.Drawing.Point(421, 49);
-      this.DecimalSeparatorInfoLabel.Name = "Decimal Separator Info";
+      this.DecimalSeparatorInfoLabel.Name = "DecimalSeparatorInfoLabel";
       this.DecimalSeparatorInfoLabel.Size = new System.Drawing.Size(16, 16);
       this.DecimalSeparatorInfoLabel.TabIndex = 22;
       this.DecimalSeparatorInfoLabel.Tag = "Select the decimal separator used to for double values";
-      this.DecimalSeparatorInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.ToolTip.SetToolTip(this.DecimalSeparatorInfoLabel, "Select the decimal separator used to for double values");
       this.DecimalSeparatorInfoLabel.DoubleClick += new System.EventHandler(this.ControlToolTip_DoubleClick);
       // 
       // SeparatorInfoLabel
       // 
       this.SeparatorInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.SeparatorInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
       this.SeparatorInfoLabel.Location = new System.Drawing.Point(421, 22);
-      this.SeparatorInfoLabel.Name = "Separator Info";
+      this.SeparatorInfoLabel.Name = "SeparatorInfoLabel";
       this.SeparatorInfoLabel.Size = new System.Drawing.Size(16, 16);
       this.SeparatorInfoLabel.TabIndex = 21;
       this.SeparatorInfoLabel.Tag = "Select the separator used to separate columns in the csv file.";
-      this.SeparatorInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.ToolTip.SetToolTip(this.SeparatorInfoLabel, "Select the separator used to separate columns in the csv file.");
       this.SeparatorInfoLabel.DoubleClick += new System.EventHandler(this.ControlToolTip_DoubleClick);
       // 
       // ProblemDataSettingsGroupBox
       // 
       this.ProblemDataSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.ProblemDataSettingsGroupBox.Controls.Add(this.ErrorTextBox);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.ShuffelInfoLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.PreviewLabel);
@@ -305,12 +327,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // ShuffelInfoLabel
       // 
+      this.ShuffelInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
       this.ShuffelInfoLabel.Location = new System.Drawing.Point(111, 20);
-      this.ShuffelInfoLabel.Name = "Shuffle Info";
+      this.ShuffelInfoLabel.Name = "ShuffelInfoLabel";
       this.ShuffelInfoLabel.Size = new System.Drawing.Size(16, 16);
       this.ShuffelInfoLabel.TabIndex = 8;
       this.ShuffelInfoLabel.Tag = "Check, if the importat data should be shuffled";
-      this.ShuffelInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.ToolTip.SetToolTip(this.ShuffelInfoLabel, "Check, if the importat data should be shuffled");
       this.ShuffelInfoLabel.DoubleClick += new System.EventHandler(this.ControlToolTip_DoubleClick);
       // 
       // PreviewLabel
@@ -325,8 +348,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // PreviewDatasetMatrix
       // 
       this.PreviewDatasetMatrix.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.PreviewDatasetMatrix.Caption = "Dataset Preview";
       this.PreviewDatasetMatrix.Content = null;
       this.PreviewDatasetMatrix.Location = new System.Drawing.Point(6, 108);
@@ -349,7 +372,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.Controls.Add(this.ProblemTextBox);
       this.Controls.Add(this.OpenFileButton);
       this.Controls.Add(this.ProblemFileLabel);
-      this.Controls.Add(this.CancelButton);
+      this.Controls.Add(this.CancelationButton);
       this.Controls.Add(this.OkButton);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
@@ -374,7 +397,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected System.Windows.Forms.TrackBar TrainingTestTrackBar;
     protected System.Windows.Forms.Label TestLabel;
     protected System.Windows.Forms.Label TrainingLabel;
-    protected System.Windows.Forms.Button CancelButton;
+    protected System.Windows.Forms.Button CancelationButton;
     protected System.Windows.Forms.OpenFileDialog openFileDialog;
     protected System.Windows.Forms.Label ProblemFileLabel;
     protected System.Windows.Forms.Button OpenFileButton;

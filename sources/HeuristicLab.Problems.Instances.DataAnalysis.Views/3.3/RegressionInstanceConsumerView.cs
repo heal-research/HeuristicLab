@@ -47,15 +47,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
           try {
             instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
           }
-          catch (Exception ex) {
-            MessageBox.Show(String.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          catch (IOException ex) {
+            ErrorWhileParsing(ex);
             return;
           }
           try {
             GenericConsumer.Load(instance);
           }
-          catch (Exception ex) {
-            MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(importTypeDialog.Path), Environment.NewLine + ex.Message), "Cannot load instance");
+          catch (IOException ex) {
+            ErrorWhileLoading(ex, importTypeDialog.Path);
           }
         } else {
           return;

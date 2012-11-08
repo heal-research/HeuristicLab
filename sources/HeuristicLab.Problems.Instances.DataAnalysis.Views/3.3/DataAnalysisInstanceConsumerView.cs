@@ -39,7 +39,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
 
     public DataAnalysisInstanceConsumerView() {
       InitializeComponent();
-
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
@@ -50,17 +49,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
           T instance = default(T);
           try {
             instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
-
           }
-          catch (Exception ex) {
-            MessageBox.Show(String.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          catch (IOException ex) {
+            ErrorWhileParsing(ex);
             return;
           }
           try {
             GenericConsumer.Load(instance);
           }
-          catch (Exception ex) {
-            MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(importTypeDialog.Path), Environment.NewLine + ex.Message), "Cannot load instance");
+          catch (IOException ex) {
+            ErrorWhileLoading(ex, importTypeDialog.Path);
           }
         } else {
           return;
@@ -68,6 +66,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       } else {
         base.importButton_Click(sender, e);
       }
+    }
+
+    protected void ErrorWhileParsing(Exception ex) {
+      MessageBox.Show(String.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+    protected void ErrorWhileLoading(Exception ex, string path) {
+      MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(path), Environment.NewLine + ex.Message), "Cannot load instance");
     }
   }
 }

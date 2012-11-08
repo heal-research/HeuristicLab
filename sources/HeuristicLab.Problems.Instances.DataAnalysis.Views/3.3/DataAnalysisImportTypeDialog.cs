@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -31,20 +30,20 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   public partial class DataAnalysisImportTypeDialog : Form {
 
-    public static readonly BindingList<KeyValuePair<DateTimeFormatInfo, string>> dateTimeFormats = new BindingList<KeyValuePair<DateTimeFormatInfo, string>>{
+    public static readonly List<KeyValuePair<DateTimeFormatInfo, string>> dateTimeFormats = new List<KeyValuePair<DateTimeFormatInfo, string>>{
       new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.GetInstance(new CultureInfo("de-DE")), "dd/mm/yyyy hh:MM:ss" ),
       new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/dd/yyyy hh:MM:ss" ),
       new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "yyyy/mm/dd hh:MM:ss" ),
       new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/yyyy/dd hh:MM:ss" )
     };
 
-    public static readonly BindingList<KeyValuePair<char, string>> POSSIBLE_SEPARATORS = new BindingList<KeyValuePair<char, string>>{
+    public static readonly List<KeyValuePair<char, string>> POSSIBLE_SEPARATORS = new List<KeyValuePair<char, string>>{
       new KeyValuePair<char, string>(',', ", (Comma)" ),
       new KeyValuePair<char, string>(';', "; (Semicolon)" ),
       new KeyValuePair<char, string>('\t', "\\t (Tab)")
     };
 
-    public static readonly BindingList<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS = new BindingList<KeyValuePair<NumberFormatInfo, string>>{
+    public static readonly List<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS = new List<KeyValuePair<NumberFormatInfo, string>>{
       new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" ),
       new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.GetInstance(new CultureInfo("de-DE")), ", (Comma)" )      
     };
@@ -74,10 +73,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
 
     public DataAnalysisImportTypeDialog() {
       InitializeComponent();
-      ToolTip.SetToolTip(SeparatorInfoLabel, (string)SeparatorInfoLabel.Tag);
-      ToolTip.SetToolTip(DecimalSeparatorInfoLabel, (string)DecimalSeparatorInfoLabel.Tag);
-      ToolTip.SetToolTip(DateTimeFormatInfoLabel, (string)DateTimeFormatInfoLabel.Tag);
-      ToolTip.SetToolTip(ShuffelInfoLabel, (string)ShuffelInfoLabel.Tag);
 
       SeparatorComboBox.DataSource = POSSIBLE_SEPARATORS;
       SeparatorComboBox.ValueMember = "Key";

@@ -24,7 +24,6 @@ using System.Linq;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-
   public partial class RegressionImportTypeDialog : DataAnalysisImportTypeDialog {
     public new RegressionImportType ImportType {
       get {
@@ -38,8 +37,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
 
     public RegressionImportTypeDialog() {
       InitializeComponent();
-
-      ToolTip.SetToolTip(TargetVariableInfoLabel, (string)TargetVariableInfoLabel.Tag);
     }
 
     protected override void CheckAdditionalConstraints(TableFileParser csvParser) {

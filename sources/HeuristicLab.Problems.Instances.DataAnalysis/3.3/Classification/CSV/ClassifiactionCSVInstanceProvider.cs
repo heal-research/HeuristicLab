@@ -93,8 +93,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
       List<IList> values = csvFileParser.Values;
       if (type.Shuffle) {
-        values = Shuffle(values, csvFileParser.VariableNames.ToList().FindIndex(x => x.Equals(type.TargetVariable)),
-                         type.Training, out trainingPartEnd);
+        values = Shuffle(values);
+        if (type.UniformlyDistributeClasses) {
+          values = Shuffle(values, csvFileParser.VariableNames.ToList().FindIndex(x => x.Equals(type.TargetVariable)),
+                           type.Training, out trainingPartEnd);
+        }
       }
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, values);
@@ -146,8 +149,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       trainingPartEnd = training.First().Count;
 
-      training = Shuffle(training);
-      test = Shuffle(test);
       for (int i = 0; i < training.Count; i++) {
         for (int j = 0; j < test[i].Count; j++) {
           training[i].Add(test[i][j]);

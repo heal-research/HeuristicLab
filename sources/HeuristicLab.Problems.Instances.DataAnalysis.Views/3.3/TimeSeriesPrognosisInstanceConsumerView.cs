@@ -26,24 +26,24 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  [View("Classification InstanceProvider View")]
-  [Content(typeof(IProblemInstanceConsumer<IClassificationProblemData>), IsDefaultView = true)]
-  public partial class ClassificationInstanceConsumerView : DataAnalysisInstanceConsumerView<IClassificationProblemData> {
-    public new IProblemInstanceConsumer<IClassificationProblemData> Content {
-      get { return (IProblemInstanceConsumer<IClassificationProblemData>)base.Content; }
+  [View("TimeSeriesPrognosis InstanceProvider View")]
+  [Content(typeof(IProblemInstanceConsumer<ITimeSeriesPrognosisProblemData>), IsDefaultView = true)]
+  public partial class TimeSeriesPrognosisInstanceConsumerView : DataAnalysisInstanceConsumerView<ITimeSeriesPrognosisProblemData> {
+    public new IProblemInstanceConsumer<ITimeSeriesPrognosisProblemData> Content {
+      get { return (IProblemInstanceConsumer<ITimeSeriesPrognosisProblemData>)base.Content; }
       set { base.Content = value; }
     }
 
-    public ClassificationInstanceConsumerView() {
+    public TimeSeriesPrognosisInstanceConsumerView() {
       InitializeComponent();
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var provider = SelectedProvider as ClassificationInstanceProvider;
+      var provider = SelectedProvider as TimeSeriesPrognosisInstanceProvider;
       if (provider != null) {
-        ClassificationImportTypeDialog importTypeDialog = new ClassificationImportTypeDialog();
+        TimeSeriesPrognosisImportTypeDialog importTypeDialog = new TimeSeriesPrognosisImportTypeDialog();
         if (importTypeDialog.ShowDialog() == DialogResult.OK) {
-          IClassificationProblemData instance = null;
+          ITimeSeriesPrognosisProblemData instance = null;
           try {
             instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
           }

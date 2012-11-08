@@ -202,6 +202,7 @@
     <Compile Include="Regression\Vladislavleva\VladislavlevaInstanceProvider.cs" />
     <Compile Include="TableFileParser.cs" />
     <Compile Include="TimeSeries\CSV\TimeSeriesPrognosisCSVInstanceProvider.cs" />
+    <Compile Include="TimeSeries\TimeSeriesPrognosisImportType.cs" />
     <Compile Include="TimeSeries\TimeSeriesPrognosisInstanceProvider.cs" />
   </ItemGroup>
   <ItemGroup>

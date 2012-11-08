@@ -82,8 +82,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       NumberFormatInfo numberFormat;
       DateTimeFormatInfo dateTimeFormatInfo;
       char separator;
-      DetermineFileFormat(new FileStream(fileName, FileMode.Open), out numberFormat, out dateTimeFormatInfo, out separator);
-      Parse(new FileStream(fileName, FileMode.Open), numberFormat, dateTimeFormatInfo, separator);
+      DetermineFileFormat(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), out numberFormat, out dateTimeFormatInfo, out separator);
+      Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), numberFormat, dateTimeFormatInfo, separator);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="dateTimeFormatInfo">Format of datetime</param>
     /// <param name="separator">defines the separator</param>
     public void Parse(string fileName, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
-      Parse(new FileStream(fileName, FileMode.Open), numberFormat, dateTimeFormatInfo, separator);
+      Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), numberFormat, dateTimeFormatInfo, separator);
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     public static void DetermineFileFormat(string path, out NumberFormatInfo numberFormat, out DateTimeFormatInfo dateTimeFormatInfo, out char separator) {
-      DetermineFileFormat(new FileStream(path, FileMode.Open), out numberFormat, out dateTimeFormatInfo, out separator);
+      DetermineFileFormat(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), out numberFormat, out dateTimeFormatInfo, out separator);
     }
 
     public static void DetermineFileFormat(Stream stream, out NumberFormatInfo numberFormat, out DateTimeFormatInfo dateTimeFormatInfo, out char separator) {
