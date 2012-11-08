@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
-      this.calculatingPanel.SuspendLayout();
+      this.progressPanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // errorProvider
@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // CalculatingPanel
       // 
-      this.calculatingPanel.Location = new System.Drawing.Point(138, 82);
+      this.progressPanel.Location = new System.Drawing.Point(138, 82);
       // 
       // VariableSelectionLabel
       // 
@@ -146,8 +146,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
-      this.calculatingPanel.ResumeLayout(false);
-      this.calculatingPanel.PerformLayout();
+      this.progressPanel.ResumeLayout(false);
+      this.progressPanel.PerformLayout();
       this.ResumeLayout(false);
 
     }

@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AbstractFeatureCorrelationView));
-      this.heatMapProgressBar = new System.Windows.Forms.ProgressBar();
+      this.progressBar = new System.Windows.Forms.ProgressBar();
       this.partitionComboBox = new System.Windows.Forms.ComboBox();
       this.correlationCalcLabel = new System.Windows.Forms.Label();
       this.correlationCalcComboBox = new System.Windows.Forms.ComboBox();
@@ -57,25 +57,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.maximumLabel = new System.Windows.Forms.Label();
       this.pictureBox = new System.Windows.Forms.PictureBox();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
-      this.calculatingPanel = new System.Windows.Forms.Panel();
-      this.calculatingLabel = new System.Windows.Forms.Label();
+      this.progressPanel = new System.Windows.Forms.Panel();
+      this.progressLabel = new System.Windows.Forms.Label();
       this.dataView = new HeuristicLab.Problems.DataAnalysis.Views.EnhancedStringConvertibleMatrixView();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
-      this.calculatingPanel.SuspendLayout();
+      this.progressPanel.SuspendLayout();
       this.SuspendLayout();
       // 
       // HeatMapProgressBar
       // 
-      this.heatMapProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-      this.heatMapProgressBar.Location = new System.Drawing.Point(25, 46);
-      this.heatMapProgressBar.Name = "HeatMapProgressBar";
-      this.heatMapProgressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-      this.heatMapProgressBar.Size = new System.Drawing.Size(154, 21);
-      this.heatMapProgressBar.TabIndex = 9;
+      this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.progressBar.Location = new System.Drawing.Point(25, 46);
+      this.progressBar.Name = "HeatMapProgressBar";
+      this.progressBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+      this.progressBar.Size = new System.Drawing.Size(154, 21);
+      this.progressBar.TabIndex = 9;
       // 
       // PartitionComboBox
       // 
@@ -170,7 +170,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // SplitContainer.Panel2
       // 
-      this.splitContainer.Panel2.Controls.Add(this.calculatingPanel);
+      this.splitContainer.Panel2.Controls.Add(this.progressPanel);
       this.splitContainer.Panel2.Controls.Add(this.dataView);
       this.splitContainer.Size = new System.Drawing.Size(475, 330);
       this.splitContainer.SplitterDistance = 25;
@@ -178,22 +178,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // CalculatingPanel
       // 
-      this.calculatingPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
-      this.calculatingPanel.Controls.Add(this.calculatingLabel);
-      this.calculatingPanel.Controls.Add(this.heatMapProgressBar);
-      this.calculatingPanel.Location = new System.Drawing.Point(138, 95);
-      this.calculatingPanel.Name = "CalculatingPanel";
-      this.calculatingPanel.Size = new System.Drawing.Size(200, 81);
-      this.calculatingPanel.TabIndex = 10;
+      this.progressPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
+      this.progressPanel.Controls.Add(this.progressLabel);
+      this.progressPanel.Controls.Add(this.progressBar);
+      this.progressPanel.Location = new System.Drawing.Point(138, 95);
+      this.progressPanel.Name = "CalculatingPanel";
+      this.progressPanel.Size = new System.Drawing.Size(200, 81);
+      this.progressPanel.TabIndex = 10;
       // 
       // CalculatingLabel
       // 
-      this.calculatingLabel.AutoSize = true;
-      this.calculatingLabel.Location = new System.Drawing.Point(42, 19);
-      this.calculatingLabel.Name = "CalculatingLabel";
-      this.calculatingLabel.Size = new System.Drawing.Size(120, 13);
-      this.calculatingLabel.TabIndex = 10;
-      this.calculatingLabel.Text = "Calculating correlation...";
+      this.progressLabel.AutoSize = true;
+      this.progressLabel.Location = new System.Drawing.Point(42, 19);
+      this.progressLabel.Name = "CalculatingLabel";
+      this.progressLabel.Size = new System.Drawing.Size(120, 13);
+      this.progressLabel.TabIndex = 10;
+      this.progressLabel.Text = "Calculating correlation...";
       // 
       // DataGridView
       // 
@@ -220,15 +220,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
-      this.calculatingPanel.ResumeLayout(false);
-      this.calculatingPanel.PerformLayout();
+      this.progressPanel.ResumeLayout(false);
+      this.progressPanel.PerformLayout();
       this.ResumeLayout(false);
 
     }
 
     #endregion
 
-    protected System.Windows.Forms.ProgressBar heatMapProgressBar;
+    protected System.Windows.Forms.ProgressBar progressBar;
     protected System.Windows.Forms.ComboBox partitionComboBox;
     protected System.Windows.Forms.Label correlationCalcLabel;
     protected System.Windows.Forms.ComboBox correlationCalcComboBox;
@@ -237,8 +237,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected System.Windows.Forms.Label maximumLabel;
     protected System.Windows.Forms.PictureBox pictureBox;
     protected System.Windows.Forms.SplitContainer splitContainer;
-    protected System.Windows.Forms.Panel calculatingPanel;
-    protected System.Windows.Forms.Label calculatingLabel;
+    protected System.Windows.Forms.Panel progressPanel;
+    protected System.Windows.Forms.Label progressLabel;
     protected HeuristicLab.Problems.DataAnalysis.Views.EnhancedStringConvertibleMatrixView dataView;
 
   }

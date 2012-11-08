@@ -117,12 +117,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected void Content_ProgressCalculation(object sender, ProgressChangedEventArgs e) {
-      if (!calculatingPanel.Visible && e.ProgressPercentage != heatMapProgressBar.Maximum) {
-        calculatingPanel.Show();
-      } else if (e.ProgressPercentage == heatMapProgressBar.Maximum) {
-        calculatingPanel.Hide();
+      if (!progressPanel.Visible && e.ProgressPercentage != progressBar.Maximum) {
+        progressPanel.Show();
+      } else if (e.ProgressPercentage == progressBar.Maximum) {
+        progressPanel.Hide();
       }
-      heatMapProgressBar.Value = e.ProgressPercentage;
+      progressBar.Value = e.ProgressPercentage;
     }
   }
 }
