@@ -21,19 +21,10 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.Scheduling.Views {
-  [Plugin("HeuristicLab.Problems.Scheduling.Views", "3.3.3.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.Scheduling.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Core.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.ScheduleEncoding", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.ScheduleEncoding.Views", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization.Views", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.Scheduling", "3.3")]
-  public class HeuristicLabProblemsSchedulingViewsPlugin : PluginBase {
+namespace HeuristicLab.Problems.Instances.Scheduling {
+  [Plugin("HeuristicLab.Problems.Instances.Scheduling", "3.3.7.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.Instances.Scheduling-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
+  public class HeuristicLabProblemsInstancesSchedulingPlugin : PluginBase {
   }
 }

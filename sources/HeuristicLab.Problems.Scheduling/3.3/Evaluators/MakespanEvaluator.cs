@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -40,14 +41,12 @@ namespace HeuristicLab.Problems.Scheduling {
 
     public MakespanEvaluator() : base() { }
 
-    protected override DoubleValue evaluate(Schedule schedule) {
-      DoubleValue quality = new DoubleValue(0);
-      foreach (Resource r in schedule.Resources) {
-        if (r.TotalDuration > quality.Value) {
-          quality.Value = r.TotalDuration;
-        }
-      }
-      return quality;
+    public static double GetMakespan(Schedule schedule) {
+      return schedule.Resources.Select(r => r.TotalDuration).Max();
+    }
+
+    protected override DoubleValue Evaluate(Schedule schedule) {
+      return new DoubleValue(GetMakespan(schedule));
     }
 
     public override IOperation Apply() {

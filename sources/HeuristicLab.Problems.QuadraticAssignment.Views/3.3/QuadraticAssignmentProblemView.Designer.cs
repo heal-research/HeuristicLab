@@ -119,13 +119,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       this.qapView.Dock = System.Windows.Forms.DockStyle.Fill;
       this.qapView.Location = new System.Drawing.Point(3, 3);
       this.qapView.Name = "qapView";
-      this.qapView.Size = new System.Drawing.Size(497, 245);
+      this.qapView.Size = new System.Drawing.Size(497, 274);
       this.qapView.TabIndex = 0;
       this.qapView.Weights = null;
       // 
       // QuadraticAssignmentProblemView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "QuadraticAssignmentProblemView";
       this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);

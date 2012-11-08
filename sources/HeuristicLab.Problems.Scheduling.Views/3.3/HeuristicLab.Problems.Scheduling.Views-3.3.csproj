@@ -114,25 +114,11 @@
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SchedulingProblemImportDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SchedulingProblemImportDialog.Designer.cs">
-      <DependentUpon>SchedulingProblemImportDialog.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="JobShopSchedulingProblemView.resx">
-      <DependentUpon>JobShopSchedulingProblemView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SchedulingProblemImportDialog.resx">
-      <DependentUpon>SchedulingProblemImportDialog.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -175,6 +161,11 @@
       <Name>HeuristicLab.MainForm-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
+      <Project>{662B4B15-8F4D-4AE5-B3EB-D91C215F5AF2}</Project>
+      <Name>HeuristicLab.Optimization.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
@@ -184,6 +175,10 @@
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.Scheduling\3.3\HeuristicLab.Problems.Scheduling-3.3.csproj">
       <Project>{2BF1D639-1A74-44ED-AAAD-41ECD395AD93}</Project>

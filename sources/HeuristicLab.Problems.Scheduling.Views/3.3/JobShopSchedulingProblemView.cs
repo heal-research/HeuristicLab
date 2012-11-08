@@ -19,47 +19,42 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Optimization.Views;
 
 namespace HeuristicLab.Problems.Scheduling.Views {
   [View("JobShop Scheduling Problem View")]
   [Content(typeof(JobShopSchedulingProblem), true)]
-  public partial class JobShopSchedulingProblemView : NamedItemView {
-    public JobShopSchedulingProblemView() {
-      InitializeComponent();
-    }
-    private SchedulingProblemImportDialog spImportDialog;
+  public partial class JobShopSchedulingProblemView : ProblemView {
 
     public new JobShopSchedulingProblem Content {
       get { return (JobShopSchedulingProblem)base.Content; }
       set { base.Content = value; }
     }
 
+    public JobShopSchedulingProblemView() {
+      InitializeComponent();
+      Controls.Remove(parameterCollectionView);
+      parameterCollectionView.Dock = DockStyle.Fill;
+      problemTabPage.Controls.Add(parameterCollectionView);
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        parameterCollectionView.Content = null;
         ganttChart.Reset();
       } else {
-        parameterCollectionView.Content = ((IParameterizedNamedItem)Content).Parameters;
         FillGanttChart(Content);
       }
     }
 
     private void FillGanttChart(JobShopSchedulingProblem content) {
-      //Add Jobs as Categories
       ganttChart.Reset();
       int jobCount = 0;
-      Random random = new Random(1);
-      foreach (Job j in content.JobData) {
+      foreach (var j in content.JobData) {
         double lastEndTime = 0;
-        foreach (Task t in content.JobData[jobCount].Tasks) {
+        foreach (var t in content.JobData[jobCount].Tasks) {
           int categoryNr = t.JobNr;
           string categoryName = "Job" + categoryNr;
           ganttChart.AddData(categoryName,
@@ -71,34 +66,6 @@ namespace HeuristicLab.Problems.Scheduling.Views {
           lastEndTime += t.Duration;
         }
         jobCount++;
-      }
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
-      parameterCollectionView.Enabled = Content != null;
-      importButton.Enabled = Content != null && !ReadOnly;
-    }
-
-    private void importButton_Click(object sender, EventArgs e) {
-      if (spImportDialog == null) spImportDialog = new SchedulingProblemImportDialog();
-
-      if (spImportDialog.ShowDialog(this) == DialogResult.OK) {
-        try {
-          switch (spImportDialog.Format) {
-            case SPFormat.ORLib:
-              Content.ImportFromORLibrary(spImportDialog.SPFileName);
-              break;
-          }
-
-
-          if (!string.IsNullOrEmpty(spImportDialog.OptimalScheduleFileName))
-            Content.ImportJSMSolution(spImportDialog.OptimalScheduleFileName);
-          OnContentChanged();
-        }
-        catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(this, ex);
-        }
       }
     }
   }

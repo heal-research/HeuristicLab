@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.Scheduling {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   public class HeuristicLabProblemsSchedulingPlugin : PluginBase {
   }
 }

@@ -60,11 +60,11 @@ namespace HeuristicLab.Problems.Scheduling {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
     }
 
-    protected abstract DoubleValue evaluate(Schedule schedule);
+    protected abstract DoubleValue Evaluate(Schedule schedule);
 
     public override IOperation Apply() {
       Schedule schedule = ScheduleParameter.ActualValue;
-      QualityParameter.ActualValue = evaluate(schedule);
+      QualityParameter.ActualValue = Evaluate(schedule);
       return base.Apply();
     }
   }

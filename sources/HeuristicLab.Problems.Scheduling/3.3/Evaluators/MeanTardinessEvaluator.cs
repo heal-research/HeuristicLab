@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -30,11 +32,10 @@ namespace HeuristicLab.Problems.Scheduling {
   [Item("Mean tardiness Evaluator", "Represents an evaluator using the mean tardiness of a schedule.")]
   [StorableClass]
   public class MeanTardinessEvaluator : SchedulingEvaluator, IJSSPOperator {
+
     [StorableConstructor]
     protected MeanTardinessEvaluator(bool deserializing) : base(deserializing) { }
-    protected MeanTardinessEvaluator(MeanTardinessEvaluator original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected MeanTardinessEvaluator(MeanTardinessEvaluator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MeanTardinessEvaluator(this, cloner);
     }
@@ -44,29 +45,20 @@ namespace HeuristicLab.Problems.Scheduling {
       get { return (ILookupParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
     #endregion
-    #region Properties
-    public ItemList<Job> JobData {
-      get { return JobDataParameter.ActualValue; }
-    }
-    #endregion
 
     public MeanTardinessEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance."));
     }
 
-    protected override DoubleValue evaluate(Schedule schedule) {
-      double totalTardiness = 0;
-      foreach (Resource r in schedule.Resources) {
-        double tardiness = r.Tasks[r.Tasks.Count - 1].EndTime - JobData[r.Tasks[r.Tasks.Count - 1].JobNr].DueDate;
-        if (tardiness > 0)
-          totalTardiness += tardiness;
-      }
-      return new DoubleValue(totalTardiness / schedule.Resources.Count);
+    public static double GetMeanTardiness(Schedule schedule, ItemList<Job> jobData) {
+      return schedule.Resources
+        .Select(r => Math.Max(0, r.Tasks.Last().EndTime - jobData[r.Tasks.Last().JobNr].DueDate))
+        .Average();
     }
 
-    public override IOperation Apply() {
-      return base.Apply();
+    protected override DoubleValue Evaluate(Schedule schedule) {
+      return new DoubleValue(GetMeanTardiness(schedule, JobDataParameter.ActualValue));
     }
   }
 }

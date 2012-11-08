@@ -52,15 +52,15 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
       base.DeregisterContentEvents();
     }
 
-    private void DistanceMatrixParameter_ValueChanged(object sender, System.EventArgs e) {
+    private void DistanceMatrixParameter_ValueChanged(object sender, EventArgs e) {
       qapView.Distances = Content.Distances;
     }
 
-    private void WeightsParameter_ValueChanged(object sender, System.EventArgs e) {
+    private void WeightsParameter_ValueChanged(object sender, EventArgs e) {
       qapView.Weights = Content.Weights;
     }
 
-    private void BestKnownSolutionParameter_ValueChanged(object sender, System.EventArgs e) {
+    private void BestKnownSolutionParameter_ValueChanged(object sender, EventArgs e) {
       qapView.Assignment = Content.BestKnownSolution;
     }
 
@@ -75,10 +75,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Views {
         qapView.Weights = null;
         qapView.Assignment = null;
       }
-    }
-
-    protected override void SetEnabledStateOfControls() {
-      base.SetEnabledStateOfControls();
     }
   }
 }

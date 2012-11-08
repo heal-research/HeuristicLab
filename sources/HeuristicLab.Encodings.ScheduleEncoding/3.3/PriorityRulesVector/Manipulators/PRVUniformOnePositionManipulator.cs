@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
 
 
     public static void Apply(IRandom random, PRVEncoding individual) {
-      UniformOnePositionManipulator.Apply(random, individual.PriorityRulesVector, new IntMatrix(new int[,] { { 0, 2 } }));
+      UniformOnePositionManipulator.Apply(random, individual.PriorityRulesVector, new IntMatrix(new int[,] { { 0, individual.NrOfRules.Value } }));
     }
 
     protected override void Manipulate(IRandom random, PRVEncoding individual) {

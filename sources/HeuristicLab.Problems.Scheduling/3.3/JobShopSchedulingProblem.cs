@@ -19,10 +19,7 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -34,12 +31,45 @@ using HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.Scheduling {
-  [Item("JobShop Scheduling Problem", "Represents a standard JobShop Scheduling Problem")]
+  [Item("Job Shop Scheduling Problem", "Represents a standard Job Shop Scheduling Problem")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class JobShopSchedulingProblem : SchedulingProblem, IStorableContent {
+  public sealed class JobShopSchedulingProblem : SchedulingProblem, IProblemInstanceConsumer<JSSPData>, IProblemInstanceExporter<JSSPData>, IStorableContent {
+    #region Default Instance
+    private static readonly JSSPData DefaultInstance = new JSSPData() {
+      Jobs = 10,
+      Resources = 10,
+      BestKnownQuality = 930,
+      ProcessingTimes = new double[,] {
+          { 29, 78,  9, 36, 49, 11, 62, 56, 44, 21 },
+          { 43, 90, 75, 11, 69, 28, 46, 46, 72, 30 },
+          { 91, 85, 39, 74, 90, 10, 12, 89, 45, 33 },
+          { 81, 95, 71, 99,  9, 52, 85, 98, 22, 43 },
+          { 14,  6, 22, 61, 26, 69, 21, 49, 72, 53 },
+          { 84,  2, 52, 95, 48, 72, 47, 65,  6, 25 },
+          { 46, 37, 61, 13, 32, 21, 32, 89, 30, 55 },
+          { 31, 86, 46, 74, 32, 88, 19, 48, 36, 79 },
+          { 76, 69, 76, 51, 85, 11, 40, 89, 26, 74 },
+          { 85, 13, 61,  7, 64, 76, 47, 52, 90, 45 }
+        },
+      Demands = new int[,] {
+          { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+          { 0, 2, 4, 9, 3, 1, 6, 5, 7, 8 },
+          { 1, 0, 3, 2, 8, 5, 7, 6, 9, 4 },
+          { 1, 2, 0, 4, 6, 8, 7, 3, 9, 5 },
+          { 2, 0, 1, 5, 3, 4, 8, 7, 9, 6 },
+          { 2, 1, 5, 3, 8, 9, 0, 6, 4, 7 },
+          { 1, 0, 3, 2, 6, 5, 9, 8, 7, 4 },
+          { 2, 0, 1, 5, 4, 6, 8, 9, 7, 3 },
+          { 0, 1, 3, 5, 2, 9, 6, 7, 4, 8 },
+          { 1, 0, 2, 6, 8, 9, 5, 3, 4, 7 }
+        }
+    };
+    #endregion
+
     #region Parameter Properties
     public ValueParameter<ItemList<Job>> JobDataParameter {
       get { return (ValueParameter<ItemList<Job>>)Parameters["JobData"]; }
@@ -104,7 +134,7 @@ namespace HeuristicLab.Problems.Scheduling {
       Parameters.Add(new ValueParameter<SchedulingEvaluator>("SolutionEvaluator", "The evaluator used to determine the quality of a solution.", new MakespanEvaluator()));
 
       InitializeOperators();
-      InitializeProblemInstance();
+      Load(DefaultInstance);
     }
 
     [StorableConstructor]
@@ -120,37 +150,68 @@ namespace HeuristicLab.Problems.Scheduling {
     protected override void OnSolutionCreatorChanged() {
       InitializeOperators();
     }
+    #endregion
 
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
+    #region Problem Instance Handling
+    public void Load(JSSPData data) {
+      var jobData = new ItemList<Job>(data.Jobs);
+      for (int j = 0; j < data.Jobs; j++) {
+        var job = new Job(j, data.DueDates != null ? data.DueDates[j] : double.MaxValue);
+        for (int t = 0; t < data.Resources; t++) {
+          job.Tasks.Add(new Task(t, data.Demands[j, t], j, data.ProcessingTimes[j, t]));
+        }
+        jobData.Add(job);
+      }
+
+      if (data.BestKnownQuality.HasValue) BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
+      else BestKnownQuality = null;
+      if (data.BestKnownSchedule != null) {
+        var enc = new JSMEncoding();
+        enc.JobSequenceMatrix = new ItemList<Permutation>(data.Resources);
+        for (int i = 0; i < data.Resources; i++) {
+          enc.JobSequenceMatrix[i] = new Permutation(PermutationTypes.Absolute, new int[data.Jobs]);
+          for (int j = 0; j < data.Jobs; j++) {
+            enc.JobSequenceMatrix[i][j] = data.BestKnownSchedule[i, j];
+          }
+        }
+        BestKnownSolution = new JSMDecoder().CreateScheduleFromEncoding(enc, jobData);
+        if (SolutionEvaluator is MeanTardinessEvaluator)
+          BestKnownQuality = new DoubleValue(MeanTardinessEvaluator.GetMeanTardiness(BestKnownSolution, jobData));
+        else if (SolutionEvaluator is MakespanEvaluator)
+          BestKnownQuality = new DoubleValue(MakespanEvaluator.GetMakespan(BestKnownSolution));
+      }
+
+      JobData = jobData;
+      Jobs = new IntValue(data.Jobs);
+      Resources = new IntValue(data.Resources);
+      DueDates = new BoolValue(data.DueDates != null);
+    }
+
+    public JSSPData Export() {
+      var result = new JSSPData {
+        Name = Name,
+        Description = Description,
+        Jobs = Jobs.Value,
+        Resources = Resources.Value,
+        ProcessingTimes = new double[Jobs.Value, Resources.Value],
+        Demands = new int[Jobs.Value, Resources.Value],
+        DueDates = (DueDates.Value ? new double[Jobs.Value] : null)
+      };
+
+      foreach (var job in JobData) {
+        var counter = 0;
+        if (DueDates.Value) result.DueDates[job.Index] = job.DueDate;
+        foreach (var task in job.Tasks) {
+          result.ProcessingTimes[task.JobNr, counter] = task.Duration;
+          result.Demands[task.JobNr, counter] = task.ResourceNr;
+          counter++;
+        }
+      }
+      return result;
     }
     #endregion
 
     #region Helpers
-    private void InitializeProblemInstance() {
-      Jobs = new IntValue(10);
-      Resources = new IntValue(10);
-      BestKnownQuality = new DoubleValue(930);
-      JobData = new ItemList<Job>();
-      List<string> data = new List<string>
-      {"0 29 1 78 2  9 3 36 4 49 5 11 6 62 7 56 8 44 9 21",
-       "0 43 2 90 4 75 9 11 3 69 1 28 6 46 5 46 7 72 8 30",
-       "1 91 0 85 3 39 2 74 8 90 5 10 7 12 6 89 9 45 4 33",
-       "1 81 2 95 0 71 4 99 6  9 8 52 7 85 3 98 9 22 5 43",
-       "2 14 0  6 1 22 5 61 3 26 4 69 8 21 7 49 9 72 6 53",
-       "2 84 1  2 5 52 3 95 8 48 9 72 0 47 6 65 4  6 7 25",
-       "1 46 0 37 3 61 2 13 6 32 5 21 9 32 8 89 7 30 4 55",
-       "2 31 0 86 1 46 5 74 4 32 6 88 8 19 9 48 7 36 3 79",
-       "0 76 1 69 3 76 5 51 2 85 9 11 6 40 7 89 4 26 8 74",
-       "1 85 0 13 2 61 6  7 8 64 9 76 5 47 3 52 4 90 7 45" };
-
-      int jobCount = 0;
-      foreach (string s in data) {
-        List<string> split = SplitString(s);
-        JobData.Add(CreateJobFromData(split, jobCount++));
-      }
-    }
-
     private void InitializeOperators() {
       Operators.Clear();
       ApplyEncoding();
@@ -158,137 +219,22 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     private void ApplyEncoding() {
-      if (SolutionCreator.GetType().Equals(typeof(JSMRandomCreator))) {
+      if (SolutionCreator.GetType() == typeof(JSMRandomCreator)) {
         Operators.AddRange(ApplicationManager.Manager.GetInstances<IJSMOperator>());
-        JSMDecoder decoder = new JSMDecoder();
-        ((SchedulingEvaluationAlgorithm)this.EvaluatorParameter.ActualValue).InitializeOperatorGraph<JSMEncoding>(decoder);
-      } else {
-        if (SolutionCreator.GetType().Equals(typeof(PRVRandomCreator))) {
-          Operators.AddRange(ApplicationManager.Manager.GetInstances<IPRVOperator>());
-          PRVDecoder decoder = new PRVDecoder();
-          ((SchedulingEvaluationAlgorithm)this.EvaluatorParameter.ActualValue).InitializeOperatorGraph<PRVEncoding>(decoder);
-        } else {
-          if (SolutionCreator.GetType().Equals(typeof(PWRRandomCreator))) {
-            Operators.AddRange(ApplicationManager.Manager.GetInstances<IPWROperator>());
-            PWRDecoder decoder = new PWRDecoder();
-            ((SchedulingEvaluationAlgorithm)this.EvaluatorParameter.ActualValue).InitializeOperatorGraph<PWREncoding>(decoder);
-          } else {
-            if (SolutionCreator.GetType().Equals(typeof(DirectScheduleRandomCreator))) {
-              Operators.AddRange(ApplicationManager.Manager.GetInstances<IDirectScheduleOperator>());
-              ((SchedulingEvaluationAlgorithm)this.EvaluatorParameter.ActualValue).InitializeOperatorGraph<Schedule>();
-            }
-          }
-        }
+        var decoder = new JSMDecoder();
+        ((SchedulingEvaluationAlgorithm)EvaluatorParameter.ActualValue).InitializeOperatorGraph(decoder);
+      } else if (SolutionCreator.GetType() == typeof(PRVRandomCreator)) {
+        Operators.AddRange(ApplicationManager.Manager.GetInstances<IPRVOperator>());
+        var decoder = new PRVDecoder();
+        ((SchedulingEvaluationAlgorithm)EvaluatorParameter.ActualValue).InitializeOperatorGraph(decoder);
+      } else if (SolutionCreator.GetType() == typeof(PWRRandomCreator)) {
+        Operators.AddRange(ApplicationManager.Manager.GetInstances<IPWROperator>());
+        var decoder = new PWRDecoder();
+        ((SchedulingEvaluationAlgorithm)EvaluatorParameter.ActualValue).InitializeOperatorGraph(decoder);
+      } else if (SolutionCreator.GetType() == typeof(DirectScheduleRandomCreator)) {
+        Operators.AddRange(ApplicationManager.Manager.GetInstances<IDirectScheduleOperator>());
+        ((SchedulingEvaluationAlgorithm)EvaluatorParameter.ActualValue).InitializeOperatorGraph<Schedule>();
       }
-    }
-    #endregion
-
-    #region Importmethods
-    private List<string> SplitString(string line) {
-      if (line == null)
-        return null;
-      List<string> data = new List<string>(line.Split(' '));
-      List<string> result = new List<string>();
-
-      foreach (string s in data) {
-        if (!String.IsNullOrEmpty(s) && s != "" && s != " ")
-          result.Add(s);
-      }
-
-      return result;
-    }
-    private int[] GetIntArray(List<string> data) {
-      int[] arr = new int[data.Count];
-      for (int i = 0; i < data.Count; i++) {
-        arr[i] = Int32.Parse(data[i]);
-      }
-      return arr;
-    }
-    private Job CreateJobFromData(List<string> data, int jobCount) {
-      double dueDate = 0;
-      int dataCount = data.Count;
-      if (DueDates.Value) {
-        dueDate = Double.Parse(data[data.Count - 1]);
-        dataCount--;
-      }
-      Job j = new Job(jobCount, dueDate);
-      for (int i = 0; i < dataCount; i++) {
-        Task t = new Task(i / 2, Int32.Parse(data[i]), jobCount, Double.Parse(data[i + 1]));
-        j.Tasks.Add(t);
-        i++;
-      }//for
-      return j;
-    }
-
-    public void ImportFromORLibrary(string fileName) {
-      if (!File.Exists(fileName))
-        return;
-      StreamReader problemFile = new StreamReader(fileName);
-      //assures that the parser only reads the first problem instance given in the file
-      bool problemFound = false;
-
-      JobData = new ItemList<Job>();
-
-      while (!problemFile.EndOfStream && !problemFound) {
-        string line = problemFile.ReadLine();
-        List<string> data = SplitString(line);
-        if (data.Count > 0 && ((int)data[0][0] >= 48 && (int)data[0][0] <= 57)) {
-          int jobCount = 0;
-          Jobs = new IntValue(Int32.Parse(data[0]));
-          Resources = new IntValue(Int32.Parse(data[1]));
-          //data[2] = bestKnownQuality (double)
-          //data[3] = dueDates (0|1)
-          DueDates.Value = false;
-          if (data.Count > 2)
-            BestKnownQualityParameter.ActualValue = new DoubleValue(Double.Parse(data[2]));
-          if (data.Count > 3 && data[3] == "1")
-            DueDates.Value = true;
-          line = problemFile.ReadLine();
-          data = SplitString(line);
-          while (!problemFile.EndOfStream && data.Count > 0 && ((int)data[0][0] >= 48 && (int)data[0][0] <= 57)) {
-            Job j = CreateJobFromData(data, jobCount);
-            this.JobData.Add(j);
-            jobCount++;
-            line = problemFile.ReadLine();
-            data = SplitString(line);
-          }//while
-          problemFound = true;
-        }//if
-      }//while
-      problemFile.Close();
-    }
-
-    public void ImportJSMSolution(string fileName) {
-      if (!File.Exists(fileName))
-        return;
-      StreamReader solutionFile = new StreamReader(fileName);
-      //assures that the parser only reads the first solution instance given in the file
-      bool solutionFound = false;
-      JSMEncoding solution = new JSMEncoding();
-      while (!solutionFile.EndOfStream && !solutionFound) {
-
-        string line = solutionFile.ReadLine();
-        List<string> data = SplitString(line);
-        if (data.Count > 0 && ((int)data[0][0] >= 48 && (int)data[0][0] <= 57)) {
-          if (data.Count > 2)
-            BestKnownQualityParameter.ActualValue = new DoubleValue(Double.Parse(data[2]));
-          line = solutionFile.ReadLine();
-          data = SplitString(line);
-          while (data != null && data.Count > 0 && ((int)data[0][0] >= 48 && (int)data[0][0] <= 57)) {
-            Permutation p = new Permutation(PermutationTypes.Absolute, GetIntArray(data));
-            solution.JobSequenceMatrix.Add(p);
-
-            line = solutionFile.ReadLine();
-            data = SplitString(line);
-          }//while
-          solutionFound = true;
-        }//if
-      }//while
-      solutionFile.Close();
-
-      JSMDecoder decoder = new JSMDecoder();
-      Schedule result = decoder.CreateScheduleFromEncoding(solution, JobData);
-      BestKnownSolution = result;
     }
     #endregion
 
