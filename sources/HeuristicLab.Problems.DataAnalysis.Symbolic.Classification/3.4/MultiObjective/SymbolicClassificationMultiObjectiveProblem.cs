@@ -83,8 +83,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.4
+      #region Backwards compatible code, remove with 3.5
       if (!Parameters.ContainsKey(ModelCreatorParameterName))
         Parameters.Add(new ValueParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName, "", new AccuracyMaximizingThresholdsModelCreator()));
+      #endregion
       RegisterEventHandlers();
     }
 

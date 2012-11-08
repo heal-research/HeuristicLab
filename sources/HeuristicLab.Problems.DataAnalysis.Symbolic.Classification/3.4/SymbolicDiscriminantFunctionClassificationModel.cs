@@ -74,7 +74,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.4
+      #region Backwards compatible code, remove with 3.5
       if (ThresholdCalculator == null) ThresholdCalculator = new AccuracyMaximizationThresholdCalculator();
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
