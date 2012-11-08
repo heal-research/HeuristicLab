@@ -20,6 +20,7 @@
  */
 
 #endregion
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class FeatureCorrelationView {
     /// <summary> 

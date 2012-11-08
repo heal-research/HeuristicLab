@@ -49,11 +49,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected override void CalculateCorrelation() {
-      if (CorrelationCalcComboBox.SelectedItem == null) return;
-      if (PartitionComboBox.SelectedItem == null) return;
+      if (correlationCalcComboBox.SelectedItem == null) return;
+      if (partitionComboBox.SelectedItem == null) return;
 
-      IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
-      string partition = (string)PartitionComboBox.SelectedValue;
+      IDependencyCalculator calc = (IDependencyCalculator)correlationCalcComboBox.SelectedValue;
+      string partition = (string)partitionComboBox.SelectedValue;
       dataView.Enabled = false;
       double[,] corr = correlationCache.GetCorrelation(calc, partition);
       if (corr == null) {

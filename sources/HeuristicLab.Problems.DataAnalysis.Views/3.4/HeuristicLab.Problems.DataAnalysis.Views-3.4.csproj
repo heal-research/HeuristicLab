@@ -168,7 +168,6 @@
       <DependentUpon>EnhancedStringConvertibleMatrixView.cs</DependentUpon>
     </Compile>
     <Compile Include="FeatureCorrelation\FeatureCorrelationCalculator.cs" />
-    <Compile Include="FeatureCorrelation\FeatureCorrelationHelpers.cs" />
     <Compile Include="FeatureCorrelation\FeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
     </Compile>

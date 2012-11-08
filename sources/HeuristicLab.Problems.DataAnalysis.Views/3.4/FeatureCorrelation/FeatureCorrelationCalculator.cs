@@ -72,7 +72,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void CalculateElements(Dataset dataset, IDependencyCalculator calc, string partition, string variable = null, int frames = 0, double[,] alreadyCalculated = null) {
-      bwInfo = new BackgroundWorkerInfo { Dataset = dataset, Calculator = calc, Partition = partition, Variable = variable, Frames = frames, AlreadyCalculated = alreadyCalculated };
+      var indices = GetRelevantIndices(problemData, partition);
+      bwInfo = new BackgroundWorkerInfo {
+        Dataset = dataset, Calculator = calc, Partition = partition, Indices = indices,
+        Variable = variable, Frames = frames, AlreadyCalculated = alreadyCalculated
+      };
       if (bw == null) {
         bw = new BackgroundWorker();
         bw.WorkerReportsProgress = true;
@@ -86,6 +90,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       } else {
         bw.RunWorkerAsync(bwInfo);
       }
+    }
+
+    private IEnumerable<int> GetRelevantIndices(IDataAnalysisProblemData problemData, string partition) {
+      IEnumerable<int> var;
+      if (partition.Equals(AbstractFeatureCorrelationView.TRAININGSAMPLES))
+        var = problemData.TrainingIndices;
+      else if (partition.Equals(AbstractFeatureCorrelationView.TESTSAMPLES))
+        var = problemData.TestIndices;
+      else var = Enumerable.Range(0, problemData.Dataset.Rows);
+      return var;
     }
 
     #region backgroundworker
@@ -103,7 +117,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       BackgroundWorkerInfo bwInfo = (BackgroundWorkerInfo)e.Argument;
       Dataset dataset = bwInfo.Dataset;
-      string partition = bwInfo.Partition;
+      IEnumerable<int> indices = bwInfo.Indices;
       IDependencyCalculator calc = bwInfo.Calculator;
 
       IList<string> doubleVariableNames = dataset.DoubleVariables.ToList();
@@ -121,8 +135,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             e.Cancel = true;
             return;
           }
-          IEnumerable<double> var1 = GetRelevantValues(problemData, partition, doubleVariableNames[i]);
-          IEnumerable<double> var2 = GetRelevantValues(problemData, partition, doubleVariableNames[j]);
+          IEnumerable<double> var1 = problemData.Dataset.GetDoubleValues(doubleVariableNames[i], indices);
+          IEnumerable<double> var2 = problemData.Dataset.GetDoubleValues(doubleVariableNames[j], indices);
 
           elements[i, j] = calc.Calculate(var1, var2, out error);
 
@@ -142,7 +156,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       BackgroundWorkerInfo bwInfo = (BackgroundWorkerInfo)e.Argument;
       Dataset dataset = bwInfo.Dataset;
-      string partition = bwInfo.Partition;
+      IEnumerable<int> indices = bwInfo.Indices;
       IDependencyCalculator calc = bwInfo.Calculator;
       string variable = bwInfo.Variable;
       int frames = bwInfo.Frames;
@@ -172,8 +186,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             return;
           }
 
-          IEnumerable<double> var1 = GetRelevantValues(problemData, partition, variable);
-          IEnumerable<double> var2 = GetRelevantValues(problemData, partition, doubleVariableNames[i]);
+          IEnumerable<double> var1 = problemData.Dataset.GetDoubleValues(variable, indices);
+          IEnumerable<double> var2 = problemData.Dataset.GetDoubleValues(doubleVariableNames[i], indices);
 
           var valuesInFrame = var1.Take(j);
           var help = var1.Skip(j).ToList();
@@ -190,16 +204,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
       e.Result = elements;
       worker.ReportProgress(100);
-    }
-
-    private IEnumerable<double> GetRelevantValues(IDataAnalysisProblemData problemData, string partition, string variable) {
-      IEnumerable<double> var;
-      if (partition.Equals(FeatureCorrelationPartitions.TRAININGSAMPLES))
-        var = problemData.Dataset.GetDoubleValues(variable, problemData.TrainingIndices);
-      else if (partition.Equals(FeatureCorrelationPartitions.TESTSAMPLES))
-        var = problemData.Dataset.GetDoubleValues(variable, problemData.TestIndices);
-      else var = problemData.Dataset.GetDoubleValues(variable);
-      return var;
     }
 
     private void BwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
@@ -253,6 +257,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       public Dataset Dataset { get; set; }
       public IDependencyCalculator Calculator { get; set; }
       public string Partition { get; set; }
+      public IEnumerable<int> Indices { get; set; }
       public string Variable { get; set; }
       public int Frames { get; set; }
       public double[,] AlreadyCalculated { get; set; }

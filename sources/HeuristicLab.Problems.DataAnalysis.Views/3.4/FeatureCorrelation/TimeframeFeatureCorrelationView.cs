@@ -33,39 +33,72 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   public partial class TimeframeFeatureCorrelationView : AbstractFeatureCorrelationView {
 
     private FeatureCorrelationTimeframeCache correlationTimeframCache;
+    private string lastFramesValue;
 
     public TimeframeFeatureCorrelationView() {
       InitializeComponent();
       correlationTimeframCache = new FeatureCorrelationTimeframeCache();
+      errorProvider.SetIconAlignment(timeframeTextbox, ErrorIconAlignment.MiddleRight);
+      errorProvider.SetIconPadding(timeframeTextbox, 2);
+      lastFramesValue = timeframeTextbox.Text;
     }
 
     protected override void OnContentChanged() {
       correlationTimeframCache.Reset();
       if (Content != null) {
         dataView.RowVisibility = SetInitialVariableVisibility();
-        VariableSelectionComboBox.DataSource = Content.Dataset.DoubleVariables.ToList();
+        SetVariableSelectionComboBox();
       }
       base.OnContentChanged();
+    }
+
+    protected virtual void SetVariableSelectionComboBox() {
+      variableSelectionComboBox.DataSource = Content.Dataset.DoubleVariables.ToList();
     }
 
     private void VariableSelectionComboBox_SelectedChangeCommitted(object sender, EventArgs e) {
       CalculateCorrelation();
     }
-
     private void TimeframeTextbox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {
-      if (e.KeyCode == Keys.Enter) {
-        CalculateCorrelation();
+      if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Return) {
+        timeFrameLabel.Select();  // select label to validate data
+      }
+
+      if (e.KeyCode == Keys.Escape) {
+        timeframeTextbox.Text = lastFramesValue;
+        timeFrameLabel.Select();  // select label to validate data
+      }
+    }
+    private void TimeframeTextbox_Validated(object sender, System.EventArgs e) {
+      lastFramesValue = timeframeTextbox.Text;
+      errorProvider.SetError(timeframeTextbox, string.Empty);
+      CalculateCorrelation();
+    }
+    private void TimeframeTextbox_Validating(object sender, System.ComponentModel.CancelEventArgs e) {
+      int help;
+      if (!int.TryParse(timeframeTextbox.Text, out help)) {
+        errorProvider.SetError(timeframeTextbox, "Timeframe couldn't be parsed. Enter a valid integer value.");
+        e.Cancel = true;
+      } else {
+        if (help > 50) {
+          DialogResult dr = MessageBox.Show("The entered value is bigger than 50. Are you sure you want to calculate? " +
+                                            "The calculation could take some time.", "Huge Value Warning", MessageBoxButtons.YesNo);
+          e.Cancel = !dr.Equals(DialogResult.Yes);
+        } else if (help < 0) {
+          errorProvider.SetError(timeframeTextbox, "The entered value can't be negative!");
+          e.Cancel = true;
+        }
       }
     }
 
     protected override void CalculateCorrelation() {
-      if (CorrelationCalcComboBox.SelectedItem != null && PartitionComboBox.SelectedItem != null
-        && VariableSelectionComboBox.SelectedItem != null && ValidateTimeframeTextbox()) {
-        string variable = (string)VariableSelectionComboBox.SelectedItem;
-        IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
-        string partition = (string)PartitionComboBox.SelectedValue;
+      if (correlationCalcComboBox.SelectedItem != null && partitionComboBox.SelectedItem != null
+        && variableSelectionComboBox.SelectedItem != null) {
+        string variable = (string)variableSelectionComboBox.SelectedItem;
+        IDependencyCalculator calc = (IDependencyCalculator)correlationCalcComboBox.SelectedValue;
+        string partition = (string)partitionComboBox.SelectedValue;
         int frames;
-        int.TryParse(TimeframeTextbox.Text, out frames);
+        int.TryParse(timeframeTextbox.Text, out frames);
         dataView.Enabled = false;
         double[,] corr = correlationTimeframCache.GetTimeframeCorrelation(calc, partition, variable);
         if (corr == null) {
@@ -81,22 +114,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         }
       }
     }
-
-    private bool ValidateTimeframeTextbox() {
-      int help;
-      if (!int.TryParse(TimeframeTextbox.Text, out help)) {
-        MessageBox.Show("Timeframe couldn't be parsed. Enter a valid integer value.", "Parse Error", MessageBoxButtons.OK);
-        return false;
-      } else {
-        if (help > 50) {
-          DialogResult dr = MessageBox.Show("The entered value is bigger than 50. Are you sure you want to calculate? " +
-                                            "The calculation could take some time.", "Huge Value Warning", MessageBoxButtons.YesNo);
-          return dr.Equals(DialogResult.Yes);
-        }
-      }
-      return true;
-    }
-
 
     protected override void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e) {
       if (InvokeRequired) {

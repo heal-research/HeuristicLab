@@ -1,4 +1,25 @@
-﻿namespace HeuristicLab.Problems.DataAnalysis.Views {
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class EnhancedStringConvertibleMatrixView {
     /// <summary> 
     /// Required designer variable.
@@ -23,7 +44,7 @@
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.ShowHideRows = new System.Windows.Forms.ToolStripMenuItem();
+      this.showHideRows = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -39,14 +60,14 @@
       // contextMenu
       // 
       this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShowHideRows});
+            this.showHideRows});
       // 
       // ShowHideRows
       // 
-      this.ShowHideRows.Name = "ShowHideRows";
-      this.ShowHideRows.Size = new System.Drawing.Size(190, 22);
-      this.ShowHideRows.Text = "Show / Hide Rows";
-      this.ShowHideRows.Click += new System.EventHandler(this.ShowHideRows_Click);
+      this.showHideRows.Name = "ShowHideRows";
+      this.showHideRows.Size = new System.Drawing.Size(190, 22);
+      this.showHideRows.Text = "Show / Hide Rows";
+      this.showHideRows.Click += new System.EventHandler(this.ShowHideRows_Click);
       // 
       // ColoredStringConvertibleMatrixView
       // 
@@ -67,6 +88,6 @@
     }
     #endregion
 
-    protected System.Windows.Forms.ToolStripMenuItem ShowHideRows;
+    protected System.Windows.Forms.ToolStripMenuItem showHideRows;
   }
 }

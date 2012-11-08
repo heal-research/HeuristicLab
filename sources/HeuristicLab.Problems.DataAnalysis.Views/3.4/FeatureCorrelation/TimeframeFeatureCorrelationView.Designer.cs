@@ -20,6 +20,7 @@
  */
 
 #endregion
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class TimeframeFeatureCorrelationView {
     /// <summary> 
@@ -45,22 +46,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.VariableSelectionLabel = new System.Windows.Forms.Label();
-      this.VariableSelectionComboBox = new System.Windows.Forms.ComboBox();
-      this.TimeFrameLabel = new System.Windows.Forms.Label();
-      this.TimeframeTextbox = new System.Windows.Forms.TextBox();
-      ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).BeginInit();
-      this.SplitContainer.Panel1.SuspendLayout();
-      this.SplitContainer.Panel2.SuspendLayout();
-      this.SplitContainer.SuspendLayout();
-      this.CalculatingPanel.SuspendLayout();
+      this.components = new System.ComponentModel.Container();
+      this.variableSelectionLabel = new System.Windows.Forms.Label();
+      this.variableSelectionComboBox = new System.Windows.Forms.ComboBox();
+      this.timeFrameLabel = new System.Windows.Forms.Label();
+      this.timeframeTextbox = new System.Windows.Forms.TextBox();
+      this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
+      this.calculatingPanel.SuspendLayout();
       this.SuspendLayout();
+      // 
+      // errorProvider
+      // 
+      this.errorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+      this.errorProvider.ContainerControl = this;
       // 
       // PartitionComboBox
       // 
-      this.PartitionComboBox.Location = new System.Drawing.Point(344, 3);
-      this.PartitionComboBox.Size = new System.Drawing.Size(131, 21);
+      this.partitionComboBox.Location = new System.Drawing.Point(344, 3);
+      this.partitionComboBox.Size = new System.Drawing.Size(131, 21);
       // 
       // maximumLabel
       // 
@@ -68,82 +77,86 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // PictureBox
       // 
-      this.PictureBox.Location = new System.Drawing.Point(506, 31);
-      this.PictureBox.Size = new System.Drawing.Size(35, 280);
+      this.pictureBox.Location = new System.Drawing.Point(506, 31);
+      this.pictureBox.Size = new System.Drawing.Size(35, 280);
       // 
       // SplitContainer
       // 
       // 
       // SplitContainer.Panel1
       // 
-      this.SplitContainer.Panel1.Controls.Add(this.VariableSelectionComboBox);
-      this.SplitContainer.Panel1.Controls.Add(this.TimeframeTextbox);
-      this.SplitContainer.Panel1.Controls.Add(this.TimeFrameLabel);
-      this.SplitContainer.Panel1.Controls.Add(this.VariableSelectionLabel);
-      this.SplitContainer.SplitterDistance = 52;
+      this.splitContainer.Panel1.Controls.Add(this.variableSelectionComboBox);
+      this.splitContainer.Panel1.Controls.Add(this.timeframeTextbox);
+      this.splitContainer.Panel1.Controls.Add(this.timeFrameLabel);
+      this.splitContainer.Panel1.Controls.Add(this.variableSelectionLabel);
+      this.splitContainer.SplitterDistance = 52;
       // 
       // CalculatingPanel
       // 
-      this.CalculatingPanel.Location = new System.Drawing.Point(138, 82);
+      this.calculatingPanel.Location = new System.Drawing.Point(138, 82);
       // 
       // VariableSelectionLabel
       // 
-      this.VariableSelectionLabel.AutoSize = true;
-      this.VariableSelectionLabel.Location = new System.Drawing.Point(0, 33);
-      this.VariableSelectionLabel.Name = "VariableSelectionLabel";
-      this.VariableSelectionLabel.Size = new System.Drawing.Size(81, 13);
-      this.VariableSelectionLabel.TabIndex = 16;
-      this.VariableSelectionLabel.Text = "Select Variable:";
+      this.variableSelectionLabel.AutoSize = true;
+      this.variableSelectionLabel.Location = new System.Drawing.Point(0, 33);
+      this.variableSelectionLabel.Name = "VariableSelectionLabel";
+      this.variableSelectionLabel.Size = new System.Drawing.Size(81, 13);
+      this.variableSelectionLabel.TabIndex = 16;
+      this.variableSelectionLabel.Text = "Select Variable:";
       // 
       // VariableSelectionComboBox
       // 
-      this.VariableSelectionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.VariableSelectionComboBox.FormattingEnabled = true;
-      this.VariableSelectionComboBox.Location = new System.Drawing.Point(110, 30);
-      this.VariableSelectionComboBox.Name = "VariableSelectionComboBox";
-      this.VariableSelectionComboBox.Size = new System.Drawing.Size(163, 21);
-      this.VariableSelectionComboBox.TabIndex = 17;
-      this.VariableSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.VariableSelectionComboBox_SelectedChangeCommitted);
+      this.variableSelectionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.variableSelectionComboBox.FormattingEnabled = true;
+      this.variableSelectionComboBox.Location = new System.Drawing.Point(110, 30);
+      this.variableSelectionComboBox.Name = "VariableSelectionComboBox";
+      this.variableSelectionComboBox.Size = new System.Drawing.Size(163, 21);
+      this.variableSelectionComboBox.TabIndex = 17;
+      this.variableSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.VariableSelectionComboBox_SelectedChangeCommitted);
       // 
       // TimeFrameLabel
       // 
-      this.TimeFrameLabel.AutoSize = true;
-      this.TimeFrameLabel.Location = new System.Drawing.Point(279, 33);
-      this.TimeFrameLabel.Name = "TimeFrameLabel";
-      this.TimeFrameLabel.Size = new System.Drawing.Size(59, 13);
-      this.TimeFrameLabel.TabIndex = 18;
-      this.TimeFrameLabel.Text = "Timeframe:";
+      this.timeFrameLabel.AutoSize = true;
+      this.timeFrameLabel.Location = new System.Drawing.Point(279, 33);
+      this.timeFrameLabel.Name = "TimeFrameLabel";
+      this.timeFrameLabel.Size = new System.Drawing.Size(59, 13);
+      this.timeFrameLabel.TabIndex = 18;
+      this.timeFrameLabel.Text = "Timeframe:";
       // 
       // TimeframeComboBox
       // 
-      this.TimeframeTextbox.Location = new System.Drawing.Point(344, 30);
-      this.TimeframeTextbox.Name = "TimeframeTextbox";
-      this.TimeframeTextbox.Size = new System.Drawing.Size(131, 21);
-      this.TimeframeTextbox.TabIndex = 19;
-      this.TimeframeTextbox.Text = "5";
-      this.TimeframeTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(TimeframeTextbox_KeyDown);
+      this.timeframeTextbox.Location = new System.Drawing.Point(344, 30);
+      this.timeframeTextbox.Name = "TimeframeTextbox";
+      this.timeframeTextbox.Size = new System.Drawing.Size(131, 21);
+      this.timeframeTextbox.TabIndex = 19;
+      this.timeframeTextbox.Text = "5";
+      this.timeframeTextbox.KeyDown += new System.Windows.Forms.KeyEventHandler(TimeframeTextbox_KeyDown);
+      this.timeframeTextbox.Validating += new System.ComponentModel.CancelEventHandler(TimeframeTextbox_Validating);
+      this.timeframeTextbox.Validated += new System.EventHandler(TimeframeTextbox_Validated);
       // 
       // TimeframeFeatureCorrelationView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Name = "TimeframeFeatureCorrelationView";
-      ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).EndInit();
-      this.SplitContainer.Panel1.ResumeLayout(false);
-      this.SplitContainer.Panel1.PerformLayout();
-      this.SplitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.SplitContainer)).EndInit();
-      this.SplitContainer.ResumeLayout(false);
-      this.CalculatingPanel.ResumeLayout(false);
-      this.CalculatingPanel.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel1.PerformLayout();
+      this.splitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+      this.splitContainer.ResumeLayout(false);
+      this.calculatingPanel.ResumeLayout(false);
+      this.calculatingPanel.PerformLayout();
       this.ResumeLayout(false);
 
     }
     #endregion
 
-    protected System.Windows.Forms.Label VariableSelectionLabel;
-    protected System.Windows.Forms.ComboBox VariableSelectionComboBox;
-    protected System.Windows.Forms.Label TimeFrameLabel;
-    protected System.Windows.Forms.TextBox TimeframeTextbox;
+    protected System.Windows.Forms.Label variableSelectionLabel;
+    protected System.Windows.Forms.ComboBox variableSelectionComboBox;
+    protected System.Windows.Forms.Label timeFrameLabel;
+    protected System.Windows.Forms.TextBox timeframeTextbox;
+    protected System.Windows.Forms.ErrorProvider errorProvider;
   }
 }

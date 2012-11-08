@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -31,6 +32,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Feature Correlation View")]
   [Content(typeof(DataAnalysisProblemData), false)]
   public abstract partial class AbstractFeatureCorrelationView : AsynchronousContentView {
+    public const string ALLSAMPLES = "All Samples";
+    public const string TRAININGSAMPLES = "Training Samples";
+    public const string TESTSAMPLES = "Test Samples";
+
+    public static readonly IList<string> Partitions = new List<string>() { ALLSAMPLES, TRAININGSAMPLES, TESTSAMPLES };
+
     protected FeatureCorrelationCalculator fcc;
 
     public new DataAnalysisProblemData Content {
@@ -43,12 +50,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       fcc = new FeatureCorrelationCalculator();
       var calculators = ApplicationManager.Manager.GetInstances<IDependencyCalculator>();
       var calcList = calculators.OrderBy(c => c.Name).Select(c => new { Name = c.Name, Calculator = c }).ToList();
-      CorrelationCalcComboBox.ValueMember = "Calculator";
-      CorrelationCalcComboBox.DisplayMember = "Name";
-      CorrelationCalcComboBox.DataSource = calcList;
-      CorrelationCalcComboBox.SelectedItem = calcList.First(c => c.Calculator.GetType().Equals(typeof(PearsonsRDependenceCalculator)));
-      PartitionComboBox.DataSource = FeatureCorrelationPartitions.Partitions;
-      PartitionComboBox.SelectedItem = FeatureCorrelationPartitions.TRAININGSAMPLES;
+      correlationCalcComboBox.ValueMember = "Calculator";
+      correlationCalcComboBox.DisplayMember = "Name";
+      correlationCalcComboBox.DataSource = calcList;
+      correlationCalcComboBox.SelectedItem = calcList.First(c => c.Calculator.GetType().Equals(typeof(PearsonsRDependenceCalculator)));
+      partitionComboBox.DataSource = Partitions;
+      partitionComboBox.SelectedItem = TRAININGSAMPLES;
     }
 
     protected override void RegisterContentEvents() {
@@ -58,8 +65,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      fcc.CorrelationCalculationFinished += new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
-      fcc.ProgressCalculation += new FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
+      fcc.CorrelationCalculationFinished -= new FeatureCorrelationCalculator.CorrelationCalculationFinishedHandler(Content_CorrelationCalculationFinished);
+      fcc.ProgressCalculation -= new FeatureCorrelationCalculator.ProgressCalculationHandler(Content_ProgressCalculation);
       base.DeregisterContentEvents();
     }
 
@@ -98,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected abstract void Content_CorrelationCalculationFinished(object sender, FeatureCorrelationCalculator.CorrelationCalculationFinishedArgs e);
 
     protected void UpdateDataView(DoubleMatrix correlation) {
-      IDependencyCalculator calc = (IDependencyCalculator)CorrelationCalcComboBox.SelectedValue;
+      IDependencyCalculator calc = (IDependencyCalculator)correlationCalcComboBox.SelectedValue;
       maximumLabel.Text = calc.Maximum.ToString();
       minimumLabel.Text = calc.Minimum.ToString();
 
@@ -110,12 +117,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected void Content_ProgressCalculation(object sender, ProgressChangedEventArgs e) {
-      if (!CalculatingPanel.Visible && e.ProgressPercentage != HeatMapProgressBar.Maximum) {
-        CalculatingPanel.Show();
-      } else if (e.ProgressPercentage == HeatMapProgressBar.Maximum) {
-        CalculatingPanel.Hide();
+      if (!calculatingPanel.Visible && e.ProgressPercentage != heatMapProgressBar.Maximum) {
+        calculatingPanel.Show();
+      } else if (e.ProgressPercentage == heatMapProgressBar.Maximum) {
+        calculatingPanel.Hide();
       }
-      HeatMapProgressBar.Value = e.ProgressPercentage;
+      heatMapProgressBar.Value = e.ProgressPercentage;
     }
   }
 }

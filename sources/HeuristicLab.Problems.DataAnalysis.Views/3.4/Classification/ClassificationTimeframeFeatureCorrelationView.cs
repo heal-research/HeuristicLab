@@ -36,6 +36,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
+    protected override void SetVariableSelectionComboBox() {
+      base.SetVariableSelectionComboBox();
+      variableSelectionComboBox.SelectedItem = Content.TargetVariable;
+    }
+
     protected override bool[] SetInitialVariableVisibility() {
       int i = Content.Dataset.DoubleVariables.ToList().FindIndex(x => x == Content.TargetVariable);
       var initialVisibility = base.SetInitialVariableVisibility();
