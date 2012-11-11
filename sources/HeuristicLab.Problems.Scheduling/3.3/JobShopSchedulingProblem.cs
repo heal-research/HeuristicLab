@@ -78,17 +78,14 @@ namespace HeuristicLab.Problems.Scheduling {
       get { return (OptionalValueParameter<Schedule>)Parameters["BestKnownSolution"]; }
     }
 
-    public ValueParameter<IntValue> JobsParameter {
-      get { return (ValueParameter<IntValue>)Parameters["Jobs"]; }
+    public IFixedValueParameter<IntValue> JobsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["Jobs"]; }
     }
-    public ValueParameter<IntValue> ResourcesParameter {
-      get { return (ValueParameter<IntValue>)Parameters["Resources"]; }
+    public IFixedValueParameter<IntValue> ResourcesParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["Resources"]; }
     }
     public ValueParameter<SchedulingEvaluator> SolutionEvaluatorParameter {
       get { return (ValueParameter<SchedulingEvaluator>)Parameters["SolutionEvaluator"]; }
-    }
-    public ValueParameter<BoolValue> DueDatesParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["DueDates"]; }
     }
     #endregion
 
@@ -101,21 +98,17 @@ namespace HeuristicLab.Problems.Scheduling {
       get { return BestKnownSolutionParameter.Value; }
       set { BestKnownSolutionParameter.Value = value; }
     }
-    public IntValue Jobs {
-      get { return JobsParameter.Value; }
-      set { JobsParameter.Value = value; }
+    public int Jobs {
+      get { return JobsParameter.Value.Value; }
+      set { JobsParameter.Value.Value = value; }
     }
-    public IntValue Resources {
-      get { return ResourcesParameter.Value; }
-      set { ResourcesParameter.Value = value; }
+    public int Resources {
+      get { return ResourcesParameter.Value.Value; }
+      set { ResourcesParameter.Value.Value = value; }
     }
     public SchedulingEvaluator SolutionEvaluator {
       get { return SolutionEvaluatorParameter.Value; }
       set { SolutionEvaluatorParameter.Value = value; }
-    }
-    public BoolValue DueDates {
-      get { return DueDatesParameter.Value; }
-      set { DueDatesParameter.Value = value; }
     }
     public override Image ItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -128,9 +121,8 @@ namespace HeuristicLab.Problems.Scheduling {
       Parameters.Add(new ValueParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", new ItemList<Job>()));
       Parameters.Add(new OptionalValueParameter<Schedule>("BestKnownSolution", "The best known solution of this JSSP instance."));
 
-      Parameters.Add(new ValueParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", new IntValue()));
-      Parameters.Add(new ValueParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", new IntValue()));
-      Parameters.Add(new ValueParameter<BoolValue>("DueDates", "Determines whether the problem instance uses due dates or not.", new BoolValue()));
+      Parameters.Add(new FixedValueParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", new IntValue()));
+      Parameters.Add(new FixedValueParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", new IntValue()));
       Parameters.Add(new ValueParameter<SchedulingEvaluator>("SolutionEvaluator", "The evaluator used to determine the quality of a solution.", new MakespanEvaluator()));
 
       InitializeOperators();
@@ -182,25 +174,24 @@ namespace HeuristicLab.Problems.Scheduling {
       }
 
       JobData = jobData;
-      Jobs = new IntValue(data.Jobs);
-      Resources = new IntValue(data.Resources);
-      DueDates = new BoolValue(data.DueDates != null);
+      Jobs = data.Jobs;
+      Resources = data.Resources;
     }
 
     public JSSPData Export() {
       var result = new JSSPData {
         Name = Name,
         Description = Description,
-        Jobs = Jobs.Value,
-        Resources = Resources.Value,
-        ProcessingTimes = new double[Jobs.Value, Resources.Value],
-        Demands = new int[Jobs.Value, Resources.Value],
-        DueDates = (DueDates.Value ? new double[Jobs.Value] : null)
+        Jobs = Jobs,
+        Resources = Resources,
+        ProcessingTimes = new double[Jobs, Resources],
+        Demands = new int[Jobs, Resources],
+        DueDates = new double[Jobs]
       };
 
       foreach (var job in JobData) {
         var counter = 0;
-        if (DueDates.Value) result.DueDates[job.Index] = job.DueDate;
+        result.DueDates[job.Index] = job.DueDate;
         foreach (var task in job.Tasks) {
           result.ProcessingTimes[task.JobNr, counter] = task.Duration;
           result.Demands[task.JobNr, counter] = task.ResourceNr;

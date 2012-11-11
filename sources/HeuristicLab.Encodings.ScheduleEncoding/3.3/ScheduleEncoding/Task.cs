@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.ComponentModel;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -27,17 +28,60 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Task", "Represents a task that has to be scheduled.")]
   [StorableClass]
-  public class Task : Item {
-    [Storable]
-    public int TaskNr { get; set; }
-    [Storable]
-    public int ResourceNr { get; set; }
-    [Storable]
-    public int JobNr { get; set; }
-    [Storable]
-    public double Duration { get; set; }
-    [Storable]
-    public bool IsScheduled { get; set; }
+  public class Task : Item, INotifyPropertyChanged {
+    [Storable(Name = "TaskNr")]
+    private int taskNr;
+    public int TaskNr {
+      get { return taskNr; }
+      set {
+        bool changed = taskNr != value;
+        taskNr = value;
+        if (changed) OnPropertyChanged("TaskNr");
+      }
+    }
+    [Storable(Name = "ResourceNr")]
+    private int resourceNr;
+    public int ResourceNr {
+      get { return resourceNr; }
+      set {
+        bool changed = resourceNr != value;
+        resourceNr = value;
+        if (changed) OnPropertyChanged("ResourceNr");
+      }
+    }
+
+    [Storable(Name = "JobNr")]
+    private int jobNr;
+    public int JobNr {
+      get { return jobNr; }
+      set {
+        bool changed = jobNr != value;
+        jobNr = value;
+        if (changed) OnPropertyChanged("JobNr");
+      }
+    }
+
+    [Storable(Name = "Duration")]
+    private double duration;
+    public double Duration {
+      get { return duration; }
+      set {
+        bool changed = duration != value;
+        duration = value;
+        if (changed) OnPropertyChanged("Duration");
+      }
+    }
+
+    [Storable(Name = "IsScheduled")]
+    private bool isScheduled;
+    public bool IsScheduled {
+      get { return isScheduled; }
+      set {
+        bool changed = isScheduled != value;
+        isScheduled = value;
+        if (changed) OnPropertyChanged("IsScheduled");
+      }
+    }
 
     [StorableConstructor]
     protected Task(bool deserializing) : base(deserializing) { }
@@ -84,6 +128,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
         task1.JobNr == task2.JobNr &&
         task1.ResourceNr == task2.ResourceNr &&
         task1.TaskNr == task2.TaskNr);
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) {
+      var handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
   }
 }

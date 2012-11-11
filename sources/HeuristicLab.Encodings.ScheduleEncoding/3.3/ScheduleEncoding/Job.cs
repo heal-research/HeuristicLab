@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.ComponentModel;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -27,13 +28,38 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Job", "Represents a composition of tasks that require processing in a scheduling problem.")]
   [StorableClass]
-  public class Job : Item {
-    [Storable]
-    public double DueDate { get; set; }
-    [Storable]
-    public int Index { get; set; }
-    [Storable]
-    public ItemList<Task> Tasks { get; set; }
+  public class Job : Item, INotifyPropertyChanged {
+    [Storable(Name = "DueDate")] private double dueDate;
+    public double DueDate {
+      get { return dueDate; }
+      set {
+        bool changed = dueDate != value;
+        dueDate = value;
+        if (changed) OnPropertyChanged("DueDate");
+      }
+    }
+
+    [Storable(Name = "Index")]
+    private int index;
+    public int Index {
+      get { return index; }
+      set {
+        bool changed = index != value;
+        index = value;
+        if (changed) OnPropertyChanged("Index");
+      }
+    }
+
+    [Storable(Name = "Tasks")]
+    private ItemList<Task> tasks; 
+    public ItemList<Task> Tasks {
+      get { return tasks; }
+      set {
+        bool changed = tasks != value;
+        tasks = value;
+        if (changed) OnPropertyChanged("Tasks");
+      }
+    }
 
     [StorableConstructor]
     protected Job(bool deserializing) : base(deserializing) { }
@@ -48,15 +74,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
     public Job(int index, double dueDate)
       : base() {
+      DueDate = dueDate;
       Index = index;
       Tasks = new ItemList<Task>();
-
-      DueDate = dueDate;
-
     }
 
     public override string ToString() {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
       sb.Append("Job#" + Index + " [ ");
       foreach (Task t in Tasks) {
         sb.Append(t.ToString() + " ");
@@ -67,12 +91,14 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     internal Task GetPreviousTask(Task t) {
-      if (t.TaskNr == 0)
-        return null;
-      else
-        return Tasks[t.TaskNr - 1];
+      if (t.TaskNr == 0) return null;
+      return Tasks[t.TaskNr - 1];
     }
 
-
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected virtual void OnPropertyChanged(string propertyName) {
+      var handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+    }
   }
 }
