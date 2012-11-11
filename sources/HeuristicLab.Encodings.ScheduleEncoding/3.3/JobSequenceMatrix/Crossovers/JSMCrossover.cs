@@ -26,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JSMCrossover", "An operator which crosses two JSM representations.")]
   [StorableClass]
-  public abstract class JSMCrossover : ScheduleCrossover<JSMEncoding>, IJSMOperator {
+  public abstract class JSMCrossover : ScheduleCrossover, IJSMOperator {
 
     [StorableConstructor]
     protected JSMCrossover(bool deserializing) : base(deserializing) { }
@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
     public abstract JSMEncoding Cross(IRandom random, JSMEncoding parent1, JSMEncoding parent2);
 
     public override IOperation Apply() {
-      ItemArray<JSMEncoding> parents = ParentsParameter.ActualValue;
+      var parents = ParentsParameter.ActualValue;
 
       ChildParameter.ActualValue =
         Cross(RandomParameter.ActualValue, parents[0] as JSMEncoding, parents[1] as JSMEncoding);

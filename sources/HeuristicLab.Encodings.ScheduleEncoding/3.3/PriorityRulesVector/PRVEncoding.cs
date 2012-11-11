@@ -41,16 +41,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       }
     }
 
-
     [StorableConstructor]
     protected PRVEncoding(bool deserializing) : base(deserializing) { }
     protected PRVEncoding(PRVEncoding original, Cloner cloner)
       : base(original, cloner) {
       this.nrOfRules = cloner.Clone(original.NrOfRules);
       this.PriorityRulesVector = cloner.Clone(original.PriorityRulesVector);
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new PRVEncoding(this, cloner);
     }
     public PRVEncoding(int nrOfRules)
       : base() {
@@ -68,6 +64,9 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       this.PriorityRulesVector = new IntegerVector(length, random, min, max);
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PRVEncoding(this, cloner);
+    }
 
     public override string ToString() {
       StringBuilder sb = new StringBuilder();

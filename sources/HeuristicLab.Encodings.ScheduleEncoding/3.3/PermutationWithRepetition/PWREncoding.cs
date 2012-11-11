@@ -29,9 +29,9 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PermutationWithRepetitionEncoding", "Represents a encoding for a standard JobShop Scheduling Problem.")]
   [StorableClass]
   public class PWREncoding : Item, IScheduleEncoding {
+
     [Storable]
     public IntegerVector PermutationWithRepetition { get; set; }
-
 
     [StorableConstructor]
     protected PWREncoding(bool deserializing) : base(deserializing) { }
@@ -39,12 +39,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
       : base(original, cloner) {
       this.PermutationWithRepetition = cloner.Clone(original.PermutationWithRepetition);
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new PWREncoding(this, cloner);
-    }
     public PWREncoding()
       : base() {
       PermutationWithRepetition = new IntegerVector();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PWREncoding(this, cloner);
     }
 
     public PWREncoding(int nrOfJobs, int nrOfResources, IRandom random)
@@ -80,6 +81,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
       else
         return base.Equals(obj);
     }
+
     public override int GetHashCode() {
       if (PermutationWithRepetition.Length == 1)
         return PermutationWithRepetition[0].GetHashCode();
@@ -87,6 +89,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
         return PermutationWithRepetition[0].GetHashCode() ^ PermutationWithRepetition[1].GetHashCode();
       return 0;
     }
+
     private bool AreEqual(PWREncoding pWREncoding1, PWREncoding pWREncoding2) {
       if (pWREncoding1.PermutationWithRepetition.Length != pWREncoding2.PermutationWithRepetition.Length)
         return false;
@@ -96,7 +99,5 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
       }
       return true;
     }
-
-
   }
 }

@@ -26,20 +26,18 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
-
   [Item("PRVUniformOnePositionManipulator", "Represents a manipulation operation inserting parts of the individual at another position.")]
   [StorableClass]
   public class PRVUniformOnePositionManipulator : PRVManipulator {
+
     [StorableConstructor]
     protected PRVUniformOnePositionManipulator(bool deserializing) : base(deserializing) { }
-    protected PRVUniformOnePositionManipulator(PRVUniformOnePositionManipulator original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected PRVUniformOnePositionManipulator(PRVUniformOnePositionManipulator original, Cloner cloner) : base(original, cloner) { }
+    public PRVUniformOnePositionManipulator() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PRVUniformOnePositionManipulator(this, cloner);
     }
-    public PRVUniformOnePositionManipulator() : base() { }
-
 
     public static void Apply(IRandom random, PRVEncoding individual) {
       UniformOnePositionManipulator.Apply(random, individual.PriorityRulesVector, new IntMatrix(new int[,] { { 0, individual.NrOfRules.Value } }));

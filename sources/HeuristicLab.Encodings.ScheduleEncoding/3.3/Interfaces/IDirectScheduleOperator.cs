@@ -20,6 +20,7 @@
 #endregion
 
 using HeuristicLab.Core;
+
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   public interface IDirectScheduleOperator : IOperator {
   }

@@ -108,11 +108,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="JSMForcingStrategyView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="JSMForcingStrategyView.Designer.cs">
+      <DependentUpon>JSMForcingStrategyView.cs</DependentUpon>
+    </Compile>
     <Compile Include="JobShopSchedulingProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="JobShopSchedulingProblemView.Designer.cs">
       <DependentUpon>JobShopSchedulingProblemView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JSMDecodingErrorPolicyView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="JSMDecodingErrorPolicyView.Designer.cs">
+      <DependentUpon>JSMDecodingErrorPolicyView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -142,6 +154,10 @@
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{bbab9df5-5ef3-4ba8-ade9-b36e82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.ScheduleEncoding.Views\3.3\HeuristicLab.Encodings.ScheduleEncoding.Views-3.3.csproj">
       <Project>{0C378762-D5DB-488A-8931-2BA42B1B7CBF}</Project>

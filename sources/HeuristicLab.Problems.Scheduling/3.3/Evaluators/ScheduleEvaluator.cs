@@ -28,52 +28,31 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Scheduling {
-  [Item("Scheduling Evaluation Algorithm", "Represents a composition of a decoder and an evaluator for scheduling problems.")]
+  [Item("Schedule Evaluator", "Represents a base class for schedule evaluators.")]
   [StorableClass]
-  public class SchedulingEvaluationAlgorithm : AlgorithmOperator, IScheduleEvaluationAlgorithm {
-    [StorableConstructor]
-    protected SchedulingEvaluationAlgorithm(bool deserializing) : base(deserializing) { }
-    protected SchedulingEvaluationAlgorithm(SchedulingEvaluationAlgorithm original, Cloner cloner)
-      : base(original, cloner) {
-      this.evaluator = cloner.Clone(original.evaluator);
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SchedulingEvaluationAlgorithm(this, cloner);
-    }
-
-    [Storable]
-    private Placeholder evaluator;
+  public abstract class ScheduleEvaluator : SingleSuccessorOperator, IScheduleEvaluator {
 
     public ILookupParameter<DoubleValue> QualityParameter {
-      get {
-        if (Parameters.ContainsKey("Quality"))
-          return (ILookupParameter<DoubleValue>)Parameters["Quality"];
-        else
-          return null;
-      }
+      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
+    }
+    public ILookupParameter<Schedule> ScheduleParameter {
+      get { return (ILookupParameter<Schedule>)Parameters["Schedule"]; }
     }
 
-    public void InitializeOperatorGraph<T>() where T : Item, IScheduleEncoding {
-      OperatorGraph.Operators.Clear();
-      OperatorGraph.InitialOperator = evaluator;
-    }
-
-    public void InitializeOperatorGraph<T>(ScheduleDecoder<T> decoder) where T : Item, IScheduleEncoding {
-      OperatorGraph.Operators.Clear();
-      OperatorGraph.InitialOperator = decoder;
-      decoder.Successor = evaluator;
-    }
-
-    public SchedulingEvaluationAlgorithm()
+    [StorableConstructor]
+    protected ScheduleEvaluator(bool deserializing) : base(deserializing) { }
+    protected ScheduleEvaluator(ScheduleEvaluator original, Cloner cloner) : base(original, cloner) { }
+    protected ScheduleEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value aka fitness value of the solution."));
-      evaluator = new Placeholder();
-      evaluator.OperatorParameter.ActualName = "SolutionEvaluator";
+      Parameters.Add(new LookupParameter<Schedule>("Schedule", "The decoded scheduling solution represented as generalized schedule."));
     }
+
+    protected abstract double Evaluate(Schedule schedule);
 
     public override IOperation Apply() {
+      QualityParameter.ActualValue = new DoubleValue(Evaluate(ScheduleParameter.ActualValue));
       return base.Apply();
     }
-
   }
 }

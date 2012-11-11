@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 namespace HeuristicLab.Problems.Scheduling {
   public enum JSMDecodingErrorPolicyTypes {
     RandomPolicy,

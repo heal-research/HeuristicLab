@@ -29,10 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PermutationWithRepetitionRandomCreator", "Creates PWR-individuals at random.")]
   [StorableClass]
-  public class PWRRandomCreator : ScheduleCreator<PWREncoding>, IStochasticOperator {
-    public IRandom Random {
-      get { return RandomParameter.ActualValue; }
-    }
+  public class PWRRandomCreator : ScheduleCreator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -46,13 +43,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
 
     [StorableConstructor]
     protected PWRRandomCreator(bool deserializing) : base(deserializing) { }
-    protected PWRRandomCreator(PWRRandomCreator original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new PWRRandomCreator(this, cloner);
-    }
-
+    protected PWRRandomCreator(PWRRandomCreator original, Cloner cloner) : base(original, cloner) { }
     public PWRRandomCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
@@ -62,13 +53,16 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
       ScheduleEncodingParameter.ActualName = "PermutationWithRepetition";
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PWRRandomCreator(this, cloner);
+    }
+
     public static PWREncoding Apply(int jobs, int resources, IRandom random) {
       return new PWREncoding(jobs, resources, random);
     }
 
-
-    protected override PWREncoding CreateSolution() {
-      return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, Random);
+    protected override IScheduleEncoding CreateSolution() {
+      return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue);
     }
   }
 }

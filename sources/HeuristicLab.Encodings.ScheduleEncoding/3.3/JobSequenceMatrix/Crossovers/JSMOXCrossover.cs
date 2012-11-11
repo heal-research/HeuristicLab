@@ -27,19 +27,18 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JSMOrderCrossover", "Represents a crossover operation swapping sequences of the parents to generate offspring.")]
   [StorableClass]
   public class JSMOXCrossover : JSMCrossover {
+
     [StorableConstructor]
     protected JSMOXCrossover(bool deserializing) : base(deserializing) { }
-    protected JSMOXCrossover(JSMOXCrossover original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected JSMOXCrossover(JSMOXCrossover original, Cloner cloner) : base(original, cloner) { }
+    public JSMOXCrossover() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new JSMOXCrossover(this, cloner);
     }
-    public JSMOXCrossover() : base() { }
-
 
     public static JSMEncoding Apply(IRandom random, JSMEncoding parent1, JSMEncoding parent2) {
-      JSMEncoding result = new JSMEncoding();
+      var result = new JSMEncoding();
 
       for (int i = 0; i < parent1.JobSequenceMatrix.Count; i++) {
         result.JobSequenceMatrix.Add(

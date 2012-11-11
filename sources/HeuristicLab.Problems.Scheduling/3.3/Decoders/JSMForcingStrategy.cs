@@ -19,32 +19,29 @@
  */
 #endregion
 
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
-
-  [Item("ConcreteScheduleManipulator", "Represents an operator somehow mutating a schedule instance.")]
+namespace HeuristicLab.Problems.Scheduling {
+  [Item("JSMForcingStrategy", "Represents a forcing strategy.")]
   [StorableClass]
-  public class ConcreteScheduleManipulator : DirectScheduleManipulator {
+  public sealed class JSMForcingStrategy : ValueTypeValue<JSMForcingStrategyTypes> {
+
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
+    }
+
     [StorableConstructor]
-    protected ConcreteScheduleManipulator(bool deserializing) : base(deserializing) { }
-    protected ConcreteScheduleManipulator(ConcreteScheduleManipulator original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    private JSMForcingStrategy(bool deserializing) : base(deserializing) { }
+    private JSMForcingStrategy(JSMForcingStrategy original, Cloner cloner) : base(original, cloner) { }
+    public JSMForcingStrategy() { }
+    public JSMForcingStrategy(JSMForcingStrategyTypes types) : base(types) { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ConcreteScheduleManipulator(this, cloner);
-    }
-    public ConcreteScheduleManipulator() : base() { }
-
-
-    public static void Apply(IRandom random, Schedule individual) {
-      //somehow manipulate individual
-    }
-
-    protected override void Manipulate(IRandom random, Schedule individual) {
-      Apply(random, individual);
+      return new JSMForcingStrategy(this, cloner);
     }
   }
 }

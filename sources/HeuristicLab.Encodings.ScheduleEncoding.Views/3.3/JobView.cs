@@ -30,7 +30,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
   [Content(typeof(Job))]
   public partial class JobView : ItemView {
     private ItemListView<Task> tasksView;
-    private bool SuppressEvents = false;
+    protected bool SuppressEvents = false;
 
     public new Job Content {
       get { return (Job)base.Content; }

@@ -28,15 +28,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PRVSinglePointCrossover", "Represents a crossover operation swapping sequences of the parents to generate offspring.")]
   [StorableClass]
   public class PRVSinglePointCrossover : PRVCrossover {
+
     [StorableConstructor]
     protected PRVSinglePointCrossover(bool deserializing) : base(deserializing) { }
-    protected PRVSinglePointCrossover(PRVSinglePointCrossover original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected PRVSinglePointCrossover(PRVSinglePointCrossover original, Cloner cloner) : base(original, cloner) { }
+    public PRVSinglePointCrossover() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PRVSinglePointCrossover(this, cloner);
     }
-    public PRVSinglePointCrossover() : base() { }
 
     public static PRVEncoding Apply(IRandom random, PRVEncoding parent1, PRVEncoding parent2) {
       return new PRVEncoding(SinglePointCrossover.Apply(random, parent1.PriorityRulesVector, parent2.PriorityRulesVector), parent1.NrOfRules);

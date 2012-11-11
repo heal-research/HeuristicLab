@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Scheduling {
   [Item("Mean tardiness Evaluator", "Represents an evaluator using the mean tardiness of a schedule.")]
   [StorableClass]
-  public class MeanTardinessEvaluator : SchedulingEvaluator, IJSSPOperator {
+  public class MeanTardinessEvaluator : ScheduleEvaluator, IJSSPOperator {
 
     [StorableConstructor]
     protected MeanTardinessEvaluator(bool deserializing) : base(deserializing) { }
@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.Scheduling {
     public MeanTardinessEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance."));
+      QualityParameter.ActualName = "MeanTardiness";
     }
 
     public static double GetMeanTardiness(Schedule schedule, ItemList<Job> jobData) {
@@ -57,8 +58,8 @@ namespace HeuristicLab.Problems.Scheduling {
         .Average();
     }
 
-    protected override DoubleValue Evaluate(Schedule schedule) {
-      return new DoubleValue(GetMeanTardiness(schedule, JobDataParameter.ActualValue));
+    protected override double Evaluate(Schedule schedule) {
+      return GetMeanTardiness(schedule, JobDataParameter.ActualValue);
     }
   }
 }

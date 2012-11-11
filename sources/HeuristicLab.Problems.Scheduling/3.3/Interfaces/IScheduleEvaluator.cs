@@ -19,9 +19,15 @@
  */
 #endregion
 
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.ScheduleEncoding;
+using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding {
-  public interface IScheduleDecoder : IScheduleOperator {
-
+namespace HeuristicLab.Problems.Scheduling {
+  /// <summary>
+  /// An evaluator for a Schedule
+  /// </summary>
+  public interface IScheduleEvaluator : ISingleObjectiveEvaluator {
+    ILookupParameter<Schedule> ScheduleParameter { get; }
   }
 }

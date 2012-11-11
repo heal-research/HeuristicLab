@@ -19,7 +19,9 @@
  */
 #endregion
 
+using System;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -70,9 +72,14 @@ namespace HeuristicLab.Problems.Scheduling {
     };
     #endregion
 
+    public string Filename { get; set; }
+    public override Image ItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
+    }
+
     #region Parameter Properties
-    public ValueParameter<ItemList<Job>> JobDataParameter {
-      get { return (ValueParameter<ItemList<Job>>)Parameters["JobData"]; }
+    public IValueParameter<ItemList<Job>> JobDataParameter {
+      get { return (IValueParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
     public OptionalValueParameter<Schedule> BestKnownSolutionParameter {
       get { return (OptionalValueParameter<Schedule>)Parameters["BestKnownSolution"]; }
@@ -84,8 +91,11 @@ namespace HeuristicLab.Problems.Scheduling {
     public IFixedValueParameter<IntValue> ResourcesParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["Resources"]; }
     }
-    public ValueParameter<SchedulingEvaluator> SolutionEvaluatorParameter {
-      get { return (ValueParameter<SchedulingEvaluator>)Parameters["SolutionEvaluator"]; }
+    public IValueParameter<IScheduleEvaluator> ScheduleEvaluatorParameter {
+      get { return (IValueParameter<IScheduleEvaluator>)Parameters["ScheduleEvaluator"]; }
+    }
+    public OptionalValueParameter<IScheduleDecoder> ScheduleDecoderParameter {
+      get { return (OptionalValueParameter<IScheduleDecoder>)Parameters["ScheduleDecoder"]; }
     }
     #endregion
 
@@ -106,41 +116,87 @@ namespace HeuristicLab.Problems.Scheduling {
       get { return ResourcesParameter.Value.Value; }
       set { ResourcesParameter.Value.Value = value; }
     }
-    public SchedulingEvaluator SolutionEvaluator {
-      get { return SolutionEvaluatorParameter.Value; }
-      set { SolutionEvaluatorParameter.Value = value; }
+    public IScheduleEvaluator ScheduleEvaluator {
+      get { return ScheduleEvaluatorParameter.Value; }
+      set { ScheduleEvaluatorParameter.Value = value; }
     }
-    public override Image ItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
+    public IScheduleDecoder ScheduleDecoder {
+      get { return ScheduleDecoderParameter.Value; }
+      set { ScheduleDecoderParameter.Value = value; }
     }
-    public string Filename { get; set; }
     #endregion
-
-    public JobShopSchedulingProblem()
-      : base(new SchedulingEvaluationAlgorithm(), new JSMRandomCreator()) {
-      Parameters.Add(new ValueParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", new ItemList<Job>()));
-      Parameters.Add(new OptionalValueParameter<Schedule>("BestKnownSolution", "The best known solution of this JSSP instance."));
-
-      Parameters.Add(new FixedValueParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", new IntValue()));
-      Parameters.Add(new FixedValueParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", new IntValue()));
-      Parameters.Add(new ValueParameter<SchedulingEvaluator>("SolutionEvaluator", "The evaluator used to determine the quality of a solution.", new MakespanEvaluator()));
-
-      InitializeOperators();
-      Load(DefaultInstance);
-    }
 
     [StorableConstructor]
     private JobShopSchedulingProblem(bool deserializing) : base(deserializing) { }
     private JobShopSchedulingProblem(JobShopSchedulingProblem original, Cloner cloner)
       : base(original, cloner) {
+      RegisterEventHandlers();
     }
+    public JobShopSchedulingProblem()
+      : base(new SchedulingEvaluator(), new JSMRandomCreator()) {
+      Parameters.Add(new ValueParameter<ItemList<Job>>("JobData", "Jobdata defining the precedence relationships and the duration of the tasks in this JSSP-Instance.", new ItemList<Job>()));
+      Parameters.Add(new OptionalValueParameter<Schedule>("BestKnownSolution", "The best known solution of this JSSP instance."));
+
+      Parameters.Add(new FixedValueParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", new IntValue()));
+      Parameters.Add(new FixedValueParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", new IntValue()));
+      Parameters.Add(new ValueParameter<IScheduleEvaluator>("ScheduleEvaluator", "The evaluator used to determine the quality of a solution.", new MakespanEvaluator()));
+      Parameters.Add(new OptionalValueParameter<IScheduleDecoder>("ScheduleDecoder", "The operator that decodes the representation and creates a schedule.", new JSMDecoder()));
+
+      EvaluatorParameter.GetsCollected = false;
+      EvaluatorParameter.Hidden = true;
+      ScheduleDecoderParameter.Hidden = true;
+
+      InitializeOperators();
+      Load(DefaultInstance);
+      RegisterEventHandlers();
+    }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new JobShopSchedulingProblem(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
+      ScheduleEvaluatorParameter.ValueChanged += ScheduleEvaluatorParameter_ValueChanged;
+      ScheduleEvaluator.QualityParameter.ActualNameChanged += ScheduleEvaluator_QualityParameter_ActualNameChanged;
+      SolutionCreatorParameter.ValueChanged += SolutionCreatorParameter_ValueChanged;
+      SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
+      ScheduleDecoderParameter.ValueChanged += ScheduleDecoderParameter_ValueChanged;
+      if (ScheduleDecoder != null) ScheduleDecoder.ScheduleParameter.ActualNameChanged += ScheduleDecoder_ScheduleParameter_ActualNameChanged;
     }
 
     #region Events
     protected override void OnSolutionCreatorChanged() {
       InitializeOperators();
+    }
+    protected override void OnEvaluatorChanged() {
+      base.OnEvaluatorChanged();
+      ParameterizeOperators();
+    }
+    private void ScheduleEvaluatorParameter_ValueChanged(object sender, EventArgs eventArgs) {
+      ScheduleEvaluator.QualityParameter.ActualNameChanged += ScheduleEvaluator_QualityParameter_ActualNameChanged;
+      ParameterizeOperators();
+    }
+    private void ScheduleEvaluator_QualityParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
+      ParameterizeOperators();
+    }
+    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs eventArgs) {
+      SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
+      ParameterizeOperators();
+    }
+    private void SolutionCreator_SchedulingEncodingParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
+      ParameterizeOperators();
+    }
+    private void ScheduleDecoderParameter_ValueChanged(object sender, EventArgs eventArgs) {
+      if (ScheduleDecoder != null) ScheduleDecoder.ScheduleParameter.ActualNameChanged += ScheduleDecoder_ScheduleParameter_ActualNameChanged;
+      ParameterizeOperators();
+    }
+    private void ScheduleDecoder_ScheduleParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
+      ParameterizeOperators();
     }
     #endregion
 
@@ -155,8 +211,7 @@ namespace HeuristicLab.Problems.Scheduling {
         jobData.Add(job);
       }
 
-      if (data.BestKnownQuality.HasValue) BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
-      else BestKnownQuality = null;
+      BestKnownQuality = data.BestKnownQuality.HasValue ? new DoubleValue(data.BestKnownQuality.Value) : null;
       if (data.BestKnownSchedule != null) {
         var enc = new JSMEncoding();
         enc.JobSequenceMatrix = new ItemList<Permutation>(data.Resources);
@@ -167,9 +222,9 @@ namespace HeuristicLab.Problems.Scheduling {
           }
         }
         BestKnownSolution = new JSMDecoder().CreateScheduleFromEncoding(enc, jobData);
-        if (SolutionEvaluator is MeanTardinessEvaluator)
+        if (ScheduleEvaluator is MeanTardinessEvaluator)
           BestKnownQuality = new DoubleValue(MeanTardinessEvaluator.GetMeanTardiness(BestKnownSolution, jobData));
-        else if (SolutionEvaluator is MakespanEvaluator)
+        else if (ScheduleEvaluator is MakespanEvaluator)
           BestKnownQuality = new DoubleValue(MakespanEvaluator.GetMakespan(BestKnownSolution));
       }
 
@@ -207,24 +262,72 @@ namespace HeuristicLab.Problems.Scheduling {
       Operators.Clear();
       ApplyEncoding();
       Operators.Add(new BestSchedulingSolutionAnalyzer());
+      ParameterizeOperators();
     }
 
     private void ApplyEncoding() {
       if (SolutionCreator.GetType() == typeof(JSMRandomCreator)) {
         Operators.AddRange(ApplicationManager.Manager.GetInstances<IJSMOperator>());
-        var decoder = new JSMDecoder();
-        ((SchedulingEvaluationAlgorithm)EvaluatorParameter.ActualValue).InitializeOperatorGraph(decoder);
+        ScheduleDecoder = new JSMDecoder();
       } else if (SolutionCreator.GetType() == typeof(PRVRandomCreator)) {
         Operators.AddRange(ApplicationManager.Manager.GetInstances<IPRVOperator>());
-        var decoder = new PRVDecoder();
-        ((SchedulingEvaluationAlgorithm)EvaluatorParameter.ActualValue).InitializeOperatorGraph(decoder);
+        ScheduleDecoder = new PRVDecoder();
       } else if (SolutionCreator.GetType() == typeof(PWRRandomCreator)) {
         Operators.AddRange(ApplicationManager.Manager.GetInstances<IPWROperator>());
-        var decoder = new PWRDecoder();
-        ((SchedulingEvaluationAlgorithm)EvaluatorParameter.ActualValue).InitializeOperatorGraph(decoder);
+        ScheduleDecoder = new PWRDecoder();
       } else if (SolutionCreator.GetType() == typeof(DirectScheduleRandomCreator)) {
         Operators.AddRange(ApplicationManager.Manager.GetInstances<IDirectScheduleOperator>());
-        ((SchedulingEvaluationAlgorithm)EvaluatorParameter.ActualValue).InitializeOperatorGraph<Schedule>();
+        ScheduleDecoder = null;
+      }
+    }
+
+    private void ParameterizeOperators() {
+      Evaluator.ScheduleDecoderParameter.ActualName = ScheduleDecoderParameter.Name;
+      Evaluator.ScheduleDecoderParameter.Hidden = true;
+      Evaluator.ScheduleEvaluatorParameter.ActualName = ScheduleEvaluatorParameter.Name;
+      Evaluator.ScheduleEvaluatorParameter.Hidden = true;
+      Evaluator.QualityParameter.ActualName = ScheduleEvaluator.QualityParameter.ActualName;
+      Evaluator.QualityParameter.Hidden = true;
+
+      if (ScheduleDecoder != null)
+        ScheduleDecoder.ScheduleEncodingParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
+
+      if (ScheduleDecoder != null) {
+        ScheduleEvaluator.ScheduleParameter.ActualName = ScheduleDecoder.ScheduleParameter.ActualName;
+        ScheduleEvaluator.ScheduleParameter.Hidden = true;
+      } else if (SolutionCreator is DirectScheduleRandomCreator) {
+        var directEvaluator = (DirectScheduleRandomCreator)SolutionCreator;
+        ScheduleEvaluator.ScheduleParameter.ActualName = directEvaluator.ScheduleEncodingParameter.ActualName;
+        ScheduleEvaluator.ScheduleParameter.Hidden = true;
+      } else {
+        ScheduleEvaluator.ScheduleParameter.ActualName = ScheduleEvaluator.ScheduleParameter.Name;
+        ScheduleEvaluator.ScheduleParameter.Hidden = false;
+      }
+
+      foreach (var op in Operators.OfType<IScheduleManipulator>()) {
+        op.ScheduleEncodingParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
+        op.ScheduleEncodingParameter.Hidden = true;
+      }
+
+      foreach (var op in Operators.OfType<IScheduleCrossover>()) {
+        op.ChildParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
+        op.ChildParameter.Hidden = true;
+        op.ParentsParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
+        op.ParentsParameter.Hidden = true;
+      }
+
+      foreach (var op in Operators.OfType<BestSchedulingSolutionAnalyzer>()) {
+        op.QualityParameter.ActualName = ScheduleEvaluator.QualityParameter.ActualName;
+        if (ScheduleDecoder != null) {
+          op.ScheduleParameter.ActualName = ScheduleDecoder.ScheduleParameter.ActualName;
+          op.ScheduleParameter.Hidden = true;
+        } else if (SolutionCreator is DirectScheduleRandomCreator) {
+          op.ScheduleParameter.ActualName = ((DirectScheduleRandomCreator)SolutionCreator).ScheduleEncodingParameter.ActualName;
+          op.ScheduleParameter.Hidden = true;
+        } else {
+          op.ScheduleParameter.ActualName = op.ScheduleParameter.Name;
+          op.ScheduleParameter.Hidden = false;
+        }
       }
     }
     #endregion

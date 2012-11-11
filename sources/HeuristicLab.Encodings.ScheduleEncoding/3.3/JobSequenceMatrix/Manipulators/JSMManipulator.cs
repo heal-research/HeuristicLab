@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JSMManipulator", "An operator which manipulates a JSM representation.")]
   [StorableClass]
-  public abstract class JSMManipulator : ScheduleManipulator<JSMEncoding>, IJSMOperator {
+  public abstract class JSMManipulator : ScheduleManipulator, IJSMOperator {
     [StorableConstructor]
     protected JSMManipulator(bool deserializing) : base(deserializing) { }
     protected JSMManipulator(JSMManipulator original, Cloner cloner) : base(original, cloner) { }
@@ -35,11 +36,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
       ScheduleEncodingParameter.ActualName = "JobSequenceMatrix";
     }
 
-    protected abstract void Manipulate(IRandom random, JSMEncoding individual);
-
+    protected abstract void Manipulate(IRandom random, IScheduleEncoding individual);
 
     public override IOperation Apply() {
-      JSMEncoding solution = ScheduleEncodingParameter.ActualValue;
+      var solution = ScheduleEncodingParameter.ActualValue as JSMEncoding;
+      if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type JSMEncoding.");
       Manipulate(RandomParameter.ActualValue, solution);
       return base.Apply();
     }

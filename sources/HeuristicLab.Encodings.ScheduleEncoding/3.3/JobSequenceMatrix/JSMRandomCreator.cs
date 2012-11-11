@@ -27,12 +27,11 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JobSequenceMatrixCreator", "Creator class used to create Job Sequence Matrix solutions for standard JobShop scheduling problems.")]
   [StorableClass]
-  public class JSMRandomCreator : ScheduleCreator<JSMEncoding>, IStochasticOperator {
-    #region Parameter Properties
+  public class JSMRandomCreator : ScheduleCreator, IStochasticOperator {
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -42,17 +41,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
     public IValueLookupParameter<IntValue> ResourcesParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["Resources"]; }
     }
-    #endregion
-
 
     [StorableConstructor]
     protected JSMRandomCreator(bool deserializing) : base(deserializing) { }
-    protected JSMRandomCreator(JSMRandomCreator original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new JSMRandomCreator(this, cloner);
-    }
+    protected JSMRandomCreator(JSMRandomCreator original, Cloner cloner) : base(original, cloner) { }
     public JSMRandomCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
@@ -62,19 +54,19 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
       ScheduleEncodingParameter.ActualName = "JobSequenceMatrix";
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new JSMRandomCreator(this, cloner);
+    }
 
     public static JSMEncoding Apply(int jobs, int resources, IRandom random) {
-      JSMEncoding solution = new JSMEncoding();
-
+      var solution = new JSMEncoding();
       for (int i = 0; i < resources; i++) {
         solution.JobSequenceMatrix.Add(new Permutation(PermutationTypes.Absolute, jobs, random));
       }
-
       return solution;
     }
 
-
-    protected override JSMEncoding CreateSolution() {
+    protected override IScheduleEncoding CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue);
     }
   }

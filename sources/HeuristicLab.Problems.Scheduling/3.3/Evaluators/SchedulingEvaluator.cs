@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -27,45 +28,52 @@ using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-
 namespace HeuristicLab.Problems.Scheduling {
-  [Item("Scheduling Evaluator", "Represents a evaluator class for standard scheduling problems.")]
+  [Item("SchedulingEvaluator", "First applies the decoder operator to obtain a schedule from an encoding and then applies the evaluator to obtain a quality.")]
   [StorableClass]
-  public abstract class SchedulingEvaluator : SingleSuccessorOperator, IScheduleEvaluator {
-    [StorableConstructor]
-    protected SchedulingEvaluator(bool deserializing) : base(deserializing) { }
-    protected SchedulingEvaluator(SchedulingEvaluator original, Cloner cloner)
-      : base(original, cloner) {
-    }
+  public class SchedulingEvaluator : SingleSuccessorOperator, ISchedulingEvaluator {
 
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
+    public IValueLookupParameter<IScheduleDecoder> ScheduleDecoderParameter {
+      get { return (IValueLookupParameter<IScheduleDecoder>) Parameters["ScheduleDecoder"]; }
+    }
+    ILookupParameter<IScheduleDecoder> ISchedulingEvaluator.ScheduleDecoderParameter {
+      get { return ScheduleDecoderParameter; }
+    }
+    public IValueLookupParameter<IScheduleEvaluator> ScheduleEvaluatorParameter {
+      get { return (IValueLookupParameter<IScheduleEvaluator>) Parameters["ScheduleEvaluator"]; }
+    }
+    ILookupParameter<IScheduleEvaluator> ISchedulingEvaluator.ScheduleEvaluatorParameter {
+      get { return ScheduleEvaluatorParameter; }
     }
     public ILookupParameter<DoubleValue> QualityParameter {
-      get {
-        if (Parameters.ContainsKey("Quality"))
-          return (ILookupParameter<DoubleValue>)Parameters["Quality"];
-        else
-          return null;
-      }
-    }
-    public ILookupParameter<Schedule> ScheduleParameter {
-      get { return (ILookupParameter<Schedule>)Parameters["Schedule"]; }
+      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
+    [StorableConstructor]
+    protected SchedulingEvaluator(bool deserializing) : base(deserializing) { }
+    protected SchedulingEvaluator(SchedulingEvaluator original, Cloner cloner) : base(original, cloner) { }
     public SchedulingEvaluator()
       : base() {
+      Parameters.Add(new ValueLookupParameter<IScheduleDecoder>("ScheduleDecoder", "The decoding operator that is used to calculate a schedule from the used representation."));
+      Parameters.Add(new ValueLookupParameter<IScheduleEvaluator>("ScheduleEvaluator", "The actual schedule evaluation operator."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value aka fitness value of the solution."));
-      Parameters.Add(new LookupParameter<Schedule>("Schedule", "The decoded scheduling solution represented as generalized schedule."));
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
+      QualityParameter.Hidden = true;
     }
 
-    protected abstract DoubleValue Evaluate(Schedule schedule);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SchedulingEvaluator(this, cloner);
+    }
 
     public override IOperation Apply() {
-      Schedule schedule = ScheduleParameter.ActualValue;
-      QualityParameter.ActualValue = Evaluate(schedule);
-      return base.Apply();
+      var decoder = ScheduleDecoderParameter.ActualValue;
+      var evaluator = ScheduleEvaluatorParameter.ActualValue;
+      if (evaluator == null) throw new InvalidOperationException("A ScheduleEvaluator could not be found.");
+
+      var operations = new OperationCollection(base.Apply());
+      operations.Insert(0, ExecutionContext.CreateChildOperation(evaluator));
+      if (decoder != null) // decode before evaluating
+        operations.Insert(0, ExecutionContext.CreateChildOperation(decoder));
+      return operations;
     }
   }
 }

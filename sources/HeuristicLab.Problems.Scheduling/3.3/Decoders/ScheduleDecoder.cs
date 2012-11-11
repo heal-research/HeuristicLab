@@ -21,34 +21,33 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [Item("ScheduleDecoder", "A scheduling decoder operator.")]
+namespace HeuristicLab.Problems.Scheduling {
+  [Item("ScheduleDecoder", "A schedule decoder translates a respresentation into an actual schedule.")]
   [StorableClass]
-  public abstract class ScheduleDecoder<T> : SingleSuccessorOperator, IScheduleDecoder where T : Item {
-    [StorableConstructor]
-    protected ScheduleDecoder(bool deserializing) : base(deserializing) { }
-    protected ScheduleDecoder(ScheduleDecoder<T> original, Cloner cloner)
-      : base(original, cloner) {
-    }
+  public abstract class ScheduleDecoder : SingleSuccessorOperator, IScheduleDecoder {
 
-    public ILookupParameter<T> ScheduleEncodingParameter {
-      get { return (ILookupParameter<T>)Parameters["ScheduleEncoding"]; }
+    public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
+      get { return (ILookupParameter<IScheduleEncoding>)Parameters["ScheduleEncoding"]; }
     }
     public ILookupParameter<Schedule> ScheduleParameter {
       get { return (ILookupParameter<Schedule>)Parameters["Schedule"]; }
     }
 
+    [StorableConstructor]
+    protected ScheduleDecoder(bool deserializing) : base(deserializing) { }
+    protected ScheduleDecoder(ScheduleDecoder original, Cloner cloner) : base(original, cloner) { }
     public ScheduleDecoder()
       : base() {
-      Parameters.Add(new LookupParameter<T>("ScheduleEncoding", "The new scheduling solution represented as encoding."));
+      Parameters.Add(new LookupParameter<IScheduleEncoding>("ScheduleEncoding", "The new scheduling solution represented as encoding."));
       Parameters.Add(new LookupParameter<Schedule>("Schedule", "The decoded scheduling solution represented as generalized schedule."));
     }
 
-    public abstract Schedule CreateScheduleFromEncoding(T solution);
+    public abstract Schedule CreateScheduleFromEncoding(IScheduleEncoding solution);
 
     public override IOperation Apply() {
       Schedule result = CreateScheduleFromEncoding(ScheduleEncodingParameter.ActualValue);

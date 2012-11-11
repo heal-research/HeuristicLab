@@ -28,14 +28,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingProblem", "Abstract class that represents a Scheduling Problem")]
   [StorableClass]
-  public abstract class SchedulingProblem : SingleObjectiveHeuristicOptimizationProblem<IScheduleEvaluationAlgorithm, IScheduleCreator> {
+  public abstract class SchedulingProblem : SingleObjectiveHeuristicOptimizationProblem<ISchedulingEvaluator, IScheduleCreator> {
     [StorableConstructor]
     protected SchedulingProblem(bool deserializing) : base(deserializing) { }
-    protected SchedulingProblem(SchedulingProblem original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
-    protected SchedulingProblem(IScheduleEvaluationAlgorithm se, IScheduleCreator sc) : base(se, sc) { }
-
+    protected SchedulingProblem(SchedulingProblem original, Cloner cloner) : base(original, cloner) { }
+    protected SchedulingProblem(ISchedulingEvaluator evaluator, IScheduleCreator creator) : base(evaluator, creator) { }
   }
 }

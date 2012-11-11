@@ -29,28 +29,26 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Scheduling {
   [Item("Makespan Evaluator", "Represents an evaluator using the maximum makespan of a schedule.")]
   [StorableClass]
-  public class MakespanEvaluator : SchedulingEvaluator {
+  public class MakespanEvaluator : ScheduleEvaluator {
+
     [StorableConstructor]
     protected MakespanEvaluator(bool deserializing) : base(deserializing) { }
-    protected MakespanEvaluator(MakespanEvaluator original, Cloner cloner)
-      : base(original, cloner) {
+    protected MakespanEvaluator(MakespanEvaluator original, Cloner cloner) : base(original, cloner) {}
+    public MakespanEvaluator()
+      : base() {
+      QualityParameter.ActualName = "Makespan";
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MakespanEvaluator(this, cloner);
     }
-
-    public MakespanEvaluator() : base() { }
 
     public static double GetMakespan(Schedule schedule) {
       return schedule.Resources.Select(r => r.TotalDuration).Max();
     }
 
-    protected override DoubleValue Evaluate(Schedule schedule) {
-      return new DoubleValue(GetMakespan(schedule));
-    }
-
-    public override IOperation Apply() {
-      return base.Apply();
+    protected override double Evaluate(Schedule schedule) {
+      return GetMakespan(schedule);
     }
   }
 }

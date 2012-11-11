@@ -19,9 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   public interface IScheduleManipulator : IManipulator, IScheduleOperator {
+    ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter { get; }
   }
 }

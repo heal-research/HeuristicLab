@@ -30,19 +30,19 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PWRGeneralizationOrderCrossover", "Represents a crossover operation swapping sequences of the parents to generate offspring.")]
   [StorableClass]
   public class PWRGOXCrossover : PWRCrossover {
+
     [StorableConstructor]
     protected PWRGOXCrossover(bool deserializing) : base(deserializing) { }
-    protected PWRGOXCrossover(PWRGOXCrossover original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected PWRGOXCrossover(PWRGOXCrossover original, Cloner cloner) : base(original, cloner) { }
+    public PWRGOXCrossover() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PWRGOXCrossover(this, cloner);
     }
-    public PWRGOXCrossover() : base() { }
 
     private static int[] GetLookUpForIndividual(List<int> p) {
-      int[] result = new int[p.Count];
-      Dictionary<int, int> lookUpTable = new Dictionary<int, int>();
+      var result = new int[p.Count];
+      var lookUpTable = new Dictionary<int, int>();
 
       for (int i = 0; i < p.Count; i++) {
         if (!lookUpTable.ContainsKey(p[i]))
@@ -53,12 +53,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
 
       return result;
     }
-    public static PWREncoding Apply(IRandom random, PWREncoding parent1, PWREncoding parent2) {
-      PWREncoding result = new PWREncoding();
 
-      List<int> p1 = ((IntegerVector)(parent1.PermutationWithRepetition.Clone())).ToList<int>();
-      List<int> p2 = ((IntegerVector)(parent2.PermutationWithRepetition.Clone())).ToList<int>();
-      List<int> child = new List<int>();
+    public static PWREncoding Apply(IRandom random, PWREncoding parent1, PWREncoding parent2) {
+      var result = new PWREncoding();
+
+      var p1 = ((IntegerVector)(parent1.PermutationWithRepetition.Clone())).ToList();
+      var p2 = ((IntegerVector)(parent2.PermutationWithRepetition.Clone())).ToList();
+      var child = new List<int>();
 
       int[] lookUpArrayP1 = GetLookUpForIndividual(p1);
       int[] lookUpArrayP2 = GetLookUpForIndividual(p2);
@@ -88,9 +89,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
     public override PWREncoding Cross(IRandom random, PWREncoding parent1, PWREncoding parent2) {
       return Apply(random, parent1, parent2);
     }
-
-
-
 
   }
 }

@@ -28,11 +28,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ResourceClass", "Represents a resource used in scheduling problems.")]
   [StorableClass]
   public class Resource : Item {
-    public Resource(int index)
-      : base() {
-      Index = index;
-      Tasks = new ItemList<ScheduledTask>();
-    }
+
     [Storable]
     public int Index {
       get;
@@ -43,6 +39,24 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       get;
       set;
     }
+
+    [StorableConstructor]
+    protected Resource(bool deserializing) : base(deserializing) { }
+    protected Resource(Resource original, Cloner cloner)
+      : base(original, cloner) {
+      this.Index = original.Index;
+      this.Tasks = cloner.Clone(original.Tasks);
+    }
+    public Resource(int index)
+      : base() {
+      Index = index;
+      Tasks = new ItemList<ScheduledTask>();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Resource(this, cloner);
+    }
+
     public double TotalDuration {
       get {
         double result = 0;
@@ -52,17 +66,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
         }
         return result;
       }
-    }
-
-    [StorableConstructor]
-    protected Resource(bool deserializing) : base(deserializing) { }
-    protected Resource(Resource original, Cloner cloner)
-      : base(original, cloner) {
-      this.Index = original.Index;
-      this.Tasks = cloner.Clone(original.Tasks);
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Resource(this, cloner);
     }
 
     public override string ToString() {
@@ -82,6 +85,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       else
         return false;
     }
+
     public override int GetHashCode() {
       if (Tasks.Count == 1)
         return Tasks[0].GetHashCode();
@@ -89,6 +93,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
         return Tasks[0].GetHashCode() ^ Tasks[1].GetHashCode();
       return 0;
     }
+
     private static bool AreEqual(Resource res1, Resource res2) {
       if (res1.Tasks.Count != res2.Tasks.Count)
         return false;

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PRVManipulator", "An operator which manipulates a PRV representation.")]
   [StorableClass]
-  public abstract class PRVManipulator : ScheduleManipulator<PRVEncoding>, IPRVOperator {
+  public abstract class PRVManipulator : ScheduleManipulator, IPRVOperator {
     [StorableConstructor]
     protected PRVManipulator(bool deserializing) : base(deserializing) { }
     protected PRVManipulator(PRVManipulator original, Cloner cloner) : base(original, cloner) { }
@@ -35,10 +36,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       ScheduleEncodingParameter.ActualName = "PriorityRulesVector";
     }
 
-
     protected abstract void Manipulate(IRandom random, PRVEncoding individual);
+
     public override IOperation Apply() {
-      PRVEncoding solution = ScheduleEncodingParameter.ActualValue;
+      var solution = ScheduleEncodingParameter.ActualValue as PRVEncoding;
+      if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type PRVEncoding.");
       Manipulate(RandomParameter.ActualValue, solution);
       return base.Apply();
     }

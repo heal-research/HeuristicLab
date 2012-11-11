@@ -29,25 +29,24 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JSMJobbasedOrderCrossover", "Represents a crossover operation swapping subsequences of the parents to generate offspring.")]
   [StorableClass]
   public class JSMJOXCrossover : JSMCrossover {
+
     [StorableConstructor]
     protected JSMJOXCrossover(bool deserializing) : base(deserializing) { }
-    protected JSMJOXCrossover(JSMJOXCrossover original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected JSMJOXCrossover(JSMJOXCrossover original, Cloner cloner) : base(original, cloner) { }
+    public JSMJOXCrossover() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new JSMJOXCrossover(this, cloner);
     }
-    public JSMJOXCrossover() : base() { }
-
 
     public static JSMEncoding Apply(IRandom random, JSMEncoding p1, JSMEncoding p2) {
-      JSMEncoding result = new JSMEncoding();
+      var result = new JSMEncoding();
 
       int nrOfResources = p1.JobSequenceMatrix.Count;
       int nrOfJobs = p1.JobSequenceMatrix[0].Length;
 
       //Determine randomly which jobindexes persist
-      BoolArray persist = new BoolArray(nrOfJobs);
+      var persist = new BoolArray(nrOfJobs);
       for (int i = 0; i < persist.Length; i++) {
         persist[i] = random.Next(2) == 1;
       }

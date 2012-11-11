@@ -19,27 +19,25 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
-
   [Item("JSMSwapManipulator", "Represents a manipulation operation swapping parts of the individual.")]
   [StorableClass]
   public class JSMSwapManipulator : JSMManipulator {
+
     [StorableConstructor]
     protected JSMSwapManipulator(bool deserializing) : base(deserializing) { }
-    protected JSMSwapManipulator(JSMSwapManipulator original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected JSMSwapManipulator(JSMSwapManipulator original, Cloner cloner) : base(original, cloner) { }
+    public JSMSwapManipulator() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new JSMSwapManipulator(this, cloner);
     }
-
-    public JSMSwapManipulator() : base() { }
-
 
     public static void Apply(IRandom random, JSMEncoding individual) {
       int resourceIndex = random.Next(individual.JobSequenceMatrix.Count);
@@ -51,8 +49,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
       p[seqIndex2] = aux;
     }
 
-    protected override void Manipulate(IRandom random, JSMEncoding individual) {
-      Apply(random, individual);
+    protected override void Manipulate(IRandom random, IScheduleEncoding individual) {
+      var solution = individual as JSMEncoding;
+      if (solution == null) throw new InvalidOperationException("Encoding is not of type JSMEncoding");
+      Apply(random, solution);
     }
   }
 }

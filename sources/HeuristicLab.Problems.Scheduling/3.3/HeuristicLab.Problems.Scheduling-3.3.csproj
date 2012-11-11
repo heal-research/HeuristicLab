@@ -106,17 +106,23 @@
   <ItemGroup>
     <Compile Include="Analyzers\BestSchedulingSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SchedulingAnalyzer.cs" />
+    <Compile Include="Decoders\JSMForcingStrategy.cs" />
     <Compile Include="Decoders\JSMDecoder.cs" />
+    <Compile Include="Decoders\JSMDecodingErrorPolicy.cs" />
     <Compile Include="Decoders\JSMDecodingErrorPolicyTypes.cs" />
     <Compile Include="Decoders\JSMForcingStrategyTypes.cs" />
     <Compile Include="Decoders\PRVDecoder.cs" />
     <Compile Include="Decoders\PWRDecoder.cs" />
+    <Compile Include="Decoders\ScheduleDecoder.cs" />
     <Compile Include="Evaluators\MeanTardinessEvaluator.cs" />
     <Compile Include="Evaluators\MakespanEvaluator.cs" />
-    <Compile Include="Evaluators\SchedulingEvaluator.cs" />
+    <Compile Include="Evaluators\ScheduleEvaluator.cs" />
     <Compile Include="Interfaces\IJSSPOperator.cs" />
+    <Compile Include="Interfaces\IScheduleDecoder.cs" />
+    <Compile Include="Interfaces\ISchedulingEvaluator.cs" />
+    <Compile Include="Interfaces\IScheduleEvaluator.cs" />
     <Compile Include="JobShopSchedulingProblem.cs" />
-    <Compile Include="Evaluators\SchedulingEvaluationAlgorithm.cs" />
+    <Compile Include="Evaluators\SchedulingEvaluator.cs" />
     <Compile Include="SchedulingProblem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

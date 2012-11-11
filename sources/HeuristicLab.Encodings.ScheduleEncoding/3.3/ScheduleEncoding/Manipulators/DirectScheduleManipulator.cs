@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -26,7 +27,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
   [Item("DirectScheduleManipulator", "An operator which manipulates a direct schedule representation.")]
   [StorableClass]
-  public abstract class DirectScheduleManipulator : ScheduleManipulator<Schedule>, IDirectScheduleOperator {
+  public abstract class DirectScheduleManipulator : ScheduleManipulator, IDirectScheduleOperator {
+
     [StorableConstructor]
     protected DirectScheduleManipulator(bool deserializing) : base(deserializing) { }
     protected DirectScheduleManipulator(DirectScheduleManipulator original, Cloner cloner) : base(original, cloner) { }
@@ -35,11 +37,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
       ScheduleEncodingParameter.ActualName = "Schedule";
     }
 
-
     protected abstract void Manipulate(IRandom random, Schedule individual);
+
     public override IOperation Apply() {
-      Schedule solution = ScheduleEncodingParameter.ActualValue;
-      Manipulate(RandomParameter.ActualValue, solution);
+      var schedule = ScheduleEncodingParameter.ActualValue as Schedule;
+      if (schedule == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type Schedule.");
+      Manipulate(RandomParameter.ActualValue, schedule);
       return base.Apply();
     }
 

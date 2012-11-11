@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleRandomCreator", "Creator class used to create schedule encoding objects.")]
   [StorableClass]
-  public class DirectScheduleRandomCreator : ScheduleCreator<Schedule>, IStochasticOperator {
+  public class DirectScheduleRandomCreator : ScheduleCreator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
     public static Schedule Apply(int jobs, int resources, PWREncoding pwr, ItemList<Job> jobData) {
-      Schedule resultingSchedule = new Schedule(jobData[0].Tasks.Count);
+      var resultingSchedule = new Schedule(jobData[0].Tasks.Count);
       foreach (int jobNr in pwr.PermutationWithRepetition) {
         int i = 0;
         while (jobData[jobNr].Tasks[i].IsScheduled) i++;
@@ -81,15 +81,14 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
 
-    protected override Schedule CreateSolution() {
+    protected override IScheduleEncoding CreateSolution() {
       try {
-        ItemList<Job> jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
+        var jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
         return Apply(JobsParameter.ActualValue.Value,
           ResourcesParameter.ActualValue.Value,
           new PWREncoding(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue),
           jobData);
-      }
-      catch {
+      } catch {
         throw new Exception("ScheduleRandomCreator needs JobData parameter from a JSSP-Instance to create Schedule-Instances!");
       }
     }

@@ -29,6 +29,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Task", "Represents a task that has to be scheduled.")]
   [StorableClass]
   public class Task : Item, INotifyPropertyChanged {
+
     [Storable(Name = "TaskNr")]
     private int taskNr;
     public int TaskNr {
@@ -93,11 +94,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       this.TaskNr = original.TaskNr;
       this.IsScheduled = original.IsScheduled;
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Task(this, cloner);
-    }
-
-
+    public Task() : this(-1, -1, -1, 0) { }
     public Task(int taskNr, int resNr, int jobNr, double duration)
       : base() {
       Duration = duration;
@@ -105,6 +102,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       JobNr = jobNr;
       TaskNr = taskNr;
       IsScheduled = false;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Task(this, cloner);
     }
 
     public override string ToString() {
@@ -119,9 +120,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       else
         return false;
     }
+
     public override int GetHashCode() {
       return TaskNr ^ JobNr;
     }
+
     public static bool AreEqual(Task task1, Task task2) {
       return (task1.Duration == task2.Duration &&
         task1.IsScheduled == task2.IsScheduled &&

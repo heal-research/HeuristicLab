@@ -29,28 +29,25 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
   [Item("DirectScheduleGTCrossover", "Represents a crossover using the GT-Algorithm to cross two direct schedule representations.")]
   [StorableClass]
   public class DirectScheduleGTCrossover : DirectScheduleCrossover {
+
+    public IValueLookupParameter<DoubleValue> MutationProbabilityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["MutationProbability"]; }
+    }
+
     [StorableConstructor]
     protected DirectScheduleGTCrossover(bool deserializing) : base(deserializing) { }
-    protected DirectScheduleGTCrossover(DirectScheduleGTCrossover original, Cloner cloner)
-      : base(original, cloner) {
+    protected DirectScheduleGTCrossover(DirectScheduleGTCrossover original, Cloner cloner) : base(original, cloner) { }
+    public DirectScheduleGTCrossover()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<DoubleValue>("MutationProbability", "The probability that a task from the conflict set is chosen randomly instead of from one of the parents."));
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DirectScheduleGTCrossover(this, cloner);
     }
-    public DirectScheduleGTCrossover()
-      : base() {
-      Parameters.Add(new LookupParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution."));
-    }
-
-
-    private LookupParameter<PercentValue> MutationProbabilityParameter {
-      get { return (LookupParameter<PercentValue>)Parameters["MutationProbability"]; }
-    }
-
 
     public static Schedule Apply(IRandom random, Schedule parent1, Schedule parent2, ItemList<Job> jobData, double mutProp) {
-      Schedule child = new Schedule(parent1.Resources.Count);
-
+      var child = new Schedule(parent1.Resources.Count);
 
       //Reset scheduled tasks in result
       foreach (Job j in jobData) {
@@ -74,7 +71,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
         //STEP 3 - Select a task from the conflict set
         int progressOnResource = conflictedResource.Tasks.Count;
         Task selectedTask = null;
-        if (random.Next(100) < mutProp) {
+        if (random.NextDouble() < mutProp) {
           //Mutation
           selectedTask = conflictSet[random.Next(conflictSet.Count)];
         } else {
@@ -94,7 +91,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
       return child;
     }
 
-
     private static Task SelectTaskFromConflictSet(ItemList<Task> conflictSet, Schedule usedParent, int conflictedResourceNr, int progressOnResource) {
       //Apply Crossover
       foreach (ScheduledTask st in usedParent.Resources[conflictedResourceNr].Tasks) {
@@ -108,8 +104,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
 
 
     public override Schedule Cross(IRandom random, Schedule parent1, Schedule parent2) {
-      ItemList<Job> jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
-      PercentValue mutProp = MutationProbabilityParameter.ActualValue;
+      var jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
+      var mutProp = MutationProbabilityParameter.ActualValue;
       return Apply(random, parent1, parent2, jobData, mutProp.Value);
     }
   }

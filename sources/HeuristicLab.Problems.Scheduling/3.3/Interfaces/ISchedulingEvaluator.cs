@@ -20,11 +20,15 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding {
-  public interface IScheduleCrossover : ICrossover, IScheduleOperator {
-    ILookupParameter<IScheduleEncoding> ChildParameter { get; }
-    IScopeTreeLookupParameter<IScheduleEncoding> ParentsParameter { get; }
+namespace HeuristicLab.Problems.Scheduling {
+  /// <summary>
+  /// An evaluator for a scheduling problem representation
+  /// </summary>
+  public interface ISchedulingEvaluator : ISingleObjectiveEvaluator {
+    ILookupParameter<IScheduleDecoder> ScheduleDecoderParameter { get; }
+    ILookupParameter<IScheduleEvaluator> ScheduleEvaluatorParameter { get; }
   }
 }

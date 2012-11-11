@@ -30,23 +30,23 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PWRPPXCrossover", "Represents a crossover operation swapping sequences of the parents to generate offspring.")]
   [StorableClass]
   public class PWRPPXCrossover : PWRCrossover {
+
     [StorableConstructor]
     protected PWRPPXCrossover(bool deserializing) : base(deserializing) { }
-    protected PWRPPXCrossover(PWRPPXCrossover original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected PWRPPXCrossover(PWRPPXCrossover original, Cloner cloner) : base(original, cloner) { }
+    public PWRPPXCrossover() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PWRPPXCrossover(this, cloner);
     }
-    public PWRPPXCrossover() : base() { }
 
     public static PWREncoding Apply(IRandom random, PWREncoding parent1, PWREncoding parent2) {
-      PWREncoding result = new PWREncoding();
-      List<int> p1 = ((IntegerVector)(parent1.PermutationWithRepetition.Clone())).ToList<int>();
-      List<int> p2 = ((IntegerVector)(parent2.PermutationWithRepetition.Clone())).ToList<int>();
-      List<int> child = new List<int>();
+      var result = new PWREncoding();
+      var p1 = ((IntegerVector)(parent1.PermutationWithRepetition.Clone())).ToList();
+      var p2 = ((IntegerVector)(parent2.PermutationWithRepetition.Clone())).ToList();
+      var child = new List<int>();
 
-      bool[] lookUpTable = new bool[parent1.PermutationWithRepetition.Length];
+      var lookUpTable = new bool[parent1.PermutationWithRepetition.Length];
       for (int i = 0; i < lookUpTable.Length; i++) {
         lookUpTable[i] = random.Next(2) == 1;
       }
@@ -71,7 +71,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
     public override PWREncoding Cross(IRandom random, PWREncoding parent1, PWREncoding parent2) {
       return Apply(random, parent1, parent2);
     }
-
 
   }
 }

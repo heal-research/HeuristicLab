@@ -28,6 +28,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduledTask", "Represents a task that has been scheduled already.")]
   [StorableClass]
   public class ScheduledTask : Item {
+
     #region Properties
     [Storable]
     public int TaskNr { get; set; }
@@ -56,10 +57,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       this.StartTime = original.StartTime;
       this.JobNr = original.JobNr;
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new ScheduledTask(this, cloner);
-    }
-
     public ScheduledTask(int resNr, double startTime, double duration, int jobNr)
       : base() {
       Duration = duration;
@@ -68,12 +65,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       JobNr = jobNr;
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ScheduledTask(this, cloner);
+    }
+
     public override string ToString() {
       StringBuilder sb = new StringBuilder();
       sb.Append("[" + JobNr + "," + ResourceNr + "]");
       return sb.ToString();
     }
-
 
     public override bool Equals(object obj) {
       if (obj.GetType() == typeof(ScheduledTask))

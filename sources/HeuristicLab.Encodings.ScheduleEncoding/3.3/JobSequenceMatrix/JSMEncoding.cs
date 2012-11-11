@@ -29,6 +29,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JobSequenceMatrixEncoding", "Represents an encoding for a scheduling Problem using a list of job sequences to deliver scheduleinformation.")]
   [StorableClass]
   public class JSMEncoding : Item, IScheduleEncoding {
+
     [Storable]
     public ItemList<Permutation> JobSequenceMatrix { get; set; }
 

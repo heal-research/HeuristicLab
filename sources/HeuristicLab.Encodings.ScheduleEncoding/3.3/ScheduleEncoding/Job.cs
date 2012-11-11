@@ -29,7 +29,9 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Job", "Represents a composition of tasks that require processing in a scheduling problem.")]
   [StorableClass]
   public class Job : Item, INotifyPropertyChanged {
-    [Storable(Name = "DueDate")] private double dueDate;
+
+    [Storable(Name = "DueDate")]
+    private double dueDate;
     public double DueDate {
       get { return dueDate; }
       set {
@@ -51,7 +53,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     [Storable(Name = "Tasks")]
-    private ItemList<Task> tasks; 
+    private ItemList<Task> tasks;
     public ItemList<Task> Tasks {
       get { return tasks; }
       set {
@@ -69,14 +71,16 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       this.Index = original.Index;
       this.Tasks = cloner.Clone(original.Tasks);
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Job(this, cloner);
-    }
+    public Job() : this(-1, double.MaxValue) { }
     public Job(int index, double dueDate)
       : base() {
       DueDate = dueDate;
       Index = index;
       Tasks = new ItemList<Task>();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Job(this, cloner);
     }
 
     public override string ToString() {

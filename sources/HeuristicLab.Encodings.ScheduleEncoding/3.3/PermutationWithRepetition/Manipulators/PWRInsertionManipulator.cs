@@ -27,19 +27,17 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
-
   [Item("PWRInsertionManipulator", "Represents a manipulation operation inserting parts of the individual at another position.")]
   [StorableClass]
   public class PWRInsertionManipulator : PWRManipulator {
     [StorableConstructor]
     protected PWRInsertionManipulator(bool deserializing) : base(deserializing) { }
-    protected PWRInsertionManipulator(PWRInsertionManipulator original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected PWRInsertionManipulator(PWRInsertionManipulator original, Cloner cloner) : base(original, cloner) { }
+    public PWRInsertionManipulator() : base() { }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PWRInsertionManipulator(this, cloner);
     }
-    public PWRInsertionManipulator() : base() { }
 
     public static void Apply(IRandom random, PWREncoding individual) {
       int cutIndex = random.Next(individual.PermutationWithRepetition.Length);

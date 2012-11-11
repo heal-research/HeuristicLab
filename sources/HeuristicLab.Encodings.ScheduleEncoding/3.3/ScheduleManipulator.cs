@@ -29,14 +29,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleManipulator", "A scheduling manipulation operation.")]
   [StorableClass]
-  public abstract class ScheduleManipulator<T> : SingleSuccessorOperator, IScheduleManipulator, IStochasticOperator where T : Item {
-    #region IScheduleManipulator Members
+  public abstract class ScheduleManipulator : SingleSuccessorOperator, IScheduleManipulator, IStochasticOperator {
 
-    public ILookupParameter<T> ScheduleEncodingParameter {
-      get { return (ILookupParameter<T>)Parameters["ScheduleEncoding"]; }
+    public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
+      get { return (ILookupParameter<IScheduleEncoding>)Parameters["ScheduleEncoding"]; }
     }
-
-    #endregion
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -44,12 +41,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     [StorableConstructor]
     protected ScheduleManipulator(bool deserializing) : base(deserializing) { }
-    protected ScheduleManipulator(ScheduleManipulator<T> original, Cloner cloner)
-      : base(original, cloner) {
-    }
+    protected ScheduleManipulator(ScheduleManipulator original, Cloner cloner) : base(original, cloner) { }
     public ScheduleManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<T>("ScheduleEncoding", "The scheduling solution to be manipulated."));
+      Parameters.Add(new LookupParameter<IScheduleEncoding>("ScheduleEncoding", "The scheduling solution to be manipulated."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
     }
 

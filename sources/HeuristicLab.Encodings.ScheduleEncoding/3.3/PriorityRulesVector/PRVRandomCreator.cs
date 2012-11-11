@@ -26,11 +26,11 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PriorityRulesRandomCreator", "Creator class used to create PRV encoding objects for scheduling problems.")]
   [StorableClass]
-  public class PRVRandomCreator : ScheduleCreator<PRVEncoding>, IStochasticOperator {
+  public class PRVRandomCreator : ScheduleCreator, IStochasticOperator {
+
     [Storable]
     public IntValue NrOfRules { get; set; }
 
@@ -44,15 +44,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       get { return (IValueLookupParameter<IntValue>)Parameters["Resources"]; }
     }
 
-
     [StorableConstructor]
     protected PRVRandomCreator(bool deserializing) : base(deserializing) { }
     protected PRVRandomCreator(PRVRandomCreator original, Cloner cloner)
       : base(original, cloner) {
       this.NrOfRules = cloner.Clone(original.NrOfRules);
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new PRVRandomCreator(this, cloner);
     }
     public PRVRandomCreator()
       : base() {
@@ -63,11 +59,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       ScheduleEncodingParameter.ActualName = "PriorityRulesVector";
     }
 
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PRVRandomCreator(this, cloner);
+    }
+
     public static PRVEncoding Apply(int jobs, int resources, IRandom random, IntValue nrOfRules) {
       return new PRVEncoding(jobs * resources, random, 0, nrOfRules.Value, nrOfRules);
     }
 
-    protected override PRVEncoding CreateSolution() {
+    protected override IScheduleEncoding CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue, NrOfRules);
     }
 

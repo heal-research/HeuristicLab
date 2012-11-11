@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
@@ -30,7 +31,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Scheduling {
   [Item("PWRDecoder", "An item used to convert a PWR-individual into a generalized schedule.")]
   [StorableClass]
-  public class PWRDecoder : ScheduleDecoder<PWREncoding>, IStochasticOperator, IJSSPOperator {
+  public class PWRDecoder : ScheduleDecoder, IStochasticOperator, IJSSPOperator {
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -40,13 +42,7 @@ namespace HeuristicLab.Problems.Scheduling {
 
     [StorableConstructor]
     protected PWRDecoder(bool deserializing) : base(deserializing) { }
-    protected PWRDecoder(PWRDecoder original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new PWRDecoder(this, cloner);
-    }
-
+    protected PWRDecoder(PWRDecoder original, Cloner cloner) : base(original, cloner) { }
     public PWRDecoder()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
@@ -54,9 +50,16 @@ namespace HeuristicLab.Problems.Scheduling {
       ScheduleEncodingParameter.ActualName = "PermutationWithRepetition";
     }
 
-    public override Schedule CreateScheduleFromEncoding(PWREncoding solution) {
-      ItemList<Job> jobs = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
-      Schedule resultingSchedule = new Schedule(jobs[0].Tasks.Count);
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PWRDecoder(this, cloner);
+    }
+
+    public override Schedule CreateScheduleFromEncoding(IScheduleEncoding encoding) {
+      var solution = encoding as PWREncoding;
+      if (solution == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
+
+      var jobs = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
+      var resultingSchedule = new Schedule(jobs[0].Tasks.Count);
       foreach (int jobNr in solution.PermutationWithRepetition) {
         int i = 0;
         while (jobs[jobNr].Tasks[i].IsScheduled) i++;
@@ -66,10 +69,6 @@ namespace HeuristicLab.Problems.Scheduling {
         resultingSchedule.ScheduleTask(currentTask.ResourceNr, startTime, currentTask.Duration, currentTask.JobNr);
       }
       return resultingSchedule;
-    }
-
-    public override IOperation Apply() {
-      return base.Apply();
     }
   }
 }

@@ -20,11 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  public interface IScheduleCrossover : ICrossover, IScheduleOperator {
-    ILookupParameter<IScheduleEncoding> ChildParameter { get; }
-    IScopeTreeLookupParameter<IScheduleEncoding> ParentsParameter { get; }
+  public interface IScheduleDecoder : IOperator {
+    ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter { get; }
+    ILookupParameter<Schedule> ScheduleParameter { get; }
   }
 }

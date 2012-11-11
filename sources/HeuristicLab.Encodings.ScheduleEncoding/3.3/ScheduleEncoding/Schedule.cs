@@ -31,6 +31,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Schedule", "Represents the general solution for scheduling problems.")]
   [StorableClass]
   public class Schedule : NamedItem, IScheduleEncoding {
+
     #region Properties
     [Storable]
     private ItemList<Resource> resources;
@@ -68,9 +69,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       this.Quality = cloner.Clone(original.Quality);
       this.lastScheduledTaskOfJob = new Dictionary<int, ScheduledTask>(original.lastScheduledTaskOfJob);
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Schedule(this, cloner);
-    }
     public Schedule(int nrOfResources) {
       Resources = new ItemList<Resource>();
       for (int i = 0; i < nrOfResources; i++) {
@@ -79,7 +77,9 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       lastScheduledTaskOfJob = new Dictionary<int, ScheduledTask>();
     }
 
-
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Schedule(this, cloner);
+    }
 
     #region Events
     public event EventHandler QualityChanged;

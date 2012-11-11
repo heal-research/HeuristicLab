@@ -26,7 +26,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PRVCrossover", "An operator which crosses two PRV representations.")]
   [StorableClass]
-  public abstract class PRVCrossover : ScheduleCrossover<PRVEncoding>, IPRVOperator {
+  public abstract class PRVCrossover : ScheduleCrossover, IPRVOperator {
+
     [StorableConstructor]
     protected PRVCrossover(bool deserializing) : base(deserializing) { }
     protected PRVCrossover(PRVCrossover original, Cloner cloner) : base(original, cloner) { }
@@ -36,11 +37,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       ChildParameter.ActualName = "PriorityRulesVector";
     }
 
-
     public abstract PRVEncoding Cross(IRandom random, PRVEncoding parent1, PRVEncoding parent2);
 
     public override IOperation Apply() {
-      ItemArray<PRVEncoding> parents = ParentsParameter.ActualValue;
+      var parents = ParentsParameter.ActualValue;
       ChildParameter.ActualValue =
         Cross(RandomParameter.ActualValue, parents[0] as PRVEncoding, parents[1] as PRVEncoding);
       return base.Apply();

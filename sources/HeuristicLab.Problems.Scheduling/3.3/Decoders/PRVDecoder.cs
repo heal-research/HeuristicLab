@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
@@ -30,21 +31,14 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Scheduling {
   [Item("JobSequencingMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequencing Matrix.")]
   [StorableClass]
-  public class PRVDecoder : ScheduleDecoder<PRVEncoding>, IStochasticOperator, IJSSPOperator {
+  public class PRVDecoder : ScheduleDecoder, IStochasticOperator, IJSSPOperator {
+
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
     public ILookupParameter<ItemList<Job>> JobDataParameter {
       get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
-
-    #region Private Members
-    [Storable]
-    private Schedule resultingSchedule;
-
-    [Storable]
-    private ItemList<Job> jobs;
-    #endregion
 
     #region Priority Rules
     //smallest number of remaining tasks
@@ -54,11 +48,11 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     //earliest start time
-    private Task ESTRule(ItemList<Task> tasks) {
+    private Task ESTRule(ItemList<Task> tasks, Schedule schedule) {
       Task currentResult = RandomRule(tasks);
       double currentEST = double.MaxValue;
       foreach (Task t in tasks) {
-        double est = GTAlgorithmUtils.ComputeEarliestStartTime(t, resultingSchedule);
+        double est = GTAlgorithmUtils.ComputeEarliestStartTime(t, schedule);
         if (est < currentEST) {
           currentEST = est;
           currentResult = t;
@@ -88,7 +82,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     //most work remaining
-    private Task MWRRule(ItemList<Task> tasks) {
+    private Task MWRRule(ItemList<Task> tasks, ItemList<Job> jobs) {
       Task currentResult = RandomRule(tasks);
       double currentLargestRemainingProcessingTime = 0;
       foreach (Task t in tasks) {
@@ -106,7 +100,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     //least work remaining
-    private Task LWRRule(ItemList<Task> tasks) {
+    private Task LWRRule(ItemList<Task> tasks, ItemList<Job> jobs) {
       Task currentResult = RandomRule(tasks);
       double currentSmallestRemainingProcessingTime = double.MaxValue;
       foreach (Task t in tasks) {
@@ -124,7 +118,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     //most operations remaining
-    private Task MORRule(ItemList<Task> tasks) {
+    private Task MORRule(ItemList<Task> tasks, ItemList<Job> jobs) {
       Task currentResult = RandomRule(tasks);
       int currentLargestNrOfRemainingTasks = 0;
       foreach (Task t in tasks) {
@@ -142,7 +136,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     //least operationsremaining
-    private Task LORRule(ItemList<Task> tasks) {
+    private Task LORRule(ItemList<Task> tasks, ItemList<Job> jobs) {
       Task currentResult = RandomRule(tasks);
       int currentSmallestNrOfRemainingTasks = int.MaxValue;
       foreach (Task t in tasks) {
@@ -175,14 +169,7 @@ namespace HeuristicLab.Problems.Scheduling {
 
     [StorableConstructor]
     protected PRVDecoder(bool deserializing) : base(deserializing) { }
-    protected PRVDecoder(PRVDecoder original, Cloner cloner)
-      : base(original, cloner) {
-      this.resultingSchedule = cloner.Clone(original.resultingSchedule);
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new PRVDecoder(this, cloner);
-    }
-
+    protected PRVDecoder(PRVDecoder original, Cloner cloner) : base(original, cloner) { }
     public PRVDecoder()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
@@ -190,29 +177,36 @@ namespace HeuristicLab.Problems.Scheduling {
       ScheduleEncodingParameter.ActualName = "PriorityRulesVector";
     }
 
-    private Task SelectTaskFromConflictSet(ItemList<Task> conflictSet, int ruleIndex, int nrOfRules) {
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new PRVDecoder(this, cloner);
+    }
+
+    private Task SelectTaskFromConflictSet(ItemList<Task> conflictSet, int ruleIndex, int nrOfRules, Schedule schedule, ItemList<Job> jobs) {
       if (conflictSet.Count == 1)
         return conflictSet[0];
 
       ruleIndex = ruleIndex % nrOfRules;
       switch (ruleIndex) {
         case 0: return FILORule(conflictSet);
-        case 1: return ESTRule(conflictSet);
+        case 1: return ESTRule(conflictSet, schedule);
         case 2: return SPTRule(conflictSet);
         case 3: return LPTRule(conflictSet);
-        case 4: return MWRRule(conflictSet);
-        case 5: return LWRRule(conflictSet);
-        case 6: return MORRule(conflictSet);
-        case 7: return LORRule(conflictSet);
+        case 4: return MWRRule(conflictSet, jobs);
+        case 5: return LWRRule(conflictSet, jobs);
+        case 6: return MORRule(conflictSet, jobs);
+        case 7: return LORRule(conflictSet, jobs);
         case 8: return FIFORule(conflictSet);
         case 9: return RandomRule(conflictSet);
         default: return RandomRule(conflictSet);
       }
     }
 
-    public override Schedule CreateScheduleFromEncoding(PRVEncoding solution) {
-      jobs = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
-      resultingSchedule = new Schedule(jobs[0].Tasks.Count);
+    public override Schedule CreateScheduleFromEncoding(IScheduleEncoding encoding) {
+      var solution = encoding as PRVEncoding;
+      if (solution == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
+
+      var jobs = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
+      var resultingSchedule = new Schedule(jobs[0].Tasks.Count);
 
       //Reset scheduled tasks in result
       foreach (Job j in jobs) {
@@ -234,7 +228,7 @@ namespace HeuristicLab.Problems.Scheduling {
 
         //STEP 3 - Select an operation from the conflict set (various methods depending on how the algorithm should work..)
         //Task selectedTask = SelectTaskFromConflictSet(conflictSet, solution.PriorityRulesVector [currentDecisionIndex++], solution.NrOfRules.Value);
-        Task selectedTask = SelectTaskFromConflictSet(conflictSet, solution.PriorityRulesVector[minimal.JobNr], solution.NrOfRules.Value);
+        Task selectedTask = SelectTaskFromConflictSet(conflictSet, solution.PriorityRulesVector[minimal.JobNr], solution.NrOfRules.Value, resultingSchedule, jobs);
 
         //STEP 4 - Adding the selected operation to the current schedule
         selectedTask.IsScheduled = true;
@@ -246,10 +240,6 @@ namespace HeuristicLab.Problems.Scheduling {
       }
 
       return resultingSchedule;
-    }
-
-    public override IOperation Apply() {
-      return base.Apply();
     }
   }
 }

@@ -19,32 +19,29 @@
  */
 #endregion
 
-using System;
+using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
-  [Item("PWRManipulator", "An operator which manipulates a PWR representation.")]
+namespace HeuristicLab.Problems.Scheduling {
+  [Item("JSMDecodingErrorPolicy", "Represents a policy for handling decoding errors.")]
   [StorableClass]
-  public abstract class PWRManipulator : ScheduleManipulator, IPWROperator {
+  public sealed class JSMDecodingErrorPolicy : ValueTypeValue<JSMDecodingErrorPolicyTypes> {
+
+    public static new Image StaticItemImage {
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
+    }
 
     [StorableConstructor]
-    protected PWRManipulator(bool deserializing) : base(deserializing) { }
-    protected PWRManipulator(PWRManipulator original, Cloner cloner) : base(original, cloner) { }
-    public PWRManipulator()
-      : base() {
-      ScheduleEncodingParameter.ActualName = "PermutationWithRepetition";
+    private JSMDecodingErrorPolicy(bool deserializing) : base(deserializing) { }
+    private JSMDecodingErrorPolicy(JSMDecodingErrorPolicy original, Cloner cloner) : base(original, cloner) { }
+    public JSMDecodingErrorPolicy() : base() { }
+    public JSMDecodingErrorPolicy(JSMDecodingErrorPolicyTypes types) : base(types) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new JSMDecodingErrorPolicy(this, cloner);
     }
-
-    protected abstract void Manipulate(IRandom random, PWREncoding individual);
-
-    public override IOperation Apply() {
-      var solution = ScheduleEncodingParameter.ActualValue as PWREncoding;
-      if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type PWREncoding.");
-      Manipulate(RandomParameter.ActualValue, solution);
-      return base.Apply();
-    }
-
   }
 }

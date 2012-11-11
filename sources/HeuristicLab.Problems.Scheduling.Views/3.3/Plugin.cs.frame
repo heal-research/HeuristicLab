@@ -27,6 +27,7 @@ namespace HeuristicLab.Problems.Scheduling.Views {
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.Data", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.ScheduleEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.ScheduleEncoding.Views", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]

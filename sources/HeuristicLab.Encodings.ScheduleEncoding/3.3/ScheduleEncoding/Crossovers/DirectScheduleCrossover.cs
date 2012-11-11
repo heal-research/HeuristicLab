@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
   [Item("DirectScheduleCrossover", "An operator which crosses two schedule representations.")]
   [StorableClass]
-  public abstract class DirectScheduleCrossover : ScheduleCrossover<Schedule>, IDirectScheduleOperator {
+  public abstract class DirectScheduleCrossover : ScheduleCrossover, IDirectScheduleOperator {
     [StorableConstructor]
     protected DirectScheduleCrossover(bool deserializing) : base(deserializing) { }
     protected DirectScheduleCrossover(DirectScheduleCrossover original, Cloner cloner) : base(original, cloner) { }
@@ -38,7 +38,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
       Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
     }
 
-
     public ILookupParameter<ItemList<Job>> JobDataParameter {
       get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
@@ -46,7 +45,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
     public abstract Schedule Cross(IRandom random, Schedule parent1, Schedule parent2);
 
     public override IOperation Apply() {
-      ItemArray<Schedule> parents = ParentsParameter.ActualValue;
+      var parents = ParentsParameter.ActualValue;
       ChildParameter.ActualValue =
         Cross(RandomParameter.ActualValue, parents[0] as Schedule, parents[1] as Schedule);
       return base.Apply();
