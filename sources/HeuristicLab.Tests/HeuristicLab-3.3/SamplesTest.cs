@@ -1021,10 +1021,10 @@ namespace HeuristicLab_33.Tests {
       var rapga = CreateRAPGASchedulingSample();
       rapga.SetSeedRandomly.Value = false;
       RunAlgorithm(rapga);
-      Assert.AreEqual(971.00, GetDoubleResult(rapga, "BestQuality"));
-      Assert.AreEqual(971.00, GetDoubleResult(rapga, "CurrentAverageQuality"));
-      Assert.AreEqual(971.00, GetDoubleResult(rapga, "CurrentWorstQuality"));
-      Assert.AreEqual(29100, GetIntResult(rapga, "EvaluatedSolutions"));
+      Assert.AreEqual(982.00, GetDoubleResult(rapga, "BestQuality"));
+      Assert.AreEqual(982.00, GetDoubleResult(rapga, "CurrentAverageQuality"));
+      Assert.AreEqual(982.00, GetDoubleResult(rapga, "CurrentWorstQuality"));
+      Assert.AreEqual(27100, GetIntResult(rapga, "EvaluatedSolutions"));
     }
 
     private RAPGA CreateRAPGASchedulingSample() {
