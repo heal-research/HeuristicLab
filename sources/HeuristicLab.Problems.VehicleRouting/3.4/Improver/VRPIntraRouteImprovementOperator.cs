@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   public sealed class VRPIntraRouteImprovementOperator : VRPImprovementOperator {
     [StorableConstructor]
     private VRPIntraRouteImprovementOperator(bool deserializing) : base(deserializing) { }
-    private VRPIntraRouteImprovementOperator(VRPImprovementOperator original, Cloner cloner) : base(original, cloner) { }
+    private VRPIntraRouteImprovementOperator(VRPIntraRouteImprovementOperator original, Cloner cloner) : base(original, cloner) { }
     public VRPIntraRouteImprovementOperator() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
