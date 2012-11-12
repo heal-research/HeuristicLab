@@ -967,16 +967,16 @@ namespace HeuristicLab_33.Tests {
       var ss = CreateScatterSearchVRPSample();
       ss.SetSeedRandomly.Value = false;
       RunAlgorithm(ss);
-      Assert.AreEqual(749, GetDoubleResult(ss, "BestQuality"));
-      Assert.AreEqual(766.95, GetDoubleResult(ss, "CurrentAverageQuality"));
-      Assert.AreEqual(789, GetDoubleResult(ss, "CurrentWorstQuality"));
-      Assert.AreEqual(27400, GetIntResult(ss, "EvaluatedSolutions"));
+      Assert.AreEqual(828.93686694283383, GetDoubleResult(ss, "BestQuality"));
+      Assert.AreEqual(868.63623986983077, GetDoubleResult(ss, "CurrentAverageQuality"));
+      Assert.AreEqual(1048.8333559209832, GetDoubleResult(ss, "CurrentWorstQuality"));
+      Assert.AreEqual(262622, GetIntResult(ss, "EvaluatedSolutions"));
     }
 
     private ScatterSearch CreateScatterSearchVRPSample() {
       #region Problem Configuration
-      var provider = new AugeratInstanceProvider();
-      var instance = provider.GetDataDescriptors().Where(x => x.Name == "A-n38-k5").Single();
+      var provider = new SolomonInstanceProvider();
+      var instance = provider.GetDataDescriptors().Single(x => x.Name == "C101");
       VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
       vrpProblem.Load(provider.LoadData(instance));
       #endregion
@@ -985,22 +985,24 @@ namespace HeuristicLab_33.Tests {
       ScatterSearch ss = new ScatterSearch();
       ss.Engine = new SequentialEngine();
       ss.Name = "Scatter Search - VRP";
-      ss.Description = "A Scatter Search algorithm which solves the \"A-n38-k5\" vehicle routing problem (imported from Augerat)";
+      ss.Description = "A scatter search algorithm which solves the \"C101\" vehicle routing problem (imported from Solomon)";
       ss.Problem = vrpProblem;
 
-      var improver = ss.Problem.Operators.OfType<VRPImprovementOperator>().First();
-      improver.ImprovementAttemptsParameter.Value.Value = 5;
-      improver.SampleSizeParameter.Value.Value = 5;
+      var improver = ss.Problem.Operators.OfType<VRPIntraRouteImprovementOperator>().First();
+      improver.ImprovementAttemptsParameter.Value.Value = 15;
+      improver.SampleSizeParameter.Value.Value = 10;
       ss.Improver = improver;
 
       var pathRelinker = ss.Problem.Operators.OfType<VRPPathRelinker>().First();
-      pathRelinker.IterationsParameter.Value.Value = 15;
+      pathRelinker.IterationsParameter.Value.Value = 25;
       ss.PathRelinker = pathRelinker;
 
-      var qualitySimCalc = ss.SimilarityCalculatorParameter.ValidValues.OfType<QualitySimilarityCalculator>().First();
-      ss.SimilarityCalculator = qualitySimCalc;
+      var similarityCalculator = ss.SimilarityCalculatorParameter.ValidValues.OfType<VRPSimilarityCalculator>().First();
+      ss.SimilarityCalculator = similarityCalculator;
 
-      ss.MaximumIterations.Value = 5;
+      ss.MaximumIterations.Value = 2;
+      ss.PopulationSize.Value = 20;
+      ss.ReferenceSetSize.Value = 10;
       ss.Seed.Value = 0;
       return ss;
       #endregion

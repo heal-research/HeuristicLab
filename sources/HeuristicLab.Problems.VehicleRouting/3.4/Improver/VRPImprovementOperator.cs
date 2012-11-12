@@ -27,18 +27,17 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.VehicleRouting.Encodings;
-using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
-  /// An operator that improves vehicle routing solutions.
+  /// A base class for operators which improve VRP solutions.
   /// </summary>
-  [Item("VRPImprovementOperator", "An operator that improves vehicle routing solutions.")]
+  [Item("VRPImprovementOperator", "A base class for operators which improve VRP solutions.")]
   [StorableClass]
-  public sealed class VRPImprovementOperator : VRPOperator, IGeneralVRPOperator, ISingleObjectiveImprovementOperator {
+  public abstract class VRPImprovementOperator : VRPOperator, IGeneralVRPOperator, ISingleObjectiveImprovementOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -46,8 +45,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public IValueParameter<IntValue> ImprovementAttemptsParameter {
       get { return (IValueParameter<IntValue>)Parameters["ImprovementAttempts"]; }
     }
-    public IValueParameter<IntValue> LambdaParameter {
-      get { return (IValueParameter<IntValue>)Parameters["Lambda"]; }
+    public IValueLookupParameter<IntValue> LocalEvaluatedSolutions {
+      get { return (IValueLookupParameter<IntValue>)Parameters["LocalEvaluatedSolutions"]; }
     }
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -61,44 +60,35 @@ namespace HeuristicLab.Problems.VehicleRouting {
     #endregion
 
     [StorableConstructor]
-    private VRPImprovementOperator(bool deserializing) : base(deserializing) { }
-    private VRPImprovementOperator(VRPImprovementOperator original, Cloner cloner) : base(original, cloner) { }
-    public VRPImprovementOperator()
+    protected VRPImprovementOperator(bool deserializing) : base(deserializing) { }
+    protected VRPImprovementOperator(VRPImprovementOperator original, Cloner cloner) : base(original, cloner) { }
+    protected VRPImprovementOperator()
       : base() {
       #region Create parameters
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that contains the solution to be improved."));
       Parameters.Add(new ValueParameter<IntValue>("ImprovementAttempts", "The number of improvement attempts the operator should perform.", new IntValue(100)));
-      Parameters.Add(new ValueParameter<IntValue>("Lambda", "The number of neighbors that should be exchanged.", new IntValue(1)));
+      Parameters.Add(new ValueLookupParameter<IntValue>("LocalEvaluatedSolutions", "The number of evaluated solutions."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "A pseudo random number generator."));
-      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The number of moves that should be executed.", new IntValue(100)));
+      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The number of moves that should be executed.", new IntValue(25)));
       Parameters.Add(new ValueLookupParameter<IItem>("Solution", "The solution to be improved. This parameter is used for name translation only."));
       #endregion
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new VRPImprovementOperator(this, cloner);
-    }
-
     public override IOperation Apply() {
-      AlbaEncoding solution = SolutionParameter.ActualValue is AlbaEncoding
-                                ? SolutionParameter.ActualValue as AlbaEncoding
-                                : AlbaEncoding.ConvertFrom(SolutionParameter.ActualValue as IVRPEncoding, ProblemInstance);
+      var solution = SolutionParameter.ActualValue as IVRPEncoding;
+      var potvinSolution = solution is PotvinEncoding ? solution as PotvinEncoding : PotvinEncoding.ConvertFrom(solution, ProblemInstance);
 
       if (solution == null)
         throw new ArgumentException("Cannot improve solution because it has the wrong type.");
 
-      double quality = -1;
-      int evaluatedSolutions;
+      int evaluatedSolutions = Improve(potvinSolution);
 
-      AlbaLambdaInterchangeLocalImprovementOperator.Apply(solution, ImprovementAttemptsParameter.Value.Value,
-                                                          LambdaParameter.Value.Value, SampleSizeParameter.Value.Value,
-                                                          RandomParameter.ActualValue, ProblemInstance, ref quality,
-                                                          out evaluatedSolutions);
-
-      SolutionParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, ProblemInstance);
-      CurrentScopeParameter.ActualValue.Variables.Add(new Variable("LocalEvaluatedSolutions", new IntValue(evaluatedSolutions)));
+      SolutionParameter.ActualValue = solution;
+      LocalEvaluatedSolutions.ActualValue = new IntValue(evaluatedSolutions);
 
       return base.Apply();
     }
+
+    protected abstract int Improve(PotvinEncoding solution);
   }
 }

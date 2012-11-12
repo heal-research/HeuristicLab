@@ -36,23 +36,23 @@ using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
-  /// An operator that relinks paths between vehicle routing solutions.
+  /// An operator which relinks paths between VRP solutions.
   /// </summary>
-  [Item("VRPPathRelinker", "An operator that relinks paths between vehicle routing solutions.")]
+  [Item("VRPPathRelinker", "An operator which relinks paths between VRP solutions.")]
   [StorableClass]
   public sealed class VRPPathRelinker : SingleObjectivePathRelinker, IGeneralVRPOperator, IStochasticOperator {
     #region Parameter properties
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    public IValueParameter<IntValue> IterationsParameter {
+      get { return (IValueParameter<IntValue>)Parameters["Iterations"]; }
     }
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    }
     public IValueParameter<IntValue> SampleSizeParameter {
       get { return (IValueParameter<IntValue>)Parameters["SampleSize"]; }
-    }
-    public IValueParameter<IntValue> IterationsParameter {
-      get { return (IValueParameter<IntValue>)Parameters["Iterations"]; }
     }
     #endregion
 
@@ -61,14 +61,127 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private VRPPathRelinker(VRPPathRelinker original, Cloner cloner) : base(original, cloner) { }
     public VRPPathRelinker()
       : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
-      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The number of moves that should be executed.", new IntValue(10)));
       Parameters.Add(new ValueParameter<IntValue>("Iterations", "The number of iterations the operator should perform.", new IntValue(50)));
+      Parameters.Add(new LookupParameter<IVRPProblemInstance>("ProblemInstance", "The VRP problem instance"));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
+      Parameters.Add(new ValueParameter<IntValue>("SampleSize", "The number of moves that should be executed.", new IntValue(10)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new VRPPathRelinker(this, cloner);
+    }
+
+    public static ItemArray<IItem> Apply(PotvinEncoding initiator, PotvinEncoding guide, PercentValue n, int sampleSize, int iterations, IRandom rand, IVRPProblemInstance problemInstance) {
+      if (initiator == null || guide == null)
+        throw new ArgumentException("Cannot relink path because one of the provided solutions or both are null.");
+
+      double sigma = 1.5;
+      double minPenalty = 0.001;
+      double maxPenalty = 1000000000;
+
+      var originalOverloadPenalty = new DoubleValue();
+      if (problemInstance is IHomogenousCapacitatedProblemInstance)
+        originalOverloadPenalty.Value = (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value;
+      var originalTardinessPenalty = new DoubleValue();
+      if (problemInstance is ITimeWindowedProblemInstance)
+        originalTardinessPenalty.Value = (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value;
+
+      PotvinEncoding current = MatchTours(initiator, guide, problemInstance);
+      double currentSimilarity = VRPSimilarityCalculator.CalculateSimilarity(current, guide);
+
+      IList<PotvinEncoding> solutions = new List<PotvinEncoding>();
+      int i = 0;
+      while (i < iterations && !currentSimilarity.IsAlmost(1.0)) {
+        var currentEval = problemInstance.Evaluate(current);
+        currentSimilarity = VRPSimilarityCalculator.CalculateSimilarity(current, guide);
+
+        if (currentSimilarity < 1.0) {
+          for (int sample = 0; sample < sampleSize; sample++) {
+            var next = current.Clone() as PotvinEncoding;
+
+            int neighborhood = rand.Next(3);
+            switch (neighborhood) {
+              case 0: next = RouteBasedXOver(next, guide, rand,
+                problemInstance);
+                break;
+              case 1: next = SequenceBasedXOver(next, guide, rand,
+                problemInstance);
+                break;
+              case 2: GuidedRelocateMove(next, guide, rand);
+                break;
+            }
+
+            next = MatchTours(next, guide, problemInstance);
+
+            var nextEval = problemInstance.Evaluate(next);
+            if ((nextEval.Quality < currentEval.Quality)) {
+              current = next;
+              solutions.Add(current);
+              break;
+            }
+          }
+
+          if (problemInstance is IHomogenousCapacitatedProblemInstance) {
+            if (((CVRPEvaluation)currentEval).Overload > 0) {
+              (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value =
+                Math.Min(maxPenalty,
+                (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value * sigma);
+            } else {
+              (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value =
+                Math.Max(minPenalty,
+                (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value * sigma);
+            }
+          }
+
+
+          if (problemInstance is ITimeWindowedProblemInstance) {
+            if (((CVRPTWEvaluation)currentEval).Tardiness > 0) {
+              (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value =
+                Math.Min(maxPenalty,
+              (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value * sigma);
+            } else {
+              (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value =
+                Math.Max(minPenalty,
+                (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value / sigma);
+            }
+          }
+
+          i++;
+        }
+      }
+
+      if (problemInstance is IHomogenousCapacitatedProblemInstance)
+        (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value = originalOverloadPenalty.Value;
+      if (problemInstance is ITimeWindowedProblemInstance)
+        (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value = originalTardinessPenalty.Value;
+
+      return new ItemArray<IItem>(ChooseSelection(solutions, n));
+    }
+
+    private static IList<IItem> ChooseSelection(IList<PotvinEncoding> solutions, PercentValue n) {
+      IList<IItem> selection = new List<IItem>();
+      if (solutions.Count > 0) {
+        int noSol = (int)(solutions.Count * n.Value);
+        if (noSol <= 0) noSol++;
+        double stepSize = (double)solutions.Count / (double)noSol;
+        for (int i = 0; i < noSol; i++)
+          selection.Add(solutions.ElementAt((int)((i + 1) * stepSize - stepSize * 0.5)));
+      }
+
+      return selection;
+    }
+
+    protected override ItemArray<IItem> Relink(ItemArray<IItem> parents, PercentValue n) {
+      if (parents.Length != 2)
+        throw new ArgumentException("The number of parents is not equal to 2.");
+
+      if (!(parents[0] is PotvinEncoding))
+        parents[0] = PotvinEncoding.ConvertFrom(parents[0] as IVRPEncoding, ProblemInstanceParameter.ActualValue);
+      if (!(parents[1] is PotvinEncoding))
+        parents[1] = PotvinEncoding.ConvertFrom(parents[1] as IVRPEncoding, ProblemInstanceParameter.ActualValue);
+
+      return Apply(parents[0] as PotvinEncoding, parents[1] as PotvinEncoding, n,
+        SampleSizeParameter.Value.Value, IterationsParameter.Value.Value, RandomParameter.ActualValue, ProblemInstanceParameter.ActualValue);
     }
 
     private static int MatchingCities(Tour tour1, Tour tour2) {
@@ -76,9 +189,9 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     private static PotvinEncoding MatchTours(PotvinEncoding initiator, PotvinEncoding guide, IVRPProblemInstance problemInstance) {
-      PotvinEncoding result = new PotvinEncoding(problemInstance);
+      var result = new PotvinEncoding(problemInstance);
 
-      List<bool> used = new List<bool>();
+      var used = new List<bool>();
       for (int i = 0; i < initiator.Tours.Count; i++) {
         used.Add(false);
       }
@@ -119,7 +232,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
     public static PotvinEncoding SequenceBasedXOver(PotvinEncoding initiator, PotvinEncoding guide, IRandom random, IVRPProblemInstance problemInstance) {
       return PotvinSequenceBasedCrossover.Apply(random, initiator, guide, problemInstance, false);
     }
-
 
     public static void GuidedRelocateMove(PotvinEncoding initiator, PotvinEncoding guide, IRandom random) {
       List<int> cities = new List<int>();
@@ -207,243 +319,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       individual.Tours.RemoveAll(t => t.Stops.Count == 0);
     }
-
-    public static void ExchangeMove(PotvinEncoding individual, IRandom random) {
-      if (individual.Tours.Count > 1) {
-        int tour1Idx = random.Next(individual.Tours.Count);
-        int tour2Idx = random.Next(individual.Tours.Count - 1);
-        if (tour2Idx >= tour1Idx)
-          tour2Idx++;
-
-        Tour tour1 = individual.Tours[tour1Idx];
-        Tour tour2 = individual.Tours[tour2Idx];
-
-        int index1 = random.Next(tour1.Stops.Count);
-        int city1 = tour1.Stops[index1];
-
-        int index2 = random.Next(tour2.Stops.Count);
-        int city2 = tour2.Stops[index2];
-
-        tour1.Stops.RemoveAt(index1);
-        tour1.Stops.Insert(index1, city2);
-
-        tour2.Stops.RemoveAt(index2);
-        tour2.Stops.Insert(index2, city1);
-      }
-    }
-
-    public static void TwoOptMove(PotvinEncoding individual, IRandom random) {
-      List<Tour> tours = individual.Tours.FindAll(t => t.Stops.Count >= 4);
-
-      if (tours.Count > 0) {
-        int tourIdx = random.Next(tours.Count);
-        Tour tour = tours[tourIdx];
-
-        int a;
-        if (tour.Stops.Count == 4) {
-          a = 0;
-        } else if (tour.Stops.Count == 5) {
-          int idx = random.Next(4);
-          if (idx >= 2)
-            idx++;
-          a = idx;
-        } else {
-          a = random.Next(tour.Stops.Count);
-        }
-
-        int b;
-        List<int> indices = new List<int>();
-        for (int i = 0; i < tour.Stops.Count; i++) {
-          if (Math.Abs(i - a) > 2) {
-            indices.Add(i);
-          }
-        }
-        b = indices[random.Next(indices.Count)];
-
-        if (b < a) {
-          int tmp = a;
-          a = b;
-          b = tmp;
-        }
-
-        int index = a + 1;
-        int count = b - a - 1;
-        List<int> segment = tour.Stops.GetRange(index, count);
-        tour.Stops.RemoveRange(index, count);
-        segment.Reverse();
-        tour.Stops.InsertRange(index, segment);
-      }
-    }
-
-    public static void TwoOptStarMove(PotvinEncoding individual, IRandom random) {
-      //consider creating new tour
-      individual.Tours.Add(new Tour());
-
-      int route1Idx = random.Next(individual.Tours.Count);
-      int route2Idx = random.Next(individual.Tours.Count - 1);
-      if (route2Idx >= route1Idx)
-        route2Idx++;
-
-      Tour route1 = individual.Tours[route1Idx];
-      Tour route2 = individual.Tours[route2Idx];
-
-      int x1 = random.Next(route1.Stops.Count + 1);
-      int x2 = random.Next(route2.Stops.Count + 1);
-
-      int count = route1.Stops.Count - x1;
-      List<int> segmentX1 = new List<int>();
-      if (count > 0) {
-        segmentX1 = route1.Stops.GetRange(x1, count);
-        route1.Stops.RemoveRange(x1, count);
-      }
-
-      count = route2.Stops.Count - x2;
-      List<int> segmentX2 = new List<int>();
-      if (count > 0) {
-        segmentX2 = route2.Stops.GetRange(x2, count);
-        route2.Stops.RemoveRange(x2, count);
-      }
-
-      route1.Stops.AddRange(segmentX2);
-      route2.Stops.AddRange(segmentX1);
-
-      individual.Tours.RemoveAll(t => t.Stops.Count == 0);
-    }
-
-    public static void OrOptMove(PotvinEncoding individual, IRandom random) {
-      List<Tour> tours = individual.Tours.FindAll(t => t.Stops.Count >= 2);
-
-      if (tours.Count > 0) {
-        int tourIdx = random.Next(tours.Count);
-        Tour tour = tours[tourIdx];
-
-        int segmentStart = random.Next(tour.Stops.Count);
-        int segmentLength;
-        if (segmentStart == 0) {
-          segmentLength = 1 + random.Next(tour.Stops.Count - 1);
-        } else {
-          segmentLength = 1 + random.Next(tour.Stops.Count - segmentStart);
-        }
-
-        List<int> segment = tour.Stops.GetRange(segmentStart, segmentLength);
-        tour.Stops.RemoveRange(segmentStart, segmentLength);
-        int newPos;
-        if (tour.Stops.Count == 1)
-          newPos = 0;
-        else
-          newPos = random.Next(tour.Stops.Count - 1);
-
-        if (newPos >= segmentStart)
-          newPos++;
-        tour.Stops.InsertRange(newPos, segment);
-      }
-    }
     #endregion
-
-    private static IList<IItem> ChooseSelection(IList<PotvinEncoding> solutions, PercentValue n) {
-      IList<IItem> selection = new List<IItem>();
-      if (solutions.Count > 0) {
-        int noSol = (int)(solutions.Count * n.Value);
-        if (noSol <= 0) noSol++;
-        double stepSize = (double)solutions.Count / (double)noSol;
-        for (int i = 0; i < noSol; i++)
-          selection.Add(solutions.ElementAt((int)((i + 1) * stepSize - stepSize * 0.5)));
-      }
-
-      return selection;
-    }
-
-    public static ItemArray<IItem> Apply(PotvinEncoding initiator, PotvinEncoding guide, PercentValue n, int sampleSize, int iterations, IRandom rand, IVRPProblemInstance problemInstance) {
-
-      if (initiator == null || guide == null)
-        throw new ArgumentException("Cannot relink path because one of the provided solutions or both are null.");
-
-      double sigma = 1.5;
-
-      DoubleValue originalOverloadPenalty = new DoubleValue();
-      if (problemInstance is IHomogenousCapacitatedProblemInstance)
-        originalOverloadPenalty.Value = (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value;
-      DoubleValue originalTardinessPenalty = new DoubleValue();
-      if (problemInstance is ITimeWindowedProblemInstance)
-        originalTardinessPenalty.Value = (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value;
-
-      PotvinEncoding current = MatchTours(initiator, guide, problemInstance);
-      double currentSimilarity = VRPSimilarityCalculator.CalculateSimilarity(current, guide);
-
-      IList<PotvinEncoding> solutions = new List<PotvinEncoding>();
-      int i = 0;
-      while (i < iterations && currentSimilarity != 1.0) {
-        VRPEvaluation currentEval = problemInstance.Evaluate(current);
-        currentSimilarity = VRPSimilarityCalculator.CalculateSimilarity(current, guide);
-
-        if (currentSimilarity < 1.0) {
-          for (int sample = 0; sample < sampleSize; sample++) {
-            PotvinEncoding next = current.Clone() as PotvinEncoding;
-
-            int neighborhood = rand.Next(4);
-            switch (neighborhood) {
-              case 0: next = RouteBasedXOver(next, guide, rand,
-                problemInstance);
-                break;
-              case 1: next = SequenceBasedXOver(next, guide, rand,
-                problemInstance);
-                break;
-              case 2: TwoOptMove(next, rand);
-                break;
-              case 3: GuidedRelocateMove(next, guide, rand);
-                break;
-            }
-
-            next = MatchTours(next, guide, problemInstance);
-
-            VRPEvaluation nextEval = problemInstance.Evaluate(next);
-            double nextSimilarity = VRPSimilarityCalculator.CalculateSimilarity(next, guide);
-
-            if (nextSimilarity > currentSimilarity && nextEval.Quality <= currentEval.Quality) {
-              current = next;
-              solutions.Add(current);
-              break;
-            }
-          }
-
-          if (problemInstance is IHomogenousCapacitatedProblemInstance) {
-            if (((CVRPEvaluation)currentEval).Overload > 0)
-              (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value *= sigma;
-            else
-              (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value /= sigma;
-          }
-
-
-          if (problemInstance is ITimeWindowedProblemInstance) {
-            if (((CVRPTWEvaluation)currentEval).Tardiness > 0)
-              (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value *= sigma;
-            else
-              (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value /= sigma;
-          }
-
-          i++;
-        }
-      }
-
-      if (problemInstance is IHomogenousCapacitatedProblemInstance)
-        (problemInstance as IHomogenousCapacitatedProblemInstance).OverloadPenalty.Value = originalOverloadPenalty.Value;
-      if (problemInstance is ITimeWindowedProblemInstance)
-        (problemInstance as ITimeWindowedProblemInstance).TardinessPenalty.Value = originalTardinessPenalty.Value;
-
-      return new ItemArray<IItem>(ChooseSelection(solutions, n));
-    }
-
-    protected override ItemArray<IItem> Relink(ItemArray<IItem> parents, PercentValue n) {
-      if (parents.Length != 2)
-        throw new ArgumentException("The number of parents is not equal to 2.");
-
-      if (!(parents[0] is PotvinEncoding))
-        parents[0] = PotvinEncoding.ConvertFrom(parents[0] as IVRPEncoding, ProblemInstanceParameter.ActualValue);
-      if (!(parents[1] is PotvinEncoding))
-        parents[1] = PotvinEncoding.ConvertFrom(parents[1] as IVRPEncoding, ProblemInstanceParameter.ActualValue);
-
-      return Apply(parents[0] as PotvinEncoding, parents[1] as PotvinEncoding, n,
-        SampleSizeParameter.Value.Value, IterationsParameter.Value.Value, RandomParameter.ActualValue, ProblemInstanceParameter.ActualValue);
-    }
   }
 }

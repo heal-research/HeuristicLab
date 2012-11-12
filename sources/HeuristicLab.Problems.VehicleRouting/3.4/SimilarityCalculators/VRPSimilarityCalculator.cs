@@ -31,12 +31,12 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
-  /// An operator that performs similarity calculation between two vehicle routing solutions.
+  /// An operator which performs similarity calculation between two VRP solutions.
   /// </summary>
   /// <remarks>
   /// The operator calculates the similarity based on the number of edges the two solutions have in common.
   /// </remarks>
-  [Item("VRPSimilarityCalculator", "An operator that performs similarity calculation between two vehicle routing solutions.")]
+  [Item("VRPSimilarityCalculator", "An operator which performs similarity calculation between two VRP solutions.")]
   [StorableClass]
   public sealed class VRPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     #region Properties

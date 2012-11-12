@@ -140,6 +140,7 @@
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMultiMoveGenerator.cs" />
     <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarSingleMoveGenerator.cs" />
     <Compile Include="Improver\VRPImprovementOperator.cs" />
+    <Compile Include="Improver\VRPIntraRouteImprovementOperator.cs" />
     <Compile Include="Interfaces\IVRPLocalSearchManipulator.cs" />
     <Compile Include="Interpreters\MDCVRPInterpreter.cs" />
     <Compile Include="Interpreters\VRPInterpreter.cs" />
@@ -473,13 +474,13 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd</PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
