@@ -124,7 +124,6 @@
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionConstantOptimizationEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveOverfittingAnalyzer.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveVariableImpactAnalyzer.cs" />
     <Compile Include="SymbolicRegressionModel.cs" />
     <Compile Include="Interfaces\ISymbolicRegressionModel.cs" />
     <Compile Include="Interfaces\ISymbolicRegressionSolution.cs" />
