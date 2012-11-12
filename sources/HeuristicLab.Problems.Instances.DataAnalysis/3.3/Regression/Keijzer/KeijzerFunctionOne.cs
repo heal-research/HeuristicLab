@@ -26,7 +26,7 @@ using System.Linq;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerFunctionOne : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Keijzer 1 f(x) = 0.3 * x *sin(2 * PI * x)"; } }
+    public override string Name { get { return "Keijzer 1 f(x) = 0.3 * x *sin(2 * PI * x); Interval [-1, 1]"; } }
     public override string Description {
       get {
         return "Paper: Improving Symbolic Regression with Interval Arithmetic and Linear Scaling" + Environment.NewLine

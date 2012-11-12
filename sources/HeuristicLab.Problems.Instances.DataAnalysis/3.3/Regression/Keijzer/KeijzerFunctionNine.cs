@@ -41,9 +41,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string[] VariableNames { get { return new string[] { "X", "F" }; } }
     protected override string[] AllowedInputVariables { get { return new string[] { "X" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
-    protected override int TrainingPartitionEnd { get { return 100; } }
-    protected override int TestPartitionStart { get { return 100; } }
-    protected override int TestPartitionEnd { get { return 1100; } }
+    protected override int TrainingPartitionEnd { get { return 101; } }
+    protected override int TestPartitionStart { get { return 101; } }
+    protected override int TestPartitionEnd { get { return 1102; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<double> results = new List<double>();
       for (int i = 0; i < data[0].Count; i++) {
         x = data[0][i];
-        results.Add(Math.Log(x + Math.Sqrt(x*x + 1)));
+        results.Add(Math.Log(x + Math.Sqrt(x * x + 1)));
       }
       data.Add(results);
 

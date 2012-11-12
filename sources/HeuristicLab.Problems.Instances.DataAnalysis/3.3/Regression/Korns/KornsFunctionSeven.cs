@@ -38,7 +38,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "\"Our testing regimen uses only statistical best practices out-of-sample testing techniques. "
         + "We test each of the test cases on matrices of 10000 rows by 1 to 5 columns with no noise. "
         + "For each test a training matrix is filled with random numbers between -50 and +50. The test case "
-        + "target expressions are limited to one basis function whose maximum depth is three grammar nodes.\"";
+        + "target expressions are limited to one basis function whose maximum depth is three grammar nodes.\"" + Environment.NewLine
+        + "Note: Because of the exponential function only non-negatic values are created for its input variable!";
       }
     }
     protected override string TargetVariable { get { return "Y"; } }
@@ -51,9 +52,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
-      }
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, 0, 50).ToList()); // note: range is only [0,50] to prevent NaN values (deviates from gp benchmark paper)
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
 
       double x0;
       List<double> results = new List<double>();

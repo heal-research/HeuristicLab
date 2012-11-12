@@ -39,7 +39,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "We test each of the test cases on matrices of 10000 rows by 1 to 5 columns with no noise. "
         + "For each test a training matrix is filled with random numbers between -50 and +50. The test case "
         + "target expressions are limited to one basis function whose maximum depth is three grammar nodes.\"" + Environment.NewLine + Environment.NewLine
-        + "Note: Because of the square root and the logarithm only non-negatic values are created for the input variables!";
+        + "Note: Because of the square root and the logarithm only non-negatic values are created for their input variables!" + Environment.NewLine
+        + "Because of the exponential function only only non-positive values are created for its input variable!";
       }
     }
     protected override string TargetVariable { get { return "Y"; } }
@@ -54,9 +55,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<List<double>> data = new List<List<double>>();
       data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, 0, 50).ToList()); // note: range is only [0,50] to prevent NaN values (deviates from gp benchmark paper)
       data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, 0, 50).ToList()); // note: range is only [0,50] to prevent NaN values (deviates from gp benchmark paper)
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList()); 
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList()); 
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList()); 
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 0).ToList()); // note: range is only [-50,0] to prevent NaN values (deviates from gp benchmark paper)
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
 
       double x0, x1, x2, x3;
       List<double> results = new List<double>();
