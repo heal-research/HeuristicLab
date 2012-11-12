@@ -367,7 +367,6 @@
     <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\JSMSXXCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\PWRGOXCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\PWRPPXCrossoverTest.cs" />
-    <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\TestRandom.cs" />
     <Compile Include="HeuristicLab.Encodings.ScheduleEncoding-3.3\TestUtils.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\AllArchitectureAlteringOperatorsTest.cs" />
     <Compile Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4\ArgumentCreaterTest.cs" />
