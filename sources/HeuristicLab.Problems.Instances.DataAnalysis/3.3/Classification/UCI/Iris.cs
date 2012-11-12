@@ -22,7 +22,7 @@
 
 using System;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Iris : IDataDescriptor {
+  public class Iris : IUCIDataDescriptor {
     public string Name { get { return "Iris"; } }
     public string Description {
       get {
@@ -37,5 +37,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "This is an exceedingly simple domain.";
       }
     }
+    public string Donor { get { return "M. Marshall"; } }
+    public int Year { get { return 1988; } }
   }
 }

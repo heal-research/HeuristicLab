@@ -22,7 +22,7 @@
 
 using System;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Wine : IDataDescriptor {
+  public class Wine : IUCIDataDescriptor {
     public string Name { get { return "Wine"; } }
     public string Description {
       get {
@@ -50,5 +50,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         "good data set for first testing of a new classifier, but not very challenging. ";
       }
     }
+    public string Donor { get { return "S. Aeberhard"; } }
+    public int Year { get { return 1991; } }
   }
 }

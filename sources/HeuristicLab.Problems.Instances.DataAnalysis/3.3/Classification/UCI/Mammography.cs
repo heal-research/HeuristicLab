@@ -22,8 +22,8 @@
 
 using System;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Mammography : IDataDescriptor {
-    public string Name { get { return "mammography"; } }
+  public class Mammography : IUCIDataDescriptor {
+    public string Name { get { return "Mammography"; } }
     public string Description {
       get {
         return "Data Set Information: Features are computed from a digitized image of a fine needle aspirate (FNA) of a breast mass."
@@ -45,5 +45,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "j) fractal dimension (\"coastline approximation\" - 1)";
       }
     }
+    public string Donor { get { return "M. Elter"; } }
+    public int Year { get { return 2007; } }
   }
 }

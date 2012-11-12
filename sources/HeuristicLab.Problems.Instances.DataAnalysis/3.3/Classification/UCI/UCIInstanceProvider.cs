@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string FileName { get { return "UCI"; } }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
+      List<IUCIDataDescriptor> descriptorList = new List<IUCIDataDescriptor>();
       descriptorList.Add(new Iris());
       descriptorList.Add(new Mammography());
       descriptorList.Add(new Thyroid());
@@ -60,7 +60,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           }
           foreach (var entry in entries.OrderBy(x => x)) {
             string prettyName = Path.GetFileNameWithoutExtension(entry);
-            IDataDescriptor desc = descriptorList.Where(x => x.Name.Equals(prettyName)).FirstOrDefault();
+            IUCIDataDescriptor desc = descriptorList.Where(x => x.Name.Equals(prettyName)).FirstOrDefault();
+            prettyName = String.Format("{0}, {1}, {2}", prettyName, desc.Donor, desc.Year);
             if (desc != null) {
               yield return new ResourceClassificationDataDescriptor(prettyName, desc.Description, entry);
             } else

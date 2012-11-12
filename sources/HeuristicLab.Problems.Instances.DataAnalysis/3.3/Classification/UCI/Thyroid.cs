@@ -22,7 +22,7 @@
 
 using System;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Thyroid : IDataDescriptor {
+  public class Thyroid : IUCIDataDescriptor {
     public string Name { get { return "Thyroid"; } }
     public string Description {
       get {
@@ -38,5 +38,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         "All attributes are continuous.";
       }
     }
+    public string Donor { get { return "S. Aeberhard"; } }
+    public int Year { get { return 1992; } }
   }
 }
