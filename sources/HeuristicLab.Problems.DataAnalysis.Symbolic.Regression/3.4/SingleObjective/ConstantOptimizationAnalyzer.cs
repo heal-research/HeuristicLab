@@ -41,6 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     private const string DataTableNameConstantOptimizationImprovement = "Constant Optimization Improvement";
     private const string DataRowNameMinimumImprovement = "Minimum improvement";
+    private const string DataRowNameMedianImprovement = "Median improvement";
     private const string DataRowNameAverageImprovement = "Average improvement";
     private const string DataRowNameMaximumImprovement = "Maximum improvement";
 
@@ -73,13 +74,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private DataRow MinimumImprovement {
       get { return ConstantOptimizationImprovementDataTable.Rows[DataRowNameMinimumImprovement]; }
     }
+    private DataRow MedianImprovement {
+      get { return ConstantOptimizationImprovementDataTable.Rows[DataRowNameMedianImprovement]; }
+    }
     private DataRow AverageImprovement {
       get { return ConstantOptimizationImprovementDataTable.Rows[DataRowNameAverageImprovement]; }
     }
     private DataRow MaximumImprovement {
       get { return ConstantOptimizationImprovementDataTable.Rows[DataRowNameMaximumImprovement]; }
     }
-
     #endregion
 
     [StorableConstructor]
@@ -150,6 +153,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         dataTable.Rows.Add(new DataRow(DataRowNameMinimumImprovement));
         MinimumImprovement.VisualProperties.StartIndexZero = true;
 
+        dataTable.Rows.Add(new DataRow(DataRowNameMedianImprovement));
+        MedianImprovement.VisualProperties.StartIndexZero = true;
+
         dataTable.Rows.Add(new DataRow(DataRowNameAverageImprovement));
         AverageImprovement.VisualProperties.StartIndexZero = true;
 
@@ -158,6 +164,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       MinimumImprovement.Values.Add(qualityImprovement.Min());
+      MedianImprovement.Values.Add(qualityImprovement.Median());
       AverageImprovement.Values.Add(qualityImprovement.Average());
       MaximumImprovement.Values.Add(qualityImprovement.Max());
 
