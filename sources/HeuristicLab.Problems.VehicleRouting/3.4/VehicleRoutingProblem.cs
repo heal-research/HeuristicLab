@@ -38,10 +38,16 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
+  public interface IVRPInstanceConsumer :  
+    IProblemInstanceConsumer<CVRPData>, IProblemInstanceConsumer<CVRPTWData>, 
+    IProblemInstanceConsumer<MDCVRPData>, IProblemInstanceConsumer<MDCVRPTWData>,
+    IProblemInstanceConsumer<PDPTWData> {
+  }
+
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {
+  public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IVRPInstanceConsumer {
     public string Filename { get; set; }
 
     public static new Image StaticItemImage {
@@ -351,36 +357,52 @@ namespace HeuristicLab.Problems.VehicleRouting {
       }
     }
 
-    public void Load(IVRPData data) {
-      Type interpreterType = typeof(IVRPDataInterpreter<>).MakeGenericType(data.GetType());
-      var interpreters = ApplicationManager.Manager.GetInstances(interpreterType);
-      if (interpreters.Count() > 0) {
-        IVRPDataInterpreter interpreter = interpreters.First() as IVRPDataInterpreter;
-        VRPInstanceDescription instance = interpreter.Interpret(data);
+    #region Instance Consuming
+    public void Load(IVRPData data, IVRPDataInterpreter interpreter) {
+      VRPInstanceDescription instance = interpreter.Interpret(data);
 
-        Name = instance.Name;
-        Description = instance.Description;
-        if (ProblemInstance != null && instance.ProblemInstance != null &&
-          instance.ProblemInstance.GetType() == ProblemInstance.GetType())
-          SetProblemInstance(instance.ProblemInstance);
-        else
-          ProblemInstance = instance.ProblemInstance;
+      Name = instance.Name;
+      Description = instance.Description;
+      if (ProblemInstance != null && instance.ProblemInstance != null &&
+        instance.ProblemInstance.GetType() == ProblemInstance.GetType())
+        SetProblemInstance(instance.ProblemInstance);
+      else
+        ProblemInstance = instance.ProblemInstance;
 
-        OnReset();
-        BestKnownQuality = null;
-        BestKnownSolution = null;
+      OnReset();
+      BestKnownQuality = null;
+      BestKnownSolution = null;
 
-        if (instance.BestKnownQuality != null) {
-          BestKnownQuality = new DoubleValue((double)instance.BestKnownQuality);
-        }
+      if (instance.BestKnownQuality != null) {
+        BestKnownQuality = new DoubleValue((double)instance.BestKnownQuality);
+      }
 
-        if (instance.BestKnownSolution != null) {
-          VRPSolution solution = new VRPSolution(ProblemInstance, instance.BestKnownSolution, new DoubleValue(0));
-          BestKnownSolution = solution;
-        }
-      } else {
-        throw new Exception("Cannot find an interpreter for " + data.GetType());
+      if (instance.BestKnownSolution != null) {
+        VRPSolution solution = new VRPSolution(ProblemInstance, instance.BestKnownSolution, new DoubleValue(0));
+        BestKnownSolution = solution;
       }
     }
+
+    public void Load(CVRPData data) {
+      Load(data, new CVRPInterpreter());
+    }
+
+    public void Load(CVRPTWData data) {
+      Load(data, new CVRPTWInterpreter());
+    }
+
+    public void Load(MDCVRPData data) {
+      Load(data, new MDCVRPInterpreter());
+    }
+
+    public void Load(MDCVRPTWData data) {
+      Load(data, new MDCVRPTWInterpreter());
+    }
+
+    public void Load(PDPTWData data) {
+      Load(data, new PDPTWInterpreter());
+    }
+
+    #endregion
   }
 }
