@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.Instances.QAPLIB {
       Size = int.Parse(reader.ReadLine());
       Distances = new double[Size, Size];
       Weights = new double[Size, Size];
-      char[] delim = new char[] { ' ' };
+      char[] delim = new char[] { ' ', '\t' };
 
       Weights = ParseMatrix(reader, delim);
       Distances = ParseMatrix(reader, delim);

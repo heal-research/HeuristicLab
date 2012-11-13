@@ -102,20 +102,29 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
-		<HintPath>..\..\HeuristicLab.PluginInfrastructure\3.3\ICSharpCode.SharpZipLib.dll</HintPath>
-		<Private>False</Private>
-	</Reference>
+      <HintPath>..\..\HeuristicLab.PluginInfrastructure\3.3\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TaillardQAPInstanceProvider.cs" />
+    <Compile Include="DreznerQAPInstanceProvider.cs" />
+    <Compile Include="MicroarrayQAPInstanceProvider.cs" />
     <Compile Include="QAPLIBParser.cs" />
     <Compile Include="QAPLIBDataDescriptor.cs" />
     <Compile Include="QAPLIBSolutionParser.cs" />
     <Compile Include="QAPLIBInstanceProvider.cs" />
     <EmbeddedResource Include="Data\qap.dat.zip" />
     <EmbeddedResource Include="Data\qap.sln.zip" />
+    <EmbeddedResource Include="Data\microarray.dat.zip" />
+    <EmbeddedResource Include="Data\microarray.sln.zip" />
+    <EmbeddedResource Include="Data\drezner.dat.zip" />
+    <EmbeddedResource Include="Data\drezner.sln.zip" />
+    <EmbeddedResource Include="Data\taillard.dat.zip" />
+    <EmbeddedResource Include="Data\taillard.sln.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -143,13 +152,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd</PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 

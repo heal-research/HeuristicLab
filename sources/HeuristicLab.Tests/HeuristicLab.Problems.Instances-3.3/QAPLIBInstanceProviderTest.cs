@@ -45,5 +45,56 @@ namespace HeuristicLab.Problems.Instances_33.Tests {
       Assert.IsTrue(count > 0, "No problem instances were found.");
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
+
+    [TestMethod()]
+    public void GetMicroarrayQAPInstanceTest() {
+      var target = new MicroarrayQAPInstanceProvider();
+      StringBuilder erroneousInstances = new StringBuilder();
+      int count = 0;
+      foreach (var id in target.GetDataDescriptors()) {
+        try {
+          target.LoadData(id);
+        } catch (Exception ex) {
+          erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
+        }
+        count++;
+      }
+      Assert.IsTrue(count > 0, "No problem instances were found.");
+      Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
+    }
+
+    [TestMethod()]
+    public void GetDreznerQAPInstanceTest() {
+      var target = new DreznerQAPInstanceProvider();
+      StringBuilder erroneousInstances = new StringBuilder();
+      int count = 0;
+      foreach (var id in target.GetDataDescriptors()) {
+        try {
+          target.LoadData(id);
+        } catch (Exception ex) {
+          erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
+        }
+        count++;
+      }
+      Assert.IsTrue(count > 0, "No problem instances were found.");
+      Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
+    }
+
+    [TestMethod()]
+    public void GetTaillardQAPInstanceTest() {
+      var target = new TaillardQAPInstanceProvider();
+      StringBuilder erroneousInstances = new StringBuilder();
+      int count = 0;
+      foreach (var id in target.GetDataDescriptors()) {
+        try {
+          target.LoadData(id);
+        } catch (Exception ex) {
+          erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
+        }
+        count++;
+      }
+      Assert.IsTrue(count > 0, "No problem instances were found.");
+      Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
+    }
   }
 }

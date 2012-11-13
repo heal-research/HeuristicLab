@@ -22,6 +22,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.QAPLIB {
   public class QAPLIBSolutionParser {
@@ -80,7 +81,7 @@ namespace HeuristicLab.Problems.Instances.QAPLIB {
       Error = null;
       try {
         StreamReader reader = new StreamReader(stream);
-        char[] delim = new char[] { ' ', ',' }; // comma is added for nug30.sln which is the only file that separates the permutation with commas
+        char[] delim = new char[] { ' ', '\t', ',' }; // comma is added for nug30.sln which is the only file that separates the permutation with commas
         string[] firstline = reader.ReadLine().Split(delim, StringSplitOptions.RemoveEmptyEntries);
         Size = int.Parse(firstline[0]);
         Quality = double.Parse(firstline[1], CultureInfo.InvariantCulture.NumberFormat);
@@ -89,11 +90,13 @@ namespace HeuristicLab.Problems.Instances.QAPLIB {
         while (!reader.EndOfStream) {
           string valLine = reader.ReadLine();
           string[] vals = valLine.Split(delim, StringSplitOptions.RemoveEmptyEntries);
+          int start = 1;
+          if (vals.Any(x => x == "0")) start = 0;
           if (vals.Length == 0) continue;
           for (int j = 0; j < vals.Length; j++) {
             if (valueAsLocation)
-              Assignment[int.Parse(vals[j]) - 1] = read++;
-            else Assignment[read++] = int.Parse(vals[j]) - 1;
+              Assignment[int.Parse(vals[j]) - start] = read++;
+            else Assignment[read++] = int.Parse(vals[j]) - start;
           }
         }
         if (read < Size) Assignment = null;

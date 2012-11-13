@@ -166,7 +166,7 @@ Journal of Global Optimization, 10, pp. 391-403.";
       }
     }
 
-    private const string FileName = "qap";
+    protected virtual string FileName { get { return "qap"; } }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       Dictionary<string, string> solutions = new Dictionary<string, string>();
