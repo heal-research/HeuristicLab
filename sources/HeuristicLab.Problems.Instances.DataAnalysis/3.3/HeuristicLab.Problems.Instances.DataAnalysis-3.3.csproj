@@ -119,6 +119,8 @@
     <Compile Include="Classification\CSV\ClassifiactionCSVInstanceProvider.cs" />
     <Compile Include="Classification\ResourceClassificationDataDescriptor.cs" />
     <Compile Include="Classification\ResourceClassificationInstanceProvider.cs" />
+    <Compile Include="Classification\UCI\Vertebral_3C.cs" />
+    <Compile Include="Classification\UCI\Parkinson.cs" />
     <Compile Include="Classification\UCI\Iris.cs" />
     <Compile Include="Classification\UCI\IUCIDataDescriptor.cs" />
     <Compile Include="Classification\UCI\Mammography.cs" />

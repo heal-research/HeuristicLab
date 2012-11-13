@@ -48,7 +48,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<IUCIDataDescriptor> descriptorList = new List<IUCIDataDescriptor>();
       descriptorList.Add(new Iris());
       descriptorList.Add(new Mammography());
+      descriptorList.Add(new Parkinson());
       descriptorList.Add(new Thyroid());
+      descriptorList.Add(new Vertebral_3C());
       descriptorList.Add(new Wine());
       var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
@@ -61,8 +63,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           foreach (var entry in entries.OrderBy(x => x)) {
             string prettyName = Path.GetFileNameWithoutExtension(entry);
             IUCIDataDescriptor desc = descriptorList.Where(x => x.Name.Equals(prettyName)).FirstOrDefault();
-            prettyName = String.Format("{0}, {1}, {2}", prettyName, desc.Donor, desc.Year);
             if (desc != null) {
+              prettyName = String.Format("{0}, {1}, {2}", prettyName, desc.Donor, desc.Year);
               yield return new ResourceClassificationDataDescriptor(prettyName, desc.Description, entry);
             } else
               yield return new ResourceClassificationDataDescriptor(prettyName, Description, entry);
