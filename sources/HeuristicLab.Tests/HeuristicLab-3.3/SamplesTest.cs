@@ -130,7 +130,7 @@ namespace HeuristicLab_33.Tests {
       VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
 
       SolomonFormatInstanceProvider instanceProvider = new SolomonInstanceProvider();
-      IVRPData data = instanceProvider.Import("C101.txt", "C101.opt.txt");
+      CVRPTWData data = instanceProvider.Import("C101.txt", "C101.opt.txt") as CVRPTWData;
       vrpProblem.Load(data);
       vrpProblem.Name = "C101 VRP (imported from Solomon)";
       vrpProblem.Description = "Represents a Vehicle Routing Problem.";
