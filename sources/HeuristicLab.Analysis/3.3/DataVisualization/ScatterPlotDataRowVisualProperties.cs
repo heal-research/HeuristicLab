@@ -31,7 +31,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [StorableClass]
   public class ScatterPlotDataRowVisualProperties : DeepCloneable, INotifyPropertyChanged {
-    #region DotStyle
+    #region PointStyle
     public enum ScatterPlotDataRowPointStyle {
       Circle,
       Cross,

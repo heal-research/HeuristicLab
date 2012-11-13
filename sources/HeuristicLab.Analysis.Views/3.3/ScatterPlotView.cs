@@ -33,7 +33,7 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Analysis.Views {
   [View("ScatterPlot View")]
   [Content(typeof(ScatterPlot), true)]
-  public partial class ScatterPlotView : NamedItemView {
+  public partial class ScatterPlotView : NamedItemView, IConfigureableView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<Point2D<double>>, ScatterPlotDataRow> pointsRowsTable;
 
@@ -108,6 +108,14 @@ namespace HeuristicLab.Analysis.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       chart.Enabled = Content != null;
+    }
+
+    public void ShowConfiguration() {
+      if (Content != null) {
+        using (ScatterPlotVisualPropertiesDialog dialog = new ScatterPlotVisualPropertiesDialog(Content)) {
+          dialog.ShowDialog(this);
+        }
+      } else MessageBox.Show("Nothing to configure.");
     }
 
     protected virtual void AddScatterPlotDataRows(IEnumerable<ScatterPlotDataRow> rows) {
