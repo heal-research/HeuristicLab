@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Note: The column \"name\" has been removed and the column \"status\" has been moved to the end.";
       }
     }
-    public string Donor { get { return "Max Little"; } }
+    public string Donor { get { return "M. Little"; } }
     public int Year { get { return 2008; } }
   }
 }

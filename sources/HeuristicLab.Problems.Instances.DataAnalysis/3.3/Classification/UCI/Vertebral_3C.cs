@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Note: Normal has the value '0', Spondylolisthesis is '1' and Disk Hernia = '2'.";
       }
     }
-    public string Donor { get { return "Dr. Henrique da Mota"; } }
+    public string Donor { get { return "H. da Mota"; } }
     public int Year { get { return 2011; } }
   }
 }
