@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 namespace HeuristicLab.Problems.Instances {
   public interface IProblemInstanceConsumer : IContent { }
 
-  public interface IProblemInstanceConsumer<in TData> : IProblemInstanceConsumer {
+  public interface IProblemInstanceConsumer<TData> : IProblemInstanceConsumer {
     /// <summary>
     /// Loads the given instance data.
     /// </summary>
