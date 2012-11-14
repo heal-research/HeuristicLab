@@ -102,18 +102,21 @@ namespace HeuristicLab.Problems.DataAnalysis {
       List<double> classValuesList = new List<double>();
       if (thresholdList.Count == 2) {
         // this happens if there are no thresholds (distributions for all classes are exactly the same)
-        // -> all samples should be classified as the first class
-        classValuesList.Add(originalClasses[0]);
+        // -> all samples should be classified as the class with the most observations
+        // group observations by target class and select the class with largest count 
+        classValuesList.Add(targetClassValues.GroupBy(c => c)
+          .OrderBy(g => g.Count())
+          .Last().Key);
       } else {
         // at least one reasonable threshold ...
         // find the most likely class for the points between thresholds m
         for (int i = 0; i < thresholdList.Count - 1; i++) {
 
           // determine class with maximal density mass between the thresholds
-          double maxDensity = LogNormalDensityMass(thresholdList[i], thresholdList[i + 1], classMean[originalClasses[0]], classStdDev[originalClasses[0]]);
+          double maxDensity = DensityMass(thresholdList[i], thresholdList[i + 1], classMean[originalClasses[0]], classStdDev[originalClasses[0]]);
           double maxDensityClassValue = originalClasses[0];
           foreach (var classValue in originalClasses.Skip(1)) {
-            double density = LogNormalDensityMass(thresholdList[i], thresholdList[i + 1], classMean[classValue], classStdDev[classValue]);
+            double density = DensityMass(thresholdList[i], thresholdList[i + 1], classMean[classValue], classStdDev[classValue]);
             if (density > maxDensity) {
               maxDensity = density;
               maxDensityClassValue = classValue;
@@ -148,32 +151,42 @@ namespace HeuristicLab.Problems.DataAnalysis {
       classValues = filteredClassValues.ToArray();
     }
 
-    private static double LogNormalDensityMass(double lower, double upper, double mu, double sigma) {
-      if (sigma.IsAlmost(0.0)) {
-        if (lower < mu && mu < upper) return double.PositiveInfinity; // log(1)
-        else return double.NegativeInfinity; // log(0)
-      }
-
-      Func<double, double> f = (x) =>
-        x * -0.5 * Math.Log(2.0 * Math.PI * sigma * sigma) - Math.Pow(x - mu, 3) / (3 * 2.0 * sigma * sigma);
-
-      if (double.IsNegativeInfinity(lower)) return f(upper);
-      else return f(upper) - f(lower);
+    private static double NormalCDF(double mu, double sigma, double x) {
+      return 0.5 * (1 + alglib.normaldistr.errorfunction((x - mu) / (sigma * Math.Sqrt(2.0))));
     }
 
+    // determines the value NormalCDF(mu,sigma, upper)  - NormalCDF(mu, sigma, lower)
+    // = the integral of the PDF of N(mu, sigma) in the range [lower, upper]
+    private static double DensityMass(double lower, double upper, double mu, double sigma) {
+      if (sigma.IsAlmost(0.0)) {
+        if (lower < mu && mu < upper) return 1.0; // all mass is between lower and upper
+        else return 0; // no mass is between lower and upper
+      }
+
+      if (double.IsNegativeInfinity(lower)) return NormalCDF(mu, sigma, upper);
+      else return NormalCDF(mu, sigma, upper) - NormalCDF(mu, sigma, lower);
+    }
+
+    // Calculates the points x1 and x2 where the distributions N(m1, s1) == N(m2,s2). 
+    // In the general case there should be two cut points. If either s1 or s2 is 0 then x1==x2. 
+    // If both s1 and s2 are zero than there are no cut points but we should return something reasonable (e.g. (m1 + m2) / 2) then.
     private static void CalculateCutPoints(double m1, double s1, double m2, double s2, out double x1, out double x2) {
       if (s1.IsAlmost(s2)) {
         if (m1.IsAlmost(m2)) {
           x1 = double.NegativeInfinity;
           x2 = double.NegativeInfinity;
         } else {
+          // s1==s2 and m1 != m2
+          // return something reasonable. cut point should be half way between m1 and m2
           x1 = (m1 + m2) / 2;
           x2 = double.NegativeInfinity;
         }
       } else if (s1.IsAlmost(0.0)) {
+        // when s1 is 0.0 the cut points are exactly at m1 ...
         x1 = m1;
         x2 = m1;
       } else if (s2.IsAlmost(0.0)) {
+        // ... same for s2
         x1 = m2;
         x2 = m2;
       } else {
@@ -181,11 +194,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
           // make sure s2 is the larger std.dev.
           CalculateCutPoints(m2, s2, m1, s1, out x1, out x2);
         } else {
+          // general case
+          // calculate the solutions x1, x2 where N(m1,s1) == N(m2,s2)
           double a = (s1 + s2) * (s1 - s2);
           double g = Math.Sqrt(s1 * s1 * s2 * s2 * ((m1 - m2) * (m1 - m2) + 2.0 * (s1 * s1 + s2 * s2) * Math.Log(s2 / s1)));
           double m1s2 = m1 * s2 * s2;
           double m2s1 = m2 * s1 * s1;
-          x1 = -(-m2s1 + m1s2 + g) / a;
+          x1 = (m2s1 - m1s2 - g) / a;
           x2 = (m2s1 - m1s2 + g) / a;
         }
       }
