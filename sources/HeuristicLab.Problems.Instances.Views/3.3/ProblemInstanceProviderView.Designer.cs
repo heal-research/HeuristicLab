@@ -44,11 +44,18 @@ namespace HeuristicLab.Problems.Instances.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
+      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
+      // 
+      // toolTip
+      // 
+      this.toolTip.AutoPopDelay = 30000;
+      this.toolTip.InitialDelay = 500;
+      this.toolTip.ReshowDelay = 100;
       // 
       // ProblemInstanceProviderView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "ProblemInstanceProviderView";
       this.Size = new System.Drawing.Size(694, 21);
@@ -57,6 +64,9 @@ namespace HeuristicLab.Problems.Instances.Views {
     }
 
     #endregion
+
+    protected System.Windows.Forms.ToolTip toolTip;
+
 
 
   }

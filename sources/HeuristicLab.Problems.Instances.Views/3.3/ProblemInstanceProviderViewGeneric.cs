@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
@@ -39,7 +38,7 @@ namespace HeuristicLab.Problems.Instances.Views {
 
     private IProblemInstanceConsumer<T> GenericConsumer { get { return Consumer as IProblemInstanceConsumer<T>; } }
 
-    public IProblemInstanceConsumer consumer;
+    private IProblemInstanceConsumer consumer;
     public override IProblemInstanceConsumer Consumer {
       get { return consumer; }
       set {
@@ -58,8 +57,8 @@ namespace HeuristicLab.Problems.Instances.Views {
         instancesComboBox.DataSource = null;
       } else {
         instancesComboBox.DisplayMember = "Name";
-        IEnumerable<IDataDescriptor> dataDescriptors = Content.GetDataDescriptors().ToList();
-        ShowInstanceLoad(dataDescriptors.Count() > 0);
+        var dataDescriptors = Content.GetDataDescriptors().ToList();
+        ShowInstanceLoad(dataDescriptors.Any());
         instancesComboBox.DataSource = dataDescriptors;
         instancesComboBox.SelectedIndex = -1;
       }
@@ -84,6 +83,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       var comboBox = (ComboBox)sender;
       if (comboBox.DataSource == null)
         comboBox.Items.Clear();
+      toolTip.SetToolTip(comboBox, String.Empty);
     }
 
     private void instancesComboBox_SelectionChangeCommitted(object sender, System.EventArgs e) {
@@ -92,11 +92,11 @@ namespace HeuristicLab.Problems.Instances.Views {
         T instance = Content.LoadData(descriptor);
         try {
           GenericConsumer.Load(instance);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), ex);
         }
-      }
+        toolTip.SetToolTip(instancesComboBox, descriptor.Description);
+      } else toolTip.SetToolTip(instancesComboBox, String.Empty);
     }
   }
 }
