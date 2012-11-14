@@ -176,7 +176,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       }
       if (!Parameters.ContainsKey("AverageQuality")) {
         Parameters.Add(new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
-        AverageQuality = new DoubleValue(Weights.Average() * Distances.Average() * Weights.Rows * Weights.Rows);
+        AverageQuality = new DoubleValue(ComputeAverageQuality());
       }
       #endregion
       RegisterEventHandlers();
@@ -400,8 +400,34 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     private void UpdateParameterValues() {
-      LowerBound = new DoubleValue(GilmoreLawlerBoundCalculator.CalculateLowerBound(Weights, Distances));
-      AverageQuality = new DoubleValue(Weights.Average() * Distances.Average() * Weights.Rows * Weights.Rows);
+      Permutation lbSolution;
+      // calculate the optimum of a LAP relaxation and use it as lower bound of our QAP
+      LowerBound = new DoubleValue(GilmoreLawlerBoundCalculator.CalculateLowerBound(Weights, Distances, out lbSolution));
+      // evalute the LAP optimal solution as if it was a QAP solution
+      var lbSolutionQuality = QAPEvaluator.Apply(lbSolution, Weights, Distances);
+      // in case both qualities are the same it means that the LAP optimum is also a QAP optimum
+      if (LowerBound.Value.IsAlmost(lbSolutionQuality)) {
+        BestKnownSolution = lbSolution;
+        BestKnownQuality = new DoubleValue(LowerBound.Value);
+      }
+      AverageQuality = new DoubleValue(ComputeAverageQuality());
+    }
+
+    private double ComputeAverageQuality() {
+      double rt = 0, rd = 0, wt = 0, wd = 0;
+      int n = Weights.Rows;
+      for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++) {
+          if (i == j) {
+            rd += Distances[i, i];
+            wd += Weights[i, i];
+          } else {
+            rt += Distances[i, j];
+            wt += Weights[i, j];
+          }
+        }
+
+      return rt * wt / (n * (n - 1)) + rd * wd / n;
     }
     #endregion
 

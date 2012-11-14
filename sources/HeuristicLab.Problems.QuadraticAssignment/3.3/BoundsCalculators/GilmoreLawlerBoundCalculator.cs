@@ -21,11 +21,17 @@
 
 using System;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Problems.LinearAssignment;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   public static class GilmoreLawlerBoundCalculator {
     public static double CalculateLowerBound(DoubleMatrix weights, DoubleMatrix distances) {
+      Permutation tmp;
+      return CalculateLowerBound(weights, distances, out tmp);
+    }
+
+    public static double CalculateLowerBound(DoubleMatrix weights, DoubleMatrix distances, out Permutation solution) {
       int N = weights.Rows;
       DoubleMatrix sortedWeights = SortEachRowExceptDiagonal(weights), sortedDistances = SortEachRowExceptDiagonal(distances);
 
@@ -39,7 +45,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       }
 
       double result;
-      LinearAssignmentProblemSolver.Solve(costs, out result);
+      solution = new Permutation(PermutationTypes.Absolute, LinearAssignmentProblemSolver.Solve(costs, out result));
       return result;
     }
 
