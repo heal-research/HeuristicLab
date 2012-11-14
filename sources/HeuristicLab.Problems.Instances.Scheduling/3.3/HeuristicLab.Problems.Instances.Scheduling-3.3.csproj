@@ -105,7 +105,7 @@
       <HintPath>..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369">
       <HintPath>..\bin\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
