@@ -293,7 +293,8 @@ namespace HeuristicLab.Clients.Hive {
         this.alreadyUploadedPlugins.Add(configFilePlugin);
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (refreshableJob.RefreshAutomatically) refreshableJob.StartResultPolling();
+        refreshableJob.RefreshAutomatically = true;
+        refreshableJob.StartResultPolling();
 
         // upload tasks
         refreshableJob.Progress.Status = "Uploading tasks...";

@@ -188,7 +188,7 @@ namespace HeuristicLab.Clients.Hive {
 
     #region Constructors and Cloning
     public RefreshableJob() {
-      this.refreshAutomatically = true;
+      this.refreshAutomatically = false;
       this.Job = new Job();
       this.log = new ThreadSafeLog();
       this.jobDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);

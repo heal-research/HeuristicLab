@@ -44,6 +44,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private Progress progress;
     private ProgressView progressView;
     private HiveResourceSelectorDialog hiveResourceSelectorDialog;
+    private bool SuppressEvents { get; set; }
 
     public new RefreshableJob Content {
       get { return (RefreshableJob)base.Content; }
@@ -121,22 +122,28 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        nameTextBox.Text = string.Empty;
-        executionTimeTextBox.Text = string.Empty;
-        resourceNamesTextBox.Text = string.Empty;
-        isPrivilegedCheckBox.Checked = false;
-        logView.Content = null;
-        refreshAutomaticallyCheckBox.Checked = false;
-        runCollectionViewHost.Content = null;
-      } else {
-        nameTextBox.Text = Content.Job.Name;
-        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
-        resourceNamesTextBox.Text = Content.Job.ResourceNames;
-        isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
-        refreshAutomaticallyCheckBox.Checked = Content.RefreshAutomatically;
-        logView.Content = Content.Log;
-        runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+      SuppressEvents = true;
+      try {
+        if (Content == null) {
+          nameTextBox.Text = string.Empty;
+          executionTimeTextBox.Text = string.Empty;
+          resourceNamesTextBox.Text = string.Empty;
+          isPrivilegedCheckBox.Checked = false;
+          logView.Content = null;
+          refreshAutomaticallyCheckBox.Checked = false;
+          runCollectionViewHost.Content = null;
+        } else {
+          nameTextBox.Text = Content.Job.Name;
+          executionTimeTextBox.Text = Content.ExecutionTime.ToString();
+          resourceNamesTextBox.Text = Content.Job.ResourceNames;
+          isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
+          refreshAutomaticallyCheckBox.Checked = Content.RefreshAutomatically;
+          logView.Content = Content.Log;
+          runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+        }
+      }
+      finally {
+        SuppressEvents = false;
       }
       hiveExperimentPermissionListView.Content = null; // has to be filled by refresh button
       Content_JobStatisticsChanged(this, EventArgs.Empty);
@@ -427,11 +434,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void refreshAutomaticallyCheckBox_CheckedChanged(object sender, EventArgs e) {
-      if (Content != null) Content.RefreshAutomatically = refreshAutomaticallyCheckBox.Checked;
+      if (Content != null && !SuppressEvents) Content.RefreshAutomatically = refreshAutomaticallyCheckBox.Checked;
     }
 
     private void isPrivilegedCheckBox_Validated(object sender, EventArgs e) {
-      if (Content != null) Content.Job.IsPrivileged = isPrivilegedCheckBox.Checked;
+      if (Content != null && !SuppressEvents) Content.Job.IsPrivileged = isPrivilegedCheckBox.Checked;
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {
