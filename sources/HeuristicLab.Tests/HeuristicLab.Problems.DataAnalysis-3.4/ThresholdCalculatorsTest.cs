@@ -78,8 +78,9 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
 
       {
         // constant output values for all classes
-        double[] estimatedValues = new double[] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
-        double[] targetClassValues = new double[] { 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
+        // most frequent class is 0
+        double[] estimatedValues = new double[] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+        double[] targetClassValues = new double[] { 2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0 };
         double[] classValues;
         double[] thresholds;
         NormalDistributionCutPointsThresholdCalculator.CalculateThresholds(null, estimatedValues, targetClassValues,
@@ -178,8 +179,8 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
                                                                            out classValues, out thresholds);
 
 
-        var expectedClassValues = new double[] { 2.0, 1.0, 2.0, 3.0 };
-        var expectedTresholds = new double[] { double.NegativeInfinity, -18.365068542315438, 1.6573010498191565, 2.314962133866949 };
+        var expectedClassValues = new double[] { 3.0, 1.0, 2.0, 3.0 };
+        var expectedTresholds = new double[] { double.NegativeInfinity, -18.36483129043598, 1.6574168546810319, 2.3148463106026012 };
 
         AssertEqual(expectedClassValues, classValues);
         AssertEqual(expectedTresholds, thresholds);

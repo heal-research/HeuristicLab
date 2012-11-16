@@ -94,24 +94,27 @@ namespace HeuristicLab.Problems.DataAnalysis {
       thresholdList.Sort();
 
       // add small value and large value for the calculation of most influential class in each thresholded section
-      thresholdList.Insert(0, estimatedValues.Min() - 1);
-      thresholdList.Add(estimatedValues.Max() + 1);
+      thresholdList.Insert(0, double.NegativeInfinity);
+      thresholdList.Add(double.PositiveInfinity);
 
       // determine class values for each partition separated by a threshold by calculating the density of all class distributions
       // all points in the partition are classified as the class with the maximal density in the parition
-      List<double> classValuesList = new List<double>();
       if (thresholdList.Count == 2) {
         // this happens if there are no thresholds (distributions for all classes are exactly the same)
         // -> all samples should be classified as the class with the most observations
         // group observations by target class and select the class with largest count 
-        classValuesList.Add(targetClassValues.GroupBy(c => c)
-          .OrderBy(g => g.Count())
-          .Last().Key);
+        double mostFrequentClass = targetClassValues.GroupBy(c => c)
+                              .OrderBy(g => g.Count())
+                              .Last().Key;
+        thresholds = new double[] { double.NegativeInfinity };
+        classValues = new double[] { mostFrequentClass };
       } else {
+
         // at least one reasonable threshold ...
         // find the most likely class for the points between thresholds m
+        List<double> filteredThresholds = new List<double>();
+        List<double> filteredClassValues = new List<double>();
         for (int i = 0; i < thresholdList.Count - 1; i++) {
-
           // determine class with maximal density mass between the thresholds
           double maxDensity = DensityMass(thresholdList[i], thresholdList[i + 1], classMean[originalClasses[0]], classStdDev[originalClasses[0]]);
           double maxDensityClassValue = originalClasses[0];
@@ -122,49 +125,55 @@ namespace HeuristicLab.Problems.DataAnalysis {
               maxDensityClassValue = classValue;
             }
           }
-          classValuesList.Add(maxDensityClassValue);
+          if (maxDensity > double.NegativeInfinity &&
+            (filteredClassValues.Count == 0 || !maxDensityClassValue.IsAlmost(filteredClassValues.Last()))) {
+            filteredThresholds.Add(thresholdList[i]);
+            filteredClassValues.Add(maxDensityClassValue);
+          }
         }
+        thresholds = filteredThresholds.ToArray();
+        classValues = filteredClassValues.ToArray();
       }
-
-      // only keep thresholds at which the class changes 
-      // class B overrides threshold s. So only thresholds r and t are relevant and have to be kept
-      // 
-      //      A    B  C
-      //       /\  /\/\        
-      //      / r\/ /\t\       
-      //     /   /\/  \ \      
-      //    /   / /\s  \ \     
-      //  -/---/-/ -\---\-\----
-
-      List<double> filteredThresholds = new List<double>();
-      List<double> filteredClassValues = new List<double>();
-      filteredThresholds.Add(double.NegativeInfinity); // the smallest possible threshold for the first class
-      filteredClassValues.Add(classValuesList[0]);
-      // do not include the last threshold which was just needed for the previous step
-      for (int i = 0; i < classValuesList.Count - 1; i++) {
-        if (!classValuesList[i].IsAlmost(classValuesList[i + 1])) {
-          filteredThresholds.Add(thresholdList[i + 1]);
-          filteredClassValues.Add(classValuesList[i + 1]);
-        }
-      }
-      thresholds = filteredThresholds.ToArray();
-      classValues = filteredClassValues.ToArray();
     }
 
-    private static double NormalCDF(double mu, double sigma, double x) {
-      return 0.5 * (1 + alglib.normaldistr.errorfunction((x - mu) / (sigma * Math.Sqrt(2.0))));
+    private static double sqr2 = Math.Sqrt(2.0);
+    // returns the density function of the standard normal distribution at x
+    private static double NormalCDF(double x) {
+      return 0.5 * (1 + alglib.errorfunction(x / sqr2));
+    }
+
+    // approximation of the log of the normal cummulative distribution from the lightspeed toolbox by Tom Minka
+    // http://research.microsoft.com/en-us/um/people/minka/software/lightspeed/
+    private static double[] c = new double[] { -1, 5 / 2.0, -37 / 3.0, 353 / 4.0, -4081 / 5.0, 55205 / 6.0, -854197 / 7.0 };
+    private static double LogNormalCDF(double x) {
+      if (x >= -6.5)
+        // calculate the log directly if x is large enough
+        return Math.Log(NormalCDF(x));
+      else {
+        double z = Math.Pow(x, -2);
+        // asymptotic series for logcdf
+        double y = z * (c[0] + z * (c[1] + z * (c[2] + z * (c[3] + z * (c[4] + z * (c[5] + z * c[6]))))));
+        return y - 0.5 * Math.Log(2 * Math.PI) - 0.5 * x * x - Math.Log(-x);
+      }
     }
 
     // determines the value NormalCDF(mu,sigma, upper)  - NormalCDF(mu, sigma, lower)
     // = the integral of the PDF of N(mu, sigma) in the range [lower, upper]
     private static double DensityMass(double lower, double upper, double mu, double sigma) {
       if (sigma.IsAlmost(0.0)) {
-        if (lower < mu && mu < upper) return 1.0; // all mass is between lower and upper
-        else return 0; // no mass is between lower and upper
+        if (lower < mu && mu < upper) return 0.0; // all mass is between lower and upper
+        else return double.NegativeInfinity; // no mass is between lower and upper
       }
 
-      if (double.IsNegativeInfinity(lower)) return NormalCDF(mu, sigma, upper);
-      else return NormalCDF(mu, sigma, upper) - NormalCDF(mu, sigma, lower);
+      if (lower > mu) {
+        return DensityMass(-upper, -lower, -mu, sigma);
+      }
+
+      upper = (upper - mu) / sigma;
+      lower = (lower - mu) / sigma;
+      if (double.IsNegativeInfinity(lower)) return LogNormalCDF(upper);
+
+      return LogNormalCDF(upper) + Math.Log(1 - Math.Exp(LogNormalCDF(lower) - LogNormalCDF(upper)));
     }
 
     // Calculates the points x1 and x2 where the distributions N(m1, s1) == N(m2,s2). 
@@ -196,12 +205,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
         } else {
           // general case
           // calculate the solutions x1, x2 where N(m1,s1) == N(m2,s2)
-          double a = (s1 + s2) * (s1 - s2);
-          double g = Math.Sqrt(s1 * s1 * s2 * s2 * ((m1 - m2) * (m1 - m2) + 2.0 * (s1 * s1 + s2 * s2) * Math.Log(s2 / s1)));
-          double m1s2 = m1 * s2 * s2;
-          double m2s1 = m2 * s1 * s1;
-          x1 = (m2s1 - m1s2 - g) / a;
-          x2 = (m2s1 - m1s2 + g) / a;
+          double g = Math.Sqrt(2 * s2 * s2 * Math.Log(s2 / s1) - 2 * s1 * s1 * Math.Log(s2 / s1) - 2 * m1 * m2 + m1 * m1 + m2 * m2);
+          double s = (s1 * s1 - s2 * s2);
+          x1 =  (m2 * s1 * s1 - m1 * s2 * s2 + s1 * s2 * g) / s;
+          x2 = -(m1 * s2 * s2 - m2 * s1 * s1 + s1 * s2 * g) / s;
         }
       }
     }
