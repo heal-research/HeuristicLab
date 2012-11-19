@@ -182,20 +182,13 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     }
 
     public virtual double GetDistance(int start, int end, IVRPEncoding solution) {
-      double distance = 0.0;
       if (distanceMatrix == null && UseDistanceMatrix.Value) {
-        if (DistanceMatrix != null)
-          distanceMatrix = DistanceMatrix;
-        else
-          distanceMatrix = DistanceMatrix = CreateDistanceMatrix();
+        if (DistanceMatrix == null) DistanceMatrix = CreateDistanceMatrix();
+        distanceMatrix = DistanceMatrix;
       }
 
-      if (distanceMatrix != null)
-        distance = distanceMatrix[start, end];
-      else
-        distance = CalculateDistance(start, end);
-
-      return distance;
+      if (distanceMatrix != null) return distanceMatrix[start, end];
+      return CalculateDistance(start, end);
     }
 
     public virtual double GetInsertionDistance(int start, int customer, int end, IVRPEncoding solution,
