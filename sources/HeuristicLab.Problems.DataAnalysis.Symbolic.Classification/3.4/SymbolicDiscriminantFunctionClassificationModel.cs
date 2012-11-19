@@ -87,7 +87,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public void SetThresholdsAndClassValues(IEnumerable<double> thresholds, IEnumerable<double> classValues) {
       var classValuesArr = classValues.ToArray();
       var thresholdsArr = thresholds.ToArray();
-      if (thresholdsArr.Length != classValuesArr.Length) throw new ArgumentException();
+      if (thresholdsArr.Length != classValuesArr.Length || thresholdsArr.Length < 1) 
+        throw new ArgumentException();
+      if (!double.IsNegativeInfinity(thresholds.First())) 
+        throw new ArgumentException();
 
       this.classValues = classValuesArr;
       this.thresholds = thresholdsArr;

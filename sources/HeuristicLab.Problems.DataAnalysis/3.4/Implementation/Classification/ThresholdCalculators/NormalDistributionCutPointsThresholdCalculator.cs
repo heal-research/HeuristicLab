@@ -70,6 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           classStdDev[classValue] = Math.Sqrt(variance);
         }
       }
+
       double[] originalClasses = classMean.Keys.OrderBy(x => x).ToArray();
       int nClasses = originalClasses.Length;
       List<double> thresholdList = new List<double>();
@@ -97,43 +98,42 @@ namespace HeuristicLab.Problems.DataAnalysis {
       thresholdList.Insert(0, double.NegativeInfinity);
       thresholdList.Add(double.PositiveInfinity);
 
-      // determine class values for each partition separated by a threshold by calculating the density of all class distributions
-      // all points in the partition are classified as the class with the maximal density in the parition
-      if (thresholdList.Count == 2) {
+
+      // find the most likely class for the points between thresholds m
+      List<double> filteredThresholds = new List<double>();
+      List<double> filteredClassValues = new List<double>();
+      for (int i = 0; i < thresholdList.Count - 1; i++) {
+        // determine class with maximal density mass between the thresholds
+        double maxDensity = DensityMass(thresholdList[i], thresholdList[i + 1], classMean[originalClasses[0]], classStdDev[originalClasses[0]]);
+        double maxDensityClassValue = originalClasses[0];
+        foreach (var classValue in originalClasses.Skip(1)) {
+          double density = DensityMass(thresholdList[i], thresholdList[i + 1], classMean[classValue], classStdDev[classValue]);
+          if (density > maxDensity) {
+            maxDensity = density;
+            maxDensityClassValue = classValue;
+          }
+        }
+        if (maxDensity > double.NegativeInfinity &&
+          (filteredClassValues.Count == 0 || !maxDensityClassValue.IsAlmost(filteredClassValues.Last()))) {
+          filteredThresholds.Add(thresholdList[i]);
+          filteredClassValues.Add(maxDensityClassValue);
+        }
+      }
+
+      if (filteredThresholds.Count == 0 || !double.IsNegativeInfinity(filteredThresholds.First())) {
         // this happens if there are no thresholds (distributions for all classes are exactly the same)
+        // or when the CDF up to the first threshold is zero
         // -> all samples should be classified as the class with the most observations
         // group observations by target class and select the class with largest count 
         double mostFrequentClass = targetClassValues.GroupBy(c => c)
                               .OrderBy(g => g.Count())
                               .Last().Key;
-        thresholds = new double[] { double.NegativeInfinity };
-        classValues = new double[] { mostFrequentClass };
-      } else {
-
-        // at least one reasonable threshold ...
-        // find the most likely class for the points between thresholds m
-        List<double> filteredThresholds = new List<double>();
-        List<double> filteredClassValues = new List<double>();
-        for (int i = 0; i < thresholdList.Count - 1; i++) {
-          // determine class with maximal density mass between the thresholds
-          double maxDensity = DensityMass(thresholdList[i], thresholdList[i + 1], classMean[originalClasses[0]], classStdDev[originalClasses[0]]);
-          double maxDensityClassValue = originalClasses[0];
-          foreach (var classValue in originalClasses.Skip(1)) {
-            double density = DensityMass(thresholdList[i], thresholdList[i + 1], classMean[classValue], classStdDev[classValue]);
-            if (density > maxDensity) {
-              maxDensity = density;
-              maxDensityClassValue = classValue;
-            }
-          }
-          if (maxDensity > double.NegativeInfinity &&
-            (filteredClassValues.Count == 0 || !maxDensityClassValue.IsAlmost(filteredClassValues.Last()))) {
-            filteredThresholds.Add(thresholdList[i]);
-            filteredClassValues.Add(maxDensityClassValue);
-          }
-        }
-        thresholds = filteredThresholds.ToArray();
-        classValues = filteredClassValues.ToArray();
+        filteredThresholds.Insert(0, double.NegativeInfinity);
+        filteredClassValues.Insert(0, mostFrequentClass);
       }
+
+      thresholds = filteredThresholds.ToArray();
+      classValues = filteredClassValues.ToArray();
     }
 
     private static double sqr2 = Math.Sqrt(2.0);
@@ -207,7 +207,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
           // calculate the solutions x1, x2 where N(m1,s1) == N(m2,s2)
           double g = Math.Sqrt(2 * s2 * s2 * Math.Log(s2 / s1) - 2 * s1 * s1 * Math.Log(s2 / s1) - 2 * m1 * m2 + m1 * m1 + m2 * m2);
           double s = (s1 * s1 - s2 * s2);
-          x1 =  (m2 * s1 * s1 - m1 * s2 * s2 + s1 * s2 * g) / s;
+          x1 = (m2 * s1 * s1 - m1 * s2 * s2 + s1 * s2 * g) / s;
           x2 = -(m1 * s2 * s2 - m2 * s1 * s1 + s1 * s2 * g) / s;
         }
       }
