@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,13 +19,17 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.log4net {
-  [Plugin("HeuristicLab.log4net", "1.2.10.0")]
-  [PluginFile("HeuristicLab.log4net-1.2.10.0.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.Log4net {
+  [Plugin("HeuristicLab.Log4net", "HeuristicLab wrapper for Apache log4net™", "1.2.11.$WCREV$")]
+  [PluginFile("HeuristicLab.Log4net-1.2.11.0.dll", PluginFileType.Assembly)]
   [PluginFile("log4net.dll", PluginFileType.Assembly)]
   [PluginFile("log4net License.txt", PluginFileType.License)]
-  public class Plugin : PluginBase {
+  public class HeuristicLabLog4netPlugin : PluginBase {
   }
 }
