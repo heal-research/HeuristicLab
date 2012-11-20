@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -59,7 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      return Util.ScalarProd(x, i, xt, j);
+      return Util.ScalarProd(x, i, xt, j, 1.0 , columnIndices);
     }
   }
 }
