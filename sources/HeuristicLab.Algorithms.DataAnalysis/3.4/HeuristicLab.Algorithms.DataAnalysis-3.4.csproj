@@ -119,36 +119,36 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
-    <Compile Include="GaussianProcess\CovarianceMask.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceConst.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceLinear.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceLinearArd.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceMask.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceMaternIso.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceNoise.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePeriodic.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceProduct.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceRationalQuadraticArd.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceRationalQuadraticIso.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceScale.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSquaredExponentialArd.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSquaredExponentialIso.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSum.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassificationSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassificationModelCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassification.cs" />
-    <Compile Include="GaussianProcess\CovarianceProduct.cs" />
-    <Compile Include="GaussianProcess\CovarianceScale.cs" />
-    <Compile Include="GaussianProcess\CovarianceRationalQuadraticArd.cs" />
-    <Compile Include="GaussianProcess\CovarianceRationalQuadraticIso.cs" />
-    <Compile Include="GaussianProcess\CovarianceSquaredExponentialArd.cs" />
-    <Compile Include="GaussianProcess\CovarianceSquaredExponentialIso.cs" />
     <Compile Include="GaussianProcess\HyperParameter.cs" />
-    <Compile Include="GaussianProcess\CovarianceMaternIso.cs" />
-    <Compile Include="GaussianProcess\CovarianceLinearArd.cs" />
-    <Compile Include="GaussianProcess\CovarianceNoise.cs" />
-    <Compile Include="GaussianProcess\CovarianceConst.cs" />
-    <Compile Include="GaussianProcess\MeanProduct.cs" />
-    <Compile Include="GaussianProcess\MeanSum.cs" />
-    <Compile Include="GaussianProcess\CovarianceSum.cs" />
-    <Compile Include="GaussianProcess\CovariancePeriodic.cs" />
+    <Compile Include="GaussianProcess\MeanFunctions\MeanConst.cs" />
+    <Compile Include="GaussianProcess\MeanFunctions\MeanLinear.cs" />
+    <Compile Include="GaussianProcess\MeanFunctions\MeanProduct.cs" />
+    <Compile Include="GaussianProcess\MeanFunctions\MeanSum.cs" />
+    <Compile Include="GaussianProcess\MeanFunctions\MeanZero.cs" />
     <Compile Include="GaussianProcess\GaussianProcessHyperparameterInitializer.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionModelCreator.cs" />
-    <Compile Include="GaussianProcess\CovarianceLinear.cs" />
     <Compile Include="GaussianProcess\GaussianProcessModelCreator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GaussianProcess\MeanLinear.cs" />
     <Compile Include="GaussianProcess\Util.cs" />
-    <Compile Include="GaussianProcess\MeanZero.cs" />
-    <Compile Include="GaussianProcess\MeanConst.cs" />
     <Compile Include="GaussianProcess\IMeanFunction.cs" />
     <Compile Include="GaussianProcess\GaussianProcessModel.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegression.cs" />
