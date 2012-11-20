@@ -47,8 +47,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static double SqrDist(double[,] x, int i, double[,] xt, int j, double scale = 1.0, IEnumerable<int> columnIndices = null) {
       double ss = 0.0;
       if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
-      foreach (int k in columnIndices) {
-        double d = x[i, k] - xt[j, k];
+      foreach (int columnIndex in columnIndices) {
+        double d = x[i, columnIndex] - xt[j, columnIndex];
         ss += d * d;
       }
       return scale * scale * ss;
@@ -62,11 +62,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double ss = 0.0;
       if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
       int scaleIndex = 0;
-      foreach (int k in columnIndices) {
-        double d = x[i, k] - xt[j, k];
+      foreach (int columnIndex in columnIndices) {
+        double d = x[i, columnIndex] - xt[j, columnIndex];
         ss += d * d * scale[scaleIndex] * scale[scaleIndex];
         scaleIndex++;
       }
+      // must be at the end of scale after iterating over columnIndices
+      if (scaleIndex != scale.Length)
+        throw new ArgumentException("Lengths of scales and covariance functions does not match.");
       return ss;
     }
     public static double ScalarProd(double[,] x, int i, int j, double scale = 1.0, IEnumerable<int> columnIndices = null) {
@@ -76,8 +79,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static double ScalarProd(double[,] x, int i, double[,] xt, int j, double scale = 1.0, IEnumerable<int> columnIndices = null) {
       double sum = 0.0;
       if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
-      foreach (int k in columnIndices) {
-        sum += x[i, k] * xt[j, k];
+      foreach (int columnIndex in columnIndices) {
+        sum += x[i, columnIndex] * xt[j, columnIndex];
       }
       return scale * scale * sum;
     }
@@ -89,10 +92,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double sum = 0.0;
       if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
       int scaleIndex = 0;
-      foreach (int k in columnIndices) {
-        sum += x[i, k] * scale[scaleIndex] * xt[j, k] * scale[scaleIndex];
+      foreach (int columnIndex in columnIndices) {
+        sum += x[i, columnIndex] * scale[scaleIndex] * xt[j, columnIndex] * scale[scaleIndex];
         scaleIndex++;
       }
+      // must be at the end of scale after iterating over columnIndices
+      if (scaleIndex != scale.Length)
+        throw new ArgumentException("Lengths of scales and covariance functions does not match.");
+
       return sum;
     }
 

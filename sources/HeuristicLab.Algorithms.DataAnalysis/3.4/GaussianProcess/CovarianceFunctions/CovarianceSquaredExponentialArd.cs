@@ -121,10 +121,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength, columnIndices);
-
+      int k = 0;
       foreach (var columnIndex in columnIndices) {
-        double sqrDist = Util.SqrDist(x[i, columnIndex] * inverseLength[columnIndex], x[j, columnIndex] * inverseLength[columnIndex]);
+        double sqrDist = Util.SqrDist(x[i, columnIndex] * inverseLength[k], x[j, columnIndex] * inverseLength[k]);
         yield return sf2 * Math.Exp(-d / 2.0) * sqrDist;
+        k++;
       }
 
       yield return 2.0 * sf2 * Math.Exp(-d / 2.0);

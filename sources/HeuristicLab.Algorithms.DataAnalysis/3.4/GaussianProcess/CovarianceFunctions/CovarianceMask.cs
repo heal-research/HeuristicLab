@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -110,14 +111,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      // cov mask overwrites the previously selected columnIndices 
+      // -> stacking of CovarianceMask is not supported
+      if (columnIndices != null && columnIndices.Count() != x.GetLength(1))
+        throw new InvalidOperationException("Stacking of masking covariance functions is not supported.");
+
       return cov.GetCovariance(x, i, j, selectedDimensions);
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      if (columnIndices != null && columnIndices.Count() != x.GetLength(1))
+        throw new InvalidOperationException("Stacking of masking covariance functions is not supported.");
+
       return cov.GetGradient(x, i, j, selectedDimensions);
     }
 
     public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+      if (columnIndices != null && columnIndices.Count() != x.GetLength(1))
+        throw new InvalidOperationException("Stacking of masking covariance functions is not supported.");
+
       return cov.GetCrossCovariance(x, xt, i, j, selectedDimensions);
     }
   }
