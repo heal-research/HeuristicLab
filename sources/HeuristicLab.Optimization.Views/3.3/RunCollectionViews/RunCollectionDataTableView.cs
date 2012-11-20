@@ -219,55 +219,13 @@ namespace HeuristicLab.Optimization.Views {
       dataRowComboBox.Items.AddRange(rowNames);
       dataRowComboBox.Items.Add(AllDataRows);
       if (dataRowComboBox.Items.Count > 0) dataRowComboBox.SelectedItem = dataRowComboBox.Items[0];
-      groupByComboBox.SelectedItem = groupByComboBox.Items[0];
     }
 
     private void dataTableComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
       UpdateDataRowComboBox();
     }
     private void dataRowComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
-      //      RebuildCombinedDataTable();
-      groupByComboBox_SelectedIndexChanged(sender, e);
-    }
-    private void groupByComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
-      var resultName = (string)dataTableComboBox.SelectedItem;
-      var groupByCriteriaName = (string)groupByComboBox.SelectedItem;
-      switch (groupByCriteriaName) {
-        case ("None"): {
-            combinedDataTable.Rows.Clear();
-            RebuildCombinedDataTable();
-            break;
-          }
-        case ("Same runs"): {
-            var rowName = (string)dataRowComboBox.SelectedItem;
-            var runGroups = Content.GroupBy(r => r.Algorithm);
-            combinedDataTable.Rows.Clear();
-            foreach (var g in runGroups) {
-              var dataTable = g.Select(r => r.Results[resultName] as DataTable);
-              var rows = dataTable.SelectMany(d => d.Rows.Where(row => row.Name == rowName)).ToList();
-              var avgRow = new DataRow { VisualProperties = { StartIndexZero = true }, Name = resultName + "." + rowName };
-              var min = rows.Min(r => r.Values.Count);
-              for (int i = 0; i != min; ++i) {
-                avgRow.Values.Add(rows.Average(r => r.Values[i]));
-              }
-              combinedDataTable.Rows.Add(avgRow);
-            }
-            break;
-          }
-        case ("All"): {
-            var rowName = (string)dataRowComboBox.SelectedItem;
-            RebuildCombinedDataTable();
-            var rows = combinedDataTable.Rows;
-            var avgRow = new DataRow { VisualProperties = { StartIndexZero = true }, Name = resultName + "." + rowName };
-            var min = rows.Min(r => r.Values.Count);
-            for (int i = 0; i != min; ++i) {
-              avgRow.Values.Add(rows.Average(r => r.Values[i]));
-            }
-            combinedDataTable.Rows.Clear();
-            combinedDataTable.Rows.Add(avgRow);
-            break;
-          }
-      }
+      RebuildCombinedDataTable();
     }
   }
 }

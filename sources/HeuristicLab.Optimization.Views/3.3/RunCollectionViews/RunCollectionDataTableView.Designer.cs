@@ -48,13 +48,11 @@ namespace HeuristicLab.Optimization.Views {
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.label2 = new System.Windows.Forms.Label();
       this.dataRowComboBox = new System.Windows.Forms.ComboBox();
-      this.label3 = new System.Windows.Forms.Label();
-      this.groupByComboBox = new System.Windows.Forms.ComboBox();
       this.SuspendLayout();
       // 
       // dataTableComboBox
       // 
-      this.dataTableComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.dataTableComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.dataTableComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.dataTableComboBox.FormattingEnabled = true;
@@ -75,8 +73,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // viewHost
       // 
-      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Caption = "View";
       this.viewHost.Content = null;
@@ -100,7 +98,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // dataRowComboBox
       // 
-      this.dataRowComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.dataRowComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.dataRowComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.dataRowComboBox.FormattingEnabled = true;
@@ -110,36 +108,10 @@ namespace HeuristicLab.Optimization.Views {
       this.dataRowComboBox.TabIndex = 4;
       this.dataRowComboBox.SelectedIndexChanged += new System.EventHandler(this.dataRowComboBox_SelectedIndexChanged);
       // 
-      // label3
-      // 
-      this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(3, 61);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(53, 13);
-      this.label3.TabIndex = 5;
-      this.label3.Text = "Grouping:";
-      // 
-      // groupByComboBox
-      // 
-      this.groupByComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.groupByComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.groupByComboBox.FormattingEnabled = true;
-      this.groupByComboBox.Items.AddRange(new object[] {
-            "None",
-            "Same runs",
-            "All"});
-      this.groupByComboBox.Location = new System.Drawing.Point(69, 58);
-      this.groupByComboBox.Name = "groupByComboBox";
-      this.groupByComboBox.Size = new System.Drawing.Size(455, 21);
-      this.groupByComboBox.TabIndex = 6;
-      this.groupByComboBox.SelectedIndexChanged += new System.EventHandler(this.groupByComboBox_SelectedIndexChanged);
-      // 
       // RunCollectionDataTableView
       // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Controls.Add(this.groupByComboBox);
-      this.Controls.Add(this.label3);
       this.Controls.Add(this.dataRowComboBox);
       this.Controls.Add(this.label2);
       this.Controls.Add(this.viewHost);
@@ -159,7 +131,5 @@ namespace HeuristicLab.Optimization.Views {
     private MainForm.WindowsForms.ViewHost viewHost;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.ComboBox dataRowComboBox;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.ComboBox groupByComboBox;
   }
 }
