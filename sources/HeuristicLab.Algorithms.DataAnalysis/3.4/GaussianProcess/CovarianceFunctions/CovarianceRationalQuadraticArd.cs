@@ -142,12 +142,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+      if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength, columnIndices);
       double b = 1 + 0.5 * d / shape;
-      for (int k = 0; k < inverseLength.Length; k++) {
-        yield return sf2 * Math.Pow(b, -shape - 1) * Util.SqrDist(x[i, k] * inverseLength[k], x[j, k] * inverseLength[k]);
+      foreach (var columnIndex in columnIndices) {
+        yield return sf2 * Math.Pow(b, -shape - 1) * Util.SqrDist(x[i, columnIndex] * inverseLength[columnIndex], x[j, columnIndex] * inverseLength[columnIndex]);
       }
       yield return 2 * sf2 * Math.Pow(b, -shape);
       yield return sf2 * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b));
