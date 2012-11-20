@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// </remarks>
   [Item("DuplicatesSelector", "A selection operator which considers a single solution representation and selects duplicates. The remaining scope then contains unique solutions and the selected scope their duplicates.")]
   [StorableClass]
-  public sealed class DuplicatesSelector : SingleObjectiveSelector, ISimilarityBasedOperator {
+  public sealed class DuplicatesSelector : SingleObjectiveSelector, ISingleObjectiveSelector, ISimilarityBasedOperator {
     #region ISimilarityBasedOperator Members
     [Storable]
     public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
