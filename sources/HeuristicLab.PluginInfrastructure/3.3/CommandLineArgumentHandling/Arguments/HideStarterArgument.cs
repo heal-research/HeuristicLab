@@ -26,8 +26,8 @@ namespace HeuristicLab.PluginInfrastructure {
   public class HideStarterArgument : CommandLineArgument<bool> {
     public const string TOKEN = "hideStarter";
 
-    public HideStarterArgument(string value) {
-      Value = string.IsNullOrEmpty(value);
+    public HideStarterArgument(string value)
+      : base(string.IsNullOrEmpty(value)) {
     }
 
     protected override bool CheckValidity() {

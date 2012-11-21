@@ -25,8 +25,12 @@ namespace HeuristicLab.PluginInfrastructure {
   [Serializable]
   public abstract class CommandLineArgument<T> : ICommandLineArgument<T> {
     object ICommandLineArgument.Value { get { return Value; } }
-    public T Value { get; protected set; }
+    public T Value { get; private set; }
     public bool Valid { get { return CheckValidity(); } }
+
+    protected CommandLineArgument(T value) {
+      Value = value;
+    }
 
     public override bool Equals(object obj) {
       if (obj == null || this.GetType() != obj.GetType()) return false;

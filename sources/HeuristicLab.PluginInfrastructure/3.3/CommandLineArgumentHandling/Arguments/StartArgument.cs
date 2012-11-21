@@ -26,8 +26,8 @@ namespace HeuristicLab.PluginInfrastructure {
   public class StartArgument : CommandLineArgument<string> {
     public const string TOKEN = "start";
 
-    public StartArgument(string value) {
-      Value = value;
+    public StartArgument(string value)
+      : base(value) {
     }
 
     protected override bool CheckValidity() {

@@ -25,8 +25,8 @@ using System.IO;
 namespace HeuristicLab.PluginInfrastructure {
   [Serializable]
   public class OpenArgument : CommandLineArgument<string> {
-    public OpenArgument(string value) {
-      Value = value;
+    public OpenArgument(string value)
+      : base(value) {
     }
 
     protected override bool CheckValidity() {
