@@ -108,7 +108,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (value == null) throw new ArgumentNullException();
         allVariableNames.Clear();
         allVariableNames.AddRange(value);
-        VariableNames = value;
       }
     }
 
@@ -167,17 +166,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       multiplicativeWeightManipulatorSigma = 0.03;
       variableNames = new List<string>();
       allVariableNames = new List<string>();
-    }
-
-    protected override void OnChanged(EventArgs e) {
-      if (@Fixed) {
-        weightManipulatorMu = 1;
-        weightManipulatorSigma = 0;
-        weightMu = 1;
-        weightSigma = 0;
-        multiplicativeWeightManipulatorSigma = 0;
-      }
-      base.OnChanged(e);
     }
 
     public override ISymbolicExpressionTreeNode CreateTreeNode() {

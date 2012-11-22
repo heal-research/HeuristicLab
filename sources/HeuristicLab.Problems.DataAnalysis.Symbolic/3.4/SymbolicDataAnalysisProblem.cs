@@ -210,10 +210,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SymbolicExpressionTreeGrammar.MaximumFunctionArguments = MaximumFunctionArguments.Value;
       SymbolicExpressionTreeGrammar.MaximumFunctionDefinitions = MaximumFunctionDefinitions.Value;
       foreach (var varSymbol in SymbolicExpressionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.Variable>()) {
-        if (!varSymbol.Fixed) varSymbol.AllVariableNames = ProblemData.AllowedInputVariables;
+        if (!varSymbol.Fixed) {
+          varSymbol.AllVariableNames = ProblemData.InputVariables.Select(x => x.Value);
+          varSymbol.VariableNames = ProblemData.AllowedInputVariables;
+        }
       }
       foreach (var varSymbol in SymbolicExpressionTreeGrammar.Symbols.OfType<HeuristicLab.Problems.DataAnalysis.Symbolic.VariableCondition>()) {
-        if (!varSymbol.Fixed) varSymbol.AllVariableNames = ProblemData.AllowedInputVariables;
+        if (!varSymbol.Fixed) {
+          varSymbol.AllVariableNames = ProblemData.InputVariables.Select(x => x.Value);
+          varSymbol.VariableNames = ProblemData.AllowedInputVariables;
+        }
       }
     }
 
