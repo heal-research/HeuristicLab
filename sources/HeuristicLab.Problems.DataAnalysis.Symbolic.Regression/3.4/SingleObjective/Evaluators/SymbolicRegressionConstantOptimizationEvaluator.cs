@@ -40,16 +40,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string ConstantOptimizationRowsPercentageParameterName = "ConstantOptimizationRowsPercentage";
     private const string UpdateConstantsInTreeParameterName = "UpdateConstantsInSymbolicExpressionTree";
 
-    private const string EvaluatedTreesResultName = "EvaluatedTrees";
-    private const string EvaluatedTreeNodesResultName = "EvaluatedTreeNodes";
-
-    public ILookupParameter<IntValue> EvaluatedTreesParameter {
-      get { return (ILookupParameter<IntValue>)Parameters[EvaluatedTreesResultName]; }
-    }
-    public ILookupParameter<IntValue> EvaluatedTreeNodesParameter {
-      get { return (ILookupParameter<IntValue>)Parameters[EvaluatedTreeNodesResultName]; }
-    }
-
     public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[ConstantOptimizationIterationsParameterName]; }
     }
@@ -94,14 +84,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
     public SymbolicRegressionConstantOptimizationEvaluator()
       : base() {
-      Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "Determines how many iterations should be calculated while optimizing the constant of a symbolic expression tree (0 indicates other or default stopping criterion).", new IntValue(3), true));
+      Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "Determines how many iterations should be calculated while optimizing the constant of a symbolic expression tree (0 indicates other or default stopping criterion).", new IntValue(10), true));
       Parameters.Add(new FixedValueParameter<DoubleValue>(ConstantOptimizationImprovementParameterName, "Determines the relative improvement which must be achieved in the constant optimization to continue with it (0 indicates other or default stopping criterion).", new DoubleValue(0), true));
       Parameters.Add(new FixedValueParameter<PercentValue>(ConstantOptimizationProbabilityParameterName, "Determines the probability that the constants are optimized", new PercentValue(1), true));
       Parameters.Add(new FixedValueParameter<PercentValue>(ConstantOptimizationRowsPercentageParameterName, "Determines the percentage of the rows which should be used for constant optimization", new PercentValue(1), true));
       Parameters.Add(new FixedValueParameter<BoolValue>(UpdateConstantsInTreeParameterName, "Determines if the constants in the tree should be overwritten by the optimized constants.", new BoolValue(true)));
-
-      Parameters.Add(new LookupParameter<IntValue>(EvaluatedTreesResultName));
-      Parameters.Add(new LookupParameter<IntValue>(EvaluatedTreeNodesResultName));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -115,15 +102,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public override IOperation Apply() {
-      AddResults();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       double quality;
       if (RandomParameter.ActualValue.NextDouble() < ConstantOptimizationProbability.Value) {
         IEnumerable<int> constantOptimizationRows = GenerateRowsToEvaluate(ConstantOptimizationRowsPercentage.Value);
         quality = OptimizeConstants(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue,
            constantOptimizationRows, ApplyLinearScalingParameter.ActualValue.Value, ConstantOptimizationIterations.Value,
-           EstimationLimitsParameter.ActualValue.Upper, EstimationLimitsParameter.ActualValue.Lower, UpdateConstantsInTree,
-          EvaluatedTreesParameter.ActualValue, EvaluatedTreeNodesParameter.ActualValue);
+           EstimationLimitsParameter.ActualValue.Upper, EstimationLimitsParameter.ActualValue.Lower, UpdateConstantsInTree);
+
         if (ConstantOptimizationRowsPercentage.Value != RelativeNumberOfEvaluatedSamplesParameter.ActualValue.Value) {
           var evaluationRows = GenerateRowsToEvaluate();
           quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows, ApplyLinearScalingParameter.ActualValue.Value);
@@ -133,33 +119,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, evaluationRows, ApplyLinearScalingParameter.ActualValue.Value);
       }
       QualityParameter.ActualValue = new DoubleValue(quality);
-      lock (locker) {
-        EvaluatedTreesParameter.ActualValue.Value += 1;
-        EvaluatedTreeNodesParameter.ActualValue.Value += solution.Length;
-      }
 
       if (Successor != null)
         return ExecutionContext.CreateOperation(Successor);
       else
         return null;
-    }
-
-    private object locker = new object();
-    private void AddResults() {
-      lock (locker) {
-        if (EvaluatedTreesParameter.ActualValue == null) {
-          var scope = ExecutionContext.Scope;
-          while (scope.Parent != null)
-            scope = scope.Parent;
-          scope.Variables.Add(new Core.Variable(EvaluatedTreesResultName, new IntValue()));
-        }
-        if (EvaluatedTreeNodesParameter.ActualValue == null) {
-          var scope = ExecutionContext.Scope;
-          while (scope.Parent != null)
-            scope = scope.Parent;
-          scope.Variables.Add(new Core.Variable(EvaluatedTreeNodesResultName, new IntValue()));
-        }
-      }
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
@@ -203,7 +167,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
 
     public static double OptimizeConstants(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree tree, IRegressionProblemData problemData,
-      IEnumerable<int> rows, bool applyLinearScaling, int maxIterations, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, bool updateConstantsInTree = true, IntValue evaluatedTrees = null, IntValue evaluatedTreeNodes = null) {
+      IEnumerable<int> rows, bool applyLinearScaling, int maxIterations, double upperEstimationLimit = double.MaxValue, double lowerEstimationLimit = double.MinValue, bool updateConstantsInTree = true) {
 
       List<AutoDiff.Variable> variables = new List<AutoDiff.Variable>();
       List<AutoDiff.Variable> parameters = new List<AutoDiff.Variable>();
@@ -233,6 +197,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
             c[i++] = variableTreeNode.Weight;
         }
       }
+      double[] originalConstants = (double[])c.Clone();
+      double originalQuality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
 
       alglib.lsfitstate state;
       alglib.lsfitreport rep;
@@ -257,34 +223,40 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       try {
         alglib.lsfitcreatefg(x, y, c, n, m, k, false, out state);
-        alglib.lsfitsetcond(state, 0, 0, maxIterations);
+        alglib.lsfitsetcond(state, 0.0, 0.0, maxIterations);
+        //alglib.lsfitsetgradientcheck(state, 0.001);
         alglib.lsfitfit(state, function_cx_1_func, function_cx_1_grad, null, null);
         alglib.lsfitresults(state, out info, out c, out rep);
-
       }
       catch (ArithmeticException) {
-        return 0.0;
+        return SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
       }
       catch (alglib.alglibexception) {
-        return 0.0;
+        return SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
       }
-      var newTree = tree;
-      if (!updateConstantsInTree) newTree = (ISymbolicExpressionTree)tree.Clone();
-      {
-        // only when no error occurred
-        // set constants in tree
-        int i = 2;
-        foreach (var node in newTree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
-          ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
-          VariableTreeNode variableTreeNode = node as VariableTreeNode;
-          if (constantTreeNode != null)
-            constantTreeNode.Value = c[i++];
-          else if (variableTreeNode != null)
-            variableTreeNode.Weight = c[i++];
-        }
 
+      //info == -7  => constant optimization failed due to wrong gradient
+      if (info != -7) UpdateConstants(tree, c.Skip(2).ToArray());
+      var quality = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
+
+      if (!updateConstantsInTree) UpdateConstants(tree, originalConstants.Skip(2).ToArray());
+      if (originalQuality - quality > 0.001 || double.IsNaN(quality)) {
+        UpdateConstants(tree, originalConstants.Skip(2).ToArray());
+        return originalQuality;
       }
-      return SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, newTree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
+      return quality;
+    }
+
+    private static void UpdateConstants(ISymbolicExpressionTree tree, double[] constants) {
+      int i = 0;
+      foreach (var node in tree.Root.IterateNodesPrefix().OfType<SymbolicExpressionTreeTerminalNode>()) {
+        ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
+        VariableTreeNode variableTreeNode = node as VariableTreeNode;
+        if (constantTreeNode != null)
+          constantTreeNode.Value = constants[i++];
+        else if (variableTreeNode != null)
+          variableTreeNode.Weight = constants[i++];
+      }
     }
 
     private static alglib.ndimensional_pfunc CreatePFunc(AutoDiff.IParametricCompiledTerm compiledFunc) {
