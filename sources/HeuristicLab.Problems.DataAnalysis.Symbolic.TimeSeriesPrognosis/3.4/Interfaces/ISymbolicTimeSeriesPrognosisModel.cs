@@ -22,5 +22,7 @@
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   public interface ISymbolicTimeSeriesPrognosisModel : ITimeSeriesPrognosisModel, ISymbolicDataAnalysisModel {
     new ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter Interpreter { get; }
+    double LowerEstimationLimit { get; }
+    double UpperEstimationLimit { get; }
   }
 }
