@@ -26,7 +26,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  public sealed partial class SymbolicExpressionTreeChart : UserControl {
+  public partial class SymbolicExpressionTreeChart : UserControl {
     private Image image;
     private StringFormat stringFormat;
     private Dictionary<ISymbolicExpressionTreeNode, VisualSymbolicExpressionTreeNode> visualTreeNodes;
@@ -35,9 +35,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     public SymbolicExpressionTreeChart() {
       InitializeComponent();
       this.image = new Bitmap(Width, Height);
-      this.stringFormat = new StringFormat();
-      this.stringFormat.Alignment = StringAlignment.Center;
-      this.stringFormat.LineAlignment = StringAlignment.Center;
+      this.stringFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
       this.spacing = 5;
       this.lineColor = Color.Black;
       this.backgroundColor = Color.White;
@@ -156,7 +154,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     #region events
     public event MouseEventHandler SymbolicExpressionTreeNodeClicked;
-    private void OnSymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
+    protected virtual void OnSymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
       var clicked = SymbolicExpressionTreeNodeClicked;
       if (clicked != null)
         clicked(sender, e);
@@ -164,12 +162,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private void SymbolicExpressionTreeChart_MouseClick(object sender, MouseEventArgs e) {
       VisualSymbolicExpressionTreeNode visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
-      if (visualTreeNode != null)
+      if (visualTreeNode != null) {
         OnSymbolicExpressionTreeNodeClicked(visualTreeNode, e);
+      }
     }
 
     public event MouseEventHandler SymbolicExpressionTreeNodeDoubleClicked;
-    private void OnSymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
+    protected virtual void OnSymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
       var doubleClicked = SymbolicExpressionTreeNodeDoubleClicked;
       if (doubleClicked != null)
         doubleClicked(sender, e);
@@ -182,7 +181,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     public event ItemDragEventHandler SymbolicExpressionTreeNodeDrag;
-    private void OnSymbolicExpressionTreeNodeDragDrag(object sender, ItemDragEventArgs e) {
+    protected virtual void OnSymbolicExpressionTreeNodeDragDrag(object sender, ItemDragEventArgs e) {
       var dragged = SymbolicExpressionTreeNodeDrag;
       if (dragged != null)
         dragged(sender, e);
@@ -233,7 +232,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="functionTree"> functiontree to draw</param>
+    /// <param name="functionTree"> function tree to draw</param>
     /// <param name="graphics">graphics object to draw on</param>
     /// <param name="x">x coordinate of drawing area</param>
     /// <param name="y">y coordinate of drawing area</param>

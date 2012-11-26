@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  partial class SymbolicExpressionTreeChart {
+  public partial class SymbolicExpressionTreeChart {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -69,7 +69,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // saveFileDialog
       // 
       this.saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|EMF (*.emf)|*.emf";
-      this.saveFileDialog.FilterIndex = 1;      
+      this.saveFileDialog.FilterIndex = 1;
       // SymbolicExpressionTreeChart
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -88,9 +88,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     #endregion
 
-    private System.Windows.Forms.ToolTip toolTip;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
-    private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
-    private System.Windows.Forms.SaveFileDialog saveFileDialog;
+    protected System.Windows.Forms.ToolTip toolTip;
+    protected System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+    protected System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
+    protected System.Windows.Forms.SaveFileDialog saveFileDialog;
   }
 }
