@@ -538,12 +538,14 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private RunCollection GetAllRunsFromJob(RefreshableJob job) {
       if (job != null) {
-        RunCollection runs = new RunCollection();
+        RunCollection runs = new RunCollection() { AlgorithmName = job.ItemName };
 
         foreach (HiveTask subTask in job.HiveTasks) {
           if (subTask is OptimizerHiveTask) {
             OptimizerHiveTask ohTask = subTask as OptimizerHiveTask;
-            runs.AddRange(ohTask.ItemTask.Item.Runs);
+            ohTask.ExecuteReadActionOnItemTask(new Action(delegate() {
+              runs.AddRange(ohTask.ItemTask.Item.Runs);
+            }));
           }
         }
         return runs;

@@ -30,9 +30,6 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive {
   public class OptimizerHiveTask : HiveTask<OptimizerTask> {
-
-    Object batchRunLocker = new Object();
-
     #region Constructors and Cloning
     public OptimizerHiveTask() { }
     public OptimizerHiveTask(IOptimizer optimizer)
@@ -59,31 +56,37 @@ namespace HeuristicLab.Clients.Hive {
     /// </summary>
     protected override void UpdateChildHiveTasks() {
       base.UpdateChildHiveTasks();
-      if (Task != null && syncTasksWithOptimizers) {
-        if (!ItemTask.ComputeInParallel) {
-          this.childHiveTasks.Clear();
-        } else {
-          if (ItemTask.Item is Optimization.Experiment) {
-            Optimization.Experiment experiment = (Optimization.Experiment)ItemTask.Item;
-            foreach (IOptimizer childOpt in experiment.Optimizers) {
-              var optimizerHiveTask = new OptimizerHiveTask(childOpt);
-              optimizerHiveTask.Task.Priority = Task.Priority; //inherit priority from parent
-              this.childHiveTasks.Add(optimizerHiveTask);
-            }
-          } else if (ItemTask.Item is Optimization.BatchRun) {
-            Optimization.BatchRun batchRun = ItemTask.OptimizerAsBatchRun;
-            if (batchRun.Optimizer != null) {
-              while (this.childHiveTasks.Count < batchRun.Repetitions) {
-                var optimizerHiveTask = new OptimizerHiveTask(batchRun.Optimizer);
-                optimizerHiveTask.Task.Priority = Task.Priority;
+      childHiveTasksLock.EnterWriteLock();
+      try {
+        if (Task != null && syncTasksWithOptimizers) {
+          if (!ItemTask.ComputeInParallel) {
+            this.childHiveTasks.Clear();
+          } else {
+            if (ItemTask.Item is Optimization.Experiment) {
+              Optimization.Experiment experiment = (Optimization.Experiment)ItemTask.Item;
+              foreach (IOptimizer childOpt in experiment.Optimizers) {
+                var optimizerHiveTask = new OptimizerHiveTask(childOpt);
+                optimizerHiveTask.Task.Priority = Task.Priority; //inherit priority from parent
                 this.childHiveTasks.Add(optimizerHiveTask);
               }
-              while (this.childHiveTasks.Count > batchRun.Repetitions) {
-                this.childHiveTasks.Remove(this.childHiveTasks.Last());
+            } else if (ItemTask.Item is Optimization.BatchRun) {
+              Optimization.BatchRun batchRun = ItemTask.OptimizerAsBatchRun;
+              if (batchRun.Optimizer != null) {
+                while (this.childHiveTasks.Count < batchRun.Repetitions) {
+                  var optimizerHiveTask = new OptimizerHiveTask(batchRun.Optimizer);
+                  optimizerHiveTask.Task.Priority = Task.Priority;
+                  this.childHiveTasks.Add(optimizerHiveTask);
+                }
+                while (this.childHiveTasks.Count > batchRun.Repetitions) {
+                  this.childHiveTasks.Remove(this.childHiveTasks.Last());
+                }
               }
             }
           }
         }
+      }
+      finally {
+        childHiveTasksLock.ExitWriteLock();
       }
     }
 
@@ -222,16 +225,20 @@ namespace HeuristicLab.Clients.Hive {
     /// Sideeffect: the optimizerTask.Optimizer will be prepared (scopes are deleted and executionstate will be reset)
     /// </summary>
     private void UpdateOptimizerInBatchRun(BatchRun batchRun, OptimizerTask optimizerTask) {
-      if (batchRun.Optimizer == null) {
-        batchRun.Optimizer = (IOptimizer)optimizerTask.Item; // only set the first optimizer as Optimizer. if every time the Optimizer would be set, the runs would be cleared each time
-      }
-      lock (batchRunLocker) {
+      itemTaskLock.EnterWriteLock();
+      try {
+        if (batchRun.Optimizer == null) {
+          batchRun.Optimizer = (IOptimizer)optimizerTask.Item; // only set the first optimizer as Optimizer. if every time the Optimizer would be set, the runs would be cleared each time
+        }
         foreach (IRun run in optimizerTask.Item.Runs) {
           if (!batchRun.Runs.Contains(run)) {
             run.Name = GetNewRunName(run, batchRun.Runs);
             batchRun.Runs.Add(run);
           }
         }
+      }
+      finally {
+        itemTaskLock.ExitWriteLock();
       }
     }
 
@@ -240,20 +247,26 @@ namespace HeuristicLab.Clients.Hive {
     /// Sideeffect: the optimizerTask.Optimizer will be prepared (scopes are deleted and executionstate will be reset)
     /// </summary>
     private void UpdateOptimizerInExperiment(Optimization.Experiment experiment, OptimizerTask optimizerTask) {
-      if (optimizerTask.IndexInParentOptimizerList < 0)
-        throw new IndexOutOfRangeException("IndexInParentOptimizerList must be equal or greater than zero! The Task is invalid and the optimizer-tree cannot be reassembled.");
+      itemTaskLock.EnterWriteLock();
+      try {
+        if (optimizerTask.IndexInParentOptimizerList < 0)
+          throw new IndexOutOfRangeException("IndexInParentOptimizerList must be equal or greater than zero! The Task is invalid and the optimizer-tree cannot be reassembled.");
 
-      while (experiment.Optimizers.Count < optimizerTask.IndexInParentOptimizerList) {
-        experiment.Optimizers.Add(new UserDefinedAlgorithm("Placeholder")); // add dummy-entries to Optimizers so that its possible to insert the optimizerTask at the correct position
-      }
-      if (experiment.Optimizers.Count < optimizerTask.IndexInParentOptimizerList + 1) {
-        experiment.Optimizers.Add(optimizerTask.Item);
-      } else {
-        // if ComputeInParallel==true, don't replace the optimizer (except it is still a Placeholder)
-        // this is because Jobs with ComputeInParallel get submitted to hive with their child-optimizers deleted
-        if (!optimizerTask.ComputeInParallel || experiment.Optimizers[optimizerTask.IndexInParentOptimizerList].Name == "Placeholder") {
-          experiment.Optimizers[optimizerTask.IndexInParentOptimizerList] = optimizerTask.Item;
+        while (experiment.Optimizers.Count < optimizerTask.IndexInParentOptimizerList) {
+          experiment.Optimizers.Add(new UserDefinedAlgorithm("Placeholder")); // add dummy-entries to Optimizers so that its possible to insert the optimizerTask at the correct position
         }
+        if (experiment.Optimizers.Count < optimizerTask.IndexInParentOptimizerList + 1) {
+          experiment.Optimizers.Add(optimizerTask.Item);
+        } else {
+          // if ComputeInParallel==true, don't replace the optimizer (except it is still a Placeholder)
+          // this is because Jobs with ComputeInParallel get submitted to hive with their child-optimizers deleted
+          if (!optimizerTask.ComputeInParallel || experiment.Optimizers[optimizerTask.IndexInParentOptimizerList].Name == "Placeholder") {
+            experiment.Optimizers[optimizerTask.IndexInParentOptimizerList] = optimizerTask.Item;
+          }
+        }
+      }
+      finally {
+        itemTaskLock.ExitWriteLock();
       }
     }
 
@@ -362,6 +375,16 @@ namespace HeuristicLab.Clients.Hive {
         return null;
       }
       finally { childHiveTasksLock.ExitReadLock(); }
+    }
+
+    public void ExecuteReadActionOnItemTask(Action action) {
+      itemTaskLock.EnterReadLock();
+      try {
+        action();
+      }
+      finally {
+        itemTaskLock.ExitReadLock();
+      }
     }
 
     #region Helpers

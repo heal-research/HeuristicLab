@@ -293,28 +293,23 @@ namespace HeuristicLab.Clients.Hive {
         this.alreadyUploadedPlugins.Add(configFilePlugin);
         cancellationToken.ThrowIfCancellationRequested();
 
-        refreshableJob.RefreshAutomatically = true;
-        refreshableJob.StartResultPolling();
-
         // upload tasks
         refreshableJob.Progress.Status = "Uploading tasks...";
 
         var tasks = new List<TS.Task>();
         foreach (HiveTask hiveTask in refreshableJob.HiveTasks) {
-          tasks.Add(TS.Task.Factory.StartNew((hj) => {
+          var task = TS.Task.Factory.StartNew((hj) => {
             UploadTaskWithChildren(refreshableJob.Progress, (HiveTask)hj, null, resourceIds, jobCount, totalJobCount, configFilePlugin.Id, refreshableJob.Job.Id, refreshableJob.Log, refreshableJob.Job.IsPrivileged, cancellationToken);
-          }, hiveTask)
-          .ContinueWith((x) => refreshableJob.Log.LogException(x.Exception), TaskContinuationOptions.OnlyOnFaulted));
+          }, hiveTask);
+          task.ContinueWith((x) => refreshableJob.Log.LogException(x.Exception), TaskContinuationOptions.OnlyOnFaulted);
+          tasks.Add(task);
         }
-        try {
-          TS.Task.WaitAll(tasks.ToArray());
-        }
-        catch (AggregateException ae) {
-          if (!ae.InnerExceptions.All(e => e is TaskCanceledException)) throw ae; // for some reason the WaitAll throws a AggregateException containg a TaskCanceledException. i don't know where it comes from, however the tasks all finish properly, so for now just ignore it
-        }
-        refreshableJob.Job.Modified = false;
+        TS.Task.WaitAll(tasks.ToArray());
       }
       finally {
+        refreshableJob.RefreshAutomatically = true;
+        refreshableJob.StartResultPolling();
+        refreshableJob.Job.Modified = false;
         refreshableJob.IsProgressing = false;
         refreshableJob.Progress.Finish();
       }
@@ -404,19 +399,15 @@ namespace HeuristicLab.Clients.Hive {
 
         var tasks = new List<TS.Task>();
         foreach (HiveTask child in hiveTask.ChildHiveTasks) {
-          tasks.Add(TS.Task.Factory.StartNew((tuple) => {
+          var task = TS.Task.Factory.StartNew((tuple) => {
             var arguments = (Tuple<HiveTask, HiveTask>)tuple;
             UploadTaskWithChildren(progress, arguments.Item1, arguments.Item2, groups, taskCount, totalJobCount, configPluginId, jobId, log, isPrivileged, cancellationToken);
-          }, new Tuple<HiveTask, HiveTask>(child, hiveTask))
-          .ContinueWith((x) => log.LogException(x.Exception), TaskContinuationOptions.OnlyOnFaulted));
+          }, new Tuple<HiveTask, HiveTask>(child, hiveTask));
+          task.ContinueWith((x) => log.LogException(x.Exception), TaskContinuationOptions.OnlyOnFaulted);
+          tasks.Add(task);
         }
         taskUploadSemaphore.Release(); semaphoreReleased = true; // the semaphore has to be release before waitall!
-        try {
-          TS.Task.WaitAll(tasks.ToArray());
-        }
-        catch (AggregateException ae) {
-          if (!ae.InnerExceptions.All(e => e is TaskCanceledException)) throw ae; // for some reason the WaitAll throws a AggregateException containg a TaskCanceledException. i don't know where it comes from, however the tasks all finish properly, so for now just ignore it
-        }
+        TS.Task.WaitAll(tasks.ToArray());
       }
       finally {
         if (!semaphoreReleased) taskUploadSemaphore.Release();

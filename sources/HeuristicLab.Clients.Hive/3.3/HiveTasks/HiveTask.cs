@@ -38,6 +38,7 @@ namespace HeuristicLab.Clients.Hive {
   public class HiveTask : NamedItem, IItemTree<HiveTask> {
     protected static object locker = new object();
     protected ReaderWriterLockSlim childHiveTasksLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+    protected ReaderWriterLockSlim itemTaskLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Event; }
@@ -82,15 +83,24 @@ namespace HeuristicLab.Clients.Hive {
       get { return itemTask; }
       set {
         if (itemTask != null && syncTasksWithOptimizers) {
-          this.childHiveTasks.Clear();
+          childHiveTasksLock.EnterWriteLock();
+          try {
+            childHiveTasks.Clear();
+          }
+          finally { childHiveTasksLock.ExitWriteLock(); }
         }
         if (itemTask != value) {
-          DergisterItemTaskEvents();
-          itemTask = value;
-          RegisterItemTaskEvents();
+          itemTaskLock.EnterWriteLock();
+          try {
+            DergisterItemTaskEvents();
+            itemTask = value;
+            RegisterItemTaskEvents();
+          }
+          finally { itemTaskLock.ExitWriteLock(); }
           OnItemTaskChanged();
           IsFinishedTaskDownloaded = true;
         }
+
       }
     }
 

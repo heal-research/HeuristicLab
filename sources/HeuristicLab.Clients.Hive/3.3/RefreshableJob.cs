@@ -35,6 +35,7 @@ namespace HeuristicLab.Clients.Hive {
     private ConcurrentTaskDownloader<ItemTask> jobDownloader;
     private object locker = new object();
     private object downloadFinishedLocker = new object();
+    object jobResultReceivedLocker = new object();
 
     public bool IsProgressing { get; set; }
 
@@ -260,56 +261,59 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     private void jobResultPoller_JobResultReceived(object sender, EventArgs<IEnumerable<LightweightTask>> e) {
-      foreach (LightweightTask lightweightTask in e.Value) {
-        HiveTask hiveTask = GetHiveTaskById(lightweightTask.Id);
-        if (hiveTask != null) {
-          // lastJobDataUpdate equals DateTime.MinValue right after it was uploaded. When the first results are polled, this value is updated
-          if (hiveTask.Task.State == TaskState.Offline && lightweightTask.State != TaskState.Finished && lightweightTask.State != TaskState.Failed && lightweightTask.State != TaskState.Aborted) {
-            hiveTask.Task.LastTaskDataUpdate = lightweightTask.LastTaskDataUpdate;
-          }
+      lock (jobResultReceivedLocker) {
+        foreach (LightweightTask lightweightTask in e.Value) {
+          HiveTask hiveTask = GetHiveTaskById(lightweightTask.Id);
+          if (hiveTask != null) {
+            // lastJobDataUpdate equals DateTime.MinValue right after it was uploaded. When the first results are polled, this value is updated
+            if (hiveTask.Task.State == TaskState.Offline && lightweightTask.State != TaskState.Finished && lightweightTask.State != TaskState.Failed && lightweightTask.State != TaskState.Aborted) {
+              hiveTask.Task.LastTaskDataUpdate = lightweightTask.LastTaskDataUpdate;
+            }
 
-          hiveTask.UpdateFromLightweightJob(lightweightTask);
+            hiveTask.UpdateFromLightweightJob(lightweightTask);
 
-          if (!hiveTask.IsFinishedTaskDownloaded && !hiveTask.IsDownloading && hiveTask.Task.LastTaskDataUpdate < lightweightTask.LastTaskDataUpdate) {
-            log.LogMessage(string.Format("Downloading task {0}", lightweightTask.Id));
-            hiveTask.IsDownloading = true;
-            jobDownloader.DownloadTaskData(hiveTask.Task, (localJob, itemJob) => {
-              lock (downloadFinishedLocker) {
-                log.LogMessage(string.Format("Finished downloading task {0}", localJob.Id));
-                HiveTask localHiveTask = GetHiveTaskById(localJob.Id);
+            if (!hiveTask.IsFinishedTaskDownloaded && !hiveTask.IsDownloading && hiveTask.Task.LastTaskDataUpdate < lightweightTask.LastTaskDataUpdate) {
+              log.LogMessage(string.Format("Downloading task {0}", lightweightTask.Id));
+              hiveTask.IsDownloading = true;
+              jobDownloader.DownloadTaskData(hiveTask.Task, (localJob, itemJob) => {
+                lock (downloadFinishedLocker) {
+                  log.LogMessage(string.Format("Finished downloading task {0}", localJob.Id));
+                  HiveTask localHiveTask = GetHiveTaskById(localJob.Id);
 
-                if (itemJob == null) {
-                  // something bad happened to this task. bad task, BAAAD task!
-                  localHiveTask.IsDownloading = false;
-                } else {
-                  // if the task is paused, download but don't integrate into parent optimizer (to avoid Prepare) 
-                  if (localJob.State == TaskState.Paused) {
-                    localHiveTask.ItemTask = itemJob;
+                  if (itemJob == null) {
+                    // something bad happened to this task. bad task, BAAAD task!
+                    localHiveTask.IsDownloading = false;
                   } else {
-                    if (localJob.ParentTaskId.HasValue) {
-                      HiveTask parentHiveTask = GetHiveTaskById(localJob.ParentTaskId.Value);
-                      parentHiveTask.IntegrateChild(itemJob, localJob.Id);
-                    } else {
+                    // if the task is paused, download but don't integrate into parent optimizer (to avoid Prepare) 
+                    if (localJob.State == TaskState.Paused) {
                       localHiveTask.ItemTask = itemJob;
+                    } else {
+                      if (localJob.ParentTaskId.HasValue) {
+                        HiveTask parentHiveTask = GetHiveTaskById(localJob.ParentTaskId.Value);
+                        parentHiveTask.IntegrateChild(itemJob, localJob.Id);
+                      } else {
+                        localHiveTask.ItemTask = itemJob;
+                      }
                     }
+                    localHiveTask.IsDownloading = false;
+                    localHiveTask.Task.LastTaskDataUpdate = lightweightTask.LastTaskDataUpdate;
                   }
-                  localHiveTask.IsDownloading = false;
-                  localHiveTask.Task.LastTaskDataUpdate = lightweightTask.LastTaskDataUpdate;
                 }
-              }
-            });
-          }
+              });
+            }
+          } else
+            throw new Exception("This should not happen");
         }
+        GC.Collect(); // force GC, because .NET is too lazy here (deserialization takes a lot of memory)
+        if (AllJobsFinished()) {
+          this.ExecutionState = Core.ExecutionState.Stopped;
+          StopResultPolling();
+        }
+        UpdateTotalExecutionTime();
+        UpdateStatistics();
+        OnStateLogListChanged();
+        OnTaskReceived();
       }
-      GC.Collect(); // force GC, because .NET is too lazy here (deserialization takes a lot of memory)
-      if (AllJobsFinished()) {
-        this.ExecutionState = Core.ExecutionState.Stopped;
-        StopResultPolling();
-      }
-      UpdateTotalExecutionTime();
-      UpdateStatistics();
-      OnStateLogListChanged();
-      OnTaskReceived();
     }
 
     public HiveTask GetHiveTaskById(Guid jobId) {
