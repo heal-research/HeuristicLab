@@ -53,8 +53,10 @@ namespace AutoDiff
             ForwardSweep(arg);
             ReverseSweep();
 
-            var gradient = tape.Take(Dimension).Select(elem => elem.Adjoint).ToArray();
-            var value = tape.Last().Value;
+            var gradient = new double[Dimension];
+            for (int i = 0; i < Dimension; i++)
+               gradient[i] = tape[i].Adjoint;
+            var value = tape.Last().Value;            
 
             return Tuple.Create(gradient, value);
         }

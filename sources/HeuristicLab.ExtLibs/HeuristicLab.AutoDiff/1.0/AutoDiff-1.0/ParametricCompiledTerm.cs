@@ -19,13 +19,17 @@ namespace AutoDiff
 
         public double Evaluate(double[] arg, double[] parameters)
         {
-            var combinedArg = arg.Concat(parameters).ToArray();
+            var combinedArg = new double[arg.Length + parameters.Length];
+            arg.CopyTo(combinedArg, 0);
+            parameters.CopyTo(combinedArg, arg.Length);
             return compiledTerm.Evaluate(combinedArg);
         }
 
         public Tuple<double[], double> Differentiate(double[] arg, double[] parameters)
         {
-            var combinedArg = arg.Concat(parameters).ToArray();
+            var combinedArg = new double[arg.Length + parameters.Length];
+            arg.CopyTo(combinedArg, 0);
+            parameters.CopyTo(combinedArg, arg.Length);
             var diffResult = compiledTerm.Differentiate(combinedArg);
 
             var partialGradient = new double[arg.Length];
