@@ -23,17 +23,19 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
   public partial class InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView : InteractiveSymbolicClassificationSolutionSimplifierViewBase {
-
     public new SymbolicDiscriminantFunctionClassificationSolution Content {
       get { return (SymbolicDiscriminantFunctionClassificationSolution)base.Content; }
       set { base.Content = value; }
     }
 
-    public InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView() : base() { }
+    public InteractiveSymbolicDiscriminantFunctionClassificationSolutionSimplifierView()
+      : base() {
+      InitializeComponent();
+      this.Caption = "Interactive Classification Solution Simplifier";
+    }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       var model = CreateModel(tree);
-      model.RecalculateModelParameters(Content.ProblemData, Content.ProblemData.TrainingIndices);
       Content.Model = (ISymbolicDiscriminantFunctionClassificationModel)model;
     }
   }

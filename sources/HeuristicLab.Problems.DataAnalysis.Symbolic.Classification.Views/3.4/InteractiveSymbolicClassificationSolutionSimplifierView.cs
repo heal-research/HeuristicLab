@@ -29,7 +29,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       set { base.Content = value; }
     }
 
-    public InteractiveSymbolicClassificationSolutionSimplifierView() : base() { }
+    public InteractiveSymbolicClassificationSolutionSimplifierView()
+      : base() {
+      InitializeComponent();
+      this.Caption = "Interactive Classification Solution Simplifier";
+    }
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       Content.Model = CreateModel(tree);

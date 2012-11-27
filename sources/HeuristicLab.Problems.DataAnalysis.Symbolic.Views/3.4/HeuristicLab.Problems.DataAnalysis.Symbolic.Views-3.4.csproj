@@ -113,6 +113,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InteractiveSymbolicExpressionTreeChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="InteractiveSymbolicExpressionTreeChart.Designer.cs">
+      <DependentUpon>InteractiveSymbolicExpressionTreeChart.cs</DependentUpon>
+    </Compile>
     <Compile Include="MathSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -120,6 +126,12 @@
       <DependentUpon>MathSymbolicDataAnalysisModelView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
+    <Compile Include="SymbolicExpressionTreeNodeChangeValueDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SymbolicExpressionTreeNodeChangeValueDialog.Designer.cs">
+      <DependentUpon>SymbolicExpressionTreeNodeChangeValueDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TextualSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -167,6 +179,18 @@
     </Compile>
     <Compile Include="Symbols\VariableView.Designer.cs">
       <DependentUpon>VariableView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeNodeChangeValueDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeNodeChangeValueDialog.Designer.cs">
+      <DependentUpon>SymbolicExpressionTreeNodeChangeValueDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeNodeInsertDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeNodeInsertDialog.Designer.cs">
+      <DependentUpon>SymbolicExpressionTreeNodeInsertDialog.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
@@ -312,14 +336,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 

@@ -142,6 +142,7 @@
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.cs" />
     <Compile Include="SymbolicRegressionSolution.cs" />
+    <Compile Include="SymbolicRegressionSolutionImpactValuesCalculator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

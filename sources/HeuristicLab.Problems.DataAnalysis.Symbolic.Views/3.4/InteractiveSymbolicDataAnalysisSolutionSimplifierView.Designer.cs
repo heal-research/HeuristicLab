@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -44,13 +44,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.treeChart = new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart();
+      this.components = new System.ComponentModel.Container();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.grpSimplify = new System.Windows.Forms.GroupBox();
       this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
       this.btnSimplify = new System.Windows.Forms.Button();
       this.btnOptimizeConstants = new System.Windows.Forms.Button();
+      this.treeChart = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart();
       this.grpViewHost = new System.Windows.Forms.GroupBox();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
@@ -60,22 +61,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.flowLayoutPanel.SuspendLayout();
       this.grpViewHost.SuspendLayout();
       this.SuspendLayout();
-      // 
-      // treeChart
-      // 
-      this.treeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.treeChart.BackgroundColor = System.Drawing.Color.White;
-      this.treeChart.LineColor = System.Drawing.Color.Black;
-      this.treeChart.Location = new System.Drawing.Point(6, 16);
-      this.treeChart.Name = "treeChart";
-      this.treeChart.Size = new System.Drawing.Size(201, 291);
-      this.treeChart.Spacing = 5;
-      this.treeChart.TabIndex = 0;
-      this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
-      this.treeChart.Tree = null;
-      this.treeChart.SymbolicExpressionTreeNodeDoubleClicked += new System.Windows.Forms.MouseEventHandler(this.treeChart_SymbolicExpressionTreeNodeDoubleClicked);
       // 
       // viewHost
       // 
@@ -112,6 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // grpSimplify
       // 
+      this.grpSimplify.AutoSize = true;
       this.grpSimplify.Controls.Add(this.flowLayoutPanel);
       this.grpSimplify.Controls.Add(this.treeChart);
       this.grpSimplify.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -156,6 +142,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.btnOptimizeConstants.UseVisualStyleBackColor = true;
       this.btnOptimizeConstants.Click += new System.EventHandler(this.btnOptimizeConstants_Click);
       // 
+      // treeChart
+      // 
+      this.treeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.treeChart.BackgroundColor = System.Drawing.Color.White;
+      this.treeChart.LineColor = System.Drawing.Color.Black;
+      this.treeChart.Location = new System.Drawing.Point(6, 16);
+      this.treeChart.Name = "treeChart";
+      this.treeChart.Size = new System.Drawing.Size(201, 291);
+      this.treeChart.Spacing = 5;
+      this.treeChart.SuspendRepaint = false;
+      this.treeChart.TabIndex = 0;
+      this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
+      this.treeChart.Tree = null;
+      this.treeChart.SymbolicExpressionTreeChanged += new System.EventHandler(this.treeChart_SymbolicExpressionTreeChanged);
+      this.treeChart.SymbolicExpressionTreeNodeChanged += new System.EventHandler(this.treeChart_SymbolicExpressionTreeNodeChanged);
+      this.treeChart.SymbolicExpressionTreeNodeDoubleClicked += new System.Windows.Forms.MouseEventHandler(this.treeChart_SymbolicExpressionTreeNodeDoubleClicked);
+      // 
       // grpViewHost
       // 
       this.grpViewHost.Controls.Add(this.viewHost);
@@ -170,11 +175,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // InteractiveSymbolicDataAnalysisSolutionSimplifierView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.splitContainer);
+      this.DoubleBuffered = true;
       this.Name = "InteractiveSymbolicDataAnalysisSolutionSimplifierView";
       this.Size = new System.Drawing.Size(564, 348);
       this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel1.PerformLayout();
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
@@ -187,7 +194,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     #endregion
 
-    private HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart treeChart;
+    private InteractiveSymbolicExpressionTreeChart treeChart;
     private System.Windows.Forms.SplitContainer splitContainer;
     private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     private System.Windows.Forms.GroupBox grpSimplify;
