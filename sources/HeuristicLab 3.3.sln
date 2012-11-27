@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
 		Build.cmd = Build.cmd
@@ -1832,5 +1832,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D1386FE7-682D-4E18-8C4F-CFD423FA5DD0} = {7EB6A587-BD45-40F2-BB15-4A69677A326C}
 		{6410BDA6-3641-42B2-BABA-AA626E2F6F71} = {7EB6A587-BD45-40F2-BB15-4A69677A326C}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
