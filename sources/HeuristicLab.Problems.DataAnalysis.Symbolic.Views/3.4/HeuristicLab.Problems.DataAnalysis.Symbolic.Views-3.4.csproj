@@ -126,12 +126,6 @@
       <DependentUpon>MathSymbolicDataAnalysisModelView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
-    <Compile Include="SymbolicExpressionTreeNodeChangeValueDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SymbolicExpressionTreeNodeChangeValueDialog.Designer.cs">
-      <DependentUpon>SymbolicExpressionTreeNodeChangeValueDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="TextualSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
     </Compile>
