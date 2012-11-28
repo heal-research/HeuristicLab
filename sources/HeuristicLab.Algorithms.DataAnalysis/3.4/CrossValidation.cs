@@ -72,6 +72,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void AfterDeserialization() {
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
+      if (Problem != null) Problem.Reset += (o, e) => OnProblemChanged();
     }
 
     private CrossValidation(CrossValidation original, Cloner cloner)
@@ -520,8 +521,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #region events
     private void RegisterEvents() {
       Folds.ValueChanged += new EventHandler(Folds_ValueChanged);
-      SamplesStart.ValueChanged += new EventHandler(SamplesStart_ValueChanged);
-      SamplesEnd.ValueChanged += new EventHandler(SamplesEnd_ValueChanged);
       RegisterClonedAlgorithmsEvents();
     }
     private void Folds_ValueChanged(object sender, EventArgs e) {
@@ -529,17 +528,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         throw new InvalidOperationException("Can not change number of folds if the execution state is not prepared.");
     }
 
-    private bool samplesChanged = false;
-    private void SamplesStart_ValueChanged(object sender, EventArgs e) {
-      samplesChanged = true;
-      if (Problem != null) Problem.ProblemData.TrainingPartition.Start = SamplesStart.Value;
-      samplesChanged = false;
-    }
-    private void SamplesEnd_ValueChanged(object sender, EventArgs e) {
-      samplesChanged = true;
-      if (Problem != null) Problem.ProblemData.TrainingPartition.End = SamplesEnd.Value;
-      samplesChanged = false;
-    }
 
     #region template algorithms events
     public event EventHandler AlgorithmChanged;
@@ -570,7 +558,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void OnProblemChanged() {
       EventHandler handler = ProblemChanged;
       if (handler != null) handler(this, EventArgs.Empty);
-      if (samplesChanged) return;
 
       SamplesStart.Value = 0;
       if (Problem != null) {
@@ -592,9 +579,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       } else
         SamplesEnd.Value = 0;
-
-      SamplesStart_ValueChanged(this, EventArgs.Empty);
-      SamplesEnd_ValueChanged(this, EventArgs.Empty);
     }
 
     private void Algorithm_ExecutionStateChanged(object sender, EventArgs e) {
@@ -688,8 +672,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void ClonedAlgorithm_Stopped(object sender, EventArgs e) {
       lock (locker) {
         if (!stopPending && ExecutionState == ExecutionState.Started) {
-          IAlgorithm preparedAlgorithm = clonedAlgorithms.Where(alg => alg.ExecutionState == ExecutionState.Prepared ||
-                                                                       alg.ExecutionState == ExecutionState.Paused).FirstOrDefault();
+          IAlgorithm preparedAlgorithm = clonedAlgorithms.FirstOrDefault(alg => alg.ExecutionState == ExecutionState.Prepared ||
+                                                                                alg.ExecutionState == ExecutionState.Paused);
           if (preparedAlgorithm != null) preparedAlgorithm.Start();
         }
         if (ExecutionState != ExecutionState.Stopped) {

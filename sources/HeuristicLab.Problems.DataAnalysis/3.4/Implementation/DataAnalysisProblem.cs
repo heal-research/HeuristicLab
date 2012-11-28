@@ -101,7 +101,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Name = data.Name;
       Description = data.Description;
       ProblemData = data;
-      OnReset();
     }
 
     public T Export() {

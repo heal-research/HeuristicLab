@@ -356,7 +356,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Name = data.Name;
       Description = data.Description;
       ProblemData = data;
-      OnReset();
     }
 
     public T Export() {
