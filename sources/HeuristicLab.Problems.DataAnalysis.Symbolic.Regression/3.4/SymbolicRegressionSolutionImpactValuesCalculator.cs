@@ -51,7 +51,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var cloner = new Cloner();
       cloner.RegisterClonedObject(node, constantNode);
       var tempModel = cloner.Clone(regressionModel);
-      SymbolicDataAnalysisModel.Scale(tempModel, regressionProblemData, regressionProblemData.TargetVariable);
 
       var estimatedValues = tempModel.GetEstimatedValues(dataset, rows);
       double newQuality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, estimatedValues, out errorState);
