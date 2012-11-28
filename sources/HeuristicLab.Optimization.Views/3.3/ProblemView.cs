@@ -56,6 +56,7 @@ namespace HeuristicLab.Optimization.Views {
       if (consumer != null) {
         IEnumerable<Type> viewTypes = MainFormManager.GetViewTypes(consumer.GetType(), true);
         Type genericView = viewTypes.Where(x => x.IsSubclassOf(neededViewType)).First();
+        ProblemInstanceConsumerViewHost.Content = null; //necessary to enable the change of the ViewType
         ProblemInstanceConsumerViewHost.ViewType = genericView;
         ProblemInstanceConsumerViewHost.Content = consumer;
         ProblemInstanceConsumerView view = (ProblemInstanceConsumerView)ProblemInstanceConsumerViewHost.ActiveView;
