@@ -550,7 +550,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         algorithm.Problem = problem;
         throw new ArgumentException("A cross validation algorithm can only contain DataAnalysisProblems.");
       }
-      if(problem!= null) problem.Reset -= new EventHandler(Problem_Reset);
+      if (problem != null) problem.Reset -= new EventHandler(Problem_Reset);
       if (Problem != null) Problem.Reset += new EventHandler(Problem_Reset);
       problem = (IDataAnalysisProblem)algorithm.Problem;
       OnProblemChanged();
@@ -566,8 +566,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       ConfigureProblem();
     }
 
-    private void ConfigureProblem(){
-    SamplesStart.Value = 0;
+    private void ConfigureProblem() {
+      SamplesStart.Value = 0;
       if (Problem != null) {
         SamplesEnd.Value = Problem.ProblemData.Dataset.Rows;
 
