@@ -158,7 +158,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
           if (!e.Cancel) {
             name = value == null ? string.Empty : value;
             OnNameChanged();
-            runs.AlgorithmName = name;
+            runs.OptimizerName = name;
           }
         }
       }
@@ -238,7 +238,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
       executionTime = TimeSpan.Zero;
       storeAlgorithmInEachRun = false;
       runsCounter = 0;
-      Runs = new RunCollection() { AlgorithmName = name };
+      Runs = new RunCollection() { OptimizerName = name };
       results = new ResultCollection();
       CreateParameters();
       DiscoverBenchmarks();

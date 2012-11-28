@@ -62,14 +62,14 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.AlgorithmNameChanged += new EventHandler(Content_AlgorithmNameChanged);
+      Content.OptimizerNameChanged += new EventHandler(Content_AlgorithmNameChanged);
     }
     protected override void DeregisterContentEvents() {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.AlgorithmNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
+      Content.OptimizerNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
       base.DeregisterContentEvents();
     }
 
@@ -203,7 +203,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateCaption() {
-      Caption = Content != null ? Content.AlgorithmName + "Data Table" : ViewAttribute.GetViewName(GetType());
+      Caption = Content != null ? Content.OptimizerName + " Data Table" : ViewAttribute.GetViewName(GetType());
     }
 
     private void UpdateDataRowComboBox() {

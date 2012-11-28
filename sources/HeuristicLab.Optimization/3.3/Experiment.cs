@@ -116,7 +116,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      Runs = new RunCollection { AlgorithmName = Name };
+      Runs = new RunCollection { OptimizerName = Name };
       Initialize();
     }
     public Experiment(string name)
@@ -125,7 +125,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      Runs = new RunCollection { AlgorithmName = Name };
+      Runs = new RunCollection { OptimizerName = Name };
       Initialize();
     }
     public Experiment(string name, string description)
@@ -133,7 +133,7 @@ namespace HeuristicLab.Optimization {
       executionState = ExecutionState.Stopped;
       executionTime = TimeSpan.Zero;
       optimizers = new OptimizerList();
-      Runs = new RunCollection { AlgorithmName = Name };
+      Runs = new RunCollection { OptimizerName = Name };
       Initialize();
     }
     [StorableConstructor]
@@ -231,7 +231,7 @@ namespace HeuristicLab.Optimization {
     #region Events
     protected override void OnNameChanged() {
       base.OnNameChanged();
-      Runs.AlgorithmName = Name;
+      Runs.OptimizerName = Name;
     }
 
     public event EventHandler ExecutionStateChanged;

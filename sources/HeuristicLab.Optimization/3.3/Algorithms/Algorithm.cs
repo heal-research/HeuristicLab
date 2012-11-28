@@ -133,7 +133,7 @@ namespace HeuristicLab.Optimization {
       executionTime = TimeSpan.Zero;
       storeAlgorithmInEachRun = false;
       runsCounter = 0;
-      Runs = new RunCollection { AlgorithmName = Name };
+      Runs = new RunCollection { OptimizerName = Name };
     }
     protected Algorithm(string name)
       : base(name) {
@@ -141,7 +141,7 @@ namespace HeuristicLab.Optimization {
       executionTime = TimeSpan.Zero;
       storeAlgorithmInEachRun = false;
       runsCounter = 0;
-      Runs = new RunCollection { AlgorithmName = Name };
+      Runs = new RunCollection { OptimizerName = Name };
     }
     protected Algorithm(string name, ParameterCollection parameters)
       : base(name, parameters) {
@@ -149,7 +149,7 @@ namespace HeuristicLab.Optimization {
       executionTime = TimeSpan.Zero;
       storeAlgorithmInEachRun = false;
       runsCounter = 0;
-      Runs = new RunCollection { AlgorithmName = Name };
+      Runs = new RunCollection { OptimizerName = Name };
     }
     protected Algorithm(string name, string description)
       : base(name, description) {
@@ -157,7 +157,7 @@ namespace HeuristicLab.Optimization {
       executionTime = TimeSpan.Zero;
       storeAlgorithmInEachRun = false;
       runsCounter = 0;
-      Runs = new RunCollection { AlgorithmName = Name };
+      Runs = new RunCollection { OptimizerName = Name };
     }
     protected Algorithm(string name, string description, ParameterCollection parameters)
       : base(name, description, parameters) {
@@ -165,7 +165,7 @@ namespace HeuristicLab.Optimization {
       executionTime = TimeSpan.Zero;
       storeAlgorithmInEachRun = false;
       runsCounter = 0;
-      Runs = new RunCollection { AlgorithmName = Name };
+      Runs = new RunCollection { OptimizerName = Name };
     }
     [StorableConstructor]
     protected Algorithm(bool deserializing) : base(deserializing) { }
@@ -251,7 +251,7 @@ namespace HeuristicLab.Optimization {
     #region Events
     protected override void OnNameChanged() {
       base.OnNameChanged();
-      Runs.AlgorithmName = Name;
+      Runs.OptimizerName = Name;
     }
 
     public event EventHandler ExecutionStateChanged;

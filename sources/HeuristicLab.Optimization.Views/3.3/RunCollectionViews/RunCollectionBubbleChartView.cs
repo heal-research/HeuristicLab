@@ -92,7 +92,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.AlgorithmNameChanged += new EventHandler(Content_AlgorithmNameChanged);
+      Content.OptimizerNameChanged += new EventHandler(Content_AlgorithmNameChanged);
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
@@ -103,7 +103,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.AlgorithmNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
+      Content.OptimizerNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
       DeregisterRunEvents(Content);
     }
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -174,7 +174,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateCaption() {
-      Caption = Content != null ? Content.AlgorithmName + "Bubble Chart" : ViewAttribute.GetViewName(GetType());
+      Caption = Content != null ? Content.OptimizerName + " Bubble Chart" : ViewAttribute.GetViewName(GetType());
     }
 
     private void UpdateComboBoxes() {

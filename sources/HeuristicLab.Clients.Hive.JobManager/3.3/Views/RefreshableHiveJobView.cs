@@ -538,7 +538,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private RunCollection GetAllRunsFromJob(RefreshableJob job) {
       if (job != null) {
-        RunCollection runs = new RunCollection() { AlgorithmName = job.ItemName };
+        RunCollection runs = new RunCollection() { OptimizerName = job.ItemName };
 
         foreach (HiveTask subTask in job.HiveTasks) {
           if (subTask is OptimizerHiveTask) {

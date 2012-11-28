@@ -64,7 +64,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.AlgorithmNameChanged += new EventHandler(Content_AlgorithmNameChanged);
+      Content.OptimizerNameChanged += new EventHandler(Content_AlgorithmNameChanged);
       RegisterRunEvents(Content);
     }
     private void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -77,7 +77,7 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
       Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.AlgorithmNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
+      Content.OptimizerNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
       DeregisterRunEvents(Content);
     }
     private void DeregisterRunEvents(IEnumerable<IRun> runs) {
@@ -110,7 +110,7 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     private void UpdateCaption() {
-      Caption = Content != null ? Content.AlgorithmName + "Tabular View" : ViewAttribute.GetViewName(GetType());
+      Caption = Content != null ? Content.OptimizerName + " Tabular View" : ViewAttribute.GetViewName(GetType());
     }
 
     protected override void UpdateColumnHeaders() {

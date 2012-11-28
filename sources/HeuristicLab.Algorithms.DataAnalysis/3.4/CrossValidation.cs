@@ -44,7 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       description = ItemDescription;
 
       executionState = ExecutionState.Stopped;
-      runs = new RunCollection { AlgorithmName = name };
+      runs = new RunCollection { OptimizerName = name };
       runsCounter = 0;
 
       algorithm = null;
@@ -248,7 +248,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     protected override void OnNameChanged() {
       base.OnNameChanged();
-      Runs.AlgorithmName = Name;
+      Runs.OptimizerName = Name;
     }
 
     public void Prepare() {
