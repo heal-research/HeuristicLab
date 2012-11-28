@@ -117,10 +117,13 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
     [Storable(AllowOneWay = true)]
     private string AlgorithmName {
       set { optimizerName = value; }
     }
+    #endregion
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
