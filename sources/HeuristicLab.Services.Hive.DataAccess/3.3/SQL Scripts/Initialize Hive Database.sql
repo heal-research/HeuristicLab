@@ -74,6 +74,7 @@ CREATE TABLE [dbo].[Downtime](
   [AllDayEvent] Bit NOT NULL,
   [Recurring] Bit NOT NULL,
   [RecurringId] UniqueIdentifier NOT NULL,
+  [DowntimeType] VarChar(MAX) NOT NULL,
   CONSTRAINT [PK_dbo.Downtime] PRIMARY KEY ([DowntimeId])
   )
 CREATE TABLE [dbo].[Job](

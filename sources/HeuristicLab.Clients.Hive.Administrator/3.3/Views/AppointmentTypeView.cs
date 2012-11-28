@@ -19,31 +19,24 @@
  */
 #endregion
 
-using HeuristicLab.Common;
+using System;
+using System.Windows.Forms;
 
-namespace HeuristicLab.Clients.Hive {
+namespace HeuristicLab.Clients.Hive.Administrator.Views {
+  public partial class AppointmentTypeView : UserControl {
+    public DowntimeType AppointmentType { get; set; }
 
-  public partial class Downtime : IDeepCloneable, IContent {
-    public Downtime() { }
-
-    public override void Store() {
-      HiveAdminClient.Store(this, new System.Threading.CancellationToken());
-      Modified = false;
+    public AppointmentTypeView() {
+      InitializeComponent();
+      AppointmentType = DowntimeType.Offline;
     }
 
-    protected Downtime(Downtime original, Cloner cloner)
-      : base(original, cloner) {
-      this.AllDayEvent = original.AllDayEvent;
-      this.EndDate = original.EndDate;
-      this.Recurring = original.Recurring;
-      this.RecurringId = original.RecurringId;
-      this.ResourceId = original.ResourceId;
-      this.StartDate = original.StartDate;
-      this.DowntimeType = original.DowntimeType;
+    private void OfflineRadioButton_CheckedChanged(object sender, EventArgs e) {
+      AppointmentType = DowntimeType.Offline;
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Downtime(this, cloner);
+    private void shutdownRadioButton_CheckedChanged(object sender, EventArgs e) {
+      AppointmentType = DowntimeType.Shutdown;
     }
   }
 }

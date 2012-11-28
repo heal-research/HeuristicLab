@@ -117,7 +117,7 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     #region Downtimes
     public static DT.Downtime ToDto(DB.Downtime source) {
       if (source == null) return null;
-      return new DT.Downtime { Id = source.DowntimeId, AllDayEvent = source.AllDayEvent, EndDate = source.EndDate, Recurring = source.Recurring, RecurringId = source.RecurringId, ResourceId = source.ResourceId, StartDate = source.StartDate };
+      return new DT.Downtime { Id = source.DowntimeId, AllDayEvent = source.AllDayEvent, EndDate = source.EndDate, Recurring = source.Recurring, RecurringId = source.RecurringId, ResourceId = source.ResourceId, StartDate = source.StartDate, DowntimeType = source.DowntimeType };
     }
     public static DB.Downtime ToEntity(DT.Downtime source) {
       if (source == null) return null;
@@ -126,7 +126,7 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     }
     public static void ToEntity(DT.Downtime source, DB.Downtime target) {
       if ((source != null) && (target != null)) {
-        target.DowntimeId = source.Id; target.AllDayEvent = source.AllDayEvent; target.EndDate = source.EndDate; target.Recurring = source.Recurring; target.RecurringId = source.RecurringId; target.ResourceId = source.ResourceId; target.StartDate = source.StartDate;
+        target.DowntimeId = source.Id; target.AllDayEvent = source.AllDayEvent; target.EndDate = source.EndDate; target.Recurring = source.Recurring; target.RecurringId = source.RecurringId; target.ResourceId = source.ResourceId; target.StartDate = source.StartDate; target.DowntimeType = source.DowntimeType;
       }
     }
     #endregion

@@ -103,6 +103,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HiveRoles.cs" />
+    <Compile Include="Views\AppointmentTypeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\AppointmentTypeDialog.Designer.cs">
+      <DependentUpon>AppointmentTypeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AppointmentTypeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\AppointmentTypeView.Designer.cs">
+      <DependentUpon>AppointmentTypeView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\HiveAdministratorView.cs">
       <SubType>UserControl</SubType>
     </Compile>

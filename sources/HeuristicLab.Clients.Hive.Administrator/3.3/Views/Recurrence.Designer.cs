@@ -62,8 +62,11 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.cbWednesday = new System.Windows.Forms.CheckBox();
       this.cbTuesday = new System.Windows.Forms.CheckBox();
       this.cbMonday = new System.Windows.Forms.CheckBox();
+      this.appointmentTypeView = new HeuristicLab.Clients.Hive.Administrator.Views.AppointmentTypeView();
+      this.gbDowntimeType = new System.Windows.Forms.GroupBox();
       this.gbAppointment.SuspendLayout();
       this.gbWeekly.SuspendLayout();
+      this.gbDowntimeType.SuspendLayout();
       this.SuspendLayout();
       // 
       // gbAppointment
@@ -148,7 +151,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btSaveRecurrence
       // 
-      this.btSaveRecurrence.Location = new System.Drawing.Point(2, 217);
+      this.btSaveRecurrence.Location = new System.Drawing.Point(2, 298);
       this.btSaveRecurrence.Name = "btSaveRecurrence";
       this.btSaveRecurrence.Size = new System.Drawing.Size(147, 23);
       this.btSaveRecurrence.TabIndex = 43;
@@ -158,7 +161,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // btCancelRecurrence
       // 
-      this.btCancelRecurrence.Location = new System.Drawing.Point(241, 217);
+      this.btCancelRecurrence.Location = new System.Drawing.Point(241, 298);
       this.btCancelRecurrence.Name = "btCancelRecurrence";
       this.btCancelRecurrence.Size = new System.Drawing.Size(147, 23);
       this.btCancelRecurrence.TabIndex = 44;
@@ -252,23 +255,44 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.cbMonday.Text = "Monday";
       this.cbMonday.UseVisualStyleBackColor = true;
       // 
+      // appointmentTypeView
+      // 
+      this.appointmentTypeView.AppointmentType = HeuristicLab.Clients.Hive.DowntimeType.Offline;
+      this.appointmentTypeView.Location = new System.Drawing.Point(10, 19);
+      this.appointmentTypeView.Name = "appointmentTypeView";
+      this.appointmentTypeView.Size = new System.Drawing.Size(120, 50);
+      this.appointmentTypeView.TabIndex = 45;
+      // 
+      // gbDowntimeType
+      // 
+      this.gbDowntimeType.Controls.Add(this.appointmentTypeView);
+      this.gbDowntimeType.Location = new System.Drawing.Point(2, 217);
+      this.gbDowntimeType.Name = "gbDowntimeType";
+      this.gbDowntimeType.Size = new System.Drawing.Size(386, 75);
+      this.gbDowntimeType.TabIndex = 46;
+      this.gbDowntimeType.TabStop = false;
+      this.gbDowntimeType.Text = "Type of Downtime";
+      // 
       // Recurrence
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.ClientSize = new System.Drawing.Size(393, 243);
+      this.ClientSize = new System.Drawing.Size(393, 332);
+      this.Controls.Add(this.gbDowntimeType);
       this.Controls.Add(this.gbWeekly);
       this.Controls.Add(this.btCancelRecurrence);
       this.Controls.Add(this.btSaveRecurrence);
       this.Controls.Add(this.gbAppointment);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-      this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       this.Name = "Recurrence";
+      this.ShowIcon = false;
+      this.ShowInTaskbar = false;
       this.Text = "Recurrence";
+      this.TopMost = true;
       this.gbAppointment.ResumeLayout(false);
       this.gbAppointment.PerformLayout();
       this.gbWeekly.ResumeLayout(false);
       this.gbWeekly.PerformLayout();
+      this.gbDowntimeType.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -293,5 +317,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private System.Windows.Forms.CheckBox cbWednesday;
     private System.Windows.Forms.CheckBox cbTuesday;
     private System.Windows.Forms.CheckBox cbMonday;
+    private AppointmentTypeView appointmentTypeView;
+    private System.Windows.Forms.GroupBox gbDowntimeType;
   }
 }

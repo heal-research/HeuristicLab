@@ -26,7 +26,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
   public class RecurrentEvent {
     public DateTime DateFrom { get; set; }
     public DateTime DateTo { get; set; }
-    public bool AllDay { get; set; }    
+    public bool AllDay { get; set; }
     public HashSet<DayOfWeek> WeekDays { get; set; }
+    public DowntimeType AppointmentType { get; set; }
   }
 }

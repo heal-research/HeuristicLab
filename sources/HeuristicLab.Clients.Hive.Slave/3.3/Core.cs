@@ -24,8 +24,6 @@ using System.Diagnostics;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
-using HeuristicLab.Clients.Hive.SlaveCore.Properties;
-using HeuristicLab.Clients.Hive.SlaveCore.ServiceContracts;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using TS = System.Threading.Tasks;
@@ -53,7 +51,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private PluginManager pluginManager;
 
     public Core() {
-      var log = new ThreadSafeLog(Settings.Default.MaxLogCount);
+      var log = new ThreadSafeLog(SlaveCore.Properties.Settings.Default.MaxLogCount);
       this.pluginManager = new PluginManager(WcfService.Instance, log);
       this.taskManager = new TaskManager(pluginManager, log);
       log.MessageAdded += new EventHandler<EventArgs<string>>(log_MessageAdded);
@@ -75,7 +73,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         //start the client communication service (pipe between slave and slave gui)
         slaveComm = new ServiceHost(typeof(SlaveCommunicationService));
         slaveComm.Open();
-        
+
         // delete all left over task directories
         pluginManager.CleanPluginTemp();
         SlaveClientCom.Instance.LogMessage("Hive Slave started");
@@ -95,7 +93,8 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
           SlaveClientCom.Instance.LogMessage(string.Format("Uncaught exception: {0} {1} Core is going to shutdown.", ex.ToString(), Environment.NewLine));
         }
         ShutdownCore();
-      } finally {
+      }
+      finally {
         DeregisterServiceEvents();
         waitShutdownSem.Release();
       }
@@ -184,6 +183,9 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
           if (interval != -1) {
             HeartbeatManager.Interval = TimeSpan.FromSeconds(interval);
           }
+          break;
+        case MessageContainer.MessageType.ShutdownComputer:
+          ShutdownComputer();
           break;
       }
     }
@@ -447,6 +449,21 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       MessageContainer mc = new MessageContainer(MessageContainer.MessageType.ShutdownSlave);
       MessageQueue.GetInstance().AddMessage(mc);
       waitShutdownSem.WaitOne();
+    }
+
+    private void ShutdownComputer() {
+      var t = TS.Task.Factory.StartNew(new Action(Shutdown));
+      t.ContinueWith(c => {
+        try {
+          Process.Start(SlaveCore.Properties.Settings.Default.ShutdownCommand);
+        }
+        catch (Exception ex) {
+          if (ServiceEventLog != null) {
+            EventLogManager.LogException(ex);
+          } else
+            throw ex;
+        }
+      });
     }
 
     /// <summary>

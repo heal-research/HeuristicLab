@@ -47,7 +47,8 @@ namespace HeuristicLab.Services.Hive {
       Sleep,     // disconnect from server, but don't shutdown
       ShutdownSlave,  // slave should shutdown immediately without submitting results
       SayHello,  // Slave should say hello, because job is unknown to the server
-      NewHBInterval,
+      NewHBInterval, // change the polling to a new interval
+      ShutdownComputer, // shutdown the computer the slave runs on
     };
 
     [Storable]

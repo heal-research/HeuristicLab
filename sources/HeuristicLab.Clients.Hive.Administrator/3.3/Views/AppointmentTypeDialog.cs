@@ -19,31 +19,26 @@
  */
 #endregion
 
-using HeuristicLab.Common;
+using System.Windows.Forms;
 
-namespace HeuristicLab.Clients.Hive {
-
-  public partial class Downtime : IDeepCloneable, IContent {
-    public Downtime() { }
-
-    public override void Store() {
-      HiveAdminClient.Store(this, new System.Threading.CancellationToken());
-      Modified = false;
+namespace HeuristicLab.Clients.Hive.Administrator.Views {
+  public partial class AppointmentTypeDialog : Form {
+    public DowntimeType AppointmentType {
+      get {
+        return appointmentTypeView.AppointmentType;
+      }
     }
 
-    protected Downtime(Downtime original, Cloner cloner)
-      : base(original, cloner) {
-      this.AllDayEvent = original.AllDayEvent;
-      this.EndDate = original.EndDate;
-      this.Recurring = original.Recurring;
-      this.RecurringId = original.RecurringId;
-      this.ResourceId = original.ResourceId;
-      this.StartDate = original.StartDate;
-      this.DowntimeType = original.DowntimeType;
+    public AppointmentTypeDialog() {
+      InitializeComponent();
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Downtime(this, cloner);
+    private void okButton_Click(object sender, System.EventArgs e) {
+      Close();
+    }
+
+    private void cancleButton_Click(object sender, System.EventArgs e) {
+      Close();
     }
   }
 }

@@ -47,6 +47,9 @@ namespace HeuristicLab.Services.Hive {
         if (heartbeat.HbInterval != slave.HbInterval) {
           actions.Add(new MessageContainer(MessageContainer.MessageType.NewHBInterval));
         }
+        if (ShutdownSlaveComputer(slave.Id)) {
+          actions.Add(new MessageContainer(MessageContainer.MessageType.ShutdownComputer));
+        }
 
         // update slave data
         slave.FreeCores = heartbeat.FreeCores;
@@ -146,7 +149,11 @@ namespace HeuristicLab.Services.Hive {
 
     private bool SlaveIsAllowedToCalculate(Guid slaveId) {
       // the slave may only calculate if there is no downtime right now. this needs to be checked for every parent resource also
-      return dao.GetParentResources(slaveId).All(r => dao.GetDowntimes(x => x.ResourceId == r.Id && (DateTime.Now >= x.StartDate) && (DateTime.Now <= x.EndDate)).Count() == 0);
+      return dao.GetParentResources(slaveId).All(r => dao.GetDowntimes(x => x.ResourceId == r.Id && x.DowntimeType == DA.DowntimeType.Offline && (DateTime.Now >= x.StartDate) && (DateTime.Now <= x.EndDate)).Count() == 0);
+    }
+
+    private bool ShutdownSlaveComputer(Guid slaveId) {
+      return dao.GetParentResources(slaveId).Any(r => dao.GetDowntimes(x => x.ResourceId == r.Id && x.DowntimeType == DA.DowntimeType.Shutdown && (DateTime.Now >= x.StartDate) && (DateTime.Now <= x.EndDate)).Count() != 0);
     }
   }
 }

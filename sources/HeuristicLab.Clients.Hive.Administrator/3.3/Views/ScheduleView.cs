@@ -90,28 +90,28 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       dvOnline.Invalidate();
     }
 
-    private bool CreateAppointment() {
+    private bool CreateAppointment(DowntimeType dtType) {
       DateTime from, to;
 
       if (!string.IsNullOrEmpty(dtpFrom.Text) && !string.IsNullOrEmpty(dtpTo.Text)) {
         if (chbade.Checked) {
           //whole day appointment, only dates are visible
           if (DateTime.TryParse(dtpFrom.Text, out from) && DateTime.TryParse(dtpTo.Text, out to) && from <= to)
-            offlineTimes.Add(CreateAppointment(from, to.AddDays(1), true));
+            offlineTimes.Add(CreateAppointment(from, to.AddDays(1), true, dtType));
           else
             MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txttimeTo.Text)) {
           //Timeframe appointment
           if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txttimeTo.Text, out to) && from < to) {
             if (from.Date == to.Date)
-              offlineTimes.Add(CreateAppointment(from, to, false));
+              offlineTimes.Add(CreateAppointment(from, to, false, dtType));
             else {
               //more than 1 day selected
               while (from.Date != to.Date) {
-                offlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false));
+                offlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false, dtType));
                 from = from.AddDays(1);
               }
-              offlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false));
+              offlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false, dtType));
             }
           } else
             MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -124,26 +124,26 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       }
     }
 
-    private HiveAppointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay) {
+    private HiveAppointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay, DowntimeType downtimeType) {
       HiveAppointment app = new HiveAppointment();
       app.StartDate = startDate;
       app.EndDate = endDate;
       app.AllDayEvent = allDay;
       app.BorderColor = Color.Red;
       app.Locked = true;
-      app.Subject = "Offline";
+      app.Subject = downtimeType.ToString();
       app.Recurring = false;
       return app;
     }
 
-    private HiveAppointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay, bool recurring, Guid recurringId) {
+    private HiveAppointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay, bool recurring, Guid recurringId, DowntimeType downtimeType) {
       HiveAppointment app = new HiveAppointment();
       app.StartDate = startDate;
       app.EndDate = endDate;
       app.AllDayEvent = allDay;
       app.BorderColor = Color.Red;
       app.Locked = true;
-      app.Subject = "Offline";
+      app.Subject = downtimeType.ToString();
       app.Recurring = recurring;
       app.RecurringId = recurringId;
       return app;
@@ -163,22 +163,19 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       List<HiveAppointment> recurringAppointments = offlineTimes.Where(appointment => ((HiveAppointment)appointment).RecurringId == recurringId).ToList();
       recurringAppointments.ForEach(appointment => appointment.StartDate = new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day, hourfrom, 0, 0));
       recurringAppointments.ForEach(appointment => appointment.EndDate = new DateTime(appointment.EndDate.Year, appointment.EndDate.Month, appointment.EndDate.Day, hourTo, 0, 0));
-
-      DeleteRecurringAppointment(recurringId);
-      offlineTimes.AddRange(recurringAppointments);
     }
 
     public void DialogClosed(RecurrentEvent e) {
-      CreateDailyRecurrenceAppointments(e.DateFrom, e.DateTo, e.AllDay, e.WeekDays);
+      CreateDailyRecurrenceAppointments(e.DateFrom, e.DateTo, e.AllDay, e.WeekDays, e.AppointmentType);
     }
 
-    private void CreateDailyRecurrenceAppointments(DateTime dateFrom, DateTime dateTo, bool allDay, HashSet<DayOfWeek> daysOfWeek) {
+    private void CreateDailyRecurrenceAppointments(DateTime dateFrom, DateTime dateTo, bool allDay, HashSet<DayOfWeek> daysOfWeek, DowntimeType appointmentType) {
       DateTime incDate = dateFrom;
       Guid guid = Guid.NewGuid();
 
       while (incDate.Date <= dateTo.Date) {
         if (daysOfWeek.Contains(incDate.Date.DayOfWeek))
-          offlineTimes.Add(CreateAppointment(incDate, new DateTime(incDate.Year, incDate.Month, incDate.Day, dateTo.Hour, dateTo.Minute, 0), allDay, true, guid));
+          offlineTimes.Add(CreateAppointment(incDate, new DateTime(incDate.Year, incDate.Month, incDate.Day, dateTo.Hour, dateTo.Minute, 0), allDay, true, guid, appointmentType));
         incDate = incDate.AddDays(1);
       }
 
@@ -283,18 +280,25 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     private void btCreate_Click(object sender, EventArgs e) {
       if (dvOnline.Selection != SelectionType.Appointment) {
-        CreateAppointment();
+        DowntimeType dtType;
+        DialogResult result;
+        AppointmentTypeDialog dialog = new AppointmentTypeDialog();
+        result = dialog.ShowDialog(this);
+        dtType = dialog.AppointmentType;
+        dialog.Dispose();
+        if (result == DialogResult.Cancel) return;
+        CreateAppointment(dtType);
       } else {
         //now we want to change an existing appointment
         if (!dvOnline.SelectedAppointment.Recurring) {
-          if (CreateAppointment())
+          if (CreateAppointment(GetDowntimeTypeOfSelectedAppointment()))
             DeleteAppointment();
         } else {
           //change recurring appointment
           //check, if only selected appointment has to change or whole recurrence
           DialogResult res = MessageBox.Show("Change all events in this series?", "Change recurrences", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
           if (res != DialogResult.Yes) {
-            if (CreateAppointment())
+            if (CreateAppointment(GetDowntimeTypeOfSelectedAppointment()))
               DeleteAppointment();
           } else
             ChangeRecurrenceAppointment(((HiveAppointment)dvOnline.SelectedAppointment).RecurringId);
@@ -338,7 +342,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         Deleted = false,
         BorderColor = Color.Red,
         Locked = true,
-        Subject = "Offline",
+        Subject = downtime.DowntimeType.ToString(),
         Changed = downtime.Modified,
         Id = downtime.Id
       };
@@ -353,9 +357,14 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         Recurring = app.Recurring,
         RecurringId = app.RecurringId,
         ResourceId = HiveAdminClient.Instance.DowntimeForResourceId,
-        Id = app.Id
+        Id = app.Id,
+        DowntimeType = (DowntimeType)Enum.Parse(typeof(DowntimeType), app.Subject)
       };
       return downtime;
+    }
+
+    private DowntimeType GetDowntimeTypeOfSelectedAppointment() {
+      return (DowntimeType)Enum.Parse(typeof(DowntimeType), ((HiveAppointment)dvOnline.SelectedAppointment).Subject);
     }
   }
 }

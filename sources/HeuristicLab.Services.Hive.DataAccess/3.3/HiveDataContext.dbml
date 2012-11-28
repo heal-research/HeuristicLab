@@ -94,6 +94,7 @@
       <Column Name="AllDayEvent" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
       <Column Name="Recurring" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
       <Column Name="RecurringId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="false" />
+      <Column Name="DowntimeType" Storage="_Type" Type="global::HeuristicLab.Services.Hive.DataAccess.DowntimeType" DbType="VarChar(MAX)" CanBeNull="false" />
       <Association Name="Resource_Downtime" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" DeleteRule="CASCADE" />
     </Type>
   </Table>

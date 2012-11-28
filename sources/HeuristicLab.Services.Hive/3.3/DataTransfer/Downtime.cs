@@ -21,6 +21,7 @@
 
 using System;
 using System.Runtime.Serialization;
+using HeuristicLab.Services.Hive.DataAccess;
 
 namespace HeuristicLab.Services.Hive.DataTransfer {
   [DataContract]
@@ -37,5 +38,7 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     public Guid RecurringId { get; set; }
     [DataMember]
     public Guid ResourceId { get; set; }
+    [DataMember]
+    public DowntimeType DowntimeType { get; set; }
   }
 }
