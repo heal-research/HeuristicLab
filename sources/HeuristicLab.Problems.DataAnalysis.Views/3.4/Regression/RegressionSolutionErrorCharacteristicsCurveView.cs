@@ -234,7 +234,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private IRegressionSolution CreateConstantModel() {
       double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average();
-      var solution = new ConstantRegressionModel(averageTrainingTarget).CreateRegressionSolution(ProblemData);
+      var model = new ConstantRegressionModel(averageTrainingTarget);
+      var solution = new ConstantRegressionSolution(model,(IRegressionProblemData)ProblemData.Clone());
       solution.Name = "Baseline";
       return solution;
     }
