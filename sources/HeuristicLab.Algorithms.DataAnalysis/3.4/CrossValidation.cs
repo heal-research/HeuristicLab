@@ -72,7 +72,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void AfterDeserialization() {
       RegisterEvents();
       if (Algorithm != null) RegisterAlgorithmEvents();
-      if (Problem != null) Problem.Reset += (o, e) => OnProblemChanged();
     }
 
     private CrossValidation(CrossValidation original, Cloner cloner)
@@ -120,7 +119,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
             Parameters.AddRange(algorithm.Parameters);
           }
           OnAlgorithmChanged();
-          if (algorithm != null) OnProblemChanged();
           Prepare();
         }
       }
@@ -540,17 +538,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void RegisterAlgorithmEvents() {
       algorithm.ProblemChanged += new EventHandler(Algorithm_ProblemChanged);
       algorithm.ExecutionStateChanged += new EventHandler(Algorithm_ExecutionStateChanged);
+      if (Problem != null) Problem.Reset += new EventHandler(Problem_Reset);
     }
     private void DeregisterAlgorithmEvents() {
       algorithm.ProblemChanged -= new EventHandler(Algorithm_ProblemChanged);
       algorithm.ExecutionStateChanged -= new EventHandler(Algorithm_ExecutionStateChanged);
+      if (Problem != null) Problem.Reset -= new EventHandler(Problem_Reset);
     }
     private void Algorithm_ProblemChanged(object sender, EventArgs e) {
       if (algorithm.Problem != null && !(algorithm.Problem is IDataAnalysisProblem)) {
         algorithm.Problem = problem;
         throw new ArgumentException("A cross validation algorithm can only contain DataAnalysisProblems.");
       }
-      algorithm.Problem.Reset += (x, y) => OnProblemChanged();
+      if(problem!= null) problem.Reset -= new EventHandler(Problem_Reset);
+      if (Problem != null) Problem.Reset += new EventHandler(Problem_Reset);
       problem = (IDataAnalysisProblem)algorithm.Problem;
       OnProblemChanged();
     }
@@ -558,8 +559,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void OnProblemChanged() {
       EventHandler handler = ProblemChanged;
       if (handler != null) handler(this, EventArgs.Empty);
+      ConfigureProblem();
+    }
 
-      SamplesStart.Value = 0;
+    private void Problem_Reset(object sender, EventArgs e) {
+      ConfigureProblem();
+    }
+
+    private void ConfigureProblem(){
+    SamplesStart.Value = 0;
       if (Problem != null) {
         SamplesEnd.Value = Problem.ProblemData.Dataset.Rows;
 
