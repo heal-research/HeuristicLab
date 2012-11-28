@@ -21,6 +21,8 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -455,7 +457,13 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       var t = TS.Task.Factory.StartNew(new Action(Shutdown));
       t.ContinueWith(c => {
         try {
-          Process.Start(SlaveCore.Properties.Settings.Default.ShutdownCommand);
+          //we assume that *.exe means an executable in the current directory, otherwise it is a command
+          if (SlaveCore.Properties.Settings.Default.ShutdownCommand.EndsWith(".exe")) {
+            string dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Process.Start(Path.Combine(dirName, SlaveCore.Properties.Settings.Default.ShutdownCommand));
+          } else {
+            Process.Start(SlaveCore.Properties.Settings.Default.ShutdownCommand);
+          }
         }
         catch (Exception ex) {
           if (ServiceEventLog != null) {
