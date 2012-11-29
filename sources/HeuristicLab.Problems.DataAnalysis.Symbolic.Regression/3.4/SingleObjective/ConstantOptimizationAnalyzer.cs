@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private DataTable ConstantOptimizationImprovementDataTable {
       get {
         IResult result;
-        ResultCollection.TryGetValue("Constant Optimization Improvement", out result);
+        ResultCollection.TryGetValue(DataTableNameConstantOptimizationImprovement, out result);
         if (result == null) return null;
         return (DataTable)result.Value;
       }
@@ -111,9 +111,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     public override IOperation Apply() {
-      //code executed for first call of analyzer
+      //code executed in the first call of analyzer
       if (qualitiesBeforeCoOp == null) {
-
         double[] trainingQuality;
         // sort is ascending and we take the first n% => order so that best solutions are smallest
         // sort order is determined by maximization parameter
