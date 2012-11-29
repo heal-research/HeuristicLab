@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       var model = new SymbolicTimeSeriesPrognosisModel(tree, Content.Model.Interpreter);
-      SymbolicTimeSeriesPrognosisModel.Scale(model, Content.ProblemData, Content.ProblemData.TargetVariable);
+      model.Scale(Content.ProblemData);
       Content.Model = model;
     }
 

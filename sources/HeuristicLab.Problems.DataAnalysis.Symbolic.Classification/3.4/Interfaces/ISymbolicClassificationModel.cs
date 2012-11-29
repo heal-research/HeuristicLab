@@ -26,5 +26,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     double UpperEstimationLimit { get; }
     void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);
     new ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
+
+    void Scale(IClassificationProblemData problemData);
   }
 }

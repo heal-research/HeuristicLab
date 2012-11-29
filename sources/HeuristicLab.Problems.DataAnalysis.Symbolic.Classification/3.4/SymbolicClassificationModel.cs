@@ -61,5 +61,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     IClassificationSolution IClassificationModel.CreateClassificationSolution(IClassificationProblemData problemData) {
       return CreateClassificationSolution(problemData);
     }
+
+    public void Scale(IClassificationProblemData problemData) {
+      Scale(problemData, problemData.TargetVariable);
+    }
   }
 }

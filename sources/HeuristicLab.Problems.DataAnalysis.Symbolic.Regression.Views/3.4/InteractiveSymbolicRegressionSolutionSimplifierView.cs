@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
     protected override void UpdateModel(ISymbolicExpressionTree tree) {
       var model = new SymbolicRegressionModel(tree, Content.Model.Interpreter, Content.Model.LowerEstimationLimit, Content.Model.UpperEstimationLimit);
-      SymbolicRegressionModel.Scale(model, Content.ProblemData, Content.ProblemData.TargetVariable);
+      model.Scale(Content.ProblemData);
       Content.Model = model;
     }
 

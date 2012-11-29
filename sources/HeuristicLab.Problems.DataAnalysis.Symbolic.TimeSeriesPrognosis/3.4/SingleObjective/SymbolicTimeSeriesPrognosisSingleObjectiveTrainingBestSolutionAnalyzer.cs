@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
 
     protected override ISymbolicTimeSeriesPrognosisSolution CreateSolution(ISymbolicExpressionTree bestTree, double bestQuality) {
       var model = new SymbolicTimeSeriesPrognosisModel((ISymbolicExpressionTree)bestTree.Clone(), SymbolicDataAnalysisTreeInterpreterParameter.ActualValue as ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper);
-      if (ApplyLinearScalingParameter.ActualValue.Value) SymbolicTimeSeriesPrognosisModel.Scale(model, ProblemDataParameter.ActualValue, ProblemDataParameter.ActualValue.TargetVariable);
+      if (ApplyLinearScalingParameter.ActualValue.Value) model.Scale(ProblemDataParameter.ActualValue);
       return new SymbolicTimeSeriesPrognosisSolution(model, (ITimeSeriesPrognosisProblemData)ProblemDataParameter.ActualValue.Clone());
     }
   }

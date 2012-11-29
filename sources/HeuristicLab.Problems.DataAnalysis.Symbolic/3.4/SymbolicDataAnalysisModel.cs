@@ -68,10 +68,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     #region Scaling
-    public static void Scale(ISymbolicDataAnalysisModel model, IDataAnalysisProblemData problemData, string targetVariable) {
+    protected void Scale(IDataAnalysisProblemData problemData, string targetVariable) {
       var dataset = problemData.Dataset;
       var rows = problemData.TrainingIndices;
-      var estimatedValues = model.Interpreter.GetSymbolicExpressionTreeValues(model.SymbolicExpressionTree, dataset, rows);
+      var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows);
       var targetValues = dataset.GetDoubleValues(targetVariable, rows);
 
       var linearScalingCalculator = new OnlineLinearScalingParameterCalculator();
@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       ConstantTreeNode alphaTreeNode = null;
       ConstantTreeNode betaTreeNode = null;
       // check if model has been scaled previously by analyzing the structure of the tree
-      var startNode = model.SymbolicExpressionTree.Root.GetSubtree(0);
+      var startNode = SymbolicExpressionTree.Root.GetSubtree(0);
       if (startNode.GetSubtree(0).Symbol is Addition) {
         var addNode = startNode.GetSubtree(0);
         if (addNode.SubtreeCount == 2 && addNode.GetSubtree(0).Symbol is Multiplication && addNode.GetSubtree(1).Symbol is Constant) {
