@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
   [PluginDependency("HeuristicLab.Optimization","3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Views", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Views", "3.4")]
