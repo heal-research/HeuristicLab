@@ -144,12 +144,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected static void CalculateWithScaling(IEnumerable<double> targetValues, IEnumerable<double> estimatedValues,
       double lowerEstimationLimit, double upperEstimationLimit,
       IOnlineCalculator calculator, int maxRows) {
-      if (cache == null || cache.GetLength(0) < maxRows) {
+      if (cache == null || cache.Length < maxRows) {
         cache = new double[maxRows];
       }
 
       // calculate linear scaling
-      // the static methods of the calculator are not used because the evaluated values should be cached for performance reasons
       int i = 0;
       var linearScalingCalculator = new OnlineLinearScalingParameterCalculator();
       var targetValuesEnumerator = targetValues.GetEnumerator();
