@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private NearestNeighborModelCreator(NearestNeighborModelCreator original, Cloner cloner) : base(original, cloner) { }
     public NearestNeighborModelCreator()
       : base() {
-      Parameters.Add(new FixedValueParameter<IntValue>("K", "The number of neighbours to use to determine the class.", new IntValue(3)));
+      Parameters.Add(new FixedValueParameter<IntValue>("K", "The number of neighbours to use to determine the class.", new IntValue(11)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new NearestNeighborModelCreator(this, cloner); }
