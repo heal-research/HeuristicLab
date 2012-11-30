@@ -46,9 +46,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.DoubleBuffered = true;
       this.insertNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.changeValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.editNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.copyNodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.copySubtreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,16 +65,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // insertNodeToolStripMenuItem
       // 
       this.insertNodeToolStripMenuItem.Name = "insertNodeToolStripMenuItem";
-      this.insertNodeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.insertNodeToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
       this.insertNodeToolStripMenuItem.Text = "Insert Node";
       this.insertNodeToolStripMenuItem.Click += new System.EventHandler(this.insertNodeToolStripMenuItem_Click);
       // 
-      // changeValueToolStripMenuItem
+      // editNodeToolStripMenuItem
       // 
-      this.changeValueToolStripMenuItem.Name = "changeValueToolStripMenuItem";
-      this.changeValueToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.changeValueToolStripMenuItem.Text = "Change Value";
-      this.changeValueToolStripMenuItem.Click += new System.EventHandler(this.changeValueToolStripMenuItem_Click);
+      this.editNodeToolStripMenuItem.Name = "editNodeToolStripMenuItem";
+      this.editNodeToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+      this.editNodeToolStripMenuItem.Text = "Edit";
+      this.editNodeToolStripMenuItem.Click += new System.EventHandler(this.editNodeToolStripMenuItem_Click);
       // 
       // copyToolStripMenuItem
       // 
@@ -83,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             this.copyNodeToolStripMenuItem,
             this.copySubtreeToolStripMenuItem});
       this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-      this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.copyToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
       this.copyToolStripMenuItem.Text = "Copy";
       // 
       // copyNodeToolStripMenuItem
@@ -106,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             this.cutNodeToolStripMenuItem,
             this.cutSubtreeToolStripMenuItem});
       this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-      this.cutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.cutToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
       this.cutToolStripMenuItem.Text = "Cut";
       // 
       // cutNodeToolStripMenuItem
@@ -129,7 +128,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             this.deleteNodeToolStripMenuItem,
             this.deleteSubtreeToolStripMenuItem});
       this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
       this.deleteToolStripMenuItem.Text = "Delete";
       // 
       // deleteNodeToolStripMenuItem
@@ -149,19 +148,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // pasteToolStripMenuItem
       // 
       this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-      this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.pasteToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
       this.pasteToolStripMenuItem.Text = "Paste";
       this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Clicked);
-      //
-      // contextMenuStrip
-      //
+      // 
+      // contextMenuStrip 
+      // 
       this.contextMenuStrip.Opened += this.contextMenuStrip_Opened;
-      this.contextMenuStrip.Items.AddRange(new ToolStripItem[] { insertNodeToolStripMenuItem,
-                                                                 changeValueToolStripMenuItem, 
-                                                                 copyToolStripMenuItem, 
-                                                                 cutToolStripMenuItem, 
-                                                                 deleteToolStripMenuItem, 
-                                                                 pasteToolStripMenuItem });
+      this.contextMenuStrip.Items.AddRange(new ToolStripItem[] { insertNodeToolStripMenuItem, 
+ 		                                                             editNodeToolStripMenuItem,  
+ 		                                                             copyToolStripMenuItem,  
+ 		                                                             cutToolStripMenuItem,  
+ 		                                                             deleteToolStripMenuItem,  
+ 		                                                             pasteToolStripMenuItem });
       // 
       // treeStatusLabel
       // 
@@ -190,14 +189,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.treeStatusLabel);
       this.Controls.Add(this.treeStatusValue);
+      this.DoubleBuffered = true;
       this.Name = "InteractiveSymbolicExpressionTreeChart";
+      this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.InteractiveSymbolicExpressionTreeChart_MouseClick);
       this.ResumeLayout(false);
       this.PerformLayout();
 
     }
 
     private ToolStripMenuItem insertNodeToolStripMenuItem;
-    private ToolStripMenuItem changeValueToolStripMenuItem;
+    private ToolStripMenuItem editNodeToolStripMenuItem;
     private ToolStripMenuItem copyToolStripMenuItem;
     private ToolStripMenuItem copyNodeToolStripMenuItem;
     private ToolStripMenuItem copySubtreeToolStripMenuItem;

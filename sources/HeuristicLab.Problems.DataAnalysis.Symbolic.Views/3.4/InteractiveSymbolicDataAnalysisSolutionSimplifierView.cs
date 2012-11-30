@@ -33,16 +33,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public abstract partial class InteractiveSymbolicDataAnalysisSolutionSimplifierView : AsynchronousContentView {
     private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> replacementNodes;
     private Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts;
-    private Dictionary<ISymbolicExpressionTreeNode, double> originalValues;
-    private Dictionary<ISymbolicExpressionTreeNode, string> originalVariableNames;
 
     public InteractiveSymbolicDataAnalysisSolutionSimplifierView() {
       InitializeComponent();
       replacementNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
       nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
-      originalValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
-      originalVariableNames = new Dictionary<ISymbolicExpressionTreeNode, string>();
-
       this.Caption = "Interactive Solution Simplifier";
     }
 
@@ -104,83 +99,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var visualNode = (VisualSymbolicExpressionTreeNode)sender;
       var symbExprTreeNode = (SymbolicExpressionTreeNode)visualNode.SymbolicExpressionTreeNode;
       if (symbExprTreeNode == null) return;
+      if (!replacementNodes.ContainsKey(symbExprTreeNode)) return;
       var tree = Content.Model.SymbolicExpressionTree;
+      var replacementNode = replacementNodes[symbExprTreeNode];
+      int indexOfReplacementNode = symbExprTreeNode.Parent.IndexOfSubtree(symbExprTreeNode);
+      SwitchNodeWithReplacementNode(symbExprTreeNode.Parent, indexOfReplacementNode);
+      // show only interesting part of solution 
+      treeChart.Tree = tree.Root.SubtreeCount > 1
+                         ? new SymbolicExpressionTree(tree.Root)
+                         : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
+      UpdateModel(tree);
+      var vNode = treeChart.GetVisualSymbolicExpressionTreeNode(replacementNode);
+      vNode.SymbolicExpressionTreeNode = replacementNode;
 
-      bool update = false;
-      // check if the node value/weight has been altered
-      // if so, the first double click will return the node to its original value/weight/variable name
-      // the next double click will replace the ConstantNode with the original SymbolicExpressionTreeNode
-      if (originalVariableNames.ContainsKey(symbExprTreeNode)) {
-        var variable = (VariableTreeNode)symbExprTreeNode;
-        variable.VariableName = originalVariableNames[symbExprTreeNode];
-        originalVariableNames.Remove(variable);
-        update = true;
-      } else if (originalValues.ContainsKey(symbExprTreeNode)) {
-        double value = originalValues[symbExprTreeNode];
-        if (symbExprTreeNode.Symbol is Constant) {
-          var constantTreeNode = (ConstantTreeNode)symbExprTreeNode;
-          constantTreeNode.Value = value;
-        } else if (symbExprTreeNode.Symbol is Variable) {
-          var variable = (VariableTreeNode)symbExprTreeNode;
-          variable.Weight = value;
-        }
-        originalValues.Remove(symbExprTreeNode);
-        update = true;
-      } else if (replacementNodes.ContainsKey(symbExprTreeNode)) {
-        foreach (var treeNode in tree.IterateNodesPostfix()) {
-          for (int i = 0; i < treeNode.SubtreeCount; i++) {
-            var subtree = treeNode.GetSubtree(i);
-            if (subtree == symbExprTreeNode) {
-              SwitchNodeWithReplacementNode(treeNode, i);
-              // show only interesting part of solution 
-              treeChart.Tree = tree.Root.SubtreeCount > 1
-                                 ? new SymbolicExpressionTree(tree.Root)
-                                 : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
-              update = true;
-            }
-          }
-          if (update) break;
-        }
-      }
-      if (update) UpdateModel(tree);
+      vNode.LineColor = replacementNode is ConstantTreeNode ? Color.DarkOrange : Color.Black;
+      treeChart.RepaintNode(vNode);
     }
 
     private void treeChart_SymbolicExpressionTreeChanged(object sender, EventArgs e) {
       UpdateModel(Content.Model.SymbolicExpressionTree);
       UpdateView();
-    }
-
-    private void treeChart_SymbolicExpressionTreeNodeChanged(object sender, EventArgs e) {
-      var dialog = (ValueChangeDialog)sender;
-      bool flag1 = false, flag2 = false;
-      var node = dialog.Content;
-
-      if (node is VariableTreeNode) {
-        var variable = (VariableTreeNode)node;
-        var weight = double.Parse(dialog.newValueTextBox.Text);
-        var name = (string)dialog.variableNamesCombo.SelectedItem;
-        if (!variable.Weight.Equals(weight)) {
-          flag1 = true;
-          originalValues[variable] = variable.Weight;
-          variable.Weight = weight;
-        }
-        if (!variable.VariableName.Equals(name)) {
-          flag2 = true;
-          originalVariableNames[variable] = variable.VariableName;
-          variable.VariableName = name;
-        }
-      } else if (node is ConstantTreeNode) {
-        var constant = (ConstantTreeNode)node;
-        var value = double.Parse(dialog.newValueTextBox.Text);
-        if (!constant.Value.Equals(value)) {
-          flag1 = true;
-          originalValues[constant] = constant.Value;
-          constant.Value = value;
-        }
-      }
-      if (flag1 || flag2) {
-        UpdateView();
-      }
     }
 
     private void SwitchNodeWithReplacementNode(ISymbolicExpressionTreeNode parent, int subTreeIndex) {
@@ -201,14 +139,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       double min = impacts.Min();
       foreach (ISymbolicExpressionTreeNode treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
         VisualSymbolicExpressionTreeNode visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
-        bool flag1 = replacementNodes.ContainsKey(treeNode);
-        bool flag2 = originalValues.ContainsKey(treeNode);
-        bool flag3 = treeNode is ConstantTreeNode;
-
-        if (flag2) // constant or variable node was changed
-          visualTree.ToolTip += Environment.NewLine + "Original value: " + originalValues[treeNode];
-        else if (flag1 && flag3) // symbol node was folded to a constant
-          visualTree.ToolTip += Environment.NewLine + "Original node: " + replacementNodes[treeNode];
 
         if (!(treeNode is ConstantTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
           double impact = nodeImpacts[treeNode];
@@ -231,21 +161,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             visualTree.ToolTip += Environment.NewLine + "Replacement value: " + constantReplacementNode.Value;
           }
         }
-      }
-      this.PaintCollapsedNodes();
-      this.treeChart.Repaint();
-    }
-
-    private void PaintCollapsedNodes() {
-      foreach (ISymbolicExpressionTreeNode treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
-        bool flag1 = replacementNodes.ContainsKey(treeNode);
-        bool flag2 = originalValues.ContainsKey(treeNode);
-        if (flag1 && treeNode is ConstantTreeNode) {
-          this.treeChart.GetVisualSymbolicExpressionTreeNode(treeNode).LineColor = flag2 ? Color.DarkViolet : Color.DarkOrange;
-        } else if (flag2) {
-          this.treeChart.GetVisualSymbolicExpressionTreeNode(treeNode).LineColor = Color.DodgerBlue;
+        if (visualTree != null && treeNode is ConstantTreeNode && replacementNodes.ContainsKey(treeNode)) {
+          visualTree.LineColor = Color.DarkOrange;
         }
       }
+      // repaint nodes and refresh
+      treeChart.RepaintNodes();
+      treeChart.Refresh();
     }
 
     private void btnSimplify_Click(object sender, EventArgs e) {

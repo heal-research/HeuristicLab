@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  partial class ValueChangeDialog {
+  partial class ConstantNodeEditDialog {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -50,8 +50,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.newValueTextBox = new System.Windows.Forms.TextBox();
       this.newValueLabel = new System.Windows.Forms.Label();
       this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-      this.variableNameLabel = new System.Windows.Forms.Label();
-      this.variableNamesCombo = new System.Windows.Forms.ComboBox();
       this.okButton = new System.Windows.Forms.Button();
       this.cancelButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
@@ -60,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // originalValueLabel
       // 
       this.originalValueLabel.AutoSize = true;
-      this.originalValueLabel.Location = new System.Drawing.Point(12, 45);
+      this.originalValueLabel.Location = new System.Drawing.Point(12, 9);
       this.originalValueLabel.Name = "originalValueLabel";
       this.originalValueLabel.Size = new System.Drawing.Size(72, 13);
       this.originalValueLabel.TabIndex = 2;
@@ -68,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // oldValueTextBox
       // 
-      this.oldValueTextBox.Location = new System.Drawing.Point(123, 42);
+      this.oldValueTextBox.Location = new System.Drawing.Point(123, 6);
       this.oldValueTextBox.Name = "oldValueTextBox";
       this.oldValueTextBox.ReadOnly = true;
       this.oldValueTextBox.Size = new System.Drawing.Size(131, 20);
@@ -76,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // newValueTextBox
       // 
-      this.newValueTextBox.Location = new System.Drawing.Point(123, 82);
+      this.newValueTextBox.Location = new System.Drawing.Point(123, 42);
       this.newValueTextBox.Name = "newValueTextBox";
       this.newValueTextBox.Size = new System.Drawing.Size(131, 20);
       this.newValueTextBox.TabIndex = 0;
@@ -87,7 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // newValueLabel
       // 
       this.newValueLabel.AutoSize = true;
-      this.newValueLabel.Location = new System.Drawing.Point(12, 85);
+      this.newValueLabel.Location = new System.Drawing.Point(12, 45);
       this.newValueLabel.Name = "newValueLabel";
       this.newValueLabel.Size = new System.Drawing.Size(59, 13);
       this.newValueLabel.TabIndex = 5;
@@ -99,32 +97,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.errorProvider.ContainerControl = this;
       this.errorProvider.RightToLeft = true;
       // 
-      // variableNameLabel
-      // 
-      this.variableNameLabel.AutoSize = true;
-      this.variableNameLabel.Location = new System.Drawing.Point(12, 7);
-      this.variableNameLabel.Name = "variableNameLabel";
-      this.variableNameLabel.Size = new System.Drawing.Size(76, 13);
-      this.variableNameLabel.TabIndex = 6;
-      this.variableNameLabel.Text = "Variable Name";
-      this.variableNameLabel.Visible = false;
-      // 
-      // variableNamesCombo
-      // 
-      this.variableNamesCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.variableNamesCombo.FormattingEnabled = true;
-      this.variableNamesCombo.Location = new System.Drawing.Point(123, 4);
-      this.variableNamesCombo.Name = "variableNamesCombo";
-      this.variableNamesCombo.Size = new System.Drawing.Size(131, 21);
-      this.variableNamesCombo.TabIndex = 7;
-      this.variableNamesCombo.Visible = false;
-      this.variableNamesCombo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.childControl_KeyDown);
-      this.variableNamesCombo.Validating += new System.ComponentModel.CancelEventHandler(this.variableNamesCombo_Validating);
-      this.variableNamesCombo.Validated += new System.EventHandler(this.variableNamesCombo_Validated);
-      // 
       // okButton
       // 
-      this.okButton.Location = new System.Drawing.Point(15, 119);
+      this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+      this.okButton.Location = new System.Drawing.Point(15, 79);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 8;
@@ -136,7 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.cancelButton.CausesValidation = false;
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(179, 119);
+      this.cancelButton.Location = new System.Drawing.Point(179, 79);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 9;
@@ -144,18 +120,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.cancelButton.UseVisualStyleBackColor = true;
       this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
       // 
-      // ValueChangeDialog
+      // ConstantNodeEditDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(269, 154);
+      this.ClientSize = new System.Drawing.Size(269, 116);
       this.ControlBox = false;
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
-      this.Controls.Add(this.variableNamesCombo);
-      this.Controls.Add(this.variableNameLabel);
       this.Controls.Add(this.newValueLabel);
       this.Controls.Add(this.newValueTextBox);
       this.Controls.Add(this.oldValueTextBox);
@@ -163,12 +137,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.MaximizeBox = false;
       this.MinimizeBox = false;
-      this.Name = "ValueChangeDialog";
+      this.Name = "ConstantNodeEditDialog";
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-      this.Text = "Change Value or Weight";
-      this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ValueChangeDialog_KeyDown);
+      this.Text = "Edit constant value";
+      this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ConstantNodeEditDialog_KeyDown);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -181,10 +155,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private System.Windows.Forms.TextBox oldValueTextBox;
     private System.Windows.Forms.Label newValueLabel;
     private System.Windows.Forms.ErrorProvider errorProvider;
-    private System.Windows.Forms.Label variableNameLabel;
     private System.Windows.Forms.Button cancelButton;
     private System.Windows.Forms.Button okButton;
     public System.Windows.Forms.TextBox newValueTextBox;
-    public System.Windows.Forms.ComboBox variableNamesCombo;
   }
 }

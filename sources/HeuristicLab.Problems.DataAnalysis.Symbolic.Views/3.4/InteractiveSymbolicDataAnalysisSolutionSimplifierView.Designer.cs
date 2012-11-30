@@ -158,7 +158,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
       this.treeChart.Tree = null;
       this.treeChart.SymbolicExpressionTreeChanged += new System.EventHandler(this.treeChart_SymbolicExpressionTreeChanged);
-      this.treeChart.SymbolicExpressionTreeNodeChanged += new System.EventHandler(this.treeChart_SymbolicExpressionTreeNodeChanged);
       this.treeChart.SymbolicExpressionTreeNodeDoubleClicked += new System.Windows.Forms.MouseEventHandler(this.treeChart_SymbolicExpressionTreeNodeDoubleClicked);
       // 
       // grpViewHost
@@ -189,7 +188,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.flowLayoutPanel.ResumeLayout(false);
       this.grpViewHost.ResumeLayout(false);
       this.ResumeLayout(false);
-
     }
 
     #endregion

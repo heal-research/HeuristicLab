@@ -126,6 +126,28 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
+    public void RepaintNodes() {
+      if (!suspendRepaint) {
+        var graphics = Graphics.FromImage(image);
+        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+        foreach (var visualNode in visualTreeNodes.Values) {
+          DrawTreeNode(graphics, visualNode);
+        }
+        this.Refresh();
+      }
+    }
+
+    public void RepaintNode(VisualSymbolicExpressionTreeNode visualNode) {
+      if (!suspendRepaint) {
+        var graphics = Graphics.FromImage(image);
+        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+        DrawTreeNode(graphics, visualNode);
+        this.Refresh();
+      }
+    }
+
     private void GenerateImage() {
       using (Graphics graphics = Graphics.FromImage(image)) {
         graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
@@ -309,6 +331,34 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         DrawFunctionTree(node.GetSubtree(i), graphics, xBoundaries[i], y + height,
           xBoundaries[i + 1] - xBoundaries[i], height, connectFrom);
       }
+    }
+
+    protected void DrawTreeNode(VisualSymbolicExpressionTreeNode visualTreeNode) {
+      using (var graphics = Graphics.FromImage(image)) {
+        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+        DrawTreeNode(graphics, visualTreeNode);
+      }
+    }
+
+    protected void DrawTreeNode(Graphics graphics, VisualSymbolicExpressionTreeNode visualTreeNode) {
+      graphics.Clip = new Region(new Rectangle(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width + 1, visualTreeNode.Height + 1));
+      graphics.Clear(backgroundColor);
+      var node = visualTreeNode.SymbolicExpressionTreeNode;
+      var textBrush = new SolidBrush(visualTreeNode.TextColor);
+      var nodeLinePen = new Pen(visualTreeNode.LineColor);
+      var nodeFillBrush = new SolidBrush(visualTreeNode.FillColor);
+      //draw terminal node
+      if (node.SubtreeCount == 0) {
+        graphics.FillRectangle(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+        graphics.DrawRectangle(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+      } else {
+        graphics.FillEllipse(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+        graphics.DrawEllipse(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+      }
+      //draw name of symbol
+      var text = node.ToString();
+      graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
     }
     #endregion
 

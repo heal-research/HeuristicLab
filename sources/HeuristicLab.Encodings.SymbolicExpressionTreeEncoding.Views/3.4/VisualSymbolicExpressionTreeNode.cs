@@ -84,6 +84,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private ISymbolicExpressionTreeNode symbolicExpressionTreeNode;
     public ISymbolicExpressionTreeNode SymbolicExpressionTreeNode {
       get { return this.symbolicExpressionTreeNode; }
+      set {
+        symbolicExpressionTreeNode = value;
+        ToolTip = SymbolicExpressionTreeNode.ToString();
+      }
     }
 
     private int preferredWidth;

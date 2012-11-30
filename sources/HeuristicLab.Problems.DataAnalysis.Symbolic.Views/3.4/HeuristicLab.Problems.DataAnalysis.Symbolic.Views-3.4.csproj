@@ -174,11 +174,17 @@
     <Compile Include="Symbols\VariableView.Designer.cs">
       <DependentUpon>VariableView.cs</DependentUpon>
     </Compile>
-    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeNodeChangeValueDialog.cs">
+    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeConstantNodeEditDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeNodeChangeValueDialog.Designer.cs">
-      <DependentUpon>SymbolicExpressionTreeNodeChangeValueDialog.cs</DependentUpon>
+    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeConstantNodeEditDialog.Designer.cs">
+      <DependentUpon>SymbolicExpressionTreeConstantNodeEditDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeVariableNodeEditDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TreeEditDialogs\SymbolicExpressionTreeVariableNodeEditDialog.Designer.cs">
+      <DependentUpon>SymbolicExpressionTreeVariableNodeEditDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TreeEditDialogs\SymbolicExpressionTreeNodeInsertDialog.cs">
       <SubType>Form</SubType>

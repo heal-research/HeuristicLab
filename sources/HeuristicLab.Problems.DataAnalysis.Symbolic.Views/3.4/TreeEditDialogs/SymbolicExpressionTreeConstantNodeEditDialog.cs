@@ -27,38 +27,31 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  public partial class ValueChangeDialog : Form {
-    private ISymbolicExpressionTreeNode content;
-    public ISymbolicExpressionTreeNode Content {
-      get { return content; }
+  public partial class ConstantNodeEditDialog : Form {
+    private ConstantTreeNode constantTreeNode;
+    public ConstantTreeNode NewNode {
+      get { return constantTreeNode; }
       set {
         if (InvokeRequired)
-          Invoke(new Action<SymbolicExpressionTreeNode>(x => content = x), value);
+          Invoke(new Action<SymbolicExpressionTreeNode>(x => constantTreeNode = (ConstantTreeNode)x), value);
         else
-          content = value;
+          constantTreeNode = value;
       }
     }
 
-    public ValueChangeDialog() {
+    public ConstantNodeEditDialog(ISymbolicExpressionTreeNode node) {
       InitializeComponent();
       oldValueTextBox.TabStop = false; // cannot receive focus using tab key
+      NewNode = (ConstantTreeNode)node;
+      InitializeFields();
     }
 
-    public void SetContent(ISymbolicExpressionTreeNode content) {
-      Content = content;
-      if (Content is VariableTreeNode) {
-        this.Text = "Change variable name or weight";
-        var variable = Content as VariableTreeNode;
-        newValueTextBox.Text = oldValueTextBox.Text = Math.Round(variable.Weight, 4).ToString();
-        // add a dropbox containing all the available variable names
-        variableNameLabel.Visible = true;
-        variableNamesCombo.Visible = true;
-        foreach (var name in variable.Symbol.VariableNames) variableNamesCombo.Items.Add(name);
-        variableNamesCombo.SelectedIndex = variableNamesCombo.Items.IndexOf(variable.VariableName);
-      } else if (Content is ConstantTreeNode) {
-        this.Text = "Change constant value";
-        var constant = Content as ConstantTreeNode;
-        newValueTextBox.Text = oldValueTextBox.Text = Math.Round(constant.Value, 4).ToString();
+    private void InitializeFields() {
+      if (NewNode == null)
+        throw new ArgumentException("Node is not a constant.");
+      else {
+        this.Text = "Edit constant";
+        newValueTextBox.Text = oldValueTextBox.Text = Math.Round(constantTreeNode.Value, 4).ToString();
       }
     }
 
@@ -91,25 +84,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
     #endregion
 
-    #region combo box validation and events
-    private void variableNamesCombo_Validating(object sender, CancelEventArgs e) {
-      if (!(Content is VariableTreeNode)) return;
-      if (variableNamesCombo.Items.Contains(variableNamesCombo.SelectedItem)) return;
-      e.Cancel = true;
-      errorProvider.SetError(variableNamesCombo, "Invalid variable name");
-      variableNamesCombo.SelectAll();
-    }
-
-    private void variableNamesCombo_Validated(object sender, EventArgs e) {
-      errorProvider.SetError(variableNamesCombo, String.Empty);
-    }
-    #endregion
     // proxy handler passing key strokes to the parent control
     private void childControl_KeyDown(object sender, KeyEventArgs e) {
-      ValueChangeDialog_KeyDown(sender, e);
+      ConstantNodeEditDialog_KeyDown(sender, e);
     }
 
-    private void ValueChangeDialog_KeyDown(object sender, KeyEventArgs e) {
+    private void ConstantNodeEditDialog_KeyDown(object sender, KeyEventArgs e) {
       if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return)) {
         if (!ValidateChildren()) return;
         OnDialogValidated(this, e); // emit validated effect
@@ -119,6 +99,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     public event EventHandler DialogValidated;
     private void OnDialogValidated(object sender, EventArgs e) {
+      if (constantTreeNode == null) return;
+      var value = double.Parse(newValueTextBox.Text);
+      // we impose an extra validation condition: that the new value is different from the original value
+      if (constantTreeNode.Value.Equals(value)) return;
+
+      constantTreeNode.Value = value;
+      DialogResult = DialogResult.OK;
       var dialogValidated = DialogValidated;
       if (dialogValidated != null)
         dialogValidated(sender, e);
@@ -134,6 +121,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         Close();
       }
     }
-
   }
 }
