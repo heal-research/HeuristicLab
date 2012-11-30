@@ -143,7 +143,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   }
 
   [StorableClass]
-  internal class ClassFrequencyComparer : IComparer<double> {
+  internal sealed class ClassFrequencyComparer : IComparer<double> {
     [Storable]
     private Dictionary<double, int> classFrequencies;
 
