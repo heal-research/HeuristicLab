@@ -108,6 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     public event EventHandler DialogValidated;
     private void OnDialogValidated(object sender, EventArgs e) {
+      DialogResult = DialogResult.OK;
       var dialogValidated = DialogValidated;
       if (dialogValidated != null)
         dialogValidated(sender, e);

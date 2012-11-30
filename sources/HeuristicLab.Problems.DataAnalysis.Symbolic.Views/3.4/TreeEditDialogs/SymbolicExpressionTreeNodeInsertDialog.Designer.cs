@@ -147,6 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // okButton
       // 
+      this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.okButton.Location = new System.Drawing.Point(12, 112);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);

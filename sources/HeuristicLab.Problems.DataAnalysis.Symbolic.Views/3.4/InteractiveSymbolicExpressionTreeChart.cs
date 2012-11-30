@@ -169,6 +169,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             Tree = Tree;
           }
           OnSymbolicExpressionTreeChanged(sender, e);
+          currSelected = null;
         }
       }
     }
@@ -358,6 +359,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
       if (currSelected != null) {
         currSelected.LineColor = originalNodes.ContainsKey(currSelected.SymbolicExpressionTreeNode) ? Color.DodgerBlue : Color.Black;
+        RepaintNode(currSelected);
       }
       currSelected = visualTreeNode;
       if (currSelected != null) {
