@@ -25,6 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -32,28 +33,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item(Name = "CovariancePeriodic", Description = "Periodic covariance function for Gaussian processes.")]
   public sealed class CovariancePeriodic : ParameterizedNamedItem, ICovarianceFunction {
 
-    [Storable]
-    private double scale;
-    [Storable]
-    private readonly HyperParameter<DoubleValue> scaleParameter;
     public IValueParameter<DoubleValue> ScaleParameter {
-      get { return scaleParameter; }
+      get { return (IValueParameter<DoubleValue>)Parameters["Scale"]; }
     }
 
-    [Storable]
-    private double inverseLength;
-    [Storable]
-    private readonly HyperParameter<DoubleValue> inverseLengthParameter;
     public IValueParameter<DoubleValue> InverseLengthParameter {
-      get { return inverseLengthParameter; }
+      get { return (IValueParameter<DoubleValue>)Parameters["InverseLength"]; }
     }
 
-    [Storable]
-    private double period;
-    [Storable]
-    private readonly HyperParameter<DoubleValue> periodParameter;
     public IValueParameter<DoubleValue> PeriodParameter {
-      get { return periodParameter; }
+      get { return (IValueParameter<DoubleValue>)Parameters["Period"]; }
     }
 
 
@@ -61,14 +50,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private CovariancePeriodic(bool deserializing) : base(deserializing) { }
     private CovariancePeriodic(CovariancePeriodic original, Cloner cloner)
       : base(original, cloner) {
-      this.scaleParameter = cloner.Clone(original.scaleParameter);
-      this.inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
-      this.periodParameter = cloner.Clone(original.periodParameter);
-      this.scale = original.scale;
-      this.inverseLength = original.inverseLength;
-      this.period = original.period;
-
-      RegisterEvents();
     }
 
     public CovariancePeriodic()
@@ -76,64 +57,81 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Name = ItemName;
       Description = ItemDescription;
 
-      scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale of the periodic covariance function.");
-      inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter for the periodic covariance function.");
-      periodParameter = new HyperParameter<DoubleValue>("Period", "The period parameter for the periodic covariance function.");
-      Parameters.Add(scaleParameter);
-      Parameters.Add(inverseLengthParameter);
-      Parameters.Add(periodParameter);
-
-      RegisterEvents();
-    }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEvents();
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale of the periodic covariance function."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("InverseLength", "The inverse length parameter for the periodic covariance function."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Period", "The period parameter for the periodic covariance function."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovariancePeriodic(this, cloner);
     }
 
-    // caching
-    private void RegisterEvents() {
-      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { scale = scaleParameter.Value.Value; });
-      Util.AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
-      Util.AttachValueChangeHandler<DoubleValue, double>(periodParameter, () => { period = periodParameter.Value.Value; });
-    }
-
     public int GetNumberOfParameters(int numberOfVariables) {
-      return
-        (new[] { scaleParameter, inverseLengthParameter, periodParameter }).Count(p => !p.Fixed);
+      return (ScaleParameter.Value != null ? 0 : 1) +
+       (PeriodParameter.Value != null ? 0 : 1) +
+       (InverseLengthParameter.Value != null ? 0 : 1);
     }
 
-    public void SetParameter(double[] hyp) {
-      int i = 0;
-      if (!inverseLengthParameter.Fixed) {
-        inverseLengthParameter.SetValue(new DoubleValue(1.0 / Math.Exp(hyp[i])));
-        i++;
-      }
-      if (!periodParameter.Fixed) {
-        periodParameter.SetValue(new DoubleValue(Math.Exp(hyp[i])));
-        i++;
-      }
-      if (!scaleParameter.Fixed) {
-        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[i])));
-        i++;
-      }
-      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePeriod", "hyp");
+    public void SetParameter(double[] p) {
+      double scale, inverseLength, period;
+      GetParameterValues(p, out scale, out period, out inverseLength);
+      ScaleParameter.Value = new DoubleValue(scale);
+      PeriodParameter.Value = new DoubleValue(period);
+      InverseLengthParameter.Value = new DoubleValue(inverseLength);
     }
 
-    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      double k = i == j ? 0.0 : GetDistance(x, x, i, j, columnIndices);
-      k = Math.PI * k / period;
-      k = Math.Sin(k) * inverseLength;
-      k = k * k;
 
-      return scale * Math.Exp(-2.0 * k);
+    private void GetParameterValues(double[] p, out double scale, out double period, out double inverseLength) {
+      // gather parameter values
+      int c = 0;
+      if (InverseLengthParameter.Value != null) {
+        inverseLength = InverseLengthParameter.Value.Value;
+      } else {
+        inverseLength = 1.0 / Math.Exp(p[c]);
+        c++;
+      }
+      if (PeriodParameter.Value != null) {
+        period = PeriodParameter.Value.Value;
+      } else {
+        period = Math.Exp(p[c]);
+        c++;
+      }
+      if (ScaleParameter.Value != null) {
+        scale = ScaleParameter.Value.Value;
+      } else {
+        scale = Math.Exp(2 * p[c]);
+        c++;
+      }
+      if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePeriodic", "p");
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      double inverseLength, period, scale;
+      GetParameterValues(p, out scale, out period, out inverseLength);
+      // create functions
+      var cov = new ParameterizedCovarianceFunction();
+      cov.Covariance = (x, i, j) => {
+        double k = i == j ? 0.0 : GetDistance(x, x, i, j, columnIndices);
+        k = Math.PI * k / period;
+        k = Math.Sin(k) * inverseLength;
+        k = k * k;
+
+        return scale * Math.Exp(-2.0 * k);
+      };
+      cov.CrossCovariance = (x, xt, i, j) => {
+        double k = GetDistance(x, xt, i, j, columnIndices);
+        k = Math.PI * k / period;
+        k = Math.Sin(k) * inverseLength;
+        k = k * k;
+
+        return scale * Math.Exp(-2.0 * k);
+      };
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, period, inverseLength);
+      return cov;
+    }
+
+
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double period, double inverseLength) {
       double v = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j, columnIndices) / period;
       double gradient = Math.Sin(v) * inverseLength;
       gradient *= gradient;
@@ -143,16 +141,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       yield return 2.0 * scale * Math.Exp(-2 * gradient);
     }
 
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      double k = GetDistance(x, xt, i, j, columnIndices);
-      k = Math.PI * k / period;
-      k = Math.Sin(k) * inverseLength;
-      k = k * k;
-
-      return scale * Math.Exp(-2.0 * k);
-    }
-
-    private double GetDistance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
+    private static double GetDistance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
       return Math.Sqrt(Util.SqrDist(x, i, xt, j, 1, columnIndices));
     }
   }

@@ -80,6 +80,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [Storable]
+    private double[] meanParameter;
+    [Storable]
+    private double[] covarianceParameter;
+
+    [Storable]
     private double[,] l;
 
     [Storable]
@@ -98,6 +103,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.negativeLogLikelihood = original.negativeLogLikelihood;
       this.targetVariable = original.targetVariable;
       this.sqrSigmaNoise = original.sqrSigmaNoise;
+      if (original.meanParameter != null) {
+        this.meanParameter = (double[])original.meanParameter.Clone();
+      }
+      if (original.covarianceParameter != null) {
+        this.covarianceParameter = (double[])original.covarianceParameter.Clone();
+      }
 
       // shallow copies of arrays because they cannot be modified
       this.allowedInputVariables = original.allowedInputVariables;
@@ -117,12 +128,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
       int nVariables = this.allowedInputVariables.Length;
-      this.meanFunction.SetParameter(hyp
+      meanParameter = hyp
         .Take(this.meanFunction.GetNumberOfParameters(nVariables))
-        .ToArray());
-      this.covarianceFunction.SetParameter(hyp.Skip(this.meanFunction.GetNumberOfParameters(nVariables))
-        .Take(this.covarianceFunction.GetNumberOfParameters(nVariables))
-        .ToArray());
+        .ToArray();
+
+      covarianceParameter = hyp.Skip(this.meanFunction.GetNumberOfParameters(nVariables))
+                                             .Take(this.covarianceFunction.GetNumberOfParameters(nVariables))
+                                             .ToArray();
       sqrSigmaNoise = Math.Exp(2.0 * hyp.Last());
 
       CalculateModel(ds, rows);
@@ -137,13 +149,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       l = new double[n, n];
 
       // calculate means and covariances
-      double[] m = meanFunction.GetMean(x);
+      var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, Enumerable.Range(0, x.GetLength(1)));
+      double[] m = Enumerable.Range(0, x.GetLength(0))
+        .Select(r => mean.Mean(x, r))
+        .ToArray();
+
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)));
       for (int i = 0; i < n; i++) {
         for (int j = i; j < n; j++) {
-          l[j, i] = covarianceFunction.GetCovariance(x, i, j) / sqrSigmaNoise;
+          l[j, i] = cov.Covariance(x, i, j) / sqrSigmaNoise;
           if (j == i) l[j, i] += 1.0;
         }
       }
+
 
       // cholesky decomposition
       int info;
@@ -180,22 +198,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double noiseGradient = sqrSigmaNoise * Enumerable.Range(0, n).Select(i => lCopy[i, i]).Sum();
 
       double[] meanGradients = new double[meanFunction.GetNumberOfParameters(nAllowedVariables)];
-      for (int i = 0; i < meanGradients.Length; i++) {
-        var meanGrad = meanFunction.GetGradients(i, x);
-        meanGradients[i] = -Util.ScalarProd(meanGrad, alpha);
+      for (int k = 0; k < meanGradients.Length; k++) {
+        var meanGrad = Enumerable.Range(0, alpha.Length)
+        .Select(r => mean.Gradient(x, r, k));
+        meanGradients[k] = -Util.ScalarProd(meanGrad, alpha);
       }
 
       double[] covGradients = new double[covarianceFunction.GetNumberOfParameters(nAllowedVariables)];
       if (covGradients.Length > 0) {
         for (int i = 0; i < n; i++) {
           for (int j = 0; j < i; j++) {
-            var g = covarianceFunction.GetGradient(x, i, j).ToArray();
+            var g = cov.CovarianceGradient(x, i, j).ToArray();
             for (int k = 0; k < covGradients.Length; k++) {
               covGradients[k] += lCopy[i, j] * g[k];
             }
           }
 
-          var gDiag = covarianceFunction.GetGradient(x, i, i).ToArray();
+          var gDiag = cov.CovarianceGradient(x, i, i).ToArray();
           for (int k = 0; k < covGradients.Length; k++) {
             // diag
             covGradients[k] += 0.5 * lCopy[i, i] * gDiag[k];
@@ -213,6 +232,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GaussianProcessModel(this, cloner);
+    }
+
+    // is called by the solution creator to set all parameter values of the covariance and mean function
+    // to the optimized values (necessary to make the values visible in the GUI)
+    public void FixParameters() {
+      covarianceFunction.SetParameter(covarianceParameter);
+      meanFunction.SetParameter(meanParameter);
+      covarianceParameter = new double[0];
+      meanParameter = new double[0];
     }
 
     #region IRegressionModel Members
@@ -233,10 +261,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int newN = newX.GetLength(0);
       int n = x.GetLength(0);
       var Ks = new double[newN, n];
-      var ms = meanFunction.GetMean(newX);
+      var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, Enumerable.Range(0, newX.GetLength(1)));
+      var ms = Enumerable.Range(0, newX.GetLength(0))
+      .Select(r => mean.Mean(newX, r))
+      .ToArray();
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
       for (int i = 0; i < newN; i++) {
         for (int j = 0; j < n; j++) {
-          Ks[i, j] = covarianceFunction.GetCrossCovariance(x, newX, j, i);
+          Ks[i, j] = cov.CrossCovariance(x, newX, j, i);
         }
       }
 
@@ -251,14 +283,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       var kss = new double[newN];
       double[,] sWKs = new double[n, newN];
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
 
       // for stddev 
       for (int i = 0; i < newN; i++)
-        kss[i] = covarianceFunction.GetCovariance(newX, i, i);
+        kss[i] = cov.Covariance(newX, i, i);
 
       for (int i = 0; i < newN; i++) {
         for (int j = 0; j < n; j++) {
-          sWKs[j, i] = covarianceFunction.GetCrossCovariance(x, newX, j, i) / Math.Sqrt(sqrSigmaNoise);
+          sWKs[j, i] = cov.CrossCovariance(x, newX, j, i) / Math.Sqrt(sqrSigmaNoise);
         }
       }
 

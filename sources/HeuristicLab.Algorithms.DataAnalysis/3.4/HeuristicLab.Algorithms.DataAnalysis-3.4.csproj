@@ -119,28 +119,57 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceConst.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceLinear.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceLinearArd.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceMask.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceMaternIso.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceNoise.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePeriodic.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceProduct.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceRationalQuadraticArd.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceRationalQuadraticIso.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceScale.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSquaredExponentialArd.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceConst.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceLinear.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceLinearArd.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceMask.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceMaternIso.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceNoise.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePeriodic.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceProduct.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceRationalQuadraticArd.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceRationalQuadraticIso.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceScale.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSquaredExponentialArd.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSquaredExponentialIso.cs" />
-    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSum.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceSum.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GaussianProcess\GaussianProcessClassificationSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassificationModelCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassification.cs" />
-    <Compile Include="GaussianProcess\HyperParameter.cs" />
     <Compile Include="GaussianProcess\MeanFunctions\MeanConst.cs" />
     <Compile Include="GaussianProcess\MeanFunctions\MeanLinear.cs" />
-    <Compile Include="GaussianProcess\MeanFunctions\MeanProduct.cs" />
-    <Compile Include="GaussianProcess\MeanFunctions\MeanSum.cs" />
+    <Compile Include="GaussianProcess\MeanFunctions\MeanProduct.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GaussianProcess\MeanFunctions\MeanSum.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GaussianProcess\MeanFunctions\MeanZero.cs" />
     <Compile Include="GaussianProcess\GaussianProcessHyperparameterInitializer.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolutionCreator.cs" />

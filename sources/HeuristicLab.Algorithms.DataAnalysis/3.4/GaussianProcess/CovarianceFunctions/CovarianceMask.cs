@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -33,20 +34,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item(Name = "CovarianceMask",
     Description = "Masking covariance function for dimension selection can be used to apply a covariance function only on certain input dimensions.")]
   public sealed class CovarianceMask : ParameterizedNamedItem, ICovarianceFunction {
-    [Storable]
-    private int[] selectedDimensions;
-    [Storable]
-    private readonly ValueParameter<IntArray> selectedDimensionsParameter;
     public IValueParameter<IntArray> SelectedDimensionsParameter {
-      get { return selectedDimensionsParameter; }
+      get { return (IValueParameter<IntArray>)Parameters["SelectedDimensions"]; }
     }
-
-    [Storable]
-    private ICovarianceFunction cov;
-    [Storable]
-    private readonly ValueParameter<ICovarianceFunction> covParameter;
     public IValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
-      get { return covParameter; }
+      get { return (IValueParameter<ICovarianceFunction>)Parameters["CovarianceFunction"]; }
     }
 
     [StorableConstructor]
@@ -56,14 +48,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private CovarianceMask(CovarianceMask original, Cloner cloner)
       : base(original, cloner) {
-      this.selectedDimensionsParameter = cloner.Clone(original.selectedDimensionsParameter);
-      if (original.selectedDimensions != null) {
-        this.selectedDimensions = (int[])original.selectedDimensions.Clone();
-      }
-
-      this.covParameter = cloner.Clone(original.covParameter);
-      this.cov = cloner.Clone(original.cov);
-      RegisterEvents();
     }
 
     public CovarianceMask()
@@ -71,66 +55,30 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Name = ItemName;
       Description = ItemDescription;
 
-      this.selectedDimensionsParameter = new ValueParameter<IntArray>("SelectedDimensions", "The dimensions on which the specified covariance function should be applied to.");
-      this.covParameter = new ValueParameter<ICovarianceFunction>("CovarianceFunction", "The covariance function that should be scaled.", new CovarianceSquaredExponentialIso());
-      cov = covParameter.Value;
-
-      Parameters.Add(selectedDimensionsParameter);
-      Parameters.Add(covParameter);
-
-      RegisterEvents();
+      Parameters.Add(new OptionalValueParameter<IntArray>("SelectedDimensions", "The dimensions on which the specified covariance function should be applied to."));
+      Parameters.Add(new ValueParameter<ICovarianceFunction>("CovarianceFunction", "The covariance function that should be scaled.", new CovarianceSquaredExponentialIso()));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceMask(this, cloner);
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEvents();
-    }
-
-    private void RegisterEvents() {
-      Util.AttachArrayChangeHandler<IntArray, int>(selectedDimensionsParameter, () => {
-        selectedDimensions = selectedDimensionsParameter.Value
-          .OrderBy(x => x)
-          .Distinct()
-          .ToArray();
-        if (selectedDimensions.Length == 0) selectedDimensions = null;
-      });
-      covParameter.ValueChanged += (sender, args) => { cov = covParameter.Value; };
-    }
-
     public int GetNumberOfParameters(int numberOfVariables) {
-      if (selectedDimensions == null) return cov.GetNumberOfParameters(numberOfVariables);
-      else return cov.GetNumberOfParameters(selectedDimensions.Length);
+      if (SelectedDimensionsParameter.Value == null) return CovarianceFunctionParameter.Value.GetNumberOfParameters(numberOfVariables);
+      else return CovarianceFunctionParameter.Value.GetNumberOfParameters(SelectedDimensionsParameter.Value.Length);
     }
 
-    public void SetParameter(double[] hyp) {
-      cov.SetParameter(hyp);
+    public void SetParameter(double[] p) {
+      CovarianceFunctionParameter.Value.SetParameter(p);
     }
 
-    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      // cov mask overwrites the previously selected columnIndices 
-      // -> stacking of CovarianceMask is not supported
-      if (columnIndices != null && columnIndices.Count() != x.GetLength(1))
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      if (columnIndices != null)
         throw new InvalidOperationException("Stacking of masking covariance functions is not supported.");
+      var cov = CovarianceFunctionParameter.Value;
+      var selectedDimensions = SelectedDimensionsParameter.Value;
 
-      return cov.GetCovariance(x, i, j, selectedDimensions);
-    }
-
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      if (columnIndices != null && columnIndices.Count() != x.GetLength(1))
-        throw new InvalidOperationException("Stacking of masking covariance functions is not supported.");
-
-      return cov.GetGradient(x, i, j, selectedDimensions);
-    }
-
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      if (columnIndices != null && columnIndices.Count() != x.GetLength(1))
-        throw new InvalidOperationException("Stacking of masking covariance functions is not supported.");
-
-      return cov.GetCrossCovariance(x, xt, i, j, selectedDimensions);
+      return cov.GetParameterizedCovarianceFunction(p, selectedDimensions);
     }
   }
 }

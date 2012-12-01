@@ -21,9 +21,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -31,17 +33,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item(Name = "CovarianceSquaredExponentialIso",
     Description = "Isotropic squared exponential covariance function for Gaussian processes.")]
   public sealed class CovarianceSquaredExponentialIso : ParameterizedNamedItem, ICovarianceFunction {
-    [Storable]
-    private double sf2;
-    [Storable]
-    private readonly HyperParameter<DoubleValue> scaleParameter;
-    public IValueParameter<DoubleValue> ScaleParameter { get { return scaleParameter; } }
+    public IValueParameter<DoubleValue> ScaleParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["Scale"]; }
+    }
 
-    [Storable]
-    private double inverseLength;
-    [Storable]
-    private readonly HyperParameter<DoubleValue> inverseLengthParameter;
-    public IValueParameter<DoubleValue> InverseLengthParameter { get { return inverseLengthParameter; } }
+    public IValueParameter<DoubleValue> InverseLengthParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["InverseLength"]; }
+    }
 
     [StorableConstructor]
     private CovarianceSquaredExponentialIso(bool deserializing)
@@ -50,13 +48,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private CovarianceSquaredExponentialIso(CovarianceSquaredExponentialIso original, Cloner cloner)
       : base(original, cloner) {
-      this.sf2 = original.sf2;
-      this.scaleParameter = cloner.Clone(original.scaleParameter);
-
-      this.inverseLength = original.inverseLength;
-      this.inverseLengthParameter = cloner.Clone(original.inverseLengthParameter);
-
-      RegisterEvents();
     }
 
     public CovarianceSquaredExponentialIso()
@@ -64,68 +55,73 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Name = ItemName;
       Description = ItemDescription;
 
-      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter of the isometric squared exponential covariance function.");
-      this.inverseLengthParameter = new HyperParameter<DoubleValue>("InverseLength", "The inverse length parameter of the isometric squared exponential covariance function.");
-
-      Parameters.Add(scaleParameter);
-      Parameters.Add(inverseLengthParameter);
-
-      RegisterEvents();
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter of the isometric squared exponential covariance function."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("InverseLength", "The inverse length parameter of the isometric squared exponential covariance function."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceSquaredExponentialIso(this, cloner);
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEvents();
-    }
-
-    private void RegisterEvents() {
-      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
-      Util.AttachValueChangeHandler<DoubleValue, double>(inverseLengthParameter, () => { inverseLength = inverseLengthParameter.Value.Value; });
-    }
-
     public int GetNumberOfParameters(int numberOfVariables) {
       return
-        (scaleParameter.Fixed ? 0 : 1) +
-        (inverseLengthParameter.Fixed ? 0 : 1);
+        (ScaleParameter.Value != null ? 0 : 1) +
+        (InverseLengthParameter.Value != null ? 0 : 1);
     }
 
-    public void SetParameter(double[] hyp) {
-      int i = 0;
-      if (!inverseLengthParameter.Fixed) {
-        inverseLengthParameter.SetValue(new DoubleValue(1.0 / Math.Exp(hyp[i])));
-        i++;
+    public void SetParameter(double[] p) {
+      double scale, inverseLength;
+      GetParameterValues(p, out scale, out inverseLength);
+      ScaleParameter.Value = new DoubleValue(scale);
+      InverseLengthParameter.Value = new DoubleValue(inverseLength);
+    }
+
+
+    private void GetParameterValues(double[] p, out double scale, out double inverseLength) {
+      // gather parameter values
+      int c = 0;
+      if (InverseLengthParameter.Value != null) {
+        inverseLength = InverseLengthParameter.Value.Value;
+      } else {
+        inverseLength = 1.0 / Math.Exp(p[c]);
+        c++;
       }
-      if (!scaleParameter.Fixed) {
-        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[i])));
-        i++;
+
+      if (ScaleParameter.Value != null) {
+        scale = ScaleParameter.Value.Value;
+      } else {
+        scale = Math.Exp(2 * p[c]);
+        c++;
       }
-      if (hyp.Length != i) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSquaredExponentialIso", "hyp");
+      if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSquaredExponentialIso", "p");
     }
 
-
-    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      double d = i == j
-                   ? 0.0
-                   : Util.SqrDist(x, i, j, inverseLength, columnIndices);
-      return sf2 * Math.Exp(-d / 2.0);
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      double inverseLength, scale;
+      GetParameterValues(p, out scale, out inverseLength);
+      // create functions
+      var cov = new ParameterizedCovarianceFunction();
+      cov.Covariance = (x, i, j) => {
+        double d = i == j
+                ? 0.0
+                : Util.SqrDist(x, i, j, inverseLength, columnIndices);
+        return scale * Math.Exp(-d / 2.0);
+      };
+      cov.CrossCovariance = (x, xt, i, j) => {
+        double d = Util.SqrDist(x, i, xt, j, inverseLength, columnIndices);
+        return scale * Math.Exp(-d / 2.0);
+      };
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, scale, inverseLength, columnIndices);
+      return cov;
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double sf2, double inverseLength, IEnumerable<int> columnIndices) {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength, columnIndices);
       double g = Math.Exp(-d / 2.0);
       yield return sf2 * g * d;
       yield return 2.0 * sf2 * g;
-    }
-
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      double d = Util.SqrDist(x, i, xt, j, inverseLength, columnIndices);
-      return sf2 * Math.Exp(-d / 2.0);
     }
   }
 }

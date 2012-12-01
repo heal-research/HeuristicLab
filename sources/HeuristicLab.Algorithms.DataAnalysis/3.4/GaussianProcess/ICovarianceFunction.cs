@@ -19,15 +19,26 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+
+  public delegate double CovarianceFunctionDelegate(double[,] x, int i, int j);
+  public delegate double CrossCovarianceFunctionDelegate(double[,] x, double[,] xt, int i, int j);
+  public delegate IEnumerable<double> CovarianceGradientFunctionDelegate(double[,] x, int i, int j);
+
+  public class ParameterizedCovarianceFunction {
+    public CovarianceFunctionDelegate Covariance { get; set; }
+    public CrossCovarianceFunctionDelegate CrossCovariance { get; set; }
+    public CovarianceGradientFunctionDelegate CovarianceGradient { get; set; }
+  }
+
   public interface ICovarianceFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
-    void SetParameter(double[] hyp);
-    double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices = null);
-    IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices = null);
-    double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices = null);
+    void SetParameter(double[] p);
+    ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices);
   }
 }

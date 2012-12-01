@@ -76,6 +76,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public override IOperation Apply() {
       if (ModelParameter.ActualValue != null) {
         var m = (IGaussianProcessModel)ModelParameter.ActualValue.Clone();
+        m.FixParameters();
         var data = (IClassificationProblemData)ProblemDataParameter.ActualValue.Clone();
         var model = new DiscriminantFunctionClassificationModel(m, new NormalDistributionCutPointsThresholdCalculator());
         model.RecalculateModelParameters(data, data.TrainingIndices);

@@ -18,6 +18,8 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -60,45 +62,52 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return factors.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
     }
 
-    public void SetParameter(double[] hyp) {
+    public void SetParameter(double[] p) {
       int offset = 0;
       foreach (var t in factors) {
         var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
-        t.SetParameter(hyp.Skip(offset).Take(numberOfParameters).ToArray());
+        t.SetParameter(p.Skip(offset).Take(numberOfParameters).ToArray());
         offset += numberOfParameters;
       }
     }
 
-    public double[] GetMean(double[,] x) {
-      var res = factors.First().GetMean(x);
-      foreach (var t in factors.Skip(1)) {
-        var a = t.GetMean(x);
-        for (int i = 0; i < res.Length; i++) res[i] *= a[i];
-      }
-      return res;
-    }
 
-    public double[] GetGradients(int k, double[,] x) {
-      double[] res = Enumerable.Repeat(1.0, x.GetLength(0)).ToArray();
-      // find index of factor for the given k
-      int j = 0;
-      while (k >= factors[j].GetNumberOfParameters(numberOfVariables)) {
-        k -= factors[j].GetNumberOfParameters(numberOfVariables);
-        j++;
-      }
-      for (int i = 0; i < factors.Count; i++) {
-        var f = factors[i];
-        if (i == j) {
-          // multiply gradient
-          var g = f.GetGradients(k, x);
-          for (int ii = 0; ii < res.Length; ii++) res[ii] *= g[ii];
-        } else {
-          // multiply mean
-          var m = f.GetMean(x);
-          for (int ii = 0; ii < res.Length; ii++) res[ii] *= m[ii];
+    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices) {
+      var factorMf = new List<ParameterizedMeanFunction>();
+      int totalNumberOfParameters = GetNumberOfParameters(numberOfVariables);
+      int[] factorIndexMap = new int[totalNumberOfParameters]; // maps k-th hyperparameter to the correct mean-term
+      int[] hyperParameterIndexMap = new int[totalNumberOfParameters]; // maps k-th hyperparameter to the l-th hyperparameter of the correct mean-term
+      int c = 0;
+      // get the parameterized mean function for each term
+      for (int factorIndex = 0; factorIndex < factors.Count; factorIndex++) {
+        var numberOfParameters = factors[factorIndex].GetNumberOfParameters(numberOfVariables);
+        factorMf.Add(factors[factorIndex].GetParameterizedMeanFunction(p.Take(numberOfParameters).ToArray(), columnIndices));
+        p = p.Skip(numberOfParameters).ToArray();
+
+        for (int hyperParameterIndex = 0; hyperParameterIndex < numberOfParameters; hyperParameterIndex++) {
+          factorIndexMap[c] = factorIndex;
+          hyperParameterIndexMap[c] = hyperParameterIndex;
+          c++;
         }
       }
-      return res;
+
+      var mf = new ParameterizedMeanFunction();
+      mf.Mean = (x, i) => factorMf.Select(t => t.Mean(x, i)).Aggregate((a, b) => a * b);
+      mf.Gradient = (x, i, k) => {
+        double result = 1.0;
+        int hyperParameterFactorIndex = factorIndexMap[k];
+        for (int factorIndex = 0; factorIndex < factors.Count; factorIndex++) {
+          if (factorIndex == hyperParameterFactorIndex) {
+            // multiply gradient
+            result *= factorMf[factorIndex].Gradient(x, i, hyperParameterIndexMap[k]);
+          } else {
+            // multiply mean
+            result *= factorMf[factorIndex].Mean(x, i);
+          }
+        }
+        return result;
+      };
+      return mf;
     }
   }
 }

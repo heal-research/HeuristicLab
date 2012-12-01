@@ -18,6 +18,8 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -56,31 +58,40 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return terms.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
     }
 
-    public void SetParameter(double[] hyp) {
+    public void SetParameter(double[] p) {
       int offset = 0;
       foreach (var t in terms) {
         var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
-        t.SetParameter(hyp.Skip(offset).Take(numberOfParameters).ToArray());
+        t.SetParameter(p.Skip(offset).Take(numberOfParameters).ToArray());
         offset += numberOfParameters;
       }
     }
 
-    public double[] GetMean(double[,] x) {
-      var res = terms.First().GetMean(x);
-      foreach (var t in terms.Skip(1)) {
-        var a = t.GetMean(x);
-        for (int i = 0; i < res.Length; i++) res[i] += a[i];
-      }
-      return res;
-    }
+    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices) {
+      var termMf = new List<ParameterizedMeanFunction>();
+      int totalNumberOfParameters = GetNumberOfParameters(numberOfVariables);
+      int[] termIndexMap = new int[totalNumberOfParameters]; // maps k-th parameter to the correct mean-term
+      int[] hyperParameterIndexMap = new int[totalNumberOfParameters]; // maps k-th parameter to the l-th parameter of the correct mean-term
+      int c = 0;
+      // get the parameterized mean function for each term
+      for (int termIndex = 0; termIndex < terms.Count; termIndex++) {
+        var numberOfParameters = terms[termIndex].GetNumberOfParameters(numberOfVariables);
+        termMf.Add(terms[termIndex].GetParameterizedMeanFunction(p.Take(numberOfParameters).ToArray(), columnIndices));
+        p = p.Skip(numberOfParameters).ToArray();
 
-    public double[] GetGradients(int k, double[,] x) {
-      int i = 0;
-      while (k >= terms[i].GetNumberOfParameters(numberOfVariables)) {
-        k -= terms[i].GetNumberOfParameters(numberOfVariables);
-        i++;
+        for (int hyperParameterIndex = 0; hyperParameterIndex < numberOfParameters; hyperParameterIndex++) {
+          termIndexMap[c] = termIndex;
+          hyperParameterIndexMap[c] = hyperParameterIndex;
+          c++;
+        }
       }
-      return terms[i].GetGradients(k, x);
+
+      var mf = new ParameterizedMeanFunction();
+      mf.Mean = (x, i) => termMf.Select(t => t.Mean(x, i)).Sum();
+      mf.Gradient = (x, i, k) => {
+        return termMf[termIndexMap[k]].Gradient(x, i, hyperParameterIndexMap[k]);
+      };
+      return mf;
     }
   }
 }

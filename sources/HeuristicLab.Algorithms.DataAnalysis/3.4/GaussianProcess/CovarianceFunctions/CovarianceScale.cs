@@ -33,20 +33,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item(Name = "CovarianceScale",
     Description = "Scale covariance function for Gaussian processes.")]
   public sealed class CovarianceScale : ParameterizedNamedItem, ICovarianceFunction {
-    [Storable]
-    private double sf2;
-    [Storable]
-    private readonly HyperParameter<DoubleValue> scaleParameter;
     public IValueParameter<DoubleValue> ScaleParameter {
-      get { return scaleParameter; }
+      get { return (IValueParameter<DoubleValue>)Parameters["Scale"]; }
     }
 
-    [Storable]
-    private ICovarianceFunction cov;
-    [Storable]
-    private readonly ValueParameter<ICovarianceFunction> covParameter;
     public IValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
-      get { return covParameter; }
+      get { return (IValueParameter<ICovarianceFunction>)Parameters["CovarianceFunction"]; }
     }
 
     [StorableConstructor]
@@ -56,12 +48,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private CovarianceScale(CovarianceScale original, Cloner cloner)
       : base(original, cloner) {
-      this.scaleParameter = cloner.Clone(original.scaleParameter);
-      this.sf2 = original.sf2;
-
-      this.covParameter = cloner.Clone(original.covParameter);
-      this.cov = cloner.Clone(original.cov);
-      RegisterEvents();
     }
 
     public CovarianceScale()
@@ -69,55 +55,50 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Name = ItemName;
       Description = ItemDescription;
 
-      this.scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale parameter.");
-      this.covParameter = new ValueParameter<ICovarianceFunction>("CovarianceFunction", "The covariance function that should be scaled.", new CovarianceSquaredExponentialIso());
-      cov = covParameter.Value;
-
-      Parameters.Add(this.scaleParameter);
-      Parameters.Add(covParameter);
-
-      RegisterEvents();
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter."));
+      Parameters.Add(new ValueParameter<ICovarianceFunction>("CovarianceFunction", "The covariance function that should be scaled.", new CovarianceSquaredExponentialIso()));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceScale(this, cloner);
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEvents();
-    }
-
-    private void RegisterEvents() {
-      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { sf2 = scaleParameter.Value.Value; });
-      covParameter.ValueChanged += (sender, args) => { cov = covParameter.Value; };
-    }
-
     public int GetNumberOfParameters(int numberOfVariables) {
-      return (scaleParameter.Fixed ? 0 : 1) + cov.GetNumberOfParameters(numberOfVariables);
+      return (ScaleParameter.Value != null ? 0 : 1) + CovarianceFunctionParameter.Value.GetNumberOfParameters(numberOfVariables);
     }
 
-    public void SetParameter(double[] hyp) {
-      int i = 0;
-      if (!scaleParameter.Fixed) {
-        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[i])));
-        i++;
+    public void SetParameter(double[] p) {
+      double scale;
+      GetParameterValues(p, out scale);
+      ScaleParameter.Value = new DoubleValue(scale);
+      CovarianceFunctionParameter.Value.SetParameter(p.Skip(1).ToArray());
+    }
+
+    private void GetParameterValues(double[] p, out double scale) {
+      // gather parameter values
+      if (ScaleParameter.Value != null) {
+        scale = ScaleParameter.Value.Value;
+      } else {
+        scale = Math.Exp(2 * p[0]);
       }
-      cov.SetParameter(hyp.Skip(i).ToArray());
     }
 
-    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      return sf2 * cov.GetCovariance(x, i, j, columnIndices);
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      double scale;
+      GetParameterValues(p, out scale);
+      var subCov = CovarianceFunctionParameter.Value.GetParameterizedCovarianceFunction(p.Skip(1).ToArray(), columnIndices);
+      // create functions
+      var cov = new ParameterizedCovarianceFunction();
+      cov.Covariance = (x, i, j) => scale * subCov.Covariance(x, i, j);
+      cov.CrossCovariance = (x, xt, i, j) => scale * subCov.CrossCovariance(x, xt, i, j);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, subCov);
+      return cov;
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      yield return 2 * sf2 * cov.GetCovariance(x, i, j, columnIndices);
-      foreach (var g in cov.GetGradient(x, i, j, columnIndices))
-        yield return sf2 * g;
-    }
-
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      return sf2 * cov.GetCrossCovariance(x, xt, i, j, columnIndices);
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, ParameterizedCovarianceFunction cov) {
+      yield return 2 * scale * cov.Covariance(x, i, j);
+      foreach (var g in cov.CovarianceGradient(x, i, j))
+        yield return scale * g;
     }
   }
 }

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -65,34 +66,42 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return factors.Select(f => f.GetNumberOfParameters(numberOfVariables)).Sum();
     }
 
-    public void SetParameter(double[] hyp) {
-      if (factors.Count == 0) throw new ArgumentException("at least one factor is necessary for the product covariance function.");
+    public void SetParameter(double[] p) {
       int offset = 0;
-      foreach (var t in factors) {
-        var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
-        t.SetParameter(hyp.Skip(offset).Take(numberOfParameters).ToArray());
+      foreach (var f in factors) {
+        var numberOfParameters = f.GetNumberOfParameters(numberOfVariables);
+        f.SetParameter(p.Skip(offset).Take(numberOfParameters).ToArray());
         offset += numberOfParameters;
       }
     }
 
-    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      return factors.Select(f => f.GetCovariance(x, i, j, columnIndices)).Aggregate((a, b) => a * b);
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      if (factors.Count == 0) throw new ArgumentException("at least one factor is necessary for the product covariance function.");
+      var functions = new List<ParameterizedCovarianceFunction>();
+      foreach (var f in factors) {
+        int numberOfParameters = f.GetNumberOfParameters(numberOfVariables);
+        functions.Add(f.GetParameterizedCovarianceFunction(p.Take(numberOfParameters).ToArray(), columnIndices));
+        p = p.Skip(numberOfParameters).ToArray();
+      }
+
+
+      var product = new ParameterizedCovarianceFunction();
+      product.Covariance = (x, i, j) => functions.Select(e => e.Covariance(x, i, j)).Aggregate((a, b) => a * b);
+      product.CrossCovariance = (x, xt, i, j) => functions.Select(e => e.CrossCovariance(x, xt, i, j)).Aggregate((a, b) => a * b);
+      product.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, functions);
+      return product;
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      var covariances = factors.Select(f => f.GetCovariance(x, i, j, columnIndices)).ToArray();
-      for (int ii = 0; ii < factors.Count; ii++) {
-        foreach (var g in factors[ii].GetGradient(x, i, j, columnIndices)) {
+    public static IEnumerable<double> GetGradient(double[,] x, int i, int j, List<ParameterizedCovarianceFunction> factorFunctions) {
+      var covariances = factorFunctions.Select(f => f.Covariance(x, i, j)).ToArray();
+      for (int ii = 0; ii < factorFunctions.Count; ii++) {
+        foreach (var g in factorFunctions[ii].CovarianceGradient(x, i, j)) {
           double res = g;
           for (int jj = 0; jj < covariances.Length; jj++)
             if (ii != jj) res *= covariances[jj];
           yield return res;
         }
       }
-    }
-
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      return factors.Select(f => f.GetCrossCovariance(x, xt, i, j, columnIndices)).Aggregate((a, b) => a * b);
     }
   }
 }

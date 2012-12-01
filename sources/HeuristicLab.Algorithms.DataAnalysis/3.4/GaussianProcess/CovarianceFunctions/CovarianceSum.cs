@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -65,26 +66,29 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return terms.Select(t => t.GetNumberOfParameters(numberOfVariables)).Sum();
     }
 
-    public void SetParameter(double[] hyp) {
-      if (terms.Count == 0) throw new ArgumentException("At least one term is needed for sum covariance function.");
+    public void SetParameter(double[] p) {
       int offset = 0;
       foreach (var t in terms) {
         var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
-        t.SetParameter(hyp.Skip(offset).Take(numberOfParameters).ToArray());
+        t.SetParameter(p.Skip(offset).Take(numberOfParameters).ToArray());
         offset += numberOfParameters;
       }
     }
 
-    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      return terms.Select(t => t.GetCovariance(x, i, j, columnIndices)).Sum();
-    }
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      if (terms.Count == 0) throw new ArgumentException("at least one term is necessary for the product covariance function.");
+      var functions = new List<ParameterizedCovarianceFunction>();
+      foreach (var t in terms) {
+        var numberOfParameters = t.GetNumberOfParameters(numberOfVariables);
+        functions.Add(t.GetParameterizedCovarianceFunction(p.Take(numberOfParameters).ToArray(), columnIndices));
+        p = p.Skip(numberOfParameters).ToArray();
+      }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      return terms.Select(t => t.GetGradient(x, i, j, columnIndices)).Aggregate(Enumerable.Concat);
-    }
-
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      return terms.Select(t => t.GetCrossCovariance(x, xt, i, j, columnIndices)).Sum();
+      var sum = new ParameterizedCovarianceFunction();
+      sum.Covariance = (x, i, j) => functions.Select(e => e.Covariance(x, i, j)).Sum();
+      sum.CrossCovariance = (x, xt, i, j) => functions.Select(e => e.CrossCovariance(x, xt, i, j)).Sum();
+      sum.CovarianceGradient = (x, i, j) => functions.Select(e => e.CovarianceGradient(x, i, j)).Aggregate(Enumerable.Concat);
+      return sum;
     }
   }
 }

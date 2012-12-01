@@ -19,6 +19,7 @@
  */
 #endregion
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -44,17 +45,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return 0;
     }
 
-    public void SetParameter(double[] hyp) {
-      if (hyp.Length > 0) throw new ArgumentException("No hyper-parameters allowed for zero mean function.", "hyp");
+    public void SetParameter(double[] p) {
+      if (p.Length > 0) throw new ArgumentException("No parameters allowed for zero mean function.", "p");
     }
 
-    public double[] GetMean(double[,] x) {
-      return Enumerable.Repeat(0.0, x.GetLength(0)).ToArray();
-    }
-
-    public double[] GetGradients(int k, double[,] x) {
-      if (k > 0) throw new ArgumentException();
-      return Enumerable.Repeat(0.0, x.GetLength(0)).ToArray();
+    public ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices) {
+      if (p.Length > 0) throw new ArgumentException("No parameters allowed for zero mean function.", "p");
+      var mf = new ParameterizedMeanFunction();
+      mf.Mean = (x, i) => 0.0;
+      mf.Gradient = (x, i, k) => {
+        if (k > 0)
+          throw new ArgumentException();
+        return 0.0;
+      };
+      return mf;
     }
   }
 }

@@ -18,13 +18,23 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
+  public delegate double MeanFunctionDelegate(double[,] x, int row);
+  public delegate double MeanGradientDelegate(double[,] x, int row, int k);
+
+  public class ParameterizedMeanFunction {
+    public MeanFunctionDelegate Mean { get; set; }
+    public MeanGradientDelegate Gradient { get; set; }
+  }
+
   public interface IMeanFunction : IItem {
     int GetNumberOfParameters(int numberOfVariables);
-    void SetParameter(double[] hyp);
-    double[] GetMean(double[,] x);
-    double[] GetGradients(int k, double[,] x);
+    void SetParameter(double[] p);
+    ParameterizedMeanFunction GetParameterizedMeanFunction(double[] p, IEnumerable<int> columnIndices);
   }
 }

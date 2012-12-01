@@ -65,6 +65,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
             new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
           }
       );
+      sum = new MeanSum();
+      sum.Terms.Add(new MeanConst());
+      sum.Terms.Add(new MeanConst());
       TestMeanFunction(sum, 1,
         new double[] { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
         new double[][]
@@ -87,6 +90,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
             new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
           }
       );
+      prod = new MeanProduct();
+      prod.Factors.Add(new MeanConst());
+      prod.Factors.Add(new MeanConst());
       TestMeanFunction(prod, 1,
         new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
         new double[][]
@@ -96,7 +102,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
           }
       );
 
-      prod.Factors.Clear();
+      prod = new MeanProduct();
       prod.Factors.Add(new MeanZero());
       prod.Factors.Add(new MeanLinear());
       TestMeanFunction(prod, 0,
@@ -110,6 +116,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
             new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
           }
       );
+      prod = new MeanProduct();
+      prod.Factors.Add(new MeanZero());
+      prod.Factors.Add(new MeanLinear());
       TestMeanFunction(prod, 1,
         new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         new double[][]
@@ -122,7 +131,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
           }
       );
 
-      prod.Factors.Clear();
+      prod = new MeanProduct();
       prod.Factors.Add(new MeanConst());
       prod.Factors.Add(new MeanLinear());
       TestMeanFunction(prod, 1,
@@ -1333,6 +1342,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
               },
           }
       );
+      cov = new CovarianceSum();
+      cov.Terms.Add(new CovarianceSquaredExponentialIso());
+      cov.Terms.Add(new CovarianceLinear());
       TestCovarianceFunction(cov, 1,
         new double[,]
           {
@@ -1440,6 +1452,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
               },
           }
       );
+      cov = new CovarianceScale();
+      cov.CovarianceFunctionParameter.Value = new CovarianceSquaredExponentialIso();
       TestCovarianceFunction(cov, 1,
         new double[,]
           {
@@ -1549,6 +1563,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
               },
           }
       );
+      cov = new CovarianceProduct();
+      cov.Factors.Add(new CovarianceSquaredExponentialIso());
+      cov.Factors.Add(new CovarianceLinear());
       TestCovarianceFunction(cov, 1,
         new double[,]
           {
@@ -1602,20 +1619,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
 
       int nHyp = cf.GetNumberOfParameters(x.GetLength(1));
       var hyp = Enumerable.Repeat(hypValue, nHyp).ToArray();
-      cf.SetParameter(hyp);
 
       int rows0 = x.GetLength(0);
       int rows1 = xt.GetLength(0);
       var actualCov = new double[rows0, rows1];
+      var covFunction = cf.GetParameterizedCovarianceFunction(hyp, Enumerable.Range(0, x.GetLength(1)));
       for (int i = 0; i < rows0; i++)
         for (int j = 0; j < rows1; j++)
-          actualCov[i, j] = cf.GetCrossCovariance(x, xt, i, j);
+          actualCov[i, j] = covFunction.CrossCovariance(x, xt, i, j);
 
       AssertEqual(expectedCov, actualCov, delta);
 
       for (int i = 0; i < rows0; i++)
         for (int j = 0; j < rows1; j++) {
-          var g = cf.GetGradient(x, i, j).ToArray();
+          var g = covFunction.CovarianceGradient(x, i, j).ToArray();
           for (int k = 0; k < nHyp; k++)
             Assert.AreEqual(expectedGradients[k][i, j], g[k], delta);
         }
@@ -1628,15 +1645,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
 
       int nHyp = mf.GetNumberOfParameters(x.GetLength(1));
       var hyp = Enumerable.Repeat(hypValue, nHyp).ToArray();
-      mf.SetParameter(hyp);
+      var meanFunction = mf.GetParameterizedMeanFunction(hyp, Enumerable.Range(0, x.GetLength(1)));
 
-      var m = mf.GetMean(xt);
+      var m = Enumerable.Range(0, xt.GetLength(0)).Select(i => meanFunction.Mean(xt, i)).ToArray();
 
       AssertEqual(expectedMean, m);
 
-      for (int i = 0; i < nHyp; i++) {
-        var g = mf.GetGradients(i, x);
-        AssertEqual(expectedGradients[i], g);
+      for (int k = 0; k < nHyp; k++) {
+        var g = Enumerable.Range(0, xt.GetLength(0)).Select(i => meanFunction.Gradient(x, i, k)).ToArray();
+        AssertEqual(expectedGradients[k], g);
       }
     }
 

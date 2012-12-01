@@ -34,5 +34,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     double[] HyperparameterGradients { get; }
 
     IEnumerable<double> GetEstimatedVariance(Dataset ds, IEnumerable<int> rows);
+    void FixParameters();
   }
 }

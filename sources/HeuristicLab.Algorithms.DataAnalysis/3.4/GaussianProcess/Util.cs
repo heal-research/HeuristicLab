@@ -105,42 +105,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static IEnumerable<double> GetRow(double[,] x, int r) {
       int cols = x.GetLength(1);
-      return Enumerable.Range(0, cols).Select(c => x[r, c]);
+      return GetRow(x, r, Enumerable.Range(0, cols));
+    }
+    public static IEnumerable<double> GetRow(double[,] x, int r, IEnumerable<int> columnIndices) {
+      return columnIndices.Select(c => x[r, c]);
     }
     public static IEnumerable<double> GetCol(double[,] x, int c) {
       int rows = x.GetLength(0);
       return Enumerable.Range(0, rows).Select(r => x[r, c]);
-    }
-
-
-    public static void AttachValueChangeHandler<T, U>(IValueParameter<T> parameter, Action action)
-      where T : ValueTypeValue<U>
-      where U : struct {
-      parameter.ValueChanged += (sender, args) => {
-        if (parameter.Value != null) {
-          parameter.Value.ValueChanged += (s, a) => action();
-          action();
-        }
-      };
-      if (parameter.Value != null) {
-        parameter.Value.ValueChanged += (s, a) => action();
-      }
-    }
-
-    public static void AttachArrayChangeHandler<T, U>(IValueParameter<T> parameter, Action action)
-      where T : ValueTypeArray<U>
-      where U : struct {
-      parameter.ValueChanged += (sender, args) => {
-        if (parameter.Value != null) {
-          parameter.Value.ItemChanged += (s, a) => action();
-          parameter.Value.Reset += (s, a) => action();
-          action();
-        }
-      };
-      if (parameter.Value != null) {
-        parameter.Value.ItemChanged += (s, a) => action();
-        parameter.Value.Reset += (s, a) => action();
-      }
     }
   }
 }

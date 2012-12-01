@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -31,13 +32,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item(Name = "CovarianceConst",
     Description = "Constant covariance function for Gaussian processes.")]
   public sealed class CovarianceConst : ParameterizedNamedItem, ICovarianceFunction {
-
-    [Storable]
-    private double scale;
-    [Storable]
-    private readonly HyperParameter<DoubleValue> scaleParameter;
     public IValueParameter<DoubleValue> ScaleParameter {
-      get { return scaleParameter; }
+      get { return (IValueParameter<DoubleValue>)Parameters["Scale"]; }
     }
 
     [StorableConstructor]
@@ -47,10 +43,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private CovarianceConst(CovarianceConst original, Cloner cloner)
       : base(original, cloner) {
-      this.scaleParameter = cloner.Clone(original.scaleParameter);
-      this.scale = original.scale;
-
-      RegisterEvents();
     }
 
     public CovarianceConst()
@@ -58,48 +50,48 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Name = ItemName;
       Description = ItemDescription;
 
-      scaleParameter = new HyperParameter<DoubleValue>("Scale", "The scale of the constant covariance function.");
-      Parameters.Add(scaleParameter);
-      RegisterEvents();
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale of the constant covariance function."));
     }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEvents();
-    }
-
-    // caching
-    private void RegisterEvents() {
-      Util.AttachValueChangeHandler<DoubleValue, double>(scaleParameter, () => { scale = scaleParameter.Value.Value; });
-    }
-
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new CovarianceConst(this, cloner);
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
-      return scaleParameter.Fixed ? 0 : 1;
+      return ScaleParameter.Value != null ? 0 : 1;
     }
 
-    public void SetParameter(double[] hyp) {
-      if (!scaleParameter.Fixed && hyp.Length == 1) {
-        scaleParameter.SetValue(new DoubleValue(Math.Exp(2 * hyp[0])));
+    public void SetParameter(double[] p) {
+      double scale;
+      GetParameterValues(p, out scale);
+      ScaleParameter.Value = new DoubleValue(scale);
+    }
+
+    private void GetParameterValues(double[] p, out double scale) {
+      int c = 0;
+      // gather parameter values
+      if (ScaleParameter.Value != null) {
+        scale = ScaleParameter.Value.Value;
       } else {
-        throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceConst", "hyp");
+        scale = Math.Exp(2 * p[c]);
+        c++;
       }
+      if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceConst", "p");
     }
 
-    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      return scale;
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      double scale;
+      GetParameterValues(p, out scale);
+      // create functions
+      var cov = new ParameterizedCovarianceFunction();
+      cov.Covariance = (x, i, j) => scale;
+      cov.CrossCovariance = (x, xt, i, j) => scale;
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, scale, columnIndices);
+      return cov;
     }
 
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double scale, IEnumerable<int> columnIndices) {
       yield return 2.0 * scale;
-    }
-
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      return scale;
     }
   }
 }

@@ -47,20 +47,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return 0;
     }
 
-    public void SetParameter(double[] hyp) {
-      if (hyp.Length > 0) throw new ArgumentException("No hyperparameters are allowed for the linear covariance function.");
+    public void SetParameter(double[] p) {
+      if (p.Length > 0) throw new ArgumentException("No parameters are allowed for the linear covariance function.");
     }
 
-    public double GetCovariance(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      return Util.ScalarProd(x, i, j, 1, columnIndices);
-    }
-
-    public IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices) {
-      yield break;
-    }
-
-    public double GetCrossCovariance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {
-      return Util.ScalarProd(x, i, xt, j, 1.0 , columnIndices);
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      if (p.Length > 0) throw new ArgumentException("No parameters are allowed for the linear covariance function.");
+      // create functions
+      var cov = new ParameterizedCovarianceFunction();
+      cov.Covariance = (x, i, j) => Util.ScalarProd(x, i, j, 1, columnIndices);
+      cov.CrossCovariance = (x, xt, i, j) =>  Util.ScalarProd(x, i, xt, j, 1.0 , columnIndices);
+      cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+      return cov;
     }
   }
 }
