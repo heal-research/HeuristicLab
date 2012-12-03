@@ -63,6 +63,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      replacementNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
+
       UpdateView();
       viewHost.Content = this.Content;
     }
@@ -70,6 +72,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private void UpdateView() {
       if (Content == null || Content.Model == null || Content.ProblemData == null) return;
       var tree = Content.Model.SymbolicExpressionTree;
+      treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
       var replacementValues = CalculateReplacementValues(tree);
       foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
@@ -77,9 +80,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
 
       nodeImpacts = CalculateImpactValues(tree);
-
-      var model = Content.Model.SymbolicExpressionTree;
-      treeChart.Tree = model.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(model.Root) : new SymbolicExpressionTree(model.Root.GetSubtree(0).GetSubtree(0));
       PaintNodeImpacts();
     }
 
@@ -100,25 +100,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var symbExprTreeNode = (SymbolicExpressionTreeNode)visualNode.SymbolicExpressionTreeNode;
       if (symbExprTreeNode == null) return;
       if (!replacementNodes.ContainsKey(symbExprTreeNode)) return;
+
       var tree = Content.Model.SymbolicExpressionTree;
-      var replacementNode = replacementNodes[symbExprTreeNode];
       int indexOfReplacementNode = symbExprTreeNode.Parent.IndexOfSubtree(symbExprTreeNode);
       SwitchNodeWithReplacementNode(symbExprTreeNode.Parent, indexOfReplacementNode);
-      // show only interesting part of solution 
-      treeChart.Tree = tree.Root.SubtreeCount > 1
-                         ? new SymbolicExpressionTree(tree.Root)
-                         : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
       UpdateModel(tree);
-      var vNode = treeChart.GetVisualSymbolicExpressionTreeNode(replacementNode);
-      vNode.SymbolicExpressionTreeNode = replacementNode;
-
-      vNode.LineColor = replacementNode is ConstantTreeNode ? Color.DarkOrange : Color.Black;
-      treeChart.RepaintNode(vNode);
     }
 
     private void treeChart_SymbolicExpressionTreeChanged(object sender, EventArgs e) {
       UpdateModel(Content.Model.SymbolicExpressionTree);
-      UpdateView();
     }
 
     private void SwitchNodeWithReplacementNode(ISymbolicExpressionTreeNode parent, int subTreeIndex) {
