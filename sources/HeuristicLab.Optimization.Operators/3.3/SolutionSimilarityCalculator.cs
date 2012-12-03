@@ -79,13 +79,8 @@ namespace HeuristicLab.Optimization.Operators {
       return similarityMatrix;
     }
 
-    public bool Equals(IScope x, IScope y) {
-      if (object.ReferenceEquals(x, y)) return true;
-      if (x == null || y == null) return false;
-      return CalculateSolutionSimilarity(x, y) == 1.0;
-    }
-
     public abstract double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution);
+    public abstract bool Equals(IScope x, IScope y);
     public abstract int GetHashCode(IScope obj);
   }
 }

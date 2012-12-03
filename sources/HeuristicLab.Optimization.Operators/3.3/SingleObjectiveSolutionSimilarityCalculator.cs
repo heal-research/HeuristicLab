@@ -47,6 +47,14 @@ namespace HeuristicLab.Optimization.Operators {
     }
     protected SingleObjectiveSolutionSimilarityCalculator() : base() { }
 
+    public override bool Equals(IScope x, IScope y) {
+      if (object.ReferenceEquals(x, y)) return true;
+      if (x == null || y == null) return false;
+      double q1 = ((DoubleValue)x.Variables[QualityVariableName].Value).Value;
+      double q2 = ((DoubleValue)y.Variables[QualityVariableName].Value).Value;
+      return q1.IsAlmost(q2) && CalculateSolutionSimilarity(x, y).IsAlmost(1.0);
+    }
+
     public override int GetHashCode(IScope scope) {
       return ((DoubleValue)scope.Variables[QualityVariableName].Value).Value.GetHashCode();
     }
