@@ -128,11 +128,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     public void RepaintNodes() {
       if (!suspendRepaint) {
-        var graphics = Graphics.FromImage(image);
-        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
-        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-        foreach (var visualNode in visualTreeNodes.Values) {
-          DrawTreeNode(graphics, visualNode);
+        using (var graphics = Graphics.FromImage(image)) {
+          graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+          graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+          foreach (var visualNode in visualTreeNodes.Values) {
+            DrawTreeNode(graphics, visualNode);
+          }
         }
         this.Refresh();
       }
@@ -140,10 +141,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     public void RepaintNode(VisualSymbolicExpressionTreeNode visualNode) {
       if (!suspendRepaint) {
-        var graphics = Graphics.FromImage(image);
-        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
-        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-        DrawTreeNode(graphics, visualNode);
+        using (var graphics = Graphics.FromImage(image)) {
+          graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+          graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+          DrawTreeNode(graphics, visualNode);
+        }
         this.Refresh();
       }
     }
@@ -267,69 +269,69 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       int actualWidth = width - spacing;
       int actualHeight = height - spacing;
 
-      SolidBrush textBrush = new SolidBrush(visualTreeNode.TextColor);
-      Pen nodeLinePen = new Pen(visualTreeNode.LineColor);
-      SolidBrush nodeFillBrush = new SolidBrush(visualTreeNode.FillColor);
+      using (var textBrush = new SolidBrush(visualTreeNode.TextColor))
+      using (var nodeLinePen = new Pen(visualTreeNode.LineColor))
+      using (var nodeFillBrush = new SolidBrush(visualTreeNode.FillColor)) {
 
-      //calculate size of node
-      if (actualWidth >= visualTreeNode.PreferredWidth && actualHeight >= visualTreeNode.PreferredHeight) {
-        visualTreeNode.Width = visualTreeNode.PreferredWidth;
-        visualTreeNode.Height = visualTreeNode.PreferredHeight;
-        visualTreeNode.X = (int)center_x - visualTreeNode.Width / 2;
-        visualTreeNode.Y = (int)center_y - visualTreeNode.Height / 2;
-      }
-        //width too small to draw in desired sized
-      else if (actualWidth < visualTreeNode.PreferredWidth && actualHeight >= visualTreeNode.PreferredHeight) {
-        visualTreeNode.Width = actualWidth;
-        visualTreeNode.Height = visualTreeNode.PreferredHeight;
-        visualTreeNode.X = x;
-        visualTreeNode.Y = (int)center_y - visualTreeNode.Height / 2;
-      }
-        //height too small to draw in desired sized
-      else if (actualWidth >= visualTreeNode.PreferredWidth && actualHeight < visualTreeNode.PreferredHeight) {
-        visualTreeNode.Width = visualTreeNode.PreferredWidth;
-        visualTreeNode.Height = actualHeight;
-        visualTreeNode.X = (int)center_x - visualTreeNode.Width / 2;
-        visualTreeNode.Y = y;
-      }
-        //width and height too small to draw in desired size
-      else {
-        visualTreeNode.Width = actualWidth;
-        visualTreeNode.Height = actualHeight;
-        visualTreeNode.X = x;
-        visualTreeNode.Y = y;
-      }
-
-      //draw terminal node
-      if (node.SubtreeCount == 0) {
-        graphics.FillRectangle(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-        graphics.DrawRectangle(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-      } else {
-        graphics.FillEllipse(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-        graphics.DrawEllipse(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-      }
-
-      //draw name of symbol
-      var text = node.ToString();
-      graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
-
-      //draw connection line to parent node
-      if (!connectionPoint.IsEmpty && node.Parent != null) {
-        var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(node.Parent, node);
-        using (Pen linePen = new Pen(visualLine.LineColor)) {
-          linePen.DashStyle = visualLine.DashStyle;
-          graphics.DrawLine(linePen, connectionPoint, new Point(visualTreeNode.X + visualTreeNode.Width / 2, visualTreeNode.Y));
+        //calculate size of node
+        if (actualWidth >= visualTreeNode.PreferredWidth && actualHeight >= visualTreeNode.PreferredHeight) {
+          visualTreeNode.Width = visualTreeNode.PreferredWidth;
+          visualTreeNode.Height = visualTreeNode.PreferredHeight;
+          visualTreeNode.X = (int)center_x - visualTreeNode.Width / 2;
+          visualTreeNode.Y = (int)center_y - visualTreeNode.Height / 2;
         }
-      }
+          //width too small to draw in desired sized
+        else if (actualWidth < visualTreeNode.PreferredWidth && actualHeight >= visualTreeNode.PreferredHeight) {
+          visualTreeNode.Width = actualWidth;
+          visualTreeNode.Height = visualTreeNode.PreferredHeight;
+          visualTreeNode.X = x;
+          visualTreeNode.Y = (int)center_y - visualTreeNode.Height / 2;
+        }
+          //height too small to draw in desired sized
+        else if (actualWidth >= visualTreeNode.PreferredWidth && actualHeight < visualTreeNode.PreferredHeight) {
+          visualTreeNode.Width = visualTreeNode.PreferredWidth;
+          visualTreeNode.Height = actualHeight;
+          visualTreeNode.X = (int)center_x - visualTreeNode.Width / 2;
+          visualTreeNode.Y = y;
+        }
+          //width and height too small to draw in desired size
+        else {
+          visualTreeNode.Width = actualWidth;
+          visualTreeNode.Height = actualHeight;
+          visualTreeNode.X = x;
+          visualTreeNode.Y = y;
+        }
 
-      //calculate areas for the subtrees according to their tree size and call drawFunctionTree
-      Point connectFrom = new Point(visualTreeNode.X + visualTreeNode.Width / 2, visualTreeNode.Y + visualTreeNode.Height);
-      int[] xBoundaries = new int[node.SubtreeCount + 1];
-      xBoundaries[0] = x;
-      for (int i = 0; i < node.SubtreeCount; i++) {
-        xBoundaries[i + 1] = (int)(xBoundaries[i] + (width * (double)node.GetSubtree(i).GetLength()) / (node.GetLength() - 1));
-        DrawFunctionTree(node.GetSubtree(i), graphics, xBoundaries[i], y + height,
-          xBoundaries[i + 1] - xBoundaries[i], height, connectFrom);
+        //draw terminal node
+        if (node.SubtreeCount == 0) {
+          graphics.FillRectangle(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+          graphics.DrawRectangle(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+        } else {
+          graphics.FillEllipse(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+          graphics.DrawEllipse(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+        }
+
+        //draw name of symbol
+        var text = node.ToString();
+        graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
+
+        //draw connection line to parent node
+        if (!connectionPoint.IsEmpty && node.Parent != null) {
+          var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(node.Parent, node);
+          using (Pen linePen = new Pen(visualLine.LineColor)) {
+            linePen.DashStyle = visualLine.DashStyle;
+            graphics.DrawLine(linePen, connectionPoint, new Point(visualTreeNode.X + visualTreeNode.Width / 2, visualTreeNode.Y));
+          }
+        }
+
+        //calculate areas for the subtrees according to their tree size and call drawFunctionTree
+        Point connectFrom = new Point(visualTreeNode.X + visualTreeNode.Width / 2, visualTreeNode.Y + visualTreeNode.Height);
+        int[] xBoundaries = new int[node.SubtreeCount + 1];
+        xBoundaries[0] = x;
+        for (int i = 0; i < node.SubtreeCount; i++) {
+          xBoundaries[i + 1] = (int)(xBoundaries[i] + (width * (double)node.GetSubtree(i).GetLength()) / (node.GetLength() - 1));
+          DrawFunctionTree(node.GetSubtree(i), graphics, xBoundaries[i], y + height, xBoundaries[i + 1] - xBoundaries[i], height, connectFrom);
+        }
       }
     }
 
@@ -345,20 +347,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       graphics.Clip = new Region(new Rectangle(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width + 1, visualTreeNode.Height + 1));
       graphics.Clear(backgroundColor);
       var node = visualTreeNode.SymbolicExpressionTreeNode;
-      var textBrush = new SolidBrush(visualTreeNode.TextColor);
-      var nodeLinePen = new Pen(visualTreeNode.LineColor);
-      var nodeFillBrush = new SolidBrush(visualTreeNode.FillColor);
-      //draw terminal node
-      if (node.SubtreeCount == 0) {
-        graphics.FillRectangle(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-        graphics.DrawRectangle(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-      } else {
-        graphics.FillEllipse(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-        graphics.DrawEllipse(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+      using (var textBrush = new SolidBrush(visualTreeNode.TextColor))
+      using (var nodeLinePen = new Pen(visualTreeNode.LineColor))
+      using (var nodeFillBrush = new SolidBrush(visualTreeNode.FillColor)) {
+        //draw terminal node
+        if (node.SubtreeCount == 0) {
+          graphics.FillRectangle(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+          graphics.DrawRectangle(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+        } else {
+          graphics.FillEllipse(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+          graphics.DrawEllipse(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
+        }
+        //draw name of symbol
+        var text = node.ToString();
+        graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
       }
-      //draw name of symbol
-      var text = node.ToString();
-      graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
     }
     #endregion
 
