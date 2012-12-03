@@ -31,7 +31,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public sealed partial class InteractiveSymbolicExpressionTreeChart : SymbolicExpressionTreeChart {
     private ISymbolicExpressionTreeNode tempNode; // node in clipboard (to be cut/copy/pasted etc)
     private VisualSymbolicExpressionTreeNode currSelected; // currently selected node
-    private enum EditOp { NoOp, CopyNode, CopySubtree, CutNode, CutSubtree, DeleteNode, DeleteSubtree }
+    private enum EditOp { NoOp, CopyNode, CopySubtree, CutNode, CutSubtree, RemoveNode, RemoveSubtree }
     private enum TreeState { Valid, Invalid }
     private EditOp lastOp = EditOp.NoOp;
     private TreeState treeState = TreeState.Valid; // tree edit operations must leave the tree in a valid state
@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         treeStatusValue.Text = "Invalid";
         treeStatusValue.ForeColor = Color.Red;
         treeState = TreeState.Invalid;
-        Repaint();
+        Tree = Tree; // reinitialize the dictionaries and repaint
       }
       foreach (var node in originalNodes.Keys) {
         var visualNode = GetVisualSymbolicExpressionTreeNode(node);
@@ -80,19 +80,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       if (currSelected == null) {
         insertNodeToolStripMenuItem.Visible = false;
-        editNodeToolStripMenuItem.Visible = false;
+        changeNodeToolStripMenuItem.Visible = false;
         copyToolStripMenuItem.Visible = false;
         cutToolStripMenuItem.Visible = false;
-        deleteToolStripMenuItem.Visible = false;
+        removeToolStripMenuItem.Visible = false;
         pasteToolStripMenuItem.Visible = false;
       } else {
         var node = currSelected.SymbolicExpressionTreeNode;
-        editNodeToolStripMenuItem.Visible = (node is SymbolicExpressionTreeTerminalNode);
-        insertNodeToolStripMenuItem.Visible = !editNodeToolStripMenuItem.Visible;
+        insertNodeToolStripMenuItem.Visible = true;
+        changeNodeToolStripMenuItem.Visible = true;
+        changeNodeToolStripMenuItem.Enabled = (node is SymbolicExpressionTreeTerminalNode);
+        insertNodeToolStripMenuItem.Enabled = !changeNodeToolStripMenuItem.Enabled;
         copyToolStripMenuItem.Visible = true;
         cutToolStripMenuItem.Visible = true;
-        deleteToolStripMenuItem.Visible = true;
-        pasteToolStripMenuItem.Visible = tempNode != null && insertNodeToolStripMenuItem.Visible;
+        removeToolStripMenuItem.Visible = true;
+        pasteToolStripMenuItem.Visible = true;
+        pasteToolStripMenuItem.Enabled = tempNode != null && insertNodeToolStripMenuItem.Enabled;
       }
     }
 
@@ -174,7 +177,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
-    private void editNodeToolStripMenuItem_Click(object sender, EventArgs e) {
+    private void changeNodeToolStripMenuItem_Click(object sender, EventArgs e) {
       if (currSelected == null) return;
 
       ISymbolicExpressionTreeNode node;
@@ -211,16 +214,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       OnSymbolicExpressionTreeChanged(sender, EventArgs.Empty);
     }
 
-    private void cutNodeToolStripMenuItem_Click(object sender, EventArgs e) {
-      lastOp = EditOp.CutNode;
-      tempNode = currSelected.SymbolicExpressionTreeNode;
-      var visualNode = GetVisualSymbolicExpressionTreeNode(tempNode);
-      visualNode.LineColor = Color.LightGray;
-      visualNode.TextColor = Color.LightGray;
-      Repaint();
-    }
-
-    private void cutSubtreeToolStripMenuItem_Click(object sender, EventArgs e) {
+    private void cutToolStripMenuItem_Click(object sender, EventArgs e) {
       lastOp = EditOp.CutSubtree;
       tempNode = currSelected.SymbolicExpressionTreeNode;
       foreach (var node in tempNode.IterateNodesPostfix()) {
@@ -237,15 +231,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       Repaint();
     }
 
-    private void copyNodeToolStripMenuItem_Click(object sender, EventArgs e) {
-      lastOp = EditOp.CopyNode;
-      tempNode = currSelected.SymbolicExpressionTreeNode;
-      currSelected.LineColor = Color.LightGray;
-      currSelected.TextColor = Color.LightGray;
-      Repaint();
-    }
-
-    private void copySubtreeToolStripMenuItem_Click(object sender, EventArgs e) {
+    private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
       lastOp = EditOp.CopySubtree;
       tempNode = currSelected.SymbolicExpressionTreeNode;
       foreach (var node in tempNode.IterateNodesPostfix()) {
@@ -261,8 +247,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       Repaint();
     }
 
-    private void deleteNodeToolStripMenuItem_Click(object sender, EventArgs e) {
-      lastOp = EditOp.DeleteNode;
+    private void removeNodeToolStripMenuItem_Click(object sender, EventArgs e) {
+      lastOp = EditOp.RemoveNode;
       var node = currSelected.SymbolicExpressionTreeNode;
       var parent = node.Parent;
       if (parent == null || parent.Symbol is StartSymbol || parent.Symbol is ProgramRootSymbol)
@@ -275,19 +261,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           parent.AddSubtree(child);
         }
       }
-      currSelected = null; // because the currently selected node was just deleted
       OnSymbolicExpressionTreeChanged(sender, e);
+      currSelected = null; // because the currently selected node was just deleted
     }
 
-    private void deleteSubtreeToolStripMenuItem_Click(object sender, EventArgs e) {
-      lastOp = EditOp.DeleteSubtree;
+    private void removeSubtreeToolStripMenuItem_Click(object sender, EventArgs e) {
+      lastOp = EditOp.RemoveSubtree;
       var node = currSelected.SymbolicExpressionTreeNode;
       var parent = node.Parent;
       if (parent == null || parent.Symbol is StartSymbol || parent.Symbol is ProgramRootSymbol)
         return; // the operation makes no sense as it would result in the deletion of the entire tree
       parent.RemoveSubtree(parent.IndexOfSubtree(node));
-      currSelected = null; // because the currently selected node was just deleted
       OnSymbolicExpressionTreeChanged(sender, e);
+      currSelected = null; // because the currently selected node was just deleted
     }
 
     private void pasteToolStripMenuItem_Clicked(object sender, EventArgs e) {
