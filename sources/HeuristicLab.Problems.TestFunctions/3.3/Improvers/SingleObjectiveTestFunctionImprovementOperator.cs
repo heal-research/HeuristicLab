@@ -125,10 +125,11 @@ namespace HeuristicLab.Problems.TestFunctions {
       if (bestSol == null)
         throw new ArgumentException("Cannot improve solution because it has the wrong type.");
 
-      MethodInfo evaluationMethod = Evaluator.GetType().GetMethod("Apply",
-                                                                  BindingFlags.Public | BindingFlags.Static,
+      MethodInfo evaluationMethod = Evaluator.GetType().GetMethod("EvaluateFunction",
+                                                                  BindingFlags.Instance | BindingFlags.NonPublic,
                                                                   null,
-                                                                  new Type[] { typeof(RealVector) }, null);
+                                                                  new[] { typeof(RealVector) },
+                                                                  null);
       Func<RealVector, double> functionEvaluator = x => (double)evaluationMethod.Invoke(Evaluator, new object[] { x });
       double bestSolQuality = functionEvaluator(bestSol);
 
