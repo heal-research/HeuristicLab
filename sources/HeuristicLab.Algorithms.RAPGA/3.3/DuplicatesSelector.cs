@@ -58,11 +58,10 @@ namespace HeuristicLab.Algorithms.RAPGA {
       bool copy = CopySelected.Value;
 
       var marks = new bool[scopes.Count];
-      for (int i = 0; i < scopes.Count; i++) {
-        for (int j = i + 1; j < scopes.Count; j++) {
-          if (SimilarityCalculator.Equals(scopes[i], scopes[j])) marks[j] = true;
-        }
-      }
+      for (int i = 0; i < scopes.Count; i++)
+        for (int j = i + 1; j < scopes.Count; j++)
+          marks[j] = SimilarityCalculator.Equals(scopes[i], scopes[j]);
+
 
       var selected = new IScope[marks.Count(x => x)];
       int k = 0;

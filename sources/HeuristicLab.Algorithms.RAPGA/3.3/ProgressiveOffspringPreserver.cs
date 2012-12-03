@@ -104,7 +104,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
           int i = 0;
           // as long as offspring is available and not enough offspring has been preserved
           while (i < createdOffspring.Length && OffspringList.Count < MaximumPopulationSize.Value - Elites.Value) {
-            if (similarityMatrix[i].Any(x => x == 1.0)) createdOffspring[i] = null; // discard duplicates
+            if (similarityMatrix[i].Any(x => x.IsAlmost(1.0))) createdOffspring[i] = null; // discard duplicates
             else OffspringList.Add(createdOffspring[i]);
             i++;
           }
