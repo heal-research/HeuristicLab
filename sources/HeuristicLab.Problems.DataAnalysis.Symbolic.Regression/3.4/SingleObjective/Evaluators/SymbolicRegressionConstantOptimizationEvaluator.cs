@@ -229,10 +229,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         alglib.lsfitresults(state, out info, out c, out rep);
       }
       catch (ArithmeticException) {
-        return SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
+        return originalQuality;
       }
       catch (alglib.alglibexception) {
-        return SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, tree, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
+        return originalQuality;
       }
 
       //info == -7  => constant optimization failed due to wrong gradient
