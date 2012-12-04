@@ -45,6 +45,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private ProgressView progressView;
     private HiveResourceSelectorDialog hiveResourceSelectorDialog;
     private bool SuppressEvents { get; set; }
+    private object runCollectionViewLocker = new object();
 
     public new RefreshableJob Content {
       get { return (RefreshableJob)base.Content; }
@@ -131,7 +132,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           isPrivilegedCheckBox.Checked = false;
           logView.Content = null;
           refreshAutomaticallyCheckBox.Checked = false;
-          runCollectionViewHost.Content = null;
+          lock (runCollectionViewLocker) {
+            runCollectionViewHost.Content = null;
+          }
         } else {
           nameTextBox.Text = Content.Job.Name;
           executionTimeTextBox.Text = Content.ExecutionTime.ToString();
@@ -139,7 +142,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
           refreshAutomaticallyCheckBox.Checked = Content.RefreshAutomatically;
           logView.Content = Content.Log;
-          runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+          lock (runCollectionViewLocker) {
+            runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+          }
         }
       }
       finally {
@@ -191,7 +196,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     #region Content Events
     void Content_TaskReceived(object sender, EventArgs e) {
-      runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+      lock (runCollectionViewLocker) {
+        runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+      }
     }
 
     private void HiveTasks_ItemsAdded(object sender, CollectionItemsChangedEventArgs<HiveTask> e) {
@@ -287,7 +294,9 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     void Content_Loaded(object sender, EventArgs e) {
-      runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+      lock (runCollectionViewLocker) {
+        runCollectionViewHost.Content = GetAllRunsFromJob(Content);
+      }
     }
 
     private void Content_HiveExperimentChanged(object sender, EventArgs e) {

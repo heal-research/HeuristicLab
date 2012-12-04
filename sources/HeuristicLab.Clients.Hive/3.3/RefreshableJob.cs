@@ -301,8 +301,7 @@ namespace HeuristicLab.Clients.Hive {
                 }
               });
             }
-          } else
-            throw new Exception("This should not happen");
+          }
         }
         GC.Collect(); // force GC, because .NET is too lazy here (deserialization takes a lot of memory)
         if (AllJobsFinished()) {
