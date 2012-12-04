@@ -266,13 +266,13 @@ namespace HeuristicLab.Clients.Hive {
           HiveTask hiveTask = GetHiveTaskById(lightweightTask.Id);
           if (hiveTask != null) {
             // lastJobDataUpdate equals DateTime.MinValue right after it was uploaded. When the first results are polled, this value is updated
-            if (hiveTask.Task.State == TaskState.Offline && lightweightTask.State != TaskState.Finished && lightweightTask.State != TaskState.Failed && lightweightTask.State != TaskState.Aborted) {
+            if (hiveTask.Task.State == TaskState.Offline && lightweightTask.State == TaskState.Waiting) {
               hiveTask.Task.LastTaskDataUpdate = lightweightTask.LastTaskDataUpdate;
             }
 
             hiveTask.UpdateFromLightweightJob(lightweightTask);
 
-            if (!hiveTask.IsFinishedTaskDownloaded && !hiveTask.IsDownloading && hiveTask.Task.LastTaskDataUpdate < lightweightTask.LastTaskDataUpdate) {
+            if (!hiveTask.IsFinishedTaskDownloaded && !hiveTask.IsDownloading && hiveTask.Task.LastTaskDataUpdate < lightweightTask.LastTaskDataUpdate && (lightweightTask.State == TaskState.Finished || lightweightTask.State == TaskState.Aborted || lightweightTask.State == TaskState.Failed || lightweightTask.State == TaskState.Paused)) {
               log.LogMessage(string.Format("Downloading task {0}", lightweightTask.Id));
               hiveTask.IsDownloading = true;
               jobDownloader.DownloadTaskData(hiveTask.Task, (localJob, itemJob) => {
