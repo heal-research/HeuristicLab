@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Authors: Ekaterina J. Vladislavleva, Member, IEEE, Guido F. Smits, Member, IEEE, and Dick den Hertog" + Environment.NewLine
         + "Function: F6(X1, X2) = 6 * sin(X1) * cos(X2)" + Environment.NewLine
         + "Training Data: 30 points X1, X2 = Rand(0.1, 5.9)" + Environment.NewLine
-        + "Test Data: 961 points X1, X2 = (-0.05:0.02:6.05)" + Environment.NewLine
+        + "Test Data: 306*306 points X1, X2 = (-0.05:0.02:6.05)" + Environment.NewLine
         + "Function Set: +, -, *, /, square, e^x, e^-x, x^eps, x + eps, x * eps";
       }
     }
@@ -42,8 +42,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string[] AllowedInputVariables { get { return new string[] { "X1", "X2" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 30; } }
-    protected override int TestPartitionStart { get { return 500; } }
-    protected override int TestPartitionEnd { get { return 1461; } }
+    protected override int TestPartitionStart { get { return 30; } }
+    protected override int TestPartitionEnd { get { return 30 + (306 * 306); } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
 
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(500, 0.1, 5.9).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(30, 0.1, 5.9).ToList());
         data[i].AddRange(combinations[i]);
       }
 

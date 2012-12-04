@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Authors: Ekaterina J. Vladislavleva, Member, IEEE, Guido F. Smits, Member, IEEE, and Dick den Hertog" + Environment.NewLine
         + "Function: F8(X1, X2) = ((X1 - 3)^4 + (X2 - 3)³ - (X2 -3)) / ((X2 - 2)^4 + 10)" + Environment.NewLine
         + "Training Data: 50 points X1, X2 = Rand(0.05, 6.05)" + Environment.NewLine
-        + "Test Data: 1157 points X1, X2 = (-0.25:0.2:6.35)" + Environment.NewLine
+        + "Test Data: 34*34 points X1, X2 = (-0.25:0.2:6.35)" + Environment.NewLine
         + "Function Set: +, -, *, /, square, x^eps, x + eps, x * eps";
       }
     }
@@ -42,18 +42,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string[] AllowedInputVariables { get { return new string[] { "X1", "X2" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 50; } }
-    protected override int TestPartitionStart { get { return 1000; } }
-    protected override int TestPartitionEnd { get { return 2157; } }
+    protected override int TestPartitionStart { get { return 50; } }
+    protected override int TestPartitionEnd { get { return 50 + (34 * 34); } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
       List<double> oneVariableTestData = ValueGenerator.GenerateSteps(-0.25, 6.35, 0.2).ToList();
-      List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
 
+      List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
+
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(1000, 0.05, 6.05).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(50, 0.05, 6.05).ToList());
         data[i].AddRange(combinations[i]);
       }
 

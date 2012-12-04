@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Authors: Ekaterina J. Vladislavleva, Member, IEEE, Guido F. Smits, Member, IEEE, and Dick den Hertog" + Environment.NewLine
         + "Function: F5(X1, X2, X3) = 30 * ((X1 - 1) * (X3 -1)) / (X2² * (X1 - 10))" + Environment.NewLine
         + "Training Data: 300 points X1, X3 = Rand(0.05, 2), X2 = Rand(1, 2)" + Environment.NewLine
-        + "Test Data: 2701 points X1, X3 = (-0.05:0.15:2.1), X2 = (0.95:0.1:2.05)" + Environment.NewLine
+        + "Test Data: (14*12*14) points X1, X3 = (-0.05:0.15:2.1), X2 = (0.95:0.1:2.05)" + Environment.NewLine
         + "Function Set: +, -, *, /, square, x^eps, x + eps, x * eps";
       }
     }
@@ -42,13 +42,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string[] AllowedInputVariables { get { return new string[] { "X1", "X2", "X3" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 300; } }
-    protected override int TestPartitionStart { get { return 1000; } }
-    protected override int TestPartitionEnd { get { return 3700; } }
+    protected override int TestPartitionStart { get { return 300; } }
+    protected override int TestPartitionEnd { get { return 300 + (14*12*14); } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
-      int n = 1000;
+      int n = 300;
       data.Add(ValueGenerator.GenerateUniformDistributedValues(n, 0.05, 2).ToList());
       data.Add(ValueGenerator.GenerateUniformDistributedValues(n, 1, 2).ToList());
       data.Add(ValueGenerator.GenerateUniformDistributedValues(n, 0.05, 2).ToList());
