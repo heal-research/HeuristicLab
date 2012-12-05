@@ -98,7 +98,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (CheckExpressionsWithIntervalArithmetic.Value)
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
 
-      EvaluatedSolutions.Value++; // increment the evaluated solutions counter
+      lock (EvaluatedSolutions) {
+        EvaluatedSolutions.Value++; // increment the evaluated solutions counter
+      }
       var state = PrepareInterpreterState(tree, dataset);
 
       foreach (var rowEnum in rows) {
@@ -108,7 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private InterpreterState PrepareInterpreterState(ISymbolicExpressionTree tree, Dataset dataset) {
+    private static InterpreterState PrepareInterpreterState(ISymbolicExpressionTree tree, Dataset dataset) {
       Instruction[] code = SymbolicExpressionTreeCompiler.Compile(tree, OpCodes.MapSymbolToOpCode);
       int necessaryArgStackSize = 0;
       foreach (Instruction instr in code) {

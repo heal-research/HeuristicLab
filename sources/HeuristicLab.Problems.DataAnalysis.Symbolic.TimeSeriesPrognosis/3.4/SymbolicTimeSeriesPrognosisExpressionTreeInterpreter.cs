@@ -81,8 +81,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
         invalidateCacheIndexes = new List<int>(10);
 
       string targetVariable = TargetVariable;
-      EvaluatedSolutions.Value++; // increment the evaluated solutions counter
-      var state = PrepareInterpreterState(tree, dataset, targetVariableCache);
+      lock (EvaluatedSolutions) {
+        EvaluatedSolutions.Value++; // increment the evaluated solutions counter
+      }
+      var state = PrepareInterpreterState(tree, dataset, targetVariableCache, TargetVariable);
       var rowsEnumerator = rows.GetEnumerator();
       var horizonsEnumerator = horizons.GetEnumerator();
 
@@ -113,25 +115,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
         throw new ArgumentException("Number of elements in rows and horizon enumerations doesn't match.");
     }
 
-    private InterpreterState PrepareInterpreterState(ISymbolicExpressionTree tree, Dataset dataset, double[] targetVariableCache) {
+    private static InterpreterState PrepareInterpreterState(ISymbolicExpressionTree tree, Dataset dataset, double[] targetVariableCache, string targetVariable) {
       Instruction[] code = SymbolicExpressionTreeCompiler.Compile(tree, OpCodes.MapSymbolToOpCode);
       int necessaryArgStackSize = 0;
       foreach (Instruction instr in code) {
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
-          if (variableTreeNode.VariableName == TargetVariable)
+          if (variableTreeNode.VariableName == targetVariable)
             instr.iArg0 = targetVariableCache;
           else
             instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.LagVariable) {
           var variableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
-          if (variableTreeNode.VariableName == TargetVariable)
+          if (variableTreeNode.VariableName == targetVariable)
             instr.iArg0 = targetVariableCache;
           else
             instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.VariableCondition) {
           var variableTreeNode = (VariableConditionTreeNode)instr.dynamicNode;
-          if (variableTreeNode.VariableName == TargetVariable)
+          if (variableTreeNode.VariableName == targetVariable)
             instr.iArg0 = targetVariableCache;
           else
             instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);

@@ -330,7 +330,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     [StorableConstructor]
     public TimeSeriesPrognosisResults(bool deserializing) : base(deserializing) { }
-    protected TimeSeriesPrognosisResults(TimeSeriesPrognosisResults original, Cloner cloner) : base(original, cloner) { }
+    protected TimeSeriesPrognosisResults(TimeSeriesPrognosisResults original, Cloner cloner)
+      : base(original, cloner) {
+      this.trainingHorizon = original.trainingHorizon;
+      this.testHorizon = original.testHorizon;
+      this.solution = cloner.Clone(original.solution);
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new TimeSeriesPrognosisResults(this, cloner);
     }
