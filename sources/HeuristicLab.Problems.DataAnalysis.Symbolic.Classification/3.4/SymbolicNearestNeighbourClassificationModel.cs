@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     [Storable]
     private int k;
     [Storable]
-    private List<KeyValuePair<double, double>> trainedTargetPair;
+    private List<KeyValuePair<double, Dictionary<double, int>>> trainedTargetPair;
     [Storable]
     private ClassFrequencyComparer frequencyComparer;
 
@@ -47,28 +47,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private SymbolicNearestNeighbourClassificationModel(SymbolicNearestNeighbourClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       k = original.k;
-      trainedTargetPair = new List<KeyValuePair<double, double>>(original.trainedTargetPair);
+      trainedTargetPair = original.trainedTargetPair.Select(x => new KeyValuePair<double, Dictionary<double, int>>(x.Key, new Dictionary<double, int>(x.Value))).ToList();
       frequencyComparer = new ClassFrequencyComparer(original.frequencyComparer);
     }
     public SymbolicNearestNeighbourClassificationModel(int k, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
       : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.k = k;
-      this.trainedTargetPair = new List<KeyValuePair<double, double>>();
+      trainedTargetPair = new List<KeyValuePair<double, Dictionary<double, int>>>();
       frequencyComparer = new ClassFrequencyComparer();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicNearestNeighbourClassificationModel(this, cloner);
-    }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      if (frequencyComparer == null) {
-        var dict = trainedTargetPair
-          .GroupBy(x => x.Value)
-          .ToDictionary(x => x.Key, y => y.Count());
-        frequencyComparer = new ClassFrequencyComparer(dict);
-      }
     }
 
     public override IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
@@ -77,24 +67,36 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var neighborClasses = new Dictionary<double, int>();
       foreach (var ev in estimatedValues) {
         // find the index of the training-point to which distance is shortest
-        var upper = trainedTargetPair.BinarySearch(0, trainedTargetPair.Count, new KeyValuePair<double, double>(ev, double.NaN), new KeyValuePairKeyComparer());
+        var upper = trainedTargetPair.BinarySearch(0, trainedTargetPair.Count, new KeyValuePair<double, Dictionary<double, int>>(ev, null), new KeyValuePairKeyComparer<Dictionary<double, int>>());
         if (upper < 0) upper = ~upper; // if the element was not found exactly, BinarySearch returns the complement of the index of the next larger item
         var lower = upper - 1;
         neighborClasses.Clear();
         // continue to the left and right of this index and look for the nearest neighbors
         for (int i = 0; i < Math.Min(k, trainedTargetPair.Count); i++) {
-          if (upper >= trainedTargetPair.Count || (lower > 0 && ev - trainedTargetPair[lower].Key < trainedTargetPair[upper].Key - ev)) {
+          bool lowerIsCloser = upper >= trainedTargetPair.Count || (lower >= 0 && ev - trainedTargetPair[lower].Key <= trainedTargetPair[upper].Key - ev);
+          bool upperIsCloser = lower < 0 || (upper < trainedTargetPair.Count && ev - trainedTargetPair[lower].Key >= trainedTargetPair[upper].Key - ev);
+          if (lowerIsCloser) {
             // the nearer neighbor is to the left
-            var lowerClass = trainedTargetPair[lower].Value;
-            if (!neighborClasses.ContainsKey(lowerClass)) neighborClasses[lowerClass] = 1;
-            else neighborClasses[lowerClass]++;
+            var lowerClassSamples = trainedTargetPair[lower].Value.Select(x => x.Value).Sum(); // should be 1, except when multiple samples are estimated the same value
+            var lowerClasses = trainedTargetPair[lower].Value;
+            foreach (var lowerClass in lowerClasses) {
+              if (!neighborClasses.ContainsKey(lowerClass.Key)) neighborClasses[lowerClass.Key] = lowerClass.Value;
+              else neighborClasses[lowerClass.Key] += lowerClass.Value;
+            }
             lower--;
-          } else {
+            i += (lowerClassSamples - 1);
+          }
+          // they could, in very rare cases, be equally far apart
+          if (upperIsCloser) {
             // the nearer neighbor is to the right
-            var upperClass = trainedTargetPair[upper].Value;
-            if (!neighborClasses.ContainsKey(upperClass)) neighborClasses[upperClass] = 1;
-            else neighborClasses[upperClass]++;
+            var upperClassSamples = trainedTargetPair[upper].Value.Select(x => x.Value).Sum(); // should be 1, except when multiple samples are estimated the same value
+            var upperClasses = trainedTargetPair[upper].Value;
+            foreach (var upperClass in upperClasses) {
+              if (!neighborClasses.ContainsKey(upperClass.Key)) neighborClasses[upperClass.Key] = upperClass.Value;
+              else neighborClasses[upperClass.Key] += upperClass.Value;
+            }
             upper++;
+            i += (upperClassSamples - 1);
           }
         }
         // majority voting with preference for bigger class in case of tie
@@ -112,10 +114,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var dict = new Dictionary<double, Dictionary<double, int>>();
       var classFrequencies = new Dictionary<double, int>();
       foreach (var p in pair) {
+        // get target values for each estimated value (foreach estimated value there may be different target values in different amounts) 
         if (!dict.ContainsKey(p.Estimated)) dict[p.Estimated] = new Dictionary<double, int>();
         if (!dict[p.Estimated].ContainsKey(p.Target)) dict[p.Estimated][p.Target] = 0;
         dict[p.Estimated][p.Target]++;
-
+        // get class frequencies
         if (!classFrequencies.ContainsKey(p.Target))
           classFrequencies[p.Target] = 1;
         else classFrequencies[p.Target]++;
@@ -123,21 +126,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
       frequencyComparer = new ClassFrequencyComparer(classFrequencies);
 
-      trainedTargetPair = new List<KeyValuePair<double, double>>();
+      trainedTargetPair = new List<KeyValuePair<double, Dictionary<double, int>>>();
       foreach (var ev in dict) {
-        var target = ev.Value.MaxItems(x => x.Value).OrderByDescending(x => x.Key, frequencyComparer).First().Key;
-        trainedTargetPair.Add(new KeyValuePair<double, double>(ev.Key, target));
+        trainedTargetPair.Add(new KeyValuePair<double, Dictionary<double, int>>(ev.Key, ev.Value));
       }
       trainedTargetPair = trainedTargetPair.OrderBy(x => x.Key).ToList();
     }
 
     public override ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
-      return new SymbolicClassificationSolution((ISymbolicClassificationModel)this.Clone(), problemData);
+      return new SymbolicClassificationSolution((ISymbolicClassificationModel)Clone(), problemData);
     }
   }
 
-  internal class KeyValuePairKeyComparer : IComparer<KeyValuePair<double, double>> {
-    public int Compare(KeyValuePair<double, double> x, KeyValuePair<double, double> y) {
+  internal class KeyValuePairKeyComparer<T> : IComparer<KeyValuePair<double, T>> {
+    public int Compare(KeyValuePair<double, T> x, KeyValuePair<double, T> y) {
       return x.Key.CompareTo(y.Key);
     }
   }
@@ -145,7 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableClass]
   internal sealed class ClassFrequencyComparer : IComparer<double> {
     [Storable]
-    private Dictionary<double, int> classFrequencies;
+    private readonly Dictionary<double, int> classFrequencies;
 
     [StorableConstructor]
     private ClassFrequencyComparer(bool deserializing) { }
