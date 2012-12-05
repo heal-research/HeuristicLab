@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -64,6 +65,8 @@ namespace HeuristicLab.Optimization.Operators {
     public override IOperation Apply() {
       ItemList<IItem> tabuList = TabuListParameter.ActualValue;
       int tabuTenure = TabuTenureParameter.ActualValue.Value;
+      if (tabuTenure == 0) return base.Apply();
+      if (tabuTenure < 0) throw new InvalidOperationException("A TabuTenure of less than 0 is not allowed.");
 
       int overlength = tabuList.Count - tabuTenure;
       if (overlength >= 0) {
