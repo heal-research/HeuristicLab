@@ -316,6 +316,8 @@
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessFunctionsTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessRegressionTest.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\MultidimensionalScalingTest.cs" />
+    <Compile Include="HeuristicLab.Collections-3.3\BidirectionalDictionaryTest.cs" />
+    <Compile Include="HeuristicLab.Collections-3.3\BidirectionalLookupTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\ObservableKeyedListTest.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\NPointCrossoverTest.cs" />

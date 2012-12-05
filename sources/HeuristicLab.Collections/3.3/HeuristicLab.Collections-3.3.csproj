@@ -113,6 +113,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
+    <Compile Include="BidirectionalDictionary.cs" />
+    <Compile Include="BidirectionalLookup.cs" />
     <Compile Include="ReadOnlyObservableKeyedList.cs" />
     <Compile Include="INotifyObservableListItemsChanged.cs" />
     <Compile Include="INotifyObservableKeyedCollectionItemsChanged.cs" />
