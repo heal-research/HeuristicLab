@@ -38,7 +38,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     [Storable]
     private int k;
     [Storable]
-    private List<KeyValuePair<double, Dictionary<double, int>>> trainedTargetPair;
+    private List<double> trainedClasses;
+    [Storable]
+    private List<double> trainedEstimatedValues;
+
     [Storable]
     private ClassFrequencyComparer frequencyComparer;
 
@@ -47,14 +50,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private SymbolicNearestNeighbourClassificationModel(SymbolicNearestNeighbourClassificationModel original, Cloner cloner)
       : base(original, cloner) {
       k = original.k;
-      trainedTargetPair = original.trainedTargetPair.Select(x => new KeyValuePair<double, Dictionary<double, int>>(x.Key, new Dictionary<double, int>(x.Value))).ToList();
       frequencyComparer = new ClassFrequencyComparer(original.frequencyComparer);
+      trainedEstimatedValues = new List<double>(original.trainedEstimatedValues);
+      trainedClasses = new List<double>(original.trainedClasses);
     }
     public SymbolicNearestNeighbourClassificationModel(int k, ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
       : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) {
       this.k = k;
-      trainedTargetPair = new List<KeyValuePair<double, Dictionary<double, int>>>();
       frequencyComparer = new ClassFrequencyComparer();
+
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -64,43 +68,55 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public override IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
       var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows)
                                        .LimitToRange(LowerEstimationLimit, UpperEstimationLimit);
-      var neighborClasses = new Dictionary<double, int>();
       foreach (var ev in estimatedValues) {
+        // find the range [lower, upper[ of trainedTargetValues that contains the k closest neighbours
+        // the range can span more than k elements when there are equal estimated values
+
         // find the index of the training-point to which distance is shortest
-        var upper = trainedTargetPair.BinarySearch(0, trainedTargetPair.Count, new KeyValuePair<double, Dictionary<double, int>>(ev, null), new KeyValuePairKeyComparer<Dictionary<double, int>>());
-        if (upper < 0) upper = ~upper; // if the element was not found exactly, BinarySearch returns the complement of the index of the next larger item
-        var lower = upper - 1;
-        neighborClasses.Clear();
-        // continue to the left and right of this index and look for the nearest neighbors
-        for (int i = 0; i < Math.Min(k, trainedTargetPair.Count); i++) {
-          bool lowerIsCloser = upper >= trainedTargetPair.Count || (lower >= 0 && ev - trainedTargetPair[lower].Key <= trainedTargetPair[upper].Key - ev);
-          bool upperIsCloser = lower < 0 || (upper < trainedTargetPair.Count && ev - trainedTargetPair[lower].Key >= trainedTargetPair[upper].Key - ev);
-          if (lowerIsCloser) {
-            // the nearer neighbor is to the left
-            var lowerClassSamples = trainedTargetPair[lower].Value.Select(x => x.Value).Sum(); // should be 1, except when multiple samples are estimated the same value
-            var lowerClasses = trainedTargetPair[lower].Value;
-            foreach (var lowerClass in lowerClasses) {
-              if (!neighborClasses.ContainsKey(lowerClass.Key)) neighborClasses[lowerClass.Key] = lowerClass.Value;
-              else neighborClasses[lowerClass.Key] += lowerClass.Value;
-            }
-            lower--;
-            i += (lowerClassSamples - 1);
+        int lower = trainedEstimatedValues.BinarySearch(ev);
+        int upper;
+        // if the element was not found exactly, BinarySearch returns the complement of the index of the next larger item
+        if (lower < 0) {
+          lower = ~lower;
+          // lower is not necessarily the closer one
+          // determine which element is closer to ev (lower - 1) or (lower)
+          if (lower == trainedEstimatedValues.Count ||
+            (lower > 0 && Math.Abs(ev - trainedEstimatedValues[lower - 1]) < Math.Abs(ev - trainedEstimatedValues[lower]))) {
+            lower = lower - 1;
           }
-          // they could, in very rare cases, be equally far apart
+        }
+        upper = lower + 1;
+        // at this point we have a range [lower, upper[ that includes only the closest element to ev
+
+        // expand the range to left or right looking for the nearest neighbors
+        while (upper - lower < Math.Min(k, trainedEstimatedValues.Count)) {
+          bool lowerIsCloser = upper >= trainedEstimatedValues.Count ||
+                               (lower > 0 && ev - trainedEstimatedValues[lower] <= trainedEstimatedValues[upper] - ev);
+          bool upperIsCloser = lower <= 0 ||
+                               (upper < trainedEstimatedValues.Count &&
+                                ev - trainedEstimatedValues[lower] >= trainedEstimatedValues[upper] - ev);
+          if (!lowerIsCloser && !upperIsCloser) break;
+          if (lowerIsCloser) {
+            lower--;
+            // eat up all equal values
+            while (lower > 0 && trainedEstimatedValues[lower - 1].IsAlmost(trainedEstimatedValues[lower]))
+              lower--;
+          }
           if (upperIsCloser) {
-            // the nearer neighbor is to the right
-            var upperClassSamples = trainedTargetPair[upper].Value.Select(x => x.Value).Sum(); // should be 1, except when multiple samples are estimated the same value
-            var upperClasses = trainedTargetPair[upper].Value;
-            foreach (var upperClass in upperClasses) {
-              if (!neighborClasses.ContainsKey(upperClass.Key)) neighborClasses[upperClass.Key] = upperClass.Value;
-              else neighborClasses[upperClass.Key] += upperClass.Value;
-            }
             upper++;
-            i += (upperClassSamples - 1);
+            while (upper < trainedEstimatedValues.Count &&
+                   trainedEstimatedValues[upper - 1].IsAlmost(trainedEstimatedValues[upper]))
+              upper++;
           }
         }
         // majority voting with preference for bigger class in case of tie
-        yield return neighborClasses.MaxItems(x => x.Value).OrderByDescending(x => x.Key, frequencyComparer).First().Key;
+        yield return Enumerable.Range(lower, upper - lower)
+          .Select(i => trainedClasses[i])
+          .GroupBy(c => c)
+          .Select(g => new { Class = g.Key, Votes = g.Count() })
+          .MaxItems(p => p.Votes)
+          .OrderByDescending(m => m.Class, frequencyComparer)
+          .First().Class;
       }
     }
 
@@ -108,39 +124,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, problemData.Dataset, rows)
                                        .LimitToRange(LowerEstimationLimit, UpperEstimationLimit);
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      var pair = estimatedValues.Zip(targetValues, (e, t) => new { Estimated = e, Target = t });
+      var trainedClasses = targetValues.ToArray();
+      var trainedEstimatedValues = estimatedValues.ToArray();
 
-      // there could be more than one target value per estimated value
-      var dict = new Dictionary<double, Dictionary<double, int>>();
-      var classFrequencies = new Dictionary<double, int>();
-      foreach (var p in pair) {
-        // get target values for each estimated value (foreach estimated value there may be different target values in different amounts) 
-        if (!dict.ContainsKey(p.Estimated)) dict[p.Estimated] = new Dictionary<double, int>();
-        if (!dict[p.Estimated].ContainsKey(p.Target)) dict[p.Estimated][p.Target] = 0;
-        dict[p.Estimated][p.Target]++;
-        // get class frequencies
-        if (!classFrequencies.ContainsKey(p.Target))
-          classFrequencies[p.Target] = 1;
-        else classFrequencies[p.Target]++;
-      }
+      Array.Sort(trainedEstimatedValues, trainedClasses);
+      this.trainedClasses = new List<double>(trainedClasses);
+      this.trainedEstimatedValues = new List<double>(trainedEstimatedValues);
 
-      frequencyComparer = new ClassFrequencyComparer(classFrequencies);
-
-      trainedTargetPair = new List<KeyValuePair<double, Dictionary<double, int>>>();
-      foreach (var ev in dict) {
-        trainedTargetPair.Add(new KeyValuePair<double, Dictionary<double, int>>(ev.Key, ev.Value));
-      }
-      trainedTargetPair = trainedTargetPair.OrderBy(x => x.Key).ToList();
+      var freq = trainedClasses
+        .GroupBy(c => c)
+        .ToDictionary(g => g.Key, g => g.Count());
+      this.frequencyComparer = new ClassFrequencyComparer(freq);
     }
 
     public override ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
       return new SymbolicClassificationSolution((ISymbolicClassificationModel)Clone(), problemData);
-    }
-  }
-
-  internal class KeyValuePairKeyComparer<T> : IComparer<KeyValuePair<double, T>> {
-    public int Compare(KeyValuePair<double, T> x, KeyValuePair<double, T> y) {
-      return x.Key.CompareTo(y.Key);
     }
   }
 
