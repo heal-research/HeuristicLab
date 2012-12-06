@@ -52,7 +52,8 @@ namespace HeuristicLab.Collections_33.Tests {
       bool exceptionOnDuplicate = false;
       try {
         dict1.Add(4, 3.0);
-      } catch (ArgumentException) { exceptionOnDuplicate = true; }
+      }
+      catch (ArgumentException) { exceptionOnDuplicate = true; }
       Assert.IsTrue(exceptionOnDuplicate);
       Assert.IsTrue(dict1.GetByFirst(4) == 2);
       Assert.IsTrue(dict1.GetBySecond(2) == 4);
@@ -61,27 +62,29 @@ namespace HeuristicLab.Collections_33.Tests {
       Assert.IsTrue(dict1.Count == 0);
 
       var dict2 = new BidirectionalDictionary<ComplexType, int>(new ComplexTypeEqualityComparer());
-      Assert.IsTrue(!dict2.FirstEnumerable.Any());
+      Assert.IsTrue(!dict2.Any());
       dict2.Add(new ComplexType(1), 2);
-      Assert.IsTrue(dict2.SecondEnumerable.Any());
+      Assert.IsTrue(dict2.Any());
       dict2.Add(new ComplexType(2), 1);
       Assert.IsTrue(dict2.ContainsFirst(new ComplexType(2)));
       Assert.IsTrue(dict2.ContainsSecond(2));
       exceptionOnDuplicate = false;
       try {
         dict2.Add(new ComplexType(2), 3);
-      } catch (ArgumentException) { exceptionOnDuplicate = true; }
+      }
+      catch (ArgumentException) { exceptionOnDuplicate = true; }
       Assert.IsTrue(exceptionOnDuplicate);
       exceptionOnDuplicate = false;
       try {
         dict2.Add(new ComplexType(3), 1);
-      } catch (ArgumentException) { exceptionOnDuplicate = true; }
+      }
+      catch (ArgumentException) { exceptionOnDuplicate = true; }
       Assert.IsTrue(exceptionOnDuplicate);
       Assert.IsTrue(dict2.Count == 2);
       Assert.IsTrue(dict2.GetBySecond(1).Field == 2);
       Assert.IsTrue(dict2.GetByFirst(new ComplexType(1)) == 2);
       dict2.Clear();
-      Assert.IsTrue(!dict2.SecondEnumerable.Any());
+      Assert.IsTrue(!dict2.Any());
     }
   }
 }
