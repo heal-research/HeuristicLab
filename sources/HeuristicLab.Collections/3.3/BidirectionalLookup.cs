@@ -19,12 +19,14 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [StorableClass]
+  [Serializable]
   public class BidirectionalLookup<TFirst, TSecond> {
     [Storable]
     private readonly Dictionary<TFirst, HashSet<TSecond>> firstToSecond;

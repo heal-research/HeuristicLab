@@ -20,12 +20,15 @@
 #endregion
 
 using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
   [StorableClass]
-  public class BidirectionalDictionary<TFirst, TSecond> {
+  [Serializable]
+  public class BidirectionalDictionary<TFirst, TSecond> : IEnumerable<KeyValuePair<TFirst, TSecond>> {
     [Storable]
     private readonly Dictionary<TFirst, TSecond> firstToSecond;
     [Storable]
@@ -52,6 +55,11 @@ namespace HeuristicLab.Collections {
       firstToSecond = new Dictionary<TFirst, TSecond>(firstComparer);
       secondToFirst = new Dictionary<TSecond, TFirst>(secondComparer);
     }
+    public BidirectionalDictionary(BidirectionalDictionary<TFirst, TSecond> other)
+      : base() {
+      firstToSecond = new Dictionary<TFirst, TSecond>(other.firstToSecond, other.firstToSecond.Comparer);
+      secondToFirst = new Dictionary<TSecond, TFirst>(other.secondToFirst, other.secondToFirst.Comparer);
+    }
 
     #region Properties
     public int Count {
@@ -64,14 +72,6 @@ namespace HeuristicLab.Collections {
 
     public IEnumerable<TSecond> SecondValues {
       get { return secondToFirst.Keys; }
-    }
-
-    public IEnumerable<KeyValuePair<TFirst, TSecond>> FirstEnumerable {
-      get { return firstToSecond; }
-    }
-
-    public IEnumerable<KeyValuePair<TSecond, TFirst>> SecondEnumerable {
-      get { return secondToFirst; }
     }
     #endregion
 
@@ -137,6 +137,14 @@ namespace HeuristicLab.Collections {
     public void Clear() {
       firstToSecond.Clear();
       secondToFirst.Clear();
+    }
+
+    public IEnumerator<KeyValuePair<TFirst, TSecond>> GetEnumerator() {
+      return firstToSecond.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+      return GetEnumerator();
     }
     #endregion
   }
