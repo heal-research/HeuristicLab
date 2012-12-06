@@ -50,6 +50,13 @@ namespace HeuristicLab.Persistence.Auxiliary {
     public string ClassName { get; private set; }
 
     /// <summary>
+    /// Gets or sets the number of generic args for
+    /// each class in a series of nested classes.
+    /// </summary>
+    [Storable]
+    public List<int> GenericArgCounts { get; private set; }
+
+      /// <summary>
     /// Gets or sets the generic args.
     /// </summary>
     /// <value>The generic args.</value>
@@ -102,26 +109,26 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// </summary>
     /// <param name="nameSpace">The namespace.</param>
     /// <param name="className">Name of the class.</param>
-    internal TypeName(string nameSpace, string className) {
+    internal TypeName(string nameSpace, string className, List<int> genericArgCounts=null) {
       Namespace = nameSpace;
       ClassName = className;
       GenericArgs = new List<TypeName>();
       MemoryMagic = "";
       AssemblyAttribues = new Dictionary<string, string>();
+      if (genericArgCounts != null)
+        GenericArgCounts = genericArgCounts.ToList();
     }
 
     internal TypeName(TypeName typeName, string className = null, string nameSpace = null) {
-      Namespace = typeName.Namespace;
-      ClassName = typeName.ClassName;
+      Namespace = nameSpace ?? typeName.Namespace;
+      ClassName = className ?? typeName.ClassName;
       GenericArgs = new List<TypeName>(typeName.GenericArgs);
       AssemblyAttribues = new Dictionary<string, string>(typeName.AssemblyAttribues);
       MemoryMagic = typeName.MemoryMagic;
       AssemblyName = typeName.AssemblyName;
       IsReference = typeName.IsReference;
-      if (nameSpace != null)
-        Namespace = nameSpace;
-      if (className != null)
-        ClassName = className;
+      if (typeName.GenericArgCounts != null)
+        GenericArgCounts = typeName.GenericArgCounts.ToList();
     }
 
     /// <summary>
@@ -147,20 +154,24 @@ namespace HeuristicLab.Persistence.Auxiliary {
     /// A <see cref="System.String"/> that represents this instance.
     /// </returns>
     public string ToString(bool full, bool includeAssembly) {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
       if (!string.IsNullOrEmpty(Namespace))
         sb.Append(Namespace).Append('.');
-      sb.Append(ClassName);
+      if (GenericArgCounts != null) {
+        sb.Append(string.Join("+",
+          ClassName
+          .Split('+')
+          .Zip(GenericArgCounts, (n, c) =>
+            c > 0 ? String.Format("{0}`{1}", n, c) : n)));
+      } else {
+        sb.Append(ClassName);
+        if (IsGeneric)
+          sb.Append('`').Append(GenericArgs.Count);
+      }
       if (IsGeneric) {
-        sb.Append('`').Append(GenericArgs.Count).Append('[');
-        bool first = true;
-        foreach (TypeName t in GenericArgs) {
-          if (first)
-            first = false;
-          else
-            sb.Append(',');
-          sb.Append('[').Append(t.ToString(full)).Append(']');
-        }
+        sb.Append('[');
+        sb.Append(String.Join(",", GenericArgs.Select(a =>
+          string.Format("[{0}]", a.ToString(full)))));
         sb.Append(']');
       }
       sb.Append(MemoryMagic);
@@ -173,40 +184,54 @@ namespace HeuristicLab.Persistence.Auxiliary {
       return sb.ToString();
     }
 
-    public string GetTypeNameInCode(HashSet<string> omitNamespaces) {
-      StringBuilder sb = new StringBuilder();
-      if (!string.IsNullOrEmpty(Namespace) && omitNamespaces == null || !omitNamespaces.Contains(Namespace))
-        sb.Append(Namespace).Append('.');
-      sb.Append(ClassName);
-      if (IsGeneric) {
-        sb.Append("<");
-        sb.Append(
-          string.Join(", ",
-            GenericArgs
-              .Select(a => a.GetTypeNameInCode(omitNamespaces))
-              .ToArray()));
-        sb.Append(">");
+    private IEnumerable<string> GetNestedClassesInCode(HashSet<string> omitNamespaces, bool includeAllNamespaces) {
+      var i = 0;
+      foreach (var pair in ClassName.Split('+').Zip(GenericArgCounts, (n, c) => new {n, c})) {
+        if (pair.c == 0) {
+          yield return pair.n;
+        }
+        else {
+          yield return string.Format("{0}<{1}>",
+            pair.n,
+            string.Join(",",
+              GenericArgs
+                .GetRange(i, pair.c)
+                .Select(a => a.GetTypeNameInCode(omitNamespaces, includeAllNamespaces))));
+          i += pair.c;
+        }
+      }
+    }
+
+    private string GetTypeNameInCode(HashSet<string> omitNamespaces, bool includeNamespaces) {
+      var sb = new StringBuilder();
+      if (!string.IsNullOrEmpty(Namespace) &&
+            (omitNamespaces == null && includeNamespaces) ||
+             omitNamespaces != null && !omitNamespaces.Contains(Namespace))
+          sb.Append(Namespace).Append('.');
+      if (GenericArgCounts != null) {
+        sb.Append(string.Join(".", GetNestedClassesInCode(omitNamespaces, includeNamespaces)));
+      } else {
+        sb.Append(ClassName);
+        if (IsGeneric) {
+          sb.Append("<");
+          sb.Append(
+            string.Join(", ",
+                        GenericArgs
+                          .Select(a => a.GetTypeNameInCode(omitNamespaces, includeNamespaces))
+                          .ToArray()));
+          sb.Append(">");
+        }
       }
       sb.Append(MemoryMagic);
       return sb.ToString();
     }
 
-    public string GetTypeNameInCode(bool includeAllNamespaces) {
-      StringBuilder sb = new StringBuilder();
-      if (includeAllNamespaces)
-        sb.Append(Namespace).Append('.');
-      sb.Append(ClassName);
-      if (IsGeneric) {
-        sb.Append("<");
-        sb.Append(
-          string.Join(", ",
-            GenericArgs
-              .Select(a => a.GetTypeNameInCode(includeAllNamespaces))
-              .ToArray()));
-        sb.Append(">");
-      }
-      sb.Append(MemoryMagic);
-      return sb.ToString();
+    public string GetTypeNameInCode(HashSet<string> omitNamespaces) {
+      return GetTypeNameInCode(omitNamespaces, false);
+    }
+
+    public string GetTypeNameInCode(bool includeNamespaces) {
+      return GetTypeNameInCode(null, includeNamespaces);
     }
 
 

@@ -1322,6 +1322,33 @@ namespace HeuristicLab.Persistence_33.Tests {
       Task.WaitAll(tasks);
     }
 
+    public class G<T,T2> {
+      public class S {}
+      public class S2<T3,T4> {}
+    }
+
+    [TestMethod]
+    public void TestInternalClassOfGeneric() {
+      var s = new G<int, char>.S();
+      var typeName = s.GetType().AssemblyQualifiedName;
+      Assert.AreEqual(
+        "UseCases.G<Int32,Char>.S",
+        TypeNameParser.Parse(typeName).GetTypeNameInCode(false));
+      XmlGenerator.Serialize(s, tempFile);
+      var s1 = XmlParser.Deserialize(tempFile);
+    }
+
+    [TestMethod]
+    public void TestInternalClassOfGeneric2() {
+      var s = new G<int, float>.S2<int, char>();
+      var typeName = s.GetType().AssemblyQualifiedName;
+      Assert.AreEqual(
+        "UseCases.G<Int32,Single>.S2<Int32,Char>",
+        TypeNameParser.Parse(typeName).GetTypeNameInCode(false));
+      XmlGenerator.Serialize(s, tempFile);
+      var s1 = XmlParser.Deserialize(tempFile);
+    }
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();

@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -45,7 +46,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
   /// TypeSpec := SimpleTypeSpec '&amp;'?  
   /// 
   /// SimpleTypeSpec := (IDENTIFIER '.')*
-  ///                   (IDENTIFIER '+')*
+  ///                   (IDENTIFIER '`\d+'? '+')*
   ///                    IDENTIFIER
   ///                   ( '`\d+[' Generics ']' )?
   ///                   (\*|\[(\d+\.\.\d+|\d+\.\.\.|(|\*)(,(|\*))*)\])* 
@@ -68,13 +69,13 @@ namespace HeuristicLab.Persistence.Auxiliary {
       TypeSpec := SimpleTypeSpec '&'?
 
       SimpleTypeSpec := (IDENTIFIER '.')*
-                        (IDENTIFIER '+')*
-                         IDENTIFIER
-                        ( '`\d+[' Generics ']' )?
+                        (IDENTIFIER '`\d+'?
+                        ( '+' IDENTIFIER '`\d+'? )*
+                        ( '[' Generics ']' )?
                         (\*|\[(\d+\.\.\d+|\d+\.\.\.|(|\*)(,(|\*))*)\])* 
                         (',\s*' IDENTIFIER (',\s*' AssemblyProperty)* )?
 
-      Generics := '[' SimpleTypeSpec ']' (',[' SimpleTypeSpec ']')
+      Generics := '[' SimpleTypeSpec ']' (',[' SimpleTypeSpec ']')*
 
       AssemblyProperty := 'Version=' Version
                  |  'PublicKey(Token)?=[a-fA-F0-9]+'
@@ -87,31 +88,33 @@ namespace HeuristicLab.Persistence.Auxiliary {
 
 
     private class Token {
-      private static Dictionary<string, string> tokens =
-        new Dictionary<string, string> {
-          {"-", "DASH"},
-          {"&", "AMPERSAND"},
-          {".", "DOT"},
-          {"+", "PLUS"},
-          {",", "COMMA"},
-          {"[", "OPEN_BRACKET"},
-          {"]", "CLOSE_BRACKET"},
-          {"*", "ASTERISK"},
-          {" ", "SPACE"},
-          {"=", "EQUALS"},
-          {"`", "BACKTICK"} };
-      private static Regex NumberRegex = new Regex("^\\d+$");
-      private static Regex IdentifierRegex = new Regex("^[_a-zA-Z][_a-zA-Z0-9]*$");
-      private static Regex TokenRegex = new Regex("[-&.+,\\[\\]* =`]|[a-f0-9]+|\\d+|[_a-zA-Z][_a-zA-Z0-9]*");
-      public string Name { get; private set; }
+      public enum Symbol {None, Dash, Ampersand, Dot, Plus, Comma, OpenBracket, CloseBracket, Asterisk, Space, Equals, Backtick}
+      private static readonly Dictionary<string, Symbol> TOKENS =
+        new Dictionary<string, Symbol> {
+          {"-", Symbol.Dash},
+          {"&", Symbol.Ampersand},
+          {".", Symbol.Dot},
+          {"+", Symbol.Plus},
+          {",", Symbol.Comma},
+          {"[", Symbol.OpenBracket},
+          {"]", Symbol.CloseBracket},
+          {"*", Symbol.Asterisk},
+          {" ", Symbol.Space},
+          {"=", Symbol.Equals},
+          {"`", Symbol.Backtick}};
+      private static readonly Regex NumberRegex = new Regex("^\\d+$");
+      private static readonly Regex IdentifierRegex = new Regex("^[_a-zA-Z][_a-zA-Z0-9]*$");
+      private static readonly Regex TokenRegex = new Regex("[-&.+,\\[\\]* =`]|[a-f0-9]+|\\d+|[_a-zA-Z][_a-zA-Z0-9]*");
+      public Symbol Name { get; private set; }
       public string Value { get; private set; }
       public bool IsIdentifier { get; private set; }
       public int? Number { get; private set; }
       public int Position { get; private set; }
       private Token(string value, int pos) {
         Position = pos;
-        if (tokens.ContainsKey(value)) {
-          Name = tokens[value];
+        Name = Symbol.None;
+        if (TOKENS.ContainsKey(value)) {
+          Name = TOKENS[value];
         } else if (NumberRegex.IsMatch(value)) {
           Number = int.Parse(value);
         } else {
@@ -127,7 +130,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
         }
       }
       public override string ToString() {
-        if (Name != null)
+        if (Name != Symbol.None)
           return "Token(" + Name + ")";
         if (Value != null)
           return "\"" + Value + "\"";
@@ -180,45 +183,47 @@ namespace HeuristicLab.Persistence.Auxiliary {
 
     private TypeName TransformTypeSpec() {
       TypeName t = TransformSimpleTypeSpec();
-      t.IsReference = ConsumeToken("AMPERSAND");
+      t.IsReference = ConsumeToken(Token.Symbol.Ampersand);
       return t;
     }
 
     private TypeName TransformSimpleTypeSpec() {
-      List<string> nameSpace = new List<string>();
-      nameSpace.Add(ConsumeIdentifier());
-      while (ConsumeToken("DOT"))
+      var nameSpace = new List<string> {ConsumeIdentifier()};
+      while (ConsumeToken(Token.Symbol.Dot))
         nameSpace.Add(ConsumeIdentifier());
-      List<string> className = new List<string>();
+      var className = new List<string>();
       if (nameSpace.Count > 0) {
         className.Add(nameSpace[nameSpace.Count - 1]);
         nameSpace.RemoveAt(nameSpace.Count - 1);
       }
-      while (ConsumeToken("PLUS"))
+      var genericArgCounts = new List<int> {
+        ConsumeToken(Token.Symbol.Backtick) ? ConsumeNumber() : 0
+      };
+      while(ConsumeToken(Token.Symbol.Plus)) {
         className.Add(ConsumeIdentifier());
-      TypeName typeName = new TypeName(
-        string.Join(".", nameSpace.ToArray()),
-        string.Join("+", className.ToArray()));
-      if (ConsumeToken("BACKTICK")) {
-        int nGenericArgs = ConsumeNumber();
-        if (ConsumeToken("OPEN_BRACKET") &&
-          CanConsumeToken("OPEN_BRACKET")) {
-          typeName.GenericArgs.AddRange(TransformGenerics());
-          ConsumeToken("CLOSE_BRACKET", true);
-        }
+        genericArgCounts.Add(ConsumeToken(Token.Symbol.Backtick) ? ConsumeNumber() : 0);
       }
-      StringBuilder pointerOrArray = new StringBuilder();
+      var nGenericArgs = genericArgCounts.Sum();
+      var typeName = new TypeName(
+        string.Join(".", nameSpace.ToArray()),
+        string.Join("+", className.ToArray()),
+        nGenericArgs > genericArgCounts.Last() ? genericArgCounts : null);
+      if (nGenericArgs > 0 && ConsumeToken(Token.Symbol.OpenBracket, true)) {
+        typeName.GenericArgs.AddRange(TransformGenerics());
+        ConsumeToken(Token.Symbol.CloseBracket, true);
+      }
+      var pointerOrArray = new StringBuilder();
       while (true) {
-        if (ConsumeToken("ASTERSIK")) {
+        if (ConsumeToken(Token.Symbol.Asterisk)) {
           pointerOrArray.Append("*");
-        } else if (ConsumeToken("OPEN_BRACKET")) {
+        } else if (ConsumeToken(Token.Symbol.OpenBracket)) {
           pointerOrArray.Append('[');
           ParseDimension(pointerOrArray);
-          while (ConsumeToken("COMMA")) {
+          while (ConsumeToken(Token.Symbol.Comma)) {
             pointerOrArray.Append(",");
             ParseDimension(pointerOrArray);
           }
-          ConsumeToken("CLOSE_BRACKET", true);
+          ConsumeToken(Token.Symbol.CloseBracket, true);
           pointerOrArray.Append(']');
         } else {
           break;
@@ -226,15 +231,15 @@ namespace HeuristicLab.Persistence.Auxiliary {
       }
       typeName.MemoryMagic = pointerOrArray.ToString();
       if (ConsumeComma()) {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         sb.Append(ConsumeIdentifier());
-        while (CanConsumeToken("DOT") ||
-          CanConsumeToken("DASH") ||
+        while (CanConsumeToken(Token.Symbol.Dot) ||
+          CanConsumeToken(Token.Symbol.Dash) ||
           CanConsumeNumber() ||
           CanConsumeIdentifier()) {
-          if (ConsumeToken("DOT"))
+          if (ConsumeToken(Token.Symbol.Dot))
             sb.Append('.');
-          else if (ConsumeToken("DASH"))
+          else if (ConsumeToken(Token.Symbol.Dash))
             sb.Append('-');
           else if (CanConsumeNumber())
             sb.Append(ConsumeNumber());
@@ -252,13 +257,13 @@ namespace HeuristicLab.Persistence.Auxiliary {
     }
 
     private void ParseDimension(StringBuilder sb) {
-      if (ConsumeToken("ASTERSIK")) {
+      if (ConsumeToken(Token.Symbol.Asterisk)) {
         sb.Append("*");
       } else if (CanConsumeNumber()) {
         sb.Append(ConsumeNumber());
-        ConsumeToken("DOT", true);
-        ConsumeToken("DOT", true);
-        if (ConsumeToken("DOT")) {
+        ConsumeToken(Token.Symbol.Dot, true);
+        ConsumeToken(Token.Symbol.Dot, true);
+        if (ConsumeToken(Token.Symbol.Dot)) {
           sb.Append("...");
         } else {
           sb.Append("..").Append(ConsumeNumber());
@@ -267,19 +272,19 @@ namespace HeuristicLab.Persistence.Auxiliary {
     }
 
     private IEnumerable<TypeName> TransformGenerics() {
-      ConsumeToken("OPEN_BRACKET", true);
+      ConsumeToken(Token.Symbol.OpenBracket, true);
       yield return TransformSimpleTypeSpec();
-      ConsumeToken("CLOSE_BRACKET", true);
-      while (ConsumeToken("COMMA")) {
-        ConsumeToken("OPEN_BRACKET", true);
+      ConsumeToken(Token.Symbol.CloseBracket, true);
+      while (ConsumeToken(Token.Symbol.Comma)) {
+        ConsumeToken(Token.Symbol.OpenBracket, true);
         yield return TransformSimpleTypeSpec();
-        ConsumeToken("CLOSE_BRACKET", true);
+        ConsumeToken(Token.Symbol.CloseBracket, true);
       }
     }
 
     private KeyValuePair<string, string> TransformAssemblyProperty() {
       if (ConsumeIdentifier("Version")) {
-        ConsumeToken("EQUALS", true);
+        ConsumeToken(Token.Symbol.Equals, true);
         return new KeyValuePair<string, string>(
           "Version",
           TransformVersion());
@@ -299,18 +304,18 @@ namespace HeuristicLab.Persistence.Auxiliary {
     }
 
     private KeyValuePair<string, string> ConsumeAssignment(string name) {
-      ConsumeToken("EQUALS", true);
+      ConsumeToken(Token.Symbol.Equals, true);
       return new KeyValuePair<string, string>(name, ConsumeToken());
     }
 
     private string TransformVersion() {
       StringBuilder version = new StringBuilder();
       version.Append(ConsumeNumber());
-      ConsumeToken("DOT");
+      ConsumeToken(Token.Symbol.Dot);
       version.Append('.').Append(ConsumeNumber());
-      ConsumeToken("DOT");
+      ConsumeToken(Token.Symbol.Dot);
       version.Append('.').Append(ConsumeNumber());
-      ConsumeToken("DOT");
+      ConsumeToken(Token.Symbol.Dot);
       version.Append('.').Append(ConsumeNumber());
       return version.ToString();
     }
@@ -367,41 +372,41 @@ namespace HeuristicLab.Persistence.Auxiliary {
     }
 
     private bool ConsumeComma() {
-      if (ConsumeToken("COMMA")) {
-        while (ConsumeToken("SPACE")) ;
+      if (ConsumeToken(Token.Symbol.Comma)) {
+        while (ConsumeToken(Token.Symbol.Space)) ;
         return true;
       } else {
         return false;
       }
     }
 
-    private bool ConsumeToken(string name) {
-      return ConsumeToken(name, false);
+    private bool ConsumeToken(Token.Symbol symbol) {
+      return ConsumeToken(symbol, false);
     }
 
-    private bool CanConsumeToken(string name) {
+    private bool CanConsumeToken(Token.Symbol symbol) {
       if (tokens.Count == 0)
         return false;
-      if (tokens.Peek().Name == name)
+      if (tokens.Peek().Name == symbol)
         return true;
       return false;
     }
 
-    private bool ConsumeToken(string name, bool force) {
+    private bool ConsumeToken(Token.Symbol symbol, bool force) {
       if (tokens.Count == 0)
         if (force)
           throw new ParseError(String.Format(
             "end of input while expecting token \"{0}\"",
-            name));
+            symbol));
         else
           return false;
-      if (tokens.Peek().Name == name) {
+      if (tokens.Peek().Name == symbol) {
         tokens.Dequeue();
         return true;
       } else if (force) {
         throw new ParseError(String.Format(
           "expected \"{0}\" found \"{1}\"",
-          name,
+          symbol,
           tokens.Peek().ToString()));
       } else {
         return false;
