@@ -42,18 +42,18 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string[] AllowedInputVariables { get { return new string[] { "X" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 20; } }
-    protected override int TestPartitionStart { get { return 250; } }
-    protected override int TestPartitionEnd { get { return 350; } }
+    protected override int TestPartitionStart { get { return 20; } }
+    protected override int TestPartitionEnd { get { return 520; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(500, -1, 1).ToList());
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(520, -1, 1).ToList());
 
       double x;
       List<double> results = new List<double>();
       for (int i = 0; i < data[0].Count; i++) {
         x = data[0][i];
-        results.Add(Math.Sin(Math.Pow(x, 2)) * Math.Cos(x) - 1);
+        results.Add(Math.Sin(x * x) * Math.Cos(x) - 1);
       }
       data.Add(results);
 

@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<List<double>> data = new List<List<double>>();
       data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, 0, 50).ToList()); // note: range is only [0,50] to prevent NaN values (deviates from gp benchmark paper)
       data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, 0, 50).ToList()); // note: range is only [0,50] to prevent NaN values (deviates from gp benchmark paper)
-      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 0).ToList()); // note: range is only [-50,0] to prevent NaN values (deviates from gp benchmark paper)
+      data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList()); 
       data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
       data.Add(ValueGenerator.GenerateUniformDistributedValues(TestPartitionEnd, -50, 50).ToList());
 

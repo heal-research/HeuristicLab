@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           + "range(train): x = [1:1:100]" + Environment.NewLine
           + "range(test): x = [1:0.1:100]" + Environment.NewLine
           + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine + Environment.NewLine
-          + "Note: The problem starts with 1 to avoid log(0), which is minus infinity!";
+          + "Note: The problem starts with 1 to avoid log(0)!";
       }
     }
     protected override string TargetVariable { get { return "F"; } }

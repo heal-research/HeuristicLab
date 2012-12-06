@@ -26,7 +26,7 @@ using System.Linq;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KornsFunctionEleven : ArtificialRegressionDataDescriptor {
 
-    public override string Name { get { return "Korns 11 y = 6.87 + (11 * cos(7.23 * X0 * X0 * X0))"; } }
+    public override string Name { get { return "Korns 11 y = 6.87 + (11 * cos(7.23 * X0³))"; } }
     public override string Description {
       get {
         return "Paper: Accuracy in Symbolic Regression" + Environment.NewLine
@@ -45,9 +45,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string[] VariableNames { get { return new string[] { "X0", "X1", "X2", "X3", "X4", "Y" }; } }
     protected override string[] AllowedInputVariables { get { return new string[] { "X0", "X1", "X2", "X3", "X4" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
-    protected override int TrainingPartitionEnd { get { return 5000; } }
-    protected override int TestPartitionStart { get { return 5000; } }
-    protected override int TestPartitionEnd { get { return 10000; } }
+    protected override int TrainingPartitionEnd { get { return 10000; } }
+    protected override int TestPartitionStart { get { return 10000; } }
+    protected override int TestPartitionEnd { get { return 20000; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();

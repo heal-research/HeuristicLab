@@ -34,9 +34,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Function: f(x, y) = 6 * sin(x) * cos(y)" + Environment.NewLine
         + "range(train): 20 Train cases x,y = rnd(-3, 3)" + Environment.NewLine
         + "range(test): x,y = [-3:0.01:3]" + Environment.NewLine
-        + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)" + Environment.NewLine + Environment.NewLine
-        + "Note: Test partition has been adjusted to only 100 random uniformly distributed test cases in the interval [-3, 3] (not ca. 360000 as described) "
-        + ", but 5000 cases are created";
+        + "Function Set: x + y, x * y, 1/x, -x, sqrt(x)";
       }
     }
     protected override string TargetVariable { get { return "F"; } }
@@ -44,13 +42,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string[] AllowedInputVariables { get { return new string[] { "X", "Y" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 20; } }
-    protected override int TestPartitionStart { get { return 2500; } }
-    protected override int TestPartitionEnd { get { return 2600; } }
+    protected override int TestPartitionStart { get { return 20; } }
+    protected override int TestPartitionEnd { get { return 20 + (601 * 601); } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
+      List<double> oneVariableTestData = ValueGenerator.GenerateSteps(-3, 3, 0.01).ToList();
+      List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
+
+      var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList();
+
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateUniformDistributedValues(5000, -3, 3).ToList());
+        data.Add(ValueGenerator.GenerateUniformDistributedValues(20, -3, 3).ToList());
+        data[i].AddRange(combinations[i]);
       }
 
       double x, y;

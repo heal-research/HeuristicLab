@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 100; } }
     protected override int TestPartitionStart { get { return 100; } }
-    protected override int TestPartitionEnd { get { return 10301; } }
+    protected override int TestPartitionEnd { get { return 100 + (101 * 101); } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();

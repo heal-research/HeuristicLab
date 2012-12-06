@@ -42,8 +42,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string[] AllowedInputVariables { get { return new string[] { "X", "Y" }; } }
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 20; } }
-    protected override int TestPartitionStart { get { return 500; } }
-    protected override int TestPartitionEnd { get { return 1000; } }
+    protected override int TestPartitionStart { get { return 20; } }
+    protected override int TestPartitionEnd { get { return 1020; } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       for (int i = 0; i < data[0].Count; i++) {
         x = data[0][i];
         y = data[1][i];
-        results.Add(Math.Sin(x) + Math.Sin(Math.Pow(y, 2)));
+        results.Add(Math.Sin(x) + Math.Sin(y * y));
       }
       data.Add(results);
 
