@@ -31,28 +31,36 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
   public sealed class OperatorGraphVisualizationInfo : GraphVisualizationInfo {
+#pragma warning disable 618
     [Storable]
     private BidirectionalLookup<IOperator, IOperatorShapeInfo> operatorShapeInfoMapping;
     private BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>> operatorParameterCollectionMapping;
+#pragma warning restore 618
     private Dictionary<IParameter, IOperator> parameterOperatorMapping;
 
     private OperatorGraphVisualizationInfo()
       : base() {
+#pragma warning disable 618
       this.operatorShapeInfoMapping = new BidirectionalLookup<IOperator, IOperatorShapeInfo>();
       this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>>();
+#pragma warning restore 618
       this.parameterOperatorMapping = new Dictionary<IParameter, IOperator>();
     }
 
     [StorableConstructor]
     private OperatorGraphVisualizationInfo(bool deserializing)
       : base(deserializing) {
+#pragma warning disable 618
       this.operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>>();
+#pragma warning restore 618
       this.parameterOperatorMapping = new Dictionary<IParameter, IOperator>();
     }
     private OperatorGraphVisualizationInfo(OperatorGraphVisualizationInfo original, Cloner cloner)
       : base(original, cloner) {
+#pragma warning disable 618
       operatorShapeInfoMapping = new BidirectionalLookup<IOperator, IOperatorShapeInfo>();
       operatorParameterCollectionMapping = new BidirectionalLookup<IOperator, IKeyedItemCollection<string, IParameter>>();
+#pragma warning restore 618
       parameterOperatorMapping = new Dictionary<IParameter, IOperator>();
 
       operatorGraph = cloner.Clone(original.operatorGraph);

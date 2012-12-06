@@ -34,14 +34,14 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
   [View("GraphVisualizationInfo View")]
   [Content(typeof(IGraphVisualizationInfo), true)]
   public partial class GraphVisualizationInfoView : AsynchronousContentView {
-    private BidirectionalLookup<IShapeInfo, IShape> shapeInfoShapeMapping;
-    private BidirectionalLookup<IConnectionInfo, IConnection> connectionInfoConnectionMapping;
+    private BidirectionalDictionary<IShapeInfo, IShape> shapeInfoShapeMapping;
+    private BidirectionalDictionary<IConnectionInfo, IConnection> connectionInfoConnectionMapping;
     private LinePenStyle connectionPenStyle;
 
     public GraphVisualizationInfoView() {
       InitializeComponent();
-      this.shapeInfoShapeMapping = new BidirectionalLookup<IShapeInfo, IShape>();
-      this.connectionInfoConnectionMapping = new BidirectionalLookup<IConnectionInfo, IConnection>();
+      this.shapeInfoShapeMapping = new BidirectionalDictionary<IShapeInfo, IShape>();
+      this.connectionInfoConnectionMapping = new BidirectionalDictionary<IConnectionInfo, IConnection>();
       this.connectionPenStyle = new LinePenStyle();
       this.connectionPenStyle.EndCap = LineCap.ArrowAnchor;
 
