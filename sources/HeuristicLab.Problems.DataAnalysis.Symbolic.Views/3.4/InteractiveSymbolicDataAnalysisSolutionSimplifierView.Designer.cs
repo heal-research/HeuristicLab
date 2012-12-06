@@ -51,8 +51,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
       this.btnSimplify = new System.Windows.Forms.Button();
       this.btnOptimizeConstants = new System.Windows.Forms.Button();
-      this.treeChart = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart();
       this.grpViewHost = new System.Windows.Forms.GroupBox();
+      this.treeStatusLabel = new System.Windows.Forms.Label();
+      this.treeStatusValue = new System.Windows.Forms.Label();
+      this.treeChart = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -73,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.viewHost.Location = new System.Drawing.Point(6, 16);
       this.viewHost.Name = "viewHost";
       this.viewHost.ReadOnly = false;
-      this.viewHost.Size = new System.Drawing.Size(335, 326);
+      this.viewHost.Size = new System.Drawing.Size(336, 383);
       this.viewHost.TabIndex = 0;
       this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
@@ -91,19 +93,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.grpViewHost);
-      this.splitContainer.Size = new System.Drawing.Size(564, 348);
+      this.splitContainer.Size = new System.Drawing.Size(565, 405);
       this.splitContainer.SplitterDistance = 213;
       this.splitContainer.TabIndex = 1;
       // 
       // grpSimplify
       // 
       this.grpSimplify.AutoSize = true;
+      this.grpSimplify.Controls.Add(this.treeStatusValue);
       this.grpSimplify.Controls.Add(this.flowLayoutPanel);
+      this.grpSimplify.Controls.Add(this.treeStatusLabel);
       this.grpSimplify.Controls.Add(this.treeChart);
       this.grpSimplify.Dock = System.Windows.Forms.DockStyle.Fill;
       this.grpSimplify.Location = new System.Drawing.Point(0, 0);
       this.grpSimplify.Name = "grpSimplify";
-      this.grpSimplify.Size = new System.Drawing.Size(213, 348);
+      this.grpSimplify.Size = new System.Drawing.Size(213, 405);
       this.grpSimplify.TabIndex = 1;
       this.grpSimplify.TabStop = false;
       this.grpSimplify.Text = "Simplify";
@@ -112,9 +116,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.flowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.flowLayoutPanel.Controls.Add(this.btnSimplify);
       this.flowLayoutPanel.Controls.Add(this.btnOptimizeConstants);
-      this.flowLayoutPanel.Location = new System.Drawing.Point(6, 313);
+      this.flowLayoutPanel.Controls.Add(this.btnSimplify);
+      this.flowLayoutPanel.Location = new System.Drawing.Point(6, 370);
       this.flowLayoutPanel.Name = "flowLayoutPanel";
       this.flowLayoutPanel.Size = new System.Drawing.Size(204, 29);
       this.flowLayoutPanel.TabIndex = 2;
@@ -122,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // btnSimplify
       // 
-      this.btnSimplify.Location = new System.Drawing.Point(3, 3);
+      this.btnSimplify.Location = new System.Drawing.Point(106, 3);
       this.btnSimplify.Name = "btnSimplify";
       this.btnSimplify.Size = new System.Drawing.Size(95, 23);
       this.btnSimplify.TabIndex = 1;
@@ -134,13 +138,45 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.btnOptimizeConstants.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.btnOptimizeConstants.Enabled = false;
-      this.btnOptimizeConstants.Location = new System.Drawing.Point(104, 3);
+      this.btnOptimizeConstants.Location = new System.Drawing.Point(3, 3);
       this.btnOptimizeConstants.Name = "btnOptimizeConstants";
       this.btnOptimizeConstants.Size = new System.Drawing.Size(97, 23);
       this.btnOptimizeConstants.TabIndex = 2;
       this.btnOptimizeConstants.Text = "Optimize";
       this.btnOptimizeConstants.UseVisualStyleBackColor = true;
       this.btnOptimizeConstants.Click += new System.EventHandler(this.btnOptimizeConstants_Click);
+      // 
+      // grpViewHost
+      // 
+      this.grpViewHost.Controls.Add(this.viewHost);
+      this.grpViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.grpViewHost.Location = new System.Drawing.Point(0, 0);
+      this.grpViewHost.Name = "grpViewHost";
+      this.grpViewHost.Size = new System.Drawing.Size(348, 405);
+      this.grpViewHost.TabIndex = 1;
+      this.grpViewHost.TabStop = false;
+      this.grpViewHost.Text = "Details";
+      // 
+      // treeStatusLabel
+      // 
+      this.treeStatusLabel.AutoSize = true;
+      this.treeStatusLabel.BackColor = System.Drawing.Color.Transparent;
+      this.treeStatusLabel.Location = new System.Drawing.Point(6, 16);
+      this.treeStatusLabel.Name = "treeStatusLabel";
+      this.treeStatusLabel.Size = new System.Drawing.Size(68, 13);
+      this.treeStatusLabel.TabIndex = 2;
+      this.treeStatusLabel.Text = "Tree Status: ";
+      // 
+      // treeStatusValue
+      // 
+      this.treeStatusValue.AutoSize = true;
+      this.treeStatusValue.BackColor = System.Drawing.Color.Transparent;
+      this.treeStatusValue.ForeColor = System.Drawing.Color.Green;
+      this.treeStatusValue.Location = new System.Drawing.Point(72, 16);
+      this.treeStatusValue.Name = "treeStatusValue";
+      this.treeStatusValue.Size = new System.Drawing.Size(30, 13);
+      this.treeStatusValue.TabIndex = 3;
+      this.treeStatusValue.Text = "Valid";
       // 
       // treeChart
       // 
@@ -149,27 +185,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.treeChart.BackgroundColor = System.Drawing.Color.White;
       this.treeChart.LineColor = System.Drawing.Color.Black;
-      this.treeChart.Location = new System.Drawing.Point(6, 16);
+      this.treeChart.Location = new System.Drawing.Point(6, 32);
+      this.treeChart.ModifyTree = null;
       this.treeChart.Name = "treeChart";
-      this.treeChart.Size = new System.Drawing.Size(201, 291);
+      this.treeChart.Size = new System.Drawing.Size(201, 332);
       this.treeChart.Spacing = 5;
       this.treeChart.SuspendRepaint = false;
       this.treeChart.TabIndex = 0;
       this.treeChart.TextFont = new System.Drawing.Font("Times New Roman", 8F);
       this.treeChart.Tree = null;
-      this.treeChart.SymbolicExpressionTreeChanged += new System.EventHandler(this.treeChart_SymbolicExpressionTreeChanged);
+      this.treeChart.SymbolicExpressionTreeNodeClicked += new System.Windows.Forms.MouseEventHandler(this.treeChart_SymbolicExpressionTreeNodeClicked);
       this.treeChart.SymbolicExpressionTreeNodeDoubleClicked += new System.Windows.Forms.MouseEventHandler(this.treeChart_SymbolicExpressionTreeNodeDoubleClicked);
-      // 
-      // grpViewHost
-      // 
-      this.grpViewHost.Controls.Add(this.viewHost);
-      this.grpViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.grpViewHost.Location = new System.Drawing.Point(0, 0);
-      this.grpViewHost.Name = "grpViewHost";
-      this.grpViewHost.Size = new System.Drawing.Size(347, 348);
-      this.grpViewHost.TabIndex = 1;
-      this.grpViewHost.TabStop = false;
-      this.grpViewHost.Text = "Details";
       // 
       // InteractiveSymbolicDataAnalysisSolutionSimplifierView
       // 
@@ -178,16 +204,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.Controls.Add(this.splitContainer);
       this.DoubleBuffered = true;
       this.Name = "InteractiveSymbolicDataAnalysisSolutionSimplifierView";
-      this.Size = new System.Drawing.Size(564, 348);
+      this.Size = new System.Drawing.Size(565, 405);
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel1.PerformLayout();
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.grpSimplify.ResumeLayout(false);
+      this.grpSimplify.PerformLayout();
       this.flowLayoutPanel.ResumeLayout(false);
       this.grpViewHost.ResumeLayout(false);
       this.ResumeLayout(false);
+
     }
 
     #endregion
@@ -200,5 +228,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private System.Windows.Forms.Button btnSimplify;
     private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
     protected System.Windows.Forms.Button btnOptimizeConstants;
+    private System.Windows.Forms.Label treeStatusValue;
+    private System.Windows.Forms.Label treeStatusLabel;
   }
 }
