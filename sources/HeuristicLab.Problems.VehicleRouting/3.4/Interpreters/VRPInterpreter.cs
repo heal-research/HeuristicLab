@@ -49,8 +49,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
       }
     }
 
-    public abstract Type GetDataType();
-
     protected abstract IVRPProblemInstance CreateProblemInstance();
     
     public VRPInstanceDescription Interpret(IVRPData data) {

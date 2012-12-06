@@ -33,7 +33,6 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
   }
 
   public interface IVRPDataInterpreter {
-    Type GetDataType();
     VRPInstanceDescription Interpret(IVRPData data);
   }
 

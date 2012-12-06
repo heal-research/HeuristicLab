@@ -27,18 +27,14 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
-  public class CVRPInterpreter : VRPInterpreter, IVRPDataInterpreter<CVRPData> {
-    public override Type GetDataType() {
-      return typeof(CVRPData);
-    }
-    
+  public class CVRPInterpreter : VRPInterpreter, IVRPDataInterpreter<CVRPData> {   
     protected override IVRPProblemInstance CreateProblemInstance() {
       return new CVRPProblemInstance();
     }
 
     protected override void Interpret(IVRPData data, IVRPProblemInstance problemInstance) {
-      CVRPData cvrpData = data as CVRPData;
-      CVRPProblemInstance problem = problemInstance as CVRPProblemInstance;
+      CVRPData cvrpData = (CVRPData)data;
+      CVRPProblemInstance problem = (CVRPProblemInstance)problemInstance;
       
       if (cvrpData.Coordinates != null)
         problem.Coordinates = new DoubleMatrix(cvrpData.Coordinates);

@@ -27,11 +27,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using System;
 
 namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
-  public class CVRPTWInterpreter: CVRPInterpreter, IVRPDataInterpreter<CVRPTWData> {
-    public override Type GetDataType() {
-      return typeof(CVRPTWData);
-    }
-    
+  public class CVRPTWInterpreter: CVRPInterpreter, IVRPDataInterpreter<CVRPTWData> {    
     protected override IVRPProblemInstance CreateProblemInstance() {
       return new CVRPTWProblemInstance();
     }
@@ -39,8 +35,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Interpreters {
     protected override void Interpret(IVRPData data, IVRPProblemInstance problemInstance) {
       base.Interpret(data, problemInstance);
 
-      CVRPTWData cvrptwData = data as CVRPTWData;
-      CVRPTWProblemInstance problem = problemInstance as CVRPTWProblemInstance;
+      CVRPTWData cvrptwData = (CVRPTWData)data;
+      CVRPTWProblemInstance problem = (CVRPTWProblemInstance)problemInstance;
 
       problem.ReadyTime = new DoubleArray(cvrptwData.ReadyTimes);
       problem.ServiceTime = new DoubleArray(cvrptwData.ServiceTimes);
