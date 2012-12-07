@@ -28,17 +28,29 @@ using HeuristicLab.Tracing;
 namespace HeuristicLab.Persistence.Auxiliary {
   internal class TypeLoader {
     #region Mono Compatibility
-    private static TypeName cachedRuntimeType;
-    private static TypeName cachedObjectEqualityComparerType;
+    private static TypeName cachedMonoRuntimeType;
+    private static TypeName cachedWindowsRuntimeType;
+    private static TypeName cachedMonoObjectEqualityComparerType;
+    private static TypeName cachedWindowsObjectEqualityComparerType;
+
+    private static bool MonoInstalled {
+      get { return Type.GetType("Mono.Runtime") != null; }
+    }
 
     static TypeLoader() {
       // we use Int32 here because we get all the information about Mono's mscorlib and just have to change the class name
-      cachedRuntimeType = TypeNameParser.Parse(typeof(System.Int32).AssemblyQualifiedName);
-      cachedRuntimeType = new TypeName(cachedRuntimeType, "MonoType");
+      cachedMonoRuntimeType = TypeNameParser.Parse(typeof(System.Int32).AssemblyQualifiedName);
+      cachedMonoRuntimeType = new TypeName(cachedMonoRuntimeType, "MonoType");
+
+      cachedWindowsRuntimeType = TypeNameParser.Parse(typeof(System.Int32).AssemblyQualifiedName);
+      cachedWindowsRuntimeType = new TypeName(cachedWindowsRuntimeType, "RuntimeType");
 
       // we need the information about the Persistence assembly, so we use TypeName here because it is contained in this assembly
-      cachedObjectEqualityComparerType = TypeNameParser.Parse(typeof(TypeName).AssemblyQualifiedName);
-      cachedObjectEqualityComparerType = new TypeName(cachedObjectEqualityComparerType, "ObjectEqualityComparer", "HeuristicLab.Persistence.Mono");
+      cachedMonoObjectEqualityComparerType = TypeNameParser.Parse(typeof(TypeName).AssemblyQualifiedName);
+      cachedMonoObjectEqualityComparerType = new TypeName(cachedMonoObjectEqualityComparerType, "ObjectEqualityComparer", "HeuristicLab.Persistence.Mono");
+
+      cachedWindowsObjectEqualityComparerType = TypeNameParser.Parse(typeof(System.Int32).AssemblyQualifiedName);
+      cachedWindowsObjectEqualityComparerType = new TypeName(cachedWindowsObjectEqualityComparerType, "ObjectEqualityComparer", "System.Collections.Generic");
     }
     #endregion
 
@@ -59,11 +71,18 @@ namespace HeuristicLab.Persistence.Auxiliary {
       }
       catch (PersistenceException) {
         #region Mono Compatibility
-        // if that fails, try to load Mono type
-        TypeName monoTypeName = GetMonoType(typeName);
-        Logger.Info(String.Format(@"Trying to load Mono type ""{0}"" instead of type ""{1}""",
-                                  monoTypeName, typeNameString));
-        return LoadInternal(monoTypeName);
+        // if that fails, try to convert to the corresponding Mono or .NET type
+        if (MonoInstalled) {
+          TypeName monoTypeName = GetMonoType(typeName);
+          Logger.Info(String.Format(@"Trying to load Mono type ""{0}"" instead of type ""{1}""",
+                                    monoTypeName, typeNameString));
+          return LoadInternal(monoTypeName);
+        } else {
+          TypeName dotNetTypeName = GetDotNetType(typeName);
+          Logger.Info(String.Format(@"Trying to load .NET type ""{0}"" instead of type ""{1}""",
+                                    dotNetTypeName, typeNameString));
+          return LoadInternal(dotNetTypeName);
+        }
       }
         #endregion
     }
@@ -133,10 +152,35 @@ namespace HeuristicLab.Persistence.Auxiliary {
     private static TypeName GetMonoType(TypeName typeName) {
       // map System.RuntimeType to System.MonoType
       if (typeName.Namespace == "System" && typeName.ClassName == "RuntimeType") {
-        return cachedRuntimeType;
+        return cachedMonoRuntimeType;
         // map System.Collections.Generic.ObjectEqualityComparer to HeuristicLab.Mono.ObjectEqualityComparer
       } else if (typeName.Namespace == "System.Collections.Generic" && typeName.ClassName == "ObjectEqualityComparer") {
-        TypeName newTypeName = new TypeName(cachedObjectEqualityComparerType);
+        TypeName newTypeName = new TypeName(cachedMonoObjectEqualityComparerType);
+        newTypeName.GenericArgs = new List<TypeName>(typeName.GenericArgs);
+        return newTypeName;
+      }
+      return typeName;
+    }
+
+    /// <summary>
+    /// Returns the corresponding type for the .NET runtime
+    /// </summary>
+    /// <returns>
+    /// The remapped typeName, or the original typeName if no mapping was found
+    /// </returns>
+    private static TypeName GetDotNetType(TypeName typeName) {
+      // map System.MonoType to System.RuntimeType
+      if (typeName.Namespace == "System" && typeName.ClassName == "MonoType") {
+        return cachedWindowsRuntimeType;
+        // maps Mono's string comparer to System.Collections.Generic.ObjectEqualityComparer
+      } else if (typeName.Namespace == "System.Collections.Generic" && typeName.ClassName == "InternalStringComparer") {
+        TypeName newTypeName = new TypeName(cachedWindowsObjectEqualityComparerType);
+        var genericArgsList = new List<TypeName>();
+        genericArgsList.Add(new TypeName(typeof(String).Namespace, "String"));
+        newTypeName.GenericArgs = genericArgsList;
+        return newTypeName;
+      } else if (typeName.Namespace == "System.Collections.Generic" && typeName.ClassName == "EqualityComparer+DefaultComparer") {
+        TypeName newTypeName = new TypeName(cachedWindowsObjectEqualityComparerType);
         newTypeName.GenericArgs = new List<TypeName>(typeName.GenericArgs);
         return newTypeName;
       }
