@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Authors: Ekaterina J. Vladislavleva, Member, IEEE, Guido F. Smits, Member, IEEE, and Dick den Hertog" + Environment.NewLine
         + "Function: F1(X1, X2) = exp(-(X1 - 1))² / (1.2 + (X2 -2.5)²" + Environment.NewLine
         + "Training Data: 100 points X1, X2 = Rand(0.3, 4)" + Environment.NewLine
-        + "Test Data: 441*441 points (X1, X2) = (-0.2:0.01:4.2)" + Environment.NewLine
+        + "Test Data: 45*45 points (X1, X2) = (-0.2:0.1:4.2)" + Environment.NewLine
         + "Function Set: +, -, *, /, square, e^x, e^-x, x^eps, x + eps, x * eps";
       }
     }
@@ -43,12 +43,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 100; } }
     protected override int TestPartitionStart { get { return 100; } }
-    protected override int TestPartitionEnd { get { return 100 + (441 * 441); } }
+    protected override int TestPartitionEnd { get { return 100 + (45 * 45); } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
-      List<double> oneVariableTestData = ValueGenerator.GenerateSteps(-0.2, 4.2, 0.01).ToList();
+      List<double> oneVariableTestData = ValueGenerator.GenerateSteps(-0.2, 4.2, 0.1).ToList();
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
