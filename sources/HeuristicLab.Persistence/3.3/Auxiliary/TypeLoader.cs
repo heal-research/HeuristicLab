@@ -73,18 +73,18 @@ namespace HeuristicLab.Persistence.Auxiliary {
         #region Mono Compatibility
         // if that fails, try to convert to the corresponding Mono or .NET type
         if (MonoInstalled) {
-          TypeName monoTypeName = GetMonoType(typeName);
-          Logger.Info(String.Format(@"Trying to load Mono type ""{0}"" instead of type ""{1}""",
-                                    monoTypeName, typeNameString));
-          return LoadInternal(monoTypeName);
+          typeName = GetMonoType(typeName);
+          Logger.Info(String.Format(@"Trying to load Mono type ""{0}"" instead of .NET type ""{1}""",
+                                    typeName, typeNameString));
         } else {
-          TypeName dotNetTypeName = GetDotNetType(typeName);
-          Logger.Info(String.Format(@"Trying to load .NET type ""{0}"" instead of type ""{1}""",
-                                    dotNetTypeName, typeNameString));
-          return LoadInternal(dotNetTypeName);
+          typeName = GetDotNetType(typeName);
+          Logger.Info(String.Format(@"Trying to load .NET type ""{0}"" instead of Mono type ""{1}""",
+                                    typeName, typeNameString));
+
         }
-      }
+        return LoadInternal(typeName);
         #endregion
+      }
     }
 
     private static Type LoadInternal(TypeName typeName) {
@@ -172,7 +172,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
       // map System.MonoType to System.RuntimeType
       if (typeName.Namespace == "System" && typeName.ClassName == "MonoType") {
         return cachedWindowsRuntimeType;
-        // maps Mono's string comparer to System.Collections.Generic.ObjectEqualityComparer
+        // maps Mono's string comparer to System.Collections.Generic.ObjectEqualityComparer<string>
       } else if (typeName.Namespace == "System.Collections.Generic" && typeName.ClassName == "InternalStringComparer") {
         TypeName newTypeName = new TypeName(cachedWindowsObjectEqualityComparerType);
         var genericArgsList = new List<TypeName>();
