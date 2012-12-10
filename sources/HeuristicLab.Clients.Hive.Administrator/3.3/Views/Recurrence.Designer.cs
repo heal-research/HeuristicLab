@@ -62,7 +62,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.cbWednesday = new System.Windows.Forms.CheckBox();
       this.cbTuesday = new System.Windows.Forms.CheckBox();
       this.cbMonday = new System.Windows.Forms.CheckBox();
-      this.appointmentTypeView = new HeuristicLab.Clients.Hive.Administrator.Views.AppointmentTypeView();
+      this.appointmentTypeView = new HeuristicLab.Clients.Hive.Administrator.Views.DowntimeTypeView();
       this.gbDowntimeType = new System.Windows.Forms.GroupBox();
       this.gbAppointment.SuspendLayout();
       this.gbWeekly.SuspendLayout();
@@ -257,7 +257,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // appointmentTypeView
       // 
-      this.appointmentTypeView.AppointmentType = HeuristicLab.Clients.Hive.DowntimeType.Offline;
+      this.appointmentTypeView.DowntimeType = HeuristicLab.Clients.Hive.DowntimeType.Offline;
       this.appointmentTypeView.Location = new System.Drawing.Point(10, 19);
       this.appointmentTypeView.Name = "appointmentTypeView";
       this.appointmentTypeView.Size = new System.Drawing.Size(120, 50);
@@ -317,7 +317,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     private System.Windows.Forms.CheckBox cbWednesday;
     private System.Windows.Forms.CheckBox cbTuesday;
     private System.Windows.Forms.CheckBox cbMonday;
-    private AppointmentTypeView appointmentTypeView;
+    private DowntimeTypeView appointmentTypeView;
     private System.Windows.Forms.GroupBox gbDowntimeType;
   }
 }

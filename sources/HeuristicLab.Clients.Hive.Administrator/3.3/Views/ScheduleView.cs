@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 using Calendar;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
@@ -39,9 +38,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       set { base.Content = value; }
     }
 
-    [XmlArray("Appointments")]
-    [XmlArrayItem("HiveAppointment", typeof(HiveAppointment))]
-    public List<HiveAppointment> offlineTimes = new List<HiveAppointment>();
+    public List<HiveDowntime> offlineTimes = new List<HiveDowntime>();
 
     //delegate fired, if a dialog is being closed
     public delegate void OnDialogClosedDelegate(RecurrentEvent e);
@@ -58,60 +55,60 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void dvOnline_OnResolveAppointments(object sender, ResolveAppointmentsEventArgs e) {
-      List<HiveAppointment> apps = new List<HiveAppointment>();
+      List<HiveDowntime> apps = new List<HiveDowntime>();
 
-      foreach (HiveAppointment app in offlineTimes) {
+      foreach (HiveDowntime app in offlineTimes) {
         if (app.StartDate >= e.StartDate && app.StartDate <= e.EndDate && !app.Deleted) {
           apps.Add(app);
         }
       }
 
       e.Appointments.Clear();
-      foreach (HiveAppointment app in apps) {
+      foreach (HiveDowntime app in apps) {
         e.Appointments.Add(app);
       }
     }
 
     private void dvOnline_OnNewAppointment(object sender, NewAppointmentEventArgs e) {
-      HiveAppointment Appointment = new HiveAppointment();
+      HiveDowntime downtime = new HiveDowntime();
 
-      Appointment.StartDate = e.StartDate;
-      Appointment.EndDate = e.EndDate;
-      offlineTimes.Add(Appointment);
+      downtime.StartDate = e.StartDate;
+      downtime.EndDate = e.EndDate;
+      offlineTimes.Add(downtime);
     }
 
     private void UpdateCalendarFromContent() {
       offlineTimes.Clear();
       if (Content != null) {
-        foreach (Downtime app in Content) {
-          offlineTimes.Add(ToHiveAppointment(app));
+        foreach (Downtime downtime in Content) {
+          offlineTimes.Add(ToHiveDowntime(downtime));
         }
       }
       dvOnline.Invalidate();
     }
 
-    private bool CreateAppointment(DowntimeType dtType) {
+    private bool CreateDowntime(DowntimeType dtType) {
       DateTime from, to;
 
       if (!string.IsNullOrEmpty(dtpFrom.Text) && !string.IsNullOrEmpty(dtpTo.Text)) {
         if (chbade.Checked) {
           //whole day appointment, only dates are visible
           if (DateTime.TryParse(dtpFrom.Text, out from) && DateTime.TryParse(dtpTo.Text, out to) && from <= to)
-            offlineTimes.Add(CreateAppointment(from, to.AddDays(1), true, dtType));
+            offlineTimes.Add(CreateDowntime(from, to.AddDays(1), true, dtType));
           else
             MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         } else if (!string.IsNullOrEmpty(txttimeFrom.Text) && !string.IsNullOrEmpty(txttimeTo.Text)) {
           //Timeframe appointment
           if (DateTime.TryParse(dtpFrom.Text + " " + txttimeFrom.Text, out from) && DateTime.TryParse(dtpTo.Text + " " + txttimeTo.Text, out to) && from < to) {
             if (from.Date == to.Date)
-              offlineTimes.Add(CreateAppointment(from, to, false, dtType));
+              offlineTimes.Add(CreateDowntime(from, to, false, dtType));
             else {
               //more than 1 day selected
               while (from.Date != to.Date) {
-                offlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false, dtType));
+                offlineTimes.Add(CreateDowntime(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false, dtType));
                 from = from.AddDays(1);
               }
-              offlineTimes.Add(CreateAppointment(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false, dtType));
+              offlineTimes.Add(CreateDowntime(from, new DateTime(from.Year, from.Month, from.Day, to.Hour, to.Minute, 0, 0), false, dtType));
             }
           } else
             MessageBox.Show("Incorrect date format", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -119,63 +116,63 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         dvOnline.Invalidate();
         return true;
       } else {
-        MessageBox.Show("Error in create appointment, please fill out all textboxes!", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show("Error creating downtime, please fill out all textboxes!", "Schedule Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         return false;
       }
     }
 
-    private HiveAppointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay, DowntimeType downtimeType) {
-      HiveAppointment app = new HiveAppointment();
-      app.StartDate = startDate;
-      app.EndDate = endDate;
-      app.AllDayEvent = allDay;
-      app.BorderColor = Color.Red;
-      app.Locked = true;
-      app.Subject = downtimeType.ToString();
-      app.Recurring = false;
-      return app;
+    private HiveDowntime CreateDowntime(DateTime startDate, DateTime endDate, bool allDay, DowntimeType downtimeType) {
+      HiveDowntime downtime = new HiveDowntime();
+      downtime.StartDate = startDate;
+      downtime.EndDate = endDate;
+      downtime.AllDayEvent = allDay;
+      downtime.BorderColor = Color.Red;
+      downtime.Locked = true;
+      downtime.Subject = downtimeType.ToString();
+      downtime.Recurring = false;
+      return downtime;
     }
 
-    private HiveAppointment CreateAppointment(DateTime startDate, DateTime endDate, bool allDay, bool recurring, Guid recurringId, DowntimeType downtimeType) {
-      HiveAppointment app = new HiveAppointment();
-      app.StartDate = startDate;
-      app.EndDate = endDate;
-      app.AllDayEvent = allDay;
-      app.BorderColor = Color.Red;
-      app.Locked = true;
-      app.Subject = downtimeType.ToString();
-      app.Recurring = recurring;
-      app.RecurringId = recurringId;
-      return app;
+    private HiveDowntime CreateDowntime(DateTime startDate, DateTime endDate, bool allDay, bool recurring, Guid recurringId, DowntimeType downtimeType) {
+      HiveDowntime downtime = new HiveDowntime();
+      downtime.StartDate = startDate;
+      downtime.EndDate = endDate;
+      downtime.AllDayEvent = allDay;
+      downtime.BorderColor = Color.Red;
+      downtime.Locked = true;
+      downtime.Subject = downtimeType.ToString();
+      downtime.Recurring = recurring;
+      downtime.RecurringId = recurringId;
+      return downtime;
     }
 
-    private void DeleteRecurringAppointment(Guid recurringId) {
-      foreach (HiveAppointment app in offlineTimes) {
-        if (app.RecurringId == recurringId) {
-          app.Deleted = true;
+    private void DeleteRecurringDowntime(Guid recurringId) {
+      foreach (HiveDowntime downtime in offlineTimes) {
+        if (downtime.RecurringId == recurringId) {
+          downtime.Deleted = true;
         }
       }
     }
 
-    private void ChangeRecurrenceAppointment(Guid recurringId) {
+    private void ChangeRecurrenceDowntime(Guid recurringId) {
       int hourfrom = int.Parse(txttimeFrom.Text.Substring(0, txttimeFrom.Text.IndexOf(':')));
       int hourTo = int.Parse(txttimeTo.Text.Substring(0, txttimeTo.Text.IndexOf(':')));
-      List<HiveAppointment> recurringAppointments = offlineTimes.Where(appointment => ((HiveAppointment)appointment).RecurringId == recurringId).ToList();
-      recurringAppointments.ForEach(appointment => appointment.StartDate = new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day, hourfrom, 0, 0));
-      recurringAppointments.ForEach(appointment => appointment.EndDate = new DateTime(appointment.EndDate.Year, appointment.EndDate.Month, appointment.EndDate.Day, hourTo, 0, 0));
+      List<HiveDowntime> recurringDowntimes = offlineTimes.Where(appointment => ((HiveDowntime)appointment).RecurringId == recurringId).ToList();
+      recurringDowntimes.ForEach(appointment => appointment.StartDate = new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day, hourfrom, 0, 0));
+      recurringDowntimes.ForEach(appointment => appointment.EndDate = new DateTime(appointment.EndDate.Year, appointment.EndDate.Month, appointment.EndDate.Day, hourTo, 0, 0));
     }
 
     public void DialogClosed(RecurrentEvent e) {
-      CreateDailyRecurrenceAppointments(e.DateFrom, e.DateTo, e.AllDay, e.WeekDays, e.AppointmentType);
+      CreateDailyRecurrenceDowntimes(e.DateFrom, e.DateTo, e.AllDay, e.WeekDays, e.DowntimeType);
     }
 
-    private void CreateDailyRecurrenceAppointments(DateTime dateFrom, DateTime dateTo, bool allDay, HashSet<DayOfWeek> daysOfWeek, DowntimeType appointmentType) {
+    private void CreateDailyRecurrenceDowntimes(DateTime dateFrom, DateTime dateTo, bool allDay, HashSet<DayOfWeek> daysOfWeek, DowntimeType appointmentType) {
       DateTime incDate = dateFrom;
       Guid guid = Guid.NewGuid();
 
       while (incDate.Date <= dateTo.Date) {
         if (daysOfWeek.Contains(incDate.Date.DayOfWeek))
-          offlineTimes.Add(CreateAppointment(incDate, new DateTime(incDate.Year, incDate.Month, incDate.Day, dateTo.Hour, dateTo.Minute, 0), allDay, true, guid, appointmentType));
+          offlineTimes.Add(CreateDowntime(incDate, new DateTime(incDate.Year, incDate.Month, incDate.Day, dateTo.Hour, dateTo.Minute, 0), allDay, true, guid, appointmentType));
         incDate = incDate.AddDays(1);
       }
 
@@ -183,25 +180,25 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void btbDelete_Click(object sender, EventArgs e) {
-      HiveAppointment selectedAppointment = (HiveAppointment)dvOnline.SelectedAppointment;
+      HiveDowntime selectedDowntime = (HiveDowntime)dvOnline.SelectedAppointment;
       if (dvOnline.SelectedAppointment != null) {
-        if (!selectedAppointment.Recurring)
-          DeleteAppointment();
+        if (!selectedDowntime.Recurring)
+          DeleteDowntime();
         else {
           DialogResult res = MessageBox.Show("Delete all events in this series?", "Delete recurrences", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
           if (res != DialogResult.Yes)
-            DeleteAppointment();
+            DeleteDowntime();
           else
-            DeleteRecurringAppointment(selectedAppointment.RecurringId);
+            DeleteRecurringDowntime(selectedDowntime.RecurringId);
         }
       }
       dvOnline.Invalidate();
     }
 
-    private void DeleteAppointment() {
+    private void DeleteDowntime() {
       try {
-        HiveAppointment app = offlineTimes.First(s => s.Equals((HiveAppointment)dvOnline.SelectedAppointment));
-        app.Deleted = true;
+        HiveDowntime downtime = offlineTimes.First(s => s.Equals((HiveDowntime)dvOnline.SelectedAppointment));
+        downtime.Deleted = true;
       }
       catch (InvalidOperationException) {
         // this is a ui bug where a selected all day appointment is not properly selected :-/
@@ -238,7 +235,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private void btnClearCal_Click(object sender, System.EventArgs e) {
-      foreach (HiveAppointment app in offlineTimes) {
+      foreach (HiveDowntime app in offlineTimes) {
         app.Deleted = true;
       }
       dvOnline.Invalidate();
@@ -255,7 +252,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         dtpTo.Text = dvOnline.SelectionEnd.Date.ToShortDateString();
         txttimeFrom.Text = dvOnline.SelectionStart.ToShortTimeString();
         txttimeTo.Text = dvOnline.SelectionEnd.ToShortTimeString();
-        btCreate.Text = "Create Appointment";
+        btCreate.Text = "Create Downtime";
       }
 
       if (dvOnline.Selection == SelectionType.Appointment) {
@@ -270,7 +267,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       }
       if (dvOnline.Selection == SelectionType.None) {
         //also change the caption of the save button
-        btCreate.Text = "Create Appointment";
+        btCreate.Text = "Create Downtime";
       }
     }
 
@@ -282,26 +279,26 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       if (dvOnline.Selection != SelectionType.Appointment) {
         DowntimeType dtType;
         DialogResult result;
-        AppointmentTypeDialog dialog = new AppointmentTypeDialog();
+        DowntimeTypeDialog dialog = new DowntimeTypeDialog();
         result = dialog.ShowDialog(this);
         dtType = dialog.AppointmentType;
         dialog.Dispose();
         if (result == DialogResult.Cancel) return;
-        CreateAppointment(dtType);
+        CreateDowntime(dtType);
       } else {
         //now we want to change an existing appointment
         if (!dvOnline.SelectedAppointment.Recurring) {
-          if (CreateAppointment(GetDowntimeTypeOfSelectedAppointment()))
-            DeleteAppointment();
+          if (CreateDowntime(GetDowntimeTypeOfSelectedDowntime()))
+            DeleteDowntime();
         } else {
           //change recurring appointment
           //check, if only selected appointment has to change or whole recurrence
           DialogResult res = MessageBox.Show("Change all events in this series?", "Change recurrences", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
           if (res != DialogResult.Yes) {
-            if (CreateAppointment(GetDowntimeTypeOfSelectedAppointment()))
-              DeleteAppointment();
+            if (CreateDowntime(GetDowntimeTypeOfSelectedDowntime()))
+              DeleteDowntime();
           } else
-            ChangeRecurrenceAppointment(((HiveAppointment)dvOnline.SelectedAppointment).RecurringId);
+            ChangeRecurrenceDowntime(((HiveDowntime)dvOnline.SelectedAppointment).RecurringId);
         }
       }
       dvOnline.Invalidate();
@@ -315,25 +312,25 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
 
     private void btnSaveCal_Click(object sender, EventArgs e) {
       if (HiveAdminClient.Instance.DowntimeForResourceId == null || HiveAdminClient.Instance.DowntimeForResourceId == Guid.Empty) {
-        MessageBox.Show("You have to save the goup before you can save the schedule. ", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+        MessageBox.Show("You have to save the group before you can save the schedule. ", "HeuristicLab Hive Administrator", MessageBoxButtons.OK, MessageBoxIcon.Stop);
       } else {
-        List<Downtime> appointments = new List<Downtime>();
-        foreach (HiveAppointment app in offlineTimes) {
-          if (app.Deleted && app.Id != Guid.Empty) {
-            HiveAdminClient.Delete(ToDowntime(app));
-          } else if (app.Changed || app.Id == null || app.Id == Guid.Empty) {
-            Downtime dt = ToDowntime(app);
-            appointments.Add(dt);
+        List<Downtime> downtimes = new List<Downtime>();
+        foreach (HiveDowntime downtime in offlineTimes) {
+          if (downtime.Deleted && downtime.Id != Guid.Empty) {
+            HiveAdminClient.Delete(ToDowntime(downtime));
+          } else if (downtime.Changed || downtime.Id == null || downtime.Id == Guid.Empty) {
+            Downtime dt = ToDowntime(downtime);
+            downtimes.Add(dt);
           }
         }
-        foreach (Downtime dt in appointments) {
+        foreach (Downtime dt in downtimes) {
           dt.Store();
         }
       }
     }
 
-    private HiveAppointment ToHiveAppointment(Downtime downtime) {
-      HiveAppointment app = new HiveAppointment {
+    private HiveDowntime ToHiveDowntime(Downtime downtime) {
+      HiveDowntime app = new HiveDowntime {
         AllDayEvent = downtime.AllDayEvent,
         EndDate = downtime.EndDate,
         StartDate = downtime.StartDate,
@@ -349,7 +346,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       return app;
     }
 
-    private Downtime ToDowntime(HiveAppointment app) {
+    private Downtime ToDowntime(HiveDowntime app) {
       Downtime downtime = new Downtime {
         AllDayEvent = app.AllDayEvent,
         EndDate = app.EndDate,
@@ -363,8 +360,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       return downtime;
     }
 
-    private DowntimeType GetDowntimeTypeOfSelectedAppointment() {
-      return (DowntimeType)Enum.Parse(typeof(DowntimeType), ((HiveAppointment)dvOnline.SelectedAppointment).Subject);
+    private DowntimeType GetDowntimeTypeOfSelectedDowntime() {
+      return (DowntimeType)Enum.Parse(typeof(DowntimeType), ((HiveDowntime)dvOnline.SelectedAppointment).Subject);
     }
   }
 }

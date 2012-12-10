@@ -53,7 +53,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
           DateTo = dateTo,
           AllDay = chbade.Checked,
           WeekDays = days,
-          AppointmentType = appointmentTypeView.AppointmentType
+          DowntimeType = appointmentTypeView.DowntimeType
         };
 
         //fire delegate and close the dialog

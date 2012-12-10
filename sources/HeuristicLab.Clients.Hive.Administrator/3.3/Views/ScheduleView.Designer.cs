@@ -70,8 +70,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       drawTool1.DayView = this.dvOnline;
       this.dvOnline.ActiveTool = drawTool1;
       this.dvOnline.AmPmDisplay = false;
-      this.dvOnline.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.dvOnline.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.dvOnline.AppointmentDuration = Calendar.AppointmentSlotDuration.SixtyMinutes;
       this.dvOnline.AppointmentHeightMode = Calendar.AppHeightDrawMode.TrueHeightAll;
@@ -211,8 +211,8 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       this.btCreate.Name = "btCreate";
       this.btCreate.Size = new System.Drawing.Size(242, 26);
       this.btCreate.TabIndex = 20;
-      this.btCreate.Text = "Create Appointment";
-      this.toolTip.SetToolTip(this.btCreate, "Create a new appointment in the calender");
+      this.btCreate.Text = "Create Downtime";
+      this.toolTip.SetToolTip(this.btCreate, "Create a new downtime in the calender");
       this.btCreate.UseVisualStyleBackColor = true;
       this.btCreate.Click += new System.EventHandler(this.btCreate_Click);
       // 
@@ -246,7 +246,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // mcOnline
       // 
-      this.mcOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.mcOnline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.mcOnline.CalendarDimensions = new System.Drawing.Size(2, 1);
       this.mcOnline.Location = new System.Drawing.Point(3, 9);

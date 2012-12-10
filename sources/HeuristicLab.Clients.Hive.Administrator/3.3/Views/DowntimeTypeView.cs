@@ -23,20 +23,20 @@ using System;
 using System.Windows.Forms;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
-  public partial class AppointmentTypeView : UserControl {
-    public DowntimeType AppointmentType { get; set; }
+  public partial class DowntimeTypeView : UserControl {
+    public DowntimeType DowntimeType { get; set; }
 
-    public AppointmentTypeView() {
+    public DowntimeTypeView() {
       InitializeComponent();
-      AppointmentType = DowntimeType.Offline;
+      DowntimeType = DowntimeType.Offline;
     }
 
     private void OfflineRadioButton_CheckedChanged(object sender, EventArgs e) {
-      AppointmentType = DowntimeType.Offline;
+      DowntimeType = DowntimeType.Offline;
     }
 
     private void shutdownRadioButton_CheckedChanged(object sender, EventArgs e) {
-      AppointmentType = DowntimeType.Shutdown;
+      DowntimeType = DowntimeType.Shutdown;
     }
   }
 }

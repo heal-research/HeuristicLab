@@ -103,17 +103,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HiveRoles.cs" />
-    <Compile Include="Views\AppointmentTypeDialog.cs">
+    <Compile Include="Views\DowntimeTypeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\AppointmentTypeDialog.Designer.cs">
-      <DependentUpon>AppointmentTypeDialog.cs</DependentUpon>
+    <Compile Include="Views\DowntimeTypeDialog.Designer.cs">
+      <DependentUpon>DowntimeTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\AppointmentTypeView.cs">
+    <Compile Include="Views\DowntimeTypeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Views\AppointmentTypeView.Designer.cs">
-      <DependentUpon>AppointmentTypeView.cs</DependentUpon>
+    <Compile Include="Views\DowntimeTypeView.Designer.cs">
+      <DependentUpon>DowntimeTypeView.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\HiveAdministratorView.cs">
       <SubType>UserControl</SubType>
@@ -121,7 +121,7 @@
     <Compile Include="Views\HiveAdministratorView.Designer.cs">
       <DependentUpon>HiveAdministratorView.cs</DependentUpon>
     </Compile>
-    <Compile Include="HiveAppointment.cs">
+    <Compile Include="HiveDowntime.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MenuItems\AdministratorMenuItem.cs" />

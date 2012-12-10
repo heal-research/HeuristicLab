@@ -1,5 +1,26 @@
-﻿namespace HeuristicLab.Clients.Hive.Administrator.Views {
-  partial class AppointmentTypeDialog {
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+namespace HeuristicLab.Clients.Hive.Administrator.Views {
+  partial class DowntimeTypeDialog {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -25,7 +46,7 @@
     private void InitializeComponent() {
       this.okButton = new System.Windows.Forms.Button();
       this.cancleButton = new System.Windows.Forms.Button();
-      this.appointmentTypeView = new HeuristicLab.Clients.Hive.Administrator.Views.AppointmentTypeView();
+      this.appointmentTypeView = new HeuristicLab.Clients.Hive.Administrator.Views.DowntimeTypeView();
       this.SuspendLayout();
       // 
       // okButton
@@ -52,7 +73,7 @@
       // 
       // appointmentTypeView
       // 
-      this.appointmentTypeView.AppointmentType = HeuristicLab.Clients.Hive.DowntimeType.Offline;
+      this.appointmentTypeView.DowntimeType = HeuristicLab.Clients.Hive.DowntimeType.Offline;
       this.appointmentTypeView.Location = new System.Drawing.Point(12, 12);
       this.appointmentTypeView.Name = "appointmentTypeView";
       this.appointmentTypeView.Size = new System.Drawing.Size(120, 57);
@@ -86,6 +107,6 @@
 
     private System.Windows.Forms.Button okButton;
     private System.Windows.Forms.Button cancleButton;
-    private AppointmentTypeView appointmentTypeView;
+    private DowntimeTypeView appointmentTypeView;
   }
 }

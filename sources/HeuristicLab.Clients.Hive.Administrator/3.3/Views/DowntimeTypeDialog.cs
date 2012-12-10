@@ -19,15 +19,26 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
-  public class RecurrentEvent {
-    public DateTime DateFrom { get; set; }
-    public DateTime DateTo { get; set; }
-    public bool AllDay { get; set; }
-    public HashSet<DayOfWeek> WeekDays { get; set; }
-    public DowntimeType DowntimeType { get; set; }
+  public partial class DowntimeTypeDialog : Form {
+    public DowntimeType AppointmentType {
+      get {
+        return appointmentTypeView.DowntimeType;
+      }
+    }
+
+    public DowntimeTypeDialog() {
+      InitializeComponent();
+    }
+
+    private void okButton_Click(object sender, System.EventArgs e) {
+      Close();
+    }
+
+    private void cancleButton_Click(object sender, System.EventArgs e) {
+      Close();
+    }
   }
 }

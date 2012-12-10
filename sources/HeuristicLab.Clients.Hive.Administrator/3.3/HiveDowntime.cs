@@ -19,26 +19,46 @@
  */
 #endregion
 
-using System.Windows.Forms;
+using System;
 
 namespace HeuristicLab.Clients.Hive.Administrator.Views {
-  public partial class AppointmentTypeDialog : Form {
-    public DowntimeType AppointmentType {
-      get {
-        return appointmentTypeView.AppointmentType;
-      }
+  public class HiveDowntime : Calendar.Appointment {
+    private Guid recurringId = Guid.Empty;
+
+    public HiveDowntime()
+      : base() {
+      Changed = false;
     }
 
-    public AppointmentTypeDialog() {
-      InitializeComponent();
+    public bool Changed { get; set; }
+
+    public new bool AllDayEvent {
+      get { return base.AllDayEvent; }
+      set { base.AllDayEvent = value; Changed = true; }
     }
 
-    private void okButton_Click(object sender, System.EventArgs e) {
-      Close();
+    public new bool Recurring {
+      get { return base.Recurring; }
+      set { base.Recurring = value; Changed = true; }
     }
 
-    private void cancleButton_Click(object sender, System.EventArgs e) {
-      Close();
+    public Guid RecurringId {
+      get { return recurringId; }
+      set { recurringId = value; Changed = true; }
     }
+
+    public new DateTime EndDate {
+      get { return base.EndDate; }
+      set { base.EndDate = value; Changed = true; }
+    }
+
+    public new DateTime StartDate {
+      get { return base.StartDate; }
+      set { base.StartDate = value; Changed = true; }
+    }
+
+    public bool Deleted { get; set; }
+
+    public Guid Id { get; set; }
   }
 }
