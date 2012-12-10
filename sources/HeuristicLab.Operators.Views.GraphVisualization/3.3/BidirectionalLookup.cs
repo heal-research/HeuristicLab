@@ -25,8 +25,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization {
   [StorableClass]
-  [Obsolete("Use BidirectionalDictionary in HeuristicLab.Collections")]
-  public class BidirectionalLookup<TFirst, TSecond> {
+  internal class BidirectionalLookup<TFirst, TSecond> {
     [Storable]
     private Dictionary<TFirst, TSecond> firstToSecond;
     [Storable]
