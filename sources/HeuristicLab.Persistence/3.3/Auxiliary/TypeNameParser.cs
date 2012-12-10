@@ -20,8 +20,8 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -88,7 +88,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
 
 
     private class Token {
-      public enum Symbol {None, Dash, Ampersand, Dot, Plus, Comma, OpenBracket, CloseBracket, Asterisk, Space, Equals, Backtick}
+      public enum Symbol { None, Dash, Ampersand, Dot, Plus, Comma, OpenBracket, CloseBracket, Asterisk, Space, Equals, Backtick }
       private static readonly Dictionary<string, Symbol> TOKENS =
         new Dictionary<string, Symbol> {
           {"-", Symbol.Dash},
@@ -156,7 +156,8 @@ namespace HeuristicLab.Persistence.Auxiliary {
 
     /// <summary>
     /// Parses the specified typename string as obtained by
-    /// <c>System.Object.GetType().FullName"</c>.
+    /// <c>System.Object.GetType().FullName</c> or 
+    /// <c>System.Object.GetType().AssemblyQualifiedName</c>.
     /// </summary>
     /// <param name="s">The typename string.</param>
     /// <returns>A <see cref="TypeName"/> representing the type name.</returns>
@@ -188,7 +189,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
     }
 
     private TypeName TransformSimpleTypeSpec() {
-      var nameSpace = new List<string> {ConsumeIdentifier()};
+      var nameSpace = new List<string> { ConsumeIdentifier() };
       while (ConsumeToken(Token.Symbol.Dot))
         nameSpace.Add(ConsumeIdentifier());
       var className = new List<string>();
@@ -199,7 +200,7 @@ namespace HeuristicLab.Persistence.Auxiliary {
       var genericArgCounts = new List<int> {
         ConsumeToken(Token.Symbol.Backtick) ? ConsumeNumber() : 0
       };
-      while(ConsumeToken(Token.Symbol.Plus)) {
+      while (ConsumeToken(Token.Symbol.Plus)) {
         className.Add(ConsumeIdentifier());
         genericArgCounts.Add(ConsumeToken(Token.Symbol.Backtick) ? ConsumeNumber() : 0);
       }

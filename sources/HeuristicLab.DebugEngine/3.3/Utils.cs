@@ -35,7 +35,7 @@ namespace HeuristicLab.DebugEngine {
     public static string TypeName(object obj) {
       if (obj == null)
         return "null";
-      return TypeNameParser.Parse(obj.GetType().ToString()).GetTypeNameInCode(true);
+      return TypeNameParser.Parse(obj.GetType().FullName).GetTypeNameInCode(true);
     }
 
     public static string Wrap(string text, int columns) {
