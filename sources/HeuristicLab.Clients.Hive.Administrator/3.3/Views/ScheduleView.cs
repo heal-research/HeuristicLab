@@ -330,7 +330,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
     }
 
     private HiveDowntime ToHiveDowntime(Downtime downtime) {
-      HiveDowntime app = new HiveDowntime {
+      HiveDowntime hiveDowntime = new HiveDowntime {
         AllDayEvent = downtime.AllDayEvent,
         EndDate = downtime.EndDate,
         StartDate = downtime.StartDate,
@@ -343,19 +343,19 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
         Changed = downtime.Modified,
         Id = downtime.Id
       };
-      return app;
+      return hiveDowntime;
     }
 
-    private Downtime ToDowntime(HiveDowntime app) {
+    private Downtime ToDowntime(HiveDowntime hiveDowntime) {
       Downtime downtime = new Downtime {
-        AllDayEvent = app.AllDayEvent,
-        EndDate = app.EndDate,
-        StartDate = app.StartDate,
-        Recurring = app.Recurring,
-        RecurringId = app.RecurringId,
+        AllDayEvent = hiveDowntime.AllDayEvent,
+        EndDate = hiveDowntime.EndDate,
+        StartDate = hiveDowntime.StartDate,
+        Recurring = hiveDowntime.Recurring,
+        RecurringId = hiveDowntime.RecurringId,
         ResourceId = HiveAdminClient.Instance.DowntimeForResourceId,
-        Id = app.Id,
-        DowntimeType = (DowntimeType)Enum.Parse(typeof(DowntimeType), app.Subject)
+        Id = hiveDowntime.Id,
+        DowntimeType = (DowntimeType)Enum.Parse(typeof(DowntimeType), hiveDowntime.Subject)
       };
       return downtime;
     }
