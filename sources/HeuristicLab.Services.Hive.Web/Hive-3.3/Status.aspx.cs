@@ -43,6 +43,11 @@ public partial class Status : System.Web.UI.Page {
     int currentlyJobsWaiting = 0;
     Dictionary<Guid, int> calculatingTasksByUser = new Dictionary<Guid,int>();
     Dictionary<Guid, int> waitingTasksByUser = new Dictionary<Guid, int>();
+    List<DT.Resource> groups = new List<DT.Resource>();
+
+    transactionManager.UseTransaction(() => {
+       groups = dao.GetResources(x => x.ResourceType == "GROUP").ToList();
+    }, false, false);    
 
     if (!string.IsNullOrEmpty(resourceName)) {
         transactionManager.UseTransaction(() =>
@@ -75,9 +80,10 @@ public partial class Status : System.Web.UI.Page {
     this.waitingJobsLabel.Text = currentlyJobsWaiting.ToString();
 
     slavesLabel.Text = string.Join(", ", onlineSlaves.Select(x => string.Format("<a href=\"?resource={0}\">{0}</a> ({1} %)", x.Name, Math.Round(x.CpuUtilization, 2))));
+    groupsLabel.Text = string.Join(", ", groups.Select(x => string.Format("<a href=\"?resource={0}\">{0}</a>", x.Name)));
 
     overallCpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
-    cpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 ? Math.Round(onlineSlaves.Where(x => x.IsAllowedToCalculate).Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
+    cpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 && onlineSlaves.Where(x => x.IsAllowedToCalculate).Count() > 0 ? Math.Round(onlineSlaves.Where(x => x.IsAllowedToCalculate).Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
 
     DT.Statistics[] stats = new DT.Statistics[0];    
     transactionManager.UseTransaction(() =>

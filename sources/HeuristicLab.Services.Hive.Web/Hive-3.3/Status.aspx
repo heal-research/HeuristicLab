@@ -36,6 +36,9 @@
     Slaves (CPU Utilization):
     <asp:Label ID="slavesLabel" runat="server" />
       <br />
+      Groups:
+    <asp:Label ID="groupsLabel" runat="server" />
+      <br />
       <br />
       Number of Calculating Tasks by User:<asp:Table ID="calculatingTasksByUserTable" runat="server" GridLines="Both">
           <asp:TableRow runat="server" BackColor="#CCCCCC">
@@ -73,7 +76,7 @@
     <br />
     <br />
     Avg. CPU Utilization History of all Slaves<br />
-    <asp:Chart ID="cpuUtilizationChart" runat="server" Height="270px" Width="1900px">
+    <asp:Chart ID="cpuUtilizationChart" runat="server" Height="270px" Width="1280px">
       <Series>
         <asp:Series BorderWidth="2" ChartType="Line" Color="0, 176, 80" Name="Series1" XValueType="DateTime"
           YValueType="Double">
@@ -95,7 +98,7 @@
     </asp:Chart>
     <br />
     Cores/Used Cores History<br />
-    <asp:Chart ID="coresChart" runat="server" Palette="None" Width="1900px" PaletteCustomColors="137, 165, 78; 185, 205, 150">
+    <asp:Chart ID="coresChart" runat="server" Palette="None" Width="1280px" PaletteCustomColors="137, 165, 78; 185, 205, 150">
       <Series>
         <asp:Series ChartType="Area" Name="Cores" XValueType="DateTime" YValueType="Double">
         </asp:Series>
@@ -120,7 +123,7 @@
     <br />
     Memory/Used Memory History (GB)<br />
     <asp:Chart ID="memoryChart" runat="server" Palette="None" PaletteCustomColors="170, 70, 67; 209, 147, 146"
-      Width="1900px">
+      Width="1280px">
       <Series>
         <asp:Series ChartType="Area" Name="Cores" XValueType="DateTime" YValueType="Double">
         </asp:Series>

@@ -638,13 +638,17 @@ namespace HeuristicLab.Services.Hive.DataAccess {
     /// </summary>
     public IEnumerable<DT.Resource> GetChildResources(Guid resourceId) {
       using (var db = CreateContext()) {
-        var childs = new List<DT.Resource>();
-        foreach (var child in db.Resources.Where(x => x.ParentResourceId == resourceId)) {
-          childs.Add(DT.Convert.ToDto(child));
-          childs.AddRange(GetChildResources(child.ResourceId));
-        }
-        return childs;
+        return CollectChildResources(resourceId, db);
       }
+    }
+
+    public IEnumerable<DT.Resource> CollectChildResources(Guid resourceId, HiveDataContext db) {
+      var childs = new List<DT.Resource>();
+      foreach (var child in db.Resources.Where(x => x.ParentResourceId == resourceId)) {
+        childs.Add(DT.Convert.ToDto(child));
+        childs.AddRange(CollectChildResources(child.ResourceId, db));
+      }
+      return childs;
     }
 
     public IEnumerable<DT.Task> GetJobsByResourceId(Guid resourceId) {
@@ -841,9 +845,9 @@ namespace HeuristicLab.Services.Hive.DataAccess {
     public Dictionary<Guid, int> GetCalculatingTasksByUser() {
       using (var db = CreateContext()) {
         var calculatingTasksByUser = from task in db.Tasks
-                              where task.State == TaskState.Calculating
-                              group task by task.Job.OwnerUserId into g
-                              select new { UserId = g.Key, UsedCores = g.Count() };
+                                     where task.State == TaskState.Calculating
+                                     group task by task.Job.OwnerUserId into g
+                                     select new { UserId = g.Key, UsedCores = g.Count() };
         return calculatingTasksByUser.ToDictionary(x => x.UserId, x => x.UsedCores);
       }
     }
