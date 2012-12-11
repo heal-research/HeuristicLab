@@ -332,7 +332,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ShuffelInfoLabel.Name = "ShuffelInfoLabel";
       this.ShuffelInfoLabel.Size = new System.Drawing.Size(16, 16);
       this.ShuffelInfoLabel.TabIndex = 8;
-      this.ShuffelInfoLabel.Tag = "Check, if the importat data should be shuffled";
+      this.ShuffelInfoLabel.Tag = "Check, if the imported data should be shuffled";
       this.ToolTip.SetToolTip(this.ShuffelInfoLabel, "Check, if the importat data should be shuffled");
       this.ShuffelInfoLabel.DoubleClick += new System.EventHandler(this.ControlToolTip_DoubleClick);
       // 
