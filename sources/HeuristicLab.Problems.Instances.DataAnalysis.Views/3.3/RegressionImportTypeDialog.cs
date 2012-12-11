@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       get {
         return new RegressionImportType() {
           Shuffle = ShuffleDataCheckbox.Checked,
-          Training = TrainingTestTrackBar.Value,
+          TrainingPercentage = TrainingTestTrackBar.Value,
           TargetVariable = (String)TargetVariableComboBox.SelectedValue
         };
       }

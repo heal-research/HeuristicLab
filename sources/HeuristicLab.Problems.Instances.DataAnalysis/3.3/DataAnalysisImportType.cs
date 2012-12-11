@@ -22,6 +22,6 @@
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class DataAnalysisImportType {
     public bool Shuffle { get; set; }
-    public int Training { get; set; }
+    public int TrainingPercentage { get; set; }
   }
 }

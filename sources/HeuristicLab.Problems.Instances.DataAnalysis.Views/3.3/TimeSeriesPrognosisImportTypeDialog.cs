@@ -30,7 +30,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         return new TimeSeriesPrognosisImportType() {
           //time series prognosis problems shall not be shuffled
           Shuffle = false,
-          Training = TrainingTestTrackBar.Value,
+          TrainingPercentage = TrainingTestTrackBar.Value,
           TargetVariable = (String)TargetVariableComboBox.SelectedValue
         };
       }

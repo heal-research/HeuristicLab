@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       // turn of input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
-      int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
+      int trainingPartEnd = (csvFileParser.Rows * type.TrainingPercentage) / 100;
       trainingPartEnd = trainingPartEnd > 0 ? trainingPartEnd : 1;
       var trainingIndizes = Enumerable.Range(0, trainingPartEnd);
       if (trainingIndizes.Count() >= 2) {

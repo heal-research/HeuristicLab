@@ -90,13 +90,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     protected override IClassificationProblemData ImportData(string path, ClassificationImportType type, TableFileParser csvFileParser) {
-      int trainingPartEnd = (csvFileParser.Rows * type.Training) / 100;
+      int trainingPartEnd = (csvFileParser.Rows * type.TrainingPercentage) / 100;
       List<IList> values = csvFileParser.Values;
       if (type.Shuffle) {
         values = Shuffle(values);
         if (type.UniformlyDistributeClasses) {
           values = Shuffle(values, csvFileParser.VariableNames.ToList().FindIndex(x => x.Equals(type.TargetVariable)),
-                           type.Training, out trainingPartEnd);
+                           type.TrainingPercentage, out trainingPartEnd);
         }
       }
 
