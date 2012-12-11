@@ -302,6 +302,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Operators.Add(new QAPAlleleFrequencyAnalyzer());
       Operators.Add(new QAPPopulationDiversityAnalyzer());
       Operators.Add(new QAPExhaustiveSwap2LocalImprovement());
+      Operators.Add(new QAPSimilarityCalculator());
       ParameterizeAnalyzers();
       ParameterizeOperators();
     }
@@ -384,6 +385,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         localOpt.MaximizationParameter.ActualName = MaximizationParameter.Name;
         localOpt.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         localOpt.WeightsParameter.ActualName = WeightsParameter.Name;
+      }
+
+      QAPSimilarityCalculator similarityCalculator = Operators.OfType<QAPSimilarityCalculator>().SingleOrDefault();
+      if (similarityCalculator != null) {
+        similarityCalculator.SolutionVariableName = SolutionCreator.PermutationParameter.ActualName;
+        similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
     }
 
