@@ -30,6 +30,8 @@ namespace HeuristicLab.Services.Hive {
     #region Task Methods
     DT.Task GetTask(Guid id);
     IEnumerable<DT.Task> GetTasks(Expression<Func<Task, bool>> predicate);
+    IEnumerable<DT.LightweightTask> GetLightweightTasksForJob(Guid jobId);
+    IEnumerable<DT.LightweightTask> GetLightweightTasks(Expression<Func<Task, bool>> predicate);
     Guid AddTask(DT.Task dto);
     void UpdateTask(DT.Task dto);
     void DeleteTask(Guid id);
@@ -144,6 +146,8 @@ namespace HeuristicLab.Services.Hive {
     #endregion
 
     #region Statistics Methods
+    Dictionary<Guid, int> GetWaitingTasksByUser();
+    Dictionary<Guid, int> GetCalculatingTasksByUser();
     DT.Statistics GetStatistic(Guid id);
     IEnumerable<DT.Statistics> GetStatistics(Expression<Func<Statistics, bool>> predicate);
     Guid AddStatistics(DT.Statistics dto);

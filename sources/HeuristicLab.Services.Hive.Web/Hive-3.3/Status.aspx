@@ -29,6 +29,21 @@
     Slaves (CPU Utilization):
     <asp:Label ID="slavesLabel" runat="server" />
       <br />
+      <br />
+      Number of calculating tasks by user:<asp:Table ID="calculatingTasksByUserTable" runat="server" GridLines="Both">
+          <asp:TableRow runat="server">
+              <asp:TableCell runat="server" Font-Bold="False">User</asp:TableCell>
+              <asp:TableCell runat="server" Font-Bold="False">Nr. of tasks</asp:TableCell>
+          </asp:TableRow>
+      </asp:Table>
+      <br />
+      Number of waiting tasks by user:<asp:Table ID="waitingTasksByUserTable" runat="server" GridLines="Both">
+          <asp:TableRow runat="server">
+              <asp:TableCell runat="server" Font-Bold="False">User</asp:TableCell>
+              <asp:TableCell runat="server" Font-Bold="False">Nr. of tasks</asp:TableCell>
+          </asp:TableRow>
+      </asp:Table>
+      <br />
     <br />
     Days:
     <asp:DropDownList ID="daysDropDownList" runat="server" AutoPostBack="True">
@@ -120,7 +135,6 @@
         </asp:ChartArea>
       </ChartAreas>
     </asp:Chart>
-    <br />
       <br />
   </div>
   </form>

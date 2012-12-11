@@ -48,6 +48,55 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
+    public IEnumerable<DT.LightweightTask> GetLightweightTasksForJob(Guid jobId) {
+      List<DT.LightweightTask> tasks = new List<DT.LightweightTask>();
+
+      using (var db = CreateContext()) {
+        var tasksQuery = from task in db.Tasks
+                         where task.JobId == jobId
+                         select new { task.TaskId, task.ExecutionTimeMs, task.ParentTaskId, task.StateLogs, task.State, task.Command };
+
+        var taskDatasQuery = from task in db.Tasks
+                             where task.JobId == jobId && task.JobData != null
+                             select new { task.TaskId, task.JobData.LastUpdate };
+
+        foreach (var task in tasksQuery) {
+          DT.LightweightTask t = new DT.LightweightTask();
+          t.Id = task.TaskId;
+          t.ExecutionTime = TimeSpan.FromMilliseconds(task.ExecutionTimeMs);
+          t.ParentTaskId = task.ParentTaskId;
+          t.StateLog = task.StateLogs == null ? new List<DT.StateLog>() : task.StateLogs.Select(x => DataTransfer.Convert.ToDto(x)).OrderBy(x => x.DateTime).ToList();
+          t.State = DataTransfer.Convert.ToDto(task.State);
+          t.Command = DataTransfer.Convert.ToDto(task.Command);
+          t.LastTaskDataUpdate = taskDatasQuery.Where(x => x.TaskId == task.TaskId).Count() > 0 ? taskDatasQuery.Select(x => x.LastUpdate).First() : DateTime.MinValue;
+          tasks.Add(t);
+        }
+      }
+      return tasks;
+    }
+
+    public IEnumerable<DT.LightweightTask> GetLightweightTasks(Expression<Func<Task, bool>> predicate) {
+      List<DT.LightweightTask> tasks = new List<DT.LightweightTask>();
+
+      using (var db = CreateContext()) {
+        var tasksQuery = db.Tasks.Where(predicate).Select(task => new { task.TaskId, task.ExecutionTimeMs, task.ParentTaskId, task.StateLogs, task.State, task.Command });
+        var taskDatasQuery = db.Tasks.Where(predicate).Where(task => task.JobData != null).Select(task => new { task.TaskId, task.JobData.LastUpdate });
+
+        foreach (var task in tasksQuery) {
+          DT.LightweightTask t = new DT.LightweightTask();
+          t.Id = task.TaskId;
+          t.ExecutionTime = TimeSpan.FromMilliseconds(task.ExecutionTimeMs);
+          t.ParentTaskId = task.ParentTaskId;
+          t.StateLog = task.StateLogs == null ? new List<DT.StateLog>() : task.StateLogs.Select(x => DataTransfer.Convert.ToDto(x)).OrderBy(x => x.DateTime).ToList();
+          t.State = DataTransfer.Convert.ToDto(task.State);
+          t.Command = DataTransfer.Convert.ToDto(task.Command);
+          t.LastTaskDataUpdate = taskDatasQuery.Where(x => x.TaskId == task.TaskId).Count() > 0 ? taskDatasQuery.Select(x => x.LastUpdate).First() : DateTime.MinValue;
+          tasks.Add(t);
+        }
+      }
+      return tasks;
+    }
+
     public Guid AddTask(DT.Task dto) {
       using (var db = CreateContext()) {
         var entity = DT.Convert.ToEntity(dto);
@@ -776,6 +825,26 @@ namespace HeuristicLab.Services.Hive.DataAccess {
         var entity = db.Statistics.FirstOrDefault(x => x.StatisticsId == id);
         if (entity != null) db.Statistics.DeleteOnSubmit(entity);
         db.SubmitChanges();
+      }
+    }
+
+    public Dictionary<Guid, int> GetWaitingTasksByUser() {
+      using (var db = CreateContext()) {
+        var waitingTasksByUser = from task in db.Tasks
+                                 where task.State == TaskState.Waiting
+                                 group task by task.Job.OwnerUserId into g
+                                 select new { UserId = g.Key, UsedCores = g.Count() };
+        return waitingTasksByUser.ToDictionary(x => x.UserId, x => x.UsedCores);
+      }
+    }
+
+    public Dictionary<Guid, int> GetCalculatingTasksByUser() {
+      using (var db = CreateContext()) {
+        var calculatingTasksByUser = from task in db.Tasks
+                              where task.State == TaskState.Calculating
+                              group task by task.Job.OwnerUserId into g
+                              select new { UserId = g.Key, UsedCores = g.Count() };
+        return calculatingTasksByUser.ToDictionary(x => x.UserId, x => x.UsedCores);
       }
     }
 
