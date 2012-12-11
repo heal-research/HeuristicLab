@@ -7,47 +7,55 @@
 <head runat="server">
   <title>HeuristicLab Hive Status Monitor</title> 
   <link rel="icon" type="image/ico" href="HeuristicLab.ico" /> 
+    <style type="text/css">
+        .auto-style1 {
+            color: #F6921B;
+        }
+        .auto-style2 {
+            color: #000000;
+        }
+    </style>
 </head>
 <body>
   <center>
-    <h1>HeuristicLab Hive Status Monitor</h1>
+    <h1 class="auto-style1">HeuristicLab <span class="auto-style2">Hive Status Monitor</span></h1>
   </center>
   <form id="form1" runat="server">
   <div>
-      Overall Available Cores:
+      <strong>Overall Available Cores:</strong>
     <asp:Label ID="overallAvailableCoresLabel" runat="server" />
       <br />
-      Available Cores (real):
+      <strong>Available Cores (real):</strong>
     <asp:Label ID="availableCoresLabel" runat="server" />
       <br />
-    Used Cores / Calculating Jobs:
+      <strong>Used Cores / Calculating Jobs:</strong>
     <asp:Label ID="usedCoresLabel" runat="server" />
     <br />
-    Waiting Jobs:
+      <strong>Waiting Jobs:</strong>
     <asp:Label ID="waitingJobsLabel" runat="server" />
     <br />
-      Overall
-    Avg. CPU Utilization:
+      <strong>Overall
+    Avg. CPU Utilization:</strong>
     <asp:Label ID="overallCpuUtilizationLabel" runat="server" />
       <br />
-      Real Avg. CPU Utilization:
+      <strong>Real Avg. CPU Utilization:</strong>
     <asp:Label ID="cpuUtilizationLabel" runat="server" />
       &nbsp;<br />
-    Slaves (CPU Utilization):
+      <strong>Slaves (CPU Utilization):</strong>
     <asp:Label ID="slavesLabel" runat="server" />
       <br />
-      Groups:
+      <strong>Groups:</strong>
     <asp:Label ID="groupsLabel" runat="server" />
       <br />
       <br />
-      Number of Calculating Tasks by User:<asp:Table ID="calculatingTasksByUserTable" runat="server" GridLines="Both">
+      <strong>Number of Calculating Tasks by User:</strong><asp:Table ID="calculatingTasksByUserTable" runat="server" GridLines="Both">
           <asp:TableRow runat="server" BackColor="#CCCCCC">
               <asp:TableCell runat="server" Font-Bold="False">User</asp:TableCell>
               <asp:TableCell runat="server" Font-Bold="False">Nr. of Tasks</asp:TableCell>
           </asp:TableRow>
       </asp:Table>
       <br />
-      Number of Waiting Tasks by User:<asp:Table ID="waitingTasksByUserTable" runat="server" GridLines="Both">
+      <strong>Number of Waiting Tasks by User:</strong><asp:Table ID="waitingTasksByUserTable" runat="server" GridLines="Both">
           <asp:TableRow runat="server" BackColor="#CCCCCC">
               <asp:TableCell runat="server" Font-Bold="False">User</asp:TableCell>
               <asp:TableCell runat="server" Font-Bold="False">Nr. of Tasks</asp:TableCell>
@@ -55,7 +63,7 @@
       </asp:Table>
       <br />
     <br />
-    Days:
+      <strong>Days:</strong>
     <asp:DropDownList ID="daysDropDownList" runat="server" AutoPostBack="True">
       <asp:ListItem Value="1"></asp:ListItem>
       <asp:ListItem Value="2"></asp:ListItem>
@@ -75,7 +83,7 @@
     </asp:DropDownList>
     <br />
     <br />
-    Avg. CPU Utilization History of all Slaves<br />
+      <strong>Avg. CPU Utilization History of all Slaves</strong><br />
     <asp:Chart ID="cpuUtilizationChart" runat="server" Height="270px" Width="1280px">
       <Series>
         <asp:Series BorderWidth="2" ChartType="Line" Color="0, 176, 80" Name="Series1" XValueType="DateTime"
@@ -97,7 +105,7 @@
       </ChartAreas>
     </asp:Chart>
     <br />
-    Cores/Used Cores History<br />
+      <strong>Cores/Used Cores History</strong><br />
     <asp:Chart ID="coresChart" runat="server" Palette="None" Width="1280px" PaletteCustomColors="137, 165, 78; 185, 205, 150">
       <Series>
         <asp:Series ChartType="Area" Name="Cores" XValueType="DateTime" YValueType="Double">
@@ -121,7 +129,7 @@
       </ChartAreas>
     </asp:Chart>
     <br />
-    Memory/Used Memory History (GB)<br />
+      <strong>Memory/Used Memory History (GB)</strong><br />
     <asp:Chart ID="memoryChart" runat="server" Palette="None" PaletteCustomColors="170, 70, 67; 209, 147, 146"
       Width="1280px">
       <Series>
