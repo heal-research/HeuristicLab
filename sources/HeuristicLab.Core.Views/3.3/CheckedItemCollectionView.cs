@@ -19,7 +19,9 @@
  */
 #endregion
 
+using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -37,6 +39,13 @@ namespace HeuristicLab.Core.Views {
     public CheckedItemCollectionView()
       : base() {
       InitializeComponent();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content != null) {
+        SetNumberOfCheckItems();
+      }
     }
 
     protected override void RegisterContentEvents() {
@@ -97,8 +106,13 @@ namespace HeuristicLab.Core.Views {
               listViewItem.Checked = Content.ItemChecked(item);
           }
         }
+        SetNumberOfCheckItems();
       }
     }
     #endregion
+
+    private void SetNumberOfCheckItems() {
+      this.itemsGroupBox.Text = String.Format("Items (Checked: {0}/{1})", Content.CheckedItems.Count(), Content.Count);
+    }
   }
 }

@@ -19,8 +19,9 @@
  */
 #endregion
 
-using System.Linq;
+using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -50,6 +51,13 @@ namespace HeuristicLab.Core.Views {
     protected override void DeregisterContentEvents() {
       Content.CheckedItemsChanged -= new CollectionItemsChangedEventHandler<IndexedItem<T>>(Content_CheckedItemsChanged);
       base.DeregisterContentEvents();
+    }
+
+    protected override void OnContentChanged() {
+      base.OnContentChanged();
+      if (Content != null) {
+        SetNumberOfCheckItems();
+      }
     }
 
     private Color backupColor = Color.Empty;
@@ -132,8 +140,13 @@ namespace HeuristicLab.Core.Views {
           if (itemsListView.Items[item.Index].Checked != Content.ItemChecked(item.Value))
             itemsListView.Items[item.Index].Checked = Content.ItemChecked(item.Value);
         }
+        SetNumberOfCheckItems();
       }
     }
     #endregion
+
+    private void SetNumberOfCheckItems() {
+      this.itemsGroupBox.Text = String.Format("Items (Checked: {0}/{1})", Content.CheckedItems.Count(), Content.Count);
+    }
   }
 }
