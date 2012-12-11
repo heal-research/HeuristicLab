@@ -80,7 +80,8 @@ public partial class Status : System.Web.UI.Page {
     this.waitingJobsLabel.Text = currentlyJobsWaiting.ToString();
 
     slavesLabel.Text = string.Join(", ", onlineSlaves.Select(x => string.Format("<a href=\"?resource={0}\">{0}</a> ({1} %)", x.Name, Math.Round(x.CpuUtilization, 2))));
-    groupsLabel.Text = string.Join(", ", groups.Select(x => string.Format("<a href=\"?resource={0}\">{0}</a>", x.Name)));
+    groupsLabel.Text = "<a href=\"Status.aspx\">All</a>, ";
+    groupsLabel.Text += string.Join(", ", groups.Select(x => string.Format("<a href=\"?resource={0}\">{0}</a>", x.Name)));
 
     overallCpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
     cpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 && onlineSlaves.Where(x => x.IsAllowedToCalculate).Count() > 0 ? Math.Round(onlineSlaves.Where(x => x.IsAllowedToCalculate).Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
