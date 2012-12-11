@@ -14,33 +14,40 @@
   </center>
   <form id="form1" runat="server">
   <div>
-    Available Cores:
+      Overall Available Cores:
+    <asp:Label ID="overallAvailableCoresLabel" runat="server" />
+      <br />
+      Available Cores (real):
     <asp:Label ID="availableCoresLabel" runat="server" />
-    <br />
+      <br />
     Used Cores / Calculating Jobs:
     <asp:Label ID="usedCoresLabel" runat="server" />
     <br />
     Waiting Jobs:
     <asp:Label ID="waitingJobsLabel" runat="server" />
     <br />
+      Overall
     Avg. CPU Utilization:
-    <asp:Label ID="cpuUtilizationLabel" runat="server" />
+    <asp:Label ID="overallCpuUtilizationLabel" runat="server" />
       <br />
+      Real Avg. CPU Utilization:
+    <asp:Label ID="cpuUtilizationLabel" runat="server" />
+      &nbsp;<br />
     Slaves (CPU Utilization):
     <asp:Label ID="slavesLabel" runat="server" />
       <br />
       <br />
-      Number of calculating tasks by user:<asp:Table ID="calculatingTasksByUserTable" runat="server" GridLines="Both">
-          <asp:TableRow runat="server">
+      Number of Calculating Tasks by User:<asp:Table ID="calculatingTasksByUserTable" runat="server" GridLines="Both">
+          <asp:TableRow runat="server" BackColor="#CCCCCC">
               <asp:TableCell runat="server" Font-Bold="False">User</asp:TableCell>
-              <asp:TableCell runat="server" Font-Bold="False">Nr. of tasks</asp:TableCell>
+              <asp:TableCell runat="server" Font-Bold="False">Nr. of Tasks</asp:TableCell>
           </asp:TableRow>
       </asp:Table>
       <br />
-      Number of waiting tasks by user:<asp:Table ID="waitingTasksByUserTable" runat="server" GridLines="Both">
-          <asp:TableRow runat="server">
+      Number of Waiting Tasks by User:<asp:Table ID="waitingTasksByUserTable" runat="server" GridLines="Both">
+          <asp:TableRow runat="server" BackColor="#CCCCCC">
               <asp:TableCell runat="server" Font-Bold="False">User</asp:TableCell>
-              <asp:TableCell runat="server" Font-Bold="False">Nr. of tasks</asp:TableCell>
+              <asp:TableCell runat="server" Font-Bold="False">Nr. of Tasks</asp:TableCell>
           </asp:TableRow>
       </asp:Table>
       <br />

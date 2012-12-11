@@ -65,16 +65,19 @@ public partial class Status : System.Web.UI.Page {
         waitingTasksByUser = dao.GetWaitingTasksByUser();
     }, false, false);
 
-    int currentlyAvailableCores = onlineSlaves.Where(s => s.Cores.HasValue).Sum(s => s.Cores.Value);
-    int currentlyUsedCores = currentlyAvailableCores - onlineSlaves.Where(s => s.FreeCores.HasValue).Sum(s => s.FreeCores.Value);
+    int overallCurrentlyAvailableCores = onlineSlaves.Where(s => s.Cores.HasValue).Sum(s => s.Cores.Value);
+    int currentlyAvailableCores = onlineSlaves.Where(s => s.Cores.HasValue && s.IsAllowedToCalculate).Sum(s => s.Cores.Value);
+    int currentlyUsedCores = overallCurrentlyAvailableCores - onlineSlaves.Where(s => s.FreeCores.HasValue).Sum(s => s.FreeCores.Value);
     
+    this.overallAvailableCoresLabel.Text = overallCurrentlyAvailableCores.ToString();
     this.availableCoresLabel.Text = currentlyAvailableCores.ToString();
     this.usedCoresLabel.Text = currentlyUsedCores.ToString();
     this.waitingJobsLabel.Text = currentlyJobsWaiting.ToString();
 
     slavesLabel.Text = string.Join(", ", onlineSlaves.Select(x => string.Format("<a href=\"?resource={0}\">{0}</a> ({1} %)", x.Name, Math.Round(x.CpuUtilization, 2))));
 
-    cpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
+    overallCpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
+    cpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 ? Math.Round(onlineSlaves.Where(x => x.IsAllowedToCalculate).Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
 
     DT.Statistics[] stats = new DT.Statistics[0];    
     transactionManager.UseTransaction(() =>
