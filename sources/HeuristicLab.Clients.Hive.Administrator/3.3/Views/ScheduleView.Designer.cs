@@ -95,7 +95,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txttimeTo
       // 
-      this.txttimeTo.CustomFormat = "HH:00";
+      this.txttimeTo.CustomFormat = "HH:mm";
       this.txttimeTo.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
       this.txttimeTo.Location = new System.Drawing.Point(164, 45);
       this.txttimeTo.Name = "txttimeTo";
@@ -105,7 +105,7 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       // 
       // txttimeFrom
       // 
-      this.txttimeFrom.CustomFormat = "HH:00";
+      this.txttimeFrom.CustomFormat = "HH:mm";
       this.txttimeFrom.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
       this.txttimeFrom.Location = new System.Drawing.Point(164, 12);
       this.txttimeFrom.Name = "txttimeFrom";
