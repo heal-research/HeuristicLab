@@ -54,20 +54,22 @@ public partial class Status : System.Web.UI.Page {
         {
             var resId = dao.GetResources(x => x.Name == resourceName).Single().Id;
             resourceIds = dao.GetChildResources(resId).Select(x => x.Id).Union(new List<Guid> { resId });
+            calculatingTasksByUser = dao.GetCalculatingTasksByUserForResources(resourceIds.ToList());
+            waitingTasksByUser = dao.GetWaitingTasksByUserForResources(resourceIds.ToList());
         }, false, false);        
     } else {
         transactionManager.UseTransaction(() =>
         {
              resourceIds = dao.GetResources(x => true).Select(y => y.Id);
+             calculatingTasksByUser = dao.GetCalculatingTasksByUser();
+             waitingTasksByUser = dao.GetWaitingTasksByUser();            
         }, false, false);
     }   
 
     transactionManager.UseTransaction(() =>
     {                     
-        onlineSlaves = dao.GetSlaves(x => (x.SlaveState == DA.SlaveState.Calculating || x.SlaveState == DA.SlaveState.Idle) && resourceIds.Contains(x.ResourceId));       
-        currentlyJobsWaiting = dao.GetLightweightTasks(x => x.State == DA.TaskState.Waiting).Count();
-        calculatingTasksByUser = dao.GetCalculatingTasksByUser();
-        waitingTasksByUser = dao.GetWaitingTasksByUser();
+        onlineSlaves = dao.GetSlaves(x => (x.SlaveState == DA.SlaveState.Calculating || x.SlaveState == DA.SlaveState.Idle) && resourceIds.Contains(x.ResourceId));
+        currentlyJobsWaiting = dao.GetLightweightTasks(x => x.State == DA.TaskState.Waiting).Count();            
     }, false, false);
 
     int overallCurrentlyAvailableCores = onlineSlaves.Where(s => s.Cores.HasValue).Sum(s => s.Cores.Value);
@@ -115,28 +117,30 @@ public partial class Status : System.Web.UI.Page {
       memoryChart.Series[1].Points.AddXY(s.TimeStamp.ToOADate(), usedMemory / 1024.0);
     }
 
-    foreach (var kvp in waitingTasksByUser) {
-      TableRow curRow = new TableRow();
-      TableCell cellUser = new TableCell();
-      cellUser.Text = ServiceLocator.Instance.UserManager.GetUserById(kvp.Key).UserName;
-      TableCell cellCnt = new TableCell();
-      cellCnt.Text = kvp.Value.ToString();
-
-      curRow.Cells.Add(cellUser);
-      curRow.Cells.Add(cellCnt);
-      waitingTasksByUserTable.Rows.Add(curRow);
-    }
-
-    foreach (var kvp in calculatingTasksByUser) {
-      TableRow curRow = new TableRow();
-      TableCell cellUser = new TableCell();
-      cellUser.Text = ServiceLocator.Instance.UserManager.GetUserById(kvp.Key).UserName;
-      TableCell cellCnt = new TableCell();
-      cellCnt.Text = kvp.Value.ToString();
-
-      curRow.Cells.Add(cellUser);
-      curRow.Cells.Add(cellCnt);
-      calculatingTasksByUserTable.Rows.Add(curRow);
-    }
+    GenerateTasksByUserTable(waitingTasksByUser, waitingTasksByUserTable);  
+    GenerateTasksByUserTable(calculatingTasksByUser, calculatingTasksByUserTable);  
   }
+
+  private void GenerateTasksByUserTable(Dictionary<Guid, int> tasksByUser, Table table) {
+    foreach (var kvp in tasksByUser) {
+      TableRow curRow = new TableRow();
+      TableCell cellUser = new TableCell();
+      cellUser.Text = ServiceLocator.Instance.UserManager.GetUserById(kvp.Key).UserName;
+      TableCell cellCnt = new TableCell();
+      cellCnt.Text = kvp.Value.ToString();
+
+      curRow.Cells.Add(cellUser);
+      curRow.Cells.Add(cellCnt);
+      table.Rows.Add(curRow);
+    }
+    if (tasksByUser.Count() > 0) {
+      TableRow sumRow = new TableRow();        
+      TableCell sumCell = new TableCell();
+      sumCell.BorderWidth = Unit.Pixel(3);
+      sumCell.Text = tasksByUser.Sum(x => x.Value).ToString();
+      sumRow.Cells.Add(new TableCell());
+      sumRow.Cells.Add(sumCell);
+      table.Rows.Add(sumRow);
+    }
+  }  
 }

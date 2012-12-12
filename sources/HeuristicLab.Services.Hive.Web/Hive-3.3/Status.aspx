@@ -28,11 +28,11 @@
       <strong>Available Cores (real):</strong>
     <asp:Label ID="availableCoresLabel" runat="server" />
       <br />
+      <strong>System-Wide Waiting Jobs:</strong>
+    <asp:Label ID="waitingJobsLabel" runat="server" />
+      <br />
       <strong>Used Cores / Calculating Jobs:</strong>
     <asp:Label ID="usedCoresLabel" runat="server" />
-    <br />
-      <strong>Waiting Jobs:</strong>
-    <asp:Label ID="waitingJobsLabel" runat="server" />
     <br />
       <strong>Overall
     Avg. CPU Utilization:</strong>
