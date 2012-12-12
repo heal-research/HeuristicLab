@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
@@ -34,7 +35,7 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   public abstract class SymbolicDataAnalysisEvaluator<T> : SingleSuccessorOperator,
-    ISymbolicDataAnalysisEvaluator<T>, ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator
+    ISymbolicDataAnalysisEvaluator<T>, ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator, IStochasticOperator
   where T : class, IDataAnalysisProblemData {
     private const string RandomParameterName = "Random";
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
@@ -49,6 +50,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override bool CanChangeName { get { return false; } }
 
     #region parameter properties
+    ILookupParameter<IRandom> IStochasticOperator.RandomParameter {
+      get { return RandomParameter; }
+    }
+
     public IValueLookupParameter<IRandom> RandomParameter {
       get { return (IValueLookupParameter<IRandom>)Parameters[RandomParameterName]; }
     }
