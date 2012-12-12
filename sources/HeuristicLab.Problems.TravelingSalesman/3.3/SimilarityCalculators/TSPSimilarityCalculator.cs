@@ -49,8 +49,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         throw new ArgumentException("Cannot calculate similarity because the provided solutions have different types.");
       if (left.Length != right.Length)
         throw new ArgumentException("Cannot calculate similarity because the provided solutions have different lengths.");
-      var comparer = new PermutationEqualityComparer();
-      if (object.ReferenceEquals(left, right) || comparer.Equals(left, right)) return 1.0;
+      if (object.ReferenceEquals(left, right)) return 1.0;
 
       switch (left.PermutationType) {
         case PermutationTypes.Absolute:
