@@ -28,13 +28,12 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   internal delegate void
-  ModifyTree(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNode oldChild, ISymbolicExpressionTreeNode newChild,
-             bool removeSubtree = true);
+  ModifyTree(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNode oldChild, ISymbolicExpressionTreeNode newChild, bool removeSubtree = true);
 
   internal sealed partial class InteractiveSymbolicExpressionTreeChart : SymbolicExpressionTreeChart {
     private ISymbolicExpressionTreeNode tempNode; // node in clipboard (to be cut/copy/pasted etc)
     private VisualSymbolicExpressionTreeNode currSelected; // currently selected node
-    public enum EditOp { NoOp, CopySubtree, CutSubtree, ChangeNode, InsertNode, InsertSubtree, RemoveNode, RemoveSubtree }
+    private enum EditOp { NoOp, CopySubtree, CutSubtree }
     private EditOp lastOp = EditOp.NoOp;
 
     // delegate to notify the parent container (the view) about the tree edit operations that it needs to perform
@@ -51,7 +50,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var point = menuStrip.SourceControl.PointToClient(Cursor.Position);
       var ea = new MouseEventArgs(MouseButtons.Left, 1, point.X, point.Y, 0);
       var visualNode = FindVisualSymbolicExpressionTreeNodeAt(ea.X, ea.Y);
-      if (visualNode != null) { OnSymbolicExpressionTreeNodeClicked(visualNode, ea); };
+      if (visualNode != null) {
+        OnSymbolicExpressionTreeNodeClicked(visualNode, ea);
+      } else {
+        currSelected = null;
+      }
 
       if (currSelected == null) {
         insertNodeToolStripMenuItem.Visible = false;
@@ -75,15 +78,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     protected override void OnSymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
-      var visualTreeNode = (VisualSymbolicExpressionTreeNode)sender;
-      var lastSelected = currSelected;
-      currSelected = visualTreeNode;
       if (currSelected != null) {
-        currSelected.LineColor = Color.LightGreen;
+        currSelected.LineColor = Color.FromArgb(255, currSelected.LineColor);
         RepaintNode(currSelected);
       }
-      if (lastSelected != null)
-        base.OnSymbolicExpressionTreeNodeClicked(lastSelected, e);
+      currSelected = (VisualSymbolicExpressionTreeNode)sender; ;
+      if (currSelected != null) {
+        currSelected.LineColor = Color.FromArgb(130, currSelected.LineColor);
+        RepaintNode(currSelected);
+      }
+    }
+
+    protected override void SymbolicExpressionTreeChart_MouseClick(object sender, MouseEventArgs e) {
+      var visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
+      if (visualTreeNode != null) {
+        OnSymbolicExpressionTreeNodeClicked(visualTreeNode, e);
+      } else if (currSelected != null) {
+        currSelected.LineColor = Color.FromArgb(255, currSelected.LineColor);
+        RepaintNode(currSelected);
+        currSelected = null;
+      }
     }
 
     protected override void OnSymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
@@ -123,7 +137,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
       currSelected = null;
     }
-
     private void changeNodeToolStripMenuItem_Click(object sender, EventArgs e) {
       if (currSelected == null) return;
 
@@ -149,68 +162,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       ModifyTree(Tree, originalNode.Parent, originalNode, newNode); // this will replace the original node with the new node
       currSelected = null;
     }
-
     private void cutToolStripMenuItem_Click(object sender, EventArgs e) {
       lastOp = EditOp.CutSubtree;
-      if (tempNode != null) {
-        foreach (var subtree in tempNode.IterateNodesBreadth()) {
-          var vNode = GetVisualSymbolicExpressionTreeNode(subtree);
-          base.OnSymbolicExpressionTreeNodeClicked(vNode, null);
-          if (subtree.Parent != null) {
-            var vArc = GetVisualSymbolicExpressionTreeNodeConnection(subtree.Parent, subtree);
-            vArc.LineColor = Color.Black;
-          }
-        }
-      }
-      tempNode = currSelected.SymbolicExpressionTreeNode;
-      foreach (var node in tempNode.IterateNodesPostfix()) {
-        var visualNode = GetVisualSymbolicExpressionTreeNode(node);
-        visualNode.LineColor = Color.LightGray;
-        visualNode.TextColor = Color.LightGray;
-        if (node.SubtreeCount > 0) {
-          foreach (var subtree in node.Subtrees) {
-            var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(node, subtree);
-            visualLine.LineColor = Color.LightGray;
-          }
-        }
-      }
-      currSelected = null;
-      Repaint();
+      copySubtree();
     }
     private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
       lastOp = EditOp.CopySubtree;
+      copySubtree();
+    }
+    private void copySubtree() {
       if (tempNode != null) {
         foreach (var subtree in tempNode.IterateNodesBreadth()) {
           var vNode = GetVisualSymbolicExpressionTreeNode(subtree);
-          base.OnSymbolicExpressionTreeNodeClicked(vNode, null);
+          vNode.LineColor = Color.FromArgb(255, vNode.LineColor); // reset the alpha value to 255
           if (subtree.Parent != null) {
             var vArc = GetVisualSymbolicExpressionTreeNodeConnection(subtree.Parent, subtree);
-            vArc.LineColor = Color.Black;
+            vArc.LineColor = Color.FromArgb(255, vArc.LineColor);
           }
         }
       }
       tempNode = currSelected.SymbolicExpressionTreeNode;
       foreach (var node in tempNode.IterateNodesPostfix()) {
         var visualNode = GetVisualSymbolicExpressionTreeNode(node);
-        visualNode.LineColor = Color.LightGray;
-        visualNode.TextColor = Color.LightGray;
-        if (node.SubtreeCount <= 0) continue;
+        visualNode.LineColor = Color.FromArgb(100, visualNode.LineColor);
+        visualNode.TextColor = Color.FromArgb(100, visualNode.TextColor);
         foreach (var subtree in node.Subtrees) {
           var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(node, subtree);
-          visualLine.LineColor = Color.LightGray;
+          visualLine.LineColor = Color.FromArgb(100, visualLine.LineColor);
         }
       }
       currSelected = null;
       Repaint();
     }
     private void removeNodeToolStripMenuItem_Click(object sender, EventArgs e) {
-      lastOp = EditOp.RemoveNode;
       var node = currSelected.SymbolicExpressionTreeNode;
       ModifyTree(Tree, node.Parent, node, null, removeSubtree: false);
       currSelected = null; // because the currently selected node was just deleted
     }
     private void removeSubtreeToolStripMenuItem_Click(object sender, EventArgs e) {
-      lastOp = EditOp.RemoveNode;
       var node = currSelected.SymbolicExpressionTreeNode;
       ModifyTree(Tree, node.Parent, node, null, removeSubtree: true);
       currSelected = null; // because the currently selected node was just deleted
@@ -226,8 +215,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       if (node.Symbol.MaximumArity <= node.SubtreeCount) return;
       switch (lastOp) {
         case EditOp.CutSubtree: {
+            if (tempNode.IterateNodesBreadth().Contains(node))
+              goto case EditOp.CopySubtree; // a subtree cannot be cut/pasted onto itself
             ModifyTree(Tree, tempNode.Parent, tempNode, null); //remove node from its original parent
-            ModifyTree(Tree, node, null, tempNode);//insert it as a child to the new parent
+            ModifyTree(Tree, node, null, tempNode); //insert it as a child to the new parent
             lastOp = EditOp.CopySubtree; //do this so the next paste will actually perform a copy   
             break;
           }
@@ -240,6 +231,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           }
       }
       currSelected = null; // because the tree will have changed
+      tempNode = null; // clear the clipboard after one paste
     }
   }
 }

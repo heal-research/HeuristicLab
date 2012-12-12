@@ -52,42 +52,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     /// Remove, Replace or Insert subtrees
     /// </summary>
     /// <param name="tree">The symbolic expression tree</param>
-    /// <param name="node">The insertion point (the parent node who will receive a new child)</param>
+    /// <param name="node">The insertion point (ie, the parent node who will receive a new child)</param>
     /// <param name="oldChild">The subtree to be replaced</param>
     /// <param name="newChild">The replacement subtree</param>
     /// <param name="removeSubtree">Flag used to indicate if whole subtrees should be removed (default behavior), or just the subtree root</param>
-    private void Modify(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNode oldChild, ISymbolicExpressionTreeNode newChild,
-                        bool removeSubtree = true) {
+    private void Modify(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNode oldChild, ISymbolicExpressionTreeNode newChild, bool removeSubtree = true) {
       if (oldChild == null && newChild == null) throw new ArgumentException();
       if (oldChild == null) { // insertion operation
         node.AddSubtree(newChild);
         newChild.Parent = node;
-        treeChart.Tree = tree; // because a new node is present in the tree, the visualNodes dictionary needs to be updated
       } else if (newChild == null) { // removal operation
-        // use switch instead of if/else purely for aesthetical reasons (to avoid nested ifs and elses)
-        switch (removeSubtree) {
-          case true:
-            // remove the whole subtree
-            node.RemoveSubtree(node.IndexOfSubtree(oldChild));
-            if (oldChild.SubtreeCount > 0)
-              foreach (var subtree in oldChild.IterateNodesBreadth()) {
-                changedNodes.Remove(subtree);
-                foldedNodes.Remove(subtree);
-              }
-            break;
-          case false:
-            // only remove the current node and try to preserve its subtrees
-            node.RemoveSubtree(node.IndexOfSubtree(oldChild));
-            if (oldChild.SubtreeCount > 0)
-              for (int i = oldChild.SubtreeCount - 1; i >= 0; --i) {
-                var subtree = oldChild.GetSubtree(i);
-                oldChild.RemoveSubtree(i);
-                node.AddSubtree(subtree);
-              }
-            break;
-        }
+        node.RemoveSubtree(node.IndexOfSubtree(oldChild));
         changedNodes.Remove(oldChild);
         foldedNodes.Remove(oldChild);
+        if (removeSubtree) {
+          foreach (var subtree in oldChild.IterateNodesPrefix()) {
+            changedNodes.Remove(subtree);
+            foldedNodes.Remove(subtree);
+          }
+        } else {
+          for (int i = oldChild.SubtreeCount - 1; i >= 0; --i) {
+            var subtree = oldChild.GetSubtree(i);
+            oldChild.RemoveSubtree(i);
+            node.AddSubtree(subtree);
+          }
+        }
       } else { // replacement operation
         var replacementIndex = node.IndexOfSubtree(oldChild);
         node.RemoveSubtree(replacementIndex);
@@ -100,33 +89,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           changedNodes.Add(newChild, oldChild);
         }
       }
-
       if (IsValid(tree)) {
         treeState = TreeState.Valid;
         UpdateModel(Content.Model.SymbolicExpressionTree);
+      } else {
+        treeState = TreeState.Invalid;
+      }
+    }
+
+    private bool IsValid(ISymbolicExpressionTree tree) {
+      treeChart.Tree = tree;
+      treeChart.Repaint();
+      bool valid = !tree.IterateNodesPostfix().Any(node => node.SubtreeCount < node.Symbol.MinimumArity || node.SubtreeCount > node.Symbol.MaximumArity);
+      if (valid) {
         btnOptimizeConstants.Enabled = true;
         btnSimplify.Enabled = true;
         treeStatusValue.Text = "Valid";
         treeStatusValue.ForeColor = Color.Green;
-        this.Refresh();
       } else {
-        treeState = TreeState.Invalid;
         btnOptimizeConstants.Enabled = true;
         btnSimplify.Enabled = true;
         treeStatusValue.Text = "Invalid";
         treeStatusValue.ForeColor = Color.Red;
-        treeChart.Repaint();
-        this.Refresh();
       }
-      foreach (var changedNode in changedNodes.Keys) {
-        var visualNode = treeChart.GetVisualSymbolicExpressionTreeNode(changedNode);
-        visualNode.LineColor = Color.DodgerBlue;
-        treeChart.RepaintNode(visualNode);
-      }
-    }
-
-    private static bool IsValid(ISymbolicExpressionTree tree) {
-      return !tree.IterateNodesPostfix().Any(node => node.SubtreeCount < node.Symbol.MinimumArity || node.SubtreeCount > node.Symbol.MaximumArity);
+      this.Refresh();
+      return valid;
     }
 
     public new ISymbolicDataAnalysisSolution Content {
@@ -182,18 +169,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void treeChart_SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
-      var visualNode = (VisualSymbolicExpressionTreeNode)sender;
-      if (visualNode == null) return;
-      var treeNode = visualNode.SymbolicExpressionTreeNode;
-      if (changedNodes.ContainsKey(treeNode)) {
-        visualNode.LineColor = Color.DodgerBlue;
-      } else if (treeNode is ConstantTreeNode && foldedNodes.ContainsKey(treeNode)) {
-        visualNode.LineColor = Color.DarkOrange;
-      } else {
-        visualNode.LineColor = Color.Black;
-      }
-      visualNode.TextColor = Color.Black;
-      treeChart.RepaintNode(visualNode);
     }
 
     private void treeChart_SymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
@@ -205,12 +180,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var parent = symbExprTreeNode.Parent;
       int indexOfSubtree = parent.IndexOfSubtree(symbExprTreeNode);
       if (changedNodes.ContainsKey(symbExprTreeNode)) {
+        // undo node change
         parent.RemoveSubtree(indexOfSubtree);
-        ISymbolicExpressionTreeNode originalNode = changedNodes[symbExprTreeNode];
+        var originalNode = changedNodes[symbExprTreeNode];
         parent.InsertSubtree(indexOfSubtree, originalNode);
         changedNodes.Remove(symbExprTreeNode);
         UpdateModel(tree);
       } else if (foldedNodes.ContainsKey(symbExprTreeNode)) {
+        // undo node folding
         SwitchNodeWithReplacementNode(parent, indexOfSubtree);
         UpdateModel(tree);
       }
@@ -256,13 +233,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             visualTree.ToolTip += Environment.NewLine + "Replacement value: " + constantReplacementNode.Value;
           }
         }
-        if (visualTree != null && treeNode is ConstantTreeNode && foldedNodes.ContainsKey(treeNode)) {
-          visualTree.LineColor = Color.DarkOrange;
-        }
+        if (visualTree != null)
+          if (changedNodes.ContainsKey(treeNode)) {
+            visualTree.LineColor = Color.DodgerBlue;
+          } else if (treeNode is ConstantTreeNode && foldedNodes.ContainsKey(treeNode)) {
+            visualTree.LineColor = Color.DarkOrange;
+          }
       }
-      // repaint nodes and refresh
       treeChart.RepaintNodes();
-      treeChart.Refresh();
     }
 
     private void btnSimplify_Click(object sender, EventArgs e) {

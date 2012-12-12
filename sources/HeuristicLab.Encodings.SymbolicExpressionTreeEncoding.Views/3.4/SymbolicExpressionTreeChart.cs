@@ -184,7 +184,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         clicked(sender, e);
     }
 
-    private void SymbolicExpressionTreeChart_MouseClick(object sender, MouseEventArgs e) {
+    protected virtual void SymbolicExpressionTreeChart_MouseClick(object sender, MouseEventArgs e) {
       VisualSymbolicExpressionTreeNode visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
       if (visualTreeNode != null) {
         OnSymbolicExpressionTreeNodeClicked(visualTreeNode, e);
@@ -198,7 +198,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         doubleClicked(sender, e);
     }
 
-    private void SymbolicExpressionTreeChart_MouseDoubleClick(object sender, MouseEventArgs e) {
+    protected virtual void SymbolicExpressionTreeChart_MouseDoubleClick(object sender, MouseEventArgs e) {
       VisualSymbolicExpressionTreeNode visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
       if (visualTreeNode != null)
         OnSymbolicExpressionTreeNodeDoubleClicked(visualTreeNode, e);
