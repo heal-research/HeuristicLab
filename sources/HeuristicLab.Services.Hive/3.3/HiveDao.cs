@@ -48,33 +48,6 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
-    public IEnumerable<DT.LightweightTask> GetLightweightTasksForJob(Guid jobId) {
-      List<DT.LightweightTask> tasks = new List<DT.LightweightTask>();
-
-      using (var db = CreateContext()) {
-        var tasksQuery = from task in db.Tasks
-                         where task.JobId == jobId
-                         select new { task.TaskId, task.ExecutionTimeMs, task.ParentTaskId, task.StateLogs, task.State, task.Command };
-
-        var taskDatasQuery = from task in db.Tasks
-                             where task.JobId == jobId && task.JobData != null
-                             select new { task.TaskId, task.JobData.LastUpdate };
-
-        foreach (var task in tasksQuery) {
-          DT.LightweightTask t = new DT.LightweightTask();
-          t.Id = task.TaskId;
-          t.ExecutionTime = TimeSpan.FromMilliseconds(task.ExecutionTimeMs);
-          t.ParentTaskId = task.ParentTaskId;
-          t.StateLog = task.StateLogs == null ? new List<DT.StateLog>() : task.StateLogs.Select(x => DataTransfer.Convert.ToDto(x)).OrderBy(x => x.DateTime).ToList();
-          t.State = DataTransfer.Convert.ToDto(task.State);
-          t.Command = DataTransfer.Convert.ToDto(task.Command);
-          t.LastTaskDataUpdate = taskDatasQuery.Where(x => x.TaskId == task.TaskId).Count() > 0 ? taskDatasQuery.Select(x => x.LastUpdate).First() : DateTime.MinValue;
-          tasks.Add(t);
-        }
-      }
-      return tasks;
-    }
-
     public IEnumerable<DT.LightweightTask> GetLightweightTasks(Expression<Func<Task, bool>> predicate) {
       List<DT.LightweightTask> tasks = new List<DT.LightweightTask>();
 

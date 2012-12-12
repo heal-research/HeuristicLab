@@ -127,7 +127,7 @@ namespace HeuristicLab.Services.Hive {
       author.AuthorizeForJob(jobId, Permission.Read);
 
       return trans.UseTransaction(() => {
-        return dao.GetLightweightTasksForJob(jobId).ToArray();
+        return dao.GetLightweightTasks(task => task.JobId == jobId).ToArray();
       }, false, false);
     }
 
