@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -243,5 +244,33 @@ namespace HeuristicLab.Core {
       if (opParam.Value != null) Operators.Add((IOperator)opParam.Value);
     }
     #endregion
+
+    // <summary>
+    /// Iterates an operator graph so that it jumps from the intial operator to all other operators and yields each operator it touches.
+    /// Cycles are detected and not iterated twice.
+    /// </summary>
+    /// <returns>An enumeration of all the operators that could be found.</returns>
+    public IEnumerable<IOperator> Iterate() {
+      if (InitialOperator == null) yield break;
+
+      var open = new Stack<IOperator>();
+      var visited = new HashSet<IOperator>();
+      open.Push(InitialOperator);
+
+      while (open.Any()) {
+        IOperator current = open.Pop();
+        if (visited.Contains(current)) continue;
+        visited.Add(current);
+
+        foreach (var parameter in current.Parameters.OfType<IValueParameter>()) {
+          if (!typeof(IOperator).IsAssignableFrom(parameter.DataType)) continue;
+          if (parameter.Value == null) continue;
+
+          open.Push((IOperator)parameter.Value);
+        }
+
+        yield return current;
+      }
+    }
   }
 }
