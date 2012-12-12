@@ -28,10 +28,10 @@
       <strong>Available Cores (real):</strong>
     <asp:Label ID="availableCoresLabel" runat="server" />
       <br />
-      <strong>System-Wide Waiting Jobs:</strong>
+      <strong>System-Wide Waiting Tasks:</strong>
     <asp:Label ID="waitingJobsLabel" runat="server" />
       <br />
-      <strong>Used Cores / Calculating Jobs:</strong>
+      <strong>Used Cores / Calculating Tasks:</strong>
     <asp:Label ID="usedCoresLabel" runat="server" />
     <br />
       <strong>Overall
