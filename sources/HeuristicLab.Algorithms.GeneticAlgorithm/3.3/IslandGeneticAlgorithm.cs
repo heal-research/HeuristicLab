@@ -180,7 +180,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
     private UniformSubScopesProcessor IslandProcessor {
-      get { return ((RandomCreator.Successor as SubScopesCreator).Successor as UniformSubScopesProcessor); }
+      get { return OperatorGraph.Iterate().OfType<UniformSubScopesProcessor>().First(x => x.Operator is SolutionsCreator); }
     }
     private SolutionsCreator SolutionsCreator {
       get { return (SolutionsCreator)IslandProcessor.Operator; }
@@ -231,6 +231,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueParameter<MultiAnalyzer>("IslandAnalyzer", "The operator used to analyze each island.", new MultiAnalyzer()));
 
       RandomCreator randomCreator = new RandomCreator();
+      UniformSubScopesProcessor ussp0 = new UniformSubScopesProcessor();
+      LocalRandomCreator localRandomCreator = new LocalRandomCreator();
+      RandomCreator globalRandomResetter = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
       UniformSubScopesProcessor ussp1 = new UniformSubScopesProcessor();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -249,7 +252,20 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       randomCreator.Successor = populationCreator;
 
       populationCreator.NumberOfSubScopesParameter.ActualName = NumberOfIslandsParameter.Name;
-      populationCreator.Successor = ussp1;
+      populationCreator.Successor = ussp0;
+
+      ussp0.Operator = localRandomCreator;
+      ussp0.Successor = globalRandomResetter;
+
+      // BackwardsCompatibility3.3
+      // the global random is resetted to ensure the same algorithm results
+      #region Backwards compatible code, remove with 3.4
+      globalRandomResetter.RandomParameter.ActualName = "GlobalRandom";
+      globalRandomResetter.SeedParameter.ActualName = SeedParameter.Name;
+      globalRandomResetter.SeedParameter.Value = null;
+      globalRandomResetter.SetSeedRandomlyParameter.Value = new BoolValue(false);
+      globalRandomResetter.Successor = ussp1;
+      #endregion
 
       ussp1.Operator = solutionsCreator;
       ussp1.Successor = variableCreator;
@@ -324,7 +340,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     #region Events
     protected override void OnProblemChanged() {
       ParameterizeStochasticOperator(Problem.SolutionCreator);
-      ParameterizeStochasticOperator(Problem.Evaluator);
+      ParameterizeStochasticOperatorForIsland(Problem.Evaluator);
       foreach (IOperator op in Problem.Operators.OfType<IOperator>()) ParameterizeStochasticOperator(op);
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
@@ -344,7 +360,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       base.Problem_SolutionCreatorChanged(sender, e);
     }
     protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
-      ParameterizeStochasticOperator(Problem.Evaluator);
+      ParameterizeStochasticOperatorForIsland(Problem.Evaluator);
       ParameterizeSolutionsCreator();
       ParameterizeMainLoop();
       ParameterizeSelectors();

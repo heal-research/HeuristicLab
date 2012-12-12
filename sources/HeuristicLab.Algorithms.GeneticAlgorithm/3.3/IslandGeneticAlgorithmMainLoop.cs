@@ -312,8 +312,12 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       uniformSubScopesProcessor0.Operator = islandVariableCreator;
       uniformSubScopesProcessor0.Successor = analyzer1;
       islandVariableCreator.Successor = islandAnalyzer1;
+      // BackwardsCompatibility3.3
+      //the local randoms are created by the island GA itself and are only here to ensure same algorithm results
+      #region Backwards compatible code, remove with 3.4
       islandAnalyzer1.Successor = localRandomCreator;
       localRandomCreator.Successor = null;
+      #endregion
       analyzer1.Successor = resultsCollector1;
       resultsCollector1.Successor = uniformSubScopesProcessor1;
       uniformSubScopesProcessor1.Operator = generationsAssigner;
