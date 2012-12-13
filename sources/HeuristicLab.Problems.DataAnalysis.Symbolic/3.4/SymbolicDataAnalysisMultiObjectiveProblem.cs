@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public abstract class SymbolicDataAnalysisMultiObjectiveProblem<T, U, V> : SymbolicDataAnalysisProblem<T, U, V>, IMultiObjectiveHeuristicOptimizationProblem
+  public abstract class SymbolicDataAnalysisMultiObjectiveProblem<T, U, V> : SymbolicDataAnalysisProblem<T, U, V>, ISymbolicDataAnalysisMultiObjectiveProblem
     where T : class,IDataAnalysisProblemData
     where U : class, ISymbolicDataAnalysisMultiObjectiveEvaluator<T>
     where V : class, ISymbolicDataAnalysisSolutionCreator {

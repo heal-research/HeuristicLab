@@ -21,9 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  public interface ISymbolicDataAnalysisProblem : IDataAnalysisProblem {
+  public interface ISymbolicDataAnalysisProblem : IDataAnalysisProblem, IHeuristicOptimizationProblem {
     IValueParameter<ISymbolicDataAnalysisGrammar> SymbolicExpressionTreeGrammarParameter { get; }
     IValueParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> SymbolicExpressionTreeInterpreterParameter { get; }
     IFixedValueParameter<IntValue> MaximumSymbolicExpressionTreeDepthParameter { get; }
@@ -44,4 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     IntRange FitnessCalculationPartition { get; }
     IntRange ValidationPartition { get; }
   }
+
+  public interface ISymbolicDataAnalysisSingleObjectiveProblem : ISymbolicDataAnalysisProblem, ISingleObjectiveHeuristicOptimizationProblem { }
+  public interface ISymbolicDataAnalysisMultiObjectiveProblem : ISymbolicDataAnalysisProblem, IMultiObjectiveHeuristicOptimizationProblem { }
 }
