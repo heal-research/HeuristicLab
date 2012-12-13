@@ -41,8 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       OnlineCalculatorError errorState;
       if (double.IsNaN(originalQuality)) {
-        var originalClassValues = regressionModel.GetEstimatedValues(dataset, rows);
-        originalQuality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, originalClassValues, out errorState);
+        var originalValues = regressionModel.GetEstimatedValues(dataset, rows);
+        originalQuality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, originalValues, out errorState);
         if (errorState != OnlineCalculatorError.None) originalQuality = 0.0;
       }
 
