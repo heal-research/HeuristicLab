@@ -107,8 +107,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         treeStatusValue.Text = "Valid";
         treeStatusValue.ForeColor = Color.Green;
       } else {
-        btnOptimizeConstants.Enabled = true;
-        btnSimplify.Enabled = true;
+        btnOptimizeConstants.Enabled = false;
+        btnSimplify.Enabled = false;
         treeStatusValue.Text = "Invalid";
         treeStatusValue.ForeColor = Color.Red;
       }
@@ -168,9 +168,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       return constantTreeNode;
     }
 
-    private void treeChart_SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
-    }
-
     private void treeChart_SymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
       if (treeState == TreeState.Invalid) return;
       var visualNode = (VisualSymbolicExpressionTreeNode)sender;
@@ -185,12 +182,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         var originalNode = changedNodes[symbExprTreeNode];
         parent.InsertSubtree(indexOfSubtree, originalNode);
         changedNodes.Remove(symbExprTreeNode);
-        UpdateModel(tree);
       } else if (foldedNodes.ContainsKey(symbExprTreeNode)) {
         // undo node folding
         SwitchNodeWithReplacementNode(parent, indexOfSubtree);
-        UpdateModel(tree);
       }
+      UpdateModel(tree);
     }
 
     private void SwitchNodeWithReplacementNode(ISymbolicExpressionTreeNode parent, int subTreeIndex) {

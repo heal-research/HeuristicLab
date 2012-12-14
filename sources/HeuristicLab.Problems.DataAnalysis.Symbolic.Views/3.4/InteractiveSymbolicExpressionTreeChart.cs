@@ -78,26 +78,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     protected override void OnSymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
-      if (currSelected != null) {
-        currSelected.LineColor = Color.FromArgb(255, currSelected.LineColor);
-        RepaintNode(currSelected);
-      }
       currSelected = (VisualSymbolicExpressionTreeNode)sender; ;
       if (currSelected != null) {
         currSelected.LineColor = Color.FromArgb(130, currSelected.LineColor);
         RepaintNode(currSelected);
       }
+      base.OnSymbolicExpressionTreeNodeClicked(sender, e);
     }
 
     protected override void SymbolicExpressionTreeChart_MouseClick(object sender, MouseEventArgs e) {
-      var visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
-      if (visualTreeNode != null) {
-        OnSymbolicExpressionTreeNodeClicked(visualTreeNode, e);
-      } else if (currSelected != null) {
+      if (currSelected != null) {
         currSelected.LineColor = Color.FromArgb(255, currSelected.LineColor);
         RepaintNode(currSelected);
-        currSelected = null;
       }
+      base.SymbolicExpressionTreeChart_MouseClick(sender, e);
     }
 
     protected override void OnSymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
@@ -172,12 +166,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
     private void copySubtree() {
       if (tempNode != null) {
-        foreach (var subtree in tempNode.IterateNodesBreadth()) {
-          var vNode = GetVisualSymbolicExpressionTreeNode(subtree);
-          vNode.LineColor = Color.FromArgb(255, vNode.LineColor); // reset the alpha value to 255
+        foreach (var subtree in tempNode.IterateNodesPostfix()) {
+          var visualNode = GetVisualSymbolicExpressionTreeNode(subtree);
+          visualNode.LineColor = Color.FromArgb(255, visualNode.LineColor); // reset the alpha value to 255
+          visualNode.TextColor = Color.FromArgb(255, visualNode.TextColor);
           if (subtree.Parent != null) {
-            var vArc = GetVisualSymbolicExpressionTreeNodeConnection(subtree.Parent, subtree);
-            vArc.LineColor = Color.FromArgb(255, vArc.LineColor);
+            var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(subtree.Parent, subtree);
+            visualLine.LineColor = Color.FromArgb(255, visualLine.LineColor);
           }
         }
       }
@@ -196,11 +191,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
     private void removeNodeToolStripMenuItem_Click(object sender, EventArgs e) {
       var node = currSelected.SymbolicExpressionTreeNode;
+      if (node == tempNode) tempNode = null;
       ModifyTree(Tree, node.Parent, node, null, removeSubtree: false);
       currSelected = null; // because the currently selected node was just deleted
     }
     private void removeSubtreeToolStripMenuItem_Click(object sender, EventArgs e) {
       var node = currSelected.SymbolicExpressionTreeNode;
+      if (node.IterateNodesPostfix().Contains(tempNode)) tempNode = null;
       ModifyTree(Tree, node.Parent, node, null, removeSubtree: true);
       currSelected = null; // because the currently selected node was just deleted
       contextMenuStrip.Close(); // avoid display of submenus since the action has already been performed

@@ -39,10 +39,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      symbolicExpressionTreeView.Content = null;
       if (Content != null)
         symbolicExpressionTreeView.Content = Content.SymbolicExpressionTree;
-      else
-        symbolicExpressionTreeView.Content = null;
     }
   }
 }
