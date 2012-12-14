@@ -72,8 +72,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         copyToolStripMenuItem.Visible = true;
         cutToolStripMenuItem.Visible = true;
         removeToolStripMenuItem.Visible = true;
+
         pasteToolStripMenuItem.Visible = true;
-        pasteToolStripMenuItem.Enabled = tempNode != null && insertNodeToolStripMenuItem.Enabled;
+        pasteToolStripMenuItem.Enabled = tempNode != null && insertNodeToolStripMenuItem.Enabled
+                                                          && !(lastOp == EditOp.CutSubtree
+                                                               && tempNode.IterateNodesBreadth().Contains(currSelected.SymbolicExpressionTreeNode));
       }
     }
 
@@ -213,10 +216,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       switch (lastOp) {
         case EditOp.CutSubtree: {
             if (tempNode.IterateNodesBreadth().Contains(node))
-              goto case EditOp.CopySubtree; // a subtree cannot be cut/pasted onto itself
-            ModifyTree(Tree, tempNode.Parent, tempNode, null); //remove node from its original parent
-            ModifyTree(Tree, node, null, tempNode); //insert it as a child to the new parent
-            lastOp = EditOp.CopySubtree; //do this so the next paste will actually perform a copy   
+              throw new ArgumentException();
             break;
           }
         case EditOp.CopySubtree: {
