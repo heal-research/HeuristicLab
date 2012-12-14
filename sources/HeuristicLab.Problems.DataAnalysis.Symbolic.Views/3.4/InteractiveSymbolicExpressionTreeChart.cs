@@ -216,14 +216,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       switch (lastOp) {
         case EditOp.CutSubtree: {
             if (tempNode.IterateNodesBreadth().Contains(node))
-              throw new ArgumentException();
+              throw new ArgumentException();// cannot cut/paste a node into itself
+            ModifyTree(Tree, tempNode.Parent, tempNode, null); //remove node from its original parent 	 	 
+            ModifyTree(Tree, node, null, tempNode); //insert it as a child to the new parent 
             break;
           }
         case EditOp.CopySubtree: {
             var clone = (SymbolicExpressionTreeNode)tempNode.Clone();
-            clone.Parent = tempNode.Parent;
-            tempNode = clone;
-            ModifyTree(Tree, node, null, tempNode);
+            ModifyTree(Tree, node, null, clone);
             break;
           }
       }
