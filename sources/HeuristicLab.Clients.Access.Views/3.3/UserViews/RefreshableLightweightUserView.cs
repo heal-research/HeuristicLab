@@ -74,8 +74,10 @@ namespace HeuristicLab.Clients.Access.Views {
     protected override void Content_Refreshed(object sender, EventArgs e) {
       base.Content_Refreshed(sender, e);
 
-      lightweightUserView.Content = new ItemList<UserGroupBase>(Content.UsersAndGroups.Where(x => selectedUsers.Contains(x.Id)));
-      if (lightweightUserView.Content != null) OnStorableStateChanged();
+      if (Content.UsersAndGroups != null) {
+        lightweightUserView.Content = new ItemList<UserGroupBase>(Content.UsersAndGroups.Where(x => selectedUsers.Contains(x.Id)));
+        if (lightweightUserView.Content != null) OnStorableStateChanged();
+      }
     }
 
     protected override void SetEnabledStateOfControls() {

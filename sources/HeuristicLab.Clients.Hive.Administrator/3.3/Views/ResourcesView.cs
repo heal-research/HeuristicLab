@@ -436,6 +436,10 @@ namespace HeuristicLab.Clients.Hive.Administrator.Views {
       ResetView();
 
       try {
+        if (!Access.UserInformation.Instance.UserExists) {
+          //do a refresh just in case that the user has changed his usr and pwd in between
+          Access.UserInformation.Instance.Refresh();
+        }
         HiveAdminClient.Instance.Refresh();
         Content = HiveAdminClient.Instance.Resources;
       }

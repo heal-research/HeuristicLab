@@ -34,6 +34,10 @@ namespace HeuristicLab.Clients.Access.Administration {
       get { return new string[] { "&Services", "&Access" }; }
     }
     public override void Execute() {
+      if (!UserInformation.Instance.UserExists) {
+        MessageBox.Show("Couldn't fetch user information from the server." + Environment.NewLine + "Please verify that you have an existing user and that your user name and password is correct. ", "HeuristicLab Access Service", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
       if (UserInformation.Instance.User.Roles.Where(x => x.Name == UserInformation.AdministratorRoleName).Count() > 0) {
         using (UserAdministrationDialog dialog = new UserAdministrationDialog()) {
           dialog.ShowDialog();
