@@ -260,6 +260,13 @@ namespace HeuristicLab.Optimization.Views {
       }
       xTrackBar.Value = 0;
       yTrackBar.Value = 0;
+
+      //needed to set axis back to automatic and refresh them, otherwise their values may remain NaN
+      var xAxis = chart.ChartAreas[0].AxisX;
+      var yAxis = chart.ChartAreas[0].AxisY;
+      SetAutomaticUpdateOfAxis(xAxis, true);
+      SetAutomaticUpdateOfAxis(yAxis, true);
+      chart.Refresh();
     }
 
     private void UpdateMarkerSizes() {
@@ -283,6 +290,9 @@ namespace HeuristicLab.Optimization.Views {
       var xAxis = this.chart.ChartAreas[0].AxisX;
       var yAxis = this.chart.ChartAreas[0].AxisY;
 
+      SetAutomaticUpdateOfAxis(xAxis, false);
+      SetAutomaticUpdateOfAxis(yAxis, false);
+
       double xAxisRange = xAxis.Maximum - xAxis.Minimum;
       double yAxisRange = yAxis.Maximum - yAxis.Minimum;
 
@@ -300,6 +310,24 @@ namespace HeuristicLab.Optimization.Views {
         point.YValues[0] = yValue;
       }
 
+    }
+
+    // sets an axis to automatic or restrains it to its current values
+    // this is used that none of the set values is changed when jitter is applied, so that the chart stays the same
+    private void SetAutomaticUpdateOfAxis(Axis axis, bool enabled) {
+      if (enabled) {
+        axis.Maximum = double.NaN;
+        axis.Minimum = double.NaN;
+        axis.MajorGrid.Interval = double.NaN;
+        axis.MajorTickMark.Interval = double.NaN;
+        axis.LabelStyle.Interval = double.NaN;
+      } else {
+        axis.Minimum = axis.Minimum;
+        axis.Maximum = axis.Maximum;
+        axis.MajorGrid.Interval = axis.MajorGrid.Interval;
+        axis.MajorTickMark.Interval = axis.MajorTickMark.Interval;
+        axis.LabelStyle.Interval = axis.LabelStyle.Interval;
+      }
     }
 
     private void AddDataPoint(IRun run) {
