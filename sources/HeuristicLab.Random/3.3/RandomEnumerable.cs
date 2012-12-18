@@ -120,9 +120,11 @@ namespace HeuristicLab.Random {
     /// <param name="source">The sequence of elements.</param>
     /// <param name="random">The random number generator to use, its NextDouble() method must produce values in the range [0;1)</param>
     /// <param name="count">The number of items to be selected.</param>
+    /// <param name="sourceCount">Optional parameter specifying the number of elements in the source enumerations</param>
     /// <returns>A sequence of elements that have been chosen randomly.</returns>
-    public static IEnumerable<T> SampleRandomWithoutRepetition<T>(this IEnumerable<T> source, IRandom random, int count) {
-      int remaining = source.Count();
+    public static IEnumerable<T> SampleRandomWithoutRepetition<T>(this IEnumerable<T> source, IRandom random, int count, int sourceCount = -1) {
+      if (sourceCount == -1) sourceCount = source.Count();
+      int remaining = sourceCount;
       foreach (var item in source) {
         if (random.NextDouble() * remaining < count) {
           count--;
