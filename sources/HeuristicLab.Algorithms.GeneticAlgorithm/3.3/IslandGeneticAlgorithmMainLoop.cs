@@ -314,7 +314,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       islandVariableCreator.Successor = islandAnalyzer1;
       // BackwardsCompatibility3.3
       //the local randoms are created by the island GA itself and are only here to ensure same algorithm results
-      #region Backwards compatible code, remove with 3.4
+      #region Backwards compatible code, remove local random creator with 3.4 and rewire the operator graph
       islandAnalyzer1.Successor = localRandomCreator;
       localRandomCreator.Successor = null;
       #endregion

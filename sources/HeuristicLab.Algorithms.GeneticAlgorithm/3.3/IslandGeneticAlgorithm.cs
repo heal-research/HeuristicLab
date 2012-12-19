@@ -259,7 +259,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       // BackwardsCompatibility3.3
       // the global random is resetted to ensure the same algorithm results
-      #region Backwards compatible code, remove with 3.4
+      #region Backwards compatible code, remove global random resetter with 3.4 and rewire the operator graph
       globalRandomResetter.RandomParameter.ActualName = "GlobalRandom";
       globalRandomResetter.SeedParameter.ActualName = SeedParameter.Name;
       globalRandomResetter.SeedParameter.Value = null;
