@@ -250,7 +250,7 @@ namespace HeuristicLab.Core {
     /// Cycles are detected and not iterated twice.
     /// </summary>
     /// <returns>An enumeration of all the operators that could be found.</returns>
-    public IEnumerable<IOperator> Iterate() {
+    public virtual IEnumerable<IOperator> Iterate() {
       if (InitialOperator == null) yield break;
 
       var open = new Stack<IOperator>();
