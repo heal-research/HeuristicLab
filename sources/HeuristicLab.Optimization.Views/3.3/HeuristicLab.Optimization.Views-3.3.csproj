@@ -262,6 +262,12 @@
     <Compile Include="RunCollectionViews\RunCollectionDataTableView.Designer.cs">
       <DependentUpon>RunCollectionDataTableView.cs</DependentUpon>
     </Compile>
+    <Compile Include="TimeLimitRunView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TimeLimitRunView.Designer.cs">
+      <DependentUpon>TimeLimitRunView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserDefinedAlgorithmView.cs">
       <SubType>UserControl</SubType>
     </Compile>

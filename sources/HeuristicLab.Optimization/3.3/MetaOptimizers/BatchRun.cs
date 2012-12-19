@@ -236,8 +236,7 @@ namespace HeuristicLab.Optimization {
         if (clearRuns) runs.Clear();
         batchRunAction = BatchRunAction.Prepare;
         // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-        try { Optimizer.Prepare(clearRuns); }
-        catch (InvalidOperationException) { }
+        try { Optimizer.Prepare(clearRuns); } catch (InvalidOperationException) { }
       } else {
         ExecutionState = ExecutionState.Stopped;
       }
@@ -249,8 +248,7 @@ namespace HeuristicLab.Optimization {
       batchRunAction = BatchRunAction.Start;
       if (Optimizer.ExecutionState == ExecutionState.Stopped) Optimizer.Prepare();
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Start(); }
-      catch (InvalidOperationException) { }
+      try { Optimizer.Start(); } catch (InvalidOperationException) { }
     }
     public void Pause() {
       if (ExecutionState != ExecutionState.Started)
@@ -259,8 +257,7 @@ namespace HeuristicLab.Optimization {
       batchRunAction = BatchRunAction.Pause;
       if (Optimizer.ExecutionState != ExecutionState.Started) return;
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Pause(); }
-      catch (InvalidOperationException) { }
+      try { Optimizer.Pause(); } catch (InvalidOperationException) { }
     }
     public void Stop() {
       if ((ExecutionState != ExecutionState.Started) && (ExecutionState != ExecutionState.Paused))
@@ -272,8 +269,7 @@ namespace HeuristicLab.Optimization {
         return;
       }
       // a race-condition may occur when the optimizer has changed the state by itself in the meantime
-      try { Optimizer.Stop(); }
-      catch (InvalidOperationException) { }
+      try { Optimizer.Stop(); } catch (InvalidOperationException) { }
     }
 
     #region Events

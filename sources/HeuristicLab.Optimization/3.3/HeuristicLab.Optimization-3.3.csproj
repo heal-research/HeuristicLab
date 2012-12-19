@@ -120,6 +120,9 @@
     <Compile Include="Interfaces\IPathRelinker.cs" />
     <Compile Include="Interfaces\ISimilarityBasedOperator.cs" />
     <Compile Include="Interfaces\ISolutionSimilarityCalculator.cs" />
+    <Compile Include="MetaOptimizers\BatchRun.cs" />
+    <Compile Include="MetaOptimizers\Experiment.cs" />
+    <Compile Include="MetaOptimizers\TimeLimitRun.cs" />
     <Compile Include="RunCollectionModification\RunCollectionRunRemover.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="RunCollectionModification\RunCollectionDiscretizer.cs" />
@@ -129,7 +132,6 @@
     <Compile Include="Interfaces\IRunCollectionModifier.cs" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Algorithms\Algorithm.cs" />
-    <Compile Include="BatchRun.cs" />
     <Compile Include="RunCollectionModification\Calculator.cs" />
     <Compile Include="Interfaces\IDiscreteDoubleMatrixModifier.cs" />
     <Compile Include="Algorithms\HeuristicOptimizationEngineAlgorithm.cs" />
@@ -172,7 +174,6 @@
     <Compile Include="Interfaces\IRun.cs" />
     <Compile Include="RunCollectionConstraints\IRunCollectionConstraint.cs" />
     <Compile Include="OptimizerList.cs" />
-    <Compile Include="Experiment.cs" />
     <Compile Include="Interfaces\IOptimizer.cs" />
     <Compile Include="RunCollection.cs" />
     <Compile Include="Run.cs" />
@@ -280,14 +281,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 

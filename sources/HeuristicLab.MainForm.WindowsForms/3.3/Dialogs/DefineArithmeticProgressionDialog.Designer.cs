@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Optimizer {
+namespace HeuristicLab.MainForm.WindowsForms {
   partial class DefineArithmeticProgressionDialog {
     /// <summary>
     /// Required designer variable.
@@ -59,7 +59,7 @@ namespace HeuristicLab.Optimizer {
       // 
       // stepSizeTextBox
       // 
-      this.stepSizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.stepSizeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.stepSizeTextBox.Location = new System.Drawing.Point(75, 64);
       this.stepSizeTextBox.Name = "stepSizeTextBox";
@@ -69,7 +69,7 @@ namespace HeuristicLab.Optimizer {
       // 
       // maximumTextBox
       // 
-      this.maximumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.maximumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.maximumTextBox.Location = new System.Drawing.Point(75, 38);
       this.maximumTextBox.Name = "maximumTextBox";
@@ -79,7 +79,7 @@ namespace HeuristicLab.Optimizer {
       // 
       // minimumTextBox
       // 
-      this.minimumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.minimumTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.minimumTextBox.Location = new System.Drawing.Point(75, 12);
       this.minimumTextBox.Name = "minimumTextBox";

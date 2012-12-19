@@ -26,7 +26,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 
-namespace HeuristicLab.Optimizer {
+namespace HeuristicLab.MainForm.WindowsForms {
   public partial class DefineArithmeticProgressionDialog : Form {
     private bool allowOnlyInteger;
 
@@ -99,7 +99,7 @@ namespace HeuristicLab.Optimizer {
           yield return Minimum;
           minimumIncluded = true;
         } else yield return value;
-        
+
         if (Step == 0) break; // a step size of 0 will only output maximum and minimum
         if (allowOnlyInteger) {
           value = (int)Maximum - i * (int)Step;

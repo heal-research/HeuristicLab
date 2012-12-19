@@ -127,12 +127,6 @@
     <EmbeddedResource Include="Documents\SS_VRP.hl" />
     <EmbeddedResource Include="Documents\RAPGA_JSSP.hl" />
     <None Include="Plugin.cs.frame" />
-    <Compile Include="DefineArithmeticProgressionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DefineArithmeticProgressionDialog.Designer.cs">
-      <DependentUpon>DefineArithmeticProgressionDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>
     </Compile>

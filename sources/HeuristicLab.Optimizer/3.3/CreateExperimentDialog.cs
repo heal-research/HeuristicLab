@@ -29,6 +29,7 @@ using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.Instances;
