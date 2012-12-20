@@ -61,7 +61,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private const string ResultsName = "Results";
     private const string TemperatureChartName = "Temperature Chart";
     private const string TemperatureAnalyzerName = "Temperature Analyzer";
-    private const string ChangeInertiaName = "ChangeInertia";
+    private const string ThresholdName = "Threshold";
+    private const string MemorySizeName = "MemorySize";
     #endregion
 
     public string Filename { get; set; }
@@ -98,8 +99,11 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier> HeatingOperatorParameter {
       get { return (OptionalConstrainedValueParameter<IDiscreteDoubleValueModifier>)Parameters[HeatingOperatorName]; }
     }
-    private ValueParameter<IntValue> ChangeInertiaParameter {
-      get { return (ValueParameter<IntValue>) Parameters[ChangeInertiaName]; }
+    private ValueParameter<DoubleRange> ThresholdParameter {
+      get { return (ValueParameter<DoubleRange>) Parameters[ThresholdName]; }
+    }
+    private ValueParameter<IntValue> MemorySizeParameter {
+      get { return (ValueParameter<IntValue>) Parameters[MemorySizeName]; }
     } 
     private ValueParameter<IntValue> MaximumIterationsParameter {
       get { return (ValueParameter<IntValue>)Parameters[MaximumIterationsName]; }
@@ -160,9 +164,13 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
     }
-    public IntValue ChangeInertia {
-      get { return ChangeInertiaParameter.Value; }
-      set { ChangeInertiaParameter.Value = value; }
+    public DoubleRange AcceptanceThreshold {
+      get { return ThresholdParameter.Value; }
+      set { ThresholdParameter.Value = value; }
+    }
+    public IntValue AcceptanceMemorySize {
+      get { return MemorySizeParameter.Value; }
+      set { MemorySizeParameter.Value = value; }
     }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
@@ -194,7 +202,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new ValueParameter<DoubleValue>(UpperTemperatureName, "The upper bound for the temperature.", new DoubleValue(100)));
       Parameters.Add(new ValueParameter<DoubleValue>(LowerTemperatureName, "The lower bound for the temperature.", new DoubleValue(1e-6)));
       Parameters.Add(new ValueParameter<MultiAnalyzer>(AnalyzerName, "The operator used to analyze each iteration.", new MultiAnalyzer()));
-      Parameters.Add(new ValueParameter<IntValue>(ChangeInertiaName, "The inertia (= number of iterations) that the process spends before switching between heating and cooling.", new IntValue(10)));
+      Parameters.Add(new ValueParameter<IntValue>(MemorySizeName, "The maximum size of the acceptance memory.", new IntValue(100)));
+      Parameters.Add(new ValueParameter<DoubleRange>(ThresholdName, "The threshold controls the temperature in case a heating operator is specified. If the average ratio of accepted moves goes below the start of the range the temperature is heated. If the the average ratio of accepted moves goes beyond the end of the range the temperature is cooled again.", new DoubleRange(0.05, 0.2)));
 
       var randomCreator = new RandomCreator();
       var solutionsCreator = new SolutionsCreator();
@@ -246,7 +255,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       
       mainLoop.AnalyzerParameter.ActualName = AnalyzerParameter.Name;
       mainLoop.AnnealingOperatorParameter.ActualName = AnnealingOperatorParameter.Name;
-      mainLoop.ChangeInertiaParameter.ActualName = ChangeInertiaParameter.Name;
+      mainLoop.MemorySizeParameter.ActualName = MemorySizeParameter.Name;
+      mainLoop.ThresholdParameter.ActualName = ThresholdParameter.Name;
       mainLoop.CoolingParameter.ActualName = CoolingName;
       mainLoop.EndTemperatureParameter.ActualName = EndTemperatureName;
       mainLoop.EvaluatedMovesParameter.ActualName = EvaluatedMovesName;

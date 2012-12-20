@@ -56,7 +56,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private const string MoveQualityName = "MoveQuality";
     private const string IsAcceptedName = "IsAccepted";
     private const string TerminateName = "Terminate";
-    private const string ChangeInertiaName = "ChangeInertia";
+    private const string ThresholdName = "Threshold";
+    private const string MemorySizeName = "MemorySize";
+    private const string AcceptanceMemoryName = "AcceptanceMemory";
     #endregion
 
     #region Parameter properties
@@ -126,8 +128,11 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public ILookupParameter<BoolValue> CoolingParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[CoolingName]; }
     }
-    public IValueLookupParameter<IntValue> ChangeInertiaParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[ChangeInertiaName]; }
+    public IValueLookupParameter<DoubleRange> ThresholdParameter {
+      get { return (IValueLookupParameter<DoubleRange>)Parameters[ThresholdName]; }
+    }
+    public IValueLookupParameter<IntValue> MemorySizeParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MemorySizeName]; }
     }
     #endregion
 
@@ -171,10 +176,12 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new LookupParameter<BoolValue>(CoolingName, "True when the temperature should be cooled, false otherwise."));
       Parameters.Add(new LookupParameter<DoubleValue>(StartTemperatureName, "The temperature from which cooling or reheating should occur."));
       Parameters.Add(new LookupParameter<DoubleValue>(EndTemperatureName, "The temperature to which should be cooled or heated."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(ChangeInertiaName, "The minimum iterations that need to be passed, before the process can change between heating and cooling."));
+      Parameters.Add(new ValueLookupParameter<DoubleRange>(ThresholdName, "The threshold controls the temperature in case a heating operator is specified. If the average ratio of accepted moves goes below the start of the range the temperature is heated. If the the average ratio of accepted moves goes beyond the end of the range the temperature is cooled again."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MemorySizeName, "The maximum size of the acceptance memory."));
       #endregion
 
       #region Create operators
+      var variableCreator = new VariableCreator();
       var ssp1 = new SubScopesProcessor();
       var analyzer1 = new Placeholder();
       var ssp2 = new SubScopesProcessor();
@@ -194,6 +201,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       var ssp3 = new SubScopesProcessor();
       var analyzer2 = new Placeholder();
       var iterationsTermination = new ConditionalBranch();
+
+      variableCreator.Name = "Initialize Memory";
+      variableCreator.CollectedValues.Add(new ValueParameter<ItemList<BoolValue>>(AcceptanceMemoryName, new ItemList<BoolValue>()));
 
       analyzer1.Name = "Analyzer";
       analyzer1.OperatorParameter.ActualName = AnalyzerParameter.Name;
@@ -219,7 +229,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       moveMaker.OperatorParameter.ActualName = MoveMakerParameter.Name;
 
       temperatureController.AnnealingOperatorParameter.ActualName = AnnealingOperatorParameter.Name;
-      temperatureController.ChangeInertiaParameter.ActualName = ChangeInertiaParameter.Name;
+      temperatureController.ThresholdParameter.ActualName = ThresholdParameter.Name;
+      temperatureController.AcceptanceMemoryParameter.ActualName = AcceptanceMemoryName;
+      temperatureController.MemorySizeParameter.ActualName = MemorySizeParameter.Name;
       temperatureController.CoolingParameter.ActualName = CoolingParameter.Name;
       temperatureController.EndTemperatureParameter.ActualName = EndTemperatureParameter.Name;
       temperatureController.HeatingOperatorParameter.ActualName = HeatingOperatorParameter.Name;
@@ -252,7 +264,8 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       #endregion
 
       #region Create operator graph
-      OperatorGraph.InitialOperator = ssp1;
+      OperatorGraph.InitialOperator = variableCreator;
+      variableCreator.Successor = ssp1;
       ssp1.Operators.Add(analyzer1);
       ssp1.Successor = ssp2;
       analyzer1.Successor = null;

@@ -22,6 +22,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -46,7 +47,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     private const string EndTemperatureName = "EndTemperature";
     private const string TemperatureName = "Temperature";
     private const string IsAcceptedName = "IsAccepted";
-    private const string ChangeInertiaName = "ChangeInertia";
+    private const string ThresholdName = "Threshold";
+    private const string AcceptanceMemoryName = "AcceptanceMemory";
+    private const string MemorySizeName = "MemorySize";
     #endregion
 
     #region Parameter Properties
@@ -86,8 +89,14 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public ILookupParameter<BoolValue> IsAcceptedParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[IsAcceptedName]; }
     }
-    public IValueLookupParameter<IntValue> ChangeInertiaParameter {
-      get { return (IValueLookupParameter<IntValue>) Parameters[ChangeInertiaName]; }
+    public IValueLookupParameter<DoubleRange> ThresholdParameter {
+      get { return (IValueLookupParameter<DoubleRange>)Parameters[ThresholdName]; }
+    }
+    public ILookupParameter<ItemList<BoolValue>> AcceptanceMemoryParameter {
+      get { return (ILookupParameter<ItemList<BoolValue>>)Parameters[AcceptanceMemoryName]; }
+    }
+    public IValueLookupParameter<IntValue> MemorySizeParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MemorySizeName]; }
     }
     #endregion
 
@@ -108,7 +117,9 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       Parameters.Add(new LookupParameter<DoubleValue>(StartTemperatureName, "The temperature from which cooling or reheating should occur."));
       Parameters.Add(new LookupParameter<DoubleValue>(EndTemperatureName, "The temperature to which should be cooled or heated."));
       Parameters.Add(new LookupParameter<BoolValue>(IsAcceptedName, "Whether the move was accepted or not."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(ChangeInertiaName, "The minimum iterations that need to be passed, before the process can change between heating and cooling."));
+      Parameters.Add(new ValueLookupParameter<DoubleRange>(ThresholdName, "The threshold controls the temperature in case a heating operator is specified. If the average ratio of accepted moves goes below the start of the range the temperature is heated. If the the average ratio of accepted moves goes beyond the end of the range the temperature is cooled again."));
+      Parameters.Add(new LookupParameter<ItemList<BoolValue>>(AcceptanceMemoryName, "Memorizes the last N acceptance decisions."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MemorySizeName, "The maximum size of the acceptance memory."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -118,7 +129,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
     public override IOperation Apply() {
       var accepted = IsAcceptedParameter.ActualValue;
       var heatingOperator = HeatingOperatorParameter.ActualValue;
-      if (accepted == null || heatingOperator == null) { // annealing in case no heating operator is given
+      if (accepted == null || heatingOperator == null) { // perform only annealing in case no heating operator is given
         return new OperationCollection {
           ExecutionContext.CreateOperation(AnnealingOperatorParameter.ActualValue),
           base.Apply()
@@ -126,16 +137,22 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       }
 
       var cooling = CoolingParameter.ActualValue.Value;
-      var lastChange = TemperatureStartIndexParameter.ActualValue.Value;
       var iterations = IterationsParameter.ActualValue.Value;
-      var inertia = ChangeInertiaParameter.ActualValue.Value;
+      var ratioStart = ThresholdParameter.ActualValue.Start;
+      var ratioEnd = ThresholdParameter.ActualValue.End;
 
-      if (accepted.Value && !cooling && (iterations - (lastChange+1)) > inertia) { // temperature is heated, but should be cooled
+      var acceptances = AcceptanceMemoryParameter.ActualValue;
+      acceptances.Add(new BoolValue(accepted.Value));
+      if (acceptances.Count > MemorySizeParameter.ActualValue.Value) acceptances.RemoveAt(0);
+      var ratio = acceptances.Average(x => x.Value ? 1.0 : 0.0);
+      
+
+      if (!cooling && ratio >= ratioEnd) { // temperature is heated, but should be cooled
         cooling = true;
         TemperatureStartIndexParameter.ActualValue.Value = Math.Max(0, iterations - 1);
         StartTemperatureParameter.ActualValue.Value = TemperatureParameter.ActualValue.Value;
         EndTemperatureParameter.ActualValue.Value = LowerTemperatureParameter.ActualValue.Value;
-      } else if (!accepted.Value && cooling && (iterations - (lastChange+1)) > inertia) {  // temperature is cooled, but should be heated
+      } else if (cooling && ratio <= ratioStart) {  // temperature is cooled, but should be heated
         cooling = false;
         TemperatureStartIndexParameter.ActualValue.Value = Math.Max(0, iterations - 1);
         StartTemperatureParameter.ActualValue.Value = TemperatureParameter.ActualValue.Value;
