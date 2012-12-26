@@ -94,7 +94,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Google.ProtocolBuffers-2.4.1.473, Version=2.4.1.473, Culture=neutral, PublicKeyToken=17b3b1f090c3ea48, processorArchitecture=MSIL">
+    <Reference Include="Google.ProtocolBuffers-2.4.1.473, Version=2.4.1.473">
       <HintPath>..\..\bin\Google.ProtocolBuffers-2.4.1.473.dll</HintPath>
       <Private>False</Private>
     </Reference>
