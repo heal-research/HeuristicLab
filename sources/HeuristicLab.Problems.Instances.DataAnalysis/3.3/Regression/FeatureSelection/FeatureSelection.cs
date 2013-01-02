@@ -41,20 +41,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
                + "In this instance the number of rows for training (" + trainingSamples +
                ") is only slightly larger than the number of columns (" + numberOfFeatures +
                ") and only a subset of the columns must be selected for the predictive model." + Environment.NewLine
-               +
-               "The target variable is calculated as a noisy linear combination of randomly selected features: y = w * S + n." +
-               Environment.NewLine
-               +
-               "Where is the S is a N x d matrix containing the selected columns from N x k the matrix of all features X" +
-               Environment.NewLine
-               + "For each feature the probability that it is selected is " + selectionProbability + "%" +
-               Environment.NewLine
-               + "X(i,j) ~ N(0, 1) iid, w(i) ~ U(0, 10) iid, n ~ N(0, sigma(w*S) * SQRT(" + noiseRatio + "))" +
-               Environment.NewLine
-               + "The noise level is " + noiseRatio + " * sigma, thus an optimal model has R² = " +
-               Math.Round(1 - noiseRatio, 2) + " (or equivalently: NMSE = " + noiseRatio + ")" + Environment.NewLine
-               + "N = " + (trainingSamples + TestSamples) + " (" + trainingSamples + " training, " + TestSamples +
-               " test)" + Environment.NewLine
+               + "The target variable is calculated as a noisy linear combination of randomly selected features: y = w * S + n." + Environment.NewLine
+               + "Where is the S is a N x d matrix containing the selected columns from N x k the matrix of all features X" + Environment.NewLine
+               + "For each feature the probability that it is selected is " + selectionProbability + "%" + Environment.NewLine
+               + "X(i,j) ~ N(0, 1) iid, w(i) ~ U(0, 10) iid, n ~ N(0, sigma(w*S) * SQRT(" + noiseRatio + "))" + Environment.NewLine
+               + "The noise level is " + noiseRatio + " * sigma, thus an optimal model has R² = "
+               + Math.Round(1 - noiseRatio, 2) + " (or equivalently: NMSE = " + noiseRatio + ")" + Environment.NewLine
+               + "N = " + (trainingSamples + TestSamples) + " (" + trainingSamples + " training, " + TestSamples + " test)" + Environment.NewLine
                + "k = " + numberOfFeatures;
         ;
       }
