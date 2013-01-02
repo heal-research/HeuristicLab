@@ -189,6 +189,7 @@
     <Compile Include="Regression\ResourceRegressionInstanceProvider.cs" />
     <Compile Include="Regression\ValueGenerator.cs" />
     <Compile Include="Regression\Various\BreimanOne.cs" />
+    <Compile Include="Regression\Various\FeatureSelection.cs" />
     <Compile Include="Regression\Various\FriedmanTwo.cs" />
     <Compile Include="Regression\Various\FriedmanOne.cs" />
     <Compile Include="Regression\Various\PolyTen.cs" />
