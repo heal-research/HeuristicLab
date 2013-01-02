@@ -44,7 +44,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       descriptorList.Add(new FriedmanTwo());
       descriptorList.Add(new PolyTen());
       descriptorList.Add(new SpatialCoevolution());
-      descriptorList.Add(new FeatureSelection());
       return descriptorList;
     }
   }
