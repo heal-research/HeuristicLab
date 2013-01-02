@@ -137,6 +137,8 @@
     <Compile Include="Regression\ArtificialRegressionDataDescriptor.cs" />
     <Compile Include="Regression\ArtificialRegressionInstanceProvider.cs" />
     <Compile Include="Regression\CSV\RegressionCSVInstanceProvider.cs" />
+    <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
+    <Compile Include="Regression\FeatureSelection\FeatureSelectionInstanceProvider.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFourteen.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionEleven.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFive.cs" />
