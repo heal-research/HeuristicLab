@@ -433,12 +433,12 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void nameTextBox_Validated(object sender, EventArgs e) {
-      if (Content.Job.Name != nameTextBox.Text)
+      if (!SuppressEvents && Content.Job.Name != nameTextBox.Text)
         Content.Job.Name = nameTextBox.Text;
     }
 
     private void resourceNamesTextBox_Validated(object sender, EventArgs e) {
-      if (Content.Job.ResourceNames != resourceNamesTextBox.Text)
+      if (!SuppressEvents && Content.Job.ResourceNames != resourceNamesTextBox.Text)
         Content.Job.ResourceNames = resourceNamesTextBox.Text;
     }
 

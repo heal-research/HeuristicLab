@@ -92,11 +92,9 @@ namespace HeuristicLab.Clients.Hive {
             waitHandle.WaitOne(Interval);
           }
 
-          if (stopRequested) {
-            waitHandle.Close();
-            IsPolling = false;
-            return;
-          }
+          waitHandle.Close();
+          IsPolling = false;
+          return;
         }
         catch (Exception e) {
           OnExceptionOccured(e);
