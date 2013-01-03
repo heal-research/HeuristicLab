@@ -102,7 +102,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (InverseLengthParameter.Value != null) {
         inverseLength = InverseLengthParameter.Value.ToArray();
       } else {
-        inverseLength = p.Skip(2).Select(e => 1.0 / Math.Exp(e)).ToArray();
+        inverseLength = p.Skip(c).Select(e => 1.0 / Math.Exp(e)).ToArray();
         c += inverseLength.Length;
       }
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceRationalQuadraticArd", "p");
