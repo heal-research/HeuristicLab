@@ -154,7 +154,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         .Select(r => mean.Mean(x, r))
         .ToArray();
 
-      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)));
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, null);
       for (int i = 0; i < n; i++) {
         for (int j = i; j < n; j++) {
           l[j, i] = cov.Covariance(x, i, j) / sqrSigmaNoise;
@@ -265,7 +265,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var ms = Enumerable.Range(0, newX.GetLength(0))
       .Select(r => mean.Mean(newX, r))
       .ToArray();
-      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, null);
       for (int i = 0; i < newN; i++) {
         for (int j = 0; j < n; j++) {
           Ks[i, j] = cov.CrossCovariance(x, newX, j, i);
@@ -283,7 +283,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       var kss = new double[newN];
       double[,] sWKs = new double[n, newN];
-      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, null);
 
       // for stddev 
       for (int i = 0; i < newN; i++)
