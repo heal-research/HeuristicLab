@@ -52,10 +52,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string ModelParameterName = "Model";
 
     #region parameter properties
-    public IConstrainedValueParameter<IGaussianProcessClassificationModelCreator> ModelCreatorParameter {
+    public IConstrainedValueParameter<IGaussianProcessClassificationModelCreator> GaussianProcessModelCreatorParameter {
       get { return (IConstrainedValueParameter<IGaussianProcessClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
     }
-    public IFixedValueParameter<GaussianProcessClassificationSolutionCreator> SolutionCreatorParameter {
+    public IFixedValueParameter<GaussianProcessClassificationSolutionCreator> GaussianProcessSolutionCreatorParameter {
       get { return (IFixedValueParameter<GaussianProcessClassificationSolutionCreator>)Parameters[SolutionCreatorParameterName]; }
     }
     #endregion
@@ -86,7 +86,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters[SolutionCreatorParameterName].Hidden = true;
 
       ParameterizedModelCreators();
-      ParameterizeSolutionCreator(SolutionCreatorParameter.Value);
+      ParameterizeSolutionCreator(GaussianProcessSolutionCreatorParameter.Value);
       RegisterEventHandlers();
     }
 
@@ -102,16 +102,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     #region events
     private void RegisterEventHandlers() {
-      ModelCreatorParameter.ValueChanged += ModelCreatorParameter_ValueChanged;
+      GaussianProcessModelCreatorParameter.ValueChanged += ModelCreatorParameter_ValueChanged;
     }
 
     private void ModelCreatorParameter_ValueChanged(object sender, EventArgs e) {
-      ParameterizedModelCreator(ModelCreatorParameter.Value);
+      ParameterizedModelCreator(GaussianProcessModelCreatorParameter.Value);
     }
     #endregion
 
     private void ParameterizedModelCreators() {
-      foreach (var creator in ModelCreatorParameter.ValidValues) {
+      foreach (var creator in GaussianProcessModelCreatorParameter.ValidValues) {
         ParameterizedModelCreator(creator);
       }
     }
