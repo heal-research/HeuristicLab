@@ -119,6 +119,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="GaussianProcess\GaussianProcessBase.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceConst.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -183,6 +184,9 @@
     <Compile Include="GaussianProcess\GaussianProcessRegression.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolution.cs" />
     <Compile Include="GaussianProcess\ICovarianceFunction.cs" />
+    <Compile Include="Interfaces\IGaussianProcessClassificationModelCreator.cs" />
+    <Compile Include="Interfaces\IGaussianProcessRegressionModelCreator.cs" />
+    <Compile Include="Interfaces\IGaussianProcessModelCreator.cs" />
     <Compile Include="Interfaces\IGaussianProcessModel.cs" />
     <Compile Include="Interfaces\IGaussianProcessSolution.cs" />
     <Compile Include="Interfaces\INcaClassificationSolution.cs" />

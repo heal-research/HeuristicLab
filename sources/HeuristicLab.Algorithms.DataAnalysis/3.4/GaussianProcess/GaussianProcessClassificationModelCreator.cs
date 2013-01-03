@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "GaussianProcessClassificationModelCreator",
     Description = "Creates a Gaussian process model for least-squares classification given the data, the hyperparameters, a mean function, and a covariance function.")]
-  public sealed class GaussianProcessClassificationModelCreator : GaussianProcessModelCreator {
+  public sealed class GaussianProcessClassificationModelCreator : GaussianProcessModelCreator, IGaussianProcessClassificationModelCreator {
     private const string ProblemDataParameterName = "ProblemData";
 
     #region Parameter Properties

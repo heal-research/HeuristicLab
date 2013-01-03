@@ -21,6 +21,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Algorithms.GradientDescent;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,6 +30,7 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -38,7 +40,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gaussian Process Least-Squares Classification", "Gaussian process least-squares classification data analysis algorithm.")]
   [Creatable("Data Analysis")]
   [StorableClass]
-  public sealed class GaussianProcessClassification : EngineAlgorithm, IStorableContent {
+  public sealed class GaussianProcessClassification : GaussianProcessBase, IStorableContent {
     public string Filename { get; set; }
 
     public override Type ProblemType { get { return typeof(IClassificationProblem); } }
@@ -47,150 +49,88 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       set { base.Problem = value; }
     }
 
-    private const string MeanFunctionParameterName = "MeanFunction";
-    private const string CovarianceFunctionParameterName = "CovarianceFunction";
-    private const string MinimizationIterationsParameterName = "Iterations";
-    private const string ApproximateGradientsParameterName = "ApproximateGradients";
-    private const string SeedParameterName = "Seed";
-    private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
+    private const string ModelParameterName = "Model";
 
     #region parameter properties
-    public IValueParameter<IMeanFunction> MeanFunctionParameter {
-      get { return (IValueParameter<IMeanFunction>)Parameters[MeanFunctionParameterName]; }
+    public IConstrainedValueParameter<IGaussianProcessClassificationModelCreator> ModelCreatorParameter {
+      get { return (IConstrainedValueParameter<IGaussianProcessClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
     }
-    public IValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
-      get { return (IValueParameter<ICovarianceFunction>)Parameters[CovarianceFunctionParameterName]; }
+    public IFixedValueParameter<GaussianProcessClassificationSolutionCreator> SolutionCreatorParameter {
+      get { return (IFixedValueParameter<GaussianProcessClassificationSolutionCreator>)Parameters[SolutionCreatorParameterName]; }
     }
-    public IValueParameter<IntValue> MinimizationIterationsParameter {
-      get { return (IValueParameter<IntValue>)Parameters[MinimizationIterationsParameterName]; }
-    }
-    public IValueParameter<IntValue> SeedParameter {
-      get { return (IValueParameter<IntValue>)Parameters[SeedParameterName]; }
-    }
-    public IValueParameter<BoolValue> SetSeedRandomlyParameter {
-      get { return (IValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
-    }
-    #endregion
-    #region properties
-    public IMeanFunction MeanFunction {
-      set { MeanFunctionParameter.Value = value; }
-      get { return MeanFunctionParameter.Value; }
-    }
-    public ICovarianceFunction CovarianceFunction {
-      set { CovarianceFunctionParameter.Value = value; }
-      get { return CovarianceFunctionParameter.Value; }
-    }
-    public int MinimizationIterations {
-      set { MinimizationIterationsParameter.Value.Value = value; }
-      get { return MinimizationIterationsParameter.Value.Value; }
-    }
-    public int Seed { get { return SeedParameter.Value.Value; } set { SeedParameter.Value.Value = value; } }
-    public bool SetSeedRandomly { get { return SetSeedRandomlyParameter.Value.Value; } set { SetSeedRandomlyParameter.Value.Value = value; } }
     #endregion
 
     [StorableConstructor]
     private GaussianProcessClassification(bool deserializing) : base(deserializing) { }
     private GaussianProcessClassification(GaussianProcessClassification original, Cloner cloner)
       : base(original, cloner) {
+      RegisterEventHandlers();
     }
     public GaussianProcessClassification()
-      : base() {
+      : base(new ClassificationProblem()) {
       this.name = ItemName;
       this.description = ItemDescription;
 
-      Problem = new ClassificationProblem();
+      var modelCreators = ApplicationManager.Manager.GetInstances<IGaussianProcessClassificationModelCreator>();
+      var defaultModelCreator = modelCreators.First(c => c is GaussianProcessClassificationModelCreator);
 
-      Parameters.Add(new ValueParameter<IMeanFunction>(MeanFunctionParameterName, "The mean function to use.", new MeanConst()));
-      Parameters.Add(new ValueParameter<ICovarianceFunction>(CovarianceFunctionParameterName, "The covariance function to use.", new CovarianceSquaredExponentialIso()));
-      Parameters.Add(new ValueParameter<IntValue>(MinimizationIterationsParameterName, "The number of iterations for likelihood optimization with LM-BFGS.", new IntValue(20)));
-      Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
-      Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
+      // GP regression and classification algorithms only differ in the model and solution creators,
+      // thus we use a common base class and use operator parameters to implement the specific versions.
+      // Different model creators can be implemented,
+      // but the solution creator is implemented in a generic fashion already and we don't allow derived solution creators
+      Parameters.Add(new ConstrainedValueParameter<IGaussianProcessClassificationModelCreator>(ModelCreatorParameterName, "The operator to create the Gaussian process model.",
+        new ItemSet<IGaussianProcessClassificationModelCreator>(modelCreators), defaultModelCreator));
+      // this parameter is not intended to be changed, 
+      Parameters.Add(new FixedValueParameter<GaussianProcessClassificationSolutionCreator>(SolutionCreatorParameterName, "The solution creator for the algorithm",
+        new GaussianProcessClassificationSolutionCreator()));
+      Parameters[SolutionCreatorParameterName].Hidden = true;
 
-      Parameters.Add(new ValueParameter<BoolValue>(ApproximateGradientsParameterName, "Indicates that gradients should not be approximated (necessary for LM-BFGS).", new BoolValue(false)));
-      Parameters[ApproximateGradientsParameterName].Hidden = true; // should not be changed
-
-      var randomCreator = new HeuristicLab.Random.RandomCreator();
-      var gpInitializer = new GaussianProcessHyperparameterInitializer();
-      var bfgsInitializer = new LbfgsInitializer();
-      var makeStep = new LbfgsMakeStep();
-      var branch = new ConditionalBranch();
-      var modelCreator = new GaussianProcessClassificationModelCreator();
-      var updateResults = new LbfgsUpdateResults();
-      var analyzer = new LbfgsAnalyzer();
-      var finalModelCreator = new GaussianProcessClassificationModelCreator();
-      var finalAnalyzer = new LbfgsAnalyzer();
-      var solutionCreator = new GaussianProcessClassificationSolutionCreator();
-
-      OperatorGraph.InitialOperator = randomCreator;
-      randomCreator.SeedParameter.ActualName = SeedParameterName;
-      randomCreator.SeedParameter.Value = null;
-      randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameterName;
-      randomCreator.SetSeedRandomlyParameter.Value = null;
-      randomCreator.Successor = gpInitializer;
-
-      gpInitializer.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
-      gpInitializer.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
-      gpInitializer.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
-      gpInitializer.HyperparameterParameter.ActualName = modelCreator.HyperparameterParameter.Name;
-      gpInitializer.RandomParameter.ActualName = randomCreator.RandomParameter.Name;
-      gpInitializer.Successor = bfgsInitializer;
-
-      bfgsInitializer.IterationsParameter.ActualName = MinimizationIterationsParameterName;
-      bfgsInitializer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
-      bfgsInitializer.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
-      bfgsInitializer.Successor = makeStep;
-
-      makeStep.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
-      makeStep.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
-      makeStep.Successor = branch;
-
-      branch.ConditionParameter.ActualName = makeStep.TerminationCriterionParameter.Name;
-      branch.FalseBranch = modelCreator;
-      branch.TrueBranch = finalModelCreator;
-
-      modelCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
-      modelCreator.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
-      modelCreator.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
-      modelCreator.Successor = updateResults;
-
-      updateResults.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
-      updateResults.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
-      updateResults.QualityGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
-      updateResults.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
-      updateResults.Successor = analyzer;
-
-      analyzer.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
-      analyzer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
-      analyzer.QualityGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
-      analyzer.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
-      analyzer.PointsTableParameter.ActualName = "Hyperparameter table";
-      analyzer.QualityGradientsTableParameter.ActualName = "Gradients table";
-      analyzer.QualitiesTableParameter.ActualName = "Negative log likelihood table";
-      analyzer.Successor = makeStep;
-
-      finalModelCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
-      finalModelCreator.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
-      finalModelCreator.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
-      finalModelCreator.HyperparameterParameter.ActualName = bfgsInitializer.PointParameter.ActualName;
-      finalModelCreator.Successor = finalAnalyzer;
-
-      finalAnalyzer.QualityParameter.ActualName = modelCreator.NegativeLogLikelihoodParameter.Name;
-      finalAnalyzer.PointParameter.ActualName = modelCreator.HyperparameterParameter.Name;
-      finalAnalyzer.QualityGradientsParameter.ActualName = modelCreator.HyperparameterGradientsParameter.Name;
-      finalAnalyzer.PointsTableParameter.ActualName = analyzer.PointsTableParameter.ActualName;
-      finalAnalyzer.QualityGradientsTableParameter.ActualName = analyzer.QualityGradientsTableParameter.ActualName;
-      finalAnalyzer.QualitiesTableParameter.ActualName = analyzer.QualitiesTableParameter.ActualName;
-      finalAnalyzer.Successor = solutionCreator;
-
-      solutionCreator.ModelParameter.ActualName = finalModelCreator.ModelParameter.Name;
-      solutionCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
+      ParameterizedModelCreators();
+      ParameterizeSolutionCreator(SolutionCreatorParameter.Value);
+      RegisterEventHandlers();
     }
 
+
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GaussianProcessClassification(this, cloner);
+    }
+
+    #region events
+    private void RegisterEventHandlers() {
+      ModelCreatorParameter.ValueChanged += ModelCreatorParameter_ValueChanged;
+    }
+
+    private void ModelCreatorParameter_ValueChanged(object sender, EventArgs e) {
+      ParameterizedModelCreator(ModelCreatorParameter.Value);
+    }
+    #endregion
+
+    private void ParameterizedModelCreators() {
+      foreach (var creator in ModelCreatorParameter.ValidValues) {
+        ParameterizedModelCreator(creator);
+      }
+    }
+
+    private void ParameterizedModelCreator(IGaussianProcessClassificationModelCreator modelCreator) {
+      modelCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
+      modelCreator.MeanFunctionParameter.ActualName = MeanFunctionParameterName;
+      modelCreator.CovarianceFunctionParameter.ActualName = CovarianceFunctionParameterName;
+
+      // parameter names fixed by the algorithm
+      modelCreator.ModelParameter.ActualName = ModelParameterName;
+      modelCreator.HyperparameterParameter.ActualName = HyperparameterParameterName;
+      modelCreator.HyperparameterGradientsParameter.ActualName = HyperparameterGradientsParameterName;
+      modelCreator.NegativeLogLikelihoodParameter.ActualName = NegativeLogLikelihoodParameterName;
+    }
+
+    private void ParameterizeSolutionCreator(GaussianProcessClassificationSolutionCreator solutionCreator) {
+      solutionCreator.ModelParameter.ActualName = ModelParameterName;
+      solutionCreator.ProblemDataParameter.ActualName = Problem.ProblemDataParameter.Name;
     }
   }
 }

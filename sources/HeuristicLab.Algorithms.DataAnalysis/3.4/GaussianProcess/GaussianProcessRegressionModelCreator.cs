@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "GaussianProcessRegressionModelCreator",
     Description = "Creates a Gaussian process model for regression given the data, the hyperparameters, a mean function, and a covariance function.")]
-  public sealed class GaussianProcessRegressionModelCreator : GaussianProcessModelCreator {
+  public sealed class GaussianProcessRegressionModelCreator : GaussianProcessModelCreator, IGaussianProcessRegressionModelCreator {
     private const string ProblemDataParameterName = "ProblemData";
 
     #region Parameter Properties
