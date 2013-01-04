@@ -81,7 +81,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    private void GetParameterValues(double[] p, out double scale, out double period, out double inverseLength) {
+    private void GetParameterValues(double[] 
+      p, out double scale, out double period, out double inverseLength) {
       // gather parameter values
       int c = 0;
       if (InverseLengthParameter.Value != null) {

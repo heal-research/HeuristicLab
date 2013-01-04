@@ -115,6 +115,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
+    // order of returned gradients must match the order in GetParameterValues!
     private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double sf2, double inverseLength, IEnumerable<int> columnIndices) {
       double d = i == j
                    ? 0.0

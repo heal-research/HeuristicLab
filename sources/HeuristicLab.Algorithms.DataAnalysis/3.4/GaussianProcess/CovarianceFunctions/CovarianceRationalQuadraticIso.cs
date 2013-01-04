@@ -83,6 +83,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void GetParameterValues(double[] p, out double scale, out double shape, out double inverseLength) {
       int c = 0;
       // gather parameter values
+      if (InverseLengthParameter.Value != null) {
+        inverseLength = InverseLengthParameter.Value.Value;
+      } else {
+        inverseLength = 1.0 / Math.Exp(p[c]);
+        c++;
+      }
       if (ScaleParameter.Value != null) {
         scale = ScaleParameter.Value.Value;
       } else {
@@ -93,12 +99,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         shape = ShapeParameter.Value.Value;
       } else {
         shape = Math.Exp(p[c]);
-        c++;
-      }
-      if (InverseLengthParameter.Value != null) {
-        inverseLength = InverseLengthParameter.Value.Value;
-      } else {
-        inverseLength = 1.0 / Math.Exp(p[c]);
         c++;
       }
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceRationalQuadraticIso", "p");

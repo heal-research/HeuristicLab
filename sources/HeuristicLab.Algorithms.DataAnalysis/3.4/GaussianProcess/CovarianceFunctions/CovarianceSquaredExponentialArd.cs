@@ -75,17 +75,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void GetParameterValues(double[] p, out double scale, out double[] inverseLength) {
       int c = 0;
       // gather parameter values
+      if (InverseLengthParameter.Value != null) {
+        inverseLength = InverseLengthParameter.Value.ToArray();
+      } else {
+        int length = p.Length;
+        if (ScaleParameter.Value == null) length--;
+        inverseLength = p.Select(e => 1.0 / Math.Exp(e)).Take(length).ToArray();
+        c += inverseLength.Length;
+      }
       if (ScaleParameter.Value != null) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[c]);
         c++;
-      }
-      if (InverseLengthParameter.Value != null) {
-        inverseLength = InverseLengthParameter.Value.ToArray();
-      } else {
-        inverseLength = p.Skip(c).Select(e => 1.0 / Math.Exp(e)).ToArray();
-        c += inverseLength.Length;
       }
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceSquaredExponentialArd", "p");
     }
@@ -110,19 +112,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return cov;
     }
 
-
+    // order of returned gradients must match the order in GetParameterValues!
     private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double[] inverseLength) {
       if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength, columnIndices);
+
       int k = 0;
       foreach (var columnIndex in columnIndices) {
         double sqrDist = Util.SqrDist(x[i, columnIndex] * inverseLength[k], x[j, columnIndex] * inverseLength[k]);
         yield return scale * Math.Exp(-d / 2.0) * sqrDist;
         k++;
       }
-
       yield return 2.0 * scale * Math.Exp(-d / 2.0);
     }
   }
