@@ -113,7 +113,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double d = i == j
                     ? 0.0
                     : Util.SqrDist(x, i, j, inverseLength, columnIndices);
-        return shape * Math.Pow(1 + 0.5 * d / shape, -shape);
+        return scale * Math.Pow(1 + 0.5 * d / shape, -shape);
       };
       cov.CrossCovariance = (x, xt, i, j) => {
         double d = Util.SqrDist(x, i, xt, j, inverseLength, columnIndices);
