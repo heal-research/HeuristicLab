@@ -374,7 +374,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.isPrivilegedCheckBox.Text = "Privileged";
       this.toolTip.SetToolTip(this.isPrivilegedCheckBox, "If checked, the task will be executed in a privileged sandbox on the slave.");
       this.isPrivilegedCheckBox.UseVisualStyleBackColor = true;
-      this.isPrivilegedCheckBox.Validated += new System.EventHandler(this.isPrivilegedCheckBox_Validated);
+      this.isPrivilegedCheckBox.CheckedChanged += new System.EventHandler(this.isPrivilegedCheckBox_CheckChanged);
       // 
       // refreshAutomaticallyCheckBox
       // 

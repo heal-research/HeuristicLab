@@ -82,7 +82,7 @@ namespace HeuristicLab.Clients.Hive {
       OnRefreshing();
 
       try {
-        this.IsAllowedPrivileged = HiveServiceLocator.Instance.CallHiveService((s) => s.IsAllowedPrivileged());
+        IsAllowedPrivileged = HiveServiceLocator.Instance.CallHiveService((s) => s.IsAllowedPrivileged());
 
         var oldJobs = jobs ?? new ItemCollection<RefreshableJob>();
         jobs = new HiveItemCollection<RefreshableJob>();

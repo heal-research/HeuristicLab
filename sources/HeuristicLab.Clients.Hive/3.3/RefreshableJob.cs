@@ -157,12 +157,11 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     // may execute jobs with privileged permissions on slaves
-    private bool isAllowedPrivileged = true;
     public bool IsAllowedPrivileged {
-      get { return isAllowedPrivileged; }
+      get { return Job.IsPrivileged; }
       set {
-        if (value != isAllowedPrivileged) {
-          isAllowedPrivileged = value;
+        if (value != Job.IsPrivileged) {
+          Job.IsPrivileged = value;
           OnIsAllowedPrivilegedChanged();
         }
       }

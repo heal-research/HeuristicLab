@@ -34,9 +34,9 @@ namespace HeuristicLab.Clients.Hive {
 
     #region Constructors and Cloning
     public Job() {
-      this.ResourceNames = "HEAL";
-      this.DateCreated = DateTime.Now;
-      this.Permission = Permission.Full;
+      ResourceNames = "HEAL";
+      DateCreated = DateTime.Now;
+      Permission = Permission.Full;
     }
 
     protected Job(Job original, Cloner cloner) {

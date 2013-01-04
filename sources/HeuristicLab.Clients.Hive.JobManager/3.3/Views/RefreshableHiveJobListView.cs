@@ -49,7 +49,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     protected override RefreshableJob CreateItem() {
-      var refreshableJob = new RefreshableJob() { IsAllowedPrivileged = HiveClient.Instance.IsAllowedPrivileged };
+      var refreshableJob = new RefreshableJob();
       refreshableJob.Job.Name = "New Hive Job";
       return refreshableJob;
     }
