@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableClass]
   [Item("Constant Regression Model", "A model that always returns the same constant value regardless of the presented input data.")]
   public class ConstantRegressionModel : NamedItem, IRegressionModel {
     [Storable]
