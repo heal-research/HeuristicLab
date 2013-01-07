@@ -88,5 +88,13 @@ namespace HeuristicLab.Services.Hive {
         return heartbeatManager;
       }
     }
+
+    private ITaskScheduler taskScheduler;
+    public ITaskScheduler TaskScheduler {
+      get {
+        if (taskScheduler == null) taskScheduler = new RoundRobinTaskScheduler();
+        return taskScheduler;
+      }
+    }
   }
 }

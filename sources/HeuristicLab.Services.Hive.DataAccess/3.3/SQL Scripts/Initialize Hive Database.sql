@@ -121,6 +121,11 @@ CREATE TABLE [Lifecycle](
   [LastCleanup] DateTime NOT NULL,
   CONSTRAINT [PK_Lifecycle] PRIMARY KEY ([LifecycleId])
   )
+CREATE TABLE [UserPriority](
+  [UserId] UniqueIdentifier NOT NULL,
+  [DateEnqueued] DateTime NOT NULL,
+  CONSTRAINT [PK_UserPriority] PRIMARY KEY ([UserId])
+  )
 CREATE TABLE [DeletedJobStatistics](
   [UserId] UniqueIdentifier NOT NULL,
   [ExecutionTimeS] float NOT NULL,

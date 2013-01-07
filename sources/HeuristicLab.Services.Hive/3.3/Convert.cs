@@ -526,5 +526,23 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
         return DB.SlaveState.Offline;
     }
     #endregion
+
+    #region UserPriority
+    public static DT.UserPriority ToDto(DB.UserPriority source) {
+      if (source == null) return null;
+      return new DT.UserPriority() { Id = source.UserId, DateEnqueued = source.DateEnqueued };
+    }
+    public static DB.UserPriority ToEntity(DT.UserPriority source) {
+      if (source == null) return null;
+      var entity = new DB.UserPriority(); ToEntity(source, entity);
+      return entity;
+    }
+    public static void ToEntity(DT.UserPriority source, DB.UserPriority target) {
+      if ((source != null) && (target != null)) {
+        target.UserId = source.Id;
+        target.DateEnqueued = source.DateEnqueued;
+      }
+    }
+    #endregion
   }
 }

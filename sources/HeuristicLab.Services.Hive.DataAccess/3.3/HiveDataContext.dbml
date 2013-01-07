@@ -41,7 +41,7 @@
       <Association Name="Resource_Resource" Member="ChildResources" ThisKey="ResourceId" OtherKey="ParentResourceId" Type="Resource" />
       <Association Name="Resource_Downtime" Member="Downtimes" Storage="_UptimeCalendars" ThisKey="ResourceId" OtherKey="ResourceId" Type="Downtime" />
       <Association Name="Resource_StateLog" Member="StateLogs" ThisKey="ResourceId" OtherKey="SlaveId" Type="StateLog" />
-      <Association Name="Resource_SlavePermission" Member="ResourcePermissions" ThisKey="ResourceId" OtherKey="ResourceId" Type="ResourcePermission" />
+      <Association Name="Resource_ResourcePermission" Member="ResourcePermissions" ThisKey="ResourceId" OtherKey="ResourceId" Type="ResourcePermission" />
       <Association Name="Resource_Resource" Member="ParentResource" ThisKey="ParentResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" />
       <Type Name="Slave" InheritanceCode="Slave" IsInheritanceDefault="true">
         <Column Name="CpuSpeed" Storage="_CPUSpeed" Type="System.Int32" DbType="Int" CanBeNull="true" />
@@ -200,7 +200,13 @@
       <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="GrantedUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="GrantedByUserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Association Name="Resource_SlavePermission" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" />
+      <Association Name="Resource_ResourcePermission" Member="Resource" ThisKey="ResourceId" OtherKey="ResourceId" Type="Resource" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="" Member="UserPriorities">
+    <Type Name="UserPriority">
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DateEnqueued" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
 </Database>

@@ -83,7 +83,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
-    public void UpdateTask(DT.Task dto) {
+    public void UpdateTaskAndPlugins(DT.Task dto) {
       using (var db = CreateContext()) {
         var entity = db.Tasks.FirstOrDefault(x => x.TaskId == dto.Id);
         if (entity == null) db.Tasks.InsertOnSubmit(DT.Convert.ToEntity(dto));
@@ -93,6 +93,15 @@ namespace HeuristicLab.Services.Hive.DataAccess {
             db.RequiredPlugins.InsertOnSubmit(new RequiredPlugin() { TaskId = entity.TaskId, PluginId = pluginId });
           }
         }
+        db.SubmitChanges();
+      }
+    }
+
+    public void UpdateTask(DT.Task dto) {
+      using (var db = CreateContext()) {
+        var entity = db.Tasks.FirstOrDefault(x => x.TaskId == dto.Id);
+        if (entity == null) db.Tasks.InsertOnSubmit(DT.Convert.ToEntity(dto));
+        else DT.Convert.ToEntity(dto, entity);
         db.SubmitChanges();
       }
     }
@@ -133,7 +142,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
-    public IEnumerable<DT.Task> GetWaitingTasks(DT.Slave slave, int count) {
+    public IEnumerable<TaskInfoForScheduler> GetWaitingTasks(DT.Slave slave) {
       using (var db = CreateContext()) {
         var resourceIds = GetParentResources(slave.Id).Select(r => r.Id);
         //Originally we checked here if there are parent tasks which should be calculated (with GetParentTasks(resourceIds, count, false);).
@@ -146,9 +155,8 @@ namespace HeuristicLab.Services.Hive.DataAccess {
                        && ar.Task.State == TaskState.Waiting
                        && ar.Task.CoresNeeded <= slave.FreeCores
                        && ar.Task.MemoryNeeded <= slave.FreeMemory
-                    orderby ar.Task.Priority descending, db.Random() // take random task to avoid the race condition that occurs when this method is called concurrently (the same task would be returned)
-                    select DT.Convert.ToDto(ar.Task);
-        var waitingTasks = (count == 0 ? query : query.Take(count)).ToArray();
+                    select new TaskInfoForScheduler() { TaskId = ar.Task.TaskId, JobId = ar.Task.JobId, Priority = ar.Task.Priority };
+        var waitingTasks = query.ToArray();
         return waitingTasks;
       }
     }
@@ -276,10 +284,18 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
+    public IEnumerable<JobInfoForScheduler> GetJobInfoForScheduler(Expression<Func<Job, bool>> predicate) {
+      using (var db = CreateContext()) {
+        return db.Jobs.Where(predicate).Select(x => new JobInfoForScheduler() { Id = x.JobId, DateCreated = x.DateCreated, OwnerUserId = x.OwnerUserId }).ToArray();
+      }
+    }
+
     public Guid AddJob(DT.Job dto) {
       using (var db = CreateContext()) {
         var entity = DT.Convert.ToEntity(dto);
         db.Jobs.InsertOnSubmit(entity);
+        if (!db.UserPriorities.Any(x => x.UserId == dto.OwnerUserId))
+          EnqueueUserPriority(new DT.UserPriority { Id = dto.OwnerUserId, DateEnqueued = dto.DateCreated });
         db.SubmitChanges();
         return entity.JobId;
       }
@@ -918,6 +934,23 @@ namespace HeuristicLab.Services.Hive.DataAccess {
         }
 
         return userStats.Values.ToList();
+      }
+    }
+    #endregion
+
+    #region UserPriority Methods
+    public IEnumerable<DT.UserPriority> GetUserPriorities(Expression<Func<UserPriority, bool>> predicate) {
+      using (var db = CreateContext()) {
+        return db.UserPriorities.Where(predicate).Select(x => DT.Convert.ToDto(x)).ToArray();
+      }
+    }
+
+    public void EnqueueUserPriority(DT.UserPriority dto) {
+      using (var db = CreateContext()) {
+        var entity = db.UserPriorities.FirstOrDefault(x => x.UserId == dto.Id);
+        if (entity == null) db.UserPriorities.InsertOnSubmit(DT.Convert.ToEntity(dto));
+        else DT.Convert.ToEntity(dto, entity);
+        db.SubmitChanges();
       }
     }
     #endregion

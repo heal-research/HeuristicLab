@@ -141,7 +141,7 @@ namespace HeuristicLab.Services.Hive {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
       author.AuthorizeForTask(taskDto.Id, Permission.Full);
       trans.UseTransaction(() => {
-        dao.UpdateTask(taskDto);
+        dao.UpdateTaskAndPlugins(taskDto);
       });
     }
 
@@ -151,7 +151,7 @@ namespace HeuristicLab.Services.Hive {
       author.AuthorizeForTask(taskData.TaskId, Permission.Full);
       //trans.UseTransaction(() => { // cneumuel: try without transaction
       taskData.LastUpdate = DateTime.Now;
-      dao.UpdateTask(task);
+      dao.UpdateTaskAndPlugins(task);
       dao.UpdateTaskData(taskData);
       //}, false, true);
     }
@@ -193,7 +193,7 @@ namespace HeuristicLab.Services.Hive {
           task = dao.UpdateTaskState(taskId, DataTransfer.Convert.ToEntity(TaskState.Waiting), slaveId, userId, exception);
         }
 
-        dao.UpdateTask(task);
+        dao.UpdateTaskAndPlugins(task);
         return task;
       });
     }
@@ -498,6 +498,12 @@ namespace HeuristicLab.Services.Hive {
     }
     #endregion
 
+    #region Resource Methods
+    public IEnumerable<Resource> GetChildResources(Guid resourceId) {
+      return dao.GetChildResources(resourceId);
+    }
+    #endregion
+
     #region Slave Methods
     public int GetNewHeartbeatInterval(Guid slaveId) {
       authen.AuthenticateForAnyRole(HiveRoles.Slave);
@@ -670,6 +676,12 @@ namespace HeuristicLab.Services.Hive {
     }
     #endregion
 
+    #region UserPriority Methods
+    public IEnumerable<UserPriority> GetUserPriorities() {
+      return trans.UseTransaction(() => dao.GetUserPriorities(x => true));
+    }
+    #endregion
+
     #region Helper Methods
     private IEnumerable<Task> GetChildTasks(Guid? parentTaskId, bool recursive, bool includeParent) {
       var tasks = new List<Task>(dao.GetTasks(x => parentTaskId == null ? !x.ParentTaskId.HasValue : x.ParentTaskId.Value == parentTaskId));
@@ -684,6 +696,15 @@ namespace HeuristicLab.Services.Hive {
 
       if (includeParent) tasks.Add(GetTask(parentTaskId.Value));
       return tasks;
+    }
+    #endregion
+
+    #region Statistics Methods
+    public IEnumerable<Statistics> GetStatistics() {
+      return dao.GetStatistics(x => true);
+    }
+    public IEnumerable<Statistics> GetStatisticsForTimePeriod(DateTime from, DateTime to) {
+      return dao.GetStatistics(x => x.Timestamp >= from && x.Timestamp <= to);
     }
     #endregion
   }

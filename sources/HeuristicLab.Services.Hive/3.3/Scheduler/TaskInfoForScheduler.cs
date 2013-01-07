@@ -19,17 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Services.Hive.DataAccess;
+using System;
 
 namespace HeuristicLab.Services.Hive {
-  public interface IServiceLocator {
-    Access.IRoleVerifier RoleVerifier { get; }
-    IAuthorizationManager AuthorizationManager { get; }
-    IHiveDao HiveDao { get; }
-    IEventManager EventManager { get; }
-    ITransactionManager TransactionManager { get; }
-    Access.IUserManager UserManager { get; }
-    HeartbeatManager HeartbeatManager { get; }
-    ITaskScheduler TaskScheduler { get; }
+  public class TaskInfoForScheduler {
+    public Guid JobId;
+    public Guid TaskId;
+    public int Priority;
   }
 }

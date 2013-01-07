@@ -113,6 +113,7 @@
   <ItemGroup>
     <Compile Include="Convert.cs" />
     <Compile Include="DataTransfer\Command.cs" />
+    <Compile Include="DataTransfer\UserPriority.cs" />
     <Compile Include="DataTransfer\ResourcePermission.cs" />
     <Compile Include="DataTransfer\Downtime.cs" />
     <Compile Include="DataTransfer\Heartbeat.cs" />
@@ -138,6 +139,10 @@
     <Compile Include="HiveDao.cs" />
     <Compile Include="HiveJanitor.cs" />
     <Compile Include="Interfaces\IHiveDao.cs" />
+    <Compile Include="Interfaces\ITaskScheduler.cs" />
+    <Compile Include="Scheduler\TaskInfoForScheduler.cs" />
+    <Compile Include="Scheduler\JobInfoForScheduler.cs" />
+    <Compile Include="Scheduler\RoundRobinTaskScheduler.cs" />
     <Compile Include="Settings.cs" />
     <None Include="app.config" />
     <None Include="Plugin.cs.frame" />
@@ -195,13 +200,13 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd</PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 

@@ -81,6 +81,9 @@ namespace HeuristicLab.Services.Hive.DataAccess
     partial void InsertResourcePermission(ResourcePermission instance);
     partial void UpdateResourcePermission(ResourcePermission instance);
     partial void DeleteResourcePermission(ResourcePermission instance);
+    partial void InsertUserPriority(UserPriority instance);
+    partial void UpdateUserPriority(UserPriority instance);
+    partial void DeleteUserPriority(UserPriority instance);
     #endregion
 		
 		public HiveDataContext() : 
@@ -246,6 +249,14 @@ namespace HeuristicLab.Services.Hive.DataAccess
 			get
 			{
 				return this.GetTable<ResourcePermission>();
+			}
+		}
+		
+		public System.Data.Linq.Table<UserPriority> UserPriorities
+		{
+			get
+			{
+				return this.GetTable<UserPriority>();
 			}
 		}
 	}
@@ -1086,7 +1097,7 @@ namespace HeuristicLab.Services.Hive.DataAccess
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Resource_SlavePermission", Storage="_ResourcePermissions", ThisKey="ResourceId", OtherKey="ResourceId")]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Resource_ResourcePermission", Storage="_ResourcePermissions", ThisKey="ResourceId", OtherKey="ResourceId")]
 		public EntitySet<ResourcePermission> ResourcePermissions
 		{
 			get
@@ -4382,7 +4393,7 @@ namespace HeuristicLab.Services.Hive.DataAccess
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Resource_SlavePermission", Storage="_Resource", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Resource_ResourcePermission", Storage="_Resource", ThisKey="ResourceId", OtherKey="ResourceId", IsForeignKey=true)]
 		public Resource Resource
 		{
 			get
@@ -4412,6 +4423,92 @@ namespace HeuristicLab.Services.Hive.DataAccess
 						this._ResourceId = default(System.Guid);
 					}
 					this.SendPropertyChanged("Resource");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="")]
+	public partial class UserPriority : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _UserId;
+		
+		private System.DateTime _DateEnqueued;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnUserIdChanging(System.Guid value);
+    partial void OnUserIdChanged();
+    partial void OnDateEnqueuedChanging(System.DateTime value);
+    partial void OnDateEnqueuedChanged();
+    #endregion
+		
+		public UserPriority()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserId", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid UserId
+		{
+			get
+			{
+				return this._UserId;
+			}
+			set
+			{
+				if ((this._UserId != value))
+				{
+					this.OnUserIdChanging(value);
+					this.SendPropertyChanging();
+					this._UserId = value;
+					this.SendPropertyChanged("UserId");
+					this.OnUserIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DateEnqueued", DbType="DateTime NOT NULL")]
+		public System.DateTime DateEnqueued
+		{
+			get
+			{
+				return this._DateEnqueued;
+			}
+			set
+			{
+				if ((this._DateEnqueued != value))
+				{
+					this.OnDateEnqueuedChanging(value);
+					this.SendPropertyChanging();
+					this._DateEnqueued = value;
+					this.SendPropertyChanged("DateEnqueued");
+					this.OnDateEnqueuedChanged();
 				}
 			}
 		}

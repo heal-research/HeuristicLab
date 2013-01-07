@@ -167,6 +167,11 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     IEnumerable<ResourcePermission> GetResourcePermissions(Guid resourceId);
     #endregion
 
+    #region Resource Methods
+    [OperationContract]
+    IEnumerable<Resource> GetChildResources(Guid resourceId);
+    #endregion
+
     #region Slave Methods
     [OperationContract]
     Guid AddSlave(Slave slave);
@@ -237,6 +242,18 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
     [OperationContract]
     Guid GetUserIdByUsername(string username);
+    #endregion
+
+    #region UserPriorities Methods
+    [OperationContract]
+    IEnumerable<UserPriority> GetUserPriorities();
+    #endregion
+
+    #region Statistics Methods
+    [OperationContract]
+    IEnumerable<Statistics> GetStatistics();
+    [OperationContract]
+    IEnumerable<Statistics> GetStatisticsForTimePeriod(DateTime from, DateTime to);
     #endregion
   }
 }

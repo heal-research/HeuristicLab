@@ -32,9 +32,10 @@ namespace HeuristicLab.Services.Hive {
     IEnumerable<DT.Task> GetTasks(Expression<Func<Task, bool>> predicate);
     IEnumerable<DT.LightweightTask> GetLightweightTasks(Expression<Func<Task, bool>> predicate);
     Guid AddTask(DT.Task dto);
+    void UpdateTaskAndPlugins(DT.Task dto);
     void UpdateTask(DT.Task dto);
     void DeleteTask(Guid id);
-    IEnumerable<DT.Task> GetWaitingTasks(DT.Slave slave, int count);
+    IEnumerable<TaskInfoForScheduler> GetWaitingTasks(DT.Slave slave);
     IEnumerable<DT.Task> GetParentTasks(IEnumerable<Guid> resourceIds, int count, bool finished);
     DT.Task UpdateTaskState(Guid taskId, TaskState taskState, Guid? slaveId, Guid? userId, string exception);
     #endregion
@@ -58,6 +59,7 @@ namespace HeuristicLab.Services.Hive {
     #region Job Methods
     DT.Job GetJob(Guid id);
     IEnumerable<DT.Job> GetJobs(Expression<Func<Job, bool>> predicate);
+    IEnumerable<JobInfoForScheduler> GetJobInfoForScheduler(Expression<Func<Job, bool>> predicate);
     Guid AddJob(DT.Job dto);
     void UpdateJob(DT.Job dto);
     void DeleteJob(Guid id);
@@ -154,6 +156,11 @@ namespace HeuristicLab.Services.Hive {
     Guid AddStatistics(DT.Statistics dto);
     void DeleteStatistics(Guid id);
     List<DT.UserStatistics> GetUserStatistics();
+    #endregion
+
+    #region UserPriority Methods
+    IEnumerable<DT.UserPriority> GetUserPriorities(Expression<Func<UserPriority, bool>> predicate);
+    void EnqueueUserPriority(DT.UserPriority userPriority);
     #endregion
   }
 }

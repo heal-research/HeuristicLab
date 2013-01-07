@@ -22,16 +22,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Services.Hive.DataTransfer;
 using DA = HeuristicLab.Services.Hive.DataAccess;
 
 namespace HeuristicLab.Services.Hive {
   public class HeartbeatManager {
+    private const string MutexName = "HiveTaskSchedulingMutex";
+
     private IHiveDao dao {
       get { return ServiceLocator.Instance.HiveDao; }
     }
-    private IAuthorizationManager auth {
-      get { return ServiceLocator.Instance.AuthorizationManager; }
+    private ITaskScheduler taskScheduler {
+      get { return ServiceLocator.Instance.TaskScheduler; }
     }
 
     /// <summary>
@@ -65,28 +68,41 @@ namespace HeuristicLab.Services.Hive {
 
         // assign new task
         if (heartbeat.AssignJob && slave.IsAllowedToCalculate && heartbeat.FreeCores > 0) {
-          var availableJobs = dao.GetWaitingTasks(slave, 1);
-          if (availableJobs.Count() > 0) {
-            var job = availableJobs.First();
-            if (AssignJob(slave, job))
-              actions.Add(new MessageContainer(MessageContainer.MessageType.CalculateTask, job.Id));
+          bool mutexAquired = false;
+          var mutex = new Mutex(false, MutexName);
+          try {
+            mutexAquired = mutex.WaitOne(Properties.Settings.Default.SchedulingPatience);
+            if (!mutexAquired)
+              DA.LogFactory.GetLogger(this.GetType().Namespace).Log("HeartbeatManager: The mutex used for scheduling could not be aquired.");
+            else {
+              var availableTasks = taskScheduler.Schedule(dao.GetWaitingTasks(slave));
+              if (availableTasks.Any()) {
+                var task = availableTasks.First();
+                AssignJob(slave, task.TaskId);
+                actions.Add(new MessageContainer(MessageContainer.MessageType.CalculateTask, task.TaskId));
+              }
+            }
+          }
+          catch (AbandonedMutexException) {
+            DA.LogFactory.GetLogger(this.GetType().Namespace).Log("HeartbeatManager: The mutex used for scheduling has been abandoned.");
+          }
+          catch (Exception ex) {
+            DA.LogFactory.GetLogger(this.GetType().Namespace).Log("HeartbeatManager threw an exception in ProcessHeartbeat: " + ex.ToString());
+          }
+          finally {
+            if (mutexAquired) mutex.ReleaseMutex();
           }
         }
       }
       return actions;
     }
 
-    // returns true if assignment was successful
-    private bool AssignJob(Slave slave, Task task) {
-      // load task again and check if it is still available (this is an attempt to reduce the race condition which causes multiple heartbeats to get the same task assigned)
-      if (dao.GetTask(task.Id).State != TaskState.Waiting) return false;
-
-      task = dao.UpdateTaskState(task.Id, DataAccess.TaskState.Transferring, slave.Id, null, null);
+    private void AssignJob(Slave slave, Guid taskId) {
+      var task = dao.UpdateTaskState(taskId, DataAccess.TaskState.Transferring, slave.Id, null, null);
 
       // from now on the task has some time to send the next heartbeat (ApplicationConstants.TransferringJobHeartbeatTimeout)
       task.LastHeartbeat = DateTime.Now;
       dao.UpdateTask(task);
-      return true;
     }
 
     /// <summary>
