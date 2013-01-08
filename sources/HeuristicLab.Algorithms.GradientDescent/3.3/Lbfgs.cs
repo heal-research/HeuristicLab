@@ -24,6 +24,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -40,11 +41,11 @@ namespace HeuristicLab.Algorithms.GradientDescent {
   [StorableClass]
   public sealed class LbfgsAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public override Type ProblemType {
-      get { return typeof(SingleObjectiveTestFunctionProblem); }
+      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
     }
 
-    public new SingleObjectiveTestFunctionProblem Problem {
-      get { return (SingleObjectiveTestFunctionProblem)base.Problem; }
+    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
+      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
       set { base.Problem = value; }
     }
 
@@ -75,17 +76,38 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     public bool SetSeedRandomly { get { return SetSeedRandomlyParameter.Value.Value; } set { SetSeedRandomlyParameter.Value.Value = value; } }
     #endregion
 
+    [Storable]
+    private LbfgsInitializer initializer;
+    [Storable]
+    private LbfgsMakeStep makeStep;
+    [Storable]
+    private LbfgsUpdateResults updateResults;
+    [Storable]
+    private LbfgsAnalyzer analyzer;
+    [Storable]
+    private LbfgsAnalyzer finalAnalyzer;
+    [Storable]
+    private Placeholder solutionCreator;
+    [Storable]
+    private Placeholder evaluator;
+
     [StorableConstructor]
     private LbfgsAlgorithm(bool deserializing) : base(deserializing) { }
     private LbfgsAlgorithm(LbfgsAlgorithm original, Cloner cloner)
       : base(original, cloner) {
+      initializer = cloner.Clone(original.initializer);
+      makeStep = cloner.Clone(original.makeStep);
+      updateResults = cloner.Clone(original.updateResults);
+      analyzer = cloner.Clone(original.analyzer);
+      finalAnalyzer = cloner.Clone(original.finalAnalyzer);
+      solutionCreator = cloner.Clone(original.solutionCreator);
+      evaluator = cloner.Clone(original.evaluator);
+      RegisterEvents();
     }
     public LbfgsAlgorithm()
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
-
-      Problem = new SingleObjectiveTestFunctionProblem();
 
       Parameters.Add(new ValueParameter<IntValue>(MaxIterationsParameterName, "The maximal number of iterations for.", new IntValue(20)));
       Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
@@ -94,14 +116,14 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       Parameters[ApproximateGradientsParameterName].Hidden = true; // should not be changed
 
       var randomCreator = new RandomCreator();
-      var solutionCreator = new Placeholder();
-      var bfgsInitializer = new LbfgsInitializer();
-      var makeStep = new LbfgsMakeStep();
+      solutionCreator = new Placeholder();
+      initializer = new LbfgsInitializer();
+      makeStep = new LbfgsMakeStep();
       var branch = new ConditionalBranch();
-      var evaluator = new Placeholder();
-      var updateResults = new LbfgsUpdateResults();
-      var analyzer = new LbfgsAnalyzer();
-      var finalAnalyzer = new LbfgsAnalyzer();
+      evaluator = new Placeholder();
+      updateResults = new LbfgsUpdateResults();
+      analyzer = new LbfgsAnalyzer();
+      finalAnalyzer = new LbfgsAnalyzer();
 
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -111,47 +133,113 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       randomCreator.SetSeedRandomlyParameter.Value = null;
       randomCreator.Successor = solutionCreator;
 
-      solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
-      solutionCreator.Successor = bfgsInitializer;
+      solutionCreator.Name = "Solution Creator (placeholder)";
+      solutionCreator.Successor = initializer;
 
-      bfgsInitializer.IterationsParameter.ActualName = MaxIterationsParameterName;
-      bfgsInitializer.PointParameter.ActualName = Problem.SolutionCreator.RealVectorParameter.ActualName;
-      bfgsInitializer.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
-      bfgsInitializer.Successor = makeStep;
+      initializer.IterationsParameter.ActualName = MaxIterationsParameterName;
+      initializer.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
+      initializer.Successor = makeStep;
 
-      makeStep.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
-      makeStep.PointParameter.ActualName = bfgsInitializer.PointParameter.ActualName;
+      makeStep.StateParameter.ActualName = initializer.StateParameter.Name;
       makeStep.Successor = branch;
 
       branch.ConditionParameter.ActualName = makeStep.TerminationCriterionParameter.Name;
       branch.FalseBranch = evaluator;
       branch.TrueBranch = finalAnalyzer;
 
-      evaluator.OperatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+      evaluator.Name = "Evaluator (placeholder)";
       evaluator.Successor = updateResults;
 
-      updateResults.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
-      updateResults.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.Name;
+      updateResults.StateParameter.ActualName = initializer.StateParameter.Name;
       updateResults.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
       updateResults.Successor = analyzer;
 
-      analyzer.QualityParameter.ActualName = updateResults.QualityParameter.ActualName;
-      analyzer.PointParameter.ActualName = makeStep.PointParameter.ActualName;
-      analyzer.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
+      analyzer.StateParameter.ActualName = initializer.StateParameter.Name;
       analyzer.Successor = makeStep;
 
-      finalAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.Name;
-      finalAnalyzer.PointParameter.ActualName = makeStep.PointParameter.ActualName;
       finalAnalyzer.PointsTableParameter.ActualName = analyzer.PointsTableParameter.ActualName;
       finalAnalyzer.QualityGradientsTableParameter.ActualName = analyzer.QualityGradientsTableParameter.ActualName;
       finalAnalyzer.QualitiesTableParameter.ActualName = analyzer.QualitiesTableParameter.ActualName;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
+    private void AfterDeserialization() {
+      RegisterEvents();
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new LbfgsAlgorithm(this, cloner);
+    }
+
+    #region events
+    private void RegisterEvents() {
+      if (Problem != null) {
+        RegisterSolutionCreatorEvents();
+        RegisterEvaluatorEvents();
+      }
+    }
+
+    protected override void OnProblemChanged() {
+      base.OnProblemChanged();
+      if (Problem != null) {
+        RegisterEvents();
+        solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+        evaluator.OperatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+      }
+    }
+
+    protected override void Problem_SolutionCreatorChanged(object sender, EventArgs e) {
+      base.Problem_SolutionCreatorChanged(sender, e);
+      RegisterSolutionCreatorEvents();
+      ParameterizeOperators();
+    }
+
+    protected override void Problem_EvaluatorChanged(object sender, EventArgs e) {
+      base.Problem_EvaluatorChanged(sender, e);
+      RegisterEvaluatorEvents();
+      ParameterizeOperators();
+    }
+
+    private void RegisterSolutionCreatorEvents() {
+      var realVectorCreator = Problem.SolutionCreator as RealVectorCreator;
+      // ignore if we have a different kind of problem
+      if (realVectorCreator != null) {
+        realVectorCreator.RealVectorParameter.ActualNameChanged += (sender, args) => ParameterizeOperators();
+      }
+    }
+
+    private void RegisterEvaluatorEvents() {
+      Problem.Evaluator.QualityParameter.ActualNameChanged += (sender, args) => ParameterizeOperators();
+    }
+    #endregion
+
+    protected override void OnStarted() {
+      var realVectorCreator = Problem.SolutionCreator as RealVectorCreator;
+      // must catch the case that user loaded an unsupported problem
+      if (realVectorCreator == null)
+        throw new InvalidOperationException("LM-BFGS only works with problems using a real-value encoding.");
+      base.OnStarted();
+    }
+
+    public override void Prepare() {
+      if (Problem != null) base.Prepare();
+    }
+
+    private void ParameterizeOperators() {
+      var realVectorCreator = Problem.SolutionCreator as RealVectorCreator;
+      // ignore if we have a different kind of problem
+      if (realVectorCreator != null) {
+        var realVectorParameterName = realVectorCreator.RealVectorParameter.ActualName;
+        initializer.PointParameter.ActualName = realVectorParameterName;
+        makeStep.PointParameter.ActualName = realVectorParameterName;
+        analyzer.PointParameter.ActualName = realVectorParameterName;
+        finalAnalyzer.PointParameter.ActualName = realVectorParameterName;
+      }
+
+      var qualityParameterName = Problem.Evaluator.QualityParameter.ActualName;
+      updateResults.QualityParameter.ActualName = qualityParameterName;
+      analyzer.QualityParameter.ActualName = qualityParameterName;
+      finalAnalyzer.QualityParameter.ActualName = qualityParameterName;
     }
   }
 }
