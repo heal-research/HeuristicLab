@@ -29,7 +29,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.TestFunctions;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
