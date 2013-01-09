@@ -143,10 +143,34 @@ namespace HeuristicLab.Core.Views {
         SetNumberOfCheckItems();
       }
     }
+    protected override void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      base.Content_CollectionReset(sender, e);
+      SetNumberOfCheckItems();
+    }
+    protected override void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      base.Content_ItemsAdded(sender, e);
+      SetNumberOfCheckItems();
+    }
+    protected override void Content_ItemsMoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      base.Content_ItemsMoved(sender, e);
+      SetNumberOfCheckItems();
+    }
+    protected override void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      base.Content_ItemsRemoved(sender, e);
+      SetNumberOfCheckItems();
+    }
+    protected override void Content_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<IndexedItem<T>> e) {
+      base.Content_ItemsReplaced(sender, e);
+      SetNumberOfCheckItems();
+    }
     #endregion
 
     private void SetNumberOfCheckItems() {
-      this.itemsGroupBox.Text = String.Format("Items (Checked: {0}/{1})", Content.CheckedItems.Count(), Content.Count);
+      if (InvokeRequired) {
+        Invoke((Action)SetNumberOfCheckItems);
+      } else {
+        this.itemsGroupBox.Text = String.Format("Items (Checked: {0}/{1})", Content.CheckedItems.Count(), Content.Count);
+      }
     }
   }
 }
