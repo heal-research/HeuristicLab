@@ -19,25 +19,11 @@
  */
 #endregion
 
-using System;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class RegressionRealWorldInstanceProvider : ResourceRegressionInstanceProvider {
-    public override string Name {
-      get { return "Real World Benchmark Problems"; }
-    }
-    public override string Description {
-      get {
-        return "";
-      }
-    }
-    public override Uri WebLink {
-      get { return null; }
-    }
-    public override string ReferencePublication {
-      get { return ""; }
-    }
-
-    protected override string FileName { get { return "RegressionRealWorld"; } }
+  internal interface IRealWorldRegressionDataDescriptor : IDataDescriptor {
+    IntRange Training { get; }
+    IntRange Test { get; }
   }
 }
