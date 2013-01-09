@@ -23,29 +23,10 @@ using System.Collections.Generic;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public abstract class ArtificialRegressionDataDescriptor : IDataDescriptor {
-    public abstract string Name { get; }
-    public abstract string Description { get; }
-
-    protected abstract string TargetVariable { get; }
-    protected abstract string[] VariableNames { get; }
-    protected abstract string[] AllowedInputVariables { get; }
-    protected abstract int TrainingPartitionStart { get; }
-    protected abstract int TrainingPartitionEnd { get; }
-    protected abstract int TestPartitionStart { get; }
-    protected abstract int TestPartitionEnd { get; }
-
+  public abstract class ArtificialRegressionDataDescriptor : RegressionDataDescriptor {
     public IRegressionProblemData GenerateRegressionData() {
       Dataset dataset = new Dataset(VariableNames, this.GenerateValues());
-
-      RegressionProblemData regData = new RegressionProblemData(dataset, AllowedInputVariables, TargetVariable);
-      regData.Name = this.Name;
-      regData.Description = this.Description;
-      regData.TrainingPartition.Start = this.TrainingPartitionStart;
-      regData.TrainingPartition.End = this.TrainingPartitionEnd;
-      regData.TestPartition.Start = this.TestPartitionStart;
-      regData.TestPartition.End = this.TestPartitionEnd;
-      return regData;
+      return GenerateRegressionData(dataset);
     }
 
     protected abstract List<List<double>> GenerateValues();

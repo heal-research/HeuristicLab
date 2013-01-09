@@ -184,10 +184,11 @@
     <Compile Include="Regression\Nguyen\NguyenFunctionTwelve.cs" />
     <Compile Include="Regression\Nguyen\NguyenFunctionTwo.cs" />
     <Compile Include="Regression\Nguyen\NguyenInstanceProvider.cs" />
-    <Compile Include="Regression\RealWorld\IRealWorldRegressionDataDescriptor.cs" />
+    <Compile Include="Regression\RealWorld\ChemicalOne.cs" />
+    <Compile Include="Regression\RealWorld\Housing.cs" />
     <Compile Include="Regression\RealWorld\RealWorldRegressionInstanceProvider.cs" />
-    <Compile Include="Regression\RealWorld\RealWorldResourceRegressionDataDescriptor.cs" />
     <Compile Include="Regression\RealWorld\Tower.cs" />
+    <Compile Include="Regression\RegressionDataDescriptor.cs" />
     <Compile Include="Regression\RegressionImportType.cs" />
     <Compile Include="Regression\RegressionInstanceProvider.cs" />
     <Compile Include="Regression\ResourceRegressionDataDescriptor.cs" />

@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using HeuristicLab.Problems.DataAnalysis;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
@@ -46,7 +45,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string FileName { get { return "RegressionRealWorld"; } }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      List<IRealWorldRegressionDataDescriptor> descriptorList = new List<IRealWorldRegressionDataDescriptor>();
+      List<ResourceRegressionDataDescriptor> descriptorList = new List<ResourceRegressionDataDescriptor>();
+      descriptorList.Add(new ChemicalOne());
+      descriptorList.Add(new Housing());
       descriptorList.Add(new Tower());
       var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
@@ -58,31 +59,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           }
           foreach (var entry in entries.OrderBy(x => x)) {
             string prettyName = Path.GetFileNameWithoutExtension(entry);
-            IRealWorldRegressionDataDescriptor desc = descriptorList.Where(x => x.Name.Equals(prettyName)).FirstOrDefault();
+            ResourceRegressionDataDescriptor desc = descriptorList.Where(x => x.Name.Equals(prettyName)).FirstOrDefault();
             if (desc != null) {
-              yield return new RealWorldResourceRegressionDataDescriptor(prettyName, desc.Description, entry, desc.Training, desc.Test);
+              desc.ResourceName = entry;
+              yield return desc;
             } else
-              yield return new ResourceRegressionDataDescriptor(prettyName, Description, entry);
+              throw new ArgumentNullException("No Descriptor could be found for this entry.");
           }
         }
       }
-    }
-
-    public override IRegressionProblemData LoadData(IDataDescriptor id) {
-      var problem = base.LoadData(id);
-
-      var descriptor = id as RealWorldResourceRegressionDataDescriptor;
-
-      if (descriptor == null) {
-        return problem;
-      }
-
-      problem.TrainingPartition.Start = descriptor.Training.Start;
-      problem.TrainingPartition.End = descriptor.Training.End;
-      problem.TestPartition.Start = descriptor.Test.Start;
-      problem.TestPartition.End = descriptor.Test.End;
-
-      return problem;
     }
   }
 }

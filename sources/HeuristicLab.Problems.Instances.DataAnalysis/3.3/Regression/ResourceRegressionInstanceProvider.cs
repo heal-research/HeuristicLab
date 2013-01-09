@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -34,21 +33,21 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     protected abstract string FileName { get; }
 
-    public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
-      if (!String.IsNullOrEmpty(solutionsArchiveName)) {
-        using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
-          IList<string> entries = new List<string>();
-          ZipEntry curEntry;
-          while ((curEntry = solutionsZipFile.GetNextEntry()) != null) {
-            entries.Add(curEntry.Name);
-          }
-          foreach (var entry in entries.OrderBy(x => x)) {
-            yield return new ResourceRegressionDataDescriptor(Path.GetFileNameWithoutExtension(entry), Description, entry);
-          }
-        }
-      }
-    }
+    //public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
+    //  var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
+    //  if (!String.IsNullOrEmpty(solutionsArchiveName)) {
+    //    using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
+    //      IList<string> entries = new List<string>();
+    //      ZipEntry curEntry;
+    //      while ((curEntry = solutionsZipFile.GetNextEntry()) != null) {
+    //        entries.Add(curEntry.Name);
+    //      }
+    //      foreach (var entry in entries.OrderBy(x => x)) {
+    //        yield return new ResourceRegressionDataDescriptor(Path.GetFileNameWithoutExtension(entry), Description, entry);
+    //      }
+    //    }
+    //  }
+    //}
 
     public override IRegressionProblemData LoadData(IDataDescriptor id) {
       var descriptor = (ResourceRegressionDataDescriptor)id;
@@ -69,20 +68,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         }
 
         Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-        string targetVar = csvFileParser.VariableNames.Where(x => dataset.DoubleVariables.Contains(x)).Last();
-        IEnumerable<string> allowedInputVars = dataset.DoubleVariables.Where(x => !x.Equals(targetVar));
+        if (!descriptor.CheckVariableNames(csvFileParser.VariableNames)) {
+          throw new ArgumentException("Parsed file contains variables which are not in the descriptor.");
+        }
 
-        IRegressionProblemData regData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
-
-        int trainingPartEnd = csvFileParser.Rows * 2 / 3;
-        regData.TrainingPartition.Start = 0;
-        regData.TrainingPartition.End = trainingPartEnd;
-        regData.TestPartition.Start = trainingPartEnd;
-        regData.TestPartition.End = csvFileParser.Rows;
-
-        regData.Name = descriptor.Name;
-        regData.Description = descriptor.Description;
-        return regData;
+        return descriptor.GenerateRegressionData(dataset);
       }
     }
 
