@@ -239,8 +239,8 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.790111952286997, GetDoubleResult(ga, "BestQuality"), 1E-8);
-      Assert.AreEqual(0.547381191721895, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(0.858344291534625, GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(0.56758466520692641, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
     }
@@ -250,9 +250,9 @@ namespace HeuristicLab_33.Tests {
       #region Problem Configuration
       SymbolicRegressionSingleObjectiveProblem symbRegProblem = new SymbolicRegressionSingleObjectiveProblem();
       symbRegProblem.Name = "Tower Symbolic Regression Problem";
-      symbRegProblem.Description = "Tower Dataset (downloaded from: http://vanillamodeling.com/realproblems.html)";
+      symbRegProblem.Description = "Tower Dataset (downloaded from: http://www.symbolicregression.com/?q=towerProblem)";
       RegressionRealWorldInstanceProvider provider = new RegressionRealWorldInstanceProvider();
-      var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("TowerData")).Single();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name.Equals("Tower")).Single();
       var towerProblemData = (RegressionProblemData)provider.LoadData(instance);
       towerProblemData.TargetVariableParameter.Value = towerProblemData.TargetVariableParameter.ValidValues
         .First(v => v.Value == "towerResponse");
@@ -271,8 +271,8 @@ namespace HeuristicLab_33.Tests {
       towerProblemData.InputVariables.SetItemCheckedState(
         towerProblemData.InputVariables.Single(x => x.Value == "towerResponse"), false);
       towerProblemData.TrainingPartition.Start = 0;
-      towerProblemData.TrainingPartition.End = 4000;
-      towerProblemData.TestPartition.Start = 4000;
+      towerProblemData.TrainingPartition.End = 3136;
+      towerProblemData.TestPartition.Start = 3136;
       towerProblemData.TestPartition.End = 4999;
       towerProblemData.Name = "Data imported from towerData.txt";
       towerProblemData.Description = "Chemical concentration at top of distillation tower, dataset downloaded from: http://vanillamodeling.com/realproblems.html, best R² achieved with nu-SVR = 0.97";
@@ -299,9 +299,9 @@ namespace HeuristicLab_33.Tests {
       // configure remaining problem parameters
       symbRegProblem.BestKnownQuality.Value = 0.97;
       symbRegProblem.FitnessCalculationPartition.Start = 0;
-      symbRegProblem.FitnessCalculationPartition.End = 2800;
-      symbRegProblem.ValidationPartition.Start = 2800;
-      symbRegProblem.ValidationPartition.End = 4000;
+      symbRegProblem.FitnessCalculationPartition.End = 2300;
+      symbRegProblem.ValidationPartition.Start = 2300;
+      symbRegProblem.ValidationPartition.End = 3136;
       symbRegProblem.RelativeNumberOfEvaluatedSamples.Value = 1;
       symbRegProblem.MaximumSymbolicExpressionTreeLength.Value = 150;
       symbRegProblem.MaximumSymbolicExpressionTreeDepth.Value = 12;
