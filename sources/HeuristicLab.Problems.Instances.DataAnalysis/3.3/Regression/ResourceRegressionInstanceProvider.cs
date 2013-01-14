@@ -33,22 +33,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     protected abstract string FileName { get; }
 
-    //public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-    //  var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
-    //  if (!String.IsNullOrEmpty(solutionsArchiveName)) {
-    //    using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
-    //      IList<string> entries = new List<string>();
-    //      ZipEntry curEntry;
-    //      while ((curEntry = solutionsZipFile.GetNextEntry()) != null) {
-    //        entries.Add(curEntry.Name);
-    //      }
-    //      foreach (var entry in entries.OrderBy(x => x)) {
-    //        yield return new ResourceRegressionDataDescriptor(Path.GetFileNameWithoutExtension(entry), Description, entry);
-    //      }
-    //    }
-    //  }
-    //}
-
     public override IRegressionProblemData LoadData(IDataDescriptor id) {
       var descriptor = (ResourceRegressionDataDescriptor)id;
 
