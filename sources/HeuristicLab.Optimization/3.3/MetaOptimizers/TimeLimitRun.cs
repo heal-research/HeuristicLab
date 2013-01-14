@@ -32,8 +32,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  internal enum TimeLimitedRunAction { None, Prepare, Start, Pause, Stop };
-
   /// <summary>
   /// A run in which an algorithm is executed for a certain maximum time only.
   /// </summary>
