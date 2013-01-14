@@ -106,7 +106,7 @@ namespace HeuristicLab.Optimization {
     private void AddProblemAnalyzer() {
       if (Analyzer != null && Problem != null) {
         foreach (IAnalyzer analyzer in Problem.Operators.OfType<IAnalyzer>()) {
-          Analyzer.Operators.Add(analyzer);
+          Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
         }
       }
     }

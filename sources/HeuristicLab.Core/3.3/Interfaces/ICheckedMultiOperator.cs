@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -20,10 +20,8 @@
 #endregion
 
 
-using HeuristicLab.Core;
-namespace HeuristicLab.Optimization {
-  /// <summary>
-  /// An interface which represents a multi analysis operator.
-  /// </summary>
-  public interface IMultiAnalyzer : ICheckedMultiOperator<IAnalyzer>, IAnalyzer { }
+namespace HeuristicLab.Core {
+  public interface ICheckedMultiOperator<T> : IMultiOperator<T> where T : class,IOperator {
+    new ICheckedItemList<T> Operators { get; }
+  }
 }
