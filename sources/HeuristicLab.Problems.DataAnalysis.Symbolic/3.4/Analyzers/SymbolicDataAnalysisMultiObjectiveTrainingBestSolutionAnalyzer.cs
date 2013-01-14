@@ -19,17 +19,16 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// <summary>
@@ -41,6 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     where T : class, ISymbolicDataAnalysisSolution {
     private const string TrainingBestSolutionsParameterName = "Best training solutions";
     private const string TrainingBestSolutionQualitiesParameterName = "Best training solution qualities";
+    private const string UpdateAlwaysParameterName = "Always update best solutions";
 
     #region parameter properties
     public ILookupParameter<ItemList<T>> TrainingBestSolutionsParameter {
@@ -48,6 +48,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public ILookupParameter<ItemList<DoubleArray>> TrainingBestSolutionQualitiesParameter {
       get { return (ILookupParameter<ItemList<DoubleArray>>)Parameters[TrainingBestSolutionQualitiesParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> UpdateAlwaysParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateAlwaysParameterName]; }
     }
     #endregion
     #region properties
@@ -59,6 +62,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return TrainingBestSolutionQualitiesParameter.ActualValue; }
       set { TrainingBestSolutionQualitiesParameter.ActualValue = value; }
     }
+    public BoolValue UpdateAlways {
+      get { return UpdateAlwaysParameter.Value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -68,6 +74,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Parameters.Add(new LookupParameter<ItemList<T>>(TrainingBestSolutionsParameterName, "The training best (Pareto-optimal) symbolic data analysis solutions."));
       Parameters.Add(new LookupParameter<ItemList<DoubleArray>>(TrainingBestSolutionQualitiesParameterName, "The qualities of the training best (Pareto-optimal) solutions."));
+      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solutions should always be updated regardless of its quality.", new BoolValue(false)));
+      UpdateAlwaysParameter.Hidden = true;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(UpdateAlwaysParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solutions should always be updated regardless of its quality.", new BoolValue(false)));
+        UpdateAlwaysParameter.Hidden = true;
+      }
     }
 
     public override IOperation Apply() {
@@ -80,9 +96,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         results.Add(new Result(TrainingBestSolutionsParameter.Name, TrainingBestSolutionsParameter.Description, TrainingBestSolutions));
       }
 
-      IList<double[]> trainingBestQualities = TrainingBestSolutionQualities
-        .Select(x => x.ToArray())
-        .ToList();
+      //if the pareto front of best solutions shall be updated regardless of the quality, the list initialized empty to discard old solutions
+      IList<double[]> trainingBestQualities;
+      if (UpdateAlways.Value) {
+        trainingBestQualities = new List<double[]>();
+      } else {
+        trainingBestQualities = TrainingBestSolutionQualities.Select(x => x.ToArray()).ToList();
+      }
 
       #region find best trees
       IList<int> nonDominatedIndexes = new List<int>();
@@ -130,7 +150,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private class DoubleArrayComparer : IEqualityComparer<double[]> {
       public bool Equals(double[] x, double[] y) {
         if (y.Length != x.Length) throw new ArgumentException();
-        for (int i = 0; i < x.Length;i++ ) {
+        for (int i = 0; i < x.Length; i++) {
           if (!x[i].IsAlmost(y[i])) return false;
         }
         return true;

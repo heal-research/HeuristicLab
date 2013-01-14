@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     where U : class, IDataAnalysisProblemData {
     private const string ValidationBestSolutionsParameterName = "Best validation solutions";
     private const string ValidationBestSolutionQualitiesParameterName = "Best validation solution qualities";
+    private const string UpdateAlwaysParameterName = "Always update best solutions";
 
     #region parameter properties
     public ILookupParameter<ItemList<S>> ValidationBestSolutionsParameter {
@@ -50,6 +51,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public ILookupParameter<ItemList<DoubleArray>> ValidationBestSolutionQualitiesParameter {
       get { return (ILookupParameter<ItemList<DoubleArray>>)Parameters[ValidationBestSolutionQualitiesParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> UpdateAlwaysParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateAlwaysParameterName]; }
     }
     #endregion
     #region properties
@@ -61,6 +65,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return ValidationBestSolutionQualitiesParameter.ActualValue; }
       set { ValidationBestSolutionQualitiesParameter.ActualValue = value; }
     }
+    public BoolValue UpdateAlways {
+      get { return UpdateAlwaysParameter.Value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -70,6 +77,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Parameters.Add(new LookupParameter<ItemList<S>>(ValidationBestSolutionsParameterName, "The validation best (Pareto-optimal) symbolic data analysis solutions."));
       Parameters.Add(new LookupParameter<ItemList<DoubleArray>>(ValidationBestSolutionQualitiesParameterName, "The qualities of the validation best (Pareto-optimal) solutions."));
+      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best validation solutions should always be updated regardless of its quality.", new BoolValue(false)));
+      UpdateAlwaysParameter.Hidden = true;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(UpdateAlwaysParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solutions should always be updated regardless of its quality.", new BoolValue(false)));
+        UpdateAlwaysParameter.Hidden = true;
+      }
     }
 
     public override IOperation Apply() {
@@ -85,9 +102,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         results.Add(new Result(ValidationBestSolutionsParameter.Name, ValidationBestSolutionsParameter.Description, ValidationBestSolutions));
       }
 
-      IList<double[]> trainingBestQualities = ValidationBestSolutionQualities
-        .Select(x => x.ToArray())
-        .ToList();
+      //if the pareto front of best solutions shall be updated regardless of the quality, the list initialized empty to discard old solutions
+      IList<double[]> trainingBestQualities;
+      if (UpdateAlways.Value) {
+        trainingBestQualities = new List<double[]>();
+      } else {
+        trainingBestQualities = ValidationBestSolutionQualities.Select(x => x.ToArray()).ToList();
+      }
 
       #region find best trees
       IList<int> nonDominatedIndexes = new List<int>();

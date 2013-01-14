@@ -42,6 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     where U : class, IDataAnalysisProblemData {
     private const string ValidationBestSolutionParameterName = "Best validation solution";
     private const string ValidationBestSolutionQualityParameterName = "Best validation solution quality";
+    private const string UpdateAlwaysParameterName = "Always update best solution";
 
     #region parameter properties
     public ILookupParameter<S> ValidationBestSolutionParameter {
@@ -49,6 +50,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public ILookupParameter<DoubleValue> ValidationBestSolutionQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[ValidationBestSolutionQualityParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> UpdateAlwaysParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateAlwaysParameterName]; }
     }
     #endregion
     #region properties
@@ -60,6 +64,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return ValidationBestSolutionQualityParameter.ActualValue; }
       set { ValidationBestSolutionQualityParameter.ActualValue = value; }
     }
+    public BoolValue UpdateAlways {
+      get { return UpdateAlwaysParameter.Value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -69,6 +76,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Parameters.Add(new LookupParameter<S>(ValidationBestSolutionParameterName, "The validation best symbolic data analyis solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(ValidationBestSolutionQualityParameterName, "The quality of the validation best symbolic data analysis solution."));
+      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best validation solution should always be updated regardless of its quality.", new BoolValue(false)));
+      UpdateAlwaysParameter.Hidden = true;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(UpdateAlwaysParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solution should always be updated regardless of its quality.", new BoolValue(false)));
+        UpdateAlwaysParameter.Hidden = true;
+      }
     }
 
     public override IOperation Apply() {
@@ -116,7 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #endregion
 
       var results = ResultCollection;
-      if (ValidationBestSolutionQuality == null ||
+      if (UpdateAlways.Value || ValidationBestSolutionQuality == null ||
         IsBetter(bestValidationQuality, ValidationBestSolutionQuality.Value, Maximization.Value)) {
         ValidationBestSolution = CreateSolution(bestTree, bestValidationQuality);
         ValidationBestSolutionQuality = new DoubleValue(bestValidationQuality);

@@ -19,13 +19,11 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -40,6 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     where T : class, ISymbolicDataAnalysisSolution {
     private const string TrainingBestSolutionParameterName = "Best training solution";
     private const string TrainingBestSolutionQualityParameterName = "Best training solution quality";
+    private const string UpdateAlwaysParameterName = "Always update best solution";
 
     #region parameter properties
     public ILookupParameter<T> TrainingBestSolutionParameter {
@@ -47,6 +46,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public ILookupParameter<DoubleValue> TrainingBestSolutionQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[TrainingBestSolutionQualityParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> UpdateAlwaysParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateAlwaysParameterName]; }
     }
     #endregion
     #region properties
@@ -58,6 +60,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return TrainingBestSolutionQualityParameter.ActualValue; }
       set { TrainingBestSolutionQualityParameter.ActualValue = value; }
     }
+    public BoolValue UpdateAlways {
+      get { return UpdateAlwaysParameter.Value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -67,6 +72,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Parameters.Add(new LookupParameter<T>(TrainingBestSolutionParameterName, "The training best symbolic data analyis solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(TrainingBestSolutionQualityParameterName, "The quality of the training best symbolic data analysis solution."));
+      Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solution should always be updated regardless of its quality.", new BoolValue(false)));
+      UpdateAlwaysParameter.Hidden = true;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(UpdateAlwaysParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solution should always be updated regardless of its quality.", new BoolValue(false)));
+        UpdateAlwaysParameter.Hidden = true;
+      }
     }
 
     public override IOperation Apply() {
@@ -84,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #endregion
 
       var results = ResultCollection;
-      if (bestTree != null && (TrainingBestSolutionQuality == null ||
+      if (bestTree != null && (UpdateAlways.Value || TrainingBestSolutionQuality == null ||
         IsBetter(bestQuality, TrainingBestSolutionQuality.Value, Maximization.Value))) {
         TrainingBestSolution = CreateSolution(bestTree, bestQuality);
         TrainingBestSolutionQuality = new DoubleValue(bestQuality);
