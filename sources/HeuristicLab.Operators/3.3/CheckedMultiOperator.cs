@@ -29,7 +29,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("CheckedMultiOperator", "A base class for operators which apply arbitrary many other operators of a specific type that can be checked or unchecked.")]
   [StorableClass]
-  public abstract class CheckedMultiOperator<T> : MultiOperator<T> where T : class, IOperator {
+  public abstract class CheckedMultiOperator<T> : MultiOperator<T>, ICheckedMultiOperator<T> where T : class, IOperator {
     /// <summary>
     /// Gets the operators of the checked multi operator
     /// </summary>
