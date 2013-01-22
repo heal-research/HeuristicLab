@@ -10,26 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		PreBuildEvent.cmd = PreBuildEvent.cmd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure-3.3", "HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj", "{94186A6A-5176-4402-AE83-886557B53CCA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence-3.3", "HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj", "{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.GUI-3.3", "HeuristicLab.Persistence.GUI\3.3\HeuristicLab.Persistence.GUI-3.3.csproj", "{A9E282EA-180F-4233-B809-AEDF0787545C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Core-3.3", "HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj", "{C36BD924-A541-4A00-AFA8-41701378DDC5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Data-3.3", "HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj", "{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators-3.3", "HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj", "{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SequentialEngine-3.3", "HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj", "{DC3D7072-7999-4719-B65D-3997744D5DC1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Random-3.3", "HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj", "{F4539FB6-4708-40C9-BE64-0A1390AEA197}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Selection-3.3", "HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj", "{2C36CD4F-E5F5-43A4-801A-201EA895FE17}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.Programmable-3.3", "HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj", "{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "HeuristicLab\3.3\HeuristicLab-3.3.csproj", "{B1DCDECA-B56E-41D5-9850-EF0D3A77DEAF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E1D6C801-892A-406A-B606-F158E36DD3C3} = {E1D6C801-892A-406A-B606-F158E36DD3C3}
@@ -151,6 +131,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937} = {BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}
 		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5} = {6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.PluginInfrastructure-3.3", "HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj", "{94186A6A-5176-4402-AE83-886557B53CCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence-3.3", "HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj", "{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Persistence.GUI-3.3", "HeuristicLab.Persistence.GUI\3.3\HeuristicLab.Persistence.GUI-3.3.csproj", "{A9E282EA-180F-4233-B809-AEDF0787545C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Core-3.3", "HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj", "{C36BD924-A541-4A00-AFA8-41701378DDC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Data-3.3", "HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj", "{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators-3.3", "HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj", "{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.SequentialEngine-3.3", "HeuristicLab.SequentialEngine\3.3\HeuristicLab.SequentialEngine-3.3.csproj", "{DC3D7072-7999-4719-B65D-3997744D5DC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Random-3.3", "HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj", "{F4539FB6-4708-40C9-BE64-0A1390AEA197}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Selection-3.3", "HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj", "{2C36CD4F-E5F5-43A4-801A-201EA895FE17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Operators.Programmable-3.3", "HeuristicLab.Operators.Programmable\3.3\HeuristicLab.Operators.Programmable-3.3.csproj", "{6A5F8C2D-B0C3-4B36-BC20-9B1A91EE6DB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Tracing-3.3", "HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj", "{EE2034D9-6E27-48A1-B855-42D45F69A4FC}"
 EndProject
