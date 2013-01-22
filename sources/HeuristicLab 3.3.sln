@@ -352,7 +352,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.LawnM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.ScatterSearch-3.3", "HeuristicLab.Algorithms.ScatterSearch\3.3\HeuristicLab.Algorithms.ScatterSearch-3.3.csproj", "{5FEE5DB4-7FD9-4CBD-BEC2-3FEE17B31A94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.GradientDescent", "HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent.csproj", "{1256B945-EEA9-4BE4-9880-76B5B113F089}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.GradientDescent-3.3", "HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent-3.3.csproj", "{1256B945-EEA9-4BE4-9880-76B5B113F089}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3", "HeuristicLab.Problems.Instances.DataAnalysis.Views\3.3\HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3.csproj", "{72232235-B6CF-4E6C-B086-9E9E11AA0717}"
 EndProject

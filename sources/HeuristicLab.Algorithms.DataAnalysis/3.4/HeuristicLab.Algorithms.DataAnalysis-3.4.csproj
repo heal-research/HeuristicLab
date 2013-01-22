@@ -266,7 +266,7 @@
     <Compile Include="TimeSeries\AutoregressiveModeling.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent-3.3.csproj">
       <Project>{1256B945-EEA9-4BE4-9880-76B5B113F089}</Project>
       <Name>HeuristicLab.Algorithms.GradientDescent</Name>
       <Private>False</Private>
