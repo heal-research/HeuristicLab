@@ -65,6 +65,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // viewsLabel
       // 
       this.viewsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.viewsLabel.ContextMenuStrip = this.viewContextMenuStrip;
       this.viewsLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Windows;
       this.viewsLabel.Location = new System.Drawing.Point(211, 0);
       this.viewsLabel.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);

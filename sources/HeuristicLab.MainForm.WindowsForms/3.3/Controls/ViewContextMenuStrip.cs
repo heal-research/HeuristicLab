@@ -62,6 +62,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void RefreshMenuItems() {
       if (InvokeRequired) Invoke((Action)RefreshMenuItems);
       else {
+        foreach (ToolStripMenuItem m in menuItems.Values)
+          m.Dispose();
         this.Items.Clear();
         this.menuItems.Clear();
 
