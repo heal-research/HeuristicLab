@@ -44,9 +44,7 @@ namespace HeuristicLab.Netron {
     }
 
     public override bool ActivateTextEditor(ITextProvider textProvider) {
-      TextEditor.GetEditor(textProvider);
-      TextEditor.Show();
-      return true;
+      return false;
     }
 
     public ILayout StandardTreeLayout {

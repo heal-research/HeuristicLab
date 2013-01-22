@@ -121,7 +121,6 @@
     <Compile Include="Ghosts.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TextEditor.cs" />
     <Compile Include="View.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -170,7 +169,7 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent>
+    <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
 </Project>

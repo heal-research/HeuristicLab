@@ -48,7 +48,6 @@ namespace HeuristicLab.Netron {
         this.View = new View(this);
         this.AttachToDocument(Document);
         this.Controller.View = View;
-        TextEditor.Init(this);
 
         View.OnCursorChange += new EventHandler<CursorEventArgs>(mView_OnCursorChange);
         View.OnBackColorChange += new EventHandler<ColorEventArgs>(View_OnBackColorChange);

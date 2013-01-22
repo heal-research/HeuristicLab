@@ -34,59 +34,40 @@ using Netron.Diagramming.Core;
 
 namespace HeuristicLab.Netron {
   internal static class GhostsFactory {
-    private static RectGhost mRectangular;
-    private static LineGhost mLine;
-    private static EllipticGhost mEllipse;
-    private static MultiLineGhost mMultiLine;
-    private static CurvedLineGhost mCurvedLine;
-    private static PolygonGhost mPolygon;
-
-    private static IView mView;
-    public static IView View {
-      get { return mView; }
-      set { mView = value; }
-    }
-
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
-    public static IGhost GetGhost(object pars, GhostTypes type) {
+    public static IGhost GetGhost(object pars, GhostTypes type, IView View) {
       Point[] points;
       switch (type) {
         case GhostTypes.Rectangle:
-          if (mRectangular == null)
-            mRectangular = new RectGhost(View);
+          var mRectangular = new RectGhost(View);
           points = (Point[])pars;
           mRectangular.Start = points[0];
           mRectangular.End = points[1];
           return mRectangular;
         case GhostTypes.Ellipse:
-          if (mEllipse == null)
-            mEllipse = new EllipticGhost(View);
+          var mEllipse = new EllipticGhost(View);
           points = (Point[])pars;
           mEllipse.Start = points[0];
           mEllipse.End = points[1];
           return mEllipse;
         case GhostTypes.Line:
-          if (mLine == null)
-            mLine = new LineGhost(View);
+          var mLine = new LineGhost(View);
           points = (Point[])pars;
           mLine.Start = points[0];
           mLine.End = points[1];
           return mLine;
         case GhostTypes.MultiLine:
-          if (mMultiLine == null)
-            mMultiLine = new MultiLineGhost(View);
+          var mMultiLine = new MultiLineGhost(View);
           points = (Point[])pars;
           mMultiLine.Points = points;
           return mMultiLine;
         case GhostTypes.CurvedLine:
-          if (mCurvedLine == null)
-            mCurvedLine = new CurvedLineGhost(View);
+          var mCurvedLine = new CurvedLineGhost(View);
           points = (Point[])pars;
           mCurvedLine.Points = points;
           return mCurvedLine;
         case GhostTypes.Polygon:
-          if (mPolygon == null)
-            mPolygon = new PolygonGhost(View);
+          var mPolygon = new PolygonGhost(View);
           points = (Point[])pars;
           mPolygon.Points = points;
           return mPolygon;

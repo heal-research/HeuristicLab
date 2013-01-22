@@ -41,7 +41,6 @@ namespace HeuristicLab.Netron {
       // this.Model.OnEntityAdded += new EventHandler<EntityEventArgs>(Model_OnEntityAdded);
       this.HorizontalRuler.Visible = true;
       this.VerticalRuler.Visible = true;
-      GhostsFactory.View = this;
     }
 
     void Selection_OnNewSelection(object sender, EventArgs e) {
@@ -101,7 +100,7 @@ namespace HeuristicLab.Netron {
 
       Ghost = GhostsFactory.GetGhost(
           new Point[] { ltPoint, rbPoint },
-              GhostTypes.Ellipse);
+              GhostTypes.Ellipse, this);
     }
     public override void PaintGhostRectangle(
         Point ltPoint,
@@ -111,7 +110,7 @@ namespace HeuristicLab.Netron {
 
       Ghost = GhostsFactory.GetGhost(
           new Point[] { ltPoint, rbPoint },
-          GhostTypes.Rectangle);
+          GhostTypes.Rectangle, this);
     }
     public override void PaintAntsRectangle(
         Point ltPoint,
@@ -128,7 +127,7 @@ namespace HeuristicLab.Netron {
 
       Ghost = GhostsFactory.GetGhost(
           new Point[] { ltPoint, rbPoint },
-          GhostTypes.Line);
+          GhostTypes.Line, this);
     }
     public override void PaintGhostLine(
         MultiPointType curveType,
@@ -138,13 +137,13 @@ namespace HeuristicLab.Netron {
 
       switch (curveType) {
         case MultiPointType.Straight:
-          Ghost = GhostsFactory.GetGhost(points, GhostTypes.MultiLine);
+          Ghost = GhostsFactory.GetGhost(points, GhostTypes.MultiLine, this);
           break;
         case MultiPointType.Polygon:
-          Ghost = GhostsFactory.GetGhost(points, GhostTypes.Polygon);
+          Ghost = GhostsFactory.GetGhost(points, GhostTypes.Polygon, this);
           break;
         case MultiPointType.Curve:
-          Ghost = GhostsFactory.GetGhost(points, GhostTypes.CurvedLine);
+          Ghost = GhostsFactory.GetGhost(points, GhostTypes.CurvedLine, this);
           break;
 
       }
