@@ -30,7 +30,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("AlgorithmOperator", "An operator which represents an algorithm represented as an operator graph.")]
   [StorableClass]
-  public abstract class AlgorithmOperator : SingleSuccessorOperator {
+  public abstract class AlgorithmOperator : SingleSuccessorOperator, IOperatorGraphOperator {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Module; }
     }

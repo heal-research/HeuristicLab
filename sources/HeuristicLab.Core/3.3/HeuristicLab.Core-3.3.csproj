@@ -151,6 +151,7 @@
     <Compile Include="Interfaces\IConstrainedValueParameter.cs" />
     <Compile Include="Interfaces\IMultiOperator.cs" />
     <Compile Include="Interfaces\IFixedValueParameter.cs" />
+    <Compile Include="Interfaces\IOperatorGraphOperator.cs" />
     <Compile Include="Interfaces\IStatefulItem.cs" />
     <Compile Include="OperatorExecutionException.cs" />
     <Compile Include="Interfaces\IScopeTreeLookupParameter.cs" />

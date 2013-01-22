@@ -262,6 +262,9 @@ namespace HeuristicLab.Core {
         if (visited.Contains(current)) continue;
         visited.Add(current);
 
+        IOperatorGraphOperator operatorGraphOperator = current as IOperatorGraphOperator;
+        if (operatorGraphOperator != null) open.Push(operatorGraphOperator.OperatorGraph.InitialOperator);
+
         foreach (var parameter in current.Parameters.OfType<IValueParameter>()) {
           if (!typeof(IOperator).IsAssignableFrom(parameter.DataType)) continue;
           if (parameter.Value == null) continue;
