@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -32,9 +33,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.ignoredViewTypes = new List<Type>();
     }
 
-    public ViewContextMenuStrip(object item)
-      : this() {
-      this.Item = item;
+    public ViewContextMenuStrip(IContainer container)
+      : base(container) {
+        InitializeComponent();
+      this.menuItems = new Dictionary<Type, ToolStripMenuItem>();
+      this.ignoredViewTypes = new List<Type>();
     }
 
     private object item;

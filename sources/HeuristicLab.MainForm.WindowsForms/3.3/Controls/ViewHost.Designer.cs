@@ -47,7 +47,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.components = new System.ComponentModel.Container();
       this.messageLabel = new System.Windows.Forms.Label();
       this.viewsLabel = new System.Windows.Forms.Label();
-      this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip();
+      this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip(this.components);
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.configurationLabel = new System.Windows.Forms.Label();
       this.SuspendLayout();
