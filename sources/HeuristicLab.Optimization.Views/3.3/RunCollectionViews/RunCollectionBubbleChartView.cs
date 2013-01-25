@@ -19,17 +19,17 @@
  */
 #endregion
 
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection BubbleChart")]
@@ -57,6 +57,7 @@ namespace HeuristicLab.Optimization.Views {
 
       chart.ContextMenuStrip.Items.Insert(0, hideRunToolStripMenuItem);
       chart.ContextMenuStrip.Items.Insert(1, openBoxPlotViewToolStripMenuItem);
+      chart.ContextMenuStrip.Items.Add(getDataAsMatrixToolStripMenuItem);
       chart.ContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(ContextMenuStrip_Opening);
 
       runToDataPointMapping = new Dictionary<IRun, List<DataPoint>>();
@@ -686,6 +687,37 @@ namespace HeuristicLab.Optimization.Views {
       boxplotView.xAxisComboBox.SelectedItem = xAxisComboBox.SelectedItem;
       boxplotView.yAxisComboBox.SelectedItem = yAxisComboBox.SelectedItem;
       boxplotView.Show();
+    }
+
+    private void getDataAsMatrixToolStripMenuItem_Click(object sender, EventArgs e) {
+      int xCol = Matrix.ColumnNames.ToList().IndexOf(xAxisValue);
+      var grouped = new Dictionary<string, List<string>>();
+      Dictionary<double, string> reverseMapping = null;
+      if (categoricalMapping.ContainsKey(xCol))
+        reverseMapping = categoricalMapping[xCol].ToDictionary(x => x.Value, y => y.Key.ToString());
+      foreach (var run in Content.Where(r => r.Visible)) {
+        var x = GetValue(run, xAxisValue);
+        var y = GetValue(run, yAxisValue);
+        if (!(x.HasValue && y.HasValue)) continue;
+
+        var category = reverseMapping == null ? x.Value.ToString() : reverseMapping[x.Value];
+        if (!grouped.ContainsKey(category)) grouped[category] = new List<string>();
+        grouped[category].Add(y.Value.ToString());
+      }
+
+      if (!grouped.Any()) return;
+      var matrix = new StringMatrix(grouped.Values.Max(x => x.Count), grouped.Count) {
+        ColumnNames = grouped.Keys.ToArray()
+      };
+      int i = 0;
+      foreach (var col in matrix.ColumnNames) {
+        int j = 0;
+        foreach (var y in grouped[col])
+          matrix[j++, i] = y;
+        i++;
+      }
+
+      MainFormManager.MainForm.ShowContent(matrix);
     }
     #endregion
 

@@ -45,8 +45,8 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RunCollectionBubbleChartView));
       this.yJitterLabel = new System.Windows.Forms.Label();
       this.xJitterlabel = new System.Windows.Forms.Label();
@@ -71,6 +71,7 @@ namespace HeuristicLab.Optimization.Views {
       this.colorYAxisButton = new System.Windows.Forms.Button();
       this.noRunsLabel = new System.Windows.Forms.Label();
       this.sizeTrackBar = new System.Windows.Forms.TrackBar();
+      this.getDataAsMatrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
@@ -187,19 +188,19 @@ namespace HeuristicLab.Optimization.Views {
       // chart
       // 
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      chartArea2.Name = "ChartArea1";
-      this.chart.ChartAreas.Add(chartArea2);
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      chartArea1.Name = "ChartArea1";
+      this.chart.ChartAreas.Add(chartArea1);
       this.chart.Location = new System.Drawing.Point(6, 30);
       this.chart.Name = "chart";
-      series2.ChartArea = "ChartArea1";
-      series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-      series2.IsVisibleInLegend = false;
-      series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-      series2.Name = "Bubbles";
-      series2.YValuesPerPoint = 2;
-      this.chart.Series.Add(series2);
+      series1.ChartArea = "ChartArea1";
+      series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series1.IsVisibleInLegend = false;
+      series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+      series1.Name = "Bubbles";
+      series1.YValuesPerPoint = 2;
+      this.chart.Series.Add(series1);
       this.chart.Size = new System.Drawing.Size(843, 425);
       this.chart.TabIndex = 16;
       this.chart.Text = "chart";
@@ -214,13 +215,13 @@ namespace HeuristicLab.Optimization.Views {
       this.openBoxPlotViewToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
       this.openBoxPlotViewToolStripMenuItem.Text = "Open BoxPlot View";
       this.openBoxPlotViewToolStripMenuItem.Click += new System.EventHandler(this.openBoxPlotViewToolStripMenuItem_Click);
-      //
+      // 
       // hideRunToolStripMenuItem
-      //
+      // 
       this.hideRunToolStripMenuItem.Name = "hideRunToolStripMenuItem";
       this.hideRunToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
       this.hideRunToolStripMenuItem.Text = "Hide Run";
-      this.hideRunToolStripMenuItem.Click += new System.EventHandler(hideRunToolStripMenuItem_Click);
+      this.hideRunToolStripMenuItem.Click += new System.EventHandler(this.hideRunToolStripMenuItem_Click);
       // 
       // zoomButton
       // 
@@ -325,6 +326,13 @@ namespace HeuristicLab.Optimization.Views {
       this.sizeTrackBar.Value = 10;
       this.sizeTrackBar.ValueChanged += new System.EventHandler(this.sizeTrackBar_ValueChanged);
       // 
+      // ToolStripMenuItem
+      // 
+      this.getDataAsMatrixToolStripMenuItem.Name = "getDataAsMatrixToolStripMenuItem";
+      this.getDataAsMatrixToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.getDataAsMatrixToolStripMenuItem.Text = "Get Data as Matrix";
+      this.getDataAsMatrixToolStripMenuItem.Click += new System.EventHandler(this.getDataAsMatrixToolStripMenuItem_Click);
+      // 
       // RunCollectionBubbleChartView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -385,5 +393,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.Button colorXAxisButton;
     private System.Windows.Forms.Button colorYAxisButton;
     private System.Windows.Forms.TrackBar sizeTrackBar;
+    private System.Windows.Forms.ToolStripMenuItem getDataAsMatrixToolStripMenuItem;
   }
 }
