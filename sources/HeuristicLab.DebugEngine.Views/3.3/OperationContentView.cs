@@ -60,18 +60,20 @@ namespace HeuristicLab.DebugEngine {
 
     private object GetParameterValue(IParameter param, IExecutionContext context, out string actualName) {
       param = (IParameter)param.Clone();
-      param.ExecutionContext = context;
+      ILookupParameter lookupParam = param as ILookupParameter;
+      if (lookupParam != null) {
+        actualName = lookupParam.ActualName;
+        lookupParam.ExecutionContext = context;
+      } else
+        actualName = null;
+
       object value = null;
       try {
         value = param.ActualValue;
-      } catch (Exception x) {
+      }
+      catch (Exception x) {
         value = x.Message;
       }
-      ILookupParameter lookupParam = param as ILookupParameter;
-      if (lookupParam != null)
-        actualName = lookupParam.ActualName;
-      else
-        actualName = null;
       return value;
     }
 

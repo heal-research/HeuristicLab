@@ -26,7 +26,6 @@ namespace HeuristicLab.Core {
     Type DataType { get; }
     bool Hidden { get; set; }
     IItem ActualValue { get; set; }
-    IExecutionContext ExecutionContext { get; set; }
 
     event EventHandler HiddenChanged;
   }

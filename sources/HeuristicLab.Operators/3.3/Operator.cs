@@ -21,6 +21,7 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -118,14 +119,14 @@ namespace HeuristicLab.Operators {
       try {
         ExecutionContext = context;
         this.cancellationToken = cancellationToken;
-        foreach (IParameter param in Parameters)
+        foreach (ILookupParameter param in Parameters.OfType<ILookupParameter>())
           param.ExecutionContext = context;
         IOperation next = Apply();
         OnExecuted();
         return next;
       }
       finally {
-        foreach (IParameter param in Parameters)
+        foreach (ILookupParameter param in Parameters.OfType<ILookupParameter>())
           param.ExecutionContext = null;
         ExecutionContext = null;
       }

@@ -25,6 +25,7 @@ namespace HeuristicLab.Core {
   public interface ILookupParameter : IParameter {
     string ActualName { get; set; }
     string TranslatedName { get; }
+    IExecutionContext ExecutionContext { get; set; }
     event EventHandler ActualNameChanged;
   }
 
