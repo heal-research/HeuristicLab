@@ -29,7 +29,7 @@ namespace HeuristicLab.CodeEditor {
   [Plugin("HeuristicLab.CodeEditor", "3.3.7.$WCREV$")]
   [PluginFile("HeuristicLab.CodeEditor-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
-  [PluginDependency("HeuristicLab.SharpDevelop", "3.1.1.5327")]
+  [PluginDependency("HeuristicLab.SharpDevelop", "3.2.1")]
   public class HeuristicLabCodeEditorPlugin : PluginBase {
   }
 }

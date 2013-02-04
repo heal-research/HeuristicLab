@@ -133,7 +133,6 @@
     </Compile>
     <None Include="app.config">
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="CustomPostBuild.cmd" />
     <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
@@ -197,18 +196,18 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 
 call PreBuildEvent.cmd</PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
 $SolutionDir/PreBuildEvent.sh
 </PreBuildEvent>
-<PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
@@ -217,7 +216,7 @@ set Configuration=$(ConfigurationName)
 
 call "$(SolutionDir)MergeConfigs.cmd"
 if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
-<PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export Outdir=$(Outdir)
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)

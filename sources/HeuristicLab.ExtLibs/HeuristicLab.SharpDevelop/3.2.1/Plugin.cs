@@ -22,8 +22,8 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.SharpDevelop {
-  [Plugin("HeuristicLab.SharpDevelop", "3.1.1.5327")]
-  [PluginFile("HeuristicLab.SharpDevelop-3.1.1.5327.dll", PluginFileType.Assembly)]
+  [Plugin("HeuristicLab.SharpDevelop", "3.2.1")]
+  [PluginFile("HeuristicLab.SharpDevelop-3.2.1.dll", PluginFileType.Assembly)]
   [PluginFile("ICSharpCode.TextEditor.dll", PluginFileType.Assembly)]
   [PluginFile("ICSharpCode.SharpDevelop.Dom.dll", PluginFileType.Assembly)]
   [PluginFile("ICSharpCode.NRefactory.dll", PluginFileType.Assembly)]
