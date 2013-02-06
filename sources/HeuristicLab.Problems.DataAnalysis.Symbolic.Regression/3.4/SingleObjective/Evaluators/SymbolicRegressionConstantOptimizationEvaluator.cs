@@ -131,14 +131,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
 
-	  // Pearson R² evaluator is used on purpose instead of the const-opt evaluator, 
-	  // because Evaluate() is used to get the quality of evolved models on 
-	  // different partitions of the dataset (e.g., best validation model)
+      // Pearson R² evaluator is used on purpose instead of the const-opt evaluator, 
+      // because Evaluate() is used to get the quality of evolved models on 
+      // different partitions of the dataset (e.g., best validation model)
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;
-      ApplyLinearScalingParameter.ExecutionContext = context;
+      ApplyLinearScalingParameter.ExecutionContext = null;
 
       return r2;
     }
