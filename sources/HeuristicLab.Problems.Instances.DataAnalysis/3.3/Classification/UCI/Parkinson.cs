@@ -22,9 +22,9 @@
 using System;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Parkinson : IUCIDataDescriptor {
-    public string Name { get { return "Parkinson"; } }
-    public string Description {
+  public class Parkinson : UCIDataDescriptor {
+    public override string Filename { get { return "Parkinson"; } }
+    public override string Description {
       get {
         return "Data Set Information:" + Environment.NewLine
         + "This dataset is composed of a range of biomedical voice measurements from 31 people, 23 with "
@@ -39,7 +39,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Note: The column \"name\" has been removed and the column \"status\" has been moved to the end.";
       }
     }
-    public string Donor { get { return "M. Little"; } }
-    public int Year { get { return 2008; } }
+    public override string Donor { get { return "M. Little"; } }
+    public override int Year { get { return 2008; } }
+
+    protected override string TargetVariable { get { return "status"; } }
+    protected override string[] VariableNames {
+      get { return new string[] { "MDVP:Fo(Hz)", "MDVP:Fhi(Hz)", "MDVP:Flo(Hz)", "MDVP:Jitter(%)", "MDVP:Jitter(Abs)", "MDVP:RAP", "MDVP:PPQ", "Jitter:DDP", "MDVP:Shimmer", "MDVP:Shimmer(dB)", "Shimmer:APQ3", "Shimmer:APQ5", "MDVP:APQ", "Shimmer:DDA", "NHR", "HNR", "RPDE", "DFA", "spread1", "spread2", "D2", "PPE", "status" }; }
+    }
+    protected override string[] AllowedInputVariables {
+      get { return new string[] { "MDVP:Fo(Hz)", "MDVP:Fhi(Hz)", "MDVP:Flo(Hz)", "MDVP:Jitter(%)", "MDVP:Jitter(Abs)", "MDVP:RAP", "MDVP:PPQ", "Jitter:DDP", "MDVP:Shimmer", "MDVP:Shimmer(dB)", "Shimmer:APQ3", "Shimmer:APQ5", "MDVP:APQ", "Shimmer:DDA", "NHR", "HNR", "RPDE", "DFA", "spread1", "spread2", "D2", "PPE" }; }
+    }
+    protected override int TrainingPartitionStart { get { return 0; } }
+    protected override int TrainingPartitionEnd { get { return 130; } }
+    protected override int TestPartitionStart { get { return 130; } }
+    protected override int TestPartitionEnd { get { return 195; } }
   }
 }

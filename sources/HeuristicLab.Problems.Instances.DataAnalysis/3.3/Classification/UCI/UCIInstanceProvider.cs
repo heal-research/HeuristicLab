@@ -45,13 +45,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override string FileName { get { return "UCI"; } }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      List<IUCIDataDescriptor> descriptorList = new List<IUCIDataDescriptor>();
+      List<UCIDataDescriptor> descriptorList = new List<UCIDataDescriptor>();
       descriptorList.Add(new Iris());
       descriptorList.Add(new Mammography());
       descriptorList.Add(new Parkinson());
       descriptorList.Add(new Thyroid());
       descriptorList.Add(new Vertebral_3C());
       descriptorList.Add(new Wine());
+      descriptorList.Add(new WisconsinDiagnosticBreastCancer());
       var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
         using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
@@ -61,13 +62,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
             entries.Add(curEntry.Name);
           }
           foreach (var entry in entries.OrderBy(x => x)) {
-            string prettyName = Path.GetFileNameWithoutExtension(entry);
-            IUCIDataDescriptor desc = descriptorList.Where(x => x.Name.Equals(prettyName)).FirstOrDefault();
+            string filename = Path.GetFileNameWithoutExtension(entry);
+            UCIDataDescriptor desc = descriptorList.Where(x => x.Filename.Equals(filename)).FirstOrDefault();
             if (desc != null) {
-              prettyName = String.Format("{0}, {1}, {2}", prettyName, desc.Donor, desc.Year);
-              yield return new ResourceClassificationDataDescriptor(prettyName, desc.Description, entry);
+              desc.ResourceName = entry;
+              yield return desc;
             } else
-              yield return new ResourceClassificationDataDescriptor(prettyName, Description, entry);
+              throw new ArgumentNullException("No Descriptor could be found for this entry.");
           }
         }
       }

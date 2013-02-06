@@ -22,9 +22,9 @@
 
 using System;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Thyroid : IUCIDataDescriptor {
-    public string Name { get { return "Thyroid"; } }
-    public string Description {
+  public class Thyroid : UCIDataDescriptor {
+    public override string Filename { get { return "Thyroid"; } }
+    public override string Description {
       get {
         return "Thyroid gland data. ('normal', hypo and hyper functioning)" + Environment.NewLine + Environment.NewLine +
         "Attr. no :" + Environment.NewLine +
@@ -38,7 +38,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         "All attributes are continuous.";
       }
     }
-    public string Donor { get { return "S. Aeberhard"; } }
-    public int Year { get { return 1992; } }
+    public override string Donor { get { return "S. Aeberhard"; } }
+    public override int Year { get { return 1992; } }
+
+    protected override string TargetVariable { get { return "X000"; } }
+    protected override string[] VariableNames {
+      get { return new string[] { "X001", "X002", "X003", "X004", "X005", "X000" }; }
+    }
+    protected override string[] AllowedInputVariables {
+      get { return new string[] { "X001", "X002", "X003", "X004", "X005" }; }
+    }
+    protected override int TrainingPartitionStart { get { return 0; } }
+    protected override int TrainingPartitionEnd { get { return 143; } }
+    protected override int TestPartitionStart { get { return 143; } }
+    protected override int TestPartitionEnd { get { return 215; } }
   }
 }

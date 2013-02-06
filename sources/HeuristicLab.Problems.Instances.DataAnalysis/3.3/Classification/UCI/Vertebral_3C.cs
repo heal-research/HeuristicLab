@@ -22,9 +22,9 @@
 using System;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Vertebral_3C : IUCIDataDescriptor {
-    public string Name { get { return "Vertebral_3C"; } }
-    public string Description {
+  public class Vertebral_3C : UCIDataDescriptor {
+    public override string Filename { get { return "Vertebral_3C"; } }
+    public override string Description {
       get {
         return "Data Set Information:" + Environment.NewLine
         + "Biomedical data set built by Dr. Henrique da Mota during a medical residence "
@@ -39,7 +39,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "Note: Normal has the value '0', Spondylolisthesis is '1' and Disk Hernia = '2'.";
       }
     }
-    public string Donor { get { return "H. da Mota"; } }
-    public int Year { get { return 2011; } }
+    public override string Donor { get { return "H. da Mota"; } }
+    public override int Year { get { return 2011; } }
+
+    protected override string TargetVariable { get { return "class"; } }
+    protected override string[] VariableNames {
+      get { return new string[] { "pelvic_incidence", "pelvic_tilt", "lumbar_lordosis_angle", "sacral_slope", "pelvic_radius", "degree_1", "class" }; }
+    }
+    protected override string[] AllowedInputVariables {
+      get { return new string[] { "pelvic_incidence", "pelvic_tilt", "lumbar_lordosis_angle", "sacral_slope", "pelvic_radius", "degree_1" }; }
+    }
+    protected override int TrainingPartitionStart { get { return 0; } }
+    protected override int TrainingPartitionEnd { get { return 207; } }
+    protected override int TestPartitionStart { get { return 207; } }
+    protected override int TestPartitionEnd { get { return 310; } }
   }
 }

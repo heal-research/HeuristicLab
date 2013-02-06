@@ -19,9 +19,13 @@
  */
 #endregion
 
+using System;
+
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public interface IUCIDataDescriptor : IDataDescriptor {
-    string Donor { get; }
-    int Year { get; }
+  public abstract class UCIDataDescriptor : ResourceClassificationDataDescriptor {
+    public override string Name { get { return String.Format("{0}, {1}, {2}", Filename, Donor, Year); } }
+    public abstract string Filename { get; }
+    public abstract string Donor { get; }
+    public abstract int Year { get; }
   }
 }

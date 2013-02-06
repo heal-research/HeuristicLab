@@ -22,9 +22,9 @@
 
 using System;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Mammography : IUCIDataDescriptor {
-    public string Name { get { return "Mammography"; } }
-    public string Description {
+  public class Mammography : UCIDataDescriptor {
+    public override string Filename { get { return "Mammography"; } }
+    public override string Description {
       get {
         return "Data Set Information: Features are computed from a digitized image of a fine needle aspirate (FNA) of a breast mass."
         + "Website: http://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29" + Environment.NewLine
@@ -45,7 +45,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         + "j) fractal dimension (\"coastline approximation\" - 1)";
       }
     }
-    public string Donor { get { return "M. Elter"; } }
-    public int Year { get { return 2007; } }
+    public override string Donor { get { return "M. Elter"; } }
+    public override int Year { get { return 2007; } }
+
+    protected override string TargetVariable { get { return "Severity"; } }
+    protected override string[] VariableNames {
+      get { return new string[] { "BI-RADS", "Age", "Shape", "Margin", "Density", "Severity" }; }
+    }
+    protected override string[] AllowedInputVariables {
+      get { return new string[] { "BI-RADS", "Age", "Shape", "Margin", "Density" }; }
+    }
+    protected override int TrainingPartitionStart { get { return 0; } }
+    protected override int TrainingPartitionEnd { get { return 641; } }
+    protected override int TestPartitionStart { get { return 641; } }
+    protected override int TestPartitionEnd { get { return 961; } }
   }
 }

@@ -19,17 +19,15 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  internal class ResourceClassificationDataDescriptor : IDataDescriptor {
-    public string Name { get; internal set; }
-    public string Description { get; internal set; }
-
+  public abstract class ResourceClassificationDataDescriptor : ClassificationDataDescriptor {
     internal string ResourceName { get; set; }
-    internal ResourceClassificationDataDescriptor(string name, string description, string resourceName) {
-      Name = name;
-      Description = description;
-      ResourceName = resourceName;
+
+    public bool CheckVariableNames(IEnumerable<string> VariableNames) {
+      return this.VariableNames.All(x => VariableNames.Contains(x));
     }
   }
 }

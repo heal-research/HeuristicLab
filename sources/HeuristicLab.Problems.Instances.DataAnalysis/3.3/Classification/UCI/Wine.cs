@@ -22,9 +22,9 @@
 
 using System;
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Wine : IUCIDataDescriptor {
-    public string Name { get { return "Wine"; } }
-    public string Description {
+  public class Wine : UCIDataDescriptor {
+    public override string Filename { get { return "Wine"; } }
+    public override string Description {
       get {
         return "These data are the results of a chemical analysis of wines grown in the same region " +
         "in Italy but derived from three different cultivars. The analysis determined the quantities " +
@@ -50,7 +50,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         "good data set for first testing of a new classifier, but not very challenging. ";
       }
     }
-    public string Donor { get { return "S. Aeberhard"; } }
-    public int Year { get { return 1991; } }
+    public override string Donor { get { return "S. Aeberhard"; } }
+    public override int Year { get { return 1991; } }
+
+    protected override string TargetVariable { get { return "Class"; } }
+    protected override string[] VariableNames {
+      get { return new string[] { "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline", "Class" }; }
+    }
+    protected override string[] AllowedInputVariables {
+      get { return new string[] { "Alcohol", "Malic acid", "Ash", "Alcalinity of ash", "Magnesium", "Total phenols", "Flavanoids", "Nonflavanoid phenols", "Proanthocyanins", "Color intensity", "Hue", "OD280/OD315 of diluted wines", "Proline" }; }
+    }
+    protected override int TrainingPartitionStart { get { return 0; } }
+    protected override int TrainingPartitionEnd { get { return 119; } }
+    protected override int TestPartitionStart { get { return 119; } }
+    protected override int TestPartitionEnd { get { return 178; } }
   }
 }
