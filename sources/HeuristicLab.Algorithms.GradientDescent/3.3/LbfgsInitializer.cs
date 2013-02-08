@@ -92,6 +92,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       }
       alglib.minlbfgs.minlbfgssetcond(state, 0.0, 0, 0, Iterations.Value);
       alglib.minlbfgs.minlbfgssetxrep(state, true);
+      // alglib.minlbfgs.minlbfgssetgradientcheck(state, 0.000001);
 
       PointParameter.ActualValue = new RealVector(initialPoint);
       StateParameter.ActualValue = new LbfgsState(state);
