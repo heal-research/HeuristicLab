@@ -19,13 +19,13 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System;
+using System.Collections.Generic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
@@ -46,6 +46,7 @@ namespace HeuristicLab.Operators {
           DeregisterOperatorsEvents();
           operators = value;
           RegisterOperatorsEvents();
+          UpdateOperatorParameters();
         }
       }
     }
