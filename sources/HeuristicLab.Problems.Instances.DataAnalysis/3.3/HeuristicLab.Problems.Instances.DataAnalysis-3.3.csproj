@@ -139,6 +139,7 @@
     <Compile Include="Regression\ArtificialRegressionDataDescriptor.cs" />
     <Compile Include="Regression\ArtificialRegressionInstanceProvider.cs" />
     <Compile Include="Regression\CSV\RegressionCSVInstanceProvider.cs" />
+    <Compile Include="Regression\FeatureSelection\FeatureSelectionRegressionProblemData.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelection.cs" />
     <Compile Include="Regression\FeatureSelection\FeatureSelectionInstanceProvider.cs" />
     <Compile Include="Regression\Keijzer\KeijzerFunctionFourteen.cs" />
@@ -243,6 +244,14 @@
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>

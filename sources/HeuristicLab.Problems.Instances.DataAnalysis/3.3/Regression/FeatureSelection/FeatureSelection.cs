@@ -23,22 +23,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class FeatureSelection : ArtificialRegressionDataDescriptor {
-    private int trainingSamples;
-    private const int TestSamples = 5000;
+    private int nTrainingSamples;
+    private int nTestSamples;
 
     private int numberOfFeatures;
     private double selectionProbability;
     private double noiseRatio;
+    private IRandom xRandom;
+    private IRandom weightRandom;
 
     public override string Name { get { return string.Format("FeatSel-{0}-{1:0%}-{2:0%}", numberOfFeatures, selectionProbability, noiseRatio); } }
     public override string Description {
       get {
         return "This problem is specifically designed to test feature selection." + Environment.NewLine
-               + "In this instance the number of rows for training (" + trainingSamples +
+               + "In this instance the number of rows for training (" + nTrainingSamples +
                ") is only slightly larger than the number of columns (" + numberOfFeatures +
                ") and only a subset of the columns must be selected for the predictive model." + Environment.NewLine
                + "The target variable is calculated as a noisy linear combination of randomly selected features: y = w * S + n." + Environment.NewLine
@@ -46,18 +49,42 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
                + "For each feature the probability that it is selected is " + selectionProbability + "%" + Environment.NewLine
                + "X(i,j) ~ N(0, 1) iid, w(i) ~ U(0, 10) iid, n ~ N(0, sigma(w*S) * SQRT(" + noiseRatio + "))" + Environment.NewLine
                + "The noise level is " + noiseRatio + " * sigma, thus an optimal model has R² = "
-               + Math.Round(1 - noiseRatio, 2) + " (or equivalently: NMSE = " + noiseRatio + ")" + Environment.NewLine
-               + "N = " + (trainingSamples + TestSamples) + " (" + trainingSamples + " training, " + TestSamples + " test)" + Environment.NewLine
+               + Math.Round(optimalRSquared) + " (or equivalently: NMSE = " + noiseRatio + ")" + Environment.NewLine
+               + "N = " + (nTrainingSamples + nTestSamples) + " (" + nTrainingSamples + " training, " + nTestSamples + " test)" + Environment.NewLine
                + "k = " + numberOfFeatures;
         ;
       }
     }
 
-    public FeatureSelection(int numberOfFeatures, double selectionProbability, double noiseRatio) {
+    private double[] w;
+    public double[] Weights {
+      get { return w; }
+    }
+
+    private string[] selectedFeatures;
+    public string[] SelectedFeatures {
+      get { return selectedFeatures; }
+    }
+
+    private double optimalRSquared;
+    public double OptimalRSquared {
+      get { return optimalRSquared; }
+    }
+
+
+    public FeatureSelection(int numberOfFeatures, double selectionProbability, double noiseRatio, IRandom xGenerator, IRandom weightGenerator)
+      : this((int)Math.Round(numberOfFeatures * 1.2), 5000, numberOfFeatures,
+      selectionProbability, noiseRatio, xGenerator, weightGenerator) { }
+
+    public FeatureSelection(int nTrainingSamples, int nTestSamples, int numberOfFeatures,
+      double selectionProbability, double noiseRatio, IRandom xGenerator, IRandom weightGenerator) {
       this.numberOfFeatures = numberOfFeatures;
-      this.trainingSamples = (int)Math.Round(numberOfFeatures * 1.2); // 20% more rows than columns
+      this.nTrainingSamples = nTrainingSamples;
+      this.nTestSamples = nTestSamples;
       this.selectionProbability = selectionProbability;
       this.noiseRatio = noiseRatio;
+      this.xRandom = xGenerator;
+      this.weightRandom = weightGenerator;
     }
 
     protected override string TargetVariable { get { return "Y"; } }
@@ -73,15 +100,19 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           .ToArray();
       }
     }
+
     protected override int TrainingPartitionStart { get { return 0; } }
-    protected override int TrainingPartitionEnd { get { return trainingSamples; } }
-    protected override int TestPartitionStart { get { return trainingSamples; } }
-    protected override int TestPartitionEnd { get { return trainingSamples + TestSamples; } }
+    protected override int TrainingPartitionEnd { get { return nTrainingSamples; } }
+    protected override int TestPartitionStart { get { return nTrainingSamples; } }
+    protected override int TestPartitionEnd { get { return nTrainingSamples + nTestSamples; } }
+
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
       for (int i = 0; i < AllowedInputVariables.Count(); i++) {
-        data.Add(ValueGenerator.GenerateNormalDistributedValues(TestPartitionEnd, 0, 1).ToList());
+        data.Add(Enumerable.Range(0, TestPartitionEnd)
+          .Select(_ => xRandom.NextDouble())
+          .ToList());
       }
 
       var random = new MersenneTwister();
@@ -89,8 +120,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         Enumerable.Range(0, AllowedInputVariables.Count())
         .Where(_ => random.NextDouble() < selectionProbability)
         .ToArray();
-      var w = ValueGenerator.GenerateUniformDistributedValues(selectedFeatures.Length, 0, 10)
-        .ToArray();
+
+      w = selectedFeatures.Select(_ => weightRandom.NextDouble()).ToArray();
       var target = new List<double>();
       for (int i = 0; i < data[0].Count; i++) {
         var s = selectedFeatures
@@ -103,6 +134,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       data.Add(target.Select(t => t + noisePrng.NextDouble()).ToList());
 
+      // set property listing the selected features as string[]
+      this.selectedFeatures = selectedFeatures.Select(i => AllowedInputVariables[i]).ToArray();
+      optimalRSquared = 1 - noiseRatio;
       return data;
     }
 

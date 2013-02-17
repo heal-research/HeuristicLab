@@ -190,7 +190,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (!variableValues.TryGetValue(variableName, out list))
         throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
       List<double> values = list as List<double>;
-      if (values == null) throw new ArgumentException("The varialbe " + variableName + " is not a double variable.");
+      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
 
       return rows.Select(index => values[index]);
     }

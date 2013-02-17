@@ -21,6 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Data;
+using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class FeatureSelectionInstanceProvider : ArtificialRegressionInstanceProvider {
@@ -38,18 +42,40 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      List<IDataDescriptor> descriptorList = new List<IDataDescriptor>();
       var sizes = new int[] { 50, 100, 200 };
       var pp = new double[] { 0.1, 0.25, 0.5 };
       var noiseRatios = new double[] { 0.01, 0.05, 0.1, 0.2 };
-      foreach (var size in sizes) {
-        foreach (var p in pp) {
-          foreach (var noiseRatio in noiseRatios) {
-            descriptorList.Add(new FeatureSelection(size, p, noiseRatio));
-          }
-        }
-      }
-      return descriptorList;
+      var mt = new MersenneTwister();
+      var xGenerator = new NormalDistributedRandom(mt, 0, 1);
+      var weightGenerator = new UniformDistributedRandom(mt, 0, 10);
+      return (from size in sizes
+              from p in pp
+              from noiseRatio in noiseRatios
+              select new FeatureSelection(size, p, noiseRatio, xGenerator, weightGenerator))
+              .Cast<IDataDescriptor>()
+              .ToList();
+    }
+
+    public override IRegressionProblemData LoadData(IDataDescriptor descriptor) {
+      var featureSelectionDescriptor = descriptor as FeatureSelection;
+      if (featureSelectionDescriptor == null) throw new ArgumentException("FeatureSelectionInstanceProvider expects an FeatureSelection data descriptor.");
+      // base call generates a regression problem data
+      var regProblemData = base.LoadData(featureSelectionDescriptor);
+      var problemData =
+        new FeatureSelectionRegressionProblemData(
+          regProblemData.Dataset, regProblemData.AllowedInputVariables, regProblemData.TargetVariable,
+          featureSelectionDescriptor.SelectedFeatures, featureSelectionDescriptor.Weights,
+          featureSelectionDescriptor.OptimalRSquared);
+
+      // copy values from regProblemData to feature selection problem data
+      problemData.Name = regProblemData.Name;
+      problemData.Description = regProblemData.Description;
+      problemData.TrainingPartition.Start = regProblemData.TrainingPartition.Start;
+      problemData.TrainingPartition.End = regProblemData.TrainingPartition.End;
+      problemData.TestPartition.Start = regProblemData.TestPartition.Start;
+      problemData.TestPartition.End = regProblemData.TestPartition.End;
+
+      return problemData;
     }
   }
 }

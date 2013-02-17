@@ -48,23 +48,23 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected List<IList> Shuffle(List<IList> values) {
       int count = values.First().Count;
       int[] indices = Enumerable.Range(0, count).Shuffle(new FastRandom()).ToArray();
-      List<IList> shuffeledValues = new List<IList>(values.Count);
+      List<IList> shuffled = new List<IList>(values.Count);
       for (int col = 0; col < values.Count; col++) {
 
         if (values[col] is List<double>)
-          shuffeledValues.Add(new List<double>());
+          shuffled.Add(new List<double>());
         else if (values[col] is List<DateTime>)
-          shuffeledValues.Add(new List<DateTime>());
+          shuffled.Add(new List<DateTime>());
         else if (values[col] is List<string>)
-          shuffeledValues.Add(new List<string>());
+          shuffled.Add(new List<string>());
         else
           throw new InvalidOperationException();
 
         for (int i = 0; i < count; i++) {
-          shuffeledValues[col].Add(values[col][indices[i]]);
+          shuffled[col].Add(values[col][indices[i]]);
         }
       }
-      return shuffeledValues;
+      return shuffled;
     }
 
     public override bool CanExportData {
