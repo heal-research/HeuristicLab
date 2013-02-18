@@ -122,8 +122,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     protected override void OnClosing(FormClosingEventArgs e) {
       if (Content.Jobs.Any(x => x.IsProgressing)) {
-        MessageBox.Show("The Hive Job Manager can only be closed after all down/uploads are finished. ", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        e.Cancel = true;
+        DialogResult result = MessageBox.Show("There are still unfinished down/uploads. Are you sure you want to close the window?", "HeuristicLab Hive Job Manager", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+        if (result == DialogResult.No) {
+          e.Cancel = true;
+        }
       } else {
         base.OnClosing(e);
         if (Content != null && Content.Jobs != null) {
