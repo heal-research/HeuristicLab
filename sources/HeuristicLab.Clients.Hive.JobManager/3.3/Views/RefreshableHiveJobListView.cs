@@ -27,6 +27,7 @@ using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
   [View("Refreshable Hive Job List")]
@@ -113,11 +114,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
         task.ContinueWith((t) => {
           progress.Finish();
-          MessageBox.Show("An error occured while deleting the job: " + Environment.NewLine + t.Exception, "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          ErrorHandling.ShowErrorDialog("An error occured while deleting the job. ", t.Exception);
         }, TaskContinuationOptions.OnlyOnFaulted);
 
         task.ContinueWith((t) => {
-          itemsListView.SelectedItems.Clear();
+          itemsListView.Invoke(new Action(() => itemsListView.SelectedItems.Clear()));
         }, TaskContinuationOptions.OnlyOnRanToCompletion);
       }
     }
