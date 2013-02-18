@@ -24,7 +24,6 @@ using System.Linq;
 using System.ServiceModel.Security;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Hive.Views;
-using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
@@ -53,13 +52,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       base.RegisterContentEvents();
       Content.Refreshing += new EventHandler(Content_Refreshing);
       Content.Refreshed += new EventHandler(Content_Refreshed);
-      Content.HiveJobsChanged += new EventHandler(Content_HiveJobsChanged);
     }
 
     protected override void DeregisterContentEvents() {
       Content.Refreshing -= new EventHandler(Content_Refreshing);
       Content.Refreshed -= new EventHandler(Content_Refreshed);
-      Content.HiveJobsChanged -= new EventHandler(Content_HiveJobsChanged);
       base.DeregisterContentEvents();
     }
 
@@ -129,23 +126,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         }
       } else {
         base.OnClosing(e);
-        if (Content != null && Content.Jobs != null) {
-          Content.Jobs.ItemsRemoved -= new CollectionItemsChangedEventHandler<RefreshableJob>(HiveExperiments_ItemsRemoved);
+        if (Content != null) {
           Content.ClearHiveClient();
           Content = null;
         }
-      }
-    }
-
-    private void HiveExperiments_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<RefreshableJob> e) {
-      foreach (var item in e.Items) {
-        HiveClient.Delete(item);
-      }
-    }
-
-    private void Content_HiveJobsChanged(object sender, EventArgs e) {
-      if (Content.Jobs != null) {
-        Content.Jobs.ItemsRemoved += new CollectionItemsChangedEventHandler<RefreshableJob>(HiveExperiments_ItemsRemoved);
       }
     }
   }

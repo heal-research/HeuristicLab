@@ -165,32 +165,54 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       SetEnabledStateOfControls();
     }
 
+    protected override void OnLockedChanged() {
+      base.OnLockedChanged();
+      executionTimeTextBox.Enabled = !Locked;
+      jobsTextBox.Enabled = !Locked;
+      calculatingTextBox.Enabled = !Locked;
+      finishedTextBox.Enabled = !Locked;
+      tabControl.Enabled = !Locked;
+      nameTextBox.Enabled = !Locked;
+      resourceNamesTextBox.Enabled = !Locked;
+      searchButton.Enabled = !Locked;
+      jobsTreeView.Enabled = !Locked;
+      isPrivilegedCheckBox.Enabled = !Locked;
+      refreshAutomaticallyCheckBox.Enabled = !Locked;
+      refreshButton.Enabled = !Locked;
+      UnloadButton.Enabled = !Locked;
+      startButton.Enabled = !Locked;
+      pauseButton.Enabled = !Locked;
+      stopButton.Enabled = !Locked;
+      resetButton.Enabled = !Locked;
+    }
+
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      executionTimeTextBox.Enabled = Content != null;
-      jobsTextBox.ReadOnly = true;
-      calculatingTextBox.ReadOnly = true;
-      finishedTextBox.ReadOnly = true;
+      if (!Locked) {
+        executionTimeTextBox.Enabled = Content != null;
+        jobsTextBox.ReadOnly = true;
+        calculatingTextBox.ReadOnly = true;
+        finishedTextBox.ReadOnly = true;
 
-      if (Content != null) {
-        bool alreadyUploaded = Content.Id != Guid.Empty;
-        bool jobsLoaded = Content.HiveTasks != null && Content.HiveTasks.All(x => x.Task.Id != Guid.Empty);
-        tabControl.Enabled = !Content.IsProgressing;
+        if (Content != null) {
+          bool alreadyUploaded = Content.Id != Guid.Empty;
+          bool jobsLoaded = Content.HiveTasks != null && Content.HiveTasks.All(x => x.Task.Id != Guid.Empty);
+          tabControl.Enabled = !Content.IsProgressing;
 
-        this.nameTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
-        this.resourceNamesTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
-        this.searchButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Prepared && !alreadyUploaded && !Content.IsProgressing;
-        this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
+          this.nameTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
+          this.resourceNamesTextBox.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
+          this.searchButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Prepared && !alreadyUploaded && !Content.IsProgressing;
+          this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
 
-        this.isPrivilegedCheckBox.Enabled = HiveClient.Instance.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded) && !Content.IsProgressing;
-        this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
-        this.refreshButton.Enabled = Content.IsDownloadable && alreadyUploaded && !Content.IsProgressing;
-        this.Locked = !Content.IsControllable || Content.ExecutionState == ExecutionState.Started || Content.IsProgressing;
+          this.isPrivilegedCheckBox.Enabled = HiveClient.Instance.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded) && !Content.IsProgressing;
+          this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
+          this.refreshButton.Enabled = Content.IsDownloadable && alreadyUploaded && !Content.IsProgressing;
 
-        this.UnloadButton.Enabled = Content.HiveTasks != null && Content.HiveTasks.Count > 0 && alreadyUploaded && !Content.IsProgressing;
+          this.UnloadButton.Enabled = Content.HiveTasks != null && Content.HiveTasks.Count > 0 && alreadyUploaded && !Content.IsProgressing;
+        }
+        SetEnabledStateOfExecutableButtons();
+        tabControl_SelectedIndexChanged(this, EventArgs.Empty); // ensure sharing tabpage is disabled
       }
-      SetEnabledStateOfExecutableButtons();
-      tabControl_SelectedIndexChanged(this, EventArgs.Empty); // ensure sharing tabpage is disabled
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {

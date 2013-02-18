@@ -20,20 +20,25 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Clients.Hive.JobManager.Views {
   [View("Refreshable Hive Job List")]
   [Content(typeof(ItemCollection<RefreshableJob>), false)]
   public partial class RefreshableHiveJobListView : HeuristicLab.Core.Views.ItemCollectionView<RefreshableJob> {
+    private Progress progress;
+    private ProgressView progressView;
 
     public RefreshableHiveJobListView() {
       InitializeComponent();
       itemsGroupBox.Text = "Jobs";
-      this.itemsListView.View = View.Details;
+      this.itemsListView.View = System.Windows.Forms.View.Details;
       this.itemsListView.Columns.Clear();
       this.itemsListView.Columns.Add(new ColumnHeader("Date") { Text = "Date" });
       this.itemsListView.Columns.Add(new ColumnHeader("Name") { Text = "Name" });
@@ -46,12 +51,34 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.itemsListView.ListViewItemSorter = new ListViewItemDateComparer(0, SortOrder.Ascending);
       this.itemsListView.Sorting = SortOrder.Ascending;
       this.itemsListView.Sort();
+
+      progress = new Progress() {
+        CanBeCanceled = false,
+        ProgressState = ProgressState.Finished
+      };
+      progressView = new ProgressView(this, progress);
     }
 
     protected override RefreshableJob CreateItem() {
       var refreshableJob = new RefreshableJob();
       refreshableJob.Job.Name = "New Hive Job";
       return refreshableJob;
+    }
+
+    protected override void OnLockedChanged() {
+      base.OnLockedChanged();
+
+      itemsListView.Enabled = !Locked;
+      addButton.Enabled = !Locked;
+      sortAscendingButton.Enabled = !Locked;
+      sortDescendingButton.Enabled = !Locked;
+      removeButton.Enabled = !Locked;
+    }
+
+    protected override void SetEnabledStateOfControls() {
+      // if the view is locked, a job is currently beeing deleted and everything should be disabled
+      if (!Locked)
+        base.SetEnabledStateOfControls();
     }
 
     protected override void removeButton_Click(object sender, EventArgs e) {
@@ -71,9 +98,38 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           MessageBox.Show("You can't delete jobs which are currently uploading or downloading." + Environment.NewLine + "Please wait for the jobs to complete and try again. ", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Warning);
           return;
         } else {
-          base.removeButton_Click(sender, e);
+          DeleteHiveJobs(e);
         }
       }
+    }
+
+    private void DeleteHiveJobs(EventArgs e) {
+      if (itemsListView.SelectedItems.Count > 0) {
+        List<RefreshableJob> items = new List<RefreshableJob>();
+        foreach (ListViewItem item in itemsListView.SelectedItems)
+          items.Add((RefreshableJob)item.Tag);
+
+        var task = System.Threading.Tasks.Task.Factory.StartNew(DeleteHiveJobsAsync, items);
+
+        task.ContinueWith((t) => {
+          progress.Finish();
+          MessageBox.Show("An error occured while deleting the job: " + Environment.NewLine + t.Exception, "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }, TaskContinuationOptions.OnlyOnFaulted);
+
+        task.ContinueWith((t) => {
+          itemsListView.SelectedItems.Clear();
+        }, TaskContinuationOptions.OnlyOnRanToCompletion);
+      }
+    }
+
+    private void DeleteHiveJobsAsync(object items) {
+      progress.Status = "Deleting job...";
+      progress.ProgressState = ProgressState.Started;
+      progress.ProgressValue = 0.0;
+      foreach (RefreshableJob item in (List<RefreshableJob>)items) {
+        Content.Remove(item);
+      }
+      progress.Finish();
     }
 
     protected override void Content_ItemsAdded(object sender, Collections.CollectionItemsChangedEventArgs<RefreshableJob> e) {
@@ -156,6 +212,19 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       var newGroup = new ListViewGroup(string.Format("Owner ({0})", groupName), HorizontalAlignment.Left) { Name = groupName };
       itemsListView.Groups.Add(newGroup);
       return newGroup;
+    }
+
+    /// <summary> 
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing) {
+      if (disposing) {
+        if (components != null) components.Dispose();
+        progressView.Content = null;
+        progressView.Dispose();
+      }
+      base.Dispose(disposing);
     }
   }
 }
