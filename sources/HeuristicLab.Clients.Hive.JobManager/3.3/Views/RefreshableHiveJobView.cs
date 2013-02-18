@@ -99,6 +99,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         progressView.Dispose();
         progressView = null;
       }
+      DeregisterHiveExperimentEvents();
+      DeregisterHiveTasksEvents();
       base.DeregisterContentEvents();
     }
 
@@ -110,12 +112,12 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       Content.Job.PropertyChanged -= new PropertyChangedEventHandler(HiveExperiment_PropertyChanged);
     }
 
-    private void RegisterHiveJobEvents() {
+    private void RegisterHiveTasksEvents() {
       Content.HiveTasks.ItemsAdded += new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_ItemsAdded);
       Content.HiveTasks.ItemsRemoved += new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_ItemsRemoved);
       Content.HiveTasks.CollectionReset += new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_CollectionReset);
     }
-    private void DeregisterHiveJobEvents() {
+    private void DeregisterHiveTasksEvents() {
       Content.HiveTasks.ItemsAdded -= new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_ItemsAdded);
       Content.HiveTasks.ItemsRemoved -= new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_ItemsRemoved);
       Content.HiveTasks.CollectionReset -= new CollectionItemsChangedEventHandler<HiveTask>(HiveTasks_CollectionReset);
@@ -130,11 +132,14 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           executionTimeTextBox.Text = string.Empty;
           resourceNamesTextBox.Text = string.Empty;
           isPrivilegedCheckBox.Checked = false;
-          logView.Content = null;
           refreshAutomaticallyCheckBox.Checked = false;
           lock (runCollectionViewLocker) {
             runCollectionViewHost.Content = null;
           }
+          logView.Content = null;
+          jobsTreeView.Content = null;
+          hiveExperimentPermissionListView.Content = null;
+          stateLogViewHost.Content = null;
         } else {
           nameTextBox.Text = Content.Job.Name;
           executionTimeTextBox.Text = Content.ExecutionTime.ToString();
@@ -181,6 +186,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
         this.refreshButton.Enabled = Content.IsDownloadable && alreadyUploaded && !Content.IsProgressing;
         this.Locked = !Content.IsControllable || Content.ExecutionState == ExecutionState.Started || Content.IsProgressing;
+
+        this.UnloadButton.Enabled = Content.HiveTasks != null && Content.HiveTasks.Count > 0 && alreadyUploaded && !Content.IsProgressing;
       }
       SetEnabledStateOfExecutableButtons();
       tabControl_SelectedIndexChanged(this, EventArgs.Empty); // ensure sharing tabpage is disabled
@@ -285,7 +292,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       else {
         if (Content != null && Content.HiveTasks != null) {
           jobsTreeView.Content = Content.HiveTasks;
-          RegisterHiveJobEvents();
+          RegisterHiveTasksEvents();
         } else {
           jobsTreeView.Content = null;
         }
@@ -434,12 +441,12 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void nameTextBox_Validated(object sender, EventArgs e) {
-      if (!SuppressEvents && Content.Job.Name != nameTextBox.Text)
+      if (!SuppressEvents && Content.Job != null && Content.Job.Name != nameTextBox.Text)
         Content.Job.Name = nameTextBox.Text;
     }
 
     private void resourceNamesTextBox_Validated(object sender, EventArgs e) {
-      if (!SuppressEvents && Content.Job.ResourceNames != resourceNamesTextBox.Text)
+      if (!SuppressEvents && Content.Job != null && Content.Job.ResourceNames != resourceNamesTextBox.Text)
         Content.Job.ResourceNames = resourceNamesTextBox.Text;
     }
 
@@ -562,6 +569,16 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       } else {
         return null;
       }
+    }
+
+    private void UnloadButton_Click(object sender, EventArgs e) {
+      Content.Unload();
+      runCollectionViewHost.Content = null;
+      stateLogViewHost.Content = null;
+      hiveExperimentPermissionListView.Content = null;
+      jobsTreeView.Content = null;
+
+      SetEnabledStateOfControls();
     }
   }
 }

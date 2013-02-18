@@ -22,12 +22,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Common;
-using System.Threading;
 
 namespace HeuristicLab.Clients.Hive {
-  public class TaskDownloader {
+  public class TaskDownloader : IDisposable {
     private IEnumerable<Guid> taskIds;
     private ConcurrentTaskDownloader<ItemTask> taskDownloader;
     private IDictionary<Guid, HiveTask> results;
@@ -37,10 +37,11 @@ namespace HeuristicLab.Clients.Hive {
 
     public bool IsFinished {
       get {
-          try {        
-              resultsLock.EnterReadLock();
-              return results.Count == taskIds.Count();
-          } finally { resultsLock.ExitReadLock(); }
+        try {
+          resultsLock.EnterReadLock();
+          return results.Count == taskIds.Count();
+        }
+        finally { resultsLock.ExitReadLock(); }
       }
     }
 
@@ -58,19 +59,21 @@ namespace HeuristicLab.Clients.Hive {
 
     public int FinishedCount {
       get {
-            try {
-              resultsLock.EnterReadLock();
-              return results.Count;
-             } finally { resultsLock.ExitReadLock(); }
+        try {
+          resultsLock.EnterReadLock();
+          return results.Count;
+        }
+        finally { resultsLock.ExitReadLock(); }
       }
     }
 
     public IDictionary<Guid, HiveTask> Results {
       get {
-            try {
-              resultsLock.EnterReadLock();
-              return results;
-            } finally { resultsLock.ExitReadLock(); }
+        try {
+          resultsLock.EnterReadLock();
+          return results;
+        }
+        finally { resultsLock.ExitReadLock(); }
       }
     }
 
@@ -96,7 +99,8 @@ namespace HeuristicLab.Clients.Hive {
               try {
                 resultsLock.EnterWriteLock();
                 this.results.Add(localJob.Id, hiveTask);
-              } finally { resultsLock.ExitWriteLock(); }
+              }
+              finally { resultsLock.ExitWriteLock(); }
             }
           });
       }
@@ -113,5 +117,13 @@ namespace HeuristicLab.Clients.Hive {
       var handler = ExceptionOccured;
       if (handler != null) handler(this, new EventArgs<Exception>(exception));
     }
+
+    #region IDisposable Members
+    public void Dispose() {
+      taskDownloader.ExceptionOccured -= new EventHandler<EventArgs<Exception>>(taskDownloader_ExceptionOccured);
+      resultsLock.Dispose();
+      taskDownloader.Dispose();
+    }
+    #endregion
   }
 }

@@ -128,6 +128,15 @@ namespace HeuristicLab.Services.Hive {
 
       return trans.UseTransaction(() => {
         return dao.GetLightweightTasks(task => task.JobId == jobId).ToArray();
+      }, false, true);
+    }
+
+    public IEnumerable<LightweightTask> GetLightweightJobTasksWithoutStateLog(Guid jobId) {
+      authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
+      author.AuthorizeForJob(jobId, Permission.Read);
+
+      return trans.UseTransaction(() => {
+        return dao.GetLightweightTasksWithoutStateLog(task => task.JobId == jobId).ToArray();
       }, false, false);
     }
 

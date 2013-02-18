@@ -30,7 +30,7 @@ using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Clients.Hive {
-  public class RefreshableJob : IHiveItem, IDeepCloneable, IContent, IComparable<RefreshableJob> {
+  public class RefreshableJob : IHiveItem, IDeepCloneable, IContent, IComparable<RefreshableJob>, IDisposable {
     private JobResultPoller jobResultPoller;
     private ConcurrentTaskDownloader<ItemTask> jobDownloader;
     private object locker = new object();
@@ -47,7 +47,7 @@ namespace HeuristicLab.Clients.Hive {
           if (value == null)
             throw new ArgumentNullException();
 
-          if (job != null) DergisterJobEvents();
+          if (job != null) DeregisterJobEvents();
           job = value;
           if (job != null) {
             RegisterJobEvents();
@@ -65,9 +65,9 @@ namespace HeuristicLab.Clients.Hive {
       get { return hiveTasks; }
       set {
         if (hiveTasks != value) {
-          if (hiveTasks != null) DeregisterHiveJobsEvents();
+          if (hiveTasks != null) DeregisterHiveTasksEvents();
           hiveTasks = value;
-          if (hiveTasks != null) RegisterHiveJobsEvents();
+          if (hiveTasks != null) RegisterHiveTasksEvents();
           OnHiveTasksChanged();
         }
       }
@@ -239,6 +239,7 @@ namespace HeuristicLab.Clients.Hive {
     public void StopResultPolling() {
       if (jobResultPoller != null && jobResultPoller.IsPolling) {
         jobResultPoller.Stop();
+        DeregisterResultPollingEvents();
       }
     }
 
@@ -357,7 +358,7 @@ namespace HeuristicLab.Clients.Hive {
       job.ModifiedChanged += new EventHandler(job_ModifiedChanged);
     }
 
-    private void DergisterJobEvents() {
+    private void DeregisterJobEvents() {
       job.ToStringChanged -= new EventHandler(OnToStringChanged);
       job.PropertyChanged -= new PropertyChangedEventHandler(job_PropertyChanged);
       job.ItemImageChanged -= new EventHandler(job_ItemImageChanged);
@@ -472,13 +473,13 @@ namespace HeuristicLab.Clients.Hive {
     #endregion
 
     #region HiveTasks Events
-    private void RegisterHiveJobsEvents() {
+    private void RegisterHiveTasksEvents() {
       this.hiveTasks.ItemsAdded += new CollectionItemsChangedEventHandler<HiveTask>(hivetasks_ItemsAdded);
       this.hiveTasks.ItemsRemoved += new CollectionItemsChangedEventHandler<HiveTask>(hiveTasks_ItemsRemoved);
       this.hiveTasks.CollectionReset += new CollectionItemsChangedEventHandler<HiveTask>(hiveTasks_CollectionReset);
     }
 
-    private void DeregisterHiveJobsEvents() {
+    private void DeregisterHiveTasksEvents() {
       this.hiveTasks.ItemsAdded -= new CollectionItemsChangedEventHandler<HiveTask>(hivetasks_ItemsAdded);
       this.hiveTasks.ItemsRemoved -= new CollectionItemsChangedEventHandler<HiveTask>(hiveTasks_ItemsRemoved);
       this.hiveTasks.CollectionReset -= new CollectionItemsChangedEventHandler<HiveTask>(hiveTasks_CollectionReset);
@@ -560,7 +561,10 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public Guid Id {
-      get { return job.Id; }
+      get {
+        if (job == null) return Guid.Empty;
+        return job.Id;
+      }
       set { job.Id = value; }
     }
     public bool Modified {
@@ -604,5 +608,43 @@ namespace HeuristicLab.Clients.Hive {
     public int CompareTo(RefreshableJob other) {
       return this.ToString().CompareTo(other.ToString());
     }
+
+    public void Unload() {
+      // stop result polling
+      if (refreshAutomatically)
+        RefreshAutomatically = false;
+      DisposeTasks();
+      hiveTasks = new ItemCollection<HiveTask>();
+    }
+
+    #region IDisposable Members
+    public void Dispose() {
+      if (jobDownloader != null) {
+        jobDownloader.ExceptionOccured -= new EventHandler<EventArgs<Exception>>(jobDownloader_ExceptionOccured);
+        jobDownloader.Dispose();
+        jobDownloader = null;
+      }
+      if (jobResultPoller != null) {
+        DeregisterResultPollingEvents();
+        jobResultPoller = null;
+      }
+      if (hiveTasks != null) {
+        DisposeTasks();
+      }
+      if (job != null) {
+        DeregisterJobEvents();
+        job = null;
+      }
+    }
+
+    private void DisposeTasks() {
+      DeregisterHiveTasksEvents();
+      foreach (var task in hiveTasks) {
+        task.Dispose();
+      }
+      hiveTasks.Clear(); // this should remove the item_StateLogChanged event handlers
+      hiveTasks = null;
+    }
+    #endregion
   }
 }

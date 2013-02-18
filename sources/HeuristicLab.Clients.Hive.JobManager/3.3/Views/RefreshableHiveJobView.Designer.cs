@@ -70,6 +70,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.refreshButton = new System.Windows.Forms.Button();
       this.isPrivilegedCheckBox = new System.Windows.Forms.CheckBox();
+      this.UnloadButton = new System.Windows.Forms.Button();
       this.refreshAutomaticallyCheckBox = new System.Windows.Forms.CheckBox();
       this.infoGroupBox = new System.Windows.Forms.GroupBox();
       this.finishedTextBox = new System.Windows.Forms.TextBox();
@@ -90,6 +91,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       // tabControl
       // 
+      this.tabControl.AllowDrop = true;
       this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -376,10 +378,21 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.isPrivilegedCheckBox.UseVisualStyleBackColor = true;
       this.isPrivilegedCheckBox.CheckedChanged += new System.EventHandler(this.isPrivilegedCheckBox_CheckChanged);
       // 
+      // UnloadButton
+      // 
+      this.UnloadButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Disconnect;
+      this.UnloadButton.Location = new System.Drawing.Point(30, 0);
+      this.UnloadButton.Name = "UnloadButton";
+      this.UnloadButton.Size = new System.Drawing.Size(24, 24);
+      this.UnloadButton.TabIndex = 27;
+      this.toolTip.SetToolTip(this.UnloadButton, "Unload Job");
+      this.UnloadButton.UseVisualStyleBackColor = true;
+      this.UnloadButton.Click += new System.EventHandler(this.UnloadButton_Click);
+      // 
       // refreshAutomaticallyCheckBox
       // 
       this.refreshAutomaticallyCheckBox.AutoSize = true;
-      this.refreshAutomaticallyCheckBox.Location = new System.Drawing.Point(30, 5);
+      this.refreshAutomaticallyCheckBox.Location = new System.Drawing.Point(70, 3);
       this.refreshAutomaticallyCheckBox.Name = "refreshAutomaticallyCheckBox";
       this.refreshAutomaticallyCheckBox.Size = new System.Drawing.Size(127, 17);
       this.refreshAutomaticallyCheckBox.TabIndex = 24;
@@ -470,8 +483,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       // RefreshableHiveJobView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.UnloadButton);
       this.Controls.Add(this.searchButton);
       this.Controls.Add(this.isPrivilegedCheckBox);
       this.Controls.Add(this.infoGroupBox);
@@ -504,7 +517,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
     #endregion
 
-    private System.Windows.Forms.TabControl tabControl;
     private System.Windows.Forms.Button startButton;
     private System.Windows.Forms.Button stopButton;
     private System.Windows.Forms.Button resetButton;
@@ -538,6 +550,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private System.Windows.Forms.TabPage runsTabPage;
     private MainForm.WindowsForms.ViewHost runCollectionViewHost;
     private System.Windows.Forms.Button searchButton;
+    private MainForm.WindowsForms.DragOverTabControl tabControl;
+    private System.Windows.Forms.Button UnloadButton;
 
   }
 }

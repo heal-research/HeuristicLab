@@ -35,7 +35,7 @@ namespace HeuristicLab.Clients.Hive {
 
   [Item("Hive Task", "Represents a hive task.")]
   [StorableClass]
-  public class HiveTask : NamedItem, IItemTree<HiveTask> {
+  public class HiveTask : NamedItem, IItemTree<HiveTask>, IDisposable {
     protected static object locker = new object();
     protected ReaderWriterLockSlim childHiveTasksLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
     protected ReaderWriterLockSlim itemTaskLock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -66,9 +66,9 @@ namespace HeuristicLab.Clients.Hive {
       get { return task; }
       set {
         if (task != value) {
-          DeregisterJobEvents();
+          DeregisterTaskEvents();
           task = value;
-          RegisterJobEvents();
+          RegisterTaskEvents();
           IsFinishedTaskDownloaded = false;
           OnTaskChanged();
           OnToStringChanged();
@@ -92,7 +92,7 @@ namespace HeuristicLab.Clients.Hive {
         if (itemTask != value) {
           itemTaskLock.EnterWriteLock();
           try {
-            DergisterItemTaskEvents();
+            DeregisterItemTaskEvents();
             itemTask = value;
             RegisterItemTaskEvents();
           }
@@ -176,7 +176,7 @@ namespace HeuristicLab.Clients.Hive {
       task.State = TaskState.Offline;
       this.childHiveTasks = new ItemList<HiveTask>();
       syncTasksWithOptimizers = true;
-      RegisterChildHiveJobEvents();
+      RegisterChildHiveTasksEvents();
     }
 
     public HiveTask(ItemTask itemJob, bool autoCreateChildHiveJobs)
@@ -197,7 +197,7 @@ namespace HeuristicLab.Clients.Hive {
       }
       this.childHiveTasks = new ItemList<HiveTask>();
       this.syncTasksWithOptimizers = true;
-      RegisterChildHiveJobEvents();
+      RegisterChildHiveTasksEvents();
     }
 
     protected HiveTask(HiveTask original, Cloner cloner)
@@ -225,19 +225,19 @@ namespace HeuristicLab.Clients.Hive {
         ItemTask.ToStringChanged += new EventHandler(ItemJob_ToStringChanged);
       }
     }
-    protected virtual void DergisterItemTaskEvents() {
+    protected virtual void DeregisterItemTaskEvents() {
       if (ItemTask != null) {
         ItemTask.ComputeInParallelChanged -= new EventHandler(ItemJob_ComputeInParallelChanged);
         ItemTask.ToStringChanged -= new EventHandler(ItemJob_ToStringChanged);
       }
     }
 
-    protected virtual void RegisterChildHiveJobEvents() {
+    protected virtual void RegisterChildHiveTasksEvents() {
       this.childHiveTasks.ItemsAdded += new CollectionItemsChangedEventHandler<IndexedItem<HiveTask>>(OnItemsAdded);
       this.childHiveTasks.ItemsRemoved += new CollectionItemsChangedEventHandler<IndexedItem<HiveTask>>(OnItemsRemoved);
       this.childHiveTasks.CollectionReset += new CollectionItemsChangedEventHandler<IndexedItem<HiveTask>>(OnCollectionReset);
     }
-    protected virtual void DeregisterChildHiveJobEvents() {
+    protected virtual void DeregisterChildHiveTasksEvents() {
       this.childHiveTasks.ItemsAdded -= new CollectionItemsChangedEventHandler<IndexedItem<HiveTask>>(OnItemsAdded);
       this.childHiveTasks.ItemsRemoved -= new CollectionItemsChangedEventHandler<IndexedItem<HiveTask>>(OnItemsRemoved);
       this.childHiveTasks.CollectionReset -= new CollectionItemsChangedEventHandler<IndexedItem<HiveTask>>(OnCollectionReset);
@@ -341,12 +341,12 @@ namespace HeuristicLab.Clients.Hive {
       if (handler != null) handler(this, EventArgs.Empty);
     }
 
-    private void RegisterJobEvents() {
+    private void RegisterTaskEvents() {
       if (task != null)
         task.PropertyChanged += new PropertyChangedEventHandler(task_PropertyChanged);
     }
 
-    private void DeregisterJobEvents() {
+    private void DeregisterTaskEvents() {
       if (task != null)
         task.PropertyChanged += new PropertyChangedEventHandler(task_PropertyChanged);
     }
@@ -524,6 +524,14 @@ namespace HeuristicLab.Clients.Hive {
     /// </summary>
     public virtual void ClearData() {
       this.ItemTask.Item = null;
+    }
+
+    public void Dispose() {
+      DeregisterChildHiveTasksEvents();
+      DeregisterTaskEvents();
+      DeregisterItemTaskEvents();
+      childHiveTasksLock.Dispose();
+      itemTaskLock.Dispose();
     }
   }
 

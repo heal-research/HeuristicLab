@@ -45,13 +45,13 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     #region Properties
-    private ItemCollection<RefreshableJob> jobs;
-    public ItemCollection<RefreshableJob> Jobs {
+    private HiveItemCollection<RefreshableJob> jobs;
+    public HiveItemCollection<RefreshableJob> Jobs {
       get { return jobs; }
       set {
         if (value != jobs) {
           jobs = value;
-          OnHiveExperimentsChanged();
+          OnHiveJobsChanged();
         }
       }
     }
@@ -75,7 +75,31 @@ namespace HeuristicLab.Clients.Hive {
     }
     #endregion
 
-    private HiveClient() { }
+    private HiveClient() {
+      //this will never be deregistered
+      TaskScheduler.UnobservedTaskException += new EventHandler<UnobservedTaskExceptionEventArgs>(TaskScheduler_UnobservedTaskException);
+    }
+
+    private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
+      e.SetObserved(); // avoid crash of process because task crashes. first exception found is handled in Results property
+      throw new HiveException("Unobserved Exception in ConcurrentTaskDownloader", e.Exception);
+    }
+
+    public void ClearHiveClient() {
+      Jobs.ClearWithoutHiveDeletion();
+      foreach (var j in Jobs) {
+        if (j.RefreshAutomatically) {
+          j.RefreshAutomatically = false; // stop result polling
+        }
+        j.Dispose();
+      }
+      Jobs = null;
+
+      if (onlinePlugins != null)
+        onlinePlugins.Clear();
+      if (alreadyUploadedPlugins != null)
+        alreadyUploadedPlugins.Clear();
+    }
 
     #region Refresh
     public void Refresh() {
@@ -84,30 +108,11 @@ namespace HeuristicLab.Clients.Hive {
       try {
         IsAllowedPrivileged = HiveServiceLocator.Instance.CallHiveService((s) => s.IsAllowedPrivileged());
 
-        var oldJobs = jobs ?? new ItemCollection<RefreshableJob>();
         jobs = new HiveItemCollection<RefreshableJob>();
         var jobsLoaded = HiveServiceLocator.Instance.CallHiveService<IEnumerable<Job>>(s => s.GetJobs());
 
         foreach (var j in jobsLoaded) {
-          var job = oldJobs.SingleOrDefault(x => x.Id == j.Id);
-          if (job == null) {
-            // new
-            jobs.Add(new RefreshableJob(j) { IsAllowedPrivileged = this.isAllowedPrivileged });
-          } else {
-            // update
-            job.Job = j;
-            job.IsAllowedPrivileged = this.isAllowedPrivileged;
-            jobs.Add(job);
-          }
-        }
-        // remove those which were not in the list of loaded hiveexperiments
-        foreach (var job in oldJobs) {
-          if (job.Id == Guid.Empty) {
-            // experiment not uploaded... keep
-            jobs.Add(job);
-          } else {
-            job.RefreshAutomatically = false; // stop results polling
-          }
+          jobs.Add(new RefreshableJob(j) { IsAllowedPrivileged = this.isAllowedPrivileged });
         }
       }
       catch {
@@ -118,6 +123,7 @@ namespace HeuristicLab.Clients.Hive {
         OnRefreshed();
       }
     }
+
     public void RefreshAsync(Action<Exception> exceptionCallback) {
       var call = new Func<Exception>(delegate() {
         try {
@@ -204,9 +210,9 @@ namespace HeuristicLab.Clients.Hive {
       var handler = Refreshed;
       if (handler != null) handler(this, EventArgs.Empty);
     }
-    public event EventHandler HiveExperimentsChanged;
-    private void OnHiveExperimentsChanged() {
-      var handler = HiveExperimentsChanged;
+    public event EventHandler HiveJobsChanged;
+    private void OnHiveJobsChanged() {
+      var handler = HiveJobsChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
     #endregion
@@ -307,8 +313,6 @@ namespace HeuristicLab.Clients.Hive {
         TS.Task.WaitAll(tasks.ToArray());
       }
       finally {
-        refreshableJob.RefreshAutomatically = true;
-        refreshableJob.StartResultPolling();
         refreshableJob.Job.Modified = false;
         refreshableJob.IsProgressing = false;
         refreshableJob.Progress.Finish();
@@ -420,6 +424,7 @@ namespace HeuristicLab.Clients.Hive {
       var hiveExperiment = refreshableJob.Job;
       refreshableJob.IsProgressing = true;
       refreshableJob.Progress = new Progress();
+      TaskDownloader downloader = null;
 
       try {
         int totalJobCount = 0;
@@ -428,11 +433,11 @@ namespace HeuristicLab.Clients.Hive {
         refreshableJob.Progress.Status = "Connecting to Server...";
         // fetch all task objects to create the full tree of tree of HiveTask objects
         refreshableJob.Progress.Status = "Downloading list of tasks...";
-        allTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasks(hiveExperiment.Id));
+        allTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(hiveExperiment.Id));
         totalJobCount = allTasks.Count();
 
         refreshableJob.Progress.Status = "Downloading tasks...";
-        TaskDownloader downloader = new TaskDownloader(allTasks.Select(x => x.Id));
+        downloader = new TaskDownloader(allTasks.Select(x => x.Id));
         downloader.StartAsync();
 
         while (!downloader.IsFinished) {
@@ -464,6 +469,9 @@ namespace HeuristicLab.Clients.Hive {
       finally {
         refreshableJob.IsProgressing = false;
         refreshableJob.Progress.Finish();
+        if (downloader != null) {
+          downloader.Dispose();
+        }
       }
     }
 

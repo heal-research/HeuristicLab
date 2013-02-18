@@ -31,6 +31,7 @@ namespace HeuristicLab.Services.Hive {
     DT.Task GetTask(Guid id);
     IEnumerable<DT.Task> GetTasks(Expression<Func<Task, bool>> predicate);
     IEnumerable<DT.LightweightTask> GetLightweightTasks(Expression<Func<Task, bool>> predicate);
+    IEnumerable<DT.LightweightTask> GetLightweightTasksWithoutStateLog(Expression<Func<Task, bool>> predicate);
     Guid AddTask(DT.Task dto);
     void UpdateTaskAndPlugins(DT.Task dto);
     void UpdateTask(DT.Task dto);

@@ -51,6 +51,16 @@ namespace HeuristicLab.Clients.Hive {
       if (ex != null) throw ex;
     }
 
+    public void ClearWithoutHiveDeletion() {
+      if (list.Count > 0) {
+        T[] items = list.ToArray();
+        list.Clear();
+        OnPropertyChanged("Count");
+        //don't call OnCollectionReset directly as it would delete the job
+        base.OnCollectionReset(list, items);
+      }
+    }
+
     private void RemoveItems(IEnumerable<T> items, out IEnumerable<T> successful, out IEnumerable<T> unsuccessful, out Exception exception) {
       List<T> removed = new List<T>();
       List<T> notremoved = new List<T>();

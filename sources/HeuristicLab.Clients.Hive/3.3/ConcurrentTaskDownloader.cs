@@ -29,7 +29,7 @@ namespace HeuristicLab.Clients.Hive {
   /// <summary>
   /// Downloads and deserializes jobs. It avoids too many jobs beeing downloaded or deserialized at the same time to avoid memory problems
   /// </summary>
-  public class ConcurrentTaskDownloader<T> where T : class, ITask {
+  public class ConcurrentTaskDownloader<T> : IDisposable where T : class, ITask {
     private bool abort = false;
     // use semaphore to ensure only few concurrenct connections and few SerializedJob objects in memory
     private Semaphore downloadSemaphore;
@@ -38,7 +38,6 @@ namespace HeuristicLab.Clients.Hive {
     public ConcurrentTaskDownloader(int concurrentDownloads, int concurrentDeserializations) {
       downloadSemaphore = new Semaphore(concurrentDownloads, concurrentDownloads);
       deserializeSemaphore = new Semaphore(concurrentDeserializations, concurrentDeserializations);
-      TaskScheduler.UnobservedTaskException += new EventHandler<UnobservedTaskExceptionEventArgs>(TaskScheduler_UnobservedTaskException);
     }
 
     public void DownloadTaskData(Task t, Action<Task, T> onFinishedAction) {
@@ -68,7 +67,11 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     private Task DownloadTask(object taskId) {
-      return HiveServiceLocator.Instance.CallHiveService(s => s.GetTask((Guid)taskId));
+      Task t = null;
+      HiveClient.TryAndRepeat(() => {
+        t = HiveServiceLocator.Instance.CallHiveService(s => s.GetTask((Guid)taskId));
+      }, Settings.Default.MaxRepeatServiceCalls, "Failed to download task.");
+      return t;
     }
 
     protected Tuple<Task, TaskData> DownloadTaskData(object taskId) {
@@ -77,11 +80,14 @@ namespace HeuristicLab.Clients.Hive {
 
     protected Tuple<Task, TaskData> DownloadTaskData(Task task) {
       downloadSemaphore.WaitOne();
-      TaskData result;
+      TaskData result = null;
       try {
         if (abort) return null;
-        result = HiveServiceLocator.Instance.CallHiveService(s => s.GetTaskData(task.Id));
-      } finally {
+        HiveClient.TryAndRepeat(() => {
+          result = HiveServiceLocator.Instance.CallHiveService(s => s.GetTaskData(task.Id));
+        }, Settings.Default.MaxRepeatServiceCalls, "Failed to download task data.");
+      }
+      finally {
         downloadSemaphore.Release();
       }
       return new Tuple<Task, TaskData>(task, result);
@@ -94,14 +100,10 @@ namespace HeuristicLab.Clients.Hive {
         var deserializedJob = PersistenceUtil.Deserialize<T>(taskData.Item2.Data);
         taskData.Item2.Data = null; // reduce memory consumption.
         return new Tuple<Task, T>(taskData.Item1, deserializedJob);
-      } finally {
+      }
+      finally {
         deserializeSemaphore.Release();
       }
-    }
-
-    private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
-      e.SetObserved(); // avoid crash of process because task crashes. first exception found is handled in Results property
-      OnExceptionOccured(new HiveException("Unobserved Exception in ConcurrentTaskDownloader", e.Exception));
     }
 
     public event EventHandler<EventArgs<Exception>> ExceptionOccured;
@@ -109,5 +111,12 @@ namespace HeuristicLab.Clients.Hive {
       var handler = ExceptionOccured;
       if (handler != null) handler(this, new EventArgs<Exception>(exception));
     }
+
+    #region IDisposable Members
+    public void Dispose() {
+      deserializeSemaphore.Dispose();
+      downloadSemaphore.Dispose();
+    }
+    #endregion
   }
 }

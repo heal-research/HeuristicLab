@@ -106,8 +106,8 @@ namespace HeuristicLab.Clients.Hive {
         }
       }
     }
-    protected override void DergisterItemTaskEvents() {
-      base.DergisterItemTaskEvents();
+    protected override void DeregisterItemTaskEvents() {
+      base.DeregisterItemTaskEvents();
       if (ItemTask != null) {
         if (ItemTask.Item is Optimization.Experiment) {
           Optimization.Experiment experiment = ItemTask.OptimizerAsExperiment;

@@ -70,6 +70,28 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       return tasks;
     }
 
+    public IEnumerable<DT.LightweightTask> GetLightweightTasksWithoutStateLog(Expression<Func<Task, bool>> predicate) {
+      List<DT.LightweightTask> tasks = new List<DT.LightweightTask>();
+
+      using (var db = CreateContext()) {
+        var tasksQuery = db.Tasks.Where(predicate).Select(task => new { task.TaskId, task.ExecutionTimeMs, task.ParentTaskId, task.State, task.Command });
+        var taskDatasQuery = db.Tasks.Where(predicate).Where(task => task.JobData != null).Select(task => new { task.TaskId, task.JobData.LastUpdate });
+
+        foreach (var task in tasksQuery) {
+          DT.LightweightTask t = new DT.LightweightTask();
+          t.Id = task.TaskId;
+          t.ExecutionTime = TimeSpan.FromMilliseconds(task.ExecutionTimeMs);
+          t.ParentTaskId = task.ParentTaskId;
+          t.StateLog = new List<DT.StateLog>();
+          t.State = DataTransfer.Convert.ToDto(task.State);
+          t.Command = DataTransfer.Convert.ToDto(task.Command);
+          t.LastTaskDataUpdate = taskDatasQuery.Where(x => x.TaskId == task.TaskId).Count() > 0 ? taskDatasQuery.Select(x => x.LastUpdate).First() : DateTime.MinValue;
+          tasks.Add(t);
+        }
+      }
+      return tasks;
+    }
+
     public Guid AddTask(DT.Task dto) {
       using (var db = CreateContext()) {
         var entity = DT.Convert.ToEntity(dto);

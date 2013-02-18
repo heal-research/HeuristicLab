@@ -52,6 +52,9 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     IEnumerable<LightweightTask> GetLightweightJobTasks(Guid jobId);
 
     [OperationContract]
+    IEnumerable<LightweightTask> GetLightweightJobTasksWithoutStateLog(Guid jobId);
+
+    [OperationContract]
     TaskData GetTaskData(Guid taskId);
 
     [OperationContract]

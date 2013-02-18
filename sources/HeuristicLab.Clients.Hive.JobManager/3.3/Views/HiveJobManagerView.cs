@@ -53,14 +53,13 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       base.RegisterContentEvents();
       Content.Refreshing += new EventHandler(Content_Refreshing);
       Content.Refreshed += new EventHandler(Content_Refreshed);
-      Content.HiveExperimentsChanged += new EventHandler(Content_HiveExperimentsChanged);
-
+      Content.HiveJobsChanged += new EventHandler(Content_HiveJobsChanged);
     }
 
     protected override void DeregisterContentEvents() {
       Content.Refreshing -= new EventHandler(Content_Refreshing);
       Content.Refreshed -= new EventHandler(Content_Refreshed);
-      Content.HiveExperimentsChanged -= new EventHandler(Content_HiveExperimentsChanged);
+      Content.HiveJobsChanged -= new EventHandler(Content_HiveJobsChanged);
       base.DeregisterContentEvents();
     }
 
@@ -122,12 +121,15 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     protected override void OnClosing(FormClosingEventArgs e) {
-      base.OnClosing(e);
-      if (Content != null && Content.Jobs != null) {
-        foreach (var exp in Content.Jobs.OfType<RefreshableJob>()) {
-          if (exp.RefreshAutomatically) {
-            exp.RefreshAutomatically = false; // stop result polling
-          }
+      if (Content.Jobs.Any(x => x.IsProgressing)) {
+        MessageBox.Show("The Hive Job Manager can only be closed after all down/uploads are finished. ", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        e.Cancel = true;
+      } else {
+        base.OnClosing(e);
+        if (Content != null && Content.Jobs != null) {
+          Content.Jobs.ItemsRemoved -= new CollectionItemsChangedEventHandler<RefreshableJob>(HiveExperiments_ItemsRemoved);
+          Content.ClearHiveClient();
+          Content = null;
         }
       }
     }
@@ -138,8 +140,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       }
     }
 
-    private void Content_HiveExperimentsChanged(object sender, EventArgs e) {
-      Content.Jobs.ItemsRemoved += new CollectionItemsChangedEventHandler<RefreshableJob>(HiveExperiments_ItemsRemoved);
+    private void Content_HiveJobsChanged(object sender, EventArgs e) {
+      if (Content.Jobs != null) {
+        Content.Jobs.ItemsRemoved += new CollectionItemsChangedEventHandler<RefreshableJob>(HiveExperiments_ItemsRemoved);
+      }
     }
   }
 }
