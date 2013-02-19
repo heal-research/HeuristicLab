@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
                + "For each feature the probability that it is selected is " + selectionProbability + "%" + Environment.NewLine
                + "X(i,j) ~ N(0, 1) iid, w(i) ~ U(0, 10) iid, n ~ N(0, sigma(w*S) * SQRT(" + noiseRatio + "))" + Environment.NewLine
                + "The noise level is " + noiseRatio + " * sigma, thus an optimal model has R² = "
-               + Math.Round(optimalRSquared) + " (or equivalently: NMSE = " + noiseRatio + ")" + Environment.NewLine
+               + Math.Round(optimalRSquared, 2) + " (or equivalently: NMSE = " + noiseRatio + ")" + Environment.NewLine
                + "N = " + (nTrainingSamples + nTestSamples) + " (" + nTrainingSamples + " training, " + nTestSamples + " test)" + Environment.NewLine
                + "k = " + numberOfFeatures;
         ;
