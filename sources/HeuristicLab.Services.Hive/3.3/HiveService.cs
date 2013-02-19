@@ -262,36 +262,42 @@ namespace HeuristicLab.Services.Hive {
     public Job GetJob(Guid id) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       author.AuthorizeForJob(id, Permission.Read);
-      var job = dao.GetJobs(x =>
-            x.JobId == id
-            && (x.OwnerUserId == userManager.CurrentUserId || x.JobPermissions.Count(hep => hep.Permission != DA.Permission.NotAllowed && hep.GrantedUserId == userManager.CurrentUserId) > 0)
-          ).FirstOrDefault();
-      if (job != null) {
-        job.Permission = DT.Convert.ToDto(dao.GetPermissionForJob(job.Id, userManager.CurrentUserId));
-        job.OwnerUsername = userManager.GetUserById(job.OwnerUserId).UserName;
-      }
-      return job;
+      return trans.UseTransaction(() => {
+        var job = dao.GetJobs(x =>
+              x.JobId == id
+              && (x.OwnerUserId == userManager.CurrentUserId || x.JobPermissions.Count(hep => hep.Permission != DA.Permission.NotAllowed && hep.GrantedUserId == userManager.CurrentUserId) > 0)
+            ).FirstOrDefault();
+        if (job != null) {
+          job.Permission = DT.Convert.ToDto(dao.GetPermissionForJob(job.Id, userManager.CurrentUserId));
+          job.OwnerUsername = userManager.GetUserById(job.OwnerUserId).UserName;
+        }
+        return job;
+      });
     }
 
     public IEnumerable<Job> GetJobs() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      var jobs = dao.GetJobs(x => x.OwnerUserId == userManager.CurrentUserId || x.JobPermissions.Count(hep => hep.Permission != DA.Permission.NotAllowed && hep.GrantedUserId == userManager.CurrentUserId) > 0);
-      foreach (var job in jobs) {
-        author.AuthorizeForJob(job.Id, Permission.Read);
-        job.Permission = DT.Convert.ToDto(dao.GetPermissionForJob(job.Id, userManager.CurrentUserId));
-        job.OwnerUsername = userManager.GetUserById(job.OwnerUserId).UserName;
-      }
-      return jobs;
+      return trans.UseTransaction(() => {
+        var jobs = dao.GetJobs(x => x.OwnerUserId == userManager.CurrentUserId || x.JobPermissions.Count(hep => hep.Permission != DA.Permission.NotAllowed && hep.GrantedUserId == userManager.CurrentUserId) > 0);
+        foreach (var job in jobs) {
+          author.AuthorizeForJob(job.Id, Permission.Read);
+          job.Permission = DT.Convert.ToDto(dao.GetPermissionForJob(job.Id, userManager.CurrentUserId));
+          job.OwnerUsername = userManager.GetUserById(job.OwnerUserId).UserName;
+        }
+        return jobs;
+      });
     }
 
     public IEnumerable<Job> GetAllJobs() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator);
-      var jobs = dao.GetJobs(x => true);
-      foreach (var job in jobs) { // no authorization here, since this method is admin-only! (admin is allowed to read all task)
-        job.Permission = DT.Convert.ToDto(dao.GetPermissionForJob(job.Id, userManager.CurrentUserId));
-        job.OwnerUsername = userManager.GetUserById(job.OwnerUserId).UserName;
-      }
-      return jobs;
+      return trans.UseTransaction(() => {
+        var jobs = dao.GetJobs(x => true);
+        foreach (var job in jobs) { // no authorization here, since this method is admin-only! (admin is allowed to read all task)
+          job.Permission = DT.Convert.ToDto(dao.GetPermissionForJob(job.Id, userManager.CurrentUserId));
+          job.OwnerUsername = userManager.GetUserById(job.OwnerUserId).UserName;
+        }
+        return jobs;
+      });
     }
 
     public Guid AddJob(Job jobDto) {
