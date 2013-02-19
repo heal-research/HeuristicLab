@@ -317,16 +317,16 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.sizeTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.sizeTrackBar.Location = new System.Drawing.Point(787, 3);
-      this.sizeTrackBar.Maximum = 50;
-      this.sizeTrackBar.Minimum = 5;
+      this.sizeTrackBar.Maximum = 20;
+      this.sizeTrackBar.Minimum = -20;
       this.sizeTrackBar.Name = "sizeTrackBar";
       this.sizeTrackBar.Size = new System.Drawing.Size(64, 45);
       this.sizeTrackBar.TabIndex = 24;
-      this.sizeTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-      this.sizeTrackBar.Value = 10;
+      this.sizeTrackBar.TickFrequency = 25;
+      this.sizeTrackBar.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
       this.sizeTrackBar.ValueChanged += new System.EventHandler(this.sizeTrackBar_ValueChanged);
       // 
-      // ToolStripMenuItem
+      // getDataAsMatrixToolStripMenuItem
       // 
       this.getDataAsMatrixToolStripMenuItem.Name = "getDataAsMatrixToolStripMenuItem";
       this.getDataAsMatrixToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
@@ -335,7 +335,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // RunCollectionBubbleChartView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;

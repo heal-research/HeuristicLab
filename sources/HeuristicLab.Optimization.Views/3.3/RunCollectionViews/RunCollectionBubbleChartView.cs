@@ -19,17 +19,17 @@
  */
 #endregion
 
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimization.Views {
   [View("RunCollection BubbleChart")]
@@ -271,19 +271,27 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateMarkerSizes() {
-      double[] sizeValues = this.chart.Series[0].Points.Select(p => p.YValues[1]).ToArray();
+      var series = chart.Series[0];
+      var sizeValues = series.Points.Select(p => p.YValues[1]);
+
       double minSizeValue = sizeValues.Min();
       double maxSizeValue = sizeValues.Max();
+      double sizeRange = maxSizeValue - minSizeValue;
 
-      for (int i = 0; i < sizeValues.Length; i++) {
-        DataPoint point = this.chart.Series[0].Points[i];
-        double sizeRange = maxSizeValue - minSizeValue;
+      const int smallestBubbleSize = 5;
+
+      foreach (DataPoint point in series.Points) {
+        //calculates the relative size of the data point  0 <= relativeSize <= 1
         double relativeSize = (point.YValues[1] - minSizeValue);
+        if (sizeRange > double.Epsilon) {
+          relativeSize /= sizeRange;
 
-        if (sizeRange > double.Epsilon) relativeSize /= sizeRange;
-        else relativeSize = 1;
+          //invert bubble sizes if the value of the trackbar is negative
+          if (sizeTrackBar.Value < 0) relativeSize = Math.Abs(relativeSize - 1);
+        } else relativeSize = 1;
 
-        point.MarkerSize = (int)Math.Round((sizeTrackBar.Value - sizeTrackBar.Minimum) * relativeSize + sizeTrackBar.Minimum);
+        double sizeChange = Math.Abs(sizeTrackBar.Value) * relativeSize;
+        point.MarkerSize = (int)Math.Round(sizeChange + smallestBubbleSize);
       }
     }
 
