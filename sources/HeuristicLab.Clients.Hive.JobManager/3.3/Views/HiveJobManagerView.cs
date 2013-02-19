@@ -126,11 +126,15 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         }
       } else {
         base.OnClosing(e);
-        if (Content != null) {
-          Content.ClearHiveClient();
-          Content = null;
-        }
       }
+    }
+
+    protected override void OnClosed(FormClosedEventArgs e) {
+      if (Content != null) {
+        Content.ClearHiveClient();
+        Content = null;
+      }
+      base.OnClosed(e);
     }
   }
 }
