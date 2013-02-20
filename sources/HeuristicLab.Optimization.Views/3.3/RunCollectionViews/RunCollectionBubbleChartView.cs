@@ -43,6 +43,7 @@ namespace HeuristicLab.Optimization.Views {
     private string sizeAxisValue;
 
     private Dictionary<IRun, List<DataPoint>> runToDataPointMapping;
+    private Dictionary<IRun, int> runToIndexMapping;
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
     private Dictionary<IRun, double> xJitter;
     private Dictionary<IRun, double> yJitter;
@@ -51,6 +52,8 @@ namespace HeuristicLab.Optimization.Views {
     private Random random;
     private bool isSelecting = false;
     private bool suppressUpdates = false;
+
+
 
     public RunCollectionBubbleChartView() {
       InitializeComponent();
@@ -166,7 +169,20 @@ namespace HeuristicLab.Optimization.Views {
       UpdateComboBoxes();
       UpdateDataPoints();
       UpdateCaption();
+      RebuildInverseIndex();
     }
+
+    private void RebuildInverseIndex() {
+      if (Content != null) {
+        runToIndexMapping = new Dictionary<IRun, int>(Content.Count);
+        int i = 0;
+        foreach (var run in Content) {
+          runToIndexMapping.Add(run, i);
+          i++;
+        }
+      }
+    }
+
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ColumnNamesChanged), sender, e);
@@ -209,8 +225,10 @@ namespace HeuristicLab.Optimization.Views {
           sizeComboBox.SelectedItem = selectedSizeAxis;
           changed = true;
         }
-        if (changed)
+        if (changed) {
           UpdateDataPoints();
+          UpdateAxisLabels();
+        }
       }
     }
 
@@ -235,7 +253,9 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_Reset), sender, e);
       else {
         this.categoricalMapping.Clear();
+        RebuildInverseIndex();
         UpdateDataPoints();
+        UpdateAxisLabels();
       }
     }
 
@@ -398,21 +418,25 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     private double GetCategoricalValue(int dimension, string value) {
-      if (!this.categoricalMapping.ContainsKey(dimension))
+      if (!this.categoricalMapping.ContainsKey(dimension)) {
         this.categoricalMapping[dimension] = new Dictionary<object, double>();
-      if (!this.categoricalMapping[dimension].ContainsKey(value)) {
-        if (this.categoricalMapping[dimension].Values.Count == 0)
-          this.categoricalMapping[dimension][value] = 1.0;
-        else
-          this.categoricalMapping[dimension][value] = this.categoricalMapping[dimension].Values.Max() + 1.0;
+        var orderedCategories = Content.Select(r => Content.GetValue(r, dimension).ToString())
+                                    .Distinct()
+                                    .OrderBy(x => x, new NaturalStringComparer());
+        int count = 1;
+        foreach (var category in orderedCategories) {
+          this.categoricalMapping[dimension].Add(category, count);
+          count++;
+        }
       }
       return this.categoricalMapping[dimension][value];
     }
+
     private double GetValue(IRun run, AxisDimension axisDimension) {
       double value = double.NaN;
       switch (axisDimension) {
         case AxisDimension.Index: {
-            value = Content.ToList().IndexOf(run);
+            value = runToIndexMapping[run];
             break;
           }
         default: {
@@ -739,15 +763,20 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void ColorRuns(string axisValue) {
-      var runs = Content.Where(r => r.Visible).Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue);
+      var runs = Content.Where(r => r.Visible).Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue).ToList();
       double minValue = runs.Min(r => r.Value.Value);
       double maxValue = runs.Max(r => r.Value.Value);
       double range = maxValue - minValue;
 
-      foreach (var r in runs) {
-        int colorIndex = 0;
-        if (!range.IsAlmost(0)) colorIndex = (int)((ColorGradient.Colors.Count - 1) * (r.Value.Value - minValue) / (range));
-        r.Run.Color = ColorGradient.Colors[colorIndex];
+      if (range.IsAlmost(0)) {
+        Color c = ColorGradient.Colors[0];
+        runs.ForEach(r => r.Run.Color = c);
+      } else {
+        int maxColorIndex = ColorGradient.Colors.Count - 1;
+        foreach (var r in runs) {
+          int colorIndex = (int)(maxColorIndex * (r.Value - minValue) / (range));
+          r.Run.Color = ColorGradient.Colors[colorIndex];
+        }
       }
     }
     #endregion
