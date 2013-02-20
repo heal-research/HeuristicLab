@@ -137,7 +137,6 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         this.Invoke(new EventHandler(run_Changed), sender, e);
       else if (!suppressUpdates) {
-        IRun run = (IRun)sender;
         UpdateDataPoints();
       }
     }

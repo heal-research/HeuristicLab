@@ -767,7 +767,8 @@ namespace HeuristicLab.Optimization.Views {
       double minValue = runs.Min(r => r.Value.Value);
       double maxValue = runs.Max(r => r.Value.Value);
       double range = maxValue - minValue;
-
+      // UpdateOfRunsInProgress has to be set to true, otherwise run_Changed is called all the time (also in other views)
+      Content.UpdateOfRunsInProgress = true;
       if (range.IsAlmost(0)) {
         Color c = ColorGradient.Colors[0];
         runs.ForEach(r => r.Run.Color = c);
@@ -778,6 +779,7 @@ namespace HeuristicLab.Optimization.Views {
           r.Run.Color = ColorGradient.Colors[colorIndex];
         }
       }
+      Content.UpdateOfRunsInProgress = false;
     }
     #endregion
   }
