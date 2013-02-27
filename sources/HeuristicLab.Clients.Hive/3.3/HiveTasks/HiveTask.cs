@@ -532,6 +532,7 @@ namespace HeuristicLab.Clients.Hive {
       DeregisterItemTaskEvents();
       childHiveTasksLock.Dispose();
       itemTaskLock.Dispose();
+      ClearData();
     }
   }
 
