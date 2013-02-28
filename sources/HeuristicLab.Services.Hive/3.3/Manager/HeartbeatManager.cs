@@ -36,6 +36,9 @@ namespace HeuristicLab.Services.Hive {
     private ITaskScheduler taskScheduler {
       get { return ServiceLocator.Instance.TaskScheduler; }
     }
+    private DataAccess.ITransactionManager trans {
+      get { return ServiceLocator.Instance.TransactionManager; }
+    }
 
     /// <summary>
     /// This method will be called every time a slave sends a heartbeat (-> very often; concurrency is important!)
@@ -43,7 +46,9 @@ namespace HeuristicLab.Services.Hive {
     /// <returns>a list of actions the slave should do</returns>
     public List<MessageContainer> ProcessHeartbeat(Heartbeat heartbeat) {
       List<MessageContainer> actions = new List<MessageContainer>();
-      Slave slave = dao.GetSlave(heartbeat.SlaveId);
+      Slave slave = null;
+      slave = trans.UseTransaction(() => { return dao.GetSlave(heartbeat.SlaveId); });
+
       if (slave == null) {
         actions.Add(new MessageContainer(MessageContainer.MessageType.SayHello));
       } else {
@@ -61,7 +66,8 @@ namespace HeuristicLab.Services.Hive {
         slave.IsAllowedToCalculate = SlaveIsAllowedToCalculate(slave.Id);
         slave.SlaveState = (heartbeat.JobProgress != null && heartbeat.JobProgress.Count > 0) ? SlaveState.Calculating : SlaveState.Idle;
         slave.LastHeartbeat = DateTime.Now;
-        dao.UpdateSlave(slave);
+
+        trans.UseTransaction(() => { dao.UpdateSlave(slave); });
 
         // update task data
         actions.AddRange(UpdateTasks(heartbeat, slave.IsAllowedToCalculate));
@@ -75,7 +81,8 @@ namespace HeuristicLab.Services.Hive {
             if (!mutexAquired)
               DA.LogFactory.GetLogger(this.GetType().Namespace).Log("HeartbeatManager: The mutex used for scheduling could not be aquired.");
             else {
-              var availableTasks = taskScheduler.Schedule(dao.GetWaitingTasks(slave));
+              IEnumerable<TaskInfoForScheduler> availableTasks = null;
+              availableTasks = trans.UseTransaction(() => { return taskScheduler.Schedule(dao.GetWaitingTasks(slave)); });
               if (availableTasks.Any()) {
                 var task = availableTasks.First();
                 AssignJob(slave, task.TaskId);
@@ -98,11 +105,13 @@ namespace HeuristicLab.Services.Hive {
     }
 
     private void AssignJob(Slave slave, Guid taskId) {
-      var task = dao.UpdateTaskState(taskId, DataAccess.TaskState.Transferring, slave.Id, null, null);
+      trans.UseTransaction(() => {
+        var task = dao.UpdateTaskState(taskId, DataAccess.TaskState.Transferring, slave.Id, null, null);
 
-      // from now on the task has some time to send the next heartbeat (ApplicationConstants.TransferringJobHeartbeatTimeout)
-      task.LastHeartbeat = DateTime.Now;
-      dao.UpdateTask(task);
+        // from now on the task has some time to send the next heartbeat (ApplicationConstants.TransferringJobHeartbeatTimeout)
+        task.LastHeartbeat = DateTime.Now;
+        dao.UpdateTask(task);
+      });
     }
 
     /// <summary>
@@ -120,7 +129,8 @@ namespace HeuristicLab.Services.Hive {
       } else {
         // process the jobProgresses
         foreach (var jobProgress in heartbeat.JobProgress) {
-          Task curTask = dao.GetTask(jobProgress.Key);
+          Task curTask = null;
+          curTask = trans.UseTransaction(() => { return dao.GetTask(jobProgress.Key); });
           if (curTask == null) {
             // task does not exist in db
             actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, jobProgress.Key));
@@ -149,7 +159,7 @@ namespace HeuristicLab.Services.Hive {
                   actions.Add(new MessageContainer(MessageContainer.MessageType.AbortTask, curTask.Id));
                   break;
               }
-              dao.UpdateTask(curTask);
+              trans.UseTransaction(() => { dao.UpdateTask(curTask); });
             }
           }
         }
@@ -158,18 +168,20 @@ namespace HeuristicLab.Services.Hive {
     }
 
     private bool TaskIsAllowedToBeCalculatedBySlave(Guid slaveId, Task curTask) {
-      var assignedResourceIds = dao.GetAssignedResources(curTask.Id).Select(x => x.Id);
-      var slaveResourceIds = dao.GetParentResources(slaveId).Select(x => x.Id);
-      return assignedResourceIds.Any(x => slaveResourceIds.Contains(x));
+      return trans.UseTransaction(() => {
+        var assignedResourceIds = dao.GetAssignedResources(curTask.Id).Select(x => x.Id);
+        var slaveResourceIds = dao.GetParentResources(slaveId).Select(x => x.Id);
+        return assignedResourceIds.Any(x => slaveResourceIds.Contains(x));
+      });
     }
 
     private bool SlaveIsAllowedToCalculate(Guid slaveId) {
       // the slave may only calculate if there is no downtime right now. this needs to be checked for every parent resource also
-      return dao.GetParentResources(slaveId).All(r => dao.GetDowntimes(x => x.ResourceId == r.Id && x.DowntimeType == DA.DowntimeType.Offline && (DateTime.Now >= x.StartDate) && (DateTime.Now <= x.EndDate)).Count() == 0);
+      return trans.UseTransaction(() => { return dao.GetParentResources(slaveId).All(r => dao.GetDowntimes(x => x.ResourceId == r.Id && x.DowntimeType == DA.DowntimeType.Offline && (DateTime.Now >= x.StartDate) && (DateTime.Now <= x.EndDate)).Count() == 0); });
     }
 
     private bool ShutdownSlaveComputer(Guid slaveId) {
-      return dao.GetParentResources(slaveId).Any(r => dao.GetDowntimes(x => x.ResourceId == r.Id && x.DowntimeType == DA.DowntimeType.Shutdown && (DateTime.Now >= x.StartDate) && (DateTime.Now <= x.EndDate)).Count() != 0);
+      return trans.UseTransaction(() => { return dao.GetParentResources(slaveId).Any(r => dao.GetDowntimes(x => x.ResourceId == r.Id && x.DowntimeType == DA.DowntimeType.Shutdown && (DateTime.Now >= x.StartDate) && (DateTime.Now <= x.EndDate)).Count() != 0); });
     }
   }
 }

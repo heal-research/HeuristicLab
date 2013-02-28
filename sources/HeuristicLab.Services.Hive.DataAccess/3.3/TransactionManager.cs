@@ -21,14 +21,13 @@
 
 using System;
 using System.Transactions;
-using HeuristicLab.Services.Hive.DataAccess;
 
-namespace HeuristicLab.Services.Hive.DataAccess {  
-  public class TransactionManager : ITransactionManager {    
-    public void UseTransaction(Action call, bool serializable = false, bool longRunning = false) {
+namespace HeuristicLab.Services.Hive.DataAccess {
+  public class TransactionManager : ITransactionManager {
+    public void UseTransaction(Action call, bool repeatableRead = false, bool longRunning = false) {
       int n = 10;
       while (n > 0) {
-        TransactionScope transaction = CreateTransaction(serializable, longRunning);
+        TransactionScope transaction = CreateTransaction(repeatableRead, longRunning);
         try {
           call();
           transaction.Complete();
@@ -36,7 +35,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
         }
         catch (System.Data.SqlClient.SqlException e) {
           n--; // probably deadlock situation, let it roll back and repeat the transaction n times
-          LogFactory.GetLogger(typeof(TransactionManager).Namespace).Log(string.Format("Exception occured, repeating transaction {0} more times. Details: {1}", n, e.ToString()));          
+          LogFactory.GetLogger(typeof(TransactionManager).Namespace).Log(string.Format("Exception occured, repeating transaction {0} more times. Details: {1}", n, e.ToString()));
           if (n <= 0) throw;
         }
         finally {
@@ -45,10 +44,10 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
-    public T UseTransaction<T>(Func<T> call, bool serializable = false, bool longRunning = false) {
+    public T UseTransaction<T>(Func<T> call, bool repeatableRead = false, bool longRunning = false) {
       int n = 10;
       while (n > 0) {
-        TransactionScope transaction = CreateTransaction(serializable, longRunning);
+        TransactionScope transaction = CreateTransaction(repeatableRead, longRunning);
         try {
           T result = call();
           transaction.Complete();
@@ -67,10 +66,10 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       throw new Exception("This code should not be reached");
     }
 
-    private TransactionScope CreateTransaction(bool serializable, bool longRunning) {
+    private TransactionScope CreateTransaction(bool repeatableRead, bool longRunning) {
       var options = new TransactionOptions();
-      if (serializable)
-        options.IsolationLevel = IsolationLevel.Serializable;
+      if (repeatableRead)
+        options.IsolationLevel = IsolationLevel.RepeatableRead;
       else
         options.IsolationLevel = IsolationLevel.ReadUncommitted;
 

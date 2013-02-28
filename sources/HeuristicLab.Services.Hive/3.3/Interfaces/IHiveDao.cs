@@ -113,7 +113,7 @@ namespace HeuristicLab.Services.Hive {
     Guid AddResource(DT.Resource dto);
     void UpdateResource(DT.Resource dto);
     void DeleteResource(Guid id);
-    void AssignJobToResource(Guid jobId, Guid resourceId);
+    void AssignJobToResource(Guid taskId, IEnumerable<Guid> resourceIds);
     IEnumerable<DT.Resource> GetAssignedResources(Guid jobId);
     IEnumerable<DT.Resource> GetParentResources(Guid resourceId);
     IEnumerable<DT.Resource> GetChildResources(Guid resourceId);

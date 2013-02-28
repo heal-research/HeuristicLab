@@ -612,10 +612,12 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
-    public void AssignJobToResource(Guid jobId, Guid resourceId) {
+    public void AssignJobToResource(Guid taskId, IEnumerable<Guid> resourceIds) {
       using (var db = CreateContext()) {
-        var job = db.Tasks.Where(x => x.TaskId == jobId).Single();
-        job.AssignedResources.Add(new AssignedResource() { TaskId = jobId, ResourceId = resourceId });
+        var task = db.Tasks.Where(x => x.TaskId == taskId).Single();
+        foreach (Guid rId in resourceIds) {
+          task.AssignedResources.Add(new AssignedResource() { TaskId = taskId, ResourceId = rId });
+        }
         db.SubmitChanges();
       }
     }

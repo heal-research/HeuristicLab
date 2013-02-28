@@ -49,12 +49,12 @@ namespace HeuristicLab.Services.Hive {
         SetTimeoutSlavesOffline();
         SetTimeoutTasksWaiting();
         DeleteObsoleteSlaves();
-      }, true);
+      });
 
       trans.UseTransaction(() => {
         FinishParentTasks();
         UpdateStatistics();
-      }, false);
+      });
     }
 
     private void UpdateStatistics() {

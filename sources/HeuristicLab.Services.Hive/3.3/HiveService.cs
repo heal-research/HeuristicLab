@@ -66,9 +66,7 @@ namespace HeuristicLab.Services.Hive {
         task.Id = dao.AddTask(task);
         taskData.TaskId = task.Id;
         taskData.LastUpdate = DateTime.Now;
-        foreach (Guid slaveGroupId in resourceIds) {
-          dao.AssignJobToResource(task.Id, slaveGroupId);
-        }
+        dao.AssignJobToResource(task.Id, resourceIds);
         dao.AddTaskData(taskData);
         dao.UpdateTaskState(task.Id, DA.TaskState.Waiting, null, userManager.CurrentUserId, null);
         return taskData.TaskId;
@@ -94,10 +92,12 @@ namespace HeuristicLab.Services.Hive {
 
     public IEnumerable<Task> GetTasks() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      var tasks = dao.GetTasks(x => true);
-      foreach (var task in tasks)
-        author.AuthorizeForTask(task.Id, Permission.Read);
-      return tasks;
+      return trans.UseTransaction(() => {
+        var tasks = dao.GetTasks(x => true);
+        foreach (var task in tasks)
+          author.AuthorizeForTask(task.Id, Permission.Read);
+        return tasks;
+      });
     }
 
     public IEnumerable<LightweightTask> GetLightweightTasks(IEnumerable<Guid> taskIds) {
@@ -143,12 +143,16 @@ namespace HeuristicLab.Services.Hive {
     public TaskData GetTaskData(Guid taskId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
       author.AuthorizeForTask(taskId, Permission.Read);
-      return dao.GetTaskData(taskId);
+
+      return trans.UseTransaction(() => {
+        return dao.GetTaskData(taskId);
+      });
     }
 
     public void UpdateTask(Task taskDto) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
       author.AuthorizeForTask(taskDto.Id, Permission.Full);
+
       trans.UseTransaction(() => {
         dao.UpdateTaskAndPlugins(taskDto);
       });
@@ -157,12 +161,15 @@ namespace HeuristicLab.Services.Hive {
     public void UpdateTaskData(Task task, TaskData taskData) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
       author.AuthorizeForTask(task.Id, Permission.Full);
-      author.AuthorizeForTask(taskData.TaskId, Permission.Full);
-      //trans.UseTransaction(() => { // cneumuel: try without transaction
-      taskData.LastUpdate = DateTime.Now;
-      dao.UpdateTaskAndPlugins(task);
-      dao.UpdateTaskData(taskData);
-      //}, false, true);
+
+      trans.UseTransaction(() => {
+        dao.UpdateTaskAndPlugins(task);
+      });
+
+      trans.UseTransaction(() => {
+        taskData.LastUpdate = DateTime.Now;
+        dao.UpdateTaskData(taskData);
+      });
     }
 
     public void DeleteTask(Guid taskId) {
@@ -414,7 +421,13 @@ namespace HeuristicLab.Services.Hive {
     public List<MessageContainer> Heartbeat(Heartbeat heartbeat) {
       authen.AuthenticateForAnyRole(HiveRoles.Slave);
 
-      List<MessageContainer> result = trans.UseTransaction(() => heartbeatManager.ProcessHeartbeat(heartbeat));
+      List<MessageContainer> result = new List<MessageContainer>();
+      try {
+        result = heartbeatManager.ProcessHeartbeat(heartbeat);
+      }
+      catch (Exception ex) {
+        DA.LogFactory.GetLogger(this.GetType().Namespace).Log("Exception processing Heartbeat: " + ex.ToString());
+      }
 
       if (HeuristicLab.Services.Hive.Properties.Settings.Default.TriggerEventManagerInHeartbeat) {
         TriggerEventManager(false);
@@ -448,19 +461,25 @@ namespace HeuristicLab.Services.Hive {
 
     public Plugin GetPlugin(Guid pluginId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
-      return dao.GetPlugin(pluginId);
+      return trans.UseTransaction(() => {
+        return dao.GetPlugin(pluginId);
+      });
     }
 
     public Plugin GetPluginByHash(byte[] hash) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
-      return dao.GetPlugins(x => x.Hash == hash).FirstOrDefault();
+      return trans.UseTransaction(() => {
+        return dao.GetPlugins(x => x.Hash == hash).FirstOrDefault();
+      });
     }
 
     // note: this is a possible security problem, since a client is able to download all plugins, which may contain proprietary code (which can be disassembled)
     //       change so that only with GetPluginByHash it is possible to download plugins
     public IEnumerable<Plugin> GetPlugins() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
-      return dao.GetPlugins(x => x.Hash != null);
+      return trans.UseTransaction(() => {
+        return dao.GetPlugins(x => x.Hash != null);
+      });
     }
 
     public IEnumerable<PluginData> GetPluginDatas(List<Guid> pluginIds) {
@@ -476,7 +495,9 @@ namespace HeuristicLab.Services.Hive {
 
     public void DeletePlugin(Guid pluginId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
-      dao.DeletePlugin(pluginId);
+      trans.UseTransaction(() => {
+        dao.DeletePlugin(pluginId);
+      });
     }
     #endregion
 
@@ -515,14 +536,15 @@ namespace HeuristicLab.Services.Hive {
 
     #region Resource Methods
     public IEnumerable<Resource> GetChildResources(Guid resourceId) {
-      return dao.GetChildResources(resourceId);
+      return trans.UseTransaction(() => { return dao.GetChildResources(resourceId); });
     }
     #endregion
 
     #region Slave Methods
     public int GetNewHeartbeatInterval(Guid slaveId) {
       authen.AuthenticateForAnyRole(HiveRoles.Slave);
-      Slave s = dao.GetSlave(slaveId);
+
+      Slave s = trans.UseTransaction(() => { return dao.GetSlave(slaveId); });
       if (s != null) {
         return s.HbInterval;
       } else {
@@ -542,28 +564,32 @@ namespace HeuristicLab.Services.Hive {
 
     public Slave GetSlave(Guid slaveId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator);
-      return dao.GetSlave(slaveId);
+      return trans.UseTransaction(() => { return dao.GetSlave(slaveId); });
     }
 
     public SlaveGroup GetSlaveGroup(Guid slaveGroupId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator);
-      return dao.GetSlaveGroup(slaveGroupId);
+      return trans.UseTransaction(() => { return dao.GetSlaveGroup(slaveGroupId); });
     }
 
     public IEnumerable<Slave> GetSlaves() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      return dao.GetSlaves(x => true).Where(x => x.OwnerUserId == null
-                                         || x.OwnerUserId == userManager.CurrentUserId
-                                         || userManager.VerifyUser(userManager.CurrentUserId, GetResourcePermissions(x.Id).Select(y => y.GrantedUserId).ToList())
-                                         || authen.IsInRole(HiveRoles.Administrator)).ToArray();
+      return trans.UseTransaction(() => {
+        return dao.GetSlaves(x => true).Where(x => x.OwnerUserId == null
+                                           || x.OwnerUserId == userManager.CurrentUserId
+                                           || userManager.VerifyUser(userManager.CurrentUserId, GetResourcePermissions(x.Id).Select(y => y.GrantedUserId).ToList())
+                                           || authen.IsInRole(HiveRoles.Administrator)).ToArray();
+      });
     }
 
     public IEnumerable<SlaveGroup> GetSlaveGroups() {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      return dao.GetSlaveGroups(x => true).Where(x => x.OwnerUserId == null
-                                              || x.OwnerUserId == userManager.CurrentUserId
-                                              || userManager.VerifyUser(userManager.CurrentUserId, GetResourcePermissions(x.Id).Select(y => y.GrantedUserId).ToList())
-                                              || authen.IsInRole(HiveRoles.Administrator)).ToArray();
+      return trans.UseTransaction(() => {
+        return dao.GetSlaveGroups(x => true).Where(x => x.OwnerUserId == null
+                                                || x.OwnerUserId == userManager.CurrentUserId
+                                                || userManager.VerifyUser(userManager.CurrentUserId, GetResourcePermissions(x.Id).Select(y => y.GrantedUserId).ToList())
+                                                || authen.IsInRole(HiveRoles.Administrator)).ToArray();
+      });
     }
 
     public void UpdateSlave(Slave slave) {
@@ -716,10 +742,10 @@ namespace HeuristicLab.Services.Hive {
 
     #region Statistics Methods
     public IEnumerable<Statistics> GetStatistics() {
-      return dao.GetStatistics(x => true);
+      return trans.UseTransaction(() => { return dao.GetStatistics(x => true); });
     }
     public IEnumerable<Statistics> GetStatisticsForTimePeriod(DateTime from, DateTime to) {
-      return dao.GetStatistics(x => x.Timestamp >= from && x.Timestamp <= to);
+      return trans.UseTransaction(() => { return dao.GetStatistics(x => x.Timestamp >= from && x.Timestamp <= to); });
     }
     #endregion
   }
