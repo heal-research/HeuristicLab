@@ -614,10 +614,11 @@ namespace HeuristicLab.Services.Hive.DataAccess {
 
     public void AssignJobToResource(Guid taskId, IEnumerable<Guid> resourceIds) {
       using (var db = CreateContext()) {
-        var task = db.Tasks.Where(x => x.TaskId == taskId).Single();
+        List<AssignedResource> assignedResources = new List<AssignedResource>();
         foreach (Guid rId in resourceIds) {
-          task.AssignedResources.Add(new AssignedResource() { TaskId = taskId, ResourceId = rId });
+          assignedResources.Add(new AssignedResource() { TaskId = taskId, ResourceId = rId });
         }
+        db.AssignedResources.InsertAllOnSubmit(assignedResources);
         db.SubmitChanges();
       }
     }
