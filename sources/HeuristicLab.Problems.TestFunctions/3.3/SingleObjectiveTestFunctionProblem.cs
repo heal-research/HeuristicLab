@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,6 +28,9 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("Single Objective Test Function", "Test function with real valued inputs and a single objective.")]
@@ -124,12 +124,6 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SingleObjectiveTestFunctionProblem(this, cloner);
-    }
-
-    private bool IsNotFieldReferenced(IOperator x) {
-      return !(x == strategyVectorCreator
-        || x == strategyVectorCrossover
-        || x == strategyVectorManipulator);
     }
 
     #region Events
@@ -336,7 +330,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
     }
     private void ParameterizeOperators() {
-      foreach (IRealVectorCrossover op in Operators.OfType<IRealVectorCrossover>()) {
+      foreach (var op in Operators.OfType<IRealVectorCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.ParentsParameter.Hidden = true;
         op.ChildParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
@@ -344,27 +338,27 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.BoundsParameter.ActualName = BoundsParameter.Name;
         op.BoundsParameter.Hidden = true;
       }
-      foreach (IRealVectorManipulator op in Operators.OfType<IRealVectorManipulator>()) {
+      foreach (var op in Operators.OfType<IRealVectorManipulator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
         op.BoundsParameter.Hidden = true;
       }
-      foreach (IRealVectorMoveOperator op in Operators.OfType<IRealVectorMoveOperator>()) {
+      foreach (var op in Operators.OfType<IRealVectorMoveOperator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
       }
-      foreach (IRealVectorMoveGenerator op in Operators.OfType<IRealVectorMoveGenerator>()) {
+      foreach (var op in Operators.OfType<IRealVectorMoveGenerator>()) {
         op.BoundsParameter.ActualName = BoundsParameter.Name;
         op.BoundsParameter.Hidden = true;
       }
-      foreach (ISingleObjectiveTestFunctionAdditiveMoveEvaluator op in Operators.OfType<ISingleObjectiveTestFunctionAdditiveMoveEvaluator>()) {
+      foreach (var op in Operators.OfType<ISingleObjectiveTestFunctionAdditiveMoveEvaluator>()) {
         op.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         op.QualityParameter.Hidden = true;
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
       }
-      foreach (IRealVectorParticleCreator op in Operators.OfType<IRealVectorParticleCreator>()) {
+      foreach (var op in Operators.OfType<IRealVectorParticleCreator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
@@ -372,38 +366,38 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.ProblemSizeParameter.ActualName = ProblemSizeParameter.Name;
         op.ProblemSizeParameter.Hidden = true;
       }
-      foreach (IRealVectorParticleUpdater op in Operators.OfType<IRealVectorParticleUpdater>()) {
+      foreach (var op in Operators.OfType<IRealVectorParticleUpdater>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
         op.BoundsParameter.ActualName = BoundsParameter.Name;
         op.BoundsParameter.Hidden = true;
       }
-      foreach (IRealVectorSwarmUpdater op in Operators.OfType<IRealVectorSwarmUpdater>()) {
+      foreach (var op in Operators.OfType<IRealVectorSwarmUpdater>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
         op.MaximizationParameter.ActualName = MaximizationParameter.Name;
         op.MaximizationParameter.Hidden = true;
       }
-      foreach (IRealVectorMultiNeighborhoodShakingOperator op in Operators.OfType<IRealVectorMultiNeighborhoodShakingOperator>()) {
+      foreach (var op in Operators.OfType<IRealVectorMultiNeighborhoodShakingOperator>()) {
         op.RealVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.RealVectorParameter.Hidden = true;
       }
-      foreach (ISingleObjectiveImprovementOperator op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
+      foreach (var op in Operators.OfType<ISingleObjectiveImprovementOperator>()) {
         op.SolutionParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.SolutionParameter.Hidden = true;
       }
-      foreach (ISingleObjectivePathRelinker op in Operators.OfType<ISingleObjectivePathRelinker>()) {
+      foreach (var op in Operators.OfType<ISingleObjectivePathRelinker>()) {
         op.ParentsParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
-      foreach (SingleObjectiveTestFunctionSimilarityCalculator op in Operators.OfType<SingleObjectiveTestFunctionSimilarityCalculator>()) {
+      foreach (var op in Operators.OfType<SingleObjectiveTestFunctionSimilarityCalculator>()) {
         op.SolutionVariableName = SolutionCreator.RealVectorParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
         op.Bounds = Bounds;
       }
     }
     private void UpdateStrategyVectorBounds() {
-      DoubleMatrix strategyBounds = (DoubleMatrix)Bounds.Clone();
+      var strategyBounds = (DoubleMatrix)Bounds.Clone();
       for (int i = 0; i < strategyBounds.Rows; i++) {
         if (strategyBounds[i, 0] < 0) strategyBounds[i, 0] = 0;
         strategyBounds[i, 1] = 0.1 * (Bounds[i, 1] - Bounds[i, 0]);

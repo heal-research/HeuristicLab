@@ -19,15 +19,15 @@
  */
 #endregion
 
+using HeuristicLab.Collections;
+using HeuristicLab.Core.Views;
+using HeuristicLab.MainForm;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using HeuristicLab.Collections;
-using HeuristicLab.Core.Views;
-using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Analysis.Views {
   [View("DataTable View")]
@@ -114,7 +114,7 @@ namespace HeuristicLab.Analysis.Views {
 
     public void ShowConfiguration() {
       if (Content != null) {
-        using (DataTableVisualPropertiesDialog dialog = new DataTableVisualPropertiesDialog(Content)) {
+        using (var dialog = new DataTableVisualPropertiesDialog(Content)) {
           dialog.ShowDialog(this);
         }
       } else MessageBox.Show("Nothing to configure.");
@@ -122,7 +122,7 @@ namespace HeuristicLab.Analysis.Views {
     protected virtual void AddDataRows(IEnumerable<DataRow> rows) {
       foreach (var row in rows) {
         RegisterDataRowEvents(row);
-        Series series = new Series(row.Name);
+        var series = new Series(row.Name);
         if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
         else series.LegendText = row.Name;
         ConfigureSeries(series, row);
@@ -230,6 +230,11 @@ namespace HeuristicLab.Analysis.Views {
       if (Content.VisualProperties.AxisTitleFont != null) area.AxisY2.TitleFont = Content.VisualProperties.AxisTitleFont;
       if (!Content.VisualProperties.AxisTitleColor.IsEmpty) area.AxisY2.TitleForeColor = Content.VisualProperties.AxisTitleColor;
       area.AxisY2.Title = Content.VisualProperties.SecondYAxisTitle;
+
+      area.AxisX.IsLogarithmic = Content.VisualProperties.XAxisLogScale;
+      area.AxisX2.IsLogarithmic = Content.VisualProperties.SecondXAxisLogScale;
+      area.AxisY.IsLogarithmic = Content.VisualProperties.YAxisLogScale;
+      area.AxisY2.IsLogarithmic = Content.VisualProperties.SecondYAxisLogScale;
     }
 
     private void RecalculateAxesScale(ChartArea area) {
@@ -499,11 +504,17 @@ namespace HeuristicLab.Analysis.Views {
           CalculateHistogram(series, row);
           break;
         default: {
+            bool yLogarithmic = series.YAxisType == AxisType.Primary
+                                  ? Content.VisualProperties.YAxisLogScale
+                                  : Content.VisualProperties.SecondYAxisLogScale;
+            bool xLogarithmic = series.XAxisType == AxisType.Primary
+                                  ? Content.VisualProperties.XAxisLogScale
+                                  : Content.VisualProperties.SecondXAxisLogScale;
             for (int i = 0; i < row.Values.Count; i++) {
               var value = row.Values[i];
-              DataPoint point = new DataPoint();
-              point.XValue = row.VisualProperties.StartIndexZero ? i : i + 1;
-              if (IsInvalidValue(value))
+              var point = new DataPoint();
+              point.XValue = row.VisualProperties.StartIndexZero && !xLogarithmic ? i : i + 1;
+              if (IsInvalidValue(value) || (yLogarithmic && value <= 0))
                 point.IsEmpty = true;
               else
                 point.YValues = new double[] { value };

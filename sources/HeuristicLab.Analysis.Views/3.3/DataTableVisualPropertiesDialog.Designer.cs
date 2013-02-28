@@ -68,7 +68,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.okButton.Location = new System.Drawing.Point(325, 400);
+      this.okButton.Location = new System.Drawing.Point(325, 425);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 0;
@@ -80,7 +80,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(406, 400);
+      this.cancelButton.Location = new System.Drawing.Point(406, 425);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 1;
@@ -90,15 +90,15 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.seriesTabPage);
       this.tabControl.Controls.Add(this.chartTabPage);
       this.tabControl.Location = new System.Drawing.Point(12, 12);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(469, 382);
+      this.tabControl.Size = new System.Drawing.Size(469, 407);
       this.tabControl.TabIndex = 2;
       // 
       // seriesTabPage
@@ -107,16 +107,16 @@ namespace HeuristicLab.Analysis.Views {
       this.seriesTabPage.Location = new System.Drawing.Point(4, 22);
       this.seriesTabPage.Name = "seriesTabPage";
       this.seriesTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.seriesTabPage.Size = new System.Drawing.Size(461, 356);
+      this.seriesTabPage.Size = new System.Drawing.Size(461, 381);
       this.seriesTabPage.TabIndex = 0;
       this.seriesTabPage.Text = "Series";
       this.seriesTabPage.UseVisualStyleBackColor = true;
       // 
       // splitContainer
       // 
-      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
       this.splitContainer.Location = new System.Drawing.Point(0, 0);
       this.splitContainer.Name = "splitContainer";
@@ -132,7 +132,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.splitContainer.Panel2.Controls.Add(this.dataRowVisualPropertiesControl);
       this.splitContainer.Panel2MinSize = 50;
-      this.splitContainer.Size = new System.Drawing.Size(461, 356);
+      this.splitContainer.Size = new System.Drawing.Size(461, 381);
       this.splitContainer.SplitterDistance = 125;
       this.splitContainer.TabIndex = 0;
       // 
@@ -160,15 +160,15 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // seriesListView
       // 
-      this.seriesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.seriesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.seriesListView.HideSelection = false;
       this.seriesListView.Location = new System.Drawing.Point(3, 32);
       this.seriesListView.MultiSelect = false;
       this.seriesListView.Name = "seriesListView";
       this.seriesListView.ShowGroups = false;
-      this.seriesListView.Size = new System.Drawing.Size(119, 321);
+      this.seriesListView.Size = new System.Drawing.Size(119, 346);
       this.seriesListView.TabIndex = 2;
       this.seriesListView.UseCompatibleStateImageBehavior = false;
       this.seriesListView.View = System.Windows.Forms.View.List;
@@ -176,13 +176,13 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // dataRowVisualPropertiesControl
       // 
-      this.dataRowVisualPropertiesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataRowVisualPropertiesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.dataRowVisualPropertiesControl.Content = null;
       this.dataRowVisualPropertiesControl.Location = new System.Drawing.Point(3, 26);
       this.dataRowVisualPropertiesControl.Name = "dataRowVisualPropertiesControl";
-      this.dataRowVisualPropertiesControl.Size = new System.Drawing.Size(326, 327);
+      this.dataRowVisualPropertiesControl.Size = new System.Drawing.Size(326, 352);
       this.dataRowVisualPropertiesControl.TabIndex = 0;
       // 
       // chartTabPage
@@ -191,20 +191,20 @@ namespace HeuristicLab.Analysis.Views {
       this.chartTabPage.Location = new System.Drawing.Point(4, 22);
       this.chartTabPage.Name = "chartTabPage";
       this.chartTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.chartTabPage.Size = new System.Drawing.Size(461, 356);
+      this.chartTabPage.Size = new System.Drawing.Size(461, 381);
       this.chartTabPage.TabIndex = 1;
       this.chartTabPage.Text = "Chart";
       this.chartTabPage.UseVisualStyleBackColor = true;
       // 
       // dataTableVisualPropertiesControl
       // 
-      this.dataTableVisualPropertiesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataTableVisualPropertiesControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.dataTableVisualPropertiesControl.Content = null;
       this.dataTableVisualPropertiesControl.Location = new System.Drawing.Point(3, 6);
       this.dataTableVisualPropertiesControl.Name = "dataTableVisualPropertiesControl";
-      this.dataTableVisualPropertiesControl.Size = new System.Drawing.Size(455, 347);
+      this.dataTableVisualPropertiesControl.Size = new System.Drawing.Size(455, 372);
       this.dataTableVisualPropertiesControl.TabIndex = 0;
       // 
       // DataTableVisualPropertiesDialog
@@ -212,7 +212,7 @@ namespace HeuristicLab.Analysis.Views {
       this.AcceptButton = this.okButton;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(493, 435);
+      this.ClientSize = new System.Drawing.Size(493, 460);
       this.Controls.Add(this.tabControl);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);

@@ -19,10 +19,10 @@
  */
 #endregion
 
-using System.Drawing;
-using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace HeuristicLab.Analysis.Views {
   [View("DataTable Visual Properties")]
@@ -74,6 +74,7 @@ namespace HeuristicLab.Analysis.Views {
           xAxisPrimaryMaximumAutoRadioButton.Checked = false;
           xAxisPrimaryMaximumFixedRadioButton.Checked = false;
           xAxisPrimaryMaximumFixedTextBox.Text = string.Empty;
+          xAxisPrimaryLogScaleCheckBox.Checked = false;
           xAxisSecondaryTitleTextBox.Text = string.Empty;
           xAxisSecondaryMinimumAutoRadioButton.Checked = false;
           xAxisSecondaryMinimumFixedRadioButton.Checked = false;
@@ -81,6 +82,7 @@ namespace HeuristicLab.Analysis.Views {
           xAxisSecondaryMaximumAutoRadioButton.Checked = false;
           xAxisSecondaryMaximumFixedRadioButton.Checked = false;
           xAxisSecondaryMaximumFixedTextBox.Text = string.Empty;
+          xAxisSecondaryLogScaleCheckBox.Checked = false;
 
           yAxisPrimaryTitleTextBox.Text = string.Empty;
           yAxisPrimaryMinimumAutoRadioButton.Checked = false;
@@ -89,6 +91,7 @@ namespace HeuristicLab.Analysis.Views {
           yAxisPrimaryMaximumAutoRadioButton.Checked = false;
           yAxisPrimaryMaximumFixedRadioButton.Checked = false;
           yAxisPrimaryMaximumFixedTextBox.Text = string.Empty;
+          yAxisPrimaryLogScaleCheckBox.Checked = false;
           yAxisSecondaryTitleTextBox.Text = string.Empty;
           yAxisSecondaryMinimumAutoRadioButton.Checked = false;
           yAxisSecondaryMinimumFixedRadioButton.Checked = false;
@@ -96,6 +99,7 @@ namespace HeuristicLab.Analysis.Views {
           yAxisSecondaryMaximumAutoRadioButton.Checked = false;
           yAxisSecondaryMaximumFixedRadioButton.Checked = false;
           yAxisSecondaryMaximumFixedTextBox.Text = string.Empty;
+          yAxisSecondaryLogScaleCheckBox.Checked = false;
         } else {
           titleFontLabel.Text = "( " + FormatFont(Content.TitleFont) + " )";
           axisFontLabel.Text = "( " + FormatFont(Content.AxisTitleFont) + " )";
@@ -108,6 +112,7 @@ namespace HeuristicLab.Analysis.Views {
           xAxisPrimaryMaximumAutoRadioButton.Checked = Content.XAxisMaximumAuto;
           xAxisPrimaryMaximumFixedRadioButton.Checked = !Content.XAxisMaximumAuto;
           xAxisPrimaryMaximumFixedTextBox.Text = Content.XAxisMaximumFixedValue.ToString();
+          xAxisPrimaryLogScaleCheckBox.Checked = Content.XAxisLogScale;
           xAxisSecondaryTitleTextBox.Text = Content.SecondXAxisTitle;
           xAxisSecondaryMinimumAutoRadioButton.Checked = Content.SecondXAxisMinimumAuto;
           xAxisSecondaryMinimumFixedRadioButton.Checked = !Content.SecondXAxisMinimumAuto;
@@ -115,6 +120,7 @@ namespace HeuristicLab.Analysis.Views {
           xAxisSecondaryMaximumAutoRadioButton.Checked = Content.SecondXAxisMaximumAuto;
           xAxisSecondaryMaximumFixedRadioButton.Checked = !Content.SecondXAxisMaximumAuto;
           xAxisSecondaryMaximumFixedTextBox.Text = Content.SecondXAxisMaximumFixedValue.ToString();
+          xAxisSecondaryLogScaleCheckBox.Checked = Content.SecondXAxisLogScale;
 
           yAxisPrimaryTitleTextBox.Text = Content.YAxisTitle;
           yAxisPrimaryMinimumAutoRadioButton.Checked = Content.YAxisMinimumAuto;
@@ -123,6 +129,7 @@ namespace HeuristicLab.Analysis.Views {
           yAxisPrimaryMaximumAutoRadioButton.Checked = Content.YAxisMaximumAuto;
           yAxisPrimaryMaximumFixedRadioButton.Checked = !Content.YAxisMaximumAuto;
           yAxisPrimaryMaximumFixedTextBox.Text = Content.YAxisMaximumFixedValue.ToString();
+          yAxisPrimaryLogScaleCheckBox.Checked = Content.YAxisLogScale;
           yAxisSecondaryTitleTextBox.Text = Content.SecondYAxisTitle;
           yAxisSecondaryMinimumAutoRadioButton.Checked = Content.SecondYAxisMinimumAuto;
           yAxisSecondaryMinimumFixedRadioButton.Checked = !Content.SecondYAxisMinimumAuto;
@@ -130,9 +137,9 @@ namespace HeuristicLab.Analysis.Views {
           yAxisSecondaryMaximumAutoRadioButton.Checked = Content.SecondYAxisMaximumAuto;
           yAxisSecondaryMaximumFixedRadioButton.Checked = !Content.SecondYAxisMaximumAuto;
           yAxisSecondaryMaximumFixedTextBox.Text = Content.SecondYAxisMaximumFixedValue.ToString();
+          yAxisSecondaryLogScaleCheckBox.Checked = Content.SecondYAxisLogScale;
         }
-      }
-      finally { SuppressEvents = false; }
+      } finally { SuppressEvents = false; }
       SetEnabledStateOfControls();
     }
 
@@ -332,8 +339,7 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.XAxisMinimumAuto = xAxisPrimaryMinimumAutoRadioButton.Checked;
           if (Content.XAxisMinimumAuto) xAxisPrimaryMinimumFixedTextBox.Text = double.NaN.ToString();
-        }
-        finally { SuppressEvents = false; }
+        } finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -344,8 +350,7 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.XAxisMaximumAuto = xAxisPrimaryMaximumAutoRadioButton.Checked;
           if (Content.XAxisMaximumAuto) xAxisPrimaryMaximumFixedTextBox.Text = double.NaN.ToString();
-        }
-        finally { SuppressEvents = false; }
+        } finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -356,8 +361,7 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.SecondXAxisMinimumAuto = xAxisSecondaryMinimumAutoRadioButton.Checked;
           if (Content.SecondXAxisMinimumAuto) xAxisSecondaryMinimumFixedTextBox.Text = double.NaN.ToString();
-        }
-        finally { SuppressEvents = false; }
+        } finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -368,8 +372,7 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.SecondXAxisMaximumAuto = xAxisSecondaryMaximumAutoRadioButton.Checked;
           if (Content.SecondXAxisMaximumAuto) xAxisSecondaryMaximumFixedTextBox.Text = double.NaN.ToString();
-        }
-        finally { SuppressEvents = false; }
+        } finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -380,8 +383,7 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.YAxisMinimumAuto = yAxisPrimaryMinimumAutoRadioButton.Checked;
           if (Content.YAxisMinimumAuto) yAxisPrimaryMinimumFixedTextBox.Text = double.NaN.ToString();
-        }
-        finally { SuppressEvents = false; }
+        } finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -392,8 +394,7 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.YAxisMaximumAuto = yAxisPrimaryMaximumAutoRadioButton.Checked;
           if (Content.YAxisMaximumAuto) yAxisPrimaryMaximumFixedTextBox.Text = double.NaN.ToString();
-        }
-        finally { SuppressEvents = false; }
+        } finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -404,8 +405,7 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.SecondYAxisMinimumAuto = yAxisSecondaryMinimumAutoRadioButton.Checked;
           if (Content.SecondYAxisMinimumAuto) yAxisSecondaryMinimumFixedTextBox.Text = double.NaN.ToString();
-        }
-        finally { SuppressEvents = false; }
+        } finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
       }
     }
@@ -416,9 +416,44 @@ namespace HeuristicLab.Analysis.Views {
         try {
           Content.SecondYAxisMaximumAuto = yAxisSecondaryMaximumAutoRadioButton.Checked;
           if (Content.SecondYAxisMaximumAuto) yAxisSecondaryMaximumFixedTextBox.Text = double.NaN.ToString();
-        }
-        finally { SuppressEvents = false; }
+        } finally { SuppressEvents = false; }
         SetEnabledStateOfControls();
+      }
+    }
+
+    private void xAxisPrimaryLogScaleCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.XAxisLogScale = xAxisPrimaryLogScaleCheckBox.Checked;
+        } finally { SuppressEvents = false; }
+      }
+    }
+
+    private void xAxisSecondaryLogScaleCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.SecondXAxisLogScale = xAxisSecondaryLogScaleCheckBox.Checked;
+        } finally { SuppressEvents = false; }
+      }
+    }
+
+    private void yAxisPrimaryLogScaleCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.YAxisLogScale = yAxisPrimaryLogScaleCheckBox.Checked;
+        } finally { SuppressEvents = false; }
+      }
+    }
+
+    private void yAxisSecondaryLogScaleCheckBox_CheckedChanged(object sender, System.EventArgs e) {
+      if (!SuppressEvents && Content != null) {
+        SuppressEvents = true;
+        try {
+          Content.SecondYAxisLogScale = yAxisSecondaryLogScaleCheckBox.Checked;
+        } finally { SuppressEvents = false; }
       }
     }
 

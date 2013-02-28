@@ -19,10 +19,10 @@
  */
 #endregion
 
-using System.ComponentModel;
-using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using System.ComponentModel;
+using System.Drawing;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
@@ -314,6 +314,46 @@ namespace HeuristicLab.Analysis {
       }
     }
 
+    private bool xAxisLogScale;
+    public bool XAxisLogScale {
+      get { return xAxisLogScale; }
+      set {
+        if (xAxisLogScale == value) return;
+        xAxisLogScale = value;
+        OnPropertyChanged("XAxisLogScale");
+      }
+    }
+
+    private bool secondXAxisLogScale;
+    public bool SecondXAxisLogScale {
+      get { return secondXAxisLogScale; }
+      set {
+        if (secondXAxisLogScale == value) return;
+        secondXAxisLogScale = value;
+        OnPropertyChanged("SecondXAxisLogScale");
+      }
+    }
+
+    private bool yAxisLogScale;
+    public bool YAxisLogScale {
+      get { return yAxisLogScale; }
+      set {
+        if (yAxisLogScale == value) return;
+        yAxisLogScale = value;
+        OnPropertyChanged("YAxisLogScale");
+      }
+    }
+
+    private bool secondYAxisLogScale;
+    public bool SecondYAxisLogScale {
+      get { return secondYAxisLogScale; }
+      set {
+        if (secondYAxisLogScale == value) return;
+        secondYAxisLogScale = value;
+        OnPropertyChanged("SecondYAxisLogScale");
+      }
+    }
+
     #region Persistence Properties
     [Storable(Name = "TitleFont")]
     private Font StorableTitleFont {
@@ -471,6 +511,10 @@ namespace HeuristicLab.Analysis {
       this.secondYAxisMinimumFixedValue = original.secondYAxisMinimumFixedValue;
       this.secondYAxisMaximumAuto = original.secondYAxisMaximumAuto;
       this.secondYAxisMaximumFixedValue = original.secondYAxisMaximumFixedValue;
+      this.xAxisLogScale = original.xAxisLogScale;
+      this.secondXAxisLogScale = original.secondXAxisLogScale;
+      this.yAxisLogScale = original.yAxisLogScale;
+      this.secondYAxisLogScale = original.secondYAxisLogScale;
     }
     public DataTableVisualProperties() {
       this.titleColor = Color.Black;
@@ -496,6 +540,10 @@ namespace HeuristicLab.Analysis {
       this.secondYAxisMinimumFixedValue = double.NaN;
       this.secondYAxisMaximumAuto = true;
       this.secondYAxisMaximumFixedValue = double.NaN;
+      this.xAxisLogScale = false;
+      this.secondXAxisLogScale = false;
+      this.yAxisLogScale = false;
+      this.secondYAxisLogScale = false;
     }
     public DataTableVisualProperties(string title)
       : this() {
@@ -508,7 +556,7 @@ namespace HeuristicLab.Analysis {
 
     public event PropertyChangedEventHandler PropertyChanged;
     protected virtual void OnPropertyChanged(string propertyName) {
-      PropertyChangedEventHandler handler = PropertyChanged;
+      var handler = PropertyChanged;
       if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }
 
@@ -546,8 +594,8 @@ namespace HeuristicLab.Analysis {
         this.secondYAxisMinimumFixedValue = double.NaN;
         this.secondYAxisMaximumAuto = true;
         this.secondYAxisMaximumFixedValue = double.NaN;
-      #endregion
       }
+      #endregion
     }
   }
 }

@@ -50,6 +50,7 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisSecondaryTitleTextBox = new System.Windows.Forms.TextBox();
       this.label4 = new System.Windows.Forms.Label();
       this.xAxisPrimaryGroupBox = new System.Windows.Forms.GroupBox();
+      this.xAxisPrimaryLogScaleCheckBox = new System.Windows.Forms.CheckBox();
       this.panel2 = new System.Windows.Forms.Panel();
       this.xAxisPrimaryMaximumFixedRadioButton = new System.Windows.Forms.RadioButton();
       this.xAxisPrimaryMaximumAutoRadioButton = new System.Windows.Forms.RadioButton();
@@ -63,6 +64,7 @@ namespace HeuristicLab.Analysis.Views {
       this.xAxisPrimaryTitleTextBox = new System.Windows.Forms.TextBox();
       this.label11 = new System.Windows.Forms.Label();
       this.xAxisSecondaryGroupBox = new System.Windows.Forms.GroupBox();
+      this.xAxisSecondaryLogScaleCheckBox = new System.Windows.Forms.CheckBox();
       this.panel4 = new System.Windows.Forms.Panel();
       this.xAxisSecondaryMaximumFixedRadioButton = new System.Windows.Forms.RadioButton();
       this.xAxisSecondaryMaximumAutoRadioButton = new System.Windows.Forms.RadioButton();
@@ -79,6 +81,7 @@ namespace HeuristicLab.Analysis.Views {
       this.xAxisTabPage = new System.Windows.Forms.TabPage();
       this.yAxisTabPage = new System.Windows.Forms.TabPage();
       this.yAxisSecondaryGroupBox = new System.Windows.Forms.GroupBox();
+      this.yAxisSecondaryLogScaleCheckBox = new System.Windows.Forms.CheckBox();
       this.panel8 = new System.Windows.Forms.Panel();
       this.yAxisSecondaryMaximumFixedRadioButton = new System.Windows.Forms.RadioButton();
       this.yAxisSecondaryMaximumAutoRadioButton = new System.Windows.Forms.RadioButton();
@@ -90,6 +93,7 @@ namespace HeuristicLab.Analysis.Views {
       this.label13 = new System.Windows.Forms.Label();
       this.label14 = new System.Windows.Forms.Label();
       this.yAxisPrimaryGroupBox = new System.Windows.Forms.GroupBox();
+      this.yAxisPrimaryLogScaleCheckBox = new System.Windows.Forms.CheckBox();
       this.panel6 = new System.Windows.Forms.Panel();
       this.yAxisPrimaryMaximumFixedRadioButton = new System.Windows.Forms.RadioButton();
       this.yAxisPrimaryMaximumAutoRadioButton = new System.Windows.Forms.RadioButton();
@@ -140,21 +144,21 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisPrimaryTitleTextBox
       // 
-      this.yAxisPrimaryTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.yAxisPrimaryTitleTextBox.Location = new System.Drawing.Point(66, 19);
+      this.yAxisPrimaryTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisPrimaryTitleTextBox.Location = new System.Drawing.Point(74, 19);
       this.yAxisPrimaryTitleTextBox.Name = "yAxisPrimaryTitleTextBox";
-      this.yAxisPrimaryTitleTextBox.Size = new System.Drawing.Size(369, 20);
+      this.yAxisPrimaryTitleTextBox.Size = new System.Drawing.Size(361, 20);
       this.yAxisPrimaryTitleTextBox.TabIndex = 1;
       this.yAxisPrimaryTitleTextBox.Validated += new System.EventHandler(this.yPrimaryTitleTextBox_Validated);
       // 
       // yAxisSecondaryTitleTextBox
       // 
-      this.yAxisSecondaryTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.yAxisSecondaryTitleTextBox.Location = new System.Drawing.Point(66, 19);
+      this.yAxisSecondaryTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisSecondaryTitleTextBox.Location = new System.Drawing.Point(74, 19);
       this.yAxisSecondaryTitleTextBox.Name = "yAxisSecondaryTitleTextBox";
-      this.yAxisSecondaryTitleTextBox.Size = new System.Drawing.Size(369, 20);
+      this.yAxisSecondaryTitleTextBox.Size = new System.Drawing.Size(361, 20);
       this.yAxisSecondaryTitleTextBox.TabIndex = 1;
       this.yAxisSecondaryTitleTextBox.Validated += new System.EventHandler(this.ySecondaryTitleTextBox_Validated);
       // 
@@ -169,8 +173,9 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisPrimaryGroupBox
       // 
-      this.xAxisPrimaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisPrimaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisPrimaryGroupBox.Controls.Add(this.xAxisPrimaryLogScaleCheckBox);
       this.xAxisPrimaryGroupBox.Controls.Add(this.panel2);
       this.xAxisPrimaryGroupBox.Controls.Add(this.panel1);
       this.xAxisPrimaryGroupBox.Controls.Add(this.xAxisPrimaryMinimumFixedTextBox);
@@ -181,16 +186,28 @@ namespace HeuristicLab.Analysis.Views {
       this.xAxisPrimaryGroupBox.Controls.Add(this.label11);
       this.xAxisPrimaryGroupBox.Location = new System.Drawing.Point(3, 3);
       this.xAxisPrimaryGroupBox.Name = "xAxisPrimaryGroupBox";
-      this.xAxisPrimaryGroupBox.Size = new System.Drawing.Size(441, 99);
+      this.xAxisPrimaryGroupBox.Size = new System.Drawing.Size(441, 126);
       this.xAxisPrimaryGroupBox.TabIndex = 0;
       this.xAxisPrimaryGroupBox.TabStop = false;
       this.xAxisPrimaryGroupBox.Text = "Primary Axis";
+      // 
+      // xAxisPrimaryLogScaleCheckBox
+      // 
+      this.xAxisPrimaryLogScaleCheckBox.AutoSize = true;
+      this.xAxisPrimaryLogScaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.xAxisPrimaryLogScaleCheckBox.Location = new System.Drawing.Point(6, 99);
+      this.xAxisPrimaryLogScaleCheckBox.Name = "xAxisPrimaryLogScaleCheckBox";
+      this.xAxisPrimaryLogScaleCheckBox.Size = new System.Drawing.Size(83, 17);
+      this.xAxisPrimaryLogScaleCheckBox.TabIndex = 8;
+      this.xAxisPrimaryLogScaleCheckBox.Text = "Logarithmic:";
+      this.xAxisPrimaryLogScaleCheckBox.UseVisualStyleBackColor = true;
+      this.xAxisPrimaryLogScaleCheckBox.CheckedChanged += new System.EventHandler(this.xAxisPrimaryLogScaleCheckBox_CheckedChanged);
       // 
       // panel2
       // 
       this.panel2.Controls.Add(this.xAxisPrimaryMaximumFixedRadioButton);
       this.panel2.Controls.Add(this.xAxisPrimaryMaximumAutoRadioButton);
-      this.panel2.Location = new System.Drawing.Point(66, 71);
+      this.panel2.Location = new System.Drawing.Point(74, 71);
       this.panel2.Name = "panel2";
       this.panel2.Size = new System.Drawing.Size(106, 20);
       this.panel2.TabIndex = 6;
@@ -223,7 +240,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.panel1.Controls.Add(this.xAxisPrimaryMinimumFixedRadioButton);
       this.panel1.Controls.Add(this.xAxisPrimaryMinimumAutoRadioButton);
-      this.panel1.Location = new System.Drawing.Point(66, 45);
+      this.panel1.Location = new System.Drawing.Point(74, 45);
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(106, 20);
       this.panel1.TabIndex = 3;
@@ -254,8 +271,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisPrimaryMinimumFixedTextBox
       // 
-      this.xAxisPrimaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisPrimaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisPrimaryMinimumFixedTextBox.Location = new System.Drawing.Point(191, 45);
       this.xAxisPrimaryMinimumFixedTextBox.Name = "xAxisPrimaryMinimumFixedTextBox";
       this.xAxisPrimaryMinimumFixedTextBox.Size = new System.Drawing.Size(244, 20);
@@ -264,8 +281,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisPrimaryMaximumFixedTextBox
       // 
-      this.xAxisPrimaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisPrimaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisPrimaryMaximumFixedTextBox.Location = new System.Drawing.Point(191, 71);
       this.xAxisPrimaryMaximumFixedTextBox.Name = "xAxisPrimaryMaximumFixedTextBox";
       this.xAxisPrimaryMaximumFixedTextBox.Size = new System.Drawing.Size(244, 20);
@@ -292,11 +309,11 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisPrimaryTitleTextBox
       // 
-      this.xAxisPrimaryTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.xAxisPrimaryTitleTextBox.Location = new System.Drawing.Point(66, 19);
+      this.xAxisPrimaryTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisPrimaryTitleTextBox.Location = new System.Drawing.Point(74, 19);
       this.xAxisPrimaryTitleTextBox.Name = "xAxisPrimaryTitleTextBox";
-      this.xAxisPrimaryTitleTextBox.Size = new System.Drawing.Size(369, 20);
+      this.xAxisPrimaryTitleTextBox.Size = new System.Drawing.Size(361, 20);
       this.xAxisPrimaryTitleTextBox.TabIndex = 1;
       this.xAxisPrimaryTitleTextBox.Validated += new System.EventHandler(this.xPrimaryTitleTextBox_Validated);
       // 
@@ -311,9 +328,10 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisSecondaryGroupBox
       // 
-      this.xAxisSecondaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisSecondaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisSecondaryGroupBox.Controls.Add(this.xAxisSecondaryLogScaleCheckBox);
       this.xAxisSecondaryGroupBox.Controls.Add(this.panel4);
       this.xAxisSecondaryGroupBox.Controls.Add(this.panel3);
       this.xAxisSecondaryGroupBox.Controls.Add(this.xAxisSecondaryMinimumFixedTextBox);
@@ -322,18 +340,30 @@ namespace HeuristicLab.Analysis.Views {
       this.xAxisSecondaryGroupBox.Controls.Add(this.xAxisSecondaryTitleTextBox);
       this.xAxisSecondaryGroupBox.Controls.Add(this.label5);
       this.xAxisSecondaryGroupBox.Controls.Add(this.label6);
-      this.xAxisSecondaryGroupBox.Location = new System.Drawing.Point(3, 108);
+      this.xAxisSecondaryGroupBox.Location = new System.Drawing.Point(3, 135);
       this.xAxisSecondaryGroupBox.Name = "xAxisSecondaryGroupBox";
-      this.xAxisSecondaryGroupBox.Size = new System.Drawing.Size(441, 99);
+      this.xAxisSecondaryGroupBox.Size = new System.Drawing.Size(441, 125);
       this.xAxisSecondaryGroupBox.TabIndex = 1;
       this.xAxisSecondaryGroupBox.TabStop = false;
       this.xAxisSecondaryGroupBox.Text = "Secondary Axis";
+      // 
+      // xAxisSecondaryLogScaleCheckBox
+      // 
+      this.xAxisSecondaryLogScaleCheckBox.AutoSize = true;
+      this.xAxisSecondaryLogScaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.xAxisSecondaryLogScaleCheckBox.Location = new System.Drawing.Point(6, 99);
+      this.xAxisSecondaryLogScaleCheckBox.Name = "xAxisSecondaryLogScaleCheckBox";
+      this.xAxisSecondaryLogScaleCheckBox.Size = new System.Drawing.Size(83, 17);
+      this.xAxisSecondaryLogScaleCheckBox.TabIndex = 8;
+      this.xAxisSecondaryLogScaleCheckBox.Text = "Logarithmic:";
+      this.xAxisSecondaryLogScaleCheckBox.UseVisualStyleBackColor = true;
+      this.xAxisSecondaryLogScaleCheckBox.CheckedChanged += new System.EventHandler(this.xAxisSecondaryLogScaleCheckBox_CheckedChanged);
       // 
       // panel4
       // 
       this.panel4.Controls.Add(this.xAxisSecondaryMaximumFixedRadioButton);
       this.panel4.Controls.Add(this.xAxisSecondaryMaximumAutoRadioButton);
-      this.panel4.Location = new System.Drawing.Point(66, 71);
+      this.panel4.Location = new System.Drawing.Point(74, 71);
       this.panel4.Name = "panel4";
       this.panel4.Size = new System.Drawing.Size(106, 20);
       this.panel4.TabIndex = 6;
@@ -366,7 +396,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.panel3.Controls.Add(this.xAxisSecondaryMinimumFixedRadioButton);
       this.panel3.Controls.Add(this.xAxisSecondaryMinimumAutoRadioButton);
-      this.panel3.Location = new System.Drawing.Point(66, 45);
+      this.panel3.Location = new System.Drawing.Point(74, 45);
       this.panel3.Name = "panel3";
       this.panel3.Size = new System.Drawing.Size(106, 20);
       this.panel3.TabIndex = 3;
@@ -397,8 +427,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisSecondaryMinimumFixedTextBox
       // 
-      this.xAxisSecondaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisSecondaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisSecondaryMinimumFixedTextBox.Location = new System.Drawing.Point(191, 45);
       this.xAxisSecondaryMinimumFixedTextBox.Name = "xAxisSecondaryMinimumFixedTextBox";
       this.xAxisSecondaryMinimumFixedTextBox.Size = new System.Drawing.Size(244, 20);
@@ -407,8 +437,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisSecondaryMaximumFixedTextBox
       // 
-      this.xAxisSecondaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisSecondaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisSecondaryMaximumFixedTextBox.Location = new System.Drawing.Point(191, 71);
       this.xAxisSecondaryMaximumFixedTextBox.Name = "xAxisSecondaryMaximumFixedTextBox";
       this.xAxisSecondaryMaximumFixedTextBox.Size = new System.Drawing.Size(244, 20);
@@ -426,11 +456,11 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // xAxisSecondaryTitleTextBox
       // 
-      this.xAxisSecondaryTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      this.xAxisSecondaryTitleTextBox.Location = new System.Drawing.Point(66, 19);
+      this.xAxisSecondaryTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.xAxisSecondaryTitleTextBox.Location = new System.Drawing.Point(74, 19);
       this.xAxisSecondaryTitleTextBox.Name = "xAxisSecondaryTitleTextBox";
-      this.xAxisSecondaryTitleTextBox.Size = new System.Drawing.Size(369, 20);
+      this.xAxisSecondaryTitleTextBox.Size = new System.Drawing.Size(361, 20);
       this.xAxisSecondaryTitleTextBox.TabIndex = 1;
       this.xAxisSecondaryTitleTextBox.Validated += new System.EventHandler(this.xSecondaryTitleTextBox_Validated);
       // 
@@ -454,14 +484,14 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // axisTabControl
       // 
-      this.axisTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.axisTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.axisTabControl.Controls.Add(this.xAxisTabPage);
       this.axisTabControl.Controls.Add(this.yAxisTabPage);
       this.axisTabControl.Location = new System.Drawing.Point(0, 84);
       this.axisTabControl.Name = "axisTabControl";
       this.axisTabControl.SelectedIndex = 0;
-      this.axisTabControl.Size = new System.Drawing.Size(455, 236);
+      this.axisTabControl.Size = new System.Drawing.Size(455, 289);
       this.axisTabControl.TabIndex = 8;
       // 
       // xAxisTabPage
@@ -471,7 +501,7 @@ namespace HeuristicLab.Analysis.Views {
       this.xAxisTabPage.Location = new System.Drawing.Point(4, 22);
       this.xAxisTabPage.Name = "xAxisTabPage";
       this.xAxisTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.xAxisTabPage.Size = new System.Drawing.Size(447, 210);
+      this.xAxisTabPage.Size = new System.Drawing.Size(447, 263);
       this.xAxisTabPage.TabIndex = 0;
       this.xAxisTabPage.Text = "X-Axis";
       this.xAxisTabPage.UseVisualStyleBackColor = true;
@@ -483,16 +513,17 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisTabPage.Location = new System.Drawing.Point(4, 22);
       this.yAxisTabPage.Name = "yAxisTabPage";
       this.yAxisTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.yAxisTabPage.Size = new System.Drawing.Size(447, 210);
+      this.yAxisTabPage.Size = new System.Drawing.Size(447, 263);
       this.yAxisTabPage.TabIndex = 1;
       this.yAxisTabPage.Text = "Y-Axis";
       this.yAxisTabPage.UseVisualStyleBackColor = true;
       // 
       // yAxisSecondaryGroupBox
       // 
-      this.yAxisSecondaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisSecondaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisSecondaryGroupBox.Controls.Add(this.yAxisSecondaryLogScaleCheckBox);
       this.yAxisSecondaryGroupBox.Controls.Add(this.panel8);
       this.yAxisSecondaryGroupBox.Controls.Add(this.panel7);
       this.yAxisSecondaryGroupBox.Controls.Add(this.yAxisSecondaryMinimumFixedTextBox);
@@ -501,18 +532,30 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisSecondaryGroupBox.Controls.Add(this.label4);
       this.yAxisSecondaryGroupBox.Controls.Add(this.label13);
       this.yAxisSecondaryGroupBox.Controls.Add(this.label14);
-      this.yAxisSecondaryGroupBox.Location = new System.Drawing.Point(3, 108);
+      this.yAxisSecondaryGroupBox.Location = new System.Drawing.Point(3, 135);
       this.yAxisSecondaryGroupBox.Name = "yAxisSecondaryGroupBox";
-      this.yAxisSecondaryGroupBox.Size = new System.Drawing.Size(441, 99);
+      this.yAxisSecondaryGroupBox.Size = new System.Drawing.Size(441, 125);
       this.yAxisSecondaryGroupBox.TabIndex = 1;
       this.yAxisSecondaryGroupBox.TabStop = false;
       this.yAxisSecondaryGroupBox.Text = "Secondary Axis";
+      // 
+      // yAxisSecondaryLogScaleCheckBox
+      // 
+      this.yAxisSecondaryLogScaleCheckBox.AutoSize = true;
+      this.yAxisSecondaryLogScaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.yAxisSecondaryLogScaleCheckBox.Location = new System.Drawing.Point(6, 99);
+      this.yAxisSecondaryLogScaleCheckBox.Name = "yAxisSecondaryLogScaleCheckBox";
+      this.yAxisSecondaryLogScaleCheckBox.Size = new System.Drawing.Size(83, 17);
+      this.yAxisSecondaryLogScaleCheckBox.TabIndex = 9;
+      this.yAxisSecondaryLogScaleCheckBox.Text = "Logarithmic:";
+      this.yAxisSecondaryLogScaleCheckBox.UseVisualStyleBackColor = true;
+      this.yAxisSecondaryLogScaleCheckBox.CheckedChanged += new System.EventHandler(this.yAxisSecondaryLogScaleCheckBox_CheckedChanged);
       // 
       // panel8
       // 
       this.panel8.Controls.Add(this.yAxisSecondaryMaximumFixedRadioButton);
       this.panel8.Controls.Add(this.yAxisSecondaryMaximumAutoRadioButton);
-      this.panel8.Location = new System.Drawing.Point(66, 71);
+      this.panel8.Location = new System.Drawing.Point(74, 71);
       this.panel8.Name = "panel8";
       this.panel8.Size = new System.Drawing.Size(106, 20);
       this.panel8.TabIndex = 6;
@@ -545,7 +588,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.panel7.Controls.Add(this.yAxisSecondaryMinimumFixedRadioButton);
       this.panel7.Controls.Add(this.yAxisSecondaryMinimumAutoRadioButton);
-      this.panel7.Location = new System.Drawing.Point(66, 45);
+      this.panel7.Location = new System.Drawing.Point(74, 45);
       this.panel7.Name = "panel7";
       this.panel7.Size = new System.Drawing.Size(106, 20);
       this.panel7.TabIndex = 3;
@@ -576,8 +619,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisSecondaryMinimumFixedTextBox
       // 
-      this.yAxisSecondaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisSecondaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisSecondaryMinimumFixedTextBox.Location = new System.Drawing.Point(191, 45);
       this.yAxisSecondaryMinimumFixedTextBox.Name = "yAxisSecondaryMinimumFixedTextBox";
       this.yAxisSecondaryMinimumFixedTextBox.Size = new System.Drawing.Size(244, 20);
@@ -586,8 +629,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisSecondaryMaximumFixedTextBox
       // 
-      this.yAxisSecondaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisSecondaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisSecondaryMaximumFixedTextBox.Location = new System.Drawing.Point(191, 71);
       this.yAxisSecondaryMaximumFixedTextBox.Name = "yAxisSecondaryMaximumFixedTextBox";
       this.yAxisSecondaryMaximumFixedTextBox.Size = new System.Drawing.Size(244, 20);
@@ -614,8 +657,9 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisPrimaryGroupBox
       // 
-      this.yAxisPrimaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisPrimaryGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisPrimaryGroupBox.Controls.Add(this.yAxisPrimaryLogScaleCheckBox);
       this.yAxisPrimaryGroupBox.Controls.Add(this.panel6);
       this.yAxisPrimaryGroupBox.Controls.Add(this.panel5);
       this.yAxisPrimaryGroupBox.Controls.Add(this.yAxisPrimaryMinimumFixedTextBox);
@@ -626,16 +670,28 @@ namespace HeuristicLab.Analysis.Views {
       this.yAxisPrimaryGroupBox.Controls.Add(this.label1);
       this.yAxisPrimaryGroupBox.Location = new System.Drawing.Point(3, 3);
       this.yAxisPrimaryGroupBox.Name = "yAxisPrimaryGroupBox";
-      this.yAxisPrimaryGroupBox.Size = new System.Drawing.Size(441, 99);
+      this.yAxisPrimaryGroupBox.Size = new System.Drawing.Size(441, 126);
       this.yAxisPrimaryGroupBox.TabIndex = 0;
       this.yAxisPrimaryGroupBox.TabStop = false;
       this.yAxisPrimaryGroupBox.Text = "Primary Axis";
+      // 
+      // yAxisPrimaryLogScaleCheckBox
+      // 
+      this.yAxisPrimaryLogScaleCheckBox.AutoSize = true;
+      this.yAxisPrimaryLogScaleCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.yAxisPrimaryLogScaleCheckBox.Location = new System.Drawing.Point(6, 99);
+      this.yAxisPrimaryLogScaleCheckBox.Name = "yAxisPrimaryLogScaleCheckBox";
+      this.yAxisPrimaryLogScaleCheckBox.Size = new System.Drawing.Size(83, 17);
+      this.yAxisPrimaryLogScaleCheckBox.TabIndex = 10;
+      this.yAxisPrimaryLogScaleCheckBox.Text = "Logarithmic:";
+      this.yAxisPrimaryLogScaleCheckBox.UseVisualStyleBackColor = true;
+      this.yAxisPrimaryLogScaleCheckBox.CheckedChanged += new System.EventHandler(this.yAxisPrimaryLogScaleCheckBox_CheckedChanged);
       // 
       // panel6
       // 
       this.panel6.Controls.Add(this.yAxisPrimaryMaximumFixedRadioButton);
       this.panel6.Controls.Add(this.yAxisPrimaryMaximumAutoRadioButton);
-      this.panel6.Location = new System.Drawing.Point(66, 71);
+      this.panel6.Location = new System.Drawing.Point(74, 71);
       this.panel6.Name = "panel6";
       this.panel6.Size = new System.Drawing.Size(106, 20);
       this.panel6.TabIndex = 6;
@@ -668,7 +724,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.panel5.Controls.Add(this.yAxisPrimaryMinimumAutoRadioButton);
       this.panel5.Controls.Add(this.yAxisPrimaryMinimumFixedRadioButton);
-      this.panel5.Location = new System.Drawing.Point(66, 45);
+      this.panel5.Location = new System.Drawing.Point(74, 45);
       this.panel5.Name = "panel5";
       this.panel5.Size = new System.Drawing.Size(106, 20);
       this.panel5.TabIndex = 3;
@@ -699,8 +755,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisPrimaryMinimumFixedTextBox
       // 
-      this.yAxisPrimaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisPrimaryMinimumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisPrimaryMinimumFixedTextBox.Location = new System.Drawing.Point(191, 45);
       this.yAxisPrimaryMinimumFixedTextBox.Name = "yAxisPrimaryMinimumFixedTextBox";
       this.yAxisPrimaryMinimumFixedTextBox.Size = new System.Drawing.Size(244, 20);
@@ -709,8 +765,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // yAxisPrimaryMaximumFixedTextBox
       // 
-      this.yAxisPrimaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.yAxisPrimaryMaximumFixedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.yAxisPrimaryMaximumFixedTextBox.Location = new System.Drawing.Point(191, 71);
       this.yAxisPrimaryMaximumFixedTextBox.Name = "yAxisPrimaryMaximumFixedTextBox";
       this.yAxisPrimaryMaximumFixedTextBox.Size = new System.Drawing.Size(244, 20);
@@ -737,8 +793,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // titleTextBox
       // 
-      this.titleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.titleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.titleTextBox.Location = new System.Drawing.Point(66, 0);
       this.titleTextBox.Name = "titleTextBox";
       this.titleTextBox.Size = new System.Drawing.Size(389, 20);
@@ -756,8 +812,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // axisFontLabel
       // 
-      this.axisFontLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.axisFontLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.axisFontLabel.AutoSize = true;
       this.axisFontLabel.Location = new System.Drawing.Point(98, 60);
       this.axisFontLabel.Name = "axisFontLabel";
@@ -767,8 +823,8 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // titleFontLabel
       // 
-      this.titleFontLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.titleFontLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.titleFontLabel.AutoSize = true;
       this.titleFontLabel.Location = new System.Drawing.Point(98, 31);
       this.titleFontLabel.Name = "titleFontLabel";
@@ -821,8 +877,13 @@ namespace HeuristicLab.Analysis.Views {
       // 
       // titleFontDialog
       // 
+      this.titleFontDialog.Color = System.Drawing.SystemColors.ControlText;
       this.titleFontDialog.FontMustExist = true;
       this.titleFontDialog.ShowColor = true;
+      // 
+      // axisFontDialog
+      // 
+      this.axisFontDialog.Color = System.Drawing.SystemColors.ControlText;
       // 
       // DataTableVisualPropertiesControl
       // 
@@ -837,7 +898,7 @@ namespace HeuristicLab.Analysis.Views {
       this.Controls.Add(this.label2);
       this.Controls.Add(this.titleFontButton);
       this.Name = "DataTableVisualPropertiesControl";
-      this.Size = new System.Drawing.Size(455, 322);
+      this.Size = new System.Drawing.Size(455, 373);
       this.xAxisPrimaryGroupBox.ResumeLayout(false);
       this.xAxisPrimaryGroupBox.PerformLayout();
       this.panel2.ResumeLayout(false);
@@ -939,5 +1000,9 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.Panel panel5;
     private System.Windows.Forms.Panel panel7;
     private System.Windows.Forms.Panel panel8;
+    private System.Windows.Forms.CheckBox xAxisPrimaryLogScaleCheckBox;
+    private System.Windows.Forms.CheckBox xAxisSecondaryLogScaleCheckBox;
+    private System.Windows.Forms.CheckBox yAxisSecondaryLogScaleCheckBox;
+    private System.Windows.Forms.CheckBox yAxisPrimaryLogScaleCheckBox;
   }
 }
