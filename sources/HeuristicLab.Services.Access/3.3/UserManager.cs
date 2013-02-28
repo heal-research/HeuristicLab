@@ -28,7 +28,7 @@ using DA = HeuristicLab.Services.Access.DataAccess;
 namespace HeuristicLab.Services.Access {
   public class UserManager : IUserManager {
     public MembershipUser CurrentUser {
-      get { return Membership.GetUser(); }
+      get { return TryAndRepeat(() => { return Membership.GetUser(); }); }
     }
 
     public Guid CurrentUserId {
@@ -78,6 +78,17 @@ namespace HeuristicLab.Services.Access {
         }
       }
       return false;
+    }
+
+    private static T TryAndRepeat<T>(Func<T> action) {
+      int repetitions = 5;
+      while (true) {
+        try { return action(); }
+        catch (Exception e) {
+          if (repetitions == 0) throw e;
+          repetitions--;
+        }
+      }
     }
   }
 }
