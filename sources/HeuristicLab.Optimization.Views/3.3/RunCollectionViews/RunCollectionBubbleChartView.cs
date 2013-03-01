@@ -723,18 +723,23 @@ namespace HeuristicLab.Optimization.Views {
 
     private void getDataAsMatrixToolStripMenuItem_Click(object sender, EventArgs e) {
       int xCol = Matrix.ColumnNames.ToList().IndexOf(xAxisValue);
+      int yCol = Matrix.ColumnNames.ToList().IndexOf(yAxisValue);
+
       var grouped = new Dictionary<string, List<string>>();
       Dictionary<double, string> reverseMapping = null;
       if (categoricalMapping.ContainsKey(xCol))
         reverseMapping = categoricalMapping[xCol].ToDictionary(x => x.Value, y => y.Key.ToString());
       foreach (var run in Content.Where(r => r.Visible)) {
         var x = GetValue(run, xAxisValue);
-        var y = GetValue(run, yAxisValue);
-        if (!(x.HasValue && y.HasValue)) continue;
+        object y;
+        if (categoricalMapping.ContainsKey(yCol))
+          y = Content.GetValue(run, yAxisValue);
+        else y = GetValue(run, yAxisValue);
+        if (!(x.HasValue && y != null)) continue;
 
         var category = reverseMapping == null ? x.Value.ToString() : reverseMapping[x.Value];
         if (!grouped.ContainsKey(category)) grouped[category] = new List<string>();
-        grouped[category].Add(y.Value.ToString());
+        grouped[category].Add(y.ToString());
       }
 
       if (!grouped.Any()) return;
@@ -748,8 +753,9 @@ namespace HeuristicLab.Optimization.Views {
           matrix[j++, i] = y;
         i++;
       }
-
-      MainFormManager.MainForm.ShowContent(matrix);
+      matrix.SortableView = false;
+      var view = MainFormManager.MainForm.ShowContent(matrix);
+      view.ReadOnly = true;
     }
     #endregion
 
