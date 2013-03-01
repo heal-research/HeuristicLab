@@ -44,6 +44,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (IValueLookupParameter<DoubleArray>)Parameters["Sigma"]; }
     }
 
+    public IValueParameter<IntValue> MaximumTriesParameter {
+      get { return (IValueParameter<IntValue>)Parameters["MaximumTries"]; }
+    }
+
     [StorableConstructor]
     protected NormalDistributedRealVectorCreator(bool deserializing) : base(deserializing) { }
     protected NormalDistributedRealVectorCreator(NormalDistributedRealVectorCreator original, Cloner cloner) : base(original, cloner) { }
@@ -51,10 +55,17 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new ValueLookupParameter<RealVector>("Mean", "The mean vector around which the points will be sampled."));
       Parameters.Add(new ValueLookupParameter<DoubleArray>("Sigma", "The standard deviations for all or for each dimension."));
+      Parameters.Add(new ValueParameter<IntValue>("MaximumTries", "The maximum number of tries to sample within the specified bounds.", new IntValue(1000)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new NormalDistributedRealVectorCreator(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("MaximumTries"))
+        Parameters.Add(new ValueParameter<IntValue>("MaximumTries", "The maximum number of tries to sample within the specified bounds.", new IntValue(1000)));
     }
 
     /// <summary>
@@ -79,11 +90,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="mean">The mean vector around which the resulting vector is sampled.</param>
     /// <param name="sigma">The vector of standard deviations, must have at least one row.</param>
     /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
+    /// <param name="maximumTries">The maximum number of tries to sample a value inside the bounds for each dimension. If a valid value cannot be obtained, the mean will be used.</param>
     /// <returns>The newly created real vector.</returns>
-    public static RealVector Apply(IRandom random, RealVector mean, DoubleArray sigma, DoubleMatrix bounds) {
-      if (random == null) throw new ArgumentException("Random is not defined", "random");
-      if (mean == null || mean.Length == 0) throw new ArgumentException("Mean is not defined", "mean");
-      if (sigma == null || sigma.Length == 0) throw new ArgumentException("Sigma is not defined.", "sigma");
+    public static RealVector Apply(IRandom random, RealVector mean, DoubleArray sigma, DoubleMatrix bounds, int maximumTries = 1000) {
+      if (random == null) throw new ArgumentNullException("Random is not defined", "random");
+      if (mean == null || mean.Length == 0) throw new ArgumentNullException("Mean is not defined", "mean");
+      if (sigma == null || sigma.Length == 0) throw new ArgumentNullException("Sigma is not defined.", "sigma");
       if (bounds == null || bounds.Rows == 0) bounds = new DoubleMatrix(new[,] { { double.MinValue, double.MaxValue } });
       var nd = new NormalDistributedRandom(random, 0, 1);
       var result = (RealVector)mean.Clone();
@@ -93,9 +105,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         if (min.IsAlmost(max) || mean[i] < min) result[i] = min;
         else if (mean[i] > max) result[i] = max;
         else {
+          int count = 0;
+          bool inRange;
           do {
             result[i] = mean[i] + sigma[i % sigma.Length] * nd.NextDouble();
-          } while (result[i] < bounds[i % sigma.Length, 0] || result[i] > bounds[i % sigma.Length, 1]);
+            inRange = result[i] >= bounds[i % sigma.Length, 0] && result[i] < bounds[i % sigma.Length, 1];
+            count++;
+          } while (count < maximumTries && !inRange);
+          if (count == maximumTries && !inRange)
+            result[i] = mean[i];
         }
       }
       return result;
@@ -109,7 +127,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <returns>The newly created real vector.</returns>
     protected override RealVector Create(IRandom random, IntValue length, DoubleMatrix bounds) {
-      return Apply(random, MeanParameter.ActualValue, SigmaParameter.ActualValue, bounds);
+      return Apply(random, MeanParameter.ActualValue, SigmaParameter.ActualValue, bounds, MaximumTriesParameter.Value.Value);
     }
   }
 }

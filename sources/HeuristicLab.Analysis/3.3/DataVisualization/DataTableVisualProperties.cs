@@ -480,6 +480,26 @@ namespace HeuristicLab.Analysis {
       get { return secondYAxisMaximumFixedValue; }
       set { secondYAxisMaximumFixedValue = value; }
     }
+    [Storable(Name = "XAxisLogScale")]
+    private bool StorableXAxisLogScale {
+      get { return xAxisLogScale; }
+      set { xAxisLogScale = value; }
+    }
+    [Storable(Name = "SecondXAxisLogScale")]
+    private bool StorableSecondXAxisLogScale {
+      get { return secondXAxisLogScale; }
+      set { secondXAxisLogScale = value; }
+    }
+    [Storable(Name = "YAxisLogScale")]
+    private bool StorableYAxisLogScale {
+      get { return yAxisLogScale; }
+      set { yAxisLogScale = value; }
+    }
+    [Storable(Name = "SecondYAxisLogScale")]
+    private bool StorableSecondYAxisLogScale {
+      get { return secondYAxisLogScale; }
+      set { secondYAxisLogScale = value; }
+    }
     #endregion
 
     [StorableConstructor]
