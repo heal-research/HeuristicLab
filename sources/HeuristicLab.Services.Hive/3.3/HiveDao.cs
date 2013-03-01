@@ -119,11 +119,22 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
-    public void UpdateTask(DT.Task dto) {
+    public void UpdateTaskAndStateLogs(DT.Task dto) {
       using (var db = CreateContext()) {
         var entity = db.Tasks.FirstOrDefault(x => x.TaskId == dto.Id);
         if (entity == null) db.Tasks.InsertOnSubmit(DT.Convert.ToEntity(dto));
         else DT.Convert.ToEntity(dto, entity);
+        db.SubmitChanges();
+      }
+    }
+
+    public void UpdateTask(DT.Task dto) {
+      using (var db = CreateContext()) {
+        db.DeferredLoadingEnabled = false;
+
+        var entity = db.Tasks.FirstOrDefault(x => x.TaskId == dto.Id);
+        if (entity == null) db.Tasks.InsertOnSubmit(DT.Convert.ToEntity(dto));
+        else DT.Convert.ToEntityTaskOnly(dto, entity);
         db.SubmitChanges();
       }
     }
@@ -185,8 +196,8 @@ namespace HeuristicLab.Services.Hive.DataAccess {
 
     public DT.Task UpdateTaskState(Guid taskId, TaskState taskState, Guid? slaveId, Guid? userId, string exception) {
       using (var db = CreateContext()) {
-        var job = db.Tasks.SingleOrDefault(x => x.TaskId == taskId);
-        job.State = taskState;
+        db.DeferredLoadingEnabled = false;
+
         db.StateLogs.InsertOnSubmit(new StateLog {
           TaskId = taskId,
           State = taskState,
@@ -196,8 +207,15 @@ namespace HeuristicLab.Services.Hive.DataAccess {
           DateTime = DateTime.Now
         });
         db.SubmitChanges();
-        job = db.Tasks.SingleOrDefault(x => x.TaskId == taskId);
-        return DT.Convert.ToDto(job);
+      }
+
+      using (var db = CreateContext()) {
+        db.DeferredLoadingEnabled = false;
+
+        var task = db.Tasks.SingleOrDefault(x => x.TaskId == taskId);
+        task.State = taskState;
+        db.SubmitChanges();
+        return DT.Convert.ToDto(task);
       }
     }
     #endregion
@@ -614,6 +632,8 @@ namespace HeuristicLab.Services.Hive.DataAccess {
 
     public void AssignJobToResource(Guid taskId, IEnumerable<Guid> resourceIds) {
       using (var db = CreateContext()) {
+        db.DeferredLoadingEnabled = false;
+
         List<AssignedResource> assignedResources = new List<AssignedResource>();
         foreach (Guid rId in resourceIds) {
           assignedResources.Add(new AssignedResource() { TaskId = taskId, ResourceId = rId });

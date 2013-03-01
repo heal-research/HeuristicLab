@@ -34,6 +34,7 @@ namespace HeuristicLab.Services.Hive {
     IEnumerable<DT.LightweightTask> GetLightweightTasksWithoutStateLog(Expression<Func<Task, bool>> predicate);
     Guid AddTask(DT.Task dto);
     void UpdateTaskAndPlugins(DT.Task dto);
+    void UpdateTaskAndStateLogs(DT.Task dto);
     void UpdateTask(DT.Task dto);
     void DeleteTask(Guid id);
     IEnumerable<TaskInfoForScheduler> GetWaitingTasks(DT.Slave slave);

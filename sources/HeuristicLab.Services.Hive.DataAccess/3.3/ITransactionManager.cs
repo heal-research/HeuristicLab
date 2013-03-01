@@ -23,7 +23,7 @@ using System;
 
 namespace HeuristicLab.Services.Hive.DataAccess {
   public interface ITransactionManager {
-    void UseTransaction(Action call, bool serializable = false, bool longRunning = false);
-    T UseTransaction<T>(Func<T> call, bool serializable = false, bool longRunning = false);
+    void UseTransaction(Action call, bool repeatableRead = false, bool longRunning = false);
+    T UseTransaction<T>(Func<T> call, bool repeatableRead = false, bool longRunning = false);
   }
 }

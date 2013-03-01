@@ -78,6 +78,25 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
         target.IsPrivileged = source.IsPrivileged;
       }
     }
+
+    public static void ToEntityTaskOnly(DT.Task source, DB.Task target) {
+      if ((source != null) && (target != null)) {
+        target.TaskId = source.Id;
+        target.CoresNeeded = source.CoresNeeded;
+        target.ExecutionTimeMs = source.ExecutionTime.TotalMilliseconds;
+        target.MemoryNeeded = source.MemoryNeeded;
+        target.ParentTaskId = source.ParentTaskId;
+        target.Priority = source.Priority;
+        target.LastHeartbeat = source.LastHeartbeat;
+        target.State = Convert.ToEntity(source.State);
+        target.IsParentTask = source.IsParentTask;
+        target.FinishWhenChildJobsFinished = source.FinishWhenChildJobsFinished;
+        target.Command = Convert.ToEntity(source.Command);
+        // RequiredPlugins are added by Dao
+        target.JobId = source.JobId;
+        target.IsPrivileged = source.IsPrivileged;
+      }
+    }
     #endregion
 
     #region TaskData
