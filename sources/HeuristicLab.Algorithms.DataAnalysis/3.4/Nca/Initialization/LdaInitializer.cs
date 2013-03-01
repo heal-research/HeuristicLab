@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,51 +28,42 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("LDA", "Initializes the matrix by performing a linear discriminant analysis.")]
   [StorableClass]
-  public class LDAInitializer : Item, INCAInitializer {
+  public class LdaInitializer : NcaInitializer {
 
     [StorableConstructor]
-    protected LDAInitializer(bool deserializing) : base(deserializing) { }
-    protected LDAInitializer(LDAInitializer original, Cloner cloner) : base(original, cloner) { }
-    public LDAInitializer() : base() { }
+    protected LdaInitializer(bool deserializing) : base(deserializing) { }
+    protected LdaInitializer(LdaInitializer original, Cloner cloner) : base(original, cloner) { }
+    public LdaInitializer() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new LDAInitializer(this, cloner);
+      return new LdaInitializer(this, cloner);
     }
 
-    public double[] Initialize(IClassificationProblemData data, int dimensions) {
+    public override double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions) {
       var instances = data.TrainingIndices.Count();
       var attributes = data.AllowedInputVariables.Count();
 
       var ldaDs = new double[instances, attributes + 1];
-      int row, col = 0;
-      foreach (var variable in data.AllowedInputVariables) {
-        row = 0;
-        foreach (var value in data.Dataset.GetDoubleValues(variable, data.TrainingIndices)) {
-          ldaDs[row, col] = value;
-          row++;
+      int j = 0;
+      foreach (var a in data.AllowedInputVariables) {
+        int i = 0;
+        var sv = scaling.GetScaledValues(data.Dataset, a, data.TrainingIndices);
+        foreach (var v in sv) {
+          ldaDs[i++, j] = v;
         }
-        col++;
+        j++;
       }
-      row = 0;
-      var uniqueClasses = new Dictionary<double, int>();
-      foreach (var label in data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices)) {
-        if (!uniqueClasses.ContainsKey(label))
-          uniqueClasses[label] = uniqueClasses.Count;
-        ldaDs[row++, attributes] = label;
-      }
-      for (row = 0; row < instances; row++)
-        ldaDs[row, attributes] = uniqueClasses[ldaDs[row, attributes]];
+      j = 0;
+      foreach (var tv in data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices))
+        ldaDs[j++, attributes] = tv;
+
+      var uniqueClasses = data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices).Distinct().Count();
 
       int info;
       double[,] matrix;
-      alglib.fisherldan(ldaDs, instances, attributes, uniqueClasses.Count, out info, out matrix);
+      alglib.fisherldan(ldaDs, instances, attributes, uniqueClasses, out info, out matrix);
 
-      var result = new double[attributes * dimensions];
-      for (int i = 0; i < attributes; i++)
-        for (int j = 0; j < dimensions; j++)
-          result[i * dimensions + j] = matrix[i, j];
-
-      return result;
+      return matrix;
     }
 
   }

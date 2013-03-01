@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,16 +20,9 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  public interface INcaInitializer : IOperator {
-    /// <summary>
-    /// Calculates an initial projection for the NCA to start from.
-    /// </summary>
-    /// <param name="data">The problem data that contains the AllowedInputVariables and TrainingIndices.</param>
-    /// <param name="dimensions">The amount of columns in the matrix</param>
-    /// <returns>The matrix that projects the input variables into a lower dimensional space.</returns>
-    double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions);
+  public interface INcaSolutionCreator : IOperator {
+
   }
 }

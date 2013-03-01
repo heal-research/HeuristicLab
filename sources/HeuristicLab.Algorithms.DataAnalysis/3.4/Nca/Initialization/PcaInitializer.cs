@@ -28,43 +28,29 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("PCA", "Initializes the matrix by performing a principal components analysis.")]
   [StorableClass]
-  public sealed class PCAInitializer : Item, INCAInitializer {
+  public sealed class PcaInitializer : NcaInitializer {
 
     [StorableConstructor]
-    private PCAInitializer(bool deserializing) : base(deserializing) { }
-    private PCAInitializer(PCAInitializer original, Cloner cloner) : base(original, cloner) { }
-    public PCAInitializer() : base() { }
+    private PcaInitializer(bool deserializing) : base(deserializing) { }
+    private PcaInitializer(PcaInitializer original, Cloner cloner) : base(original, cloner) { }
+    public PcaInitializer() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new PCAInitializer(this, cloner);
+      return new PcaInitializer(this, cloner);
     }
 
-    public double[] Initialize(IClassificationProblemData data, int dimensions) {
+    public override double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions) {
       var instances = data.TrainingIndices.Count();
       var attributes = data.AllowedInputVariables.Count();
 
-      var pcaDs = new double[instances, attributes];
-      int col = 0;
-      foreach (var variable in data.AllowedInputVariables) {
-        int row = 0;
-        foreach (var value in data.Dataset.GetDoubleValues(variable, data.TrainingIndices)) {
-          pcaDs[row, col] = value;
-          row++;
-        }
-        col++;
-      }
+      var pcaDs = AlglibUtil.PrepareAndScaleInputMatrix(data.Dataset, data.AllowedInputVariables, data.TrainingIndices, scaling);
 
       int info;
       double[] varianceValues;
       double[,] matrix;
       alglib.pcabuildbasis(pcaDs, instances, attributes, out info, out varianceValues, out matrix);
 
-      var result = new double[attributes * dimensions];
-      for (int i = 0; i < attributes; i++)
-        for (int j = 0; j < dimensions; j++)
-          result[i * dimensions + j] = matrix[i, j];
-
-      return result;
+      return matrix;
     }
 
   }

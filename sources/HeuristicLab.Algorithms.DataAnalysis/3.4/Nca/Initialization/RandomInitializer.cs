@@ -22,58 +22,39 @@
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Random", "Initializes the matrix randomly.")]
   [StorableClass]
-  public class RandomInitializer : ParameterizedNamedItem, INCAInitializer {
-    private IValueParameter<IntValue> RandomParameter {
-      get { return (IValueParameter<IntValue>)Parameters["Seed"]; }
-    }
-    private IValueParameter<BoolValue> SetSeedRandomlyParameter {
-      get { return (IValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
-    }
-
-    public int Seed {
-      get { return RandomParameter.Value.Value; }
-      set { RandomParameter.Value.Value = value; }
-    }
-
-    public bool SetSeedRandomly {
-      get { return SetSeedRandomlyParameter.Value.Value; }
-      set { SetSeedRandomlyParameter.Value.Value = value; }
+  public sealed class RandomInitializer : NcaInitializer, IStochasticOperator {
+    public ILookupParameter<IRandom> RandomParameter {
+      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected RandomInitializer(bool deserializing) : base(deserializing) { }
-    protected RandomInitializer(RandomInitializer original, Cloner cloner) : base(original, cloner) { }
+    private RandomInitializer(bool deserializing) : base(deserializing) { }
+    private RandomInitializer(RandomInitializer original, Cloner cloner) : base(original, cloner) { }
     public RandomInitializer()
       : base() {
-      Parameters.Add(new ValueParameter<IntValue>("Seed", "The seed for the random number generator.", new IntValue(0)));
-      Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "Whether the seed should be randomized for each call.", new BoolValue(true)));
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RandomInitializer(this, cloner);
     }
 
-    public double[] Initialize(IClassificationProblemData data, int dimensions) {
-      var instances = data.TrainingIndices.Count();
+    public override double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions) {
       var attributes = data.AllowedInputVariables.Count();
 
-      var random = new MersenneTwister();
-      if (SetSeedRandomly) Seed = random.Next();
-      random.Reset(Seed);
-
-      var range = data.AllowedInputVariables.Select(x => data.Dataset.GetDoubleValues(x).Max() - data.Dataset.GetDoubleValues(x).Min()).ToArray();
-      var matrix = new double[attributes * dimensions];
-      for (int i = 0; i < matrix.Length; i++)
-        matrix[i] = random.NextDouble() / range[i / dimensions];
+      var random = RandomParameter.ActualValue;
+      var matrix = new double[attributes, dimensions];
+      for (int i = 0; i < attributes; i++)
+        for (int j = 0; j < dimensions; j++)
+          matrix[i, j] = random.NextDouble();
 
       return matrix;
     }

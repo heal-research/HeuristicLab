@@ -20,21 +20,20 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using HeuristicLab.Analysis;
+using HeuristicLab.Algorithms.GradientDescent;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  internal delegate void Reporter(double quality, double[] coefficients, double[] gradients);
   /// <summary>
   /// Neighborhood Components Analysis
   /// </summary>
@@ -45,29 +44,75 @@ with additional regularizations described in Z. Yang, J. Laaksonen. 2007.
 Regularized Neighborhood Component Analysis. Lecture Notes in Computer Science, 4522. pp. 253-262.")]
   [Creatable("Data Analysis")]
   [StorableClass]
-  public sealed class NcaAlgorithm : FixedDataAnalysisAlgorithm<IClassificationProblem> {
+  public sealed class NcaAlgorithm : EngineAlgorithm {
+    #region Parameter Names
+    private const string SeedParameterName = "Seed";
+    private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
+    private const string KParameterName = "K";
+    private const string DimensionsParameterName = "Dimensions";
+    private const string InitializationParameterName = "Initialization";
+    private const string NeighborSamplesParameterName = "NeighborSamples";
+    private const string IterationsParameterName = "Iterations";
+    private const string RegularizationParameterName = "Regularization";
+    private const string NcaModelCreatorParameterName = "NcaModelCreator";
+    private const string NcaSolutionCreatorParameterName = "NcaSolutionCreator";
+    private const string ApproximateGradientsParameterName = "ApproximateGradients";
+    private const string NcaMatrixParameterName = "NcaMatrix";
+    private const string NcaMatrixGradientsParameterName = "NcaMatrixGradients";
+    private const string QualityParameterName = "Quality";
+    #endregion
+
+    public override Type ProblemType { get { return typeof(IClassificationProblem); } }
+    public new IClassificationProblem Problem {
+      get { return (IClassificationProblem)base.Problem; }
+      set { base.Problem = value; }
+    }
+
     #region Parameter Properties
+    public IValueParameter<IntValue> SeedParameter {
+      get { return (IValueParameter<IntValue>)Parameters[SeedParameterName]; }
+    }
+    public IValueParameter<BoolValue> SetSeedRandomlyParameter {
+      get { return (IValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
+    }
     public IFixedValueParameter<IntValue> KParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["K"]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[KParameterName]; }
     }
     public IFixedValueParameter<IntValue> DimensionsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["Dimensions"]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[DimensionsParameterName]; }
     }
-    public IConstrainedValueParameter<INCAInitializer> InitializationParameter {
-      get { return (IConstrainedValueParameter<INCAInitializer>)Parameters["Initialization"]; }
+    public IConstrainedValueParameter<INcaInitializer> InitializationParameter {
+      get { return (IConstrainedValueParameter<INcaInitializer>)Parameters[InitializationParameterName]; }
     }
     public IFixedValueParameter<IntValue> NeighborSamplesParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["NeighborSamples"]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[NeighborSamplesParameterName]; }
     }
     public IFixedValueParameter<IntValue> IterationsParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters["Iterations"]; }
+      get { return (IFixedValueParameter<IntValue>)Parameters[IterationsParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> RegularizationParameter {
-      get { return (IFixedValueParameter<DoubleValue>)Parameters["Regularization"]; }
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[RegularizationParameterName]; }
+    }
+    public IValueParameter<BoolValue> ApproximateGradientsParameter {
+      get { return (IValueParameter<BoolValue>)Parameters[ApproximateGradientsParameterName]; }
+    }
+    public IValueParameter<INcaModelCreator> NcaModelCreatorParameter {
+      get { return (IValueParameter<INcaModelCreator>)Parameters[NcaModelCreatorParameterName]; }
+    }
+    public IValueParameter<INcaSolutionCreator> NcaSolutionCreatorParameter {
+      get { return (IValueParameter<INcaSolutionCreator>)Parameters[NcaSolutionCreatorParameterName]; }
     }
     #endregion
 
     #region Properties
+    public int Seed {
+      get { return SeedParameter.Value.Value; }
+      set { SeedParameter.Value.Value = value; }
+    }
+    public bool SetSeedRandomly {
+      get { return SetSeedRandomlyParameter.Value.Value; }
+      set { SetSeedRandomlyParameter.Value.Value = value; }
+    }
     public int K {
       get { return KParameter.Value.Value; }
       set { KParameter.Value.Value = value; }
@@ -88,6 +133,14 @@ Regularized Neighborhood Component Analysis. Lecture Notes in Computer Science, 
       get { return RegularizationParameter.Value.Value; }
       set { RegularizationParameter.Value.Value = value; }
     }
+    public INcaModelCreator NcaModelCreator {
+      get { return NcaModelCreatorParameter.Value; }
+      set { NcaModelCreatorParameter.Value = value; }
+    }
+    public INcaSolutionCreator NcaSolutionCreator {
+      get { return NcaSolutionCreatorParameter.Value; }
+      set { NcaSolutionCreatorParameter.Value = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -95,19 +148,97 @@ Regularized Neighborhood Component Analysis. Lecture Notes in Computer Science, 
     private NcaAlgorithm(NcaAlgorithm original, Cloner cloner) : base(original, cloner) { }
     public NcaAlgorithm()
       : base() {
-      Parameters.Add(new FixedValueParameter<IntValue>("K", "The K for the nearest neighbor.", new IntValue(3)));
-      Parameters.Add(new FixedValueParameter<IntValue>("Dimensions", "The number of dimensions that NCA should reduce the data to.", new IntValue(2)));
-      Parameters.Add(new ConstrainedValueParameter<INCAInitializer>("Initialization", "Which method should be used to initialize the matrix. Typically LDA (linear discriminant analysis) should provide a good estimate."));
-      Parameters.Add(new FixedValueParameter<IntValue>("NeighborSamples", "How many of the neighbors should be sampled in order to speed up the calculation. This should be at least the value of k and at most the number of training instances minus one.", new IntValue(60)));
-      Parameters.Add(new FixedValueParameter<IntValue>("Iterations", "How many iterations the conjugate gradient (CG) method should be allowed to perform. The method might still terminate earlier if a local optima has already been reached.", new IntValue(50)));
-      Parameters.Add(new FixedValueParameter<DoubleValue>("Regularization", "A non-negative paramter which can be set to increase generalization and avoid overfitting. If set to 0 the algorithm is similar to NCA as proposed by Goldberger et al.", new DoubleValue(0)));
+      Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The seed of the random number generator.", new IntValue(0)));
+      Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "A boolean flag that indicates whether the seed should be randomly reset each time the algorithm is run.", new BoolValue(true)));
+      Parameters.Add(new FixedValueParameter<IntValue>(KParameterName, "The K for the nearest neighbor.", new IntValue(3)));
+      Parameters.Add(new FixedValueParameter<IntValue>(DimensionsParameterName, "The number of dimensions that NCA should reduce the data to.", new IntValue(2)));
+      Parameters.Add(new ConstrainedValueParameter<INcaInitializer>(InitializationParameterName, "Which method should be used to initialize the matrix. Typically LDA (linear discriminant analysis) should provide a good estimate."));
+      Parameters.Add(new FixedValueParameter<IntValue>(NeighborSamplesParameterName, "How many of the neighbors should be sampled in order to speed up the calculation. This should be at least the value of k and at most the number of training instances minus one will be used.", new IntValue(60)));
+      Parameters.Add(new FixedValueParameter<IntValue>(IterationsParameterName, "How many iterations the conjugate gradient (CG) method should be allowed to perform. The method might still terminate earlier if a local optima has already been reached.", new IntValue(50)));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(RegularizationParameterName, "A non-negative paramter which can be set to increase generalization and avoid overfitting. If set to 0 the algorithm is similar to NCA as proposed by Goldberger et al.", new DoubleValue(0)));
+      Parameters.Add(new ValueParameter<INcaModelCreator>(NcaModelCreatorParameterName, "Creates an NCA model out of the matrix.", new NcaModelCreator()));
+      Parameters.Add(new ValueParameter<INcaSolutionCreator>(NcaSolutionCreatorParameterName, "Creates an NCA solution given a model and some data.", new NcaSolutionCreator()));
+      Parameters.Add(new ValueParameter<BoolValue>(ApproximateGradientsParameterName, "True if the gradient should be approximated otherwise they are computed exactly.", new BoolValue()));
 
-      INCAInitializer defaultInitializer = null;
-      foreach (var initializer in ApplicationManager.Manager.GetInstances<INCAInitializer>().OrderBy(x => x.ItemName)) {
-        if (initializer is LDAInitializer) defaultInitializer = initializer;
+      NcaSolutionCreatorParameter.Hidden = true;
+      ApproximateGradientsParameter.Hidden = true;
+
+      INcaInitializer defaultInitializer = null;
+      foreach (var initializer in ApplicationManager.Manager.GetInstances<INcaInitializer>().OrderBy(x => x.ItemName)) {
+        if (initializer is LdaInitializer) defaultInitializer = initializer;
         InitializationParameter.ValidValues.Add(initializer);
       }
       if (defaultInitializer != null) InitializationParameter.Value = defaultInitializer;
+
+      var randomCreator = new RandomCreator();
+      var ncaInitializer = new Placeholder();
+      var bfgsInitializer = new LbfgsInitializer();
+      var makeStep = new LbfgsMakeStep();
+      var branch = new ConditionalBranch();
+      var gradientCalculator = new NcaGradientCalculator();
+      var modelCreator = new Placeholder();
+      var updateResults = new LbfgsUpdateResults();
+      var analyzer = new LbfgsAnalyzer();
+      var finalModelCreator = new Placeholder();
+      var finalAnalyzer = new LbfgsAnalyzer();
+      var solutionCreator = new Placeholder();
+
+      OperatorGraph.InitialOperator = randomCreator;
+      randomCreator.SeedParameter.ActualName = SeedParameterName;
+      randomCreator.SeedParameter.Value = null;
+      randomCreator.SetSeedRandomlyParameter.ActualName = SetSeedRandomlyParameterName;
+      randomCreator.SetSeedRandomlyParameter.Value = null;
+      randomCreator.Successor = ncaInitializer;
+
+      ncaInitializer.Name = "(NcaInitializer)";
+      ncaInitializer.OperatorParameter.ActualName = InitializationParameterName;
+      ncaInitializer.Successor = bfgsInitializer;
+
+      bfgsInitializer.IterationsParameter.ActualName = IterationsParameterName;
+      bfgsInitializer.PointParameter.ActualName = NcaMatrixParameterName;
+      bfgsInitializer.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
+      bfgsInitializer.Successor = makeStep;
+
+      makeStep.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
+      makeStep.PointParameter.ActualName = NcaMatrixParameterName;
+      makeStep.Successor = branch;
+
+      branch.ConditionParameter.ActualName = makeStep.TerminationCriterionParameter.Name;
+      branch.FalseBranch = gradientCalculator;
+      branch.TrueBranch = finalModelCreator;
+
+      gradientCalculator.Successor = modelCreator;
+
+      modelCreator.OperatorParameter.ActualName = NcaModelCreatorParameterName;
+      modelCreator.Successor = updateResults;
+
+      updateResults.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
+      updateResults.QualityParameter.ActualName = QualityParameterName;
+      updateResults.QualityGradientsParameter.ActualName = NcaMatrixGradientsParameterName;
+      updateResults.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
+      updateResults.Successor = analyzer;
+
+      analyzer.QualityParameter.ActualName = QualityParameterName;
+      analyzer.PointParameter.ActualName = NcaMatrixParameterName;
+      analyzer.QualityGradientsParameter.ActualName = NcaMatrixGradientsParameterName;
+      analyzer.StateParameter.ActualName = bfgsInitializer.StateParameter.Name;
+      analyzer.PointsTableParameter.ActualName = "Matrix table";
+      analyzer.QualityGradientsTableParameter.ActualName = "Gradients table";
+      analyzer.QualitiesTableParameter.ActualName = "Qualities";
+      analyzer.Successor = makeStep;
+
+      finalModelCreator.OperatorParameter.ActualName = NcaModelCreatorParameterName;
+      finalModelCreator.Successor = finalAnalyzer;
+
+      finalAnalyzer.QualityParameter.ActualName = QualityParameterName;
+      finalAnalyzer.PointParameter.ActualName = NcaMatrixParameterName;
+      finalAnalyzer.QualityGradientsParameter.ActualName = NcaMatrixGradientsParameterName;
+      finalAnalyzer.PointsTableParameter.ActualName = analyzer.PointsTableParameter.ActualName;
+      finalAnalyzer.QualityGradientsTableParameter.ActualName = analyzer.QualityGradientsTableParameter.ActualName;
+      finalAnalyzer.QualitiesTableParameter.ActualName = analyzer.QualitiesTableParameter.ActualName;
+      finalAnalyzer.Successor = solutionCreator;
+
+      solutionCreator.OperatorParameter.ActualName = NcaSolutionCreatorParameterName;
 
       Problem = new ClassificationProblem();
     }
@@ -116,193 +247,8 @@ Regularized Neighborhood Component Analysis. Lecture Notes in Computer Science, 
       return new NcaAlgorithm(this, cloner);
     }
 
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      if (!Parameters.ContainsKey("Regularization")) {
-        Parameters.Add(new FixedValueParameter<DoubleValue>("Regularization", "A non-negative paramter which can be set to increase generalization and avoid overfitting. If set to 0 the algorithm is similar to NCA as proposed by Goldberger et al.", new DoubleValue(0)));
-      }
-    }
-
     public override void Prepare() {
       if (Problem != null) base.Prepare();
     }
-
-    protected override void Run() {
-      var initializer = InitializationParameter.Value;
-
-      var clonedProblem = (IClassificationProblemData)Problem.ProblemData.Clone();
-      var model = Train(clonedProblem, K, Dimensions, NeighborSamples, Regularization, Iterations, initializer.Initialize(clonedProblem, Dimensions), ReportQuality, CancellationToken.None);
-      var solution = model.CreateClassificationSolution(clonedProblem);
-      if (!Results.ContainsKey("ClassificationSolution"))
-        Results.Add(new Result("ClassificationSolution", "The classification solution.", solution));
-      else Results["ClassificationSolution"].Value = solution;
-    }
-
-    public static INcaClassificationSolution CreateClassificationSolution(IClassificationProblemData data, int k, int dimensions, int neighborSamples, double regularization, int iterations, INCAInitializer initializer) {
-      var clonedProblem = (IClassificationProblemData)data.Clone();
-      var model = Train(clonedProblem, k, dimensions, neighborSamples, regularization, iterations, initializer);
-      return model.CreateClassificationSolution(clonedProblem);
-    }
-
-    public static INcaModel Train(IClassificationProblemData problemData, int k, int dimensions, int neighborSamples, double regularization, int iterations, INCAInitializer initializer) {
-      return Train(problemData, k, dimensions, neighborSamples, regularization, iterations, initializer.Initialize(problemData, dimensions), null, CancellationToken.None);
-    }
-
-    public static INcaModel Train(IClassificationProblemData problemData, int k, int neighborSamples, double regularization, int iterations, double[,] initalMatrix) {
-      var matrix = new double[initalMatrix.Length];
-      for (int i = 0; i < initalMatrix.GetLength(0); i++)
-        for (int j = 0; j < initalMatrix.GetLength(1); j++)
-          matrix[i * initalMatrix.GetLength(1) + j] = initalMatrix[i, j];
-      return Train(problemData, k, initalMatrix.GetLength(1), neighborSamples, regularization, iterations, matrix, null, CancellationToken.None);
-    }
-
-    private static INcaModel Train(IClassificationProblemData data, int k, int dimensions, int neighborSamples, double regularization, int iterations, double[] matrix, Reporter reporter, CancellationToken cancellation) {
-      var scaling = new Scaling(data.Dataset, data.AllowedInputVariables, data.TrainingIndices);
-      var scaledData = AlglibUtil.PrepareAndScaleInputMatrix(data.Dataset, data.AllowedInputVariables, data.TrainingIndices, scaling);
-      var classes = data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices).ToArray();
-      var attributes = scaledData.GetLength(1);
-
-      alglib.mincgstate state;
-      alglib.mincgreport rep;
-      alglib.mincgcreate(matrix, out state);
-      alglib.mincgsetcond(state, 0, 0, 0, iterations);
-      alglib.mincgsetxrep(state, true);
-      //alglib.mincgsetgradientcheck(state, 0.01);
-      int neighborSampleSize = neighborSamples;
-      Optimize(state, scaledData, classes, dimensions, neighborSampleSize, regularization, cancellation, reporter);
-      alglib.mincgresults(state, out matrix, out rep);
-      if (rep.terminationtype == -7) throw new InvalidOperationException("Gradient verification failed.");
-
-      var transformationMatrix = new double[attributes, dimensions];
-      var counter = 0;
-      for (var i = 0; i < attributes; i++)
-        for (var j = 0; j < dimensions; j++)
-          transformationMatrix[i, j] = matrix[counter++];
-
-      return new NcaModel(k, transformationMatrix, data.Dataset, data.TrainingIndices, data.TargetVariable, data.AllowedInputVariables, scaling, data.ClassValues.ToArray());
-    }
-
-    private static void Optimize(alglib.mincgstate state, double[,] data, double[] classes, int dimensions, int neighborSampleSize, double lambda, CancellationToken cancellation, Reporter reporter) {
-      while (alglib.mincgiteration(state)) {
-        if (cancellation.IsCancellationRequested) break;
-        if (state.needfg) {
-          Gradient(state.x, ref state.innerobj.f, state.innerobj.g, data, classes, dimensions, neighborSampleSize, lambda);
-          continue;
-        }
-        if (state.innerobj.xupdated) {
-          if (reporter != null)
-            reporter(state.innerobj.f, state.innerobj.x, state.innerobj.g);
-          continue;
-        }
-        throw new InvalidOperationException("Neighborhood Components Analysis: Error in Optimize() (some derivatives were not provided?)");
-      }
-    }
-
-    private static void Gradient(double[] A, ref double func, double[] grad, double[,] data, double[] classes, int dimensions, int neighborSampleSize, double lambda) {
-      var instances = data.GetLength(0);
-      var attributes = data.GetLength(1);
-
-      var AMatrix = new Matrix(A, A.Length / dimensions, dimensions);
-
-      alglib.sparsematrix probabilities;
-      alglib.sparsecreate(instances, instances, out probabilities);
-      var transformedDistances = new Dictionary<int, double>(instances);
-      for (int i = 0; i < instances; i++) {
-        var iVector = new Matrix(GetRow(data, i), data.GetLength(1));
-        for (int k = 0; k < instances; k++) {
-          if (k == i) {
-            transformedDistances.Remove(k);
-            continue;
-          }
-          var kVector = new Matrix(GetRow(data, k));
-          transformedDistances[k] = Math.Exp(-iVector.Multiply(AMatrix).Subtract(kVector.Multiply(AMatrix)).SumOfSquares());
-        }
-        var normalization = transformedDistances.Sum(x => x.Value);
-        if (normalization <= 0) continue;
-        foreach (var s in transformedDistances.Where(x => x.Value > 0).OrderByDescending(x => x.Value).Take(neighborSampleSize)) {
-          alglib.sparseset(probabilities, i, s.Key, s.Value / normalization);
-        }
-      }
-      alglib.sparseconverttocrs(probabilities); // needed to enumerate in order (top-down and left-right)
-
-      int t0 = 0, t1 = 0, r, c;
-      double val;
-      var pi = new double[instances];
-      while (alglib.sparseenumerate(probabilities, ref t0, ref t1, out r, out c, out val)) {
-        if (classes[r].IsAlmost(classes[c])) {
-          pi[r] += val;
-        }
-      }
-
-      var innerSum = new double[attributes, attributes];
-      while (alglib.sparseenumerate(probabilities, ref t0, ref t1, out r, out c, out val)) {
-        var vector = new Matrix(GetRow(data, r)).Subtract(new Matrix(GetRow(data, c)));
-        vector.OuterProduct(vector).Multiply(val * pi[r]).AddTo(innerSum);
-
-        if (classes[r].IsAlmost(classes[c])) {
-          vector.OuterProduct(vector).Multiply(-val).AddTo(innerSum);
-        }
-      }
-
-      func = -pi.Sum() + lambda * AMatrix.SumOfSquares();
-
-      r = 0;
-      var newGrad = AMatrix.Multiply(-2.0).Transpose().Multiply(new Matrix(innerSum)).Transpose();
-      foreach (var g in newGrad) {
-        grad[r] = g + lambda * 2 * A[r];
-        r++;
-      }
-    }
-
-    private void ReportQuality(double func, double[] coefficients, double[] gradients) {
-      var instances = Problem.ProblemData.TrainingIndices.Count();
-      DataTable qualities;
-      if (!Results.ContainsKey("Optimization")) {
-        qualities = new DataTable("Optimization");
-        qualities.Rows.Add(new DataRow("Quality", string.Empty));
-        Results.Add(new Result("Optimization", qualities));
-      } else qualities = (DataTable)Results["Optimization"].Value;
-      qualities.Rows["Quality"].Values.Add(-func / instances);
-
-      string[] attributNames = Problem.ProblemData.AllowedInputVariables.ToArray();
-      if (gradients != null) {
-        DataTable grads;
-        if (!Results.ContainsKey("Gradients")) {
-          grads = new DataTable("Gradients");
-          for (int i = 0; i < gradients.Length; i++)
-            grads.Rows.Add(new DataRow(attributNames[i / Dimensions] + "-" + (i % Dimensions), string.Empty));
-          Results.Add(new Result("Gradients", grads));
-        } else grads = (DataTable)Results["Gradients"].Value;
-        for (int i = 0; i < gradients.Length; i++)
-          grads.Rows[attributNames[i / Dimensions] + "-" + (i % Dimensions)].Values.Add(gradients[i]);
-      }
-
-      if (!Results.ContainsKey("Quality")) {
-        Results.Add(new Result("Quality", new DoubleValue(-func / instances)));
-      } else ((DoubleValue)Results["Quality"].Value).Value = -func / instances;
-
-      var attributes = attributNames.Length;
-      var transformationMatrix = new double[attributes, Dimensions];
-      var counter = 0;
-      for (var i = 0; i < attributes; i++)
-        for (var j = 0; j < Dimensions; j++)
-          transformationMatrix[i, j] = coefficients[counter++];
-
-      var scaling = new Scaling(Problem.ProblemData.Dataset, attributNames, Problem.ProblemData.TrainingIndices);
-      var model = new NcaModel(K, transformationMatrix, Problem.ProblemData.Dataset, Problem.ProblemData.TrainingIndices, Problem.ProblemData.TargetVariable, attributNames, scaling, Problem.ProblemData.ClassValues.ToArray());
-
-      IClassificationSolution solution = model.CreateClassificationSolution(Problem.ProblemData);
-      if (!Results.ContainsKey("ClassificationSolution")) {
-        Results.Add(new Result("ClassificationSolution", solution));
-      } else {
-        Results["ClassificationSolution"].Value = solution;
-      }
-    }
-
-    private static IEnumerable<double> GetRow(double[,] data, int row) {
-      for (int i = 0; i < data.GetLength(1); i++)
-        yield return data[row, i];
-    }
-
   }
 }
