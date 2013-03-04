@@ -42,9 +42,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ILookupParameter<RealVector> NcaMatrixParameter {
       get { return (ILookupParameter<RealVector>)Parameters["NcaMatrix"]; }
     }
-    public ILookupParameter<Scaling> ScalingParameter {
-      get { return (ILookupParameter<Scaling>)Parameters["Scaling"]; }
-    }
 
     [StorableConstructor]
     protected NcaInitializer(bool deserializing) : base(deserializing) { }
@@ -53,15 +50,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new LookupParameter<IClassificationProblemData>("ProblemData", "The classification problem data."));
       Parameters.Add(new LookupParameter<IntValue>("Dimensions", "The number of dimensions to which the features should be pruned."));
       Parameters.Add(new LookupParameter<RealVector>("NcaMatrix", "The coefficients of the matrix that need to be optimized. Note that the matrix is flattened."));
-      Parameters.Add(new LookupParameter<Scaling>("Scaling", "Each dataset is scaled and the information is stored in a scaling object."));
     }
 
     public override IOperation Apply() {
       var problemData = ProblemDataParameter.ActualValue;
-      var scaling = new Scaling(problemData.Dataset, problemData.AllowedInputVariables, problemData.TrainingIndices);
 
       var dimensions = DimensionsParameter.ActualValue.Value;
-      var matrix = Initialize(problemData, scaling, dimensions);
+      var matrix = Initialize(problemData, dimensions);
       var attributes = matrix.GetLength(0);
 
       var result = new double[attributes * dimensions];
@@ -69,11 +64,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int j = 0; j < dimensions; j++)
           result[i * dimensions + j] = matrix[i, j];
 
-      ScalingParameter.ActualValue = scaling;
       NcaMatrixParameter.ActualValue = new RealVector(result);
       return base.Apply();
     }
 
-    public abstract double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions);
+    public abstract double[,] Initialize(IClassificationProblemData data, int dimensions);
   }
 }

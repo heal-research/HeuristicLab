@@ -39,23 +39,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new LdaInitializer(this, cloner);
     }
 
-    public override double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions) {
+    public override double[,] Initialize(IClassificationProblemData data, int dimensions) {
       var instances = data.TrainingIndices.Count();
       var attributes = data.AllowedInputVariables.Count();
 
-      var ldaDs = new double[instances, attributes + 1];
-      int j = 0;
-      foreach (var a in data.AllowedInputVariables) {
-        int i = 0;
-        var sv = scaling.GetScaledValues(data.Dataset, a, data.TrainingIndices);
-        foreach (var v in sv) {
-          ldaDs[i++, j] = v;
-        }
-        j++;
-      }
-      j = 0;
-      foreach (var tv in data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices))
-        ldaDs[j++, attributes] = tv;
+      var ldaDs = AlglibUtil.PrepareInputMatrix(data.Dataset,
+                                                data.AllowedInputVariables.Concat(data.TargetVariable.ToEnumerable()),
+                                                data.TrainingIndices);
 
       var uniqueClasses = data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices).Distinct().Count();
 

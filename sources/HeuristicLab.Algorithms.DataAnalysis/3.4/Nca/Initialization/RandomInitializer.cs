@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new RandomInitializer(this, cloner);
     }
 
-    public override double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions) {
+    public override double[,] Initialize(IClassificationProblemData data, int dimensions) {
       var attributes = data.AllowedInputVariables.Count();
 
       var random = RandomParameter.ActualValue;

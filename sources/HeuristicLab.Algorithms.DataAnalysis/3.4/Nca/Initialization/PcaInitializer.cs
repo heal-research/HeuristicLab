@@ -39,11 +39,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new PcaInitializer(this, cloner);
     }
 
-    public override double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions) {
+    public override double[,] Initialize(IClassificationProblemData data, int dimensions) {
       var instances = data.TrainingIndices.Count();
       var attributes = data.AllowedInputVariables.Count();
 
-      var pcaDs = AlglibUtil.PrepareAndScaleInputMatrix(data.Dataset, data.AllowedInputVariables, data.TrainingIndices, scaling);
+      var pcaDs = AlglibUtil.PrepareInputMatrix(data.Dataset, data.AllowedInputVariables, data.TrainingIndices);
 
       int info;
       double[] varianceValues;

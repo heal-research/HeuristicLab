@@ -32,8 +32,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public class NcaModel : NamedItem, INcaModel {
 
     [Storable]
-    private Scaling scaling;
-    [Storable]
     private double[,] transformationMatrix;
     public double[,] TransformationMatrix {
       get { return (double[,])transformationMatrix.Clone(); }
@@ -51,17 +49,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected NcaModel(bool deserializing) : base(deserializing) { }
     protected NcaModel(NcaModel original, Cloner cloner)
       : base(original, cloner) {
-      this.scaling = cloner.Clone(original.scaling);
       this.transformationMatrix = (double[,])original.transformationMatrix.Clone();
       this.allowedInputVariables = (string[])original.allowedInputVariables.Clone();
       this.targetVariable = original.targetVariable;
       this.nnModel = cloner.Clone(original.nnModel);
       this.classValues = (double[])original.classValues.Clone();
     }
-    public NcaModel(int k, double[,] transformationMatrix, Dataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<string> allowedInputVariables, Scaling scaling, double[] classValues) {
+    public NcaModel(int k, double[,] transformationMatrix, Dataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues) {
       Name = ItemName;
       Description = ItemDescription;
-      this.scaling = scaling;
       this.transformationMatrix = (double[,])transformationMatrix.Clone();
       this.allowedInputVariables = allowedInputVariables.ToArray();
       this.targetVariable = targetVariable;
@@ -89,13 +85,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public double[,] Reduce(Dataset dataset, IEnumerable<int> rows) {
-      var scaledData = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, scaling);
+      var data = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
+
       var targets = dataset.GetDoubleValues(targetVariable, rows).ToArray();
-      var result = new double[scaledData.GetLength(0), transformationMatrix.GetLength(1) + 1];
-      for (int i = 0; i < scaledData.GetLength(0); i++)
-        for (int j = 0; j < scaledData.GetLength(1); j++) {
+      var result = new double[data.GetLength(0), transformationMatrix.GetLength(1) + 1];
+      for (int i = 0; i < data.GetLength(0); i++)
+        for (int j = 0; j < data.GetLength(1); j++) {
           for (int x = 0; x < transformationMatrix.GetLength(1); x++) {
-            result[i, x] += scaledData[i, j] * transformationMatrix[j, x];
+            result[i, x] += data[i, j] * transformationMatrix[j, x];
           }
           result[i, transformationMatrix.GetLength(1)] = targets[i];
         }

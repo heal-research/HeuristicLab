@@ -54,10 +54,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return (ILookupParameter<IClassificationProblemData>)Parameters["ProblemData"]; }
     }
 
-    public ILookupParameter<Scaling> ScalingParameter {
-      get { return (ILookupParameter<Scaling>)Parameters["Scaling"]; }
-    }
-
     public ILookupParameter<INcaModel> NcaModelParameter {
       get { return (ILookupParameter<INcaModel>)Parameters["NcaModel"]; }
     }
@@ -71,7 +67,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new LookupParameter<RealVector>("NcaMatrix", "The optimized matrix."));
       Parameters.Add(new LookupParameter<RealVector>("NcaMatrixGradients", "The gradients from the matrix that is being optimized."));
       Parameters.Add(new LookupParameter<IClassificationProblemData>("ProblemData", "The classification problem data."));
-      Parameters.Add(new LookupParameter<Scaling>("Scaling", "The scaling of the dataset."));
       Parameters.Add(new LookupParameter<INcaModel>("NcaModel", "The NCA model that should be created."));
     }
 
@@ -90,9 +85,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           matrix[i, j] = vector[i * dim + j];
         }
 
-      var scaling = ScalingParameter.ActualValue;
       var problemData = ProblemDataParameter.ActualValue;
-      NcaModelParameter.ActualValue = new NcaModel(k, matrix, problemData.Dataset, problemData.TrainingIndices, problemData.TargetVariable, problemData.AllowedInputVariables, scaling, problemData.ClassValues.ToArray());
+      NcaModelParameter.ActualValue = new NcaModel(k, matrix, problemData.Dataset, problemData.TrainingIndices, problemData.TargetVariable, problemData.AllowedInputVariables, problemData.ClassValues.ToArray());
       return base.Apply();
     }
   }

@@ -64,10 +64,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ILookupParameter<IClassificationProblemData> ProblemDataParameter {
       get { return (ILookupParameter<IClassificationProblemData>)Parameters["ProblemData"]; }
     }
-
-    public ILookupParameter<Scaling> ScalingParameter {
-      get { return (ILookupParameter<Scaling>)Parameters["Scaling"]; }
-    }
     #endregion
 
     [StorableConstructor]
@@ -82,7 +78,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new LookupParameter<RealVector>("NcaMatrixGradients", "The gradients from the matrix that is being optimized."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the current matrix."));
       Parameters.Add(new LookupParameter<IClassificationProblemData>("ProblemData", "The classification problem data."));
-      Parameters.Add(new LookupParameter<Scaling>("Scaling", "The scaling of the dataset."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -91,7 +86,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IOperation Apply() {
       var problemData = ProblemDataParameter.ActualValue;
-      var scaling = ScalingParameter.ActualValue;
       var dimensions = DimensionsParameter.ActualValue.Value;
       var neighborSamples = NeighborSamplesParameter.ActualValue.Value;
       var regularization = RegularizationParameter.ActualValue.Value;
@@ -103,8 +97,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         NcaMatrixGradientsParameter.ActualValue = gradients;
       }
 
-      var data = AlglibUtil.PrepareAndScaleInputMatrix(problemData.Dataset, problemData.AllowedInputVariables,
-                                                       problemData.TrainingIndices, scaling);
+      var data = AlglibUtil.PrepareInputMatrix(problemData.Dataset, problemData.AllowedInputVariables,
+                                               problemData.TrainingIndices);
       var classes = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).ToArray();
 
       var quality = Gradient(vector, gradients, data, classes, dimensions, neighborSamples, regularization);

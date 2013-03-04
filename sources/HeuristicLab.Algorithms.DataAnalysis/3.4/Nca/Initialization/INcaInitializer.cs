@@ -30,6 +30,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="data">The problem data that contains the AllowedInputVariables and TrainingIndices.</param>
     /// <param name="dimensions">The amount of columns in the matrix</param>
     /// <returns>The matrix that projects the input variables into a lower dimensional space.</returns>
-    double[,] Initialize(IClassificationProblemData data, Scaling scaling, int dimensions);
+    double[,] Initialize(IClassificationProblemData data, int dimensions);
   }
 }
