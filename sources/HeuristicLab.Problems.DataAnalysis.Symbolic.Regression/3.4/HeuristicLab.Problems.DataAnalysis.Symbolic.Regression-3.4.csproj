@@ -92,9 +92,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ALGLIB-3.6.0, Version=3.6.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\..\bin\ALGLIB-3.6.0.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
     </Reference>
     <Reference Include="AutoDiff-1.0, Version=1.0.0.14388, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
@@ -118,6 +118,7 @@
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="SingleObjective\ConstantOptimizationAnalyzer.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveAbsoluteRelativeErrorEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMaxAbsoluteErrorEvaluator.cs" />
