@@ -72,11 +72,14 @@ namespace HeuristicLab.Optimization.Views {
       this.noRunsLabel = new System.Windows.Forms.Label();
       this.sizeTrackBar = new System.Windows.Forms.TrackBar();
       this.getDataAsMatrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.transparencyTrackBar = new System.Windows.Forms.TrackBar();
+      this.transparencyLabel = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.radioButtonGroup.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.sizeTrackBar)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.transparencyTrackBar)).BeginInit();
       this.SuspendLayout();
       // 
       // yJitterLabel
@@ -187,8 +190,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
@@ -282,7 +285,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.colorXAxisButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.colorXAxisButton.Enabled = false;
-      this.colorXAxisButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.DisplayInColorVertical;
+      this.colorXAxisButton.Image = ((System.Drawing.Image)(resources.GetObject("colorXAxisButton.Image")));
       this.colorXAxisButton.Location = new System.Drawing.Point(719, 469);
       this.colorXAxisButton.Name = "colorXAxisButton";
       this.colorXAxisButton.Size = new System.Drawing.Size(21, 21);
@@ -294,7 +297,7 @@ namespace HeuristicLab.Optimization.Views {
       // colorYAxisButton
       // 
       this.colorYAxisButton.Enabled = false;
-      this.colorYAxisButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.DisplayInColor;
+      this.colorYAxisButton.Image = ((System.Drawing.Image)(resources.GetObject("colorYAxisButton.Image")));
       this.colorYAxisButton.Location = new System.Drawing.Point(251, 3);
       this.colorYAxisButton.Name = "colorYAxisButton";
       this.colorYAxisButton.Size = new System.Drawing.Size(21, 21);
@@ -322,7 +325,7 @@ namespace HeuristicLab.Optimization.Views {
       this.sizeTrackBar.Name = "sizeTrackBar";
       this.sizeTrackBar.Size = new System.Drawing.Size(64, 45);
       this.sizeTrackBar.TabIndex = 24;
-      this.sizeTrackBar.TickFrequency = 25;
+      this.sizeTrackBar.TickFrequency = 20;
       this.sizeTrackBar.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
       this.sizeTrackBar.ValueChanged += new System.EventHandler(this.sizeTrackBar_ValueChanged);
       // 
@@ -333,11 +336,34 @@ namespace HeuristicLab.Optimization.Views {
       this.getDataAsMatrixToolStripMenuItem.Text = "Get Data as Matrix";
       this.getDataAsMatrixToolStripMenuItem.Click += new System.EventHandler(this.getDataAsMatrixToolStripMenuItem_Click);
       // 
+      // transparencyTrackBar
+      // 
+      this.transparencyTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.transparencyTrackBar.LargeChange = 16;
+      this.transparencyTrackBar.Location = new System.Drawing.Point(295, 469);
+      this.transparencyTrackBar.Maximum = 254;
+      this.transparencyTrackBar.Name = "transparencyTrackBar";
+      this.transparencyTrackBar.Size = new System.Drawing.Size(64, 45);
+      this.transparencyTrackBar.TabIndex = 24;
+      this.transparencyTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+      this.transparencyTrackBar.ValueChanged += new System.EventHandler(this.transparencyTrackBar_ValueChanged);
+      // 
+      // transparencyLabel
+      // 
+      this.transparencyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.transparencyLabel.AutoSize = true;
+      this.transparencyLabel.Location = new System.Drawing.Point(214, 474);
+      this.transparencyLabel.Name = "transparencyLabel";
+      this.transparencyLabel.Size = new System.Drawing.Size(75, 13);
+      this.transparencyLabel.TabIndex = 12;
+      this.transparencyLabel.Text = "Transparency:";
+      // 
       // RunCollectionBubbleChartView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.Controls.Add(this.transparencyTrackBar);
       this.Controls.Add(this.sizeTrackBar);
       this.Controls.Add(this.colorYAxisButton);
       this.Controls.Add(this.colorXAxisButton);
@@ -348,6 +374,7 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.Add(this.sizeLabel);
       this.Controls.Add(this.sizeComboBox);
       this.Controls.Add(this.yJitterLabel);
+      this.Controls.Add(this.transparencyLabel);
       this.Controls.Add(this.xJitterlabel);
       this.Controls.Add(this.xTrackBar);
       this.Controls.Add(this.xAxisLabel);
@@ -363,6 +390,7 @@ namespace HeuristicLab.Optimization.Views {
       this.radioButtonGroup.ResumeLayout(false);
       this.radioButtonGroup.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.sizeTrackBar)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.transparencyTrackBar)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -393,5 +421,7 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.Button colorYAxisButton;
     private System.Windows.Forms.TrackBar sizeTrackBar;
     private System.Windows.Forms.ToolStripMenuItem getDataAsMatrixToolStripMenuItem;
+    private System.Windows.Forms.TrackBar transparencyTrackBar;
+    private System.Windows.Forms.Label transparencyLabel;
   }
 }

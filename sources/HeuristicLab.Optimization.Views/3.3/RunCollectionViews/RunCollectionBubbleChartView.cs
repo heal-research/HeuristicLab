@@ -312,6 +312,7 @@ namespace HeuristicLab.Optimization.Views {
 
         double sizeChange = Math.Abs(sizeTrackBar.Value) * relativeSize;
         point.MarkerSize = (int)Math.Round(sizeChange + smallestBubbleSize);
+        point.Color = Color.FromArgb(255 - transparencyTrackBar.Value, ((IRun)point.Tag).Color);
       }
     }
 
@@ -756,6 +757,10 @@ namespace HeuristicLab.Optimization.Views {
       matrix.SortableView = false;
       var view = MainFormManager.MainForm.ShowContent(matrix);
       view.ReadOnly = true;
+    }
+
+    private void transparencyTrackBar_ValueChanged(object sender, EventArgs e) {
+      UpdateMarkerSizes();
     }
     #endregion
 
