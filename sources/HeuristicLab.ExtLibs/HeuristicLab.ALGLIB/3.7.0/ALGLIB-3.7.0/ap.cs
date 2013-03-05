@@ -569,8 +569,9 @@ public partial class alglib
     ********************************************************************/
     public class math
     {
-        //public static System.Random RndObject = new System.Random(System.DateTime.Now.Millisecond);
-        public static System.Random rndobject = new System.Random(System.DateTime.Now.Millisecond + 1000*System.DateTime.Now.Second + 60*1000*System.DateTime.Now.Minute);
+      //public static System.Random RndObject = new System.Random(System.DateTime.Now.Millisecond);
+      [ThreadStatic] //mkommend: added thread static attribute to RNG to have a separate instance per thread and allow modification of the seed
+      public static System.Random rndobject;
 
         public const double machineepsilon = 5E-16;
         public const double maxrealnumber = 1E300;
@@ -578,18 +579,21 @@ public partial class alglib
         
         public static bool isfinite(double d)
         {
+            if (rndobject == null) rndobject = new System.Random(System.DateTime.Now.Millisecond + 1000 * System.DateTime.Now.Second + 60 * 1000 * System.DateTime.Now.Minute);
             return !System.Double.IsNaN(d) && !System.Double.IsInfinity(d);
         }
         
         public static double randomreal()
         {
             double r = 0;
+            if (rndobject == null) rndobject = new System.Random(System.DateTime.Now.Millisecond + 1000 * System.DateTime.Now.Second + 60 * 1000 * System.DateTime.Now.Minute);
             lock(rndobject){ r = rndobject.NextDouble(); }
             return r;
         }
         public static int randominteger(int N)
         {
             int r = 0;
+            if (rndobject == null) rndobject = new System.Random(System.DateTime.Now.Millisecond + 1000 * System.DateTime.Now.Second + 60 * 1000 * System.DateTime.Now.Minute);
             lock(rndobject){ r = rndobject.Next(N); }
             return r;
         }
