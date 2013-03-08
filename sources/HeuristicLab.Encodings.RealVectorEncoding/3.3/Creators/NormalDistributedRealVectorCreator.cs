@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -26,7 +27,6 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
-using System;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
@@ -109,7 +109,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
           bool inRange;
           do {
             result[i] = mean[i] + sigma[i % sigma.Length] * nd.NextDouble();
-            inRange = result[i] >= bounds[i % sigma.Length, 0] && result[i] < bounds[i % sigma.Length, 1];
+            inRange = result[i] >= bounds[i % bounds.Rows, 0] && result[i] < bounds[i % bounds.Rows, 1];
             count++;
           } while (count < maximumTries && !inRange);
           if (count == maximumTries && !inRange)
