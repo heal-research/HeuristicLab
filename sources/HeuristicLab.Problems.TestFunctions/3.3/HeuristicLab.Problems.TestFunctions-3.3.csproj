@@ -107,7 +107,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Evaluators\RandomEvaluator.cs" />
     <Compile Include="Improvers\SingleObjectiveTestFunctionImprovementOperator.cs" />
+    <Compile Include="MoveEvaluators\RandomAdditiveMoveEvaluator.cs" />
     <Compile Include="PathRelinkers\SingleObjectiveTestFunctionPathRelinker.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
