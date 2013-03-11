@@ -215,6 +215,10 @@ namespace HeuristicLab.Services.Hive.DataAccess {
         var task = db.Tasks.SingleOrDefault(x => x.TaskId == taskId);
         task.State = taskState;
         db.SubmitChanges();
+      }
+
+      using (var db = CreateContext()) {
+        var task = db.Tasks.SingleOrDefault(x => x.TaskId == taskId);
         return DT.Convert.ToDto(task);
       }
     }
