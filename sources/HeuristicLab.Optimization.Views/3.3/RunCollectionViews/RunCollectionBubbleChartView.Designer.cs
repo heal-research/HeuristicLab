@@ -192,8 +192,8 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
@@ -371,7 +371,7 @@ namespace HeuristicLab.Optimization.Views {
       this.colorRunsButton.Size = new System.Drawing.Size(43, 21);
       this.colorRunsButton.TabIndex = 25;
       this.colorRunsButton.Text = "Color";
-      this.colorRunsButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.colorRunsButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       this.tooltip.SetToolTip(this.colorRunsButton, "Color all selected runs");
       this.colorRunsButton.UseVisualStyleBackColor = true;
       this.colorRunsButton.Click += new System.EventHandler(this.colorRunsButton_Click);
@@ -386,7 +386,7 @@ namespace HeuristicLab.Optimization.Views {
       this.hideRunsButton.Size = new System.Drawing.Size(43, 21);
       this.hideRunsButton.TabIndex = 26;
       this.hideRunsButton.Text = "Hide";
-      this.hideRunsButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.hideRunsButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
       this.tooltip.SetToolTip(this.hideRunsButton, "Hides all selected runs");
       this.hideRunsButton.UseVisualStyleBackColor = true;
       this.hideRunsButton.Click += new System.EventHandler(this.hideRunsButton_Click);
