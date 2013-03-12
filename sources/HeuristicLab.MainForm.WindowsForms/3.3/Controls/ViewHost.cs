@@ -180,10 +180,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void RegisterActiveViewEvents() {
       activeView.CaptionChanged += new EventHandler(activeView_CaptionChanged);
       activeView.LockedChanged += new EventHandler(activeView_LockedChanged);
+      activeView.Changed += new EventHandler(activeView_Changed);
     }
     private void DeregisterActiveViewEvents() {
       activeView.CaptionChanged -= new EventHandler(activeView_CaptionChanged);
       activeView.LockedChanged -= new EventHandler(activeView_LockedChanged);
+      activeView.Changed -= new EventHandler(activeView_Changed);
     }
     private void activeView_CaptionChanged(object sender, EventArgs e) {
       Caption = activeView.Caption;
@@ -191,6 +193,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void activeView_LockedChanged(object sender, EventArgs e) {
       Locked = activeView.Locked;
       configurationLabel.Enabled = !activeView.Locked;
+    }
+    private void activeView_Changed(object sender, EventArgs e) {
+      OnChanged();
     }
 
     protected override void OnSizeChanged(EventArgs e) {

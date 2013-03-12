@@ -555,8 +555,10 @@ namespace HeuristicLab.Optimization.Views {
           selectedRuns.Add(run);
         }
       }
+
       this.chart.ChartAreas[0].CursorX.SelectionStart = this.chart.ChartAreas[0].CursorX.SelectionEnd;
       this.chart.ChartAreas[0].CursorY.SelectionStart = this.chart.ChartAreas[0].CursorY.SelectionEnd;
+      this.OnChanged();
     }
 
     private void chart_MouseMove(object sender, MouseEventArgs e) {

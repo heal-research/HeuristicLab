@@ -25,7 +25,9 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Views;
 using HeuristicLab.Optimizer;
 
 namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
@@ -48,55 +50,71 @@ namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
     }
     protected override void OnActiveViewChanged(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IOptimizer) && !activeView.Locked) {
-        var optimizer = activeView.Content as IOptimizer;
-        ToolStripItem.Enabled = GetDataAnalysisResults(optimizer).Any();
-      } else {
-        ToolStripItem.Enabled = false;
-      }
+      ToolStripItem.Enabled = GetDataAnalysisResults(activeView).Any();
+    }
+    protected override void OnViewChanged(object sender, EventArgs e) {
+      base.OnViewChanged(sender, e);
+      IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
+      ToolStripItem.Enabled = GetDataAnalysisResults(activeView).Any();
     }
 
     public override void Execute() {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IOptimizer) && !activeView.Locked) {
-        var optimizer = activeView.Content as IOptimizer;
-        var solutionGroups = from pair in GetDataAnalysisResults(optimizer)
-                             group pair.Value by pair.Key into g
-                             select g;
-        foreach (var group in solutionGroups) {
-          // check if all solutions in the group are either only regression or only classification solutions
-          if (group.All(s => s is IRegressionSolution)) {
-            // show all regression ensembles
-            // clone problemdata (N.B. this assumes all solutions are based on the same problem data!)
-            var problemData = (RegressionProblemData)group
-              .OfType<IRegressionSolution>()
-              .First()
-              .ProblemData.Clone();
-            var ensemble = new RegressionEnsembleSolution(problemData);
-            ensemble.Name = group.Key + " ensemble";
-            var nestedSolutions = group.OfType<RegressionEnsembleSolution>().SelectMany(e => e.RegressionSolutions);
-            var solutions = group.Where(s => !(s is RegressionEnsembleSolution)).OfType<IRegressionSolution>();
-            ensemble.AddRegressionSolutions(nestedSolutions.Concat(solutions));
-            MainFormManager.MainForm.ShowContent(ensemble);
-          } else if (group.All(s => s is IClassificationSolution)) {
-            // show all classification ensembles
-            var problemData = (ClassificationProblemData)group
-              .OfType<IClassificationSolution>()
-              .First()
-              .ProblemData.Clone();
-            var ensemble = new ClassificationEnsembleSolution(Enumerable.Empty<IClassificationModel>(), problemData);
-            ensemble.Name = group.Key + " ensemble";
-            var nestedSolutions = group.OfType<ClassificationEnsembleSolution>().SelectMany(e => e.ClassificationSolutions);
-            var solutions = group.Where(s => !(s is ClassificationEnsembleSolution)).OfType<IClassificationSolution>();
-            ensemble.AddClassificationSolutions(nestedSolutions.Concat(solutions));
-            MainFormManager.MainForm.ShowContent(ensemble);
-          }
+      var solutionGroups = from pair in GetDataAnalysisResults(activeView)
+                           group pair.Value by pair.Key into g
+                           select g;
+      foreach (var group in solutionGroups) {
+        // check if all solutions in the group are either only regression or only classification solutions
+        if (group.All(s => s is IRegressionSolution)) {
+          // show all regression ensembles
+          // clone problemdata (N.B. this assumes all solutions are based on the same problem data!)
+          var problemData = (RegressionProblemData)group
+            .OfType<IRegressionSolution>()
+            .First()
+            .ProblemData.Clone();
+          var ensemble = new RegressionEnsembleSolution(problemData);
+          ensemble.Name = group.Key + " ensemble";
+          var nestedSolutions = group.OfType<RegressionEnsembleSolution>().SelectMany(e => e.RegressionSolutions);
+          var solutions = group.Where(s => !(s is RegressionEnsembleSolution)).OfType<IRegressionSolution>();
+          ensemble.AddRegressionSolutions(nestedSolutions.Concat(solutions));
+          MainFormManager.MainForm.ShowContent(ensemble);
+        } else if (group.All(s => s is IClassificationSolution)) {
+          // show all classification ensembles
+          var problemData = (ClassificationProblemData)group
+            .OfType<IClassificationSolution>()
+            .First()
+            .ProblemData.Clone();
+          var ensemble = new ClassificationEnsembleSolution(Enumerable.Empty<IClassificationModel>(), problemData);
+          ensemble.Name = group.Key + " ensemble";
+          var nestedSolutions = group.OfType<ClassificationEnsembleSolution>().SelectMany(e => e.ClassificationSolutions);
+          var solutions = group.Where(s => !(s is ClassificationEnsembleSolution)).OfType<IClassificationSolution>();
+          ensemble.AddClassificationSolutions(nestedSolutions.Concat(solutions));
+          MainFormManager.MainForm.ShowContent(ensemble);
         }
       }
     }
 
-    private IEnumerable<KeyValuePair<string, IItem>> GetDataAnalysisResults(IOptimizer optimizer) {
-      var allResults = from r in optimizer.Runs
+    private IEnumerable<KeyValuePair<string, IItem>> GetDataAnalysisResults(IContentView view) {
+      var empty = Enumerable.Empty<KeyValuePair<string, IItem>>();
+      if (view == null) return empty;
+      if (view.Content == null) return empty;
+      if (view.Locked) return empty;
+
+      var optimizer = view.Content as IOptimizer;
+      if (optimizer != null) return GetDataAnalysisResults(optimizer.Runs);
+
+      RunCollectionBubbleChartView bubbleChart;
+      var viewHost = view as ViewHost;
+      if (viewHost != null)
+        bubbleChart = viewHost.ActiveView as RunCollectionBubbleChartView;
+      else bubbleChart = view as RunCollectionBubbleChartView;
+      if (bubbleChart != null && bubbleChart.SelectedRuns.Any()) return GetDataAnalysisResults(bubbleChart.SelectedRuns);
+
+      return empty;
+    }
+
+    private IEnumerable<KeyValuePair<string, IItem>> GetDataAnalysisResults(IEnumerable<IRun> runs) {
+      var allResults = from r in runs
                        select r.Results;
       return from r in allResults
              from result in r
