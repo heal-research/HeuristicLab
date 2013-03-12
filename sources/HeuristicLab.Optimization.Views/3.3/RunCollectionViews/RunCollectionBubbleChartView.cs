@@ -42,17 +42,18 @@ namespace HeuristicLab.Optimization.Views {
     private string yAxisValue;
     private string sizeAxisValue;
 
-    private Dictionary<IRun, List<DataPoint>> runToDataPointMapping;
-    private Dictionary<IRun, int> runToIndexMapping;
-    private Dictionary<int, Dictionary<object, double>> categoricalMapping;
-    private Dictionary<IRun, double> xJitter;
-    private Dictionary<IRun, double> yJitter;
+    private readonly Dictionary<IRun, List<DataPoint>> runToDataPointMapping = new Dictionary<IRun, List<DataPoint>>();
+    private readonly Dictionary<IRun, int> runToIndexMapping = new Dictionary<IRun, int>();
+    private readonly Dictionary<int, Dictionary<object, double>> categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
+    private readonly Dictionary<IRun, double> xJitter = new Dictionary<IRun, double>();
+    private readonly Dictionary<IRun, double> yJitter = new Dictionary<IRun, double>();
+
+    private readonly HashSet<IRun> selectedRuns = new HashSet<IRun>();
+    private readonly Random random = new Random();
     private double xJitterFactor = 0.0;
     private double yJitterFactor = 0.0;
-    private Random random;
     private bool isSelecting = false;
     private bool suppressUpdates = false;
-
 
 
     public RunCollectionBubbleChartView() {
@@ -63,14 +64,8 @@ namespace HeuristicLab.Optimization.Views {
       chart.ContextMenuStrip.Items.Add(getDataAsMatrixToolStripMenuItem);
       chart.ContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(ContextMenuStrip_Opening);
 
-      runToDataPointMapping = new Dictionary<IRun, List<DataPoint>>();
-      categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
-      xJitter = new Dictionary<IRun, double>();
-      yJitter = new Dictionary<IRun, double>();
-      random = new Random();
-
       colorDialog.Color = Color.Black;
-      colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
+      colorDialogButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
       isSelecting = false;
 
       chart.CustomizeAllChartAreas();
@@ -87,6 +82,9 @@ namespace HeuristicLab.Optimization.Views {
     public IStringConvertibleMatrix Matrix {
       get { return this.Content; }
     }
+    public IEnumerable<IRun> SelectedRuns {
+      get { return selectedRuns; }
+    }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
@@ -95,8 +93,8 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
       Content.OptimizerNameChanged += new EventHandler(Content_AlgorithmNameChanged);
+      Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
@@ -106,8 +104,8 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
       Content.OptimizerNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
+      Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
       DeregisterRunEvents(Content);
     }
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
@@ -130,37 +128,58 @@ namespace HeuristicLab.Optimization.Views {
       RegisterRunEvents(e.Items);
     }
     private void run_Changed(object sender, EventArgs e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
         this.Invoke(new EventHandler(run_Changed), sender, e);
       else {
         IRun run = (IRun)sender;
         UpdateRun(run);
+        UpdateCursorInterval();
+        chart.ChartAreas[0].RecalculateAxesScale();
+        UpdateAxisLabels();
+      }
+    }
+
+    private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        this.Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
+      else {
+        suppressUpdates = Content.UpdateOfRunsInProgress;
+        if (suppressUpdates) return;
+
+        foreach (var run in Content) UpdateRun(run);
+        UpdateMarkerSizes();
+        UpdateCursorInterval();
+        chart.ChartAreas[0].RecalculateAxesScale();
+        UpdateAxisLabels();
       }
     }
 
     private void UpdateRun(IRun run) {
-      if (!suppressUpdates) {
-        if (runToDataPointMapping.ContainsKey(run)) {
-          foreach (DataPoint point in runToDataPointMapping[run]) {
-            point.Color = run.Color;
-            if (!run.Visible) {
-              this.chart.Series[0].Points.Remove(point);
-              UpdateCursorInterval();
-              chart.ChartAreas[0].RecalculateAxesScale();
-            }
+      if (runToDataPointMapping.ContainsKey(run)) {
+        foreach (DataPoint point in runToDataPointMapping[run]) {
+          if (!run.Visible) {
+            this.chart.Series[0].Points.Remove(point);
+            continue;
           }
-          if (!run.Visible) runToDataPointMapping.Remove(run);
-        } else {
-          AddDataPoint(run);
-          UpdateCursorInterval();
-          chart.ChartAreas[0].RecalculateAxesScale();
-        }
+          if (selectedRuns.Contains(run)) {
+            point.Color = Color.Red;
+            point.MarkerStyle = MarkerStyle.Cross;
+          } else {
+            point.Color = Color.FromArgb(255 - transparencyTrackBar.Value, ((IRun)point.Tag).Color);
+            point.MarkerStyle = MarkerStyle.Circle;
+          }
 
-        if (this.chart.Series[0].Points.Count == 0)
-          noRunsLabel.Visible = true;
-        else
-          noRunsLabel.Visible = false;
+        }
+        if (!run.Visible) runToDataPointMapping.Remove(run);
+      } else {
+        AddDataPoint(run);
       }
+
+      if (this.chart.Series[0].Points.Count == 0)
+        noRunsLabel.Visible = true;
+      else
+        noRunsLabel.Visible = false;
     }
 
     protected override void OnContentChanged() {
@@ -174,7 +193,7 @@ namespace HeuristicLab.Optimization.Views {
 
     private void RebuildInverseIndex() {
       if (Content != null) {
-        runToIndexMapping = new Dictionary<IRun, int>(Content.Count);
+        runToIndexMapping.Clear();
         int i = 0;
         foreach (var run in Content) {
           runToIndexMapping.Add(run, i);
@@ -232,16 +251,6 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
-
-    private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
-      else {
-        suppressUpdates = Content.UpdateOfRunsInProgress;
-        if (!suppressUpdates) UpdateDataPoints();
-      }
-    }
-
     private void Content_AlgorithmNameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_AlgorithmNameChanged), sender, e);
@@ -263,6 +272,7 @@ namespace HeuristicLab.Optimization.Views {
       Series series = this.chart.Series[0];
       series.Points.Clear();
       runToDataPointMapping.Clear();
+      selectedRuns.Clear();
 
       chart.ChartAreas[0].AxisX.IsMarginVisible = xAxisValue != AxisDimension.Index.ToString();
       chart.ChartAreas[0].AxisY.IsMarginVisible = yAxisValue != AxisDimension.Index.ToString();
@@ -312,7 +322,6 @@ namespace HeuristicLab.Optimization.Views {
 
         double sizeChange = Math.Abs(sizeTrackBar.Value) * relativeSize;
         point.MarkerSize = (int)Math.Round(sizeChange + smallestBubbleSize);
-        point.Color = Color.FromArgb(255 - transparencyTrackBar.Value, ((IRun)point.Tag).Color);
       }
     }
 
@@ -372,16 +381,15 @@ namespace HeuristicLab.Optimization.Views {
 
       if (xValue.HasValue && yValue.HasValue && sizeValue.HasValue) {
         xValue = xValue.Value;
-
         yValue = yValue.Value;
 
         if (run.Visible) {
           DataPoint point = new DataPoint(xValue.Value, new double[] { yValue.Value, sizeValue.Value });
           point.Tag = run;
-          point.Color = run.Color;
           series.Points.Add(point);
           if (!runToDataPointMapping.ContainsKey(run)) runToDataPointMapping.Add(run, new List<DataPoint>());
           runToDataPointMapping[run].Add(point);
+          UpdateRun(run);
         }
       }
     }
@@ -421,7 +429,7 @@ namespace HeuristicLab.Optimization.Views {
     private double GetCategoricalValue(int dimension, string value) {
       if (!this.categoricalMapping.ContainsKey(dimension)) {
         this.categoricalMapping[dimension] = new Dictionary<object, double>();
-        var orderedCategories = Content.Select(r => Content.GetValue(r, dimension).ToString())
+        var orderedCategories = Content.Where(r => r.Visible).Select(r => Content.GetValue(r, dimension).ToString())
                                     .Distinct()
                                     .OrderBy(x => x, new NaturalStringComparer());
         int count = 1;
@@ -460,20 +468,24 @@ namespace HeuristicLab.Optimization.Views {
       return value;
     }
     private void UpdateCursorInterval() {
-      Series series = chart.Series[0];
-      double[] xValues = (from point in series.Points
-                          where !point.IsEmpty
-                          select point.XValue)
-                    .DefaultIfEmpty(1.0)
-                    .ToArray();
-      double[] yValues = (from point in series.Points
-                          where !point.IsEmpty
-                          select point.YValues[0])
-                    .DefaultIfEmpty(1.0)
-                    .ToArray();
+      double xMin = double.MaxValue;
+      double xMax = double.MinValue;
+      double yMin = double.MaxValue;
+      double yMax = double.MinValue;
 
-      double xRange = xValues.Max() - xValues.Min();
-      double yRange = yValues.Max() - yValues.Min();
+      foreach (var point in chart.Series[0].Points) {
+        if (point.IsEmpty) continue;
+        if (point.XValue < xMin) xMin = point.XValue;
+        if (point.XValue > xMax) xMax = point.XValue;
+        if (point.YValues[0] < yMin) yMin = point.YValues[0];
+        if (point.YValues[0] > yMax) yMax = point.YValues[0];
+      }
+
+      double xRange = 0.0;
+      double yRange = 0.0;
+      if (xMin != double.MaxValue && xMax != double.MinValue) xRange = xMax - xMin;
+      if (yMin != double.MaxValue && yMax != double.MinValue) yRange = yMax - yMin;
+
       if (xRange.IsAlmost(0.0)) xRange = 1.0;
       if (yRange.IsAlmost(0.0)) yRange = 1.0;
       double xDigits = (int)Math.Log10(xRange) - 3;
@@ -511,42 +523,44 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void chart_MouseUp(object sender, MouseEventArgs e) {
-      if (isSelecting) {
-        System.Windows.Forms.DataVisualization.Charting.Cursor xCursor = chart.ChartAreas[0].CursorX;
-        System.Windows.Forms.DataVisualization.Charting.Cursor yCursor = chart.ChartAreas[0].CursorY;
+      if (!isSelecting) return;
 
-        double minX = Math.Min(xCursor.SelectionStart, xCursor.SelectionEnd);
-        double maxX = Math.Max(xCursor.SelectionStart, xCursor.SelectionEnd);
-        double minY = Math.Min(yCursor.SelectionStart, yCursor.SelectionEnd);
-        double maxY = Math.Max(yCursor.SelectionStart, yCursor.SelectionEnd);
+      System.Windows.Forms.DataVisualization.Charting.Cursor xCursor = chart.ChartAreas[0].CursorX;
+      System.Windows.Forms.DataVisualization.Charting.Cursor yCursor = chart.ChartAreas[0].CursorY;
 
-        //check for click to select model
-        if (minX == maxX && minY == maxY) {
-          HitTestResult hitTest = chart.HitTest(e.X, e.Y);
-          if (hitTest.ChartElementType == ChartElementType.DataPoint) {
-            int pointIndex = hitTest.PointIndex;
-            IRun run = (IRun)this.chart.Series[0].Points[pointIndex].Tag;
-            run.Color = colorDialog.Color;
-          }
-        } else {
-          List<DataPoint> selectedPoints = new List<DataPoint>();
-          foreach (DataPoint p in this.chart.Series[0].Points) {
-            if (p.XValue >= minX && p.XValue < maxX &&
-              p.YValues[0] >= minY && p.YValues[0] < maxY) {
-              selectedPoints.Add(p);
-            }
-          }
-          foreach (DataPoint p in selectedPoints) {
-            IRun run = (IRun)p.Tag;
-            run.Color = colorDialog.Color;
-          }
+      double minX = Math.Min(xCursor.SelectionStart, xCursor.SelectionEnd);
+      double maxX = Math.Max(xCursor.SelectionStart, xCursor.SelectionEnd);
+      double minY = Math.Min(yCursor.SelectionStart, yCursor.SelectionEnd);
+      double maxY = Math.Max(yCursor.SelectionStart, yCursor.SelectionEnd);
+
+      //check for click to select a single model
+      if (minX == maxX && minY == maxY) {
+        HitTestResult hitTest = chart.HitTest(e.X, e.Y);
+        if (hitTest.ChartElementType == ChartElementType.DataPoint) {
+          int pointIndex = hitTest.PointIndex;
+          var point = chart.Series[0].Points[pointIndex];
+          IRun run = (IRun)point.Tag;
+          point.Color = Color.Red;
+          point.MarkerStyle = MarkerStyle.Cross;
+          selectedRuns.Add(run);
+
+        } else ClearSelectedRuns();
+      } else {
+        foreach (DataPoint point in this.chart.Series[0].Points) {
+          if (point.XValue < minX || point.XValue >= maxX) continue;
+          if (point.YValues[0] < minY || point.YValues[0] >= maxY) continue;
+          point.MarkerStyle = MarkerStyle.Cross;
+          point.Color = Color.Red;
+          IRun run = (IRun)point.Tag;
+          selectedRuns.Add(run);
         }
-        this.chart.ChartAreas[0].CursorX.SelectionStart = this.chart.ChartAreas[0].CursorX.SelectionEnd;
-        this.chart.ChartAreas[0].CursorY.SelectionStart = this.chart.ChartAreas[0].CursorY.SelectionEnd;
       }
+      this.chart.ChartAreas[0].CursorX.SelectionStart = this.chart.ChartAreas[0].CursorX.SelectionEnd;
+      this.chart.ChartAreas[0].CursorY.SelectionStart = this.chart.ChartAreas[0].CursorY.SelectionEnd;
     }
 
     private void chart_MouseMove(object sender, MouseEventArgs e) {
+      if (Control.MouseButtons != MouseButtons.None) return;
       HitTestResult h = this.chart.HitTest(e.X, e.Y);
       string newTooltipText = string.Empty;
       string oldTooltipText;
@@ -670,23 +684,12 @@ namespace HeuristicLab.Optimization.Views {
 
     private void zoomButton_CheckedChanged(object sender, EventArgs e) {
       this.isSelecting = selectButton.Checked;
-      this.colorButton.Enabled = this.isSelecting;
+      this.colorDialogButton.Enabled = this.isSelecting;
+      this.colorRunsButton.Enabled = this.isSelecting;
+      this.hideRunsButton.Enabled = this.isSelecting;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
-    }
-    private void colorButton_Click(object sender, EventArgs e) {
-      if (colorDialog.ShowDialog(this) == DialogResult.OK) {
-        this.colorButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
-      }
-    }
-    private Image GenerateImage(int width, int height, Color fillColor) {
-      Image colorImage = new Bitmap(width, height);
-      using (Graphics gfx = Graphics.FromImage(colorImage)) {
-        using (SolidBrush brush = new SolidBrush(fillColor)) {
-          gfx.FillRectangle(brush, 0, 0, width, height);
-        }
-      }
-      return colorImage;
+      ClearSelectedRuns();
     }
 
     private IRun runToHide = null;
@@ -705,13 +708,31 @@ namespace HeuristicLab.Optimization.Views {
 
     }
     private void hideRunToolStripMenuItem_Click(object sender, EventArgs e) {
-      var constraint = Content.Constraints.OfType<RunCollectionContentConstraint>().Where(c => c.Active).FirstOrDefault();
+      var constraint = Content.Constraints.OfType<RunCollectionContentConstraint>().FirstOrDefault(c => c.Active);
       if (constraint == null) {
         constraint = new RunCollectionContentConstraint();
         Content.Constraints.Add(constraint);
         constraint.Active = true;
       }
       constraint.ConstraintData.Add(runToHide);
+    }
+    private void hideRunsButton_Click(object sender, EventArgs e) {
+      if (!selectedRuns.Any()) return;
+      var constraint = new RunCollectionContentConstraint();
+      constraint.ConstraintData = new ItemSet<IRun>(selectedRuns);
+      Content.Constraints.Add(constraint);
+      ClearSelectedRuns();
+      constraint.Active = true;
+    }
+
+    private void ClearSelectedRuns() {
+      foreach (var run in selectedRuns) {
+        foreach (var point in runToDataPointMapping[run]) {
+          point.MarkerStyle = MarkerStyle.Circle;
+          point.Color = Color.FromArgb(255 - transparencyTrackBar.Value, run.Color);
+        }
+      }
+      selectedRuns.Clear();
     }
 
     private void openBoxPlotViewToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -760,19 +781,43 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void transparencyTrackBar_ValueChanged(object sender, EventArgs e) {
-      UpdateMarkerSizes();
+      foreach (var run in Content)
+        UpdateRun(run);
     }
     #endregion
 
-    #region Automatic coloring
+    #region coloring
+    private void colorDialogButton_Click(object sender, EventArgs e) {
+      if (colorDialog.ShowDialog(this) == DialogResult.OK) {
+        this.colorDialogButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
+      }
+    }
+    private Image GenerateImage(int width, int height, Color fillColor) {
+      Image colorImage = new Bitmap(width, height);
+      using (Graphics gfx = Graphics.FromImage(colorImage)) {
+        using (SolidBrush brush = new SolidBrush(fillColor)) {
+          gfx.FillRectangle(brush, 0, 0, width, height);
+        }
+      }
+      return colorImage;
+    }
+
+    private void colorRunsButton_Click(object sender, EventArgs e) {
+      if (!selectedRuns.Any()) return;
+      Content.UpdateOfRunsInProgress = true;
+      foreach (var run in selectedRuns)
+        run.Color = colorDialog.Color;
+
+      ClearSelectedRuns();
+      Content.UpdateOfRunsInProgress = false;
+    }
+
     private void colorXAxisButton_Click(object sender, EventArgs e) {
       ColorRuns(xAxisValue);
     }
-
     private void colorYAxisButton_Click(object sender, EventArgs e) {
       ColorRuns(yAxisValue);
     }
-
     private void ColorRuns(string axisValue) {
       var runs = Content.Where(r => r.Visible).Select(r => new { Run = r, Value = GetValue(r, axisValue) }).Where(r => r.Value.HasValue).ToList();
       double minValue = runs.Min(r => r.Value.Value);

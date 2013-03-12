@@ -327,7 +327,7 @@ namespace HeuristicLab.Optimization.Views {
     private double GetCategoricalValue(int dimension, string value) {
       if (!this.categoricalMapping.ContainsKey(dimension)) {
         this.categoricalMapping[dimension] = new Dictionary<object, double>();
-        var orderedCategories = Content.Select(r => Content.GetValue(r, dimension).ToString())
+        var orderedCategories = Content.Where(r=> r.Visible).Select(r => Content.GetValue(r, dimension).ToString())
                                 .Distinct()
                                 .OrderBy(x => x, new NaturalStringComparer());
         int count = 1;
