@@ -30,10 +30,12 @@ namespace HeuristicLab.ParallelEngine.Views {
   /// </summary>
   [Plugin("HeuristicLab.ParallelEngine.Views", "3.3.7.$WCREV$")]
   [PluginFile("HeuristicLab.ParallelEngine.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm", "3.3")]
+  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
+  [PluginDependency("HeuristicLab.ParallelEngine", "3.3")]
   public class HeuristicLabParallelEnginePlugin : PluginBase {
   }
 }
