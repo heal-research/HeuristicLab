@@ -56,7 +56,10 @@ namespace HeuristicLab.ParallelEngine {
       : base(original, cloner) {
       this.DegreeOfParallelism = original.DegreeOfParallelism;
     }
-    public ParallelEngine() : base() { }
+    public ParallelEngine()
+      : base() {
+      this.degreeOfParallelism = -1;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ParallelEngine(this, cloner);
