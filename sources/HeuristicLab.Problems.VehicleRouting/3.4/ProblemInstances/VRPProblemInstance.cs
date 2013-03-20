@@ -36,26 +36,30 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
   public abstract class VRPProblemInstance : ParameterizedNamedItem, IVRPProblemInstance, IStatefulItem {
     IVRPEvaluator moveEvaluator;
 
+    private object locker = new object();
+
     public IVRPEvaluator MoveEvaluator {
       get {
-        if (evaluator == null)
-          return null;
-        else {
-          if (moveEvaluator == null) {
-            moveEvaluator = evaluator.Clone() as IVRPEvaluator;
+        lock (locker) {
+          if (evaluator == null)
+            return null;
+          else {
+            if (moveEvaluator == null) {
+              moveEvaluator = evaluator.Clone() as IVRPEvaluator;
 
-            foreach (IParameter parameter in moveEvaluator.Parameters) {
-              if (parameter is ILookupParameter
-                && parameter != moveEvaluator.ProblemInstanceParameter
-                && parameter != moveEvaluator.VRPToursParameter) {
-                (parameter as ILookupParameter).ActualName =
-                  VRPMoveEvaluator.MovePrefix +
-                  (parameter as ILookupParameter).ActualName;
+              foreach (IParameter parameter in moveEvaluator.Parameters) {
+                if (parameter is ILookupParameter
+                  && parameter != moveEvaluator.ProblemInstanceParameter
+                  && parameter != moveEvaluator.VRPToursParameter) {
+                  (parameter as ILookupParameter).ActualName =
+                    VRPMoveEvaluator.MovePrefix +
+                    (parameter as ILookupParameter).ActualName;
+                }
               }
             }
-          }
 
-          return moveEvaluator;
+            return moveEvaluator;
+          }
         }
       }
     }
@@ -175,9 +179,11 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       }
 
       set {
-        moveEvaluator = null;
-        evaluator = value;
-        EvalBestKnownSolution();
+        lock (locker) {
+          moveEvaluator = null;
+          evaluator = value;
+          EvalBestKnownSolution();
+        }
       }
     }
 
