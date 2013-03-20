@@ -36,18 +36,43 @@ namespace HeuristicLab.ParallelEngine {
   [Item("Parallel Engine", "Engine for parallel execution of algorithms using multiple threads (suitable for shared memory systems with multiple cores).")]
   public class ParallelEngine : Engine {
     private CancellationToken cancellationToken;
+    private ParallelOptions parallelOptions;
+
+    [Storable(DefaultValue = -1)]
+    private int degreeOfParallelism;
+    public int DegreeOfParallelism {
+      get { return degreeOfParallelism; }
+      set {
+        if (degreeOfParallelism != value) {
+          degreeOfParallelism = value;
+          OnDegreeOfParallelismChanged();
+        }
+      }
+    }
 
     [StorableConstructor]
     protected ParallelEngine(bool deserializing) : base(deserializing) { }
-    protected ParallelEngine(ParallelEngine original, Cloner cloner) : base(original, cloner) { }
+    protected ParallelEngine(ParallelEngine original, Cloner cloner)
+      : base(original, cloner) {
+      this.DegreeOfParallelism = original.DegreeOfParallelism;
+    }
     public ParallelEngine() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ParallelEngine(this, cloner);
     }
 
+    public event EventHandler DegreeOfParallelismChanged;
+    protected void OnDegreeOfParallelismChanged() {
+      var handler = DegreeOfParallelismChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+
     protected override void Run(CancellationToken cancellationToken) {
       this.cancellationToken = cancellationToken;
+      parallelOptions = new ParallelOptions();
+      parallelOptions.MaxDegreeOfParallelism = DegreeOfParallelism;
       Run(ExecutionStack);
     }
 
@@ -64,15 +89,13 @@ namespace HeuristicLab.ParallelEngine {
         if (next is OperationCollection) {
           coll = (OperationCollection)next;
           if (coll.Parallel) {
-            Task[] tasks = new Task[coll.Count];
             Stack<IOperation>[] stacks = new Stack<IOperation>[coll.Count];
             for (int i = 0; i < coll.Count; i++) {
               stacks[i] = new Stack<IOperation>();
               stacks[i].Push(coll[i]);
-              tasks[i] = Task.Factory.StartNew(Run, stacks[i], cancellationToken);
             }
             try {
-              Task.WaitAll(tasks);
+              Parallel.ForEach(stacks, parallelOptions, Run);
             }
             catch (AggregateException ex) {
               OperationCollection remaining = new OperationCollection() { Parallel = true };
