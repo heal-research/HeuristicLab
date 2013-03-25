@@ -535,7 +535,7 @@ namespace HeuristicLab.Optimization.Views {
 
       //check for click to select a single model
       if (minX == maxX && minY == maxY) {
-        HitTestResult hitTest = chart.HitTest(e.X, e.Y);
+        HitTestResult hitTest = chart.HitTest(e.X, e.Y, ChartElementType.DataPoint);
         if (hitTest.ChartElementType == ChartElementType.DataPoint) {
           int pointIndex = hitTest.PointIndex;
           var point = chart.Series[0].Points[pointIndex];
