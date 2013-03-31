@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 
 namespace HeuristicLab.Core {
   public class OperatorExecutionException : Exception {
@@ -31,7 +32,10 @@ namespace HeuristicLab.Core {
       get {
         string name = "\"" + op.Name + "\"";
         if (!op.Name.Equals(op.ItemName)) name += " (" + op.ItemName + ")";
-
+        if (!string.IsNullOrEmpty(op.GetType().Assembly.Location)) {
+          var fvi = FileVersionInfo.GetVersionInfo(op.GetType().Assembly.Location);
+          name += " [" + fvi.FileName + ": " + fvi.FileVersion + "]";
+        }
         if (InnerException == null)
           return base.Message + name + ".";
         else

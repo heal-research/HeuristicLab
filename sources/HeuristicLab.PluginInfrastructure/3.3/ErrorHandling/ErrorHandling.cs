@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure {
@@ -28,7 +29,9 @@ namespace HeuristicLab.PluginInfrastructure {
       if (exception == null) {
         return string.Empty;
       } else {
-        string message = exception.GetType().Name + ": " + exception.Message + Environment.NewLine +
+        string message =
+          "HeuristicLab version: " + FileVersionInfo.GetVersionInfo(typeof(ErrorHandling).Assembly.Location).FileVersion + Environment.NewLine +
+          exception.GetType().Name + ": " + exception.Message + Environment.NewLine +
                          exception.StackTrace;
 
         while (exception.InnerException != null) {
