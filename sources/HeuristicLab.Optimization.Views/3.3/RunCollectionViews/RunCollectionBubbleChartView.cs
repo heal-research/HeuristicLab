@@ -302,8 +302,9 @@ namespace HeuristicLab.Optimization.Views {
 
     private void UpdateMarkerSizes() {
       var series = chart.Series[0];
-      var sizeValues = series.Points.Select(p => p.YValues[1]);
+      if (series.Points.Count <= 0) return;
 
+      var sizeValues = series.Points.Select(p => p.YValues[1]);
       double minSizeValue = sizeValues.Min();
       double maxSizeValue = sizeValues.Max();
       double sizeRange = maxSizeValue - minSizeValue;
