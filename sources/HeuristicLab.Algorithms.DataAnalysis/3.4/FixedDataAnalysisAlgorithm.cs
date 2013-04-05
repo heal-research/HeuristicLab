@@ -95,7 +95,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     private void Run(object state) {
       CancellationToken cancellationToken = (CancellationToken)state;
-      lastUpdateTime = DateTime.Now;
+      lastUpdateTime = DateTime.UtcNow;
       System.Timers.Timer timer = new System.Timers.Timer(250);
       timer.AutoReset = true;
       timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
@@ -106,7 +106,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
         timer.Stop();
-        ExecutionTime += DateTime.Now - lastUpdateTime;
+        ExecutionTime += DateTime.UtcNow - lastUpdateTime;
       }
 
       cancellationToken.ThrowIfCancellationRequested();
@@ -120,7 +120,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
       System.Timers.Timer timer = (System.Timers.Timer)sender;
       timer.Enabled = false;
-      DateTime now = DateTime.Now;
+      DateTime now = DateTime.UtcNow;
       ExecutionTime += now - lastUpdateTime;
       lastUpdateTime = now;
       timer.Enabled = true;

@@ -154,7 +154,7 @@ namespace HeuristicLab.DebugEngine {
       OnStarted();
       cancellationTokenSource = new CancellationTokenSource();
       stopPending = false;
-      lastUpdateTime = DateTime.Now;
+      lastUpdateTime = DateTime.UtcNow;
       timer.Start();
       try {
         ProcessNextOperation(true, cancellationTokenSource.Token);
@@ -165,7 +165,7 @@ namespace HeuristicLab.DebugEngine {
         OnExceptionOccurred(ex);
       }
       timer.Stop();
-      ExecutionTime += DateTime.Now - lastUpdateTime;
+      ExecutionTime += DateTime.UtcNow - lastUpdateTime;
       cancellationTokenSource.Dispose();
       cancellationTokenSource = null;
       if (stopPending) ExecutionStack.Clear();
@@ -241,7 +241,7 @@ namespace HeuristicLab.DebugEngine {
       CancellationToken cancellationToken = (CancellationToken)state;
 
       OnStarted();
-      lastUpdateTime = DateTime.Now;
+      lastUpdateTime = DateTime.UtcNow;
       timer.Start();
       try {
         if (!cancellationToken.IsCancellationRequested && CanContinue)
@@ -252,7 +252,7 @@ namespace HeuristicLab.DebugEngine {
       }
       finally {
         timer.Stop();
-        ExecutionTime += DateTime.Now - lastUpdateTime;
+        ExecutionTime += DateTime.UtcNow - lastUpdateTime;
 
         if (IsAtBreakpoint)
           Log.LogMessage(string.Format("Breaking before: {0}", CurrentAtomicOperation.Operator.Name));
@@ -262,7 +262,7 @@ namespace HeuristicLab.DebugEngine {
     private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
       System.Timers.Timer timer = (System.Timers.Timer)sender;
       timer.Enabled = false;
-      DateTime now = DateTime.Now;
+      DateTime now = DateTime.UtcNow;
       ExecutionTime += now - lastUpdateTime;
       lastUpdateTime = now;
       timer.Enabled = true;
