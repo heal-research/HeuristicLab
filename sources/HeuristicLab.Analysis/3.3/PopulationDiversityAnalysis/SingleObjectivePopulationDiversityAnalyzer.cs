@@ -37,6 +37,7 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public class SingleObjectivePopulationDiversityAnalyzer : SingleSuccessorOperator, IAnalyzer, ISimilarityBasedOperator {
     #region ISimilarityBasedOperator Members
+    [Storable]
     public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
     #endregion
 
@@ -68,7 +69,10 @@ namespace HeuristicLab.Analysis {
 
     [StorableConstructor]
     protected SingleObjectivePopulationDiversityAnalyzer(bool deserializing) : base(deserializing) { }
-    protected SingleObjectivePopulationDiversityAnalyzer(SingleObjectivePopulationDiversityAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    protected SingleObjectivePopulationDiversityAnalyzer(SingleObjectivePopulationDiversityAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+      SimilarityCalculator = cloner.Clone(original.SimilarityCalculator);
+    }
     public SingleObjectivePopulationDiversityAnalyzer()
       : base() {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that contains the solutions which should be analyzed."));
