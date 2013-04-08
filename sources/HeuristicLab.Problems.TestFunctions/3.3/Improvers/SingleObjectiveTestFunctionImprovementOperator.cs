@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Reflection;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -125,13 +124,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       if (bestSol == null)
         throw new ArgumentException("Cannot improve solution because it has the wrong type.");
 
-      MethodInfo evaluationMethod = Evaluator.GetType().GetMethod("EvaluateFunction",
-                                                                  BindingFlags.Instance | BindingFlags.NonPublic,
-                                                                  null,
-                                                                  new[] { typeof(RealVector) },
-                                                                  null);
-      Func<RealVector, double> functionEvaluator = x => (double)evaluationMethod.Invoke(Evaluator, new object[] { x });
-      double bestSolQuality = functionEvaluator(bestSol);
+      double bestSolQuality = Evaluator.EvaluateFunction(bestSol);
 
       // create perturbed solutions
       RealVector[] simplex = new RealVector[bestSol.Length];
@@ -145,7 +138,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       // improve solutions
       for (int i = 0; i < ImprovementAttempts.Value; i++) {
         // order according to their objective function value
-        Array.Sort(simplex, (x, y) => functionEvaluator(x).CompareTo(functionEvaluator(y)));
+        Array.Sort(simplex, (x, y) => Evaluator.EvaluateFunction(x).CompareTo(Evaluator.EvaluateFunction(y)));
 
         // calculate centroid
         RealVector centroid = new RealVector(bestSol.Length);
@@ -159,32 +152,32 @@ namespace HeuristicLab.Problems.TestFunctions {
         RealVector reflectionPoint = new RealVector(bestSol.Length);
         for (int j = 0; j < reflectionPoint.Length; j++)
           reflectionPoint[j] = centroid[j] + Alpha.Value * (centroid[j] - simplex[simplex.Length - 1][j]);
-        double reflectionPointQuality = functionEvaluator(reflectionPoint);
-        if (functionEvaluator(simplex[0]) <= reflectionPointQuality
-            && reflectionPointQuality < functionEvaluator(simplex[simplex.Length - 2]))
+        double reflectionPointQuality = Evaluator.EvaluateFunction(reflectionPoint);
+        if (Evaluator.EvaluateFunction(simplex[0]) <= reflectionPointQuality
+            && reflectionPointQuality < Evaluator.EvaluateFunction(simplex[simplex.Length - 2]))
           simplex[simplex.Length - 1] = reflectionPoint;
 
         // expansion
-        if (reflectionPointQuality < functionEvaluator(simplex[0])) {
+        if (reflectionPointQuality < Evaluator.EvaluateFunction(simplex[0])) {
           RealVector expansionPoint = new RealVector(bestSol.Length);
           for (int j = 0; j < expansionPoint.Length; j++)
             expansionPoint[j] = centroid[j] + Beta.Value * (reflectionPoint[j] - centroid[j]);
-          simplex[simplex.Length - 1] = functionEvaluator(expansionPoint) < reflectionPointQuality ? expansionPoint : reflectionPoint;
+          simplex[simplex.Length - 1] = Evaluator.EvaluateFunction(expansionPoint) < reflectionPointQuality ? expansionPoint : reflectionPoint;
         }
 
         // contraction
-        if (functionEvaluator(simplex[simplex.Length - 2]) <= reflectionPointQuality
-            && reflectionPointQuality < functionEvaluator(simplex[simplex.Length - 1])) {
+        if (Evaluator.EvaluateFunction(simplex[simplex.Length - 2]) <= reflectionPointQuality
+            && reflectionPointQuality < Evaluator.EvaluateFunction(simplex[simplex.Length - 1])) {
           RealVector outsideContractionPoint = new RealVector(bestSol.Length);
           for (int j = 0; j < outsideContractionPoint.Length; j++)
             outsideContractionPoint[j] = centroid[j] + Gamma.Value * (reflectionPoint[j] - centroid[j]);
-          if (functionEvaluator(outsideContractionPoint) <= reflectionPointQuality) {
+          if (Evaluator.EvaluateFunction(outsideContractionPoint) <= reflectionPointQuality) {
             simplex[simplex.Length - 1] = outsideContractionPoint;
-            if (functionEvaluator(reflectionPoint) >= functionEvaluator(simplex[simplex.Length - 1])) {
+            if (Evaluator.EvaluateFunction(reflectionPoint) >= Evaluator.EvaluateFunction(simplex[simplex.Length - 1])) {
               RealVector insideContractionPoint = new RealVector(bestSol.Length);
               for (int j = 0; j < insideContractionPoint.Length; j++)
                 insideContractionPoint[j] = centroid[j] - Gamma.Value * (reflectionPoint[j] - centroid[j]);
-              if (functionEvaluator(insideContractionPoint) < functionEvaluator(simplex[simplex.Length - 1])) simplex[simplex.Length - 1] = insideContractionPoint;
+              if (Evaluator.EvaluateFunction(insideContractionPoint) < Evaluator.EvaluateFunction(simplex[simplex.Length - 1])) simplex[simplex.Length - 1] = insideContractionPoint;
             }
           }
         }

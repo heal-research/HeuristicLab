@@ -38,6 +38,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     ILookupParameter<RealVector> PointParameter { get; }
 
     double Evaluate2D(double x, double y);
+    double EvaluateFunction(RealVector point);
     RealVector GetBestKnownSolution(int dimension);
   }
 }

@@ -85,13 +85,8 @@ namespace HeuristicLab.Problems.TestFunctions {
       return new RealVector(dimension);
     }
 
-    public override double Evaluate2D(double x, double y) {
-      var random = new System.Random();
-      return random.NextDouble();
-    }
-
-    protected override double EvaluateFunction(RealVector point) {
-      return RandomParameter.ActualValue.NextDouble();
+    public override double EvaluateFunction(RealVector point) {
+      return ExecutionContext == null ? new System.Random().NextDouble() : RandomParameter.ActualValue.NextDouble();
     }
   }
 }

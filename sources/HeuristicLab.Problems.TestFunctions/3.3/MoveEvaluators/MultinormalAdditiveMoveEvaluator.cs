@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       RealVectorAdditiveMoveWrapper wrapper = new RealVectorAdditiveMoveWrapper(move, point);
       var eval = EvaluatorParameter.ActualValue as MultinormalEvaluator;
       if (eval != null)
-        return eval.Evaluate(wrapper);
+        return eval.EvaluateFunction(wrapper);
       throw new InvalidOperationException("evaluator is not a multinormal evaluator");
     }
   }

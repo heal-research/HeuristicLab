@@ -160,11 +160,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
       }
     }
 
-    public double Evaluate(RealVector point) {
-      return EvaluateFunction(point);
-    }
-
-    protected override double EvaluateFunction(RealVector point) {
+    public override double EvaluateFunction(RealVector point) {
       double value = 0;
       if (centers.Count == 0) {
         var c = Centers(point.Length).GetEnumerator();
