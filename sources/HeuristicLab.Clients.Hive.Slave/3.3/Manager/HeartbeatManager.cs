@@ -69,6 +69,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       threadStopped = true;
       waitHandle.Set();
       heartBeatThread.Join();
+      waitHandle.Close();
     }
 
     /// <summary>
@@ -128,7 +129,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         }
         waitHandle.WaitOne(this.interval);
       }
-      waitHandle.Close();
       SlaveClientCom.Instance.LogMessage("Heartbeat thread stopped");
     }
 

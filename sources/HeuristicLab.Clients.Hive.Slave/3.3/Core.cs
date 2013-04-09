@@ -74,7 +74,15 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       try {
         //start the client communication service (pipe between slave and slave gui)
         slaveComm = new ServiceHost(typeof(SlaveCommunicationService));
-        slaveComm.Open();
+
+        try {
+          slaveComm.Open();
+        }
+        catch (AddressAlreadyInUseException ex) {
+          if (ServiceEventLog != null) {
+            EventLogManager.LogException(ex);
+          }
+        }
 
         // delete all left over task directories
         pluginManager.CleanPluginTemp();
