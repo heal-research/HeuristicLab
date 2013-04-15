@@ -265,7 +265,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var ms = Enumerable.Range(0, newX.GetLength(0))
       .Select(r => mean.Mean(newX, r))
       .ToArray();
-      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, null);
+      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
       for (int i = 0; i < newN; i++) {
         for (int j = 0; j < n; j++) {
           Ks[i, j] = cov.CrossCovariance(x, newX, j, i);
