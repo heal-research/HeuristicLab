@@ -140,29 +140,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double r = Math.Sin(k) * inverseLength;
       yield return 2.0 * k * scale * Math.Exp(-2 * r * r) *Math.Sin(2*k) * inverseLength * inverseLength;
       yield return 2.0 * scale * Math.Exp(-2 * gradient); 
-      /*
-       *  double s = Math.Log(scale) / 2.0;
-      double l = Math.Log(1.0 / inverseLength);
-      double p = Math.Log(period);
 
-      double v;
-      {
-        v = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j, columnIndices) * Math.Exp(-p);
-        double sin = Math.Sin(v);
-        double sin2 = sin * sin;
-        yield return 4.0 * sin2 * Math.Exp(-2.0 * Math.Exp(-2 * l) * sin2 - 2 * l + 2 * s);
-      }
-      {
-        double pi_d = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j, columnIndices);
-        double sin = Math.Sin(Math.Exp(-p)*pi_d);
-        double sin2 = Math.Sin(2*Math.Exp(-p)*pi_d);
-        yield return 2*pi_d*sin2*Math.Exp(-2*Math.Exp(-2*l)*sin*sin - 2*l - p + 2*s);
-      }
-      {
-        double pi_d = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j, columnIndices);
-        double sin = Math.Sin(Math.Exp(-p) * pi_d);
-        yield return 2 * Math.Exp(2 * scale - 2 * Math.Exp(-2 * l) * sin * sin);
-      }*/
     }
 
     private static double GetDistance(double[,] x, double[,] xt, int i, int j, IEnumerable<int> columnIndices) {

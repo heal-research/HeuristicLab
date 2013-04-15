@@ -89,8 +89,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double[] inverseLength, IEnumerable<int> columnIndices) {
-      if (columnIndices == null) columnIndices = Enumerable.Range(0, x.GetLength(1));
-
       int k = 0;
       foreach (int columnIndex in columnIndices) {
         yield return -2.0 * x[i, columnIndex] * x[j, columnIndex] * inverseLength[k] * inverseLength[k];

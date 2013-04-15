@@ -73,12 +73,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
-      if (columnIndices != null)
-        throw new InvalidOperationException("Stacking of masking covariance functions is not supported.");
       var cov = CovarianceFunctionParameter.Value;
       var selectedDimensions = SelectedDimensionsParameter.Value;
 
-      return cov.GetParameterizedCovarianceFunction(p, selectedDimensions);
+      return cov.GetParameterizedCovarianceFunction(p, selectedDimensions.Intersect(columnIndices));
     }
   }
 }
