@@ -452,6 +452,10 @@ namespace HeuristicLab.Data.Views {
     }
     #endregion
 
+    public int GetRowIndex(int originalIndex) {
+      return virtualRowIndices[originalIndex];
+    }
+
     public class RowComparer : IComparer<int> {
       public RowComparer() {
       }
