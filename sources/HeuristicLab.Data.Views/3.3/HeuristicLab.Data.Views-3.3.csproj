@@ -120,6 +120,12 @@
     <Compile Include="DoubleRangeView.Designer.cs">
       <DependentUpon>DoubleRangeView.cs</DependentUpon>
     </Compile>
+    <Compile Include="EnhancedStringConvertibleMatrixView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EnhancedStringConvertibleMatrixView.Designer.cs">
+      <DependentUpon>EnhancedStringConvertibleMatrixView.cs</DependentUpon>
+    </Compile>
     <Compile Include="IntRangeView.cs">
       <SubType>UserControl</SubType>
     </Compile>

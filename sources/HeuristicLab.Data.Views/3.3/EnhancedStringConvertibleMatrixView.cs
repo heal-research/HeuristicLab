@@ -25,10 +25,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
-using HeuristicLab.Data;
-using HeuristicLab.Data.Views;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views {
+namespace HeuristicLab.Data.Views {
   public partial class EnhancedStringConvertibleMatrixView : StringConvertibleMatrixView {
     private bool[] columnVisibility, rowVisibility;
 
@@ -71,13 +69,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
     protected override void UpdateRowHeaders() {
-      if (rowVisibility == null) return;
       if (Content == null) return;
-      if (rowVisibility.Count() != dataGridView.RowCount) return;
+      if (rowVisibility != null && rowVisibility.Count() != dataGridView.RowCount) return;
 
       for (int index = 0; index < dataGridView.RowCount; index++) {
         dataGridView.Rows[index].HeaderCell.Value = Content.RowNames.ElementAt(virtualRowIndices[index]);
-        dataGridView.Rows[index].Visible = rowVisibility.ElementAt(virtualRowIndices[index]);
+
+        if (rowVisibility != null) {
+          dataGridView.Rows[index].Visible = rowVisibility.ElementAt(virtualRowIndices[index]);
+        } else {
+          dataGridView.Rows[index].Visible = true;
+        }
       }
     }
 

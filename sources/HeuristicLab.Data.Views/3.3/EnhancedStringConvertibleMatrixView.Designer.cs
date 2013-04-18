@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.DataAnalysis.Views {
+namespace HeuristicLab.Data.Views {
   partial class EnhancedStringConvertibleMatrixView {
     /// <summary> 
     /// Required designer variable.

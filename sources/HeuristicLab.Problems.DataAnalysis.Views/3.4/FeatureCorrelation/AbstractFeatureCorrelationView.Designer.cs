@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.progressPanel = new System.Windows.Forms.Panel();
       this.progressLabel = new System.Windows.Forms.Label();
-      this.dataView = new HeuristicLab.Problems.DataAnalysis.Views.EnhancedStringConvertibleMatrixView();
+      this.dataView = new HeuristicLab.Data.Views.EnhancedStringConvertibleMatrixView();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
@@ -239,7 +239,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected System.Windows.Forms.SplitContainer splitContainer;
     protected System.Windows.Forms.Panel progressPanel;
     protected System.Windows.Forms.Label progressLabel;
-    protected HeuristicLab.Problems.DataAnalysis.Views.EnhancedStringConvertibleMatrixView dataView;
+    protected HeuristicLab.Data.Views.EnhancedStringConvertibleMatrixView dataView;
 
   }
 }

@@ -161,12 +161,6 @@
     <Compile Include="DataAnalysisSolutionEvaluationView.Designer.cs">
       <DependentUpon>DataAnalysisSolutionEvaluationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="FeatureCorrelation\EnhancedStringConvertibleMatrixView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FeatureCorrelation\EnhancedStringConvertibleMatrixView.Designer.cs">
-      <DependentUpon>EnhancedStringConvertibleMatrixView.cs</DependentUpon>
-    </Compile>
     <Compile Include="FeatureCorrelation\FeatureCorrelationCalculator.cs" />
     <Compile Include="FeatureCorrelation\FeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
