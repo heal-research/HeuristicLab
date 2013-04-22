@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Persistence.Auxiliary;
 using HeuristicLab.Persistence.Core;
@@ -55,6 +56,8 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
         sb.Append(a.GetLowerBound(i));
         lowerBounds[i] = a.GetLowerBound(i);
       }
+      if (lengths.Any(l => l == 0))
+        return new XmlString(sb.ToString());
       int[] positions = (int[])lowerBounds.Clone();
       while (positions[a.Rank - 1] < lengths[a.Rank - 1] + lowerBounds[a.Rank - 1]) {
         sb.Append(Separator);
@@ -101,7 +104,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Compact {
             }
           }
         }
-        if (positions[rank - 1] != lowerBounds[rank - 1] + lengths[rank - 1])
+        if (positions[rank - 1] != lowerBounds[rank - 1] + lengths[rank - 1] && lengths.All(l => l != 0))
           throw new PersistenceException("Insufficient number of elements while trying to fill number array.");
         return (T)(object)a;
       }
