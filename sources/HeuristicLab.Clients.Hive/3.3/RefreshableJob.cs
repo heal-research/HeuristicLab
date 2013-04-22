@@ -109,7 +109,7 @@ namespace HeuristicLab.Clients.Hive {
               StartResultPolling();
             }
           } else {
-            StopResultPolling();
+            PauseResultPolling();
           }
         }
       }
@@ -238,8 +238,16 @@ namespace HeuristicLab.Clients.Hive {
 
     public void StopResultPolling() {
       if (jobResultPoller != null && jobResultPoller.IsPolling) {
+        refreshAutomatically = false;
         jobResultPoller.Stop();
         DeregisterResultPollingEvents();
+        jobResultPoller = null;
+      }
+    }
+
+    public void PauseResultPolling() {
+      if (jobResultPoller != null && jobResultPoller.IsPolling) {
+        jobResultPoller.Stop();
       }
     }
 
@@ -514,12 +522,11 @@ namespace HeuristicLab.Clients.Hive {
 
     public event EventHandler HiveTasksChanged;
     protected virtual void OnHiveTasksChanged() {
-      StopResultPolling();
       if (this.HiveTasks != null && this.HiveTasks.Count > 0 && this.GetAllHiveTasks().All(x => x.Task.Id != Guid.Empty)) {
         if (IsFinished()) {
           this.ExecutionState = Core.ExecutionState.Stopped;
           this.RefreshAutomatically = false;
-          if (jobResultPoller != null) DeregisterResultPollingEvents();
+          StopResultPolling();
         } else {
           this.RefreshAutomatically = true;
         }
