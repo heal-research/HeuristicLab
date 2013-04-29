@@ -397,7 +397,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return res;
     }
 
-    public int GetMinimumExpressionLengthRec(ISymbol symbol) {
+    private int GetMinimumExpressionLengthRec(ISymbol symbol) {
       int temp;
       if (!cachedMinExpressionLength.TryGetValue(symbol.Name, out temp)) {
         cachedMinExpressionLength[symbol.Name] = int.MaxValue; // prevent infinite recursion
