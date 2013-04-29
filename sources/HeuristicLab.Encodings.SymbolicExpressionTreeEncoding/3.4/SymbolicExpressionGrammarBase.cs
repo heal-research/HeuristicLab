@@ -386,13 +386,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     private readonly Dictionary<string, int> cachedMinExpressionLength;
     public int GetMinimumExpressionLength(ISymbol symbol) {
+      int res;
+      if (cachedMinExpressionLength.TryGetValue(symbol.Name, out res))
+        return res;
+
+      res = GetMinimumExpressionLengthRec(symbol);
+      foreach (var entry in cachedMinExpressionLength.Where(e => e.Value >= int.MaxValue).ToList()) {
+        if (entry.Key != symbol.Name) cachedMinExpressionLength.Remove(entry.Key);
+      }
+      return res;
+    }
+
+    public int GetMinimumExpressionLengthRec(ISymbol symbol) {
       int temp;
       if (!cachedMinExpressionLength.TryGetValue(symbol.Name, out temp)) {
         cachedMinExpressionLength[symbol.Name] = int.MaxValue; // prevent infinite recursion
         long sumOfMinExpressionLengths = 1 + (from argIndex in Enumerable.Range(0, GetMinimumSubtreeCount(symbol))
                                               let minForSlot = (long)(from s in GetAllowedChildSymbols(symbol, argIndex)
                                                                       where s.InitialFrequency > 0.0
-                                                                      select GetMinimumExpressionLength(s)).DefaultIfEmpty(0).Min()
+                                                                      select GetMinimumExpressionLengthRec(s)).DefaultIfEmpty(0).Min()
                                               select minForSlot).DefaultIfEmpty(0).Sum();
 
         cachedMinExpressionLength[symbol.Name] = (int)Math.Min(sumOfMinExpressionLengths, int.MaxValue);
@@ -421,13 +433,24 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     private readonly Dictionary<string, int> cachedMinExpressionDepth;
     public int GetMinimumExpressionDepth(ISymbol symbol) {
+      int res;
+      if (cachedMinExpressionDepth.TryGetValue(symbol.Name, out res))
+        return res;
+
+      res = GetMinimumExpressionDepthRec(symbol);
+      foreach (var entry in cachedMinExpressionDepth.Where(e => e.Value >= int.MaxValue).ToList()) {
+        if (entry.Key != symbol.Name) cachedMinExpressionDepth.Remove(entry.Key);
+      }
+      return res;
+    }
+    private int GetMinimumExpressionDepthRec(ISymbol symbol) {
       int temp;
       if (!cachedMinExpressionDepth.TryGetValue(symbol.Name, out temp)) {
         cachedMinExpressionDepth[symbol.Name] = int.MaxValue; // prevent infinite recursion
         long minDepth = 1 + (from argIndex in Enumerable.Range(0, GetMinimumSubtreeCount(symbol))
                              let minForSlot = (long)(from s in GetAllowedChildSymbols(symbol, argIndex)
                                                      where s.InitialFrequency > 0.0
-                                                     select GetMinimumExpressionDepth(s)).DefaultIfEmpty(0).Min()
+                                                     select GetMinimumExpressionDepthRec(s)).DefaultIfEmpty(0).Min()
                              select minForSlot).DefaultIfEmpty(0).Max();
         cachedMinExpressionDepth[symbol.Name] = (int)Math.Min(minDepth, int.MaxValue);
         return cachedMinExpressionDepth[symbol.Name];
