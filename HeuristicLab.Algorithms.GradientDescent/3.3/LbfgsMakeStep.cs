@@ -78,6 +78,14 @@ namespace HeuristicLab.Algorithms.GradientDescent {
         double[] x = new double[state.State.x.Length];
         alglib.minlbfgs.minlbfgsreport rep = new alglib.minlbfgs.minlbfgsreport();
         alglib.minlbfgs.minlbfgsresults(state.State, ref x, rep);
+        if (rep.terminationtype < 0) {
+          if (rep.terminationtype == -1)
+            throw new OperatorExecutionException(this, "Incorrect parameters were specified.");
+          else if (rep.terminationtype == -2)
+            throw new OperatorExecutionException(this, "Rounding errors prevent further improvement.");
+          else if (rep.terminationtype == -7)
+            throw new OperatorExecutionException(this, "Gradient verification failed.");
+        }
         PointParameter.ActualValue = new RealVector(x);
       }
       return base.Apply();
