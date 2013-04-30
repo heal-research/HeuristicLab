@@ -54,6 +54,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     private const string ApproximateGradientsParameterName = "ApproximateGradients";
     private const string SeedParameterName = "Seed";
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
+    private const string GradientCheckStepSizeParameterName = "GradientCheckStepSize";
 
     #region parameter properties
     public IValueParameter<IntValue> MaxIterationsParameter {
@@ -64,6 +65,9 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     }
     public IValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (IValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
+    }
+    public IValueParameter<DoubleValue> GradientStepSizeParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters[GradientCheckStepSizeParameterName]; }
     }
     #endregion
     #region properties
@@ -105,14 +109,15 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     }
     public LbfgsAlgorithm()
       : base() {
-      this.name = ItemName;
-      this.description = ItemDescription;
 
       Parameters.Add(new ValueParameter<IntValue>(MaxIterationsParameterName, "The maximal number of iterations for.", new IntValue(20)));
       Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
       Parameters.Add(new ValueParameter<BoolValue>(ApproximateGradientsParameterName, "Indicates that gradients should be approximated.", new BoolValue(true)));
-      Parameters[ApproximateGradientsParameterName].Hidden = true; // should not be changed
+      Parameters.Add(new OptionalValueParameter<DoubleValue>(GradientCheckStepSizeParameterName, "Step size for the gradient check (should be used for debugging the gradient calculation only)."));
+      // these parameter should not be changed usually
+      Parameters[ApproximateGradientsParameterName].Hidden = true;
+      Parameters[GradientCheckStepSizeParameterName].Hidden = true;
 
       var randomCreator = new RandomCreator();
       solutionCreator = new Placeholder();
@@ -132,7 +137,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       randomCreator.SetSeedRandomlyParameter.Value = null;
       randomCreator.Successor = solutionCreator;
 
-      solutionCreator.Name = "Solution Creator (placeholder)";
+      solutionCreator.Name = "(Solution Creator)";
       solutionCreator.Successor = initializer;
 
       initializer.IterationsParameter.ActualName = MaxIterationsParameterName;
@@ -146,7 +151,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       branch.FalseBranch = evaluator;
       branch.TrueBranch = finalAnalyzer;
 
-      evaluator.Name = "Evaluator (placeholder)";
+      evaluator.Name = "(Evaluator)";
       evaluator.Successor = updateResults;
 
       updateResults.StateParameter.ActualName = initializer.StateParameter.Name;

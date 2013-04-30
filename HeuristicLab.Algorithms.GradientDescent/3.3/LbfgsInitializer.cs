@@ -37,6 +37,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     private const string StateParameterName = "State";
     private const string IterationsParameterName = "Iterations";
     private const string ApproximateGradientsParameterName = "ApproximateGradients";
+    private const string GradientCheckStepSizeParameterName = "GradientCheckStepSize";
 
     #region Parameter Properties
     // in
@@ -52,6 +53,9 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     }
     public ILookupParameter<BoolValue> ApproximateGradientsParameter {
       get { return (ILookupParameter<BoolValue>)Parameters[ApproximateGradientsParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> GradientStepSizeParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[GradientCheckStepSizeParameterName]; }
     }
 
 
@@ -73,6 +77,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       Parameters.Add(new LookupParameter<IntValue>(IterationsParameterName, "The maximal number of iterations for the LM-BFGS algorithm."));
       Parameters.Add(new LookupParameter<BoolValue>(ApproximateGradientsParameterName,
                                                     "Flag that indicates if gradients should be approximated."));
+      Parameters.Add(new LookupParameter<DoubleValue>(GradientCheckStepSizeParameterName, "Step size for the gradient check (should be used for debugging the gradient calculation only)."));
       // out
       Parameters.Add(new LookupParameter<LbfgsState>(StateParameterName, "The state of the LM-BFGS algorithm."));
     }
@@ -92,7 +97,8 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       }
       alglib.minlbfgs.minlbfgssetcond(state, 0.0, 0, 0, Iterations.Value);
       alglib.minlbfgs.minlbfgssetxrep(state, true);
-      // alglib.minlbfgs.minlbfgssetgradientcheck(state, 0.000001);
+      if (GradientStepSizeParameter.ActualValue != null && GradientStepSizeParameter.ActualValue.Value > 0)
+        alglib.minlbfgs.minlbfgssetgradientcheck(state, GradientStepSizeParameter.ActualValue.Value);
 
       PointParameter.ActualValue = new RealVector(initialPoint);
       StateParameter.ActualValue = new LbfgsState(state);
