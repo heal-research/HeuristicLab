@@ -84,20 +84,25 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     private static double CalculateRelativeUndirected(Permutation left, Permutation right) {
-      int[,] edges = new int[right.Length, 2];
-      for (int i = 0; i < right.Length; i++) {
-        edges[right[i], 0] = right[(i + 1) % right.Length];
-        edges[right[i], 1] = right[(i - 1 + right.Length) % right.Length];
-      }
+      int[] edgesR = CalculateEdgesVector(right);
+      int[] edgesL = CalculateEdgesVector(left);
 
       double similarity = 0.0;
       for (int i = 0; i < left.Length; i++) {
-        int targetCity = left[(i + 1) % left.Length];
-        if (targetCity == edges[left[i], 0] || targetCity == edges[left[i], 1])
+        if ((edgesL[i] == edgesR[i]) || (edgesL[edgesR[i]] == i))
           similarity++;
       }
 
       return similarity / left.Length;
+    }
+
+    private static int[] CalculateEdgesVector(Permutation permutation) {
+      // transform path representation into adjacency representation
+      int[] edgesVector = new int[permutation.Length];
+      for (int i = 0; i < permutation.Length - 1; i++)
+        edgesVector[permutation[i]] = permutation[i + 1];
+      edgesVector[permutation[permutation.Length - 1]] = permutation[0];
+      return edgesVector;
     }
 
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {
