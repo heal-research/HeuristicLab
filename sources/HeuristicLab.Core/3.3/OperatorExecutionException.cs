@@ -24,10 +24,12 @@ using System.Diagnostics;
 
 namespace HeuristicLab.Core {
   public class OperatorExecutionException : Exception {
-    private IOperator op;
+    private readonly IOperator op;
     public IOperator Operator {
       get { return op; }
     }
+
+    private readonly string message;
     public override string Message {
       get {
         string name = "\"" + op.Name + "\"";
@@ -37,16 +39,18 @@ namespace HeuristicLab.Core {
           name += " [" + fvi.FileName + ": " + fvi.FileVersion + "]";
         }
         if (InnerException == null)
-          return base.Message + name + ".";
+          return base.Message + name + message + ".";
         else
           return base.Message + name + ": " + InnerException.Message;
       }
     }
 
-    public OperatorExecutionException(IOperator op)
+    public OperatorExecutionException(IOperator op) : this(op, string.Empty) { }
+    public OperatorExecutionException(IOperator op, string message)
       : base("An exception was thrown by the operator ") {
       if (op == null) throw new ArgumentNullException();
       this.op = op;
+      this.message = message;
     }
     public OperatorExecutionException(IOperator op, Exception innerException)
       : base("An exception was thrown by the operator ", innerException) {
