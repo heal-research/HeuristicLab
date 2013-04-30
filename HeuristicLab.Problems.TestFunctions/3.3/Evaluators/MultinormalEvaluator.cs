@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
     }
 
     private double FastFindOptimum(out RealVector bestSolution) {
-      var optima = centers.Select((c, i) => new { f = EvaluateFunction(c), i }).OrderBy(v => v.f).ToList();
+      var optima = centers.Select((c, i) => new { f = Evaluate(c), i }).OrderBy(v => v.f).ToList();
       if (optima.Count == 0) {
         bestSolution = new RealVector();
         return 0;
@@ -160,7 +160,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
       }
     }
 
-    public override double EvaluateFunction(RealVector point) {
+    public override double Evaluate(RealVector point) {
       double value = 0;
       if (centers.Count == 0) {
         var c = Centers(point.Length).GetEnumerator();

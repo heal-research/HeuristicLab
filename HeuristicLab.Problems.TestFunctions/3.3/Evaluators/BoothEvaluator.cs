@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the Booth function at the given point.</returns>
-    public override double EvaluateFunction(RealVector point) {
+    public override double Evaluate(RealVector point) {
       return Apply(point);
     }
   }
