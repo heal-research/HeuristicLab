@@ -200,7 +200,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     }
 
     private void RegisterSolutionCreatorEvents() {
-      var realVectorCreator = Problem.SolutionCreator as RealVectorCreator;
+      var realVectorCreator = Problem.SolutionCreator as IRealVectorCreator;
       // ignore if we have a different kind of problem
       if (realVectorCreator != null) {
         realVectorCreator.RealVectorParameter.ActualNameChanged += (sender, args) => ParameterizeOperators();
@@ -213,7 +213,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     #endregion
 
     protected override void OnStarted() {
-      var realVectorCreator = Problem.SolutionCreator as RealVectorCreator;
+      var realVectorCreator = Problem.SolutionCreator as IRealVectorCreator;
       // must catch the case that user loaded an unsupported problem
       if (realVectorCreator == null)
         throw new InvalidOperationException("LM-BFGS only works with problems using a real-value encoding.");
@@ -225,7 +225,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     }
 
     private void ParameterizeOperators() {
-      var realVectorCreator = Problem.SolutionCreator as RealVectorCreator;
+      var realVectorCreator = Problem.SolutionCreator as IRealVectorCreator;
       // ignore if we have a different kind of problem
       if (realVectorCreator != null) {
         var realVectorParameterName = realVectorCreator.RealVectorParameter.ActualName;
