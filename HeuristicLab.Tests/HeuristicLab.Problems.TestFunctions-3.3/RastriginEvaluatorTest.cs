@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.TestFunctions_33.Tests {
       double actual;
       for (int dimension = target.MinimumProblemSize; dimension <= System.Math.Min(10, target.MaximumProblemSize); dimension++) {
         point = target.GetBestKnownSolution(dimension);
-        actual = target.EvaluateFunction(point);
+        actual = target.Evaluate(point);
         Assert.AreEqual(expected, actual);
       }
     }
