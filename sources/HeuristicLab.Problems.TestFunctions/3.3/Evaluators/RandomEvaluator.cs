@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       return new RealVector(dimension);
     }
 
-    public override double EvaluateFunction(RealVector point) {
+    public override double Evaluate(RealVector point) {
       return ExecutionContext == null ? new System.Random().NextDouble() : RandomParameter.ActualValue.NextDouble();
     }
   }

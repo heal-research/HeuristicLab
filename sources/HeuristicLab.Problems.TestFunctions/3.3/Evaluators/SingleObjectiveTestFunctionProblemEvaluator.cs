@@ -83,13 +83,13 @@ namespace HeuristicLab.Problems.TestFunctions {
 
     public override IOperation Apply() {
       RealVector point = PointParameter.ActualValue;
-      double quality = EvaluateFunction(point);
+      double quality = Evaluate(point);
       QualityParameter.ActualValue = new DoubleValue(quality);
       return base.Apply();
     }
 
     public virtual double Evaluate2D(double x, double y) {
-      return EvaluateFunction(new RealVector(new double[] { x, y }));
+      return Evaluate(new RealVector(new double[] { x, y }));
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
     /// <returns>The result value of the function at the given point.</returns>
-    public abstract double EvaluateFunction(RealVector point);
+    public abstract double Evaluate(RealVector point);
 
     /// <summary>
     /// Gets the best known solution for this function.
