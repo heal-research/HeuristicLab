@@ -732,10 +732,19 @@ namespace HeuristicLab.Optimization.Views {
       foreach (var run in selectedRuns) {
         foreach (var point in runToDataPointMapping[run]) {
           point.MarkerStyle = MarkerStyle.Circle;
-          point.Color = Color.FromArgb(255 - transparencyTrackBar.Value, run.Color);
+          point.Color = Color.FromArgb(255 - LogTransform(transparencyTrackBar.Value), run.Color);
         }
       }
       selectedRuns.Clear();
+    }
+
+    // returns a value in [0..255]
+    private int LogTransform(int x) {
+      double min = transparencyTrackBar.Minimum;
+      double max = transparencyTrackBar.Maximum;
+      double r = (x - min) / (max - min);  // r \in [0..1]
+      double l = Math.Log(r + 1) / Math.Log(2.0); // l \in [0..1]
+      return (int)Math.Round(255.0 * l);
     }
 
     private void openBoxPlotViewToolStripMenuItem_Click(object sender, EventArgs e) {
