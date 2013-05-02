@@ -211,11 +211,6 @@ namespace HeuristicLab.Services.Hive.DataAccess {
           Exception = exception,
           DateTime = DateTime.Now
         });
-        db.SubmitChanges();
-      }
-
-      using (var db = CreateContext()) {
-        db.DeferredLoadingEnabled = false;
 
         var task = db.Tasks.SingleOrDefault(x => x.TaskId == taskId);
         task.State = taskState;
