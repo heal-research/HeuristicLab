@@ -66,7 +66,6 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
         target.Priority = source.Priority;
         target.LastHeartbeat = source.LastHeartbeat;
         target.State = Convert.ToEntity(source.State);
-        if (target.StateLogs == null) target.StateLogs = new EntitySet<DB.StateLog>();
         foreach (DT.StateLog sl in source.StateLog.Where(x => x.Id == Guid.Empty)) {
           target.StateLogs.Add(Convert.ToEntity(sl));
         }
