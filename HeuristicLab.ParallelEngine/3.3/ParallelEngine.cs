@@ -76,6 +76,7 @@ namespace HeuristicLab.ParallelEngine {
       this.cancellationToken = cancellationToken;
       parallelOptions = new ParallelOptions();
       parallelOptions.MaxDegreeOfParallelism = DegreeOfParallelism;
+      parallelOptions.CancellationToken = cancellationToken;
       Run(ExecutionStack);
     }
 
@@ -100,7 +101,7 @@ namespace HeuristicLab.ParallelEngine {
             try {
               Parallel.ForEach(stacks, parallelOptions, Run);
             }
-            catch (AggregateException ex) {
+            catch (OperationCanceledException ex) {
               OperationCollection remaining = new OperationCollection() { Parallel = true };
               for (int i = 0; i < stacks.Length; i++) {
                 if (stacks[i].Count == 1)
