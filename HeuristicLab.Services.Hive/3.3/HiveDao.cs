@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Linq.Expressions;
 using DT = HeuristicLab.Services.Hive.DataTransfer;
@@ -121,6 +122,10 @@ namespace HeuristicLab.Services.Hive.DataAccess {
 
     public void UpdateTaskAndStateLogs(DT.Task dto) {
       using (var db = CreateContext()) {
+        DataLoadOptions dlo = new DataLoadOptions();
+        dlo.LoadWith<Task>(x => x.StateLogs);
+        db.LoadOptions = dlo;
+
         var entity = db.Tasks.FirstOrDefault(x => x.TaskId == dto.Id);
         if (entity == null) db.Tasks.InsertOnSubmit(DT.Convert.ToEntity(dto));
         else DT.Convert.ToEntity(dto, entity);
