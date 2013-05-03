@@ -33,6 +33,8 @@ namespace HeuristicLab.Data {
   [Item("StringArray", "Represents an array of strings.")]
   [StorableClass]
   public class StringArray : Item, IEnumerable<string>, IStringConvertibleArray {
+    private const int maximumToStringLength = 100;
+
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
@@ -105,12 +107,17 @@ namespace HeuristicLab.Data {
     }
 
     public override string ToString() {
+      if (array.Length == 0) return "[]";
+
       StringBuilder sb = new StringBuilder();
       sb.Append("[");
-      if (array.Length > 0) {
-        sb.Append(array[0]);
-        for (int i = 1; i < array.Length; i++)
-          sb.Append(";").Append(array[i]);
+      sb.Append(array[0]);
+      for (int i = 1; i < array.Length; i++) {
+        sb.Append(";").Append(array[i]);
+        if (sb.Length > maximumToStringLength) {
+          sb.Append("...");
+          break;
+        }
       }
       sb.Append("]");
       return sb.ToString();
@@ -149,7 +156,8 @@ namespace HeuristicLab.Data {
     protected virtual void OnItemChanged(int index) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int>(index));
-      OnToStringChanged();
+      if (index < maximumToStringLength)
+        OnToStringChanged();
     }
     public event EventHandler Reset;
     protected virtual void OnReset() {
