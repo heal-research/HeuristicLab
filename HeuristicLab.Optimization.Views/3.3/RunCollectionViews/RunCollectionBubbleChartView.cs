@@ -55,17 +55,24 @@ namespace HeuristicLab.Optimization.Views {
     private bool isSelecting = false;
     private bool suppressUpdates = false;
 
+    private const double transperencyExponent = 2.5;
+
+    private RunCollectionContentConstraint visibilityConstraint = new RunCollectionContentConstraint() { Active = true };
 
     public RunCollectionBubbleChartView() {
       InitializeComponent();
 
-      chart.ContextMenuStrip.Items.Insert(0, hideRunToolStripMenuItem);
-      chart.ContextMenuStrip.Items.Insert(1, openBoxPlotViewToolStripMenuItem);
-      chart.ContextMenuStrip.Items.Add(getDataAsMatrixToolStripMenuItem);
+      chart.ContextMenuStrip.Items.Insert(0, openBoxPlotViewToolStripMenuItem);
+      chart.ContextMenuStrip.Items.Insert(1, getDataAsMatrixToolStripMenuItem);
+      chart.ContextMenuStrip.Items.Insert(2, new ToolStripSeparator());
+      chart.ContextMenuStrip.Items.Insert(3, hideRunsToolStripMenuItem);
+      chart.ContextMenuStrip.Items.Insert(4, unhideAllRunToolStripMenuItem);
+      chart.ContextMenuStrip.Items.Insert(5, colorResetToolStripMenuItem);
+      chart.ContextMenuStrip.Items.Insert(6, new ToolStripSeparator());
       chart.ContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(ContextMenuStrip_Opening);
 
-      colorDialog.Color = Color.Black;
-      colorDialogButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
+      colorDialog.Color = Color.Orange;
+      colorRunsButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
       isSelecting = false;
 
       chart.CustomizeAllChartAreas();
@@ -166,7 +173,7 @@ namespace HeuristicLab.Optimization.Views {
             point.Color = Color.Red;
             point.MarkerStyle = MarkerStyle.Cross;
           } else {
-            point.Color = Color.FromArgb(255 - transparencyTrackBar.Value, ((IRun)point.Tag).Color);
+            point.Color = Color.FromArgb(255 - LogTransform(transparencyTrackBar.Value), ((IRun)point.Tag).Color);
             point.MarkerStyle = MarkerStyle.Circle;
           }
 
@@ -309,7 +316,7 @@ namespace HeuristicLab.Optimization.Views {
       double maxSizeValue = sizeValues.Max();
       double sizeRange = maxSizeValue - minSizeValue;
 
-      const int smallestBubbleSize = 5;
+      const int smallestBubbleSize = 7;
 
       foreach (DataPoint point in series.Points) {
         //calculates the relative size of the data point  0 <= relativeSize <= 1
@@ -330,9 +337,6 @@ namespace HeuristicLab.Optimization.Views {
       var xAxis = this.chart.ChartAreas[0].AxisX;
       var yAxis = this.chart.ChartAreas[0].AxisY;
 
-      SetAutomaticUpdateOfAxis(xAxis, false);
-      SetAutomaticUpdateOfAxis(yAxis, false);
-
       double xAxisRange = xAxis.Maximum - xAxis.Minimum;
       double yAxisRange = yAxis.Maximum - yAxis.Minimum;
 
@@ -350,6 +354,14 @@ namespace HeuristicLab.Optimization.Views {
         point.YValues[0] = yValue;
       }
 
+      if (xJitterFactor.IsAlmost(0.0) && yJitterFactor.IsAlmost(0.0)) {
+        SetAutomaticUpdateOfAxis(xAxis, true);
+        SetAutomaticUpdateOfAxis(yAxis, true);
+        chart.ChartAreas[0].RecalculateAxesScale();
+      } else {
+        SetAutomaticUpdateOfAxis(xAxis, false);
+        SetAutomaticUpdateOfAxis(yAxis, false);
+      }
     }
 
     // sets an axis to automatic or restrains it to its current values
@@ -430,9 +442,8 @@ namespace HeuristicLab.Optimization.Views {
     private double GetCategoricalValue(int dimension, string value) {
       if (!this.categoricalMapping.ContainsKey(dimension)) {
         this.categoricalMapping[dimension] = new Dictionary<object, double>();
-        var orderedCategories = Content.Where(r => r.Visible).Select(r => Content.GetValue(r, dimension).ToString())
-                                    .Distinct()
-                                    .OrderBy(x => x, new NaturalStringComparer());
+        var orderedCategories = Content.Where(r => r.Visible && Content.GetValue(r, dimension) != null).Select(r => Content.GetValue(r, dimension).ToString())
+                                    .Distinct().OrderBy(x => x, new NaturalStringComparer());
         int count = 1;
         foreach (var category in orderedCategories) {
           this.categoricalMapping[dimension].Add(category, count);
@@ -534,6 +545,10 @@ namespace HeuristicLab.Optimization.Views {
       double minY = Math.Min(yCursor.SelectionStart, yCursor.SelectionEnd);
       double maxY = Math.Max(yCursor.SelectionStart, yCursor.SelectionEnd);
 
+      if (Control.ModifierKeys != Keys.Control) {
+        ClearSelectedRuns();
+      }
+
       //check for click to select a single model
       if (minX == maxX && minY == maxY) {
         HitTestResult hitTest = chart.HitTest(e.X, e.Y, ChartElementType.DataPoint);
@@ -544,12 +559,11 @@ namespace HeuristicLab.Optimization.Views {
           point.Color = Color.Red;
           point.MarkerStyle = MarkerStyle.Cross;
           selectedRuns.Add(run);
-
-        } else ClearSelectedRuns();
+        }
       } else {
         foreach (DataPoint point in this.chart.Series[0].Points) {
-          if (point.XValue < minX || point.XValue >= maxX) continue;
-          if (point.YValues[0] < minY || point.YValues[0] >= maxY) continue;
+          if (point.XValue < minX || point.XValue > maxX) continue;
+          if (point.YValues[0] < minY || point.YValues[0] > maxY) continue;
           point.MarkerStyle = MarkerStyle.Cross;
           point.Color = Color.Red;
           IRun run = (IRun)point.Tag;
@@ -687,8 +701,8 @@ namespace HeuristicLab.Optimization.Views {
 
     private void zoomButton_CheckedChanged(object sender, EventArgs e) {
       this.isSelecting = selectButton.Checked;
-      this.colorDialogButton.Enabled = this.isSelecting;
       this.colorRunsButton.Enabled = this.isSelecting;
+      this.colorDialogButton.Enabled = this.isSelecting;
       this.hideRunsButton.Enabled = this.isSelecting;
       this.chart.ChartAreas[0].AxisX.ScaleView.Zoomable = !isSelecting;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = !isSelecting;
@@ -700,32 +714,38 @@ namespace HeuristicLab.Optimization.Views {
       var pos = Control.MousePosition;
       var chartPos = chart.PointToClient(pos);
 
-      HitTestResult h = this.chart.HitTest(chartPos.X, chartPos.Y);
+      HitTestResult h = this.chart.HitTest(chartPos.X, chartPos.Y, ChartElementType.DataPoint);
       if (h.ChartElementType == ChartElementType.DataPoint) {
         runToHide = (IRun)((DataPoint)h.Object).Tag;
-        hideRunToolStripMenuItem.Visible = true;
+        hideRunsToolStripMenuItem.Visible = true;
       } else {
         runToHide = null;
-        hideRunToolStripMenuItem.Visible = false;
+        hideRunsToolStripMenuItem.Visible = false;
       }
-
     }
-    private void hideRunToolStripMenuItem_Click(object sender, EventArgs e) {
-      var constraint = Content.Constraints.OfType<RunCollectionContentConstraint>().FirstOrDefault(c => c.Active);
-      if (constraint == null) {
-        constraint = new RunCollectionContentConstraint();
-        Content.Constraints.Add(constraint);
-        constraint.Active = true;
-      }
-      constraint.ConstraintData.Add(runToHide);
+
+    private void unhideAllRunToolStripMenuItem_Click(object sender, EventArgs e) {
+      visibilityConstraint.ConstraintData.Clear();
+      if (Content.Constraints.Contains(visibilityConstraint)) Content.Constraints.Remove(visibilityConstraint);
+    }
+    private void hideRunsToolStripMenuItem_Click(object sender, EventArgs e) {
+      HideRuns(selectedRuns);
+      //could not use ClearSelectedRuns as the runs are not visible anymore
+      selectedRuns.Clear();
     }
     private void hideRunsButton_Click(object sender, EventArgs e) {
-      if (!selectedRuns.Any()) return;
-      var constraint = new RunCollectionContentConstraint();
-      constraint.ConstraintData = new ItemSet<IRun>(selectedRuns);
-      Content.Constraints.Add(constraint);
-      ClearSelectedRuns();
-      constraint.Active = true;
+      HideRuns(selectedRuns);
+      //could not use ClearSelectedRuns as the runs are not visible anymore
+      selectedRuns.Clear();
+    }
+
+    private void HideRuns(IEnumerable<IRun> runs) {
+      visibilityConstraint.Active = false;
+      if (!Content.Constraints.Contains(visibilityConstraint)) Content.Constraints.Add(visibilityConstraint);
+      foreach (var run in selectedRuns) {
+        visibilityConstraint.ConstraintData.Add(run);
+      }
+      visibilityConstraint.Active = true;
     }
 
     private void ClearSelectedRuns() {
@@ -799,9 +819,23 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     #region coloring
+    private void colorResetToolStripMenuItem_Click(object sender, EventArgs e) {
+      Content.UpdateOfRunsInProgress = true;
+
+      IEnumerable<IRun> runs;
+      if (selectedRuns.Any()) runs = selectedRuns;
+      else runs = Content;
+
+      foreach (var run in runs)
+        run.Color = Color.Black;
+      ClearSelectedRuns();
+
+      Content.UpdateOfRunsInProgress = false;
+    }
     private void colorDialogButton_Click(object sender, EventArgs e) {
       if (colorDialog.ShowDialog(this) == DialogResult.OK) {
-        this.colorDialogButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
+        this.colorRunsButton.Image = this.GenerateImage(16, 16, this.colorDialog.Color);
+        colorRunsButton_Click(sender, e);
       }
     }
     private Image GenerateImage(int width, int height, Color fillColor) {

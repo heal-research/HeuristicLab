@@ -47,7 +47,6 @@ namespace HeuristicLab.Optimization.Views {
       this.components = new System.ComponentModel.Container();
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
       System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RunCollectionBubbleChartView));
       this.yJitterLabel = new System.Windows.Forms.Label();
       this.xJitterlabel = new System.Windows.Forms.Label();
       this.xTrackBar = new System.Windows.Forms.TrackBar();
@@ -60,28 +59,30 @@ namespace HeuristicLab.Optimization.Views {
       this.sizeLabel = new System.Windows.Forms.Label();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.openBoxPlotViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.hideRunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.hideRunsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.zoomButton = new System.Windows.Forms.RadioButton();
       this.selectButton = new System.Windows.Forms.RadioButton();
       this.radioButtonGroup = new System.Windows.Forms.GroupBox();
-      this.colorDialogButton = new System.Windows.Forms.Button();
+      this.colorRunsButton = new System.Windows.Forms.Button();
       this.colorDialog = new System.Windows.Forms.ColorDialog();
       this.tooltip = new System.Windows.Forms.ToolTip(this.components);
       this.colorXAxisButton = new System.Windows.Forms.Button();
       this.colorYAxisButton = new System.Windows.Forms.Button();
+      this.transparencyTrackBar = new System.Windows.Forms.TrackBar();
+      this.hideRunsButton = new System.Windows.Forms.Button();
       this.noRunsLabel = new System.Windows.Forms.Label();
       this.sizeTrackBar = new System.Windows.Forms.TrackBar();
       this.getDataAsMatrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.transparencyTrackBar = new System.Windows.Forms.TrackBar();
       this.transparencyLabel = new System.Windows.Forms.Label();
-      this.colorRunsButton = new System.Windows.Forms.Button();
-      this.hideRunsButton = new System.Windows.Forms.Button();
+      this.unhideAllRunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.colorResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.colorDialogButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.yTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.radioButtonGroup.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.sizeTrackBar)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.transparencyTrackBar)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.sizeTrackBar)).BeginInit();
       this.SuspendLayout();
       // 
       // yJitterLabel
@@ -221,12 +222,12 @@ namespace HeuristicLab.Optimization.Views {
       this.openBoxPlotViewToolStripMenuItem.Text = "Open BoxPlot View";
       this.openBoxPlotViewToolStripMenuItem.Click += new System.EventHandler(this.openBoxPlotViewToolStripMenuItem_Click);
       // 
-      // hideRunToolStripMenuItem
+      // hideRunsToolStripMenuItem
       // 
-      this.hideRunToolStripMenuItem.Name = "hideRunToolStripMenuItem";
-      this.hideRunToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
-      this.hideRunToolStripMenuItem.Text = "Hide Run";
-      this.hideRunToolStripMenuItem.Click += new System.EventHandler(this.hideRunToolStripMenuItem_Click);
+      this.hideRunsToolStripMenuItem.Name = "hideRunsToolStripMenuItem";
+      this.hideRunsToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.hideRunsToolStripMenuItem.Text = "Hide selected Runs";
+      this.hideRunsToolStripMenuItem.Click += new System.EventHandler(this.hideRunsToolStripMenuItem_Click);
       // 
       // zoomButton
       // 
@@ -264,19 +265,18 @@ namespace HeuristicLab.Optimization.Views {
       this.radioButtonGroup.TabIndex = 19;
       this.radioButtonGroup.TabStop = false;
       // 
-      // colorDialogButton
+      // colorRunsButton
       // 
-      this.colorDialogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.colorDialogButton.Enabled = false;
-      this.colorDialogButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.colorDialogButton.Location = new System.Drawing.Point(130, 469);
-      this.colorDialogButton.Name = "colorDialogButton";
-      this.colorDialogButton.Size = new System.Drawing.Size(21, 21);
-      this.colorDialogButton.TabIndex = 20;
-      this.colorDialogButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.tooltip.SetToolTip(this.colorDialogButton, "Choose color");
-      this.colorDialogButton.UseVisualStyleBackColor = true;
-      this.colorDialogButton.Click += new System.EventHandler(this.colorDialogButton_Click);
+      this.colorRunsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.colorRunsButton.Enabled = false;
+      this.colorRunsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.colorRunsButton.Location = new System.Drawing.Point(130, 469);
+      this.colorRunsButton.Name = "colorRunsButton";
+      this.colorRunsButton.Size = new System.Drawing.Size(21, 21);
+      this.colorRunsButton.TabIndex = 20;
+      this.tooltip.SetToolTip(this.colorRunsButton, "Color all selected runs");
+      this.colorRunsButton.UseVisualStyleBackColor = true;
+      this.colorRunsButton.Click += new System.EventHandler(this.colorRunsButton_Click);
       // 
       // colorDialog
       // 
@@ -308,6 +308,33 @@ namespace HeuristicLab.Optimization.Views {
       this.colorYAxisButton.UseVisualStyleBackColor = true;
       this.colorYAxisButton.Click += new System.EventHandler(this.colorYAxisButton_Click);
       // 
+      // transparencyTrackBar
+      // 
+      this.transparencyTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.transparencyTrackBar.LargeChange = 16;
+      this.transparencyTrackBar.Location = new System.Drawing.Point(359, 470);
+      this.transparencyTrackBar.Maximum = 254;
+      this.transparencyTrackBar.Name = "transparencyTrackBar";
+      this.transparencyTrackBar.Size = new System.Drawing.Size(64, 45);
+      this.transparencyTrackBar.TabIndex = 24;
+      this.transparencyTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
+      this.tooltip.SetToolTip(this.transparencyTrackBar, "Sets the transparency of the colors");
+      this.transparencyTrackBar.ValueChanged += new System.EventHandler(this.transparencyTrackBar_ValueChanged);
+      // 
+      // hideRunsButton
+      // 
+      this.hideRunsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.hideRunsButton.Enabled = false;
+      this.hideRunsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.hideRunsButton.Location = new System.Drawing.Point(177, 469);
+      this.hideRunsButton.Name = "hideRunsButton";
+      this.hideRunsButton.Size = new System.Drawing.Size(43, 21);
+      this.hideRunsButton.TabIndex = 26;
+      this.hideRunsButton.Text = "Hide";
+      this.tooltip.SetToolTip(this.hideRunsButton, "Hides all selected runs");
+      this.hideRunsButton.UseVisualStyleBackColor = true;
+      this.hideRunsButton.Click += new System.EventHandler(this.hideRunsButton_Click);
+      // 
       // noRunsLabel
       // 
       this.noRunsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -338,19 +365,6 @@ namespace HeuristicLab.Optimization.Views {
       this.getDataAsMatrixToolStripMenuItem.Text = "Get Data as Matrix";
       this.getDataAsMatrixToolStripMenuItem.Click += new System.EventHandler(this.getDataAsMatrixToolStripMenuItem_Click);
       // 
-      // transparencyTrackBar
-      // 
-      this.transparencyTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.transparencyTrackBar.LargeChange = 16;
-      this.transparencyTrackBar.Location = new System.Drawing.Point(359, 470);
-      this.transparencyTrackBar.Maximum = 254;
-      this.transparencyTrackBar.Name = "transparencyTrackBar";
-      this.transparencyTrackBar.Size = new System.Drawing.Size(64, 45);
-      this.transparencyTrackBar.TabIndex = 24;
-      this.transparencyTrackBar.TickStyle = System.Windows.Forms.TickStyle.None;
-      this.tooltip.SetToolTip(this.transparencyTrackBar, "Sets the transparency of the colors");
-      this.transparencyTrackBar.ValueChanged += new System.EventHandler(this.transparencyTrackBar_ValueChanged);
-      // 
       // transparencyLabel
       // 
       this.transparencyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -361,35 +375,35 @@ namespace HeuristicLab.Optimization.Views {
       this.transparencyLabel.TabIndex = 12;
       this.transparencyLabel.Text = "Transparency:";
       // 
-      // colorRunsButton
+      // unhideAllRunToolStripMenuItem
       // 
-      this.colorRunsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.colorRunsButton.Enabled = false;
-      this.colorRunsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.colorRunsButton.Location = new System.Drawing.Point(151, 469);
-      this.colorRunsButton.Name = "colorRunsButton";
-      this.colorRunsButton.Size = new System.Drawing.Size(43, 21);
-      this.colorRunsButton.TabIndex = 25;
-      this.colorRunsButton.Text = "Color";
-      this.colorRunsButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      this.tooltip.SetToolTip(this.colorRunsButton, "Color all selected runs");
-      this.colorRunsButton.UseVisualStyleBackColor = true;
-      this.colorRunsButton.Click += new System.EventHandler(this.colorRunsButton_Click);
+      this.unhideAllRunToolStripMenuItem.Name = "unhideAllRunToolStripMenuItem";
+      this.unhideAllRunToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.unhideAllRunToolStripMenuItem.Text = "Unhide all";
+      this.unhideAllRunToolStripMenuItem.Click += new System.EventHandler(this.unhideAllRunToolStripMenuItem_Click);
       // 
-      // hideRunsButton
+      // colorResetToolStripMenuItem
       // 
-      this.hideRunsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.hideRunsButton.Enabled = false;
-      this.hideRunsButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-      this.hideRunsButton.Location = new System.Drawing.Point(194, 469);
-      this.hideRunsButton.Name = "hideRunsButton";
-      this.hideRunsButton.Size = new System.Drawing.Size(43, 21);
-      this.hideRunsButton.TabIndex = 26;
-      this.hideRunsButton.Text = "Hide";
-      this.hideRunsButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-      this.tooltip.SetToolTip(this.hideRunsButton, "Hides all selected runs");
-      this.hideRunsButton.UseVisualStyleBackColor = true;
-      this.hideRunsButton.Click += new System.EventHandler(this.hideRunsButton_Click);
+      this.colorResetToolStripMenuItem.Name = "colorResetToolStripMenuItem";
+      this.colorResetToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+      this.colorResetToolStripMenuItem.Text = "Color reset";
+      this.colorResetToolStripMenuItem.Click += new System.EventHandler(this.colorResetToolStripMenuItem_Click);
+      // 
+      // colorDialogButton
+      // 
+      this.colorDialogButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.colorDialogButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+      this.colorDialogButton.Enabled = false;
+      this.colorDialogButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.colorDialogButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.colorDialogButton.Location = new System.Drawing.Point(150, 469);
+      this.colorDialogButton.Name = "colorDialogButton";
+      this.colorDialogButton.Size = new System.Drawing.Size(14, 21);
+      this.colorDialogButton.TabIndex = 25;
+      this.colorDialogButton.Text = "v";
+      this.tooltip.SetToolTip(this.colorDialogButton, "Choose color");
+      this.colorDialogButton.UseVisualStyleBackColor = true;
+      this.colorDialogButton.Click += new System.EventHandler(this.colorDialogButton_Click);
       // 
       // RunCollectionBubbleChartView
       // 
@@ -397,15 +411,13 @@ namespace HeuristicLab.Optimization.Views {
       this.BackColor = System.Drawing.SystemColors.Window;
       this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.Controls.Add(this.hideRunsButton);
-      this.Controls.Add(this.colorRunsButton);
       this.Controls.Add(this.transparencyTrackBar);
       this.Controls.Add(this.sizeTrackBar);
       this.Controls.Add(this.colorYAxisButton);
       this.Controls.Add(this.colorXAxisButton);
       this.Controls.Add(this.noRunsLabel);
-      this.Controls.Add(this.colorDialogButton);
+      this.Controls.Add(this.colorRunsButton);
       this.Controls.Add(this.radioButtonGroup);
-      this.Controls.Add(this.chart);
       this.Controls.Add(this.sizeLabel);
       this.Controls.Add(this.sizeComboBox);
       this.Controls.Add(this.yJitterLabel);
@@ -417,6 +429,8 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.Add(this.yAxisLabel);
       this.Controls.Add(this.yAxisComboBox);
       this.Controls.Add(this.yTrackBar);
+      this.Controls.Add(this.colorDialogButton);
+      this.Controls.Add(this.chart);
       this.Name = "RunCollectionBubbleChartView";
       this.Size = new System.Drawing.Size(854, 496);
       ((System.ComponentModel.ISupportInitialize)(this.xTrackBar)).EndInit();
@@ -424,8 +438,8 @@ namespace HeuristicLab.Optimization.Views {
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.radioButtonGroup.ResumeLayout(false);
       this.radioButtonGroup.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.sizeTrackBar)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.transparencyTrackBar)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.sizeTrackBar)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -446,19 +460,21 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.RadioButton zoomButton;
     private System.Windows.Forms.RadioButton selectButton;
     private System.Windows.Forms.GroupBox radioButtonGroup;
-    private System.Windows.Forms.Button colorDialogButton;
+    private System.Windows.Forms.Button colorRunsButton;
     private System.Windows.Forms.ColorDialog colorDialog;
     private System.Windows.Forms.ToolTip tooltip;
     private System.Windows.Forms.Label noRunsLabel;
     private System.Windows.Forms.ToolStripMenuItem openBoxPlotViewToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem hideRunToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem hideRunsToolStripMenuItem;
     private System.Windows.Forms.Button colorXAxisButton;
     private System.Windows.Forms.Button colorYAxisButton;
     private System.Windows.Forms.TrackBar sizeTrackBar;
     private System.Windows.Forms.ToolStripMenuItem getDataAsMatrixToolStripMenuItem;
     private System.Windows.Forms.TrackBar transparencyTrackBar;
     private System.Windows.Forms.Label transparencyLabel;
-    private System.Windows.Forms.Button colorRunsButton;
     private System.Windows.Forms.Button hideRunsButton;
+    private System.Windows.Forms.ToolStripMenuItem unhideAllRunToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem colorResetToolStripMenuItem;
+    private System.Windows.Forms.Button colorDialogButton;
   }
 }
