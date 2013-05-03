@@ -33,6 +33,8 @@ namespace HeuristicLab.Data {
   [Item("StringMatrix", "Represents a matrix of strings.")]
   [StorableClass]
   public class StringMatrix : Item, IEnumerable<string>, IStringConvertibleMatrix {
+    private const int maximumToStringLength = 100;
+
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
@@ -207,17 +209,23 @@ namespace HeuristicLab.Data {
     }
 
     public override string ToString() {
+      if (matrix.Length == 0) return "[]";
+
       StringBuilder sb = new StringBuilder();
       sb.Append("[");
-      if (matrix.Length > 0) {
-        for (int i = 0; i < Rows; i++) {
-          sb.Append("[").Append(matrix[i, 0]);
-          for (int j = 1; j < Columns; j++)
-            sb.Append(";").Append(matrix[i, j]);
-          sb.Append("]");
+      for (int i = 0; i < Rows; i++) {
+        sb.Append("[").Append(matrix[i, 0]);
+        for (int j = 1; j < Columns; j++)
+          sb.Append(";").Append(matrix[i, j]);
+        sb.Append("]");
+
+        if (sb.Length > maximumToStringLength) {
+          sb.Append("[...]");
+          break;
         }
       }
       sb.Append("]");
+
       return sb.ToString();
     }
 
@@ -285,7 +293,11 @@ namespace HeuristicLab.Data {
     protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int, int>(rowIndex, columnIndex));
-      OnToStringChanged();
+
+      //approximation to avoid firing of unnecessary ToStringChangedEvents
+      //columnIndex is not used, because always full rows are returned in the ToString method
+      if (rowIndex * Columns < maximumToStringLength)
+        OnToStringChanged();
     }
     public event EventHandler Reset;
     protected virtual void OnReset() {
