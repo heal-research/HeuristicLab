@@ -75,7 +75,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       Content.HiveTasksChanged += new EventHandler(Content_HiveTasksChanged);
       Content.ExecutionStateChanged += new EventHandler(Content_ExecutionStateChanged);
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
-      Content.IsAllowedPrivilegedChanged += new EventHandler(Content_IsAllowedPrivilegedChanged);
       Content.Loaded += new EventHandler(Content_Loaded);
       Content.TaskReceived += new EventHandler(Content_TaskReceived);
       progressView = new ProgressView(this, progress);
@@ -144,7 +143,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           nameTextBox.Text = Content.Job.Name;
           executionTimeTextBox.Text = Content.ExecutionTime.ToString();
           resourceNamesTextBox.Text = Content.Job.ResourceNames;
-          isPrivilegedCheckBox.Checked = Content.IsAllowedPrivileged;
+          isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
           refreshAutomaticallyCheckBox.Checked = Content.RefreshAutomatically;
           logView.Content = Content.Log;
           lock (runCollectionViewLocker) {
@@ -326,6 +325,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       lock (runCollectionViewLocker) {
         runCollectionViewHost.Content = GetAllRunsFromJob(Content);
       }
+      isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
     }
 
     private void Content_HiveExperimentChanged(object sender, EventArgs e) {
@@ -367,14 +367,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         Invoke(new EventHandler(Content_StateLogListChanged), sender, e);
       else {
         UpdateStateLogList();
-      }
-    }
-    private void Content_IsAllowedPrivilegedChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_IsAllowedPrivilegedChanged), sender, e);
-      else {
-        isPrivilegedCheckBox.Checked = Content.IsAllowedPrivileged;
-        SetEnabledStateOfControls();
       }
     }
 
@@ -477,7 +469,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void isPrivilegedCheckBox_CheckChanged(object sender, EventArgs e) {
-      if (Content != null && !SuppressEvents) Content.IsAllowedPrivileged = isPrivilegedCheckBox.Checked;
+      if (Content != null && !SuppressEvents) Content.Job.IsPrivileged = isPrivilegedCheckBox.Checked;
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {

@@ -156,17 +156,6 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    // may execute jobs with privileged permissions on slaves
-    public bool IsAllowedPrivileged {
-      get { return Job.IsPrivileged; }
-      set {
-        if (value != Job.IsPrivileged) {
-          Job.IsPrivileged = value;
-          OnIsAllowedPrivilegedChanged();
-        }
-      }
-    }
-
     private Progress progress;
     public Progress Progress {
       get { return progress; }
@@ -195,9 +184,9 @@ namespace HeuristicLab.Clients.Hive {
       this.jobDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(jobDownloader_ExceptionOccured);
       this.HiveTasks = new ItemCollection<HiveTask>();
     }
-    public RefreshableJob(Job hiveExperiment) {
+    public RefreshableJob(Job hiveJob) {
       this.refreshAutomatically = true;
-      this.Job = hiveExperiment;
+      this.Job = hiveJob;
       this.log = new ThreadSafeLog();
       this.jobDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
       this.jobDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(jobDownloader_ExceptionOccured);
@@ -429,12 +418,6 @@ namespace HeuristicLab.Clients.Hive {
     public event EventHandler IsSharableChanged;
     private void OnIsSharableChanged() {
       var handler = IsSharableChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler IsAllowedPrivilegedChanged;
-    private void OnIsAllowedPrivilegedChanged() {
-      var handler = IsAllowedPrivilegedChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
 
