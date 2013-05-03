@@ -327,9 +327,8 @@ namespace HeuristicLab.Optimization.Views {
     private double GetCategoricalValue(int dimension, string value) {
       if (!this.categoricalMapping.ContainsKey(dimension)) {
         this.categoricalMapping[dimension] = new Dictionary<object, double>();
-        var orderedCategories = Content.Where(r=> r.Visible).Select(r => Content.GetValue(r, dimension).ToString())
-                                .Distinct()
-                                .OrderBy(x => x, new NaturalStringComparer());
+        var orderedCategories = Content.Where(r => r.Visible && Content.GetValue(r, dimension) != null).Select(r => Content.GetValue(r, dimension).ToString())
+                                       .Distinct().OrderBy(x => x, new NaturalStringComparer());
         int count = 1;
         foreach (var category in orderedCategories) {
           this.categoricalMapping[dimension].Add(category, count);
@@ -388,7 +387,8 @@ namespace HeuristicLab.Optimization.Views {
     private void SetCustomAxisLabels(Axis axis, int dimension) {
       axis.CustomLabels.Clear();
       if (categoricalMapping.ContainsKey(dimension)) {
-        foreach (var pair in categoricalMapping[dimension]) {
+        int position = 1;
+        foreach (var pair in categoricalMapping[dimension].Where(x => seriesCache.ContainsKey(x.Value))) {
           string labelText = pair.Key.ToString();
           CustomLabel label = new CustomLabel();
           label.ToolTip = labelText;
@@ -396,9 +396,10 @@ namespace HeuristicLab.Optimization.Views {
             labelText = labelText.Substring(0, 25) + " ... ";
           label.Text = labelText;
           label.GridTicks = GridTickTypes.TickMark;
-          label.FromPosition = pair.Value - 0.5;
-          label.ToPosition = pair.Value + 0.5;
+          label.FromPosition = position - 0.5;
+          label.ToPosition = position + 0.5;
           axis.CustomLabels.Add(label);
+          position++;
         }
       } else if (dimension > 0 && Content.GetValue(0, dimension) is TimeSpanValue) {
         this.chart.ChartAreas[0].RecalculateAxesScale();
