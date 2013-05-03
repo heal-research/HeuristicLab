@@ -112,7 +112,7 @@ namespace HeuristicLab.Clients.Hive {
         var jobsLoaded = HiveServiceLocator.Instance.CallHiveService<IEnumerable<Job>>(s => s.GetJobs());
 
         foreach (var j in jobsLoaded) {
-          jobs.Add(new RefreshableJob(j) { IsAllowedPrivileged = this.isAllowedPrivileged });
+          jobs.Add(new RefreshableJob(j));
         }
       }
       catch {
@@ -451,6 +451,7 @@ namespace HeuristicLab.Clients.Hive {
         }
         IDictionary<Guid, HiveTask> allHiveTasks = downloader.Results;
         var parents = allHiveTasks.Values.Where(x => !x.Task.ParentTaskId.HasValue);
+        refreshableJob.Job.IsPrivileged = allHiveTasks.Any(x => x.Value.Task.IsPrivileged);
 
         refreshableJob.Progress.Status = "Downloading/deserializing complete. Displaying tasks...";
         // build child-task tree
