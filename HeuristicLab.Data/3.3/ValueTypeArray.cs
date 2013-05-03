@@ -33,6 +33,8 @@ namespace HeuristicLab.Data {
   [Item("ValueTypeArray", "An abstract base class for representing arrays of value types.")]
   [StorableClass]
   public abstract class ValueTypeArray<T> : Item, IEnumerable<T> where T : struct {
+    private const int maximumToStringLength = 100;
+
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Class; }
     }
@@ -98,12 +100,17 @@ namespace HeuristicLab.Data {
     }
 
     public override string ToString() {
+      if (array.Length == 0) return "[]";
+
       StringBuilder sb = new StringBuilder();
       sb.Append("[");
-      if (array.Length > 0) {
-        sb.Append(array[0].ToString());
-        for (int i = 1; i < array.Length; i++)
-          sb.Append(";").Append(array[i].ToString());
+      sb.Append(array[0].ToString());
+      for (int i = 1; i < array.Length; i++) {
+        sb.Append(";").Append(array[i].ToString());
+        if (sb.Length > maximumToStringLength) {
+          sb.Append("...");
+          break;
+        }
       }
       sb.Append("]");
       return sb.ToString();
@@ -121,7 +128,8 @@ namespace HeuristicLab.Data {
     protected virtual void OnItemChanged(int index) {
       if (ItemChanged != null)
         ItemChanged(this, new EventArgs<int>(index));
-      OnToStringChanged();
+      if (index < maximumToStringLength)
+        OnToStringChanged();
     }
     public event EventHandler Reset;
     protected virtual void OnReset() {
