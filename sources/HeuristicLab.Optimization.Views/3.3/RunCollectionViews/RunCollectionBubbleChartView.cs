@@ -763,7 +763,7 @@ namespace HeuristicLab.Optimization.Views {
       double min = transparencyTrackBar.Minimum;
       double max = transparencyTrackBar.Maximum;
       double r = (x - min) / (max - min);  // r \in [0..1]
-      double l = Math.Log(r + 1) / Math.Log(2.0); // l \in [0..1]
+      double l = Math.Max(Math.Min((1.0 - Math.Pow(0.05, r)) / 0.95, 1), 0); // l \in [0..1]
       return (int)Math.Round(255.0 * l);
     }
 
