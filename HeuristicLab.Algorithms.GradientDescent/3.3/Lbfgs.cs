@@ -21,6 +21,8 @@
 #endregion
 
 using System;
+using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -50,6 +52,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
 
     public string Filename { get; set; }
 
+    private const string AnalyzerParameterName = "Analyzer";
     private const string MaxIterationsParameterName = "MaxIterations";
     private const string ApproximateGradientsParameterName = "ApproximateGradients";
     private const string SeedParameterName = "Seed";
@@ -57,6 +60,9 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     private const string GradientCheckStepSizeParameterName = "GradientCheckStepSize";
 
     #region parameter properties
+    public IValueParameter<IMultiAnalyzer> AnalyzerParameter {
+      get { return (IValueParameter<IMultiAnalyzer>)Parameters[AnalyzerParameterName]; }
+    }
     public IValueParameter<IntValue> MaxIterationsParameter {
       get { return (IValueParameter<IntValue>)Parameters[MaxIterationsParameterName]; }
     }
@@ -71,6 +77,10 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     }
     #endregion
     #region properties
+    public IMultiAnalyzer Analyzer {
+      get { return AnalyzerParameter.Value; }
+      set { AnalyzerParameter.Value = value; }
+    }
     public int MaxIterations {
       set { MaxIterationsParameter.Value.Value = value; }
       get { return MaxIterationsParameter.Value.Value; }
@@ -88,8 +98,6 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     [Storable]
     private LbfgsAnalyzer analyzer;
     [Storable]
-    private LbfgsAnalyzer finalAnalyzer;
-    [Storable]
     private Placeholder solutionCreator;
     [Storable]
     private Placeholder evaluator;
@@ -102,14 +110,13 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       makeStep = cloner.Clone(original.makeStep);
       updateResults = cloner.Clone(original.updateResults);
       analyzer = cloner.Clone(original.analyzer);
-      finalAnalyzer = cloner.Clone(original.finalAnalyzer);
       solutionCreator = cloner.Clone(original.solutionCreator);
       evaluator = cloner.Clone(original.evaluator);
       RegisterEvents();
     }
     public LbfgsAlgorithm()
       : base() {
-
+      Parameters.Add(new ValueParameter<IMultiAnalyzer>(AnalyzerParameterName, "The analyzers that will be executed on the solution.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<IntValue>(MaxIterationsParameterName, "The maximal number of iterations for.", new IntValue(20)));
       Parameters.Add(new ValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
@@ -126,8 +133,8 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       var branch = new ConditionalBranch();
       evaluator = new Placeholder();
       updateResults = new LbfgsUpdateResults();
-      analyzer = new LbfgsAnalyzer();
-      finalAnalyzer = new LbfgsAnalyzer();
+      var analyzerPlaceholder = new Placeholder();
+      var finalAnalyzerPlaceholder = new Placeholder();
 
       OperatorGraph.InitialOperator = randomCreator;
 
@@ -149,21 +156,25 @@ namespace HeuristicLab.Algorithms.GradientDescent {
 
       branch.ConditionParameter.ActualName = makeStep.TerminationCriterionParameter.Name;
       branch.FalseBranch = evaluator;
-      branch.TrueBranch = finalAnalyzer;
+      branch.TrueBranch = finalAnalyzerPlaceholder;
 
       evaluator.Name = "(Evaluator)";
       evaluator.Successor = updateResults;
 
       updateResults.StateParameter.ActualName = initializer.StateParameter.Name;
       updateResults.ApproximateGradientsParameter.ActualName = ApproximateGradientsParameterName;
-      updateResults.Successor = analyzer;
+      updateResults.Successor = analyzerPlaceholder;
 
+      analyzerPlaceholder.Name = "(Analyzer)";
+      analyzerPlaceholder.OperatorParameter.ActualName = AnalyzerParameterName;
+      analyzerPlaceholder.Successor = makeStep;
+
+      finalAnalyzerPlaceholder.Name = "(Analyzer)";
+      finalAnalyzerPlaceholder.OperatorParameter.ActualName = AnalyzerParameterName;
+      finalAnalyzerPlaceholder.Successor = null;
+
+      analyzer = new LbfgsAnalyzer();
       analyzer.StateParameter.ActualName = initializer.StateParameter.Name;
-      analyzer.Successor = makeStep;
-
-      finalAnalyzer.PointsTableParameter.ActualName = analyzer.PointsTableParameter.ActualName;
-      finalAnalyzer.QualityGradientsTableParameter.ActualName = analyzer.QualityGradientsTableParameter.ActualName;
-      finalAnalyzer.QualitiesTableParameter.ActualName = analyzer.QualitiesTableParameter.ActualName;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -189,6 +200,8 @@ namespace HeuristicLab.Algorithms.GradientDescent {
         RegisterEvents();
         solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
         evaluator.OperatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+        UpdateAnalyzers();
+        ParameterizeOperators();
       }
     }
 
@@ -202,6 +215,11 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       base.Problem_EvaluatorChanged(sender, e);
       RegisterEvaluatorEvents();
       ParameterizeOperators();
+    }
+
+    protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
+      base.Problem_OperatorsChanged(sender, e);
+      UpdateAnalyzers();
     }
 
     private void RegisterSolutionCreatorEvents() {
@@ -229,6 +247,18 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       if (Problem != null) base.Prepare();
     }
 
+    private void UpdateAnalyzers() {
+      Analyzer.Operators.Clear();
+      if (Problem != null) {
+        foreach (var a in Problem.Operators.OfType<IAnalyzer>()) {
+          foreach (var param in a.Parameters.OfType<IScopeTreeLookupParameter>())
+            param.Depth = 0;
+          Analyzer.Operators.Add(a, a.EnabledByDefault);
+        }
+      }
+      Analyzer.Operators.Add(analyzer, analyzer.EnabledByDefault);
+    }
+
     private void ParameterizeOperators() {
       var realVectorCreator = Problem.SolutionCreator as IRealVectorCreator;
       // ignore if we have a different kind of problem
@@ -237,13 +267,11 @@ namespace HeuristicLab.Algorithms.GradientDescent {
         initializer.PointParameter.ActualName = realVectorParameterName;
         makeStep.PointParameter.ActualName = realVectorParameterName;
         analyzer.PointParameter.ActualName = realVectorParameterName;
-        finalAnalyzer.PointParameter.ActualName = realVectorParameterName;
       }
 
       var qualityParameterName = Problem.Evaluator.QualityParameter.ActualName;
       updateResults.QualityParameter.ActualName = qualityParameterName;
       analyzer.QualityParameter.ActualName = qualityParameterName;
-      finalAnalyzer.QualityParameter.ActualName = qualityParameterName;
     }
   }
 }
