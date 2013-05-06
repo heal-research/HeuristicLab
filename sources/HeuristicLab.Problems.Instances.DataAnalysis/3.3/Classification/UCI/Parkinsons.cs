@@ -22,8 +22,8 @@
 using System;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class Parkinson : UCIDataDescriptor {
-    public override string Filename { get { return "Parkinson"; } }
+  public class Parkinsons : UCIDataDescriptor {
+    public override string Filename { get { return "Parkinsons"; } }
     public override string Description {
       get {
         return "Data Set Information:" + Environment.NewLine

@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       List<UCIDataDescriptor> descriptorList = new List<UCIDataDescriptor>();
       descriptorList.Add(new Iris());
       descriptorList.Add(new Mammography());
-      descriptorList.Add(new Parkinson());
+      descriptorList.Add(new Parkinsons());
       descriptorList.Add(new Thyroid());
       descriptorList.Add(new Vertebral_3C());
       descriptorList.Add(new Wine());
