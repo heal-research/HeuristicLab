@@ -87,6 +87,8 @@ namespace HeuristicLab.Analysis {
     }
     public ScatterPlot()
       : base() {
+      this.Name = ItemName;
+      this.Description = ItemDescription;
       VisualProperties = new ScatterPlotVisualProperties();
       Rows = new NamedItemCollection<ScatterPlotDataRow>();
     }
@@ -125,6 +127,8 @@ namespace HeuristicLab.Analysis {
       if (string.IsNullOrEmpty(VisualProperties.YAxisTitle) && !string.IsNullOrEmpty(yAxisName)) VisualProperties.YAxisTitle = yAxisName;
       if (rows == null) Rows = new NamedItemCollection<ScatterPlotDataRow>();
       if ((Rows.Count == 0) && (points != null)) Rows.Add(new ScatterPlotDataRow(name, null, points.Select(p => new Point2D<double>(p.X, p.Y))));
+      if (string.IsNullOrEmpty(this.name)) this.name = ItemName;
+      if (string.IsNullOrEmpty(this.description)) this.description = ItemDescription;
     }
     #endregion
 
