@@ -47,11 +47,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                                                 data.AllowedInputVariables.Concat(data.TargetVariable.ToEnumerable()),
                                                 data.TrainingIndices);
 
-      var uniqueClasses = data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices).Distinct().Count();
+      // map class values to sequential natural numbers (required by alglib)
+      var uniqueClasses = data.Dataset.GetDoubleValues(data.TargetVariable, data.TrainingIndices)
+                                        .Distinct()
+                                        .Select((v, i) => new { v, i })
+                                        .ToDictionary(x => x.v, x => x.i);
+
+      for (int row = 0; row < instances; row++)
+        ldaDs[row, attributes] = uniqueClasses[ldaDs[row, attributes]];
 
       int info;
       double[,] matrix;
-      alglib.fisherldan(ldaDs, instances, attributes, uniqueClasses, out info, out matrix);
+      alglib.fisherldan(ldaDs, instances, attributes, uniqueClasses.Count, out info, out matrix);
 
       return matrix;
     }
