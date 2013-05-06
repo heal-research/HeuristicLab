@@ -118,7 +118,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     protected override void OnClosing(FormClosingEventArgs e) {
-      if (Content != null && Content.Jobs.Any(x => x.IsProgressing)) {
+      if (Content != null && Content.Jobs != null && Content.Jobs.Any(x => x.IsProgressing)) {
         DialogResult result = MessageBox.Show("There are still unfinished down/uploads. Are you sure you want to close the window?", "HeuristicLab Hive Job Manager", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
         if (result == DialogResult.No) {
@@ -130,7 +130,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
-      if (Content != null) {
+      if (Content != null && Content.Jobs != null) {
         Content.ClearHiveClient();
         Content = null;
       }
