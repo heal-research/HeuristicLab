@@ -72,13 +72,13 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     private static double CalculateRelativeDirected(Permutation left, Permutation right) {
-      int[] edges = new int[right.Length];
-      for (int i = 0; i < right.Length; i++)
-        edges[right[i]] = right[(i + 1) % right.Length];
+      int[] edgesR = CalculateEdgesVector(right);
+      int[] edgesL = CalculateEdgesVector(left);
 
       double similarity = 0.0;
-      for (int i = 0; i < left.Length; i++)
-        if (left[(i + 1) % left.Length] == edges[left[i]]) similarity++;
+      for (int i = 0; i < left.Length; i++) {
+        if (edgesL[i] == edgesR[i]) similarity++;
+      }
 
       return similarity / left.Length;
     }
