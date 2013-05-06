@@ -32,7 +32,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Instances.Views {
   [View("ProblemInstanceConsumerView")]
-  [Content(typeof(IProblemInstanceConsumer<>), IsDefaultView = true)]
+  [Content(typeof(IProblemInstanceConsumer<>), IsDefaultView = false)]
   public partial class ProblemInstanceConsumerViewGeneric<T> : ProblemInstanceConsumerView {
 
     public new IProblemInstanceConsumer<T> Content {

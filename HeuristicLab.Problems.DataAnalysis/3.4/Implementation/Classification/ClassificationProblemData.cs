@@ -310,7 +310,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
                                     .Take(maxSamples)
                                     .Distinct()
                                     .Count()
-                                  where distinctValues < MaximumNumberOfClasses
+                                  where distinctValues <= MaximumNumberOfClasses
                                   select v).ToArray();
 
       if (!validTargetVariables.Any())
