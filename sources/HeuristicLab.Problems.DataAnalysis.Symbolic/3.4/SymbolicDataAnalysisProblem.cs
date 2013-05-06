@@ -352,13 +352,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     #region Import & Export
-    public void Load(T data) {
+    public virtual void Load(T data) {
       Name = data.Name;
       Description = data.Description;
       ProblemData = data;
     }
 
-    public T Export() {
+    public virtual T Export() {
       return ProblemData;
     }
     #endregion

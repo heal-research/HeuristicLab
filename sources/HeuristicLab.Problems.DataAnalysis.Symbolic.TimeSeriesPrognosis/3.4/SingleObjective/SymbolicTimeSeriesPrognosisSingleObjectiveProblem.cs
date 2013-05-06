@@ -19,11 +19,13 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
   [Item("Symbolic Time-Series Prognosis Problem (single objective)", "Represents a single objective symbolic time-series prognosis problem.")]
@@ -128,6 +130,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
           op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
         }
       }
+    }
+
+    public override void Load(ITimeSeriesPrognosisProblemData data) {
+      base.Load(data);
+      this.ProblemData.TrainingPartition.Start =
+        Math.Min(10, this.ProblemData.TrainingPartition.End);
     }
   }
 }
