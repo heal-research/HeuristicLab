@@ -55,8 +55,6 @@ namespace HeuristicLab.Optimization.Views {
     private bool isSelecting = false;
     private bool suppressUpdates = false;
 
-    private const double transperencyExponent = 2.5;
-
     private RunCollectionContentConstraint visibilityConstraint = new RunCollectionContentConstraint() { Active = true };
 
     public RunCollectionBubbleChartView() {
@@ -715,19 +713,8 @@ namespace HeuristicLab.Optimization.Views {
       ClearSelectedRuns();
     }
 
-    private IRun runToHide = null;
     private void ContextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
-      var pos = Control.MousePosition;
-      var chartPos = chart.PointToClient(pos);
-
-      HitTestResult h = this.chart.HitTest(chartPos.X, chartPos.Y, ChartElementType.DataPoint);
-      if (h.ChartElementType == ChartElementType.DataPoint) {
-        runToHide = (IRun)((DataPoint)h.Object).Tag;
-        hideRunsToolStripMenuItem.Visible = true;
-      } else {
-        runToHide = null;
-        hideRunsToolStripMenuItem.Visible = false;
-      }
+      hideRunsToolStripMenuItem.Visible = selectedRuns.Any();
     }
 
     private void unhideAllRunToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -748,7 +735,7 @@ namespace HeuristicLab.Optimization.Views {
     private void HideRuns(IEnumerable<IRun> runs) {
       visibilityConstraint.Active = false;
       if (!Content.Constraints.Contains(visibilityConstraint)) Content.Constraints.Add(visibilityConstraint);
-      foreach (var run in selectedRuns) {
+      foreach (var run in runs) {
         visibilityConstraint.ConstraintData.Add(run);
       }
       visibilityConstraint.Active = true;
