@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       var rows = classes.Values.Select(x => x.Item2).Distinct().ToDictionary(c => c, c => new ScatterPlotDataRow(c, string.Empty, Enumerable.Empty<Point2D<double>>()));
 
-      var reduced = PCAReduce(Content.ProblemData.Dataset, range, Content.ProblemData.AllowedInputVariables, Content.Model);
+      var reduced = PCAReduce(Content.ProblemData.Dataset, range, Content.ProblemData.AllowedInputVariables);
 
       int idx = 0;
       foreach (var r in range) {
@@ -88,10 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       scatterPlot.Rows.AddRange(rows.Values);
     }
 
-    private static double[,] PCAReduce(Dataset dataset, IEnumerable<int> rows, IEnumerable<string> variables, IDataAnalysisModel model) {
-      var clusteringModel = model as IClusteringModel;
-      if (clusteringModel == null) return new double[0, 0];
-
+    private static double[,] PCAReduce(Dataset dataset, IEnumerable<int> rows, IEnumerable<string> variables) {
       var instances = rows.ToArray();
       var attributes = variables.ToArray();
       var data = new double[instances.Length, attributes.Length + 1];
