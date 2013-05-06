@@ -89,7 +89,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // OkButton
       // 
-      this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.OkButton.Enabled = false;
       this.OkButton.Location = new System.Drawing.Point(303, 407);
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // TrainingTestTrackBar
       // 
-      this.TrainingTestTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.TrainingTestTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.TrainingTestTrackBar.Location = new System.Drawing.Point(6, 43);
       this.TrainingTestTrackBar.Maximum = 100;
@@ -165,7 +165,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // ProblemTextBox
       // 
-      this.ProblemTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.ProblemTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.ProblemTextBox.Location = new System.Drawing.Point(91, 6);
       this.ProblemTextBox.Name = "ProblemTextBox";
@@ -179,9 +179,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // DateTimeFormatComboBox
       // 
-      this.DateTimeFormatComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.DateTimeFormatComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.DateTimeFormatComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.DateTimeFormatComboBox.Enabled = false;
       this.DateTimeFormatComboBox.FormattingEnabled = true;
       this.DateTimeFormatComboBox.Location = new System.Drawing.Point(111, 73);
       this.DateTimeFormatComboBox.Name = "DateTimeFormatComboBox";
@@ -191,9 +192,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // DecimalSeparatorComboBox
       // 
-      this.DecimalSeparatorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.DecimalSeparatorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.DecimalSeparatorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.DecimalSeparatorComboBox.Enabled = false;
       this.DecimalSeparatorComboBox.FormattingEnabled = true;
       this.DecimalSeparatorComboBox.Location = new System.Drawing.Point(111, 46);
       this.DecimalSeparatorComboBox.Name = "DecimalSeparatorComboBox";
@@ -230,9 +232,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // SeparatorComboBox
       // 
-      this.SeparatorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.SeparatorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.SeparatorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.SeparatorComboBox.Enabled = false;
       this.SeparatorComboBox.FormattingEnabled = true;
       this.SeparatorComboBox.Location = new System.Drawing.Point(111, 19);
       this.SeparatorComboBox.Name = "SeparatorComboBox";
@@ -242,7 +245,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // CSVSettingsGroupBox
       // 
-      this.CSVSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.CSVSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.CSVSettingsGroupBox.Controls.Add(this.DateTimeFormatInfoLabel);
       this.CSVSettingsGroupBox.Controls.Add(this.DecimalSeparatorInfoLabel);
@@ -298,8 +301,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // ProblemDataSettingsGroupBox
       // 
-      this.ProblemDataSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.ProblemDataSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.ProblemDataSettingsGroupBox.Controls.Add(this.ErrorTextBox);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.ShuffelInfoLabel);
@@ -323,6 +326,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ErrorTextBox.Name = "ErrorTextBox";
       this.ErrorTextBox.Size = new System.Drawing.Size(435, 73);
       this.ErrorTextBox.TabIndex = 0;
+      this.ErrorTextBox.Text = "Open a CSV File";
       this.ErrorTextBox.Visible = false;
       // 
       // ShuffelInfoLabel
@@ -347,8 +351,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // PreviewDatasetMatrix
       // 
-      this.PreviewDatasetMatrix.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.PreviewDatasetMatrix.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.PreviewDatasetMatrix.Caption = "Dataset Preview";
       this.PreviewDatasetMatrix.Content = null;
@@ -366,7 +370,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(471, 442);
-      this.ControlBox = false;
       this.Controls.Add(this.ProblemDataSettingsGroupBox);
       this.Controls.Add(this.CSVSettingsGroupBox);
       this.Controls.Add(this.ProblemTextBox);

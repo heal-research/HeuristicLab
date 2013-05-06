@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
@@ -37,15 +38,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/yyyy/dd hh:MM:ss" )
     };
 
-    public static readonly List<KeyValuePair<char, string>> POSSIBLE_SEPARATORS = new List<KeyValuePair<char, string>>{
-      new KeyValuePair<char, string>(',', ", (Comma)" ),
+    public static readonly List<KeyValuePair<char, string>> POSSIBLE_SEPARATORS = new List<KeyValuePair<char, string>>{  
       new KeyValuePair<char, string>(';', "; (Semicolon)" ),
-      new KeyValuePair<char, string>('\t', "\\t (Tab)")
+      new KeyValuePair<char, string>(',', ", (Comma)" ),    
+      new KeyValuePair<char, string>('\t', "\\t (Tab)"),
+      new KeyValuePair<char, string>(' ', "' ' (Space)" )
     };
 
     public static readonly List<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS = new List<KeyValuePair<NumberFormatInfo, string>>{
-      new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" ),
-      new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.GetInstance(new CultureInfo("de-DE")), ", (Comma)" )      
+      new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.GetInstance(new CultureInfo("de-DE")), ", (Comma)"),
+      new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" )    
     };
 
     public string Path {
@@ -93,6 +95,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected virtual void OpenFileButtonClick(object sender, System.EventArgs e) {
       if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
 
+      SeparatorComboBox.Enabled = true;
+      DecimalSeparatorComboBox.Enabled = true;
+      DateTimeFormatComboBox.Enabled = true;
       ProblemTextBox.Text = openFileDialog.FileName;
       ParseCSVFile();
     }
@@ -121,9 +126,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         OkButton.Enabled = true;
       }
       catch (Exception ex) {
-        OkButton.Enabled = false;
-        ErrorTextBox.Text = ex.Message;
-        ErrorTextBox.Visible = true;
+        if (ex is IOException || ex is InvalidOperationException || ex is ArgumentException || ex is TableFileParser.DataFormatException) {
+          OkButton.Enabled = false;
+          ErrorTextBox.Text = ex.Message;
+          ErrorTextBox.Visible = true;
+        } else {
+          throw;
+        }
       }
     }
 
