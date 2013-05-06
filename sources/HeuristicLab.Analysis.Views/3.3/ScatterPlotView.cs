@@ -430,35 +430,6 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     #region Helpers
-    public static IEnumerable<double> DoubleRange(double min, double max, double step) {
-      double i;
-      for (i = min; i <= max; i += step)
-        yield return i;
-
-      if (i != max + step)
-        yield return i;
-    }
-
-    private double HumanRoundRange(double range) {
-      double base10 = Math.Pow(10.0, Math.Floor(Math.Log10(range)));
-      double rounding = range / base10;
-      if (rounding <= 1.5) rounding = 1;
-      else if (rounding <= 2.25) rounding = 2;
-      else if (rounding <= 3.75) rounding = 2.5;
-      else if (rounding <= 7.5) rounding = 5;
-      else rounding = 10;
-      return rounding * base10;
-    }
-
-    private double HumanRoundMax(double max) {
-      double base10;
-      if (max > 0) base10 = Math.Pow(10.0, Math.Floor(Math.Log10(max)));
-      else base10 = Math.Pow(10.0, Math.Ceiling(Math.Log10(-max)));
-      double rounding = (max > 0) ? base10 : -base10;
-      while (rounding < max) rounding += base10;
-      return rounding;
-    }
-
     private MarkerStyle ConvertPointStyle(ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle pointStyle) {
       switch (pointStyle) {
         case ScatterPlotDataRowVisualProperties.ScatterPlotDataRowPointStyle.Circle:
