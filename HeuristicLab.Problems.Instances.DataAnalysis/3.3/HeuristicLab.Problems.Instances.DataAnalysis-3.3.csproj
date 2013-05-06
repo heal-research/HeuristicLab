@@ -121,7 +121,7 @@
     <Compile Include="Classification\ResourceClassificationInstanceProvider.cs" />
     <Compile Include="Classification\UCI\WisconsinDiagnosticBreastCancer.cs" />
     <Compile Include="Classification\UCI\Vertebral_3C.cs" />
-    <Compile Include="Classification\UCI\Parkinson.cs" />
+    <Compile Include="Classification\UCI\Parkinsons.cs" />
     <Compile Include="Classification\UCI\Iris.cs" />
     <Compile Include="Classification\UCI\UCIDataDescriptor.cs" />
     <Compile Include="Classification\UCI\Mammography.cs" />
