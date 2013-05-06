@@ -556,9 +556,15 @@ namespace HeuristicLab.Optimization.Views {
           int pointIndex = hitTest.PointIndex;
           var point = chart.Series[0].Points[pointIndex];
           IRun run = (IRun)point.Tag;
-          point.Color = Color.Red;
-          point.MarkerStyle = MarkerStyle.Cross;
-          selectedRuns.Add(run);
+          if (selectedRuns.Contains(run)) {
+            point.MarkerStyle = MarkerStyle.Circle;
+            point.Color = Color.FromArgb(255 - LogTransform(transparencyTrackBar.Value), run.Color);
+            selectedRuns.Remove(run);
+          } else {
+            point.Color = Color.Red;
+            point.MarkerStyle = MarkerStyle.Cross;
+            selectedRuns.Add(run);
+          }
         }
       } else {
         foreach (DataPoint point in this.chart.Series[0].Points) {
