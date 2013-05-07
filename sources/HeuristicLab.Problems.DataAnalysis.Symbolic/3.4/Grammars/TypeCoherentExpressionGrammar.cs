@@ -157,7 +157,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       #region allowed child symbols configuration
       AddAllowedChildSymbol(StartSymbol, realValuedSymbols);
+      AddAllowedChildSymbol(StartSymbol, powerSymbols);
+      AddAllowedChildSymbol(StartSymbol, conditionSymbols);
+      AddAllowedChildSymbol(StartSymbol, timeSeriesSymbols);
+      AddAllowedChildSymbol(StartSymbol, specialFunctions);
+
       AddAllowedChildSymbol(DefunSymbol, realValuedSymbols);
+      AddAllowedChildSymbol(DefunSymbol, powerSymbols);
+      AddAllowedChildSymbol(DefunSymbol, conditionSymbols);
+      AddAllowedChildSymbol(DefunSymbol, timeSeriesSymbols);
+      AddAllowedChildSymbol(DefunSymbol, specialFunctions);
 
       AddAllowedChildSymbol(realValuedSymbols, realValuedSymbols);
       AddAllowedChildSymbol(realValuedSymbols, powerSymbols);
@@ -167,9 +176,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       AddAllowedChildSymbol(powerSymbols, variableSymbol, 0);
       AddAllowedChildSymbol(powerSymbols, laggedVariable, 0);
+      AddAllowedChildSymbol(powerSymbols, autoregressiveVariable, 0);
       AddAllowedChildSymbol(powerSymbols, constant, 1);
+
       AddAllowedChildSymbol(square, realValuedSymbols, 0);
+      AddAllowedChildSymbol(square, conditionSymbols, 0);
+      AddAllowedChildSymbol(square, timeSeriesSymbols, 0);
+
       AddAllowedChildSymbol(sqrt, realValuedSymbols, 0);
+      AddAllowedChildSymbol(sqrt, conditionSymbols, 0);
+      AddAllowedChildSymbol(sqrt, timeSeriesSymbols, 0);
 
       AddAllowedChildSymbol(@if, comparisonSymbols, 0);
       AddAllowedChildSymbol(@if, booleanOperationSymbols, 0);
@@ -233,6 +249,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == PowerFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
+
 
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = true;
       Symbols.First(s => s is Derivative).Enabled = false;
