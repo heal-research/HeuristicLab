@@ -25,7 +25,7 @@ namespace HeuristicLab.Clients.Access.Administration {
   /// <summary>
   /// Plugin class for HeuristicLab.Clients.Access.Administration plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Clients.Access.Administration", "3.3.7.$WCREV$")]
+  [Plugin("HeuristicLab.Clients.Access.Administration", "3.3.8.$WCREV$")]
   [PluginFile("HeuristicLab.Clients.Access.Administration-3.3.dll", PluginFileType.Assembly)]  
   [PluginDependency("HeuristicLab.Clients.Common", "3.3")]  
   [PluginDependency("HeuristicLab.Collections", "3.3")]
