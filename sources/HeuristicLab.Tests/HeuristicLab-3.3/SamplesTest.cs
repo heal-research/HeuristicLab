@@ -344,13 +344,13 @@ namespace HeuristicLab_33.Tests {
       var ga = CreateGpSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;
       RunAlgorithm(ga);
-      Assert.AreEqual(0.14458636369766503, GetDoubleResult(ga, "BestQuality"), 1E-8);
-      Assert.AreEqual(2.5613992769560352, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(0.141880203907627, GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(4.3246992327753295, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
       Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
       var bestTrainingSolution = (IClassificationSolution)ga.Results["Best training solution"].Value;
-      Assert.AreEqual(0.80625, bestTrainingSolution.TrainingAccuracy, 1E-8);
-      Assert.AreEqual(0.782608695652174, bestTrainingSolution.TestAccuracy, 1E-8);
+      Assert.AreEqual(0.80875, bestTrainingSolution.TrainingAccuracy, 1E-8);
+      Assert.AreEqual(0.795031055900621, bestTrainingSolution.TestAccuracy, 1E-8);
     }
 
     private GeneticAlgorithm CreateGpSymbolicClassificationSample() {
