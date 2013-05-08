@@ -835,6 +835,72 @@ namespace HeuristicLab_33.Tests {
       return ts;
     }
     #endregion
+
+    #region VRP
+    [TestMethod]
+    public void CreateTabuSearchVRPSampleTest() {
+      var vrp = CreateTabuSearchVrpSample();
+      XmlGenerator.Serialize(vrp, "../../TS_VRP.hl");
+    }
+    [TestMethod]
+    public void RunTabuSearchVRPSampleTest() {
+      var vrp = CreateTabuSearchVrpSample();
+      vrp.SetSeedRandomly.Value = false;
+      RunAlgorithm(vrp);
+      Assert.AreEqual(1436, GetDoubleResult(vrp, "BestQuality"));
+      Assert.AreEqual(2132.2478893442621, GetDoubleResult(vrp, "CurrentAverageQuality"));
+      Assert.AreEqual(4176.0, GetDoubleResult(vrp, "CurrentWorstQuality"));
+      Assert.AreEqual(119011, GetIntResult(vrp, "EvaluatedMoves"));
+    }
+
+    private TabuSearch CreateTabuSearchVrpSample() {
+      TabuSearch ts = new TabuSearch();
+      #region Problem Configuration
+      var provider = new AugeratInstanceProvider();
+      var instance = provider.GetDataDescriptors().Where(x => x.Name == "A-n62-k8").Single();
+      VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
+      vrpProblem.Load(provider.LoadData(instance));
+      #endregion
+      #region Algorithm Configuration
+      ts.Name = "Tabu Search - VRP";
+      ts.Description = "A tabu search algorithm that solves the \"A-n62-k8\" VRP (imported from Augerat)";
+      ts.Problem = vrpProblem;
+
+      ts.MaximumIterations.Value = 200;
+      // move generator has to be set first
+      var moveGenerator = ts.MoveGeneratorParameter.ValidValues
+        .OfType<PotvinCustomerRelocationExhaustiveMoveGenerator>()
+        .Single();
+      ts.MoveGenerator = moveGenerator;
+      var moveEvaluator = ts.MoveEvaluatorParameter.ValidValues
+        .OfType<PotvinCustomerRelocationMoveEvaluator>()
+        .Single();
+      ts.MoveEvaluator = moveEvaluator;
+      var moveMaker = ts.MoveMakerParameter.ValidValues
+        .OfType<PotvinCustomerRelocationMoveMaker>()
+        .Single();
+      ts.MoveMaker = moveMaker;
+      ts.SampleSize.Value = 1000;
+      ts.Seed.Value = 0;
+      ts.SetSeedRandomly.Value = true;
+
+      var tabuChecker = ts.TabuCheckerParameter.ValidValues
+        .OfType<PotvinCustomerRelocationMoveTabuCriterion>()
+        .Single();
+      tabuChecker.UseAspirationCriterion.Value = false;
+      ts.TabuChecker = tabuChecker;
+
+      var tabuMaker = ts.TabuMakerParameter.ValidValues
+        .OfType<PotvinCustomerRelocationMoveTabuMaker>()
+        .Single();
+      ts.TabuMaker = tabuMaker;
+      ts.TabuTenure.Value = 6;
+
+      #endregion
+      ts.Engine = new ParallelEngine();
+      return ts;
+    }
+    #endregion
     #endregion
 
     #region VNS
