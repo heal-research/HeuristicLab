@@ -123,9 +123,9 @@
     <EmbeddedResource Include="Documents\SGP_SymbReg.hl" />
     <EmbeddedResource Include="Documents\VNS_TSP.hl" />
     <EmbeddedResource Include="Documents\PSO_Schwefel.hl" />
-    <EmbeddedResource Include="Documents\TS_VRP.hl" />
     <EmbeddedResource Include="Documents\SS_VRP.hl" />
     <EmbeddedResource Include="Documents\RAPGA_JSSP.hl" />
+    <EmbeddedResource Include="Documents\GPR.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>
