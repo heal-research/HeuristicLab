@@ -126,6 +126,7 @@
     <EmbeddedResource Include="Documents\SS_VRP.hl" />
     <EmbeddedResource Include="Documents\RAPGA_JSSP.hl" />
     <EmbeddedResource Include="Documents\GPR.hl" />
+    <EmbeddedResource Include="Documents\TS_VRP.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>
