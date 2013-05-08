@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.ParticleSwarmOptimization plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.ParticleSwarmOptimization", "3.3.7.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.ParticleSwarmOptimization", "3.3.8.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
