@@ -915,12 +915,11 @@ namespace HeuristicLab_33.Tests {
     #endregion
     #endregion
 
-
     #region Gaussian Process Regression
     [TestMethod]
     public void CreateGaussianProcessRegressionSampleTest() {
-      var vns = CreateGaussianProcessRegressionSample();
-      XmlGenerator.Serialize(vns, "../../GaussianProcessRegression.hl");
+      var gpr = CreateGaussianProcessRegressionSample();
+      XmlGenerator.Serialize(gpr, "../../GPR.hl");
     }
     [TestMethod]
     public void RunGaussianProcessRegressionSample() {
@@ -940,7 +939,7 @@ namespace HeuristicLab_33.Tests {
       regProblem.Load(provider.LoadData(instance));
       #region Algorithm Configuration
       gpr.Name = "Gaussian Process Regression";
-      gpr.Description = "A Gaussian process regression algorithm applied to the spatial co-evolution benchmark problem.";
+      gpr.Description = "A Gaussian process regression algorithm which solves the spatial co-evolution benchmark problem";
       gpr.Problem = regProblem;
 
       gpr.CovarianceFunction = new CovarianceSquaredExponentialIso();
