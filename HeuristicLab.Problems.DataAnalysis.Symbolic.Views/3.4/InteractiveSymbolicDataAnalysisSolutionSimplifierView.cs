@@ -34,7 +34,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> foldedNodes;
     private Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts;
     private enum TreeState { Valid, Invalid }
-    private TreeState treeState;
 
     public InteractiveSymbolicDataAnalysisSolutionSimplifierView() {
       InitializeComponent();
