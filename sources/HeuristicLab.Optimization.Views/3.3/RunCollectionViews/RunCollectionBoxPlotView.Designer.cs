@@ -80,8 +80,11 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.xAxisComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
+      this.xAxisComboBox.DropDownHeight = 400;
       this.xAxisComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.xAxisComboBox.DropDownWidth = 800;
       this.xAxisComboBox.FormattingEnabled = true;
+      this.xAxisComboBox.IntegralHeight = false;
       this.xAxisComboBox.Location = new System.Drawing.Point(319, 253);
       this.xAxisComboBox.Name = "xAxisComboBox";
       this.xAxisComboBox.Size = new System.Drawing.Size(221, 21);
@@ -100,8 +103,11 @@ namespace HeuristicLab.Optimization.Views {
       // yAxisComboBox
       // 
       this.yAxisComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
+      this.yAxisComboBox.DropDownHeight = 400;
       this.yAxisComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.yAxisComboBox.DropDownWidth = 800;
       this.yAxisComboBox.FormattingEnabled = true;
+      this.yAxisComboBox.IntegralHeight = false;
       this.yAxisComboBox.Location = new System.Drawing.Point(24, 3);
       this.yAxisComboBox.Name = "yAxisComboBox";
       this.yAxisComboBox.Size = new System.Drawing.Size(221, 21);
