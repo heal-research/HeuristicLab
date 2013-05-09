@@ -60,6 +60,7 @@ namespace HeuristicLab.Optimization.Views {
       this.statisticsMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.tooltip = new System.Windows.Forms.ToolTip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
@@ -70,7 +71,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.xAxisLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisLabel.AutoSize = true;
-      this.xAxisLabel.Location = new System.Drawing.Point(298, 256);
+      this.xAxisLabel.Location = new System.Drawing.Point(363, 345);
       this.xAxisLabel.Name = "xAxisLabel";
       this.xAxisLabel.Size = new System.Drawing.Size(15, 13);
       this.xAxisLabel.TabIndex = 12;
@@ -80,14 +81,11 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.xAxisComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.xAxisComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-      this.xAxisComboBox.DropDownHeight = 400;
       this.xAxisComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.xAxisComboBox.DropDownWidth = 800;
       this.xAxisComboBox.FormattingEnabled = true;
-      this.xAxisComboBox.IntegralHeight = false;
-      this.xAxisComboBox.Location = new System.Drawing.Point(319, 253);
+      this.xAxisComboBox.Location = new System.Drawing.Point(384, 342);
       this.xAxisComboBox.Name = "xAxisComboBox";
-      this.xAxisComboBox.Size = new System.Drawing.Size(221, 21);
+      this.xAxisComboBox.Size = new System.Drawing.Size(600, 21);
       this.xAxisComboBox.TabIndex = 11;
       this.xAxisComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
       // 
@@ -103,25 +101,22 @@ namespace HeuristicLab.Optimization.Views {
       // yAxisComboBox
       // 
       this.yAxisComboBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-      this.yAxisComboBox.DropDownHeight = 400;
       this.yAxisComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.yAxisComboBox.DropDownWidth = 800;
       this.yAxisComboBox.FormattingEnabled = true;
-      this.yAxisComboBox.IntegralHeight = false;
       this.yAxisComboBox.Location = new System.Drawing.Point(24, 3);
       this.yAxisComboBox.Name = "yAxisComboBox";
-      this.yAxisComboBox.Size = new System.Drawing.Size(221, 21);
+      this.yAxisComboBox.Size = new System.Drawing.Size(600, 21);
       this.yAxisComboBox.TabIndex = 9;
       this.yAxisComboBox.SelectedIndexChanged += new System.EventHandler(this.AxisComboBox_SelectedIndexChanged);
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
-      this.chart.Location = new System.Drawing.Point(6, 30);
+      this.chart.Location = new System.Drawing.Point(-1, 30);
       this.chart.Name = "chart";
       series1.ChartArea = "ChartArea1";
       series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.BoxPlot;
@@ -130,7 +125,7 @@ namespace HeuristicLab.Optimization.Views {
       series1.Name = "DataSeries";
       series1.YValuesPerPoint = 6;
       this.chart.Series.Add(series1);
-      this.chart.Size = new System.Drawing.Size(534, 217);
+      this.chart.Size = new System.Drawing.Size(989, 306);
       this.chart.TabIndex = 17;
       this.chart.Text = "chart";
       this.chart.AxisViewChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ViewEventArgs>(this.chart_AxisViewChanged);
@@ -140,7 +135,7 @@ namespace HeuristicLab.Optimization.Views {
       // 
       this.noRunsLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
       this.noRunsLabel.AutoSize = true;
-      this.noRunsLabel.Location = new System.Drawing.Point(212, 122);
+      this.noRunsLabel.Location = new System.Drawing.Point(434, 167);
       this.noRunsLabel.Name = "noRunsLabel";
       this.noRunsLabel.Size = new System.Drawing.Size(138, 13);
       this.noRunsLabel.TabIndex = 22;
@@ -166,8 +161,8 @@ namespace HeuristicLab.Optimization.Views {
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.statisticsGroupBox);
-      this.splitContainer.Size = new System.Drawing.Size(543, 416);
-      this.splitContainer.SplitterDistance = 277;
+      this.splitContainer.Size = new System.Drawing.Size(987, 550);
+      this.splitContainer.SplitterDistance = 366;
       this.splitContainer.TabIndex = 23;
       // 
       // showStatisticsCheckBox
@@ -177,7 +172,7 @@ namespace HeuristicLab.Optimization.Views {
       this.showStatisticsCheckBox.Checked = true;
       this.showStatisticsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
       this.showStatisticsCheckBox.Image = HeuristicLab.Common.Resources.VSImageLibrary.Properties;
-      this.showStatisticsCheckBox.Location = new System.Drawing.Point(6, 245);
+      this.showStatisticsCheckBox.Location = new System.Drawing.Point(3, 339);
       this.showStatisticsCheckBox.Name = "showStatisticsCheckBox";
       this.showStatisticsCheckBox.Size = new System.Drawing.Size(24, 24);
       this.showStatisticsCheckBox.TabIndex = 23;
@@ -187,13 +182,13 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // statisticsGroupBox
       // 
-      this.statisticsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.statisticsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.statisticsGroupBox.Controls.Add(this.statisticsMatrixView);
       this.statisticsGroupBox.Location = new System.Drawing.Point(3, 3);
       this.statisticsGroupBox.Name = "statisticsGroupBox";
-      this.statisticsGroupBox.Size = new System.Drawing.Size(534, 129);
+      this.statisticsGroupBox.Size = new System.Drawing.Size(981, 174);
       this.statisticsGroupBox.TabIndex = 1;
       this.statisticsGroupBox.TabStop = false;
       this.statisticsGroupBox.Text = "Statistics";
@@ -208,22 +203,22 @@ namespace HeuristicLab.Optimization.Views {
       this.statisticsMatrixView.ReadOnly = true;
       this.statisticsMatrixView.ShowRowsAndColumnsTextBox = false;
       this.statisticsMatrixView.ShowStatisticalInformation = false;
-      this.statisticsMatrixView.Size = new System.Drawing.Size(528, 110);
+      this.statisticsMatrixView.Size = new System.Drawing.Size(975, 155);
       this.statisticsMatrixView.TabIndex = 0;
       // 
       // RunCollectionBoxPlotView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.BackColor = System.Drawing.SystemColors.Window;
       this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.Controls.Add(this.splitContainer);
       this.Name = "RunCollectionBoxPlotView";
-      this.Size = new System.Drawing.Size(543, 416);
+      this.Size = new System.Drawing.Size(987, 550);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel1.PerformLayout();
       this.splitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.statisticsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
