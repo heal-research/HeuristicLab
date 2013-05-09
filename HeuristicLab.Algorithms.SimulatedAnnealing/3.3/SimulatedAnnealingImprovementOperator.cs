@@ -278,7 +278,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
       if (problem != null) {
         foreach (IAnalyzer analyzer in problem.Operators.OfType<IAnalyzer>()) {
           if (!IsSubclassOfGeneric(typeof(AlleleFrequencyAnalyzer<>), analyzer.GetType()) &&
-              !IsSubclassOfGeneric(typeof(PopulationDiversityAnalyzer<>), analyzer.GetType())) {
+              !(analyzer is SingleObjectivePopulationDiversityAnalyzer)) {
             IAnalyzer clone = analyzer.Clone() as IAnalyzer;
             foreach (IScopeTreeLookupParameter param in clone.Parameters.OfType<IScopeTreeLookupParameter>())
               param.Depth = 0;
