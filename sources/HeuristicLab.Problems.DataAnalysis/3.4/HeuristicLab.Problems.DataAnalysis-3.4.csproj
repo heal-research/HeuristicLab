@@ -168,6 +168,7 @@
     <Compile Include="OnlineCalculators\DependencyCalculator\PearsonsRSquaredDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\DependencyCalculator\SpearmansRankCorrelationCoefficientCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineBoundedMeanSquaredErrorCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlineCovarianceCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineDirectionalSymmetryCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMaxAbsoluteErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanErrorCalculator.cs" />
@@ -200,7 +201,6 @@
     <Compile Include="Interfaces\Regression\IRegressionProblem.cs" />
     <Compile Include="Interfaces\Regression\IRegressionProblemData.cs" />
     <Compile Include="Interfaces\Regression\IRegressionSolution.cs" />
-    <Compile Include="OnlineCalculators\OnlineCovarianceCalcualtor.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanAbsolutePercentageErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanAndVarianceCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanSquaredErrorCalculator.cs" />
