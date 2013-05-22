@@ -339,6 +339,8 @@ namespace HeuristicLab.Data.Views {
       }
 
       for (int i = minRowIndex; i <= maxRowIndex; i++) {
+        if (!dataGridView.Rows[i].Visible) continue;
+
         int rowIndex = this.virtualRowIndices[i];
         if (addRowNames) {
           s.Append(Content.RowNames.ElementAt(rowIndex));
@@ -514,6 +516,7 @@ namespace HeuristicLab.Data.Views {
     }
     protected virtual void ShowHideColumns_Click(object sender, EventArgs e) {
       new StringConvertibleMatrixColumnVisibilityDialog(this.dataGridView.Columns.Cast<DataGridViewColumn>()).ShowDialog();
+      columnsTextBox.Text = dataGridView.Columns.GetColumnCount(DataGridViewElementStates.Visible).ToString();
     }
 
     private void UpdateVisibilityOfTextBoxes() {
