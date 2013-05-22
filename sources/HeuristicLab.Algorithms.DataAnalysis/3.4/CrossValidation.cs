@@ -650,11 +650,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private readonly object locker = new object();
+    private readonly object resultLocker = new object();
     private void ClonedAlgorithm_Started(object sender, EventArgs e) {
       IAlgorithm algorithm = sender as IAlgorithm;
-      if (algorithm != null && !results.ContainsKey(algorithm.Name))
-        results.Add(new Result(algorithm.Name, "Contains results for the specific fold.", algorithm.Results));
-
+      lock (resultLocker) {
+        if (algorithm != null && !results.ContainsKey(algorithm.Name))
+          results.Add(new Result(algorithm.Name, "Contains results for the specific fold.", algorithm.Results));
+      }
     }
 
     private void ClonedAlgorithm_Paused(object sender, EventArgs e) {
