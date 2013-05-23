@@ -83,6 +83,9 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.label16 = new System.Windows.Forms.Label();
       this.heightNumericUD = new System.Windows.Forms.NumericUpDown();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
+      this.legendGroupBox = new System.Windows.Forms.GroupBox();
+      this.label20 = new System.Windows.Forms.Label();
+      this.legendPositionComboBox = new System.Windows.Forms.ComboBox();
       this.chartAreaComboBox = new System.Windows.Forms.ComboBox();
       this.togglePreviewCheckBox = new System.Windows.Forms.CheckBox();
       this.lengthUnitComboBox = new System.Windows.Forms.ComboBox();
@@ -104,6 +107,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
+      this.legendGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).BeginInit();
       this.SuspendLayout();
       // 
@@ -129,7 +133,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.okButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.okButton.Location = new System.Drawing.Point(141, 487);
+      this.okButton.Location = new System.Drawing.Point(141, 552);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 2;
@@ -197,7 +201,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
             "600",
             "800",
             "1200"});
-      this.resolutionComboBox.Location = new System.Drawing.Point(84, 383);
+      this.resolutionComboBox.Location = new System.Drawing.Point(84, 450);
       this.resolutionComboBox.Name = "resolutionComboBox";
       this.resolutionComboBox.Size = new System.Drawing.Size(83, 21);
       this.resolutionComboBox.TabIndex = 8;
@@ -214,7 +218,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
             0,
             0,
             65536});
-      this.widthNumericUD.Location = new System.Drawing.Point(84, 410);
+      this.widthNumericUD.Location = new System.Drawing.Point(84, 477);
       this.widthNumericUD.Minimum = new decimal(new int[] {
             1,
             0,
@@ -233,7 +237,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // label5
       // 
       this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(18, 386);
+      this.label5.Location = new System.Drawing.Point(18, 453);
       this.label5.Name = "label5";
       this.label5.Size = new System.Drawing.Size(60, 13);
       this.label5.TabIndex = 7;
@@ -242,7 +246,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // label6
       // 
       this.label6.AutoSize = true;
-      this.label6.Location = new System.Drawing.Point(18, 412);
+      this.label6.Location = new System.Drawing.Point(18, 479);
       this.label6.Name = "label6";
       this.label6.Size = new System.Drawing.Size(38, 13);
       this.label6.TabIndex = 10;
@@ -305,7 +309,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // cancelButton
       // 
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(222, 487);
+      this.cancelButton.Location = new System.Drawing.Point(222, 552);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 0;
@@ -339,7 +343,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.groupBox1.Controls.Add(this.secondaryYTextBox);
       this.groupBox1.Controls.Add(this.label4);
       this.groupBox1.Controls.Add(this.label3);
-      this.groupBox1.Location = new System.Drawing.Point(12, 154);
+      this.groupBox1.Location = new System.Drawing.Point(12, 221);
       this.groupBox1.Name = "groupBox1";
       this.groupBox1.Size = new System.Drawing.Size(258, 82);
       this.groupBox1.TabIndex = 5;
@@ -376,7 +380,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.groupBox2.Controls.Add(this.primaryYTextBox);
       this.groupBox2.Controls.Add(this.label14);
       this.groupBox2.Controls.Add(this.label15);
-      this.groupBox2.Location = new System.Drawing.Point(12, 64);
+      this.groupBox2.Location = new System.Drawing.Point(12, 131);
       this.groupBox2.Name = "groupBox2";
       this.groupBox2.Size = new System.Drawing.Size(258, 84);
       this.groupBox2.TabIndex = 4;
@@ -459,7 +463,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.groupBox3.Controls.Add(this.label10);
       this.groupBox3.Controls.Add(this.axisFontSizeComboBox);
       this.groupBox3.Controls.Add(this.titleFontSizeComboBox);
-      this.groupBox3.Location = new System.Drawing.Point(12, 242);
+      this.groupBox3.Location = new System.Drawing.Point(12, 309);
       this.groupBox3.Name = "groupBox3";
       this.groupBox3.Size = new System.Drawing.Size(258, 131);
       this.groupBox3.TabIndex = 6;
@@ -568,7 +572,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // label16
       // 
       this.label16.AutoSize = true;
-      this.label16.Location = new System.Drawing.Point(18, 438);
+      this.label16.Location = new System.Drawing.Point(18, 505);
       this.label16.Name = "label16";
       this.label16.Size = new System.Drawing.Size(41, 13);
       this.label16.TabIndex = 12;
@@ -582,7 +586,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
             0,
             0,
             65536});
-      this.heightNumericUD.Location = new System.Drawing.Point(84, 436);
+      this.heightNumericUD.Location = new System.Drawing.Point(84, 503);
       this.heightNumericUD.Minimum = new decimal(new int[] {
             1,
             0,
@@ -607,6 +611,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       // splitContainer.Panel1
       // 
+      this.splitContainer.Panel1.Controls.Add(this.legendGroupBox);
       this.splitContainer.Panel1.Controls.Add(this.chartAreaComboBox);
       this.splitContainer.Panel1.Controls.Add(this.togglePreviewCheckBox);
       this.splitContainer.Panel1.Controls.Add(this.titleTextBox);
@@ -631,10 +636,46 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.splitContainer.Panel2.Controls.Add(this.label13);
       this.splitContainer.Panel2.Controls.Add(this.rawImageSizeLabel);
       this.splitContainer.Panel2.Controls.Add(this.previewZoomLabel);
-      this.splitContainer.Size = new System.Drawing.Size(793, 478);
+      this.splitContainer.Size = new System.Drawing.Size(793, 542);
       this.splitContainer.SplitterDistance = 300;
       this.splitContainer.SplitterWidth = 1;
       this.splitContainer.TabIndex = 1;
+      // 
+      // legendGroupBox
+      // 
+      this.legendGroupBox.Controls.Add(this.label20);
+      this.legendGroupBox.Controls.Add(this.legendPositionComboBox);
+      this.legendGroupBox.Location = new System.Drawing.Point(12, 64);
+      this.legendGroupBox.Name = "legendGroupBox";
+      this.legendGroupBox.Size = new System.Drawing.Size(258, 61);
+      this.legendGroupBox.TabIndex = 17;
+      this.legendGroupBox.TabStop = false;
+      this.legendGroupBox.Text = "Legend";
+      // 
+      // label20
+      // 
+      this.label20.AutoSize = true;
+      this.label20.Location = new System.Drawing.Point(6, 27);
+      this.label20.Name = "label20";
+      this.label20.Size = new System.Drawing.Size(47, 13);
+      this.label20.TabIndex = 0;
+      this.label20.Text = "Position:";
+      // 
+      // legendPositionComboBox
+      // 
+      this.legendPositionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.legendPositionComboBox.FormattingEnabled = true;
+      this.legendPositionComboBox.Items.AddRange(new object[] {
+            "Top",
+            "Right",
+            "Bottom",
+            "Left",
+            "Hidden"});
+      this.legendPositionComboBox.Location = new System.Drawing.Point(72, 24);
+      this.legendPositionComboBox.Name = "legendPositionComboBox";
+      this.legendPositionComboBox.Size = new System.Drawing.Size(159, 21);
+      this.legendPositionComboBox.TabIndex = 3;
+      this.legendPositionComboBox.SelectedIndexChanged += new System.EventHandler(this.legendPositionComboBox_SelectedIndexChanged);
       // 
       // chartAreaComboBox
       // 
@@ -655,7 +696,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.togglePreviewCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
       this.togglePreviewCheckBox.Location = new System.Drawing.Point(277, 3);
       this.togglePreviewCheckBox.Name = "togglePreviewCheckBox";
-      this.togglePreviewCheckBox.Size = new System.Drawing.Size(20, 472);
+      this.togglePreviewCheckBox.Size = new System.Drawing.Size(20, 536);
       this.togglePreviewCheckBox.TabIndex = 16;
       this.togglePreviewCheckBox.Text = ">";
       this.toolTip.SetToolTip(this.togglePreviewCheckBox, "Show or hide the preview pane");
@@ -666,7 +707,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       this.lengthUnitComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.lengthUnitComboBox.FormattingEnabled = true;
-      this.lengthUnitComboBox.Location = new System.Drawing.Point(173, 422);
+      this.lengthUnitComboBox.Location = new System.Drawing.Point(173, 489);
       this.lengthUnitComboBox.Name = "lengthUnitComboBox";
       this.lengthUnitComboBox.Size = new System.Drawing.Size(70, 21);
       this.lengthUnitComboBox.TabIndex = 14;
@@ -676,7 +717,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       this.resolutionUnitComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.resolutionUnitComboBox.FormattingEnabled = true;
-      this.resolutionUnitComboBox.Location = new System.Drawing.Point(173, 383);
+      this.resolutionUnitComboBox.Location = new System.Drawing.Point(173, 450);
       this.resolutionUnitComboBox.Name = "resolutionUnitComboBox";
       this.resolutionUnitComboBox.Size = new System.Drawing.Size(70, 21);
       this.resolutionUnitComboBox.TabIndex = 9;
@@ -695,7 +736,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       this.previewPictureBox.Location = new System.Drawing.Point(0, 3);
       this.previewPictureBox.Name = "previewPictureBox";
-      this.previewPictureBox.Size = new System.Drawing.Size(492, 453);
+      this.previewPictureBox.Size = new System.Drawing.Size(492, 520);
       this.previewPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
       this.previewPictureBox.TabIndex = 0;
       this.previewPictureBox.TabStop = false;
@@ -703,7 +744,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // label19
       // 
       this.label19.AutoSize = true;
-      this.label19.Location = new System.Drawing.Point(85, 459);
+      this.label19.Location = new System.Drawing.Point(84, 526);
       this.label19.Name = "label19";
       this.label19.Size = new System.Drawing.Size(84, 13);
       this.label19.TabIndex = 10;
@@ -712,7 +753,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // label13
       // 
       this.label13.AutoSize = true;
-      this.label13.Location = new System.Drawing.Point(3, 459);
+      this.label13.Location = new System.Drawing.Point(2, 526);
       this.label13.Name = "label13";
       this.label13.Size = new System.Drawing.Size(37, 13);
       this.label13.TabIndex = 10;
@@ -721,7 +762,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // rawImageSizeLabel
       // 
       this.rawImageSizeLabel.AutoSize = true;
-      this.rawImageSizeLabel.Location = new System.Drawing.Point(175, 459);
+      this.rawImageSizeLabel.Location = new System.Drawing.Point(174, 526);
       this.rawImageSizeLabel.Name = "rawImageSizeLabel";
       this.rawImageSizeLabel.Size = new System.Drawing.Size(37, 13);
       this.rawImageSizeLabel.TabIndex = 10;
@@ -730,7 +771,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // previewZoomLabel
       // 
       this.previewZoomLabel.AutoSize = true;
-      this.previewZoomLabel.Location = new System.Drawing.Point(46, 459);
+      this.previewZoomLabel.Location = new System.Drawing.Point(45, 526);
       this.previewZoomLabel.Name = "previewZoomLabel";
       this.previewZoomLabel.Size = new System.Drawing.Size(33, 13);
       this.previewZoomLabel.TabIndex = 10;
@@ -747,7 +788,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.AcceptButton = this.okButton;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(794, 522);
+      this.ClientSize = new System.Drawing.Size(794, 587);
       this.ControlBox = false;
       this.Controls.Add(this.splitContainer);
       this.Controls.Add(this.cancelButton);
@@ -771,6 +812,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       this.splitContainer.Panel2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
+      this.legendGroupBox.ResumeLayout(false);
+      this.legendGroupBox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.previewPictureBox)).EndInit();
       this.ResumeLayout(false);
 
@@ -828,5 +871,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     private System.Windows.Forms.CheckBox showPrimaryYAxisCheckBox;
     private System.Windows.Forms.CheckBox showPrimaryXAxisCheckBox;
     private System.Windows.Forms.ToolTip toolTip;
+    private System.Windows.Forms.GroupBox legendGroupBox;
+    private System.Windows.Forms.Label label20;
+    private System.Windows.Forms.ComboBox legendPositionComboBox;
   }
 }

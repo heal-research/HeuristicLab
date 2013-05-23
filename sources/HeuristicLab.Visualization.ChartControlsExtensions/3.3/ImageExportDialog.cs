@@ -66,7 +66,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         SuppressEvents = false;
         splitContainer.Panel2Collapsed = true;
         Width = 305;
-        Height = 560;
+        Height = 625;
       } finally { SuppressEvents = false; }
       #endregion
     }
@@ -155,14 +155,17 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       var prevFormat = originalChart.Serializer.Format;
       originalChart.Serializer.Content = SerializationContents.Default;
       originalChart.Serializer.Format = SerializationFormat.Binary;
-      var ms = new MemoryStream();
-      originalChart.Serializer.Save(ms);
+      using (var ms = new MemoryStream()) {
+        originalChart.Serializer.Save(ms);
 
-      ms.Seek(0, SeekOrigin.Begin);
-      workingChart = new EnhancedChart();
-      workingChart.Serializer.Format = originalChart.Serializer.Format;
-      workingChart.Serializer.Load(ms);
-      ms.Close();
+        ms.Seek(0, SeekOrigin.Begin);
+        workingChart = new EnhancedChart();
+        workingChart.Serializer.Format = originalChart.Serializer.Format;
+        workingChart.Serializer.Load(ms);
+      }
+
+      foreach (var s in workingChart.Series.Where(x => !x.Points.Any()).ToArray())
+        s.IsVisibleInLegend = false;
 
       originalChart.Serializer.Content = prevContent;
       originalChart.Serializer.Format = prevFormat;
@@ -179,6 +182,32 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         showPrimaryYAxisCheckBox.Checked = originalChart.Series.Any(x => x.YAxisType == AxisType.Primary);
         showSecondaryXAxisCheckBox.Checked = originalChart.Series.Any(x => x.XAxisType == AxisType.Secondary);
         showSecondaryYAxisCheckBox.Checked = originalChart.Series.Any(x => x.YAxisType == AxisType.Secondary);
+
+        if (!workingChart.Legends.Any()) {
+          legendPositionComboBox.Enabled = false;
+          legendFontSizeComboBox.Enabled = false;
+        } else {
+          legendPositionComboBox.Enabled = true;
+          legendFontSizeComboBox.Enabled = true;
+          if (workingChart.Legends[0].Enabled) {
+            switch (workingChart.Legends[0].Docking) {
+              case Docking.Top:
+                legendPositionComboBox.SelectedItem = "Top";
+                break;
+              case Docking.Right:
+                legendPositionComboBox.SelectedItem = "Right";
+                break;
+              case Docking.Bottom:
+                legendPositionComboBox.SelectedItem = "Bottom";
+                break;
+              case Docking.Left:
+                legendPositionComboBox.SelectedItem = "Left";
+                break;
+            }
+          } else {
+            legendPositionComboBox.SelectedItem = "Hidden";
+          }
+        }
       } finally { SuppressEvents = false; }
       base.OnShown(e);
 
@@ -198,6 +227,35 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     private void chartAreaComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       if (chartAreaComboBox.SelectedIndex >= 0)
         UpdateFields();
+    }
+
+    private void legendPositionComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (!SuppressEvents) {
+        if (legendPositionComboBox.SelectedIndex >= 0) {
+          var legend = workingChart.Legends[0];
+          var legendPosition = legendPositionComboBox.Items[legendPositionComboBox.SelectedIndex].ToString();
+          if (legendPosition != "Hidden" && !legend.Enabled)
+            legend.Enabled = true;
+          switch (legendPosition) {
+            case "Top":
+              legend.Docking = Docking.Top;
+              break;
+            case "Right":
+              legend.Docking = Docking.Right;
+              break;
+            case "Bottom":
+              legend.Docking = Docking.Bottom;
+              break;
+            case "Left":
+              legend.Docking = Docking.Left;
+              break;
+            case "Hidden":
+              legend.Enabled = false;
+              break;
+          }
+        }
+        UpdatePreview();
+      }
     }
 
     private void titleTextBox_TextChanged(object sender, EventArgs e) {
