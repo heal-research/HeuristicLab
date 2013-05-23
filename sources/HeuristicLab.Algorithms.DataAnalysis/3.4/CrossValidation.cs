@@ -386,7 +386,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private void AggregateResultValues(IDictionary<string, IItem> results) {
-      Dictionary<string, List<double>> resultValues = new Dictionary<string, List<double>>();
       IEnumerable<IRun> runs = clonedAlgorithms.Select(alg => alg.Runs.FirstOrDefault()).Where(run => run != null);
       IEnumerable<KeyValuePair<string, IItem>> resultCollections = runs.Where(x => x != null).SelectMany(x => x.Results).ToList();
 
@@ -549,8 +548,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         throw new ArgumentException("A cross validation algorithm can only contain DataAnalysisProblems.");
       }
       if (problem != null) problem.Reset -= new EventHandler(Problem_Reset);
-      if (Problem != null) Problem.Reset += new EventHandler(Problem_Reset);
       problem = (IDataAnalysisProblem)algorithm.Problem;
+      if (problem != null) problem.Reset += new EventHandler(Problem_Reset);
       OnProblemChanged();
     }
     public event EventHandler ProblemChanged;
