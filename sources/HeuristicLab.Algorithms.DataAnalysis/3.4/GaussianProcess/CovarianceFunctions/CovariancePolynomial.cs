@@ -33,8 +33,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item(Name = "CovariancePolynomial",
     Description = "Polynomial covariance function for Gaussian processes.")]
   public sealed class CovariancePolynomial : ParameterizedNamedItem, ICovarianceFunction {
-    public IValueParameter<DoubleValue> CParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters["C"]; }
+    public IValueParameter<DoubleValue> ConstParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["Const"]; }
     }
 
     public IValueParameter<DoubleValue> ScaleParameter {
@@ -59,7 +59,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Name = ItemName;
       Description = ItemDescription;
 
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("C", "Parameter for the additive constant in the polymomial."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Const", "Additive constant in the polymomial."));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter of the Polynomial covariance function."));
       Parameters.Add(new ValueParameter<IntValue>("Degree", "The degree of the polynomial (only non-zero positive values allowed).", new IntValue(2)));
     }
@@ -70,24 +70,24 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public int GetNumberOfParameters(int numberOfVariables) {
       return
-        (CParameter.Value != null ? 0 : 1) +
+        (ConstParameter.Value != null ? 0 : 1) +
         (ScaleParameter.Value != null ? 0 : 1);
     }
 
     public void SetParameter(double[] p) {
-      double c, scale;
-      GetParameterValues(p, out c, out scale);
-      CParameter.Value = new DoubleValue(c);
+      double @const, scale;
+      GetParameterValues(p, out @const, out scale);
+      ConstParameter.Value = new DoubleValue(@const);
       ScaleParameter.Value = new DoubleValue(scale);
     }
 
-    private void GetParameterValues(double[] p, out double c, out double scale) {
+    private void GetParameterValues(double[] p, out double @const, out double scale) {
       // gather parameter values
       int n = 0;
-      if (CParameter.Value != null) {
-        c = CParameter.Value.Value;
+      if (ConstParameter.Value != null) {
+        @const = ConstParameter.Value.Value;
       } else {
-        c = Math.Exp(p[n]);
+        @const = Math.Exp(p[n]);
         n++;
       }
 
@@ -101,15 +101,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
-      double c, scale;
-      int d = DegreeParameter.Value.Value;
-      if (d <= 0) throw new ArgumentException("The degree parameter for CovariancePolynomial must be greater than zero.");
-      GetParameterValues(p, out c, out scale);
+      double @const, scale;
+      int degree = DegreeParameter.Value.Value;
+      if (degree <= 0) throw new ArgumentException("The degree parameter for CovariancePolynomial must be greater than zero.");
+      GetParameterValues(p, out @const, out scale);
       // create functions
       var cov = new ParameterizedCovarianceFunction();
-      cov.Covariance = (x, i, j) => scale * Math.Pow(c + Util.ScalarProd(x, i, j, 1.0, columnIndices), d);
-      cov.CrossCovariance = (x, xt, i, j) => scale * Math.Pow(c + Util.ScalarProd(x, i, xt, j, 1.0, columnIndices), d);
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, c, scale, d, columnIndices);
+      cov.Covariance = (x, i, j) => scale * Math.Pow(@const + Util.ScalarProd(x, i, j, 1.0, columnIndices), degree);
+      cov.CrossCovariance = (x, xt, i, j) => scale * Math.Pow(@const + Util.ScalarProd(x, i, xt, j, 1.0, columnIndices), degree);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, @const, scale, degree, columnIndices);
       return cov;
     }
 
