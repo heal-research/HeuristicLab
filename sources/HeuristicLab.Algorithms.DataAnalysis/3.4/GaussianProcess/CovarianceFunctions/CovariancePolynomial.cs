@@ -1,0 +1,122 @@
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+
+namespace HeuristicLab.Algorithms.DataAnalysis {
+  [StorableClass]
+  [Item(Name = "CovariancePolynomial",
+    Description = "Polynomial covariance function for Gaussian processes.")]
+  public sealed class CovariancePolynomial : ParameterizedNamedItem, ICovarianceFunction {
+    public IValueParameter<DoubleValue> CParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["C"]; }
+    }
+
+    public IValueParameter<DoubleValue> ScaleParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["Scale"]; }
+    }
+
+    public IValueParameter<IntValue> DegreeParameter {
+      get { return (IValueParameter<IntValue>)Parameters["Degree"]; }
+    }
+
+    [StorableConstructor]
+    private CovariancePolynomial(bool deserializing)
+      : base(deserializing) {
+    }
+
+    private CovariancePolynomial(CovariancePolynomial original, Cloner cloner)
+      : base(original, cloner) {
+    }
+
+    public CovariancePolynomial()
+      : base() {
+      Name = ItemName;
+      Description = ItemDescription;
+
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("C", "Parameter for the additive constant in the polymomial."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter of the Polynomial covariance function."));
+      Parameters.Add(new ValueParameter<IntValue>("Degree", "The degree of the polynomial (only non-zero positive values allowed).", new IntValue(2)));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new CovariancePolynomial(this, cloner);
+    }
+
+    public int GetNumberOfParameters(int numberOfVariables) {
+      return
+        (CParameter.Value != null ? 0 : 1) +
+        (ScaleParameter.Value != null ? 0 : 1);
+    }
+
+    public void SetParameter(double[] p) {
+      double c, scale;
+      GetParameterValues(p, out c, out scale);
+      CParameter.Value = new DoubleValue(c);
+      ScaleParameter.Value = new DoubleValue(scale);
+    }
+
+    private void GetParameterValues(double[] p, out double c, out double scale) {
+      // gather parameter values
+      int n = 0;
+      if (CParameter.Value != null) {
+        c = CParameter.Value.Value;
+      } else {
+        c = Math.Exp(p[n]);
+        n++;
+      }
+
+      if (ScaleParameter.Value != null) {
+        scale = ScaleParameter.Value.Value;
+      } else {
+        scale = Math.Exp(2 * p[n]);
+        n++;
+      }
+      if (p.Length != n) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovariancePolynomial", "p");
+    }
+
+    public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
+      double c, scale;
+      int d = DegreeParameter.Value.Value;
+      if (d <= 0) throw new ArgumentException("The degree parameter for CovariancePolynomial must be greater than zero.");
+      GetParameterValues(p, out c, out scale);
+      // create functions
+      var cov = new ParameterizedCovarianceFunction();
+      cov.Covariance = (x, i, j) => scale * Math.Pow(c + Util.ScalarProd(x, i, j, 1.0, columnIndices), d);
+      cov.CrossCovariance = (x, xt, i, j) => scale * Math.Pow(c + Util.ScalarProd(x, i, xt, j, 1.0, columnIndices), d);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, c, scale, d, columnIndices);
+      return cov;
+    }
+
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double c, double scale, int degree, IEnumerable<int> columnIndices) {
+      double s = Util.ScalarProd(x, i, j, 1.0, columnIndices);
+      yield return c * degree * scale * Math.Pow(c + s, degree - 1);
+      yield return 2 * scale * Math.Pow(c + s, degree);
+    }
+  }
+}
