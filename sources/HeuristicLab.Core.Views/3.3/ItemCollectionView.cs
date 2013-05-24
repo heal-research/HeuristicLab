@@ -406,9 +406,9 @@ namespace HeuristicLab.Core.Views {
 
     #region Helpers
     protected virtual void SortItemsListView(SortOrder sortOrder) {
-      itemsListView.Sorting = SortOrder.None;
+      if (itemsListView.Sorting == sortOrder || sortOrder == SortOrder.None) return;
       itemsListView.Sorting = sortOrder;
-      itemsListView.Sorting = SortOrder.None;
+      itemsListView.Sort();
     }
     protected virtual void AdjustListViewColumnSizes() {
       if (itemsListView.Items.Count > 0) {

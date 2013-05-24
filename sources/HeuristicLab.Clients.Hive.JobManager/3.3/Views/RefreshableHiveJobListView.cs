@@ -43,21 +43,24 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.itemsListView.Columns.Clear();
       this.itemsListView.Columns.Add(new ColumnHeader("Date") { Text = "Date" });
       this.itemsListView.Columns.Add(new ColumnHeader("Name") { Text = "Name" });
-      foreach (ColumnHeader c in this.itemsListView.Columns) {
-        c.AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-      }
+
       this.itemsListView.HeaderStyle = ColumnHeaderStyle.Clickable;
       this.itemsListView.FullRowSelect = true;
 
       this.itemsListView.ListViewItemSorter = new ListViewItemDateComparer(0, SortOrder.Ascending);
-      this.itemsListView.Sorting = SortOrder.Ascending;
-      this.itemsListView.Sort();
 
       progress = new Progress() {
         CanBeCanceled = false,
         ProgressState = ProgressState.Finished
       };
       progressView = new ProgressView(this, progress);
+    }
+
+    protected override void SortItemsListView(SortOrder sortOrder) {
+      if (itemsListView.Sorting == sortOrder || sortOrder == SortOrder.None) return;
+      ((ListViewItemDateComparer)itemsListView.ListViewItemSorter).Order = sortOrder;
+      base.SortItemsListView(sortOrder);
+      AdjustListViewColumnSizes();
     }
 
     protected override RefreshableJob CreateItem() {
