@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -57,26 +58,26 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
           lengthUnitComboBox.SelectedIndex = 1;
         else lengthUnitComboBox.SelectedIndex = 0;
 
-        titleFontSizeComboBox.Text = "12";
+        titleFontSizeComboBox.Text = "10";
         axisFontSizeComboBox.Text = "8";
         scalesFontSizeComboBox.Text = "6";
         legendFontSizeComboBox.Text = "6";
-        resolutionComboBox.Text = "300";
+        resolutionComboBox.Text = "150";
         SuppressEvents = false;
         splitContainer.Panel2Collapsed = true;
         Width = 305;
-        Height = 550;
+        Height = 625;
       } finally { SuppressEvents = false; }
       #endregion
     }
 
     private void UpdateFields() {
-      ChartArea area = GetCurrentChartArea();
+      var area = GetCurrentChartArea();
 
       try {
         SuppressEvents = true;
 
-        if (workingChart.Titles.Count == 0) titleFontSizeComboBox.Text = "12";
+        if (workingChart.Titles.Count == 0) titleFontSizeComboBox.Text = "10";
         else {
           titleTextBox.Text = workingChart.Titles[0].Text;
           titleFontSizeComboBox.Text = workingChart.Titles[0].Font.SizeInPoints.ToString();
@@ -89,7 +90,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
         axisFontSizeComboBox.Text = area.AxisX.TitleFont.SizeInPoints.ToString();
         scalesFontSizeComboBox.Text = area.AxisX.LabelStyle.Font.SizeInPoints.ToString();
-        if (workingChart.Legends.Count == 0) legendFontSizeComboBox.Text = "8";
+        if (workingChart.Legends.Count == 0) legendFontSizeComboBox.Text = "6";
         else legendFontSizeComboBox.Text = workingChart.Legends[0].Font.SizeInPoints.ToString();
       } finally {
         SuppressEvents = false;
@@ -120,7 +121,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         previewWidth = (int)Math.Round(width / height * previewHeight);
       }
 
-      float scaleFactor = (float)Math.Min(previewWidth / width, previewHeight / height);
+      var scaleFactor = (float)Math.Min(previewWidth / width, previewHeight / height);
       if (scaleFactor >= 1) {
         previewZoomLabel.Text = "100%";
         previewWidth = (int)Math.Round(width);
@@ -128,7 +129,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       } else previewZoomLabel.Text = (scaleFactor * 100).ToString("0") + "%";
       rawImageSizeLabel.Text = GetRawImageSizeInMegabytes(width, height).ToString("0.00") + "M   " + "(" + Math.Round(width).ToString("0") + " x " + Math.Round(height).ToString("0") + ") pixels";
 
-      Bitmap image = new Bitmap(previewWidth, previewHeight);
+      var image = new Bitmap(previewWidth, previewHeight);
       image.SetResolution(dpi, dpi);
       using (Graphics graphics = Graphics.FromImage(image)) {
         if (scaleFactor < 1) graphics.ScaleTransform(scaleFactor, scaleFactor);
@@ -154,24 +155,60 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       var prevFormat = originalChart.Serializer.Format;
       originalChart.Serializer.Content = SerializationContents.Default;
       originalChart.Serializer.Format = SerializationFormat.Binary;
-      MemoryStream ms = new MemoryStream();
-      originalChart.Serializer.Save(ms);
+      using (var ms = new MemoryStream()) {
+        originalChart.Serializer.Save(ms);
 
-      ms.Seek(0, SeekOrigin.Begin);
-      workingChart = new EnhancedChart();
-      workingChart.Serializer.Format = originalChart.Serializer.Format;
-      workingChart.Serializer.Load(ms);
-      ms.Close();
+        ms.Seek(0, SeekOrigin.Begin);
+        workingChart = new EnhancedChart();
+        workingChart.Serializer.Format = originalChart.Serializer.Format;
+        workingChart.Serializer.Load(ms);
+      }
+
+      foreach (var s in workingChart.Series.Where(x => !x.Points.Any()).ToArray())
+        s.IsVisibleInLegend = false;
 
       originalChart.Serializer.Content = prevContent;
       originalChart.Serializer.Format = prevFormat;
       #endregion
 
       chartAreaComboBox.Items.Clear();
-      foreach (ChartArea area in originalChart.ChartAreas) {
+      foreach (var area in originalChart.ChartAreas) {
         chartAreaComboBox.Items.Add(area.Name);
       }
       chartAreaComboBox.SelectedIndex = 0;
+      SuppressEvents = true;
+      try {
+        showPrimaryXAxisCheckBox.Checked = originalChart.Series.Any(x => x.XAxisType == AxisType.Primary);
+        showPrimaryYAxisCheckBox.Checked = originalChart.Series.Any(x => x.YAxisType == AxisType.Primary);
+        showSecondaryXAxisCheckBox.Checked = originalChart.Series.Any(x => x.XAxisType == AxisType.Secondary);
+        showSecondaryYAxisCheckBox.Checked = originalChart.Series.Any(x => x.YAxisType == AxisType.Secondary);
+
+        if (!workingChart.Legends.Any()) {
+          legendPositionComboBox.Enabled = false;
+          legendFontSizeComboBox.Enabled = false;
+        } else {
+          legendPositionComboBox.Enabled = true;
+          legendFontSizeComboBox.Enabled = true;
+          if (workingChart.Legends[0].Enabled) {
+            switch (workingChart.Legends[0].Docking) {
+              case Docking.Top:
+                legendPositionComboBox.SelectedItem = "Top";
+                break;
+              case Docking.Right:
+                legendPositionComboBox.SelectedItem = "Right";
+                break;
+              case Docking.Bottom:
+                legendPositionComboBox.SelectedItem = "Bottom";
+                break;
+              case Docking.Left:
+                legendPositionComboBox.SelectedItem = "Left";
+                break;
+            }
+          } else {
+            legendPositionComboBox.SelectedItem = "Hidden";
+          }
+        }
+      } finally { SuppressEvents = false; }
       base.OnShown(e);
 
       if (togglePreviewCheckBox.Checked) UpdatePreview();
@@ -192,14 +229,47 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         UpdateFields();
     }
 
+    private void legendPositionComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (!SuppressEvents) {
+        if (legendPositionComboBox.SelectedIndex >= 0) {
+          var legend = workingChart.Legends[0];
+          var legendPosition = legendPositionComboBox.Items[legendPositionComboBox.SelectedIndex].ToString();
+          if (legendPosition != "Hidden" && !legend.Enabled)
+            legend.Enabled = true;
+          switch (legendPosition) {
+            case "Top":
+              legend.Docking = Docking.Top;
+              break;
+            case "Right":
+              legend.Docking = Docking.Right;
+              break;
+            case "Bottom":
+              legend.Docking = Docking.Bottom;
+              break;
+            case "Left":
+              legend.Docking = Docking.Left;
+              break;
+            case "Hidden":
+              legend.Enabled = false;
+              break;
+          }
+        }
+        UpdatePreview();
+      }
+    }
+
     private void titleTextBox_TextChanged(object sender, EventArgs e) {
       if (!SuppressEvents) {
-        if (workingChart.Titles.Count > 0) {
-          workingChart.Titles[0].Text = titleTextBox.Text;
-        } else {
-          Title t = new Title(titleTextBox.Text);
-          t.Font = ChangeFontSizePt(t.Font, float.Parse(titleFontSizeComboBox.Text));
-          workingChart.Titles.Add(t);
+        if (string.IsNullOrEmpty(titleTextBox.Text))
+          workingChart.Titles.Clear();
+        else {
+          if (workingChart.Titles.Count > 0) {
+            workingChart.Titles[0].Text = titleTextBox.Text;
+          } else {
+            var t = new Title(titleTextBox.Text);
+            t.Font = ChangeFontSizePt(t.Font, float.Parse(titleFontSizeComboBox.Text));
+            workingChart.Titles.Add(t);
+          }
         }
         if (togglePreviewCheckBox.Checked) UpdatePreview();
       }
@@ -207,7 +277,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     private void primaryXTextBox_TextChanged(object sender, EventArgs e) {
       if (!SuppressEvents) {
-        ChartArea area = GetCurrentChartArea();
+        var area = GetCurrentChartArea();
         area.AxisX.Title = primaryXTextBox.Text;
         if (togglePreviewCheckBox.Checked) UpdatePreview();
       }
@@ -215,7 +285,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     private void primaryYTextBox_TextChanged(object sender, EventArgs e) {
       if (!SuppressEvents) {
-        ChartArea area = GetCurrentChartArea();
+        var area = GetCurrentChartArea();
         area.AxisY.Title = primaryYTextBox.Text;
         if (togglePreviewCheckBox.Checked) UpdatePreview();
       }
@@ -223,7 +293,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     private void secondaryXTextBox_TextChanged(object sender, EventArgs e) {
       if (!SuppressEvents) {
-        ChartArea area = GetCurrentChartArea();
+        var area = GetCurrentChartArea();
         area.AxisX2.Title = secondaryXTextBox.Text;
         if (togglePreviewCheckBox.Checked) UpdatePreview();
       }
@@ -231,8 +301,44 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     private void secondaryYTextBox_TextChanged(object sender, EventArgs e) {
       if (!SuppressEvents) {
-        ChartArea area = GetCurrentChartArea();
+        var area = GetCurrentChartArea();
         area.AxisY2.Title = secondaryYTextBox.Text;
+        if (togglePreviewCheckBox.Checked) UpdatePreview();
+      }
+    }
+
+    private void showPrimaryXAxisCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (!SuppressEvents) {
+        var area = GetCurrentChartArea();
+        var isChecked = ((CheckBox)sender).Checked;
+        area.AxisX.Enabled = isChecked ? AxisEnabled.True : AxisEnabled.False;
+        if (togglePreviewCheckBox.Checked) UpdatePreview();
+      }
+    }
+
+    private void showPrimaryYAxisCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (!SuppressEvents) {
+        var area = GetCurrentChartArea();
+        var isChecked = ((CheckBox)sender).Checked;
+        area.AxisY.Enabled = isChecked ? AxisEnabled.True : AxisEnabled.False;
+        if (togglePreviewCheckBox.Checked) UpdatePreview();
+      }
+    }
+
+    private void showSecondaryXAxisCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (!SuppressEvents) {
+        var area = GetCurrentChartArea();
+        var isChecked = ((CheckBox)sender).Checked;
+        area.AxisX2.Enabled = isChecked ? AxisEnabled.True : AxisEnabled.False;
+        if (togglePreviewCheckBox.Checked) UpdatePreview();
+      }
+    }
+
+    private void showSecondaryYAxisCheckBox_CheckedChanged(object sender, EventArgs e) {
+      if (!SuppressEvents) {
+        var area = GetCurrentChartArea();
+        var isChecked = ((CheckBox)sender).Checked;
+        area.AxisY2.Enabled = isChecked ? AxisEnabled.True : AxisEnabled.False;
         if (togglePreviewCheckBox.Checked) UpdatePreview();
       }
     }
@@ -269,10 +375,9 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (!SuppressEvents) {
         float fontSize;
         if (float.TryParse(axisFontSizeComboBox.Text, out fontSize)) {
-          ChartArea area = GetCurrentChartArea();
-          foreach (Axis a in area.Axes) {
+          var area = GetCurrentChartArea();
+          foreach (Axis a in area.Axes)
             a.TitleFont = ChangeFontSizePt(a.TitleFont, fontSize);
-          }
         }
         if (togglePreviewCheckBox.Checked) UpdatePreview();
       }
@@ -282,10 +387,9 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (!SuppressEvents) {
         float fontSize;
         if (float.TryParse(scalesFontSizeComboBox.Text, out fontSize)) {
-          ChartArea area = GetCurrentChartArea();
-          foreach (Axis a in area.Axes) {
+          var area = GetCurrentChartArea();
+          foreach (var a in area.Axes)
             a.LabelStyle.Font = ChangeFontSizePt(a.LabelStyle.Font, fontSize);
-          }
         }
         if (togglePreviewCheckBox.Checked) UpdatePreview();
       }
@@ -295,9 +399,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       if (!SuppressEvents) {
         float fontSize;
         if (float.TryParse(legendFontSizeComboBox.Text, out fontSize)) {
-          foreach (Legend l in workingChart.Legends) {
+          foreach (var l in workingChart.Legends)
             l.Font = ChangeFontSizePt(l.Font, fontSize);
-          }
         }
         if (togglePreviewCheckBox.Checked) UpdatePreview();
       }
@@ -335,16 +438,16 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       float height;
       GetImageParameters(out dpi, out width, out height);
 
-      Bitmap image = new Bitmap((int)Math.Round(width), (int)Math.Round(height));
+      var image = new Bitmap((int)Math.Round(width), (int)Math.Round(height));
       image.SetResolution(dpi, dpi);
-      using (Graphics graphics = Graphics.FromImage(image)) {
+      using (var graphics = Graphics.FromImage(image)) {
         workingChart.Printing.PrintPaint(graphics, new Rectangle(0, 0, image.Width, image.Height));
       }
 
       if (titleTextBox.Text.Trim() != String.Empty) saveFileDialog.FileName = titleTextBox.Text.Trim();
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-        ImageFormat format = ImageFormat.Bmp;
-        string filename = saveFileDialog.FileName.ToLower();
+        var format = ImageFormat.Bmp;
+        var filename = saveFileDialog.FileName.ToLower();
         if (filename.EndsWith("jpg")) {
           format = ImageFormat.Jpeg;
         } else if (filename.EndsWith("emf")) {

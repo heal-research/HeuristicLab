@@ -121,52 +121,53 @@ namespace HeuristicLab.Optimizer {
       if (isConstrainedValueParameter) {
         if (e.Item.Checked) multipleChoiceParameters.Add(parameter, new HashSet<IItem>());
         else multipleChoiceParameters.Remove(parameter);
-      }
+      } else {
 
-      var intValue = parameter.Value as ValueTypeValue<int>;
-      if (intValue != null) {
-        if (e.Item.Checked) {
-          IntArray initialValues;
-          if (intValue.Value == int.MinValue)
-            initialValues = new IntArray(new int[] { -100, -50, 5 });
-          else if (intValue.Value == int.MaxValue)
-            initialValues = new IntArray(new int[] { 5, 50, 100 });
-          else if (intValue.Value == 0)
-            initialValues = new IntArray(new int[] { 0, 1, 2 });
-          else if (Math.Abs(intValue.Value) < 10)
-            initialValues = new IntArray(new int[] { intValue.Value - 1, intValue.Value, intValue.Value + 1 });
-          else initialValues = new IntArray(new int[] { intValue.Value / 2, intValue.Value, intValue.Value * 2 });
-          intParameters.Add(parameter, initialValues);
-          intParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
-        } else intParameters.Remove(parameter);
-      }
+        var intValue = parameter.Value as ValueTypeValue<int>;
+        if (intValue != null) {
+          if (e.Item.Checked) {
+            IntArray initialValues;
+            if (intValue.Value == int.MinValue)
+              initialValues = new IntArray(new int[] { -100, -50, 5 });
+            else if (intValue.Value == int.MaxValue)
+              initialValues = new IntArray(new int[] { 5, 50, 100 });
+            else if (intValue.Value == 0)
+              initialValues = new IntArray(new int[] { 0, 1, 2 });
+            else if (Math.Abs(intValue.Value) < 10)
+              initialValues = new IntArray(new int[] { intValue.Value - 1, intValue.Value, intValue.Value + 1 });
+            else initialValues = new IntArray(new int[] { intValue.Value / 2, intValue.Value, intValue.Value * 2 });
+            intParameters.Add(parameter, initialValues);
+            intParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
+          } else intParameters.Remove(parameter);
+        }
 
-      var doubleValue = parameter.Value as ValueTypeValue<double>;
-      if (doubleValue != null) {
-        if (e.Item.Checked) {
-          DoubleArray initialValues;
-          if (doubleValue.Value == double.MinValue)
-            initialValues = new DoubleArray(new double[] { -1, -0.5, 0 });
-          else if (doubleValue.Value == double.MaxValue)
-            initialValues = new DoubleArray(new double[] { 0, 0.5, 1 });
-          else if (doubleValue.Value == 0.0)
-            initialValues = new DoubleArray(new double[] { 0, 0.1, 0.2 });
-          else if (Math.Abs(doubleValue.Value) <= 1.0) {
-            if (doubleValue.Value > 0.9 || (doubleValue.Value < 0.0 && doubleValue.Value > -0.1))
-              initialValues = new DoubleArray(new double[] { doubleValue.Value - 0.2, doubleValue.Value - 0.1, doubleValue.Value });
-            else if (doubleValue.Value < -0.9 || (doubleValue.Value > 0 && doubleValue.Value < 0.1))
-              initialValues = new DoubleArray(new double[] { doubleValue.Value, doubleValue.Value + 0.1, doubleValue.Value + 0.2 });
-            else initialValues = new DoubleArray(new double[] { doubleValue.Value - 0.1, doubleValue.Value, doubleValue.Value + 0.1 });
-          } else initialValues = new DoubleArray(new double[] { doubleValue.Value / 2.0, doubleValue.Value, doubleValue.Value * 2.0 });
-          doubleParameters.Add(parameter, initialValues);
-          doubleParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
-        } else doubleParameters.Remove(parameter);
-      }
+        var doubleValue = parameter.Value as ValueTypeValue<double>;
+        if (doubleValue != null) {
+          if (e.Item.Checked) {
+            DoubleArray initialValues;
+            if (doubleValue.Value == double.MinValue)
+              initialValues = new DoubleArray(new double[] { -1, -0.5, 0 });
+            else if (doubleValue.Value == double.MaxValue)
+              initialValues = new DoubleArray(new double[] { 0, 0.5, 1 });
+            else if (doubleValue.Value == 0.0)
+              initialValues = new DoubleArray(new double[] { 0, 0.1, 0.2 });
+            else if (Math.Abs(doubleValue.Value) <= 1.0) {
+              if (doubleValue.Value > 0.9 || (doubleValue.Value < 0.0 && doubleValue.Value > -0.1))
+                initialValues = new DoubleArray(new double[] { doubleValue.Value - 0.2, doubleValue.Value - 0.1, doubleValue.Value });
+              else if (doubleValue.Value < -0.9 || (doubleValue.Value > 0 && doubleValue.Value < 0.1))
+                initialValues = new DoubleArray(new double[] { doubleValue.Value, doubleValue.Value + 0.1, doubleValue.Value + 0.2 });
+              else initialValues = new DoubleArray(new double[] { doubleValue.Value - 0.1, doubleValue.Value, doubleValue.Value + 0.1 });
+            } else initialValues = new DoubleArray(new double[] { doubleValue.Value / 2.0, doubleValue.Value, doubleValue.Value * 2.0 });
+            doubleParameters.Add(parameter, initialValues);
+            doubleParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
+          } else doubleParameters.Remove(parameter);
+        }
 
-      var boolValue = parameter.Value as ValueTypeValue<bool>;
-      if (boolValue != null) {
-        if (e.Item.Checked) boolParameters.Add(parameter);
-        else boolParameters.Remove(parameter);
+        var boolValue = parameter.Value as ValueTypeValue<bool>;
+        if (boolValue != null) {
+          if (e.Item.Checked) boolParameters.Add(parameter);
+          else boolParameters.Remove(parameter);
+        }
       }
 
       UpdateVariationsLabel();
