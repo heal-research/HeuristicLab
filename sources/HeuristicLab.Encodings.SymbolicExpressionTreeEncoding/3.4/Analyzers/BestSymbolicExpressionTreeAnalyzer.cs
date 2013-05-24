@@ -76,7 +76,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     public BestSymbolicExpressionTreeAnalyzer()
       : base() {
-      Parameters.Add(new ScopeTreeLookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree whose length should be calculated."));
+      Parameters.Add(new ScopeTreeLookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression trees from which the best should be determined."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>(QualityParameterName, "The quality value of a tree."));
       Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The order relation for qualities of trees."));
       Parameters.Add(new LookupParameter<DoubleValue>(BestTreeQualityParameterName, "The quality of the best tree so far."));
