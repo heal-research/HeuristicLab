@@ -60,7 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Description = ItemDescription;
 
       Parameters.Add(new OptionalValueParameter<DoubleValue>("Const", "Additive constant in the polymomial."));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter of the Polynomial covariance function."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter of the polynomial covariance function."));
       Parameters.Add(new ValueParameter<IntValue>("Degree", "The degree of the polynomial (only non-zero positive values allowed).", new IntValue(2)));
     }
 
