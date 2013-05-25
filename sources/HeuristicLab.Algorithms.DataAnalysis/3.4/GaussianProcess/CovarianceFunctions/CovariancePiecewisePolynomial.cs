@@ -41,8 +41,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return (IValueParameter<DoubleValue>)Parameters["Scale"]; }
     }
 
-    public IValueParameter<IntValue> VParameter {
-      get { return (IValueParameter<IntValue>)Parameters["V"]; }
+    public IConstrainedValueParameter<IntValue> VParameter {
+      get { return (IConstrainedValueParameter<IntValue>)Parameters["V"]; }
     }
 
     [StorableConstructor]
