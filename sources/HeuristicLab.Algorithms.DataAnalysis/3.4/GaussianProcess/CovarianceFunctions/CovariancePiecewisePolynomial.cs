@@ -60,7 +60,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Description = ItemDescription;
 
       Parameters.Add(new OptionalValueParameter<DoubleValue>("Length", "The length parameter of the isometric piecewise polynomial covariance function."));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter of the Polynomial covariance function."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("Scale", "The scale parameter of the piecewise polynomial covariance function."));
 
       var validValues = new ItemSet<IntValue>(new IntValue[] { 
         (IntValue)(new IntValue().AsReadOnly()), 
