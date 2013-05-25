@@ -123,6 +123,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="FixedDataAnalysisAlgorithm.cs" />
+    <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePiecewisePolynomial.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovarianceNeuralNetwork.cs" />
     <Compile Include="GaussianProcess\CovarianceFunctions\CovariancePolynomial.cs" />
     <Compile Include="GaussianProcess\GaussianProcessBase.cs" />
