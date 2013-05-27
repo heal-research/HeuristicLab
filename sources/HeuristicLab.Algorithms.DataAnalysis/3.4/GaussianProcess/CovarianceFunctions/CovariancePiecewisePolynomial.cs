@@ -139,11 +139,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => {
-        double k = Math.Sqrt(Util.SqrDist(x, i, x, j, 1.0 / length));
+        double k = Math.Sqrt(Util.SqrDist(x, i, x, j, 1.0 / length, columnIndices));
         return scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
       };
       cov.CrossCovariance = (x, xt, i, j) => {
-        double k = Math.Sqrt(Util.SqrDist(x, i, xt, j, 1.0 / length));
+        double k = Math.Sqrt(Util.SqrDist(x, i, xt, j, 1.0 / length, columnIndices));
         return scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
       };
       cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, length, scale, v, exp, f, df, columnIndices);
@@ -151,7 +151,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, int v, double exp, Func<double, double> f, Func<double, double> df, IEnumerable<int> columnIndices) {
-      double k = Math.Sqrt(Util.SqrDist(x, i, x, j, 1.0 / length));
+      double k = Math.Sqrt(Util.SqrDist(x, i, x, j, 1.0 / length, columnIndices));
       yield return scale * Math.Pow(Math.Max(1.0 - k, 0), exp + v - 1) * k * ((exp + v) * f(k) - Math.Max(1 - k, 0) * df(k));
       yield return 2.0 * scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
     }
