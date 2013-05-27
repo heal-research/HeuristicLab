@@ -59,7 +59,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     protected override void SortItemsListView(SortOrder sortOrder) {
       if (itemsListView.Sorting == sortOrder || sortOrder == SortOrder.None) return;
       ((ListViewItemDateComparer)itemsListView.ListViewItemSorter).Order = sortOrder;
-      base.SortItemsListView(sortOrder);
+      itemsListView.Sorting = sortOrder;
+      itemsListView.Sort();
       AdjustListViewColumnSizes();
     }
 
