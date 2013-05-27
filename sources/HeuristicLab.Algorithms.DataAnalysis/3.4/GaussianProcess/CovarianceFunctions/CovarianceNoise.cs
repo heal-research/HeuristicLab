@@ -86,7 +86,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => i == j ? scale : 0.0;
-      cov.CrossCovariance = (x, xt, i, j) => 0.0;
+      cov.CrossCovariance = (x, xt, i, j) => Util.SqrDist(x, i, xt, j, 1.0, columnIndices) < 1e-9 ? scale : 0.0;
       cov.CovarianceGradient = (x, i, j) => Enumerable.Repeat(i == j ? 2.0 * scale : 0.0, 1);
       return cov;
     }
