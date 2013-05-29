@@ -1597,8 +1597,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public TimeSeriesPrognosisProblemData(ITimeSeriesPrognosisProblemData timeseriesProblemData)
       : this(timeseriesProblemData.Dataset, timeseriesProblemData.AllowedInputVariables, timeseriesProblemData.TargetVariable) {
 
+      TrainingPartition.Start = timeseriesProblemData.TrainingPartition.Start;
+      TrainingPartition.End = timeseriesProblemData.TrainingPartition.End;
+      TestPartition.Start = timeseriesProblemData.TestPartition.Start;
+      TestPartition.End = timeseriesProblemData.TestPartition.End;
+
+      TrainingHorizon = timeseriesProblemData.TrainingHorizon;
       TestHorizon = timeseriesProblemData.TestHorizon;
-      TrainingHorizon = timeseriesProblemData.TestHorizon;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
