@@ -30,16 +30,16 @@ namespace HeuristicLab.Clients.Hive.JobManager {
   /// </summary>
   public class ListViewItemDateComparer : IComparer {
     private int col;
-    private SortOrder order;
+    public SortOrder Order { get; set; }
 
     public ListViewItemDateComparer() {
       col = 0;
-      order = SortOrder.Ascending;
+      Order = SortOrder.Ascending;
     }
 
     public ListViewItemDateComparer(int column, SortOrder order) {
       col = column;
-      this.order = order;
+      Order = order;
     }
 
     public int Compare(object x, object y) {
@@ -65,7 +65,7 @@ namespace HeuristicLab.Clients.Hive.JobManager {
            listViewItemX.SubItems[col].Text, listViewItemY.SubItems[col].Text));
       }
 
-      if (order == SortOrder.Descending) {
+      if (Order == SortOrder.Descending) {
         // invert the value returned by Compare.
         returnVal *= -1;
       }
