@@ -189,6 +189,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
       mainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
+      mainLoop.ReevaluateElitesParameter.ActualName = ReevaluateElitesParameter.Name;
       mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
       mainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
       mainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
