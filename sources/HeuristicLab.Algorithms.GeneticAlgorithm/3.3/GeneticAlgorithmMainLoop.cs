@@ -147,9 +147,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch conditionalBranch = new ConditionalBranch();
       ConditionalBranch reevaluateElitesBranch = new ConditionalBranch();
-      UniformSubScopesProcessor uniformSubScopesProcessor3 = new UniformSubScopesProcessor();
-      Placeholder evaluator2 = new Placeholder();
-      SubScopesCounter subScopesCounter2 = new SubScopesCounter();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class GeneticAlgorithm expects this to be called Generations
 
@@ -203,15 +200,6 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       reevaluateElitesBranch.ConditionParameter.ActualName = "ReevaluateElites";
       reevaluateElitesBranch.Name = "Reevaluate elites ?";
-
-      uniformSubScopesProcessor3.Parallel.Value = true;
-
-      evaluator2.Name = "Evaluator";
-      evaluator2.OperatorParameter.ActualName = "Evaluator";
-
-      subScopesCounter2.Name = "Increment EvaluatedSolutions";
-      subScopesCounter2.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
-
       #endregion
 
       #region Create operator graph
@@ -241,9 +229,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       subScopesProcessor2.Successor = mergingReducer;
       bestSelector.Successor = rightReducer;
       rightReducer.Successor = reevaluateElitesBranch;
-      reevaluateElitesBranch.TrueBranch = uniformSubScopesProcessor3;
-      uniformSubScopesProcessor3.Operator = evaluator;
-      uniformSubScopesProcessor3.Successor = subScopesCounter2;
+      reevaluateElitesBranch.TrueBranch = uniformSubScopesProcessor2;
       reevaluateElitesBranch.FalseBranch = null;
       reevaluateElitesBranch.Successor = null;
       mergingReducer.Successor = intCounter;
