@@ -100,6 +100,7 @@ namespace HeuristicLab.Optimization.Views {
       else UpdateCaption();
     }
     private void run_Changed(object sender, EventArgs e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
         this.Invoke(new EventHandler(run_Changed), sender, e);
       else {
@@ -198,6 +199,7 @@ namespace HeuristicLab.Optimization.Views {
         this.dataGridView.Rows[rowIndex].DefaultCellStyle.ForeColor = run.Color;
         runIndex++;
       }
+      rowsTextBox.Text = dataGridView.Rows.GetRowCount(DataGridViewElementStates.Visible).ToString();
       UpdateRowHeaders();
     }
 
