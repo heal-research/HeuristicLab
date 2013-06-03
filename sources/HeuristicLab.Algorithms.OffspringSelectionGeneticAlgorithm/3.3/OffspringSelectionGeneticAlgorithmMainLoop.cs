@@ -62,6 +62,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<IntValue> ElitesParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["Elites"]; }
     }
+    public IValueLookupParameter<BoolValue> ReevaluateElitesParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["ReevaluateElites"]; }
+    }
     public ValueLookupParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
@@ -107,6 +110,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Initialize();
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("ReevaluateElites")) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
+      }
+    }
+
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
@@ -119,6 +129,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
@@ -169,6 +180,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainOperator.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainOperator.CurrentSuccessRatioParameter.ActualName = "CurrentSuccessRatio";
       mainOperator.ElitesParameter.ActualName = ElitesParameter.Name;
+      mainOperator.ReevaluateElitesParameter.ActualName = ReevaluateElitesParameter.Name;
       mainOperator.EvaluatedSolutionsParameter.ActualName = EvaluatedSolutionsParameter.Name;
       mainOperator.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
       mainOperator.MaximizationParameter.ActualName = MaximizationParameter.Name;

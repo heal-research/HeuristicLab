@@ -78,6 +78,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
+    private IFixedValueParameter<BoolValue> ReevaluateElitesParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters["ReevaluateElites"]; }
+    }
     private ValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
@@ -143,6 +146,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return ElitesParameter.Value; }
       set { ElitesParameter.Value = value; }
     }
+    public bool ReevaluteElites {
+      get { return ReevaluateElitesParameter.Value.Value; }
+      set { ReevaluateElitesParameter.Value.Value = value; }
+    }
     public IntValue MaximumGenerations {
       get { return MaximumGenerationsParameter.Value; }
       set { MaximumGenerationsParameter.Value = value; }
@@ -207,6 +214,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       #region Backwards Compatibility
       if (successfulOffspringAnalyzer == null)
         successfulOffspringAnalyzer = new SuccessfulOffspringAnalyzer();
+      if (!Parameters.ContainsKey("ReevaluateElites")) {
+        Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", (BoolValue)new BoolValue(false).AsReadOnly()) { Hidden = true });
+      }
       #endregion
 
       Initialize();
@@ -231,6 +241,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
+      Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", new BoolValue(false)) { Hidden = true });
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved.", new DoubleValue(1)));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("ComparisonFactorLowerBound", "The lower bound of the comparison factor (start).", new DoubleValue(0)));
@@ -273,6 +284,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.ComparisonFactorStartParameter.ActualName = ComparisonFactorLowerBoundParameter.Name;
       mainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
+      mainLoop.ReevaluateElitesParameter.ActualName = ReevaluateElitesParameter.Name;
       mainLoop.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
       mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
       mainLoop.MaximumSelectionPressureParameter.ActualName = MaximumSelectionPressureParameter.Name;

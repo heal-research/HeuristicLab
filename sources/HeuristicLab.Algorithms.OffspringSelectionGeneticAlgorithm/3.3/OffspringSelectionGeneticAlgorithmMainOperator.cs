@@ -66,6 +66,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<IntValue> ElitesParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["Elites"]; }
     }
+    public IValueLookupParameter<BoolValue> ReevaluateElitesParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["ReevaluateElites"]; }
+    }
     public LookupParameter<DoubleValue> ComparisonFactorParameter {
       get { return (LookupParameter<DoubleValue>)Parameters["ComparisonFactor"]; }
     }
@@ -99,6 +102,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Initialize();
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("ReevaluateElites")) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
+      }
+    }
+
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
@@ -111,6 +121,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated solutions."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
       Parameters.Add(new LookupParameter<DoubleValue>("ComparisonFactor", "The comparison factor is used to determine whether the offspring should be compared to the better parent, the worse parent or a quality value linearly interpolated between them. It is in the range [0;1]."));
       Parameters.Add(new LookupParameter<DoubleValue>("CurrentSuccessRatio", "The current success ratio."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("SuccessRatio", "The ratio of successful to total children that should be achieved."));
@@ -158,6 +169,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       RightReducer rightReducer = new RightReducer();
       LeftReducer leftReducer = new LeftReducer();
       MergingReducer mergingReducer2 = new MergingReducer();
+      ConditionalBranch reevaluateElitesBranch = new ConditionalBranch();
+      UniformSubScopesProcessor uniformSubScopesProcessor7 = new UniformSubScopesProcessor();
+      Placeholder evaluator4 = new Placeholder();
+      SubScopesCounter subScopesCounter4 = new SubScopesCounter();
 
       selector.Name = "Selector (placeholder)";
       selector.OperatorParameter.ActualName = SelectorParameter.Name;
@@ -252,6 +267,17 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       worstSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;
       worstSelector.NumberOfSelectedSubScopesParameter.ActualName = ElitesParameter.Name;
       worstSelector.QualityParameter.ActualName = QualityParameter.Name;
+
+      reevaluateElitesBranch.ConditionParameter.ActualName = "ReevaluateElites";
+      reevaluateElitesBranch.Name = "Reevaluate elites ?";
+
+      uniformSubScopesProcessor7.Parallel.Value = true;
+
+      evaluator4.Name = "Evaluator (placeholder)";
+      evaluator4.OperatorParameter.ActualName = EvaluatorParameter.Name;
+
+      subScopesCounter4.Name = "Increment EvaluatedSolutions";
+      subScopesCounter4.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
       #endregion
 
       #region Create operator graph
@@ -309,7 +335,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       subScopesProcessor3.Operators.Add(worstSelector);
       subScopesProcessor3.Successor = mergingReducer2;
       bestSelector.Successor = rightReducer;
-      rightReducer.Successor = null;
+      rightReducer.Successor = reevaluateElitesBranch;
+      reevaluateElitesBranch.TrueBranch = uniformSubScopesProcessor7;
+      uniformSubScopesProcessor7.Operator = evaluator4;
+      uniformSubScopesProcessor7.Successor = subScopesCounter4;
+      subScopesCounter4.Successor = null;
+      reevaluateElitesBranch.FalseBranch = null;
+      reevaluateElitesBranch.Successor = null;
       worstSelector.Successor = leftReducer;
       leftReducer.Successor = null;
       mergingReducer2.Successor = null;
