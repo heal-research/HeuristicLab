@@ -199,9 +199,11 @@ namespace HeuristicLab.Algorithms.RAPGA {
     private RAPGA(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("ReevaluateElites")) {
         Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", (BoolValue)new BoolValue(false).AsReadOnly()) { Hidden = true });
       }
+      #endregion
       Initialize();
     }
     private RAPGA(RAPGA original, Cloner cloner)
