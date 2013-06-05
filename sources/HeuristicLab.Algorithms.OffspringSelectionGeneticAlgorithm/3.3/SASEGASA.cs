@@ -239,7 +239,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private SASEGASA(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      #region Backwards Compatibility
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
       if (successfulOffspringAnalyzer == null)
         successfulOffspringAnalyzer = new SuccessfulOffspringAnalyzer();
       if (!Parameters.ContainsKey("ReevaluateElites")) {
