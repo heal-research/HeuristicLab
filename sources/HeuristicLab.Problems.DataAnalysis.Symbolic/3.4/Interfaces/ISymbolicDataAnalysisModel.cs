@@ -24,5 +24,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public interface ISymbolicDataAnalysisModel : IDataAnalysisModel {
     ISymbolicExpressionTree SymbolicExpressionTree { get; }
     ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get; }
+
+    double LowerEstimationLimit { get; }
+    double UpperEstimationLimit { get; }
   }
 }

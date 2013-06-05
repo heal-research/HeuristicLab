@@ -22,8 +22,6 @@
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   public interface ISymbolicClassificationModel : IClassificationModel, ISymbolicDataAnalysisModel {
-    double LowerEstimationLimit { get; }
-    double UpperEstimationLimit { get; }
     void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);
     new ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
 
