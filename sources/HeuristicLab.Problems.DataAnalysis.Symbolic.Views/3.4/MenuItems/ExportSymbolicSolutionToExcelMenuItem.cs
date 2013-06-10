@@ -303,7 +303,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       estimatedWorksheet.Cells["C2:C" + (rows + 1)].Formula = "J2";
 
       estimatedWorksheet.Cells["D2:D" + (rows + 1)].Formula = "ABS(B2 - C2)";
-      estimatedWorksheet.Cells["E2:E" + (rows + 1)].Formula = "D2 / B2";
+      estimatedWorksheet.Cells["E2:E" + (rows + 1)].Formula = "ABS(D2 / B2)";
       estimatedWorksheet.Cells["F2:F" + (rows + 1)].Formula = "C2 - B2";
       estimatedWorksheet.Cells["G2:G" + (rows + 1)].Formula = "POWER(F2, 2)";
 
