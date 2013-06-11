@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public TData ImportData(string path, ImportType type, DataAnalysisCSVFormat csvFormat) {
       TableFileParser csvFileParser = new TableFileParser();
-      csvFileParser.Parse(path, csvFormat.NumberFormatInfo, csvFormat.DateTimeFormatInfo, csvFormat.Separator);
+      csvFileParser.Parse(path, csvFormat.NumberFormatInfo, csvFormat.DateTimeFormatInfo, csvFormat.Separator, csvFormat.VariableNamesAvailable);
       return ImportData(path, type, csvFileParser);
     }
 

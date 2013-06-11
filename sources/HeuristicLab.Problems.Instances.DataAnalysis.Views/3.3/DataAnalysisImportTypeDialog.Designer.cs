@@ -71,6 +71,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.PreviewLabel = new System.Windows.Forms.Label();
       this.PreviewDatasetMatrix = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.CheckboxColumnNames = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.TrainingTestTrackBar)).BeginInit();
       this.CSVSettingsGroupBox.SuspendLayout();
       this.ProblemDataSettingsGroupBox.SuspendLayout();
@@ -92,7 +93,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.OkButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.OkButton.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.OkButton.Enabled = false;
-      this.OkButton.Location = new System.Drawing.Point(303, 407);
+      this.OkButton.Location = new System.Drawing.Point(303, 422);
       this.OkButton.Name = "OkButton";
       this.OkButton.Size = new System.Drawing.Size(75, 23);
       this.OkButton.TabIndex = 2;
@@ -136,7 +137,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       this.CancelationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.CancelationButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.CancelationButton.Location = new System.Drawing.Point(384, 407);
+      this.CancelationButton.Location = new System.Drawing.Point(384, 422);
       this.CancelationButton.Name = "CancelationButton";
       this.CancelationButton.Size = new System.Drawing.Size(75, 23);
       this.CancelationButton.TabIndex = 3;
@@ -247,6 +248,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       this.CSVSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+      this.CSVSettingsGroupBox.Controls.Add(this.CheckboxColumnNames);
       this.CSVSettingsGroupBox.Controls.Add(this.DateTimeFormatInfoLabel);
       this.CSVSettingsGroupBox.Controls.Add(this.DecimalSeparatorInfoLabel);
       this.CSVSettingsGroupBox.Controls.Add(this.SeparatorInfoLabel);
@@ -258,7 +260,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.CSVSettingsGroupBox.Controls.Add(this.DateTimeFormatLabel);
       this.CSVSettingsGroupBox.Location = new System.Drawing.Point(12, 32);
       this.CSVSettingsGroupBox.Name = "CSVSettingsGroupBox";
-      this.CSVSettingsGroupBox.Size = new System.Drawing.Size(447, 105);
+      this.CSVSettingsGroupBox.Size = new System.Drawing.Size(447, 126);
       this.CSVSettingsGroupBox.TabIndex = 16;
       this.CSVSettingsGroupBox.TabStop = false;
       this.CSVSettingsGroupBox.Text = "CSV Settings";
@@ -312,9 +314,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TrainingLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TrainingTestTrackBar);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.ShuffleDataCheckbox);
-      this.ProblemDataSettingsGroupBox.Location = new System.Drawing.Point(12, 143);
+      this.ProblemDataSettingsGroupBox.Location = new System.Drawing.Point(12, 164);
       this.ProblemDataSettingsGroupBox.Name = "ProblemDataSettingsGroupBox";
-      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 258);
+      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 252);
       this.ProblemDataSettingsGroupBox.TabIndex = 17;
       this.ProblemDataSettingsGroupBox.TabStop = false;
       this.ProblemDataSettingsGroupBox.Text = "ProblemData Settings";
@@ -361,15 +363,26 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.PreviewDatasetMatrix.ReadOnly = true;
       this.PreviewDatasetMatrix.ShowRowsAndColumnsTextBox = false;
       this.PreviewDatasetMatrix.ShowStatisticalInformation = false;
-      this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 144);
+      this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 138);
       this.PreviewDatasetMatrix.TabIndex = 0;
+      // 
+      // CheckboxColumnNames
+      // 
+      this.CheckboxColumnNames.AutoSize = true;
+      this.CheckboxColumnNames.Location = new System.Drawing.Point(9, 103);
+      this.CheckboxColumnNames.Name = "CheckboxColumnNames";
+      this.CheckboxColumnNames.Size = new System.Drawing.Size(144, 17);
+      this.CheckboxColumnNames.TabIndex = 24;
+      this.CheckboxColumnNames.Text = "Column names in first line";
+      this.CheckboxColumnNames.UseVisualStyleBackColor = true;
+      this.CheckboxColumnNames.CheckedChanged += new System.EventHandler(this.CheckboxColumnNames_CheckedChanged);
       // 
       // DataAnalysisImportTypeDialog
       // 
       this.AcceptButton = this.OkButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(471, 442);
+      this.ClientSize = new System.Drawing.Size(471, 457);
       this.Controls.Add(this.ProblemDataSettingsGroupBox);
       this.Controls.Add(this.CSVSettingsGroupBox);
       this.Controls.Add(this.ProblemTextBox);
@@ -421,5 +434,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     protected System.Windows.Forms.Label DecimalSeparatorInfoLabel;
     protected System.Windows.Forms.Label ShuffelInfoLabel;
     protected System.Windows.Forms.ToolTip ToolTip;
+    private System.Windows.Forms.CheckBox CheckboxColumnNames;
   }
 }

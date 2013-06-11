@@ -67,7 +67,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         return new DataAnalysisCSVFormat() {
           Separator = (char)SeparatorComboBox.SelectedValue,
           NumberFormatInfo = (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
-          DateTimeFormatInfo = (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue
+          DateTimeFormatInfo = (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,
+          VariableNamesAvailable = CheckboxColumnNames.Checked
         };
       }
     }
@@ -98,10 +99,21 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       DecimalSeparatorComboBox.Enabled = true;
       DateTimeFormatComboBox.Enabled = true;
       ProblemTextBox.Text = openFileDialog.FileName;
+      TableFileParser csvParser = new TableFileParser();
+      CheckboxColumnNames.Checked = csvParser.AreColumnNamesInFirstLine(ProblemTextBox.Text,
+                                                                      (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
+                                                                      (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,
+                                                                      (char)SeparatorComboBox.SelectedValue);
       ParseCSVFile();
     }
 
     protected virtual void CSVFormatComboBoxSelectionChangeCommitted(object sender, EventArgs e) {
+      if (string.IsNullOrEmpty(ProblemTextBox.Text)) return;
+
+      ParseCSVFile();
+    }
+
+    protected virtual void CheckboxColumnNames_CheckedChanged(object sender, EventArgs e) {
       if (string.IsNullOrEmpty(ProblemTextBox.Text)) return;
 
       ParseCSVFile();
@@ -114,7 +126,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
         csvParser.Parse(ProblemTextBox.Text,
                         (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
                         (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,
-                        (char)SeparatorComboBox.SelectedValue);
+                        (char)SeparatorComboBox.SelectedValue,
+                        CheckboxColumnNames.Checked);
         IEnumerable<string> variableNamesWithType = GetVariableNamesWithType(csvParser);
         PreviewDatasetMatrix.Content = new Dataset(variableNamesWithType, csvParser.Values);
 

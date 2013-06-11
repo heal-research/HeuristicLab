@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0.00, 0.00, 0.00, 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0.00, 0.00, 0.00, 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0,00; 0,00; 0,00; 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0,00; 0,00; 0,00; 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0; 0; 0; 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -152,7 +152,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0; 0; 0; 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -174,7 +174,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0, 0, 0, 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -196,7 +196,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0,0,0,0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -219,7 +219,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0, 0, 0, 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -242,7 +242,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0,0,0,0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -265,7 +265,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       "0,00\t 0,00\t 0,00\t 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -288,7 +288,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       "0,00\t 0,00\t 0,00\t 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -310,7 +310,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       "0.00\t 0.00\t 0.00\t 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -332,7 +332,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       "0.00\t 0.00\t 0.00\t 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -354,7 +354,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       "0\t 0\t 0\t 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -376,7 +376,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       "0\t 0\t 0\t 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -399,7 +399,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       "0\t 0\t 0\t 0" + Environment.NewLine + Environment.NewLine);
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(4, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
       }
@@ -420,7 +420,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0,00 0,00 0,00 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -442,7 +442,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0,00 0,00 0,00 0,00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -464,7 +464,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0.00 0.00 0.00 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -486,7 +486,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
 0.00 0.00 0.00 0.00");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
@@ -507,7 +507,7 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 ");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(3, parser.Rows);
         Assert.AreEqual(4507, parser.Columns);
       }
@@ -528,7 +528,7 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 0 0 0 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
@@ -550,7 +550,7 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 0 0 0 0");
       TableFileParser parser = new TableFileParser();
       try {
-        parser.Parse(tempFileName);
+        parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);

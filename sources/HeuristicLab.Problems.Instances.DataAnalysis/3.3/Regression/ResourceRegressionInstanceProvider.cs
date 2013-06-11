@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
         TableFileParser csvFileParser = new TableFileParser();
         using (Stream stream = instancesZipFile.GetInputStream(entry)) {
-          csvFileParser.Parse(stream, numberFormat, dateFormat, separator);
+          csvFileParser.Parse(stream, numberFormat, dateFormat, separator, csvFileParser.AreColumnNamesInFirstLine(stream));
         }
 
         Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);

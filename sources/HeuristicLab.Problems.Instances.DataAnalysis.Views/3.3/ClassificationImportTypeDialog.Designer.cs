@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // OkButton
       // 
-      this.OkButton.Location = new System.Drawing.Point(303, 464);
+      this.OkButton.Location = new System.Drawing.Point(303, 482);
       // 
       // TrainingTestTrackBar
       // 
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // CancelationButton
       // 
-      this.CancelationButton.Location = new System.Drawing.Point(384, 464);
+      this.CancelationButton.Location = new System.Drawing.Point(384, 482);
       // 
       // ProblemDataSettingsGroupBox
       // 
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableComboBox);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.UniformDistributionOfClassesCheckbox);
-      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 315);
+      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 312);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.UniformDistributionOfClassesCheckbox, 0);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.TargetVariableComboBox, 0);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.TargetVariableLabel, 0);
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // PreviewDatasetMatrix
       // 
       this.PreviewDatasetMatrix.Location = new System.Drawing.Point(6, 134);
-      this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 175);
+      this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 172);
       // 
       // PreviewLabel
       // 
@@ -117,7 +117,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // TargetVariableComboBox
       // 
-      this.TargetVariableComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.TargetVariableComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.TargetVariableComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.TargetVariableComboBox.FormattingEnabled = true;
@@ -177,7 +177,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(471, 499);
+      this.ClientSize = new System.Drawing.Size(471, 517);
       this.Name = "ClassificationImportTypeDialog";
       this.Text = "Classification CSV Import";
       ((System.ComponentModel.ISupportInitialize)(this.TrainingTestTrackBar)).EndInit();
