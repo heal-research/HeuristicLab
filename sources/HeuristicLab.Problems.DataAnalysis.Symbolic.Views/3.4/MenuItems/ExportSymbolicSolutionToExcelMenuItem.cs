@@ -123,11 +123,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       modelWorksheet.Cells[row, 1].Value = "Estimation Limits Lower";
       modelWorksheet.Cells[row, 2].Value = solution.Model.LowerEstimationLimit;
       modelWorksheet.Names.Add("EstimationLimitLower", modelWorksheet.Cells[row, 2]);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Estimation Limits Upper";
       modelWorksheet.Cells[row, 2].Value = solution.Model.UpperEstimationLimit;
       modelWorksheet.Names.Add("EstimationLimitUpper", modelWorksheet.Cells[row, 2]);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row += 2;
 
       modelWorksheet.Cells[row, 1].Value = "Trainings Partition Start";
@@ -166,36 +168,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       modelWorksheet.Cells[row, 1].Value = "Pearson's R² (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("POWER(PEARSON({0},{1}),2)", excelTrainingTarget, excelTrainingEstimated);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Pearson's R² (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("POWER(PEARSON({0},{1}),2)", excelTestTarget, excelTestEstimated);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean Squared Error (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTrainingMSE);
       modelWorksheet.Names.Add("TrainingMSE", modelWorksheet.Cells[row, 2]);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean Squared Error (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTestMSE);
       modelWorksheet.Names.Add("TestMSE", modelWorksheet.Cells[row, 2]);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean absolute error (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTrainingAbsoluteError);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean absolute error (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTestAbsoluteError);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean error (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTrainingMeanError);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean error (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTestMeanError);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Average relative error (training)";
@@ -210,10 +220,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       modelWorksheet.Cells[row, 1].Value = "Normalized Mean Squared error (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("TrainingMSE / VAR({0})", excelTrainingTarget);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Normalized Mean Squared error  (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("TestMSE / VAR({0})", excelTestTarget);
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
 
       modelWorksheet.Cells["A1:B" + row].AutoFitColumns();
 
@@ -299,15 +311,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         estimatedWorksheet.Cells[i + 2, 2].Formula = datasetWorksheet.Cells[i + 2, targetIndex].FullAddress;
         estimatedWorksheet.Cells[i + 2, 9].Formula = string.Format(preparedFormula, i + 2);
       }
+      estimatedWorksheet.Cells["B2:B" + (rows + 1)].Style.Numberformat.Format = "0.000";
 
       estimatedWorksheet.Cells["C2:C" + (rows + 1)].Formula = "J2";
-
+      estimatedWorksheet.Cells["C2:C" + (rows + 1)].Style.Numberformat.Format = "0.000";
       estimatedWorksheet.Cells["D2:D" + (rows + 1)].Formula = "ABS(B2 - C2)";
+      estimatedWorksheet.Cells["D2:D" + (rows + 1)].Style.Numberformat.Format = "0.000";
       estimatedWorksheet.Cells["E2:E" + (rows + 1)].Formula = "ABS(D2 / B2)";
+      estimatedWorksheet.Cells["E2:E" + (rows + 1)].Style.Numberformat.Format = "0.000";
       estimatedWorksheet.Cells["F2:F" + (rows + 1)].Formula = "C2 - B2";
+      estimatedWorksheet.Cells["F2:F" + (rows + 1)].Style.Numberformat.Format = "0.000";
       estimatedWorksheet.Cells["G2:G" + (rows + 1)].Formula = "POWER(F2, 2)";
+      estimatedWorksheet.Cells["G2:G" + (rows + 1)].Style.Numberformat.Format = "0.000";
 
+      estimatedWorksheet.Cells["I2:I" + (rows + 1)].Style.Numberformat.Format = "0.000";
       estimatedWorksheet.Cells["J2:J" + (rows + 1)].Formula = "IFERROR(IF(I2 > Model!EstimationLimitUpper, Model!EstimationLimitUpper, IF(I2 < Model!EstimationLimitLower, Model!EstimationLimitLower, I2)), AVERAGE(Model!EstimationLimitLower, Model!EstimationLimitUpper))";
+      estimatedWorksheet.Cells["J2:J" + (rows + 1)].Style.Numberformat.Format = "0.000";
     }
 
     private string PrepareFormula(string[] formulaParts) {
