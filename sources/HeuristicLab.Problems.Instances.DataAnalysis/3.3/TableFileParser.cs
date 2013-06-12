@@ -377,7 +377,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         Token token = new Token(TokenTypeEnum.String, strToken);
         if (strToken.Equals(INTERNAL_SEPARATOR)) {
           return SeparatorToken;
-        } else if (double.TryParse(strToken, NumberStyles.Float | NumberStyles.AllowTrailingSign, numberFormatInfo, out token.doubleValue)) {
+        } else if (double.TryParse(strToken, NumberStyles.Float, numberFormatInfo, out token.doubleValue)) {
           token.type = TokenTypeEnum.Double;
           return token;
         } else if (DateTime.TryParse(strToken, dateTimeFormatInfo, DateTimeStyles.None, out token.dateTimeValue)) {
