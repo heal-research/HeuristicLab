@@ -110,7 +110,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             values[row, 1] = target[row].ToString();
             values[row, 2] = est.ToString();
             values[row, 5] = Math.Abs(res).ToString();
-            values[row, 6] = Math.Abs(res / est).ToString();
+            values[row, 6] = Math.Abs(res / target[row]).ToString();
           }
 
           matrix = new StringMatrix(values);
