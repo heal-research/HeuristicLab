@@ -21,11 +21,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimizer;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
@@ -51,53 +53,73 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     protected override void OnToolStripItemSet(EventArgs e) {
+      base.OnToolStripItemSet(e);
       ToolStripItem.Enabled = false;
+      var menuItem = ToolStripItem.OwnerItem as ToolStripMenuItem;
+      if (menuItem != null)
+        menuItem.DropDownOpening += menuItem_DropDownOpening;
     }
-    protected override void OnActiveViewChanged(object sender, EventArgs e) {
+
+    private void menuItem_DropDownOpening(object sender, EventArgs e) {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      ToolStripItem.Enabled = activeView != null && activeView.Content is ISymbolicDataAnalysisSolution;
+      Control control = activeView as Control;
+      activeView = control.GetNestedControls((c) => c.Visible)
+        .OfType<IContentView>().FirstOrDefault(v => v.Content is ISymbolicDataAnalysisSolution && v.Content is IRegressionSolution);
+      ToolStripItem.Enabled = activeView != null;
     }
 
     public override void Execute() {
-      var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+      IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
+      Control control = activeView as Control;
+      activeView = control.GetNestedControls((c) => c.Visible)
+        .OfType<IContentView>().First(v => v.Content is ISymbolicDataAnalysisSolution && v.Content is IRegressionSolution);
       var solution = (ISymbolicDataAnalysisSolution)activeView.Content;
       var formatter = new SymbolicDataAnalysisExpressionExcelFormatter();
-      var formula = formatter.Format(solution.Model.SymbolicExpressionTree);
-      var formulaParts = formula.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+      var formula = formatter.Format(solution.Model.SymbolicExpressionTree, solution.ProblemData.Dataset);
+
 
       SaveFileDialog saveFileDialog = new SaveFileDialog();
       saveFileDialog.Filter = "Excel Workbook|*.xlsx";
       saveFileDialog.Title = "Save an Excel File";
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         string fileName = saveFileDialog.FileName;
-        FileInfo newFile = new FileInfo(fileName);
-        if (newFile.Exists) {
-          newFile.Delete();
-          newFile = new FileInfo(fileName);
+        using (BackgroundWorker bg = new BackgroundWorker()) {
+          bg.DoWork += (b, e) => ExportChart(fileName, solution, formula);
+          bg.RunWorkerAsync();
         }
-        using (ExcelPackage package = new ExcelPackage(newFile)) {
-          ExcelWorksheet modelWorksheet = package.Workbook.Worksheets.Add("Model");
-          FormatModelSheet(modelWorksheet, solution, formulaParts);
+      }
+    }
 
-          ExcelWorksheet datasetWorksheet = package.Workbook.Worksheets.Add("Dataset");
-          WriteDatasetToExcel(datasetWorksheet, solution.ProblemData);
+    private void ExportChart(string fileName, ISymbolicDataAnalysisSolution solution, string formula) {
+      FileInfo newFile = new FileInfo(fileName);
+      if (newFile.Exists) {
+        newFile.Delete();
+        newFile = new FileInfo(fileName);
+      }
+      var formulaParts = formula.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
-          ExcelWorksheet inputsWorksheet = package.Workbook.Worksheets.Add("Inputs");
-          WriteInputSheet(inputsWorksheet, datasetWorksheet, formulaParts.Skip(2), solution.ProblemData.Dataset);
+      using (ExcelPackage package = new ExcelPackage(newFile)) {
+        ExcelWorksheet modelWorksheet = package.Workbook.Worksheets.Add("Model");
+        FormatModelSheet(modelWorksheet, solution, formulaParts);
 
-          if (solution is IRegressionSolution) {
-            ExcelWorksheet estimatedWorksheet = package.Workbook.Worksheets.Add("Estimated Values");
-            WriteEstimatedWorksheet(estimatedWorksheet, datasetWorksheet, formulaParts, solution as IRegressionSolution);
+        ExcelWorksheet datasetWorksheet = package.Workbook.Worksheets.Add("Dataset");
+        WriteDatasetToExcel(datasetWorksheet, solution.ProblemData);
 
-            ExcelWorksheet chartsWorksheet = package.Workbook.Worksheets.Add("Charts");
-            AddCharts(chartsWorksheet);
-          }
-          package.Workbook.Properties.Title = "Excel Export";
-          package.Workbook.Properties.Author = "HEAL";
-          package.Workbook.Properties.Comments = "Excel export of a symbolic data analysis solution from HeuristicLab";
+        ExcelWorksheet inputsWorksheet = package.Workbook.Worksheets.Add("Inputs");
+        WriteInputSheet(inputsWorksheet, datasetWorksheet, formulaParts.Skip(2), solution.ProblemData.Dataset);
 
-          package.Save();
+        if (solution is IRegressionSolution) {
+          ExcelWorksheet estimatedWorksheet = package.Workbook.Worksheets.Add("Estimated Values");
+          WriteEstimatedWorksheet(estimatedWorksheet, datasetWorksheet, formulaParts, solution as IRegressionSolution);
+
+          ExcelWorksheet chartsWorksheet = package.Workbook.Worksheets.Add("Charts");
+          AddCharts(chartsWorksheet);
         }
+        package.Workbook.Properties.Title = "Excel Export";
+        package.Workbook.Properties.Author = "HEAL";
+        package.Workbook.Properties.Comments = "Excel export of a symbolic data analysis solution from HeuristicLab";
+
+        package.Save();
       }
     }
 

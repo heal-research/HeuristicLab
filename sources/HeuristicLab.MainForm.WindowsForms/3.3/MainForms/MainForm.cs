@@ -385,13 +385,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void AddToolStripMenuItem(IMenuItem menuItem) {
       ToolStripMenuItem item = new ToolStripMenuItem();
       this.SetToolStripItemProperties(item, menuItem);
+      this.InsertItem(menuItem.Structure, typeof(ToolStripMenuItem), item, menuStrip.Items);
       if (menuItem is MenuItem) {
         MenuItem menuItemBase = (MenuItem)menuItem;
         menuItemBase.ToolStripItem = item;
         item.ShortcutKeys = menuItemBase.ShortCutKeys;
         item.DisplayStyle = menuItemBase.ToolStripItemDisplayStyle;
       }
-      this.InsertItem(menuItem.Structure, typeof(ToolStripMenuItem), item, menuStrip.Items);
     }
 
     private void AddToolStripMenuItem(IMenuSeparatorItem menuItem) {

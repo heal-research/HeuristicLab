@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -65,16 +66,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       return string.Format("${0}1", variableNameMapping[variabelName]);
     }
-
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
+      return Format(symbolicExpressionTree, null);
+    }
+
+    public string Format(ISymbolicExpressionTree symbolicExpressionTree, Dataset dataset) {
       var stringBuilder = new StringBuilder();
+      if (dataset != null) CalculateVariableMapping(symbolicExpressionTree, dataset);
+
       stringBuilder.Append("=");
       stringBuilder.Append(FormatRecursively(symbolicExpressionTree.Root));
+
       foreach (var variable in variableNameMapping) {
         stringBuilder.AppendLine();
         stringBuilder.Append(variable.Key + " = " + variable.Value);
       }
       return stringBuilder.ToString();
+    }
+
+    private void CalculateVariableMapping(ISymbolicExpressionTree tree, Dataset dataset) {
+      int columnIndex = 0;
+      int inputIndex = 0;
+      var usedVariables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(v => v.VariableName).Distinct();
+      foreach (var variable in dataset.VariableNames) {
+        columnIndex++;
+        if (!usedVariables.Contains(variable)) continue;
+        inputIndex++;
+        variableNameMapping[variable] = GetExcelColumnName(inputIndex);
+      }
     }
 
     private string FormatRecursively(ISymbolicExpressionTreeNode node) {
@@ -136,9 +155,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(")");
       } else if (symbol is Logarithm) {
-        stringBuilder.Append("LOG(");
+        stringBuilder.Append("LN(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
-        stringBuilder.Append(", EXP(1))"); // Excel does not use the natural logarithm, therefor the base has to be set
+        stringBuilder.Append(")");
       } else if (symbol is Multiplication) {
         for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("*");
