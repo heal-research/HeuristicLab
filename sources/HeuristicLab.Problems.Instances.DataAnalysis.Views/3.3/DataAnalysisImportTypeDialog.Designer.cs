@@ -45,6 +45,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DataAnalysisImportTypeDialog));
       this.ShuffleDataCheckbox = new System.Windows.Forms.CheckBox();
       this.OkButton = new System.Windows.Forms.Button();
       this.TrainingTestTrackBar = new System.Windows.Forms.TrackBar();
@@ -62,6 +63,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.SeparatorLabel = new System.Windows.Forms.Label();
       this.SeparatorComboBox = new System.Windows.Forms.ComboBox();
       this.CSVSettingsGroupBox = new System.Windows.Forms.GroupBox();
+      this.CheckboxColumnNames = new System.Windows.Forms.CheckBox();
       this.DateTimeFormatInfoLabel = new System.Windows.Forms.Label();
       this.DecimalSeparatorInfoLabel = new System.Windows.Forms.Label();
       this.SeparatorInfoLabel = new System.Windows.Forms.Label();
@@ -71,7 +73,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.PreviewLabel = new System.Windows.Forms.Label();
       this.PreviewDatasetMatrix = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.CheckboxColumnNames = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.TrainingTestTrackBar)).BeginInit();
       this.CSVSettingsGroupBox.SuspendLayout();
       this.ProblemDataSettingsGroupBox.SuspendLayout();
@@ -147,7 +148,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // OpenFileButton
       // 
       this.OpenFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.OpenFileButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
+      this.OpenFileButton.Image = ((System.Drawing.Image)(resources.GetObject("OpenFileButton.Image")));
       this.OpenFileButton.Location = new System.Drawing.Point(429, 3);
       this.OpenFileButton.Name = "OpenFileButton";
       this.OpenFileButton.Size = new System.Drawing.Size(24, 24);
@@ -265,10 +266,21 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.CSVSettingsGroupBox.TabStop = false;
       this.CSVSettingsGroupBox.Text = "CSV Settings";
       // 
+      // CheckboxColumnNames
+      // 
+      this.CheckboxColumnNames.AutoSize = true;
+      this.CheckboxColumnNames.Location = new System.Drawing.Point(9, 103);
+      this.CheckboxColumnNames.Name = "CheckboxColumnNames";
+      this.CheckboxColumnNames.Size = new System.Drawing.Size(144, 17);
+      this.CheckboxColumnNames.TabIndex = 24;
+      this.CheckboxColumnNames.Text = "Column names in first line";
+      this.CheckboxColumnNames.UseVisualStyleBackColor = true;
+      this.CheckboxColumnNames.CheckedChanged += new System.EventHandler(this.CheckboxColumnNames_CheckedChanged);
+      // 
       // DateTimeFormatInfoLabel
       // 
       this.DateTimeFormatInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.DateTimeFormatInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.DateTimeFormatInfoLabel.Image = ((System.Drawing.Image)(resources.GetObject("DateTimeFormatInfoLabel.Image")));
       this.DateTimeFormatInfoLabel.Location = new System.Drawing.Point(421, 76);
       this.DateTimeFormatInfoLabel.Name = "DateTimeFormatInfoLabel";
       this.DateTimeFormatInfoLabel.Size = new System.Drawing.Size(16, 16);
@@ -280,7 +292,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // DecimalSeparatorInfoLabel
       // 
       this.DecimalSeparatorInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.DecimalSeparatorInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.DecimalSeparatorInfoLabel.Image = ((System.Drawing.Image)(resources.GetObject("DecimalSeparatorInfoLabel.Image")));
       this.DecimalSeparatorInfoLabel.Location = new System.Drawing.Point(421, 49);
       this.DecimalSeparatorInfoLabel.Name = "DecimalSeparatorInfoLabel";
       this.DecimalSeparatorInfoLabel.Size = new System.Drawing.Size(16, 16);
@@ -292,7 +304,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // SeparatorInfoLabel
       // 
       this.SeparatorInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.SeparatorInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.SeparatorInfoLabel.Image = ((System.Drawing.Image)(resources.GetObject("SeparatorInfoLabel.Image")));
       this.SeparatorInfoLabel.Location = new System.Drawing.Point(421, 22);
       this.SeparatorInfoLabel.Name = "SeparatorInfoLabel";
       this.SeparatorInfoLabel.Size = new System.Drawing.Size(16, 16);
@@ -323,6 +335,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // ErrorTextBox
       // 
+      this.ErrorTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.ErrorTextBox.Location = new System.Drawing.Point(6, 15);
       this.ErrorTextBox.Multiline = true;
       this.ErrorTextBox.Name = "ErrorTextBox";
@@ -333,7 +347,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       // ShuffelInfoLabel
       // 
-      this.ShuffelInfoLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Information;
+      this.ShuffelInfoLabel.Image = ((System.Drawing.Image)(resources.GetObject("ShuffelInfoLabel.Image")));
       this.ShuffelInfoLabel.Location = new System.Drawing.Point(111, 20);
       this.ShuffelInfoLabel.Name = "ShuffelInfoLabel";
       this.ShuffelInfoLabel.Size = new System.Drawing.Size(16, 16);
@@ -365,17 +379,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.PreviewDatasetMatrix.ShowStatisticalInformation = false;
       this.PreviewDatasetMatrix.Size = new System.Drawing.Size(435, 138);
       this.PreviewDatasetMatrix.TabIndex = 0;
-      // 
-      // CheckboxColumnNames
-      // 
-      this.CheckboxColumnNames.AutoSize = true;
-      this.CheckboxColumnNames.Location = new System.Drawing.Point(9, 103);
-      this.CheckboxColumnNames.Name = "CheckboxColumnNames";
-      this.CheckboxColumnNames.Size = new System.Drawing.Size(144, 17);
-      this.CheckboxColumnNames.TabIndex = 24;
-      this.CheckboxColumnNames.Text = "Column names in first line";
-      this.CheckboxColumnNames.UseVisualStyleBackColor = true;
-      this.CheckboxColumnNames.CheckedChanged += new System.EventHandler(this.CheckboxColumnNames_CheckedChanged);
       // 
       // DataAnalysisImportTypeDialog
       // 
