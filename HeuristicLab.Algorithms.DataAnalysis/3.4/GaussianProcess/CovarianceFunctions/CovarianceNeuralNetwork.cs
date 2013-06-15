@@ -119,7 +119,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       AutoDiff.Term sx = 1;
       AutoDiff.Term s1 = 1;
       AutoDiff.Term s2 = 1;
-      foreach (var k in columnIndices) {
+      for (int k = 0; k < columnIndices.Count(); k++) {
         x1[k] = new AutoDiff.Variable();
         x2[k] = new AutoDiff.Variable();
         sx += x1[k] * x2[k];
