@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
       return new SymbolicExpressionTreeGraphvizFormatter(this, cloner);
     }
 
-    public string Format(SymbolicExpressionTree symbolicExpressionTree) {
+    public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
       int nodeCounter = 1;
       StringBuilder strBuilder = new StringBuilder();
       strBuilder.AppendLine("graph {");
@@ -59,7 +59,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
       return strBuilder.ToString();
     }
 
-    private string FormatRecursively(SymbolicExpressionTreeNode node, int indentLength, ref int nodeId) {
+    private string FormatRecursively(ISymbolicExpressionTreeNode node, int indentLength, ref int nodeId) {
       // save id of current node
       int currentNodeId = nodeId;
       // increment id for next node
@@ -76,14 +76,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
 
       strBuilder.Append("node" + currentNodeId + "[label=\"" + nodeLabel + "\"");
       // leaf nodes should have box shape
-      if (node.SubTrees.Count == 0) {
+      if (node.SubtreeCount == 0) {
         strBuilder.AppendLine(", shape=\"box\"];");
       } else {
         strBuilder.AppendLine("];");
       }
 
       // internal nodes or leaf nodes?
-      foreach (SymbolicExpressionTreeNode subTree in node.SubTrees) {
+      foreach (ISymbolicExpressionTreeNode subTree in node.Subtrees) {
         // add an edge 
         if (Indent) strBuilder.Append(' ', indentLength);
         strBuilder.AppendLine("node" + currentNodeId + " -- node" + nodeId + ";");

@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
-  [Item("SymbolicExpressionTreeStringFormatter", "The default string formatter for symbolic expression trees.")]
+  [Item("Default String Formatter", "The default string formatter for symbolic expression trees.")]
   [StorableClass]
   public class SymbolicExpressionTreeStringFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
 
