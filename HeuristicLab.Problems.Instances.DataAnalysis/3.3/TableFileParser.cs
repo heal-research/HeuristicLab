@@ -74,16 +74,49 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       variableNames = new List<string>();
     }
 
+    public bool AreColumnNamesInFirstLine(string fileName) {
+      NumberFormatInfo numberFormat;
+      DateTimeFormatInfo dateTimeFormatInfo;
+      char separator;
+      DetermineFileFormat(fileName, out numberFormat, out dateTimeFormatInfo, out separator);
+      using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+        return AreColumnNamesInFirstLine(stream, numberFormat, dateTimeFormatInfo, separator);
+      }
+    }
+
+    public bool AreColumnNamesInFirstLine(Stream stream) {
+      NumberFormatInfo numberFormat = NumberFormatInfo.InvariantInfo;
+      DateTimeFormatInfo dateTimeFormatInfo = DateTimeFormatInfo.InvariantInfo;
+      char separator = ',';
+      return AreColumnNamesInFirstLine(stream, numberFormat, dateTimeFormatInfo, separator);
+    }
+
+    public bool AreColumnNamesInFirstLine(string fileName, NumberFormatInfo numberFormat,
+                                         DateTimeFormatInfo dateTimeFormatInfo, char separator) {
+      using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+        return AreColumnNamesInFirstLine(stream, numberFormat, dateTimeFormatInfo, separator);
+      }
+    }
+
+    public bool AreColumnNamesInFirstLine(Stream stream, NumberFormatInfo numberFormat,
+                                          DateTimeFormatInfo dateTimeFormatInfo, char separator) {
+      using (StreamReader reader = new StreamReader(stream)) {
+        tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
+        return tokenizer.Peek().type != TokenTypeEnum.Double;
+      }
+    }
+
     /// <summary>
     /// Parses a file and determines the format first
     /// </summary>
     /// <param name="fileName">file which is parsed</param>
-    public void Parse(string fileName) {
+    /// <param name="columnNamesInFirstLine"></param>
+    public void Parse(string fileName, bool columnNamesInFirstLine) {
       NumberFormatInfo numberFormat;
       DateTimeFormatInfo dateTimeFormatInfo;
       char separator;
-      DetermineFileFormat(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), out numberFormat, out dateTimeFormatInfo, out separator);
-      Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), numberFormat, dateTimeFormatInfo, separator);
+      DetermineFileFormat(fileName, out numberFormat, out dateTimeFormatInfo, out separator);
+      Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine);
     }
 
     /// <summary>
@@ -93,19 +126,23 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="numberFormat">Format of numbers</param>
     /// <param name="dateTimeFormatInfo">Format of datetime</param>
     /// <param name="separator">defines the separator</param>
-    public void Parse(string fileName, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
-      Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), numberFormat, dateTimeFormatInfo, separator);
+    /// <param name="columnNamesInFirstLine"></param>
+    public void Parse(string fileName, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine) {
+      using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+        Parse(stream, numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine);
+      }
     }
 
     /// <summary>
     /// Takes a Stream and parses it with default format. NumberFormatInfo.InvariantInfo, DateTimeFormatInfo.InvariantInfo and separator = ','
     /// </summary>
     /// <param name="stream">stream which is parsed</param>
-    public void Parse(Stream stream) {
+    /// <param name="columnNamesInFirstLine"></param>
+    public void Parse(Stream stream, bool columnNamesInFirstLine) {
       NumberFormatInfo numberFormat = NumberFormatInfo.InvariantInfo;
       DateTimeFormatInfo dateTimeFormatInfo = DateTimeFormatInfo.InvariantInfo;
       char separator = ',';
-      Parse(stream, numberFormat, dateTimeFormatInfo, separator);
+      Parse(stream, numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine);
     }
 
     /// <summary>
@@ -115,11 +152,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="numberFormat">Format of numbers</param>
     /// <param name="dateTimeFormatInfo">Format of datetime</param>
     /// <param name="separator">defines the separator</param>
-    public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
+    /// <param name="columnNamesInFirstLine"></param>
+    public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine) {
       using (StreamReader reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
         // parse the file
-        Parse();
+        Parse(columnNamesInFirstLine);
       }
 
       // translate the list of samples into a DoubleMatrixData item
@@ -371,9 +409,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     #endregion
 
     #region parsing
-    private void Parse() {
-      ParseVariableNames();
-      if (!tokenizer.HasNext()) Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
+    private void Parse(bool columnNamesInFirstLine) {
+      if (columnNamesInFirstLine) {
+        ParseVariableNames();
+        if (!tokenizer.HasNext())
+          Error(
+            "Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).",
+            "", tokenizer.CurrentLineNumber);
+      }
       ParseValues();
       if (rowValues.Count == 0) Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
     }
@@ -422,9 +465,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     private void ParseVariableNames() {
-      //if first token is double no variables names are given
-      if (tokenizer.Peek().type == TokenTypeEnum.Double) return;
-
       // the first line must contain variable names
       List<Token> tokens = new List<Token>();
       Token valueToken;

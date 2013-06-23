@@ -52,11 +52,20 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ProblemDataSettingsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
+      // OkButton
+      // 
+      this.OkButton.Location = new System.Drawing.Point(303, 421);
+      // 
+      // CancelationButton
+      // 
+      this.CancelationButton.Location = new System.Drawing.Point(384, 421);
+      // 
       // ProblemDataSettingsGroupBox
       // 
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableInfoLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableComboBox);
+      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 251);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.PreviewLabel, 0);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.ShuffelInfoLabel, 0);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.TargetVariableComboBox, 0);
@@ -105,7 +114,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(471, 442);
+      this.ClientSize = new System.Drawing.Size(471, 456);
       this.Name = "RegressionImportTypeDialog";
       this.Text = "Regression CSV Import";
       ((System.ComponentModel.ISupportInitialize)(this.TrainingTestTrackBar)).EndInit();

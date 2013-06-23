@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override IClassificationProblemData ImportData(string path) {
       TableFileParser csvFileParser = new TableFileParser();
 
-      csvFileParser.Parse(path);
+      csvFileParser.Parse(path, csvFileParser.AreColumnNamesInFirstLine(path));
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       string targetVar = dataset.DoubleVariables.Last();
