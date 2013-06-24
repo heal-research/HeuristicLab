@@ -27,12 +27,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class TableFileParser {
     private const int BUFFER_SIZE = 65536;
-    private static readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t' };
+    // char used to symbolize whitespaces (no missing values can be handled with whitespaces)
+    private const char WHITESPACECHAR = (char)0;
+    private static readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t', WHITESPACECHAR };
     private Tokenizer tokenizer;
     private List<List<object>> rowValues;
 
@@ -359,18 +360,22 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       }
 
       private IEnumerable<string> Split(string line) {
-        StringBuilder subStr = new StringBuilder();
-        foreach (char c in line) {
-          if (c == separator) {
-            yield return subStr.ToString();
-            subStr = new StringBuilder();
-            // all separator characters are transformed to the internally used separator character
+        IEnumerable<string> splitString;
+        if (separator == WHITESPACECHAR) {
+          //separate whitespaces
+          splitString = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
+        } else {
+          splitString = line.Split(separator);
+        }
+        int cur = splitString.Count();
+        foreach (var str in splitString) {
+          yield return str;
+          cur--;
+          // do not return the INTERNAL_SEPARATOR after the last string
+          if (cur != 0) {
             yield return INTERNAL_SEPARATOR;
-          } else {
-            subStr.Append(c);
           }
         }
-        yield return subStr.ToString();
       }
 
       private Token MakeToken(string strToken) {

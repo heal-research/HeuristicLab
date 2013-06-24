@@ -41,7 +41,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
     public static readonly List<KeyValuePair<char, string>> POSSIBLE_SEPARATORS = new List<KeyValuePair<char, string>>{  
       new KeyValuePair<char, string>(';', "; (Semicolon)" ),
       new KeyValuePair<char, string>(',', ", (Comma)" ),    
-      new KeyValuePair<char, string>('\t', "\\t (Tab)")
+      new KeyValuePair<char, string>('\t', "\\t (Tab)"),
+      new KeyValuePair<char, string>((char)0, "all whitespaces (including tabs and spaces)")
     };
 
     public static readonly List<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS = new List<KeyValuePair<NumberFormatInfo, string>>{
