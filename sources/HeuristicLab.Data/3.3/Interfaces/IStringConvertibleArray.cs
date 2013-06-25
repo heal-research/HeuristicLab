@@ -20,11 +20,13 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Data {
   public interface IStringConvertibleArray : IContent {
     int Length { get; set; }
+    IEnumerable<string> ElementNames { get; set; }
 
     bool ReadOnly { get; }
 
@@ -32,6 +34,7 @@ namespace HeuristicLab.Data {
     string GetValue(int index);
     bool SetValue(string value, int index);
 
+    event EventHandler ElementNamesChanged;
     event EventHandler<EventArgs<int>> ItemChanged;
     event EventHandler Reset;
   }

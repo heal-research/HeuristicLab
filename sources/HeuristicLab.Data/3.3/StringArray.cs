@@ -42,12 +42,33 @@ namespace HeuristicLab.Data {
     [Storable]
     protected string[] array;
 
+    [Storable]
+    protected List<string> elementNames;
+    public virtual IEnumerable<string> ElementNames {
+      get { return this.elementNames; }
+      set {
+        if (ReadOnly) throw new NotSupportedException("ElementNames cannot be set. ValueTypeArray is read-only.");
+        if (value == null || !value.Any())
+          elementNames = new List<string>();
+        else if (value.Count() != Length)
+          throw new ArgumentException("An element name must be specified for each element.");
+        else
+          elementNames = new List<string>(value);
+        OnElementNamesChanged();
+      }
+    }
+
     public virtual int Length {
       get { return array.Length; }
       protected set {
         if (ReadOnly) throw new NotSupportedException("Length cannot be set. StringArray is read-only.");
         if (value != Length) {
           Array.Resize<string>(ref array, value);
+          while (elementNames.Count > value)
+            elementNames.RemoveAt(elementNames.Count - 1);
+          while (elementNames.Count < value)
+            elementNames.Add("Element " + elementNames.Count);
+          OnElementNamesChanged();
           OnReset();
         }
       }
@@ -71,22 +92,30 @@ namespace HeuristicLab.Data {
       get { return readOnly; }
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (elementNames == null) { elementNames = new List<string>(); }
+    }
+
     [StorableConstructor]
     protected StringArray(bool deserializing) : base(deserializing) { }
     protected StringArray(StringArray original, Cloner cloner)
       : base(original, cloner) {
       this.array = (string[])original.array.Clone();
       this.readOnly = original.readOnly;
+      this.elementNames = new List<string>(original.elementNames);
     }
     public StringArray() {
       array = new string[0];
       readOnly = false;
+      elementNames = new List<string>();
     }
     public StringArray(int length) {
       array = new string[length];
       for (int i = 0; i < array.Length; i++)
         array[i] = string.Empty;
       readOnly = false;
+      elementNames = new List<string>();
     }
     public StringArray(string[] elements) {
       if (elements == null) throw new ArgumentNullException();
@@ -94,6 +123,7 @@ namespace HeuristicLab.Data {
       for (int i = 0; i < array.Length; i++)
         array[i] = elements[i] == null ? string.Empty : elements[i];
       readOnly = false;
+      elementNames = new List<string>();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -150,6 +180,13 @@ namespace HeuristicLab.Data {
       } else {
         return false;
       }
+    }
+
+    public event EventHandler ElementNamesChanged;
+    protected virtual void OnElementNamesChanged() {
+      EventHandler handler = ElementNamesChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
 
     public event EventHandler<EventArgs<int>> ItemChanged;
