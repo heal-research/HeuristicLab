@@ -36,9 +36,13 @@ namespace HeuristicLab.Services.Hive {
   /// We need 'IgnoreExtensionDataObject' Attribute for the slave to work. 
   /// </summary>
   [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall, IgnoreExtensionDataObject = true)]
+  [HiveOperationContextBehavior]
   public class HiveService : IHiveService {
     private IHiveDao dao {
       get { return ServiceLocator.Instance.HiveDao; }
+    }
+    private IOptimizedHiveDao optimizedDao {
+      get { return ServiceLocator.Instance.OptimizedHiveDao; }
     }
     private Access.IRoleVerifier authen {
       get { return ServiceLocator.Instance.RoleVerifier; }
@@ -63,22 +67,26 @@ namespace HeuristicLab.Services.Hive {
     public Guid AddTask(Task task, TaskData taskData, IEnumerable<Guid> resourceIds) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       return trans.UseTransaction(() => {
-        task.Id = dao.AddTask(task);
-        taskData.TaskId = task.Id;
-        taskData.LastUpdate = DateTime.Now;
-        dao.AssignJobToResource(task.Id, resourceIds);
-        dao.AddTaskData(taskData);
-        dao.UpdateTaskState(task.Id, DA.TaskState.Waiting, null, userManager.CurrentUserId, null);
-        return taskData.TaskId;
+        var t = DT.Convert.ToEntity(task);
+        t.RequiredPlugins.AddRange(task.PluginsNeededIds.Select(pluginId => new DA.RequiredPlugin { Task = t, PluginId = pluginId }));
+
+        t.JobData = DT.Convert.ToEntity(taskData);
+        t.JobData.LastUpdate = DateTime.Now;
+
+        optimizedDao.AddTask(t);
+
+        dao.AssignJobToResource(t.TaskId, resourceIds);
+
+        optimizedDao.UpdateTaskState(t.TaskId, DA.TaskState.Waiting, null, userManager.CurrentUserId, null);
+
+        return t.TaskId;
       }, false, true);
     }
 
     public Guid AddChildTask(Guid parentTaskId, Task task, TaskData taskData) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      return trans.UseTransaction(() => {
-        task.ParentTaskId = parentTaskId;
-        return AddTask(task, taskData, dao.GetAssignedResources(parentTaskId).Select(x => x.Id));
-      }, false, true);
+      task.ParentTaskId = parentTaskId;
+      return AddTask(task, taskData, optimizedDao.GetAssignedResourceIds(parentTaskId));
     }
 
     public Task GetTask(Guid taskId) {
@@ -86,7 +94,7 @@ namespace HeuristicLab.Services.Hive {
       author.AuthorizeForTask(taskId, Permission.Read);
 
       return trans.UseTransaction(() => {
-        return dao.GetTask(taskId);
+        return DT.Convert.ToDto(optimizedDao.GetTaskById(taskId));
       }, false, false);
     }
 
@@ -127,7 +135,7 @@ namespace HeuristicLab.Services.Hive {
       author.AuthorizeForJob(jobId, Permission.Read);
 
       return trans.UseTransaction(() => {
-        return dao.GetLightweightTasks(task => task.JobId == jobId).ToArray();
+        return optimizedDao.GetLightweightTasks(jobId).ToArray();
       }, false, true);
     }
 
@@ -154,7 +162,8 @@ namespace HeuristicLab.Services.Hive {
       author.AuthorizeForTask(taskDto.Id, Permission.Full);
 
       trans.UseTransaction(() => {
-        dao.UpdateTaskAndPlugins(taskDto);
+        var task = optimizedDao.GetTaskByDto(taskDto);
+        optimizedDao.UpdateTask(task);
       });
     }
 
@@ -163,12 +172,14 @@ namespace HeuristicLab.Services.Hive {
       author.AuthorizeForTask(task.Id, Permission.Full);
 
       trans.UseTransaction(() => {
-        dao.UpdateTaskAndPlugins(task);
+        var t = optimizedDao.GetTaskByDto(task);
+        optimizedDao.UpdateTask(t);
       });
 
       trans.UseTransaction(() => {
-        taskData.LastUpdate = DateTime.Now;
-        dao.UpdateTaskData(taskData);
+        var data = optimizedDao.GetTaskDataByDto(taskData);
+        data.LastUpdate = DateTime.Now;
+        optimizedDao.UpdateTaskData(data);
       });
     }
 
@@ -195,22 +206,22 @@ namespace HeuristicLab.Services.Hive {
     public Task UpdateTaskState(Guid taskId, TaskState taskState, Guid? slaveId, Guid? userId, string exception) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
       author.AuthorizeForTask(taskId, Permission.Full);
-      return trans.UseTransaction(() => {
-        Task task = dao.UpdateTaskState(taskId, DataTransfer.Convert.ToEntity(taskState), slaveId, userId, exception);
 
-        if (task.Command.HasValue && task.Command.Value == Command.Pause && task.State == TaskState.Paused) {
+      return trans.UseTransaction(() => {
+        var task = optimizedDao.UpdateTaskState(taskId, DT.Convert.ToEntity(taskState), slaveId, userId, exception);
+
+        if (task.Command.HasValue && task.Command.Value == DA.Command.Pause && task.State == DA.TaskState.Paused) {
           task.Command = null;
-        } else if (task.Command.HasValue && task.Command.Value == Command.Abort && task.State == TaskState.Aborted) {
+        } else if (task.Command.HasValue && task.Command.Value == DA.Command.Abort && task.State == DA.TaskState.Aborted) {
           task.Command = null;
-        } else if (task.Command.HasValue && task.Command.Value == Command.Stop && task.State == TaskState.Aborted) {
+        } else if (task.Command.HasValue && task.Command.Value == DA.Command.Stop && task.State == DA.TaskState.Aborted) {
           task.Command = null;
         } else if (taskState == TaskState.Paused && !task.Command.HasValue) {
           // slave paused and uploaded the task (no user-command) -> set waiting.
-          task = dao.UpdateTaskState(taskId, DataTransfer.Convert.ToEntity(TaskState.Waiting), slaveId, userId, exception);
+          task = optimizedDao.UpdateTaskState(taskId, DA.TaskState.Waiting, slaveId, userId, exception);
         }
 
-        dao.UpdateTaskAndPlugins(task);
-        return task;
+        return DT.Convert.ToDto(task);
       });
     }
 
@@ -462,7 +473,7 @@ namespace HeuristicLab.Services.Hive {
     public Plugin GetPlugin(Guid pluginId) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client, HiveRoles.Slave);
       return trans.UseTransaction(() => {
-        return dao.GetPlugin(pluginId);
+        return DT.Convert.ToDto(optimizedDao.GetPluginById(pluginId));
       });
     }
 

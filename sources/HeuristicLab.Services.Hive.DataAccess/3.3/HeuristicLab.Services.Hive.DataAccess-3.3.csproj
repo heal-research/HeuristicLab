@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQL Scripts\Initialize Hive Database.sql" />
+    <Content Include="SQL Scripts\Migrate to Filestream.sql" />
     <Content Include="SQL Scripts\Prepare Hive Database.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

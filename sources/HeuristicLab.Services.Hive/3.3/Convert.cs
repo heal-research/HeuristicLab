@@ -101,7 +101,7 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     #region TaskData
     public static DT.TaskData ToDto(DB.TaskData source) {
       if (source == null) return null;
-      return new DT.TaskData { TaskId = source.TaskId, Data = source.Data.ToArray(), LastUpdate = source.LastUpdate };
+      return new DT.TaskData { TaskId = source.TaskId, Data = source.Data, LastUpdate = source.LastUpdate };
     }
     public static DB.TaskData ToEntity(DT.TaskData source) {
       if (source == null) return null;
@@ -110,7 +110,9 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     }
     public static void ToEntity(DT.TaskData source, DB.TaskData target) {
       if ((source != null) && (target != null)) {
-        target.TaskId = source.TaskId; target.Data = new Binary(source.Data); target.LastUpdate = source.LastUpdate;
+        target.TaskId = source.TaskId;
+        target.Data = source.Data;
+        target.LastUpdate = source.LastUpdate;
       }
     }
     #endregion
@@ -212,7 +214,10 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     }
     public static void ToEntity(DT.PluginData source, DB.PluginData target) {
       if ((source != null) && (target != null)) {
-        target.PluginDataId = source.Id; target.PluginId = source.PluginId; target.Data = new Binary(source.Data); target.FileName = source.FileName;
+        target.PluginDataId = source.Id;
+        target.PluginId = source.PluginId;
+        target.Data = source.Data;
+        target.FileName = source.FileName;
       }
     }
     #endregion

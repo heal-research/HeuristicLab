@@ -26,6 +26,7 @@ namespace HeuristicLab.Services.Hive {
     Access.IRoleVerifier RoleVerifier { get; }
     IAuthorizationManager AuthorizationManager { get; }
     IHiveDao HiveDao { get; }
+    IOptimizedHiveDao OptimizedHiveDao { get; }
     IEventManager EventManager { get; }
     ITransactionManager TransactionManager { get; }
     Access.IUserManager UserManager { get; }

@@ -2660,7 +2660,7 @@ namespace HeuristicLab.Services.Hive.DataAccess
 		
 		private System.Guid _JobId;
 		
-		private System.Data.Linq.Link<System.Data.Linq.Binary> _Data;
+		private System.Data.Linq.Link<byte[]> _Data;
 		
 		private System.DateTime _LastUpdate;
 		
@@ -2672,7 +2672,7 @@ namespace HeuristicLab.Services.Hive.DataAccess
     partial void OnCreated();
     partial void OnTaskIdChanging(System.Guid value);
     partial void OnTaskIdChanged();
-    partial void OnDataChanging(System.Data.Linq.Binary value);
+    partial void OnDataChanging(byte[] value);
     partial void OnDataChanged();
     partial void OnLastUpdateChanging(System.DateTime value);
     partial void OnLastUpdateChanged();
@@ -2709,7 +2709,7 @@ namespace HeuristicLab.Services.Hive.DataAccess
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Data", DbType="VarBinary(MAX)", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
-		public System.Data.Linq.Binary Data
+		public byte[] Data
 		{
 			get
 			{
@@ -2813,7 +2813,7 @@ namespace HeuristicLab.Services.Hive.DataAccess
 		
 		private System.Guid _PluginId;
 		
-		private System.Data.Linq.Link<System.Data.Linq.Binary> _Data;
+		private System.Data.Linq.Link<byte[]> _Data;
 		
 		private string _FileName;
 		
@@ -2827,7 +2827,7 @@ namespace HeuristicLab.Services.Hive.DataAccess
     partial void OnPluginDataIdChanged();
     partial void OnPluginIdChanging(System.Guid value);
     partial void OnPluginIdChanged();
-    partial void OnDataChanging(System.Data.Linq.Binary value);
+    partial void OnDataChanging(byte[] value);
     partial void OnDataChanged();
     partial void OnFileNameChanging(string value);
     partial void OnFileNameChanged();
@@ -2884,7 +2884,7 @@ namespace HeuristicLab.Services.Hive.DataAccess
 		}
 		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Data", DbType="VarBinary(MAX) NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
-		public System.Data.Linq.Binary Data
+		public byte[] Data
 		{
 			get
 			{

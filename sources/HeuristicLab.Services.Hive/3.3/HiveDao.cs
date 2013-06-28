@@ -34,8 +34,6 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       return context;
     }
 
-    public HiveDao() { }
-
     #region Task Methods
     public DT.Task GetTask(Guid id) {
       using (var db = CreateContext()) {
@@ -665,7 +663,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
-    private void CollectParentResources(List<Resource> resources, Resource resource) {
+    private static void CollectParentResources(ICollection<Resource> resources, Resource resource) {
       if (resource == null) return;
       resources.Add(resource);
       CollectParentResources(resources, resource.ParentResource);
