@@ -2,9 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Clients.Hive.SlaveCore.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="HeartbeatInterval" Type="System.TimeSpan" Scope="User">
-      <Value Profile="(Default)">00:00:40</Value>
-    </Setting>
     <Setting Name="LastUsedFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">lastUsed.dat</Value>
     </Setting>
@@ -76,6 +73,9 @@
     </Setting>
     <Setting Name="ShutdownCommand" Type="System.String" Scope="User">
       <Value Profile="(Default)">shutdown.exe</Value>
+    </Setting>
+    <Setting Name="HeartbeatInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:40</Value>
     </Setting>
   </Settings>
 </SettingsFile>
