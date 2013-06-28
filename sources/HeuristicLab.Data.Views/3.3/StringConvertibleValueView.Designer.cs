@@ -123,9 +123,9 @@ namespace HeuristicLab.Data.Views {
 
     #endregion
 
-    private System.Windows.Forms.TextBox valueTextBox;
-    private System.Windows.Forms.ErrorProvider errorProvider;
-    private System.Windows.Forms.Label valueLabel;
-    private System.Windows.Forms.SplitContainer splitContainer;
+    protected System.Windows.Forms.TextBox valueTextBox;
+    protected System.Windows.Forms.ErrorProvider errorProvider;
+    protected System.Windows.Forms.Label valueLabel;
+    protected System.Windows.Forms.SplitContainer splitContainer;
   }
 }
