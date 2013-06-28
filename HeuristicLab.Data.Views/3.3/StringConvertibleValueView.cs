@@ -77,14 +77,14 @@ namespace HeuristicLab.Data.Views {
       valueTextBox.ReadOnly = ReadOnly;
     }
 
-    private void Content_ValueChanged(object sender, EventArgs e) {
+    protected virtual void Content_ValueChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ValueChanged), sender, e);
       else
         valueTextBox.Text = Content.GetValue();
     }
 
-    private void valueTextBox_KeyDown(object sender, KeyEventArgs e) {
+    protected virtual void valueTextBox_KeyDown(object sender, KeyEventArgs e) {
       if ((e.KeyCode == Keys.Enter) || (e.KeyCode == Keys.Return))
         valueLabel.Select();  // select label to validate data
 
@@ -93,7 +93,7 @@ namespace HeuristicLab.Data.Views {
         valueLabel.Select();  // select label to validate data
       }
     }
-    private void valueTextBox_Validating(object sender, CancelEventArgs e) {
+    protected virtual void valueTextBox_Validating(object sender, CancelEventArgs e) {
       if (ReadOnly) return;
       string errorMessage;
       if (!Content.Validate(valueTextBox.Text, out errorMessage)) {
@@ -102,7 +102,7 @@ namespace HeuristicLab.Data.Views {
         valueTextBox.SelectAll();
       }
     }
-    private void valueTextBox_Validated(object sender, EventArgs e) {
+    protected virtual void valueTextBox_Validated(object sender, EventArgs e) {
       if (ReadOnly) return;
       if (!Content.ReadOnly) Content.SetValue(valueTextBox.Text);
       errorProvider.SetError(valueTextBox, string.Empty);
