@@ -78,6 +78,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private ValueParameter<IntValue> ElitesParameter {
       get { return (ValueParameter<IntValue>)Parameters["Elites"]; }
     }
+    private IFixedValueParameter<BoolValue> ReevaluateElitesParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters["ReevaluateElites"]; }
+    }
     private ValueParameter<MultiAnalyzer> AnalyzerParameter {
       get { return (ValueParameter<MultiAnalyzer>)Parameters["Analyzer"]; }
     }
@@ -119,6 +122,10 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       get { return ElitesParameter.Value; }
       set { ElitesParameter.Value = value; }
     }
+    public bool ReevaluteElites {
+      get { return ReevaluateElitesParameter.Value.Value; }
+      set { ReevaluateElitesParameter.Value.Value = value; }
+    }
     public MultiAnalyzer Analyzer {
       get { return AnalyzerParameter.Value; }
       set { AnalyzerParameter.Value = value; }
@@ -150,6 +157,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueParameter<PercentValue>("MutationProbability", "The probability that the mutation operator is applied on a solution.", new PercentValue(0.05)));
       Parameters.Add(new OptionalConstrainedValueParameter<IManipulator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation.", new IntValue(1)));
+      Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", new BoolValue(false)) { Hidden = true });
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
 
@@ -181,6 +189,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       mainLoop.SelectorParameter.ActualName = SelectorParameter.Name;
       mainLoop.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainLoop.ElitesParameter.ActualName = ElitesParameter.Name;
+      mainLoop.ReevaluateElitesParameter.ActualName = ReevaluateElitesParameter.Name;
       mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
       mainLoop.MutatorParameter.ActualName = MutatorParameter.Name;
       mainLoop.MutationProbabilityParameter.ActualName = MutationProbabilityParameter.Name;
@@ -206,8 +215,17 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     private GeneticAlgorithm(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("ReevaluateElites")) {
+        Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", (BoolValue)new BoolValue(false).AsReadOnly()) { Hidden = true });
+      }
+      #endregion
+
       Initialize();
     }
+
+
 
     private GeneticAlgorithm(GeneticAlgorithm original, Cloner cloner)
       : base(original, cloner) {

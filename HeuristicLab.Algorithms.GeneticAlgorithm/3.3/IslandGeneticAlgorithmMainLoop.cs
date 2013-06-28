@@ -91,6 +91,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
     public ValueLookupParameter<IntValue> ElitesParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["Elites"]; }
     }
+    public IValueLookupParameter<BoolValue> ReevaluateElitesParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["ReevaluateElites"]; }
+    }
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
@@ -143,6 +146,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The results collection to store the results."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to the analyze the islands."));
       Parameters.Add(new ValueLookupParameter<IOperator>("IslandAnalyzer", "The operator used to analyze each island."));
@@ -193,6 +197,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       Comparator generationsComparator = new Comparator();
       Placeholder analyzer2 = new Placeholder();
       ConditionalBranch generationsTerminationCondition = new ConditionalBranch();
+      ConditionalBranch reevaluateElitesBranch = new ConditionalBranch();
 
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Migrations", new IntValue(0)));
@@ -304,6 +309,9 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       generationsTerminationCondition.Name = "Terminate?";
       generationsTerminationCondition.ConditionParameter.ActualName = "TerminateGenerations";
+
+      reevaluateElitesBranch.ConditionParameter.ActualName = "ReevaluateElites";
+      reevaluateElitesBranch.Name = "Reevaluate elites ?";
       #endregion
 
       #region Create operator graph
@@ -344,13 +352,15 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       uniformSubScopesProcessor3.Successor = subScopesCounter;
       evaluator.Successor = null;
       subScopesCounter.Successor = null;
-      subScopesCounter.Successor = null;
       subScopesProcessor2.Operators.Add(bestSelector);
       subScopesProcessor2.Operators.Add(new EmptyOperator());
       subScopesProcessor2.Successor = mergingReducer;
       mergingReducer.Successor = islandAnalyzer2;
       bestSelector.Successor = rightReducer;
-      rightReducer.Successor = null;
+      rightReducer.Successor = reevaluateElitesBranch;
+      reevaluateElitesBranch.TrueBranch = uniformSubScopesProcessor3;
+      reevaluateElitesBranch.FalseBranch = null;
+      reevaluateElitesBranch.Successor = null;
       islandAnalyzer2.Successor = islandGenerationsCounter;
       islandGenerationsCounter.Successor = checkIslandGenerationsReachedMaximum;
       checkIslandGenerationsReachedMaximum.Successor = checkContinueEvolution;
@@ -365,6 +375,16 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
       generationsTerminationCondition.TrueBranch = null;
       generationsTerminationCondition.FalseBranch = uniformSubScopesProcessor1;
       generationsTerminationCondition.Successor = null;
+      #endregion
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("ReevaluateElites")) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
+      }
       #endregion
     }
 

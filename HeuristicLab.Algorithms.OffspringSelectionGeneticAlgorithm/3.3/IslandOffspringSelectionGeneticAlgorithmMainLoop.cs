@@ -90,6 +90,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<IntValue> ElitesParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["Elites"]; }
     }
+    public IValueLookupParameter<BoolValue> ReevaluateElitesParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["ReevaluateElites"]; }
+    }
     public ValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
@@ -157,6 +160,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The results collection to store the results."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Visualizer", "The operator used to visualize solutions."));
       Parameters.Add(new LookupParameter<IItem>("Visualization", "The item which represents the visualization of solutions."));
@@ -247,6 +251,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainOperator.CrossoverParameter.ActualName = CrossoverParameter.Name;
       mainOperator.CurrentSuccessRatioParameter.ActualName = "CurrentSuccessRatio";
       mainOperator.ElitesParameter.ActualName = ElitesParameter.Name;
+      mainOperator.ReevaluateElitesParameter.ActualName = ReevaluateElitesParameter.Name;
       mainOperator.EvaluatedSolutionsParameter.ActualName = EvaluatedSolutionsParameter.Name;
       mainOperator.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
       mainOperator.MaximizationParameter.ActualName = MaximizationParameter.Name;
@@ -410,6 +415,16 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       evaluatedSolutionsTerminationCondition.TrueBranch = null;
       evaluatedSolutionsTerminationCondition.FalseBranch = uniformSubScopesProcessor1;
       evaluatedSolutionsTerminationCondition.Successor = null;
+      #endregion
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("ReevaluateElites")) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
+      }
       #endregion
     }
 

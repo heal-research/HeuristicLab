@@ -64,6 +64,9 @@ namespace HeuristicLab.Algorithms.RAPGA {
     public ValueLookupParameter<IntValue> ElitesParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["Elites"]; }
     }
+    public IValueLookupParameter<BoolValue> ReevaluateElitesParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["ReevaluateElites"]; }
+    }
     public ValueLookupParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueLookupParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
@@ -117,6 +120,16 @@ namespace HeuristicLab.Algorithms.RAPGA {
       return new RAPGAMainLoop(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("ReevaluateElites")) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
+      }
+      #endregion
+    }
+
     private void Initialize() {
       #region Create parameters
       Parameters.Add(new ValueLookupParameter<IRandom>("Random", "A pseudo random number generator."));
@@ -128,6 +141,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
       Parameters.Add(new ValueLookupParameter<IOperator>("Mutator", "The operator used to mutate solutions."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Evaluator", "The operator used to evaluate solutions. This operator is executed in parallel, if an engine is used which supports parallelization."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed."));
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
@@ -189,6 +203,10 @@ namespace HeuristicLab.Algorithms.RAPGA {
       Assigner assigner3 = new Assigner();
       Assigner assigner4 = new Assigner();
       Assigner assigner5 = new Assigner();
+      ConditionalBranch reevaluateElitesBranch = new ConditionalBranch();
+      UniformSubScopesProcessor uniformSubScopesProcessor2 = new UniformSubScopesProcessor();
+      Placeholder evaluator2 = new Placeholder();
+      SubScopesCounter subScopesCounter4 = new SubScopesCounter();
 
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Generations", new IntValue(0))); // Class RAPGA expects this to be called Generations
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("CurrentPopulationSize", new IntValue(0)));
@@ -337,6 +355,17 @@ namespace HeuristicLab.Algorithms.RAPGA {
       assigner5.Name = "Reset OffspringList";
       assigner5.LeftSideParameter.ActualName = "OffspringList";
       assigner5.RightSideParameter.Value = new ScopeList();
+
+      reevaluateElitesBranch.ConditionParameter.ActualName = "ReevaluateElites";
+      reevaluateElitesBranch.Name = "Reevaluate elites ?";
+
+      uniformSubScopesProcessor2.Parallel.Value = true;
+
+      evaluator2.Name = "Evaluator (placeholder)";
+      evaluator2.OperatorParameter.ActualName = EvaluatorParameter.Name;
+
+      subScopesCounter4.Name = "Increment EvaluatedSolutions";
+      subScopesCounter4.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
       #endregion
 
       #region Create operator graph
@@ -377,7 +406,14 @@ namespace HeuristicLab.Algorithms.RAPGA {
       subScopesProcessor2.Operators.Add(scopeCleaner);
       subScopesProcessor2.Successor = mergingReducer;
       bestSelector.Successor = rightReducer2;
-      rightReducer2.Successor = null;
+      rightReducer2.Successor = reevaluateElitesBranch;
+      reevaluateElitesBranch.TrueBranch = uniformSubScopesProcessor2;
+      uniformSubScopesProcessor2.Operator = evaluator2;
+      uniformSubScopesProcessor2.Successor = subScopesCounter4;
+      evaluator2.Successor = null;
+      subScopesCounter4.Successor = null;
+      reevaluateElitesBranch.FalseBranch = null;
+      reevaluateElitesBranch.Successor = null;
       scopeCleaner.Successor = scopeRestorer;
       mergingReducer.Successor = intCounter3;
       intCounter3.Successor = subScopesCounter3;
