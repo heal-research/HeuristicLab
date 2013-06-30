@@ -1,3 +1,5 @@
+/* Upgrade script from HeuristicLab Hive 3.3.8 to 3.3.9 */
+
 USE [HeuristicLab.Hive-3.3]
 
 EXEC sp_configure filestream_access_level, 2
