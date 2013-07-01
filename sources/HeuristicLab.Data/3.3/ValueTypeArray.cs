@@ -68,8 +68,10 @@ namespace HeuristicLab.Data {
           Array.Resize<T>(ref array, value);
           while (elementNames.Count > value)
             elementNames.RemoveAt(elementNames.Count - 1);
-          while (elementNames.Count < value)
-            elementNames.Add("Element " + elementNames.Count);
+          if (elementNames.Any()) {
+            while (elementNames.Count < value)
+              elementNames.Add("Element " + elementNames.Count);
+          }
           OnElementNamesChanged();
           OnReset();
         }
