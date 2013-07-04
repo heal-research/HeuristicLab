@@ -22,7 +22,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Common;
@@ -104,11 +103,13 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected virtual void UpdateRowHeaders() {
-      for (int i = 0; i < dataGridView.RowCount; i++) {
-        if (i < Content.ElementNames.Count())
-          dataGridView.Rows[i].HeaderCell.Value = Content.ElementNames.ElementAt(i);
-        else
-          dataGridView.Rows[i].HeaderCell.Value = string.Empty;
+      int i = 0;
+      foreach (string elementName in Content.ElementNames) {
+        dataGridView.Rows[i].HeaderCell.Value = elementName;
+        i++;
+      }
+      for (; i < dataGridView.RowCount; i++) {
+        dataGridView.Rows[i].HeaderCell.Value = string.Empty;
       }
     }
 

@@ -50,8 +50,8 @@ namespace HeuristicLab.Data {
         if (ReadOnly) throw new NotSupportedException("ElementNames cannot be set. ValueTypeArray is read-only.");
         if (value == null || !value.Any())
           elementNames = new List<string>();
-        else if (value.Count() != Length)
-          throw new ArgumentException("An element name must be specified for each element.");
+        else if (value.Count() > Length)
+          throw new ArgumentException("The number of element names must not exceed the array length.");
         else
           elementNames = new List<string>(value);
         OnElementNamesChanged();
@@ -68,10 +68,6 @@ namespace HeuristicLab.Data {
           Array.Resize<T>(ref array, value);
           while (elementNames.Count > value)
             elementNames.RemoveAt(elementNames.Count - 1);
-          if (elementNames.Any()) {
-            while (elementNames.Count < value)
-              elementNames.Add("Element " + elementNames.Count);
-          }
           OnElementNamesChanged();
           OnReset();
         }
