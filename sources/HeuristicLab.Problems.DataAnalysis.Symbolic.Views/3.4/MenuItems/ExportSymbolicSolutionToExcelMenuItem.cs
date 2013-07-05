@@ -362,31 +362,35 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void WriteInputSheet(ExcelWorksheet inputsWorksheet, ExcelWorksheet datasetWorksheet, IEnumerable<string> list, Dataset dataset) {
-      int rows = dataset.Rows;
-      var variableNames = dataset.VariableNames.ToList();
-      int cur = 1;
-      foreach (var variableMapping in list) {
-        var varMap = variableMapping.Split(new string[] { " = " }, StringSplitOptions.None);
-        if (varMap.Count() != 2) throw new ArgumentException("variableMapping is not correct");
-        int column = variableNames.FindIndex(x => x.Equals(varMap[0])) + 1;
-        inputsWorksheet.Cells[1, cur].Value = varMap[0];
-        for (int i = 2; i <= rows + 1; i++) {
-          inputsWorksheet.Cells[i, cur].Formula = datasetWorksheet.Cells[i, column].FullAddress;
+      //remark the performance of EPPlus drops dramatically 
+      //if the data is not written row wise (from left to right) due the internal indices used.
+      var variableNames = dataset.VariableNames.Select((v, i) => new { variable = v, index = i + 1 }).ToDictionary(v => v.variable, v => v.index);
+      var nameMapping = list.Select(x => x.Split('=')[0].Trim()).ToArray();
+
+      for (int row = 1; row <= dataset.Rows + 1; row++) {
+        for (int column = 1; column < nameMapping.Length + 1; column++) {
+          int variableIndex = variableNames[nameMapping[column - 1]];
+          inputsWorksheet.Cells[row, column].Formula = datasetWorksheet.Cells[row, variableIndex].FullAddress;
         }
-        cur++;
       }
     }
 
     private void WriteDatasetToExcel(ExcelWorksheet datasetWorksheet, IDataAnalysisProblemData problemData) {
+      //remark the performance of EPPlus drops dramatically 
+      //if the data is not written row wise (from left to right) due the internal indices used.
       Dataset dataset = problemData.Dataset;
       var variableNames = dataset.VariableNames.ToList();
-      for (int col = 1; col <= variableNames.Count; col++) {
+      var doubleVariables = new HashSet<string>(dataset.DoubleVariables);
+
+      for (int col = 1; col <= variableNames.Count; col++)
         datasetWorksheet.Cells[1, col].Value = variableNames[col - 1];
-        if (dataset.DoubleVariables.Contains(variableNames[col - 1])) {
-          datasetWorksheet.Cells[2, col].LoadFromCollection(dataset.GetDoubleValues(variableNames[col - 1]));
-        } else {
-          var coll = Enumerable.Range(0, dataset.Rows).Select(x => dataset.GetValue(x, col - 1));
-          datasetWorksheet.Cells[2, col].LoadFromCollection(coll);
+
+      for (int row = 0; row < dataset.Rows; row++) {
+        for (int col = 0; col < variableNames.Count; col++) {
+          if (doubleVariables.Contains(variableNames[col]))
+            datasetWorksheet.Cells[row + 2, col + 1].Value = dataset.GetDoubleValue(variableNames[col], row);
+          else
+            datasetWorksheet.Cells[row + 2, col + 1].Value = dataset.GetValue(col, row);
         }
       }
     }
