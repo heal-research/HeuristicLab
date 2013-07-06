@@ -136,8 +136,11 @@
     <Compile Include="DataTransfer\StateLog.cs" />
     <Compile Include="DataTransfer\Statistics.cs" />
     <Compile Include="DataTransfer\UserStatistics.cs" />
+    <Compile Include="OptimizedHiveDao.cs" />
     <Compile Include="HiveDao.cs" />
     <Compile Include="HiveJanitor.cs" />
+    <Compile Include="HiveOperationContext.cs" />
+    <Compile Include="Interfaces\IOptimizedHiveDao.cs" />
     <Compile Include="Interfaces\IHiveDao.cs" />
     <Compile Include="Interfaces\ITaskScheduler.cs" />
     <Compile Include="Scheduler\TaskInfoForScheduler.cs" />

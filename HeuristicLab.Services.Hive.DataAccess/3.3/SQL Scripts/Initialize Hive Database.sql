@@ -1,6 +1,11 @@
 ﻿USE [HeuristicLab.Hive-3.3]
 /* create and initialize hive database tables */
 
+EXEC sp_configure filestream_access_level, 2
+GO
+RECONFIGURE
+GO 
+
 SET ARITHABORT ON
 CREATE TABLE [dbo].[AssignedResources](
   [ResourceId] UniqueIdentifier NOT NULL,
@@ -87,15 +92,15 @@ CREATE TABLE [dbo].[Job](
   CONSTRAINT [PK_dbo.Job] PRIMARY KEY ([JobId])
   )
 CREATE TABLE [dbo].[TaskData](
-  [TaskId] UniqueIdentifier NOT NULL,
-  [Data] VarBinary(MAX) NOT NULL,
+  [TaskId] UniqueIdentifier RowGuidCol NOT NULL,
+  [Data] VarBinary(MAX) Filestream NOT NULL,
   [LastUpdate] DateTime NOT NULL,
   CONSTRAINT [PK_dbo.TaskData] PRIMARY KEY ([TaskId])
   )
 CREATE TABLE [dbo].[PluginData](
-  [PluginDataId] UniqueIdentifier NOT NULL,
+  [PluginDataId] UniqueIdentifier RowGuidCol NOT NULL,
   [PluginId] UniqueIdentifier NOT NULL,
-  [Data] VarBinary(MAX) NOT NULL,
+  [Data] VarBinary(MAX) FileStream NOT NULL,
   [FileName] VarChar(MAX) NOT NULL,
   CONSTRAINT [PK_dbo.PluginData] PRIMARY KEY ([PluginDataId])
   )

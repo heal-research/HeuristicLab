@@ -113,7 +113,7 @@
   <Table Name="dbo.TaskData" Member="TaskDatas">
     <Type Name="TaskData">
       <Column Name="TaskId" Storage="_JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX)" CanBeNull="false" UpdateCheck="Never" IsDelayLoaded="true" />
+      <Column Name="Data" Type="System.Byte[]" DbType="VarBinary(MAX)" CanBeNull="false" UpdateCheck="Never" IsDelayLoaded="true" />
       <Column Name="LastUpdate" Type="System.DateTime" DbType="DateTime" CanBeNull="false" />
       <Association Name="Task_TaskData" Member="Task" Storage="_Job" ThisKey="TaskId" OtherKey="TaskId" Type="Task" IsForeignKey="true" />
     </Type>
@@ -122,7 +122,7 @@
     <Type Name="PluginData">
       <Column Name="PluginDataId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="PluginId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="Data" Type="System.Data.Linq.Binary" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" IsDelayLoaded="true" />
+      <Column Name="Data" Type="System.Byte[]" DbType="VarBinary(MAX) NOT NULL" CanBeNull="false" UpdateCheck="Never" IsDelayLoaded="true" />
       <Column Name="FileName" Type="System.String" DbType="VarChar(MAX)" CanBeNull="false" />
       <Association Name="Plugin_PluginData" Member="Plugin" ThisKey="PluginId" OtherKey="PluginId" Type="Plugin" IsForeignKey="true" />
     </Type>

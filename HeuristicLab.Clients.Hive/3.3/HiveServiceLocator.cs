@@ -34,6 +34,9 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
+    private HiveServiceLocator() {
+    }
+
     private string username;
     public string Username {
       get { return username; }
@@ -46,12 +49,41 @@ namespace HeuristicLab.Clients.Hive {
       set { password = value; }
     }
 
+    public int EndpointRetries { get; private set; }
+
+    public string WorkingEndpoint { get; private set; }
+
     private HiveServiceClient NewServiceClient() {
-      HiveServiceClient cl;
+      if (EndpointRetries >= Settings.Default.MaxEndpointRetries) {
+        return CreateClient(WorkingEndpoint);
+      }
+
+      var configurations = Settings.Default.EndpointConfigurationPriorities;
+
+      Exception exception = null;
+      foreach (var endpointConfigurationName in configurations) {
+        try {
+          var cl = CreateClient(endpointConfigurationName);
+          cl.Open();
+          WorkingEndpoint = endpointConfigurationName;
+          return cl;
+        }
+        catch (Exception exc) {
+          exception = exc;
+          EndpointRetries++;
+        }
+      }
+
+      throw exception ?? new Exception("No endpoint for Hive service found.");
+    }
+
+    private HiveServiceClient CreateClient(string endpointConfigurationName) {
+      HiveServiceClient cl = null;
+
       if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
-        cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>();
+        cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>(endpointConfigurationName);
       else
-        cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>(null, null, username, password);
+        cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>(endpointConfigurationName, null, username, password);
 
       return cl;
     }

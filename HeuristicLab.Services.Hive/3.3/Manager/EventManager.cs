@@ -77,7 +77,7 @@ namespace HeuristicLab.Services.Hive {
       //collecting user statistics slows down the db and results in timeouts. 
       //we have to find another way to deal with this.  
       //until then the next line is commented out...
-      //stats.UserStatistics = dao.GetUserStatistics();
+      //stats.UserStatistics = dtoDao.GetUserStatistics();
       dao.AddStatistics(stats);
     }
 

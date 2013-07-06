@@ -41,6 +41,15 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
+    public IOptimizedHiveDao OptimizedHiveDao {
+      get {
+        var dataContext = HiveOperationContext.Current != null
+                            ? HiveOperationContext.Current.DataContext
+                            : new HiveDataContext(Settings.Default.HeuristicLab_Hive_LinqConnectionString);
+        return new OptimizedHiveDao(dataContext);
+      }
+    }
+
     private Access.IRoleVerifier roleVerifier;
     public Access.IRoleVerifier RoleVerifier {
       get {
