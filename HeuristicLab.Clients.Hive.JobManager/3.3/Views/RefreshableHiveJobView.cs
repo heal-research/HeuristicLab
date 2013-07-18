@@ -325,7 +325,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       lock (runCollectionViewLocker) {
         runCollectionViewHost.Content = GetAllRunsFromJob(Content);
       }
-      isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
+      if (InvokeRequired) {
+        Invoke(new Action(() => { isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged; }));
+      } else {
+        isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
+      }
     }
 
     private void Content_HiveExperimentChanged(object sender, EventArgs e) {
