@@ -42,6 +42,22 @@ namespace HeuristicLab.Data {
     [Storable]
     protected T[] array;
 
+    [Storable]
+    protected List<string> elementNames;
+    public virtual IEnumerable<string> ElementNames {
+      get { return this.elementNames; }
+      set {
+        if (ReadOnly) throw new NotSupportedException("ElementNames cannot be set. ValueTypeArray is read-only.");
+        if (value == null || !value.Any())
+          elementNames = new List<string>();
+        else if (value.Count() > Length)
+          throw new ArgumentException("The number of element names must not exceed the array length.");
+        else
+          elementNames = new List<string>(value);
+        OnElementNamesChanged();
+      }
+    }
+
     public virtual int Length {
       get { return array.Length; }
       #region Mono Compatibility
@@ -50,6 +66,9 @@ namespace HeuristicLab.Data {
         if (ReadOnly) throw new NotSupportedException("Length cannot be set. ValueTypeArray is read-only.");
         if (value != Length) {
           Array.Resize<T>(ref array, value);
+          while (elementNames.Count > value)
+            elementNames.RemoveAt(elementNames.Count - 1);
+          OnElementNamesChanged();
           OnReset();
         }
       }
@@ -72,25 +91,34 @@ namespace HeuristicLab.Data {
       get { return readOnly; }
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (elementNames == null) { elementNames = new List<string>(); }
+    }
+
     [StorableConstructor]
     protected ValueTypeArray(bool deserializing) : base(deserializing) { }
     protected ValueTypeArray(ValueTypeArray<T> original, Cloner cloner)
       : base(original, cloner) {
       this.array = (T[])original.array.Clone();
       this.readOnly = original.readOnly;
+      this.elementNames = new List<string>(original.elementNames);
     }
     protected ValueTypeArray() {
       array = new T[0];
       readOnly = false;
+      elementNames = new List<string>();
     }
     protected ValueTypeArray(int length) {
       array = new T[length];
       readOnly = false;
+      elementNames = new List<string>();
     }
     protected ValueTypeArray(T[] elements) {
       if (elements == null) throw new ArgumentNullException();
       array = (T[])elements.Clone();
       readOnly = false;
+      elementNames = new List<string>();
     }
 
     public virtual ValueTypeArray<T> AsReadOnly() {
@@ -122,6 +150,13 @@ namespace HeuristicLab.Data {
 
     IEnumerator IEnumerable.GetEnumerator() {
       return GetEnumerator();
+    }
+
+    public event EventHandler ElementNamesChanged;
+    protected virtual void OnElementNamesChanged() {
+      EventHandler handler = ElementNamesChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
     }
 
     public event EventHandler<EventArgs<int>> ItemChanged;

@@ -52,6 +52,7 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected override void DeregisterContentEvents() {
+      Content.ElementNamesChanged -= new EventHandler(Content_ElementNamesChanged);
       Content.ItemChanged -= new EventHandler<EventArgs<int>>(Content_ItemChanged);
       Content.Reset -= new EventHandler(Content_Reset);
       base.DeregisterContentEvents();
@@ -61,6 +62,7 @@ namespace HeuristicLab.Data.Views {
       base.RegisterContentEvents();
       Content.ItemChanged += new EventHandler<EventArgs<int>>(Content_ItemChanged);
       Content.Reset += new EventHandler(Content_Reset);
+      Content.ElementNamesChanged += new EventHandler(Content_ElementNamesChanged);
     }
 
     protected override void OnContentChanged() {
@@ -95,7 +97,27 @@ namespace HeuristicLab.Data.Views {
         }
         dataGridView.Columns[0].Width = dataGridView.Columns[0].GetPreferredWidth(DataGridViewAutoSizeColumnMode.AllCells, true);
       }
+      UpdateRowHeaders();
+      dataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders);
       dataGridView.Enabled = true;
+    }
+
+    protected virtual void UpdateRowHeaders() {
+      int i = 0;
+      foreach (string elementName in Content.ElementNames) {
+        dataGridView.Rows[i].HeaderCell.Value = elementName;
+        i++;
+      }
+      for (; i < dataGridView.RowCount; i++) {
+        dataGridView.Rows[i].HeaderCell.Value = string.Empty;
+      }
+    }
+
+    private void Content_ElementNamesChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_ElementNamesChanged), sender, e);
+      else
+        UpdateRowHeaders();
     }
 
     private void Content_ItemChanged(object sender, EventArgs<int> e) {
