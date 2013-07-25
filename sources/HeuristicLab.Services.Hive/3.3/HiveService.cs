@@ -86,7 +86,7 @@ namespace HeuristicLab.Services.Hive {
     public Guid AddChildTask(Guid parentTaskId, Task task, TaskData taskData) {
       authen.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
       task.ParentTaskId = parentTaskId;
-      return AddTask(task, taskData, optimizedDao.GetAssignedResourceIds(parentTaskId));
+      return AddTask(task, taskData, optimizedDao.GetAssignedResourceIds(parentTaskId).ToList());
     }
 
     public Task GetTask(Guid taskId) {
