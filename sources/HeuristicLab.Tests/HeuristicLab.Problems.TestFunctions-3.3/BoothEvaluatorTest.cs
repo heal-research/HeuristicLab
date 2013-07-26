@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     /// <summary>
     ///A test for EvaluateFunction
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Problems.TestFunctions-3.3.dll")]
     public void BoothEvaluateFunctionTest() {
       BoothEvaluator_Accessor target = new BoothEvaluator_Accessor();
