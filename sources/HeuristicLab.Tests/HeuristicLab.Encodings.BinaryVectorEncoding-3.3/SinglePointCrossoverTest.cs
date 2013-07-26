@@ -83,7 +83,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.BinaryVectorEncoding-3.3.dll")]
     public void SinglePointCrossoverCrossTest() {
       SinglePointCrossover_Accessor target = new SinglePointCrossover_Accessor(new PrivateObject(typeof(SinglePointCrossover)));
@@ -119,7 +119,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
     /// <summary>
     ///A test for SinglePointCrossover Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void SinglePointCrossoverConstructorTest() {
       SinglePointCrossover target = new SinglePointCrossover();
     }

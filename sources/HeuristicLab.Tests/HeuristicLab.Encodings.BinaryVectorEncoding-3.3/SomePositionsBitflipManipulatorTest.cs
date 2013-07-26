@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void SomePositionsBitflipManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       BinaryVector parent, expected;
@@ -100,7 +100,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
     /// <summary>
     ///A test for SomePositionsBitflipManipulator Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void SomePositionsBitflipManipulatorConstructorTest() {
       SomePositionsBitflipManipulator target = new SomePositionsBitflipManipulator();
     }
