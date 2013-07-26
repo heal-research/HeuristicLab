@@ -22,7 +22,6 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Tests;

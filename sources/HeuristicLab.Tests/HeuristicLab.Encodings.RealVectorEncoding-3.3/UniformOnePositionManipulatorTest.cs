@@ -20,7 +20,6 @@
 #endregion
 
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,58 +30,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class UniformOnePositionManipulatorTest {
-
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
-
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod]
+    [TestMethod()]
+    [TestCategory("Encodings.RealVector")]
+    [TestProperty("Time", "short")]
     public void UniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent, expected;
@@ -96,14 +49,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
       bounds = new DoubleMatrix(new double[,] { { 0.2, 0.7 } });
       UniformOnePositionManipulator.Apply(random, parent, bounds);
       Assert.IsTrue(Auxiliary.RealVectorIsAlmostEqualByPosition(expected, parent));
-    }
-
-    /// <summary>
-    ///A test for UniformOnePositionManipulator Constructor
-    ///</summary>
-    [TestMethod]
-    public void UniformOnePositionManipulatorConstructorTest() {
-      UniformOnePositionManipulator target = new UniformOnePositionManipulator();
     }
   }
 }

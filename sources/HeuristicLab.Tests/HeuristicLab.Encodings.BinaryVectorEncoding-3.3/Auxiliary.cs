@@ -19,7 +19,6 @@
  */
 #endregion
 
-
 namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
   public static class Auxiliary {
     public static bool BinaryVectorIsEqualByPosition(BinaryVector p1, BinaryVector p2) {

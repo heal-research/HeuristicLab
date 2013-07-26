@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -30,58 +29,12 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class SinglePositionBitflipManipulatorTest {
-
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
-
     /// <summary>
     ///A test for Apply
     ///</summary>
     [TestMethod]
+    [TestCategory("Encodings.BinaryVector")]
+    [TestProperty("Time", "short")]
     public void SinglePositionBitflipManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       BinaryVector parent, expected;
@@ -94,14 +47,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
         false, true, true, true, true, true, true, false, false, false, true, false, true});
       SinglePositionBitflipManipulator.Apply(random, parent);
       Assert.IsTrue(Auxiliary.BinaryVectorIsEqualByPosition(expected, parent));
-    }
-
-    /// <summary>
-    ///A test for SinglePositionBitflipManipulator Constructor
-    ///</summary>
-    [TestMethod]
-    public void SinglePositionBitflipManipulatorConstructorTest() {
-      SinglePositionBitflipManipulator target = new SinglePositionBitflipManipulator();
     }
   }
 }

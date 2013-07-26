@@ -20,7 +20,6 @@
 #endregion
 
 using HeuristicLab.Common;
-using HeuristicLab.Encodings.RealVectorEncoding;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   public static class Auxiliary {

@@ -20,7 +20,6 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,59 +30,12 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class EdgeRecombinationCrossoverTest {
-
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
-
     /// <summary>
     ///A test for Cross
     ///</summary>
     [TestMethod]
-    [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
+    [TestCategory("Encodings.Permutation")]
+    [TestProperty("Time", "short")]
     public void EdgeRecombinationCrossoverCrossoverCrossTest() {
       TestRandom random = new TestRandom();
       EdgeRecombinationCrossover_Accessor target =
@@ -94,8 +46,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
       try {
         target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
           new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4)}));
-      }
-      catch (System.InvalidOperationException) {
+      } catch (System.InvalidOperationException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -105,6 +56,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     ///A test for Apply
     ///</summary>
     [TestMethod]
+    [TestCategory("Encodings.Permutation")]
+    [TestProperty("Time", "short")]
     public void EdgeRecombinationCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       Permutation parent1, parent2, expected, actual;
@@ -127,8 +80,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
       bool exceptionFired = false;
       try {
         EdgeRecombinationCrossover.Apply(random, new Permutation(PermutationTypes.RelativeUndirected, 8), new Permutation(PermutationTypes.RelativeUndirected, 6));
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

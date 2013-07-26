@@ -20,7 +20,6 @@
 #endregion
 
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,58 +30,12 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class PolynomialOnePositionManipulatorTest {
-
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
-
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod]
+    [TestMethod()]
+    [TestCategory("Encodings.RealVector")]
+    [TestProperty("Time", "short")]
     public void PolynomialOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent, expected;
@@ -108,19 +61,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
       maxManipulation = new DoubleValue(0.2);
       try {
         PolynomialOnePositionManipulator.Apply(random, parent, contiguity, maxManipulation);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for PolynomialOnePositionManipulator Constructor
-    ///</summary>
-    [TestMethod]
-    public void PolynomialOnePositionManipulatorConstructorTest() {
-      PolynomialOnePositionManipulator target = new PolynomialOnePositionManipulator();
     }
   }
 }
