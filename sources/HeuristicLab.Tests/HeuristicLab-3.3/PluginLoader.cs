@@ -35,7 +35,7 @@ namespace HeuristicLab.Tests {
     public static List<Assembly> Assemblies;
 
     static PluginLoader() {
-      foreach (string path in Directory.EnumerateFiles(Environment.CurrentDirectory).Where(IsRelevantAssemblyPath)) {
+      foreach (string path in Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory).Where(IsRelevantAssemblyPath)) {
         try {
           Assembly.LoadFrom(path);
         } catch (BadImageFormatException) { }
