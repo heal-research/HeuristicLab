@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
   [TestClass()]
   public class QAPLIBInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
     public void GetQAPLIBInstanceTest() {
       var target = new QAPLIBInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetMicroarrayQAPInstanceTest() {
       var target = new MicroarrayQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetDreznerQAPInstanceTest() {
       var target = new DreznerQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetTaillardQAPInstanceTest() {
       var target = new TaillardQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

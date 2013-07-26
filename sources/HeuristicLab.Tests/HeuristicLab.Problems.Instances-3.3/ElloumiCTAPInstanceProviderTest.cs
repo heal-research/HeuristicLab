@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
   [TestClass()]
   public class ElloumiCTAPInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
     public void GetElloumiCTAPInstanceTest() {
       var target = new ElloumiCTAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

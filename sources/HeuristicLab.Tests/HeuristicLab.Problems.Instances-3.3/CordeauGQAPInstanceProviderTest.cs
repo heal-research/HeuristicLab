@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
   [TestClass()]
   public class CordeauGQAPInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
     public void GetCordeauGQAPInstanceTest() {
       var target = new CordeauGQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

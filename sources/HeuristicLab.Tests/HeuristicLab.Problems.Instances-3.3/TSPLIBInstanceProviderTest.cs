@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
   [TestClass()]
   public class TSPLIBInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
     public void GetTSPLIBTSPInstanceTest() {
       var target = new TSPLIBTSPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetTSPLIBATSPInstanceTest() {
       var target = new TSPLIBATSPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetTSPLIBCVRPInstanceTest() {
       var target = new TSPLIBCVRPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
