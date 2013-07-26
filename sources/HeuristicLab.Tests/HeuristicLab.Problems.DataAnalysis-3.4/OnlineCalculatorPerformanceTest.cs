@@ -22,7 +22,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -34,7 +33,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     private const int Repetitions = 10000;
 
     private TestContext testContextInstance;
-
     /// <summary>
     ///Gets or sets the test context which provides
     ///information about and functionality for the current test run.
@@ -46,27 +44,39 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "medium")]
     public void OnlineAccuracyCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineAccuracyCalculator.Calculate);
     }
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "medium")]
     public void OnlineCovarianceCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineCovarianceCalculator.Calculate);
     }
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "medium")]
     public void OnlineMeanAbsolutePercentageErrorCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineMeanAbsolutePercentageErrorCalculator.Calculate);
     }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "medium")]
     public void OnlineMeanSquaredErrorCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineMeanSquaredErrorCalculator.Calculate);
     }
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "medium")]
     public void OnlineNormalizedMeanSquaredErrorCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlineNormalizedMeanSquaredErrorCalculator.Calculate);
     }
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "medium")]
     public void OnlinePearsonsRSquaredCalculatorPerformanceTest() {
       TestCalculatorPerfomance(OnlinePearsonsRSquaredCalculator.Calculate);
     }

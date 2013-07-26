@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   internal class SymbolicExpressionImporter {
@@ -84,9 +83,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     ProgramRootSymbol programRootSymbol = new ProgramRootSymbol();
     StartSymbol startSymbol = new StartSymbol();
-
-    public SymbolicExpressionImporter() {
-    }
 
     internal ISymbolicExpressionTree Import(string str) {
       str = str.Replace("(", " ( ").Replace(")", " ) ");
