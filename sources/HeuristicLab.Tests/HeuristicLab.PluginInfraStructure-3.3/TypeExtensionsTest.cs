@@ -35,6 +35,7 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
   public class TypeExtensionsTest {
     [TestMethod]
     [TestCategory("General")]
+    [TestCategory("Essential")]
     [TestProperty("Time", "short")]
     public void IsSubTypeOfTest() {
       Assert.IsTrue(typeof(int).IsSubTypeOf(typeof(object)));
@@ -62,6 +63,7 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
 
     [TestMethod]
     [TestCategory("General")]
+    [TestCategory("Essential")]
     [TestProperty("Time", "short")]
     public void BuildTypeTest() {
       Assert.AreEqual(typeof(List<>).BuildType(typeof(List<>)), typeof(List<>));
