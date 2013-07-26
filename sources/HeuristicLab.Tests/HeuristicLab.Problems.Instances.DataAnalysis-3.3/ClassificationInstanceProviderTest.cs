@@ -21,7 +21,6 @@
 
 using System;
 using System.Text;
-using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
@@ -29,6 +28,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
   public class ClassificationInstanceProviderTest {
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void UCIInstanceTest() {
       var target = new UCIInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -36,8 +37,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;

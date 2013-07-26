@@ -19,16 +19,18 @@
  */
 #endregion
 
-
 using System;
 using System.Text;
 using HeuristicLab.Problems.Instances.TSPLIB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 namespace HeuristicLab.Problems.Instances.Tests {
   [TestClass()]
   public class TSPLIBInstanceProviderTest {
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "medium")]
     public void GetTSPLIBTSPInstanceTest() {
       var target = new TSPLIBTSPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -36,8 +38,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -47,6 +48,8 @@ namespace HeuristicLab.Problems.Instances.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetTSPLIBATSPInstanceTest() {
       var target = new TSPLIBATSPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -54,8 +57,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -65,6 +67,8 @@ namespace HeuristicLab.Problems.Instances.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetTSPLIBCVRPInstanceTest() {
       var target = new TSPLIBCVRPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -72,8 +76,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;

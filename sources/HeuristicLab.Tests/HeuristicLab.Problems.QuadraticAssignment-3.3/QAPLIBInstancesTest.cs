@@ -26,7 +26,7 @@ using System.Text;
 using HeuristicLab.Problems.Instances.QAPLIB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
+namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
   [TestClass]
   public class QAPLIBInstancesTest {
     #region instances
@@ -188,6 +188,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
     #endregion
 
     [TestMethod]
+    [TestCategory("Problems.Assignment")]
+    [TestProperty("Time", "long")]
     public void TestQAPLIBInstances() {
       var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();
@@ -207,6 +209,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
     }
 
     [TestMethod]
+    [TestCategory("Problems.Assignment")]
+    [TestProperty("Time", "long")]
     public void TestQAPLIBSolutions() {
       var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();
@@ -225,6 +229,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests_33 {
     }
 
     [TestMethod]
+    [TestCategory("Problems.Assignment")]
+    [TestProperty("Time", "short")]
     public void TestQAPLIBLowerBounds() {
       var provider = new QAPLIBInstanceProvider();
       var qap = new QuadraticAssignmentProblem();

@@ -29,6 +29,8 @@ namespace HeuristicLab.Problems.Instances.Tests {
   public class CordeauGQAPInstanceProviderTest {
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetCordeauGQAPInstanceTest() {
       var target = new CordeauGQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -36,8 +38,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;

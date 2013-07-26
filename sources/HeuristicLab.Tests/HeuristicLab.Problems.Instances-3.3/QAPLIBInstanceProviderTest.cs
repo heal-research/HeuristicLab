@@ -29,6 +29,8 @@ namespace HeuristicLab.Problems.Instances.Tests {
   public class QAPLIBInstanceProviderTest {
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "medium")]
     public void GetQAPLIBInstanceTest() {
       var target = new QAPLIBInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -36,8 +38,7 @@ namespace HeuristicLab.Problems.Instances.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -47,6 +48,8 @@ namespace HeuristicLab.Problems.Instances.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetMicroarrayQAPInstanceTest() {
       var target = new MicroarrayQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -64,6 +67,8 @@ namespace HeuristicLab.Problems.Instances.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetDreznerQAPInstanceTest() {
       var target = new DreznerQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -81,6 +86,8 @@ namespace HeuristicLab.Problems.Instances.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "long")]
     public void GetTaillardQAPInstanceTest() {
       var target = new TaillardQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

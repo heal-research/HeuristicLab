@@ -21,15 +21,14 @@
 
 using System;
 using System.IO;
-using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
-
   [TestClass()]
   public class TableFileParserTest {
-
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseCSV() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -45,12 +44,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
+
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseCSVWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -67,13 +68,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseGermanCSV() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -89,13 +91,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseGermanCSVWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -112,13 +115,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual(parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseGermanCSVWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -134,12 +138,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
+
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseGermanCSVWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -156,13 +162,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishCSVWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -178,13 +185,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishCSVWithoutCommasWithoutSpace() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -200,13 +208,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishCSVWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -223,13 +232,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishCSVWithoutCommasWithoutSpacesWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -246,14 +256,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseGermanTabSeparated() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -269,13 +280,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseGermanTabSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -292,13 +304,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishTabSeparated() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -314,12 +327,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
+
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishTabSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -336,13 +351,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseTabSeparatedWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -358,12 +374,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
+
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseTabSeparatedWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -380,13 +398,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseWithEmtpyLines() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -402,13 +421,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(4, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseGermanSpaceSeparated() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -424,12 +444,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
+
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseGermanSpaceSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -446,13 +468,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishSpaceSeparated() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -468,12 +491,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
+
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishSpaceSeparatedWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -490,13 +515,14 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3.14);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseEnglishSpaceSeparatedWithNamesManyColumns() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -510,13 +536,14 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         parser.Parse(tempFileName, parser.AreColumnNamesInFirstLine(tempFileName));
         Assert.AreEqual(3, parser.Rows);
         Assert.AreEqual(4507, parser.Columns);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
 
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseSpaceSeparatedWithoutCommas() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -532,12 +559,14 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
+
     [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void ParseSpaceSeparatedWithoutCommasWithNames() {
       string tempFileName = Path.GetTempFileName();
       WriteToFile(tempFileName,
@@ -554,8 +583,7 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
-      }
-      finally {
+      } finally {
         File.Delete(tempFileName);
       }
     }
