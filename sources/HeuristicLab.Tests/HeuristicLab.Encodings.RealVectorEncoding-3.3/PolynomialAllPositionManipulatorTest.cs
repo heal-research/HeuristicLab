@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void PolynomialAllPositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent, expected;
@@ -115,7 +115,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for PolynomialAllPositionManipulator Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void PolynomialAllPositionManipulatorConstructorTest() {
       PolynomialAllPositionManipulator target = new PolynomialAllPositionManipulator();
     }

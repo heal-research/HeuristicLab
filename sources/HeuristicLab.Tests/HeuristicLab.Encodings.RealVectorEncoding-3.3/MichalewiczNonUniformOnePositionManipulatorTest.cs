@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void MichalewiczNonUniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent, expected;
@@ -124,7 +124,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for MichalewiczNonUniformOnePositionManipulator Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void MichalewiczNonUniformOnePositionManipulatorConstructorTest() {
       MichalewiczNonUniformOnePositionManipulator target = new MichalewiczNonUniformOnePositionManipulator();
     }

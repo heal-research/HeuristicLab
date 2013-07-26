@@ -83,7 +83,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.RealVectorEncoding-3.3.dll")]
     public void LocalCrossoverCrossTest() {
       LocalCrossover_Accessor target = new LocalCrossover_Accessor(new PrivateObject(typeof(LocalCrossover)));
@@ -119,7 +119,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void LocalCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent1, parent2, expected, actual;
@@ -150,7 +150,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for LocalCrossover Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void LocalCrossoverConstructorTest() {
       LocalCrossover target = new LocalCrossover();
     }

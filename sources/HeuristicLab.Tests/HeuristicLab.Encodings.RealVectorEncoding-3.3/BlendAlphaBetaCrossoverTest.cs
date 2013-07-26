@@ -83,7 +83,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.RealVectorEncoding-3.3.dll")]
     public void BlendAlphaBetaCrossoverCrossTest() {
       BlendAlphaBetaCrossover_Accessor target = new BlendAlphaBetaCrossover_Accessor(new PrivateObject(typeof(BlendAlphaBetaCrossover)));
@@ -117,7 +117,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void BlendAlphaBetaCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent1, parent2, expected, actual;
@@ -165,7 +165,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
     /// <summary>
     ///A test for BlendAlphaBetaCrossover Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void BlendAlphaBetaCrossoverConstructorTest() {
       BlendAlphaBetaCrossover target = new BlendAlphaBetaCrossover();
     }
