@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.LinearAssignment.Tests_33 {
     /// <summary>
     ///A test for Solve
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void SolveTest() {
       double[,] costs = new double[,] {
         {  5,  9,  3,  6 },
