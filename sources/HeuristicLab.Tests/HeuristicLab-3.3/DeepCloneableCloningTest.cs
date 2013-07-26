@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   /// <summary>
   /// Summary description for DeepCloneableCloningTest
   /// </summary>
@@ -118,14 +118,12 @@ namespace HeuristicLab_33.Tests {
         IDeepCloneable item = null;
         try {
           item = (IDeepCloneable)Activator.CreateInstance(deepCloneableType, nonPublic: false);
-        }
-        catch { continue; } // no default constructor
+        } catch { continue; } // no default constructor
 
         IDeepCloneable clone = null;
         try {
           clone = (IDeepCloneable)item.Clone(new Cloner());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           TestContext.WriteLine(Environment.NewLine + deepCloneableType.FullName + ":");
           TestContext.WriteLine("ERROR! " + e.GetType().Name + @" was thrown during cloning.
 All IDeepCloneable items with a default constructor should be cloneable when using that constructor!");

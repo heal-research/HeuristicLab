@@ -24,7 +24,7 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   public static class AlgorithmExtensions {
     public static void StartSync(this IExecutable executable, CancellationToken cancellationToken) {
       var executor = new AlgorithmExecutor(executable, cancellationToken);

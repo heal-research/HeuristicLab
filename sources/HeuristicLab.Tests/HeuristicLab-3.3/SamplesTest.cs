@@ -40,7 +40,6 @@ using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.ParallelEngine;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.ArtificialAnt;
 using HeuristicLab.Problems.DataAnalysis;
@@ -60,11 +59,10 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Selection;
-using HeuristicLab.SequentialEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.opt.txt")]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.txt")]
@@ -617,7 +615,7 @@ namespace HeuristicLab_33.Tests {
       ls.Seed.Value = 0;
       ls.SetSeedRandomly.Value = true;
       #endregion
-      ls.Engine = new ParallelEngine();
+      ls.Engine = new ParallelEngine.ParallelEngine();
       return ls;
     }
     #endregion
@@ -696,7 +694,7 @@ namespace HeuristicLab_33.Tests {
       pso.Seed.Value = 0;
       pso.SetSeedRandomly.Value = true;
       #endregion
-      pso.Engine = new ParallelEngine();
+      pso.Engine = new ParallelEngine.ParallelEngine();
       return pso;
     }
     #endregion
@@ -762,7 +760,7 @@ namespace HeuristicLab_33.Tests {
       sa.SetSeedRandomly.Value = true;
       sa.StartTemperature.Value = 1;
       #endregion
-      sa.Engine = new ParallelEngine();
+      sa.Engine = new ParallelEngine.ParallelEngine();
       return sa;
     }
     #endregion
@@ -831,7 +829,7 @@ namespace HeuristicLab_33.Tests {
       ts.TabuTenure.Value = 60;
 
       #endregion
-      ts.Engine = new ParallelEngine();
+      ts.Engine = new ParallelEngine.ParallelEngine();
       return ts;
     }
     #endregion
@@ -897,7 +895,7 @@ namespace HeuristicLab_33.Tests {
       ts.TabuTenure.Value = 6;
 
       #endregion
-      ts.Engine = new ParallelEngine();
+      ts.Engine = new ParallelEngine.ParallelEngine();
       return ts;
     }
     #endregion
@@ -975,7 +973,7 @@ namespace HeuristicLab_33.Tests {
         .Single(), false);
       vns.ShakingOperator = shakingOperator;
       #endregion
-      vns.Engine = new ParallelEngine();
+      vns.Engine = new ParallelEngine.ParallelEngine();
       return vns;
     }
     #endregion
@@ -1014,7 +1012,7 @@ namespace HeuristicLab_33.Tests {
       gpr.Seed = 0;
       gpr.SetSeedRandomly = true;
       #endregion
-      gpr.Engine = new ParallelEngine();
+      gpr.Engine = new ParallelEngine.ParallelEngine();
       return gpr;
     }
     #endregion
@@ -1048,7 +1046,7 @@ namespace HeuristicLab_33.Tests {
 
       #region Algorithm Configuration
       ScatterSearch ss = new ScatterSearch();
-      ss.Engine = new SequentialEngine();
+      ss.Engine = new SequentialEngine.SequentialEngine();
       ss.Name = "Scatter Search - VRP";
       ss.Description = "A scatter search algorithm which solves the \"C101\" vehicle routing problem (imported from Solomon)";
       ss.Problem = vrpProblem;
@@ -1101,7 +1099,7 @@ namespace HeuristicLab_33.Tests {
 
       #region Algorithm Configuration
       RAPGA rapga = new RAPGA();
-      rapga.Engine = new SequentialEngine();
+      rapga.Engine = new SequentialEngine.SequentialEngine();
       rapga.Name = "RAPGA - Job Shop Scheduling";
       rapga.Description = "A relevant alleles preserving genetic algorithm which solves a job shop scheduling problem";
       rapga.Problem = problem;
@@ -1146,7 +1144,7 @@ namespace HeuristicLab_33.Tests {
       es.StrategyParameterManipulator = es.StrategyParameterManipulatorParameter.ValidValues
         .OfType<SM>()
         .Single();
-      es.Engine = new ParallelEngine();
+      es.Engine = new ParallelEngine.ParallelEngine();
     }
 
     private void ConfigureGeneticAlgorithmParameters<S, C, M>(GeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate, int tournGroupSize = 0)
@@ -1175,7 +1173,7 @@ namespace HeuristicLab_33.Tests {
       if (tSelector != null) {
         tSelector.GroupSizeParameter.Value.Value = tournGroupSize;
       }
-      ga.Engine = new ParallelEngine();
+      ga.Engine = new ParallelEngine.ParallelEngine();
     }
 
     private void ConfigureIslandGeneticAlgorithmParameters<S, C, M, Mi, MiS, MiR>(IslandGeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate, int numberOfIslands, int migrationInterval, double migrationRate)
@@ -1214,7 +1212,7 @@ namespace HeuristicLab_33.Tests {
       ga.ImmigrationReplacer = ga.ImmigrationReplacerParameter.ValidValues
         .OfType<MiR>()
         .Single();
-      ga.Engine = new ParallelEngine();
+      ga.Engine = new ParallelEngine.ParallelEngine();
     }
 
 

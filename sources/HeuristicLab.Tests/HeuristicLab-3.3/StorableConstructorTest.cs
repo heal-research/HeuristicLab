@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class StorableConstructorTest {
 

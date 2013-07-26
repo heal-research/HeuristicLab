@@ -27,7 +27,7 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class ContentViewTests {
     public ContentViewTests() {
@@ -69,8 +69,7 @@ namespace HeuristicLab_33.Tests {
         ContentView_Accessor accessor = new ContentView_Accessor(new PrivateObject(view));
         try {
           accessor.OnContentChanged();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           Assert.Fail(viewType.ToString() + Environment.NewLine + ex.Message);
         }
       }

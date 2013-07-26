@@ -21,11 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
+namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
 
 
   /// <summary>
@@ -98,8 +97,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       try {
         BinaryVector actual;
         actual = target.Cross(random, parents);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -110,8 +108,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       try {
         BinaryVector actual;
         actual = target.Cross(random, parents);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -164,8 +161,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       exceptionFired = false;
       try {
         actual = NPointCrossover.Apply(random, parent1, parent2, n);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

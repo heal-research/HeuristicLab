@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class ThreadSafeLogTest {
 

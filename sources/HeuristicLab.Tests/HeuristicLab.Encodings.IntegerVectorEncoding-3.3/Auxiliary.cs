@@ -21,7 +21,7 @@
 
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 
-namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
   public static class Auxiliary {
     public static bool IntegerVectorIsEqualByPosition(IntegerVector p1, IntegerVector p2) {
       bool equal = (p1.Length == p2.Length);

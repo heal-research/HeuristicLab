@@ -26,7 +26,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Tests {
   [TestClass]
   public class OnlineCalculatorPerformanceTest {
     private const int Rows = 5000;

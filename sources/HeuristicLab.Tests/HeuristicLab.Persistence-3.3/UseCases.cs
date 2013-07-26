@@ -39,10 +39,10 @@ using HeuristicLab.Persistence.Default.DebugString;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Persistence.Default.Xml.Primitive;
 using HeuristicLab.Persistence.Interfaces;
-using HeuristicLab_33.Tests;
+using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Persistence_33.Tests {
+namespace HeuristicLab.Persistence.Tests {
 
   [StorableClass]
   public class NumberTest {

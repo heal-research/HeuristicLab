@@ -24,7 +24,7 @@ using System.IO;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
+namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
 
   [TestClass()]
   public class TableFileParserTest {

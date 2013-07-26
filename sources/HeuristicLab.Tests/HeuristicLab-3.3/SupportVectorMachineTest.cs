@@ -20,19 +20,16 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using HeuristicLab.Algorithms.GeneticAlgorithm;
-using HeuristicLab.Common;
-using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.Xml;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using HeuristicLab.Algorithms.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis;
-using System.Collections.Generic;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Problems.DataAnalysis;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class SupportVectorMachineTest {
     public SupportVectorMachineTest() { }

@@ -24,7 +24,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
   [TestClass()]
   public class StatisticCalculatorsTest {

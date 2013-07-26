@@ -25,7 +25,7 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Analysis_33.Tests {
+namespace HeuristicLab.Analysis.Tests {
   [TestClass]
   public class MultidimensionalScalingTest {
     [TestMethod]

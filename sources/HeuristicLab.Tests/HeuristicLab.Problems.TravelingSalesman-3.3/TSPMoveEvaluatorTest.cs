@@ -27,7 +27,7 @@ using HeuristicLab.Problems.TravelingSalesman;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.TravelingSalesman_33.Tests {
+namespace HeuristicLab.Problems.TravelingSalesman.Tests {
 
   /// <summary>
   ///This is a test class for TSP move evaluators

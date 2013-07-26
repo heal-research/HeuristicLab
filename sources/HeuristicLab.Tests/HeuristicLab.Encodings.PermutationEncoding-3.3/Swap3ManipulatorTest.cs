@@ -23,7 +23,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
+namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   /// <summary>
   ///This is a test class for Swap3Manipulator and is intended
   ///to contain all Swap3Manipulator Unit Tests

@@ -26,7 +26,7 @@ using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Random;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   internal class Util {
 
     public static void InitTree(ISymbolicExpressionTree tree, MersenneTwister twister, List<string> varNames) {

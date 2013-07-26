@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Collections_33.Tests {
+namespace HeuristicLab.Collections.Tests {
   [TestClass]
   public class BidirectionalDictionaryTest {
     private class ComplexType {

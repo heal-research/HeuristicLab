@@ -24,7 +24,7 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.IntegerVectorEncoding_33.Tests {
+namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
   /// <summary>
   ///This is a test class for UniformOnePositionManipulator and is intended
   ///to contain all UniformOnePositionManipulator Unit Tests

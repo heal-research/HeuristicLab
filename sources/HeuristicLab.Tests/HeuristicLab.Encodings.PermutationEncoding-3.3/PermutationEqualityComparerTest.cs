@@ -22,7 +22,7 @@
 using HeuristicLab.Encodings.PermutationEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
+namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   [TestClass]
   public class PermutationEqualityComparerTest {
     [TestMethod]

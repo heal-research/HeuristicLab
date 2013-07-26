@@ -23,7 +23,7 @@ using System.Linq;
 using HeuristicLab.Algorithms.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
+namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   [TestClass]
 
   // reference values calculated with Rasmussen's GPML MATLAB package

@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class GeneticAlgorithmTest {
     public GeneticAlgorithmTest() { }

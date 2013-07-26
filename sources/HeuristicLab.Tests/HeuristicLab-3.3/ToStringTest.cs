@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class ToStringTest {
 
@@ -56,8 +56,7 @@ namespace HeuristicLab_33.Tests {
       foreach (object item in ApplicationManager.Manager.GetInstances(typeof(IItem))) {
         try {
           item.ToString();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           TestContext.WriteLine(item.GetType() + " throws a " + e.GetType() + " in the ToString method.");
           success = false;
         }

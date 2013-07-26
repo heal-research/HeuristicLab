@@ -30,10 +30,9 @@ using HeuristicLab.Common;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
-using HeuristicLab.SequentialEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class CollectObjectGraphTest {
 
@@ -102,7 +101,7 @@ namespace HeuristicLab_33.Tests {
         GeneticAlgorithm ga = new GeneticAlgorithm();
         ga.PopulationSize.Value = 5;
         ga.MaximumGenerations.Value = 5;
-        ga.Engine = new SequentialEngine();
+        ga.Engine = new SequentialEngine.SequentialEngine();
         ga.Problem = new SingleObjectiveTestFunctionProblem();
 
         sw.Start();
@@ -132,7 +131,7 @@ namespace HeuristicLab_33.Tests {
           ga.Name = "Alg " + locali;
           ga.PopulationSize.Value = 5;
           ga.MaximumGenerations.Value = 5;
-          ga.Engine = new SequentialEngine();
+          ga.Engine = new SequentialEngine.SequentialEngine();
           ga.Problem = new SingleObjectiveTestFunctionProblem();
           ga.Prepare(true);
           Console.WriteLine("{0}; Objects before execution: {1}", ga.Name, ga.GetObjectGraphObjects().Count());

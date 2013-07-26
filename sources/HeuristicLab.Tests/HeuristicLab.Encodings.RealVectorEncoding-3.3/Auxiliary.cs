@@ -22,7 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Encodings.RealVectorEncoding;
 
-namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
+namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   public static class Auxiliary {
     public static bool RealVectorIsAlmostEqualByPosition(RealVector p1, RealVector p2) {
       bool equal = (p1.Length == p2.Length);

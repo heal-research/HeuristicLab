@@ -21,7 +21,7 @@
 
 using HeuristicLab.Encodings.PermutationEncoding;
 
-namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
+namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   public static class Auxiliary {
     public static bool PermutationIsEqualByPosition(Permutation p1, Permutation p2) {
       bool equal = (p1.Length == p2.Length);

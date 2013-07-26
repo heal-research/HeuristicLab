@@ -25,10 +25,10 @@ using System.Globalization;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Tests;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis_34.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests {
 
   [TestClass()]
   public class SymbolicTimeSeriesPrognosisInterpreterTest {

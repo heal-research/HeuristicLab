@@ -23,7 +23,7 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.TestFunctions_33.Tests {
+namespace HeuristicLab.Problems.TestFunctions.Tests {
 
 
   /// <summary>

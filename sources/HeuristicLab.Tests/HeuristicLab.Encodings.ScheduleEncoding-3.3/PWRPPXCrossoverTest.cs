@@ -25,7 +25,7 @@ using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding_33.Tests {
+namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
 
 
   /// <summary>

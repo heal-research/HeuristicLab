@@ -21,11 +21,10 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
+namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
 
 
   /// <summary>
@@ -98,8 +97,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       try {
         RealVector actual;
         actual = target.Cross(random, parents);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -110,8 +108,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       try {
         RealVector actual;
         actual = target.Cross(random, parents);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -146,8 +143,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       exceptionFired = false;
       try {
         actual = BlendAlphaBetaCrossover.Apply(random, parent1, parent2, alpha, beta);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -160,8 +156,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
       exceptionFired = false;
       try {
         actual = BlendAlphaBetaCrossover.Apply(random, parent1, parent2, alpha, beta);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

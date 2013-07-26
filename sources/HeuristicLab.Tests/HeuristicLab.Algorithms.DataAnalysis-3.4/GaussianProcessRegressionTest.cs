@@ -28,7 +28,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Algorithms.DataAnalysis_34.Tests {
+namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   [TestClass]
   [DeploymentItem(@"HeuristicLab.Algorithms.DataAnalysis-3.4/co2.txt")]
   public class GaussianProcessRegressionTest {

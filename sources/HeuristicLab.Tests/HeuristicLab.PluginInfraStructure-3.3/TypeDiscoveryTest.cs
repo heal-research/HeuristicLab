@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab_33.Tests;
+using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.PluginInfrastructure.Tests {

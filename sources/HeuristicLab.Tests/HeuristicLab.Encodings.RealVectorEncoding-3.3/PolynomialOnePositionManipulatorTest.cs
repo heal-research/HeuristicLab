@@ -24,7 +24,7 @@ using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
+namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   /// <summary>
   ///This is a test class for PolynomialOnePositionManipulator and is intended
   ///to contain all PolynomialOnePositionManipulator Unit Tests

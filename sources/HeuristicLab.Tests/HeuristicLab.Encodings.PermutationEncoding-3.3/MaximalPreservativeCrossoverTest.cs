@@ -24,7 +24,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
+namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   /// <summary>
   ///This is a test class for MaximalPreservativeCrossover and is intended
   ///to contain all MaximalPreservativeCrossover Unit Tests

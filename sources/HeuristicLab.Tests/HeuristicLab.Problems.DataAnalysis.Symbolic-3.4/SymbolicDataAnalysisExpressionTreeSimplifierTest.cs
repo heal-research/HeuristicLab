@@ -25,7 +25,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
   [TestClass()]
   public class SymbolicDataAnalysisExpressionTreeSimplifierTest {

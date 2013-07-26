@@ -24,7 +24,7 @@ using System.Text;
 using HeuristicLab.Problems.Instances.QAPLIB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.Instances_33.Tests {
+namespace HeuristicLab.Problems.Instances.Tests {
   [TestClass()]
   public class QAPLIBInstanceProviderTest {
 

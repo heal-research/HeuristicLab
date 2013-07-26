@@ -21,7 +21,7 @@
 
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Persistence_33.Tests {
+namespace HeuristicLab.Persistence.Tests {
 
   [StorableClass]
   class DemoClass {
