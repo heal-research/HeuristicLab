@@ -83,7 +83,7 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
     /// <summary>
     ///A test for GetRemotePluginList
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void GetRemotePluginListTest() {
       string pluginDir = Environment.CurrentDirectory;
       try {
@@ -99,7 +99,7 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
     /// <summary>
     ///A test for GetRemoteProductList
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void GetRemoteProductListTest() {
       string pluginDir = Environment.CurrentDirectory;
       try {
