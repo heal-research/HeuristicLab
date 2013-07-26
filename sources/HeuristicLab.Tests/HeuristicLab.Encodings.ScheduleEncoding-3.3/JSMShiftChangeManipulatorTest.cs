@@ -85,7 +85,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void ApplyTest() {
       IRandom random = new TestRandom(new int[] { 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 }, null);
       JSMEncoding individual = TestUtils.CreateTestJSM1();

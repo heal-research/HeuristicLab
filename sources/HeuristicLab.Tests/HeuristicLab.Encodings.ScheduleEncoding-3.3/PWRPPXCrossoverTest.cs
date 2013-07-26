@@ -85,7 +85,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void ApplyTest() {
       IRandom random = new TestRandom(new int[] { 1, 1, 0, 0, 1, 1, 0, 0, 1 }, null);
       PWREncoding parent1 = TestUtils.CreateTestPWR1();

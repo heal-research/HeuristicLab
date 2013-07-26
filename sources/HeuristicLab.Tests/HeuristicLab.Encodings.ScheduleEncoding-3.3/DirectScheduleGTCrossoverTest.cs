@@ -86,7 +86,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void ApplyTest() {
       IRandom random = new TestRandom(new int[] {  1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1 }, new double[] { 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9 });
       Schedule parent1 = TestUtils.CreateTestSchedule1();
