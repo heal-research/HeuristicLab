@@ -81,7 +81,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void InversionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       Permutation parent, expected;

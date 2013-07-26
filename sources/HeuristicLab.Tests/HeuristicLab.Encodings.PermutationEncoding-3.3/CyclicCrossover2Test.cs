@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void CyclicCrossover2CrossTest() {
       TestRandom random = new TestRandom();
@@ -103,7 +103,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void CyclicCrossover2ApplyTest() {
       TestRandom random = new TestRandom();
       Permutation parent1, parent2, expected, actual;

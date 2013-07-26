@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void PositionBasedCrossoverCrossTest() {
       TestRandom random = new TestRandom();
@@ -105,7 +105,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void PositionBasedCrossoverApplyTest() {
       TestRandom random = new TestRandom();

@@ -84,7 +84,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void UniformLikeCrossoverApplyTest() {
       // test from the paper
       IRandom random = new TestRandom(new int[] { 0 }, new double[] { 0.2, 0.7, 0.2, 0.2 }); // TODO: Initialize to an appropriate value
@@ -106,7 +106,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void UniformLikeCrossoverCrossTest() {
       UniformLikeCrossover_Accessor target = new UniformLikeCrossover_Accessor();
