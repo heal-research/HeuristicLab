@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
   [TestClass()]
   public class ClassificationInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
     public void UCIInstanceTest() {
       var target = new UCIInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

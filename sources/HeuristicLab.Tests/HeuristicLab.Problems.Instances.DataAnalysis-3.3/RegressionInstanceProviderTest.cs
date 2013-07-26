@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
   [TestClass()]
   public class RegressionInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
     public void GetKeijzerInstanceTest() {
       var target = new KeijzerInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetKornInstanceTest() {
       var target = new KornsInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetNguyenInstanceTest() {
       var target = new NguyenInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetRealWorldInstanceTest() {
       var target = new RegressionRealWorldInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetVariousInstanceTest() {
       var target = new VariousInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void GetVladislavlevaInstanceTest() {
       var target = new VladislavlevaInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
