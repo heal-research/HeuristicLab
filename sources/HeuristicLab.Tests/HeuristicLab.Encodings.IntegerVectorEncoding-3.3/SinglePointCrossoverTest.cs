@@ -83,7 +83,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll")]
     public void SinglePointCrossoverCrossTest() {
       SinglePointCrossover_Accessor target = new SinglePointCrossover_Accessor(new PrivateObject(typeof(SinglePointCrossover)));
@@ -119,7 +119,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void SinglePointCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       IntegerVector parent1, parent2, expected, actual;
@@ -150,7 +150,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     /// <summary>
     ///A test for SinglePointCrossover Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void SinglePointCrossoverConstructorTest() {
       SinglePointCrossover target = new SinglePointCrossover();
     }

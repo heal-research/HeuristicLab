@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void UniformOnePositionManipulatorApplyTest() {
       TestRandom random = new TestRandom();
       IntegerVector parent, expected;
@@ -101,7 +101,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     /// <summary>
     ///A test for UniformOnePositionManipulator Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void UniformOnePositionManipulatorConstructorTest() {
       UniformOnePositionManipulator target = new UniformOnePositionManipulator();
     }

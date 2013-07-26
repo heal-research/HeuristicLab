@@ -83,7 +83,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     [DeploymentItem("HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll")]
     public void DiscreteCrossoverCrossTest() {
       DiscreteCrossover_Accessor target = new DiscreteCrossover_Accessor(new PrivateObject(typeof(DiscreteCrossover)));
@@ -107,7 +107,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void DiscreteCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       IntegerVector parent1, parent2, expected, actual;
@@ -139,7 +139,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
     /// <summary>
     ///A test for DiscreteCrossover Constructor
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
     public void DiscreteCrossoverConstructorTest() {
       DiscreteCrossover target = new DiscreteCrossover();
     }
