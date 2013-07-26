@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -34,20 +33,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     private const int MAX_TREE_DEPTH = 10;
     private TestContext testContextInstance;
 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Encodings.SymbolicExpressionTree")]
+    [TestProperty("Time", "long")]
     public void SubroutineDeleterDistributionsTest() {
       var trees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateArithmeticAndAdfGrammar();

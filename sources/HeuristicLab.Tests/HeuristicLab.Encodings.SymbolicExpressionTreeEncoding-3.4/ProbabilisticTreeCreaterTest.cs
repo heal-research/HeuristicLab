@@ -34,20 +34,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     private const int MAX_TREE_DEPTH = 10;
     private TestContext testContextInstance;
 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
     [TestMethod()]
+    [TestCategory("Encodings.SymbolicExpressionTree")]
+    [TestProperty("Time", "long")]
     public void ProbabilisticTreeCreaterDistributionsTest() {
       var randomTrees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();
@@ -83,6 +72,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Encodings.SymbolicExpressionTree")]
+    [TestProperty("Time", "short")]
     public void ProbabilisticTreeCreatorSpecificTreeSizesTest() {
       var trees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();

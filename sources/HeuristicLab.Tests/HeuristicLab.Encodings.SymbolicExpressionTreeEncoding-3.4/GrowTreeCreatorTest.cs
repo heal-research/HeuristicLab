@@ -34,20 +34,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     private const int MAX_TREE_LENGTH = 50;
     private TestContext testContextInstance;
 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Encodings.SymbolicExpressionTree")]
+    [TestProperty("Time", "long")]
     public void GrowTreeCreatorDistributionsTest() {
       var randomTrees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();
