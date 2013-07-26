@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Collections.Tests {
@@ -45,6 +44,8 @@ namespace HeuristicLab.Collections.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "short")]
     public void TestBidirectionalDictionary() {
       var dict1 = new BidirectionalDictionary<int, double>();
       dict1.Add(4, 2.0);

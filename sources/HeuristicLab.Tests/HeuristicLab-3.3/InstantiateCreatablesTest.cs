@@ -36,6 +36,9 @@ namespace HeuristicLab.Tests {
       PluginLoader.Assemblies.Any();
     }
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "medium")]
     public void InstantiateAllCreatables() {
       var exceptions = new List<string>();
 
@@ -48,7 +51,8 @@ namespace HeuristicLab.Tests {
       foreach (var t in types) {
         try {
           var instance = Activator.CreateInstance(t);
-        } catch {
+        }
+        catch {
           exceptions.Add("Error instantiating " + t.FullName);
         }
       }

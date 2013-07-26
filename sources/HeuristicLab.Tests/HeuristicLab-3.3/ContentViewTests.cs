@@ -33,21 +33,6 @@ namespace HeuristicLab.Tests {
     public ContentViewTests() {
     }
 
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
     // Use ClassInitialize to run code before running the first test in the class
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
@@ -56,6 +41,9 @@ namespace HeuristicLab.Tests {
 
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "long")]
     public void ContentViewAttributeTest() {
       //get all non-generic and instantiable classes which implement IContentView
       foreach (Type viewType in ApplicationManager.Manager.GetTypes(typeof(IContentView))) {
@@ -69,7 +57,8 @@ namespace HeuristicLab.Tests {
         ContentView_Accessor accessor = new ContentView_Accessor(new PrivateObject(view));
         try {
           accessor.OnContentChanged();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           Assert.Fail(viewType.ToString() + Environment.NewLine + ex.Message);
         }
       }

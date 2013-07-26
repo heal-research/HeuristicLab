@@ -29,6 +29,8 @@ namespace HeuristicLab.Tests {
   public class ThreadSafeLogTest {
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "short")]
     public void ThreadSafeLogThreadSafetyTest() {
       int count = 10000;
       ThreadSafeLog log = new ThreadSafeLog();

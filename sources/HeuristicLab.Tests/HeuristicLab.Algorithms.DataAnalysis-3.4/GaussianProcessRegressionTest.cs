@@ -22,7 +22,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
@@ -35,24 +34,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
     public GaussianProcessRegressionTest() { }
 
     private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
     public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
+      get { return testContextInstance; }
+      set { testContextInstance = value; }
     }
 
     private EventWaitHandle trigger = new AutoResetEvent(false);
     private Exception ex;
 
     [TestMethod]
+    [TestCategory("Algorithms.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void GaussianProcessRegressionPerformanceTest() {
       ex = null;
 

@@ -70,11 +70,15 @@ namespace HeuristicLab.Tests {
     #region GA
     #region TSP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGaTspSampleTest() {
       var ga = CreateGaTspSample();
       XmlGenerator.Serialize(ga, "../../GA_TSP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGaTspSampleTest() {
       var ga = CreateGaTspSample();
       ga.SetSeedRandomly.Value = false;
@@ -106,12 +110,16 @@ namespace HeuristicLab.Tests {
     #endregion
     #region VRP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGaVrpSampleTest() {
       var ga = CreateGaVrpSample();
       XmlGenerator.Serialize(ga, "../../GA_VRP.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGaVrpSampleTest() {
       var ga = CreateGaVrpSample();
       ga.SetSeedRandomly.Value = false;
@@ -176,12 +184,16 @@ namespace HeuristicLab.Tests {
     #endregion
     #region ArtificialAnt
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       XmlGenerator.Serialize(ga, "../../SGP_SantaFe.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
@@ -228,11 +240,15 @@ namespace HeuristicLab.Tests {
     #endregion
     #region Symbolic Regression
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGpSymbolicRegressionSampleTest() {
       var ga = CreateGpSymbolicRegressionSample();
       XmlGenerator.Serialize(ga, "../../SGP_SymbReg.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGpSymbolicRegressionSampleTest() {
       var ga = CreateGpSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
@@ -332,12 +348,16 @@ namespace HeuristicLab.Tests {
     #endregion
     #region Symbolic Classification
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
       XmlGenerator.Serialize(ga, "../../SGP_SymbClass.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;
@@ -439,6 +459,8 @@ namespace HeuristicLab.Tests {
     #endregion
     #region LawnMower
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGpLawnMowerSampleTest() {
       var ga = CreateGpLawnMowerSample();
       ga.SetSeedRandomly.Value = false;
@@ -469,11 +491,15 @@ namespace HeuristicLab.Tests {
     #region ES
     #region Griewank
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();
       XmlGenerator.Serialize(es, "../../ES_Griewank.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();
       es.SetSeedRandomly.Value = false;
@@ -523,11 +549,15 @@ namespace HeuristicLab.Tests {
     #region Island GA
     #region TSP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateIslandGaTspSampleTest() {
       var ga = CreateIslandGaTspSample();
       XmlGenerator.Serialize(ga, "../../IslandGA_TSP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunIslandGaTspSampleTest() {
       var ga = CreateIslandGaTspSample();
       ga.SetSeedRandomly.Value = false;
@@ -563,11 +593,15 @@ namespace HeuristicLab.Tests {
     #region LS
     #region Knapsack
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
       XmlGenerator.Serialize(ls, "../../LS_Knapsack.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "medium")]
     public void RunLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
       ls.SetSeedRandomly.Value = false;
@@ -624,11 +658,15 @@ namespace HeuristicLab.Tests {
     #region PSO
     #region Schwefel
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreatePsoSchwefelSampleTest() {
       var pso = CreatePsoSchwefelSample();
       XmlGenerator.Serialize(pso, "../../PSO_Schwefel.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "medium")]
     public void RunPsoSchwefelSampleTest() {
       var pso = CreatePsoSchwefelSample();
       pso.SetSeedRandomly.Value = false;
@@ -703,11 +741,15 @@ namespace HeuristicLab.Tests {
     #region SA
     #region Rastrigin
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();
       XmlGenerator.Serialize(sa, "../../SA_Rastrigin.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "medium")]
     public void RunSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();
       sa.SetSeedRandomly.Value = false;
@@ -769,11 +811,15 @@ namespace HeuristicLab.Tests {
     #region TS
     #region TSP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateTabuSearchTspSampleTest() {
       var ts = CreateTabuSearchTspSample();
       XmlGenerator.Serialize(ts, "../../TS_TSP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunTabuSearchTspSampleTest() {
       var ts = CreateTabuSearchTspSample();
       ts.SetSeedRandomly.Value = false;
@@ -836,11 +882,15 @@ namespace HeuristicLab.Tests {
 
     #region VRP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
       XmlGenerator.Serialize(vrp, "../../TS_VRP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
       vrp.SetSeedRandomly.Value = false;
@@ -904,11 +954,15 @@ namespace HeuristicLab.Tests {
     #region VNS
     #region TSP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateVnsTspSampleTest() {
       var vns = CreateVnsTspSample();
       XmlGenerator.Serialize(vns, "../../VNS_TSP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunVnsTspSampleTest() {
       var vns = CreateVnsTspSample();
       vns.SetSeedRandomly = false;
@@ -981,11 +1035,15 @@ namespace HeuristicLab.Tests {
 
     #region Gaussian Process Regression
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGaussianProcessRegressionSampleTest() {
       var gpr = CreateGaussianProcessRegressionSample();
       XmlGenerator.Serialize(gpr, "../../GPR.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGaussianProcessRegressionSample() {
       var gpr = CreateGaussianProcessRegressionSample();
       gpr.SetSeedRandomly = false;
@@ -1020,12 +1078,16 @@ namespace HeuristicLab.Tests {
     #region Scatter Search
     #region VRP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
       XmlGenerator.Serialize(ss, "../../SS_VRP.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
       ss.SetSeedRandomly.Value = false;
@@ -1076,12 +1138,16 @@ namespace HeuristicLab.Tests {
     #region RAPGA
     #region Scheduling
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateRAPGASchedulingSampleTest() {
       var ss = CreateRAPGASchedulingSample();
       XmlGenerator.Serialize(ss, "../../RAPGA_JSSP.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunRAPGASchedulingSampleTest() {
       var rapga = CreateRAPGASchedulingSample();
       rapga.SetSeedRandomly.Value = false;

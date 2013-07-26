@@ -30,17 +30,9 @@ namespace HeuristicLab.Tests {
   public class ToStringTest {
 
     private TestContext testContextInstance;
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
     public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
+      get { return testContextInstance; }
+      set { testContextInstance = value; }
     }
 
     // Use ClassInitialize to run code before running the first test in the class
@@ -50,13 +42,17 @@ namespace HeuristicLab.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "long")]
     public void TestToString() {
       bool success = true;
       // just test for all IItems that the ToString method doesn't throw an exception
       foreach (object item in ApplicationManager.Manager.GetInstances(typeof(IItem))) {
         try {
           item.ToString();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
           TestContext.WriteLine(item.GetType() + " throws a " + e.GetType() + " in the ToString method.");
           success = false;
         }

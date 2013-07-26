@@ -20,7 +20,6 @@
 #endregion
 
 using System.Linq;
-using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,6 +30,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   public class GaussianProcessModelTest {
     [TestMethod]
     [DeploymentItem(@"HeuristicLab.Algorithms.DataAnalysis-3.4/co2.txt")]
+    [TestCategory("General")]
+    [TestProperty("Time", "medium")]
     public void GaussianProcessModelOutputTest() {
       var provider = new RegressionCSVInstanceProvider();
       var problemData = provider.ImportData("co2.txt");

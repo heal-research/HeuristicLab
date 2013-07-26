@@ -53,6 +53,8 @@ namespace HeuristicLab.Tests {
     private Exception ex;
 
     [TestMethod]
+    [TestCategory("Algorithms.DataAnalysis")]
+    [TestProperty("Time", "medium")]
     public void SupportVectorMachinePerformanceTest() {
       ex = null;
 

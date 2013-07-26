@@ -43,6 +43,9 @@ namespace HeuristicLab.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "medium")]
     [DeploymentItem(@"HeuristicLab-3.3/Resources/GA_SymbReg.hl")]
     public void CollectGASample() {
       GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize("GA_SymbReg.hl");
@@ -93,6 +96,8 @@ namespace HeuristicLab.Tests {
     /// causes a StackOverflow occurs after some executions)
     /// </summary>
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "long")]
     public void AlgorithmExecutions() {
       var algs = new List<IAlgorithm>();
 
@@ -119,6 +124,8 @@ namespace HeuristicLab.Tests {
     /// Test the execution of many algorithms in parallel
     /// </summary>
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "medium")]
     public void ParallelAlgorithmExecutions() {
       int n = 60;
       var tasks = new Task[n];
