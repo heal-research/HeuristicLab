@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2010 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Globalization;
 using System.Text;
 using HeuristicLab.Core;
 using HeuristicLab.Common;
@@ -40,6 +41,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
       return FormatRecursively(symbolicExpressionTree.Root);
     }
 
+    // returns the smalltalk expression corresponding to the node 
+    // smalltalk expressions are always surrounded by parantheses "(<expr>)"
     private string FormatRecursively(ISymbolicExpressionTreeNode node) {
 
       ISymbol symbol = node.Symbol;
@@ -47,7 +50,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
       if (symbol is ProgramRootSymbol || symbol is StartSymbol)
         return FormatRecursively(node.GetSubtree(0));
 
-      StringBuilder stringBuilder = new StringBuilder();
+      StringBuilder stringBuilder = new StringBuilder(20);
 
       stringBuilder.Append("(");
 
@@ -60,9 +63,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
         stringBuilder.Append("(");
         for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("&");
-          stringBuilder.Append("((");
+          stringBuilder.Append("(");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
-          stringBuilder.Append(")>=0)");
+          stringBuilder.Append(" > 0)");
         }
         stringBuilder.Append(") ifTrue:[1] ifFalse:[-1]");
       } else if (symbol is Average) {
@@ -71,14 +74,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
         stringBuilder.Append(")*(");
         for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("+");
-          stringBuilder.Append("(");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
-          stringBuilder.Append(")");
         }
         stringBuilder.Append(")");
       } else if (symbol is Constant) {
         ConstantTreeNode constantTreeNode = node as ConstantTreeNode;
-        stringBuilder.Append(constantTreeNode.Value.ToString().Replace(",", "."));
+        stringBuilder.Append(constantTreeNode.Value.ToString(CultureInfo.InvariantCulture));
       } else if (symbol is Cosine) {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append(" cos");
@@ -113,7 +114,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(2)));
         stringBuilder.Append("]");
       } else if (symbol is LaggedVariable) {
-        stringBuilder.Append("not implemented");
+        stringBuilder.Append("lagged variable not implemented");
       } else if (symbol is LessThan) {
         stringBuilder.Append("(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
@@ -129,15 +130,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
         }
       } else if (symbol is Not) {
-        stringBuilder.Append("-1*");
+        stringBuilder.Append("(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(">0) ifTrue: [-1] ifFalse: [1.0]");
       } else if (symbol is Or) {
         stringBuilder.Append("(");
         for (int i = 0; i < node.SubtreeCount; i++) {
           if (i > 0) stringBuilder.Append("|");
-          stringBuilder.Append("((");
+          stringBuilder.Append("(");
           stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
-          stringBuilder.Append(")>=0)");
+          stringBuilder.Append(">0)");
         }
         stringBuilder.Append(") ifTrue:[1] ifFalse:[-1]");
       } else if (symbol is Sine) {
@@ -150,20 +152,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
         } else {
           stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
           for (int i = 1; i < node.SubtreeCount; i++) {
-            stringBuilder.Append("-");
+            stringBuilder.Append(" - ");
             stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
           }
         }
       } else if (symbol is Tangent) {
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
-        stringBuilder.Append("tan");
+        stringBuilder.Append(" tan");
       } else if (symbol is Variable) {
         VariableTreeNode variableTreeNode = node as VariableTreeNode;
-        stringBuilder.Append(variableTreeNode.Weight.ToString().Replace(",", "."));
+        stringBuilder.Append(variableTreeNode.Weight.ToString(CultureInfo.InvariantCulture));
         stringBuilder.Append("*");
         stringBuilder.Append(variableTreeNode.VariableName);
       } else {
-        stringBuilder.Append("ERROR");
+        stringBuilder.Append("(");
+        for (int i = 0; i < node.SubtreeCount; i++) {
+          if (i > 0) stringBuilder.Append(", ");
+          stringBuilder.Append(FormatRecursively(node.GetSubtree(i)));
+        }
+        stringBuilder.AppendFormat(" {0} [Not Supported] )", node.Symbol.Name);
       }
 
       stringBuilder.Append(")");
