@@ -1596,8 +1596,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     }
     #endregion
 
-    public IValueParameter<StringValue> PriceVariableParameter {
-      get { return (IValueParameter<StringValue>)Parameters[PriceVariableParameterName]; }
+    public IConstrainedValueParameter<StringValue> PriceVariableParameter {
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[PriceVariableParameterName]; }
     }
     public IValueParameter<DoubleValue> TransactionCostsParameter {
       get { return (IValueParameter<DoubleValue>)Parameters[TransactionCostsParameterName]; }
