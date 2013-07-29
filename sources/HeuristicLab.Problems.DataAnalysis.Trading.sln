@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Trading-3.4", "HeuristicLab.Problems.DataAnalysis.Trading\3.4\HeuristicLab.Problems.DataAnalysis.Trading-3.4.csproj", "{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "Main\Main.csproj", "{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32} = {E4EE5AFB-D552-447B-8A16-6CBE7938AF32}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7CE422F3-3DBB-4A1F-B45D-03D0C389DFD6}"
+	ProjectSection(SolutionItems) = preProject
+		Build.cmd = Build.cmd
+		PreBuildEvent.cmd = PreBuildEvent.cmd
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Debug|x64.ActiveCfg = Debug|x64
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Debug|x64.Build.0 = Debug|x64
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Debug|x86.ActiveCfg = Debug|x86
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Debug|x86.Build.0 = Debug|x86
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Release|x64.ActiveCfg = Release|x64
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Release|x64.Build.0 = Release|x64
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Release|x86.ActiveCfg = Release|x86
+		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}.Release|x86.Build.0 = Release|x86
+		{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}.Release|x64.ActiveCfg = Release|Any CPU
+		{49F6CC21-8EE7-41BF-8A9B-E6E9774F5C2F}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
