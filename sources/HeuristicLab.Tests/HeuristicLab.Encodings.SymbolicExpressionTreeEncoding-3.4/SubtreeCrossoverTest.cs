@@ -29,7 +29,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
   [TestClass]
   public class SubtreeCrossoverTest {
     private const int POPULATION_SIZE = 1000;
-    private TestContext testContextInstance;
 
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]

@@ -32,7 +32,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     private const int POPULATION_SIZE = 10000;
     private const int MAX_TREE_DEPTH = 10;
     private const int MAX_TREE_LENGTH = 50;
-    private TestContext testContextInstance;
 
     [TestMethod]
     [TestCategory("Encodings.SymbolicExpressionTree")]
