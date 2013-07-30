@@ -171,7 +171,9 @@ namespace HeuristicLab.Clients.Hive {
     [StorableConstructor]
     protected HiveTask(bool deserializing) { }
 
-    public HiveTask() {
+    public HiveTask()
+      : base() {
+      Name = "Hive Task";
       this.Task = new Task() { CoresNeeded = 1, MemoryNeeded = 128 };
       task.State = TaskState.Offline;
       this.childHiveTasks = new ItemList<HiveTask>();

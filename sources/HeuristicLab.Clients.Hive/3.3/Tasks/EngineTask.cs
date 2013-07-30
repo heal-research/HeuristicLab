@@ -49,7 +49,6 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     #region constructors and cloning
-    public EngineTask() { }
     public EngineTask(IOperation initialOperation, IEngine engine) {
       this.initialOperation = initialOperation;
       this.Item = engine;
@@ -143,7 +142,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public override string Name {
-      get { return Item != null ? Item.ToString() : null; }
+      get { return Item != null ? Item.ToString() : "Engine Task"; }
       set { throw new NotSupportedException(); }
     }
 
@@ -152,7 +151,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public override string ItemName {
-      get { return "EngineTask"; }
+      get { return "Engine Task"; }
     }
   }
 }

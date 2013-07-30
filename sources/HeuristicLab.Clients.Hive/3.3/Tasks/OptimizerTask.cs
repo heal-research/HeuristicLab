@@ -45,9 +45,7 @@ namespace HeuristicLab.Clients.Hive.Jobs {
       set { this.indexInParentOptimizerList = value; }
     }
 
-    public OptimizerTask() : base() { }
-    public OptimizerTask(IOptimizer optimizer)
-      : this() {
+    public OptimizerTask(IOptimizer optimizer) {
       this.Item = optimizer;
 
       if (optimizer is Experiment) {
@@ -209,7 +207,7 @@ namespace HeuristicLab.Clients.Hive.Jobs {
     public override string Name {
       get {
         if (Item == null)
-          return string.Empty;
+          return "Optimizer Task";
         else
           return Item.Name;
       }
