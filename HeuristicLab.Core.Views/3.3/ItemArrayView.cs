@@ -444,6 +444,7 @@ namespace HeuristicLab.Core.Views {
         T item = (T)sender;
         foreach (ListViewItem listViewItem in GetListViewItemsForItem(item))
           UpdateListViewItemText(listViewItem);
+        AdjustListViewColumnSizes();
       }
     }
     #endregion
