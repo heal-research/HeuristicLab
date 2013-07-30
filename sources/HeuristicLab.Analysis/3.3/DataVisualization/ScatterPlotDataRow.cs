@@ -77,6 +77,7 @@ namespace HeuristicLab.Analysis {
     }
     public ScatterPlotDataRow()
       : base() {
+      Name = "ScatterPlotDataRow";
       VisualProperties = new ScatterPlotDataRowVisualProperties();
       points = new ObservableList<Point2D<double>>();
     }
