@@ -5,7 +5,7 @@ using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Tests.HeuristicLab_3._3 {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class NamedItemTest {
     [ClassInitialize]
