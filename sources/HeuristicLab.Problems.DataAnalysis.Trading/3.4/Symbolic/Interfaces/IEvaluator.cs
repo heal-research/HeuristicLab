@@ -19,7 +19,7 @@
  */
 #endregion
 
-using HeuristicLab.Problems.DataAnalysis.Trading;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   public interface IEvaluator : ISymbolicDataAnalysisEvaluator<IProblemData> {
