@@ -19,14 +19,13 @@
  */
 #endregion
 
-using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis.Trading.Views;
+using HeuristicLab.Problems.DataAnalysis.Trading.Symbolic;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Views.Symbolic {
   [Content(typeof(SymbolicSolution), true)]
   [View("SymbolicTradingSolution View")]
-  public partial class SolutionView : DataAnalysis.Trading.Views.SolutionView {
+  public partial class SolutionView : Views.SolutionView {
     public SolutionView() {
       InitializeComponent();
     }

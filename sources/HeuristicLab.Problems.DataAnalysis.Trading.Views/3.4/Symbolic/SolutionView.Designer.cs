@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading.Views {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Views.Symbolic {
   partial class SolutionView {
     /// <summary> 
     /// Required designer variable.
