@@ -195,7 +195,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       ApplyLinearScalingParameter.Hidden = true;
 
       SymbolicExpressionTreeGrammar = new TypeCoherentExpressionGrammar();
-      SymbolicExpressionTreeInterpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
+      SymbolicExpressionTreeInterpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
 
       FitnessCalculationPartition.Start = ProblemData.TrainingPartition.Start;
       FitnessCalculationPartition.End = ProblemData.TrainingPartition.End;
