@@ -19,14 +19,12 @@
  */
 #endregion
 
-using System.Text;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using System.Collections.Generic;
-using HeuristicLab.Core;
+using System.Text;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("GraphViz String Formatter", "Formatter for symbolic expression trees for visualization with GraphViz.")]
   public sealed class SymbolicExpressionTreeGraphvizFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     public bool Indent { get; set; }

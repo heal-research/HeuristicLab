@@ -30,8 +30,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [View("SymbolicExpression View")]
   [Content(typeof(ISymbolicExpressionTree), false)]
   public partial class SymbolicExpressionView : AsynchronousContentView {
-
-    List<ISymbolicExpressionTreeStringFormatter> treeFormattersList = new List<ISymbolicExpressionTreeStringFormatter>();
+    private readonly List<ISymbolicExpressionTreeStringFormatter> treeFormattersList = new List<ISymbolicExpressionTreeStringFormatter>();
 
     public new ISymbolicExpressionTree Content {
       get { return (ISymbolicExpressionTree)base.Content; }
@@ -47,7 +46,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         formattersComboBox.Items.Add(formatter.Name);
       }
       if (formattersComboBox.Items.Count > 0)
-        formattersComboBox.SelectedIndex = 0;
+        formattersComboBox.SelectedIndex = treeFormattersList.FindIndex(0, treeFormattersList.Count, (f) => f.Name.Contains("Default"));
       else
         formattersComboBox.SelectedIndex = -1;
     }

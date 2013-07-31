@@ -21,20 +21,20 @@
 
 using System.Globalization;
 using System.Text;
-using HeuristicLab.Core;
 using HeuristicLab.Common;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using Variable = HeuristicLab.Problems.DataAnalysis.Symbolic.Variable;
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
   [Item("Smalltalk String Formatter", "String formatter for string representations of symbolic expression trees in Smalltalk syntax.")]
-  public class SymbolicExpressionTreeSmalltalkStringFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
+  public class SymbolicDataAnalysisExpressionSmalltalkFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
 
-    protected SymbolicExpressionTreeSmalltalkStringFormatter(SymbolicExpressionTreeSmalltalkStringFormatter original, Cloner cloner) : base(original, cloner) { }
-    public SymbolicExpressionTreeSmalltalkStringFormatter()
+    protected SymbolicDataAnalysisExpressionSmalltalkFormatter(SymbolicDataAnalysisExpressionSmalltalkFormatter original, Cloner cloner) : base(original, cloner) { }
+    public SymbolicDataAnalysisExpressionSmalltalkFormatter()
       : base() {
-      Name = "Smalltalk String Formatter";
+      Name = ItemName;
+      Description = ItemDescription;
     }
 
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
@@ -179,7 +179,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Formatters {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicExpressionTreeSmalltalkStringFormatter(this, cloner);
+      return new SymbolicDataAnalysisExpressionSmalltalkFormatter(this, cloner);
     }
   }
 }
