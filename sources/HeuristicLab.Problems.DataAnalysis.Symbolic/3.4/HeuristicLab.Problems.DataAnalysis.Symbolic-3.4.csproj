@@ -146,6 +146,7 @@
     <Compile Include="Interpreter\OpCodes.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeILEmittingInterpreter.cs" />
     <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeInterpreter.cs" />
+    <Compile Include="Interpreter\SymbolicDataAnalysisExpressionTreeLinearInterpreter.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionLatexFormatter.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionMATLABFormatter.cs" />

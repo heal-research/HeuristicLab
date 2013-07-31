@@ -36,27 +36,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
     private const int Columns = 50;
 
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void SymbolicTimeSeriesPrognosisTreeInterpreterTypeCoherentGrammarPerformanceTest() {
-      TypeCoherentGrammarPerformanceTest(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
+    public void TimeSeriesPrognosisInterpreterTestTypeCoherentGrammarPerformance() {
+      TestTypeCoherentGrammarPerformance(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
 
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void SymbolicTimeSeriesPrognosisTreeInterpreterFullGrammarPerformanceTest() {
-      FullGrammarPerformanceTest(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
+    public void TimeSeriesPrognosisInterpreterTestFullGrammarPerformance() {
+      TestFullGrammarPerformance(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
 
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void SymbolicTimeSeriesPrognosisTreeInterpreterArithmeticGrammarPerformanceTest() {
-      ArithmeticGrammarPerformanceTest(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
+    public void TimeSeriesPrognosisInterpreterTestArithmeticGrammarPerformance() {
+      TestArithmeticGrammarPerformance(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
 
-    private void TypeCoherentGrammarPerformanceTest(ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
+    private void TestTypeCoherentGrammarPerformance(ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new TypeCoherentExpressionGrammar();
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
       //Assert.IsTrue(nodesPerSec > nodesPerSecThreshold); // evaluated nodes per seconds must be larger than 15mNodes/sec
     }
 
-    private void FullGrammarPerformanceTest(ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
+    private void TestFullGrammarPerformance(ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new FullFunctionalExpressionGrammar();
@@ -91,7 +91,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
       //Assert.IsTrue(nodesPerSec > nodesPerSecThreshold); // evaluated nodes per seconds must be larger than 15mNodes/sec
     }
 
-    private void ArithmeticGrammarPerformanceTest(ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
+    private void TestArithmeticGrammarPerformance(ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new ArithmeticExpressionGrammar();
@@ -114,9 +114,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
     ///A test for Evaluate
     ///</summary>
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "short")]
-    public void SymbolicDataAnalysisExpressionTreeInterpreterEvaluateTest() {
+    public void TimeSeriesPrognosisInterpreterTestEvaluation() {
       Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
         { 1.0, 1.0, 1.0 },
         { 2.0, 2.0, 2.0 },

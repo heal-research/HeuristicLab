@@ -122,21 +122,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
           if (variableTreeNode.VariableName == targetVariable)
-            instr.iArg0 = targetVariableCache;
+            instr.data = targetVariableCache;
           else
-            instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+            instr.data = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.LagVariable) {
           var variableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
           if (variableTreeNode.VariableName == targetVariable)
-            instr.iArg0 = targetVariableCache;
+            instr.data = targetVariableCache;
           else
-            instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+            instr.data = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.VariableCondition) {
           var variableTreeNode = (VariableConditionTreeNode)instr.dynamicNode;
           if (variableTreeNode.VariableName == targetVariable)
-            instr.iArg0 = targetVariableCache;
+            instr.data = targetVariableCache;
           else
-            instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+            instr.data = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.Call) {
           necessaryArgStackSize += instr.nArguments + 1;
         }

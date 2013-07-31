@@ -19,17 +19,25 @@
  */
 #endregion
 
+using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  // total size of this class should be small to improve cache access while executing the code
-  public class Instruction {
-    // the tree node can hold additional data that is necessary for the execution of this instruction
-    public ISymbolicExpressionTreeNode dynamicNode;
-    // op code of the function that determines what operation should be executed
-    public byte opCode;
-    // number of arguments of the current instruction
-    public byte nArguments;
-    // an optional object value (addresses for calls, argument index for arguments)
-    public object data;
+  public static class SymbolicExpressionTreeLinearCompiler {
+    public static LinearInstruction[] Compile(ISymbolicExpressionTree tree, Func<ISymbolicExpressionTreeNode, byte> opCodeMapper) {
+      var root = tree.Root.GetSubtree(0).GetSubtree(0);
+      var code = new LinearInstruction[root.GetLength()];
+      code[0] = new LinearInstruction { dynamicNode = root, nArguments = (byte)root.SubtreeCount, opCode = opCodeMapper(root) };
+      int c = 1, i = 0;
+      foreach (var node in root.IterateNodesBreadth()) {
+        for (int j = 0; j < node.SubtreeCount; ++j) {
+          var s = node.GetSubtree(j);
+          code[c + j] = new LinearInstruction { dynamicNode = s, nArguments = (byte)s.SubtreeCount, opCode = opCodeMapper(s) };
+        }
+        code[i].childIndex = (byte)c;
+        c += node.SubtreeCount;
+        ++i;
+      }
+      return code;
+    }
   }
 }

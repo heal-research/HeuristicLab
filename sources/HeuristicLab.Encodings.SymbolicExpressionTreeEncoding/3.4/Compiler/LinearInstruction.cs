@@ -22,14 +22,9 @@
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   // total size of this class should be small to improve cache access while executing the code
-  public class Instruction {
-    // the tree node can hold additional data that is necessary for the execution of this instruction
-    public ISymbolicExpressionTreeNode dynamicNode;
-    // op code of the function that determines what operation should be executed
-    public byte opCode;
-    // number of arguments of the current instruction
-    public byte nArguments;
-    // an optional object value (addresses for calls, argument index for arguments)
-    public object data;
+  public class LinearInstruction : Instruction {
+    public double value;
+    public byte childIndex;
+    public bool skip;
   }
 }
