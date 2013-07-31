@@ -21,7 +21,7 @@
 
 using HeuristicLab.Problems.DataAnalysis.Trading;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   public interface IEvaluator : ISymbolicDataAnalysisEvaluator<IProblemData> {
   }
 }

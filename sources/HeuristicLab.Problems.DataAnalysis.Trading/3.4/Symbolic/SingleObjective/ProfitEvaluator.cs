@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Trading;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   [Item("Profit Evaluator", "")]
   [StorableClass]
   public class ProfitEvaluator : SingleObjectiveEvaluator {

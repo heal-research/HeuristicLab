@@ -19,9 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Problems.DataAnalysis.Trading;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading {
-  public interface IModel : DataAnalysis.Trading.IModel, ISymbolicDataAnalysisModel {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
+  public interface IModel : Trading.IModel, ISymbolicDataAnalysisModel {
   }
 }

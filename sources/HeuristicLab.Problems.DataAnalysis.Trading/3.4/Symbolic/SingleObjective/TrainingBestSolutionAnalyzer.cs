@@ -24,9 +24,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Trading;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   /// <summary>
   /// An operator that analyzes the training best symbolic trading solution for single objective symbolic trading problems.
   /// </summary>

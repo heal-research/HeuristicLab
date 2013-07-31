@@ -26,9 +26,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Trading;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   [Item("Sharpe Ratio Evaluator", "")]
   [StorableClass]
   public class SharpeRatioEvaluator : SingleObjectiveEvaluator {

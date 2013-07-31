@@ -24,9 +24,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Trading;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   /// <summary>
   /// Represents a symbolic trading solution (model + data) and attributes of the solution like accuracy and complexity
   /// </summary>

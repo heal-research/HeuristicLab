@@ -22,9 +22,9 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Trading;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Trading {
+namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
   public abstract class SingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<IProblemData>, ISingleObjectiveEvaluator {
     [StorableConstructor]
     protected SingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
