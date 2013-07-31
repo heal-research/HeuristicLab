@@ -75,23 +75,21 @@ namespace HeuristicLab.Analysis {
       this.VisualProperties = (DataRowVisualProperties)cloner.Clone(original.visualProperties);
       this.values = new ObservableList<double>(original.values);
     }
-    public DataRow()
-      : base() {
-      VisualProperties = new DataRowVisualProperties();
-      values = new ObservableList<double>();
-    }
     public DataRow(string name)
       : base(name) {
+      if (string.IsNullOrEmpty(name)) throw new ArgumentException("Name of a DataRow cannot be empty", name);
       VisualProperties = new DataRowVisualProperties(name);
       values = new ObservableList<double>();
     }
     public DataRow(string name, string description)
       : base(name, description) {
+      if (string.IsNullOrEmpty(name)) throw new ArgumentException("Name of a DataRow cannot be empty", name);
       VisualProperties = new DataRowVisualProperties(name);
       values = new ObservableList<double>();
     }
     public DataRow(string name, string description, IEnumerable<double> values)
       : base(name, description) {
+      if (string.IsNullOrEmpty(name)) throw new ArgumentException("Name of a DataRow cannot be empty", name);
       VisualProperties = new DataRowVisualProperties(name);
       this.values = new ObservableList<double>(values);
     }
