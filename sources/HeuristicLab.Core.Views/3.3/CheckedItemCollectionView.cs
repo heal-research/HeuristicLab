@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -96,16 +97,11 @@ namespace HeuristicLab.Core.Views {
     #endregion
 
     #region Content Events
-    protected virtual void Content_CheckedItemsChanged(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<T> e) {
+    protected virtual void Content_CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<T> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<T>(Content_CheckedItemsChanged), sender, e);
       else {
-        foreach (T item in e.Items) {
-          foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
-            if (listViewItem.Checked != Content.ItemChecked(item))
-              listViewItem.Checked = Content.ItemChecked(item);
-          }
-        }
+        UpdateCheckedItemState(e.Items);
         SetNumberOfCheckItems();
       }
     }
@@ -128,6 +124,16 @@ namespace HeuristicLab.Core.Views {
         Invoke((Action)SetNumberOfCheckItems);
       } else {
         this.itemsGroupBox.Text = String.Format("Items (Checked: {0}/{1})", Content.CheckedItems.Count(), Content.Count);
+      }
+    }
+
+    private void UpdateCheckedItemState(IEnumerable<T> items) {
+      foreach (T item in items) {
+        foreach (ListViewItem listViewItem in GetListViewItemsForItem(item)) {
+          var isChecked = Content.ItemChecked(item);
+          if (listViewItem.Checked != isChecked)
+            listViewItem.Checked = isChecked;
+        }
       }
     }
   }
