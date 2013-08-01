@@ -19,8 +19,10 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
@@ -49,6 +51,15 @@ namespace HeuristicLab.Operators {
     public CheckedMultiOperator()
       : base() {
       Operators = new CheckedItemList<T>();
+    }
+
+    public override void CollectParameterValues(IDictionary<string, IItem> values) {
+      base.CollectParameterValues(values);
+      foreach (var opParam in OperatorParameters) {
+        var op = opParam.Value;
+        var @checked = Operators.ItemChecked(op);
+        values.Add(opParam.Name + ".Checked", new BoolValue(@checked));
+      }
     }
   }
 }
