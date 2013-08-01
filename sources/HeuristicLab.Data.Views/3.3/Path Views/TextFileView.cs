@@ -23,20 +23,19 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data.Views {
   [View("TextFileView")]
   [Content(typeof(TextFileValue), true)]
-  public sealed partial class TextFileView : ItemView {
-    private bool changedFileContent;
-    private bool ChangedFileContent {
-      get { return changedFileContent; }
+  public sealed partial class TextFileView : FileValueView {
+    private bool fileContentChanged;
+    private bool FileContentChanged {
+      get { return fileContentChanged; }
       set {
-        if (changedFileContent != value) {
-          changedFileContent = value;
-          OnChangedFileContent();
+        if (fileContentChanged != value) {
+          fileContentChanged = value;
+          OnFileContentChanged();
         }
       }
     }
@@ -48,24 +47,22 @@ namespace HeuristicLab.Data.Views {
 
     public TextFileView() {
       InitializeComponent();
-      changedFileContent = false;
+      fileContentChanged = false;
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ValueChanged += Content_FilePathChanged;
-      Content.FileOpenDialogFilterChanged += Content_FileDialogFilterChanged;
+      Content.StringValue.ValueChanged += Content_FilePathChanged;
     }
     protected override void DeregisterContentEvents() {
-      Content.ValueChanged -= Content_FilePathChanged;
-      Content.FileOpenDialogFilterChanged -= Content_FileDialogFilterChanged;
+      Content.StringValue.ValueChanged -= Content_FilePathChanged;
       fileSystemWatcher.EnableRaisingEvents = false;
       base.DeregisterContentEvents();
     }
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       textBox.ReadOnly = Locked || ReadOnly || Content == null;
-      saveButton.Enabled = !Locked && !ReadOnly && Content != null && ChangedFileContent;
+      saveButton.Enabled = !Locked && !ReadOnly && Content != null && FileContentChanged;
 
       if (Content != null && Content.Exists()) {
         fileSystemWatcher.Filter = Path.GetFileName(Content.Value);
@@ -82,16 +79,13 @@ namespace HeuristicLab.Data.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      ChangedFileContent = false;
+      FileContentChanged = false;
       if (Content == null) {
-        fileValueView.Content = null;
         textBox.Text = string.Empty;
         //mkommend: other properties of the file system watcher cannot be cleared (e.g., path) as this leads to an ArgumentException
         fileSystemWatcher.EnableRaisingEvents = false;
         return;
       }
-
-      fileValueView.Content = Content;
       saveFileDialog.Filter = Content.FileDialogFilter;
       UpdateTextBox();
     }
@@ -100,21 +94,14 @@ namespace HeuristicLab.Data.Views {
       UpdateTextBox();
       SetEnabledStateOfControls();
     }
-    private void Content_FileDialogFilterChanged(object sender, EventArgs e) {
-      saveFileDialog.Filter = Content.FileDialogFilter;
-    }
 
     private void textBox_TextChanged(object sender, EventArgs e) {
-      ChangedFileContent = fileText != textBox.Text;
+      FileContentChanged = fileText != textBox.Text;
     }
 
-    private void OnChangedFileContent() {
+    private void OnFileContentChanged() {
       SetEnabledStateOfControls();
-      if (ChangedFileContent) {
-        textBox.ForeColor = Color.Red;
-      } else {
-        textBox.ForeColor = Color.Black;
-      }
+      textBox.ForeColor = FileContentChanged ? Color.Red : Color.Black;
     }
 
     private bool fileSystemWatcherChangedFired = false;
@@ -145,7 +132,7 @@ namespace HeuristicLab.Data.Views {
           UpdateTextBox();
         } else {
           fileText = newContent;
-          ChangedFileContent = true;
+          FileContentChanged = true;
         }
       }
 
@@ -184,7 +171,7 @@ namespace HeuristicLab.Data.Views {
 
       WriteFile(path, textBox.Text);
       Content.Value = path;
-      ChangedFileContent = false;
+      FileContentChanged = false;
       fileSystemWatcher.EnableRaisingEvents = true;
     }
 
@@ -211,7 +198,7 @@ namespace HeuristicLab.Data.Views {
       textBox.Text = fileText;
     }
     private void textBox_Validated(object sender, EventArgs e) {
-      if (!ChangedFileContent) return;
+      if (!FileContentChanged) return;
       string msg = string.Format("You have not saved the changes in the file \"{0}\" yet. Do you want to save the changes?", Content.Value);
       var result = MessageBox.Show(this, msg, "Save changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
       if (result == DialogResult.Yes) SaveFile();

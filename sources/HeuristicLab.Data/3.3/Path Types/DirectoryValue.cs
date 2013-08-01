@@ -38,7 +38,7 @@ namespace HeuristicLab.Data {
     public DirectoryValue() : base() { }
 
     public override bool Exists() {
-      return Directory.Exists(value);
+      return Directory.Exists(Value);
     }
   }
 }

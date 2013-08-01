@@ -19,7 +19,6 @@
  */
 #endregion
 
-
 using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -28,22 +27,31 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("PathValue", "Represents a path.")]
   [StorableClass]
-  public abstract class PathValue : StringValue {
-    public override string Value {
-      get { return base.Value; }
+  public abstract class PathValue : Item {
+
+    [Storable]
+    private readonly StringValue stringValue = new StringValue();
+    public StringValue StringValue {
+      get { return stringValue; }
+    }
+
+    public string Value {
+      get { return stringValue.Value; }
       set {
         if (value == null) value = string.Empty;
         value = value.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        base.Value = value;
+        stringValue.Value = value;
       }
     }
 
     [StorableConstructor]
     protected PathValue(bool deserializing) : base(deserializing) { }
-    protected PathValue(PathValue original, Cloner cloner) : base(original, cloner) { }
+    protected PathValue(PathValue original, Cloner cloner)
+      : base(original, cloner) {
+      stringValue = cloner.Clone(original.stringValue);
+    }
 
-    protected PathValue()
-      : base(string.Empty) { }
+    protected PathValue() : base() { }
 
     public abstract bool Exists();
   }

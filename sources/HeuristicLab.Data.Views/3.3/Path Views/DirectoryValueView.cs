@@ -21,23 +21,16 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data.Views {
   [View("DirectoryValueView")]
   [Content(typeof(DirectoryValue), true)]
-  public partial class DirectoryValueView : StringConvertibleValueView {
+  public partial class DirectoryValueView : ItemView {
     public new DirectoryValue Content {
       get { return (DirectoryValue)base.Content; }
       set { base.Content = value; }
-    }
-
-    public override bool ReadOnly {
-      get {
-        if ((Content != null) && Content.ReadOnly) return true;
-        return base.ReadOnly;
-      }
-      set { base.ReadOnly = value; }
     }
 
     public DirectoryValueView() {
@@ -46,20 +39,17 @@ namespace HeuristicLab.Data.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      valueTextBox.Enabled = !Locked && !ReadOnly && Content != null;
-      valueTextBox.ReadOnly = Locked || ReadOnly || Content == null;
       openButton.Enabled = !Locked && !ReadOnly && Content != null;
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        valueTextBox.Text = string.Empty;
+        stringConvertibleValueView.Content = null;
         return;
       }
 
-      valueTextBox.Text = Content.Value;
-      openButton.Enabled = !Content.ReadOnly;
+      stringConvertibleValueView.Content = Content.StringValue;
     }
 
     protected virtual void openButton_Click(object sender, EventArgs e) {

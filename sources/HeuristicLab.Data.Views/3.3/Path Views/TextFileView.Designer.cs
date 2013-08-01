@@ -49,17 +49,24 @@ namespace HeuristicLab.Data.Views {
       this.saveButton = new System.Windows.Forms.Button();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.fileSystemWatcher = new System.IO.FileSystemWatcher();
-      this.fileValueView = new HeuristicLab.Data.Views.FileValueView();
       this.textBox = new System.Windows.Forms.TextBox();
       ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).BeginInit();
       this.SuspendLayout();
+      // 
+      // openButton
+      // 
+      this.openButton.Location = new System.Drawing.Point(365, 0);
+      // 
+      // stringConvertibleValueView
+      // 
+      this.stringConvertibleValueView.Size = new System.Drawing.Size(355, 21);
       // 
       // saveButton
       // 
       this.saveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.saveButton.CausesValidation = false;
       this.saveButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Save;
-      this.saveButton.Location = new System.Drawing.Point(394, 3);
+      this.saveButton.Location = new System.Drawing.Point(395, 0);
       this.saveButton.Name = "saveButton";
       this.saveButton.Size = new System.Drawing.Size(24, 24);
       this.saveButton.TabIndex = 2;
@@ -68,26 +75,13 @@ namespace HeuristicLab.Data.Views {
       // 
       // fileSystemWatcher
       // 
-      this.fileSystemWatcher.EnableRaisingEvents = false;
-      this.fileSystemWatcher.NotifyFilter = System.IO.NotifyFilters.LastWrite | System.IO.NotifyFilters.FileName;
+      this.fileSystemWatcher.EnableRaisingEvents = true;
+      this.fileSystemWatcher.NotifyFilter = ((System.IO.NotifyFilters)((System.IO.NotifyFilters.FileName | System.IO.NotifyFilters.LastWrite)));
       this.fileSystemWatcher.SynchronizingObject = this;
       this.fileSystemWatcher.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher_Changed);
       this.fileSystemWatcher.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcher_Changed);
       this.fileSystemWatcher.Deleted += new System.IO.FileSystemEventHandler(this.fileSystemWatcher_Changed);
       this.fileSystemWatcher.Renamed += new System.IO.RenamedEventHandler(this.fileSystemWatcher_Renamed);
-      // 
-      // fileValueView
-      // 
-      this.fileValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.fileValueView.Caption = "FileValueView";
-      this.fileValueView.Content = null;
-      this.fileValueView.LabelVisible = true;
-      this.fileValueView.Location = new System.Drawing.Point(4, 3);
-      this.fileValueView.Name = "fileValueView";
-      this.fileValueView.ReadOnly = false;
-      this.fileValueView.Size = new System.Drawing.Size(389, 24);
-      this.fileValueView.TabIndex = 3;
       // 
       // textBox
       // 
@@ -97,11 +91,11 @@ namespace HeuristicLab.Data.Views {
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.textBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.textBox.Location = new System.Drawing.Point(3, 35);
+      this.textBox.Location = new System.Drawing.Point(3, 30);
       this.textBox.Multiline = true;
       this.textBox.Name = "textBox";
       this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.textBox.Size = new System.Drawing.Size(415, 363);
+      this.textBox.Size = new System.Drawing.Size(415, 368);
       this.textBox.TabIndex = 4;
       this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
       this.textBox.Validated += new System.EventHandler(this.textBox_Validated);
@@ -109,10 +103,13 @@ namespace HeuristicLab.Data.Views {
       // TextFileView
       // 
       this.Controls.Add(this.textBox);
-      this.Controls.Add(this.fileValueView);
       this.Controls.Add(this.saveButton);
       this.Name = "TextFileView";
       this.Size = new System.Drawing.Size(421, 401);
+      this.Controls.SetChildIndex(this.saveButton, 0);
+      this.Controls.SetChildIndex(this.textBox, 0);
+      this.Controls.SetChildIndex(this.openButton, 0);
+      this.Controls.SetChildIndex(this.stringConvertibleValueView, 0);
       ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -124,7 +121,6 @@ namespace HeuristicLab.Data.Views {
     private System.Windows.Forms.Button saveButton;
     private System.Windows.Forms.SaveFileDialog saveFileDialog;
     private System.IO.FileSystemWatcher fileSystemWatcher;
-    private FileValueView fileValueView;
     private System.Windows.Forms.TextBox textBox;
   }
 }

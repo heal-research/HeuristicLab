@@ -21,61 +21,40 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Data.Views {
   [View("FileValueView")]
   [Content(typeof(FileValue), true)]
-  public partial class FileValueView : StringConvertibleValueView {
+  public partial class FileValueView : ItemView {
     public new FileValue Content {
       get { return (FileValue)base.Content; }
       set { base.Content = value; }
-    }
-
-    public override bool ReadOnly {
-      get {
-        if ((Content != null) && Content.ReadOnly) return true;
-        return base.ReadOnly;
-      }
-      set { base.ReadOnly = value; }
     }
 
     public FileValueView() {
       InitializeComponent();
     }
 
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      Content.FileOpenDialogFilterChanged += new EventHandler(Content_FileOpenDialogFilterChanged);
-    }
-    protected override void DeregisterContentEvents() {
-      Content.FileOpenDialogFilterChanged -= new EventHandler(Content_FileOpenDialogFilterChanged);
-      base.DeregisterContentEvents();
-    }
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      valueTextBox.Enabled = !Locked && !ReadOnly && Content != null;
-      valueTextBox.ReadOnly = Locked || ReadOnly || Content == null;
       openButton.Enabled = !Locked && !ReadOnly && Content != null;
     }
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        valueTextBox.Text = string.Empty;
+        stringConvertibleValueView.Content = null;
         return;
       }
 
-      valueTextBox.Text = Content.Value;
-      openButton.Enabled = !Content.ReadOnly;
-      openFileDialog.Filter = Content.FileDialogFilter;
-    }
-
-    protected virtual void Content_FileOpenDialogFilterChanged(object sender, EventArgs e) {
+      stringConvertibleValueView.Content = Content.StringValue;
       openFileDialog.Filter = Content.FileDialogFilter;
     }
 
     protected virtual void openButton_Click(object sender, EventArgs e) {
+      openFileDialog.Filter = Content.FileDialogFilter;
       if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
       Content.Value = openFileDialog.FileName;
     }

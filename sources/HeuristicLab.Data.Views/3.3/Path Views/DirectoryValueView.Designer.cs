@@ -47,59 +47,41 @@ namespace HeuristicLab.Data.Views {
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DirectoryValueView));
       this.openButton = new System.Windows.Forms.Button();
       this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
-      this.splitContainer.Panel1.SuspendLayout();
-      this.splitContainer.Panel2.SuspendLayout();
-      this.splitContainer.SuspendLayout();
+      this.stringConvertibleValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
       this.SuspendLayout();
-      // 
-      // valueTextBox
-      // 
-      this.errorProvider.SetIconAlignment(this.valueTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.errorProvider.SetIconPadding(this.valueTextBox, 2);
-      this.valueTextBox.Location = new System.Drawing.Point(17, 2);
-      this.valueTextBox.Size = new System.Drawing.Size(87, 20);
-      // 
-      // valueLabel
-      // 
-      this.valueLabel.Location = new System.Drawing.Point(3, 5);
-      this.valueLabel.Size = new System.Drawing.Size(52, 13);
-      this.valueLabel.Text = "Directory:";
-      // 
-      // splitContainer
-      // 
-      // 
-      // splitContainer.Panel2
-      // 
-      this.splitContainer.Panel2.Controls.Add(this.openButton);
-      this.splitContainer.Size = new System.Drawing.Size(194, 24);
-      this.splitContainer.SplitterDistance = 56;
       // 
       // openButton
       // 
       this.openButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.openButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
-      this.openButton.Location = new System.Drawing.Point(110, 0);
+      this.openButton.Location = new System.Drawing.Point(167, 0);
       this.openButton.Name = "openButton";
       this.openButton.Size = new System.Drawing.Size(24, 24);
       this.openButton.TabIndex = 3;
       this.openButton.UseVisualStyleBackColor = true;
       this.openButton.Click += new System.EventHandler(this.openButton_Click);
       // 
+      // stringConvertibleValueView
+      // 
+      this.stringConvertibleValueView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.stringConvertibleValueView.Caption = "StringConvertibleValue View";
+      this.stringConvertibleValueView.Content = null;
+      this.stringConvertibleValueView.LabelVisible = true;
+      this.stringConvertibleValueView.Location = new System.Drawing.Point(4, 2);
+      this.stringConvertibleValueView.Name = "stringConvertibleValueView";
+      this.stringConvertibleValueView.ReadOnly = false;
+      this.stringConvertibleValueView.Size = new System.Drawing.Size(157, 21);
+      this.stringConvertibleValueView.TabIndex = 4;
+      // 
       // DirectoryValueView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.stringConvertibleValueView);
+      this.Controls.Add(this.openButton);
       this.Name = "DirectoryValueView";
       this.Size = new System.Drawing.Size(194, 24);
-      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
-      this.splitContainer.Panel1.ResumeLayout(false);
-      this.splitContainer.Panel1.PerformLayout();
-      this.splitContainer.Panel2.ResumeLayout(false);
-      this.splitContainer.Panel2.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
-      this.splitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -108,6 +90,7 @@ namespace HeuristicLab.Data.Views {
 
     protected System.Windows.Forms.Button openButton;
     protected System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+    private StringConvertibleValueView stringConvertibleValueView;
 
   }
 }

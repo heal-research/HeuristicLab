@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.IO;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -36,7 +35,6 @@ namespace HeuristicLab.Data {
       set {
         if (fileDialogFilter != value) {
           fileDialogFilter = value;
-          OnFileOpenDialogFilterChanged();
         }
       }
     }
@@ -57,14 +55,7 @@ namespace HeuristicLab.Data {
     }
 
     public override bool Exists() {
-      return File.Exists(value);
-    }
-
-    public event EventHandler FileOpenDialogFilterChanged;
-    protected virtual void OnFileOpenDialogFilterChanged() {
-      var handler = FileOpenDialogFilterChanged;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+      return File.Exists(Value);
     }
   }
 }
