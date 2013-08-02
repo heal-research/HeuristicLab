@@ -215,7 +215,7 @@ namespace HeuristicLab.Data.Views {
     private static string ReadFile(string path) {
       if (!File.Exists(path)) return null;
       string fileContent = string.Empty;
-      using (FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+      using (FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
         using (StreamReader streamReader = new StreamReader(fileStream)) {
           fileContent = streamReader.ReadToEnd();
         }
@@ -224,7 +224,7 @@ namespace HeuristicLab.Data.Views {
     }
 
     private static void WriteFile(string path, string fileContent) {
-      using (FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write)) {
+      using (FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None)) {
         using (StreamWriter streamWriter = new StreamWriter(fileStream)) {
           streamWriter.Write(fileContent);
         }
