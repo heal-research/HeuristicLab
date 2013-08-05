@@ -24,6 +24,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Data.Views {
   [View("TextFileView")]
@@ -215,19 +216,29 @@ namespace HeuristicLab.Data.Views {
     private static string ReadFile(string path) {
       if (!File.Exists(path)) return null;
       string fileContent = string.Empty;
-      using (FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-        using (StreamReader streamReader = new StreamReader(fileStream)) {
-          fileContent = streamReader.ReadToEnd();
+      try {
+        using (FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+          using (StreamReader streamReader = new StreamReader(fileStream)) {
+            fileContent = streamReader.ReadToEnd();
+          }
         }
+      }
+      catch (Exception e) {
+        ErrorHandling.ShowErrorDialog(e);
       }
       return fileContent;
     }
 
     private static void WriteFile(string path, string fileContent) {
-      using (FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None)) {
-        using (StreamWriter streamWriter = new StreamWriter(fileStream)) {
-          streamWriter.Write(fileContent);
+      try {
+        using (FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None)) {
+          using (StreamWriter streamWriter = new StreamWriter(fileStream)) {
+            streamWriter.Write(fileContent);
+          }
         }
+      }
+      catch (Exception e) {
+        ErrorHandling.ShowErrorDialog(e);
       }
     }
   }
