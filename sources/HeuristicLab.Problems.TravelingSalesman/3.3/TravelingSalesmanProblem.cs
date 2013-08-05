@@ -381,8 +381,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         throw new System.IO.InvalidDataException("The given instance specifies neither coordinates nor distances!");
       if (data.Dimension > DistanceMatrixSizeLimit && (data.DistanceMeasure == DistanceMeasure.Att
         || data.DistanceMeasure == DistanceMeasure.Manhattan
-        || data.DistanceMeasure == DistanceMeasure.Maximum
-        || data.DistanceMeasure == DistanceMeasure.UpperEuclidean))
+        || data.DistanceMeasure == DistanceMeasure.Maximum))
         throw new System.IO.InvalidDataException("The given instance uses an unsupported distance measure and is too large for using a distance matrix.");
       if (data.Coordinates != null && data.Coordinates.GetLength(1) != 2)
         throw new System.IO.InvalidDataException("The coordinates of the given instance are not in the right format, there need to be one row for each customer and two columns for the x and y coordinates.");
@@ -398,8 +397,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       TSPEvaluator evaluator;
       if (data.DistanceMeasure == DistanceMeasure.Att
         || data.DistanceMeasure == DistanceMeasure.Manhattan
-        || data.DistanceMeasure == DistanceMeasure.Maximum
-        || data.DistanceMeasure == DistanceMeasure.UpperEuclidean) {
+        || data.DistanceMeasure == DistanceMeasure.Maximum) {
         evaluator = new TSPDistanceMatrixEvaluator();
         UseDistanceMatrix = new BoolValue(true);
         DistanceMatrix = new DistanceMatrix(data.GetDistanceMatrix());
@@ -416,6 +414,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
             break;
           case DistanceMeasure.RoundedEuclidean:
             evaluator = new TSPRoundedEuclideanPathEvaluator();
+            break;
+          case DistanceMeasure.UpperEuclidean:
+            evaluator = new TSPUpperEuclideanPathEvaluator();
             break;
           case DistanceMeasure.Geo:
             evaluator = new TSPGeoPathEvaluator();
