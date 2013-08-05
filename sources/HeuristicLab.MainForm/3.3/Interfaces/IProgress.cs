@@ -27,20 +27,20 @@ namespace HeuristicLab.MainForm {
 
   public interface IProgress : IContent {
     /// <summary>
-    /// Gets the currently associated status text with the progress.
+    /// Gets or sets the currently associated status text with the progress.
     /// </summary>
-    string Status { get; }
+    string Status { get; set; }
     /// <summary>
-    /// Gets the currently associated progress value in the range (0;1].
+    /// Gets or sets the currently associated progress value in the range (0;1].
     ///  Values outside this range are permitted and need to be handled in some feasible manner.
     /// </summary>
-    double ProgressValue { get; }
+    double ProgressValue { get; set; }
     /// <summary>
-    /// Gets the current state of the progress. Every progress starts in state
+    /// Gets or sets the current state of the progress. Every progress starts in state
     /// Started and then becomes either Canceled or Finished.
     /// If it is reused it may be Started again.
     /// </summary>
-    ProgressState ProgressState { get; }
+    ProgressState ProgressState { get; set; }
     /// <summary>
     /// Returns whether the operation can be canceled or not.
     /// This can change during the course of the progress.
@@ -55,6 +55,10 @@ namespace HeuristicLab.MainForm {
     /// <exception cref="NotSupportedException">Thrown when cancellation is not supported.</exception>
     /// <param name="timeoutMs">The operation is given a certain timeout to cancel. If the operation doesn't cancel in this time it will be forcibly closed.</param>
     void Cancel(int timeoutMs);
+    /// <summary>
+    /// Sets the ProgressValue to 1 and the ProgressState to Finished.
+    /// </summary>
+    void Finish();
 
     /// <summary>
     /// The status text changed.

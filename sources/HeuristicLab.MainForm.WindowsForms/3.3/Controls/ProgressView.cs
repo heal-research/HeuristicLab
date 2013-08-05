@@ -28,7 +28,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
   [Content(typeof(IProgress), true)]
   public partial class ProgressView : AsynchronousContentView {
     private const int DefaultCancelTimeoutMs = 3000;
-    private ContentView parentView;
+    private readonly IView parentView;
 
     [Category("Custom"), Description("The time that the process is allowed to exit.")]
     [DefaultValue(DefaultCancelTimeoutMs)]
@@ -40,6 +40,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
       set { base.Content = value; }
     }
 
+    private Control Control {
+      get { return (Control)parentView; }
+    }
+
+    public bool DisposeOnFinish { get; set; }
+
     public ProgressView() {
       InitializeComponent();
     }
@@ -47,14 +53,21 @@ namespace HeuristicLab.MainForm.WindowsForms {
       : this() {
       Content = progress;
     }
-    public ProgressView(ContentView parentView)
+    public ProgressView(IView parentView)
       : this() {
       if (parentView == null) throw new ArgumentNullException("parentView", "The parent view is null.");
+      if (!(parentView is Control)) throw new ArgumentException("The parent view is not a control.", "parentView");
       this.parentView = parentView;
     }
-    public ProgressView(ContentView parentView, IProgress progress)
+    public ProgressView(IView parentView, IProgress progress)
       : this(parentView) {
       Content = progress;
+    }
+
+    public static ProgressView Attach(IView parentView, IProgress progress, bool disposeOnFinish = false) {
+      return new ProgressView(parentView, progress) {
+        DisposeOnFinish = disposeOnFinish
+      };
     }
 
     protected override void RegisterContentEvents() {
@@ -93,14 +106,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired) Invoke((Action)ShowProgress);
       else {
         if (parentView != null) {
-          this.Left = (parentView.ClientRectangle.Width / 2) - (this.Width / 2);
-          this.Top = (parentView.ClientRectangle.Height / 2) - (this.Height / 2);
+          this.Left = (Control.ClientRectangle.Width / 2) - (this.Width / 2);
+          this.Top = (Control.ClientRectangle.Height / 2) - (this.Height / 2);
           this.Anchor = AnchorStyles.None;
 
           LockBackground();
 
-          if (!parentView.Controls.Contains(this))
-            parentView.Controls.Add(this);
+          if (!Control.Controls.Contains(this))
+            Control.Controls.Add(this);
 
           BringToFront();
         }
@@ -114,8 +127,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired) Invoke((Action)HideProgress);
       else {
         if (parentView != null) {
-          if (parentView.Controls.Contains(this))
-            parentView.Controls.Remove(this);
+          if (Control.Controls.Contains(this))
+            Control.Controls.Remove(this);
 
           UnlockBackground();
         }
@@ -132,11 +145,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void Content_ProgressStateChanged(object sender, EventArgs e) {
-      if (Content.ProgressState == ProgressState.Finished
-        || Content.ProgressState == ProgressState.Canceled)
-        HideProgress();
-      if (Content.ProgressState == ProgressState.Started)
-        ShowProgress();
+      switch (Content.ProgressState) {
+        case ProgressState.Finished:
+          HideProgress();
+          if (DisposeOnFinish) {
+            Content = null;
+            Dispose();
+          }
+          break;
+        case ProgressState.Canceled: HideProgress(); break;
+        case ProgressState.Started: ShowProgress(); break;
+      }
     }
 
     private void Content_CanBeCanceledChanged(object sender, EventArgs e) {
@@ -147,20 +166,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired) {
         Invoke((Action)LockBackground);
       } else {
-        parentView.Locked = true;
-        parentView.ReadOnly = true;
-        Locked = false;
-        ReadOnly = false;
+        parentView.Enabled = false;
+        Enabled = true;
       }
     }
 
     private void UnlockBackground() {
       if (InvokeRequired) Invoke((Action)UnlockBackground);
       else {
-        parentView.Locked = false;
-        parentView.ReadOnly = false;
-        Locked = true;
-        ReadOnly = true;
+        parentView.Enabled = true;
+        Enabled = false;
       }
     }
 

@@ -29,6 +29,8 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class MainForm : Form, IMainForm {
+    private readonly Dictionary<IContent, IProgress> contentProgressLookup;
+    private readonly Dictionary<IView, IProgress> viewProgressLookup;
     private bool initialized;
     private int appStartingCursors;
     private int waitingCursors;
@@ -38,6 +40,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
       this.views = new Dictionary<IView, Form>();
       this.userInterfaceItems = new List<IUserInterfaceItem>();
+      this.contentProgressLookup = new Dictionary<IContent, IProgress>();
+      this.viewProgressLookup = new Dictionary<IView, IProgress>();
       this.initialized = false;
       this.showContentInViewHost = false;
       appStartingCursors = 0;
@@ -341,6 +345,61 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public void CloseAllViews(CloseReason closeReason) {
       foreach (IView view in views.Keys.ToArray())
         CloseView(view, closeReason);
+    }
+
+    /// <summary>
+    /// Adds a <see cref="ProgressView"/> to the <see cref="ContentView"/>s showing the specified content.
+    /// </summary>
+    public void AddOperationProgressToContent(IContent content, IProgress progress, bool addToObjectGraphObjects = true) {
+      if (contentProgressLookup.ContainsKey(content))
+        throw new ArgumentException("A progress is already registered for the specified content.", "content");
+
+      var contentViews = Enumerable.Empty<IContentView>();
+      if (addToObjectGraphObjects) {
+        var containedObjects = content.GetObjectGraphObjects();
+        contentViews = views.Keys.OfType<IContentView>().Where(v => containedObjects.Contains(v.Content));
+      } else
+        contentViews = views.Keys.OfType<IContentView>().Where(v => v.Content == content);
+
+      foreach (var contentView in contentViews)
+        ProgressView.Attach(contentView, progress, true);
+
+      contentProgressLookup[content] = progress;
+    }
+
+    /// <summary>
+    /// Adds a <see cref="ProgressView"/> to the specified view.
+    /// </summary>
+    public void AddOperationProgressToView(IView view, Progress progress) {
+      if (viewProgressLookup.ContainsKey(view))
+        throw new ArgumentException("A progress is already registered for the specified view.", "view");
+
+      ProgressView.Attach(view, progress, true);
+      viewProgressLookup[view] = progress;
+    }
+
+    /// <summary>
+    /// Removes an existing <see cref="ProgressView"/> from the <see cref="ContentView"/>s showing the specified content.
+    /// </summary>
+    public void RemoveOperationProgressFromContent(IContent content) {
+      IProgress progress;
+      if (!contentProgressLookup.TryGetValue(content, out progress))
+        throw new ArgumentException("No progress is registered for the specified content.", "content");
+
+      progress.Finish();
+      contentProgressLookup.Remove(content);
+    }
+
+    /// <summary>
+    /// Removes an existing <see cref="ProgressView"/> from the specified view.
+    /// </summary>
+    public void RemoveOperationProgressFromView(IView view) {
+      IProgress progress;
+      if (!viewProgressLookup.TryGetValue(view, out progress))
+        throw new ArgumentException("No progress is registered for the specified view.", "view");
+
+      progress.Finish();
+      viewProgressLookup.Remove(view);
     }
     #endregion
 

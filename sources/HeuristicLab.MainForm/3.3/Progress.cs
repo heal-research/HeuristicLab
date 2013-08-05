@@ -85,9 +85,6 @@ namespace HeuristicLab.MainForm {
         OnCancelRequested(timeoutMs);
     }
 
-    /// <summary>
-    /// Sets the ProgressValue to 1 and the ProgressState to Finished.
-    /// </summary>
     public void Finish() {
       if (ProgressValue != 1.0) ProgressValue = 1.0;
       ProgressState = ProgressState.Finished;

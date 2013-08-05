@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
@@ -97,7 +97,7 @@ namespace HeuristicLab.Optimizer {
         if (string.IsNullOrEmpty(content.Filename))
           SaveAs(view);
         else {
-          ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
+          MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
           SetEnabledStateOfContentViews(content, false);
           ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
         }
@@ -122,7 +122,7 @@ namespace HeuristicLab.Optimizer {
         saveFileDialog.FileName = string.IsNullOrEmpty(content.Filename) ? "Item" : content.Filename;
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-          ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
+          MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
           SetEnabledStateOfContentViews(content, false);
           if (saveFileDialog.FilterIndex == 1) {
             ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
@@ -134,7 +134,6 @@ namespace HeuristicLab.Optimizer {
     }
     private static void SavingCompleted(IStorableContent content, Exception error) {
       try {
-        SetEnabledStateOfContentViews(content, true);
         if (error != null) throw error;
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
       }
@@ -142,7 +141,8 @@ namespace HeuristicLab.Optimizer {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
       }
       finally {
-        ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
+        SetEnabledStateOfContentViews(content, true);
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().ResetAppStartingCursor();
       }
     }
 
@@ -151,8 +151,10 @@ namespace HeuristicLab.Optimizer {
       #region Mono Compatibility
       // removed the InvokeRequired check because of Mono
       mainForm.Invoke((Action)delegate {
-        var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
-        views.ForEach(v => v.Enabled = enabled);
+        if (enabled)
+          mainForm.RemoveOperationProgressFromContent(content);
+        else
+          mainForm.AddOperationProgressToContent(content, new Progress(string.Format("Saving file \"{0}\"...", Path.GetFileName(content.Filename))));
       });
       #endregion
     }
