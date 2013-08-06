@@ -98,7 +98,7 @@ namespace HeuristicLab.Optimizer {
           SaveAs(view);
         else {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
-          SetEnabledStateOfContentViews(content, false);
+          SetSaveOperationProgressInContentViews(content, true);
           ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
         }
       }
@@ -123,7 +123,7 @@ namespace HeuristicLab.Optimizer {
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
-          SetEnabledStateOfContentViews(content, false);
+          SetSaveOperationProgressInContentViews(content, true, saveFileDialog.FileName);
           if (saveFileDialog.FilterIndex == 1) {
             ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
           } else {
@@ -141,20 +141,21 @@ namespace HeuristicLab.Optimizer {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
       }
       finally {
-        SetEnabledStateOfContentViews(content, true);
+        SetSaveOperationProgressInContentViews(content, false);
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().ResetAppStartingCursor();
       }
     }
 
-    private static void SetEnabledStateOfContentViews(IStorableContent content, bool enabled) {
+    private static void SetSaveOperationProgressInContentViews(IStorableContent content, bool showProgress, string fileName = null) {
       HeuristicLab.MainForm.WindowsForms.MainForm mainForm = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>();
       #region Mono Compatibility
       // removed the InvokeRequired check because of Mono
       mainForm.Invoke((Action)delegate {
-        if (enabled)
+        if (showProgress) {
+          var progress = new Progress(string.Format("Saving file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename)));
+          mainForm.AddOperationProgressToContent(content, progress);
+        } else
           mainForm.RemoveOperationProgressFromContent(content);
-        else
-          mainForm.AddOperationProgressToContent(content, new Progress(string.Format("Saving file \"{0}\"...", Path.GetFileName(content.Filename))));
       });
       #endregion
     }
