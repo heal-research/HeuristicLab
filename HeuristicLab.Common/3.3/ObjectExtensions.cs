@@ -37,6 +37,7 @@ namespace HeuristicLab.Common {
     public static IEnumerable<object> GetObjectGraphObjects(this object obj, HashSet<object> excludedMembers = null, bool excludeStaticMembers = false) {
       if (obj == null) return Enumerable.Empty<object>();
       if (excludedMembers == null) excludedMembers = new HashSet<object>();
+      var fieldInfos = new Dictionary<Type, FieldInfo[]>();
 
       var objects = new HashSet<object>();
       var stack = new Stack<object>();
@@ -46,7 +47,7 @@ namespace HeuristicLab.Common {
         object current = stack.Pop();
         objects.Add(current);
 
-        foreach (object o in GetChildObjects(current, excludedMembers, excludeStaticMembers)) {
+        foreach (object o in GetChildObjects(current, excludedMembers, excludeStaticMembers, fieldInfos)) {
           if (o == null) continue;
           if (ExcludeType(o.GetType())) continue;
           if (objects.Contains(o)) continue;
@@ -79,7 +80,7 @@ namespace HeuristicLab.Common {
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 
-    private static IEnumerable<object> GetChildObjects(object obj, HashSet<object> excludedMembers, bool excludeStaticMembers) {
+    private static IEnumerable<object> GetChildObjects(object obj, HashSet<object> excludedMembers, bool excludeStaticMembers, Dictionary<Type, FieldInfo[]> fieldInfos) {
       Type type = obj.GetType();
 
       if (type.IsSubclassOfRawGeneric(typeof(ThreadLocal<>))) {
@@ -110,7 +111,9 @@ namespace HeuristicLab.Common {
           yield return value;
         }
       } else {
-        foreach (FieldInfo f in type.GetAllFields()) {
+        if (!fieldInfos.ContainsKey(type))
+          fieldInfos[type] = type.GetAllFields().ToArray();
+        foreach (FieldInfo f in fieldInfos[type]) {
           if (excludeStaticMembers && f.IsStatic) continue;
           object fieldValue;
           try {
