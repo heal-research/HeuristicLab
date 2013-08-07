@@ -75,9 +75,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     public override void Execute() {
       IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
-      Progress progress = new Progress("Removing duplicate datasets.");
       var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
-      mainForm.AddOperationProgressToContent(activeView.Content, progress);
+      mainForm.AddOperationProgressToContent(activeView.Content, "Removing duplicate datasets.");
 
       Action<IContentView> action = (view) => {
         var variableValuesMapping = new Dictionary<ValuesType, ValuesType>();

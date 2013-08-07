@@ -166,7 +166,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (InvokeRequired) {
         Invoke((Action)LockBackground);
       } else {
-        parentView.Enabled = false;
+        foreach (Control c in Control.Controls)
+          c.Enabled = false;
         Enabled = true;
       }
     }
@@ -174,7 +175,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void UnlockBackground() {
       if (InvokeRequired) Invoke((Action)UnlockBackground);
       else {
-        parentView.Enabled = true;
+        foreach (Control c in Control.Controls)
+          c.Enabled = true;
         Enabled = false;
       }
     }

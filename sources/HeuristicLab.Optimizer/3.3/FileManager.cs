@@ -152,8 +152,7 @@ namespace HeuristicLab.Optimizer {
       // removed the InvokeRequired check because of Mono
       mainForm.Invoke((Action)delegate {
         if (showProgress) {
-          var progress = new Progress(string.Format("Saving file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename)));
-          mainForm.AddOperationProgressToContent(content, progress);
+          mainForm.AddOperationProgressToContent(content, string.Format("Saving file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename)));
         } else
           mainForm.RemoveOperationProgressFromContent(content);
       });

@@ -350,7 +350,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the <see cref="ContentView"/>s showing the specified content.
     /// </summary>
-    public void AddOperationProgressToContent(IContent content, IProgress progress, bool addToObjectGraphObjects = true) {
+    public void AddOperationProgressToContent(IContent content, string progressMessage, bool addToObjectGraphObjects = true) {
       if (contentProgressLookup.ContainsKey(content))
         throw new ArgumentException("A progress is already registered for the specified content.", "content");
 
@@ -361,6 +361,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       } else
         contentViews = views.Keys.OfType<IContentView>().Where(v => v.Content == content);
 
+      var progress = new Progress(progressMessage);
       foreach (var contentView in contentViews)
         ProgressView.Attach(contentView, progress, true);
 
@@ -370,10 +371,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the specified view.
     /// </summary>
-    public void AddOperationProgressToView(IView view, Progress progress) {
+    public void AddOperationProgressToView(IView view, string progressMessage) {
       if (viewProgressLookup.ContainsKey(view))
         throw new ArgumentException("A progress is already registered for the specified view.", "view");
 
+      var progress = new Progress(progressMessage);
       ProgressView.Attach(view, progress, true);
       viewProgressLookup[view] = progress;
     }
