@@ -22,8 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoGen-2.4.1.473", "Heuri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ProtobufCS-2.4.1.473", "HeuristicLab.ExtLibs\HeuristicLab.ProtobufCS\2.4.1\HeuristicLab.ProtobufCS\HeuristicLab.ProtobufCS-2.4.1.473.csproj", "{236459CE-80CF-4991-972F-DE74C826BCCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ALGLIB-3.6.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.6.0\HeuristicLab.ALGLIB-3.6.0\HeuristicLab.ALGLIB-3.6.0.csproj", "{571A0EE4-C86A-40A6-8790-DA754D464EDC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibSVM-3.12", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\LibSVM-3.12\LibSVM-3.12.csproj", "{4C41E3A3-B2FD-46EA-98FB-F21433E58FBE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.LibSVM-3.12", "HeuristicLab.ExtLibs\HeuristicLab.LibSVM\3.12\HeuristicLab.LibSVM-3.12\HeuristicLab.LibSVM-3.12.csproj", "{005C27BE-ED6E-4602-8199-5F9EB7591CEB}"
@@ -41,8 +39,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALGLIB-3.7.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\ALGLIB-3.7.0\ALGLIB-3.7.0.csproj", "{AE723DEF-1A44-4F9C-8670-DBCAB79626A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.ALGLIB-3.7.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.7.0\HeuristicLab.ALGLIB-3.7.0\HeuristicLab.ALGLIB-3.7.0.csproj", "{6F1D7847-D610-4E52-A184-405DAEFA41A9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALGLIB-3.6.0", "HeuristicLab.ExtLibs\HeuristicLab.ALGLIB\3.6.0\ALGLIB-3.6.0\ALGLIB-3.6.0.csproj", "{D863807E-4774-455E-85A4-96E7E6A8F68F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -150,18 +146,6 @@ Global
 		{236459CE-80CF-4991-972F-DE74C826BCCC}.Release|x64.Build.0 = Release|x64
 		{236459CE-80CF-4991-972F-DE74C826BCCC}.Release|x86.ActiveCfg = Release|x86
 		{236459CE-80CF-4991-972F-DE74C826BCCC}.Release|x86.Build.0 = Release|x86
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Debug|x64.ActiveCfg = Debug|x64
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Debug|x64.Build.0 = Debug|x64
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Debug|x86.ActiveCfg = Debug|x86
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Debug|x86.Build.0 = Debug|x86
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Release|x64.ActiveCfg = Release|x64
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Release|x64.Build.0 = Release|x64
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Release|x86.ActiveCfg = Release|x86
-		{571A0EE4-C86A-40A6-8790-DA754D464EDC}.Release|x86.Build.0 = Release|x86
 		{4C41E3A3-B2FD-46EA-98FB-F21433E58FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4C41E3A3-B2FD-46EA-98FB-F21433E58FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C41E3A3-B2FD-46EA-98FB-F21433E58FBE}.Debug|x64.ActiveCfg = Debug|x64
@@ -270,18 +254,6 @@ Global
 		{6F1D7847-D610-4E52-A184-405DAEFA41A9}.Release|x64.Build.0 = Release|x64
 		{6F1D7847-D610-4E52-A184-405DAEFA41A9}.Release|x86.ActiveCfg = Release|x86
 		{6F1D7847-D610-4E52-A184-405DAEFA41A9}.Release|x86.Build.0 = Release|x86
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Debug|x64.ActiveCfg = Debug|x64
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Debug|x64.Build.0 = Debug|x64
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Debug|x86.ActiveCfg = Debug|x86
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Debug|x86.Build.0 = Debug|x86
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Release|x64.ActiveCfg = Release|x64
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Release|x64.Build.0 = Release|x64
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Release|x86.ActiveCfg = Release|x86
-		{D863807E-4774-455E-85A4-96E7E6A8F68F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
