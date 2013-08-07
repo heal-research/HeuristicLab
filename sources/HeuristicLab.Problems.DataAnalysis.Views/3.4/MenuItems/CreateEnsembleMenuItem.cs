@@ -30,16 +30,16 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Views;
 using HeuristicLab.Optimizer;
 
-namespace HeuristicLab.Problems.DataAnalysis.MenuItems {
+namespace HeuristicLab.Problems.DataAnalysis.Views {
   internal class CreateEnsembleMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {
       get { return "Create &Solution Ensembles"; }
     }
     public override IEnumerable<string> Structure {
-      get { return new string[] { "&Edit" }; }
+      get { return new string[] { "&Data Analysis" }; }
     }
     public override int Position {
-      get { return 2500; }
+      get { return 5100; }
     }
     public override string ToolTipText {
       get { return "Create ensembles of data analysis solutions from the solutions in the current optimizer."; }
