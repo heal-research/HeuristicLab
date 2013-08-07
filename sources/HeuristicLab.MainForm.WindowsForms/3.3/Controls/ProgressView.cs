@@ -46,8 +46,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     public bool DisposeOnFinish { get; set; }
 
-    public ProgressView(IView view) {
+    public ProgressView() {
       InitializeComponent();
+    }
+
+    public ProgressView(IView view)
+      : this() {
       if (view == null) throw new ArgumentNullException("view", "The view is null.");
       if (!(view is Control)) throw new ArgumentException("The view is not a control.", "view");
       this.view = view;
