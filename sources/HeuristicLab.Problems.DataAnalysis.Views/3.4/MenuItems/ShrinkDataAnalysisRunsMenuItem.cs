@@ -102,6 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private static bool EqualVariableValues(ValuesType values1, ValuesType values2) {
+      //compare variable names for equality
       if (!values1.Keys.SequenceEqual(values2.Keys)) return false;
       foreach (var key in values1.Keys) {
         var v1 = values1[key];
@@ -116,6 +117,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private static readonly Action<Dataset, Dictionary<string, IList>> variableValuesSetter;
     private static readonly Func<Dataset, Dictionary<string, IList>> variableValuesGetter;
+    /// <summary>
+    /// The static initializer is used to create expressions for getting and setting the private variableValues field in the dataset.
+    /// This is done by expressions because the field is private and compiled expression calls are much faster compared to standad reflection calls.
+    /// </summary>
     static ShrinkDataAnalysisRunsMenuItem() {
       var dataset = Expression.Parameter(typeof(Dataset));
       var variableValues = Expression.Parameter(typeof(ValuesType));
