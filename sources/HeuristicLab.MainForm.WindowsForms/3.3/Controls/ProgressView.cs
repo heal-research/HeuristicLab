@@ -28,7 +28,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
   [Content(typeof(IProgress), true)]
   public partial class ProgressView : AsynchronousContentView {
     private const int DefaultCancelTimeoutMs = 3000;
-    private readonly IView parentView;
+    private readonly IView view;
 
     [Category("Custom"), Description("The time that the process is allowed to exit.")]
     [DefaultValue(DefaultCancelTimeoutMs)]
@@ -41,31 +41,24 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private Control Control {
-      get { return (Control)parentView; }
+      get { return (Control)view; }
     }
 
     public bool DisposeOnFinish { get; set; }
 
-    public ProgressView() {
+    public ProgressView(IView view) {
       InitializeComponent();
+      if (view == null) throw new ArgumentNullException("view", "The view is null.");
+      if (!(view is Control)) throw new ArgumentException("The view is not a control.", "view");
+      this.view = view;
     }
-    public ProgressView(IProgress progress)
-      : this() {
-      Content = progress;
-    }
-    public ProgressView(IView parentView)
-      : this() {
-      if (parentView == null) throw new ArgumentNullException("parentView", "The parent view is null.");
-      if (!(parentView is Control)) throw new ArgumentException("The parent view is not a control.", "parentView");
-      this.parentView = parentView;
-    }
-    public ProgressView(IView parentView, IProgress progress)
-      : this(parentView) {
+    public ProgressView(IView view, IProgress progress)
+      : this(view) {
       Content = progress;
     }
 
-    public static ProgressView Attach(IView parentView, IProgress progress, bool disposeOnFinish = false) {
-      return new ProgressView(parentView, progress) {
+    public static ProgressView Attach(IView view, IProgress progress, bool disposeOnFinish = false) {
+      return new ProgressView(view, progress) {
         DisposeOnFinish = disposeOnFinish
       };
     }
@@ -105,16 +98,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void ShowProgress() {
       if (InvokeRequired) Invoke((Action)ShowProgress);
       else {
-        if (parentView != null) {
-          this.Left = (Control.ClientRectangle.Width / 2) - (this.Width / 2);
-          this.Top = (Control.ClientRectangle.Height / 2) - (this.Height / 2);
-          this.Anchor = AnchorStyles.None;
+        if (view != null) {
+          Left = (Control.ClientRectangle.Width / 2) - (Width / 2);
+          Top = (Control.ClientRectangle.Height / 2) - (Height / 2);
+          Anchor = AnchorStyles.None;
 
           LockBackground();
-
-          if (!Control.Controls.Contains(this))
-            Control.Controls.Add(this);
-
+          Parent = Control.Parent;
           BringToFront();
         }
         UpdateProgressValue();
@@ -126,10 +116,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void HideProgress() {
       if (InvokeRequired) Invoke((Action)HideProgress);
       else {
-        if (parentView != null) {
-          if (Control.Controls.Contains(this))
-            Control.Controls.Remove(this);
-
+        if (view != null) {
+          Parent = null;
           UnlockBackground();
         }
         Visible = false;
@@ -163,21 +151,16 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     private void LockBackground() {
-      if (InvokeRequired) {
-        Invoke((Action)LockBackground);
-      } else {
-        foreach (Control c in Control.Controls)
-          c.Enabled = false;
-        Enabled = true;
+      if (InvokeRequired) Invoke((Action)LockBackground);
+      else {
+        view.Enabled = false;
       }
     }
 
     private void UnlockBackground() {
       if (InvokeRequired) Invoke((Action)UnlockBackground);
       else {
-        foreach (Control c in Control.Controls)
-          c.Enabled = true;
-        Enabled = false;
+        view.Enabled = true;
       }
     }
 
