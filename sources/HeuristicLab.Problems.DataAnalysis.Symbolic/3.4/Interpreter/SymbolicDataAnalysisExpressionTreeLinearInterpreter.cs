@@ -117,295 +117,214 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private double Evaluate(Dataset dataset, int row, LinearInstruction[] code) {
       for (int i = code.Length - 1; i >= 0; --i) {
         if (code[i].skip) continue;
-        #region opcode switch
+        #region opcode if
         var instr = code[i];
-        switch (instr.opCode) {
-          case OpCodes.Variable: {
-              if (row < 0 || row >= dataset.Rows) instr.value = double.NaN;
-              var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
-              instr.value = ((IList<double>)instr.data)[row] * variableTreeNode.Weight;
-            }
-            break;
-          case OpCodes.LagVariable: {
-              var laggedVariableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
-              int actualRow = row + laggedVariableTreeNode.Lag;
-              if (actualRow < 0 || actualRow >= dataset.Rows)
-                instr.value = double.NaN;
-              else
-                instr.value = ((IList<double>)instr.data)[actualRow] * laggedVariableTreeNode.Weight;
-            }
-            break;
-          case OpCodes.VariableCondition: {
-              if (row < 0 || row >= dataset.Rows) instr.value = double.NaN;
-              var variableConditionTreeNode = (VariableConditionTreeNode)instr.dynamicNode;
-              double variableValue = ((IList<double>)instr.data)[row];
-              double x = variableValue - variableConditionTreeNode.Threshold;
-              double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
+        if (instr.opCode == OpCodes.Variable) {
+          if (row < 0 || row >= dataset.Rows) instr.value = double.NaN;
+          var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
+          instr.value = ((IList<double>)instr.data)[row] * variableTreeNode.Weight;
+        } else if (instr.opCode == OpCodes.LagVariable) {
+          var laggedVariableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
+          int actualRow = row + laggedVariableTreeNode.Lag;
+          if (actualRow < 0 || actualRow >= dataset.Rows)
+            instr.value = double.NaN;
+          else
+            instr.value = ((IList<double>)instr.data)[actualRow] * laggedVariableTreeNode.Weight;
+        } else if (instr.opCode == OpCodes.VariableCondition) {
+          if (row < 0 || row >= dataset.Rows) instr.value = double.NaN;
+          var variableConditionTreeNode = (VariableConditionTreeNode)instr.dynamicNode;
+          double variableValue = ((IList<double>)instr.data)[row];
+          double x = variableValue - variableConditionTreeNode.Threshold;
+          double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
 
-              double trueBranch = code[instr.childIndex].value;
-              double falseBranch = code[instr.childIndex + 1].value;
+          double trueBranch = code[instr.childIndex].value;
+          double falseBranch = code[instr.childIndex + 1].value;
 
-              instr.value = trueBranch * p + falseBranch * (1 - p);
-            }
-            break;
-          case OpCodes.Add: {
-              double s = code[instr.childIndex].value;
-              for (int j = 1; j != instr.nArguments; ++j) {
-                s += code[instr.childIndex + j].value;
-              }
-              instr.value = s;
-            }
-            break;
-          case OpCodes.Sub: {
-              double s = code[instr.childIndex].value;
-              for (int j = 1; j != instr.nArguments; ++j) {
-                s -= code[instr.childIndex + j].value;
-              }
-              if (instr.nArguments == 1) s = -s;
-              instr.value = s;
-            }
-            break;
-          case OpCodes.Mul: {
-              double p = code[instr.childIndex].value;
-              for (int j = 1; j != instr.nArguments; ++j) {
-                p *= code[instr.childIndex + j].value;
-              }
-              instr.value = p;
-            }
-            break;
-          case OpCodes.Div: {
-              double p = code[instr.childIndex].value;
-              for (int j = 1; j != instr.nArguments; ++j) {
-                p /= code[instr.childIndex + j].value;
-              }
-              if (instr.nArguments == 1) p = 1.0 / p;
-              instr.value = p;
-            }
-            break;
-          case OpCodes.Average: {
-              double s = code[instr.childIndex].value;
-              for (int j = 1; j != instr.nArguments; ++j) {
-                s += code[instr.childIndex + j].value;
-              }
-              instr.value = s / instr.nArguments;
-            }
-            break;
-          case OpCodes.Cos: {
-              instr.value = Math.Cos(code[instr.childIndex].value);
-            }
-            break;
-          case OpCodes.Sin: {
-              instr.value = Math.Sin(code[instr.childIndex].value);
-            }
-            break;
-          case OpCodes.Tan: {
-              instr.value = Math.Tan(code[instr.childIndex].value);
-            }
-            break;
-          case OpCodes.Square: {
-              instr.value = Math.Pow(code[instr.childIndex].value, 2);
-            }
-            break;
-          case OpCodes.Power: {
-              double x = code[instr.childIndex].value;
-              double y = Math.Round(code[instr.childIndex + 1].value);
-              instr.value = Math.Pow(x, y);
-            }
-            break;
-          case OpCodes.SquareRoot: {
-              instr.value = Math.Sqrt(code[instr.childIndex].value);
-            }
-            break;
-          case OpCodes.Root: {
-              double x = code[instr.childIndex].value;
-              double y = code[instr.childIndex + 1].value;
-              instr.value = Math.Pow(x, 1 / y);
-            }
-            break;
-          case OpCodes.Exp: {
-              instr.value = Math.Exp(code[instr.childIndex].value);
-            }
-            break;
-          case OpCodes.Log: {
-              instr.value = Math.Log(code[instr.childIndex].value);
-            }
-            break;
-          case OpCodes.Gamma: {
-              var x = code[instr.childIndex].value;
-              instr.value = double.IsNaN(x) ? double.NaN : alglib.gammafunction(x);
-            }
-            break;
-          case OpCodes.Psi: {
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else if (x <= 0 && (Math.Floor(x) - x).IsAlmost(0)) instr.value = double.NaN;
-              else instr.value = alglib.psi(x);
-            }
-            break;
-          case OpCodes.Dawson: {
-              var x = code[instr.childIndex].value;
-              instr.value = double.IsNaN(x) ? double.NaN : alglib.dawsonintegral(x);
-            }
-            break;
-          case OpCodes.ExponentialIntegralEi: {
-              var x = code[instr.childIndex].value;
-              instr.value = double.IsNaN(x) ? double.NaN : alglib.exponentialintegralei(x);
-            }
-            break;
-          case OpCodes.SineIntegral: {
-              double si, ci;
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else {
-                alglib.sinecosineintegrals(x, out si, out ci);
-                instr.value = si;
-              }
-            }
-            break;
-          case OpCodes.CosineIntegral: {
-              double si, ci;
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else {
-                alglib.sinecosineintegrals(x, out si, out ci);
-                instr.value = ci;
-              }
-            }
-            break;
-          case OpCodes.HyperbolicSineIntegral: {
-              double shi, chi;
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else {
-                alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
-                instr.value = shi;
-              }
-            }
-            break;
-          case OpCodes.HyperbolicCosineIntegral: {
-              double shi, chi;
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else {
-                alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
-                instr.value = chi;
-              }
-            }
-            break;
-          case OpCodes.FresnelCosineIntegral: {
-              double c = 0, s = 0;
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else {
-                alglib.fresnelintegral(x, ref c, ref s);
-                instr.value = c;
-              }
-            }
-            break;
-          case OpCodes.FresnelSineIntegral: {
-              double c = 0, s = 0;
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else {
-                alglib.fresnelintegral(x, ref c, ref s);
-                instr.value = s;
-              }
-            }
-            break;
-          case OpCodes.AiryA: {
-              double ai, aip, bi, bip;
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else {
-                alglib.airy(x, out ai, out aip, out bi, out bip);
-                instr.value = ai;
-              }
-            }
-            break;
-          case OpCodes.AiryB: {
-              double ai, aip, bi, bip;
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else {
-                alglib.airy(x, out ai, out aip, out bi, out bip);
-                instr.value = bi;
-              }
-            }
-            break;
-          case OpCodes.Norm: {
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else instr.value = alglib.normaldistribution(x);
-            }
-            break;
-          case OpCodes.Erf: {
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else instr.value = alglib.errorfunction(x);
-            }
-            break;
-          case OpCodes.Bessel: {
-              var x = code[instr.childIndex].value;
-              if (double.IsNaN(x)) instr.value = double.NaN;
-              else instr.value = alglib.besseli0(x);
-            }
-            break;
-          case OpCodes.IfThenElse: {
-              double condition = code[instr.childIndex].value;
-              double result;
-              if (condition > 0.0) {
-                result = code[instr.childIndex + 1].value;
-              } else {
-                result = code[instr.childIndex + 2].value;
-              }
-              instr.value = result;
-            }
-            break;
-          case OpCodes.AND: {
-              double result = code[instr.childIndex].value;
-              for (int j = 1; j < instr.nArguments; j++) {
-                if (result > 0.0) result = code[instr.childIndex + j].value;
-                else break;
-              }
-              instr.value = result > 0.0 ? 1.0 : -1.0;
-            }
-            break;
-          case OpCodes.OR: {
-              double result = code[instr.childIndex].value;
-              for (int j = 1; j < instr.nArguments; j++) {
-                if (result <= 0.0) result = code[instr.childIndex + j].value;
-                else break;
-              }
-              instr.value = result > 0.0 ? 1.0 : -1.0;
-            }
-            break;
-          case OpCodes.NOT: {
-              instr.value = code[instr.childIndex].value > 0.0 ? -1.0 : 1.0;
-            }
-            break;
-          case OpCodes.GT: {
-              double x = code[instr.childIndex].value;
-              double y = code[instr.childIndex + 1].value;
-              instr.value = x > y ? 1.0 : -1.0;
-            }
-            break;
-          case OpCodes.LT: {
-              double x = code[instr.childIndex].value;
-              double y = code[instr.childIndex + 1].value;
-              instr.value = x < y ? 1.0 : -1.0;
-            }
-            break;
-          case OpCodes.TimeLag:
-          case OpCodes.Integral:
-          case OpCodes.Derivative: {
-              var state = (InterpreterState)instr.data;
-              state.Reset();
-              instr.value = interpreter.Evaluate(dataset, ref row, state);
-            }
-            break;
-          default:
-            var errorText = string.Format("The {0} symbol is not supported by the linear interpreter. To support this symbol, please use the SymbolicDataAnalysisExpressionTreeInterpreter.", instr.dynamicNode.Symbol.Name);
-            throw new NotSupportedException(errorText);
+          instr.value = trueBranch * p + falseBranch * (1 - p);
+        } else if (instr.opCode == OpCodes.Add) {
+          double s = code[instr.childIndex].value;
+          for (int j = 1; j != instr.nArguments; ++j) {
+            s += code[instr.childIndex + j].value;
+          }
+          instr.value = s;
+        } else if (instr.opCode == OpCodes.Sub) {
+          double s = code[instr.childIndex].value;
+          for (int j = 1; j != instr.nArguments; ++j) {
+            s -= code[instr.childIndex + j].value;
+          }
+          if (instr.nArguments == 1) s = -s;
+          instr.value = s;
+        } else if (instr.opCode == OpCodes.Mul) {
+          double p = code[instr.childIndex].value;
+          for (int j = 1; j != instr.nArguments; ++j) {
+            p *= code[instr.childIndex + j].value;
+          }
+          instr.value = p;
+        } else if (instr.opCode == OpCodes.Div) {
+          double p = code[instr.childIndex].value;
+          for (int j = 1; j != instr.nArguments; ++j) {
+            p /= code[instr.childIndex + j].value;
+          }
+          if (instr.nArguments == 1) p = 1.0 / p;
+          instr.value = p;
+        } else if (instr.opCode == OpCodes.Average) {
+          double s = code[instr.childIndex].value;
+          for (int j = 1; j != instr.nArguments; ++j) {
+            s += code[instr.childIndex + j].value;
+          }
+          instr.value = s / instr.nArguments;
+        } else if (instr.opCode == OpCodes.Cos) {
+          instr.value = Math.Cos(code[instr.childIndex].value);
+        } else if (instr.opCode == OpCodes.Sin) {
+          instr.value = Math.Sin(code[instr.childIndex].value);
+        } else if (instr.opCode == OpCodes.Tan) {
+          instr.value = Math.Tan(code[instr.childIndex].value);
+        } else if (instr.opCode == OpCodes.Square) {
+          instr.value = Math.Pow(code[instr.childIndex].value, 2);
+        } else if (instr.opCode == OpCodes.Power) {
+          double x = code[instr.childIndex].value;
+          double y = Math.Round(code[instr.childIndex + 1].value);
+          instr.value = Math.Pow(x, y);
+        } else if (instr.opCode == OpCodes.SquareRoot) {
+          instr.value = Math.Sqrt(code[instr.childIndex].value);
+        } else if (instr.opCode == OpCodes.Root) {
+          double x = code[instr.childIndex].value;
+          double y = code[instr.childIndex + 1].value;
+          instr.value = Math.Pow(x, 1 / y);
+        } else if (instr.opCode == OpCodes.Exp) {
+          instr.value = Math.Exp(code[instr.childIndex].value);
+        } else if (instr.opCode == OpCodes.Log) {
+          instr.value = Math.Log(code[instr.childIndex].value);
+        } else if (instr.opCode == OpCodes.Gamma) {
+          var x = code[instr.childIndex].value;
+          instr.value = double.IsNaN(x) ? double.NaN : alglib.gammafunction(x);
+        } else if (instr.opCode == OpCodes.Psi) {
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else if (x <= 0 && (Math.Floor(x) - x).IsAlmost(0)) instr.value = double.NaN;
+          else instr.value = alglib.psi(x);
+        } else if (instr.opCode == OpCodes.Dawson) {
+          var x = code[instr.childIndex].value;
+          instr.value = double.IsNaN(x) ? double.NaN : alglib.dawsonintegral(x);
+        } else if (instr.opCode == OpCodes.ExponentialIntegralEi) {
+          var x = code[instr.childIndex].value;
+          instr.value = double.IsNaN(x) ? double.NaN : alglib.exponentialintegralei(x);
+        } else if (instr.opCode == OpCodes.SineIntegral) {
+          double si, ci;
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else {
+            alglib.sinecosineintegrals(x, out si, out ci);
+            instr.value = si;
+          }
+        } else if (instr.opCode == OpCodes.CosineIntegral) {
+          double si, ci;
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else {
+            alglib.sinecosineintegrals(x, out si, out ci);
+            instr.value = ci;
+          }
+        } else if (instr.opCode == OpCodes.HyperbolicSineIntegral) {
+          double shi, chi;
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else {
+            alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+            instr.value = shi;
+          }
+        } else if (instr.opCode == OpCodes.HyperbolicCosineIntegral) {
+          double shi, chi;
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else {
+            alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+            instr.value = chi;
+          }
+        } else if (instr.opCode == OpCodes.FresnelCosineIntegral) {
+          double c = 0, s = 0;
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else {
+            alglib.fresnelintegral(x, ref c, ref s);
+            instr.value = c;
+          }
+        } else if (instr.opCode == OpCodes.FresnelSineIntegral) {
+          double c = 0, s = 0;
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else {
+            alglib.fresnelintegral(x, ref c, ref s);
+            instr.value = s;
+          }
+        } else if (instr.opCode == OpCodes.AiryA) {
+          double ai, aip, bi, bip;
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else {
+            alglib.airy(x, out ai, out aip, out bi, out bip);
+            instr.value = ai;
+          }
+        } else if (instr.opCode == OpCodes.AiryB) {
+          double ai, aip, bi, bip;
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else {
+            alglib.airy(x, out ai, out aip, out bi, out bip);
+            instr.value = bi;
+          }
+        } else if (instr.opCode == OpCodes.Norm) {
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else instr.value = alglib.normaldistribution(x);
+        } else if (instr.opCode == OpCodes.Erf) {
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else instr.value = alglib.errorfunction(x);
+        } else if (instr.opCode == OpCodes.Bessel) {
+          var x = code[instr.childIndex].value;
+          if (double.IsNaN(x)) instr.value = double.NaN;
+          else instr.value = alglib.besseli0(x);
+        } else if (instr.opCode == OpCodes.IfThenElse) {
+          double condition = code[instr.childIndex].value;
+          double result;
+          if (condition > 0.0) {
+            result = code[instr.childIndex + 1].value;
+          } else {
+            result = code[instr.childIndex + 2].value;
+          }
+          instr.value = result;
+        } else if (instr.opCode == OpCodes.AND) {
+          double result = code[instr.childIndex].value;
+          for (int j = 1; j < instr.nArguments; j++) {
+            if (result > 0.0) result = code[instr.childIndex + j].value;
+            else break;
+          }
+          instr.value = result > 0.0 ? 1.0 : -1.0;
+        } else if (instr.opCode == OpCodes.OR) {
+          double result = code[instr.childIndex].value;
+          for (int j = 1; j < instr.nArguments; j++) {
+            if (result <= 0.0) result = code[instr.childIndex + j].value;
+            else break;
+          }
+          instr.value = result > 0.0 ? 1.0 : -1.0;
+        } else if (instr.opCode == OpCodes.NOT) {
+          instr.value = code[instr.childIndex].value > 0.0 ? -1.0 : 1.0;
+        } else if (instr.opCode == OpCodes.GT) {
+          double x = code[instr.childIndex].value;
+          double y = code[instr.childIndex + 1].value;
+          instr.value = x > y ? 1.0 : -1.0;
+        } else if (instr.opCode == OpCodes.LT) {
+          double x = code[instr.childIndex].value;
+          double y = code[instr.childIndex + 1].value;
+          instr.value = x < y ? 1.0 : -1.0;
+        } else if (instr.opCode == OpCodes.TimeLag || instr.opCode == OpCodes.Derivative || instr.opCode == OpCodes.Integral) {
+          var state = (InterpreterState)instr.data;
+          state.Reset();
+          instr.value = interpreter.Evaluate(dataset, ref row, state);
+        } else {
+          var errorText = string.Format("The {0} symbol is not supported by the linear interpreter. To support this symbol, please use the SymbolicDataAnalysisExpressionTreeInterpreter.", instr.dynamicNode.Symbol.Name);
+          throw new NotSupportedException(errorText);
         }
         #endregion
       }
