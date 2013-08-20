@@ -90,6 +90,7 @@ namespace HeuristicLab.Analysis {
     }
     public DataTable()
       : base() {
+      Name = "DataTable";
       VisualProperties = new DataTableVisualProperties();
       Rows = new NamedItemCollection<DataRow>();
     }

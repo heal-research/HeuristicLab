@@ -341,6 +341,7 @@
     <Compile Include="HeuristicLab-3.3\CloningConstructorTest.cs" />
     <Compile Include="HeuristicLab-3.3\CollectObjectGraphTest.cs" />
     <Compile Include="HeuristicLab-3.3\ContentViewTests.cs" />
+    <Compile Include="HeuristicLab-3.3\NamedItemTest.cs" />
     <Compile Include="HeuristicLab-3.3\ParameterVisibilityTest.cs" />
     <Compile Include="HeuristicLab-3.3\DeepCloneableCloningTest.cs" />
     <Compile Include="HeuristicLab-3.3\GeneticAlgorithmTest.cs" />
