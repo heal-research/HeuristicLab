@@ -21,14 +21,15 @@
 
 using System;
 using System.Globalization;
-using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Analysis_33.Tests {
+namespace HeuristicLab.Analysis.Tests {
   [TestClass]
   public class MultidimensionalScalingTest {
     [TestMethod]
+    [TestCategory("Algorithms.DataAnalysis")]
+    [TestProperty("Time", "short")]
     public void TestGoodnessOfFit() {
       double stress;
       DoubleMatrix distances3 = new DoubleMatrix(3, 3);

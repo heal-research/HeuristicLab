@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
 
   [TestClass]
   public class InstantiateCreatablesTest {
@@ -36,6 +36,9 @@ namespace HeuristicLab_33.Tests {
       PluginLoader.Assemblies.Any();
     }
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "medium")]
     public void InstantiateAllCreatables() {
       var exceptions = new List<string>();
 

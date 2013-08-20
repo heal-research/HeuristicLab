@@ -21,10 +21,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Collections_33.Tests {
+namespace HeuristicLab.Collections.Tests {
   [TestClass]
   public class BidirectionalLookupTest {
     private class ComplexType {
@@ -44,6 +43,8 @@ namespace HeuristicLab.Collections_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "short")]
     public void TestBidirectionalLookup() {
       var lookup1 = new BidirectionalLookup<int, double>();
       lookup1.Add(4, 2);

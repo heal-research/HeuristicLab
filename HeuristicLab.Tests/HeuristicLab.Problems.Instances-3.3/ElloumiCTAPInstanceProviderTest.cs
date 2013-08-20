@@ -24,11 +24,13 @@ using System.Text;
 using HeuristicLab.Problems.Instances.ElloumiCTAP;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.Instances_33.Tests {
+namespace HeuristicLab.Problems.Instances.Tests {
   [TestClass()]
   public class ElloumiCTAPInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetElloumiCTAPInstanceTest() {
       var target = new ElloumiCTAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();

@@ -26,28 +26,16 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_34.Tests {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
   [TestClass]
   public class GrowTreeCreatorTest {
     private const int POPULATION_SIZE = 10000;
     private const int MAX_TREE_DEPTH = 10;
     private const int MAX_TREE_LENGTH = 50;
-    private TestContext testContextInstance;
 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Encodings.SymbolicExpressionTree")]
+    [TestProperty("Time", "long")]
     public void GrowTreeCreatorDistributionsTest() {
       var randomTrees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();

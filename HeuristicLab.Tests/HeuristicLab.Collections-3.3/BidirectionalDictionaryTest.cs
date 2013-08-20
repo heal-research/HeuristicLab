@@ -22,10 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Collections_33.Tests {
+namespace HeuristicLab.Collections.Tests {
   [TestClass]
   public class BidirectionalDictionaryTest {
     private class ComplexType {
@@ -45,6 +44,8 @@ namespace HeuristicLab.Collections_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "short")]
     public void TestBidirectionalDictionary() {
       var dict1 = new BidirectionalDictionary<int, double>();
       dict1.Add(4, 2.0);

@@ -23,7 +23,7 @@ using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_34.Tests {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
   public static class Grammars {
     public static ISymbolicExpressionGrammar CreateSimpleArithmeticGrammar() {
       var g = new TypeCoherentExpressionGrammar();

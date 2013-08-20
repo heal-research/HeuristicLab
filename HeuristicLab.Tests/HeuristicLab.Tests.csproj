@@ -103,197 +103,233 @@
   <ItemGroup>
     <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\ALGLIB-3.7.0.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.CMAEvolutionStrategy-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\HeuristicLab.Algorithms.CMAEvolutionStrategy-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Algorithms.DataAnalysis-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Algorithms.DataAnalysis-3.4">
       <HintPath>..\bin\HeuristicLab.Algorithms.DataAnalysis-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.EvolutionStrategy-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Algorithms.EvolutionStrategy-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.EvolutionStrategy-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.GeneticAlgorithm-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Algorithms.GeneticAlgorithm-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.GeneticAlgorithm-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.LocalSearch-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Algorithms.LocalSearch-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.LocalSearch-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.RAPGA-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.RAPGA-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.ScatterSearch-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.ScatterSearch-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.SimulatedAnnealing-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Algorithms.SimulatedAnnealing-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.SimulatedAnnealing-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.TabuSearch-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Algorithms.TabuSearch-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.TabuSearch-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Analysis-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Analysis-3.3, Version=3.3.0.0">
       <HintPath>..\bin\HeuristicLab.Analysis-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Collections-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Collections-3.3">
       <HintPath>..\bin\HeuristicLab.Collections-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Common-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Common-3.3">
       <HintPath>..\bin\HeuristicLab.Common-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Core-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Core-3.3">
       <HintPath>..\bin\HeuristicLab.Core-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Data-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Data-3.3">
       <HintPath>..\bin\HeuristicLab.Data-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3">
       <HintPath>..\bin\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3">
+      <Private>true</Private>
       <HintPath>..\bin\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll</HintPath>
     </Reference>
-    <Reference Include="HeuristicLab.Encodings.PermutationEncoding-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Encodings.PermutationEncoding-3.3">
       <HintPath>..\bin\HeuristicLab.Encodings.PermutationEncoding-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Encodings.RealVectorEncoding-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Encodings.RealVectorEncoding-3.3">
       <HintPath>..\bin\HeuristicLab.Encodings.RealVectorEncoding-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="HeuristicLab.Encodings.ScheduleEncoding-3.3">
       <HintPath>..\bin\HeuristicLab.Encodings.ScheduleEncoding-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Encodings.ScheduleEncoding.Views-3.3">
-      <HintPath>..\bin\HeuristicLab.Encodings.ScheduleEncoding.Views-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4">
       <HintPath>..\bin\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.MainForm-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.MainForm-3.3">
       <HintPath>..\bin\HeuristicLab.MainForm-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.MainForm.WindowsForms-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.MainForm.WindowsForms-3.3">
       <HintPath>..\bin\HeuristicLab.MainForm.WindowsForms-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Operators-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Operators-3.3">
       <HintPath>..\bin\HeuristicLab.Operators-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Optimization-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Optimization-3.3">
       <HintPath>..\bin\HeuristicLab.Optimization-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Optimization.Operators-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Optimization.Operators-3.3">
       <HintPath>..\bin\HeuristicLab.Optimization.Operators-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.ParallelEngine-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.ParallelEngine-3.3">
       <HintPath>..\bin\HeuristicLab.ParallelEngine-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Parameters-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Parameters-3.3">
       <HintPath>..\bin\HeuristicLab.Parameters-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Persistence-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Persistence-3.3">
       <HintPath>..\bin\HeuristicLab.Persistence-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.PluginInfrastructure-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
       <HintPath>..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.ArtificialAnt-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.ArtificialAnt-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.ArtificialAnt-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.DataAnalysis-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Instances-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.Instances-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Instances.CordeauGQAP-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.Instances.CordeauGQAP-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.CordeauGQAP-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.DataAnalysis-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Instances.ElloumiCTAP-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.Instances.ElloumiCTAP-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.ElloumiCTAP-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Instances.QAPLIB-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.Instances.QAPLIB-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.QAPLIB-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Instances.Scheduling-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\bin\HeuristicLab.Problems.Instances.Scheduling-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.Instances.TSPLIB-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.Instances.TSPLIB-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.TSPLIB-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Instances.VehicleRouting-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.Instances.VehicleRouting-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.VehicleRouting-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Knapsack-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.Knapsack-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Knapsack-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.LawnMower-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.LawnMower-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.LinearAssignment-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.LinearAssignment-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.LinearAssignment-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.OneMax-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\bin\HeuristicLab.Problems.OneMax-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.QuadraticAssignment-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.QuadraticAssignment-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.QuadraticAssignment-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Scheduling-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Scheduling-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.Scheduling.Views-3.3">
-      <HintPath>..\bin\HeuristicLab.Problems.Scheduling.Views-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.TestFunctions-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.TestFunctions-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.TestFunctions-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.TravelingSalesman-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.TravelingSalesman-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.TravelingSalesman-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.VehicleRouting-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Problems.VehicleRouting-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.VehicleRouting-3.4.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Random-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Random-3.3">
       <HintPath>..\bin\HeuristicLab.Random-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Selection-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.Selection-3.3">
       <HintPath>..\bin\HeuristicLab.Selection-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
-    <Reference Include="HeuristicLab.SequentialEngine-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+    <Reference Include="HeuristicLab.SequentialEngine-3.3">
       <HintPath>..\bin\HeuristicLab.SequentialEngine-3.3.dll</HintPath>
+      <Private>true</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <Private>False</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
@@ -313,7 +349,7 @@
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
     <Compile Include="HeuristicLab-3.3\SamplesTest.cs" />
     <Compile Include="HeuristicLab-3.3\StorableConstructorTest.cs" />
-    <Compile Include="HeuristicLab-3.3\SupportVectorMachineTest.cs" />
+    <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\SupportVectorMachineTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
     <Compile Include="HeuristicLab-3.3\ToStringTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessModelTest.cs" />
@@ -392,7 +428,7 @@
     <Compile Include="HeuristicLab.Persistence-3.3\StorableAttributeTests.cs" />
     <Compile Include="HeuristicLab.Persistence-3.3\UseCases.cs" />
     <Compile Include="HeuristicLab.PluginInfraStructure-3.3\InstallationManagerTest.cs" />
-    <Compile Include="HeuristicLab.PluginInfraStructure-3.3\TypeDiscoveryTest.cs" />
+    <Compile Include="HeuristicLab.PluginInfraStructure-3.3\TypeExtensionsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ThresholdCalculatorsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\StatisticCalculatorsTest.cs" />

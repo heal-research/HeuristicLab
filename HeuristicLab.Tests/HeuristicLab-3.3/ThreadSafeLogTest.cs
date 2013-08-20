@@ -24,11 +24,13 @@ using System.Threading.Tasks;
 using HeuristicLab.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class ThreadSafeLogTest {
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "short")]
     public void ThreadSafeLogThreadSafetyTest() {
       int count = 10000;
       ThreadSafeLog log = new ThreadSafeLog();

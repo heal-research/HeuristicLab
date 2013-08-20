@@ -22,12 +22,11 @@
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Tests;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding_33.Tests {
+namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
   public class TestUtils {
     public static JSMEncoding CreateTestJSM1() {
       JSMEncoding result = new JSMEncoding();

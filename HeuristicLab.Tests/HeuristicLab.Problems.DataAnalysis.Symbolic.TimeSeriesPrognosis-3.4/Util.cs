@@ -25,7 +25,8 @@ using System.Diagnostics;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis_34.Tests {
+
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests {
   internal class Util {
     public static void InitTree(ISymbolicExpressionTree tree, MersenneTwister twister, List<string> varNames) {
       foreach (var node in tree.IterateNodesPostfix()) {

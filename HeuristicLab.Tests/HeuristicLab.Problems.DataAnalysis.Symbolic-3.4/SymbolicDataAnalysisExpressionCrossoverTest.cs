@@ -26,13 +26,12 @@ using System.Linq;
 using System.Threading;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ExecutionContext = HeuristicLab.Core.ExecutionContext;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
   [TestClass()]
   public class SymbolicDataAnalysisExpressionCrossoverTest {
     private const int PopulationSize = 10000;
@@ -48,6 +47,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
     public TestContext TestContext { get; set; }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionSemanticSimilarityCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionSemanticSimilarityCrossover<IRegressionProblemData>>().First();
@@ -55,6 +56,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover<IRegressionProblemData>>().First();
@@ -62,6 +65,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionDeterministicBestCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionDeterministicBestCrossover<IRegressionProblemData>>().First();
@@ -69,6 +74,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionContextAwareCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionContextAwareCrossover<IRegressionProblemData>>().First();
@@ -76,6 +83,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void SymbolicDataAnalysisExpressionDepthConstrainedCrossoverPerformanceTest() {
       var problem = new SymbolicRegressionSingleObjectiveProblem();
       var crossover = problem.OperatorsParameter.Value.OfType<SymbolicDataAnalysisExpressionDepthConstrainedCrossover<IRegressionProblemData>>().First();
@@ -136,7 +145,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests {
                         msPerCrossover + " ms per crossover (~" + Math.Round(1000.0 / (msPerCrossover)) + " crossover operations / s)");
 
       foreach (var tree in trees)
-        HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_34.Tests.Util.IsValid(tree);
+        HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests.Util.IsValid(tree);
     }
   }
 }

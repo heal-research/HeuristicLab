@@ -30,10 +30,9 @@ using HeuristicLab.Common;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.TestFunctions;
-using HeuristicLab.SequentialEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class CollectObjectGraphTest {
 
@@ -44,6 +43,9 @@ namespace HeuristicLab_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "medium")]
     [DeploymentItem(@"HeuristicLab-3.3/Resources/GA_SymbReg.hl")]
     public void CollectGASample() {
       GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize("GA_SymbReg.hl");
@@ -94,6 +96,8 @@ namespace HeuristicLab_33.Tests {
     /// causes a StackOverflow occurs after some executions)
     /// </summary>
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "long")]
     public void AlgorithmExecutions() {
       var algs = new List<IAlgorithm>();
 
@@ -102,7 +106,7 @@ namespace HeuristicLab_33.Tests {
         GeneticAlgorithm ga = new GeneticAlgorithm();
         ga.PopulationSize.Value = 5;
         ga.MaximumGenerations.Value = 5;
-        ga.Engine = new SequentialEngine();
+        ga.Engine = new SequentialEngine.SequentialEngine();
         ga.Problem = new SingleObjectiveTestFunctionProblem();
 
         sw.Start();
@@ -120,6 +124,8 @@ namespace HeuristicLab_33.Tests {
     /// Test the execution of many algorithms in parallel
     /// </summary>
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "medium")]
     public void ParallelAlgorithmExecutions() {
       int n = 60;
       var tasks = new Task[n];
@@ -132,7 +138,7 @@ namespace HeuristicLab_33.Tests {
           ga.Name = "Alg " + locali;
           ga.PopulationSize.Value = 5;
           ga.MaximumGenerations.Value = 5;
-          ga.Engine = new SequentialEngine();
+          ga.Engine = new SequentialEngine.SequentialEngine();
           ga.Problem = new SingleObjectiveTestFunctionProblem();
           ga.Prepare(true);
           Console.WriteLine("{0}; Objects before execution: {1}", ga.Name, ga.GetObjectGraphObjects().Count());

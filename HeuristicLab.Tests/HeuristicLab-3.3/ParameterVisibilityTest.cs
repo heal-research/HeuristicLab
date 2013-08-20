@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class ParameterVisibilityTest {
     // Use ClassInitialize to run code before running the first test in the class
@@ -35,21 +35,17 @@ namespace HeuristicLab_33.Tests {
     public static void MyClassInitialize(TestContext testContext) {
       PluginLoader.Assemblies.Any();
     }
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
+
     private TestContext testContextInstance;
     public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
+      get { return testContextInstance; }
+      set { testContextInstance = value; }
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "long")]
     public void TestParameterVisibility() {
       StringBuilder errorMessage = new StringBuilder();
 

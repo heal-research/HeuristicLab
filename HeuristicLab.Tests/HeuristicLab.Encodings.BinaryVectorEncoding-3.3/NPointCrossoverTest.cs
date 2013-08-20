@@ -21,71 +21,22 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
-
-
+namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
   /// <summary>
   ///This is a test class for SinglePointCrossoverTest and is intended
   ///to contain all SinglePointCrossoverTest Unit Tests
   ///</summary>
   [TestClass()]
   public class NPointCrossoverTest {
-
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
-    [DeploymentItem("HeuristicLab.Encodings.BinaryVectorEncoding-3.3.dll")]
+    [TestMethod]
+    [TestCategory("Encodings.BinaryVector")]
+    [TestProperty("Time", "short")]
     public void NPointCrossoverCrossTest() {
       NPointCrossover_Accessor target = new NPointCrossover_Accessor(new PrivateObject(typeof(NPointCrossover)));
       ItemArray<BinaryVector> parents;
@@ -98,8 +49,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       try {
         BinaryVector actual;
         actual = target.Cross(random, parents);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -110,8 +60,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       try {
         BinaryVector actual;
         actual = target.Cross(random, parents);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -120,7 +69,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Encodings.BinaryVector")]
+    [TestProperty("Time", "short")]
     public void NPointCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       BinaryVector parent1, parent2, expected, actual;
@@ -164,19 +115,10 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding_33.Tests {
       exceptionFired = false;
       try {
         actual = NPointCrossover.Apply(random, parent1, parent2, n);
-      }
-      catch (System.ArgumentException) {
+      } catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for SinglePointCrossover Constructor
-    ///</summary>
-    [TestMethod()]
-    public void NPointCrossoverConstructorTest() {
-      NPointCrossover target = new NPointCrossover();
     }
   }
 }

@@ -24,41 +24,34 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic_34.Tests;
+using HeuristicLab.Problems.DataAnalysis.Symbolic.Tests;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis_34.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests {
 
   [TestClass()]
   public class SymbolicTimeSeriesPrognosisInterpreterTest {
     private const int N = 1000;
     private const int Rows = 100;
     private const int Columns = 50;
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void SymbolicTimeSeriesPrognosisTreeInterpreterTypeCoherentGrammarPerformanceTest() {
       TypeCoherentGrammarPerformanceTest(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
+
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void SymbolicTimeSeriesPrognosisTreeInterpreterFullGrammarPerformanceTest() {
       FullGrammarPerformanceTest(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
+
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "long")]
     public void SymbolicTimeSeriesPrognosisTreeInterpreterArithmeticGrammarPerformanceTest() {
       ArithmeticGrammarPerformanceTest(new SymbolicTimeSeriesPrognosisExpressionTreeInterpreter("y"), 12.5e6);
     }
@@ -121,6 +114,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis_34.Tes
     ///A test for Evaluate
     ///</summary>
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
     public void SymbolicDataAnalysisExpressionTreeInterpreterEvaluateTest() {
       Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
         { 1.0, 1.0, 1.0 },
@@ -142,28 +137,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis_34.Tes
       EvaluateOperations(interpreter, ds);
       EvaluateAdf(interpreter, ds);
     }
-
-    //[TestMethod]
-    //public void SymbolicDataAnalysisExpressionILEmittingTreeInterpreterEvaluateTest() {
-    //  Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
-    //    { 1.0, 1.0, 1.0 },
-    //    { 2.0, 2.0, 2.0 },
-    //    { 3.0, 1.0, 2.0 },
-    //    { 4.0, 1.0, 1.0 },
-    //    { 5.0, 2.0, 2.0 },
-    //    { 6.0, 1.0, 2.0 },
-    //    { 7.0, 1.0, 1.0 },
-    //    { 8.0, 2.0, 2.0 },
-    //    { 9.0, 1.0, 2.0 },
-    //    { 10.0, 1.0, 1.0 },
-    //    { 11.0, 2.0, 2.0 },
-    //    { 12.0, 1.0, 2.0 }
-    //  });
-
-    //  var interpreter = new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter();
-    //  EvaluateTerminals(interpreter, ds);
-    //  EvaluateOperations(interpreter, ds);
-    //}
 
     private void EvaluateTerminals(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds) {
       // constants

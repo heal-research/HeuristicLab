@@ -28,7 +28,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class PluginDependenciesTest {
     private static Dictionary<Assembly, Type> loadedPlugins;
@@ -52,6 +52,9 @@ namespace HeuristicLab_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "short")]
     public void CheckReferenceAssembliesForPluginDependencies() {
       StringBuilder errorMessage = new StringBuilder();
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
@@ -75,6 +78,9 @@ namespace HeuristicLab_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "short")]
     public void CheckPluginDependenciesForReferencedAssemblies() {
       StringBuilder errorMessage = new StringBuilder();
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
@@ -102,7 +108,7 @@ namespace HeuristicLab_33.Tests {
     }
 
     private static Type GetPluginFromAssembly(Assembly assembly) {
-      return assembly.GetExportedTypes().Where(t => typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface).FirstOrDefault();
+      return assembly.GetExportedTypes().FirstOrDefault(t => typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface);
     }
 
     private static string GetPluginName(Type plugin) {

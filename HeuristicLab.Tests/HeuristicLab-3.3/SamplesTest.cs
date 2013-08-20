@@ -40,7 +40,6 @@ using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
-using HeuristicLab.ParallelEngine;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.ArtificialAnt;
 using HeuristicLab.Problems.DataAnalysis;
@@ -60,11 +59,10 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Selection;
-using HeuristicLab.SequentialEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.opt.txt")]
   [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.txt")]
@@ -72,11 +70,15 @@ namespace HeuristicLab_33.Tests {
     #region GA
     #region TSP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGaTspSampleTest() {
       var ga = CreateGaTspSample();
       XmlGenerator.Serialize(ga, "../../GA_TSP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGaTspSampleTest() {
       var ga = CreateGaTspSample();
       ga.SetSeedRandomly.Value = false;
@@ -108,12 +110,16 @@ namespace HeuristicLab_33.Tests {
     #endregion
     #region VRP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGaVrpSampleTest() {
       var ga = CreateGaVrpSample();
       XmlGenerator.Serialize(ga, "../../GA_VRP.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGaVrpSampleTest() {
       var ga = CreateGaVrpSample();
       ga.SetSeedRandomly.Value = false;
@@ -178,12 +184,16 @@ namespace HeuristicLab_33.Tests {
     #endregion
     #region ArtificialAnt
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       XmlGenerator.Serialize(ga, "../../SGP_SantaFe.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
@@ -230,11 +240,15 @@ namespace HeuristicLab_33.Tests {
     #endregion
     #region Symbolic Regression
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGpSymbolicRegressionSampleTest() {
       var ga = CreateGpSymbolicRegressionSample();
       XmlGenerator.Serialize(ga, "../../SGP_SymbReg.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGpSymbolicRegressionSampleTest() {
       var ga = CreateGpSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
@@ -334,12 +348,16 @@ namespace HeuristicLab_33.Tests {
     #endregion
     #region Symbolic Classification
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
       XmlGenerator.Serialize(ga, "../../SGP_SymbClass.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;
@@ -441,6 +459,8 @@ namespace HeuristicLab_33.Tests {
     #endregion
     #region LawnMower
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGpLawnMowerSampleTest() {
       var ga = CreateGpLawnMowerSample();
       ga.SetSeedRandomly.Value = false;
@@ -471,11 +491,15 @@ namespace HeuristicLab_33.Tests {
     #region ES
     #region Griewank
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();
       XmlGenerator.Serialize(es, "../../ES_Griewank.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();
       es.SetSeedRandomly.Value = false;
@@ -525,11 +549,15 @@ namespace HeuristicLab_33.Tests {
     #region Island GA
     #region TSP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateIslandGaTspSampleTest() {
       var ga = CreateIslandGaTspSample();
       XmlGenerator.Serialize(ga, "../../IslandGA_TSP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunIslandGaTspSampleTest() {
       var ga = CreateIslandGaTspSample();
       ga.SetSeedRandomly.Value = false;
@@ -565,11 +593,15 @@ namespace HeuristicLab_33.Tests {
     #region LS
     #region Knapsack
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
       XmlGenerator.Serialize(ls, "../../LS_Knapsack.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "medium")]
     public void RunLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
       ls.SetSeedRandomly.Value = false;
@@ -617,7 +649,7 @@ namespace HeuristicLab_33.Tests {
       ls.Seed.Value = 0;
       ls.SetSeedRandomly.Value = true;
       #endregion
-      ls.Engine = new ParallelEngine();
+      ls.Engine = new ParallelEngine.ParallelEngine();
       return ls;
     }
     #endregion
@@ -626,11 +658,15 @@ namespace HeuristicLab_33.Tests {
     #region PSO
     #region Schwefel
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreatePsoSchwefelSampleTest() {
       var pso = CreatePsoSchwefelSample();
       XmlGenerator.Serialize(pso, "../../PSO_Schwefel.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "medium")]
     public void RunPsoSchwefelSampleTest() {
       var pso = CreatePsoSchwefelSample();
       pso.SetSeedRandomly.Value = false;
@@ -696,7 +732,7 @@ namespace HeuristicLab_33.Tests {
       pso.Seed.Value = 0;
       pso.SetSeedRandomly.Value = true;
       #endregion
-      pso.Engine = new ParallelEngine();
+      pso.Engine = new ParallelEngine.ParallelEngine();
       return pso;
     }
     #endregion
@@ -705,11 +741,15 @@ namespace HeuristicLab_33.Tests {
     #region SA
     #region Rastrigin
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();
       XmlGenerator.Serialize(sa, "../../SA_Rastrigin.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "medium")]
     public void RunSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();
       sa.SetSeedRandomly.Value = false;
@@ -762,7 +802,7 @@ namespace HeuristicLab_33.Tests {
       sa.SetSeedRandomly.Value = true;
       sa.StartTemperature.Value = 1;
       #endregion
-      sa.Engine = new ParallelEngine();
+      sa.Engine = new ParallelEngine.ParallelEngine();
       return sa;
     }
     #endregion
@@ -771,11 +811,15 @@ namespace HeuristicLab_33.Tests {
     #region TS
     #region TSP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateTabuSearchTspSampleTest() {
       var ts = CreateTabuSearchTspSample();
       XmlGenerator.Serialize(ts, "../../TS_TSP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunTabuSearchTspSampleTest() {
       var ts = CreateTabuSearchTspSample();
       ts.SetSeedRandomly.Value = false;
@@ -831,18 +875,22 @@ namespace HeuristicLab_33.Tests {
       ts.TabuTenure.Value = 60;
 
       #endregion
-      ts.Engine = new ParallelEngine();
+      ts.Engine = new ParallelEngine.ParallelEngine();
       return ts;
     }
     #endregion
 
     #region VRP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
       XmlGenerator.Serialize(vrp, "../../TS_VRP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
       vrp.SetSeedRandomly.Value = false;
@@ -897,7 +945,7 @@ namespace HeuristicLab_33.Tests {
       ts.TabuTenure.Value = 6;
 
       #endregion
-      ts.Engine = new ParallelEngine();
+      ts.Engine = new ParallelEngine.ParallelEngine();
       return ts;
     }
     #endregion
@@ -906,11 +954,15 @@ namespace HeuristicLab_33.Tests {
     #region VNS
     #region TSP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateVnsTspSampleTest() {
       var vns = CreateVnsTspSample();
       XmlGenerator.Serialize(vns, "../../VNS_TSP.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunVnsTspSampleTest() {
       var vns = CreateVnsTspSample();
       vns.SetSeedRandomly = false;
@@ -975,7 +1027,7 @@ namespace HeuristicLab_33.Tests {
         .Single(), false);
       vns.ShakingOperator = shakingOperator;
       #endregion
-      vns.Engine = new ParallelEngine();
+      vns.Engine = new ParallelEngine.ParallelEngine();
       return vns;
     }
     #endregion
@@ -983,11 +1035,15 @@ namespace HeuristicLab_33.Tests {
 
     #region Gaussian Process Regression
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateGaussianProcessRegressionSampleTest() {
       var gpr = CreateGaussianProcessRegressionSample();
       XmlGenerator.Serialize(gpr, "../../GPR.hl");
     }
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunGaussianProcessRegressionSample() {
       var gpr = CreateGaussianProcessRegressionSample();
       gpr.SetSeedRandomly = false;
@@ -1014,7 +1070,7 @@ namespace HeuristicLab_33.Tests {
       gpr.Seed = 0;
       gpr.SetSeedRandomly = true;
       #endregion
-      gpr.Engine = new ParallelEngine();
+      gpr.Engine = new ParallelEngine.ParallelEngine();
       return gpr;
     }
     #endregion
@@ -1022,12 +1078,16 @@ namespace HeuristicLab_33.Tests {
     #region Scatter Search
     #region VRP
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
       XmlGenerator.Serialize(ss, "../../SS_VRP.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
       ss.SetSeedRandomly.Value = false;
@@ -1048,7 +1108,7 @@ namespace HeuristicLab_33.Tests {
 
       #region Algorithm Configuration
       ScatterSearch ss = new ScatterSearch();
-      ss.Engine = new SequentialEngine();
+      ss.Engine = new SequentialEngine.SequentialEngine();
       ss.Name = "Scatter Search - VRP";
       ss.Description = "A scatter search algorithm which solves the \"C101\" vehicle routing problem (imported from Solomon)";
       ss.Problem = vrpProblem;
@@ -1078,12 +1138,16 @@ namespace HeuristicLab_33.Tests {
     #region RAPGA
     #region Scheduling
     [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
     public void CreateRAPGASchedulingSampleTest() {
       var ss = CreateRAPGASchedulingSample();
       XmlGenerator.Serialize(ss, "../../RAPGA_JSSP.hl");
     }
 
     [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
     public void RunRAPGASchedulingSampleTest() {
       var rapga = CreateRAPGASchedulingSample();
       rapga.SetSeedRandomly.Value = false;
@@ -1101,7 +1165,7 @@ namespace HeuristicLab_33.Tests {
 
       #region Algorithm Configuration
       RAPGA rapga = new RAPGA();
-      rapga.Engine = new SequentialEngine();
+      rapga.Engine = new SequentialEngine.SequentialEngine();
       rapga.Name = "RAPGA - Job Shop Scheduling";
       rapga.Description = "A relevant alleles preserving genetic algorithm which solves a job shop scheduling problem";
       rapga.Problem = problem;
@@ -1146,7 +1210,7 @@ namespace HeuristicLab_33.Tests {
       es.StrategyParameterManipulator = es.StrategyParameterManipulatorParameter.ValidValues
         .OfType<SM>()
         .Single();
-      es.Engine = new ParallelEngine();
+      es.Engine = new ParallelEngine.ParallelEngine();
     }
 
     private void ConfigureGeneticAlgorithmParameters<S, C, M>(GeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate, int tournGroupSize = 0)
@@ -1175,7 +1239,7 @@ namespace HeuristicLab_33.Tests {
       if (tSelector != null) {
         tSelector.GroupSizeParameter.Value.Value = tournGroupSize;
       }
-      ga.Engine = new ParallelEngine();
+      ga.Engine = new ParallelEngine.ParallelEngine();
     }
 
     private void ConfigureIslandGeneticAlgorithmParameters<S, C, M, Mi, MiS, MiR>(IslandGeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate, int numberOfIslands, int migrationInterval, double migrationRate)
@@ -1214,7 +1278,7 @@ namespace HeuristicLab_33.Tests {
       ga.ImmigrationReplacer = ga.ImmigrationReplacerParameter.ValidValues
         .OfType<MiR>()
         .Single();
-      ga.Engine = new ParallelEngine();
+      ga.Engine = new ParallelEngine.ParallelEngine();
     }
 
 

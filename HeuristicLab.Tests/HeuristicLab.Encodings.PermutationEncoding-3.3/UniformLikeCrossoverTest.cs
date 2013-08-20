@@ -20,71 +20,22 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
-
-
+namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   /// <summary>
   ///This is a test class for UniformLikeCrossoverTest and is intended
   ///to contain all UniformLikeCrossoverTest Unit Tests
   ///</summary>
   [TestClass()]
   public class UniformLikeCrossoverTest {
-
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
-
     /// <summary>
     ///A test for Apply
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Encodings.Permutation")]
+    [TestProperty("Time", "short")]
     public void UniformLikeCrossoverApplyTest() {
       // test from the paper
       IRandom random = new TestRandom(new int[] { 0 }, new double[] { 0.2, 0.7, 0.2, 0.2 }); // TODO: Initialize to an appropriate value
@@ -106,7 +57,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding_33.Tests {
     /// <summary>
     ///A test for Cross
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Encodings.Permutation")]
+    [TestProperty("Time", "short")]
     [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void UniformLikeCrossoverCrossTest() {
       UniformLikeCrossover_Accessor target = new UniformLikeCrossover_Accessor();

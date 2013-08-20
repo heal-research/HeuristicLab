@@ -27,7 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class CloningConstructorTest {
     // Use ClassInitialize to run code before running the first test in the class
@@ -37,6 +37,9 @@ namespace HeuristicLab_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "medium")]
     public void TestCloningConstructor() {
       StringBuilder errorMessage = new StringBuilder();
 

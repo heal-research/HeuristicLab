@@ -22,10 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Collections_33.Tests {
+namespace HeuristicLab.Collections.Tests {
   [TestClass]
   public class ObservableKeyedListTest {
     private class IntKeyedList : ObservableKeyedList<int, int> {
@@ -39,6 +38,8 @@ namespace HeuristicLab.Collections_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "short")]
     public void KeyedListAddDuplicateItemTest() {
       var list = new IntKeyedList();
       var numbers = new List<int>() { 1, 2, 3 };

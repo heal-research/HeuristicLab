@@ -24,11 +24,13 @@ using System.Text;
 using HeuristicLab.Problems.Instances.CordeauGQAP;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.Instances_33.Tests {
+namespace HeuristicLab.Problems.Instances.Tests {
   [TestClass()]
   public class CordeauGQAPInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetCordeauGQAPInstanceTest() {
       var target = new CordeauGQAPInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -36,8 +38,7 @@ namespace HeuristicLab.Problems.Instances_33.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;

@@ -20,70 +20,21 @@
 #endregion
 
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.TestFunctions_33.Tests {
-
-
+namespace HeuristicLab.Problems.TestFunctions.Tests {
   /// <summary>
   ///This is a test class for MatyasEvaluatorTest and is intended
   ///to contain all MatyasEvaluatorTest Unit Tests
   ///</summary>
   [TestClass()]
   public class MatyasEvaluatorTest {
-
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
     /// <summary>
     ///A test for EvaluateFunction
     ///</summary>
-    [TestMethod()]
-    [DeploymentItem("HeuristicLab.Problems.TestFunctions-3.3.dll")]
+    [TestMethod]
+    [TestCategory("Problems.TestFunctions")]
+    [TestProperty("Time", "short")]
     public void MatyasEvaluateFunctionTest() {
       MatyasEvaluator_Accessor target = new MatyasEvaluator_Accessor();
       RealVector point = null;

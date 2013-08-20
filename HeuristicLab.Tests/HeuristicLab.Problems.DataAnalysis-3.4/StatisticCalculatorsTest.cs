@@ -22,9 +22,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Problems.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Tests {
 
   [TestClass()]
   public class StatisticCalculatorsTest {
@@ -53,6 +52,8 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
       };
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
     public void CalculateMeanAndVarianceTest() {
       System.Random random = new System.Random(31415);
 
@@ -84,6 +85,8 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
     public void CalculatePearsonsRSquaredTest() {
       System.Random random = new System.Random(31415);
       int n = testData.GetLength(0);
@@ -113,7 +116,10 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
         }
       }
     }
+
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
     public void CalculatePearsonsRSquaredOfConstantTest() {
       System.Random random = new System.Random(31415);
       int n = 12;
@@ -140,6 +146,8 @@ namespace HeuristicLab.Problems.DataAnalysis_34.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.DataAnalysis")]
+    [TestProperty("Time", "short")]
     public void CalculateHoeffdingsDTest() {
       OnlineCalculatorError error;
       // direct perfect dependency

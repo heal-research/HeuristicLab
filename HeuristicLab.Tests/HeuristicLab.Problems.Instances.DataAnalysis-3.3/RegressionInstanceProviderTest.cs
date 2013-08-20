@@ -21,14 +21,15 @@
 
 using System;
 using System.Text;
-using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
+namespace HeuristicLab.Problems.Instances.DataAnalysis.Tests {
   [TestClass()]
   public class RegressionInstanceProviderTest {
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "medium")]
     public void GetKeijzerInstanceTest() {
       var target = new KeijzerInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -36,8 +37,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -46,7 +46,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetKornInstanceTest() {
       var target = new KornsInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -54,8 +56,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -64,7 +65,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetNguyenInstanceTest() {
       var target = new NguyenInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -72,8 +75,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -82,7 +84,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetRealWorldInstanceTest() {
       var target = new RegressionRealWorldInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -90,8 +94,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -100,7 +103,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetVariousInstanceTest() {
       var target = new VariousInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -108,8 +113,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;
@@ -118,7 +122,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       Assert.IsTrue(erroneousInstances.Length == 0, "Some instances could not be parsed: " + Environment.NewLine + erroneousInstances.ToString());
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
     public void GetVladislavlevaInstanceTest() {
       var target = new VladislavlevaInstanceProvider();
       StringBuilder erroneousInstances = new StringBuilder();
@@ -126,8 +132,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis_34.Tests {
       foreach (var id in target.GetDataDescriptors()) {
         try {
           target.LoadData(id);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           erroneousInstances.AppendLine(id.Name + ": " + ex.Message);
         }
         count++;

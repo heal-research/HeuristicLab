@@ -23,30 +23,19 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.LinearAssignment.Tests_33 {
+namespace HeuristicLab.Problems.LinearAssignment.Tests {
   /// <summary>
   ///This is a test class for LinearAssignmentProblemSolverTest and is intended
   ///to contain all LinearAssignmentProblemSolverTest Unit Tests
   ///</summary>
   [TestClass()]
   public class LinearAssignmentProblemSolverTest {
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get { return testContextInstance; }
-      set { testContextInstance = value; }
-    }
-
-
     /// <summary>
     ///A test for Solve
     ///</summary>
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Problems.Assignment")]
+    [TestProperty("Time", "short")]
     public void SolveTest() {
       double[,] costs = new double[,] {
         {  5,  9,  3,  6 },

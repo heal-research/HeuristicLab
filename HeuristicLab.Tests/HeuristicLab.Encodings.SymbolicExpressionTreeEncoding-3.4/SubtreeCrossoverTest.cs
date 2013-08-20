@@ -22,30 +22,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding_34.Tests {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
   [TestClass]
   public class SubtreeCrossoverTest {
     private const int POPULATION_SIZE = 1000;
-    private TestContext testContextInstance;
 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Encodings.SymbolicExpressionTree")]
+    [TestProperty("Time", "long")]
     public void SubtreeCrossoverDistributionsTest() {
       int generations = 5;
       var trees = new List<ISymbolicExpressionTree>();

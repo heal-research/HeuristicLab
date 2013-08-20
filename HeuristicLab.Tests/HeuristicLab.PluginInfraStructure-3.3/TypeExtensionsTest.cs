@@ -21,12 +21,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab_33.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.PluginInfrastructure.Tests {
@@ -34,25 +32,11 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
   /// Summary description for TypeDiscoveryTest
   /// </summary>
   [TestClass]
-  public class TypeDiscoveryTest {
-    public TypeDiscoveryTest() { }
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get { return testContextInstance; }
-      set { testContextInstance = value; }
-    }
-
-    public static void MyClassInitialize(TestContext testContext) {
-      PluginLoader.Assemblies.Any();
-    }
-
+  public class TypeExtensionsTest {
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "short")]
     public void IsSubTypeOfTest() {
       Assert.IsTrue(typeof(int).IsSubTypeOf(typeof(object)));
       Assert.IsTrue(typeof(IntValue).IsSubTypeOf(typeof(IItem)));
@@ -78,6 +62,9 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "short")]
     public void BuildTypeTest() {
       Assert.AreEqual(typeof(List<>).BuildType(typeof(List<>)), typeof(List<>));
       Assert.AreEqual(typeof(List<int>).BuildType(typeof(List<>)), typeof(List<int>));

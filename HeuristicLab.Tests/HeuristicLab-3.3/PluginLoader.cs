@@ -26,7 +26,7 @@ using System.Linq;
 using System.Reflection;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   public static class PluginLoader {
     public const string ExecutableExtension = ".exe";
     public const string AssemblyExtension = ".dll";
@@ -35,11 +35,10 @@ namespace HeuristicLab_33.Tests {
     public static List<Assembly> Assemblies;
 
     static PluginLoader() {
-      foreach (string path in Directory.EnumerateFiles(Environment.CurrentDirectory).Where(IsRelevantAssemblyPath)) {
+      foreach (string path in Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory).Where(IsRelevantAssemblyPath)) {
         try {
           Assembly.LoadFrom(path);
-        }
-        catch (BadImageFormatException) { }
+        } catch (BadImageFormatException) { }
       }
       // test relevant path again to exclude previously loaded assemblies
       Assemblies = AppDomain.CurrentDomain.GetAssemblies()

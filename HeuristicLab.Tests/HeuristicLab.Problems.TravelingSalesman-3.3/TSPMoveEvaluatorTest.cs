@@ -23,12 +23,10 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Problems.TravelingSalesman;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Problems.TravelingSalesman_33.Tests {
-
+namespace HeuristicLab.Problems.TravelingSalesman.Tests {
   /// <summary>
   ///This is a test class for TSP move evaluators
   ///</summary>
@@ -39,16 +37,6 @@ namespace HeuristicLab.Problems.TravelingSalesman_33.Tests {
     private static DistanceMatrix distances;
     private static Permutation tour;
     private static MersenneTwister random;
-
-    private TestContext testContextInstance;
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get { return testContextInstance; }
-      set { testContextInstance = value; }
-    }
 
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
@@ -69,6 +57,8 @@ namespace HeuristicLab.Problems.TravelingSalesman_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Problems.TravelingSalesman")]
+    [TestProperty("Time", "short")]
     public void InversionMoveEvaluatorTest() {
       var evaluator = new TSPRoundedEuclideanPathEvaluator();
       var moveEvaluator = new TSPInversionMoveRoundedEuclideanPathEvaluator();
@@ -100,6 +90,8 @@ The move would invert the tour {1} between values {2} and {3}.", moveMatrix.ToSt
     }
 
     [TestMethod]
+    [TestCategory("Problems.TravelingSalesman")]
+    [TestProperty("Time", "short")]
     public void TranslocationMoveEvaluatorTest() {
       var evaluator = new TSPRoundedEuclideanPathEvaluator();
       var moveEvaluator = new TSPTranslocationMoveRoundedEuclideanPathEvaluator();

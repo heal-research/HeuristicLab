@@ -27,25 +27,10 @@ using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   [TestClass]
   public class ContentViewTests {
     public ContentViewTests() {
-    }
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
     }
 
     // Use ClassInitialize to run code before running the first test in the class
@@ -56,6 +41,9 @@ namespace HeuristicLab_33.Tests {
 
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "long")]
     public void ContentViewAttributeTest() {
       //get all non-generic and instantiable classes which implement IContentView
       foreach (Type viewType in ApplicationManager.Manager.GetTypes(typeof(IContentView))) {

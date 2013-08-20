@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab_33.Tests {
+namespace HeuristicLab.Tests {
   /// <summary>
   /// Summary description for DeepCloneableCloningTest
   /// </summary>
@@ -39,6 +39,12 @@ namespace HeuristicLab_33.Tests {
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
       PluginLoader.Assemblies.Any();
+    }
+
+    private TestContext testContextInstance;
+    public TestContext TestContext {
+      get { return testContextInstance; }
+      set { testContextInstance = value; }
     }
 
     public DeepCloneableCloningTest() {
@@ -54,45 +60,12 @@ namespace HeuristicLab_33.Tests {
         excludedTypes.Add(grammarType);
     }
 
-    private TestContext testContextInstance;
     private readonly HashSet<Type> excludedTypes;
 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    //
-    // You can use the following additional attributes as you write your tests:
-    //
-    // Use ClassInitialize to run code before running the first test in the class
-    // [ClassInitialize()]
-    // public static void MyClassInitialize(TestContext testContext) { }
-    //
-    // Use ClassCleanup to run code after all tests in a class have run
-    // [ClassCleanup()]
-    // public static void MyClassCleanup() { }
-    //
-    // Use TestInitialize to run code before running each test 
-    // [TestInitialize()]
-    // public void MyTestInitialize() { }
-    //
-    // Use TestCleanup to run code after each test has run
-    // [TestCleanup()]
-    // public void MyTestCleanup() { }
-    //
-    #endregion
-
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "long")]
     [DeploymentItem(@"HeuristicLab-3.3\Resources\SamplesExperimentFinished.hl")]
     public void TestCloningFinishedExperiment() {
       Experiment experiment = (Experiment)XmlParser.Deserialize("SamplesExperimentFinished.hl");
@@ -104,6 +77,9 @@ namespace HeuristicLab_33.Tests {
     }
 
     [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "long")]
     public void TestCloningAllDeepCloneables() {
       PluginLoader.Assemblies.ToArray();
       bool success = true;

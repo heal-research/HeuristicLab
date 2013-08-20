@@ -21,71 +21,22 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
-
-
+namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   /// <summary>
   ///This is a test class for SimulatedBinaryCrossoverTest and is intended
   ///to contain all SimulatedBinaryCrossoverTest Unit Tests
   ///</summary>
   [TestClass()]
   public class SimulatedBinaryCrossoverTest {
-
-
-    private TestContext testContextInstance;
-
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
     /// <summary>
     ///A test for Cross
     ///</summary>
     [TestMethod()]
-    [DeploymentItem("HeuristicLab.Encodings.RealVectorEncoding-3.3.dll")]
+    [TestCategory("Encodings.RealVector")]
+    [TestProperty("Time", "short")]
     public void SimulatedBinaryCrossoverCrossTest() {
       SimulatedBinaryCrossover_Accessor target = new SimulatedBinaryCrossover_Accessor(new PrivateObject(typeof(SimulatedBinaryCrossover)));
       ItemArray<RealVector> parents;
@@ -119,6 +70,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
     ///A test for Apply
     ///</summary>
     [TestMethod()]
+    [TestCategory("Encodings.RealVector")]
+    [TestProperty("Time", "short")]
     public void SimulatedBinaryCrossoverApplyTest() {
       TestRandom random = new TestRandom();
       RealVector parent1, parent2, expected, actual;
@@ -159,14 +112,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding_33.Tests {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
-    ///A test for SimulatedBinaryCrossover Constructor
-    ///</summary>
-    [TestMethod()]
-    public void SimulatedBinaryCrossoverConstructorTest() {
-      SimulatedBinaryCrossover target = new SimulatedBinaryCrossover();
     }
   }
 }
