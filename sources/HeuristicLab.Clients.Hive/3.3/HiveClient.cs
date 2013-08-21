@@ -264,7 +264,7 @@ namespace HeuristicLab.Clients.Hive {
     private void UploadJob(RefreshableJob refreshableJob, CancellationToken cancellationToken) {
       try {
         refreshableJob.IsProgressing = true;
-        refreshableJob.Progress = new Progress("Connecting to server...");
+        refreshableJob.Progress.Start("Connecting to server...");
         IEnumerable<string> resourceNames = ToResourceNameList(refreshableJob.Job.ResourceNames);
         var resourceIds = new List<Guid>();
         foreach (var resourceName in resourceNames) {
@@ -423,16 +423,14 @@ namespace HeuristicLab.Clients.Hive {
     public static void LoadJob(RefreshableJob refreshableJob) {
       var hiveExperiment = refreshableJob.Job;
       refreshableJob.IsProgressing = true;
-      refreshableJob.Progress = new Progress();
       TaskDownloader downloader = null;
 
       try {
         int totalJobCount = 0;
         IEnumerable<LightweightTask> allTasks;
 
-        refreshableJob.Progress.Status = "Connecting to Server...";
         // fetch all task objects to create the full tree of tree of HiveTask objects
-        refreshableJob.Progress.Status = "Downloading list of tasks...";
+        refreshableJob.Progress.Start("Downloading list of tasks...");
         allTasks = HiveServiceLocator.Instance.CallHiveService(s => s.GetLightweightJobTasksWithoutStateLog(hiveExperiment.Id));
         totalJobCount = allTasks.Count();
 

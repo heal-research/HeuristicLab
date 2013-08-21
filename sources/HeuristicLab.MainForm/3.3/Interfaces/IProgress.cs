@@ -54,11 +54,15 @@ namespace HeuristicLab.MainForm {
     /// </summary>
     /// <exception cref="NotSupportedException">Thrown when cancellation is not supported.</exception>
     /// <param name="timeoutMs">The operation is given a certain timeout to cancel. If the operation doesn't cancel in this time it will be forcibly closed.</param>
-    void Cancel(int timeoutMs);
+    void Cancel(int timeoutMs = 0);
     /// <summary>
     /// Sets the ProgressValue to 1 and the ProgressState to Finished.
     /// </summary>
     void Finish();
+
+    void Start(string status);
+
+    void Start();
 
     /// <summary>
     /// The status text changed.

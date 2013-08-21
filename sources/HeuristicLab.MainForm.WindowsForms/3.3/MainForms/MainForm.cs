@@ -29,8 +29,6 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class MainForm : Form, IMainForm {
-    private readonly Dictionary<IContent, IProgress> contentProgressLookup;
-    private readonly Dictionary<IView, IProgress> viewProgressLookup;
     private bool initialized;
     private int appStartingCursors;
     private int waitingCursors;
@@ -40,8 +38,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       InitializeComponent();
       this.views = new Dictionary<IView, Form>();
       this.userInterfaceItems = new List<IUserInterfaceItem>();
-      this.contentProgressLookup = new Dictionary<IContent, IProgress>();
-      this.viewProgressLookup = new Dictionary<IView, IProgress>();
       this.initialized = false;
       this.showContentInViewHost = false;
       appStartingCursors = 0;
@@ -346,6 +342,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
       foreach (IView view in views.Keys.ToArray())
         CloseView(view, closeReason);
     }
+    #endregion
+
+    #region progress views
+    private readonly Dictionary<IContent, IProgress> contentProgressLookup = new Dictionary<IContent, IProgress>();
+    private readonly Dictionary<IView, IProgress> viewProgressLookup = new Dictionary<IView, IProgress>();
+    private readonly List<ProgressView> progressViews = new List<ProgressView>();
 
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the <see cref="ContentView"/>s showing the specified content.
@@ -354,16 +356,20 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (contentProgressLookup.ContainsKey(content))
         throw new ArgumentException("A progress is already registered for the specified content.", "content");
 
-      var contentViews = Enumerable.Empty<IContentView>();
+      var contentViews = views.Keys.OfType<ContentView>();
+      if (!contentViews.Any(v => v.Content == content))
+        throw new ArgumentException("The content is not displayed in a top-level view", "content");
+
       if (addToObjectGraphObjects) {
         var containedObjects = content.GetObjectGraphObjects();
-        contentViews = views.Keys.OfType<IContentView>().Where(v => containedObjects.Contains(v.Content));
+        contentViews = contentViews.Where(v => containedObjects.Contains(v.Content));
       } else
-        contentViews = views.Keys.OfType<IContentView>().Where(v => v.Content == content);
+        contentViews = contentViews.Where(v => v.Content == content);
 
-      var progress = new Progress(progressMessage);
-      foreach (var contentView in contentViews)
-        ProgressView.Attach(contentView, progress, true);
+      var progress = new Progress(progressMessage, ProgressState.Started);
+      foreach (var contentView in contentViews) {
+        progressViews.Add(new ProgressView((Control)contentView, progress));
+      }
 
       contentProgressLookup[content] = progress;
     }
@@ -375,8 +381,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (viewProgressLookup.ContainsKey(view))
         throw new ArgumentException("A progress is already registered for the specified view.", "view");
 
-      var progress = new Progress(progressMessage);
-      ProgressView.Attach(view, progress, true);
+      var control = view as Control;
+      if (control == null) throw new ArgumentException("The passed view must be a control.", "view");
+
+      var progress = new Progress(progressMessage, ProgressState.Started);
+      progressViews.Add(new ProgressView(control, progress));
       viewProgressLookup[view] = progress;
     }
 
@@ -389,6 +398,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
         throw new ArgumentException("No progress is registered for the specified content.", "content");
 
       progress.Finish();
+      foreach (var progressView in progressViews.Where(v => v.Content == progress).ToList()) {
+        progressView.Dispose();
+        progressViews.Remove(progressView);
+      }
       contentProgressLookup.Remove(content);
     }
 
@@ -401,6 +414,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
         throw new ArgumentException("No progress is registered for the specified view.", "view");
 
       progress.Finish();
+      foreach (var progressView in progressViews.Where(v => v.Content == progress).ToList()) {
+        progressView.Dispose();
+        progressViews.Remove(progressView);
+      }
       viewProgressLookup.Remove(view);
     }
     #endregion

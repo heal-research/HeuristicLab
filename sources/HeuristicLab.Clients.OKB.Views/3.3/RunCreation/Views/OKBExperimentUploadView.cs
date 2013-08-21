@@ -58,10 +58,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     public OKBExperimentUploadView() {
       InitializeComponent();
-      progress = new Progress() {
-        CanBeCanceled = false,
-        ProgressState = ProgressState.Finished
-      };
+      progress = new Progress();
     }
 
     protected override void OnContentChanged() {
@@ -102,7 +99,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       RunCreationClient.Instance.Refreshing -= new EventHandler(RunCreationClient_Refreshing);
       RunCreationClient.Instance.Refreshed -= new EventHandler(RunCreationClient_Refreshed);
       if (progressView != null) {
-        progressView.Content = null;
         progressView.Dispose();
         progressView = null;
       }

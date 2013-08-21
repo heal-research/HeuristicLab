@@ -44,10 +44,7 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     public OptimizerHiveTaskView() {
       InitializeComponent();
-      progress = new Progress() {
-        CanBeCanceled = false,
-        ProgressState = ProgressState.Finished
-      };
+      progress = new Progress();
     }
 
     protected override void Job_ItemChanged(object sender, EventArgs e) {
@@ -69,7 +66,6 @@ namespace HeuristicLab.Clients.Hive.Views {
     protected override void DeregisterContentEvents() {
       Content.IsControllableChanged -= new EventHandler(Content_IsControllableChanged);
       if (progressView != null) {
-        progressView.Content = null;
         progressView.Dispose();
         progressView = null;
       }
@@ -109,22 +105,19 @@ namespace HeuristicLab.Clients.Hive.Views {
     #endregion
 
     private void PauseTaskAsync() {
-      progress.Status = "Pausing task. Please be patient for the command to take effect.";
-      progress.ProgressState = ProgressState.Started;
+      progress.Start("Pausing task. Please be patient for the command to take effect.");
       Content.Pause();
       progress.Finish();
     }
 
     private void StopTaskAsync() {
-      progress.Status = "Stopping task. Please be patient for the command to take effect.";
-      progress.ProgressState = ProgressState.Started;
+      progress.Start("Stopping task. Please be patient for the command to take effect.");
       Content.Stop();
       progress.Finish();
     }
 
     private void ResumeTaskAsync() {
-      progress.Status = "Resuming task. Please be patient for the command to take effect.";
-      progress.ProgressState = ProgressState.Started;
+      progress.Start("Resuming task. Please be patient for the command to take effect.");
       Content.Restart();
       progress.Finish();
     }

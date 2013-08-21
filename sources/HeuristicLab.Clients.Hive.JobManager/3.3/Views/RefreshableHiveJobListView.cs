@@ -49,10 +49,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
       this.itemsListView.ListViewItemSorter = new ListViewItemDateComparer(0, SortOrder.Ascending);
 
-      progress = new Progress() {
-        CanBeCanceled = false,
-        ProgressState = ProgressState.Finished
-      };
+      progress = new Progress();
       progressView = new ProgressView(this, progress);
     }
 
@@ -128,9 +125,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void DeleteHiveJobsAsync(object items) {
-      progress.Status = "Deleting job...";
-      progress.ProgressState = ProgressState.Started;
-      progress.ProgressValue = 0.0;
+      progress.Start("Deleting job...");
       foreach (RefreshableJob item in (List<RefreshableJob>)items) {
         Content.Remove(item);
       }
@@ -226,8 +221,8 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     protected override void Dispose(bool disposing) {
       if (disposing) {
         if (components != null) components.Dispose();
-        progressView.Content = null;
         progressView.Dispose();
+        progressView = null;
       }
       base.Dispose(disposing);
     }

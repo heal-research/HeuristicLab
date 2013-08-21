@@ -63,15 +63,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       selectedResources = new HashSet<Resource>();
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.MonitorLarge);
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.NetworkCenterLarge);
-      progress = new Progress() {
-        CanBeCanceled = false,
-        ProgressState = ProgressState.Finished
-      };
+      progress = new Progress();
     }
 
     protected override void DeregisterContentEvents() {
       if (progressView != null) {
-        progressView.Content = null;
         progressView.Dispose();
         progressView = null;
       }

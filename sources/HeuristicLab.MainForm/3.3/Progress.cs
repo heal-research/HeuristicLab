@@ -69,18 +69,20 @@ namespace HeuristicLab.MainForm {
     }
 
     public Progress() {
-      progressState = ProgressState.Started;
+      progressState = ProgressState.Finished;
+      canBeCanceled = false;
     }
     public Progress(string status)
       : this() {
       this.status = status;
     }
-    public Progress(string status, double progressValue)
-      : this(status) {
-      this.progressValue = progressValue;
+    public Progress(string status, ProgressState state)
+      : this() {
+      this.status = status;
+      this.progressState = state;
     }
 
-    public void Cancel(int timeoutMs) {
+    public void Cancel(int timeoutMs = 0) {
       if (canBeCanceled)
         OnCancelRequested(timeoutMs);
     }
@@ -90,46 +92,47 @@ namespace HeuristicLab.MainForm {
       ProgressState = ProgressState.Finished;
     }
 
+    public void Start() {
+      ProgressValue = 0.0;
+      ProgressState = ProgressState.Started;
+    }
+
+    public void Start(string status) {
+      Start();
+      Status = status;
+    }
+
     #region Event Handler
     public event EventHandler StatusChanged;
     private void OnStatusChanged() {
       var handler = StatusChanged;
-      try {
-        if (handler != null) handler(this, EventArgs.Empty);
-      } catch { }
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event EventHandler ProgressValueChanged;
     private void OnProgressChanged() {
       var handler = ProgressValueChanged;
-      try {
-        if (handler != null) handler(this, EventArgs.Empty);
-      } catch { }
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event EventHandler ProgressStateChanged;
     private void OnProgressStateChanged() {
       var handler = ProgressStateChanged;
-      try {
-        if (handler != null) handler(this, EventArgs.Empty);
-      } catch { }
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event EventHandler CanBeCanceledChanged;
     private void OnCanBeCanceledChanged() {
       var handler = CanBeCanceledChanged;
-      try {
-        if (handler != null) handler(this, EventArgs.Empty);
-      } catch { }
+      if (handler != null) handler(this, EventArgs.Empty);
+
     }
 
     public event EventHandler<EventArgs<int>> CancelRequested;
     private void OnCancelRequested(int timeoutMs) {
       var handler = CancelRequested;
-      try {
-        if (handler == null) throw new NotSupportedException("Cancel request was ignored.");
-        else handler(this, new EventArgs<int>(timeoutMs));
-      } catch { }
+      if (handler != null) throw new NotSupportedException("Cancel request was ignored.");
+      else handler(this, new EventArgs<int>(timeoutMs));
     }
     #endregion
   }

@@ -31,6 +31,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing) {
+      DeregisterContentEvents();
       if (disposing && (components != null)) {
         components.Dispose();
       }
@@ -49,7 +50,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.statusLabel = new System.Windows.Forms.Label();
       this.cancelButton = new System.Windows.Forms.Button();
       this.panel = new System.Windows.Forms.Panel();
-      this.cancelButtonTimer = new System.Windows.Forms.Timer(this.components);
       this.panel.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -96,10 +96,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.panel.Size = new System.Drawing.Size(360, 88);
       this.panel.TabIndex = 3;
       // 
-      // cancelButtonTimer
-      // 
-      this.cancelButtonTimer.Tick += new System.EventHandler(this.cancelButtonTimer_Tick);
-      // 
       // ProgressView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -108,7 +104,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.Size = new System.Drawing.Size(360, 88);
       this.panel.ResumeLayout(false);
       this.ResumeLayout(false);
-
     }
 
     #endregion
@@ -117,6 +112,5 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private System.Windows.Forms.Label statusLabel;
     private System.Windows.Forms.Button cancelButton;
     private System.Windows.Forms.Panel panel;
-    private System.Windows.Forms.Timer cancelButtonTimer;
   }
 }
