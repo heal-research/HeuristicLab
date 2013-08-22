@@ -25,13 +25,18 @@ using System.Linq;
 using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive {
   public class OptimizerHiveTask : HiveTask<OptimizerTask> {
+    public Progress Progress { get; private set; }
+
     #region Constructors and Cloning
-    public OptimizerHiveTask() { }
+    public OptimizerHiveTask() {
+      Progress = new Progress();
+    }
     public OptimizerHiveTask(IOptimizer optimizer)
       : this() {
       this.ItemTask = new OptimizerTask(optimizer);
@@ -42,6 +47,7 @@ namespace HeuristicLab.Clients.Hive {
     }
     protected OptimizerHiveTask(OptimizerHiveTask original, Cloner cloner)
       : base(original, cloner) {
+      Progress = new Progress();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new OptimizerHiveTask(this, cloner);

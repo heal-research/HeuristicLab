@@ -30,8 +30,6 @@ namespace HeuristicLab.Clients.Hive.Views {
   [View("OptimizerHiveTask View")]
   [Content(typeof(OptimizerHiveTask), true)]
   public partial class OptimizerHiveTaskView : HiveTaskView {
-    private Progress progress;
-    
     public new OptimizerHiveTask Content {
       get { return (OptimizerHiveTask)base.Content; }
       set {
@@ -43,7 +41,6 @@ namespace HeuristicLab.Clients.Hive.Views {
 
     public OptimizerHiveTaskView() {
       InitializeComponent();
-      progress = new Progress();
     }
 
     protected override void Job_ItemChanged(object sender, EventArgs e) {
@@ -55,11 +52,12 @@ namespace HeuristicLab.Clients.Hive.Views {
         runCollectionViewHost.Content = null;
       }
     }
+
     #region Content Events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.IsControllableChanged += new EventHandler(Content_IsControllableChanged);
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, progress);
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, Content.Progress);
     }
 
     protected override void DeregisterContentEvents() {
@@ -71,14 +69,13 @@ namespace HeuristicLab.Clients.Hive.Views {
     protected virtual void Content_IsControllableChanged(object sender, EventArgs e) {
       SetEnabledStateOfControls();
     }
-
     #endregion
 
     #region Child Control Events
     private void restartButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(ResumeTaskAsync);
       task.ContinueWith((t) => {
-        progress.Finish();
+        Content.Progress.Finish();
         ErrorHandling.ShowErrorDialog(this, "An error occured while resuming the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
@@ -86,7 +83,7 @@ namespace HeuristicLab.Clients.Hive.Views {
     private void pauseButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(PauseTaskAsync);
       task.ContinueWith((t) => {
-        progress.Finish();
+        Content.Progress.Finish();
         ErrorHandling.ShowErrorDialog(this, "An error occured while pausing the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
@@ -94,28 +91,28 @@ namespace HeuristicLab.Clients.Hive.Views {
     private void stopButton_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(StopTaskAsync);
       task.ContinueWith((t) => {
-        progress.Finish();
+        Content.Progress.Finish();
         ErrorHandling.ShowErrorDialog(this, "An error occured while stopping the task.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
     #endregion
 
     private void PauseTaskAsync() {
-      progress.Start("Pausing task. Please be patient for the command to take effect.");
+      Content.Progress.Start("Pausing task. Please be patient for the command to take effect.");
       Content.Pause();
-      progress.Finish();
+      Content.Progress.Finish();
     }
 
     private void StopTaskAsync() {
-      progress.Start("Stopping task. Please be patient for the command to take effect.");
+      Content.Progress.Start("Stopping task. Please be patient for the command to take effect.");
       Content.Stop();
-      progress.Finish();
+      Content.Progress.Finish();
     }
 
     private void ResumeTaskAsync() {
-      progress.Start("Resuming task. Please be patient for the command to take effect.");
+      Content.Progress.Start("Resuming task. Please be patient for the command to take effect.");
       Content.Restart();
-      progress.Finish();
+      Content.Progress.Finish();
     }
 
     protected override void SetEnabledStateOfControls() {
