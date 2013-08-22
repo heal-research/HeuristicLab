@@ -378,29 +378,27 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the specified view.
     /// </summary>
-    public IProgress AddOperationProgressToView(Control view, string progressMessage) {
+    public IProgress AddOperationProgressToView(Control control, string progressMessage) {
       var progress = new Progress(progressMessage, ProgressState.Started);
-      AddOperationProgressToView(view, progress);
+      AddOperationProgressToView(control, progress);
       return progress;
     }
 
-    public void AddOperationProgressToView(Control view, IProgress progress) {
-      if (view == null) throw new ArgumentNullException("view", "The view must not be null.");
+    public void AddOperationProgressToView(Control control, IProgress progress) {
+      if (control == null) throw new ArgumentNullException("control", "The view must not be null.");
       if (progress == null) throw new ArgumentNullException("progress", "The progress must not be null.");
 
-     if (view == null) throw new ArgumentException("The passed view must be a control.", "view");
-
       IProgress oldProgress;
-      if (viewProgressLookup.TryGetValue(view, out oldProgress)) {
+      if (viewProgressLookup.TryGetValue(control, out oldProgress)) {
         foreach (var progressView in progressViews.Where(v => v.Content == oldProgress).ToList()) {
           progressView.Dispose();
           progressViews.Remove(progressView);
         }
-        viewProgressLookup.Remove(view);
+        viewProgressLookup.Remove(control);
       }
 
-      progressViews.Add(new ProgressView(view, progress));
-      viewProgressLookup[view] = progress;
+      progressViews.Add(new ProgressView(control, progress));
+      viewProgressLookup[control] = progress;
     }
 
     /// <summary>
@@ -422,17 +420,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Removes an existing <see cref="ProgressView"/> from the specified view.
     /// </summary>
-    public void RemoveOperationProgressFromView(Control view, bool finishProgress = true) {
+    public void RemoveOperationProgressFromView(Control control, bool finishProgress = true) {
       IProgress progress;
-      if (!viewProgressLookup.TryGetValue(view, out progress))
-        throw new ArgumentException("No progress is registered for the specified view.", "view");
+      if (!viewProgressLookup.TryGetValue(control, out progress))
+        throw new ArgumentException("No progress is registered for the specified control.", "control");
 
       if (finishProgress) progress.Finish();
       foreach (var progressView in progressViews.Where(v => v.Content == progress).ToList()) {
         progressView.Dispose();
         progressViews.Remove(progressView);
       }
-      viewProgressLookup.Remove(view);
+      viewProgressLookup.Remove(control);
     }
     #endregion
 
