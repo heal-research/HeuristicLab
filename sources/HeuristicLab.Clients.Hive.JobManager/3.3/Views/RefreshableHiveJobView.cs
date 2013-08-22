@@ -41,7 +41,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
   [View("Hive Job View")]
   [Content(typeof(RefreshableJob), true)]
   public partial class RefreshableHiveJobView : HeuristicLab.Core.Views.ItemView {
-    private ProgressView progressView;
     private HiveResourceSelectorDialog hiveResourceSelectorDialog;
     private bool SuppressEvents { get; set; }
     private object runCollectionViewLocker = new object();
@@ -71,7 +70,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       Content.ExecutionTimeChanged += new EventHandler(Content_ExecutionTimeChanged);
       Content.Loaded += new EventHandler(Content_Loaded);
       Content.TaskReceived += new EventHandler(Content_TaskReceived);
-      progressView = new ProgressView(this, Content.Progress);
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, Content.Progress);
     }
 
     protected override void DeregisterContentEvents() {
@@ -86,10 +85,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       Content.ExecutionTimeChanged -= new EventHandler(Content_ExecutionTimeChanged);
       Content.Loaded -= new EventHandler(Content_Loaded);
       Content.TaskReceived -= new EventHandler(Content_TaskReceived);
-      if (progressView != null) {
-        progressView.Dispose();
-        progressView = null;
-      }
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this, false);
       DeregisterHiveExperimentEvents();
       DeregisterHiveTasksEvents();
       base.DeregisterContentEvents();
@@ -250,40 +246,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       else
         SetEnabledStateOfControls();
     }
-    private void Content_Prepared(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Prepared), sender, e);
-      else {
-        nameTextBox.Enabled = true;
-        Locked = false;
-        SetEnabledStateOfControls();
-      }
-    }
-    private void Content_Started(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Started), sender, e);
-      else {
-        nameTextBox.Enabled = false;
-        SetEnabledStateOfControls();
-      }
-    }
-    private void Content_Paused(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Paused), sender, e);
-      else {
-        nameTextBox.Enabled = true;
-        SetEnabledStateOfControls();
-      }
-    }
-    private void Content_Stopped(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Stopped), sender, e);
-      else {
-        nameTextBox.Enabled = true;
-        Locked = false;
-        SetEnabledStateOfControls();
-      }
-    }
+
     private void Content_ExecutionTimeChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ExecutionTimeChanged), sender, e);

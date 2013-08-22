@@ -352,7 +352,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the <see cref="ContentView"/>s showing the specified content.
     /// </summary>
-    public void AddOperationProgressToContent(IContent content, string progressMessage, bool addToObjectGraphObjects = true) {
+    public IProgress AddOperationProgressToContent(IContent content, string progressMessage, bool addToObjectGraphObjects = true) {
       if (contentProgressLookup.ContainsKey(content))
         throw new ArgumentException("A progress is already registered for the specified content.", "content");
 
@@ -372,19 +372,34 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
 
       contentProgressLookup[content] = progress;
+      return progress;
     }
 
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the specified view.
     /// </summary>
-    public void AddOperationProgressToView(IView view, string progressMessage) {
-      if (viewProgressLookup.ContainsKey(view))
-        throw new ArgumentException("A progress is already registered for the specified view.", "view");
+    public IProgress AddOperationProgressToView(IView view, string progressMessage) {
+      var progress = new Progress(progressMessage, ProgressState.Started);
+      AddOperationProgressToView(view, progress);
+      return progress;
+    }
+
+    public void AddOperationProgressToView(IView view, IProgress progress) {
+      if (view == null) throw new ArgumentNullException("view", "The view must not be null.");
+      if (progress == null) throw new ArgumentNullException("progress", "The progress must not be null.");
 
       var control = view as Control;
       if (control == null) throw new ArgumentException("The passed view must be a control.", "view");
 
-      var progress = new Progress(progressMessage, ProgressState.Started);
+      IProgress oldProgress;
+      if (viewProgressLookup.TryGetValue(view, out oldProgress)) {
+        foreach (var progressView in progressViews.Where(v => v.Content == oldProgress).ToList()) {
+          progressView.Dispose();
+          progressViews.Remove(progressView);
+        }
+        viewProgressLookup.Remove(view);
+      }
+
       progressViews.Add(new ProgressView(control, progress));
       viewProgressLookup[view] = progress;
     }
@@ -392,12 +407,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Removes an existing <see cref="ProgressView"/> from the <see cref="ContentView"/>s showing the specified content.
     /// </summary>
-    public void RemoveOperationProgressFromContent(IContent content) {
+    public void RemoveOperationProgressFromContent(IContent content, bool finishProgress = true) {
       IProgress progress;
       if (!contentProgressLookup.TryGetValue(content, out progress))
         throw new ArgumentException("No progress is registered for the specified content.", "content");
 
-      progress.Finish();
+      if (finishProgress) progress.Finish();
       foreach (var progressView in progressViews.Where(v => v.Content == progress).ToList()) {
         progressView.Dispose();
         progressViews.Remove(progressView);
@@ -408,12 +423,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Removes an existing <see cref="ProgressView"/> from the specified view.
     /// </summary>
-    public void RemoveOperationProgressFromView(IView view) {
+    public void RemoveOperationProgressFromView(IView view, bool finishProgress = true) {
       IProgress progress;
       if (!viewProgressLookup.TryGetValue(view, out progress))
         throw new ArgumentException("No progress is registered for the specified view.", "view");
 
-      progress.Finish();
+      if (finishProgress) progress.Finish();
       foreach (var progressView in progressViews.Where(v => v.Content == progress).ToList()) {
         progressView.Dispose();
         progressViews.Remove(progressView);

@@ -41,9 +41,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private ISet<TreeNode> mainTreeNodes;
     private ISet<TreeNode> filteredTreeNodes;
     private ISet<TreeNode> nodeStore;
-    private Progress progress;
-    private ProgressView progressView;
-
+    
     private ISet<Resource> selectedResources;
     public ISet<Resource> SelectedResources {
       get { return selectedResources; }
@@ -63,28 +61,14 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       selectedResources = new HashSet<Resource>();
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.MonitorLarge);
       imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.NetworkCenterLarge);
-      progress = new Progress();
     }
-
-    protected override void DeregisterContentEvents() {
-      if (progressView != null) {
-        progressView.Dispose();
-        progressView = null;
-      }
-      base.DeregisterContentEvents();
-    }
-
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      progressView = new ProgressView(this, progress);
-    }
-
+  
     public void StartProgressView() {
       if (InvokeRequired) {
         Invoke(new Action(StartProgressView));
       } else {
-        progress.Status = "Downloading resources. Please be patient.";
-        progress.ProgressState = ProgressState.Started;
+        var message = "Downloading resources. Please be patient.";
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, message);
       }
     }
 
@@ -92,7 +76,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       if (InvokeRequired) {
         Invoke(new Action(FinishProgressView));
       } else {
-        progress.Finish();
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
       }
     }
 

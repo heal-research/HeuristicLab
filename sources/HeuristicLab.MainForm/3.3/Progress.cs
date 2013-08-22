@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm {
   public class Progress : IProgress {
@@ -49,7 +48,7 @@ namespace HeuristicLab.MainForm {
     private ProgressState progressState;
     public ProgressState ProgressState {
       get { return progressState; }
-      set {
+      private set {
         if (progressState != value) {
           progressState = value;
           OnProgressStateChanged();
@@ -82,9 +81,9 @@ namespace HeuristicLab.MainForm {
       this.progressState = state;
     }
 
-    public void Cancel(int timeoutMs = 0) {
+    public void Cancel() {
       if (canBeCanceled)
-        OnCancelRequested(timeoutMs);
+        OnCancelRequested();
     }
 
     public void Finish() {
@@ -125,14 +124,13 @@ namespace HeuristicLab.MainForm {
     private void OnCanBeCanceledChanged() {
       var handler = CanBeCanceledChanged;
       if (handler != null) handler(this, EventArgs.Empty);
-
     }
 
-    public event EventHandler<EventArgs<int>> CancelRequested;
-    private void OnCancelRequested(int timeoutMs) {
+    public event EventHandler CancelRequested;
+    private void OnCancelRequested() {
       var handler = CancelRequested;
       if (handler != null) throw new NotSupportedException("Cancel request was ignored.");
-      else handler(this, new EventArgs<int>(timeoutMs));
+      else handler(this, EventArgs.Empty);
     }
     #endregion
   }

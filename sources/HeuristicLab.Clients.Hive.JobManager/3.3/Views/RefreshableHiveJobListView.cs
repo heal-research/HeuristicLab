@@ -33,9 +33,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
   [View("Refreshable Hive Job List")]
   [Content(typeof(ItemCollection<RefreshableJob>), false)]
   public partial class RefreshableHiveJobListView : HeuristicLab.Core.Views.ItemCollectionView<RefreshableJob> {
-    private Progress progress;
-    private ProgressView progressView;
-
     public RefreshableHiveJobListView() {
       InitializeComponent();
       itemsGroupBox.Text = "Jobs";
@@ -48,9 +45,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.itemsListView.FullRowSelect = true;
 
       this.itemsListView.ListViewItemSorter = new ListViewItemDateComparer(0, SortOrder.Ascending);
-
-      progress = new Progress();
-      progressView = new ProgressView(this, progress);
     }
 
     protected override void SortItemsListView(SortOrder sortOrder) {
@@ -114,7 +108,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         var task = System.Threading.Tasks.Task.Factory.StartNew(DeleteHiveJobsAsync, items);
 
         task.ContinueWith((t) => {
-          progress.Finish();
+          MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
           ErrorHandling.ShowErrorDialog("An error occured while deleting the job. ", t.Exception);
         }, TaskContinuationOptions.OnlyOnFaulted);
 
@@ -125,11 +119,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     }
 
     private void DeleteHiveJobsAsync(object items) {
-      progress.Start("Deleting job...");
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Deleting job...");
       foreach (RefreshableJob item in (List<RefreshableJob>)items) {
         Content.Remove(item);
       }
-      progress.Finish();
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
     }
 
     protected override void Content_ItemsAdded(object sender, Collections.CollectionItemsChangedEventArgs<RefreshableJob> e) {
@@ -221,8 +215,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     protected override void Dispose(bool disposing) {
       if (disposing) {
         if (components != null) components.Dispose();
-        progressView.Dispose();
-        progressView = null;
       }
       base.Dispose(disposing);
     }

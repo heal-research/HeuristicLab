@@ -23,7 +23,7 @@ using System;
 using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  public sealed partial class ProgressView : UserControl {
+  internal sealed partial class ProgressView : UserControl {
     private readonly Control control;
     public Control Control {
       get { return control; }
@@ -45,6 +45,20 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (content.ProgressState == ProgressState.Started)
         ShowProgress();
       RegisterContentEvents();
+    }
+
+    /// <summary> 
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing) {
+      DeregisterContentEvents();
+      HideProgress();
+
+      if (disposing && (components != null)) {
+        components.Dispose();
+      }
+      base.Dispose(disposing);
     }
 
     private void RegisterContentEvents() {

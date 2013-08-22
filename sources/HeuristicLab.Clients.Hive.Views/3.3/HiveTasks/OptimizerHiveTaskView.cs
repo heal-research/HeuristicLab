@@ -31,8 +31,7 @@ namespace HeuristicLab.Clients.Hive.Views {
   [Content(typeof(OptimizerHiveTask), true)]
   public partial class OptimizerHiveTaskView : HiveTaskView {
     private Progress progress;
-    private ProgressView progressView;
-
+    
     public new OptimizerHiveTask Content {
       get { return (OptimizerHiveTask)base.Content; }
       set {
@@ -60,15 +59,12 @@ namespace HeuristicLab.Clients.Hive.Views {
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.IsControllableChanged += new EventHandler(Content_IsControllableChanged);
-      progressView = new ProgressView(this, progress);
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, progress);
     }
 
     protected override void DeregisterContentEvents() {
       Content.IsControllableChanged -= new EventHandler(Content_IsControllableChanged);
-      if (progressView != null) {
-        progressView.Dispose();
-        progressView = null;
-      }
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this, false);
       base.DeregisterContentEvents();
     }
 

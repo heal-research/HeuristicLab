@@ -53,12 +53,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private List<Algorithm> algorithms = new List<Algorithm>();
     Algorithm selectedAlgorithm = null;
     Problem selectedProblem = null;
-    private ProgressView progressView;
-    private Progress progress;
 
     public OKBExperimentUploadView() {
       InitializeComponent();
-      progress = new Progress();
     }
 
     protected override void OnContentChanged() {
@@ -92,16 +89,12 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       base.RegisterContentEvents();
       RunCreationClient.Instance.Refreshing += new EventHandler(RunCreationClient_Refreshing);
       RunCreationClient.Instance.Refreshed += new EventHandler(RunCreationClient_Refreshed);
-      progressView = new ProgressView(this, progress);
     }
 
     protected override void DeregisterContentEvents() {
       RunCreationClient.Instance.Refreshing -= new EventHandler(RunCreationClient_Refreshing);
       RunCreationClient.Instance.Refreshed -= new EventHandler(RunCreationClient_Refreshed);
-      if (progressView != null) {
-        progressView.Dispose();
-        progressView = null;
-      }
+
       base.DeregisterContentEvents();
     }
 
@@ -193,8 +186,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (InvokeRequired) {
         Invoke(new EventHandler(RunCreationClient_Refreshing), sender, e);
       } else {
-        progress.Status = "Refreshing algorithms and problems...";
-        progress.ProgressState = ProgressState.Started;
+        var message = "Refreshing algorithms and problems...";
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, message);
       }
     }
 
@@ -202,7 +195,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (InvokeRequired) {
         Invoke(new EventHandler(RunCreationClient_Refreshed), sender, e);
       } else {
-        progress.Finish();
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
         SetEnabledStateOfControls();
       }
     }
@@ -210,15 +203,14 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private void btnUpload_Click(object sender, EventArgs e) {
       var task = System.Threading.Tasks.Task.Factory.StartNew(UploadAsync);
       task.ContinueWith((t) => {
-        progress.Finish();
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
         PluginInfrastructure.ErrorHandling.ShowErrorDialog("An exception occured while uploading the runs to the OKB.", t.Exception);
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private void UploadAsync() {
-      progress.Status = "Uploading runs to OKB...";
-      progress.ProgressValue = 0;
-      progress.ProgressState = ProgressState.Started;
+      var message = "Uploading runs to OKB...";
+      IProgress progress = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, message);
       double count = dataGridView.Rows.Count;
       int i = 0;
       foreach (DataGridViewRow row in dataGridView.Rows) {
@@ -233,7 +225,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         i++;
         progress.ProgressValue = ((double)i) / count;
       }
-      progress.Finish();
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
       ClearRuns();
     }
 

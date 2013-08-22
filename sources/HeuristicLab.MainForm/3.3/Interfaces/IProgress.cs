@@ -40,7 +40,7 @@ namespace HeuristicLab.MainForm {
     /// Started and then becomes either Canceled or Finished.
     /// If it is reused it may be Started again.
     /// </summary>
-    ProgressState ProgressState { get; set; }
+    ProgressState ProgressState { get; }
     /// <summary>
     /// Returns whether the operation can be canceled or not.
     /// This can change during the course of the progress.
@@ -53,16 +53,18 @@ namespace HeuristicLab.MainForm {
     /// The corresponding event will also notify of a success.
     /// </summary>
     /// <exception cref="NotSupportedException">Thrown when cancellation is not supported.</exception>
-    /// <param name="timeoutMs">The operation is given a certain timeout to cancel. If the operation doesn't cancel in this time it will be forcibly closed.</param>
-    void Cancel(int timeoutMs = 0);
+    void Cancel();
     /// <summary>
     /// Sets the ProgressValue to 1 and the ProgressState to Finished.
     /// </summary>
     void Finish();
 
-    void Start(string status);
-
+    /// <summary>
+    /// Starts or restarts a Progress. 
+    /// </summary>
     void Start();
+
+    void Start(string status);
 
     /// <summary>
     /// The status text changed.
@@ -81,8 +83,8 @@ namespace HeuristicLab.MainForm {
     /// </summary>
     event EventHandler CanBeCanceledChanged;
     /// <summary>
-    /// A cancelation is requested with a certain timeout (in ms) in which it should occur gracefully. If the timeout is surpassed, it should be forcibly canceled.
+    /// A cancelation is requested.
     /// </summary>
-    event EventHandler<EventArgs<int>> CancelRequested;
+    event EventHandler CancelRequested;
   }
 }
