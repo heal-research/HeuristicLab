@@ -346,7 +346,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     #region progress views
     private readonly Dictionary<IContent, IProgress> contentProgressLookup = new Dictionary<IContent, IProgress>();
-    private readonly Dictionary<IView, IProgress> viewProgressLookup = new Dictionary<IView, IProgress>();
+    private readonly Dictionary<Control, IProgress> viewProgressLookup = new Dictionary<Control, IProgress>();
     private readonly List<ProgressView> progressViews = new List<ProgressView>();
 
     /// <summary>
@@ -368,7 +368,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
       var progress = new Progress(progressMessage, ProgressState.Started);
       foreach (var contentView in contentViews) {
-        progressViews.Add(new ProgressView((Control)contentView, progress));
+        progressViews.Add(new ProgressView(contentView, progress));
       }
 
       contentProgressLookup[content] = progress;
@@ -378,18 +378,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Adds a <see cref="ProgressView"/> to the specified view.
     /// </summary>
-    public IProgress AddOperationProgressToView(IView view, string progressMessage) {
+    public IProgress AddOperationProgressToView(Control view, string progressMessage) {
       var progress = new Progress(progressMessage, ProgressState.Started);
       AddOperationProgressToView(view, progress);
       return progress;
     }
 
-    public void AddOperationProgressToView(IView view, IProgress progress) {
+    public void AddOperationProgressToView(Control view, IProgress progress) {
       if (view == null) throw new ArgumentNullException("view", "The view must not be null.");
       if (progress == null) throw new ArgumentNullException("progress", "The progress must not be null.");
 
-      var control = view as Control;
-      if (control == null) throw new ArgumentException("The passed view must be a control.", "view");
+     if (view == null) throw new ArgumentException("The passed view must be a control.", "view");
 
       IProgress oldProgress;
       if (viewProgressLookup.TryGetValue(view, out oldProgress)) {
@@ -400,7 +399,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         viewProgressLookup.Remove(view);
       }
 
-      progressViews.Add(new ProgressView(control, progress));
+      progressViews.Add(new ProgressView(view, progress));
       viewProgressLookup[view] = progress;
     }
 
@@ -423,7 +422,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// <summary>
     /// Removes an existing <see cref="ProgressView"/> from the specified view.
     /// </summary>
-    public void RemoveOperationProgressFromView(IView view, bool finishProgress = true) {
+    public void RemoveOperationProgressFromView(Control view, bool finishProgress = true) {
       IProgress progress;
       if (!viewProgressLookup.TryGetValue(view, out progress))
         throw new ArgumentException("No progress is registered for the specified view.", "view");
