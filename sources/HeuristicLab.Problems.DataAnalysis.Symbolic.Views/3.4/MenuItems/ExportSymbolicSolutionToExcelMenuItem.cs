@@ -76,6 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var solution = (ISymbolicDataAnalysisSolution)activeView.Content;
       var formatter = new SymbolicDataAnalysisExpressionExcelFormatter();
       var formula = formatter.Format(solution.Model.SymbolicExpressionTree, solution.ProblemData.Dataset);
+      control = (Control)activeView;
 
 
       SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -84,7 +85,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         string fileName = saveFileDialog.FileName;
         using (BackgroundWorker bg = new BackgroundWorker()) {
+          MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(control, "Exportion solution to " + fileName + ".");
           bg.DoWork += (b, e) => ExportChart(fileName, solution, formula);
+          bg.RunWorkerCompleted += (o, e) => MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(control);
           bg.RunWorkerAsync();
         }
       }
@@ -390,7 +393,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           if (doubleVariables.Contains(variableNames[col]))
             datasetWorksheet.Cells[row + 2, col + 1].Value = dataset.GetDoubleValue(variableNames[col], row);
           else
-            datasetWorksheet.Cells[row + 2, col + 1].Value = dataset.GetValue(col, row);
+            datasetWorksheet.Cells[row + 2, col + 1].Value = dataset.GetValue(row, col);
         }
       }
     }
