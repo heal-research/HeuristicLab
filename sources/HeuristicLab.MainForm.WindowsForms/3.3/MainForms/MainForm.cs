@@ -353,6 +353,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// Adds a <see cref="ProgressView"/> to the <see cref="ContentView"/>s showing the specified content.
     /// </summary>
     public IProgress AddOperationProgressToContent(IContent content, string progressMessage, bool addToObjectGraphObjects = true) {
+      if (InvokeRequired) {
+        IProgress result = (IProgress)Invoke((Func<IContent, string, bool, IProgress>)AddOperationProgressToContent, content, progressMessage, addToObjectGraphObjects);
+        return result;
+      }
       if (contentProgressLookup.ContainsKey(content))
         throw new ArgumentException("A progress is already registered for the specified content.", "content");
 
@@ -385,6 +389,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     public void AddOperationProgressToView(Control control, IProgress progress) {
+      if (InvokeRequired) {
+        Invoke((Action<Control, IProgress>)AddOperationProgressToView, control, progress);
+        return;
+      }
       if (control == null) throw new ArgumentNullException("control", "The view must not be null.");
       if (progress == null) throw new ArgumentNullException("progress", "The progress must not be null.");
 
@@ -405,6 +413,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// Removes an existing <see cref="ProgressView"/> from the <see cref="ContentView"/>s showing the specified content.
     /// </summary>
     public void RemoveOperationProgressFromContent(IContent content, bool finishProgress = true) {
+      if (InvokeRequired) {
+        Invoke((Action<IContent, bool>)RemoveOperationProgressFromContent, content, finishProgress);
+        return;
+      }
+
       IProgress progress;
       if (!contentProgressLookup.TryGetValue(content, out progress))
         throw new ArgumentException("No progress is registered for the specified content.", "content");
@@ -415,6 +428,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
         progressViews.Remove(progressView);
       }
       contentProgressLookup.Remove(content);
+
     }
 
     /// <summary>
