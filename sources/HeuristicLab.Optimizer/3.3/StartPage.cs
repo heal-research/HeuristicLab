@@ -33,6 +33,8 @@ using HeuristicLab.Persistence.Default.Xml;
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]
   public partial class StartPage : HeuristicLab.MainForm.WindowsForms.View {
+    private IProgress progress;
+
     public StartPage() {
       InitializeComponent();
     }
@@ -66,6 +68,7 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void LoadSamples(object state) {
+      progress = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(samplesListView, "Loading...");
       Assembly assembly = Assembly.GetExecutingAssembly();
       var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(".hl"));
       int count = samples.Count();
@@ -76,16 +79,18 @@ namespace HeuristicLab.Optimizer {
           using (Stream stream = assembly.GetManifestResourceStream(name)) {
             WriteStreamToTempFile(stream, path);
             INamedItem item = XmlParser.Deserialize<INamedItem>(path);
-            OnSampleLoaded(item, loadingProgressBar.Maximum / count);
+            OnSampleLoaded(item, 1.0 / count);
           }
         }
-        catch (Exception) { }
+        catch (Exception) {
+          MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
+        }
       }
       OnAllSamplesLoaded();
     }
-    private void OnSampleLoaded(INamedItem sample, int progress) {
+    private void OnSampleLoaded(INamedItem sample, double progress) {
       if (InvokeRequired)
-        Invoke(new Action<INamedItem, int>(OnSampleLoaded), sample, progress);
+        Invoke(new Action<INamedItem, double>(OnSampleLoaded), sample, progress);
       else {
         ListViewItem item = new ListViewItem(new string[] { sample.Name, sample.Description });
         item.ToolTipText = sample.ItemName + ": " + sample.ItemDescription;
@@ -93,7 +98,7 @@ namespace HeuristicLab.Optimizer {
         item.ImageIndex = samplesListView.SmallImageList.Images.Count - 1;
         item.Tag = sample;
         samplesListView.Items.Add(item);
-        loadingProgressBar.Value += progress;
+        this.progress.ProgressValue += progress;
       }
     }
     private void OnAllSamplesLoaded() {
@@ -105,7 +110,7 @@ namespace HeuristicLab.Optimizer {
           for (int i = 0; i < samplesListView.Columns.Count; i++)
             samplesListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
-        loadingPanel.Visible = false;
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
       }
     }
 

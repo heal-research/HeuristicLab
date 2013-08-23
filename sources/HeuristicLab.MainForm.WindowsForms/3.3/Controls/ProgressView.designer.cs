@@ -34,7 +34,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       this.progressBar = new System.Windows.Forms.ProgressBar();
       this.statusLabel = new System.Windows.Forms.Label();
       this.cancelButton = new System.Windows.Forms.Button();
@@ -44,8 +43,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // progressBar
       // 
-      this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.progressBar.Location = new System.Drawing.Point(3, 3);
       this.progressBar.Name = "progressBar";
       this.progressBar.Size = new System.Drawing.Size(352, 23);
@@ -54,8 +53,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // statusLabel
       // 
-      this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.statusLabel.Location = new System.Drawing.Point(3, 33);
       this.statusLabel.Name = "statusLabel";
       this.statusLabel.Size = new System.Drawing.Size(352, 17);
@@ -74,8 +73,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // panel
       // 
-      this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panel.Controls.Add(this.progressBar);
       this.panel.Controls.Add(this.cancelButton);
@@ -93,6 +93,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.Size = new System.Drawing.Size(360, 88);
       this.panel.ResumeLayout(false);
       this.ResumeLayout(false);
+
     }
 
     #endregion

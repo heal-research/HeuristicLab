@@ -24,6 +24,9 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   internal sealed partial class ProgressView : UserControl {
+    private const int defaultControlHeight = 88;
+    private const int collapsedControlHeight = 55;
+
     private readonly Control control;
     public Control Control {
       get { return control; }
@@ -79,8 +82,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
         Control.Invoke((Action)ShowProgress);
         return;
       }
+      int height = Content.CanBeCanceled ? Height : collapsedControlHeight;
+
       Left = (Control.ClientRectangle.Width / 2) - (Width / 2);
-      Top = (Control.ClientRectangle.Height / 2) - (Height / 2);
+      Top = (Control.ClientRectangle.Height / 2) - (height / 2);
       Anchor = AnchorStyles.None;
 
       control.Enabled = false;
@@ -126,6 +131,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void UpdateCancelButton() {
       cancelButton.Visible = content != null && content.CanBeCanceled;
       cancelButton.Enabled = content != null && content.CanBeCanceled;
+
+      if (content != null && content.CanBeCanceled) {
+        Height = defaultControlHeight;
+      } else if (content != null && !content.CanBeCanceled) {
+        Height = collapsedControlHeight;
+      }
     }
 
     private void UpdateProgressValue() {
