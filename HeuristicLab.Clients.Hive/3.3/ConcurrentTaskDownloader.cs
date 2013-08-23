@@ -45,7 +45,7 @@ namespace HeuristicLab.Clients.Hive {
                                      .ContinueWith((y) => DeserializeTask(y.Result));
 
       task.ContinueWith((x) => OnTaskFinished(x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion);
-      task.ContinueWith((x) => OnTaskFailed(x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
+      task.ContinueWith((x) => OnTaskFailed(x), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
     }
 
     public void DownloadTaskDataAndTask(Guid taskId, Action<Task, T> onFinishedAction) {
@@ -54,16 +54,15 @@ namespace HeuristicLab.Clients.Hive {
                                      .ContinueWith((y) => DeserializeTask(y.Result));
 
       task.ContinueWith((x) => OnTaskFinished(x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion);
-      task.ContinueWith((x) => OnTaskFailed(x, onFinishedAction), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
+      task.ContinueWith((x) => OnTaskFailed(x), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private void OnTaskFinished(Task<Tuple<Task, T>> task, Action<Task, T> onFinishedAction) {
       onFinishedAction(task.Result.Item1, task.Result.Item2);
     }
-    private void OnTaskFailed(Task<Tuple<Task, T>> task, Action<Task, T> onFinishedAction) {
+    private void OnTaskFailed(Task<Tuple<Task, T>> task) {
       task.Exception.Flatten().Handle((e) => { return true; });
       OnExceptionOccured(task.Exception.Flatten());
-      onFinishedAction(task.Result.Item1, null);
     }
 
     private Task DownloadTask(object taskId) {
