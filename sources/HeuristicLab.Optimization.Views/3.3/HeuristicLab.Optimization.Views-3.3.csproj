@@ -238,11 +238,11 @@
     <Compile Include="RunCollectionConstraintViews\RunCollectionEqualityConstraintView.Designer.cs">
       <DependentUpon>RunCollectionEqualityConstraintView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionViews\RunCollectionTabularView.cs">
+    <Compile Include="RunCollectionViews\RunCollectionTableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionViews\RunCollectionTabularView.Designer.cs">
-      <DependentUpon>RunCollectionTabularView.cs</DependentUpon>
+    <Compile Include="RunCollectionViews\RunCollectionTableView.Designer.cs">
+      <DependentUpon>RunCollectionTableView.cs</DependentUpon>
     </Compile>
     <Compile Include="RunCollectionViews\RunCollectionView.cs">
       <SubType>UserControl</SubType>
@@ -256,11 +256,11 @@
     <Compile Include="RunView.Designer.cs">
       <DependentUpon>RunView.cs</DependentUpon>
     </Compile>
-    <Compile Include="RunCollectionViews\RunCollectionDataTableView.cs">
+    <Compile Include="RunCollectionViews\RunCollectionChartAggregationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RunCollectionViews\RunCollectionDataTableView.Designer.cs">
-      <DependentUpon>RunCollectionDataTableView.cs</DependentUpon>
+    <Compile Include="RunCollectionViews\RunCollectionChartAggregationView.Designer.cs">
+      <DependentUpon>RunCollectionChartAggregationView.cs</DependentUpon>
     </Compile>
     <Compile Include="UserDefinedAlgorithmView.cs">
       <SubType>UserControl</SubType>

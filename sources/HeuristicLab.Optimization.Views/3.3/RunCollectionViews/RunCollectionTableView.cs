@@ -28,12 +28,12 @@ using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
-  [View("RunCollection Tabular View")]
+  [View("Table")]
   [Content(typeof(RunCollection), false)]
-  public sealed partial class RunCollectionTabularView : StringConvertibleMatrixView {
+  public sealed partial class RunCollectionTableView : StringConvertibleMatrixView {
     private int[] runToRowMapping;
     private bool suppressUpdates = false;
-    public RunCollectionTabularView() {
+    public RunCollectionTableView() {
       InitializeComponent();
       dataGridView.RowHeaderMouseDoubleClick += new DataGridViewCellMouseEventHandler(dataGridView_RowHeaderMouseDoubleClick);
     }
@@ -111,7 +111,7 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     private void UpdateCaption() {
-      Caption = Content != null ? Content.OptimizerName + " Tabular View" : ViewAttribute.GetViewName(GetType());
+      Caption = Content != null ? Content.OptimizerName + " Table" : ViewAttribute.GetViewName(GetType());
     }
 
     protected override void UpdateColumnHeaders() {

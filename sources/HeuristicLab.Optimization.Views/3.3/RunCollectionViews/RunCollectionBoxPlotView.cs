@@ -31,7 +31,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimization.Views {
-  [View("RunCollection BoxPlots")]
+  [View("Box Plot")]
   [Content(typeof(RunCollection), false)]
   public partial class RunCollectionBoxPlotView : AsynchronousContentView {
     private enum AxisDimension { Color = 0 }
@@ -158,7 +158,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateCaption() {
-      Caption = Content != null ? Content.OptimizerName + " Box Plots" : ViewAttribute.GetViewName(GetType());
+      Caption = Content != null ? Content.OptimizerName + " Box Plot" : ViewAttribute.GetViewName(GetType());
     }
 
     private void UpdateComboBoxes() {
