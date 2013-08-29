@@ -37,6 +37,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
         this.Caption = ViewAttribute.GetViewName(this.GetType());
       else
         this.Caption = "View";
+
+      if (ViewAttribute.HasHelpResourcePath((this.GetType())))
+        helpLabel.Visible = true;
     }
 
     private string caption;
@@ -259,6 +262,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
         Invoke((Action<bool>)ResumeRepaint, refresh);
       else
         ((Control)this).ResumeRepaint(refresh);
+    }
+
+    protected void helpLabel_DoubleClick(object sender, EventArgs e) {
+      using (InfoBox dialog = new InfoBox("Help for " + ViewAttribute.GetViewName(this.GetType()), ViewAttribute.GetHelpResourcePath(this.GetType()), this)) {
+        dialog.ShowDialog(this);
+      }
     }
   }
 }
