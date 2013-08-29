@@ -62,11 +62,19 @@ namespace HeuristicLab.MainForm.WindowsForms {
       EmbeddedResourceName = embeddedResourceName;
     }
 
-    protected virtual void LoadEmbeddedResource(string name) {
+    protected virtual void LoadEmbeddedResource(string resourceName) {
+      string extension = Path.GetExtension(resourceName);
       Assembly assembly = Assembly.GetAssembly(ParentView.GetType());
       try {
-        using (Stream stream = assembly.GetManifestResourceStream(name))
-          infoRichTextBox.LoadFile(stream, RichTextBoxStreamType.RichText);
+        using (Stream stream = assembly.GetManifestResourceStream(resourceName)) {
+          if (extension == ".rtf") {
+            infoRichTextBox.LoadFile(stream, RichTextBoxStreamType.RichText);
+          } else if (extension == ".txt") {
+            infoRichTextBox.LoadFile(stream, RichTextBoxStreamType.UnicodePlainText);
+          } else {
+            infoRichTextBox.Text = "Error: Unsupported help format: " + extension;
+          }
+        }
       }
       catch (Exception ex) {
         infoRichTextBox.Text = "Error: Could not load help text. Exception is: " + Environment.NewLine + ex.ToString();

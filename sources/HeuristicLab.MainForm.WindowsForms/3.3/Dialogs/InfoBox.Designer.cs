@@ -62,14 +62,15 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // infoRichTextBox
       // 
-      this.infoRichTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.infoRichTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.infoRichTextBox.BackColor = System.Drawing.SystemColors.Control;
       this.infoRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.infoRichTextBox.Location = new System.Drawing.Point(12, 12);
       this.infoRichTextBox.Name = "infoRichTextBox";
       this.infoRichTextBox.ReadOnly = true;
+      this.infoRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
       this.infoRichTextBox.Size = new System.Drawing.Size(612, 441);
       this.infoRichTextBox.TabIndex = 1;
       this.infoRichTextBox.Text = "";
