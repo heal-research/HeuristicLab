@@ -44,37 +44,18 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
-      this.helpLabel = new System.Windows.Forms.Label();
-      this.helpToolTip = new System.Windows.Forms.ToolTip(this.components);
       this.SuspendLayout();
       // 
-      // helpLabel
+      // ViewBase
       // 
-      this.helpLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.helpLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Help;
-      this.helpLabel.Location = new System.Drawing.Point(131, 0);
-      this.helpLabel.Name = "helpLabel";
-      this.helpLabel.Size = new System.Drawing.Size(16, 16);
-      this.helpLabel.TabIndex = 0;
-      this.helpToolTip.SetToolTip(this.helpLabel, "Double Click to Show Help");
-      this.helpLabel.Visible = false;
-      this.helpLabel.DoubleClick += new System.EventHandler(this.helpLabel_DoubleClick);
-      // 
-      // View
-      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Controls.Add(this.helpLabel);
-      this.Name = "View";
+      this.Name = "ViewBase";
       this.Load += new System.EventHandler(this.View_Load);
       this.ResumeLayout(false);
 
     }
 
     #endregion
-
-    protected System.Windows.Forms.Label helpLabel;
-    protected System.Windows.Forms.ToolTip helpToolTip;
-
   }
 }

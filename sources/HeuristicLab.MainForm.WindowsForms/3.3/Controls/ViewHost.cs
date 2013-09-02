@@ -102,6 +102,18 @@ namespace HeuristicLab.MainForm.WindowsForms {
           } else viewType = null;
           configurationLabel.Visible = activeView is IConfigureableView;
           configurationLabel.Enabled = activeView != null && !activeView.Locked;
+
+          if (activeView != null && ViewAttribute.HasHelpResourcePath(activeView.GetType())) {
+            if (configurationLabel.Visible) {
+              helpLabel.Top = 44;
+            } else {
+              helpLabel.Top = 22;
+            }
+            helpLabel.Visible = true;
+          } else {
+            helpLabel.Visible = false;
+            helpLabel.Top = 44;
+          }
         }
       }
     }
@@ -300,6 +312,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private void configurationLabel_DoubleClick(object sender, MouseEventArgs e) {
       ((IConfigureableView)ActiveView).ShowConfiguration();
+    }
+
+    private void helpLabel_DoubleClick(object sender, EventArgs e) {
+      using (InfoBox dialog = new InfoBox("Help for " + ViewAttribute.GetViewName(ActiveView.GetType()), ViewAttribute.GetHelpResourcePath(ActiveView.GetType()), ActiveView)) {
+        dialog.ShowDialog(this);
+      }
     }
     #endregion
   }
