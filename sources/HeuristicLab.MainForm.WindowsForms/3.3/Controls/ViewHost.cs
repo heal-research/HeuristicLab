@@ -103,17 +103,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
           configurationLabel.Visible = activeView is IConfigureableView;
           configurationLabel.Enabled = activeView != null && !activeView.Locked;
 
-          if (activeView != null && ViewAttribute.HasHelpResourcePath(activeView.GetType())) {
-            if (configurationLabel.Visible) {
-              helpLabel.Top = 44;
-            } else {
-              helpLabel.Top = 22;
-            }
-            helpLabel.Visible = true;
-          } else {
-            helpLabel.Visible = false;
-            helpLabel.Top = 44;
-          }
+          helpLabel.Visible = activeView != null && ViewAttribute.HasHelpResourcePath(activeView.GetType());
+          helpLabel.Top = CalculateHelpLabelPosY();
         }
       }
     }
@@ -221,7 +212,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
       base.OnSizeChanged(e);
       viewsLabel.Location = new Point(Width - viewsLabel.Margin.Right - viewsLabel.Width, viewsLabel.Margin.Top);
       configurationLabel.Location = new Point(Width - configurationLabel.Margin.Right - configurationLabel.Width, viewsLabel.Bottom + viewsLabel.Margin.Bottom + configurationLabel.Margin.Top);
+      helpLabel.Location = new Point(Width - helpLabel.Margin.Right - helpLabel.Width, CalculateHelpLabelPosY());
+    }
 
+    private int CalculateHelpLabelPosY() {
+      if (activeView != null && ViewAttribute.HasHelpResourcePath(activeView.GetType()) && !configurationLabel.Visible) {
+        return configurationLabel.Top;
+      }
+      return configurationLabel.Bottom + configurationLabel.Margin.Bottom + helpLabel.Margin.Top;
     }
 
     #region forwarding of view events
