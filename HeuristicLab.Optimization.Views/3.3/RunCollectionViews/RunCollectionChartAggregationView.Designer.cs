@@ -19,7 +19,7 @@
  */
 #endregion
 namespace HeuristicLab.Optimization.Views {
-  partial class RunCollectionDataTableView {
+  partial class RunCollectionChartAggregationView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -108,7 +108,7 @@ namespace HeuristicLab.Optimization.Views {
       this.dataRowComboBox.TabIndex = 4;
       this.dataRowComboBox.SelectedIndexChanged += new System.EventHandler(this.dataRowComboBox_SelectedIndexChanged);
       // 
-      // RunCollectionDataTableView
+      // RunCollectionChartAggregationView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -117,7 +117,7 @@ namespace HeuristicLab.Optimization.Views {
       this.Controls.Add(this.viewHost);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.dataTableComboBox);
-      this.Name = "RunCollectionDataTableView";
+      this.Name = "RunCollectionChartAggregationView";
       this.Size = new System.Drawing.Size(527, 374);
       this.ResumeLayout(false);
       this.PerformLayout();

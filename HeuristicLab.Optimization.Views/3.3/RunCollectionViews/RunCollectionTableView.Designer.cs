@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Optimization.Views {
-  partial class RunCollectionTabularView {
+  partial class RunCollectionTableView {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -52,10 +52,10 @@ namespace HeuristicLab.Optimization.Views {
       this.errorProvider.SetIconAlignment(this.rowsTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.rowsTextBox, 2);
       // 
-      // RunCollectionTabularView
+      // RunCollectionTableView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-      this.Name = "RunCollectionTabularView";
+      this.Name = "RunCollectionTableView";
       this.ShowStatisticalInformation = true;
       this.Controls.SetChildIndex(this.rowsLabel, 0);
       this.Controls.SetChildIndex(this.columnsLabel, 0);

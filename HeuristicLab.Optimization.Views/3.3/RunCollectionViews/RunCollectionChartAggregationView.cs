@@ -29,9 +29,9 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
-  [View("RunCollection DataTableView")]
+  [View("Chart Aggregation")]
   [Content(typeof(RunCollection), false)]
-  public partial class RunCollectionDataTableView : ItemView {
+  public partial class RunCollectionChartAggregationView : ItemView {
     private const string AllDataRows = "All DataRows";
 
     public new RunCollection Content {
@@ -47,7 +47,7 @@ namespace HeuristicLab.Optimization.Views {
       get { return combinedDataTable; }
     }
 
-    public RunCollectionDataTableView() {
+    public RunCollectionChartAggregationView() {
       InitializeComponent();
       runMapping = new Dictionary<IRun, IEnumerable<DataRow>>();
       combinedDataTable = new DataTable("Combined DataTable", "A data table containing data rows from multiple runs.");
@@ -203,7 +203,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateCaption() {
-      Caption = Content != null ? Content.OptimizerName + " Data Table" : ViewAttribute.GetViewName(GetType());
+      Caption = Content != null ? Content.OptimizerName + " Chart Aggregation" : ViewAttribute.GetViewName(GetType());
     }
 
     private void UpdateDataRowComboBox() {

@@ -32,7 +32,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimization.Views {
-  [View("RunCollection BubbleChart")]
+  [View("Bubble Chart")]
   [Content(typeof(RunCollection), false)]
   public partial class RunCollectionBubbleChartView : AsynchronousContentView {
     private enum SizeDimension { Constant = 0 }
