@@ -344,6 +344,110 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
     #endregion
 
+    #region progress views
+    private readonly Dictionary<IContent, IProgress> contentProgressLookup = new Dictionary<IContent, IProgress>();
+    private readonly Dictionary<Control, IProgress> viewProgressLookup = new Dictionary<Control, IProgress>();
+    private readonly List<ProgressView> progressViews = new List<ProgressView>();
+
+    /// <summary>
+    /// Adds a <see cref="ProgressView"/> to the <see cref="ContentView"/>s showing the specified content.
+    /// </summary>
+    public IProgress AddOperationProgressToContent(IContent content, string progressMessage, bool addToObjectGraphObjects = true) {
+      if (InvokeRequired) {
+        IProgress result = (IProgress)Invoke((Func<IContent, string, bool, IProgress>)AddOperationProgressToContent, content, progressMessage, addToObjectGraphObjects);
+        return result;
+      }
+      if (contentProgressLookup.ContainsKey(content))
+        throw new ArgumentException("A progress is already registered for the specified content.", "content");
+
+      var contentViews = views.Keys.OfType<ContentView>();
+      if (!contentViews.Any(v => v.Content == content))
+        throw new ArgumentException("The content is not displayed in a top-level view", "content");
+
+      if (addToObjectGraphObjects) {
+        var containedObjects = content.GetObjectGraphObjects();
+        contentViews = contentViews.Where(v => containedObjects.Contains(v.Content));
+      } else
+        contentViews = contentViews.Where(v => v.Content == content);
+
+      var progress = new Progress(progressMessage, ProgressState.Started);
+      foreach (var contentView in contentViews) {
+        progressViews.Add(new ProgressView(contentView, progress));
+      }
+
+      contentProgressLookup[content] = progress;
+      return progress;
+    }
+
+    /// <summary>
+    /// Adds a <see cref="ProgressView"/> to the specified view.
+    /// </summary>
+    public IProgress AddOperationProgressToView(Control control, string progressMessage) {
+      var progress = new Progress(progressMessage, ProgressState.Started);
+      AddOperationProgressToView(control, progress);
+      return progress;
+    }
+
+    public void AddOperationProgressToView(Control control, IProgress progress) {
+      if (InvokeRequired) {
+        Invoke((Action<Control, IProgress>)AddOperationProgressToView, control, progress);
+        return;
+      }
+      if (control == null) throw new ArgumentNullException("control", "The view must not be null.");
+      if (progress == null) throw new ArgumentNullException("progress", "The progress must not be null.");
+
+      IProgress oldProgress;
+      if (viewProgressLookup.TryGetValue(control, out oldProgress)) {
+        foreach (var progressView in progressViews.Where(v => v.Content == oldProgress).ToList()) {
+          progressView.Dispose();
+          progressViews.Remove(progressView);
+        }
+        viewProgressLookup.Remove(control);
+      }
+
+      progressViews.Add(new ProgressView(control, progress));
+      viewProgressLookup[control] = progress;
+    }
+
+    /// <summary>
+    /// Removes an existing <see cref="ProgressView"/> from the <see cref="ContentView"/>s showing the specified content.
+    /// </summary>
+    public void RemoveOperationProgressFromContent(IContent content, bool finishProgress = true) {
+      if (InvokeRequired) {
+        Invoke((Action<IContent, bool>)RemoveOperationProgressFromContent, content, finishProgress);
+        return;
+      }
+
+      IProgress progress;
+      if (!contentProgressLookup.TryGetValue(content, out progress))
+        throw new ArgumentException("No progress is registered for the specified content.", "content");
+
+      if (finishProgress) progress.Finish();
+      foreach (var progressView in progressViews.Where(v => v.Content == progress).ToList()) {
+        progressView.Dispose();
+        progressViews.Remove(progressView);
+      }
+      contentProgressLookup.Remove(content);
+
+    }
+
+    /// <summary>
+    /// Removes an existing <see cref="ProgressView"/> from the specified view.
+    /// </summary>
+    public void RemoveOperationProgressFromView(Control control, bool finishProgress = true) {
+      IProgress progress;
+      if (!viewProgressLookup.TryGetValue(control, out progress))
+        throw new ArgumentException("No progress is registered for the specified control.", "control");
+
+      if (finishProgress) progress.Finish();
+      foreach (var progressView in progressViews.Where(v => v.Content == progress).ToList()) {
+        progressView.Dispose();
+        progressViews.Remove(progressView);
+      }
+      viewProgressLookup.Remove(control);
+    }
+    #endregion
+
     #region create menu and toolbar
     private void CreateGUI() {
       IEnumerable<object> allUserInterfaceItems = ApplicationManager.Manager.GetInstances(userInterfaceItemType);

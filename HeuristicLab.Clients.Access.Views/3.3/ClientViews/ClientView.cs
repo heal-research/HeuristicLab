@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -33,29 +32,8 @@ namespace HeuristicLab.Clients.Access.Views {
       set { base.Content = value; }
     }
 
-    private ProgressView progressView;
-    private Progress progress;
-
     public ClientView() {
       InitializeComponent();
-      progress = new Progress() {
-        CanBeCanceled = false,
-        ProgressState = ProgressState.Finished
-      };
-    }
-
-    protected override void DeregisterContentEvents() {
-      if (progressView != null) {
-        progressView.Content = null;
-        progressView.Dispose();
-        progressView = null;
-      }
-      base.DeregisterContentEvents();
-    }
-
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      progressView = new ProgressView(this, progress);
     }
 
     protected override void OnContentChanged() {
@@ -97,20 +75,12 @@ namespace HeuristicLab.Clients.Access.Views {
     }
 
     public void StartProgressView() {
-      if (InvokeRequired) {
-        Invoke(new Action(StartProgressView));
-      } else {
-        progress.Status = "Downloading client information. Please be patient.";
-        progress.ProgressState = ProgressState.Started;
-      }
+      var message = "Downloading client information. Please be patient.";
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, message);
     }
 
     public void FinishProgressView() {
-      if (InvokeRequired) {
-        Invoke(new Action(FinishProgressView));
-      } else {
-        progress.Finish();
-      }
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
     }
   }
 }

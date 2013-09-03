@@ -177,6 +177,7 @@ namespace HeuristicLab.Clients.Hive {
 
     #region Constructors and Cloning
     public RefreshableJob() {
+      this.progress = new Progress();
       this.refreshAutomatically = false;
       this.Job = new Job();
       this.log = new ThreadSafeLog();
@@ -185,6 +186,7 @@ namespace HeuristicLab.Clients.Hive {
       this.HiveTasks = new ItemCollection<HiveTask>();
     }
     public RefreshableJob(Job hiveJob) {
+      this.progress = new Progress();
       this.refreshAutomatically = true;
       this.Job = hiveJob;
       this.log = new ThreadSafeLog();

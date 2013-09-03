@@ -26,17 +26,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
-    /// <summary> 
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing) {
-      if (disposing && (components != null)) {
-        components.Dispose();
-      }
-      base.Dispose(disposing);
-    }
-
+   
     #region Component Designer generated code
 
     /// <summary> 
@@ -44,19 +34,17 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
       this.progressBar = new System.Windows.Forms.ProgressBar();
       this.statusLabel = new System.Windows.Forms.Label();
       this.cancelButton = new System.Windows.Forms.Button();
       this.panel = new System.Windows.Forms.Panel();
-      this.cancelButtonTimer = new System.Windows.Forms.Timer(this.components);
       this.panel.SuspendLayout();
       this.SuspendLayout();
       // 
       // progressBar
       // 
-      this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.progressBar.Location = new System.Drawing.Point(3, 3);
       this.progressBar.Name = "progressBar";
       this.progressBar.Size = new System.Drawing.Size(352, 23);
@@ -65,8 +53,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // statusLabel
       // 
-      this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.statusLabel.Location = new System.Drawing.Point(3, 33);
       this.statusLabel.Name = "statusLabel";
       this.statusLabel.Size = new System.Drawing.Size(352, 17);
@@ -85,8 +73,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // panel
       // 
-      this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panel.Controls.Add(this.progressBar);
       this.panel.Controls.Add(this.cancelButton);
@@ -95,10 +84,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.panel.Name = "panel";
       this.panel.Size = new System.Drawing.Size(360, 88);
       this.panel.TabIndex = 3;
-      // 
-      // cancelButtonTimer
-      // 
-      this.cancelButtonTimer.Tick += new System.EventHandler(this.cancelButtonTimer_Tick);
       // 
       // ProgressView
       // 
@@ -117,6 +102,5 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private System.Windows.Forms.Label statusLabel;
     private System.Windows.Forms.Button cancelButton;
     private System.Windows.Forms.Panel panel;
-    private System.Windows.Forms.Timer cancelButtonTimer;
   }
 }

@@ -21,7 +21,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
@@ -97,8 +97,8 @@ namespace HeuristicLab.Optimizer {
         if (string.IsNullOrEmpty(content.Filename))
           SaveAs(view);
         else {
-          ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
-          SetEnabledStateOfContentViews(content, false);
+          MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
+          SetSaveOperationProgressInContentViews(content, true);
           ContentManager.SaveAsync(content, content.Filename, true, SavingCompleted);
         }
       }
@@ -122,8 +122,8 @@ namespace HeuristicLab.Optimizer {
         saveFileDialog.FileName = string.IsNullOrEmpty(content.Filename) ? "Item" : content.Filename;
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-          ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).SetAppStartingCursor();
-          SetEnabledStateOfContentViews(content, false);
+          MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
+          SetSaveOperationProgressInContentViews(content, true, saveFileDialog.FileName);
           if (saveFileDialog.FilterIndex == 1) {
             ContentManager.SaveAsync(content, saveFileDialog.FileName, false, SavingCompleted);
           } else {
@@ -134,7 +134,6 @@ namespace HeuristicLab.Optimizer {
     }
     private static void SavingCompleted(IStorableContent content, Exception error) {
       try {
-        SetEnabledStateOfContentViews(content, true);
         if (error != null) throw error;
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().UpdateTitle();
       }
@@ -142,17 +141,20 @@ namespace HeuristicLab.Optimizer {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot save file.", ex);
       }
       finally {
-        ((MainForm.WindowsForms.MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
+        SetSaveOperationProgressInContentViews(content, false);
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().ResetAppStartingCursor();
       }
     }
 
-    private static void SetEnabledStateOfContentViews(IStorableContent content, bool enabled) {
+    private static void SetSaveOperationProgressInContentViews(IStorableContent content, bool showProgress, string fileName = null) {
       HeuristicLab.MainForm.WindowsForms.MainForm mainForm = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>();
       #region Mono Compatibility
       // removed the InvokeRequired check because of Mono
       mainForm.Invoke((Action)delegate {
-        var views = MainFormManager.MainForm.Views.OfType<IContentView>().Where(v => v.Content == content).ToList();
-        views.ForEach(v => v.Enabled = enabled);
+        if (showProgress) {
+          mainForm.AddOperationProgressToContent(content, string.Format("Saving to file \"{0}\"...", Path.GetFileName(fileName ?? content.Filename)));
+        } else
+          mainForm.RemoveOperationProgressFromContent(content);
       });
       #endregion
     }
