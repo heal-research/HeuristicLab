@@ -19,10 +19,11 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
@@ -54,11 +55,24 @@ namespace HeuristicLab.Operators {
     }
 
     public override void CollectParameterValues(IDictionary<string, IItem> values) {
-      base.CollectParameterValues(values);
+      foreach (var param in Parameters.OfType<IValueParameter>().Except(OperatorParameters)) {
+        var children = GetCollectedValues(param);
+        foreach (var c in children) {
+          if (String.IsNullOrEmpty(c.Key))
+            values.Add(param.Name, c.Value);
+          else values.Add(param.Name + "." + c.Key, c.Value);
+        }
+      }
       foreach (var opParam in OperatorParameters) {
         var op = opParam.Value;
         var @checked = Operators.ItemChecked(op);
-        values.Add(opParam.Name + ".Checked", new BoolValue(@checked));
+        if (!@checked) continue;
+        var children = GetCollectedValues(opParam);
+        foreach (var c in children) {
+          if (String.IsNullOrEmpty(c.Key))
+            values.Add(opParam.Name, c.Value);
+          else values.Add(opParam.Name + "." + c.Key, c.Value);
+        }
       }
     }
   }
