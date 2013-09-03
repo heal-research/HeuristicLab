@@ -79,17 +79,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
       Add(new Result(TestProfitResultName, "Profit of the model on the test partition", new DoubleValue()));
     }
 
-
-    protected override void OnModelChanged() {
-      base.OnModelChanged();
-      RecalculateResults();
-    }
-
-    protected override void OnProblemDataChanged() {
-      base.OnProblemDataChanged();
-      RecalculateResults();
-    }
-
     protected override void RecalculateResults() {
       CalculateTradingResults();
     }
@@ -114,23 +103,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     }
 
     public virtual IEnumerable<double> Signals {
-      get {
-        return GetSignals(Enumerable.Range(0, ProblemData.Dataset.Rows));
-      }
+      get { return GetSignals(Enumerable.Range(0, ProblemData.Dataset.Rows)); }
     }
-
     public virtual IEnumerable<double> TrainingSignals {
-      get {
-        return GetSignals(ProblemData.TrainingIndices);
-      }
+      get { return GetSignals(ProblemData.TrainingIndices); }
     }
-
     public virtual IEnumerable<double> TestSignals {
-      get {
-        return GetSignals(ProblemData.TestIndices);
-      }
+      get { return GetSignals(ProblemData.TestIndices); }
     }
-
     public virtual IEnumerable<double> GetSignals(IEnumerable<int> rows) {
       return Model.GetSignals(ProblemData.Dataset, rows);
     }

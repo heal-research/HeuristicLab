@@ -31,8 +31,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
     public SolutionView() {
       InitializeComponent();
 
-      var regressionSolutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(ISolutionEvaluationView), true);
-      foreach (Type viewType in regressionSolutionEvaluationViewTypes)
+      var solutionEvaluationViewTypes = ApplicationManager.Manager.GetTypes(typeof(ISolutionEvaluationView));
+      foreach (Type viewType in solutionEvaluationViewTypes)
         AddViewListViewItem(viewType, HeuristicLab.Common.Resources.VSImageLibrary.Graph);
     }
 
