@@ -21,9 +21,6 @@
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   public interface ISymbolicRegressionModel : IRegressionModel, ISymbolicDataAnalysisModel {
-    double LowerEstimationLimit { get; }
-    double UpperEstimationLimit { get; }
-
     void Scale(IRegressionProblemData problemData);
   }
 }

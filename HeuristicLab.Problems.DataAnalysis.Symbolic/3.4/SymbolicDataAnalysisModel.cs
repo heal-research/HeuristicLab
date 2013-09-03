@@ -37,6 +37,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     #region properties
+    [Storable]
+    private double lowerEstimationLimit;
+    public double LowerEstimationLimit { get { return lowerEstimationLimit; } }
+    [Storable]
+    private double upperEstimationLimit;
+    public double UpperEstimationLimit { get { return upperEstimationLimit; } }
 
     [Storable]
     private ISymbolicExpressionTree symbolicExpressionTree;
@@ -49,7 +55,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter {
       get { return interpreter; }
     }
-
     #endregion
 
     [StorableConstructor]
@@ -58,13 +63,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base(original, cloner) {
       this.symbolicExpressionTree = cloner.Clone(original.symbolicExpressionTree);
       this.interpreter = cloner.Clone(original.interpreter);
+      this.lowerEstimationLimit = original.lowerEstimationLimit;
+      this.upperEstimationLimit = original.upperEstimationLimit;
     }
-    public SymbolicDataAnalysisModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter)
+    protected SymbolicDataAnalysisModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+       double lowerEstimationLimit, double upperEstimationLimit)
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
       this.symbolicExpressionTree = tree;
       this.interpreter = interpreter;
+      this.lowerEstimationLimit = lowerEstimationLimit;
+      this.upperEstimationLimit = upperEstimationLimit;
     }
 
     #region Scaling

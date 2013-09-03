@@ -31,27 +31,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   /// </summary>
   [StorableClass]
   [Item(Name = "SymbolicClassificationModel", Description = "Represents a symbolic classification model.")]
-  public abstract class
-    SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
-    [Storable]
-    private double lowerEstimationLimit;
-    public double LowerEstimationLimit { get { return lowerEstimationLimit; } }
-    [Storable]
-    private double upperEstimationLimit;
-    public double UpperEstimationLimit { get { return upperEstimationLimit; } }
+  public abstract class SymbolicClassificationModel : SymbolicDataAnalysisModel, ISymbolicClassificationModel {
 
     [StorableConstructor]
     protected SymbolicClassificationModel(bool deserializing) : base(deserializing) { }
-    protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner)
-      : base(original, cloner) {
-      lowerEstimationLimit = original.lowerEstimationLimit;
-      upperEstimationLimit = original.upperEstimationLimit;
-    }
-    protected SymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter) {
-      this.lowerEstimationLimit = lowerEstimationLimit;
-      this.upperEstimationLimit = upperEstimationLimit;
-    }
+    protected SymbolicClassificationModel(SymbolicClassificationModel original, Cloner cloner) : base(original, cloner) { }
+    protected SymbolicClassificationModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
+      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) { }
 
     public abstract IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows);
     public abstract void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);

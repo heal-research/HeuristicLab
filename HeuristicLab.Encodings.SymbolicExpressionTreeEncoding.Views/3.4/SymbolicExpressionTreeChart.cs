@@ -375,7 +375,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
-    private void SaveImageAsBitmap(string filename) {
+    public void SaveImageAsBitmap(string filename) {
       if (tree == null) return;
       Image image = new Bitmap(Width, Height);
       using (Graphics g = Graphics.FromImage(image)) {
@@ -385,7 +385,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       image.Save(filename);
     }
 
-    private void SaveImageAsEmf(string filename) {
+    public void SaveImageAsEmf(string filename) {
       if (tree == null) return;
       using (Graphics g = CreateGraphics()) {
         using (Metafile file = new Metafile(filename, g.GetHdc())) {

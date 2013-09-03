@@ -32,26 +32,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableClass]
   [Item(Name = "Symbolic Regression Model", Description = "Represents a symbolic regression model.")]
   public class SymbolicRegressionModel : SymbolicDataAnalysisModel, ISymbolicRegressionModel {
-    [Storable]
-    private double lowerEstimationLimit;
-    public double LowerEstimationLimit { get { return lowerEstimationLimit; } }
-    [Storable]
-    private double upperEstimationLimit;
-    public double UpperEstimationLimit { get { return upperEstimationLimit; } }
+
 
     [StorableConstructor]
     protected SymbolicRegressionModel(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner)
-      : base(original, cloner) {
-      this.lowerEstimationLimit = original.lowerEstimationLimit;
-      this.upperEstimationLimit = original.upperEstimationLimit;
-    }
+    protected SymbolicRegressionModel(SymbolicRegressionModel original, Cloner cloner) : base(original, cloner) { }
+
     public SymbolicRegressionModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
-      : base(tree, interpreter) {
-      this.lowerEstimationLimit = lowerEstimationLimit;
-      this.upperEstimationLimit = upperEstimationLimit;
-    }
+      : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicRegressionModel(this, cloner);
@@ -59,7 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
       return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows)
-        .LimitToRange(lowerEstimationLimit, upperEstimationLimit);
+        .LimitToRange(LowerEstimationLimit, UpperEstimationLimit);
     }
 
     public ISymbolicRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
