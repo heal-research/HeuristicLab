@@ -43,10 +43,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       get { return "Export Symbolic Solution To Excel"; }
     }
     public override IEnumerable<string> Structure {
-      get { return new string[] { "&Edit" }; }
+      get { return new string[] { "&Data Analysis" }; }
     }
     public override int Position {
-      get { return 2500; }
+      get { return 5200; }
     }
     public override string ToolTipText {
       get { return "Create excel file of symbolic data analysis solutions."; }
