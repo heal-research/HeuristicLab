@@ -58,7 +58,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.okButton.TabIndex = 0;
       this.okButton.Text = "&OK";
       this.okButton.UseVisualStyleBackColor = true;
-      this.okButton.Click += new System.EventHandler(this.okButton_Click);
       // 
       // infoRichTextBox
       // 
@@ -77,6 +76,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       // 
       // InfoBox
       // 
+      this.AcceptButton = this.okButton;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ClientSize = new System.Drawing.Size(636, 494);
       this.Controls.Add(this.infoRichTextBox);
@@ -88,6 +88,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Info Box";
+      this.Load += new System.EventHandler(this.InfoBox_Load);
       this.ResumeLayout(false);
 
     }

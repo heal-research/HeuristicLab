@@ -26,47 +26,21 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class InfoBox : Form {
-    public string Caption {
-      get { return this.Text; }
-      set {
-        if (InvokeRequired)
-          Invoke(new Action<string>(x => this.Text = x), value);
-        else
-          this.Text = value;
-      }
-    }
-
     protected string embeddedResourceName;
-    public string EmbeddedResourceName {
-      get { return embeddedResourceName; }
-      set {
-        if (InvokeRequired)
-          Invoke(new Action<string>(x => this.EmbeddedResourceName = x), value);
-        else {
-          embeddedResourceName = value;
-          LoadEmbeddedResource(embeddedResourceName);
-        }
-      }
-    }
+    protected IView parentView;
 
-    public IView ParentView { get; set; }
-
-    public InfoBox() {
+    public InfoBox(string caption, string embeddedResourceName, IView parentView) {
       InitializeComponent();
+      this.Text = caption;
+      this.parentView = parentView;
+      this.embeddedResourceName = embeddedResourceName;
     }
 
-    public InfoBox(string caption, string embeddedResourceName, IView parentView)
-      : this() {
-      Caption = caption;
-      ParentView = parentView;
-      EmbeddedResourceName = embeddedResourceName;
-    }
-
-    protected virtual void LoadEmbeddedResource(string resourceName) {
-      string extension = Path.GetExtension(resourceName);
-      Assembly assembly = Assembly.GetAssembly(ParentView.GetType());
+    protected virtual void LoadEmbeddedResource() {
+      string extension = Path.GetExtension(embeddedResourceName);
+      Assembly assembly = Assembly.GetAssembly(parentView.GetType());
       try {
-        using (Stream stream = assembly.GetManifestResourceStream(resourceName)) {
+        using (Stream stream = assembly.GetManifestResourceStream(embeddedResourceName)) {
           if (extension == ".rtf") {
             infoRichTextBox.LoadFile(stream, RichTextBoxStreamType.RichText);
           } else if (extension == ".txt") {
@@ -81,8 +55,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       }
     }
 
-    protected virtual void okButton_Click(object sender, EventArgs e) {
-      Close();
+    private void InfoBox_Load(object sender, EventArgs e) {
+      LoadEmbeddedResource();
     }
   }
 }
