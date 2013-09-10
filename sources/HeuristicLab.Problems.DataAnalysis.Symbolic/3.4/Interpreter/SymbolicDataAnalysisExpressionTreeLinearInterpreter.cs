@@ -332,12 +332,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private static LinearInstruction[] GetPrefixSequence(LinearInstruction[] code, int startIndex) {
+      var s = new Stack<int>();
       var list = new List<LinearInstruction>();
-      int i = startIndex;
-      while (i != code.Length) {
+      s.Push(startIndex);
+      while (s.Any()) {
+        int i = s.Pop();
         var instr = code[i];
+        // push instructions in reverse execution order
+        for (int j = instr.nArguments - 1; j >= 0; j--) s.Push(instr.childIndex + j);
         list.Add(instr);
-        i = instr.nArguments > 0 ? instr.childIndex : i + 1;
       }
       return list.ToArray();
     }
