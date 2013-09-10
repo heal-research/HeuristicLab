@@ -19,13 +19,13 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using System;
-using System.Collections.Generic;
 
 namespace HeuristicLab.Operators {
   /// <summary>
@@ -35,6 +35,7 @@ namespace HeuristicLab.Operators {
   [StorableClass]
   public abstract class MultiOperator<T> : SingleSuccessorOperator, IMultiOperator<T> where T : class, IOperator {
     private List<IValueParameter<T>> operatorParameters;
+    protected IEnumerable<IValueParameter<T>> OperatorParameters { get { return operatorParameters; } }
 
     [Storable]
     private IItemList<T> operators;
