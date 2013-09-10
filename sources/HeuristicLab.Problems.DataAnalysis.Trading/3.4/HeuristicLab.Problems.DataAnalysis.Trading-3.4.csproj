@@ -106,7 +106,6 @@
     <Compile Include="Interfaces\IProblemData.cs" />
     <Compile Include="Interfaces\ISolution.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="Problem.cs" />
     <Compile Include="ProblemData.cs" />
     <Compile Include="Solution.cs" />
     <Compile Include="Symbolic\Interfaces\IEvaluator.cs" />
@@ -219,7 +218,7 @@
   </Target>
   -->
   <PropertyGroup>
-  <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
       set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
       set ProjectDir=$(ProjectDir)
       set SolutionDir=$(SolutionDir)
