@@ -44,6 +44,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
       MaximumSymbolicExpressionTreeLength.Value = InitialMaximumTreeLength;
 
       InitializeOperators();
+      ConfigureGrammarSymbols();
+    }
+
+    private void ConfigureGrammarSymbols() {
+      var grammar = SymbolicExpressionTreeGrammar as TypeCoherentExpressionGrammar;
+      if (grammar != null) grammar.ConfigureAsDefaultTimeSeriesPrognosisGrammar();
     }
 
     private void InitializeOperators() {
