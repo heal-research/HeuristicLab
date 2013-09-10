@@ -27,12 +27,12 @@ using HeuristicLab.Common;
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
   public class OnlineProfitCalculator : IOnlineCalculator {
 
-    private int p;
+    private int position; // currently held position: -1: short, 0: out of market, 1: long
     private readonly double transactionCost;
-    private int c;
-    private double sum;
+    private int count; // only necessary to reset position and total profit on the first data point 
+    private double totalProfit;
     public double Profit {
-      get { return sum; }
+      get { return totalProfit; }
     }
 
     public OnlineProfitCalculator(double transactionCost) {
@@ -48,45 +48,45 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
       get { return Profit; }
     }
     public void Reset() {
-      p = 0;
-      c = 0;
-      sum = 0.0;
+      position = 0;
+      count = 0;
+      totalProfit = 0.0;
     }
 
     public void Add(double actualReturn, double signal) {
-      double iterationReturn = 0.0;
-      if (c == 0) {
-        p = (int)signal;
-        iterationReturn = 0;
-        c++;
+      double profit = 0.0;
+      if (count == 0) {
+        position = (int)signal;
+        profit = 0;
+        count++;
       } else {
-        if (p == 0 && signal.IsAlmost(0)) {
-        } else if (p == 0 && signal.IsAlmost(1)) {
-          p = 1;
-          iterationReturn = -transactionCost;
-        } else if (p == 0 && signal.IsAlmost(-1)) {
-          p = -1;
-          iterationReturn = -transactionCost;
-        } else if (p == 1 && signal.IsAlmost(1)) {
-          iterationReturn = actualReturn;
-        } else if (p == 1 && signal.IsAlmost(0)) {
-          iterationReturn = actualReturn - transactionCost;
-          p = 0;
-        } else if (p == 1 && signal.IsAlmost(-1)) {
-          iterationReturn = actualReturn - transactionCost;
-          p = -1;
-        } else if (p == -1 && signal.IsAlmost(-1)) {
-          iterationReturn = -actualReturn;
-        } else if (p == -1 && signal.IsAlmost(0)) {
-          iterationReturn = -actualReturn - transactionCost;
-          p = 0;
-        } else if (p == -1 && signal.IsAlmost(1)) {
-          iterationReturn = -actualReturn - transactionCost;
-          p = 1;
+        if (position == 0 && signal.IsAlmost(0)) {
+        } else if (position == 0 && signal.IsAlmost(1)) {
+          position = 1;
+          profit = -transactionCost;
+        } else if (position == 0 && signal.IsAlmost(-1)) {
+          position = -1;
+          profit = -transactionCost;
+        } else if (position == 1 && signal.IsAlmost(1)) {
+          profit = actualReturn;
+        } else if (position == 1 && signal.IsAlmost(0)) {
+          profit = actualReturn - transactionCost;
+          position = 0;
+        } else if (position == 1 && signal.IsAlmost(-1)) {
+          profit = actualReturn - transactionCost;
+          position = -1;
+        } else if (position == -1 && signal.IsAlmost(-1)) {
+          profit = -actualReturn;
+        } else if (position == -1 && signal.IsAlmost(0)) {
+          profit = -actualReturn - transactionCost;
+          position = 0;
+        } else if (position == -1 && signal.IsAlmost(1)) {
+          profit = -actualReturn - transactionCost;
+          position = 1;
         }
-        c++;
+        count++;
       }
-      sum += iterationReturn;
+      totalProfit += profit;
     }
     #endregion
 
