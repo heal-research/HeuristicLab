@@ -115,12 +115,6 @@
     <Compile Include="SolutionView.Designer.cs">
       <DependentUpon>SolutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Symbolic\SolutionView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Symbolic\SolutionView.Designer.cs">
-      <DependentUpon>SolutionView.cs</DependentUpon>
-    </Compile>
     <None Include="HeuristicLab.snk" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Plugin.cs.frame" />
