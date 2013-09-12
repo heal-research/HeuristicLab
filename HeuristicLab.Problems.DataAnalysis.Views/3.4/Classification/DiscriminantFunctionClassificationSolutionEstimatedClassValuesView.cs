@@ -29,9 +29,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Estimated Class Values")]
   [Content(typeof(IDiscriminantFunctionClassificationSolution))]
   public partial class DiscriminantFunctionClassificationSolutionEstimatedClassValuesView : ClassificationSolutionEstimatedClassValuesView {
-    private const string TargetClassValuesSeriesname = "TargetVariable";
-    private const string EstimatedClassValuesSeriesName = "EstimatedClassValues";
-    private const string EstimatedValuesSeriesName = "EstimatedValues";
+    private const string TARGETVARIABLE_SERIES_NAME = "TargetVariable";
+    private const string ESTIMATEDVALUES_SERIES_NAME = "Estimated Class Values (all)";
+    private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Class Values (training)";
+    private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Class Values (test)";
+    private const string ESTIMATEDVALUES_DISCRIMINANT_SERIES_NAME = "Discriminant Values (all)";
 
     public new IDiscriminantFunctionClassificationSolution Content {
       get { return (IDiscriminantFunctionClassificationSolution)base.Content; }
@@ -48,20 +50,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else {
         StringMatrix matrix = null;
         if (Content != null) {
-          string[,] values = new string[Content.ProblemData.Dataset.Rows, 4];
-
+          string[,] values = new string[Content.ProblemData.Dataset.Rows, 6];
           double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
-          double[] estimatedClassValues = Content.EstimatedClassValues.ToArray();
+          double[] estimatedClassValue = Content.EstimatedClassValues.ToArray();
           double[] estimatedValues = Content.EstimatedValues.ToArray();
           for (int row = 0; row < target.Length; row++) {
             values[row, 0] = row.ToString();
             values[row, 1] = target[row].ToString();
-            values[row, 2] = estimatedClassValues[row].ToString();
-            values[row, 3] = estimatedValues[row].ToString();
+            values[row, 2] = estimatedClassValue[row].ToString();
+            values[row, 5] = estimatedValues[row].ToString();
+          }
+
+          var estimatedTraining = Content.EstimatedTrainingClassValues.GetEnumerator();
+          estimatedTraining.MoveNext();
+          foreach (var trainingRow in Content.ProblemData.TrainingIndices) {
+            values[trainingRow, 3] = estimatedTraining.Current.ToString();
+            estimatedTraining.MoveNext();
+          }
+          var estimatedTest = Content.EstimatedTestClassValues.GetEnumerator();
+          estimatedTest.MoveNext();
+          foreach (var testRow in Content.ProblemData.TestIndices) {
+            values[testRow, 4] = estimatedTest.Current.ToString();
+            estimatedTest.MoveNext();
           }
 
           matrix = new StringMatrix(values);
-          matrix.ColumnNames = new string[] { "Id", TargetClassValuesSeriesname, EstimatedClassValuesSeriesName, EstimatedValuesSeriesName };
+          matrix.ColumnNames = new string[] { "Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME, ESTIMATEDVALUES_DISCRIMINANT_SERIES_NAME };
           matrix.SortableView = true;
         }
         matrixView.Content = matrix;
