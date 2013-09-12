@@ -44,7 +44,6 @@ namespace HeuristicLab.Data.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileValueView));
       this.openButton = new System.Windows.Forms.Button();
       this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
       this.stringConvertibleValueView = new HeuristicLab.Data.Views.StringConvertibleValueView();
@@ -54,7 +53,7 @@ namespace HeuristicLab.Data.Views {
       // 
       this.openButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.openButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
-      this.openButton.Location = new System.Drawing.Point(198, 0);
+      this.openButton.Location = new System.Drawing.Point(167, 0);
       this.openButton.Name = "openButton";
       this.openButton.Size = new System.Drawing.Size(24, 24);
       this.openButton.TabIndex = 3;
@@ -76,7 +75,6 @@ namespace HeuristicLab.Data.Views {
       // 
       // FileValueView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.stringConvertibleValueView);
       this.Controls.Add(this.openButton);
