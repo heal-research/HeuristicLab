@@ -46,9 +46,8 @@ namespace HeuristicLab.Tests {
     [TestCategory("General")]
     [TestCategory("Essential")]
     [TestProperty("Time", "medium")]
-    [DeploymentItem(@"HeuristicLab-3.3/Resources/GA_SymbReg.hl")]
     public void CollectGASample() {
-      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize("GA_SymbReg.hl");
+      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize(@"Test Resources\GA_SymbReg.hl");
 
       Stopwatch watch = new Stopwatch();
       watch.Start();

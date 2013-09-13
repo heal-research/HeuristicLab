@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -103,223 +103,223 @@
   <ItemGroup>
     <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\bin\ALGLIB-3.7.0.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.DataAnalysis-3.4">
       <HintPath>..\bin\HeuristicLab.Algorithms.DataAnalysis-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.EvolutionStrategy-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.EvolutionStrategy-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.GeneticAlgorithm-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.GeneticAlgorithm-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.LocalSearch-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.LocalSearch-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.RAPGA-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.RAPGA-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.ScatterSearch-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.ScatterSearch-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.SimulatedAnnealing-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.SimulatedAnnealing-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.TabuSearch-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.TabuSearch-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.VariableNeighborhoodSearch-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Analysis-3.3, Version=3.3.0.0">
       <HintPath>..\bin\HeuristicLab.Analysis-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Collections-3.3">
       <HintPath>..\bin\HeuristicLab.Collections-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Common-3.3">
       <HintPath>..\bin\HeuristicLab.Common-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Core-3.3">
       <HintPath>..\bin\HeuristicLab.Core-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Data-3.3">
       <HintPath>..\bin\HeuristicLab.Data-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3">
       <HintPath>..\bin\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Encodings.IntegerVectorEncoding-3.3">
-      <Private>true</Private>
+      <Private>False</Private>
       <HintPath>..\bin\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.dll</HintPath>
     </Reference>
     <Reference Include="HeuristicLab.Encodings.PermutationEncoding-3.3">
       <HintPath>..\bin\HeuristicLab.Encodings.PermutationEncoding-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Encodings.RealVectorEncoding-3.3">
       <HintPath>..\bin\HeuristicLab.Encodings.RealVectorEncoding-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Encodings.ScheduleEncoding-3.3">
       <HintPath>..\bin\HeuristicLab.Encodings.ScheduleEncoding-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4">
       <HintPath>..\bin\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.MainForm-3.3">
       <HintPath>..\bin\HeuristicLab.MainForm-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.MainForm.WindowsForms-3.3">
       <HintPath>..\bin\HeuristicLab.MainForm.WindowsForms-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Operators-3.3">
       <HintPath>..\bin\HeuristicLab.Operators-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Optimization-3.3">
       <HintPath>..\bin\HeuristicLab.Optimization-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Optimization.Operators-3.3">
       <HintPath>..\bin\HeuristicLab.Optimization.Operators-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.ParallelEngine-3.3">
       <HintPath>..\bin\HeuristicLab.ParallelEngine-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Parameters-3.3">
       <HintPath>..\bin\HeuristicLab.Parameters-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Persistence-3.3">
       <HintPath>..\bin\HeuristicLab.Persistence-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.PluginInfrastructure-3.3">
       <HintPath>..\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.ArtificialAnt-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.ArtificialAnt-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.Regression-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Instances-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Instances.CordeauGQAP-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.CordeauGQAP-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.DataAnalysis-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Instances.ElloumiCTAP-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.ElloumiCTAP-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Instances.QAPLIB-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.QAPLIB-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Instances.TSPLIB-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.TSPLIB-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Instances.VehicleRouting-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.Instances.VehicleRouting-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Knapsack-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Knapsack-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.LawnMower-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.LawnMower-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.LinearAssignment-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.LinearAssignment-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.QuadraticAssignment-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.QuadraticAssignment-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Scheduling-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Scheduling-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.TestFunctions-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.TestFunctions-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.TravelingSalesman-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.TravelingSalesman-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.VehicleRouting-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.VehicleRouting-3.4.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Random-3.3">
       <HintPath>..\bin\HeuristicLab.Random-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Selection-3.3">
       <HintPath>..\bin\HeuristicLab.Selection-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.SequentialEngine-3.3">
       <HintPath>..\bin\HeuristicLab.SequentialEngine-3.3.dll</HintPath>
-      <Private>true</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <Private>false</Private>
@@ -341,18 +341,18 @@
     <Compile Include="HeuristicLab-3.3\CloningConstructorTest.cs" />
     <Compile Include="HeuristicLab-3.3\CollectObjectGraphTest.cs" />
     <Compile Include="HeuristicLab-3.3\ContentViewTests.cs" />
-    <Compile Include="HeuristicLab-3.3\NamedItemTest.cs" />
-    <Compile Include="HeuristicLab-3.3\ParameterVisibilityTest.cs" />
     <Compile Include="HeuristicLab-3.3\DeepCloneableCloningTest.cs" />
     <Compile Include="HeuristicLab-3.3\GeneticAlgorithmTest.cs" />
     <Compile Include="HeuristicLab-3.3\InstantiateCreatablesTest.cs" />
+    <Compile Include="HeuristicLab-3.3\NamedItemTest.cs" />
+    <Compile Include="HeuristicLab-3.3\ParameterVisibilityTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
     <Compile Include="HeuristicLab-3.3\SamplesTest.cs" />
     <Compile Include="HeuristicLab-3.3\StorableConstructorTest.cs" />
-    <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\SupportVectorMachineTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
     <Compile Include="HeuristicLab-3.3\ToStringTest.cs" />
+    <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\SupportVectorMachineTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessModelTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessFunctionsTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessRegressionTest.cs" />
@@ -467,23 +467,20 @@
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HeuristicLab.Algorithms.DataAnalysis-3.4\co2.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="app.config" />
     <None Include="Builder.testsettings">
       <SubType>Designer</SubType>
     </None>
-    <None Include="HeuristicLab-3.3\Resources\GA_SymbReg.hl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="HeuristicLab-3.3\Resources\GA_TSP.hl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <Content Include="HeuristicLab-3.3\Resources\SamplesExperimentFinished.hl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="HeuristicLab.snk" />
+    <None Include="Test Resources\GA_SymbReg.hl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test Resources\GA_TSP.hl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test Resources\SamplesExperimentFinished.hl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Shadow Include="Test References\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.accessor" />
     <Shadow Include="Test References\HeuristicLab.PluginInfrastructure-3.3.accessor" />
     <Shadow Include="Test References\HeuristicLab.MainForm.WindowsForms-3.3.accessor" />
@@ -493,13 +490,15 @@
     <Shadow Include="Test References\HeuristicLab.Encodings.PermutationEncoding-3.3.accessor" />
     <Shadow Include="Test References\HeuristicLab.Problems.TestFunctions-3.3.accessor" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="HeuristicLab-3.3\Resources\C101.opt.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Test Resources\C101.opt.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="HeuristicLab-3.3\Resources\C101.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Test Resources\C101.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Test Resources\co2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

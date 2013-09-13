@@ -66,9 +66,8 @@ namespace HeuristicLab.Tests {
     [TestCategory("General")]
     [TestCategory("Essential")]
     [TestProperty("Time", "long")]
-    [DeploymentItem(@"HeuristicLab-3.3\Resources\SamplesExperimentFinished.hl")]
     public void TestCloningFinishedExperiment() {
-      Experiment experiment = (Experiment)XmlParser.Deserialize("SamplesExperimentFinished.hl");
+      Experiment experiment = (Experiment)XmlParser.Deserialize(@"Test Resources\SamplesExperimentFinished.hl");
 
       Experiment clone = (Experiment)experiment.Clone(new Cloner());
       var intersections = CheckTotalInequality(experiment, clone).Where(x => x.GetType().FullName.StartsWith("HeuristicLab"));

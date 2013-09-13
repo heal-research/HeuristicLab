@@ -44,10 +44,9 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestProperty("Time", "long")]
-    [DeploymentItem(@"HeuristicLab-3.3/Resources/GA_TSP.hl")]
     public void GeneticAlgorithmPerformanceTest() {
       ex = null;
-      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize("GA_TSP.hl");
+      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize(@"Test Resources\GA_TSP.hl");
       ga.ExceptionOccurred += new EventHandler<EventArgs<Exception>>(ga_ExceptionOccurred);
       ga.Stopped += new EventHandler(ga_Stopped);
       ga.SetSeedRandomly.Value = false;
