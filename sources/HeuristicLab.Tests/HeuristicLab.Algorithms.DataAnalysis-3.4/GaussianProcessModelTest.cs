@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
     [TestProperty("Time", "medium")]
     public void GaussianProcessModelOutputTest() {
       var provider = new RegressionCSVInstanceProvider();
-      var problemData = provider.ImportData("co2.txt");
+      var problemData = provider.ImportData(@"Test Resources\co2.txt");
 
       var targetVariable = "interpolated";
       var allowedInputVariables = new string[] { "decimal date" };
