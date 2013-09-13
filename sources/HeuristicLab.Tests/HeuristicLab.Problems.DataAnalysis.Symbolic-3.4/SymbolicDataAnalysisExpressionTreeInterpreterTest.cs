@@ -111,58 +111,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), 12.5e6);
     }
 
-    [TestMethod]
-    [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
-    public void ExpressionTreeInterpreterTestArithmeticGrammarPerformance() {
-      TestArithmeticGrammarPerformance(new ExpressionTreeInterpreter(), 12.5e6);
-    }
-
-    [TestMethod]
-    [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
-    public void ExpressionTreeInterpreterTestCompilationPerformance() {
-      var twister = new MersenneTwister(31415);
-      var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
-      var grammar = new ArithmeticExpressionGrammar();
-      //grammar.Symbols.OfType<Variable>().First().Enabled = false;
-      grammar.MaximumFunctionArguments = 0;
-      grammar.MaximumFunctionDefinitions = 0;
-      grammar.MinimumFunctionArguments = 0;
-      grammar.MinimumFunctionDefinitions = 0;
-
-      var trees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0).ToArray();
-      foreach (SymbolicExpressionTree tree in trees)
-        Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
-
-
-      var data = dataset.DoubleVariables.ToDictionary(key => key, v => (IList<double>)dataset.GetReadOnlyDoubleValues(v));
-      var param = Expression.Parameter(typeof(int), "row");
-
-      Stopwatch watch = new Stopwatch();
-      int repetitions = 3;
-
-      long nNodes = trees.Aggregate<ISymbolicExpressionTree, long>(0, (current, t) => current + t.Length);
-
-      for (int rep = 0; rep < repetitions; rep++) {
-        watch.Start();
-        foreach (ISymbolicExpressionTree t in trees) {
-          var exp = ExpressionTreeInterpreter.CreateExpression(t.Root.GetSubtree(0).GetSubtree(0), data, param);
-          while (exp.CanReduce) exp = exp.Reduce();
-          var function = Expression.Lambda<Func<int, double>>(exp, param).Compile();
-          function(0);
-        }
-        watch.Stop();
-      }
-      Console.WriteLine("Random tree compilation performance of expression tree interpreter: " + Environment.NewLine +
-        watch.ElapsedMilliseconds + "ms " + Environment.NewLine +
-        Util.NodesPerSecond(nNodes * repetitions, watch) + " nodes/sec" + Environment.NewLine +
-        Util.NodesPerSecond(trees.Length * repetitions, watch) + " trees/sec"
-        );
-
-    }
-
-
     private void TestTypeCoherentGrammarPerformance(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
