@@ -124,6 +124,9 @@ namespace HeuristicLab.Data.Views {
       if (InvokeRequired)
         Invoke(new EventHandler<EventArgs<int>>(Content_ItemChanged), sender, e);
       else {
+        // if a resize of the array occurs and some other class handles the event and provides default values
+        //then the itemChanged will occur before the reset event. hence the check was added
+        if (dataGridView.RowCount <= e.Value) return;
         dataGridView.Rows[e.Value].Cells[0].Value = Content.GetValue(e.Value);
         Size size = dataGridView.Rows[e.Value].Cells[0].PreferredSize;
         dataGridView.Columns[0].Width = Math.Max(dataGridView.Columns[0].Width, size.Width);
