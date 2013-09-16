@@ -44,7 +44,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SymbolicDiscriminantFunctionClassificationSolutionView));
       this.btnSimplify = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
@@ -53,6 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       this.itemsGroupBox.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
+      exportButton.Visible = false;
       // 
       // splitContainer
       // 

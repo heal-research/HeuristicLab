@@ -59,20 +59,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       // splitContainer.Panel1
       // 
       this.splitContainer.Panel1.Controls.Add(this.btnSimplify);
-      this.splitContainer.Size = new System.Drawing.Size(480, 275);
-      this.splitContainer.SplitterDistance = 255;
-      // 
-      // itemsGroupBox
-      // 
-      this.itemsGroupBox.Size = new System.Drawing.Size(486, 294);
-      // 
-      // itemsListView
-      // 
-      this.itemsListView.Size = new System.Drawing.Size(249, 238);
-      // 
-      // detailsGroupBox
-      // 
-      this.detailsGroupBox.Size = new System.Drawing.Size(215, 246);
       // 
       // addButton
       // 
@@ -82,14 +68,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       // 
       this.toolTip.SetToolTip(this.removeButton, "Remove");
       // 
-      // viewHost
-      // 
-      this.viewHost.Size = new System.Drawing.Size(203, 221);
-      // 
       // btnSimplify
       // 
       this.btnSimplify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSimplify.Location = new System.Drawing.Point(177, 4);
+      this.btnSimplify.Location = new System.Drawing.Point(172, 4);
       this.btnSimplify.Name = "btnSimplify";
       this.btnSimplify.Size = new System.Drawing.Size(75, 23);
       this.btnSimplify.TabIndex = 6;
@@ -99,7 +81,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       // 
       // SymbolicRegressionSolutionView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.Name = "SymbolicRegressionSolutionView";
       this.Size = new System.Drawing.Size(486, 294);
       this.splitContainer.Panel1.ResumeLayout(false);

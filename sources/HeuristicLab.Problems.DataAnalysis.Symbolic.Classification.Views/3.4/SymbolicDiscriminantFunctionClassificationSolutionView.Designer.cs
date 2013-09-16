@@ -53,6 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       this.itemsGroupBox.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
+      exportButton.Visible = false;
       // 
       // splitContainer
       // 

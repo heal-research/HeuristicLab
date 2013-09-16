@@ -43,6 +43,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.exportButton = new System.Windows.Forms.Button();
+      this.exportFileDialog = new System.Windows.Forms.SaveFileDialog();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -53,6 +55,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // splitContainer
       // 
+      // 
+      // splitContainer.Panel2
+      // 
+      this.splitContainer.Panel2.Controls.Add(this.exportButton);
       // 
       // itemsGroupBox
       // 
@@ -66,9 +72,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       this.toolTip.SetToolTip(this.removeButton, "Remove");
       // 
+      // exportButton
+      // 
+      this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.exportButton.Location = new System.Drawing.Point(215, 4);
+      this.exportButton.Name = "exportButton";
+      this.exportButton.Size = new System.Drawing.Size(54, 23);
+      this.exportButton.TabIndex = 6;
+      this.exportButton.Text = "Export";
+      this.exportButton.UseVisualStyleBackColor = true;
+      this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+      // 
       // DataAnalysisSolutionView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Name = "DataAnalysisSolutionView";
       this.splitContainer.Panel1.ResumeLayout(false);
@@ -82,6 +98,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     #endregion
+
+    private System.Windows.Forms.SaveFileDialog exportFileDialog;
+    protected System.Windows.Forms.Button exportButton;
 
   }
 }

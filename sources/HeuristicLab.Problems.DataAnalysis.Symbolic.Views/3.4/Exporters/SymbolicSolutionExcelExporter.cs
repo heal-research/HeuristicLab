@@ -33,64 +33,27 @@ using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
-  public class ExportSymbolicSolutionToExcelMenuItem : MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
+  public class SymbolicSolutionExcelExporter : IDataAnalysisSolutionExporter {
     private const string TRAININGSTART = "TrainingStart";
     private const string TRAININGEND = "TrainingEnd";
     private const string TESTSTART = "TestStart";
     private const string TESTEND = "TestEnd";
 
-    public override string Name {
-      get { return "Export Symbolic Solution To Excel"; }
+
+    public string FileTypeFilter {
+      get { return "Excel 2007 file (*.xlsx)|*.xlsx"; }
     }
-    public override IEnumerable<string> Structure {
-      get { return new string[] { "&Data Analysis" }; }
-    }
-    public override int Position {
-      get { return 5200; }
-    }
-    public override string ToolTipText {
-      get { return "Create excel file of symbolic data analysis solutions."; }
+    public bool Supports(IDataAnalysisSolution solution) {
+      return solution is ISymbolicDataAnalysisSolution &&
+        solution is IRegressionSolution;
     }
 
-    protected override void OnToolStripItemSet(EventArgs e) {
-      base.OnToolStripItemSet(e);
-      ToolStripItem.Enabled = false;
-      var menuItem = ToolStripItem.OwnerItem as ToolStripMenuItem;
-      if (menuItem != null)
-        menuItem.DropDownOpening += menuItem_DropDownOpening;
-    }
-
-    private void menuItem_DropDownOpening(object sender, EventArgs e) {
-      IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      Control control = activeView as Control;
-      activeView = control.GetNestedControls((c) => c.Visible)
-        .OfType<IContentView>().FirstOrDefault(v => v.Content is ISymbolicDataAnalysisSolution && v.Content is IRegressionSolution);
-      ToolStripItem.Enabled = activeView != null;
-    }
-
-    public override void Execute() {
-      IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      Control control = activeView as Control;
-      activeView = control.GetNestedControls((c) => c.Visible)
-        .OfType<IContentView>().First(v => v.Content is ISymbolicDataAnalysisSolution && v.Content is IRegressionSolution);
-      var solution = (ISymbolicDataAnalysisSolution)activeView.Content;
+    public void Export(IDataAnalysisSolution solution, string fileName) {
+      var symbSolution = solution as ISymbolicDataAnalysisSolution;
+      if (symbSolution == null) throw new NotSupportedException("This solution cannot be exported to Excel");
       var formatter = new SymbolicDataAnalysisExpressionExcelFormatter();
-      var formula = formatter.Format(solution.Model.SymbolicExpressionTree, solution.ProblemData.Dataset);
-      control = (Control)activeView;
-
-
-      SaveFileDialog saveFileDialog = new SaveFileDialog();
-      saveFileDialog.Filter = "Excel Workbook|*.xlsx";
-      saveFileDialog.Title = "Save an Excel File";
-      if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-        string fileName = saveFileDialog.FileName;
-        using (BackgroundWorker bg = new BackgroundWorker()) {
-          MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(control, "Exportion solution to " + fileName + ".");
-          bg.DoWork += (b, e) => ExportChart(fileName, solution, formula);
-          bg.RunWorkerCompleted += (o, e) => MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(control);
-          bg.RunWorkerAsync();
-        }
-      }
+      var formula = formatter.Format(symbSolution.Model.SymbolicExpressionTree, solution.ProblemData.Dataset);
+      ExportChart(fileName, symbSolution, formula);
     }
 
     private void ExportChart(string fileName, ISymbolicDataAnalysisSolution solution, string formula) {

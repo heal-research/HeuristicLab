@@ -118,6 +118,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exporters\SymbolicSolutionExcelExporter.cs" />
     <Compile Include="InteractiveSymbolicExpressionTreeChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -130,7 +131,6 @@
     <Compile Include="MathSymbolicDataAnalysisModelView.designer.cs">
       <DependentUpon>MathSymbolicDataAnalysisModelView.cs</DependentUpon>
     </Compile>
-    <Compile Include="MenuItems\ExportSymbolicSolutionToExcelMenuItem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="TextualSymbolicDataAnalysisModelView.cs">
       <SubType>UserControl</SubType>
