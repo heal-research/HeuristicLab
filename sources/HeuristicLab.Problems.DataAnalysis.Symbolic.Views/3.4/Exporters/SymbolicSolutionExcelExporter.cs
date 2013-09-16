@@ -21,14 +21,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
-using HeuristicLab.Optimizer;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing.Chart;
 
