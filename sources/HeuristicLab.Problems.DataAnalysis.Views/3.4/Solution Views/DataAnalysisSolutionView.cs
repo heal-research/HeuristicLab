@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
   [View("DataAnalysisSolution View")]
   [Content(typeof(DataAnalysisSolution), false)]
-  public partial class DataAnalysisSolutionView : Bla {
+  public partial class DataAnalysisSolutionView : NamedItemCollectionView<IResult> {
     public DataAnalysisSolutionView() {
       InitializeComponent();
       viewHost.ViewsLabelVisible = false;
@@ -218,9 +218,4 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
     #endregion
   }
-
-  public class Bla : NamedItemCollectionView<IResult> {
-
-  }
-
 }
