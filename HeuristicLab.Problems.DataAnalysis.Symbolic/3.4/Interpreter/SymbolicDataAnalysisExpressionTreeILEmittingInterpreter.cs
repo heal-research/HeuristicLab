@@ -167,13 +167,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (Instruction instr in code) {
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
-          instr.iArg0 = doubleVariableNames[variableTreeNode.VariableName];
+          instr.data = doubleVariableNames[variableTreeNode.VariableName];
         } else if (instr.opCode == OpCodes.LagVariable) {
           var laggedVariableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
-          instr.iArg0 = doubleVariableNames[laggedVariableTreeNode.VariableName];
+          instr.data = doubleVariableNames[laggedVariableTreeNode.VariableName];
         } else if (instr.opCode == OpCodes.VariableCondition) {
           var variableConditionTreeNode = (VariableConditionTreeNode)instr.dynamicNode;
-          instr.iArg0 = doubleVariableNames[variableConditionTreeNode.VariableName];
+          instr.data = doubleVariableNames[variableConditionTreeNode.VariableName];
         } else if (instr.opCode == OpCodes.Call) {
           necessaryArgStackSize += instr.nArguments + 1;
         }
@@ -565,7 +565,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Variable: {
             VariableTreeNode varNode = (VariableTreeNode)currentInstr.dynamicNode;
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.data);
             // load correct column of the current variable
             il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_0); // rowIndex
@@ -599,7 +599,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var normalResult = il.DefineLabel();
             LaggedVariableTreeNode varNode = (LaggedVariableTreeNode)currentInstr.dynamicNode;
             il.Emit(System.Reflection.Emit.OpCodes.Ldarg_1); // load columns array
-            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.iArg0);
+            il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, (int)currentInstr.data);
             // load correct column of the current variable
             il.Emit(System.Reflection.Emit.OpCodes.Ldelem_Ref);
             il.Emit(System.Reflection.Emit.OpCodes.Ldc_I4, varNode.Lag); // lag

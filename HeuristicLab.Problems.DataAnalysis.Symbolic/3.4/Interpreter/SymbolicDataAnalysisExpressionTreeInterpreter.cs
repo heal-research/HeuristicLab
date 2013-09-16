@@ -116,13 +116,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (Instruction instr in code) {
         if (instr.opCode == OpCodes.Variable) {
           var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
-          instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
+          instr.data = dataset.GetReadOnlyDoubleValues(variableTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.LagVariable) {
           var laggedVariableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
-          instr.iArg0 = dataset.GetReadOnlyDoubleValues(laggedVariableTreeNode.VariableName);
+          instr.data = dataset.GetReadOnlyDoubleValues(laggedVariableTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.VariableCondition) {
           var variableConditionTreeNode = (VariableConditionTreeNode)instr.dynamicNode;
-          instr.iArg0 = dataset.GetReadOnlyDoubleValues(variableConditionTreeNode.VariableName);
+          instr.data = dataset.GetReadOnlyDoubleValues(variableConditionTreeNode.VariableName);
         } else if (instr.opCode == OpCodes.Call) {
           necessaryArgStackSize += instr.nArguments + 1;
         }
@@ -131,7 +131,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
 
-    protected virtual double Evaluate(Dataset dataset, ref int row, InterpreterState state) {
+    public virtual double Evaluate(Dataset dataset, ref int row, InterpreterState state) {
       Instruction currentInstr = state.NextInstruction();
       switch (currentInstr.opCode) {
         case OpCodes.Add: {
@@ -405,7 +405,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             // save the pc
             int savedPc = state.ProgramCounter;
             // set pc to start of function  
-            state.ProgramCounter = (ushort)currentInstr.iArg0;
+            state.ProgramCounter = (ushort)currentInstr.data;
             // evaluate the function
             double v = Evaluate(dataset, ref row, state);
 
@@ -417,18 +417,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return v;
           }
         case OpCodes.Arg: {
-            return state.GetStackFrameValue((ushort)currentInstr.iArg0);
+            return state.GetStackFrameValue((ushort)currentInstr.data);
           }
         case OpCodes.Variable: {
             if (row < 0 || row >= dataset.Rows) return double.NaN;
             var variableTreeNode = (VariableTreeNode)currentInstr.dynamicNode;
-            return ((IList<double>)currentInstr.iArg0)[row] * variableTreeNode.Weight;
+            return ((IList<double>)currentInstr.data)[row] * variableTreeNode.Weight;
           }
         case OpCodes.LagVariable: {
             var laggedVariableTreeNode = (LaggedVariableTreeNode)currentInstr.dynamicNode;
             int actualRow = row + laggedVariableTreeNode.Lag;
             if (actualRow < 0 || actualRow >= dataset.Rows) return double.NaN;
-            return ((IList<double>)currentInstr.iArg0)[actualRow] * laggedVariableTreeNode.Weight;
+            return ((IList<double>)currentInstr.data)[actualRow] * laggedVariableTreeNode.Weight;
           }
         case OpCodes.Constant: {
             var constTreeNode = (ConstantTreeNode)currentInstr.dynamicNode;
@@ -440,7 +440,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.VariableCondition: {
             if (row < 0 || row >= dataset.Rows) return double.NaN;
             var variableConditionTreeNode = (VariableConditionTreeNode)currentInstr.dynamicNode;
-            double variableValue = ((IList<double>)currentInstr.iArg0)[row];
+            double variableValue = ((IList<double>)currentInstr.data)[row];
             double x = variableValue - variableConditionTreeNode.Threshold;
             double p = 1 / (1 + Math.Exp(-variableConditionTreeNode.Slope * x));
 

@@ -29,69 +29,87 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
 
-  [TestClass()]
+  [TestClass]
   public class SymbolicDataAnalysisExpressionTreeInterpreterTest {
     private const int N = 1000;
     private const int Rows = 1000;
     private const int Columns = 50;
-    private TestContext testContextInstance;
 
-    /// <summary>
-    ///Gets or sets the test context which provides
-    ///information about and functionality for the current test run.
-    ///</summary>
-    public TestContext TestContext {
-      get {
-        return testContextInstance;
-      }
-      set {
-        testContextInstance = value;
-      }
-    }
-
-    [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "long")]
-    public void SymbolicDataAnalysisExpressionTreeInterpreterTypeCoherentGrammarPerformanceTest() {
-      TypeCoherentGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
-    }
+    private static Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
+        { 1.0, 1.0, 1.0 },
+        { 2.0, 2.0, 2.0 },
+        { 3.0, 1.0, 2.0 },
+        { 4.0, 1.0, 1.0 },
+        { 5.0, 2.0, 2.0 },
+        { 6.0, 1.0, 2.0 },
+        { 7.0, 1.0, 1.0 },
+        { 8.0, 2.0, 2.0 },
+        { 9.0, 1.0, 2.0 },
+        { 10.0, 1.0, 1.0 },
+        { 11.0, 2.0, 2.0 },
+        { 12.0, 1.0, 2.0 }
+      });
 
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void SymbolicDataAnalysisExpressionTreeInterpreterFullGrammarPerformanceTest() {
-      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+    public void StandardInterpreterTestTypeCoherentGrammarPerformance() {
+      TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
     }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void StandardInterpreterTestFullGrammarPerformance() {
+      TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+    }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void StandardInterpreterTestArithmeticGrammarPerformance() {
+      TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+    }
+
 
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void SymbolicDataAnalysisExpressionTreeInterpreterArithmeticGrammarPerformanceTest() {
-      ArithmeticGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
+    public void ILEmittingInterpreterTestTypeCoherentGrammarPerformance() {
+      TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
     }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void ILEmittingInterpreterTestFullGrammarPerformance() {
+      TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
+    }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void ILEmittingInterpreterTestArithmeticGrammarPerformance() {
+      TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
+    }
+
 
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterTypeCoherentGrammarPerformanceTest() {
-      TypeCoherentGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
+    public void LinearInterpreterTestTypeCoherentGrammarPerformance() {
+      TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), 12.5e6);
     }
-
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterFullGrammarPerformanceTest() {
-      FullGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
+    public void LinearInterpreterTestFullGrammarPerformance() {
+      TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), 12.5e6);
     }
-
-    [TestCategory("Problems.DataAnalysis")]
-    [TestProperty("Time", "long")]
     [TestMethod]
-    public void SymbolicDataAnalysisExpressionTreeILEmittingInterpreterArithmeticGrammarPerformanceTest() {
-      ArithmeticGrammarPerformanceTest(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void LinearInterpreterTestArithmeticGrammarPerformance() {
+      TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeLinearInterpreter(), 12.5e6);
     }
 
-    private void TypeCoherentGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
+    private void TestTypeCoherentGrammarPerformance(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new TypeCoherentExpressionGrammar();
@@ -109,7 +127,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       // Assert.IsTrue(nodesPerSec > nodesPerSecThreshold); // evaluated nodes per seconds must be larger than 15mNodes/sec
     }
 
-    private void FullGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
+    private void TestFullGrammarPerformance(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new FullFunctionalExpressionGrammar();
@@ -126,7 +144,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       //Assert.IsTrue(nodesPerSec > nodesPerSecThreshold); // evaluated nodes per seconds must be larger than 15mNodes/sec
     }
 
-    private void ArithmeticGrammarPerformanceTest(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
+    private void TestArithmeticGrammarPerformance(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new ArithmeticExpressionGrammar();
@@ -149,24 +167,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     ///A test for Evaluate
     ///</summary>
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "short")]
-    public void SymbolicDataAnalysisExpressionTreeInterpreterEvaluateTest() {
-      Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
-        { 1.0, 1.0, 1.0 },
-        { 2.0, 2.0, 2.0 },
-        { 3.0, 1.0, 2.0 },
-        { 4.0, 1.0, 1.0 },
-        { 5.0, 2.0, 2.0 },
-        { 6.0, 1.0, 2.0 },
-        { 7.0, 1.0, 1.0 },
-        { 8.0, 2.0, 2.0 },
-        { 9.0, 1.0, 2.0 },
-        { 10.0, 1.0, 1.0 },
-        { 11.0, 2.0, 2.0 },
-        { 12.0, 1.0, 2.0 }
-      });
-
+    public void StandardInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
       EvaluateTerminals(interpreter, ds);
       EvaluateOperations(interpreter, ds);
@@ -174,25 +177,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     }
 
     [TestMethod]
-    [TestCategory("Problems.DataAnalysis")]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "short")]
-    public void SymbolicDataAnalysisExpressionILEmittingTreeInterpreterEvaluateTest() {
-      Dataset ds = new Dataset(new string[] { "Y", "A", "B" }, new double[,] {
-        { 1.0, 1.0, 1.0 },
-        { 2.0, 2.0, 2.0 },
-        { 3.0, 1.0, 2.0 },
-        { 4.0, 1.0, 1.0 },
-        { 5.0, 2.0, 2.0 },
-        { 6.0, 1.0, 2.0 },
-        { 7.0, 1.0, 1.0 },
-        { 8.0, 2.0, 2.0 },
-        { 9.0, 1.0, 2.0 },
-        { 10.0, 1.0, 1.0 },
-        { 11.0, 2.0, 2.0 },
-        { 12.0, 1.0, 2.0 }
-      });
-
+    public void ILEmittingInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter();
+      EvaluateTerminals(interpreter, ds);
+      EvaluateOperations(interpreter, ds);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "short")]
+    public void LinearInterpreterTestEvaluation() {
+      var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
+
+      //ADFs are not supported by the linear interpreter
       EvaluateTerminals(interpreter, ds);
       EvaluateOperations(interpreter, ds);
     }
@@ -429,7 +428,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         Action<double> checkPsi = (x) => {
           try {
             Evaluate(interpreter, ds, "(psi " + x + ")", 0, alglib.psi(x));
-          } catch (alglib.alglibexception) { // ignore cases where alglib throws an exception
+          }
+          catch (alglib.alglibexception) { // ignore cases where alglib throws an exception
           }
         };
         Action<double> checkDawson = (x) => {

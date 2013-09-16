@@ -51,7 +51,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         Instruction instr = code[i];
         if (instr.dynamicNode.Symbol is InvokeFunction) {
           var invokeNode = (InvokeFunctionTreeNode)instr.dynamicNode;
-          instr.iArg0 = entryPoint[invokeNode.Symbol.FunctionName];
+          instr.data = entryPoint[invokeNode.Symbol.FunctionName];
         }
       }
 
@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         instr.opCode = opCodeMapper(node);
         if (node.Symbol is Argument) {
           var argNode = (ArgumentTreeNode)node;
-          instr.iArg0 = (ushort)argNode.Symbol.ArgumentIndex;
+          instr.data = (ushort)argNode.Symbol.ArgumentIndex;
         }
         instr.dynamicNode = node;
         foreach (var hook in postInstructionCompiledHooks) {

@@ -48,9 +48,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
       var replacementValue = CalculateReplacementValue(regressionModel, node, regressionProblemData, rows);
       var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
+
       var cloner = new Cloner();
-      cloner.RegisterClonedObject(node, constantNode);
       var tempModel = cloner.Clone(regressionModel);
+      var tempModelNode = (ISymbolicExpressionTreeNode)cloner.GetClone(node);
+
+      var tempModelParentNode = tempModelNode.Parent;
+      int i = tempModelParentNode.IndexOfSubtree(tempModelNode);
+      tempModelParentNode.RemoveSubtree(i);
+      tempModelParentNode.InsertSubtree(i, constantNode);
 
       var estimatedValues = tempModel.GetEstimatedValues(dataset, rows);
       double newQuality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, estimatedValues, out errorState);

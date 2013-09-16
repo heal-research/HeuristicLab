@@ -66,5 +66,16 @@ namespace HeuristicLab.Common {
       return mapping.ContainsKey(item);
     }
 
+    /// <summary>
+    /// Returns the clone of an deeply cloned item, if it was already cloned.
+    /// </summary>
+    /// <param name="original">The original object.</param>
+    /// <returns>The clone of the given object, if it was already cloned; null otherwise</returns>
+    public IDeepCloneable GetClone(IDeepCloneable original) {
+      IDeepCloneable clone = null;
+      mapping.TryGetValue(original, out clone);
+      return clone;
+    }
+
   }
 }

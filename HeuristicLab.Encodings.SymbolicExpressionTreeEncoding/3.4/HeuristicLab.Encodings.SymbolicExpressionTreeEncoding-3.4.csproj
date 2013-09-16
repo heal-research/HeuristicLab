@@ -123,7 +123,9 @@
     <Compile Include="ArchitectureManipulators\SubroutineDuplicater.cs" />
     <Compile Include="ArchitectureManipulators\SymbolicExpressionTreeArchitectureManipulator.cs" />
     <Compile Include="Compiler\Instruction.cs" />
+    <Compile Include="Compiler\LinearInstruction.cs" />
     <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
+    <Compile Include="Compiler\SymbolicExpressionTreeLinearCompiler.cs" />
     <Compile Include="Creators\FullTreeCreator.cs">
       <SubType>Code</SubType>
     </Compile>
