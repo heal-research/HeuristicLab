@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Algorithms.DataAnalysis;
@@ -64,9 +65,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
-  [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.opt.txt")]
-  [DeploymentItem(@"HeuristicLab-3.3/Resources/C101.txt")]
   public class SamplesTest {
+    private const string samplesDirectory = @"Samples\";
+
+    [ClassInitialize]
+    public static void MyClassInitialize(TestContext testContext) {
+      if (!Directory.Exists(samplesDirectory))
+        Directory.CreateDirectory(samplesDirectory);
+    }
+
     #region GA
     #region TSP
     [TestMethod]
@@ -74,7 +81,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateGaTspSampleTest() {
       var ga = CreateGaTspSample();
-      XmlGenerator.Serialize(ga, "../../GA_TSP.hl");
+      XmlGenerator.Serialize(ga, @"Samples\GA_TSP.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -114,7 +121,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateGaVrpSampleTest() {
       var ga = CreateGaVrpSample();
-      XmlGenerator.Serialize(ga, "../../GA_VRP.hl");
+      XmlGenerator.Serialize(ga, @"Samples\GA_VRP.hl");
     }
 
     [TestMethod]
@@ -136,7 +143,7 @@ namespace HeuristicLab.Tests {
       VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
 
       SolomonFormatInstanceProvider instanceProvider = new SolomonInstanceProvider();
-      CVRPTWData data = instanceProvider.Import("C101.txt", "C101.opt.txt") as CVRPTWData;
+      CVRPTWData data = instanceProvider.Import(@"Test Resources\C101.txt", @"Test Resources\C101.opt.txt") as CVRPTWData;
       vrpProblem.Load(data);
       vrpProblem.Name = "C101 VRP (imported from Solomon)";
       vrpProblem.Description = "Represents a Vehicle Routing Problem.";
@@ -188,7 +195,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
-      XmlGenerator.Serialize(ga, "../../SGP_SantaFe.hl");
+      XmlGenerator.Serialize(ga, @"Samples\SGP_SantaFe.hl");
     }
 
     [TestMethod]
@@ -244,7 +251,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateGpSymbolicRegressionSampleTest() {
       var ga = CreateGpSymbolicRegressionSample();
-      XmlGenerator.Serialize(ga, "../../SGP_SymbReg.hl");
+      XmlGenerator.Serialize(ga, @"Samples\SGP_SymbReg.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -352,7 +359,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
-      XmlGenerator.Serialize(ga, "../../SGP_SymbClass.hl");
+      XmlGenerator.Serialize(ga, @"Samples\SGP_SymbClass.hl");
     }
 
     [TestMethod]
@@ -495,7 +502,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();
-      XmlGenerator.Serialize(es, "../../ES_Griewank.hl");
+      XmlGenerator.Serialize(es, @"Samples\ES_Griewank.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -553,7 +560,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateIslandGaTspSampleTest() {
       var ga = CreateIslandGaTspSample();
-      XmlGenerator.Serialize(ga, "../../IslandGA_TSP.hl");
+      XmlGenerator.Serialize(ga, @"Samples\IslandGA_TSP.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -597,7 +604,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
-      XmlGenerator.Serialize(ls, "../../LS_Knapsack.hl");
+      XmlGenerator.Serialize(ls, @"Samples\LS_Knapsack.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -662,7 +669,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreatePsoSchwefelSampleTest() {
       var pso = CreatePsoSchwefelSample();
-      XmlGenerator.Serialize(pso, "../../PSO_Schwefel.hl");
+      XmlGenerator.Serialize(pso, @"Samples\PSO_Schwefel.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -745,7 +752,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();
-      XmlGenerator.Serialize(sa, "../../SA_Rastrigin.hl");
+      XmlGenerator.Serialize(sa, @"Samples\SA_Rastrigin.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -815,7 +822,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateTabuSearchTspSampleTest() {
       var ts = CreateTabuSearchTspSample();
-      XmlGenerator.Serialize(ts, "../../TS_TSP.hl");
+      XmlGenerator.Serialize(ts, @"Samples\TS_TSP.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -886,7 +893,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
-      XmlGenerator.Serialize(vrp, "../../TS_VRP.hl");
+      XmlGenerator.Serialize(vrp, @"Samples\TS_VRP.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -958,7 +965,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateVnsTspSampleTest() {
       var vns = CreateVnsTspSample();
-      XmlGenerator.Serialize(vns, "../../VNS_TSP.hl");
+      XmlGenerator.Serialize(vns, @"Samples\VNS_TSP.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -1039,7 +1046,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateGaussianProcessRegressionSampleTest() {
       var gpr = CreateGaussianProcessRegressionSample();
-      XmlGenerator.Serialize(gpr, "../../GPR.hl");
+      XmlGenerator.Serialize(gpr, @"Samples\GPR.hl");
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
@@ -1082,7 +1089,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
-      XmlGenerator.Serialize(ss, "../../SS_VRP.hl");
+      XmlGenerator.Serialize(ss, @"Samples\SS_VRP.hl");
     }
 
     [TestMethod]
@@ -1142,7 +1149,7 @@ namespace HeuristicLab.Tests {
     [TestProperty("Time", "medium")]
     public void CreateRAPGASchedulingSampleTest() {
       var ss = CreateRAPGASchedulingSample();
-      XmlGenerator.Serialize(ss, "../../RAPGA_JSSP.hl");
+      XmlGenerator.Serialize(ss, @"Samples\RAPGA_JSSP.hl");
     }
 
     [TestMethod]

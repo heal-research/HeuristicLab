@@ -29,7 +29,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   [TestClass]
-  [DeploymentItem(@"HeuristicLab.Algorithms.DataAnalysis-3.4/co2.txt")]
   public class GaussianProcessRegressionTest {
     public GaussianProcessRegressionTest() { }
 
@@ -53,7 +52,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
 
       alg.Problem = new RegressionProblem();
       var provider = new RegressionCSVInstanceProvider();
-      var problemData = (RegressionProblemData)provider.ImportData("co2.txt");
+      var problemData = (RegressionProblemData)provider.ImportData(@"Test Resources\co2.txt");
       problemData.TargetVariableParameter.ActualValue = problemData.TargetVariableParameter.ValidValues.First(x => x.Value == "interpolated");
       problemData.InputVariables.SetItemCheckedState(problemData.InputVariables.First(x => x.Value == "year"), false);
       problemData.InputVariables.SetItemCheckedState(problemData.InputVariables.First(x => x.Value == "month"), false);

@@ -29,12 +29,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Tests {
   // reference values calculated with Rasmussen's GPML MATLAB package
   public class GaussianProcessModelTest {
     [TestMethod]
-    [DeploymentItem(@"HeuristicLab.Algorithms.DataAnalysis-3.4/co2.txt")]
     [TestCategory("General")]
     [TestProperty("Time", "medium")]
     public void GaussianProcessModelOutputTest() {
       var provider = new RegressionCSVInstanceProvider();
-      var problemData = provider.ImportData("co2.txt");
+      var problemData = provider.ImportData(@"Test Resources\co2.txt");
 
       var targetVariable = "interpolated";
       var allowedInputVariables = new string[] { "decimal date" };

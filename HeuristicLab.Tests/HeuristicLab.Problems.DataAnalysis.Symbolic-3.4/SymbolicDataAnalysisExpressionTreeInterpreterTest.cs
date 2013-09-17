@@ -21,8 +21,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -148,6 +150,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
       var grammar = new ArithmeticExpressionGrammar();
+      //grammar.Symbols.OfType<Variable>().First().Enabled = false;
       grammar.MaximumFunctionArguments = 0;
       grammar.MaximumFunctionDefinitions = 0;
       grammar.MinimumFunctionArguments = 0;

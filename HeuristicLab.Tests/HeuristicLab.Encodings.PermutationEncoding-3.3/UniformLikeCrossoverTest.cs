@@ -60,7 +60,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
     [TestMethod]
     [TestCategory("Encodings.Permutation")]
     [TestProperty("Time", "short")]
-    [DeploymentItem("HeuristicLab.Encodings.PermutationEncoding-3.3.dll")]
     public void UniformLikeCrossoverCrossTest() {
       UniformLikeCrossover_Accessor target = new UniformLikeCrossover_Accessor();
       IRandom random = new TestRandom(new int[] { }, new double[] { 0.1, 0.2, 0.3, 0.4 });
