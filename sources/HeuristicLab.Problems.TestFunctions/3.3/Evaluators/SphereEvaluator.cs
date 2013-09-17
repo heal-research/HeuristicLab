@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("SphereEvaluator", "Evaluates the Sphere function y = C * ||X||^Alpha on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
   [StorableClass]
   public class SphereEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Sphere"; } }
     /// <summary>
     /// Returns false as the Sphere function is a minimization problem.
     /// </summary>

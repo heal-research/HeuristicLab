@@ -19,13 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.MainForm;
+using HeuristicLab.Optimization.Views;
 
-namespace HeuristicLab.Problems.Instances {
-  [Plugin("HeuristicLab.Problems.Instances", "3.3.8.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.Instances-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  public class HeuristicLabProblemsInstancesPlugin : PluginBase {
+namespace HeuristicLab.Problems.TestFunctions.Views {
+  [View("Single Objective Test Function View")]
+  [Content(typeof(SingleObjectiveTestFunctionProblem), IsDefaultView = true)]
+  public partial class SingleObjectiveTestFunctionProblemView : ProblemView {
+    public new SingleObjectiveTestFunctionProblem Content {
+      get { return (SingleObjectiveTestFunctionProblem)base.Content; }
+      set { base.Content = value; }
+    }
+
+    public SingleObjectiveTestFunctionProblemView() {
+      InitializeComponent();
+    }
   }
 }

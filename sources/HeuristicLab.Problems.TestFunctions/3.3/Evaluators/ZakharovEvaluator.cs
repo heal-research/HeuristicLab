@@ -32,6 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("ZakharovEvaluator", "Evaluates the Zakharov function on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Hedar, A. & Fukushima, M. 2004. Heuristic pattern search and its hybridization with simulated annealing for nonlinear global optimization. Optimization Methods and Software 19, pp. 291-308, Taylor & Francis.")]
   [StorableClass]
   public class ZakharovEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Zakharov"; } }
     /// <summary>
     /// Returns false as the Zakharov function is a minimization problem.
     /// </summary>

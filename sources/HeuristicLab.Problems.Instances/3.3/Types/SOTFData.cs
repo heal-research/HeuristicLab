@@ -19,13 +19,26 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Problems.Instances {
-  [Plugin("HeuristicLab.Problems.Instances", "3.3.8.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.Instances-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  public class HeuristicLabProblemsInstancesPlugin : PluginBase {
+  /// <summary>
+  /// Describes instances of Single Objective Test Functions (SOTF).
+  /// </summary>
+  public class SOTFData {
+    /// <summary>
+    /// The name of the instance
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Optional! The description of the instance
+    /// </summary>
+    public string Description { get; set; }
+
+    /// <summary>
+    /// The operator used for evaluations
+    /// </summary>
+    public IOperator Evaluator { get; set; }
   }
 }

@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     double BestKnownQuality { get; }
     int MinimumProblemSize { get; }
     int MaximumProblemSize { get; }
+    string FunctionName { get; }
 
     ILookupParameter<RealVector> PointParameter { get; }
 

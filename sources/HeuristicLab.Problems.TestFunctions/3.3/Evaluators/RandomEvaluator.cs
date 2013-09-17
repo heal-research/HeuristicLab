@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("RandomEvaluator", "Returns a random value in [0;1) that is independent of the inputs.")]
   [StorableClass]
   public class RandomEvaluator : SingleObjectiveTestFunctionProblemEvaluator, IStochasticOperator {
+    public override string FunctionName { get { return "Random"; } }
     /// <summary>
     /// It does not really matter.
     /// </summary>

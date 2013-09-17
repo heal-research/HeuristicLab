@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("GriewankEvaluator", "Evaluates the Griewank function on a given point. The optimum of this function is 0 at the origin. It is introduced by Griewank A.O. 1981 and implemented as described (without the modifications) in Locatelli, M. 2003. A note on the Griewank test function. Journal of Global Optimization 25, pp. 169-174, Springer.")]
   [StorableClass]
   public class GriewankEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Griewank"; } }
     /// <summary>
     /// Returns false as the Griewank function is a minimization problem.
     /// </summary>

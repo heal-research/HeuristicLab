@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("RastriginEvaluator", "Evaluates the generalized Rastrigin function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))) on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class RastriginEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Rastrigin"; } }
     /// <summary>
     /// Returns false as the Rastrigin function is a minimization problem.
     /// </summary>

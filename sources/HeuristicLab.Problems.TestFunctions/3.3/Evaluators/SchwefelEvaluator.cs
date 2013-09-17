@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("SchwefelEvaluator", "Evaluates the Schwefel function (sine root) on a given point. In the given bounds [-500;500] the optimum of this function is close to 0 at (420.968746453712,420.968746453712,...,420.968746453712). It is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.")]
   [StorableClass]
   public class SchwefelEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Schwefel"; } }
     /// <summary>
     /// Returns false as the Schwefel (sine root) function is a minimization problem.
     /// </summary>

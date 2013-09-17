@@ -19,13 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using HeuristicLab.Problems.TestFunctions;
 
-namespace HeuristicLab.Problems.Instances {
-  [Plugin("HeuristicLab.Problems.Instances", "3.3.8.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.Instances-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  public class HeuristicLabProblemsInstancesPlugin : PluginBase {
+namespace HeuristicLab.Problems.Instances.TestFunctions {
+  internal class SOTFDataDescriptor : IDataDescriptor {
+    public string Name { get { return Evaluator.FunctionName + " Function"; } }
+
+    public string Description {
+      get { return Evaluator.Description; }
+    }
+
+    internal ISingleObjectiveTestFunctionProblemEvaluator Evaluator { get; set; }
+
+    public SOTFDataDescriptor(ISingleObjectiveTestFunctionProblemEvaluator evaluator) {
+      Evaluator = evaluator;
+    }
   }
 }

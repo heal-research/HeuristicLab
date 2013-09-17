@@ -37,6 +37,7 @@ It is unknown how many local minima there are for dimensions greater than 30.
 It is implemented as generalized Rosenbrock function for which the 2 dimensional function is a special case, as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.")]
   [StorableClass]
   public class RosenbrockEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Rosenbrock"; } }
     /// <summary>
     /// Returns false as the Rosenbrock function is a minimization problem.
     /// </summary>
