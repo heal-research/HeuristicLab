@@ -409,7 +409,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     public void Load(SOTFData data) {
       Name = data.Name;
       Description = data.Description;
-      Evaluator = (ISingleObjectiveTestFunctionProblemEvaluator)data.Evaluator;
+      Evaluator = data.Evaluator;
     }
   }
 }

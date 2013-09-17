@@ -131,7 +131,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{494F87F4-0F25-4D33-A382-10CDB2174D48} = {494F87F4-0F25-4D33-A382-10CDB2174D48}
 		{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937} = {BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}
 		{6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5} = {6AE0E1F5-D3FF-43A3-90E1-2435E7493FB5}
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A} = {98EF72F8-D207-4A5B-8291-95DC73DDFD9A}
 		{E4EE5AFB-D552-447B-8A16-6CBE7938AF32} = {E4EE5AFB-D552-447B-8A16-6CBE7938AF32}
 	EndProjectSection
 EndProject
@@ -381,8 +380,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Trading-3.4", "HeuristicLab.Problems.DataAnalysis.Trading\3.4\HeuristicLab.Problems.DataAnalysis.Trading-3.4.csproj", "{E4EE5AFB-D552-447B-8A16-6CBE7938AF32}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Trading.Views-3.4", "HeuristicLab.Problems.DataAnalysis.Trading.Views\3.4\HeuristicLab.Problems.DataAnalysis.Trading.Views-3.4.csproj", "{CB3D0A1E-1BE8-476B-A53C-2B189E30064F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Instances.TestFunctions-3.3", "HeuristicLab.Problems.Instances.TestFunctions\3.3\HeuristicLab.Problems.Instances.TestFunctions-3.3.csproj", "{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1858,18 +1855,6 @@ Global
 		{CB3D0A1E-1BE8-476B-A53C-2B189E30064F}.Release|x64.Build.0 = Release|x64
 		{CB3D0A1E-1BE8-476B-A53C-2B189E30064F}.Release|x86.ActiveCfg = Release|x86
 		{CB3D0A1E-1BE8-476B-A53C-2B189E30064F}.Release|x86.Build.0 = Release|x86
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Debug|x64.ActiveCfg = Debug|x64
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Debug|x64.Build.0 = Debug|x64
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Debug|x86.ActiveCfg = Debug|x86
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Debug|x86.Build.0 = Debug|x86
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Release|x64.ActiveCfg = Release|x64
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Release|x64.Build.0 = Release|x64
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Release|x86.ActiveCfg = Release|x86
-		{98EF72F8-D207-4A5B-8291-95DC73DDFD9A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

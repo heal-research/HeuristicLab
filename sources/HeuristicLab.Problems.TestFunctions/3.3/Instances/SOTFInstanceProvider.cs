@@ -23,9 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.TestFunctions;
+using HeuristicLab.Problems.Instances;
 
-namespace HeuristicLab.Problems.Instances.TestFunctions {
+namespace HeuristicLab.Problems.TestFunctions {
   public class SOTFInstanceProvider : ProblemInstanceProvider<SOTFData> {
     public override string Name {
       get { return "General"; }

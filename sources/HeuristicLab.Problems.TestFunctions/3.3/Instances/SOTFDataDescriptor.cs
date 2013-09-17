@@ -19,26 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.Core;
+using HeuristicLab.Problems.Instances;
 
-namespace HeuristicLab.Problems.Instances {
-  /// <summary>
-  /// Describes instances of Single Objective Test Functions (SOTF).
-  /// </summary>
-  public class SOTFData {
-    /// <summary>
-    /// The name of the instance
-    /// </summary>
-    public string Name { get; set; }
+namespace HeuristicLab.Problems.TestFunctions {
+  internal class SOTFDataDescriptor : IDataDescriptor {
+    public string Name { get { return Evaluator.FunctionName + " Function"; } }
 
-    /// <summary>
-    /// Optional! The description of the instance
-    /// </summary>
-    public string Description { get; set; }
+    public string Description {
+      get { return Evaluator.Description; }
+    }
 
-    /// <summary>
-    /// The operator used for evaluations
-    /// </summary>
-    public IOperator Evaluator { get; set; }
+    internal ISingleObjectiveTestFunctionProblemEvaluator Evaluator { get; set; }
+
+    public SOTFDataDescriptor(ISingleObjectiveTestFunctionProblemEvaluator evaluator) {
+      Evaluator = evaluator;
+    }
   }
 }

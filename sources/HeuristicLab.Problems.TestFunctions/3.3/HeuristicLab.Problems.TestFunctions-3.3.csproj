@@ -109,6 +109,9 @@
   <ItemGroup>
     <Compile Include="Evaluators\RandomEvaluator.cs" />
     <Compile Include="Improvers\SingleObjectiveTestFunctionImprovementOperator.cs" />
+    <Compile Include="Instances\SOTFData.cs" />
+    <Compile Include="Instances\SOTFDataDescriptor.cs" />
+    <Compile Include="Instances\SOTFInstanceProvider.cs" />
     <Compile Include="MoveEvaluators\RandomAdditiveMoveEvaluator.cs" />
     <Compile Include="PathRelinkers\SingleObjectiveTestFunctionPathRelinker.cs" />
     <Compile Include="Plugin.cs" />
