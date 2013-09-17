@@ -27,12 +27,24 @@ namespace HeuristicLab.MainForm {
   public sealed class ViewAttribute : Attribute {
     public ViewAttribute(string name) {
       this.name = name;
+      this.helpResourcePath = string.Empty;
+    }
+
+    public ViewAttribute(string name, string helpResourcePath) {
+      this.name = name;
+      this.helpResourcePath = helpResourcePath;
     }
 
     private string name;
     public string Name {
       get { return this.name; }
       set { this.name = value; }
+    }
+
+    private string helpResourcePath;
+    public string HelpResourcePath {
+      get { return this.helpResourcePath; }
+      set { this.helpResourcePath = value; }
     }
 
     public static bool HasViewAttribute(MemberInfo viewType) {
@@ -45,6 +57,20 @@ namespace HeuristicLab.MainForm {
       if (attributes.Length == 1)
         return attributes[0].Name;
       return viewType.Name;
+    }
+
+    public static string GetHelpResourcePath(MemberInfo viewType) {
+      ViewAttribute[] attributes = (ViewAttribute[])viewType.GetCustomAttributes(typeof(ViewAttribute), false);
+      if (attributes.Length == 1)
+        return attributes[0].helpResourcePath;
+      return string.Empty;
+    }
+
+    public static bool HasHelpResourcePath(MemberInfo viewType) {
+      ViewAttribute[] attributes = (ViewAttribute[])viewType.GetCustomAttributes(typeof(ViewAttribute), false);
+      if (attributes.Length == 1)
+        return attributes[0].helpResourcePath != string.Empty;
+      return false;
     }
   }
 }

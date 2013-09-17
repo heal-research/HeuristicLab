@@ -50,6 +50,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewContextMenuStrip = new HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip(this.components);
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.configurationLabel = new System.Windows.Forms.Label();
+      this.helpLabel = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // messageLabel
@@ -72,10 +73,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.viewsLabel.Name = "viewsLabel";
       this.viewsLabel.Size = new System.Drawing.Size(16, 16);
       this.viewsLabel.TabIndex = 0;
-      this.toolTip.SetToolTip(this.viewsLabel,
-        "Double-click to open a new window of the current view." + System.Environment.NewLine +
-        "Right-click to change current view." + System.Environment.NewLine +
-        "Drag icon to copy or link content to another view.");
+      this.toolTip.SetToolTip(this.viewsLabel, "Double-click to open a new window of the current view.\r\nRight-click to change cur" +
+        "rent view.\r\nDrag icon to copy or link content to another view.");
       this.viewsLabel.DoubleClick += new System.EventHandler(this.viewsLabel_DoubleClick);
       this.viewsLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.viewsLabel_MouseDown);
       this.viewsLabel.MouseLeave += new System.EventHandler(this.viewsLabel_MouseLeave);
@@ -101,10 +100,24 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.configurationLabel.Visible = false;
       this.configurationLabel.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.configurationLabel_DoubleClick);
       // 
+      // helpLabel
+      // 
+      this.helpLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.helpLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Help;
+      this.helpLabel.Location = new System.Drawing.Point(211, 44);
+      this.helpLabel.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
+      this.helpLabel.Name = "helpLabel";
+      this.helpLabel.Size = new System.Drawing.Size(16, 16);
+      this.helpLabel.TabIndex = 3;
+      this.toolTip.SetToolTip(this.helpLabel, "Double-click to open help.");
+      this.helpLabel.Visible = false;
+      this.helpLabel.DoubleClick += new System.EventHandler(this.helpLabel_DoubleClick);
+      // 
       // ViewHost
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.helpLabel);
       this.Controls.Add(this.viewsLabel);
       this.Controls.Add(this.configurationLabel);
       this.Controls.Add(this.messageLabel);
@@ -120,6 +133,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private System.Windows.Forms.ToolTip toolTip;
     private HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip viewContextMenuStrip;
     private System.Windows.Forms.Label configurationLabel;
+    private System.Windows.Forms.Label helpLabel;
 
   }
 }

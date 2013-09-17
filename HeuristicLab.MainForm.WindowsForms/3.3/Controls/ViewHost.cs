@@ -102,6 +102,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
           } else viewType = null;
           configurationLabel.Visible = activeView is IConfigureableView;
           configurationLabel.Enabled = activeView != null && !activeView.Locked;
+
+          helpLabel.Visible = activeView != null && ViewAttribute.HasHelpResourcePath(activeView.GetType());
+          helpLabel.Top = CalculateHelpLabelPosY();
         }
       }
     }
@@ -209,7 +212,14 @@ namespace HeuristicLab.MainForm.WindowsForms {
       base.OnSizeChanged(e);
       viewsLabel.Location = new Point(Width - viewsLabel.Margin.Right - viewsLabel.Width, viewsLabel.Margin.Top);
       configurationLabel.Location = new Point(Width - configurationLabel.Margin.Right - configurationLabel.Width, viewsLabel.Bottom + viewsLabel.Margin.Bottom + configurationLabel.Margin.Top);
+      helpLabel.Location = new Point(Width - helpLabel.Margin.Right - helpLabel.Width, CalculateHelpLabelPosY());
+    }
 
+    private int CalculateHelpLabelPosY() {
+      if (activeView != null && ViewAttribute.HasHelpResourcePath(activeView.GetType()) && !configurationLabel.Visible) {
+        return configurationLabel.Top;
+      }
+      return configurationLabel.Bottom + configurationLabel.Margin.Bottom + helpLabel.Margin.Top;
     }
 
     #region forwarding of view events
@@ -300,6 +310,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private void configurationLabel_DoubleClick(object sender, MouseEventArgs e) {
       ((IConfigureableView)ActiveView).ShowConfiguration();
+    }
+
+    private void helpLabel_DoubleClick(object sender, EventArgs e) {
+      using (InfoBox dialog = new InfoBox("Help for " + ViewAttribute.GetViewName(ActiveView.GetType()), ViewAttribute.GetHelpResourcePath(ActiveView.GetType()), ActiveView)) {
+        dialog.ShowDialog(this);
+      }
     }
     #endregion
   }
