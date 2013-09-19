@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
   [Item("MultinormalFunction", "Evaluates a random multinormal function on a given point.")]
   [StorableClass]
   public class MultinormalEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Multinormal"; } }
 
     private ItemList<RealVector> centers {
       get { return (ItemList<RealVector>)Parameters["Centers"].ActualValue; }

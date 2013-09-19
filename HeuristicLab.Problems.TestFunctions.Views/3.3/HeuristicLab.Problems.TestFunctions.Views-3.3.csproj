@@ -112,6 +112,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SingleObjectiveTestFunctionProblemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SingleObjectiveTestFunctionProblemView.Designer.cs">
+      <DependentUpon>SingleObjectiveTestFunctionProblemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SingleObjectiveTestFunctionSolutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -178,6 +184,11 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540e29e-4793-49e7-8ee2-fea7f61c3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.TestFunctions\3.3\HeuristicLab.Problems.TestFunctions-3.3.csproj">
       <Project>{88B9B0E3-344E-4196-82A3-0F9732506FE8}</Project>
       <Name>HeuristicLab.Problems.TestFunctions-3.3</Name>
@@ -210,14 +221,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 

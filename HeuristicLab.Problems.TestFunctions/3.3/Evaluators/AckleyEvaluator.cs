@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("AckleyEvaluator", "Evaluates the Ackley function on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
   public class AckleyEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Ackley"; } }
     /// <summary>
     /// Returns false as the Ackley function is a minimization problem.
     /// </summary>

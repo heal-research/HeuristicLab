@@ -34,6 +34,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("BealeEvaluator", "Evaluates the Beale function on a given point. The optimum of this function is 0 at (3,0.5). It is implemented as described in Moré, J.J., Garbow, B., and Hillstrom, K. 1981. Testing unconstrained optimization software. ACM Transactions on Mathematical Software 7, pp. 136-140, ACM.")]
   [StorableClass]
   public class BealeEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Beale"; } }
     /// <summary>
     /// Returns false as the Beale function is a minimization problem.
     /// </summary>

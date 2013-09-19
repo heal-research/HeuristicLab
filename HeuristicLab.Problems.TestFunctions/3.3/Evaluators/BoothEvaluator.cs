@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("BoothEvaluator", "Evaluates the Booth function on a given point. The optimum of this function is 0 at (1,3). It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page816.htm, last accessed April 12th, 2010.")]
   [StorableClass]
   public class BoothEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Booth"; } }
     /// <summary>
     /// Returns false as the Booth function is a minimization problem.
     /// </summary>

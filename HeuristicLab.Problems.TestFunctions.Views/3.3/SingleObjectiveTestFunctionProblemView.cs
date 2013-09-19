@@ -19,27 +19,20 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Optimization;
+using HeuristicLab.MainForm;
+using HeuristicLab.Optimization.Views;
 
-namespace HeuristicLab.Problems.TestFunctions {
-  /// <summary>
-  /// An interface which represents an evaluation operator for single objective test functions.
-  /// </summary>
-  public interface ISingleObjectiveTestFunctionProblemEvaluator : ISingleObjectiveEvaluator {
-    bool Maximization { get; }
-    DoubleMatrix Bounds { get; }
-    double BestKnownQuality { get; }
-    int MinimumProblemSize { get; }
-    int MaximumProblemSize { get; }
-    string FunctionName { get; }
+namespace HeuristicLab.Problems.TestFunctions.Views {
+  [View("Single Objective Test Function View")]
+  [Content(typeof(SingleObjectiveTestFunctionProblem), IsDefaultView = true)]
+  public partial class SingleObjectiveTestFunctionProblemView : ProblemView {
+    public new SingleObjectiveTestFunctionProblem Content {
+      get { return (SingleObjectiveTestFunctionProblem)base.Content; }
+      set { base.Content = value; }
+    }
 
-    ILookupParameter<RealVector> PointParameter { get; }
-
-    double Evaluate2D(double x, double y);
-    double Evaluate(RealVector point);
-    RealVector GetBestKnownSolution(int dimension);
+    public SingleObjectiveTestFunctionProblemView() {
+      InitializeComponent();
+    }
   }
 }

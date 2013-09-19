@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("LevyEvaluator", "Evaluates the Levy function on a given point. The optimum of this function is 0 at (1,1,...,1). It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2056.htm, last accessed April 12th, 2010.")]
   [StorableClass]
   public class LevyEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Levy"; } }
     /// <summary>
     /// Returns false as the Levy function is a minimization problem.
     /// </summary>

@@ -32,6 +32,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("SumSquaresEvaluator", "Evaluates the sum squares function on a given point. The optimum of this function is 0 at the origin. The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n.")]
   [StorableClass]
   public class SumSquaresEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "SumSquares"; } }
     /// <summary>
     /// Returns false as the Sum Squares function is a minimization problem.
     /// </summary>

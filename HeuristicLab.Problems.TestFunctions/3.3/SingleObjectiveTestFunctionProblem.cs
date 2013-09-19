@@ -19,6 +19,9 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -28,15 +31,13 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("Single Objective Test Function", "Test function with real valued inputs and a single objective.")]
   [StorableClass]
   [Creatable("Problems")]
-  public sealed class SingleObjectiveTestFunctionProblem : SingleObjectiveHeuristicOptimizationProblem<ISingleObjectiveTestFunctionProblemEvaluator, IRealVectorCreator>, IStorableContent {
+  public sealed class SingleObjectiveTestFunctionProblem : SingleObjectiveHeuristicOptimizationProblem<ISingleObjectiveTestFunctionProblemEvaluator, IRealVectorCreator>, IStorableContent, IProblemInstanceConsumer<SOTFData> {
     public string Filename { get; set; }
 
     [Storable]
@@ -323,8 +324,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       Evaluator.PointParameter.Hidden = true;
       try {
         BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
-      }
-      catch (ArgumentException e) {
+      } catch (ArgumentException e) {
         ErrorHandling.ShowErrorDialog(e);
         ProblemSize.Value = Evaluator.MinimumProblemSize;
       }
@@ -405,5 +405,11 @@ namespace HeuristicLab.Problems.TestFunctions {
       strategyVectorCreator.BoundsParameter.Value = strategyBounds;
     }
     #endregion
+
+    public void Load(SOTFData data) {
+      Name = data.Name;
+      Description = data.Description;
+      Evaluator = data.Evaluator;
+    }
   }
 }

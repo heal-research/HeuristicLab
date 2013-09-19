@@ -35,6 +35,10 @@ namespace HeuristicLab.Problems.TestFunctions {
   [StorableClass]
   public abstract class SingleObjectiveTestFunctionProblemEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
+    /// The name of the function
+    /// </summary>
+    public abstract string FunctionName { get; }
+    /// <summary>
     /// These operators should not change their name through the GUI
     /// </summary>
     public override bool CanChangeName {

@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("MatyasEvaluator", "Evaluates the Matyas function on a given point. The optimum of this function is 0 at the origin. It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.")]
   [StorableClass]
   public class MatyasEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
+    public override string FunctionName { get { return "Matyas"; } }
     /// <summary>
     /// Returns false as the Matyas function is a minimization problem.
     /// </summary>
