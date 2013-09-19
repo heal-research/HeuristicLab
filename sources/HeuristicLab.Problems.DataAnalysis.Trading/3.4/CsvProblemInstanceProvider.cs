@@ -25,16 +25,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using HeuristicLab.Common;
-using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.Instances;
+using HeuristicLab.Problems.Instances.DataAnalysis;
 
-namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class RegressionCSVInstanceProvider : RegressionInstanceProvider {
+namespace HeuristicLab.Problems.DataAnalysis.Trading {
+  public class CsvProblemInstanceProvider : ProblemInstanceProvider<IProblemData> {
     public override string Name {
       get { return "CSV File"; }
     }
     public override string Description {
       get {
-        return "";
+        return "Comma separated values file importer";
       }
     }
     public override Uri WebLink {
@@ -47,19 +48,23 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
       return new List<IDataDescriptor>();
     }
-    public override IRegressionProblemData LoadData(IDataDescriptor descriptor) {
+    public override IProblemData LoadData(IDataDescriptor descriptor) {
       throw new NotImplementedException();
     }
 
     public override bool CanImportData {
       get { return true; }
     }
-    public override IRegressionProblemData ImportData(string path) {
+    public override IProblemData ImportData(string path) {
       TableFileParser csvFileParser = new TableFileParser();
       csvFileParser.Parse(path, csvFileParser.AreColumnNamesInFirstLine(path));
 
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
-      string targetVar = dataset.DoubleVariables.Last();
+      string targetVar = (from v in dataset.DoubleVariables
+                          where dataset.GetReadOnlyDoubleValues(v).Min() <= 0
+                          where dataset.GetReadOnlyDoubleValues(v).Max() >= 0
+                          select v).LastOrDefault();
+      if (targetVar == null) throw new ArgumentException("The target variable must contain changes (deltas) of the asset price over time.");
 
       // turn off input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
@@ -74,51 +79,17 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(targetVar)));
       }
 
-      IRegressionProblemData regressionData = new RegressionProblemData(dataset, allowedInputVars, targetVar);
+      IProblemData problemData = new ProblemData(dataset, allowedInputVars, targetVar);
 
       var trainingPartEnd = trainingIndizes.Last();
-      regressionData.TrainingPartition.Start = trainingIndizes.First();
-      regressionData.TrainingPartition.End = trainingPartEnd;
-      regressionData.TestPartition.Start = trainingPartEnd;
-      regressionData.TestPartition.End = csvFileParser.Rows;
+      problemData.TrainingPartition.Start = trainingIndizes.First();
+      problemData.TrainingPartition.End = trainingPartEnd;
+      problemData.TestPartition.Start = trainingPartEnd;
+      problemData.TestPartition.End = csvFileParser.Rows;
 
-      regressionData.Name = Path.GetFileName(path);
+      problemData.Name = Path.GetFileName(path);
 
-      return regressionData;
-    }
-
-    protected override IRegressionProblemData ImportData(string path, RegressionImportType type, TableFileParser csvFileParser) {
-      List<IList> values = csvFileParser.Values;
-      if (type.Shuffle) {
-        values = Shuffle(values);
-      }
-      Dataset dataset = new Dataset(csvFileParser.VariableNames, values);
-
-      // turn of input variables that are constant in the training partition
-      var allowedInputVars = new List<string>();
-      int trainingPartEnd = (csvFileParser.Rows * type.TrainingPercentage) / 100;
-      trainingPartEnd = trainingPartEnd > 0 ? trainingPartEnd : 1;
-      var trainingIndizes = Enumerable.Range(0, trainingPartEnd);
-      if (trainingIndizes.Count() >= 2) {
-        foreach (var variableName in dataset.DoubleVariables) {
-          if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
-            variableName != type.TargetVariable)
-            allowedInputVars.Add(variableName);
-        }
-      } else {
-        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(type.TargetVariable)));
-      }
-
-      RegressionProblemData regressionData = new RegressionProblemData(dataset, allowedInputVars, type.TargetVariable);
-
-      regressionData.TrainingPartition.Start = 0;
-      regressionData.TrainingPartition.End = trainingPartEnd;
-      regressionData.TestPartition.Start = trainingPartEnd;
-      regressionData.TestPartition.End = csvFileParser.Rows;
-
-      regressionData.Name = Path.GetFileName(path);
-
-      return regressionData;
+      return problemData;
     }
   }
 }

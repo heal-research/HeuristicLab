@@ -28,7 +28,6 @@ using HeuristicLab.Problems.Instances;
 using System.Linq;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
-
   public class EcbProblemInstanceProvider : ProblemInstanceProvider<IProblemData> {
     private class EcbDataDescriptor : IDataDescriptor {
       public string Name { get; set; }

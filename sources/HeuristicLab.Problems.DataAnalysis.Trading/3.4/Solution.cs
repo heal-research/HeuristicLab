@@ -85,9 +85,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
 
     protected void CalculateTradingResults() {
       double[] trainingSignals = TrainingSignals.ToArray(); // cache values
-      IEnumerable<double> trainingReturns = ProblemData.Dataset.GetDoubleValues(ProblemData.PriceVariable, ProblemData.TrainingIndices);
+      IEnumerable<double> trainingReturns = ProblemData.Dataset.GetDoubleValues(ProblemData.PriceChangeVariable, ProblemData.TrainingIndices);
       double[] testSignals = TestSignals.ToArray(); // cache values
-      IEnumerable<double> testReturns = ProblemData.Dataset.GetDoubleValues(ProblemData.PriceVariable, ProblemData.TestIndices);
+      IEnumerable<double> testReturns = ProblemData.Dataset.GetDoubleValues(ProblemData.PriceChangeVariable, ProblemData.TestIndices);
 
       OnlineCalculatorError errorState;
       double trainingSharpeRatio = OnlineSharpeRatioCalculator.Calculate(trainingReturns, trainingSignals, ProblemData.TransactionCosts, out errorState);

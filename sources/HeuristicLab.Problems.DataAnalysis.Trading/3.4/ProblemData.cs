@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
   [StorableClass]
   [Item("TradingProblemData", "Represents an item containing all data defining a trading problem.")]
   public sealed class ProblemData : DataAnalysisProblemData, IProblemData {
-    private const string PriceVariableParameterName = "PriceVariable";
+    private const string PriceChangeVariableParameterName = "PriceChangeVariable";
     private const string TransactionCostsParameterName = "TransactionCosts";
 
     #region default data
@@ -1588,22 +1588,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     private static string defaultPriceVariable;
 
     static ProblemData() {
-      defaultDataset = new Dataset(new string[] { "AUD" }, audInUsdDiff);
+      defaultDataset = new Dataset(new string[] { "d(AUD/USD)/dt" }, audInUsdDiff);
       defaultDataset.Name = "AUD in USD";
-      defaultDataset.Description = "Price of Australian dollar in US dollar.";
-      defaultAllowedInputVariables = new List<string>() { "AUD" };
-      defaultPriceVariable = "AUD";
+      defaultDataset.Description = "Australian dollar in US dollar.";
+      defaultAllowedInputVariables = new List<string>() { "d(AUD/USD)/dt" };
+      defaultPriceVariable = "d(AUD/USD)/dt";
     }
     #endregion
 
-    public IConstrainedValueParameter<StringValue> PriceVariableParameter {
-      get { return (IConstrainedValueParameter<StringValue>)Parameters[PriceVariableParameterName]; }
+    public IConstrainedValueParameter<StringValue> PriceChangeVariableParameter {
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[PriceChangeVariableParameterName]; }
     }
     public IValueParameter<DoubleValue> TransactionCostsParameter {
       get { return (IValueParameter<DoubleValue>)Parameters[TransactionCostsParameterName]; }
     }
-    public string PriceVariable {
-      get { return PriceVariableParameter.Value.Value; }
+    public string PriceChangeVariable {
+      get { return PriceChangeVariableParameter.Value.Value; }
     }
     public double TransactionCosts {
       get { return TransactionCostsParameter.Value.Value; }
@@ -1629,13 +1629,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     public ProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
       : base(dataset, allowedInputVariables) {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
-      Parameters.Add(new ConstrainedValueParameter<StringValue>(PriceVariableParameterName, new ItemSet<StringValue>(variables), variables.First(x => x.Value == targetVariable)));
+      Parameters.Add(new ConstrainedValueParameter<StringValue>(PriceChangeVariableParameterName, new ItemSet<StringValue>(variables), variables.First(x => x.Value == targetVariable)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(TransactionCostsParameterName, "The absolute cost of on buy/sell transaction (assumed to be constant and independent of transaction volume)", new DoubleValue(0.0002)));
+
+      if (dataset.GetReadOnlyDoubleValues(targetVariable).Min() >= 0) throw new ArgumentException("The target variable must contain changes (deltas) of the asset price over time.");
+
       RegisterParameterEvents();
     }
 
     private void RegisterParameterEvents() {
-      PriceVariableParameter.ValueChanged += new EventHandler(PriceVariableParameter_ValueChanged);
+      PriceChangeVariableParameter.ValueChanged += new EventHandler(PriceVariableParameter_ValueChanged);
       TransactionCostsParameter.Value.ValueChanged += new EventHandler(TransactionCostsParameter_ValueChanged);
     }
 
@@ -1643,6 +1646,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
       OnChanged();
     }
     private void PriceVariableParameter_ValueChanged(object sender, EventArgs e) {
+      if (Dataset.GetReadOnlyDoubleValues(PriceChangeVariable).Min() >= 0) throw new ArgumentException("The target variable must contain changes (deltas) of the asset price over time.");
       OnChanged();
     }
   }

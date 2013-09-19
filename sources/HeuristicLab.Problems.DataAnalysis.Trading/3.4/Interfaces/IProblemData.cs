@@ -21,7 +21,7 @@
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
   public interface IProblemData : IDataAnalysisProblemData {
-    string PriceVariable { get; }
+    string PriceChangeVariable { get; }
     double TransactionCosts { get; }
   }
 }

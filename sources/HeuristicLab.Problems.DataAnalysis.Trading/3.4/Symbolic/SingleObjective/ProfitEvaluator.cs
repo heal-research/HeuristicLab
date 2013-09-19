@@ -58,7 +58,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
 
     public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, IProblemData problemData, IEnumerable<int> rows) {
       IEnumerable<double> signals = GetSignals(interpreter, solution, problemData.Dataset, rows);
-      IEnumerable<double> returns = problemData.Dataset.GetDoubleValues(problemData.PriceVariable, rows);
+      IEnumerable<double> returns = problemData.Dataset.GetDoubleValues(problemData.PriceChangeVariable, rows);
       OnlineCalculatorError errorState;
       double profit = OnlineProfitCalculator.Calculate(returns, signals, problemData.TransactionCosts, out errorState);
       if (errorState != OnlineCalculatorError.None) return 0.0;

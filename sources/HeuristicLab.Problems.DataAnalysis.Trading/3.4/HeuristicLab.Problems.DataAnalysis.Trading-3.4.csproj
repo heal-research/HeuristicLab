@@ -102,13 +102,14 @@
   <ItemGroup>
     <Compile Include="Calculators\OnlineProfitCalculator.cs" />
     <Compile Include="Calculators\OnlineSharpeRatioCalculator.cs" />
+    <Compile Include="CsvProblemInstanceProvider.cs" />
+    <Compile Include="EcbProblemInstanceProvider.cs" />
     <Compile Include="Interfaces\IModel.cs" />
     <Compile Include="Interfaces\IProblem.cs" />
     <Compile Include="Interfaces\IProblemData.cs" />
     <Compile Include="Interfaces\ISolution.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ProblemData.cs" />
-    <Compile Include="ProblemInstanceProvider.cs" />
     <Compile Include="Solution.cs" />
     <Compile Include="Symbolic\Interfaces\IEvaluator.cs" />
     <Compile Include="Symbolic\Interfaces\IModel.cs" />
@@ -204,6 +205,10 @@
       <Project>{df87c13e-a889-46ff-8153-66dcaa8c5674}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances.DataAnalysis\3.3\HeuristicLab.Problems.Instances.DataAnalysis-3.3.csproj">
+      <Project>{94C7714E-29D4-4D6D-B213-2C18D627AB75}</Project>
+      <Name>HeuristicLab.Problems.Instances.DataAnalysis-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
