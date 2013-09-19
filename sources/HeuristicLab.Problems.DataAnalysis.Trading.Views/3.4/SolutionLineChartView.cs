@@ -64,14 +64,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
         this.chart.Series[SIGNALS_SERIES_NAME].Points.DataBindY(Content.Signals.ToArray());
         this.chart.Series[SIGNALS_SERIES_NAME].Tag = Content;
 
-        IEnumerable<double> accumulatedPrice = GetAccumulatedPrices(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceVariable));
+        IEnumerable<double> accumulatedPrice = GetAccumulatedPrices(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable));
         this.chart.Series.Add(PRICEVARIABLE_SERIES_NAME);
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].LegendText = PRICEVARIABLE_SERIES_NAME;
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].Points.DataBindY(accumulatedPrice.ToArray());
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].Tag = Content;
 
-        IEnumerable<double> profit = OnlineProfitCalculator.GetProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceVariable), Content.Signals, Content.ProblemData.TransactionCosts);
+        IEnumerable<double> profit = OnlineProfitCalculator.GetProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable), Content.Signals, Content.ProblemData.TransactionCosts);
         IEnumerable<double> accumulatedProfits = GetAccumulatedPrices(profit);
         this.chart.Series.Add(ASSET_SERIES_NAME);
         this.chart.Series[ASSET_SERIES_NAME].LegendText = ASSET_SERIES_NAME;

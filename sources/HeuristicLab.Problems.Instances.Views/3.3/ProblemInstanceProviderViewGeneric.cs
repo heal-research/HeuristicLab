@@ -20,7 +20,9 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
@@ -87,16 +89,48 @@ namespace HeuristicLab.Problems.Instances.Views {
     }
 
     private void instancesComboBox_SelectionChangeCommitted(object sender, System.EventArgs e) {
+      toolTip.SetToolTip(instancesComboBox, String.Empty);
       if (instancesComboBox.SelectedIndex >= 0) {
         var descriptor = (IDataDescriptor)instancesComboBox.SelectedItem;
-        T instance = Content.LoadData(descriptor);
-        try {
-          GenericConsumer.Load(instance);
-        } catch (Exception ex) {
-          ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), ex);
-        }
-        toolTip.SetToolTip(instancesComboBox, descriptor.Description);
-      } else toolTip.SetToolTip(instancesComboBox, String.Empty);
+
+        IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+        var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+        // lock active view and show progress bar
+        mainForm.AddOperationProgressToContent(activeView.Content, "Loading problem instance.");
+        // continuation for removing the progess bar from the active view
+        Action<Task> removeProgressFromContent = (_) => mainForm.RemoveOperationProgressFromContent(activeView.Content);
+
+        // task structure:
+        // loadFromProvider
+        // |
+        // +-> on fault -> show error dialog -> remove progress bar
+        // |
+        // `-> success  -> loadToProblem
+        //                 |
+        //                 +-> on fault -> show error dialog -> remove progress bar
+        //                 |
+        //                 `-> success -> set tool tip -> remove progress bar
+        var loadFromProvider = new Task<T>(() => Content.LoadData(descriptor));
+
+        // success
+        var loadToProblem = loadFromProvider
+          .ContinueWith(task => GenericConsumer.Load(task.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+        // on error 
+        loadFromProvider
+          .ContinueWith(task => { ErrorHandling.ShowErrorDialog(String.Format("Could not load the problem instance {0}", descriptor.Name), task.Exception); }, TaskContinuationOptions.OnlyOnFaulted)
+          .ContinueWith(removeProgressFromContent);
+
+        // success
+        loadToProblem
+          .ContinueWith(task => toolTip.SetToolTip(instancesComboBox, descriptor.Description), TaskContinuationOptions.OnlyOnRanToCompletion)
+          .ContinueWith(removeProgressFromContent);
+        // on error
+        loadToProblem.ContinueWith(task => { ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), task.Exception); }, TaskContinuationOptions.OnlyOnFaulted)
+        .ContinueWith(removeProgressFromContent);
+
+        // start async loading task
+        loadFromProvider.Start();
+      }
     }
   }
 }

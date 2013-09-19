@@ -77,7 +77,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
       var values = new List<IList>();
       var tList = new List<DateTime>();
       var dList = new List<double>();
-      double prevValue = 0;
       values.Add(tList);
       values.Add(dList);
       using (var client = new WebClient()) {
@@ -99,13 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
                 // find matching entry
                 if (descriptor.Name.Contains(reader.GetAttribute("currency"))) {
                   reader.MoveToAttribute("rate");
-                  var curValue = reader.ReadContentAsDouble();
-                  if (!dList.Any())
-                    dList.Add(0.0);
-                  else {
-                    dList.Add(curValue - prevValue);
-                  }
-                  prevValue = curValue;
+                  dList.Add(reader.ReadContentAsDouble());
 
                   reader.MoveToElement();
                   // skip remaining siblings
@@ -116,9 +109,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
             } while (reader.ReadToNextSibling("Cube", "http://www.ecb.int/vocabulary/2002-08-01/eurofxref"));
           }
       }
-      var allowedInputVariables = new string[] { descriptor.Name };
-      var targetVariable = descriptor.Name;
-      var ds = new Dataset(new string[] { "Day", descriptor.Name }, values);
+      // entries in ECB XML are ordered most recent first => reverse lists
+      tList.Reverse();
+      dList.Reverse();
+      // calculate exchange rate deltas
+      var changes = new[] { 0.0 } // first element
+        .Concat(dList.Zip(dList.Skip(1), (prev, cur) => cur - prev)).ToList();
+      values.Add(changes);
+
+      var targetVariable = "d(" + descriptor.Name + ")";
+      var allowedInputVariables = new string[] { targetVariable };
+
+      var ds = new Dataset(new string[] { "Day", descriptor.Name, targetVariable }, values);
       return new ProblemData(ds, allowedInputVariables, targetVariable);
     }
   }
