@@ -71,12 +71,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
       var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
       if (trainingIndizes.Count() >= 2) {
         foreach (var variableName in dataset.DoubleVariables) {
-          if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0 &&
-            variableName != targetVar)
+          if (dataset.GetDoubleValues(variableName, trainingIndizes).Range() > 0)
             allowedInputVars.Add(variableName);
         }
       } else {
-        allowedInputVars.AddRange(dataset.DoubleVariables.Where(x => !x.Equals(targetVar)));
+        allowedInputVars.AddRange(dataset.DoubleVariables);
       }
 
       IProblemData problemData = new ProblemData(dataset, allowedInputVars, targetVar);
