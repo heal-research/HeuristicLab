@@ -27,7 +27,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
     public override XmlString Format(Font font) {
       return new XmlString(string.Format("{0};{1};{2};{3};{4};{5}",
-        font.Name,
+        font.FontFamily.Name,
         Float2XmlSerializer.FormatG8(font.Size),
         font.Style,
         font.Unit,
