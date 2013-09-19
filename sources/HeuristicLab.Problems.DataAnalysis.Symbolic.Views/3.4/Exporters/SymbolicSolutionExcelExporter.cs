@@ -104,15 +104,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       row += 2;
 
       modelWorksheet.Cells[row, 1].Value = "Estimation Limits Lower";
-      modelWorksheet.Cells[row, 2].Value = solution.Model.LowerEstimationLimit;
+      modelWorksheet.Cells[row, 2].Value = Math.Max(solution.Model.LowerEstimationLimit, -9.99999999999999E+307); // minimal value supported by excel
       modelWorksheet.Names.Add("EstimationLimitLower", modelWorksheet.Cells[row, 2]);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Estimation Limits Upper";
-      modelWorksheet.Cells[row, 2].Value = solution.Model.UpperEstimationLimit;
+      modelWorksheet.Cells[row, 2].Value = Math.Min(solution.Model.UpperEstimationLimit, 9.99999999999999E+307);  // maximal value supported by excel
       modelWorksheet.Names.Add("EstimationLimitUpper", modelWorksheet.Cells[row, 2]);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row += 2;
 
       modelWorksheet.Cells[row, 1].Value = "Trainings Partition Start";
@@ -162,33 +162,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       modelWorksheet.Cells[row, 1].Value = "Mean Squared Error (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTrainingMSE);
       modelWorksheet.Names.Add("TrainingMSE", modelWorksheet.Cells[row, 2]);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean Squared Error (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTestMSE);
       modelWorksheet.Names.Add("TestMSE", modelWorksheet.Cells[row, 2]);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean absolute error (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTrainingAbsoluteError);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean absolute error (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTestAbsoluteError);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean error (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTrainingMeanError);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Mean error (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("AVERAGE({0})", excelTestMeanError);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Average relative error (training)";
@@ -203,12 +203,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       modelWorksheet.Cells[row, 1].Value = "Normalized Mean Squared error (training)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("TrainingMSE / VAR({0})", excelTrainingTarget);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
       row++;
 
       modelWorksheet.Cells[row, 1].Value = "Normalized Mean Squared error  (test)";
       modelWorksheet.Cells[row, 2].Formula = string.Format("TestMSE / VAR({0})", excelTestTarget);
-      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000";
+      modelWorksheet.Cells[row, 2].Style.Numberformat.Format = "0.000E+00";
 
       modelWorksheet.Cells["A1:B" + row].AutoFitColumns();
 
