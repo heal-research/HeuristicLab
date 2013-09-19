@@ -52,38 +52,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
 
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
+      this.chart.ChartAreas[0].AxisY2.ScaleView.Zoomable = false;
       this.chart.ChartAreas[0].CursorY.Interval = 0;
     }
 
     private void RedrawChart() {
       this.chart.Series.Clear();
       if (Content != null) {
+        var trainingRows = Content.ProblemData.TrainingIndices;
+        var testRows = Content.ProblemData.TestIndices;
         this.chart.Series.Add(SIGNALS_SERIES_NAME);
         this.chart.Series[SIGNALS_SERIES_NAME].LegendText = SIGNALS_SERIES_NAME;
         this.chart.Series[SIGNALS_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[SIGNALS_SERIES_NAME].Points.DataBindY(Content.Signals.ToArray());
+        this.chart.Series[SIGNALS_SERIES_NAME].Points.DataBindY(Content.TrainingSignals.Concat(Content.TestSignals).ToArray());
         this.chart.Series[SIGNALS_SERIES_NAME].Tag = Content;
+        this.chart.Series[SIGNALS_SERIES_NAME].YAxisType = AxisType.Secondary;
 
-        IEnumerable<double> accumulatedPrice = GetAccumulatedPrices(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable));
+        IEnumerable<double> accumulatedPrice = GetAccumulatedProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable));
         this.chart.Series.Add(PRICEVARIABLE_SERIES_NAME);
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].LegendText = PRICEVARIABLE_SERIES_NAME;
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].Points.DataBindY(accumulatedPrice.ToArray());
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].Tag = Content;
+        this.chart.Series[SIGNALS_SERIES_NAME].YAxisType = AxisType.Primary;
 
-        IEnumerable<double> profit = OnlineProfitCalculator.GetProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable), Content.Signals, Content.ProblemData.TransactionCosts);
-        IEnumerable<double> accumulatedProfits = GetAccumulatedPrices(profit);
+
+        IEnumerable<double> trainingProfit = OnlineProfitCalculator.GetProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable, trainingRows), Content.TrainingSignals, Content.ProblemData.TransactionCosts);
+        IEnumerable<double> testProfit = OnlineProfitCalculator.GetProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable, testRows), Content.TestSignals, Content.ProblemData.TransactionCosts);
+        IEnumerable<double> accTrainingProfit = GetAccumulatedProfits(trainingProfit);
+        IEnumerable<double> accTestProfit = GetAccumulatedProfits(testProfit);
         this.chart.Series.Add(ASSET_SERIES_NAME);
         this.chart.Series[ASSET_SERIES_NAME].LegendText = ASSET_SERIES_NAME;
         this.chart.Series[ASSET_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[ASSET_SERIES_NAME].Points.DataBindY(accumulatedProfits.ToArray());
+        this.chart.Series[ASSET_SERIES_NAME].Points.DataBindY(accTrainingProfit.Concat(accTestProfit).ToArray());
         this.chart.Series[ASSET_SERIES_NAME].Tag = Content;
+        this.chart.Series[SIGNALS_SERIES_NAME].YAxisType = AxisType.Primary;
 
         this.UpdateStripLines();
       }
     }
 
-    private IEnumerable<double> GetAccumulatedPrices(IEnumerable<double> xs) {
+    private IEnumerable<double> GetAccumulatedProfits(IEnumerable<double> xs) {
       double sum = 0;
       foreach (var x in xs) {
         sum += x;

@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
       // 
       // itemsGroupBox
       // 
-      this.itemsGroupBox.Text = "Regression Solution";
+      this.itemsGroupBox.Text = "Trading Solution";
       // 
       // addButton
       // 
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Name = "RegressionSolutionView";
+      this.Name = "TradingSolutionView";
       this.splitContainer.Panel1.ResumeLayout(false);
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();

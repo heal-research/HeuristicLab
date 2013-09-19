@@ -37,6 +37,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Instances.DataAnalysis", "3.3")]
   public class Plugin : PluginBase {
   }
 }

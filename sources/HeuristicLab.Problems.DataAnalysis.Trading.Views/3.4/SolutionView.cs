@@ -25,7 +25,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
-  [View("TradingSolution View")]
+  [View("Trading Solution View")]
   [Content(typeof(Solution), true)]
   public partial class SolutionView : DataAnalysisSolutionView {
     public SolutionView() {
