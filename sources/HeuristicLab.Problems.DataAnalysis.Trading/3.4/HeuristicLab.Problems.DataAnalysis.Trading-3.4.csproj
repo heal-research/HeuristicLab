@@ -102,8 +102,8 @@
   <ItemGroup>
     <Compile Include="Calculators\OnlineProfitCalculator.cs" />
     <Compile Include="Calculators\OnlineSharpeRatioCalculator.cs" />
-    <Compile Include="CsvProblemInstanceProvider.cs" />
-    <Compile Include="EcbProblemInstanceProvider.cs" />
+    <Compile Include="InstanceProviders\CsvProblemInstanceProvider.cs" />
+    <Compile Include="InstanceProviders\EcbProblemInstanceProvider.cs" />
     <Compile Include="Interfaces\IModel.cs" />
     <Compile Include="Interfaces\IProblem.cs" />
     <Compile Include="Interfaces\IProblemData.cs" />

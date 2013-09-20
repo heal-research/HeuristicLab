@@ -52,7 +52,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
 
       this.chart.ChartAreas[0].CursorY.IsUserSelectionEnabled = true;
       this.chart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
+      this.chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.VariableCount;
       this.chart.ChartAreas[0].AxisY2.ScaleView.Zoomable = false;
+      this.chart.ChartAreas[0].AxisY2.IntervalAutoMode = IntervalAutoMode.VariableCount;
+      this.chart.ChartAreas[0].AxisY2.LabelStyle.Enabled = false;
+      this.chart.ChartAreas[0].AxisY2.MajorGrid.Enabled = false;
+      this.chart.ChartAreas[0].AxisY2.MinorGrid.Enabled = false;
+      this.chart.ChartAreas[0].AxisY2.MajorTickMark.Enabled = false;
+      this.chart.ChartAreas[0].AxisY2.MinorTickMark.Enabled = false;
       this.chart.ChartAreas[0].CursorY.Interval = 0;
     }
 
@@ -62,31 +69,42 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
         var trainingRows = Content.ProblemData.TrainingIndices;
         var testRows = Content.ProblemData.TestIndices;
         this.chart.Series.Add(SIGNALS_SERIES_NAME);
+        this.chart.Series[SIGNALS_SERIES_NAME].YAxisType = AxisType.Secondary;
         this.chart.Series[SIGNALS_SERIES_NAME].LegendText = SIGNALS_SERIES_NAME;
         this.chart.Series[SIGNALS_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[SIGNALS_SERIES_NAME].Points.DataBindY(Content.TrainingSignals.Concat(Content.TestSignals).ToArray());
+        this.chart.Series[SIGNALS_SERIES_NAME].Points.DataBindXY(
+          trainingRows.Concat(testRows).ToArray(),
+          Content.TrainingSignals.Concat(Content.TestSignals).ToArray());
         this.chart.Series[SIGNALS_SERIES_NAME].Tag = Content;
-        this.chart.Series[SIGNALS_SERIES_NAME].YAxisType = AxisType.Secondary;
 
-        IEnumerable<double> accumulatedPrice = GetAccumulatedProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable));
+        var trainingPriceChanges = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable,
+                                                                               trainingRows);
+        var testPriceChanges = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable,
+                                                                               testRows);
+        IEnumerable<double> accumulatedTrainingPrice = GetAccumulatedProfits(trainingPriceChanges);
+        IEnumerable<double> accumulatedTestPrice = GetAccumulatedProfits(testPriceChanges);
         this.chart.Series.Add(PRICEVARIABLE_SERIES_NAME);
+        this.chart.Series[PRICEVARIABLE_SERIES_NAME].YAxisType = AxisType.Primary;
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].LegendText = PRICEVARIABLE_SERIES_NAME;
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[PRICEVARIABLE_SERIES_NAME].Points.DataBindY(accumulatedPrice.ToArray());
+        this.chart.Series[PRICEVARIABLE_SERIES_NAME].Points.DataBindXY(
+          trainingRows.Concat(testRows).ToArray(),
+          accumulatedTrainingPrice.Concat(accumulatedTestPrice).ToArray());
         this.chart.Series[PRICEVARIABLE_SERIES_NAME].Tag = Content;
-        this.chart.Series[SIGNALS_SERIES_NAME].YAxisType = AxisType.Primary;
 
 
-        IEnumerable<double> trainingProfit = OnlineProfitCalculator.GetProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable, trainingRows), Content.TrainingSignals, Content.ProblemData.TransactionCosts);
-        IEnumerable<double> testProfit = OnlineProfitCalculator.GetProfits(Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.PriceChangeVariable, testRows), Content.TestSignals, Content.ProblemData.TransactionCosts);
+        IEnumerable<double> trainingProfit = OnlineProfitCalculator.GetProfits(trainingPriceChanges, Content.TrainingSignals, Content.ProblemData.TransactionCosts);
+        IEnumerable<double> testProfit = OnlineProfitCalculator.GetProfits(testPriceChanges, Content.TestSignals, Content.ProblemData.TransactionCosts);
         IEnumerable<double> accTrainingProfit = GetAccumulatedProfits(trainingProfit);
         IEnumerable<double> accTestProfit = GetAccumulatedProfits(testProfit);
         this.chart.Series.Add(ASSET_SERIES_NAME);
+        this.chart.Series[ASSET_SERIES_NAME].YAxisType = AxisType.Primary;
         this.chart.Series[ASSET_SERIES_NAME].LegendText = ASSET_SERIES_NAME;
         this.chart.Series[ASSET_SERIES_NAME].ChartType = SeriesChartType.FastLine;
-        this.chart.Series[ASSET_SERIES_NAME].Points.DataBindY(accTrainingProfit.Concat(accTestProfit).ToArray());
+        this.chart.Series[ASSET_SERIES_NAME].Points.DataBindXY(
+          trainingRows.Concat(testRows).ToArray(),
+          accTrainingProfit.Concat(accTestProfit).ToArray());
         this.chart.Series[ASSET_SERIES_NAME].Tag = Content;
-        this.chart.Series[SIGNALS_SERIES_NAME].YAxisType = AxisType.Primary;
 
         this.UpdateStripLines();
       }
