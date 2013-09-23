@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -29,8 +30,10 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Views;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
+
   [View("DataAnalysisSolution View")]
   [Content(typeof(DataAnalysisSolution), false)]
   public partial class DataAnalysisSolutionView : NamedItemCollectionView<IResult> {
@@ -48,6 +51,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       base.SetEnabledStateOfControls();
       addButton.Enabled = false;
       removeButton.Enabled = false;
+      if (Content == null) {
+        exportButton.Enabled = false;
+      } else {
+        exportButton.Enabled = !Locked;
+      }
     }
 
     protected override void RegisterContentEvents() {
@@ -116,6 +124,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         viewHost.Content = Content;
       } else
         base.itemsListView_SelectedIndexChanged(sender, e);
+    }
+
+
+    private void exportButton_Click(object sender, EventArgs e) {
+      var exporters = ApplicationManager.Manager.GetInstances<IDataAnalysisSolutionExporter>()
+        .Where(exporter => exporter.Supports(Content)).ToArray();
+      exportFileDialog.Filter = exporters.Skip(1)
+        .Aggregate(exporters.First().FileTypeFilter, (s, exporter) => s + "|" + exporter.FileTypeFilter);
+      var result = exportFileDialog.ShowDialog();
+      if (result == DialogResult.OK) {
+
+        var name = exportFileDialog.FileName;
+        var selectedExporter = exporters.Single(exporter => exporter.FileTypeFilter == exportFileDialog.Filter);
+
+        using (BackgroundWorker bg = new BackgroundWorker()) {
+          MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Exportion solution to " + name + ".");
+          bg.DoWork += (_, __) => selectedExporter.Export(Content, name);
+          bg.RunWorkerCompleted += (_, __) => MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+          bg.RunWorkerAsync();
+        }
+      }
     }
 
     protected void AddViewListViewItem(Type viewType, Image image) {

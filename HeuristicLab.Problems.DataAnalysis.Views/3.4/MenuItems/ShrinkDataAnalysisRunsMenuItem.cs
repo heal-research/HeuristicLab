@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       get { return "Remove Duplicate Datasets"; }
     }
     public override IEnumerable<string> Structure {
-      get { return new string[] { "&Data Analysis" }; }
+      get { return new string[] { "&Edit", "&Data Analysis" }; }
     }
     public override int Position {
       get { return 5300; }

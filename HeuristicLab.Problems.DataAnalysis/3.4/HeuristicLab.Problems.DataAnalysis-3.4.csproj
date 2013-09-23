@@ -147,6 +147,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Classification\IDiscriminantFunctionThresholdCalculator.cs" />
+    <Compile Include="Interfaces\IDataAnalysisSolutionExporter.cs" />
     <Compile Include="Interfaces\IDependencyCalculator.cs" />
     <Compile Include="Interfaces\Regression\IRegressionEnsembleModel.cs">
       <SubType>Code</SubType>
