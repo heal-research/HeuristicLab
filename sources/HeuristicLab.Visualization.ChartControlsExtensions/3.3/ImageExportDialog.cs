@@ -448,12 +448,13 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         var filename = saveFileDialog.FileName.ToLower();
         if (filename.EndsWith("emf")) {
           using (var graphics = Graphics.FromImage(image)) {
-            var metafile = new Metafile(filename, graphics.GetHdc());
-            graphics.ReleaseHdc();
-            using (var g = Graphics.FromImage(metafile)) {
-              workingChart.Printing.PrintPaint(g, new Rectangle(0, 0, image.Width, image.Height));
+            var rectangle = new Rectangle(0, 0, image.Width, image.Height);
+            using (var metafile = new Metafile(filename, graphics.GetHdc(), rectangle, MetafileFrameUnit.Pixel, EmfType.EmfPlusDual)) {
+              graphics.ReleaseHdc();
+              using (var g = Graphics.FromImage(metafile)) {
+                workingChart.Printing.PrintPaint(g, rectangle);
+              }
             }
-            metafile.Dispose();
           }
         } else {
           using (var graphics = Graphics.FromImage(image)) {
