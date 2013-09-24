@@ -70,7 +70,8 @@ namespace HeuristicLab.Optimization.Views {
             problemInstanceProviderComboBox.DataSource = ProblemInstanceProviders.OrderBy(x => x.Name).ToList();
           }
           problemInstanceSplitContainer.Panel1Collapsed = !expand;
-        }
+        } else
+          problemInstanceSplitContainer.Panel1Collapsed = true;
       }
       SetEnabledStateOfControls();
     }
