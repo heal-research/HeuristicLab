@@ -19,8 +19,8 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.Instances.Views {
-  partial class ProblemInstanceConsumerView {
+namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
+  partial class TimeSeriesPrognosisInstanceProviderView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -44,22 +44,10 @@ namespace HeuristicLab.Problems.Instances.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
-      this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-      this.SuspendLayout();
-      // 
-      // ProblemInstanceConsumerView
-      // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      components = new System.ComponentModel.Container();
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-      this.Name = "ProblemInstanceConsumerView";
-      this.Size = new System.Drawing.Size(694, 22);
-      this.ResumeLayout(false);
-
     }
 
     #endregion
-
-    private System.Windows.Forms.ToolTip toolTip;
   }
 }

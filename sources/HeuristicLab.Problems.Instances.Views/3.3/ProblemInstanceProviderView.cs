@@ -20,6 +20,7 @@
 #endregion
 
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
@@ -34,9 +35,21 @@ namespace HeuristicLab.Problems.Instances.Views {
     }
 
     public abstract IProblemInstanceConsumer Consumer { get; set; }
+    public abstract IProblemInstanceExporter Exporter { get; set; }
 
-    public ProblemInstanceProviderView() {
+    protected ProblemInstanceProviderView() {
       InitializeComponent();
     }
+
+    protected string GetProblemType() {
+      var item = Consumer as IItem;
+      return item != null ? item.ItemName : "problem";
+    }
+
+    protected string GetProviderFormatInfo() {
+      return Content != null ? Content.Name : string.Empty;
+    }
+
+    protected abstract void SetTooltip();
   }
 }

@@ -27,41 +27,34 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   [View("Classification InstanceProvider View")]
-  [Content(typeof(IProblemInstanceConsumer<IClassificationProblemData>), IsDefaultView = true)]
-  public partial class ClassificationInstanceConsumerView : DataAnalysisInstanceConsumerView<IClassificationProblemData> {
-    public new IProblemInstanceConsumer<IClassificationProblemData> Content {
-      get { return (IProblemInstanceConsumer<IClassificationProblemData>)base.Content; }
+  [Content(typeof(ClassificationInstanceProvider), IsDefaultView = true)]
+  public partial class ClassificationInstanceProviderView : DataAnalysisInstanceProviderView<IClassificationProblemData> {
+
+    public new ClassificationInstanceProvider Content {
+      get { return (ClassificationInstanceProvider)base.Content; }
       set { base.Content = value; }
     }
 
-    public ClassificationInstanceConsumerView() {
+    public ClassificationInstanceProviderView() {
       InitializeComponent();
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var provider = SelectedProvider as ClassificationInstanceProvider;
-      if (provider != null) {
-        ClassificationImportTypeDialog importTypeDialog = new ClassificationImportTypeDialog();
-        if (importTypeDialog.ShowDialog() == DialogResult.OK) {
-          IClassificationProblemData instance = null;
-          try {
-            instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
-          }
-          catch (IOException ex) {
-            ErrorWhileParsing(ex);
-            return;
-          }
-          try {
-            GenericConsumer.Load(instance);
-          }
-          catch (IOException ex) {
-            ErrorWhileLoading(ex, importTypeDialog.Path);
-          }
-        } else {
+      var importTypeDialog = new ClassificationImportTypeDialog();
+      if (importTypeDialog.ShowDialog() == DialogResult.OK) {
+        IClassificationProblemData instance = null;
+        try {
+          instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
+        } catch (IOException ex) {
+          ErrorWhileParsing(ex);
           return;
         }
-      } else {
-        base.importButton_Click(sender, e);
+        try {
+          GenericConsumer.Load(instance);
+          instancesComboBox.SelectedIndex = -1;
+        } catch (IOException ex) {
+          ErrorWhileLoading(ex, importTypeDialog.Path);
+        }
       }
     }
   }

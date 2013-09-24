@@ -23,31 +23,37 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.Instances.Views;
+using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Problems.Instances.TSPLIB.Views {
-  [View("TSPLIB TSP InstanceProvider View")]
-  [Content(typeof(TSPLIBTSPInstanceProvider), IsDefaultView = true)]
-  public partial class TSPLIBTSPInstanceProviderView : ProblemInstanceProviderViewGeneric<TSPData> {
-    public new TSPLIBTSPInstanceProvider Content {
-      get { return (TSPLIBTSPInstanceProvider)base.Content; }
+namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
+  [View("Regression InstanceProvider View")]
+  [Content(typeof(RegressionInstanceProvider), IsDefaultView = true)]
+  public partial class RegressionInstanceProviderView : DataAnalysisInstanceProviderView<IRegressionProblemData> {
+
+    public new RegressionInstanceProvider Content {
+      get { return (RegressionInstanceProvider)base.Content; }
       set { base.Content = value; }
     }
 
-    public TSPLIBTSPInstanceProviderView() {
+    public RegressionInstanceProviderView() {
       InitializeComponent();
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      using (var dialog = new TSPLIBImportDialog()) {
-        if (dialog.ShowDialog() == DialogResult.OK) {
-          var instance = Content.LoadData(dialog.TSPFileName, dialog.TourFileName, dialog.Quality);
-          try {
-            GenericConsumer.Load(instance);
-            instancesComboBox.SelectedIndex = -1;
-          } catch (Exception ex) {
-            MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
-          }
+      var importTypeDialog = new RegressionImportTypeDialog();
+      if (importTypeDialog.ShowDialog() == DialogResult.OK) {
+        IRegressionProblemData instance = null;
+        try {
+          instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
+        } catch (IOException ex) {
+          ErrorWhileParsing(ex);
+          return;
+        }
+        try {
+          GenericConsumer.Load(instance);
+          instancesComboBox.SelectedIndex = -1;
+        } catch (IOException ex) {
+          ErrorWhileLoading(ex, importTypeDialog.Path);
         }
       }
     }

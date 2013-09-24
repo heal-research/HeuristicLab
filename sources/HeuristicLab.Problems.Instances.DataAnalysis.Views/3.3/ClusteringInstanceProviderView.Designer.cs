@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  partial class TimeSeriesPrognosisInstanceConsumerView {
+  partial class ClusteringInstanceProviderView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

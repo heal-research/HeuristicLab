@@ -24,45 +24,46 @@ using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.Instances.Views;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
-  [View("Regression InstanceProvider View")]
-  [Content(typeof(IProblemInstanceConsumer<IRegressionProblemData>), IsDefaultView = true)]
-  public partial class RegressionInstanceConsumerView : DataAnalysisInstanceConsumerView<IRegressionProblemData> {
-    public new IProblemInstanceConsumer<IRegressionProblemData> Content {
-      get { return (IProblemInstanceConsumer<IRegressionProblemData>)base.Content; }
-      set { base.Content = value; }
-    }
+  [View("DataAnalysis InstanceProvider View")]
+  public partial class DataAnalysisInstanceProviderView<T> : ProblemInstanceProviderViewGeneric<T>
+    where T : class, IDataAnalysisProblemData {
 
-    public RegressionInstanceConsumerView() {
+    public DataAnalysisInstanceProviderView() {
       InitializeComponent();
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var provider = SelectedProvider as RegressionInstanceProvider;
+      var provider = Content as DataAnalysisInstanceProvider<T, DataAnalysisImportType>;
       if (provider != null) {
-        RegressionImportTypeDialog importTypeDialog = new RegressionImportTypeDialog();
+        var importTypeDialog = new DataAnalysisImportTypeDialog();
         if (importTypeDialog.ShowDialog() == DialogResult.OK) {
-          IRegressionProblemData instance = null;
+          T instance = default(T);
           try {
             instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
-          }
-          catch (IOException ex) {
+          } catch (IOException ex) {
             ErrorWhileParsing(ex);
             return;
           }
           try {
             GenericConsumer.Load(instance);
-          }
-          catch (IOException ex) {
+            instancesComboBox.SelectedIndex = -1;
+          } catch (IOException ex) {
             ErrorWhileLoading(ex, importTypeDialog.Path);
           }
-        } else {
-          return;
         }
       } else {
         base.importButton_Click(sender, e);
       }
+    }
+
+    protected void ErrorWhileParsing(Exception ex) {
+      MessageBox.Show(String.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+    protected void ErrorWhileLoading(Exception ex, string path) {
+      MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(path), Environment.NewLine + ex.Message), "Cannot load instance");
     }
   }
 }

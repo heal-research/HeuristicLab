@@ -23,46 +23,28 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances.Views;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
   [View("VRP InstanceProvider View")]
-  [Content(typeof(IProblemInstanceConsumer<IVRPData>), IsDefaultView = true)]
-  public partial class VRPInstanceProviderView<T> : ProblemInstanceConsumerViewGeneric<T> where T : class, IVRPData {
-
-    public new IProblemInstanceConsumer<T> Content {
-      get { return (IProblemInstanceConsumer<T>)base.Content; }
-      set { base.Content = value; }
-    }
+  [Content(typeof(IProblemInstanceProvider<IVRPData>), IsDefaultView = true)]
+  public partial class VRPInstanceProviderView<T> : ProblemInstanceProviderViewGeneric<T> where T : class, IVRPData {
 
     public VRPInstanceProviderView() {
       InitializeComponent();
     }
 
-    protected override void SetEnabledStateOfControls() {
-      problemInstanceProviderComboBox.Enabled = !ReadOnly && !Locked && Content != null && problemInstanceProviderComboBox.Items.Count > 0;
-      libraryInfoButton.Enabled = SelectedProvider != null && SelectedProvider.WebLink != null;
-      IVRPInstanceProvider provider = SelectedProvider as IVRPInstanceProvider;
-      importButton.Enabled = !ReadOnly && !Locked && Content != null && Consumer != null &&
-                             provider != null && provider.CanImportData;
-      ProviderImportSplitContainer.Panel2Collapsed = !importButton.Enabled;
-      exportButton.Enabled = !ReadOnly && !Locked && Content != null && Exporter != null &&
-                             provider != null && provider.CanExportData;
-      ProviderExportSplitContainer.Panel2Collapsed = !exportButton.Enabled;
-    }
-
     protected override void importButton_Click(object sender, EventArgs e) {
-      IVRPInstanceProvider provider = SelectedProvider as IVRPInstanceProvider;
+      var provider = Content as IVRPInstanceProvider;
       if (provider != null) {
-        using (var dialog = new VRPImportDialog(SelectedProvider.Name)) {
+        using (var dialog = new VRPImportDialog(Content.Name)) {
           if (dialog.ShowDialog() == DialogResult.OK) {
             var instance = provider.Import(dialog.VRPFileName, dialog.TourFileName);
             try {
               GenericConsumer.Load(instance as T);
-            }
-            catch (Exception ex) {
+              instancesComboBox.SelectedIndex = -1;
+            } catch (Exception ex) {
               MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
             }
           }
@@ -71,13 +53,12 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
     }
 
     protected override void exportButton_Click(object sender, EventArgs e) {
-      IVRPInstanceProvider provider = SelectedProvider as IVRPInstanceProvider;
+      var provider = Content as IVRPInstanceProvider;
       if (provider != null) {
         if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
           try {
             provider.Export(GenericExporter.Export(), saveFileDialog.FileName);
-          }
-          catch (Exception ex) {
+          } catch (Exception ex) {
             ErrorHandling.ShowErrorDialog(this, ex);
           }
         }
