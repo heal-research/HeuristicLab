@@ -109,9 +109,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
             } while (reader.ReadToNextSibling("Cube", "http://www.ecb.int/vocabulary/2002-08-01/eurofxref"));
           }
       }
+      // keep only the rows with data for this exchange rate
+      if (tList.Count > dList.Count)
+        tList.RemoveRange(dList.Count, tList.Count - dList.Count);
+      else if (dList.Count > tList.Count)
+        dList.RemoveRange(tList.Count, dList.Count - tList.Count);
+
       // entries in ECB XML are ordered most recent first => reverse lists
       tList.Reverse();
       dList.Reverse();
+
       // calculate exchange rate deltas
       var changes = new[] { 0.0 } // first element
         .Concat(dList.Zip(dList.Skip(1), (prev, cur) => cur - prev)).ToList();
