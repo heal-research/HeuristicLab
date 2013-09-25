@@ -67,7 +67,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         splitContainer.Panel2Collapsed = true;
         Width = 305;
         Height = 625;
-      } finally { SuppressEvents = false; }
+      }
+      finally { SuppressEvents = false; }
       #endregion
     }
 
@@ -92,7 +93,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         scalesFontSizeComboBox.Text = area.AxisX.LabelStyle.Font.SizeInPoints.ToString();
         if (workingChart.Legends.Count == 0) legendFontSizeComboBox.Text = "6";
         else legendFontSizeComboBox.Text = workingChart.Legends[0].Font.SizeInPoints.ToString();
-      } finally {
+      }
+      finally {
         SuppressEvents = false;
       }
     }
@@ -208,7 +210,8 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
             legendPositionComboBox.SelectedItem = "Hidden";
           }
         }
-      } finally { SuppressEvents = false; }
+      }
+      finally { SuppressEvents = false; }
       base.OnShown(e);
 
       if (togglePreviewCheckBox.Checked) UpdatePreview();
@@ -437,33 +440,39 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       float width;
       float height;
       GetImageParameters(out dpi, out width, out height);
-
       var image = new Bitmap((int)Math.Round(width), (int)Math.Round(height));
       image.SetResolution(dpi, dpi);
-      using (var graphics = Graphics.FromImage(image)) {
-        workingChart.Printing.PrintPaint(graphics, new Rectangle(0, 0, image.Width, image.Height));
-      }
-
       if (titleTextBox.Text.Trim() != String.Empty) saveFileDialog.FileName = titleTextBox.Text.Trim();
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         var format = ImageFormat.Bmp;
         var filename = saveFileDialog.FileName.ToLower();
-        if (filename.EndsWith("jpg")) {
-          format = ImageFormat.Jpeg;
-        } else if (filename.EndsWith("emf")) {
-          format = ImageFormat.Emf;
-        } else if (filename.EndsWith("gif")) {
-          format = ImageFormat.Gif;
-        } else if (filename.EndsWith("png")) {
-          format = ImageFormat.Png;
-        } else if (filename.EndsWith("tif")) {
-          format = ImageFormat.Tiff;
+        if (filename.EndsWith("emf")) {
+          using (var graphics = Graphics.FromImage(image)) {
+            var rectangle = new Rectangle(0, 0, image.Width, image.Height);
+            using (var metafile = new Metafile(filename, graphics.GetHdc(), rectangle, MetafileFrameUnit.Pixel, EmfType.EmfPlusDual)) {
+              graphics.ReleaseHdc();
+              using (var g = Graphics.FromImage(metafile)) {
+                workingChart.Printing.PrintPaint(g, rectangle);
+              }
+            }
+          }
+        } else {
+          using (var graphics = Graphics.FromImage(image)) {
+            workingChart.Printing.PrintPaint(graphics, new Rectangle(0, 0, image.Width, image.Height));
+          }
+          if (filename.EndsWith("jpg")) {
+            format = ImageFormat.Jpeg;
+          } else if (filename.EndsWith("gif")) {
+            format = ImageFormat.Gif;
+          } else if (filename.EndsWith("png")) {
+            format = ImageFormat.Png;
+          } else if (filename.EndsWith("tif")) {
+            format = ImageFormat.Tiff;
+          }
+          image.Save(saveFileDialog.FileName, format);
         }
-        image.Save(saveFileDialog.FileName, format);
       }
-
       image.Dispose();
-
       Cleanup();
     }
 
