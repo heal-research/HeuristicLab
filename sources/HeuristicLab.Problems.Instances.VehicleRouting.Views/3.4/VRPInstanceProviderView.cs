@@ -29,7 +29,7 @@ using HeuristicLab.Problems.Instances.Views;
 namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
   [View("VRP InstanceProvider View")]
   [Content(typeof(IProblemInstanceProvider<IVRPData>), IsDefaultView = true)]
-  public partial class VRPInstanceProviderView<T> : ProblemInstanceProviderViewGeneric<T> where T : class, IVRPData {
+  public partial class VRPInstanceProviderView<T> : ProblemInstanceProviderView<T> where T : class, IVRPData {
 
     public VRPInstanceProviderView() {
       InitializeComponent();

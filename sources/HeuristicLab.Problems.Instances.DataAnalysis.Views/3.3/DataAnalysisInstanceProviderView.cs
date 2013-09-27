@@ -28,7 +28,7 @@ using HeuristicLab.Problems.Instances.Views;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   [View("DataAnalysis InstanceProvider View")]
-  public partial class DataAnalysisInstanceProviderView<T> : ProblemInstanceProviderViewGeneric<T>
+  public partial class DataAnalysisInstanceProviderView<T> : ProblemInstanceProviderView<T>
     where T : class, IDataAnalysisProblemData {
 
     public DataAnalysisInstanceProviderView() {

@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.Instances.Views {
   [View("ProblemInstanceProviderViewGeneric")]
   [Content(typeof(IProblemInstanceProvider<>), IsDefaultView = true)]
-  public partial class ProblemInstanceProviderViewGeneric<T> : ProblemInstanceProviderView {
+  public partial class ProblemInstanceProviderView<T> : ProblemInstanceProviderView {
 
     public new IProblemInstanceProvider<T> Content {
       get { return (IProblemInstanceProvider<T>)base.Content; }
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.Instances.Views {
     }
     #endregion
 
-    public ProblemInstanceProviderViewGeneric() {
+    public ProblemInstanceProviderView() {
       InitializeComponent();
       importButton.Text = String.Empty;
       importButton.Image = VSImageLibrary.Open;

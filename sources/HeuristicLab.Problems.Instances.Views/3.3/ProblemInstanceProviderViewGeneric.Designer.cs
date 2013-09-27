@@ -21,7 +21,7 @@
 
 
 namespace HeuristicLab.Problems.Instances.Views {
-  partial class ProblemInstanceProviderViewGeneric<T> {
+  partial class ProblemInstanceProviderView<T> {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

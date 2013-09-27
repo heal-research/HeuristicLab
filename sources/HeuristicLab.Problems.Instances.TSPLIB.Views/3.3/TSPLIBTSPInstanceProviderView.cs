@@ -28,7 +28,7 @@ using HeuristicLab.Problems.Instances.Views;
 namespace HeuristicLab.Problems.Instances.TSPLIB.Views {
   [View("TSPLIB TSP InstanceProvider View")]
   [Content(typeof(TSPLIBTSPInstanceProvider), IsDefaultView = true)]
-  public partial class TSPLIBTSPInstanceProviderView : ProblemInstanceProviderViewGeneric<TSPData> {
+  public partial class TSPLIBTSPInstanceProviderView : ProblemInstanceProviderView<TSPData> {
     public new TSPLIBTSPInstanceProvider Content {
       get { return (TSPLIBTSPInstanceProvider)base.Content; }
       set { base.Content = value; }
