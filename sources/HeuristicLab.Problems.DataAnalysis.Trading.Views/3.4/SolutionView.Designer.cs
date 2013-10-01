@@ -51,6 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
       this.itemsGroupBox.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
+      this.exportButton.Visible = false;
       // 
       // splitContainer
       // 
