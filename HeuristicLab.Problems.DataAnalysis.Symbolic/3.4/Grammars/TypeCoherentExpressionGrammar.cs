@@ -250,7 +250,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Symbols.First(s => s.Name == ConditionalSymbolsName).Enabled = false;
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
 
-
+      Symbols.Single(s => s.Name == "Variable").Enabled = false;
       Symbols.First(s => s.Name == TimeSeriesSymbolsName).Enabled = true;
       Symbols.First(s => s is Derivative).Enabled = false;
       Symbols.First(s => s is Integral).Enabled = false;

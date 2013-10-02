@@ -61,7 +61,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       Dataset dataset = new Dataset(csvFileParser.VariableNames, csvFileParser.Values);
       string targetVar = dataset.DoubleVariables.Last();
 
-      // turn of input variables that are constant in the training partition
+      // turn off input variables that are constant in the training partition
       var allowedInputVars = new List<string>();
       var trainingIndizes = Enumerable.Range(0, (csvFileParser.Rows * 2) / 3);
       if (trainingIndizes.Count() >= 2) {
