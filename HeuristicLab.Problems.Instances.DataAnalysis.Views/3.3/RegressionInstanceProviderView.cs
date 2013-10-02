@@ -27,41 +27,34 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   [View("Regression InstanceProvider View")]
-  [Content(typeof(IProblemInstanceConsumer<IRegressionProblemData>), IsDefaultView = true)]
-  public partial class RegressionInstanceConsumerView : DataAnalysisInstanceConsumerView<IRegressionProblemData> {
-    public new IProblemInstanceConsumer<IRegressionProblemData> Content {
-      get { return (IProblemInstanceConsumer<IRegressionProblemData>)base.Content; }
+  [Content(typeof(RegressionInstanceProvider), IsDefaultView = true)]
+  public partial class RegressionInstanceProviderView : DataAnalysisInstanceProviderView<IRegressionProblemData> {
+
+    public new RegressionInstanceProvider Content {
+      get { return (RegressionInstanceProvider)base.Content; }
       set { base.Content = value; }
     }
 
-    public RegressionInstanceConsumerView() {
+    public RegressionInstanceProviderView() {
       InitializeComponent();
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var provider = SelectedProvider as RegressionInstanceProvider;
-      if (provider != null) {
-        RegressionImportTypeDialog importTypeDialog = new RegressionImportTypeDialog();
-        if (importTypeDialog.ShowDialog() == DialogResult.OK) {
-          IRegressionProblemData instance = null;
-          try {
-            instance = provider.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
-          }
-          catch (IOException ex) {
-            ErrorWhileParsing(ex);
-            return;
-          }
-          try {
-            GenericConsumer.Load(instance);
-          }
-          catch (IOException ex) {
-            ErrorWhileLoading(ex, importTypeDialog.Path);
-          }
-        } else {
+      var importTypeDialog = new RegressionImportTypeDialog();
+      if (importTypeDialog.ShowDialog() == DialogResult.OK) {
+        IRegressionProblemData instance = null;
+        try {
+          instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
+        } catch (IOException ex) {
+          ErrorWhileParsing(ex);
           return;
         }
-      } else {
-        base.importButton_Click(sender, e);
+        try {
+          GenericConsumer.Load(instance);
+          instancesComboBox.SelectedIndex = -1;
+        } catch (IOException ex) {
+          ErrorWhileLoading(ex, importTypeDialog.Path);
+        }
       }
     }
   }

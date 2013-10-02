@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.Instances;
@@ -36,12 +35,17 @@ namespace HeuristicLab.Optimization.Views {
   [Content(typeof(IProblem), true)]
   public partial class ProblemView : ParameterizedNamedItemView {
 
-    private static Type neededViewType = typeof(ProblemInstanceConsumerView);
-
     public new IProblem Content {
       get { return (IProblem)base.Content; }
       set { base.Content = value; }
     }
+
+    protected IEnumerable<IProblemInstanceProvider> problemInstanceProviders;
+    public IEnumerable<IProblemInstanceProvider> ProblemInstanceProviders {
+      get { return new List<IProblemInstanceProvider>(problemInstanceProviders); }
+    }
+
+    public IProblemInstanceProvider SelectedProvider { get; protected set; }
 
     /// <summary>
     /// Initializes a new instance of <see cref="ItemBaseView"/>.
@@ -52,20 +56,70 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      IProblemInstanceConsumer consumer = Content as IProblemInstanceConsumer;
-      if (consumer != null) {
-        IEnumerable<Type> viewTypes = MainFormManager.GetViewTypes(consumer.GetType(), true);
-        Type genericView = viewTypes.Where(x => x.IsSubclassOf(neededViewType)).First();
-        ProblemInstanceConsumerViewHost.Content = null; //necessary to enable the change of the ViewType
-        ProblemInstanceConsumerViewHost.ViewType = genericView;
-        ProblemInstanceConsumerViewHost.Content = consumer;
-        ProblemInstanceConsumerView view = (ProblemInstanceConsumerView)ProblemInstanceConsumerViewHost.ActiveView;
-        problemInstanceSplitContainer.Panel1Collapsed = !view.ProblemInstanceProviders.Any();
-      } else {
+      if (Content == null) {
+        problemInstanceProviders = null;
+        problemInstanceProviderComboBox.DataSource = null;
         problemInstanceSplitContainer.Panel1Collapsed = true;
+      } else {
+        var consumer = Content as IProblemInstanceConsumer;
+        if (consumer != null) {
+          problemInstanceProviders = ProblemInstanceManager.GetProviders(Content);
+          bool expand = problemInstanceProviders.Any();
+          if (expand) {
+            problemInstanceProviderComboBox.DisplayMember = "Name";
+            problemInstanceProviderComboBox.DataSource = ProblemInstanceProviders.OrderBy(x => x.Name).ToList();
+          }
+          problemInstanceSplitContainer.Panel1Collapsed = !expand;
+        } else
+          problemInstanceSplitContainer.Panel1Collapsed = true;
       }
       SetEnabledStateOfControls();
     }
 
+    protected virtual void problemInstanceProviderComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
+      if (problemInstanceProviderComboBox.SelectedIndex >= 0) {
+        SelectedProvider = (IProblemInstanceProvider)problemInstanceProviderComboBox.SelectedItem;
+        problemInstanceProviderViewHost.Content = SelectedProvider;
+        var view = (ProblemInstanceProviderView)problemInstanceProviderViewHost.ActiveView;
+        var consumer = (IProblemInstanceConsumer)Content;
+        view.Consumer = consumer;
+        if (CheckForIProblemInstanceExporter(consumer))
+          view.Exporter = (IProblemInstanceExporter)Content;
+        else view.Exporter = null;
+        SetTooltip();
+      } else {
+        SelectedProvider = null;
+      }
+      SetEnabledStateOfControls();
+    }
+
+    protected bool CheckForIProblemInstanceExporter(IProblemInstanceConsumer content) {
+      return Content.GetType().GetInterfaces()
+                    .Any(x => x == typeof(IProblemInstanceExporter));
+    }
+
+    #region ToolTip
+    protected void SetTooltip() {
+      toolTip.SetToolTip(problemInstanceProviderComboBox, GetProviderToolTip());
+    }
+
+    private string GetProviderToolTip() {
+      var provider = SelectedProvider;
+      string toolTip = provider.Name;
+
+      if (!String.IsNullOrEmpty(provider.ReferencePublication)) {
+        toolTip = toolTip
+            + Environment.NewLine + Environment.NewLine
+            + provider.ReferencePublication;
+      }
+      if (provider.WebLink != null) {
+        toolTip = toolTip
+            + Environment.NewLine
+            + provider.WebLink.ToString();
+      }
+
+      return toolTip;
+    }
+    #endregion
   }
 }

@@ -45,7 +45,9 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     private void InitializeComponent() {
       this.problemInstanceSplitContainer = new System.Windows.Forms.SplitContainer();
-      this.ProblemInstanceConsumerViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.libraryLabel = new System.Windows.Forms.Label();
+      this.problemInstanceProviderComboBox = new System.Windows.Forms.ComboBox();
+      this.problemInstanceProviderViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).BeginInit();
       this.problemInstanceSplitContainer.Panel1.SuspendLayout();
@@ -86,7 +88,9 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // problemInstanceSplitContainer.Panel1
       // 
-      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.ProblemInstanceConsumerViewHost);
+      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.libraryLabel);
+      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.problemInstanceProviderComboBox);
+      this.problemInstanceSplitContainer.Panel1.Controls.Add(this.problemInstanceProviderViewHost);
       this.problemInstanceSplitContainer.Panel1MinSize = 10;
       // 
       // problemInstanceSplitContainer.Panel2
@@ -99,31 +103,50 @@ namespace HeuristicLab.Optimization.Views {
       this.problemInstanceSplitContainer.SplitterDistance = 26;
       this.problemInstanceSplitContainer.TabIndex = 13;
       // 
-      // ProblemInstanceConsumerViewHost
+      // libraryLabel
       // 
-      this.ProblemInstanceConsumerViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+      this.libraryLabel.AutoSize = true;
+      this.libraryLabel.Location = new System.Drawing.Point(3, 6);
+      this.libraryLabel.Name = "libraryLabel";
+      this.libraryLabel.Size = new System.Drawing.Size(41, 13);
+      this.libraryLabel.TabIndex = 17;
+      this.libraryLabel.Text = "Library:";
+      // 
+      // problemInstanceProviderComboBox
+      // 
+      this.problemInstanceProviderComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.problemInstanceProviderComboBox.FormattingEnabled = true;
+      this.problemInstanceProviderComboBox.Location = new System.Drawing.Point(50, 2);
+      this.problemInstanceProviderComboBox.Name = "problemInstanceProviderComboBox";
+      this.problemInstanceProviderComboBox.Size = new System.Drawing.Size(208, 21);
+      this.problemInstanceProviderComboBox.TabIndex = 18;
+      this.problemInstanceProviderComboBox.SelectedIndexChanged += new System.EventHandler(this.problemInstanceProviderComboBox_SelectedIndexChanged);
+      // 
+      // problemInstanceProviderViewHost
+      // 
+      this.problemInstanceProviderViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.ProblemInstanceConsumerViewHost.Caption = "ProblemInstanceConsumerView";
-      this.ProblemInstanceConsumerViewHost.Content = null;
-      this.ProblemInstanceConsumerViewHost.Enabled = false;
-      this.ProblemInstanceConsumerViewHost.Location = new System.Drawing.Point(0, 1);
-      this.ProblemInstanceConsumerViewHost.Name = "ProblemInstanceConsumerViewHost";
-      this.ProblemInstanceConsumerViewHost.ReadOnly = false;
-      this.ProblemInstanceConsumerViewHost.Size = new System.Drawing.Size(511, 23);
-      this.ProblemInstanceConsumerViewHost.TabIndex = 0;
-      this.ProblemInstanceConsumerViewHost.ViewsLabelVisible = false;
-      this.ProblemInstanceConsumerViewHost.ViewType = null;
+      this.problemInstanceProviderViewHost.Caption = "ProblemInstanceConsumerView";
+      this.problemInstanceProviderViewHost.Content = null;
+      this.problemInstanceProviderViewHost.Enabled = false;
+      this.problemInstanceProviderViewHost.Location = new System.Drawing.Point(264, 1);
+      this.problemInstanceProviderViewHost.Name = "problemInstanceProviderViewHost";
+      this.problemInstanceProviderViewHost.ReadOnly = false;
+      this.problemInstanceProviderViewHost.Size = new System.Drawing.Size(247, 23);
+      this.problemInstanceProviderViewHost.TabIndex = 0;
+      this.problemInstanceProviderViewHost.ViewsLabelVisible = false;
+      this.problemInstanceProviderViewHost.ViewType = null;
       // 
       // ProblemView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.problemInstanceSplitContainer);
       this.Name = "ProblemView";
       this.Size = new System.Drawing.Size(511, 363);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.problemInstanceSplitContainer.Panel1.ResumeLayout(false);
+      this.problemInstanceSplitContainer.Panel1.PerformLayout();
       this.problemInstanceSplitContainer.Panel2.ResumeLayout(false);
       this.problemInstanceSplitContainer.Panel2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.problemInstanceSplitContainer)).EndInit();
@@ -135,6 +158,8 @@ namespace HeuristicLab.Optimization.Views {
     #endregion
 
     protected System.Windows.Forms.SplitContainer problemInstanceSplitContainer;
-    protected HeuristicLab.MainForm.WindowsForms.ViewHost ProblemInstanceConsumerViewHost;
+    protected HeuristicLab.MainForm.WindowsForms.ViewHost problemInstanceProviderViewHost;
+    protected System.Windows.Forms.Label libraryLabel;
+    protected System.Windows.Forms.ComboBox problemInstanceProviderComboBox;
   }
 }
