@@ -20,10 +20,12 @@
 #endregion
 
 using System;
-using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
@@ -31,26 +33,44 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.Instances.Views {
   [View("ProblemInstanceProviderViewGeneric")]
   [Content(typeof(IProblemInstanceProvider<>), IsDefaultView = true)]
-  public partial class ProblemInstanceProviderViewGeneric<T> : ProblemInstanceProviderView {
+  public partial class ProblemInstanceProviderView<T> : ProblemInstanceProviderView {
 
     public new IProblemInstanceProvider<T> Content {
       get { return (IProblemInstanceProvider<T>)base.Content; }
       set { base.Content = value; }
     }
 
-    private IProblemInstanceConsumer<T> GenericConsumer { get { return Consumer as IProblemInstanceConsumer<T>; } }
-
-    private IProblemInstanceConsumer consumer;
+    #region Importer & Exporter
+    protected IProblemInstanceConsumer<T> GenericConsumer { get { return Consumer as IProblemInstanceConsumer<T>; } }
+    protected IProblemInstanceConsumer consumer;
     public override IProblemInstanceConsumer Consumer {
       get { return consumer; }
       set {
         consumer = value;
         SetEnabledStateOfControls();
+        SetTooltip();
       }
     }
 
-    public ProblemInstanceProviderViewGeneric() {
+    protected IProblemInstanceExporter<T> GenericExporter { get { return Exporter as IProblemInstanceExporter<T>; } }
+    protected IProblemInstanceExporter exporter;
+    public override IProblemInstanceExporter Exporter {
+      get { return exporter; }
+      set {
+        exporter = value;
+        SetEnabledStateOfControls();
+      }
+    }
+    #endregion
+
+    public ProblemInstanceProviderView() {
       InitializeComponent();
+      importButton.Text = String.Empty;
+      importButton.Image = VSImageLibrary.Open;
+      exportButton.Text = String.Empty;
+      exportButton.Image = VSImageLibrary.SaveAs;
+      libraryInfoButton.Text = String.Empty;
+      libraryInfoButton.Image = VSImageLibrary.Help;
     }
 
     protected override void OnContentChanged() {
@@ -64,6 +84,7 @@ namespace HeuristicLab.Problems.Instances.Views {
         instancesComboBox.DataSource = dataDescriptors;
         instancesComboBox.SelectedIndex = -1;
       }
+      SetTooltip();
     }
 
     protected void ShowInstanceLoad(bool show) {
@@ -79,6 +100,11 @@ namespace HeuristicLab.Problems.Instances.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       instancesComboBox.Enabled = !ReadOnly && !Locked && Content != null && GenericConsumer != null;
+      libraryInfoButton.Enabled = Content != null && Content.WebLink != null;
+      importButton.Enabled = !ReadOnly && !Locked && Content != null && GenericConsumer != null && Content.CanImportData;
+      splitContainer1.Panel1Collapsed = !importButton.Enabled;
+      exportButton.Enabled = !ReadOnly && !Locked && Content != null && GenericExporter != null && Content.CanExportData;
+      splitContainer2.Panel1Collapsed = !exportButton.Enabled;
     }
 
     private void instancesComboBox_DataSourceChanged(object sender, EventArgs e) {
@@ -88,7 +114,7 @@ namespace HeuristicLab.Problems.Instances.Views {
       toolTip.SetToolTip(comboBox, String.Empty);
     }
 
-    private void instancesComboBox_SelectionChangeCommitted(object sender, System.EventArgs e) {
+    protected virtual void instancesComboBox_SelectionChangeCommitted(object sender, EventArgs e) {
       toolTip.SetToolTip(instancesComboBox, String.Empty);
       if (instancesComboBox.SelectedIndex >= 0) {
         var descriptor = (IDataDescriptor)instancesComboBox.SelectedItem;
@@ -97,40 +123,66 @@ namespace HeuristicLab.Problems.Instances.Views {
         var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
         // lock active view and show progress bar
         mainForm.AddOperationProgressToContent(activeView.Content, "Loading problem instance.");
-        // continuation for removing the progess bar from the active view
-        Action<Task> removeProgressFromContent = (_) => mainForm.RemoveOperationProgressFromContent(activeView.Content);
 
-        // task structure:
-        // loadFromProvider
-        // |
-        // +-> on fault -> show error dialog -> remove progress bar
-        // |
-        // `-> success  -> loadToProblem
-        //                 |
-        //                 +-> on fault -> show error dialog -> remove progress bar
-        //                 |
-        //                 `-> success -> set tool tip -> remove progress bar
-        var loadFromProvider = new Task<T>(() => Content.LoadData(descriptor));
-
-        // success
-        var loadToProblem = loadFromProvider
-          .ContinueWith(task => GenericConsumer.Load(task.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
-        // on error 
-        loadFromProvider
-          .ContinueWith(task => { ErrorHandling.ShowErrorDialog(String.Format("Could not load the problem instance {0}", descriptor.Name), task.Exception); }, TaskContinuationOptions.OnlyOnFaulted)
-          .ContinueWith(removeProgressFromContent);
-
-        // success
-        loadToProblem
-          .ContinueWith(task => toolTip.SetToolTip(instancesComboBox, descriptor.Description), TaskContinuationOptions.OnlyOnRanToCompletion)
-          .ContinueWith(removeProgressFromContent);
-        // on error
-        loadToProblem.ContinueWith(task => { ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), task.Exception); }, TaskContinuationOptions.OnlyOnFaulted)
-        .ContinueWith(removeProgressFromContent);
-
-        // start async loading task
-        loadFromProvider.Start();
+        Task.Factory.StartNew(() => {
+          T data;
+          try {
+            data = Content.LoadData(descriptor);
+          } catch (Exception ex) {
+            ErrorHandling.ShowErrorDialog(String.Format("Could not load the problem instance {0}", descriptor.Name), ex);
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            return;
+          }
+          try {
+            GenericConsumer.Load(data);
+          } catch (Exception ex) {
+            ErrorHandling.ShowErrorDialog(String.Format("This problem does not support loading the instance {0}", descriptor.Name), ex);
+          } finally {
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+          }
+        });
       }
+    }
+
+    private void libraryInfoButton_Click(object sender, EventArgs e) {
+      Process.Start(Content.WebLink.ToString());
+    }
+
+    protected virtual void importButton_Click(object sender, EventArgs e) {
+      openFileDialog.FileName = Content.Name + " instance";
+      if (openFileDialog.ShowDialog() == DialogResult.OK) {
+        T instance = default(T);
+        try {
+          instance = Content.ImportData(openFileDialog.FileName);
+        } catch (Exception ex) {
+          MessageBox.Show(String.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return;
+        }
+        try {
+          GenericConsumer.Load(instance);
+          instancesComboBox.SelectedIndex = -1;
+        } catch (Exception ex) {
+          MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
+        }
+      }
+    }
+
+    protected virtual void exportButton_Click(object sender, EventArgs e) {
+      if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
+        try {
+          Content.ExportData(GenericExporter.Export(), saveFileDialog.FileName);
+        } catch (Exception ex) {
+          ErrorHandling.ShowErrorDialog(this, ex);
+        }
+      }
+    }
+
+    protected override void SetTooltip() {
+      toolTip.SetToolTip(importButton, "Import a " + GetProblemType() + " from a file in the " + GetProviderFormatInfo() + " format.");
+      toolTip.SetToolTip(exportButton, "Export currently loaded " + GetProblemType() + " to a file in the " + GetProviderFormatInfo() + " format.");
+      if (Content != null && Content.WebLink != null)
+        toolTip.SetToolTip(libraryInfoButton, "Browse to " + Content.WebLink);
+      else toolTip.SetToolTip(libraryInfoButton, "Library does not have a web reference.");
     }
   }
 }

@@ -26,7 +26,6 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
   [PluginFile("HeuristicLab.Problems.Instances.VehicleRouting.Views-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
-  [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   [PluginDependency("HeuristicLab.Problems.Instances.VehicleRouting", "3.4")]
   [PluginDependency("HeuristicLab.Problems.Instances.Views", "3.3")]

@@ -91,11 +91,17 @@
     <Compile Include="ClassificationImportTypeDialog.Designer.cs">
       <DependentUpon>ClassificationImportTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ClassificationInstanceConsumerView.cs">
+    <Compile Include="ClassificationInstanceProviderView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ClassificationInstanceConsumerView.Designer.cs">
-      <DependentUpon>ClassificationInstanceConsumerView.cs</DependentUpon>
+    <Compile Include="ClassificationInstanceProviderView.Designer.cs">
+      <DependentUpon>ClassificationInstanceProviderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ClusteringInstanceProviderView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ClusteringInstanceProviderView.Designer.cs">
+      <DependentUpon>ClusteringInstanceProviderView.cs</DependentUpon>
     </Compile>
     <Compile Include="TimeSeriesPrognosisImportTypeDialog.cs">
       <SubType>Form</SubType>
@@ -103,11 +109,11 @@
     <Compile Include="TimeSeriesPrognosisImportTypeDialog.Designer.cs">
       <DependentUpon>TimeSeriesPrognosisImportTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TimeSeriesPrognosisInstanceConsumerView.cs">
+    <Compile Include="TimeSeriesPrognosisInstanceProviderView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TimeSeriesPrognosisInstanceConsumerView.Designer.cs">
-      <DependentUpon>TimeSeriesPrognosisInstanceConsumerView.cs</DependentUpon>
+    <Compile Include="TimeSeriesPrognosisInstanceProviderView.Designer.cs">
+      <DependentUpon>TimeSeriesPrognosisInstanceProviderView.cs</DependentUpon>
     </Compile>
     <Compile Include="DataAnalysisImportTypeDialog.cs">
       <SubType>Form</SubType>
@@ -115,11 +121,11 @@
     <Compile Include="DataAnalysisImportTypeDialog.Designer.cs">
       <DependentUpon>DataAnalysisImportTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataAnalysisInstanceConsumerView.cs">
+    <Compile Include="DataAnalysisInstanceProviderView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DataAnalysisInstanceConsumerView.Designer.cs">
-      <DependentUpon>DataAnalysisInstanceConsumerView.cs</DependentUpon>
+    <Compile Include="DataAnalysisInstanceProviderView.Designer.cs">
+      <DependentUpon>DataAnalysisInstanceProviderView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="RegressionImportTypeDialog.cs">
@@ -128,11 +134,11 @@
     <Compile Include="RegressionImportTypeDialog.Designer.cs">
       <DependentUpon>RegressionImportTypeDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="RegressionInstanceConsumerView.cs">
+    <Compile Include="RegressionInstanceProviderView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="RegressionInstanceConsumerView.Designer.cs">
-      <DependentUpon>RegressionInstanceConsumerView.cs</DependentUpon>
+    <Compile Include="RegressionInstanceProviderView.Designer.cs">
+      <DependentUpon>RegressionInstanceProviderView.cs</DependentUpon>
     </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />

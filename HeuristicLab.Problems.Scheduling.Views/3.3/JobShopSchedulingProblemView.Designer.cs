@@ -70,10 +70,10 @@ namespace HeuristicLab.Problems.Scheduling.Views {
       // 
       // ProblemInstanceConsumerViewHost
       // 
-      this.ProblemInstanceConsumerViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.ProblemInstanceConsumerViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ProblemInstanceConsumerViewHost.Location = new System.Drawing.Point(0, 0);
-      this.ProblemInstanceConsumerViewHost.Size = new System.Drawing.Size(511, 26);
+      this.problemInstanceProviderViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+      this.problemInstanceProviderViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.problemInstanceProviderViewHost.Location = new System.Drawing.Point(0, 0);
+      this.problemInstanceProviderViewHost.Size = new System.Drawing.Size(511, 26);
       // 
       // parameterCollectionView
       // 
@@ -94,8 +94,8 @@ namespace HeuristicLab.Problems.Scheduling.Views {
       // 
       // problemTabControl
       // 
-      this.problemTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.problemTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.problemTabControl.Controls.Add(this.problemTabPage);
       this.problemTabControl.Controls.Add(this.visualizationTabPage);
