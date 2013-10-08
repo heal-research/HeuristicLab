@@ -25,13 +25,10 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>

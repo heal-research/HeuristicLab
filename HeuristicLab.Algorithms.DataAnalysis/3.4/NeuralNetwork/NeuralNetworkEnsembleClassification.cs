@@ -25,13 +25,10 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -160,8 +157,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double rmsError, avgRelError, relClassError;
       var solution = CreateNeuralNetworkEnsembleClassificationSolution(Problem.ProblemData, EnsembleSize, HiddenLayers, NodesInFirstHiddenLayer, NodesInSecondHiddenLayer, Decay, Restarts, out rmsError, out avgRelError, out relClassError);
       Results.Add(new Result(NeuralNetworkEnsembleClassificationModelResultName, "The neural network ensemble classification solution.", solution));
-      Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the neural network ensemble regression solution on the training set.", new DoubleValue(rmsError)));
-      Results.Add(new Result("Average relative error", "The average of relative errors of the neural network ensemble regression solution on the training set.", new PercentValue(avgRelError)));
+      Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the neural network ensemble classification solution on the training set.", new DoubleValue(rmsError)));
+      Results.Add(new Result("Average relative error", "The average of relative errors of the neural network ensemble classification solution on the training set.", new PercentValue(avgRelError)));
       Results.Add(new Result("Relative classification error", "The percentage of misclassified samples.", new PercentValue(relClassError)));
     }
 
@@ -200,7 +197,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       int info;
       alglib.mlpetraines(mlpEnsemble, inputMatrix, nRows, decay, restarts, out info, out rep);
-      if (info != 6) throw new ArgumentException("Error in calculation of neural network ensemble regression solution");
+      if (info != 6) throw new ArgumentException("Error in calculation of neural network ensemble classification solution");
 
       rmsError = alglib.mlpermserror(mlpEnsemble, inputMatrix, nRows);
       avgRelError = alglib.mlpeavgrelerror(mlpEnsemble, inputMatrix, nRows);
