@@ -25,13 +25,10 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.Parameters;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
@@ -46,7 +43,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string NodesInFirstHiddenLayerParameterName = "NodesInFirstHiddenLayer";
     private const string NodesInSecondHiddenLayerParameterName = "NodesInSecondHiddenLayer";
     private const string RestartsParameterName = "Restarts";
-    private const string NeuralNetworkRegressionModelResultName = "Neural network classification solution";
+    private const string NeuralNetworkClassificationModelResultName = "Neural network classification solution";
 
     #region parameter properties
     public IFixedValueParameter<DoubleValue> DecayParameter {
@@ -173,9 +170,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run() {
       double rmsError, avgRelError, relClassError;
       var solution = CreateNeuralNetworkClassificationSolution(Problem.ProblemData, HiddenLayers, NodesInFirstHiddenLayer, NodesInSecondHiddenLayer, Decay, Restarts, out rmsError, out avgRelError, out relClassError);
-      Results.Add(new Result(NeuralNetworkRegressionModelResultName, "The neural network regression solution.", solution));
-      Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the neural network regression solution on the training set.", new DoubleValue(rmsError)));
-      Results.Add(new Result("Average relative error", "The average of relative errors of the neural network regression solution on the training set.", new PercentValue(avgRelError)));
+      Results.Add(new Result(NeuralNetworkClassificationModelResultName, "The neural network classification solution.", solution));
+      Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the neural network classification solution on the training set.", new DoubleValue(rmsError)));
+      Results.Add(new Result("Average relative error", "The average of relative errors of the neural network classification solution on the training set.", new PercentValue(avgRelError)));
       Results.Add(new Result("Relative classification error", "The percentage of misclassified samples.", new PercentValue(relClassError)));
     }
 
