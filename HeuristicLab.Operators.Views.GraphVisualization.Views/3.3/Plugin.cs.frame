@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
-  [Plugin("HeuristicLab.Operators.Views.GraphVisualization.Views-3.3", "3.3.8.$WCREV$")]
+  [Plugin("HeuristicLab.Operators.Views.GraphVisualization.Views-3.3", "3.3.9.$WCREV$")]
   [PluginFile("HeuristicLab.Operators.Views.GraphVisualization.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
