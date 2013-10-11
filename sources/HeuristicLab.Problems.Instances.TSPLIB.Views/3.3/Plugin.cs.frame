@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Instances.TSPLIB.Views {
-  [Plugin("HeuristicLab.Problems.Instances.TSPLIB.Views", "3.3.8.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.Instances.TSPLIB.Views", "3.3.9.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Instances.TSPLIB.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]

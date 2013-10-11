@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.Knapsack {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.Knapsack plugin
   /// </summary>
-  [Plugin("HeuristicLab.Problems.Knapsack", "3.3.8.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.Knapsack", "3.3.9.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Knapsack-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
