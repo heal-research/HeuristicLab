@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.OneMax.Views {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.OneMax.Views plugin
   /// </summary>
-  [Plugin("HeuristicLab.Problems.OneMax.Views", "3.3.8.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.OneMax.Views", "3.3.9.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.OneMax.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]

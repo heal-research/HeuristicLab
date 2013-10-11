@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Instances {
-  [Plugin("HeuristicLab.Problems.Instances.QAPLIB", "3.3.8.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.Instances.QAPLIB", "3.3.9.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Instances.QAPLIB-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   public class HeuristicLabProblemsInstancesQAPLIBPlugin : PluginBase {
