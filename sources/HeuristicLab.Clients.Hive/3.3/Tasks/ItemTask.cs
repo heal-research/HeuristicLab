@@ -30,8 +30,13 @@ namespace HeuristicLab.Clients.Hive {
   [Item("Item Task", "Represents a executable hive task which contains a HeuristicLab Item.")]
   [StorableClass]
   public abstract class ItemTask : NamedItem, ITask {
+    public virtual HiveTask CreateHiveTask() {
+      return new HiveTask(this, true);
+    }
+
     public virtual bool IsParallelizable {
       get { return true; }
+      set { }
     }
 
     [Storable]

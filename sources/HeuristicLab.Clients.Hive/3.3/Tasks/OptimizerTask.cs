@@ -29,6 +29,10 @@ namespace HeuristicLab.Clients.Hive.Jobs {
   [Item("Optimizer Task", "Represents Task which executes a IOptimizer object.")]
   [StorableClass]
   public class OptimizerTask : ItemTask {
+    public override HiveTask CreateHiveTask() {
+      return new OptimizerHiveTask(this);
+    }
+
     public override bool IsParallelizable {
       get { return this.Item is Experiment || this.Item is BatchRun; }
     }

@@ -28,6 +28,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Clients.Hive {
   [StorableClass]
   public class EngineTask : ItemTask {
+    public override HiveTask CreateHiveTask() {
+      //only used when deserializing, so no problem with parentscope
+      return new EngineHiveTask(this, null);
+    }
+
     [Storable]
     protected IOperation initialOperation;
     public IOperation InitialOperation {
@@ -51,6 +56,10 @@ namespace HeuristicLab.Clients.Hive {
     #region constructors and cloning
     public EngineTask(IOperation initialOperation, IEngine engine) {
       this.initialOperation = initialOperation;
+      this.Item = engine;
+    }
+
+    public EngineTask(IEngine engine) {
       this.Item = engine;
     }
 

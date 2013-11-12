@@ -22,6 +22,7 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -467,8 +468,15 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private void jobsTreeView_DragEnter(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      var obj = e.Data.GetData(Constants.DragDropDataFormat);
-      if (obj is IOptimizer) {
+      var obj = e.Data.GetData(Constants.DragDropDataFormat) as IDeepCloneable;
+      Type objType = obj.GetType();
+
+      var typeHiveTaskMap = ApplicationManager.Manager.GetTypes(typeof(ItemTask))
+          .Select(t => new Tuple<PropertyInfo, Type>(t.GetProperties().Single(x => x.Name == "Item" && x.PropertyType != typeof(IItem)), t));
+
+      var hiveTaskFound = typeHiveTaskMap.Any(x => x.Item1.PropertyType.IsAssignableFrom(objType));
+
+      if (hiveTaskFound) {
         if (Content.Id != Guid.Empty) e.Effect = DragDropEffects.None;
         else if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
@@ -477,23 +485,34 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private void jobsTreeView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        var obj = e.Data.GetData(Constants.DragDropDataFormat);
+        var obj = e.Data.GetData(Constants.DragDropDataFormat) as IDeepCloneable;
+        Type objType = obj.GetType();
 
-        var optimizer = obj as IOptimizer;
-        if (optimizer != null) {
-          IOptimizer newOptimizer = null;
-          if (e.Effect.HasFlag(DragDropEffects.Copy)) {
-            newOptimizer = (IOptimizer)optimizer.Clone();
-            newOptimizer.Runs.Clear();
-          } else {
-            newOptimizer = optimizer;
-          }
-          if (newOptimizer.ExecutionState != ExecutionState.Prepared) {
-            newOptimizer.Prepare();
-          }
+        var typeHiveTaskMap = ApplicationManager.Manager.GetTypes(typeof(ItemTask))
+            .Select(t => new Tuple<PropertyInfo, Type>(t.GetProperties().Single(x => x.Name == "Item" && x.PropertyType != typeof(IItem)), t));
 
-          Content.HiveTasks.Add(new OptimizerHiveTask(newOptimizer));
+        var hiveTaskType = typeHiveTaskMap.Single(x => x.Item1.PropertyType.IsAssignableFrom(objType)).Item2;
+
+        IDeepCloneable newObj = null;
+        if (e.Effect.HasFlag(DragDropEffects.Copy)) {
+          newObj = obj.Clone(new Cloner());
+        } else {
+          newObj = obj;
         }
+
+        //IOptimizer and IExecutables need some special care
+        if (newObj is IOptimizer) {
+          ((IOptimizer)newObj).Runs.Clear();
+        }
+        if (newObj is IExecutable) {
+          IExecutable exec = newObj as IExecutable;
+          if (exec.ExecutionState != ExecutionState.Prepared) {
+            exec.Prepare();
+          }
+        }
+
+        ItemTask hiveTask = Activator.CreateInstance(hiveTaskType, new object[] { newObj }) as ItemTask;
+        Content.HiveTasks.Add(hiveTask.CreateHiveTask());
       }
     }
     #endregion

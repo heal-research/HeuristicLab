@@ -361,7 +361,7 @@ namespace HeuristicLab.Clients.Hive {
         TaskData taskData;
         List<IPluginDescription> plugins;
 
-        if (hiveTask.ItemTask.ComputeInParallel && (hiveTask.ItemTask.Item is Optimization.Experiment || hiveTask.ItemTask.Item is Optimization.BatchRun)) {
+        if (hiveTask.ItemTask.ComputeInParallel) {
           hiveTask.Task.IsParentTask = true;
           hiveTask.Task.FinishWhenChildJobsFinished = true;
           taskData = hiveTask.GetAsTaskData(true, out plugins);
