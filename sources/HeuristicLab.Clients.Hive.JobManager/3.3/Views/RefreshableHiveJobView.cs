@@ -22,7 +22,6 @@
 using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -471,11 +470,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       var obj = e.Data.GetData(Constants.DragDropDataFormat) as IDeepCloneable;
       Type objType = obj.GetType();
 
-      var typeHiveTaskMap = ApplicationManager.Manager.GetTypes(typeof(ItemTask))
-          .Select(t => new Tuple<PropertyInfo, Type>(t.GetProperties().Single(x => x.Name == "Item" && x.PropertyType != typeof(IItem)), t));
-
-      var hiveTaskFound = typeHiveTaskMap.Any(x => x.Item1.PropertyType.IsAssignableFrom(objType));
-
+      var hiveTaskFound = ItemTask.IsTypeSupported(objType);
       if (hiveTaskFound) {
         if (Content.Id != Guid.Empty) e.Effect = DragDropEffects.None;
         else if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
@@ -485,17 +480,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private void jobsTreeView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        var obj = e.Data.GetData(Constants.DragDropDataFormat) as IDeepCloneable;
-        Type objType = obj.GetType();
+        var obj = e.Data.GetData(Constants.DragDropDataFormat) as IItem;
 
-        var typeHiveTaskMap = ApplicationManager.Manager.GetTypes(typeof(ItemTask))
-            .Select(t => new Tuple<PropertyInfo, Type>(t.GetProperties().Single(x => x.Name == "Item" && x.PropertyType != typeof(IItem)), t));
-
-        var hiveTaskType = typeHiveTaskMap.Single(x => x.Item1.PropertyType.IsAssignableFrom(objType)).Item2;
-
-        IDeepCloneable newObj = null;
+        IItem newObj = null;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) {
-          newObj = obj.Clone(new Cloner());
+          newObj = obj.Clone(new Cloner()) as IItem;
         } else {
           newObj = obj;
         }
@@ -511,7 +500,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           }
         }
 
-        ItemTask hiveTask = Activator.CreateInstance(hiveTaskType, new object[] { newObj }) as ItemTask;
+        ItemTask hiveTask = ItemTask.GetItemTaskForItem(newObj);
         Content.HiveTasks.Add(hiveTask.CreateHiveTask());
       }
     }

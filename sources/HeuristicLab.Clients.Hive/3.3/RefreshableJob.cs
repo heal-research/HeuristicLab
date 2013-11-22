@@ -156,8 +156,8 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    private Progress progress;
-    public Progress Progress {
+    private IProgress progress;
+    public IProgress Progress {
       get { return progress; }
       set {
         this.progress = value;

@@ -59,9 +59,7 @@ namespace HeuristicLab.Clients.Hive {
       this.Item = engine;
     }
 
-    public EngineTask(IEngine engine) {
-      this.Item = engine;
-    }
+    public EngineTask(IEngine engine) : base(engine) { }
 
     [StorableConstructor]
     protected EngineTask(bool deserializing) : base(deserializing) { }

@@ -49,8 +49,8 @@ namespace HeuristicLab.Clients.Hive.Jobs {
       set { this.indexInParentOptimizerList = value; }
     }
 
-    public OptimizerTask(IOptimizer optimizer) {
-      this.Item = optimizer;
+    public OptimizerTask(IOptimizer optimizer)
+      : base(optimizer) {
 
       if (optimizer is Experiment) {
         this.ComputeInParallel = true;

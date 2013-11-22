@@ -97,6 +97,8 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods\TreeNodeExtensions.cs" />
     <Compile Include="ListViewItemDateComparer.cs" />
+    <Compile Include="MenuItems\CreateHiveJobMenuItem.cs" />
+    <Compile Include="MenuItems\RunInHiveMenuItem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Views\HiveJobManagerView.cs">
       <SubType>UserControl</SubType>

@@ -21,10 +21,12 @@
 
 using System;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Hive;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive {
   [Item("Item Task", "Represents a executable hive task which contains a HeuristicLab Item.")]
@@ -74,6 +76,9 @@ namespace HeuristicLab.Clients.Hive {
       : base(original, cloner) {
       this.ComputeInParallel = original.ComputeInParallel;
       this.Item = cloner.Clone(original.Item);
+    }
+    public ItemTask(IItem item) {
+      Item = item;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -215,5 +220,28 @@ namespace HeuristicLab.Clients.Hive {
     public override string ToString() {
       return Name;
     }
+
+    #region Helpers
+    public static bool IsTypeSupported(Type itemType) {
+      var supportedHiveTaskTypes = ApplicationManager.Manager.GetTypes(typeof(ItemTask))
+          .Select(t => t.GetProperties().Single(x => x.Name == "Item" && x.PropertyType != typeof(IItem)).PropertyType);
+      return supportedHiveTaskTypes.Any(x => x.IsAssignableFrom(itemType));
+    }
+
+    public static Type GetHiveTaskType(Type itemType) {
+      if (!IsTypeSupported(itemType)) throw new Exception("Item " + itemType + " is not supported for Hive.");
+
+      var typeHiveTaskMap = ApplicationManager.Manager.GetTypes(typeof(ItemTask))
+          .Select(t => new Tuple<Type, Type>(t.GetProperties().Single(x => x.Name == "Item" && x.PropertyType != typeof(IItem)).PropertyType, t));
+
+      return typeHiveTaskMap.Single(x => x.Item1.IsAssignableFrom(itemType)).Item2;
+    }
+
+    public static ItemTask GetItemTaskForItem(IItem item) {
+      Type itemType = item.GetType();
+      Type hiveTaskType = GetHiveTaskType(itemType);
+      return Activator.CreateInstance(hiveTaskType, new object[] { item }) as ItemTask;
+    }
+    #endregion
   }
 }
