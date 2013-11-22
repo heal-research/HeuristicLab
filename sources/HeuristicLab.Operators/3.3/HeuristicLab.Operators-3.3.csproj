@@ -112,12 +112,14 @@
   <ItemGroup>
     <Compile Include="CheckedMultiOperator.cs" />
     <Compile Include="CombinedOperator.cs" />
+    <Compile Include="Operator.InstrumentedOperatorWrapper.cs" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="ConditionalBranch.cs" />
     <Compile Include="Comparator.cs" />
     <Compile Include="Assigner.cs" />
     <Compile Include="AlgorithmOperator.cs" />
     <Compile Include="DataReducer.cs" />
+    <Compile Include="InstrumentedOperator.cs" />
     <Compile Include="LocalRandomCreator.cs" />
     <Compile Include="MultiOperator.cs" />
     <Compile Include="Operator.cs" />
@@ -220,14 +222,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
