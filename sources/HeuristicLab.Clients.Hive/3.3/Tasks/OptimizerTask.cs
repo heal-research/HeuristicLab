@@ -52,10 +52,8 @@ namespace HeuristicLab.Clients.Hive.Jobs {
     public OptimizerTask(IOptimizer optimizer)
       : base(optimizer) {
 
-      if (optimizer is Experiment) {
+      if (optimizer is Experiment || optimizer is BatchRun) {
         this.ComputeInParallel = true;
-      } else if (optimizer is BatchRun) {
-        this.ComputeInParallel = false;
       } else {
         this.ComputeInParallel = false;
       }
