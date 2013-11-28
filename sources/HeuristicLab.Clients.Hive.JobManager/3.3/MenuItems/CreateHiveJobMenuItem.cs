@@ -21,12 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using HeuristicLab.Clients.Hive;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimizer;
 
-namespace HeuristicLab.Optimizer.MenuItems {
+namespace HeuristicLab.Clients.Hive.JobManager {
   public class CreateHiveJobMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
     public override string Name {
       get { return "&Create Hive Job"; }
@@ -73,7 +73,7 @@ namespace HeuristicLab.Optimizer.MenuItems {
       ItemTask hiveTask = ItemTask.GetItemTaskForItem(content);
       HiveTask task = hiveTask.CreateHiveTask();
       RefreshableJob rJob = new RefreshableJob();
-      rJob.Job.Name = content.ItemName;
+      rJob.Job.Name = content.ToString();
       rJob.HiveTasks.Add(task);
       task.ItemTask.ComputeInParallel = content is Experiment || content is BatchRun;
 
