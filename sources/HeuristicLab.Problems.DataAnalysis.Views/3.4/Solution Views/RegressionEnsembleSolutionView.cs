@@ -31,6 +31,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      //loading of problemdata is currently not support for ensemble solutions
+      loadProblemDataButton.Enabled = false;
+      loadProblemDataButton.Visible = false;
+    }
+
     public new RegressionEnsembleSolution Content {
       get { return (RegressionEnsembleSolution)base.Content; }
       set { base.Content = value; }

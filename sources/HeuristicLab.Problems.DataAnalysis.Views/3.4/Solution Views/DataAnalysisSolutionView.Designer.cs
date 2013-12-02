@@ -18,6 +18,8 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class DataAnalysisSolutionView {
     /// <summary> 
@@ -45,6 +47,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private void InitializeComponent() {
       this.exportButton = new System.Windows.Forms.Button();
       this.exportFileDialog = new System.Windows.Forms.SaveFileDialog();
+      this.loadProblemDataButton = new System.Windows.Forms.Button();
+      this.loadProblemDataFileDialog = new System.Windows.Forms.OpenFileDialog();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -58,6 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // 
       // splitContainer.Panel2
       // 
+      this.splitContainer.Panel2.Controls.Add(this.loadProblemDataButton);
       this.splitContainer.Panel2.Controls.Add(this.exportButton);
       // 
       // itemsGroupBox
@@ -75,13 +80,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       // exportButton
       // 
       this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.exportButton.Location = new System.Drawing.Point(215, 4);
+      this.exportButton.Location = new System.Drawing.Point(194, 3);
       this.exportButton.Name = "exportButton";
-      this.exportButton.Size = new System.Drawing.Size(54, 23);
+      this.exportButton.Size = new System.Drawing.Size(75, 24);
       this.exportButton.TabIndex = 6;
       this.exportButton.Text = "Export";
       this.exportButton.UseVisualStyleBackColor = true;
       this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+      //
+      // loadProblemDataButton
+      //
+      this.loadProblemDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+      this.loadProblemDataButton.Location = new System.Drawing.Point(3, 3);
+      this.loadProblemDataButton.Name = "loadProblemDataButton";
+      this.loadProblemDataButton.Size = new System.Drawing.Size(75, 24);
+      this.loadProblemDataButton.TabIndex = 7;
+      this.loadProblemDataButton.Text = "Load Data";
+      this.loadProblemDataButton.UseVisualStyleBackColor = true;
+      this.loadProblemDataButton.Click += new System.EventHandler(this.loadProblemDataButton_Click);
+      this.toolTip.SetToolTip(this.loadProblemDataButton, "Load new data");
+      // 
+      // openFileDialog
+      // 
+      this.loadProblemDataFileDialog.Filter = "HL files|*.hl";
+      this.loadProblemDataFileDialog.Title = "Load new ProblemData or Problem...";
       // 
       // DataAnalysisSolutionView
       // 
@@ -101,6 +123,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     private System.Windows.Forms.SaveFileDialog exportFileDialog;
     protected System.Windows.Forms.Button exportButton;
+    protected System.Windows.Forms.Button loadProblemDataButton;
+    protected System.Windows.Forms.OpenFileDialog loadProblemDataFileDialog;
 
   }
 }

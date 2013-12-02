@@ -36,6 +36,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set { base.Content = value; }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      //loading of problemdata is currently not support for ensemble solutions
+      loadProblemDataButton.Enabled = false;
+      loadProblemDataButton.Visible = false;
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       itemsListView.Items.Remove(itemsListView.FindItemWithText("Model: ClassificationEnsembleModel"));

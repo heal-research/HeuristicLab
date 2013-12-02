@@ -21,6 +21,7 @@
 
 using System;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
@@ -54,7 +55,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     #endregion
 
     protected override bool CheckCompatibilityOfProblemData(IDataAnalysisProblemData problemData) {
-      IRegressionProblemData regressionProblemData = (IRegressionProblemData)problemData;
+      IRegressionProblemData regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData == null) {
+        ErrorHandling.ShowErrorDialog(this, new ArgumentException("The problem data is no regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided."));
+        return false;
+      }
 
       if (!regressionProblemData.TargetVariable.Equals(Content.ProblemData.TargetVariable)) {
         string message = "The target variables are not matching. Old target variable: '"

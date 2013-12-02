@@ -31,6 +31,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Views;
+using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
@@ -54,8 +55,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       removeButton.Enabled = false;
       if (Content == null) {
         exportButton.Enabled = false;
+        loadProblemDataButton.Enabled = false;
       } else {
         exportButton.Enabled = !Locked;
+        loadProblemDataButton.Enabled = !Locked;
       }
     }
 
@@ -127,6 +130,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         base.itemsListView_SelectedIndexChanged(sender, e);
     }
 
+    protected virtual void loadProblemDataButton_Click(object sender, EventArgs e) {
+      if (loadProblemDataFileDialog.ShowDialog(this) != DialogResult.OK) return;
+      object hlFile = XmlParser.Deserialize(loadProblemDataFileDialog.FileName);
+
+      IDataAnalysisProblemData problemData = null;
+      if (hlFile is IDataAnalysisProblemData) {
+        problemData = (IDataAnalysisProblemData)hlFile;
+      } else if (hlFile is IDataAnalysisProblem) {
+        problemData = ((IDataAnalysisProblem)hlFile).ProblemData;
+      } else if (hlFile is IDataAnalysisSolution) {
+        problemData = ((IDataAnalysisSolution)hlFile).ProblemData;
+      }
+
+      if (problemData == null) {
+        ErrorHandling.ShowErrorDialog(this, new NullReferenceException("The problem data is null." + Environment.NewLine
+                                      + "The .hl-file contains no DataAnalysisProblemData or DataAnylsisProblem."));
+        return;
+      }
+
+      if (CheckCompatibilityOfProblemData(problemData)) {
+        var solution = (IDataAnalysisSolution)Content.Clone();
+        solution.ProblemData = problemData;
+        solution.Name += " with loaded problem data (" + loadProblemDataFileDialog + ")";
+        MainFormManager.MainForm.ShowContent(solution);
+      }
+    }
 
     private void exportButton_Click(object sender, EventArgs e) {
       var exporters = ApplicationManager.Manager.GetInstances<IDataAnalysisSolutionExporter>()
