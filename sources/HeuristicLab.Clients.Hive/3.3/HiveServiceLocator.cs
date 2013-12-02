@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.ServiceModel;
 using HeuristicLab.Clients.Common;
 
 namespace HeuristicLab.Clients.Hive {
@@ -68,7 +69,7 @@ namespace HeuristicLab.Clients.Hive {
           WorkingEndpoint = endpointConfigurationName;
           return cl;
         }
-        catch (Exception exc) {
+        catch (EndpointNotFoundException exc) {
           exception = exc;
           EndpointRetries++;
         }
