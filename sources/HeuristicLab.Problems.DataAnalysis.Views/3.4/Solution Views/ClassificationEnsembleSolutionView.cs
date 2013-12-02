@@ -46,6 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (e.Effect != DragDropEffects.None) {
         var droppedData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
         if (droppedData is IValueParameter) droppedData = ((IValueParameter)droppedData).Value;
+        else if (droppedData is IClassificationProblem) droppedData = ((IClassificationProblem)droppedData).ProblemData;
 
         ClassificationEnsembleProblemData ensembleProblemData = droppedData as ClassificationEnsembleProblemData;
         ClassificationProblemData problemData = droppedData as ClassificationProblemData;

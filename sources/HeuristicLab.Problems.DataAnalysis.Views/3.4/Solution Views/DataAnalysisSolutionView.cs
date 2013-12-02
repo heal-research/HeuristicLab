@@ -196,18 +196,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
       if (dropData is DataAnalysisProblemData) validDragOperation = true;
+      else if (dropData is IDataAnalysisProblem) validDragOperation = true;
       else if (dropData is IValueParameter) {
         var param = (IValueParameter)dropData;
-        if (param.Value is DataAnalysisProblemData) validDragOperation = true;
+        if (param.Value is IDataAnalysisProblemData) validDragOperation = true;
       }
     }
 
     protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
         var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
-        if (dropData is DataAnalysisProblemData) {
+        if (dropData is IDataAnalysisProblemData) {
           DataAnalysisProblemData problemData = (DataAnalysisProblemData)dropData;
           Content.ProblemData = (DataAnalysisProblemData)problemData.Clone();
+        } else if (dropData is IDataAnalysisProblem) {
+          IDataAnalysisProblemData problemData = ((IDataAnalysisProblem)dropData).ProblemData;
+          Content.ProblemData = (IDataAnalysisProblemData)problemData.Clone();
         } else if (dropData is IValueParameter) {
           var param = (IValueParameter)dropData;
           DataAnalysisProblemData problemData = param.Value as DataAnalysisProblemData;

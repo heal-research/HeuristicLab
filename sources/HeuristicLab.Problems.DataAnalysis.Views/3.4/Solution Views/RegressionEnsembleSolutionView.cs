@@ -46,9 +46,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (e.Effect != DragDropEffects.None) {
         var droppedData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
         if (droppedData is IValueParameter) droppedData = ((IValueParameter)droppedData).Value;
+        if (droppedData is IRegressionProblem) droppedData = ((IRegressionProblem)droppedData).ProblemData;
 
         RegressionEnsembleProblemData ensembleProblemData = droppedData as RegressionEnsembleProblemData;
-        RegressionProblemData problemData = droppedData as RegressionProblemData;
+        IRegressionProblemData problemData = droppedData as IRegressionProblemData;
         if (ensembleProblemData != null) {
           Content.ProblemData = (RegressionEnsembleProblemData)ensembleProblemData.Clone();
         } else if (problemData != null) {
