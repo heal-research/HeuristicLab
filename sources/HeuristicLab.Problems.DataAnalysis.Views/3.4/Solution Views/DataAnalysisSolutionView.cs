@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
@@ -204,21 +205,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected override void itemsListView_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect != DragDropEffects.None) {
-        var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
-        if (dropData is IDataAnalysisProblemData) {
-          DataAnalysisProblemData problemData = (DataAnalysisProblemData)dropData;
-          Content.ProblemData = (DataAnalysisProblemData)problemData.Clone();
-        } else if (dropData is IDataAnalysisProblem) {
-          IDataAnalysisProblemData problemData = ((IDataAnalysisProblem)dropData).ProblemData;
-          Content.ProblemData = (IDataAnalysisProblemData)problemData.Clone();
-        } else if (dropData is IValueParameter) {
-          var param = (IValueParameter)dropData;
-          DataAnalysisProblemData problemData = param.Value as DataAnalysisProblemData;
-          if (problemData != null)
-            Content.ProblemData = (DataAnalysisProblemData)problemData.Clone();
-        }
+      if (e.Effect == DragDropEffects.None) return;
+
+      IDataAnalysisProblemData problemData = null;
+      var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+      if (dropData is IDataAnalysisProblemData)
+        problemData = (IDataAnalysisProblemData)dropData;
+      else if (dropData is IDataAnalysisProblem)
+        problemData = ((IDataAnalysisProblem)dropData).ProblemData;
+      else if (dropData is IValueParameter) {
+        var param = (IValueParameter)dropData;
+        problemData = param.Value as DataAnalysisProblemData;
       }
+      if (problemData == null) return;
+      CheckCompatibilityOfProblemData(problemData);
+      Content.ProblemData = (IDataAnalysisProblemData)problemData.Clone();
+    }
+    #endregion
+
+    #region load problem data
+    protected virtual bool CheckCompatibilityOfProblemData(IDataAnalysisProblemData problemData) {
+      StringBuilder message = new StringBuilder();
+      List<string> variables = problemData.InputVariables.Select(x => x.Value).ToList();
+      foreach (var item in Content.ProblemData.InputVariables.CheckedItems) {
+        if (!variables.Contains(item.Value.Value))
+          message.AppendLine("Input variable '" + item.Value.Value + "' is not in the new problem data.");
+      }
+
+      if (message.Length != 0) {
+        ErrorHandling.ShowErrorDialog(this, new InvalidOperationException(message.ToString()));
+        return false;
+      }
+      return true;
     }
     #endregion
   }

@@ -19,9 +19,11 @@
  */
 #endregion
 
+using System;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("RegressionSolution View")]
@@ -50,5 +52,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
     #endregion
+
+    protected override bool CheckCompatibilityOfProblemData(IDataAnalysisProblemData problemData) {
+      IRegressionProblemData regressionProblemData = (IRegressionProblemData)problemData;
+
+      if (!regressionProblemData.TargetVariable.Equals(Content.ProblemData.TargetVariable)) {
+        string message = "The target variables are not matching. Old target variable: '"
+                         + Content.ProblemData.TargetVariable
+                         + "'. New targetvariable: '" + regressionProblemData.TargetVariable + "'";
+        ErrorHandling.ShowErrorDialog(this, new InvalidOperationException(message));
+        return false;
+      }
+
+      return base.CheckCompatibilityOfProblemData(problemData);
+    }
   }
 }
