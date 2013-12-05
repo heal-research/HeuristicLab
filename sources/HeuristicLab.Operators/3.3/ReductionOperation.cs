@@ -26,6 +26,16 @@ using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Operators {
+  public enum ReductionOperations {
+    Sum,
+    Product,
+    Count,
+    Min,
+    Max,
+    Avg,
+    Assign
+  }
+
   [Item("ReductionOperation", "Represents a certain type of reduction operation.")]
   [StorableClass]
   public class ReductionOperation : ValueTypeValue<ReductionOperations> {
