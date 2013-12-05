@@ -33,7 +33,9 @@ namespace HeuristicLab.Operators {
     Min,
     Max,
     Avg,
-    Assign
+    Assign,
+    All,
+    Any
   }
 
   [Item("ReductionOperation", "Represents a certain type of reduction operation.")]
