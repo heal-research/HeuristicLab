@@ -49,6 +49,21 @@ namespace HeuristicLab.Problems.Scheduling.Views {
       }
     }
 
+    protected override void DeregisterContentEvents() {
+      Content.JobDataParameter.ValueChanged -= JobDataParameter_ValueChanged;
+      base.DeregisterContentEvents();
+    }
+    protected override void RegisterContentEvents() {
+      base.RegisterContentEvents();
+      Content.JobDataParameter.ValueChanged += JobDataParameter_ValueChanged;
+    }
+
+    void JobDataParameter_ValueChanged(object sender, System.EventArgs e) {
+      if (Content != null) {
+        FillGanttChart(Content);
+      }
+    }
+
     private void FillGanttChart(JobShopSchedulingProblem content) {
       ganttChart.Reset();
       int jobCount = 0;
