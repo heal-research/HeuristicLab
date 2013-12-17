@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
@@ -31,17 +32,17 @@ namespace HeuristicLab.Operators {
     private const string BeforeExecutionOperatorsParameterName = "BeforeExecutionOperators";
     private const string AfterExecutionOperatorsParameterName = "AfterExecutionOperators";
 
-    private IFixedValueParameter<ItemList<SingleSuccessorOperator>> BeforeExecutionOperatorsParameter {
-      get { return (IFixedValueParameter<ItemList<SingleSuccessorOperator>>)Parameters[BeforeExecutionOperatorsParameterName]; }
+    private IFixedValueParameter<OperatorList> BeforeExecutionOperatorsParameter {
+      get { return (IFixedValueParameter<OperatorList>)Parameters[BeforeExecutionOperatorsParameterName]; }
     }
-    private IFixedValueParameter<ItemList<SingleSuccessorOperator>> AfterExecutionOperatorsParameter {
-      get { return (IFixedValueParameter<ItemList<SingleSuccessorOperator>>)Parameters[AfterExecutionOperatorsParameterName]; }
+    private IFixedValueParameter<OperatorList> AfterExecutionOperatorsParameter {
+      get { return (IFixedValueParameter<OperatorList>)Parameters[AfterExecutionOperatorsParameterName]; }
     }
 
-    public ItemList<SingleSuccessorOperator> BeforeExecutionOperators {
+    public OperatorList BeforeExecutionOperators {
       get { return BeforeExecutionOperatorsParameter.Value; }
     }
-    public ItemList<SingleSuccessorOperator> AfterExecutionOperators {
+    public OperatorList AfterExecutionOperators {
       get { return AfterExecutionOperatorsParameter.Value; }
     }
 
@@ -52,8 +53,8 @@ namespace HeuristicLab.Operators {
     }
     protected InstrumentedOperator()
       : base() {
-      Parameters.Add(new FixedValueParameter<ItemList<SingleSuccessorOperator>>(BeforeExecutionOperatorsParameterName, "Actions that are executed before the execution of the operator", new ItemList<SingleSuccessorOperator>()));
-      Parameters.Add(new FixedValueParameter<ItemList<SingleSuccessorOperator>>(AfterExecutionOperatorsParameterName, "Actions that are executed after the execution of the operator", new ItemList<SingleSuccessorOperator>()));
+      Parameters.Add(new FixedValueParameter<OperatorList>(BeforeExecutionOperatorsParameterName, "Actions that are executed before the execution of the operator", new OperatorList()));
+      Parameters.Add(new FixedValueParameter<OperatorList>(AfterExecutionOperatorsParameterName, "Actions that are executed after the execution of the operator", new OperatorList()));
       BeforeExecutionOperatorsParameter.Hidden = true;
       AfterExecutionOperatorsParameter.Hidden = true;
     }
@@ -63,22 +64,25 @@ namespace HeuristicLab.Operators {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey(BeforeExecutionOperatorsParameterName)) {
-        Parameters.Add(new FixedValueParameter<ItemList<SingleSuccessorOperator>>(BeforeExecutionOperatorsParameterName, "Actions that are executed before the execution of the operator", new ItemList<SingleSuccessorOperator>()));
+        Parameters.Add(new FixedValueParameter<OperatorList>(BeforeExecutionOperatorsParameterName, "Actions that are executed before the execution of the operator", new OperatorList()));
         BeforeExecutionOperatorsParameter.Hidden = true;
       }
       if (!Parameters.ContainsKey(AfterExecutionOperatorsParameterName)) {
-        Parameters.Add(new FixedValueParameter<ItemList<SingleSuccessorOperator>>(AfterExecutionOperatorsParameterName, "Actions that are executed after the execution of the operator", new ItemList<SingleSuccessorOperator>()));
+        Parameters.Add(new FixedValueParameter<OperatorList>(AfterExecutionOperatorsParameterName, "Actions that are executed after the execution of the operator", new OperatorList()));
         AfterExecutionOperatorsParameter.Hidden = true;
       }
       #endregion
     }
 
     public sealed override IOperation Apply() {
-      var opCol = new OperationCollection();
+      //to speed up the execution call instrumented apply directly if no before operators exists
+      if (!BeforeExecutionOperators.Any())
+        return InstrumentedApply();
 
       //build before operations
+      var opCol = new OperationCollection();
       foreach (var beforeAction in BeforeExecutionOperators) {
-        IOperation beforeActionOperation = ExecutionContext.CreateOperation(beforeAction);
+        var beforeActionOperation = ExecutionContext.CreateOperation(beforeAction);
         opCol.Add(beforeActionOperation);
       }
       //build operation for the instrumented apply
@@ -87,11 +91,17 @@ namespace HeuristicLab.Operators {
     }
 
     public virtual IOperation InstrumentedApply() {
+      if (!AfterExecutionOperators.Any()) {
+        if (Successor != null) return ExecutionContext.CreateOperation(Successor);
+        return null;
+      }
+
       var opCol = new OperationCollection();
       foreach (var afterAction in AfterExecutionOperators) {
-        IOperation afterActionOperation = ExecutionContext.CreateOperation(afterAction);
+        var afterActionOperation = ExecutionContext.CreateOperation(afterAction);
         opCol.Add(afterActionOperation);
       }
+
       if (Successor != null)
         opCol.Add(ExecutionContext.CreateOperation(Successor));
       return opCol;
