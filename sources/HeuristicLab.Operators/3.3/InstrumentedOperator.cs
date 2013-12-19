@@ -82,7 +82,7 @@ namespace HeuristicLab.Operators {
       //build before operations
       var opCol = new OperationCollection();
       foreach (var beforeAction in BeforeExecutionOperators) {
-        var beforeActionOperation = ExecutionContext.CreateOperation(beforeAction);
+        var beforeActionOperation = ExecutionContext.CreateChildOperation(beforeAction);
         opCol.Add(beforeActionOperation);
       }
       //build operation for the instrumented apply
@@ -98,7 +98,7 @@ namespace HeuristicLab.Operators {
 
       var opCol = new OperationCollection();
       foreach (var afterAction in AfterExecutionOperators) {
-        var afterActionOperation = ExecutionContext.CreateOperation(afterAction);
+        var afterActionOperation = ExecutionContext.CreateChildOperation(afterAction);
         opCol.Add(afterActionOperation);
       }
 
