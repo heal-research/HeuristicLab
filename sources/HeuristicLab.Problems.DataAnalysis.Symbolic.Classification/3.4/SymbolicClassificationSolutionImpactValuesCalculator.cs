@@ -48,10 +48,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
       var replacementValue = CalculateReplacementValue(classificationModel, node, classificationProblemData, rows);
       var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
+
       var cloner = new Cloner();
-      cloner.RegisterClonedObject(node, constantNode);
       var tempModel = cloner.Clone(classificationModel);
-      tempModel.RecalculateModelParameters(classificationProblemData, rows);
+      var tempModelNode = (ISymbolicExpressionTreeNode)cloner.GetClone(node);
+
+      var tempModelParentNode = tempModelNode.Parent;
+      int i = tempModelParentNode.IndexOfSubtree(tempModelNode);
+      tempModelParentNode.RemoveSubtree(i);
+      tempModelParentNode.InsertSubtree(i, constantNode);
 
       var estimatedClassValues = tempModel.GetEstimatedClassValues(dataset, rows);
       double newQuality = OnlineAccuracyCalculator.Calculate(targetClassValues, estimatedClassValues, out errorState);
