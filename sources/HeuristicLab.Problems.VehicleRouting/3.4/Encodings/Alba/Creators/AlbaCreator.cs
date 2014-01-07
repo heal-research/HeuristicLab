@@ -44,10 +44,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       : base(original, cloner) {
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       (VRPToursParameter.ActualValue as AlbaEncoding).Repair();
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

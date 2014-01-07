@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       #endregion
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var solution = SolutionParameter.ActualValue as IVRPEncoding;
       var potvinSolution = solution is PotvinEncoding ? solution as PotvinEncoding : PotvinEncoding.ConvertFrom(solution, ProblemInstance);
 
@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
       SolutionParameter.ActualValue = solution;
       LocalEvaluatedSolutions.ActualValue = new IntValue(evaluatedSolutions);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract int Improve(PotvinEncoding solution);

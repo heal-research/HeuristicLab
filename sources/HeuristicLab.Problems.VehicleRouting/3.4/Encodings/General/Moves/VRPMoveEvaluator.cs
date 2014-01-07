@@ -75,10 +75,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
 
     protected abstract void EvaluateMove();
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       EvaluateMove();
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

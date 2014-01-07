@@ -86,7 +86,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         city, routeToAvoid, allowInfeasible, out route, out place);
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is PotvinEncoding)) {
         VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, ProblemInstance);
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as PotvinEncoding);
       (VRPToursParameter.ActualValue as PotvinEncoding).Repair();
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

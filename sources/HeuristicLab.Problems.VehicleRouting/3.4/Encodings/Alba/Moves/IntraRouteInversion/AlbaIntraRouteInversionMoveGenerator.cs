@@ -57,8 +57,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     protected abstract AlbaIntraRouteInversionMove[] GenerateMoves(AlbaEncoding individual, IVRPProblemInstance problemInstance);
 
-    public override IOperation Apply() {
-      IOperation next = base.Apply();
+    public override IOperation InstrumentedApply() {
+      IOperation next = base.InstrumentedApply();
 
       AlbaEncoding individual = VRPToursParameter.ActualValue as AlbaEncoding;
       AlbaIntraRouteInversionMove[] moves = GenerateMoves(individual, ProblemInstance);

@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
 
     protected abstract AlbaEncoding Crossover(IRandom random, AlbaEncoding parent1, AlbaEncoding parent2);
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
         IVRPEncoding solution = ParentsParameter.ActualValue[i];
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
         Crossover(RandomParameter.ActualValue, parents[0] as AlbaEncoding, parents[1] as AlbaEncoding);
       (ChildParameter.ActualValue as AlbaEncoding).Repair();
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

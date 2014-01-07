@@ -127,7 +127,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       return evaluation;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       InitResultParameters();
 
       VRPEvaluation evaluation = CreateTourEvaluation();
@@ -139,7 +139,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
       QualityParameter.ActualValue = new DoubleValue(evaluation.Quality);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     #endregion

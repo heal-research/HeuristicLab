@@ -56,8 +56,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
     protected abstract PotvinPDRearrangeMove[] GenerateMoves(PotvinEncoding individual, IVRPProblemInstance problemInstance);
 
-    public override IOperation Apply() {
-      IOperation next = base.Apply();
+    public override IOperation InstrumentedApply() {
+      IOperation next = base.InstrumentedApply();
 
       PotvinEncoding individual = VRPToursParameter.ActualValue as PotvinEncoding;
       PotvinPDRearrangeMove[] moves = GenerateMoves(individual, ProblemInstance);

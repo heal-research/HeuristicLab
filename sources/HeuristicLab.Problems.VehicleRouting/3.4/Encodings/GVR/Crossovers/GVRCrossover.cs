@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
       return child;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
         IVRPEncoding solution = ParentsParameter.ActualValue[i];
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.GVR {
 
       ChildParameter.ActualValue = Crossover(RandomParameter.ActualValue, parents[0] as GVREncoding, parents[1] as GVREncoding);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

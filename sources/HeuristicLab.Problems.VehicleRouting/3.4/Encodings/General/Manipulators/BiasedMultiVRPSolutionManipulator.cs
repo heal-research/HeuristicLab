@@ -130,7 +130,43 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         }
       }
 
-      return base.InstrumentedApply();
+      ////////////////
+      IRandom random = RandomParameter.ActualValue;
+      DoubleArray probabilities = ActualProbabilitiesParameter.ActualValue;
+      if (probabilities.Length != Operators.Count) {
+        throw new InvalidOperationException(Name + ": The list of probabilities has to match the number of operators");
+      }
+      var checkedOperators = Operators.CheckedItems;
+      if (checkedOperators.Count() > 0) {
+        // select a random operator from the checked operators
+        double sum = (from indexedItem in checkedOperators select probabilities[indexedItem.Index]).Sum();
+        if (sum == 0) throw new InvalidOperationException(Name + ": All selected operators have zero probability.");
+        double r = random.NextDouble() * sum;
+        sum = 0;
+        foreach (var indexedItem in checkedOperators) {
+          sum += probabilities[indexedItem.Index];
+          if (sum > r) {
+            successor = indexedItem.Value;
+            break;
+          }
+        }
+      }
+
+      IOperation successorOp = null;
+      if (Successor != null)
+        successorOp = ExecutionContext.CreateOperation(Successor);
+      OperationCollection next = new OperationCollection(successorOp);
+      if (successor != null) {
+        SelectedOperatorParameter.ActualValue = new StringValue(successor.Name);
+
+        if (CreateChildOperation)
+          next.Insert(0, ExecutionContext.CreateChildOperation(successor));
+        else next.Insert(0, ExecutionContext.CreateOperation(successor));
+      } else {
+        SelectedOperatorParameter.ActualValue = new StringValue("");
+      }
+
+      return next;
     }
   }
 }
