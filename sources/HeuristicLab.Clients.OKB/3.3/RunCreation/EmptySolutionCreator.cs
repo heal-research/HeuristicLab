@@ -31,7 +31,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("EmptySolutionCreator", "A dummy solution creator which throws an exception when executed.")]
   [StorableClass]
   [NonDiscoverableType]
-  public sealed class EmptySolutionCreator : SingleSuccessorOperator, ISolutionCreator {
+  public sealed class EmptySolutionCreator : Operator, ISolutionCreator {
     private string exceptionMessage;
 
     public override bool CanChangeName {

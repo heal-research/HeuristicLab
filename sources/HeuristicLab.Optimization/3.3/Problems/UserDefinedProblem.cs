@@ -234,9 +234,6 @@ namespace HeuristicLab.Optimization {
     [NonDiscoverableType]
     private sealed class EmptyUserDefinedProblemEvaluator : ParameterizedNamedItem, ISingleObjectiveEvaluator {
 
-      public IEnumerable<IOperator> BeforeExecutionOperators { get { throw new NotSupportedException(); } }
-      public IEnumerable<IOperator> AfterExecutionOperators { get { throw new NotSupportedException(); } }
-
       [StorableConstructor]
       private EmptyUserDefinedProblemEvaluator(bool deserializing) : base(deserializing) { }
       private EmptyUserDefinedProblemEvaluator(EmptyUserDefinedProblemEvaluator original, Cloner cloner)
