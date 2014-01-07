@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleCreator", "Represents the generalized form of creators for Scheduling Problems.")]
   [StorableClass]
-  public abstract class ScheduleCreator : SingleSuccessorOperator, IScheduleCreator {
+  public abstract class ScheduleCreator : InstrumentedOperator, IScheduleCreator {
 
     public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
       get { return (ILookupParameter<IScheduleEncoding>)Parameters["ScheduleEncoding"]; }
@@ -42,9 +42,9 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       Parameters.Add(new LookupParameter<IScheduleEncoding>("ScheduleEncoding", "The new scheduling solutioncandidate."));
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       ScheduleEncodingParameter.ActualValue = CreateSolution();
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract IScheduleEncoding CreateSolution();

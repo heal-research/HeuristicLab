@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </summary>
   [Item("BinaryVectorManipulator", "A base class for operators that manipulate bool-valued vectors.")]
   [StorableClass]
-  public abstract class BinaryVectorManipulator : SingleSuccessorOperator, IBinaryVectorManipulator, IStochasticOperator {
+  public abstract class BinaryVectorManipulator : InstrumentedOperator, IBinaryVectorManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -52,9 +52,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       Parameters.Add(new LookupParameter<BinaryVector>("BinaryVector", "The vector which should be manipulated."));
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       Manipulate(RandomParameter.ActualValue, BinaryVectorParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract void Manipulate(IRandom random, BinaryVector binaryVector);

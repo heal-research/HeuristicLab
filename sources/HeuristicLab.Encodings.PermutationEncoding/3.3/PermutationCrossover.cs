@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </summary>
   [Item("PermutationCrossover", "A base class for permutation crossover operators.")]
   [StorableClass]
-  public abstract class PermutationCrossover : SingleSuccessorOperator, IPermutationCrossover, IStochasticOperator {
+  public abstract class PermutationCrossover : InstrumentedOperator, IPermutationCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -59,9 +59,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       ChildParameter.ActualName = "Permutation";
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       ChildParameter.ActualValue = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract Permutation Cross(IRandom random, ItemArray<Permutation> parents);

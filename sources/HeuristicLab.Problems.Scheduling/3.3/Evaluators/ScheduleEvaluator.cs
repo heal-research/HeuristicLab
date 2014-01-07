@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Scheduling {
   [Item("Schedule Evaluator", "Represents a base class for schedule evaluators.")]
   [StorableClass]
-  public abstract class ScheduleEvaluator : SingleSuccessorOperator, IScheduleEvaluator {
+  public abstract class ScheduleEvaluator : InstrumentedOperator, IScheduleEvaluator {
 
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -50,9 +50,9 @@ namespace HeuristicLab.Problems.Scheduling {
 
     protected abstract double Evaluate(Schedule schedule);
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       QualityParameter.ActualValue = new DoubleValue(Evaluate(ScheduleParameter.ActualValue));
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

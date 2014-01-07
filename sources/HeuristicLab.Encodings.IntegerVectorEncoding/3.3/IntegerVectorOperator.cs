@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("IntegerVectorOperator", "Base class for integer vectoro operators.")]
   [StorableClass]
-  public abstract class IntegerVectorOperator : SingleSuccessorOperator, IIntegerVectorOperator {
+  public abstract class IntegerVectorOperator : InstrumentedOperator, IIntegerVectorOperator {
 
     [StorableConstructor]
     protected IntegerVectorOperator(bool deserializing) : base(deserializing) { }

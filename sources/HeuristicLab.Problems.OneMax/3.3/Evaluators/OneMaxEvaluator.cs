@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.OneMax {
   /// </summary>
   [Item("OneMaxEvaluator", "Evaluates solutions for the OneMax problem.")]
   [StorableClass]
-  public class OneMaxEvaluator : SingleSuccessorOperator, IOneMaxEvaluator {
+  public class OneMaxEvaluator : InstrumentedOperator, IOneMaxEvaluator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.OneMax {
       return new OneMaxEvaluator(this, cloner);
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       BinaryVector v = BinaryVectorParameter.ActualValue;
 
       double quality = 0;
@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.OneMax {
 
       QualityParameter.ActualValue = new DoubleValue(quality);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.LawnMower {
   [StorableClass]
   [Item("Lawn Mower Evaluator", "Evaluator for the lawn mower demo GP problem.")]
-  public class Evaluator : SingleSuccessorOperator, ISingleObjectiveEvaluator {
+  public class Evaluator : InstrumentedOperator, ISingleObjectiveEvaluator {
 
     private const string QualityParameterName = "Quality";
     private const string LawnMowerProgramParameterName = "LawnMowerProgram";
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.LawnMower {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Evaluator(this, cloner);
     }
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       int length = LawnLengthParameter.ActualValue.Value;
       int width = LawnWidthParameter.ActualValue.Value;
       ISymbolicExpressionTree tree = LawnMowerProgramParameter.ActualValue;
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.LawnMower {
           }
 
       QualityParameter.ActualValue = new DoubleValue(numberOfMowedCells);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

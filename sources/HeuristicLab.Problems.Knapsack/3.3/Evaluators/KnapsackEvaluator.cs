@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Knapsack {
   /// </summary>
   [Item("KnapsackEvaluator", "Evaluates solutions for the Knapsack problem.")]
   [StorableClass]
-  public class KnapsackEvaluator : SingleSuccessorOperator, IKnapsackEvaluator {
+  public class KnapsackEvaluator : InstrumentedOperator, IKnapsackEvaluator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -128,7 +128,7 @@ namespace HeuristicLab.Problems.Knapsack {
       return result;
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       BinaryVector v = BinaryVectorParameter.ActualValue;
 
       KnapsackEvaluation evaluation = Apply(BinaryVectorParameter.ActualValue,
@@ -142,7 +142,7 @@ namespace HeuristicLab.Problems.Knapsack {
       SumValuesParameter.ActualValue = evaluation.SumValues;
       AppliedPenaltyParameter.ActualValue = evaluation.AppliedPenalty;
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

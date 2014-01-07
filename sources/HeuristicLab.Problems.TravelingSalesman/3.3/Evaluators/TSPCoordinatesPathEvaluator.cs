@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return length;
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       if (UseDistanceMatrixParameter.ActualValue.Value) {
         Permutation p = PermutationParameter.ActualValue;
         DistanceMatrix dm = DistanceMatrixParameter.ActualValue;
@@ -119,7 +119,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         length += CalculateDistance(c[p[p.Length - 1], 0], c[p[p.Length - 1], 1], c[p[0], 0], c[p[0], 1]);
         QualityParameter.ActualValue = new DoubleValue(length);
       }
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     /// <summary>

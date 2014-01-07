@@ -53,9 +53,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree that should be created."));
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       SymbolicExpressionTree = Create(Random);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract ISymbolicExpressionTree Create(IRandom random);

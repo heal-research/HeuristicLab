@@ -46,14 +46,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
 
     public override bool Maximization { get { return true; } }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
       double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, ProblemDataParameter.ActualValue, rows);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, IProblemData problemData, IEnumerable<int> rows) {

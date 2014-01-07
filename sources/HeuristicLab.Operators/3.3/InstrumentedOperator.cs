@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -28,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Operators {
   [Item("InstrumentedOperator", "A operator that can execute pre- and post actions.")]
   [StorableClass]
-  public abstract class InstrumentedOperator : SingleSuccessorOperator {
+  public abstract class InstrumentedOperator : SingleSuccessorOperator, IInstrumentedOperator {
     private const string BeforeExecutionOperatorsParameterName = "BeforeExecutionOperators";
     private const string AfterExecutionOperatorsParameterName = "AfterExecutionOperators";
 
@@ -39,9 +40,12 @@ namespace HeuristicLab.Operators {
       get { return (IFixedValueParameter<OperatorList>)Parameters[AfterExecutionOperatorsParameterName]; }
     }
 
+
+    IEnumerable<IOperator> IInstrumentedOperator.BeforeExecutionOperators { get { return BeforeExecutionOperators; } }
     public OperatorList BeforeExecutionOperators {
       get { return BeforeExecutionOperatorsParameter.Value; }
     }
+    IEnumerable<IOperator> IInstrumentedOperator.AfterExecutionOperators { get { return AfterExecutionOperators; } }
     public OperatorList AfterExecutionOperators {
       get { return AfterExecutionOperatorsParameter.Value; }
     }

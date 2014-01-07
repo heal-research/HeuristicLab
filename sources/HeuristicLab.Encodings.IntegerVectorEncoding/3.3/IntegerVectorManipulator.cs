@@ -51,9 +51,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       Parameters.Add(new LookupParameter<IntegerVector>("IntegerVector", "The vector which should be manipulated."));
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       Manipulate(RandomParameter.ActualValue, IntegerVectorParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract void Manipulate(IRandom random, IntegerVector integerVector);

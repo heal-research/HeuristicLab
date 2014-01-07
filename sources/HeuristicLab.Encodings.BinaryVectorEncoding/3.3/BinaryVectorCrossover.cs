@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </summary>
   [Item("BinaryVectorCrossover", "A base class for operators that perform a crossover of bool-valued vectors.")]
   [StorableClass]
-  public abstract class BinaryVectorCrossover : SingleSuccessorOperator, IBinaryVectorCrossover, IStochasticOperator {
+  public abstract class BinaryVectorCrossover : InstrumentedOperator, IBinaryVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -58,9 +58,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       ChildParameter.ActualName = "BinaryVector";
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       ChildParameter.ActualValue = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract BinaryVector Cross(IRandom random, ItemArray<BinaryVector> parents);

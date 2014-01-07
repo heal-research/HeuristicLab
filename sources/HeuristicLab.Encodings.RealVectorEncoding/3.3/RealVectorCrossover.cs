@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </summary>
   [Item("RealVectorCrossover", "A base class for operators that perform a crossover of real-valued vectors.")]
   [StorableClass]
-  public abstract class RealVectorCrossover : SingleSuccessorOperator, IRealVectorCrossover, IStochasticOperator {
+  public abstract class RealVectorCrossover : InstrumentedOperator, IRealVectorCrossover, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -95,11 +95,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       BoundsCheckerParameter.ValueChanged += new System.EventHandler(BoundsCheckerParameter_ValueChanged);
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       RealVector result = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
       ChildParameter.ActualValue = result;
 
-      IOperation successor = base.Apply();
+      IOperation successor = base.InstrumentedApply();
       if (BoundsChecker != null) {
         IOperation checkerOperation = ExecutionContext.CreateChildOperation(BoundsChecker);
         if (successor == null) return checkerOperation;

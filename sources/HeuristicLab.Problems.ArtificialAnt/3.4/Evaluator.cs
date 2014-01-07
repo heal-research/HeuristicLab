@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("ArtificialAntEvaluator", "Evaluates an artificial ant solution.")]
   [StorableClass]
-  public class Evaluator : SingleSuccessorOperator, ISingleObjectiveEvaluator {
+  public class Evaluator : InstrumentedOperator, ISingleObjectiveEvaluator {
 
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
@@ -59,7 +59,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Parameters.Add(new LookupParameter<IntValue>("MaxTimeSteps", "The maximal number of time steps that the artificial ant should be simulated."));
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       SymbolicExpressionTree expression = SymbolicExpressionTreeParameter.ActualValue;
       BoolMatrix world = WorldParameter.ActualValue;
       IntValue maxTimeSteps = MaxTimeStepsParameter.ActualValue;
@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       interpreter.Run();
 
       QualityParameter.ActualValue = new DoubleValue(interpreter.FoodEaten);
-      return null;
+      return base.InstrumentedApply();
     }
   }
 }

@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization.Operators {
   [Item("ParentCopyCrossover", "This operator creates an offspring by creating a clone of a randomly chosen parent. It can be used in situations where no crossover should occur after selection.")]
   [StorableClass]
-  public class ParentCopyCrossover : SingleSuccessorOperator, ICrossover, IStochasticOperator {
+  public class ParentCopyCrossover : InstrumentedOperator, ICrossover, IStochasticOperator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -42,7 +42,7 @@ namespace HeuristicLab.Optimization.Operators {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IScope scope = ExecutionContext.Scope;
       int index = RandomParameter.ActualValue.Next(scope.SubScopes.Count);
       IScope child = scope.SubScopes[index];
@@ -50,7 +50,7 @@ namespace HeuristicLab.Optimization.Operators {
       foreach (IVariable var in child.Variables)
         scope.Variables.Add((IVariable)var.Clone());
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

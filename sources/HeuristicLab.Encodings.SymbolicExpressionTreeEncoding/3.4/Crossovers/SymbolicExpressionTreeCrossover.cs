@@ -62,14 +62,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       ChildParameter.ActualName = "SymbolicExpressionTree";
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       if (Parents.Length != 2)
         throw new ArgumentException("Number of parents must be exactly two for symbolic expression tree crossover operators.");
 
       ISymbolicExpressionTree result = Crossover(Random, Parents[0], Parents[1]);
 
       Child = result;
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public abstract ISymbolicExpressionTree Crossover(IRandom random, ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1);
