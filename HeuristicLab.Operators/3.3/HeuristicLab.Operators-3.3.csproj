@@ -125,7 +125,6 @@
     <Compile Include="IntCounter.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ReductionOperation.cs" />
-    <Compile Include="ReductionOperations.cs" />
     <Compile Include="ScopeCleaner.cs" />
     <Compile Include="StochasticBranch.cs" />
     <Compile Include="StochasticMultiBranch.cs">

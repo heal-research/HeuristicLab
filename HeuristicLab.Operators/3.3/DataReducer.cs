@@ -68,17 +68,20 @@ namespace HeuristicLab.Operators {
 
     public override IOperation Apply() {
       var values = ParameterToReduce.ActualValue;
-      if (values.Count() > 0) {
-        if (values.All(x => typeof(IntValue).IsAssignableFrom(x.GetType()))) {
-          CalculateResult(values.OfType<IntValue>().Select(x => x.Value), values.First().GetType());
-        } else if (values.All(x => typeof(DoubleValue).IsAssignableFrom(x.GetType()))) {
-          CalculateResult(values.OfType<DoubleValue>().Select(x => x.Value), values.First().GetType());
-        } else if (values.All(x => typeof(TimeSpanValue).IsAssignableFrom(x.GetType()))) {
-          CalculateResult(values.OfType<TimeSpanValue>().Select(x => x.Value), values.First().GetType());
-        } else {
-          throw new ArgumentException(string.Format("Type {0} is not supported by the DataReducer.", values.First().GetType()));
-        }
+      if (!values.Any()) return base.Apply();
+
+      if (values.All(x => x is IntValue)) {
+        CalculateResult(values.OfType<IntValue>().Select(x => x.Value), values.First().GetType());
+      } else if (values.All(x => x is DoubleValue)) {
+        CalculateResult(values.OfType<DoubleValue>().Select(x => x.Value), values.First().GetType());
+      } else if (values.All(x => x is TimeSpanValue)) {
+        CalculateResult(values.OfType<TimeSpanValue>().Select(x => x.Value), values.First().GetType());
+      } else if (values.All(x => x is BoolValue)) {
+        CalculateResult(values.OfType<BoolValue>().Select(x => x.Value), values.First().GetType());
+      } else {
+        throw new ArgumentException(string.Format("Type {0} is not supported by the DataReducer.", values.First().GetType()));
       }
+
       return base.Apply();
     }
 
@@ -245,6 +248,31 @@ namespace HeuristicLab.Operators {
           break;
         case ReductionOperations.Assign:
           target = InitializeTarget<TimeSpanValue, TimeSpan>(targetType, new TimeSpan());
+          target.Value = result;
+          break;
+        default:
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, targetType));
+      }
+    }
+    #endregion
+    #region bool reduction
+    private void CalculateResult(IEnumerable<bool> values, Type targetType) {
+      bool result;
+      switch (ReductionOperation.Value.Value) {
+        case ReductionOperations.All:
+          result = values.All(x => x);
+          break;
+        case ReductionOperations.Any:
+          result = values.Any(x => x);
+          break;
+        default:
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, targetType));
+      }
+
+      BoolValue target;
+      switch (TargetOperation.Value.Value) {
+        case ReductionOperations.Assign:
+          target = InitializeTarget<BoolValue, bool>(targetType, true);
           target.Value = result;
           break;
         default:
