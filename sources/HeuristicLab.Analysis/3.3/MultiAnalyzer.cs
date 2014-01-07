@@ -68,7 +68,7 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the MultiAnalyzer was called since the last update.", "MultiAnalyzerUpdateCounter"));
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IntValue interval = UpdateIntervalParameter.ActualValue;
       if (interval == null) interval = new IntValue(1);
 
@@ -83,10 +83,10 @@ namespace HeuristicLab.Analysis {
         OperationCollection next = new OperationCollection();
         foreach (IndexedItem<IAnalyzer> item in Operators.CheckedItems)
           next.Add(ExecutionContext.CreateOperation(item.Value));
-        next.Add(base.Apply());
+        next.Add(base.InstrumentedApply());
         return next;
       } else {
-        return base.Apply();
+        return base.InstrumentedApply();
       }
     }
   }

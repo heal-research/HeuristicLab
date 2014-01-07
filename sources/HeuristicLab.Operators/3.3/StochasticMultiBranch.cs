@@ -131,7 +131,7 @@ namespace HeuristicLab.Operators {
     /// match the number of operators, the list of selected operators is empty, 
     /// or all selected operators have zero probabitlity.</exception>
     /// <returns>A new operation with the operator that was selected followed by the current operator's successor.</returns>
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IRandom random = RandomParameter.ActualValue;
       DoubleArray probabilities = ProbabilitiesParameter.ActualValue;
       if (probabilities.Length != Operators.Count) {
@@ -155,7 +155,7 @@ namespace HeuristicLab.Operators {
           }
         }
       }
-      OperationCollection next = new OperationCollection(base.Apply());
+      OperationCollection next = new OperationCollection(base.InstrumentedApply());
       if (successor != null) {
         if (TraceSelectedOperatorParameter.Value.Value)
           SelectedOperatorParameter.ActualValue = new StringValue(index + ": " + successor.Name);

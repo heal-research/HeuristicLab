@@ -20,17 +20,15 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Analysis;
-using HeuristicLab.Parameters;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("BiasedMultiVRPSolutionManipulator", "Randomly selects and applies one of its crossovers every time it is called based on the success progress.")]
@@ -39,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public ValueLookupParameter<DoubleArray> ActualProbabilitiesParameter {
       get { return (ValueLookupParameter<DoubleArray>)Parameters["ActualProbabilities"]; }
     }
-    
+
     public ValueLookupParameter<StringValue> SuccessProgressAnalyisis {
       get { return (ValueLookupParameter<StringValue>)Parameters["SuccessProgressAnalysis"]; }
     }
@@ -62,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public BiasedMultiVRPSolutionManipulator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleArray>("ActualProbabilities", "The array of relative probabilities for each operator."));
-      Parameters.Add(new ValueLookupParameter<StringValue>("SuccessProgressAnalysis", "The success progress analyisis to be considered", 
+      Parameters.Add(new ValueLookupParameter<StringValue>("SuccessProgressAnalysis", "The success progress analyisis to be considered",
         new StringValue("ExecutedMutationOperator")));
 
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Factor", "The factor with which the probabilities should be updated", new DoubleValue(0.2)));
@@ -80,7 +78,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       ActualProbabilitiesParameter.Value = null;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IOperator successor = null;
 
       if (ActualProbabilitiesParameter.ActualValue == null) {
@@ -132,43 +130,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         }
       }
 
-      ////////////////
-      IRandom random = RandomParameter.ActualValue;
-      DoubleArray probabilities = ActualProbabilitiesParameter.ActualValue;
-      if (probabilities.Length != Operators.Count) {
-        throw new InvalidOperationException(Name + ": The list of probabilities has to match the number of operators");
-      }
-      var checkedOperators = Operators.CheckedItems;
-      if (checkedOperators.Count() > 0) {
-        // select a random operator from the checked operators
-        double sum = (from indexedItem in checkedOperators select probabilities[indexedItem.Index]).Sum();
-        if (sum == 0) throw new InvalidOperationException(Name + ": All selected operators have zero probability.");
-        double r = random.NextDouble() * sum;
-        sum = 0;
-        foreach (var indexedItem in checkedOperators) {
-          sum += probabilities[indexedItem.Index];
-          if (sum > r) {
-            successor = indexedItem.Value;
-            break;
-          }
-        }
-      }
-
-      IOperation successorOp = null;
-      if (Successor != null)
-        successorOp = ExecutionContext.CreateOperation(Successor);
-      OperationCollection next = new OperationCollection(successorOp);
-      if (successor != null) {
-        SelectedOperatorParameter.ActualValue = new StringValue(successor.Name);
-
-        if (CreateChildOperation)
-          next.Insert(0, ExecutionContext.CreateChildOperation(successor));
-        else next.Insert(0, ExecutionContext.CreateOperation(successor));
-      } else {
-        SelectedOperatorParameter.ActualValue = new StringValue("");
-      }
-
-      return next;
+      return base.InstrumentedApply();
     }
   }
 }

@@ -89,9 +89,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       }
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       if (Operators.Count == 0) throw new InvalidOperationException(Name + ": Please add at least one binary vector crossover to choose from.");
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

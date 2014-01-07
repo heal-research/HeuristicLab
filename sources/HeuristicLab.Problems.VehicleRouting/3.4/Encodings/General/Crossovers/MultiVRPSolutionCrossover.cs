@@ -105,9 +105,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       }
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       if (Operators.Count == 0) throw new InvalidOperationException(Name + ": Please add at least one permutation crossover to choose from.");
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }
