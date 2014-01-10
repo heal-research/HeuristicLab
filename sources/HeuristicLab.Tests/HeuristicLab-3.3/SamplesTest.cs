@@ -831,9 +831,9 @@ namespace HeuristicLab.Tests {
       var ts = CreateTabuSearchTspSample();
       ts.SetSeedRandomly.Value = false;
       RunAlgorithm(ts);
-      Assert.AreEqual(6441, GetDoubleResult(ts, "BestQuality"));
-      Assert.AreEqual(7401.666666666667, GetDoubleResult(ts, "CurrentAverageQuality"));
-      Assert.AreEqual(8418, GetDoubleResult(ts, "CurrentWorstQuality"));
+      Assert.AreEqual(6294, GetDoubleResult(ts, "BestQuality"));
+      Assert.AreEqual(7380.0386666666664, GetDoubleResult(ts, "CurrentAverageQuality"));
+      Assert.AreEqual(8328, GetDoubleResult(ts, "CurrentWorstQuality"));
       Assert.AreEqual(750000, GetIntResult(ts, "EvaluatedMoves"));
     }
 
@@ -902,10 +902,10 @@ namespace HeuristicLab.Tests {
       var vrp = CreateTabuSearchVrpSample();
       vrp.SetSeedRandomly.Value = false;
       RunAlgorithm(vrp);
-      Assert.AreEqual(1436, GetDoubleResult(vrp, "BestQuality"));
-      Assert.AreEqual(2132.2478893442621, GetDoubleResult(vrp, "CurrentAverageQuality"));
-      Assert.AreEqual(4176.0, GetDoubleResult(vrp, "CurrentWorstQuality"));
-      Assert.AreEqual(119011, GetIntResult(vrp, "EvaluatedMoves"));
+      Assert.AreEqual(1473, GetDoubleResult(vrp, "BestQuality"));
+      Assert.AreEqual(2102.1192622950812, GetDoubleResult(vrp, "CurrentAverageQuality"));
+      Assert.AreEqual(4006, GetDoubleResult(vrp, "CurrentWorstQuality"));
+      Assert.AreEqual(119072, GetIntResult(vrp, "EvaluatedMoves"));
     }
 
     private TabuSearch CreateTabuSearchVrpSample() {

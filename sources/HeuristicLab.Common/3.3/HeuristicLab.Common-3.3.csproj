@@ -123,6 +123,8 @@
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\IStorableContent.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="ArrayExtensions.cs" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="Point2D.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="MatrixExtensions.cs" />

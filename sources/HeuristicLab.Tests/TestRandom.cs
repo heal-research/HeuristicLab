@@ -60,9 +60,9 @@ namespace HeuristicLab.Tests {
     }
 
     public TestRandom(int[] intNumbers, double[] doubleNumbers) {
-      if (intNumbers == null) intNumbers = new int[0];
+      if (intNumbers == null) this.intNumbers = new int[0];
       else this.intNumbers = intNumbers;
-      if (doubleNumbers == null) doubleNumbers = new double[0];
+      if (doubleNumbers == null) this.doubleNumbers = new double[0];
       else this.doubleNumbers = doubleNumbers;
       nextIntIndex = 0;
       nextDoubleIndex = 0;
