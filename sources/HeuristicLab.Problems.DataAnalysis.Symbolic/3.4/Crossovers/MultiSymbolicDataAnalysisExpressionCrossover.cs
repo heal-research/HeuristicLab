@@ -108,6 +108,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       InitializeOperators();
       name = "MultiSymbolicDataAnalysisExpressionCrossover";
+
+      SelectedOperatorParameter.ActualName = "SelectedCrossoverOperator";
     }
 
     private void InitializeOperators() {
