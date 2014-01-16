@@ -66,6 +66,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Factor", "The factor with which the probabilities should be updated", new DoubleValue(0.2)));
       Parameters.Add(new ValueParameter<DoubleValue>("LowerBound", "The depth of the individuals in the scope tree.", new DoubleValue(0.01)));
       Parameters.Add(new ValueParameter<IntValue>("Depth", "The depth of the individuals in the scope tree.", new IntValue(1)));
+
+      SelectedOperatorParameter.ActualName = "SelectedManipulationOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
