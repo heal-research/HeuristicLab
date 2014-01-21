@@ -189,7 +189,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private void AttachProblemInstanceEventHandlers() {
       if (ProblemInstance != null) {
-        EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
+        ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
         ProblemInstance.EvaluationChanged += new EventHandler(ProblemInstance_EvaluationChanged);
       }
     }
