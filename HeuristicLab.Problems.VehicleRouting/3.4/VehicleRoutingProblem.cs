@@ -38,8 +38,8 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  public interface IVRPInstanceConsumer :  
-    IProblemInstanceConsumer<CVRPData>, IProblemInstanceConsumer<CVRPTWData>, 
+  public interface IVRPInstanceConsumer :
+    IProblemInstanceConsumer<CVRPData>, IProblemInstanceConsumer<CVRPTWData>,
     IProblemInstanceConsumer<MDCVRPData>, IProblemInstanceConsumer<MDCVRPTWData>,
     IProblemInstanceConsumer<PDPTWData> {
   }
@@ -152,6 +152,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private VehicleRoutingProblem(VehicleRoutingProblem original, Cloner cloner)
       : base(original, cloner) {
       this.AttachEventHandlers();
+      this.AttachProblemInstanceEventHandlers();
     }
 
     #region Events
