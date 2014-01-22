@@ -29,6 +29,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       return new SymbolicClassificationPruningAnalyzer(this, cloner);
     }
 
+    [StorableConstructor]
+    private SymbolicClassificationPruningAnalyzer(bool deserializing) : base(deserializing) { }
+
     public SymbolicClassificationPruningAnalyzer() {
       // pruning parameters
       Parameters.Add(new LookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName));

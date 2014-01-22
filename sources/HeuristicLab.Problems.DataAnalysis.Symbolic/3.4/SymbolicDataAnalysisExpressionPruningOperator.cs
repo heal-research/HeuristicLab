@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     [StorableConstructor]
-    private SymbolicDataAnalysisExpressionPruningOperator(bool deserializing) : base(deserializing) { }
+    protected SymbolicDataAnalysisExpressionPruningOperator(bool deserializing) : base(deserializing) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionPruningOperator(this, cloner);
     }

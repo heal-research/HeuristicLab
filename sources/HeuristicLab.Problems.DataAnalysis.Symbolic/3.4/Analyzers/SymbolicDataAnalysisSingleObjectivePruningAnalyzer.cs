@@ -87,6 +87,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected DoubleValue NodeImpactThreshold { get { return NodeImpactThresholdParameter.Value; } }
     protected BoolValue PruneOnlyZeroImpactNodes { get { return PruneOnlyZeroImpactNodesParameter.Value; } }
     #endregion
+
+    [StorableConstructor]
+    protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(bool deserializing) : base(deserializing) { }
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(SymbolicDataAnalysisSingleObjectivePruningAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       impactValuesCalculator = original.impactValuesCalculator;

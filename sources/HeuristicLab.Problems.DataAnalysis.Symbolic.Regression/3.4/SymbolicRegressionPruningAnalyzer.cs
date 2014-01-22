@@ -15,6 +15,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return new SymbolicRegressionPruningAnalyzer(this, cloner);
     }
 
+    [StorableConstructor]
+    private SymbolicRegressionPruningAnalyzer(bool deserializing) : base(deserializing) { }
+
     public SymbolicRegressionPruningAnalyzer() {
       impactValuesCalculator = new SymbolicRegressionSolutionImpactValuesCalculator();
     }
