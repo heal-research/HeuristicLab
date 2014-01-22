@@ -66,11 +66,11 @@ namespace HeuristicLab.Collections {
       get { return firstToSecond.Count; }
     }
 
-    public IEnumerable<TFirst> FirstValues {
+    public IEnumerable<TFirst> FirstKeys {
       get { return firstToSecond.Keys; }
     }
 
-    public IEnumerable<TSecond> SecondValues {
+    public IEnumerable<TSecond> SecondKeys {
       get { return secondToFirst.Keys; }
     }
     #endregion
