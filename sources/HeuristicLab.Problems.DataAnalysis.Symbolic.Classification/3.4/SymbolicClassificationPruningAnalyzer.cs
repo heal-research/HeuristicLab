@@ -22,7 +22,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
     #endregion
 
-    protected SymbolicClassificationPruningAnalyzer(SymbolicClassificationPruningAnalyzer original, Cloner cloner)
+    private SymbolicClassificationPruningAnalyzer(SymbolicClassificationPruningAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {

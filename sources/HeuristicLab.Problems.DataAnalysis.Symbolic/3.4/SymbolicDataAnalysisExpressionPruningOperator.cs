@@ -48,10 +48,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private DoubleValue PrunedSubtrees { get { return NumberOfPrunedSubtreesParameter.ActualValue; } }
     private DoubleValue PrunedTrees { get { return NumberOfPrunedTreesParameter.ActualValue; } }
     #endregion
+
+    [StorableConstructor]
+    private SymbolicDataAnalysisExpressionPruningOperator(bool deserializing) : base(deserializing) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionPruningOperator(this, cloner);
     }
-    private SymbolicDataAnalysisExpressionPruningOperator(SymbolicDataAnalysisExpressionPruningOperator original, Cloner cloner)
+    protected SymbolicDataAnalysisExpressionPruningOperator(SymbolicDataAnalysisExpressionPruningOperator original, Cloner cloner)
       : base(original, cloner) {
     }
 

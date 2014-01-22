@@ -8,7 +8,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("SymbolicRegressionPruningAnalyzer", "An analyzer that prunes introns from the population.")]
   [StorableClass]
   public sealed class SymbolicRegressionPruningAnalyzer : SymbolicDataAnalysisSingleObjectivePruningAnalyzer {
-    protected SymbolicRegressionPruningAnalyzer(SymbolicRegressionPruningAnalyzer original, Cloner cloner)
+    private SymbolicRegressionPruningAnalyzer(SymbolicRegressionPruningAnalyzer original, Cloner cloner)
       : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
