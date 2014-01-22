@@ -111,6 +111,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectivePruningAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisMultiObjectiveValidationAnalyzer.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />
     <Compile Include="Creators\MultiSymbolicDataAnalysisExpressionCreator.cs" />

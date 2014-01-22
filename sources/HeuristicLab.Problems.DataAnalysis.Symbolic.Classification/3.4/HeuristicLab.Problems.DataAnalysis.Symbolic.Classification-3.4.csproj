@@ -119,6 +119,7 @@
     <Compile Include="ModelCreators\NearestNeighborModelCreator.cs" />
     <Compile Include="ModelCreators\NormalDistributedThresholdsModelCreator.cs" />
     <Compile Include="MultiObjective\SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer.cs" />
+    <Compile Include="SymbolicClassificationPruningAnalyzer.cs" />
     <Compile Include="SymbolicClassificationSolutionImpactValuesCalculator.cs" />
     <Compile Include="SymbolicNearestNeighbourClassificationModel.cs" />
     <Compile Include="Plugin.cs" />
