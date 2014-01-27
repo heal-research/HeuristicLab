@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.HLScript.Views {
-  partial class HLScriptView {
+  partial class ScriptView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
@@ -45,7 +45,6 @@ namespace HeuristicLab.HLScript.Views {
     /// </summary>
     private void InitializeComponent() {
       this.compilationLabel = new System.Windows.Forms.Label();
-      this.showCodeButton = new System.Windows.Forms.Button();
       this.startStopButton = new System.Windows.Forms.Button();
       this.errorListView = new System.Windows.Forms.ListView();
       this.categoryColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -60,8 +59,8 @@ namespace HeuristicLab.HLScript.Views {
       this.errorListTabPage = new System.Windows.Forms.TabPage();
       this.outputTabPage = new System.Windows.Forms.TabPage();
       this.outputTextBox = new System.Windows.Forms.TextBox();
-      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.variableStoreView = new HeuristicLab.HLScript.Views.VariableStoreView();
+      this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -91,23 +90,11 @@ namespace HeuristicLab.HLScript.Views {
       // 
       this.compilationLabel.AutoSize = true;
       this.compilationLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-      this.compilationLabel.Location = new System.Drawing.Point(63, 32);
+      this.compilationLabel.Location = new System.Drawing.Point(33, 32);
       this.compilationLabel.Name = "compilationLabel";
       this.compilationLabel.Size = new System.Drawing.Size(69, 13);
       this.compilationLabel.TabIndex = 3;
       this.compilationLabel.Text = "Not compiled";
-      // 
-      // showCodeButton
-      // 
-      this.showCodeButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.PrintPreview;
-      this.showCodeButton.Location = new System.Drawing.Point(33, 26);
-      this.showCodeButton.Name = "showCodeButton";
-      this.showCodeButton.Size = new System.Drawing.Size(24, 24);
-      this.showCodeButton.TabIndex = 2;
-      this.showCodeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.showCodeButton, "Show generated code");
-      this.showCodeButton.UseVisualStyleBackColor = true;
-      this.showCodeButton.Click += new System.EventHandler(this.showCodeButton_Click);
       // 
       // startStopButton
       // 
@@ -178,8 +165,8 @@ namespace HeuristicLab.HLScript.Views {
       // 
       // splitContainer1
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer1.Location = new System.Drawing.Point(3, 56);
       this.splitContainer1.Name = "splitContainer1";
@@ -260,6 +247,17 @@ namespace HeuristicLab.HLScript.Views {
       this.outputTextBox.TabIndex = 0;
       this.outputTextBox.WordWrap = false;
       // 
+      // variableStoreView
+      // 
+      this.variableStoreView.Caption = "ItemCollection View";
+      this.variableStoreView.Content = null;
+      this.variableStoreView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.variableStoreView.Location = new System.Drawing.Point(0, 0);
+      this.variableStoreView.Name = "variableStoreView";
+      this.variableStoreView.ReadOnly = false;
+      this.variableStoreView.Size = new System.Drawing.Size(188, 543);
+      this.variableStoreView.TabIndex = 0;
+      // 
       // viewHost
       // 
       this.viewHost.Caption = "View";
@@ -274,27 +272,14 @@ namespace HeuristicLab.HLScript.Views {
       this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
       // 
-      // variableStoreView
-      // 
-      this.variableStoreView.Caption = "ItemCollection View";
-      this.variableStoreView.Content = null;
-      this.variableStoreView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.variableStoreView.Location = new System.Drawing.Point(0, 0);
-      this.variableStoreView.Name = "variableStoreView";
-      this.variableStoreView.ReadOnly = false;
-      this.variableStoreView.Size = new System.Drawing.Size(188, 543);
-      this.variableStoreView.TabIndex = 0;
-      // 
-      // HLScriptView
+      // ScriptView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.startStopButton);
       this.Controls.Add(this.compilationLabel);
-      this.Controls.Add(this.showCodeButton);
-      this.Name = "HLScriptView";
+      this.Name = "ScriptView";
       this.Size = new System.Drawing.Size(835, 602);
-      this.Controls.SetChildIndex(this.showCodeButton, 0);
       this.Controls.SetChildIndex(this.compilationLabel, 0);
       this.Controls.SetChildIndex(this.startStopButton, 0);
       this.Controls.SetChildIndex(this.splitContainer1, 0);
@@ -321,7 +306,6 @@ namespace HeuristicLab.HLScript.Views {
 
     #endregion
 
-    private System.Windows.Forms.Button showCodeButton;
     private System.Windows.Forms.Label compilationLabel;
     private System.Windows.Forms.Button startStopButton;
     private System.Windows.Forms.ListView errorListView;

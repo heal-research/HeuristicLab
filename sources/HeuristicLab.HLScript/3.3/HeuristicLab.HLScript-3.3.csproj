@@ -86,8 +86,8 @@
   <ItemGroup>
     <Compile Include="VariableStore.cs" />
     <None Include="Plugin.cs.frame" />
-    <Compile Include="HLScript.cs" />
-    <Compile Include="HLScriptGeneration.cs" />
+    <Compile Include="Script.cs" />
+    <Compile Include="UserScriptBase.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

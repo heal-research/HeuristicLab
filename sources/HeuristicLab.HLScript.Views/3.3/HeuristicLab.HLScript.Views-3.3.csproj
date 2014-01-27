@@ -85,11 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
-    <Compile Include="HLScriptView.cs">
+    <Compile Include="ScriptView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="HLScriptView.Designer.cs">
-      <DependentUpon>HLScriptView.cs</DependentUpon>
+    <Compile Include="ScriptView.Designer.cs">
+      <DependentUpon>ScriptView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

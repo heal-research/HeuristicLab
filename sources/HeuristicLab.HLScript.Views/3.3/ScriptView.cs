@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.CodeEditor;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
@@ -33,17 +32,17 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.HLScript.Views {
 
-  [View("HLScript View")]
-  [Content(typeof(HLScript), true)]
-  public partial class HLScriptView : NamedItemView {
+  [View("Script View")]
+  [Content(typeof(Script), true)]
+  public partial class ScriptView : NamedItemView {
     private bool running;
 
-    public new HLScript Content {
-      get { return (HLScript)base.Content; }
-      set { base.Content = (HLScript)value; }
+    public new Script Content {
+      get { return (Script)base.Content; }
+      set { base.Content = (Script)value; }
     }
 
-    public HLScriptView() {
+    public ScriptView() {
       InitializeComponent();
     }
 
@@ -69,10 +68,12 @@ namespace HeuristicLab.HLScript.Views {
     }
     private void Content_ScriptExecutionStarted(object sender, EventArgs e) {
       Locked = true;
+      ReadOnly = true;
       startStopButton.Image = VSImageLibrary.Stop;
     }
     private void Content_ScriptExecutionFinished(object sender, EventArgs e) {
       Locked = false;
+      ReadOnly = false;
       startStopButton.Image = VSImageLibrary.Play;
       running = false;
     }
@@ -109,8 +110,7 @@ namespace HeuristicLab.HLScript.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      startStopButton.Enabled = Content != null && !Locked;
-      showCodeButton.Enabled = Content != null && !string.IsNullOrEmpty(Content.CompilationUnitCode);
+      startStopButton.Enabled = Content != null && (!Locked || running);
       codeEditor.Enabled = Content != null && !Locked && !ReadOnly;
     }
 
@@ -124,10 +124,6 @@ namespace HeuristicLab.HLScript.Views {
           Content.Execute();
           running = true;
         }
-    }
-
-    private void showCodeButton_Click(object sender, EventArgs e) {
-      new CodeViewer(Content.CompilationUnitCode).ShowDialog(this);
     }
 
     private void codeEditor_TextEditorTextChanged(object sender, EventArgs e) {
@@ -202,7 +198,12 @@ namespace HeuristicLab.HLScript.Views {
           m.ErrorText
         });
         errorListView.Items.Add(item);
-        outputTextBox.AppendText(string.Format("{0} {1} ({2}:{3}): {4}", item.SubItems[0].Text, item.SubItems[1].Text, item.SubItems[2].Text, item.SubItems[3].Text, item.SubItems[4].Text));
+        outputTextBox.AppendText(string.Format("{0} {1} ({2}:{3}): {4}",
+                                 item.SubItems[0].Text,
+                                 item.SubItems[1].Text,
+                                 item.SubItems[2].Text,
+                                 item.SubItems[3].Text,
+                                 item.SubItems[4].Text));
         outputTextBox.AppendText(Environment.NewLine);
       }
     }

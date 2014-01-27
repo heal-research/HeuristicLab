@@ -16,27 +16,31 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using Microsoft.CSharp;
 
 namespace HeuristicLab.HLScript {
-  [Item("HL Script", "A HeuristicLab script.")]
+  [Item("Script", "A HeuristicLab script.")]
   [Creatable("Scripts")]
   [StorableClass]
-  public sealed class HLScript : NamedItem, IStorableContent {
+  public sealed class Script : NamedItem, IStorableContent {
     #region Constants
-    private const string ScriptNamespaceName = "HeuristicLab.HLScript";
     private const string ExecuteMethodName = "Execute";
     private const string CodeTemplate =
 @"// use 'vars' to access global variables in the variable store
 
 using System;
 
-public override void Main() {
-  // type your code here
-}
+namespace UserScripts {
+  public class UserScript : HeuristicLab.HLScript.UserScriptBase {
+    public override void Main() {
+      // type your code here
+    }
 
-// further classes and methods";
+    // further classes and methods
+
+  }
+}";
     #endregion
 
     #region Fields & Properties
-    private HLScriptGeneration compiledHLScript;
+    private UserScriptBase compiledScript;
 
     public string Filename { get; set; }
 
@@ -57,7 +61,7 @@ public override void Main() {
       set {
         if (value == code) return;
         code = value;
-        compiledHLScript = null;
+        compiledScript = null;
         OnCodeChanged();
       }
     }
@@ -79,8 +83,8 @@ public override void Main() {
 
     #region Construction & Initialization
     [StorableConstructor]
-    private HLScript(bool deserializing) : base(deserializing) { }
-    private HLScript(HLScript original, Cloner cloner)
+    private Script(bool deserializing) : base(deserializing) { }
+    private Script(Script original, Cloner cloner)
       : base(original, cloner) {
       code = original.code;
       variableStore = new VariableStore();
@@ -89,25 +93,25 @@ public override void Main() {
         compileErrors = new CompilerErrorCollection(original.compileErrors);
     }
 
-    public HLScript()
-      : base("HL Script", "A HeuristicLab script.") {
+    public Script()
+      : base("Script", "A HeuristicLab script.") {
       code = CodeTemplate;
       variableStore = new VariableStore();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new HLScript(this, cloner);
+      return new Script(this, cloner);
     }
     #endregion
 
     private void RegisterScriptEvents() {
-      if (compiledHLScript == null) return;
-      compiledHLScript.ConsoleOutputChanged += compiledHLScript_ConsoleOutputChanged;
+      if (compiledScript == null) return;
+      compiledScript.ConsoleOutputChanged += compiledScript_ConsoleOutputChanged;
     }
 
     private void DeregisterScriptEvents() {
-      if (compiledHLScript == null) return;
-      compiledHLScript.ConsoleOutputChanged -= compiledHLScript_ConsoleOutputChanged;
+      if (compiledScript == null) return;
+      compiledScript.ConsoleOutputChanged -= compiledScript_ConsoleOutputChanged;
     }
 
     #region Compilation
@@ -142,7 +146,7 @@ public override void Main() {
 
     public void Compile() {
       var results = DoCompile();
-      compiledHLScript = null;
+      compiledScript = null;
       CompileErrors = results.Errors;
       if (results.Errors.HasErrors) {
         var sb = new StringBuilder();
@@ -159,7 +163,7 @@ public override void Main() {
         var assembly = results.CompiledAssembly;
         var types = assembly.GetTypes();
         DeregisterScriptEvents();
-        compiledHLScript = (HLScriptGeneration)Activator.CreateInstance(types[0]);
+        compiledScript = (UserScriptBase)Activator.CreateInstance(types[0]);
         RegisterScriptEvents();
       }
     }
@@ -180,42 +184,12 @@ public override void Main() {
       return assemblies;
     }
 
-    private readonly Regex LineSplitter = new Regex(@"\r\n|\r|\n");
     private readonly Regex SafeTypeNameCharRegex = new Regex("[_a-zA-Z0-9]+");
     private readonly Regex SafeTypeNameRegex = new Regex("[_a-zA-Z][_a-zA-Z0-9]*");
-    private readonly Regex NamespaceDeclarationRegex = new Regex(@"using\s+(@?[a-z_A-Z]\w+(?:\s*\.\s*@?[a-z_A-Z]\w*)*)\s*;");
-    private readonly Regex NamespaceRegex = new Regex(@"(@?[a-z_A-Z]\w+(?:\s*\.\s*@?[a-z_A-Z]\w*)*)");
-    private readonly Regex CommentRegex = new Regex(@"((/\*)[^/]+(\*/))|(//.*)");
 
     private CodeCompileUnit CreateCompilationUnit() {
-      var ns = new CodeNamespace(ScriptNamespaceName);
-      ns.Types.Add(CreateScriptClass());
-      ns.Imports.AddRange(
-        GetNamespaces()
-        .Select(n => new CodeNamespaceImport(n))
-        .ToArray());
-      var unit = new CodeCompileUnit();
-      unit.Namespaces.Add(ns);
+      var unit = new CodeSnippetCompileUnit(code);
       return unit;
-    }
-
-    private IEnumerable<string> GetNamespaces() {
-      var strings = NamespaceDeclarationRegex.Matches(CommentRegex.Replace(code, string.Empty))
-                                             .Cast<Match>()
-                                             .Select(m => m.Value);
-      foreach (var s in strings) {
-        var match = NamespaceRegex.Match(s.Replace("using", string.Empty));
-        yield return match.Value;
-      }
-    }
-
-    private IEnumerable<string> GetCodeLines() {
-      var lines = LineSplitter.Split(code);
-      foreach (var line in lines) {
-        string trimmedLine = line.Trim();
-        if (!NamespaceDeclarationRegex.IsMatch(trimmedLine))
-          yield return trimmedLine;
-      }
     }
 
     public string CompiledTypeName {
@@ -229,27 +203,17 @@ public override void Main() {
         return SafeTypeNameRegex.Match(sb.ToString()).Value;
       }
     }
-
-    private CodeTypeDeclaration CreateScriptClass() {
-      var typeDecl = new CodeTypeDeclaration(CompiledTypeName) {
-        IsClass = true,
-        TypeAttributes = TypeAttributes.Public,
-      };
-      typeDecl.BaseTypes.Add(typeof(HLScriptGeneration));
-      typeDecl.Members.Add(new CodeSnippetTypeMember(string.Join(Environment.NewLine, GetCodeLines())));
-      return typeDecl;
-    }
     #endregion
 
     private Thread scriptThread;
     public void Execute() {
-      if (compiledHLScript == null) return;
-      var executeMethod = typeof(HLScriptGeneration).GetMethod(ExecuteMethodName, BindingFlags.NonPublic | BindingFlags.Instance);
+      if (compiledScript == null) return;
+      var executeMethod = typeof(UserScriptBase).GetMethod(ExecuteMethodName, BindingFlags.NonPublic | BindingFlags.Instance);
       if (executeMethod != null) {
         scriptThread = new Thread(() => {
           try {
             OnScriptExecutionStarted();
-            executeMethod.Invoke(compiledHLScript, new[] { VariableStore });
+            executeMethod.Invoke(compiledScript, new[] { VariableStore });
           } finally {
             OnScriptExecutionFinished();
           }
@@ -263,7 +227,7 @@ public override void Main() {
         scriptThread.Abort();
     }
 
-    private void compiledHLScript_ConsoleOutputChanged(object sender, EventArgs<string> e) {
+    private void compiledScript_ConsoleOutputChanged(object sender, EventArgs<string> e) {
       OnConsoleOutputChanged(e.Value);
     }
 

@@ -113,6 +113,7 @@ namespace HeuristicLab.HLScript.Views {
         sortDescendingButton.Enabled = variableListView.Items.Count > 1;
         removeButton.Enabled = !Locked && !ReadOnly && variableListView.SelectedItems.Count > 0;
         variableListView.Enabled = true;
+        variableListView.LabelEdit = !Locked && !ReadOnly;
       }
     }
 
