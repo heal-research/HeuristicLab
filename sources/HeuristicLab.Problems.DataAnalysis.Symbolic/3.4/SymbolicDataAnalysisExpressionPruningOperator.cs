@@ -48,13 +48,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private DoubleValue PrunedSubtrees { get { return NumberOfPrunedSubtreesParameter.ActualValue; } }
     private DoubleValue PrunedTrees { get { return NumberOfPrunedTreesParameter.ActualValue; } }
     #endregion
-
-    [StorableConstructor]
-    protected SymbolicDataAnalysisExpressionPruningOperator(bool deserializing) : base(deserializing) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionPruningOperator(this, cloner);
     }
-    protected SymbolicDataAnalysisExpressionPruningOperator(SymbolicDataAnalysisExpressionPruningOperator original, Cloner cloner)
+    private SymbolicDataAnalysisExpressionPruningOperator(SymbolicDataAnalysisExpressionPruningOperator original, Cloner cloner)
       : base(original, cloner) {
     }
 
@@ -66,6 +63,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ISymbolicDataAnalysisModel Model { get; set; }
     public IDataAnalysisProblemData ProblemData { get; set; }
     public ISymbolicDataAnalysisSolutionImpactValuesCalculator ImpactsCalculator { get; set; }
+
+    public IntRange FitnessCalculationPartition { get; set; }
     public IRandom Random { get; set; }
 
     public bool PruneOnlyZeroImpactNodes { get; set; }
@@ -75,12 +74,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       int prunedSubtrees = 0;
 
       var nodes = Model.SymbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
+      var rows = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size).ToList();
 
       for (int j = 0; j < nodes.Count; ++j) {
         var node = nodes[j];
         if (node is ConstantTreeNode) continue;
 
-        var impact = ImpactsCalculator.CalculateImpactValue(Model, node, ProblemData, ProblemData.TrainingIndices);
+        var impact = ImpactsCalculator.CalculateImpactValue(Model, node, ProblemData, rows);
 
         if (PruneOnlyZeroImpactNodes) {
           if (!impact.IsAlmost(0.0)) continue;
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           if (NodeImpactThreshold < impact) continue;
         }
 
-        var replacementValue = ImpactsCalculator.CalculateReplacementValue(Model, node, ProblemData, ProblemData.TrainingIndices);
+        var replacementValue = ImpactsCalculator.CalculateReplacementValue(Model, node, ProblemData, rows);
         var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
         ReplaceWithConstant(node, constantNode);
         j += node.GetLength() - 1; // skip subtrees under the node that was folded

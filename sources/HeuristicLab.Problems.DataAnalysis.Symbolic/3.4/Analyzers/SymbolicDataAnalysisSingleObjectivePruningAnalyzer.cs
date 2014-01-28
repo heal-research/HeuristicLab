@@ -31,6 +31,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string PruneOnlyZeroImpactNodesParameterName = "PruneOnlyZeroImpactNodes";
     private const string NodeImpactThresholdParameterName = "ImpactThreshold";
 
+    private const string FitnessCalculationPartitionParameterName = "FitnessCalculationPartition";
+
     private bool reentry;
     [Storable]
     protected ISymbolicDataAnalysisSolutionImpactValuesCalculator impactValuesCalculator;
@@ -50,6 +52,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     private ILookupParameter<IDataAnalysisProblemData> ProblemDataParameter {
       get { return (ILookupParameter<IDataAnalysisProblemData>)Parameters[ProblemDataParameterName]; }
+    }
+    public ILookupParameter<IntRange> FitnessCalculationPartitionParameter {
+      get { return (ILookupParameter<IntRange>)Parameters[FitnessCalculationPartitionParameterName]; }
     }
     private ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter {
       get { return (ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName]; }
@@ -75,6 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
     #region properties
     protected IDataAnalysisProblemData ProblemData { get { return ProblemDataParameter.ActualValue; } }
+    protected IntRange FitnessCalculationPartition { get { return FitnessCalculationPartitionParameter.ActualValue; } }
     protected ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get { return InterpreterParameter.ActualValue; } }
     protected IntValue UpdateInterval { get { return UpdateIntervalParameter.Value; } }
     protected IntValue UpdateCounter { get { return UpdateCounterParameter.Value; } }
@@ -88,8 +94,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected BoolValue PruneOnlyZeroImpactNodes { get { return PruneOnlyZeroImpactNodesParameter.Value; } }
     #endregion
 
+    #region IStatefulItem members
+    public override void InitializeState() {
+      base.InitializeState();
+      UpdateCounter.Value = 0;
+    }
+    public override void ClearState() {
+      base.ClearState();
+      UpdateCounter.Value = 0;
+    }
+    #endregion
+
     [StorableConstructor]
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(FitnessCalculationPartitionParameterName))
+        Parameters.Add(new LookupParameter<IntRange>(FitnessCalculationPartitionParameterName, ""));
+    }
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(SymbolicDataAnalysisSingleObjectivePruningAnalyzer original, Cloner cloner)
       : base(original, cloner) {
       impactValuesCalculator = original.impactValuesCalculator;
@@ -109,6 +131,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<DoubleLimit>(EstimationLimitsParameterName));
       Parameters.Add(new FixedValueParameter<DoubleValue>(NodeImpactThresholdParameterName, new DoubleValue(0.0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(PruneOnlyZeroImpactNodesParameterName, new BoolValue(false)));
+      Parameters.Add(new LookupParameter<IntRange>(FitnessCalculationPartitionParameterName, ""));
     }
 
     public override IOperation Apply() {
@@ -146,7 +169,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             ProblemData = ProblemData,
             Random = Random,
             PruneOnlyZeroImpactNodes = PruneOnlyZeroImpactNodes.Value,
-            NodeImpactThreshold = NodeImpactThreshold.Value
+            NodeImpactThreshold = NodeImpactThreshold.Value,
+            FitnessCalculationPartition = FitnessCalculationPartition
           };
           operations.Add(ExecutionContext.CreateChildOperation(op, ExecutionContext.Scope));
         }
