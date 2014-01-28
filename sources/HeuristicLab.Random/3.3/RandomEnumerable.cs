@@ -198,13 +198,14 @@ namespace HeuristicLab.Random {
 
       HashSet<int> chosenIndices = new HashSet<int>();
       while (chosenIndices.Count < sourceArray.Length) {
-        int index = 0;
-        double ball = valueArray[index], sum = random.NextDouble() * total;
+        int index = -1;
+        double ball = 0, sum = random.NextDouble() * total;
         while (ball < sum) {
           index++;
           if (!chosenIndices.Contains(index))
-            ball += valueArray[++index];
+            ball += valueArray[index];
         }
+        index = index >= 0 ? index : Enumerable.Range(0, sourceArray.Length).First(x => !chosenIndices.Contains(x));
         yield return sourceArray[index];
         chosenIndices.Add(index);
         total -= valueArray[index];
