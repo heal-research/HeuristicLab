@@ -98,10 +98,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override void InitializeState() {
       base.InitializeState();
       UpdateCounter.Value = 0;
+      PrunedSubtrees.Value = 0;
+      PrunedTrees.Value = 0;
     }
     public override void ClearState() {
       base.ClearState();
       UpdateCounter.Value = 0;
+      PrunedSubtrees.Value = 0;
+      PrunedTrees.Value = 0;
     }
     #endregion
 
