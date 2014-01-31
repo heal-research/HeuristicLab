@@ -19,7 +19,10 @@
  */
 #endregion
 
+using System;
 using System.Windows.Forms;
+using HeuristicLab.Collections;
+using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization.Views;
 
@@ -42,34 +45,62 @@ namespace HeuristicLab.Problems.Scheduling.Views {
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
-      if (Content == null) {
-        ganttChart.Reset();
-      } else {
-        FillGanttChart(Content);
-      }
+      FillGanttChart();
     }
 
     protected override void DeregisterContentEvents() {
-      Content.JobDataParameter.ValueChanged -= JobDataParameter_ValueChanged;
+      Content.JobDataParameter.ValueChanged -= JobDataParameterOnValueChanged;
+      Content.JobData.ItemsAdded -= JobsOnChanged;
+      Content.JobData.ItemsRemoved -= JobsOnChanged;
+      Content.JobData.ItemsReplaced -= JobsOnChanged;
+      Content.JobData.CollectionReset -= JobsOnChanged;
+      foreach (var job in Content.JobData) {
+        job.TasksChanged -= JobOnTasksChanged;
+      }
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.JobDataParameter.ValueChanged += JobDataParameter_ValueChanged;
-    }
-
-    void JobDataParameter_ValueChanged(object sender, System.EventArgs e) {
-      if (Content != null) {
-        FillGanttChart(Content);
+      Content.JobDataParameter.ValueChanged += JobDataParameterOnValueChanged;
+      Content.JobData.ItemsAdded += JobsOnChanged;
+      Content.JobData.ItemsRemoved += JobsOnChanged;
+      Content.JobData.ItemsReplaced += JobsOnChanged;
+      Content.JobData.CollectionReset += JobsOnChanged;
+      foreach (var job in Content.JobData) {
+        job.TasksChanged += JobOnTasksChanged;
       }
     }
 
-    private void FillGanttChart(JobShopSchedulingProblem content) {
+    private void JobsOnChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<Job>> e) {
+      foreach (var job in e.OldItems)
+        job.Value.TasksChanged -= JobOnTasksChanged;
+      foreach (var job in e.Items)
+        job.Value.TasksChanged += JobOnTasksChanged;
+      FillGanttChart();
+    }
+
+    private void JobDataParameterOnValueChanged(object sender, EventArgs e) {
+      Content.JobData.ItemsAdded += JobsOnChanged;
+      Content.JobData.ItemsRemoved += JobsOnChanged;
+      Content.JobData.ItemsReplaced += JobsOnChanged;
+      Content.JobData.CollectionReset += JobsOnChanged;
+      foreach (var job in Content.JobData) {
+        job.TasksChanged += JobOnTasksChanged;
+      }
+      FillGanttChart();
+    }
+
+    private void JobOnTasksChanged(object sender, EventArgs e) {
+      FillGanttChart();
+    }
+
+    private void FillGanttChart() {
       ganttChart.Reset();
+      if (Content == null) return;
       int jobCount = 0;
-      foreach (var j in content.JobData) {
+      foreach (var j in Content.JobData) {
         double lastEndTime = 0;
-        foreach (var t in content.JobData[jobCount].Tasks) {
+        foreach (var t in Content.JobData[jobCount].Tasks) {
           int categoryNr = t.JobNr;
           string categoryName = "Job" + categoryNr;
           ganttChart.AddData(categoryName,
@@ -77,7 +108,7 @@ namespace HeuristicLab.Problems.Scheduling.Views {
             t.TaskNr,
             lastEndTime + 1,
             lastEndTime + t.Duration,
-            "Job" + t.JobNr + " - " + "Task#" + t.TaskNr.ToString());
+            "Job" + t.JobNr + " - " + "Task#" + t.TaskNr);
           lastEndTime += t.Duration;
         }
         jobCount++;

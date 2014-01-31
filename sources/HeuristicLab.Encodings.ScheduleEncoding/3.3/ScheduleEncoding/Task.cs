@@ -37,7 +37,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       set {
         bool changed = taskNr != value;
         taskNr = value;
-        if (changed) OnPropertyChanged("TaskNr");
+        if (changed) {
+          OnPropertyChanged("TaskNr");
+          OnToStringChanged();
+        }
       }
     }
     [Storable(Name = "ResourceNr")]
@@ -47,7 +50,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       set {
         bool changed = resourceNr != value;
         resourceNr = value;
-        if (changed) OnPropertyChanged("ResourceNr");
+        if (changed) {
+          OnPropertyChanged("ResourceNr");
+          OnToStringChanged();
+        }
       }
     }
 
@@ -112,25 +118,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       StringBuilder sb = new StringBuilder();
       sb.Append("[" + TaskNr + "," + ResourceNr + "]");
       return sb.ToString();
-    }
-
-    public override bool Equals(object obj) {
-      if (obj.GetType() == typeof(Task))
-        return AreEqual(this, obj as Task);
-      else
-        return false;
-    }
-
-    public override int GetHashCode() {
-      return TaskNr ^ JobNr;
-    }
-
-    public static bool AreEqual(Task task1, Task task2) {
-      return (task1.Duration == task2.Duration &&
-        task1.IsScheduled == task2.IsScheduled &&
-        task1.JobNr == task2.JobNr &&
-        task1.ResourceNr == task2.ResourceNr &&
-        task1.TaskNr == task2.TaskNr);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
