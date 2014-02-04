@@ -38,16 +38,10 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  public interface IVRPInstanceConsumer :
-    IProblemInstanceConsumer<CVRPData>, IProblemInstanceConsumer<CVRPTWData>,
-    IProblemInstanceConsumer<MDCVRPData>, IProblemInstanceConsumer<MDCVRPTWData>,
-    IProblemInstanceConsumer<PDPTWData> {
-  }
-
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IVRPInstanceConsumer {
+  public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<VRPData> {
     public string Filename { get; set; }
 
     public static new Image StaticItemImage {
@@ -389,25 +383,28 @@ namespace HeuristicLab.Problems.VehicleRouting {
         BestKnownSolution = solution;
       }
     }
+    #endregion
 
-    public void Load(CVRPData data) {
-      Load(data, new CVRPInterpreter());
-    }
+    #region IProblemInstanceConsumer<VRPData> Members
 
-    public void Load(CVRPTWData data) {
-      Load(data, new CVRPTWInterpreter());
-    }
+    public void Load(VRPData data) {
+      Type interpreterType = typeof(IVRPDataInterpreter<>).MakeGenericType(data.GetType());
+      var interpreters = ApplicationManager.Manager.GetInstances(interpreterType);
+      IVRPDataInterpreter interpreter = null;
+      foreach (object i in interpreters) {
+        var parentInterfaces = i.GetType().BaseType.GetInterfaces();
+        var interfaces = i.GetType().GetInterfaces().Except(parentInterfaces);
+        var interpreterInterface = interfaces.First(j => typeof(IVRPDataInterpreter).IsAssignableFrom(j));
+        var interpreterDataType = interpreterInterface.GetGenericArguments()[0];
+        if (interpreterDataType == data.GetType()) {
+          interpreter = i as IVRPDataInterpreter;
+          break;
+        }
+      }
 
-    public void Load(MDCVRPData data) {
-      Load(data, new MDCVRPInterpreter());
-    }
-
-    public void Load(MDCVRPTWData data) {
-      Load(data, new MDCVRPTWInterpreter());
-    }
-
-    public void Load(PDPTWData data) {
-      Load(data, new PDPTWInterpreter());
+      if (interpreter == null)
+        throw new ArgumentException("No interpreter found for the VRP type");
+      Load(data, interpreter);
     }
 
     #endregion

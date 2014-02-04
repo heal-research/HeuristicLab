@@ -28,7 +28,7 @@ using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class VRPInstanceProvider<T> : ProblemInstanceProvider<T>, IVRPInstanceProvider where T : IVRPData {
+  public abstract class VRPInstanceProvider : ProblemInstanceProvider<VRPData>, IVRPInstanceProvider {
     protected abstract string FileName { get; }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       }
     }
 
-    public override T LoadData(IDataDescriptor id) {
+    public override VRPData LoadData(IDataDescriptor id) {
       var descriptor = (VRPDataDescriptor)id;
       var instanceArchiveName = GetResourceName(FileName + @"\.zip");
       using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       }
     }
 
-    private static void LoadSolution(Stream stream, T instance) {
+    private static void LoadSolution(Stream stream, VRPData instance) {
       List<List<int>> routes = new List<List<int>>();
 
       using (StreamReader reader = new StreamReader(stream)) {
@@ -98,13 +98,13 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       instance.BestKnownTour = routes.Select(x => x.ToArray()).ToArray();
     }
 
-    public static void LoadSolution(string path, T instance) {
+    public static void LoadSolution(string path, VRPData instance) {
       using (FileStream stream = new FileStream(path, FileMode.Open)) {
         LoadSolution(stream, instance);
       }
     }
 
-    protected abstract T LoadData(Stream stream);
+    protected abstract VRPData LoadData(Stream stream);
 
     public IVRPData Import(string vrpFile, string tourFile) {
       var data = ImportData(vrpFile);
@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     }
 
     public void Export(IVRPData instance, string path) {
-      ExportData((T)instance, path);
+      ExportData((VRPData)instance, path);
     }
 
     protected virtual string GetResourceName(string fileName) {
