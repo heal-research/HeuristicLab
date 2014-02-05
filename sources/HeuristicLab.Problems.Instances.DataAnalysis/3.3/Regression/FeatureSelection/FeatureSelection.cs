@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
                + "The target variable is calculated as a noisy linear combination of randomly selected features: y = w * S + n." + Environment.NewLine
                + "Where is the S is a N x d matrix containing the selected columns from N x k the matrix of all features X" + Environment.NewLine
                + "For each feature the probability that it is selected is " + selectionProbability + "%" + Environment.NewLine
-               + "X(i,j) ~ N(0, 1) iid, w(i) ~ U(0, 10) iid, n ~ N(0, sigma(w*S) * SQRT(" + noiseRatio + "))" + Environment.NewLine
+               + "X(i,j) ~ N(0, 1) iid, w(i) ~ U(0, 10) iid, n ~ N(0, sigma(w*S) * SQRT(" + noiseRatio / (1 - noiseRatio)  + "))" + Environment.NewLine
                + "The noise level is " + noiseRatio + " * sigma, thus an optimal model has R² = "
                + Math.Round(optimalRSquared, 2) + " (or equivalently: NMSE = " + noiseRatio + ")" + Environment.NewLine
                + "N = " + (nTrainingSamples + nTestSamples) + " (" + nTrainingSamples + " training, " + nTestSamples + " test)" + Environment.NewLine
@@ -130,7 +130,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         target.Add(ScalarProd(s, w));
       }
       var targetSigma = target.StandardDeviation();
-      var noisePrng = new NormalDistributedRandom(random, 0, targetSigma * Math.Sqrt(noiseRatio));
+      var noisePrng = new NormalDistributedRandom(random, 0, targetSigma * Math.Sqrt(noiseRatio / (1.0 - noiseRatio)));
 
       data.Add(target.Select(t => t + noisePrng.NextDouble()).ToList());
 
