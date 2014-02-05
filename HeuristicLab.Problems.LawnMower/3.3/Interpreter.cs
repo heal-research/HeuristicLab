@@ -53,7 +53,6 @@ namespace HeuristicLab.Problems.LawnMower {
       mowerState.Energy = length * width * 2;
       lawn[mowerState.Position.Item1, mowerState.Position.Item2] = true;
       EvaluateLawnMowerProgram(tree.Root, mowerState, lawn, tree.Root.Subtrees.Skip(1).ToArray());
-
       return lawn;
     }
 
@@ -114,9 +113,12 @@ namespace HeuristicLab.Problems.LawnMower {
         return EvaluateLawnMowerProgram(node.GetSubtree(1), mowerState, lawn, adfs);
       } else if (node.Symbol is Frog) {
         var p = EvaluateLawnMowerProgram(node.GetSubtree(0), mowerState, lawn, adfs);
-
-        uint newRow = (uint)((mowerState.Position.Item1 + lawn.GetLength(0) + p.Item1 % lawn.GetLength(0)) % lawn.GetLength(0));
-        uint newCol = (uint)((mowerState.Position.Item2 + lawn.GetLength(1) + p.Item2 % lawn.GetLength(1)) % lawn.GetLength(1));
+        int x = p.Item1;
+        int y = p.Item2;
+        while (x < 0) x += lawn.GetLength(0);
+        while (y < 0) y += lawn.GetLength(1);
+        var newRow = (uint)((mowerState.Position.Item1 + x) % lawn.GetLength(0));
+        var newCol = (uint)((mowerState.Position.Item2 + y) % lawn.GetLength(1));
         mowerState.Position = new Tuple<uint, uint>(newRow, newCol);
         mowerState.Energy = mowerState.Energy - 1;
         lawn[newRow, newCol] = true;
@@ -129,7 +131,7 @@ namespace HeuristicLab.Problems.LawnMower {
                                   where adf.FunctionName == invokeNode.Symbol.FunctionName
                                   select adf).Single();
         // clone the function definition because we are replacing the argument nodes
-        functionDefinition = (DefunTreeNode) functionDefinition.Clone();
+        functionDefinition = (DefunTreeNode)functionDefinition.Clone();
         // find the argument tree nodes and their parents in the original function definition
         // toList is necessary to prevent that newly inserted branches are iterated
         var argumentCutPoints = (from parent in functionDefinition.IterateNodesPrefix()
