@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,13 +28,37 @@ namespace HeuristicLab.Data {
   [Item("PercentValue", "Represents a double value in percent.")]
   [StorableClass]
   public class PercentValue : DoubleValue {
+    [Storable(DefaultValue = false)]
+    private bool restrictToUnitInterval = false;
+    public bool RestrictToUnitInterval {
+      get { return restrictToUnitInterval; }
+    }
+
+    public override double Value {
+      get { return base.Value; }
+      set {
+        if (restrictToUnitInterval && (value < 0 || value > 1))
+          throw new ArgumentException("Value must lie in the interval [0,1].");
+        base.Value = value;
+      }
+    }
+
     [StorableConstructor]
     protected PercentValue(bool deserializing) : base(deserializing) { }
     protected PercentValue(PercentValue original, Cloner cloner)
       : base(original, cloner) {
+      restrictToUnitInterval = original.restrictToUnitInterval;
     }
     public PercentValue() : base() { }
     public PercentValue(double value) : base(value) { }
+
+    public PercentValue(double value, bool restrictToUnitInterval)
+      : base() {
+      this.restrictToUnitInterval = restrictToUnitInterval;
+      if (restrictToUnitInterval && (value < 0 || value > 1))
+        throw new ArgumentException("Value must lie in the interval [0,1].");
+      this.value = value;
+    }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PercentValue(this, cloner);
@@ -45,8 +70,17 @@ namespace HeuristicLab.Data {
 
     protected override bool Validate(string value, out string errorMessage) {
       value = value.Replace("%", " ");
-      return base.Validate(value, out errorMessage);
+      bool valid = base.Validate(value, out errorMessage);
+      if (!restrictToUnitInterval || !valid) return valid;
+
+      double val = double.Parse(value);
+      if (val < 0 || val > 1) {
+        errorMessage = "Value must lie in the interval [0,1].";
+        return false;
+      }
+      return true;
     }
+
     protected override string GetValue() {
       return Value.ToString("#0.#################### %");  // percent format
     }
