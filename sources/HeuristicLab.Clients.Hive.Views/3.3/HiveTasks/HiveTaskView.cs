@@ -95,14 +95,14 @@ namespace HeuristicLab.Clients.Hive.Views {
           if (Content.Task.Priority >= 0 && Content.Task.Priority < priorityComboBox.Items.Count) {
             this.priorityComboBox.SelectedIndex = Content.Task.Priority;
           } else {
-            this.priorityComboBox.SelectedIndex = 0;
+            this.priorityComboBox.SelectedIndex = 1;
           }
           this.coresNeededComboBox.Text = Content.Task.CoresNeeded.ToString();
           this.memoryNeededComboBox.Text = Content.Task.MemoryNeeded.ToString();
         } else {
           this.jobIdTextBox.Text = string.Empty;
           this.dateCreatedTextBox.Text = string.Empty;
-          this.priorityComboBox.SelectedIndex = 0;
+          this.priorityComboBox.SelectedIndex = 1;
           this.coresNeededComboBox.Text = "1";
           this.memoryNeededComboBox.Text = "128";
         }

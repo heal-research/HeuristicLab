@@ -108,9 +108,9 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // stateLogViewHost
       // 
-      this.stateLogViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.stateLogViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.stateLogViewHost.Caption = "View";
       this.stateLogViewHost.Content = null;
       this.stateLogViewHost.Enabled = false;
@@ -136,8 +136,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // splitContainer1
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer1.Location = new System.Drawing.Point(6, 6);
       this.splitContainer1.Name = "splitContainer1";
       // 
@@ -188,11 +188,12 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // priorityComboBox
       // 
-      this.priorityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.priorityComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.priorityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.priorityComboBox.FormattingEnabled = true;
       this.priorityComboBox.Items.AddRange(new object[] {
+            "Low",
             "Normal",
             "Urgent",
             "Critical"});
@@ -213,8 +214,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // jobIdTextBox
       // 
-      this.jobIdTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.jobIdTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.jobIdTextBox.Location = new System.Drawing.Point(87, 13);
       this.jobIdTextBox.Name = "jobIdTextBox";
       this.jobIdTextBox.Size = new System.Drawing.Size(182, 20);
@@ -231,8 +232,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // lastUpdatedTextBox
       // 
-      this.lastUpdatedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.lastUpdatedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.lastUpdatedTextBox.Location = new System.Drawing.Point(87, 66);
       this.lastUpdatedTextBox.Name = "lastUpdatedTextBox";
       this.lastUpdatedTextBox.Size = new System.Drawing.Size(182, 20);
@@ -265,8 +266,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // memoryNeededComboBox
       // 
-      this.memoryNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.memoryNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.memoryNeededComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.memoryNeededComboBox.FormattingEnabled = true;
       this.memoryNeededComboBox.Items.AddRange(new object[] {
@@ -282,8 +283,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // coresNeededComboBox
       // 
-      this.coresNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.coresNeededComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.coresNeededComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.coresNeededComboBox.FormattingEnabled = true;
       this.coresNeededComboBox.Items.AddRange(new object[] {
@@ -359,8 +360,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // commandTextBox
       // 
-      this.commandTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.commandTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.commandTextBox.Location = new System.Drawing.Point(95, 39);
       this.commandTextBox.Name = "commandTextBox";
       this.commandTextBox.Size = new System.Drawing.Size(171, 20);
@@ -377,8 +378,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // stateTextBox
       // 
-      this.stateTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.stateTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.stateTextBox.Location = new System.Drawing.Point(95, 13);
       this.stateTextBox.Name = "stateTextBox";
       this.stateTextBox.Size = new System.Drawing.Size(171, 20);
@@ -404,8 +405,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // dateCalculatedText
       // 
-      this.dateCalculatedText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.dateCalculatedText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.dateCalculatedText.Location = new System.Drawing.Point(95, 117);
       this.dateCalculatedText.Name = "dateCalculatedText";
       this.dateCalculatedText.Size = new System.Drawing.Size(171, 20);
@@ -413,8 +414,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // dateFinishedTextBox
       // 
-      this.dateFinishedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.dateFinishedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.dateFinishedTextBox.Location = new System.Drawing.Point(95, 143);
       this.dateFinishedTextBox.Name = "dateFinishedTextBox";
       this.dateFinishedTextBox.Size = new System.Drawing.Size(171, 20);
@@ -422,8 +423,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // executionTimeTextBox
       // 
-      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.executionTimeTextBox.Location = new System.Drawing.Point(95, 65);
       this.executionTimeTextBox.Name = "executionTimeTextBox";
       this.executionTimeTextBox.Size = new System.Drawing.Size(171, 20);
@@ -431,8 +432,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // dateCreatedTextBox
       // 
-      this.dateCreatedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.dateCreatedTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.dateCreatedTextBox.Location = new System.Drawing.Point(95, 91);
       this.dateCreatedTextBox.Name = "dateCreatedTextBox";
       this.dateCreatedTextBox.Size = new System.Drawing.Size(171, 20);
@@ -476,8 +477,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // exceptionTextBox
       // 
-      this.exceptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.exceptionTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.exceptionTextBox.Location = new System.Drawing.Point(95, 169);
       this.exceptionTextBox.Name = "exceptionTextBox";
       this.exceptionTextBox.Size = new System.Drawing.Size(171, 20);
@@ -486,8 +487,8 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // modifyItemButton
       // 
-      this.modifyItemButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.modifyItemButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.modifyItemButton.Location = new System.Drawing.Point(3, 224);
       this.modifyItemButton.Name = "modifyItemButton";
       this.modifyItemButton.Size = new System.Drawing.Size(551, 23);
@@ -498,9 +499,9 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.detailsTabPage);
       this.tabControl.Controls.Add(this.stateLogTabPage);
       this.tabControl.Location = new System.Drawing.Point(3, 3);
@@ -511,7 +512,6 @@ namespace HeuristicLab.Clients.Hive.Views {
       // 
       // HiveTaskView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.tabControl);
       this.Name = "HiveTaskView";
