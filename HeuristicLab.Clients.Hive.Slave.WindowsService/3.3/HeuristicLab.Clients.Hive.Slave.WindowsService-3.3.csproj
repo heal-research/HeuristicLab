@@ -153,7 +153,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Clients.Hive.Slave\3.3\HeuristicLab.Clients.Hive.Slave-3.3.csproj">
@@ -163,13 +165,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd</PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
