@@ -22,6 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinOneLevelExchangeMainpulator", "The 1M operator which manipulates a VRP representation.  It is implemented as described in Potvin, J.-Y. and Bengio, S. (1996). The Vehicle Routing Problem with Time Windows - Part II: Genetic Search. INFORMS Journal of Computing, 8:165–172.")]
@@ -40,10 +41,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
-      bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
-
-      int selectedIndex = SelectRandomTourBiasedByLength(random, individual);
+    public static void ApplyManipulation(IRandom random, PotvinEncoding individual, IVRPProblemInstance instance, bool allowInfeasible) {
+      int selectedIndex = SelectRandomTourBiasedByLength(random, individual, instance);
       if (selectedIndex >= 0) {
         Tour route1 =
           individual.Tours[selectedIndex];
@@ -66,6 +65,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           count = route1.Stops.Count;
         }
       }
+    }
+
+    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+      bool allowInfeasible = AllowInfeasibleSolutions.Value.Value;
+      ApplyManipulation(random, individual, ProblemInstance, allowInfeasible);      
     }
   }
 }
