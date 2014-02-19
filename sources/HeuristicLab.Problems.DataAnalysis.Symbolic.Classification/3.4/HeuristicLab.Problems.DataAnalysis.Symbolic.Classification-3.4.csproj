@@ -149,6 +149,7 @@
     <Compile Include="SymbolicDiscriminantFunctionClassificationSolution.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SymbolicClassificationPruningOperator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

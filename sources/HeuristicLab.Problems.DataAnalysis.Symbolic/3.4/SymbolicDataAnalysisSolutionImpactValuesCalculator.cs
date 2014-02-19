@@ -21,12 +21,23 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  public abstract class SymbolicDataAnalysisSolutionImpactValuesCalculator : ISymbolicDataAnalysisSolutionImpactValuesCalculator {
+  [StorableClass]
+  [Item("SymbolicDataAnalysisSolutionImpactValuesCalculator", "Calculates the impact values and replacements values for symbolic expression tree nodes.")]
+  public abstract class SymbolicDataAnalysisSolutionImpactValuesCalculator : Item, ISymbolicDataAnalysisSolutionImpactValuesCalculator {
+    protected SymbolicDataAnalysisSolutionImpactValuesCalculator() { }
+
+    protected SymbolicDataAnalysisSolutionImpactValuesCalculator(SymbolicDataAnalysisSolutionImpactValuesCalculator original, Cloner cloner)
+      : base(original, cloner) { }
+    [StorableConstructor]
+    protected SymbolicDataAnalysisSolutionImpactValuesCalculator(bool deserializing) : base(deserializing) { }
     public abstract double CalculateReplacementValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows);
     public abstract double CalculateImpactValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, double originalQuality = double.NaN);
+    public abstract void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue, double originalQuality = double.NaN);
 
     protected static double CalculateReplacementValue(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
       Dataset dataset, IEnumerable<int> rows) {
