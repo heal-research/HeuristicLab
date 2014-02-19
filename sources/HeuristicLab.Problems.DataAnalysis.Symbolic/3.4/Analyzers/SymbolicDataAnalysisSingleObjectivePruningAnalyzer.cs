@@ -89,10 +89,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(bool deserializing) : base(deserializing) { }
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(SymbolicDataAnalysisSingleObjectivePruningAnalyzer original, Cloner cloner)
       : base(original, cloner) {
-      this.prunedSubtreesReducer = (DataReducer)original.prunedSubtreesReducer.Clone();
-      this.prunedTreesReducer = (DataReducer)original.prunedTreesReducer.Clone();
-      this.valuesCollector = (DataTableValuesCollector)original.valuesCollector.Clone();
-      this.resultsCollector = (ResultsCollector)original.resultsCollector.Clone();
+      if (original.prunedSubtreesReducer != null)
+        this.prunedSubtreesReducer = (DataReducer)original.prunedSubtreesReducer.Clone();
+      if (original.prunedTreesReducer != null)
+        this.prunedTreesReducer = (DataReducer)original.prunedTreesReducer.Clone();
+      if (original.valuesCollector != null)
+        this.valuesCollector = (DataTableValuesCollector)original.valuesCollector.Clone();
+      if (original.resultsCollector != null)
+        this.resultsCollector = (ResultsCollector)original.resultsCollector.Clone();
     }
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer() {
       #region add parameters
