@@ -30,9 +30,10 @@ namespace HeuristicLab.Common {
     }
 
     public static void StableSort<T>(this List<T> values, int index, int count) {
-      var orderedList = values.Skip(index).Take(count).OrderBy(x => x).ToList();
-      values.Clear();
-      values.AddRange(orderedList);
+      var orderedList = values.Skip(index).Take(count).OrderBy(x => x);
+      int i = index;
+      foreach (var e in orderedList)
+        values[i++] = e;
     }
 
     public static void StableSort<T>(this List<T> values, IComparer<T> comparer) {
@@ -40,9 +41,10 @@ namespace HeuristicLab.Common {
     }
 
     public static void StableSort<T>(this List<T> values, int index, int count, IComparer<T> comparer) {
-      var orderedList = values.OrderBy(x => x, comparer).ToList();
-      values.Clear();
-      values.AddRange(orderedList);
+      var orderedList = values.OrderBy(x => x, comparer);
+      int i = 0;
+      foreach (var e in orderedList)
+        values[i++] = e;
     }
 
     public static void StableSort<T>(this List<T> values, Comparison<T> comparison) {
@@ -50,9 +52,10 @@ namespace HeuristicLab.Common {
     }
 
     public static void StableSort<T>(this List<T> values, int index, int count, Comparison<T> comparison) {
-      var orderedList = values.OrderBy(x => x, new StableSortComparer<T>(comparison)).ToList();
-      values.Clear();
-      values.AddRange(orderedList);
+      var orderedList = values.OrderBy(x => x, new StableSortComparer<T>(comparison));
+      int i = 0;
+      foreach (var e in orderedList)
+        values[i++] = e;
     }
 
     public class StableSortComparer<T> : IComparer<T> {
