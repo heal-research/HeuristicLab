@@ -75,17 +75,17 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected Job(bool deserializing) : base(deserializing) { }
     protected Job(Job original, Cloner cloner)
       : base(original, cloner) {
-      this.DueDate = original.DueDate;
-      this.Index = original.Index;
-      this.Tasks = cloner.Clone(original.Tasks);
+      this.dueDate = original.DueDate;
+      this.index = original.Index;
+      this.tasks = cloner.Clone(original.Tasks);
       RegisterEventHandlers();
     }
     public Job() : this(-1, double.MaxValue) { }
     public Job(int index, double dueDate)
       : base() {
-      DueDate = dueDate;
-      Index = index;
-      Tasks = new ItemList<Task>();
+      this.dueDate = dueDate;
+      this.index = index;
+      this.tasks = new ItemList<Task>();
       RegisterEventHandlers();
     }
 
@@ -134,7 +134,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       var sb = new StringBuilder();
       sb.Append("Job#" + Index + " [ ");
       foreach (Task t in Tasks) {
-        sb.Append(t.ToString() + " ");
+        sb.Append(t + " ");
       }
       sb.Append("{" + DueDate + "} ");
       sb.Append("]");

@@ -94,20 +94,20 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected Task(bool deserializing) : base(deserializing) { }
     protected Task(Task original, Cloner cloner)
       : base(original, cloner) {
-      this.ResourceNr = original.ResourceNr;
-      this.JobNr = original.JobNr;
-      this.Duration = original.Duration;
-      this.TaskNr = original.TaskNr;
-      this.IsScheduled = original.IsScheduled;
+      this.resourceNr = original.ResourceNr;
+      this.jobNr = original.JobNr;
+      this.duration = original.Duration;
+      this.taskNr = original.TaskNr;
+      this.isScheduled = original.IsScheduled;
     }
     public Task() : this(-1, -1, -1, 0) { }
     public Task(int taskNr, int resNr, int jobNr, double duration)
       : base() {
-      Duration = duration;
-      ResourceNr = resNr;
-      JobNr = jobNr;
-      TaskNr = taskNr;
-      IsScheduled = false;
+      this.duration = duration;
+      this.resourceNr = resNr;
+      this.jobNr = jobNr;
+      this.taskNr = taskNr;
+      this.isScheduled = false;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

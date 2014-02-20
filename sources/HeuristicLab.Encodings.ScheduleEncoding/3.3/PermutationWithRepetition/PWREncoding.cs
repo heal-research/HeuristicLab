@@ -74,30 +74,5 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
 
       return sb.ToString();
     }
-
-    public override bool Equals(object obj) {
-      if (obj.GetType() == typeof(PWREncoding))
-        return AreEqual(this, obj as PWREncoding);
-      else
-        return base.Equals(obj);
-    }
-
-    public override int GetHashCode() {
-      if (PermutationWithRepetition.Length == 1)
-        return PermutationWithRepetition[0].GetHashCode();
-      if (PermutationWithRepetition.Length == 2)
-        return PermutationWithRepetition[0].GetHashCode() ^ PermutationWithRepetition[1].GetHashCode();
-      return 0;
-    }
-
-    private bool AreEqual(PWREncoding pWREncoding1, PWREncoding pWREncoding2) {
-      if (pWREncoding1.PermutationWithRepetition.Length != pWREncoding2.PermutationWithRepetition.Length)
-        return false;
-      for (int i = 0; i < pWREncoding1.PermutationWithRepetition.Length; i++) {
-        if (pWREncoding1.PermutationWithRepetition[i] != pWREncoding2.PermutationWithRepetition[i])
-          return false;
-      }
-      return true;
-    }
   }
 }

@@ -73,7 +73,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       sb.Append("[ ");
 
       foreach (int i in PriorityRulesVector) {
-        sb.Append(i.ToString() + " ");
+        sb.Append(i + " ");
       }
 
       sb.Append("]");

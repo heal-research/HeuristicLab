@@ -72,37 +72,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       StringBuilder sb = new StringBuilder();
       sb.Append("Resource#" + Index + " [ ");
       foreach (ScheduledTask t in Tasks) {
-        sb.Append(t.ToString() + " ");
+        sb.Append(t+ " ");
       }
       sb.Append("]");
       return sb.ToString();
-    }
-
-
-    public override bool Equals(object obj) {
-      if (obj.GetType() == typeof(Resource))
-        return AreEqual(this, obj as Resource);
-      else
-        return false;
-    }
-
-    public override int GetHashCode() {
-      if (Tasks.Count == 1)
-        return Tasks[0].GetHashCode();
-      if (Tasks.Count == 2)
-        return Tasks[0].GetHashCode() ^ Tasks[1].GetHashCode();
-      return 0;
-    }
-
-    private static bool AreEqual(Resource res1, Resource res2) {
-      if (res1.Tasks.Count != res2.Tasks.Count)
-        return false;
-      for (int i = 0; i < res1.Tasks.Count; i++) {
-        if (!res1.Tasks[i].Equals(res2.Tasks[i]))
-          return false;
-      }
-
-      return true;
     }
   }
 }

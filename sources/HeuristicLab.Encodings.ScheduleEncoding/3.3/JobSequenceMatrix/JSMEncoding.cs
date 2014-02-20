@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -52,45 +53,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
       sb.Append("[ ");
 
       foreach (Permutation p in JobSequenceMatrix) {
-        sb.Append(p.ToString() + " \n");
+        sb.AppendLine(p.ToString());
       }
 
       sb.Append("]");
       return sb.ToString();
-    }
-
-
-    public override bool Equals(object obj) {
-      if (obj.GetType() == typeof(JSMEncoding))
-        return AreEqual(this, obj as JSMEncoding);
-
-      return false;
-    }
-    public override int GetHashCode() {
-      if (JobSequenceMatrix.Count == 1)
-        return JobSequenceMatrix[0].GetHashCode();
-      if (JobSequenceMatrix.Count == 2)
-        return JobSequenceMatrix[0].GetHashCode() ^ JobSequenceMatrix[1].GetHashCode();
-      return 0;
-    }
-    private static bool AreEqual(JSMEncoding jSMEncoding1, JSMEncoding jSMEncoding2) {
-      if (jSMEncoding1.JobSequenceMatrix.Count != jSMEncoding2.JobSequenceMatrix.Count)
-        return false;
-      for (int i = 0; i < jSMEncoding1.JobSequenceMatrix.Count; i++) {
-        if (!AreEqual(jSMEncoding1.JobSequenceMatrix[i], jSMEncoding2.JobSequenceMatrix[i]))
-          return false;
-      }
-      return true;
-    }
-
-    private static bool AreEqual(Permutation p1, Permutation p2) {
-      if (p1.Length != p2.Length)
-        return false;
-      for (int i = 0; i < p1.Length; i++) {
-        if (p1[i] != p2[i])
-          return false;
-      }
-      return true;
     }
   }
 }

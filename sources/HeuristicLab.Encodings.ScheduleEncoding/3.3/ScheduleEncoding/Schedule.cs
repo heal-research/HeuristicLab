@@ -148,7 +148,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       StringBuilder sb = new StringBuilder();
       sb.Append("[ ");
       foreach (Resource r in Resources) {
-        sb.Append(r.ToString() + " \n");
+        sb.AppendLine(r.ToString());
       }
       sb.Append("]");
       return sb.ToString();
@@ -163,31 +163,5 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
       return quality;
     }
-
-    public override bool Equals(object obj) {
-      if (obj.GetType() == typeof(Schedule))
-        return AreEqual(this, obj as Schedule);
-      else
-        return false;
-    }
-    public override int GetHashCode() {
-      if (Resources.Count == 1)
-        return Resources[0].GetHashCode();
-      if (Resources.Count == 2)
-        return Resources[0].GetHashCode() ^ Resources[1].GetHashCode();
-      return 0;
-    }
-
-    private static bool AreEqual(Schedule schedule1, Schedule schedule2) {
-      if (schedule1.Resources.Count != schedule2.Resources.Count)
-        return false;
-      for (int i = 0; i < schedule1.Resources.Count; i++) {
-        if (!schedule1.Resources[i].Equals(schedule2.Resources[i]))
-          return false;
-      }
-
-      return true;
-    }
-
   }
 }
