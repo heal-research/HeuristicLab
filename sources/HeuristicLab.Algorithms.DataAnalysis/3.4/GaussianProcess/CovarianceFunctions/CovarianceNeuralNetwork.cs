@@ -104,14 +104,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (p.Length != c) throw new ArgumentException("The length of the parameter vector does not match the number of free parameters for CovarianceNeuralNetwork", "p");
     }
 
-
-    private static Func<Term, UnaryFunc> asin = UnaryFunc.Factory(
-        x => Math.Asin(x),      // evaluate
-        x => 1 / Math.Sqrt(1 - x * x));  // derivative of atan
-    private static Func<Term, UnaryFunc> sqrt = UnaryFunc.Factory(
-      x => Math.Sqrt(x),
-      x => 1 / (2 * Math.Sqrt(x)));
-
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
       double length, scale;
       GetParameterValues(p, out scale, out length);
@@ -167,9 +159,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         if (!fixedScale) {
           yield return 2.0 * scale * Math.Asin(f);
         }
-
-      };
+      }
     }
-
   }
 }
