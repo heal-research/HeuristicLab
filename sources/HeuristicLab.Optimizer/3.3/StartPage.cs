@@ -69,24 +69,28 @@ namespace HeuristicLab.Optimizer {
 
     private void LoadSamples(object state) {
       progress = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(samplesListView, "Loading...");
-      Assembly assembly = Assembly.GetExecutingAssembly();
-      var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(".hl"));
-      int count = samples.Count();
-      string path = Path.GetTempFileName();
+      try {
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(".hl"));
+        int count = samples.Count();
+        string path = Path.GetTempFileName();
 
-      foreach (string name in samples) {
-        try {
-          using (Stream stream = assembly.GetManifestResourceStream(name)) {
-            WriteStreamToTempFile(stream, path);
-            INamedItem item = XmlParser.Deserialize<INamedItem>(path);
-            OnSampleLoaded(item, 1.0 / count);
+        foreach (string name in samples) {
+          try {
+            using (Stream stream = assembly.GetManifestResourceStream(name)) {
+              WriteStreamToTempFile(stream, path);
+              INamedItem item = XmlParser.Deserialize<INamedItem>(path);
+              OnSampleLoaded(item, 1.0 / count);
+            }
+          }
+          catch (Exception) {
           }
         }
-        catch (Exception) {
-          MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
-        }
+        OnAllSamplesLoaded();
       }
-      OnAllSamplesLoaded();
+      finally {
+        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
+      }
     }
     private void OnSampleLoaded(INamedItem sample, double progress) {
       if (InvokeRequired)
@@ -110,7 +114,6 @@ namespace HeuristicLab.Optimizer {
           for (int i = 0; i < samplesListView.Columns.Count; i++)
             samplesListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
-        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
       }
     }
 
