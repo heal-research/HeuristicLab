@@ -104,10 +104,6 @@
       <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AutoDiff-1.0, Version=1.0.0.14388, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AutoDiff-1.0.dll</HintPath>
-    </Reference>
     <Reference Include="LibSVM-3.12, Version=3.12.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <HintPath>..\..\bin\LibSVM-3.12.dll</HintPath>
       <Private>False</Private>

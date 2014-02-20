@@ -21,9 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using AutoDiff;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;

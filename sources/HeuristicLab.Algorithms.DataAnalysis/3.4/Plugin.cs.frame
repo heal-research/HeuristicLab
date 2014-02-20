@@ -28,7 +28,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Plugin("HeuristicLab.Algorithms.DataAnalysis", "Provides wrappers for data analysis algorithms implemented in external libraries (linear regression, linear discriminant analysis, k-means clustering, support vector classification and regression)", "3.4.5.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.DataAnalysis-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.7.0")]
-  [PluginDependency("HeuristicLab.AutoDiff", "1.0.0")]
   [PluginDependency("HeuristicLab.Algorithms.GradientDescent", "3.3")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
