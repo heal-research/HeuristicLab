@@ -53,6 +53,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return (IValueParameter<DoubleArray>)Parameters[LengthScaleParameterName]; }
     }
 
+    private bool HasFixedWeightParameter {
+      get { return WeightParameter.Value != null; }
+    }
+    private bool HasFixedFrequencyParameter {
+      get { return FrequencyParameter.Value != null; }
+    }
+    private bool HasFixedLengthScaleParameter {
+      get { return LengthScaleParameter.Value != null; }
+    }
+
     [StorableConstructor]
     private CovarianceSpectralMixture(bool deserializing)
       : base(deserializing) {
@@ -79,9 +89,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public int GetNumberOfParameters(int numberOfVariables) {
       var q = QParameter.Value.Value;
       return
-        (WeightParameter.Value != null ? 0 : q) +
-        (FrequencyParameter.Value != null ? 0 : q * numberOfVariables) +
-        (LengthScaleParameter.Value != null ? 0 : q * numberOfVariables);
+        (HasFixedWeightParameter ? 0 : q) +
+        (HasFixedFrequencyParameter ? 0 : q * numberOfVariables) +
+        (HasFixedLengthScaleParameter ? 0 : q * numberOfVariables);
     }
 
     public void SetParameter(double[] p) {
@@ -99,19 +109,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int q = QParameter.Value.Value;
       // guess number of elements for frequency and length (=q * numberOfVariables)
       int n = WeightParameter.Value == null ? ((p.Length - q) / 2) : (p.Length / 2);
-      if (WeightParameter.Value != null) {
+      if (HasFixedWeightParameter) {
         weight = WeightParameter.Value.ToArray();
       } else {
         weight = p.Skip(c).Select(Math.Exp).Take(q).ToArray();
         c += q;
       }
-      if (FrequencyParameter.Value != null) {
+      if (HasFixedFrequencyParameter) {
         frequency = FrequencyParameter.Value.ToArray();
       } else {
         frequency = p.Skip(c).Select(Math.Exp).Take(n).ToArray();
         c += n;
       }
-      if (LengthScaleParameter.Value != null) {
+      if (HasFixedLengthScaleParameter) {
         lengthScale = LengthScaleParameter.Value.ToArray();
       } else {
         lengthScale = p.Skip(c).Select(Math.Exp).Take(n).ToArray();
@@ -123,6 +133,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
       double[] weight, frequency, lengthScale;
       GetParameterValues(p, out weight, out frequency, out lengthScale);
+      var fixedWeight = HasFixedWeightParameter;
+      var fixedFrequency = HasFixedFrequencyParameter;
+      var fixedLengthScale = HasFixedLengthScaleParameter;
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => {
@@ -134,7 +147,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                              lengthScale, columnIndices);
       };
       cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, QParameter.Value.Value, weight, frequency,
-                             lengthScale, columnIndices);
+                             lengthScale, columnIndices, fixedWeight, fixedFrequency, fixedLengthScale);
       return cov;
     }
 
@@ -167,49 +180,57 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // order of returned gradients must match the order in GetParameterValues!
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int maxQ, double[] weight, double[] frequency, double[] lengthScale, IEnumerable<int> columnIndices) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int maxQ, double[] weight, double[] frequency, double[] lengthScale, IEnumerable<int> columnIndices,
+      bool fixedWeight, bool fixedFrequency, bool fixedLengthScale) {
       double[] tau = Util.GetRow(x, i, columnIndices).Zip(Util.GetRow(x, j, columnIndices), (xi, xj) => xi - xj).ToArray();
       int numberOfVariables = lengthScale.Length / maxQ;
 
-      // weight
-      // for each component
-      for (int q = 0; q < maxQ; q++) {
-        double k = weight[q]; 
-        int idx = 0; // helper index for tau
-        // for each selected variable
-        foreach (var c in columnIndices) {
-          k *= f1(tau[idx], lengthScale[q * numberOfVariables + c]) * f2(tau[idx], frequency[q * numberOfVariables + c]);
-          idx++;
-        }
-        yield return k;
-      }
-
-      // frequency
-      // for each component
-      for (int q = 0; q < maxQ; q++) {
-        int idx = 0; // helper index for tau
-        // for each selected variable
-        foreach (var c in columnIndices) {
-          double k = f1(tau[idx], lengthScale[q * numberOfVariables + c]) *
-            -2 * Math.PI * tau[idx] * frequency[q * numberOfVariables + c] * Math.Sin(2 * Math.PI * tau[idx] * frequency[q * numberOfVariables + c]);
-          idx++;
-          yield return weight[q] * k;
+      if (!fixedWeight) {
+        // weight
+        // for each component
+        for (int q = 0; q < maxQ; q++) {
+          double k = weight[q];
+          int idx = 0; // helper index for tau
+          // for each selected variable
+          foreach (var c in columnIndices) {
+            k *= f1(tau[idx], lengthScale[q * numberOfVariables + c]) * f2(tau[idx], frequency[q * numberOfVariables + c]);
+            idx++;
+          }
+          yield return k;
         }
       }
 
-      // length scale
-      // for each component
-      for (int q = 0; q < maxQ; q++) {
-        int idx = 0; // helper index for tau
-        // for each selected variable
-        foreach (var c in columnIndices) {
-          double k = -2 * Math.PI * Math.PI * tau[idx] * tau[idx] * lengthScale[q * numberOfVariables + c] *
-             f1(tau[idx], lengthScale[q * numberOfVariables + c]) * f2(tau[idx], frequency[q * numberOfVariables + c]);
-          idx++;
-          yield return weight[q] * k;
+      if (!fixedFrequency) {
+        // frequency
+        // for each component
+        for (int q = 0; q < maxQ; q++) {
+          int idx = 0; // helper index for tau
+          // for each selected variable
+          foreach (var c in columnIndices) {
+            double k = f1(tau[idx], lengthScale[q * numberOfVariables + c]) *
+                       -2 * Math.PI * tau[idx] * frequency[q * numberOfVariables + c] *
+                       Math.Sin(2 * Math.PI * tau[idx] * frequency[q * numberOfVariables + c]);
+            idx++;
+            yield return weight[q] * k;
+          }
         }
       }
 
+      if (!fixedLengthScale) {
+        // length scale
+        // for each component
+        for (int q = 0; q < maxQ; q++) {
+          int idx = 0; // helper index for tau
+          // for each selected variable
+          foreach (var c in columnIndices) {
+            double k = -2 * Math.PI * Math.PI * tau[idx] * tau[idx] * lengthScale[q * numberOfVariables + c] *
+                       f1(tau[idx], lengthScale[q * numberOfVariables + c]) *
+                       f2(tau[idx], frequency[q * numberOfVariables + c]);
+            idx++;
+            yield return weight[q] * k;
+          }
+        }
+      }
     }
   }
 }

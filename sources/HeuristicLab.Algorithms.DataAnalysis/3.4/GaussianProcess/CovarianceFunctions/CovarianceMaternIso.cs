@@ -44,7 +44,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IConstrainedValueParameter<IntValue> DParameter {
       get { return (IConstrainedValueParameter<IntValue>)Parameters["D"]; }
     }
-
+    private bool HasFixedScaleParameter {
+      get { return ScaleParameter.Value != null; }
+    }
+    private bool HasFixedInverseLengthParameter {
+      get { return InverseLengthParameter.Value != null; }
+    }
 
     [StorableConstructor]
     private CovarianceMaternIso(bool deserializing)
@@ -75,8 +80,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public int GetNumberOfParameters(int numberOfVariables) {
       return
-        (InverseLengthParameter.Value != null ? 0 : 1) +
-        (ScaleParameter.Value != null ? 0 : 1);
+        (HasFixedInverseLengthParameter ? 0 : 1) +
+        (HasFixedScaleParameter ? 0 : 1);
     }
 
     public void SetParameter(double[] p) {
@@ -89,14 +94,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void GetParameterValues(double[] p, out double scale, out double inverseLength) {
       // gather parameter values
       int c = 0;
-      if (InverseLengthParameter.Value != null) {
+      if (HasFixedInverseLengthParameter) {
         inverseLength = InverseLengthParameter.Value.Value;
       } else {
         inverseLength = 1.0 / Math.Exp(p[c]);
         c++;
       }
 
-      if (ScaleParameter.Value != null) {
+      if (HasFixedScaleParameter) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[c]);
@@ -109,6 +114,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double inverseLength, scale;
       int d = DParameter.Value.Value;
       GetParameterValues(p, out scale, out inverseLength);
+      var fixedInverseLength = HasFixedInverseLengthParameter;
+      var fixedScale = HasFixedScaleParameter;
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => {
@@ -121,7 +128,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double dist = Math.Sqrt(Util.SqrDist(x, i, xt, j, Math.Sqrt(d) * inverseLength, columnIndices));
         return scale * m(d, dist);
       };
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, d, scale, inverseLength, columnIndices);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, d, scale, inverseLength, columnIndices, fixedInverseLength, fixedScale);
       return cov;
     }
 
@@ -148,13 +155,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int d, double scale, double inverseLength, IEnumerable<int> columnIndices) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, int d, double scale, double inverseLength, IEnumerable<int> columnIndices,
+      bool fixedInverseLength, bool fixedScale) {
       double dist = i == j
                    ? 0.0
                    : Math.Sqrt(Util.SqrDist(x, i, j, Math.Sqrt(d) * inverseLength, columnIndices));
 
-      yield return scale * dm(d, dist);
-      yield return 2 * scale * m(d, dist);
+      if (!fixedInverseLength) yield return scale * dm(d, dist);
+      if (!fixedScale) yield return 2 * scale * m(d, dist);
     }
   }
 }

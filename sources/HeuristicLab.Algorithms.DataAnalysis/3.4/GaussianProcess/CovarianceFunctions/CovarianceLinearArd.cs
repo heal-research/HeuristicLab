@@ -36,6 +36,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<DoubleArray> InverseLengthParameter {
       get { return (IValueParameter<DoubleArray>)Parameters["InverseLength"]; }
     }
+    private bool HasFixedInverseLengthParameter {
+      get { return InverseLengthParameter.Value != null; }
+    }
 
     [StorableConstructor]
     private CovarianceLinearArd(bool deserializing) : base(deserializing) { }
@@ -56,10 +59,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
-      if (InverseLengthParameter.Value == null)
-        return numberOfVariables;
-      else
+      if (HasFixedInverseLengthParameter)
         return 0;
+      else
+        return numberOfVariables;
     }
 
     public void SetParameter(double[] p) {
@@ -70,7 +73,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void GetParameterValues(double[] p, out double[] inverseLength) {
       // gather parameter values
-      if (InverseLengthParameter.Value != null) {
+      if (HasFixedInverseLengthParameter) {
         inverseLength = InverseLengthParameter.Value.ToArray();
       } else {
         inverseLength = p.Select(e => 1.0 / Math.Exp(e)).ToArray();
@@ -80,11 +83,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
       double[] inverseLength;
       GetParameterValues(p, out inverseLength);
+      var fixedInverseLength = HasFixedInverseLengthParameter;
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => Util.ScalarProd(x, i, j, inverseLength, columnIndices);
       cov.CrossCovariance = (x, xt, i, j) => Util.ScalarProd(x, i, xt, j, inverseLength, columnIndices);
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, inverseLength, columnIndices);
+      if (fixedInverseLength)
+        cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+      else
+        cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, inverseLength, columnIndices);
       return cov;
     }
 

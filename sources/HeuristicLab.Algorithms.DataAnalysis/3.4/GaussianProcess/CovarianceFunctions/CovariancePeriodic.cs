@@ -45,6 +45,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return (IValueParameter<DoubleValue>)Parameters["Period"]; }
     }
 
+    private bool HasFixedScaleParameter {
+      get { return ScaleParameter.Value != null; }
+    }
+    private bool HasFixedInverseLengthParameter {
+      get { return InverseLengthParameter.Value != null; }
+    }
+    private bool HasFixedPeriodParameter {
+      get { return PeriodParameter.Value != null; }
+    }
+
 
     [StorableConstructor]
     private CovariancePeriodic(bool deserializing) : base(deserializing) { }
@@ -67,9 +77,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
-      return (ScaleParameter.Value != null ? 0 : 1) +
-       (PeriodParameter.Value != null ? 0 : 1) +
-       (InverseLengthParameter.Value != null ? 0 : 1);
+      return (HasFixedScaleParameter ? 0 : 1) +
+       (HasFixedPeriodParameter ? 0 : 1) +
+       (HasFixedInverseLengthParameter ? 0 : 1);
     }
 
     public void SetParameter(double[] p) {
@@ -81,23 +91,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    private void GetParameterValues(double[] 
+    private void GetParameterValues(double[]
       p, out double scale, out double period, out double inverseLength) {
       // gather parameter values
       int c = 0;
-      if (InverseLengthParameter.Value != null) {
+      if (HasFixedInverseLengthParameter) {
         inverseLength = InverseLengthParameter.Value.Value;
       } else {
         inverseLength = 1.0 / Math.Exp(p[c]);
         c++;
       }
-      if (PeriodParameter.Value != null) {
+      if (HasFixedPeriodParameter) {
         period = PeriodParameter.Value.Value;
       } else {
         period = Math.Exp(p[c]);
         c++;
       }
-      if (ScaleParameter.Value != null) {
+      if (HasFixedScaleParameter) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[c]);
@@ -109,6 +119,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
       double inverseLength, period, scale;
       GetParameterValues(p, out scale, out period, out inverseLength);
+      var fixedInverseLength = HasFixedInverseLengthParameter;
+      var fixedPeriod = HasFixedPeriodParameter;
+      var fixedScale = HasFixedScaleParameter;
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => {
@@ -127,19 +140,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         return scale * Math.Exp(-2.0 * k);
       };
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, period, inverseLength);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, period, inverseLength, fixedInverseLength, fixedPeriod, fixedScale);
       return cov;
     }
 
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double period, double inverseLength) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double period, double inverseLength,
+      bool fixedInverseLength, bool fixedPeriod, bool fixedScale) {
       double k = i == j ? 0.0 : Math.PI * GetDistance(x, x, i, j, columnIndices) / period;
       double gradient = Math.Sin(k) * inverseLength;
       gradient *= gradient;
-      yield return 4.0 * scale * Math.Exp(-2.0 * gradient) * gradient;
-      double r = Math.Sin(k) * inverseLength;
-      yield return 2.0 * k * scale * Math.Exp(-2 * r * r) *Math.Sin(2*k) * inverseLength * inverseLength;
-      yield return 2.0 * scale * Math.Exp(-2 * gradient); 
+      if (!fixedInverseLength) yield return 4.0 * scale * Math.Exp(-2.0 * gradient) * gradient;
+      if (!fixedPeriod) {
+        double r = Math.Sin(k) * inverseLength;
+        yield return 2.0 * k * scale * Math.Exp(-2 * r * r) * Math.Sin(2 * k) * inverseLength * inverseLength;
+      }
+      if (!fixedScale)
+        yield return 2.0 * scale * Math.Exp(-2 * gradient);
 
     }
 

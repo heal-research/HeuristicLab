@@ -36,6 +36,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<DoubleValue> ScaleParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Scale"]; }
     }
+    private bool HasFixedScaleParameter {
+      get { return ScaleParameter.Value != null; }
+    }
 
     public IValueParameter<ICovarianceFunction> CovarianceFunctionParameter {
       get { return (IValueParameter<ICovarianceFunction>)Parameters["CovarianceFunction"]; }
@@ -64,7 +67,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
-      return (ScaleParameter.Value != null ? 0 : 1) + CovarianceFunctionParameter.Value.GetNumberOfParameters(numberOfVariables);
+      return (HasFixedScaleParameter ? 0 : 1) + CovarianceFunctionParameter.Value.GetNumberOfParameters(numberOfVariables);
     }
 
     public void SetParameter(double[] p) {
@@ -76,7 +79,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private void GetParameterValues(double[] p, out double scale) {
       // gather parameter values
-      if (ScaleParameter.Value != null) {
+      if (HasFixedScaleParameter) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[0]);
@@ -86,17 +89,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
       double scale;
       GetParameterValues(p, out scale);
+      var fixedScale = HasFixedScaleParameter;
       var subCov = CovarianceFunctionParameter.Value.GetParameterizedCovarianceFunction(p.Skip(1).ToArray(), columnIndices);
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => scale * subCov.Covariance(x, i, j);
       cov.CrossCovariance = (x, xt, i, j) => scale * subCov.CrossCovariance(x, xt, i, j);
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, subCov);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, subCov, fixedScale);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, ParameterizedCovarianceFunction cov) {
-      yield return 2 * scale * cov.Covariance(x, i, j);
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, ParameterizedCovarianceFunction cov,
+      bool fixedScale) {
+      if (!fixedScale) {
+        yield return 2 * scale * cov.Covariance(x, i, j);
+      }
       foreach (var g in cov.CovarianceGradient(x, i, j))
         yield return scale * g;
     }

@@ -42,6 +42,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<DoubleValue> LengthParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Length"]; }
     }
+    private bool HasFixedScaleParameter {
+      get { return ScaleParameter.Value != null; }
+    }
+    private bool HasFixedLengthParameter {
+      get { return LengthParameter.Value != null; }
+    }
 
     [StorableConstructor]
     private CovarianceNeuralNetwork(bool deserializing)
@@ -67,8 +73,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public int GetNumberOfParameters(int numberOfVariables) {
       return
-        (ScaleParameter.Value != null ? 0 : 1) +
-        (LengthParameter.Value != null ? 0 : 1);
+        (HasFixedScaleParameter ? 0 : 1) +
+        (HasFixedLengthParameter ? 0 : 1);
     }
 
     public void SetParameter(double[] p) {
@@ -82,14 +88,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void GetParameterValues(double[] p, out double scale, out double length) {
       // gather parameter values
       int c = 0;
-      if (LengthParameter.Value != null) {
+      if (HasFixedLengthParameter) {
         length = LengthParameter.Value.Value;
       } else {
         length = Math.Exp(2 * p[c]);
         c++;
       }
 
-      if (ScaleParameter.Value != null) {
+      if (HasFixedScaleParameter) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[c]);
@@ -109,72 +115,60 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
       double length, scale;
       GetParameterValues(p, out scale, out length);
-      // create functions
-      AutoDiff.Variable p0 = new AutoDiff.Variable();
-      AutoDiff.Variable p1 = new AutoDiff.Variable();
-      var l = TermBuilder.Exp(2.0 * p0);
-      var s = TermBuilder.Exp(2.0 * p1);
-      AutoDiff.Variable[] x1 = new AutoDiff.Variable[columnIndices.Count()];
-      AutoDiff.Variable[] x2 = new AutoDiff.Variable[columnIndices.Count()];
-      AutoDiff.Term sx = 1;
-      AutoDiff.Term s1 = 1;
-      AutoDiff.Term s2 = 1;
-      for (int k = 0; k < columnIndices.Count(); k++) {
-        x1[k] = new AutoDiff.Variable();
-        x2[k] = new AutoDiff.Variable();
-        sx += x1[k] * x2[k];
-        s1 += x1[k] * x1[k];
-        s2 += x2[k] * x2[k];
-      }
-
-      var parameter = x1.Concat(x2).Concat(new AutoDiff.Variable[] { p0, p1 }).ToArray();
-      var values = new double[x1.Length + x2.Length + 2];
-      var c = (s * asin(sx / (sqrt((l + s1) * (l + s2))))).Compile(parameter);
+      var fixedLength = HasFixedLengthParameter;
+      var fixedScale = HasFixedScaleParameter;
 
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => {
-        int k = 0;
+        double sx = 1.0;
+        double s1 = 1.0;
+        double s2 = 1.0;
         foreach (var col in columnIndices) {
-          values[k] = x[i, col];
-          k++;
+          sx += x[i, col] * x[j, col];
+          s1 += x[i, col] * x[i, col];
+          s2 += x[j, col] * x[j, col];
         }
-        foreach (var col in columnIndices) {
-          values[k] = x[j, col];
-          k++;
-        }
-        values[k] = Math.Log(Math.Sqrt(length));
-        values[k + 1] = Math.Log(Math.Sqrt(scale));
-        return c.Evaluate(values);
+
+        return (scale * Math.Asin(sx / (Math.Sqrt((length + s1) * (length + s2)))));
       };
       cov.CrossCovariance = (x, xt, i, j) => {
-        int k = 0;
+        double sx = 1.0;
+        double s1 = 1.0;
+        double s2 = 1.0;
         foreach (var col in columnIndices) {
-          values[k] = x[i, col];
-          k++;
+          sx += x[i, col] * xt[j, col];
+          s1 += x[i, col] * x[i, col];
+          s2 += xt[j, col] * xt[j, col];
         }
-        foreach (var col in columnIndices) {
-          values[k] = xt[j, col];
-          k++;
-        }
-        values[k] = Math.Log(Math.Sqrt(length));
-        values[k + 1] = Math.Log(Math.Sqrt(scale));
-        return c.Evaluate(values);
+
+        return (scale * Math.Asin(sx / (Math.Sqrt((length + s1) * (length + s2)))));
       };
-      cov.CovarianceGradient = (x, i, j) => {
-        int k = 0;
-        foreach (var col in columnIndices) {
-          values[k] = x[i, col];
-          k++;
-        }
-        foreach (var col in columnIndices) {
-          values[k] = x[j, col];
-          k++;
-        }
-        values[k] = Math.Log(Math.Sqrt(length));
-        values[k + 1] = Math.Log(Math.Sqrt(scale));
-        return c.Differentiate(values).Item1.Skip(columnIndices.Count() * 2);
-      };
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, length, scale, columnIndices, fixedLength, fixedScale);
       return cov;
+    }
+
+    // order of returned gradients must match the order in GetParameterValues!
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, IEnumerable<int> columnIndices,
+      bool fixedLength, bool fixedScale) {
+      {
+        double sx = 1.0;
+        double s1 = 1.0;
+        double s2 = 1.0;
+        foreach (var col in columnIndices) {
+          sx += x[i, col] * x[j, col];
+          s1 += x[i, col] * x[i, col];
+          s2 += x[j, col] * x[j, col];
+        }
+        var h = (length + s1) * (length + s2);
+        var f = sx / Math.Sqrt(h);
+        if (!fixedLength) {
+          yield return -scale / Math.Sqrt(1.0 - f * f) * ((length * sx * (2.0 * length + s1 + s2)) / Math.Pow(h, 3.0 / 2.0));
+        }
+        if (!fixedScale) {
+          yield return 2.0 * scale * Math.Asin(f);
+        }
+
+      };
     }
 
   }

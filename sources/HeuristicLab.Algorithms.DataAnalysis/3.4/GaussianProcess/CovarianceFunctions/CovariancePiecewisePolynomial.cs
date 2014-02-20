@@ -44,6 +44,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IConstrainedValueParameter<IntValue> VParameter {
       get { return (IConstrainedValueParameter<IntValue>)Parameters["V"]; }
     }
+    private bool HasFixedLengthParameter {
+      get { return LengthParameter.Value != null; }
+    }
+    private bool HasFixedScaleParameter {
+      get { return ScaleParameter.Value != null; }
+    }
 
     [StorableConstructor]
     private CovariancePiecewisePolynomial(bool deserializing)
@@ -76,8 +82,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public int GetNumberOfParameters(int numberOfVariables) {
       return
-        (LengthParameter.Value != null ? 0 : 1) +
-        (ScaleParameter.Value != null ? 0 : 1);
+        (HasFixedLengthParameter ? 0 : 1) +
+        (HasFixedScaleParameter ? 0 : 1);
     }
 
     public void SetParameter(double[] p) {
@@ -90,14 +96,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void GetParameterValues(double[] p, out double length, out double scale) {
       // gather parameter values
       int n = 0;
-      if (LengthParameter.Value != null) {
+      if (HasFixedLengthParameter) {
         length = LengthParameter.Value.Value;
       } else {
         length = Math.Exp(p[n]);
         n++;
       }
 
-      if (ScaleParameter.Value != null) {
+      if (HasFixedScaleParameter) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[n]);
@@ -110,6 +116,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double length, scale;
       int v = VParameter.Value.Value;
       GetParameterValues(p, out length, out scale);
+      var fixedLength = HasFixedLengthParameter;
+      var fixedScale = HasFixedScaleParameter;
       int exp = (int)Math.Floor(columnIndices.Count() / 2.0) + v + 1;
 
       Func<double, double> f;
@@ -146,14 +154,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double k = Math.Sqrt(Util.SqrDist(x, i, xt, j, 1.0 / length, columnIndices));
         return scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
       };
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, length, scale, v, exp, f, df, columnIndices);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, length, scale, v, exp, f, df, columnIndices, fixedLength, fixedScale);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, int v, double exp, Func<double, double> f, Func<double, double> df, IEnumerable<int> columnIndices) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double length, double scale, int v, double exp, Func<double, double> f, Func<double, double> df, IEnumerable<int> columnIndices,
+      bool fixedLength, bool fixedScale) {
       double k = Math.Sqrt(Util.SqrDist(x, i, x, j, 1.0 / length, columnIndices));
-      yield return scale * Math.Pow(Math.Max(1.0 - k, 0), exp + v - 1) * k * ((exp + v) * f(k) - Math.Max(1 - k, 0) * df(k));
-      yield return 2.0 * scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
+      if (!fixedLength) yield return scale * Math.Pow(Math.Max(1.0 - k, 0), exp + v - 1) * k * ((exp + v) * f(k) - Math.Max(1 - k, 0) * df(k));
+      if (!fixedScale) yield return 2.0 * scale * Math.Pow(Math.Max(1 - k, 0), exp + v) * f(k);
     }
   }
 }
