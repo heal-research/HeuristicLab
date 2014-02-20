@@ -52,14 +52,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public override bool Maximization { get { return false; } }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
       double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows) {
