@@ -107,7 +107,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         visualTreeNodes = new Dictionary<ISymbolicExpressionTreeNode, VisualSymbolicExpressionTreeNode>();
         visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualSymbolicExpressionTreeNodeConnection>();
         if (tree != null) {
-          foreach (ISymbolicExpressionTreeNode node in tree.IterateNodesPrefix()) {
+          IEnumerable<ISymbolicExpressionTreeNode> nodes;
+          if (tree.Root.SubtreeCount == 1) nodes = tree.Root.GetSubtree(0).IterateNodesPrefix();
+          else nodes = tree.Root.IterateNodesPrefix();
+          foreach (ISymbolicExpressionTreeNode node in nodes) {
             visualTreeNodes[node] = new VisualSymbolicExpressionTreeNode(node);
             if (node.Parent != null) visualLines[Tuple.Create(node.Parent, node)] = new VisualSymbolicExpressionTreeNodeConnection();
           }
@@ -265,8 +268,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
 
     #region methods for painting the symbolic expression tree
-    private void DrawFunctionTree(ISymbolicExpressionTree symbolicExpressionTree, Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
+    private void DrawFunctionTree(ISymbolicExpressionTree symbolicExpressionTree, Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {      
       var layoutNodes = layoutAdapter.Convert(symbolicExpressionTree).ToList();
+      if(symbolicExpressionTree.Root.SubtreeCount==1) layoutNodes.RemoveAt(0);
       layoutEngine.Reset();
       layoutEngine.Root = layoutNodes[0];
       layoutEngine.AddNodes(layoutNodes);
