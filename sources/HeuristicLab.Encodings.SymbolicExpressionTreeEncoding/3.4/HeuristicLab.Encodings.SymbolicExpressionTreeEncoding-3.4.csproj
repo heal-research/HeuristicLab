@@ -134,6 +134,8 @@
     </Compile>
     <Compile Include="Creators\RampedHalfAndHalfTreeCreator.cs" />
     <Compile Include="Formatters\SymbolicExpressionTreeGraphvizFormatter.cs" />
+    <Compile Include="Formatters\SymbolicExpressionTreeLatexFormatter.cs" />
+    <Compile Include="Interfaces\ILayoutAdapter.cs" />
     <Compile Include="Interfaces\IReadOnlySymbol.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammarBase.cs" />
@@ -153,6 +155,9 @@
     <Compile Include="Interfaces\ISymbolicExpressionTreeNode.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeStringFormatter.cs" />
     <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeSizeConstraintOperator.cs" />
+    <Compile Include="LayoutEngines\LayoutNode.cs" />
+    <Compile Include="LayoutEngines\ReingoldTilfordLayoutEngine.cs" />
+    <Compile Include="LayoutEngines\SymbolicExpressionTreeLayoutAdapter.cs" />
     <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
     <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Manipulators\RemoveBranchManipulation.cs" />

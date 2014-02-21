@@ -49,32 +49,41 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+      this.exportPgfLaTeXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // contextMenuStrip
       // 
       this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveImageToolStripMenuItem});
+            this.saveImageToolStripMenuItem,
+            this.exportPgfLaTeXToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(135, 26);
+      this.contextMenuStrip.Size = new System.Drawing.Size(166, 70);
       // 
       // saveImageToolStripMenuItem
       // 
       this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.saveImageToolStripMenuItem.Text = "Save Image";
       this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
       // 
       // saveFileDialog
       // 
       this.saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|EMF (*.emf)|*.emf";
-      this.saveFileDialog.FilterIndex = 1;
+      // 
+      // exportPgfLaTeXToolStripMenuItem
+      // 
+      this.exportPgfLaTeXToolStripMenuItem.Name = "exportPgfLaTeXToolStripMenuItem";
+      this.exportPgfLaTeXToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+      this.exportPgfLaTeXToolStripMenuItem.Text = "Export Pgf/LaTeX";
+      this.exportPgfLaTeXToolStripMenuItem.Click += new System.EventHandler(this.exportLatexToolStripMenuItem_Click);
+      // 
       // SymbolicExpressionTreeChart
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ContextMenuStrip = this.contextMenuStrip;
+      this.DoubleBuffered = true;
       this.Name = "SymbolicExpressionTreeChart";
       this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseClick);
       this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseDoubleClick);
@@ -92,5 +101,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     protected System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     protected System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
     protected System.Windows.Forms.SaveFileDialog saveFileDialog;
+    private System.Windows.Forms.ToolStripMenuItem exportPgfLaTeXToolStripMenuItem;
   }
 }
