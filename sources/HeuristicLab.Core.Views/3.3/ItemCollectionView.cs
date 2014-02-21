@@ -44,8 +44,8 @@ namespace HeuristicLab.Core.Views {
       set { base.Content = value; }
     }
 
-    public ItemCollection<T> ItemCollection {
-      get { return Content as ItemCollection<T>; }
+    public ObservableCollection<T> ItemCollection {
+      get { return Content as ObservableCollection<T>; }
     }
 
     public bool ShowDetails {
