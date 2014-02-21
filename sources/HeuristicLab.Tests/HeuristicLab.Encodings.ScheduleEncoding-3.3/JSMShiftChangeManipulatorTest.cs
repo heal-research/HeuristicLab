@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
       }
       expected.JobSequenceMatrix = jsm;
 
-      Assert.IsTrue(individual.Equals(expected));
+      Assert.IsTrue(TestUtils.JSMEncodingEquals(expected, individual));
     }
   }
 }

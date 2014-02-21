@@ -46,7 +46,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
       expected.PermutationWithRepetition = new IntegerVector(new int[] { 1, 0, 1, 0, 1, 2, 0, 2, 2 });
       PWREncoding actual;
       actual = PWRPPXCrossover.Apply(random, parent1, parent2);
-      Assert.IsTrue(actual.Equals(expected));
+      Assert.IsTrue(TestUtils.PRWEncodingEquals(expected, actual));
     }
   }
 }

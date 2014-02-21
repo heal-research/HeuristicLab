@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.PermutationEncoding;
@@ -95,6 +96,56 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     public static Schedule CreateTestSchedule2() {
       Schedule result = DirectScheduleRandomCreator.Apply(3, 3, new PWREncoding(3, 3, new TestRandom(new int[] { 0, 1, 1, 0, 2, 0, 1, 2, 2 }, null)), CreateJobData());
       return result;
+    }
+    public static bool ScheduleEquals(Schedule actual, Schedule expected) {
+      return actual.Resources.Count == expected.Resources.Count &&
+             actual.Resources.Zip(expected.Resources, (a, e) => ResourceEquals(a, e)).All(_ => _);
+    }
+
+    public static bool ResourceEquals(Resource actual, Resource expected) {
+      return actual.Index == expected.Index &&
+             actual.TotalDuration == expected.TotalDuration &&
+             actual.Tasks.Count == expected.Tasks.Count &&
+             actual.Tasks.Zip(expected.Tasks, (a, e) => TaskEquals(a, e)).All(_ => _);
+    }
+
+    public static bool TaskEquals(ScheduledTask actual, ScheduledTask expected) {
+      return
+        actual.StartTime == expected.StartTime &&
+        actual.EndTime == expected.EndTime &&
+        actual.Duration == expected.Duration &&
+        actual.ResourceNr == expected.ResourceNr &&
+        actual.JobNr == expected.JobNr &&
+        actual.TaskNr == expected.TaskNr;
+    }
+
+    public static bool JSMEncodingEquals(JSMEncoding expected, JSMEncoding actual) {
+      if (expected.JobSequenceMatrix.Count != actual.JobSequenceMatrix.Count)
+        return false;
+      for (int i = 0; i < expected.JobSequenceMatrix.Count; i++) {
+        if (!PermutationEquals(expected.JobSequenceMatrix[i], actual.JobSequenceMatrix[i]))
+          return false;
+      }
+      return true;
+    }
+    private static bool PermutationEquals(Permutation p1, Permutation p2) {
+      if (p1.Length != p2.Length)
+        return false;
+      for (int i = 0; i < p1.Length; i++) {
+        if (p1[i] != p2[i])
+          return false;
+      }
+      return true;
+    }
+
+    public static bool PRWEncodingEquals(PWREncoding expected, PWREncoding actual) {
+      if (expected.PermutationWithRepetition.Length != actual.PermutationWithRepetition.Length)
+        return false;
+      for (int i = 0; i < expected.PermutationWithRepetition.Length; i++) {
+        if (expected.PermutationWithRepetition[i] != actual.PermutationWithRepetition[i])
+          return false;
+      }
+      return true;
     }
   }
 }
