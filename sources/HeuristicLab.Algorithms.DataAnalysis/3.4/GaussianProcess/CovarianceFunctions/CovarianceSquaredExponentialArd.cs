@@ -85,7 +85,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         inverseLength = InverseLengthParameter.Value.ToArray();
       } else {
         int length = p.Length;
-        if (HasFixedScaleParameter) length--;
+        if (!HasFixedScaleParameter) length--;
         inverseLength = p.Select(e => 1.0 / Math.Exp(e)).Take(length).ToArray();
         c += inverseLength.Length;
       }
