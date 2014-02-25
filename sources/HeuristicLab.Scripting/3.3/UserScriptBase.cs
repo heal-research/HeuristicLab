@@ -51,7 +51,7 @@ namespace HeuristicLab.Scripting {
       if (handler != null) handler(null, new EventArgs<string>(args));
     }
 
-    private class Variables : DynamicObject {
+    protected class Variables : DynamicObject {
       private readonly VariableStore variableStore;
 
       public Variables(VariableStore variableStore) {
@@ -65,6 +65,10 @@ namespace HeuristicLab.Scripting {
       public override bool TrySetMember(SetMemberBinder binder, object value) {
         variableStore[binder.Name] = value;
         return true;
+      }
+
+      public bool Contains(string variableName) {
+        return variableStore.ContainsKey(variableName);
       }
     }
 
