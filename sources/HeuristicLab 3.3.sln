@@ -383,9 +383,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.DataAnalysis.Trading.Views-3.4", "HeuristicLab.Problems.DataAnalysis.Trading.Views\3.4\HeuristicLab.Problems.DataAnalysis.Trading.Views-3.4.csproj", "{CB3D0A1E-1BE8-476B-A53C-2B189E30064F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Scripting-3.3", "HeuristicLab.HLScript\3.3\HeuristicLab.Scripting-3.3.csproj", "{21977CC3-1757-4B3B-87BD-FF817AAA900F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Scripting-3.3", "HeuristicLab.Scripting\3.3\HeuristicLab.Scripting-3.3.csproj", "{21977CC3-1757-4B3B-87BD-FF817AAA900F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Scripting.Views-3.3", "HeuristicLab.HLScript.Views\3.3\HeuristicLab.Scripting.Views-3.3.csproj", "{0C2917C8-7AA8-4E18-800A-C4D064F992ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Scripting.Views-3.3", "HeuristicLab.Scripting.Views\3.3\HeuristicLab.Scripting.Views-3.3.csproj", "{0C2917C8-7AA8-4E18-800A-C4D064F992ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

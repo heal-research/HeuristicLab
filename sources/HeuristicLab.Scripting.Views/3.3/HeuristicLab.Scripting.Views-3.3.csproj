@@ -135,7 +135,7 @@
       <Name>HeuristicLab.Core-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.HLScript\3.3\HeuristicLab.Scripting-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Scripting\3.3\HeuristicLab.Scripting-3.3.csproj">
       <Project>{21977cc3-1757-4b3b-87bd-ff817aaa900f}</Project>
       <Name>HeuristicLab.Scripting-3.3</Name>
       <Private>False</Private>
