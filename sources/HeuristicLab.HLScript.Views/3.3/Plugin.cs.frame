@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -21,19 +21,19 @@
 
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.HLScript.Views {
-  [Plugin("HeuristicLab.HLScript.Views", "3.3.9.$WCREV$")]
-  [PluginFile("HeuristicLab.HLScript.Views-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.Scripting.Views {
+  [Plugin("HeuristicLab.Scripting.Views", "3.3.9.$WCREV$")]
+  [PluginFile("HeuristicLab.Scripting.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.CodeEditor", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
-  [PluginDependency("HeuristicLab.HLScript", "3.3")]
+  [PluginDependency("HeuristicLab.Scripting", "3.3")]
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class HeuristicLabHLScriptViewsPlugin : PluginBase {
+  public class HeuristicLabScriptingViewsPlugin : PluginBase {
   }
 }

@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
@@ -35,7 +36,7 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.HLScript.Views {
+namespace HeuristicLab.Scripting.Views {
   [View("ItemCollection View")]
   [Content(typeof(VariableStore), true)]
   public partial class VariableStoreView : AsynchronousContentView {
@@ -287,12 +288,14 @@ namespace HeuristicLab.HLScript.Views {
       }
     }
 
+    private readonly Regex SafeVariableNameRegex = new Regex("^[@]?[_a-zA-Z][_a-zA-Z0-9]*$");
     private void variableListView_AfterLabelEdit(object sender, LabelEditEventArgs e) {
-      if (!string.IsNullOrEmpty(e.Label)) {
+      string name = e.Label;
+      if (!string.IsNullOrEmpty(name) && SafeVariableNameRegex.IsMatch(name)) {
         var variable = (KeyValuePair<string, object>)variableListView.Items[e.Item].Tag;
-        if (!Content.ContainsKey(e.Label)) {
+        if (!Content.ContainsKey(name)) {
           Content.Remove(variable.Key);
-          Content.Add(e.Label, variable.Value);
+          Content.Add(name, variable.Value);
         }
       }
       e.CancelEdit = true;
@@ -389,10 +392,8 @@ namespace HeuristicLab.HLScript.Views {
       variableListView.Sorting = SortOrder.None;
     }
     protected virtual void AdjustListViewColumnSizes() {
-      if (variableListView.Items.Count > 0) {
-        for (int i = 0; i < variableListView.Columns.Count; i++)
-          variableListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-      }
+      foreach (ColumnHeader ch in variableListView.Columns)
+        ch.Width = -2;
     }
     protected virtual void RebuildImageList() {
       variableListView.SmallImageList.Images.Clear();

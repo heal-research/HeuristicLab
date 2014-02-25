@@ -1,11 +1,31 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.Dynamic;
 using System.IO;
 using System.Text;
-using System.Threading;
 using HeuristicLab.Common;
 
-namespace HeuristicLab.HLScript {
+namespace HeuristicLab.Scripting {
   public abstract class UserScriptBase {
     protected dynamic vars;
 
@@ -22,13 +42,7 @@ namespace HeuristicLab.HLScript {
 
     private void Execute(VariableStore variableStore) {
       vars = new Variables(variableStore);
-      try {
-        Main();
-      } catch (ThreadAbortException) {
-      } catch (Exception e) {
-        Console.WriteLine("---");
-        Console.WriteLine(e);
-      }
+      Main();
     }
 
     protected internal event EventHandler<EventArgs<string>> ConsoleOutputChanged;

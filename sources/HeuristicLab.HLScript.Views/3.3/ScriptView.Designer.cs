@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.HLScript.Views {
+namespace HeuristicLab.Scripting.Views {
   partial class ScriptView {
     /// <summary> 
     /// Required designer variable.
@@ -44,23 +44,27 @@ namespace HeuristicLab.HLScript.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       this.compilationLabel = new System.Windows.Forms.Label();
       this.startStopButton = new System.Windows.Forms.Button();
       this.errorListView = new System.Windows.Forms.ListView();
+      this.iconColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.categoryColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.errorNumberColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.lineColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.columnColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.descriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.codeEditor = new HeuristicLab.CodeEditor.CodeEditor();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-      this.tabControl1 = new System.Windows.Forms.TabControl();
-      this.errorListTabPage = new System.Windows.Forms.TabPage();
+      this.infoTabControl = new System.Windows.Forms.TabControl();
       this.outputTabPage = new System.Windows.Forms.TabPage();
       this.outputTextBox = new System.Windows.Forms.TextBox();
-      this.variableStoreView = new HeuristicLab.HLScript.Views.VariableStoreView();
+      this.errorListTabPage = new System.Windows.Forms.TabPage();
+      this.variableStoreView = new HeuristicLab.Scripting.Views.VariableStoreView();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.compileButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -70,9 +74,9 @@ namespace HeuristicLab.HLScript.Views {
       this.splitContainer2.Panel1.SuspendLayout();
       this.splitContainer2.Panel2.SuspendLayout();
       this.splitContainer2.SuspendLayout();
-      this.tabControl1.SuspendLayout();
-      this.errorListTabPage.SuspendLayout();
+      this.infoTabControl.SuspendLayout();
       this.outputTabPage.SuspendLayout();
+      this.errorListTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -90,7 +94,7 @@ namespace HeuristicLab.HLScript.Views {
       // 
       this.compilationLabel.AutoSize = true;
       this.compilationLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-      this.compilationLabel.Location = new System.Drawing.Point(33, 32);
+      this.compilationLabel.Location = new System.Drawing.Point(66, 32);
       this.compilationLabel.Name = "compilationLabel";
       this.compilationLabel.Size = new System.Drawing.Size(69, 13);
       this.compilationLabel.TabIndex = 3;
@@ -99,7 +103,7 @@ namespace HeuristicLab.HLScript.Views {
       // startStopButton
       // 
       this.startStopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
-      this.startStopButton.Location = new System.Drawing.Point(3, 26);
+      this.startStopButton.Location = new System.Drawing.Point(36, 26);
       this.startStopButton.Name = "startStopButton";
       this.startStopButton.Size = new System.Drawing.Size(24, 24);
       this.startStopButton.TabIndex = 1;
@@ -111,6 +115,7 @@ namespace HeuristicLab.HLScript.Views {
       // errorListView
       // 
       this.errorListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.iconColumnHeader,
             this.categoryColumnHeader,
             this.errorNumberColumnHeader,
             this.lineColumnHeader,
@@ -123,9 +128,14 @@ namespace HeuristicLab.HLScript.Views {
       this.errorListView.Location = new System.Drawing.Point(3, 3);
       this.errorListView.Name = "errorListView";
       this.errorListView.Size = new System.Drawing.Size(623, 79);
+      this.errorListView.SmallImageList = this.imageList;
       this.errorListView.TabIndex = 0;
       this.errorListView.UseCompatibleStateImageBehavior = false;
       this.errorListView.View = System.Windows.Forms.View.Details;
+      // 
+      // iconColumnHeader
+      // 
+      this.iconColumnHeader.Text = "";
       // 
       // categoryColumnHeader
       // 
@@ -134,22 +144,24 @@ namespace HeuristicLab.HLScript.Views {
       // errorNumberColumnHeader
       // 
       this.errorNumberColumnHeader.Text = "Error Number";
-      this.errorNumberColumnHeader.Width = 78;
       // 
       // lineColumnHeader
       // 
       this.lineColumnHeader.Text = "Line";
-      this.lineColumnHeader.Width = 50;
       // 
       // columnColumnHeader
       // 
       this.columnColumnHeader.Text = "Column";
-      this.columnColumnHeader.Width = 50;
       // 
       // descriptionColumnHeader
       // 
       this.descriptionColumnHeader.Text = "Description";
-      this.descriptionColumnHeader.Width = 600;
+      // 
+      // imageList
+      // 
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
       // 
       // codeEditor
       // 
@@ -196,32 +208,21 @@ namespace HeuristicLab.HLScript.Views {
       // 
       // splitContainer2.Panel2
       // 
-      this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
+      this.splitContainer2.Panel2.Controls.Add(this.infoTabControl);
       this.splitContainer2.Size = new System.Drawing.Size(637, 543);
       this.splitContainer2.SplitterDistance = 428;
       this.splitContainer2.TabIndex = 5;
       // 
-      // tabControl1
+      // infoTabControl
       // 
-      this.tabControl1.Controls.Add(this.errorListTabPage);
-      this.tabControl1.Controls.Add(this.outputTabPage);
-      this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.tabControl1.Location = new System.Drawing.Point(0, 0);
-      this.tabControl1.Name = "tabControl1";
-      this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(637, 111);
-      this.tabControl1.TabIndex = 1;
-      // 
-      // errorListTabPage
-      // 
-      this.errorListTabPage.Controls.Add(this.errorListView);
-      this.errorListTabPage.Location = new System.Drawing.Point(4, 22);
-      this.errorListTabPage.Name = "errorListTabPage";
-      this.errorListTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.errorListTabPage.Size = new System.Drawing.Size(629, 85);
-      this.errorListTabPage.TabIndex = 0;
-      this.errorListTabPage.Text = "Error List";
-      this.errorListTabPage.UseVisualStyleBackColor = true;
+      this.infoTabControl.Controls.Add(this.outputTabPage);
+      this.infoTabControl.Controls.Add(this.errorListTabPage);
+      this.infoTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.infoTabControl.Location = new System.Drawing.Point(0, 0);
+      this.infoTabControl.Name = "infoTabControl";
+      this.infoTabControl.SelectedIndex = 0;
+      this.infoTabControl.Size = new System.Drawing.Size(637, 111);
+      this.infoTabControl.TabIndex = 1;
       // 
       // outputTabPage
       // 
@@ -246,6 +247,17 @@ namespace HeuristicLab.HLScript.Views {
       this.outputTextBox.Size = new System.Drawing.Size(623, 79);
       this.outputTextBox.TabIndex = 0;
       this.outputTextBox.WordWrap = false;
+      // 
+      // errorListTabPage
+      // 
+      this.errorListTabPage.Controls.Add(this.errorListView);
+      this.errorListTabPage.Location = new System.Drawing.Point(4, 22);
+      this.errorListTabPage.Name = "errorListTabPage";
+      this.errorListTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.errorListTabPage.Size = new System.Drawing.Size(629, 85);
+      this.errorListTabPage.TabIndex = 0;
+      this.errorListTabPage.Text = "Error List";
+      this.errorListTabPage.UseVisualStyleBackColor = true;
       // 
       // variableStoreView
       // 
@@ -272,9 +284,22 @@ namespace HeuristicLab.HLScript.Views {
       this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
       // 
+      // compileButton
+      // 
+      this.compileButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Script;
+      this.compileButton.Location = new System.Drawing.Point(6, 26);
+      this.compileButton.Name = "compileButton";
+      this.compileButton.Size = new System.Drawing.Size(24, 24);
+      this.compileButton.TabIndex = 8;
+      this.compileButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+      this.toolTip.SetToolTip(this.compileButton, "Compile (F6)");
+      this.compileButton.UseVisualStyleBackColor = true;
+      this.compileButton.Click += new System.EventHandler(this.compileButton_Click);
+      // 
       // ScriptView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.compileButton);
       this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.startStopButton);
       this.Controls.Add(this.compilationLabel);
@@ -286,6 +311,7 @@ namespace HeuristicLab.HLScript.Views {
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
+      this.Controls.SetChildIndex(this.compileButton, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.splitContainer1.Panel1.ResumeLayout(false);
       this.splitContainer1.Panel2.ResumeLayout(false);
@@ -295,10 +321,10 @@ namespace HeuristicLab.HLScript.Views {
       this.splitContainer2.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
       this.splitContainer2.ResumeLayout(false);
-      this.tabControl1.ResumeLayout(false);
-      this.errorListTabPage.ResumeLayout(false);
+      this.infoTabControl.ResumeLayout(false);
       this.outputTabPage.ResumeLayout(false);
       this.outputTabPage.PerformLayout();
+      this.errorListTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -319,9 +345,12 @@ namespace HeuristicLab.HLScript.Views {
     private VariableStoreView variableStoreView;
     private System.Windows.Forms.ColumnHeader errorNumberColumnHeader;
     private System.Windows.Forms.ColumnHeader categoryColumnHeader;
-    private System.Windows.Forms.TabControl tabControl1;
+    private System.Windows.Forms.TabControl infoTabControl;
     private System.Windows.Forms.TabPage errorListTabPage;
     private System.Windows.Forms.TabPage outputTabPage;
     private System.Windows.Forms.TextBox outputTextBox;
+    private System.Windows.Forms.Button compileButton;
+    private System.Windows.Forms.ColumnHeader iconColumnHeader;
+    private System.Windows.Forms.ImageList imageList;
   }
 }

@@ -1,4 +1,25 @@
-﻿using System;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -15,8 +36,8 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using Microsoft.CSharp;
 
-namespace HeuristicLab.HLScript {
-  [Item("Script", "A HeuristicLab script.")]
+namespace HeuristicLab.Scripting {
+  [Item("Script", "An empty C# script.")]
   [Creatable("Scripts")]
   [StorableClass]
   public sealed class Script : NamedItem, IStorableContent {
@@ -26,16 +47,19 @@ namespace HeuristicLab.HLScript {
 @"// use 'vars' to access global variables in the variable store
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 
-namespace UserScripts {
-  public class UserScript : HeuristicLab.HLScript.UserScriptBase {
-    public override void Main() {
-      // type your code here
-    }
-
-    // further classes and methods
-
+public class UserScript : HeuristicLab.Scripting.UserScriptBase {
+  public override void Main() {
+    // type your code here
   }
+
+  // further classes and methods
+
 }";
     #endregion
 
@@ -125,7 +149,8 @@ namespace UserScripts {
       var parameters = new CompilerParameters {
         GenerateExecutable = false,
         GenerateInMemory = true,
-        IncludeDebugInformation = false
+        IncludeDebugInformation = true,
+        WarningLevel = 4
       };
       parameters.ReferencedAssemblies.AddRange(
         GetAssemblies()
@@ -211,11 +236,16 @@ namespace UserScripts {
       var executeMethod = typeof(UserScriptBase).GetMethod(ExecuteMethodName, BindingFlags.NonPublic | BindingFlags.Instance);
       if (executeMethod != null) {
         scriptThread = new Thread(() => {
+          Exception ex = null;
           try {
             OnScriptExecutionStarted();
             executeMethod.Invoke(compiledScript, new[] { VariableStore });
+          } catch (ThreadAbortException) {
+            // the execution was cancelled by the user
+          } catch (TargetInvocationException e) {
+            ex = e.InnerException;
           } finally {
-            OnScriptExecutionFinished();
+            OnScriptExecutionFinished(ex);
           }
         });
         scriptThread.Start();
@@ -249,10 +279,10 @@ namespace UserScripts {
       if (handler != null) handler(this, EventArgs.Empty);
     }
 
-    public event EventHandler ScriptExecutionFinished;
-    private void OnScriptExecutionFinished() {
+    public event EventHandler<EventArgs<Exception>> ScriptExecutionFinished;
+    private void OnScriptExecutionFinished(Exception e) {
       var handler = ScriptExecutionFinished;
-      if (handler != null) handler(this, EventArgs.Empty);
+      if (handler != null) handler(this, new EventArgs<Exception>(e));
     }
 
     public event EventHandler<EventArgs<string>> ConsoleOutputChanged;
