@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleCrossover", "A scheduling crossover operation.")]
   [StorableClass]
-  public abstract class ScheduleCrossover : SingleSuccessorOperator, IScheduleCrossover, IStochasticOperator {
+  public abstract class ScheduleCrossover : InstrumentedOperator, IScheduleCrossover, IStochasticOperator {
 
     public ILookupParameter<IScheduleEncoding> ChildParameter {
       get { return (ILookupParameter<IScheduleEncoding>)Parameters["Child"]; }

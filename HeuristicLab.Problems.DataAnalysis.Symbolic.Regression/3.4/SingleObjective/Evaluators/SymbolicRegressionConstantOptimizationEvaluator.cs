@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Parameters.Add(new FixedValueParameter<BoolValue>(UpdateConstantsInTreeParameterName, "Determines if the constants in the tree should be overwritten by the optimized constants.", new BoolValue(true)));
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       double quality;
       if (RandomParameter.ActualValue.NextDouble() < ConstantOptimizationProbability.Value) {
@@ -120,10 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
       QualityParameter.ActualValue = new DoubleValue(quality);
 
-      if (Successor != null)
-        return ExecutionContext.CreateOperation(Successor);
-      else
-        return null;
+      return base.InstrumentedApply();
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {

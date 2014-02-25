@@ -32,7 +32,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </summary>
   [Item("PermutationManipulator", "A base class for permutation manipulation operators.")]
   [StorableClass]
-  public abstract class PermutationManipulator : SingleSuccessorOperator, IPermutationManipulator, IStochasticOperator {
+  public abstract class PermutationManipulator : InstrumentedOperator, IPermutationManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -53,9 +53,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation which should be manipulated."));
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       Manipulate(RandomParameter.ActualValue, PermutationParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract void Manipulate(IRandom random, Permutation permutation);

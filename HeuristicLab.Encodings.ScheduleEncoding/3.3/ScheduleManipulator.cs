@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleManipulator", "A scheduling manipulation operation.")]
   [StorableClass]
-  public abstract class ScheduleManipulator : SingleSuccessorOperator, IScheduleManipulator, IStochasticOperator {
+  public abstract class ScheduleManipulator : InstrumentedOperator, IScheduleManipulator, IStochasticOperator {
 
     public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
       get { return (ILookupParameter<IScheduleEncoding>)Parameters["ScheduleEncoding"]; }

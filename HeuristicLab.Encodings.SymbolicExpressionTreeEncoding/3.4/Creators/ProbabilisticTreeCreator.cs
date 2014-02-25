@@ -86,7 +86,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName, "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       if (ClonedSymbolicExpressionTreeGrammarParameter.ActualValue == null) {
         SymbolicExpressionTreeGrammarParameter.ActualValue.ReadOnly = true;
         IScope globalScope = ExecutionContext.Scope;
@@ -95,7 +95,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
         globalScope.Variables.Add(new Variable(ClonedSymbolicExpressionTreeGrammarParameterName, (ISymbolicExpressionGrammar)SymbolicExpressionTreeGrammarParameter.ActualValue.Clone()));
       }
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected override ISymbolicExpressionTree Create(IRandom random) {

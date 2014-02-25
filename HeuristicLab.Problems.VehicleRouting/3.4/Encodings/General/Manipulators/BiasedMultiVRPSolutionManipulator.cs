@@ -20,17 +20,15 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Analysis;
-using HeuristicLab.Parameters;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("BiasedMultiVRPSolutionManipulator", "Randomly selects and applies one of its crossovers every time it is called based on the success progress.")]
@@ -39,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public ValueLookupParameter<DoubleArray> ActualProbabilitiesParameter {
       get { return (ValueLookupParameter<DoubleArray>)Parameters["ActualProbabilities"]; }
     }
-    
+
     public ValueLookupParameter<StringValue> SuccessProgressAnalyisis {
       get { return (ValueLookupParameter<StringValue>)Parameters["SuccessProgressAnalysis"]; }
     }
@@ -62,7 +60,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public BiasedMultiVRPSolutionManipulator()
       : base() {
       Parameters.Add(new ValueLookupParameter<DoubleArray>("ActualProbabilities", "The array of relative probabilities for each operator."));
-      Parameters.Add(new ValueLookupParameter<StringValue>("SuccessProgressAnalysis", "The success progress analyisis to be considered", 
+      Parameters.Add(new ValueLookupParameter<StringValue>("SuccessProgressAnalysis", "The success progress analyisis to be considered",
         new StringValue("ExecutedMutationOperator")));
 
       Parameters.Add(new ValueLookupParameter<DoubleValue>("Factor", "The factor with which the probabilities should be updated", new DoubleValue(0.2)));
@@ -80,7 +78,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       ActualProbabilitiesParameter.Value = null;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IOperator successor = null;
 
       if (ActualProbabilitiesParameter.ActualValue == null) {

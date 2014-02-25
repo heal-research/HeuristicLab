@@ -152,9 +152,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       }
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       if (Operators.Count == 0) throw new InvalidOperationException(Name + ": Please add at least one VRP move generator choose from.");
-      OperationCollection next = new OperationCollection(base.Apply());
+      OperationCollection next = new OperationCollection(base.InstrumentedApply());
 
       for (int i = 0; i < SelectedOperatorsParameter.ActualValue.Value; i++) {
         IRandom random = RandomParameter.ActualValue;

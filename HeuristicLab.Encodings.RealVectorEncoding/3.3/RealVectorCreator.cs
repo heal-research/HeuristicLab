@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </summary>
   [Item("RealVectorCreator", "A base class for operators creating real-valued vectors.")]
   [StorableClass]
-  public abstract class RealVectorCreator : SingleSuccessorOperator, IRealVectorCreator, IStochasticOperator {
+  public abstract class RealVectorCreator : InstrumentedOperator, IRealVectorCreator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -62,9 +62,9 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled."));
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       RealVectorParameter.ActualValue = Create(RandomParameter.ActualValue, LengthParameter.ActualValue, BoundsParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract RealVector Create(IRandom random, IntValue length, DoubleMatrix bounds);

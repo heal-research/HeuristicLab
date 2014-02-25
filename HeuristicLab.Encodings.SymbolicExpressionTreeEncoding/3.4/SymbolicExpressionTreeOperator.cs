@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// </summary>
   [Item("SymbolicExpressionTreeOperator", "A base class for operators for symbolic expression trees.")]
   [StorableClass]
-  public abstract class SymbolicExpressionTreeOperator : SingleSuccessorOperator, IStochasticOperator, ISymbolicExpressionTreeOperator {
+  public abstract class SymbolicExpressionTreeOperator : InstrumentedOperator, IStochasticOperator, ISymbolicExpressionTreeOperator {
     private const string RandomParameterName = "Random";
 
     public override bool CanChangeName {

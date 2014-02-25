@@ -31,7 +31,7 @@ using HeuristicLab.Encodings.PermutationEncoding;
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LAPEvaluator", "Evaluates a solution to the linear assignment problem.")]
   [StorableClass]
-  public class LAPEvaluator : SingleSuccessorOperator, ILAPEvaluator {
+  public class LAPEvaluator : InstrumentedOperator, ILAPEvaluator {
 
     public ILookupParameter<DoubleMatrix> CostsParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Costs"]; }
@@ -46,7 +46,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
     [StorableConstructor]
     protected LAPEvaluator(bool deserializing) : base(deserializing) { }
     protected LAPEvaluator(LAPEvaluator original, Cloner cloner) : base(original, cloner) { }
-    public LAPEvaluator() : base() {
+    public LAPEvaluator()
+      : base() {
       Parameters.Add(new LookupParameter<DoubleMatrix>("Costs", LinearAssignmentProblem.CostsDescription));
       Parameters.Add(new LookupParameter<Permutation>("Assignment", "The assignment solution to evaluate."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the solution."));
@@ -56,7 +57,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
       return new LAPEvaluator(this, cloner);
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var costs = CostsParameter.ActualValue;
       var assignment = AssignmentParameter.ActualValue;
       if (costs == null || assignment == null) throw new InvalidOperationException(Name + ": Cannot find Costs or Assignment.");
@@ -68,7 +69,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
       }
 
       QualityParameter.ActualValue = new DoubleValue(quality);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

@@ -33,7 +33,7 @@ namespace HeuristicLab.Operators {
   /// </summary>
   [Item("MultiOperator", "A base class for operators which apply arbitrary many other operators of a specific type.")]
   [StorableClass]
-  public abstract class MultiOperator<T> : SingleSuccessorOperator, IMultiOperator<T> where T : class, IOperator {
+  public abstract class MultiOperator<T> : InstrumentedOperator, IMultiOperator<T> where T : class, IOperator {
     private List<IValueParameter<T>> operatorParameters;
     protected IEnumerable<IValueParameter<T>> OperatorParameters { get { return operatorParameters; } }
 

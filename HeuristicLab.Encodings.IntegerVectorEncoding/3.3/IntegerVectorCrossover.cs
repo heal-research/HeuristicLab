@@ -57,9 +57,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       ChildParameter.ActualName = "IntegerVector";
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       ChildParameter.ActualValue = Cross(RandomParameter.ActualValue, ParentsParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract IntegerVector Cross(IRandom random, ItemArray<IntegerVector> parents);

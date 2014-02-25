@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
 
     protected abstract void Manipulate(IRandom random, ZhuEncoding individual);
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is ZhuEncoding)) {
         VRPToursParameter.ActualValue = ZhuEncoding.ConvertFrom(solution, ProblemInstance);
@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
 
       Manipulate(RandomParameter.ActualValue, VRPToursParameter.ActualValue as ZhuEncoding);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

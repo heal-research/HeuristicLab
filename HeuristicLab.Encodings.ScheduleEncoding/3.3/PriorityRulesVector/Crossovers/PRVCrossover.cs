@@ -39,11 +39,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
 
     public abstract PRVEncoding Cross(IRandom random, PRVEncoding parent1, PRVEncoding parent2);
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var parents = ParentsParameter.ActualValue;
       ChildParameter.ActualValue =
         Cross(RandomParameter.ActualValue, parents[0] as PRVEncoding, parents[1] as PRVEncoding);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

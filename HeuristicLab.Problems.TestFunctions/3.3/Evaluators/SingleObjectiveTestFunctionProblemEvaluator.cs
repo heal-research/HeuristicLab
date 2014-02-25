@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// </summary>
   [Item("Evaluator", "Base calls for single objective test function evaluators.")]
   [StorableClass]
-  public abstract class SingleObjectiveTestFunctionProblemEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionProblemEvaluator {
+  public abstract class SingleObjectiveTestFunctionProblemEvaluator : InstrumentedOperator, ISingleObjectiveTestFunctionProblemEvaluator {
     /// <summary>
     /// The name of the function
     /// </summary>
@@ -85,11 +85,11 @@ namespace HeuristicLab.Problems.TestFunctions {
       Parameters.Add(new LookupParameter<RealVector>("Point", "The point at which the function should be evaluated."));
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       RealVector point = PointParameter.ActualValue;
       double quality = Evaluate(point);
       QualityParameter.ActualValue = new DoubleValue(quality);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public virtual double Evaluate2D(double x, double y) {

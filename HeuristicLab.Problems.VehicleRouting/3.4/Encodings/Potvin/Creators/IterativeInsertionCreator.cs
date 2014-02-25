@@ -139,10 +139,10 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return result;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       VRPToursParameter.ActualValue = CreateSolution(ProblemInstance, RandomParameter.ActualValue, AdhereTimeWindowsParameter.Value.Value);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

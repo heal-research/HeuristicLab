@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// </summary>
   [Item("BinaryVectorCreator", "A base class for operators creating bool-valued vectors.")]
   [StorableClass]
-  public abstract class BinaryVectorCreator : SingleSuccessorOperator, IBinaryVectorCreator, IStochasticOperator {
+  public abstract class BinaryVectorCreator : InstrumentedOperator, IBinaryVectorCreator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -57,9 +57,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       Parameters.Add(new ValueLookupParameter<IntValue>("Length", "The length of the vector."));
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       BinaryVectorParameter.ActualValue = Create(RandomParameter.ActualValue, LengthParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract BinaryVector Create(IRandom random, IntValue length);

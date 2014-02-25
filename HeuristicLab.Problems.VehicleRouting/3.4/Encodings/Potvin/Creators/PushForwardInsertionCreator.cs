@@ -372,12 +372,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return result;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       VRPToursParameter.ActualValue = CreateSolution(ProblemInstance, RandomParameter.ActualValue,
         Alpha.Value.Value, Beta.Value.Value, Gamma.Value.Value,
         AlphaVariance.Value.Value, BetaVariance.Value.Value, GammaVariance.Value.Value);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

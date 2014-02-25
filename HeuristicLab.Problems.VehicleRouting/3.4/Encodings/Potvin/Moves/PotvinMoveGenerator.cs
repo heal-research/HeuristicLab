@@ -40,13 +40,13 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IVRPEncoding solution = VRPToursParameter.ActualValue;
       if (!(solution is PotvinEncoding)) {
         VRPToursParameter.ActualValue = PotvinEncoding.ConvertFrom(solution, ProblemInstance);
       }
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

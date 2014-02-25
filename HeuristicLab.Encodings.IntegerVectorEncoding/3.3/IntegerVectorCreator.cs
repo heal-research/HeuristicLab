@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// </summary>
   [Item("IntegerVectorCreator", "A base class for operators creating int-valued vectors.")]
   [StorableClass]
-  public abstract class IntegerVectorCreator : SingleSuccessorOperator, IIntegerVectorCreator, IStochasticOperator {
+  public abstract class IntegerVectorCreator : InstrumentedOperator, IIntegerVectorCreator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -78,9 +78,9 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
     #endregion
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       IntegerVectorParameter.ActualValue = Create(RandomParameter.ActualValue, LengthParameter.ActualValue, BoundsParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract IntegerVector Create(IRandom random, IntValue length, IntMatrix bounds);

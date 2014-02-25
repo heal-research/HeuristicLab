@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// </summary>
   [Item("RandomPermutationCreator", "An operator which creates a new random permutation of integer values.")]
   [StorableClass]
-  public sealed class RandomPermutationCreator : SingleSuccessorOperator, IPermutationCreator, IStochasticOperator {
+  public sealed class RandomPermutationCreator : InstrumentedOperator, IPermutationCreator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -71,9 +71,9 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       return new RandomPermutationCreator(this, cloner);
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       PermutationParameter.ActualValue = new Permutation(PermutationType, LengthParameter.ActualValue.Value, RandomParameter.ActualValue);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

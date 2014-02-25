@@ -34,7 +34,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
-  public abstract class SymbolicDataAnalysisEvaluator<T> : SingleSuccessorOperator,
+  public abstract class SymbolicDataAnalysisEvaluator<T> : InstrumentedOperator,
     ISymbolicDataAnalysisEvaluator<T>, ISymbolicDataAnalysisInterpreterOperator, ISymbolicDataAnalysisBoundedOperator, IStochasticOperator
   where T : class, IDataAnalysisProblemData {
     private const string RandomParameterName = "Random";

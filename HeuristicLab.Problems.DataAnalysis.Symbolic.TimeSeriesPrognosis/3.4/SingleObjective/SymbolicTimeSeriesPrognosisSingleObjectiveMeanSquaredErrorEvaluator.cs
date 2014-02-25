@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
 
     public override bool Maximization { get { return false; } }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
         HorizonParameter.ActualValue.Value, ApplyLinearScalingParameter.ActualValue.Value);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public static double Calculate(ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, ITimeSeriesPrognosisProblemData problemData, IEnumerable<int> rows, IntRange evaluationPartition, int horizon, bool applyLinearScaling) {

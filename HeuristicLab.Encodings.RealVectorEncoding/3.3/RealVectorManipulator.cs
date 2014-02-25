@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </summary>
   [Item("RealVectorManipulator", "A base class for operators that manipulate real-valued vectors.")]
   [StorableClass]
-  public abstract class RealVectorManipulator : SingleSuccessorOperator, IRealVectorManipulator, IStochasticOperator {
+  public abstract class RealVectorManipulator : InstrumentedOperator, IRealVectorManipulator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -89,11 +89,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       BoundsCheckerParameter.ValueChanged += new System.EventHandler(BoundsCheckerParameter_ValueChanged);
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       RealVector vector = RealVectorParameter.ActualValue;
       Manipulate(RandomParameter.ActualValue, vector);
 
-      IOperation successor = base.Apply();
+      IOperation successor = base.InstrumentedApply();
       if (BoundsChecker != null) {
         IOperation checkerOperation = ExecutionContext.CreateChildOperation(BoundsChecker);
         if (successor == null) return checkerOperation;

@@ -63,10 +63,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       double quality = Evaluate(ExecutionContext, SymbolicExpressionTreeParameter.ActualValue, ProblemDataParameter.ActualValue, GenerateRowsToEvaluate());
       QualityParameter.ActualValue = new DoubleValue(quality);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public static double Calculate(IClassificationModel model, IClassificationProblemData problemData, IEnumerable<int> rows) {

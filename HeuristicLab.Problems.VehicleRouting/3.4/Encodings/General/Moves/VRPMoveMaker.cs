@@ -98,11 +98,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       }
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       PerformMove();
       UpdateMoveEvaluation();
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

@@ -31,16 +31,16 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingEvaluator", "First applies the decoder operator to obtain a schedule from an encoding and then applies the evaluator to obtain a quality.")]
   [StorableClass]
-  public class SchedulingEvaluator : SingleSuccessorOperator, ISchedulingEvaluator {
+  public class SchedulingEvaluator : InstrumentedOperator, ISchedulingEvaluator {
 
     public IValueLookupParameter<IScheduleDecoder> ScheduleDecoderParameter {
-      get { return (IValueLookupParameter<IScheduleDecoder>) Parameters["ScheduleDecoder"]; }
+      get { return (IValueLookupParameter<IScheduleDecoder>)Parameters["ScheduleDecoder"]; }
     }
     ILookupParameter<IScheduleDecoder> ISchedulingEvaluator.ScheduleDecoderParameter {
       get { return ScheduleDecoderParameter; }
     }
     public IValueLookupParameter<IScheduleEvaluator> ScheduleEvaluatorParameter {
-      get { return (IValueLookupParameter<IScheduleEvaluator>) Parameters["ScheduleEvaluator"]; }
+      get { return (IValueLookupParameter<IScheduleEvaluator>)Parameters["ScheduleEvaluator"]; }
     }
     ILookupParameter<IScheduleEvaluator> ISchedulingEvaluator.ScheduleEvaluatorParameter {
       get { return ScheduleEvaluatorParameter; }
@@ -64,12 +64,12 @@ namespace HeuristicLab.Problems.Scheduling {
       return new SchedulingEvaluator(this, cloner);
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var decoder = ScheduleDecoderParameter.ActualValue;
       var evaluator = ScheduleEvaluatorParameter.ActualValue;
       if (evaluator == null) throw new InvalidOperationException("A ScheduleEvaluator could not be found.");
 
-      var operations = new OperationCollection(base.Apply());
+      var operations = new OperationCollection(base.InstrumentedApply());
       operations.Insert(0, ExecutionContext.CreateChildOperation(evaluator));
       if (decoder != null) // decode before evaluating
         operations.Insert(0, ExecutionContext.CreateChildOperation(decoder));

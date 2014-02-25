@@ -68,12 +68,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       return length;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       Permutation p = PermutationParameter.ActualValue;
       DistanceMatrix dm = DistanceMatrixParameter.ActualValue;
 
       QualityParameter.ActualValue = new DoubleValue(Apply(dm, p));
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

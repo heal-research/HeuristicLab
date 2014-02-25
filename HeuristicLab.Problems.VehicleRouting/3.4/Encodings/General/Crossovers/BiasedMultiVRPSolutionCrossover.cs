@@ -20,17 +20,15 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HeuristicLab.Core;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Common;
 using HeuristicLab.Analysis;
-using HeuristicLab.Parameters;
-using HeuristicLab.Optimization;
-using HeuristicLab.Data;
 using HeuristicLab.Collections;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("BiasedMultiVRPSolutionCrossover", "Randomly selects and applies one of its crossovers every time it is called based on the success progress.")]
@@ -80,7 +78,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       ActualProbabilitiesParameter.Value = null;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IOperator successor = null;
 
       if (ActualProbabilitiesParameter.ActualValue == null) {

@@ -34,12 +34,12 @@ namespace HeuristicLab.Optimization.Operators {
     protected UserDefinedOperator(UserDefinedOperator original, Cloner cloner) : base(original, cloner) { }
     public UserDefinedOperator() : base() { }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       OperationCollection result = new OperationCollection();
       foreach (IOperator op in Operators.CheckedItems.OrderBy(x => x.Index).Select(x => x.Value)) {
         result.Add(ExecutionContext.CreateOperation(op));
       }
-      result.Add(base.Apply());
+      result.Add(base.InstrumentedApply());
       return result;
     }
   }

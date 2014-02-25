@@ -21,7 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -54,11 +53,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
     }
 
-    public sealed override IOperation Apply() {
+    public sealed override IOperation InstrumentedApply() {
       ISymbolicExpressionTree tree = SymbolicExpressionTreeParameter.ActualValue;
       Manipulate(RandomParameter.ActualValue, tree);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     protected abstract void Manipulate(IRandom random, ISymbolicExpressionTree symbolicExpressionTree);

@@ -39,13 +39,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
 
     public abstract JSMEncoding Cross(IRandom random, JSMEncoding parent1, JSMEncoding parent2);
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var parents = ParentsParameter.ActualValue;
 
       ChildParameter.ActualValue =
         Cross(RandomParameter.ActualValue, parents[0] as JSMEncoding, parents[1] as JSMEncoding);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

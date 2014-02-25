@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
 
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       if (ClonedSymbolicExpressionTreeGrammarParameter.ActualValue == null) {
         SymbolicExpressionTreeGrammarParameter.ActualValue.ReadOnly = true;
         IScope globalScope = ExecutionContext.Scope;
@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
 
         globalScope.Variables.Add(new Core.Variable(ClonedSymbolicExpressionTreeGrammarParameterName, (ISymbolicExpressionGrammar)SymbolicExpressionTreeGrammarParameter.ActualValue.Clone()));
       }
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {

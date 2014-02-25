@@ -143,7 +143,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return success;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       ItemArray<IVRPEncoding> parents = new ItemArray<IVRPEncoding>(ParentsParameter.ActualValue.Length);
       for (int i = 0; i < ParentsParameter.ActualValue.Length; i++) {
         IVRPEncoding solution = ParentsParameter.ActualValue[i];
@@ -159,7 +159,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       ChildParameter.ActualValue = Crossover(RandomParameter.ActualValue, parents[0] as PotvinEncoding, parents[1] as PotvinEncoding);
       (ChildParameter.ActualValue as PotvinEncoding).Repair();
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

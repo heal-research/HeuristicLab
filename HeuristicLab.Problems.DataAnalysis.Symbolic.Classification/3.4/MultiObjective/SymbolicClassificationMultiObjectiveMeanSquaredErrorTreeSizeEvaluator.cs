@@ -43,12 +43,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     public override IEnumerable<bool> Maximization { get { return new bool[2] { false, false }; } }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
-      return base.Apply();
+      return base.InstrumentedApply();
     }
 
     public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IClassificationProblemData problemData, IEnumerable<int> rows) {

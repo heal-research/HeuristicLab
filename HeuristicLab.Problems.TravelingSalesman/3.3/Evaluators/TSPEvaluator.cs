@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// </summary>
   [Item("TSPEvaluator", "A base class for operators which evaluate TSP solutions.")]
   [StorableClass]
-  public abstract class TSPEvaluator : SingleSuccessorOperator, ITSPEvaluator {
+  public abstract class TSPEvaluator : InstrumentedOperator, ITSPEvaluator {
     public override bool CanChangeName {
       get { return false; }
     }

@@ -80,8 +80,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
       tabuChecker = cloner.Clone(original.tabuChecker);
     }
 
-    public override IOperation Apply() {
-      IOperation next = base.Apply();
+    public override IOperation InstrumentedApply() {
+      IOperation next = base.InstrumentedApply();
 
       IVRPEncoding solution = VRPToursParameter.ActualValue;
 

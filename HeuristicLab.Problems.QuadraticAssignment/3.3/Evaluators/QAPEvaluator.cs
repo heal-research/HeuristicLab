@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [StorableClass]
-  public class QAPEvaluator : SingleSuccessorOperator, IQAPEvaluator {
+  public class QAPEvaluator : InstrumentedOperator, IQAPEvaluator {
 
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
@@ -77,7 +77,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       return impact;
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       Permutation assignment = PermutationParameter.ActualValue;
       DoubleMatrix weights = WeightsParameter.ActualValue;
       DoubleMatrix distanceMatrix = DistancesParameter.ActualValue;
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       double quality = Apply(assignment, weights, distanceMatrix);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }

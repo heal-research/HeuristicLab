@@ -55,7 +55,7 @@ namespace HeuristicLab.Optimization.Operators {
       Parameters.Add(new LookupParameter<IntValue>("NeighborhoodCount", "The number of operators that are available."));
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       if (NeighborhoodCountParameter.ActualValue == null)
         NeighborhoodCountParameter.ActualValue = new IntValue(Operators.CheckedItems.Count());
       else NeighborhoodCountParameter.ActualValue.Value = Operators.CheckedItems.Count();
@@ -63,7 +63,7 @@ namespace HeuristicLab.Optimization.Operators {
       int index = CurrentNeighborhoodIndexParameter.ActualValue.Value;
       var shaker = base.Operators.CheckedItems.SingleOrDefault(x => x.Index == index);
 
-      OperationCollection next = new OperationCollection(base.Apply());
+      OperationCollection next = new OperationCollection(base.InstrumentedApply());
       if (shaker.Value != null)
         next.Insert(0, ExecutionContext.CreateChildOperation(shaker.Value));
 
