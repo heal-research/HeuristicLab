@@ -109,6 +109,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Formatters\SymbolicExpressionTreeLatexFormatter.cs" />
+    <Compile Include="LayoutEngines\BoxesLayoutEngine.cs" />
+    <Compile Include="LayoutEngines\ILayoutEngine.cs" />
+    <Compile Include="LayoutEngines\LayoutNode.cs" />
+    <Compile Include="LayoutEngines\ReingoldTilfordLayoutEngine.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="SymbolicExpressionGrammarAllowedChildSymbolsControl.cs">
       <SubType>UserControl</SubType>
@@ -159,8 +164,8 @@
     <Compile Include="SymbolicExpressionView.Designer.cs">
       <DependentUpon>SymbolicExpressionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="VisualSymbolicExpressionTreeNode.cs" />
-    <Compile Include="VisualSymbolicExpressionTreeNodeConnection.cs" />
+    <Compile Include="VisualTreeNode.cs" />
+    <Compile Include="VisualTreeNodeConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -266,6 +271,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -275,14 +281,14 @@
   </Target>
   -->
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd
 </PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 

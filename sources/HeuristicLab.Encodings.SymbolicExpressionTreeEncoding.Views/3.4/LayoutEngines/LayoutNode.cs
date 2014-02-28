@@ -23,8 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  public class LayoutNode<T> where T : class {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
+  public class LayoutNode<T> : object where T : class {
+    public float Width { get; set; }
+    public float Height { get; set; }
+
     public LayoutNode<T> NextLeft {
       get {
         return Children == null ? Thread : Children.First();
@@ -73,6 +76,33 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           throw new ArgumentNullException("LayoutNode: Content cannot be null.");
         content = value;
       }
+    }
+    /// <summary>
+    /// Translate the position of the layout node according to the given offsets
+    /// </summary>
+    /// <param name="dx"></param>
+    /// <param name="dy"></param>
+    public void Translate(float dx, float dy) {
+      X += dx;
+      Y += dy;
+    }
+
+    public void ResetCoordinates() {
+      X = 0;
+      Y = 0;
+    }
+
+    /// <summary>
+    /// Reset layout-related parameters
+    /// </summary>
+    public void Reset() {
+      Ancestor = this;
+      Thread = null;
+      Change = 0;
+      Shift = 0;
+      Prelim = 0;
+      Mod = 0;
+      ResetCoordinates();
     }
   }
 }

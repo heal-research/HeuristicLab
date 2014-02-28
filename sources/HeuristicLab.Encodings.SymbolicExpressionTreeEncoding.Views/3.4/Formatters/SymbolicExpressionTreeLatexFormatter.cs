@@ -27,7 +27,7 @@ using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
-namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   [Item("LaTeX/PDF Formatter", "Formatter for symbolic expression trees for use with latex package tikz.")]
   public class SymbolicExpressionTreeLatexFormatter : NamedItem, ISymbolicExpressionTreeStringFormatter {
     private readonly static Dictionary<string, string> symbolNameMap = new Dictionary<string, string>
@@ -36,11 +36,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       {"StartSymbol","RPB"}
     };
     private readonly ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>();
-    private readonly SymbolicExpressionTreeLayoutAdapter layoutAdapter = new SymbolicExpressionTreeLayoutAdapter();
 
     public SymbolicExpressionTreeLatexFormatter()
       : base("LaTeX/PDF Formatter", "Formatter for symbolic expression trees for use with latex package tikz.") {
-      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>();
+      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> {
+        HorizontalSpacing = 2,
+        VerticalSpacing = 2,
+        NodeWidth = 8,
+        NodeHeight = 4
+      };
     }
 
     protected SymbolicExpressionTreeLatexFormatter(SymbolicExpressionTreeLatexFormatter original, Cloner cloner)
@@ -53,11 +57,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
       layoutEngine.Reset();
-      var layoutNodes = layoutAdapter.Convert(symbolicExpressionTree).ToList();
-      layoutEngine.Root = layoutNodes[0];
-      layoutEngine.AddNodes(layoutNodes);
+      var root = symbolicExpressionTree.Root;
+      var actualRoot = root.SubtreeCount == 0 ? root.GetSubtree(0) : root;
+      layoutEngine.Initialize(actualRoot, x => x.Subtrees);
       layoutEngine.CalculateLayout();
-      var nodeCoordinates = layoutEngine.GetNodeCoordinates();
+      var nodeCoordinates = layoutEngine.GetCoordinates();
       var sb = new StringBuilder();
       var nl = Environment.NewLine;
       double ws = 1;

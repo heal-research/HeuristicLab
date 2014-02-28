@@ -28,6 +28,8 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.PluginInfrastructure;
 
+using VisualSymbolicExpressionTreeNode = HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.VisualTreeNode<HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ISymbolicExpressionTreeNode>;
+
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   public sealed partial class SymbolicExpressionGrammarAllowedChildSymbolsControl : UserControl {
     private ObservableList<ISymbolicExpressionTreeNode> selectedSymbolicExpressionTreeNodes;
@@ -161,7 +163,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         selectedSymbolicExpressionTreeNodes.Clear();
 
       VisualSymbolicExpressionTreeNode clickedNode = (VisualSymbolicExpressionTreeNode)sender;
-      var selectedNode = clickedNode.SymbolicExpressionTreeNode;
+      var selectedNode = clickedNode.Content;
       if (selectedNode.SubtreeCount == 0) {
         if (!selectedSymbolicExpressionTreeNodes.Contains(selectedNode))
           selectedSymbolicExpressionTreeNodes.Add(selectedNode);
@@ -206,7 +208,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         Point coordinates = symbolicExpressionTreeChart.PointToClient(new Point(e.X, e.Y));
         var visualNode = symbolicExpressionTreeChart.FindVisualSymbolicExpressionTreeNodeAt(coordinates.X, coordinates.Y);
         if (visualNode != null) {
-          var node = visualNode.SymbolicExpressionTreeNode;
+          var node = visualNode.Content;
           var root = symbolicExpressionTreeChart.Tree.Root;
           if (node == root || node.Parent == root) e.Effect = DragDropEffects.Copy;
         }
@@ -222,13 +224,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       var symbol = data as ISymbol;
       var symbols = data as IEnumerable<ISymbol>;
 
-      if (node.SymbolicExpressionTreeNode == root) {
+      if (node.Content == root) {
         if (symbol != null)
           Grammar.AddAllowedChildSymbol(root.Symbol, symbol);
         else if (symbols != null)
           foreach (var s in symbols) Grammar.AddAllowedChildSymbol(root.Symbol, s);
       } else {
-        int argumentIndex = root.IndexOfSubtree(node.SymbolicExpressionTreeNode);
+        int argumentIndex = root.IndexOfSubtree(node.Content);
         if (symbol != null)
           Grammar.AddAllowedChildSymbol(root.Symbol, symbol, argumentIndex);
         else if (symbols != null)

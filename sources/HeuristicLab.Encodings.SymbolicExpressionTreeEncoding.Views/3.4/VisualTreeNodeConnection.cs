@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  public class VisualSymbolicExpressionTreeNodeConnection : object {
+  public class VisualTreeNodeConnection : object {
     private static readonly Color defaultLineColor = Color.Black;
     private static readonly DashStyle defaultDashStyle = DashStyle.Solid;
 
@@ -39,7 +39,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       set { dashStyle = value; }
     }
 
-    public VisualSymbolicExpressionTreeNodeConnection()
+    public VisualTreeNodeConnection()
       : base() {
       lineColor = defaultLineColor;
       dashStyle = defaultDashStyle;
