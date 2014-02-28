@@ -96,8 +96,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void treeChart_SymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
-      var visualNode = (VisualSymbolicExpressionTreeNode)sender;
-      var symbExprTreeNode = (SymbolicExpressionTreeNode)visualNode.SymbolicExpressionTreeNode;
+      var visualNode = (VisualTreeNode<ISymbolicExpressionTreeNode>)sender;
+      var symbExprTreeNode = (SymbolicExpressionTreeNode)visualNode.Content;
       if (symbExprTreeNode == null) return;
       var tree = Content.Model.SymbolicExpressionTree;
       var parent = symbExprTreeNode.Parent;
@@ -125,8 +125,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var impacts = nodeImpacts.Values;
       double max = impacts.Max();
       double min = impacts.Min();
-      foreach (ISymbolicExpressionTreeNode treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
-        VisualSymbolicExpressionTreeNode visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
+      foreach (var treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
+        VisualTreeNode<ISymbolicExpressionTreeNode> visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
 
         if (!(treeNode is ConstantTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
           double impact = nodeImpacts[treeNode];
