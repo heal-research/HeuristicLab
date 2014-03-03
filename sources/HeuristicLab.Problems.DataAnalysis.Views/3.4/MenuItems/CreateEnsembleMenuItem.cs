@@ -22,8 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using HeuristicLab.Core;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
@@ -67,11 +66,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         // check if all solutions in the group are either only regression or only classification solutions
         if (group.All(s => s is IRegressionSolution)) {
           // show all regression ensembles
-          // clone problemdata (N.B. this assumes all solutions are based on the same problem data!)
-          var problemData = (RegressionProblemData)group
-            .OfType<IRegressionSolution>()
-            .First()
-            .ProblemData.Clone();
+          // N.B. this assumes all solutions are based on the same problem data!
+          // the problem data is not cloned because the individual solutions were already cloned
+          var problemData = group.OfType<IRegressionSolution>().First().ProblemData;
           var ensemble = new RegressionEnsembleSolution(problemData);
           ensemble.Name = group.Key + " ensemble";
           var nestedSolutions = group.OfType<RegressionEnsembleSolution>().SelectMany(e => e.RegressionSolutions);
@@ -80,10 +77,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           MainFormManager.MainForm.ShowContent(ensemble);
         } else if (group.All(s => s is IClassificationSolution)) {
           // show all classification ensembles
-          var problemData = (ClassificationProblemData)group
-            .OfType<IClassificationSolution>()
-            .First()
-            .ProblemData.Clone();
+          // N.B. this assumes all solutions are based on the same problem data!
+          // the problem data is not cloned because the individual solutions were already cloned
+          var problemData = (ClassificationProblemData)group.OfType<IClassificationSolution>().First().ProblemData;
           var ensemble = new ClassificationEnsembleSolution(Enumerable.Empty<IClassificationModel>(), problemData);
           ensemble.Name = group.Key + " ensemble";
           var nestedSolutions = group.OfType<ClassificationEnsembleSolution>().SelectMany(e => e.ClassificationSolutions);
@@ -94,8 +90,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private IEnumerable<KeyValuePair<string, IItem>> GetDataAnalysisResults(IContentView view) {
-      var empty = Enumerable.Empty<KeyValuePair<string, IItem>>();
+    private IEnumerable<KeyValuePair<string, IDataAnalysisSolution>> GetDataAnalysisResults(IContentView view) {
+      var empty = Enumerable.Empty<KeyValuePair<string, IDataAnalysisSolution>>();
       if (view == null) return empty;
       if (view.Content == null) return empty;
       if (view.Locked) return empty;
@@ -113,14 +109,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       return empty;
     }
 
-    private IEnumerable<KeyValuePair<string, IItem>> GetDataAnalysisResults(IEnumerable<IRun> runs) {
+    private IEnumerable<KeyValuePair<string, IDataAnalysisSolution>> GetDataAnalysisResults(IEnumerable<IRun> runs) {
+      var cloner = new Cloner();
       var allResults = from r in runs
                        select r.Results;
       return from r in allResults
              from result in r
-             let s = result.Value as IDataAnalysisSolution
+             let s = cloner.Clone(result.Value) as IDataAnalysisSolution
              where s != null
-             select result;
+             select new KeyValuePair<string, IDataAnalysisSolution>(result.Key, s);
     }
   }
 }
