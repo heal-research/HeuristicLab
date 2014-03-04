@@ -254,8 +254,12 @@ namespace HeuristicLab.Optimization.Views {
     private void itemsListView_KeyDown(object sender, KeyEventArgs e) {
       if (e.KeyCode == Keys.Delete) {
         if ((itemsListView.SelectedItems.Count > 0) && !Content.IsReadOnly && !ReadOnly) {
-          foreach (ListViewItem item in itemsListView.SelectedItems)
-            Content.Remove((IRun)item.Tag);
+          if (RunCollection != null) {
+            RunCollection.RemoveRange(itemsListView.SelectedItems.Cast<ListViewItem>().Select(i => (IRun)i.Tag));
+          } else {
+            foreach (ListViewItem item in itemsListView.SelectedItems)
+              Content.Remove((IRun)item.Tag);
+          }
         }
       }
     }
@@ -349,8 +353,12 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void removeButton_Click(object sender, EventArgs e) {
       if (itemsListView.SelectedItems.Count > 0) {
-        foreach (ListViewItem item in itemsListView.SelectedItems)
-          Content.Remove((IRun)item.Tag);
+        if (RunCollection != null) {
+          RunCollection.RemoveRange(itemsListView.SelectedItems.Cast<ListViewItem>().Select(i => (IRun)i.Tag));
+        } else {
+          foreach (ListViewItem item in itemsListView.SelectedItems)
+            Content.Remove((IRun)item.Tag);
+        }
         itemsListView.SelectedItems.Clear();
       }
     }
@@ -376,7 +384,8 @@ namespace HeuristicLab.Optimization.Views {
       ReadOnly = true;
       try {
         RunCollection.Modify();
-      } finally {
+      }
+      finally {
         ReadOnly = false;
       }
     }
