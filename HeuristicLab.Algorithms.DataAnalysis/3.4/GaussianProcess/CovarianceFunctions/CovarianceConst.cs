@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -35,7 +36,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<DoubleValue> ScaleParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Scale"]; }
     }
-
+    private bool HasFixedScaleParameter {
+      get { return ScaleParameter.Value != null; }
+    }
     [StorableConstructor]
     private CovarianceConst(bool deserializing)
       : base(deserializing) {
@@ -58,7 +61,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
-      return ScaleParameter.Value != null ? 0 : 1;
+      return HasFixedScaleParameter ? 0 : 1;
     }
 
     public void SetParameter(double[] p) {
@@ -70,7 +73,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void GetParameterValues(double[] p, out double scale) {
       int c = 0;
       // gather parameter values
-      if (ScaleParameter.Value != null) {
+      if (HasFixedScaleParameter) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[c]);
@@ -86,7 +89,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => scale;
       cov.CrossCovariance = (x, xt, i, j) => scale;
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, scale, columnIndices);
+      if (HasFixedScaleParameter) {
+        cov.CovarianceGradient = (x, i, j) => Enumerable.Empty<double>();
+      } else {
+        cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, scale, columnIndices);
+      }
       return cov;
     }
 

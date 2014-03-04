@@ -44,6 +44,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<IntValue> DegreeParameter {
       get { return (IValueParameter<IntValue>)Parameters["Degree"]; }
     }
+    private bool HasFixedConstParameter {
+      get { return ConstParameter.Value != null; }
+    }
+    private bool HasFixedScaleParameter {
+      get { return ScaleParameter.Value != null; }
+    }
 
     [StorableConstructor]
     private CovariancePolynomial(bool deserializing)
@@ -70,8 +76,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public int GetNumberOfParameters(int numberOfVariables) {
       return
-        (ConstParameter.Value != null ? 0 : 1) +
-        (ScaleParameter.Value != null ? 0 : 1);
+        (HasFixedConstParameter ? 0 : 1) +
+        (HasFixedScaleParameter ? 0 : 1);
     }
 
     public void SetParameter(double[] p) {
@@ -84,14 +90,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void GetParameterValues(double[] p, out double @const, out double scale) {
       // gather parameter values
       int n = 0;
-      if (ConstParameter.Value != null) {
+      if (HasFixedConstParameter) {
         @const = ConstParameter.Value.Value;
       } else {
         @const = Math.Exp(p[n]);
         n++;
       }
 
-      if (ScaleParameter.Value != null) {
+      if (HasFixedScaleParameter) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[n]);
@@ -105,18 +111,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int degree = DegreeParameter.Value.Value;
       if (degree <= 0) throw new ArgumentException("The degree parameter for CovariancePolynomial must be greater than zero.");
       GetParameterValues(p, out @const, out scale);
+      var fixedConst = HasFixedConstParameter;
+      var fixedScale = HasFixedScaleParameter;
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => scale * Math.Pow(@const + Util.ScalarProd(x, i, j, 1.0, columnIndices), degree);
       cov.CrossCovariance = (x, xt, i, j) => scale * Math.Pow(@const + Util.ScalarProd(x, i, xt, j, 1.0, columnIndices), degree);
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, @const, scale, degree, columnIndices);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, @const, scale, degree, columnIndices, fixedConst, fixedScale);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double c, double scale, int degree, IEnumerable<int> columnIndices) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, double c, double scale, int degree, IEnumerable<int> columnIndices,
+      bool fixedConst, bool fixedScale) {
       double s = Util.ScalarProd(x, i, j, 1.0, columnIndices);
-      yield return c * degree * scale * Math.Pow(c + s, degree - 1);
-      yield return 2 * scale * Math.Pow(c + s, degree);
+      if (!fixedConst) yield return c * degree * scale * Math.Pow(c + s, degree - 1);
+      if (!fixedScale) yield return 2 * scale * Math.Pow(c + s, degree);
     }
   }
 }

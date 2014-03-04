@@ -43,6 +43,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<DoubleValue> ShapeParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Shape"]; }
     }
+
+    private bool HasFixedScaleParameter {
+      get { return ScaleParameter.Value != null; }
+    }
+    private bool HasFixedInverseLengthParameter {
+      get { return InverseLengthParameter.Value != null; }
+    }
+    private bool HasFixedShapeParameter {
+      get { return ShapeParameter.Value != null; }
+    }
+
+
     [StorableConstructor]
     private CovarianceRationalQuadraticIso(bool deserializing)
       : base(deserializing) {
@@ -67,9 +79,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public int GetNumberOfParameters(int numberOfVariables) {
-      return (ScaleParameter.Value != null ? 0 : 1) +
-        (ShapeParameter.Value != null ? 0 : 1) +
-        (InverseLengthParameter.Value != null ? 0 : 1);
+      return (HasFixedScaleParameter ? 0 : 1) +
+        (HasFixedShapeParameter ? 0 : 1) +
+        (HasFixedInverseLengthParameter ? 0 : 1);
     }
 
     public void SetParameter(double[] p) {
@@ -83,19 +95,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private void GetParameterValues(double[] p, out double scale, out double shape, out double inverseLength) {
       int c = 0;
       // gather parameter values
-      if (InverseLengthParameter.Value != null) {
+      if (HasFixedInverseLengthParameter) {
         inverseLength = InverseLengthParameter.Value.Value;
       } else {
         inverseLength = 1.0 / Math.Exp(p[c]);
         c++;
       }
-      if (ScaleParameter.Value != null) {
+      if (HasFixedScaleParameter) {
         scale = ScaleParameter.Value.Value;
       } else {
         scale = Math.Exp(2 * p[c]);
         c++;
       }
-      if (ShapeParameter.Value != null) {
+      if (HasFixedShapeParameter) {
         shape = ShapeParameter.Value.Value;
       } else {
         shape = Math.Exp(p[c]);
@@ -107,6 +119,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ParameterizedCovarianceFunction GetParameterizedCovarianceFunction(double[] p, IEnumerable<int> columnIndices) {
       double scale, shape, inverseLength;
       GetParameterValues(p, out scale, out shape, out inverseLength);
+      var fixedInverseLength = HasFixedInverseLengthParameter;
+      var fixedScale = HasFixedScaleParameter;
+      var fixedShape = HasFixedShapeParameter;
       // create functions
       var cov = new ParameterizedCovarianceFunction();
       cov.Covariance = (x, i, j) => {
@@ -119,19 +134,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double d = Util.SqrDist(x, i, xt, j, inverseLength, columnIndices);
         return scale * Math.Pow(1 + 0.5 * d / shape, -shape);
       };
-      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, shape, inverseLength);
+      cov.CovarianceGradient = (x, i, j) => GetGradient(x, i, j, columnIndices, scale, shape, inverseLength, fixedInverseLength, fixedScale, fixedShape);
       return cov;
     }
 
-    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double shape, double inverseLength) {
+    private static IEnumerable<double> GetGradient(double[,] x, int i, int j, IEnumerable<int> columnIndices, double scale, double shape, double inverseLength,
+      bool fixedInverseLength, bool fixedScale, bool fixedShape) {
       double d = i == j
                    ? 0.0
                    : Util.SqrDist(x, i, j, inverseLength, columnIndices);
 
       double b = 1 + 0.5 * d / shape;
-      yield return scale * Math.Pow(b, -shape - 1) * d;
-      yield return 2 * scale * Math.Pow(b, -shape);
-      yield return scale * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b));
+      if (!fixedInverseLength) yield return scale * Math.Pow(b, -shape - 1) * d;
+      if (!fixedScale) yield return 2 * scale * Math.Pow(b, -shape);
+      if (!fixedShape) yield return scale * Math.Pow(b, -shape) * (0.5 * d / b - shape * Math.Log(b));
     }
   }
 }
