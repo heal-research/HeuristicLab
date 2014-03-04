@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
       chart.ChartAreas[0].CursorX.Interval = 0.01;
 
-      chart.ChartAreas[0].AxisY.Title = "Number of Samples";
+      chart.ChartAreas[0].AxisY.Title = "Ratio of Residuals";
       chart.ChartAreas[0].AxisY.Minimum = 0.0;
       chart.ChartAreas[0].AxisY.Maximum = 1.0;
       chart.ChartAreas[0].AxisY.MajorGrid.Interval = 0.2;
