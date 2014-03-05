@@ -97,7 +97,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.loadProblemDataButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.loadProblemDataButton.UseVisualStyleBackColor = true;
       this.loadProblemDataButton.Click += new System.EventHandler(this.loadProblemDataButton_Click);
-      this.toolTip.SetToolTip(this.loadProblemDataButton, "Load new data");
+      this.toolTip.SetToolTip(this.loadProblemDataButton, "Creates a new data analysis solution with the same model and the loaded problem data.");
       // 
       // openFileDialog
       // 

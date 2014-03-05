@@ -86,6 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       this.exportButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.exportButton.UseVisualStyleBackColor = true;
       this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+      this.toolTip.SetToolTip(this.exportButton, "Exports the symbolic regression solution to Excel.");
       // 
       // SymbolicClassificationSolutionView
       // 
