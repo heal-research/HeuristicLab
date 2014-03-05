@@ -1620,5 +1620,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnChanged();
     }
 
+    public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
+      TimeSeriesPrognosisProblemData timeSeriesProblemData = problemData as TimeSeriesPrognosisProblemData;
+      if (timeSeriesProblemData == null)
+        throw new ArgumentException("The problem data is not a timeseries problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+
+      base.AdjustProblemDataProperties(problemData);
+
+      TrainingHorizon = timeSeriesProblemData.TrainingHorizon;
+      TestHorizon = timeSeriesProblemData.TestHorizon;
+    }
+
   }
 }

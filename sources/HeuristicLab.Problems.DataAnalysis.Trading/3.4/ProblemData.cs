@@ -1649,5 +1649,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
       if (Dataset.GetReadOnlyDoubleValues(PriceChangeVariable).Min() >= 0) throw new ArgumentException("The target variable must contain changes (deltas) of the asset price over time.");
       OnChanged();
     }
+
+    public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
+      throw new NotImplementedException("TODO");
+    }
   }
 }

@@ -37,6 +37,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
       set { base.Content = value; }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      btnSimplify.Enabled = Content != null && !Locked;
+    }
+
     private void btn_SimplifyModel_Click(object sender, EventArgs e) {
       InteractiveSymbolicTimeSeriesPrognosisSolutionSimplifierView view = new InteractiveSymbolicTimeSeriesPrognosisSolutionSimplifierView();
       view.Content = (SymbolicTimeSeriesPrognosisSolution)this.Content.Clone();

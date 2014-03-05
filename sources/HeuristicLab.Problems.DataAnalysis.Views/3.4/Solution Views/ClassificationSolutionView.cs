@@ -19,12 +19,9 @@
  */
 #endregion
 
-using System;
 using System.Windows.Forms;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.MainForm;
-using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("ClassificationSolution View")]
@@ -53,23 +50,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
     #endregion
-
-    protected override bool CheckCompatibilityOfProblemData(IDataAnalysisProblemData problemData) {
-      IClassificationProblemData classificationProblemData = problemData as IClassificationProblemData;
-      if (classificationProblemData == null) {
-        ErrorHandling.ShowErrorDialog(this, new ArgumentException("The problem data is no classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided."));
-        return false;
-      }
-
-      if (!classificationProblemData.TargetVariable.Equals(Content.ProblemData.TargetVariable)) {
-        string message = "The target variables are not matching. Old target variable: '"
-                         + Content.ProblemData.TargetVariable
-                         + "'. New targetvariable: '" + classificationProblemData.TargetVariable + "'";
-        ErrorHandling.ShowErrorDialog(this, new InvalidOperationException(message));
-        return false;
-      }
-
-      return base.CheckCompatibilityOfProblemData(problemData);
-    }
   }
 }

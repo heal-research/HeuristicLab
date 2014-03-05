@@ -19,7 +19,6 @@
  */
 #endregion
 
-
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   partial class DataAnalysisSolutionView {
     /// <summary> 
@@ -45,8 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.exportButton = new System.Windows.Forms.Button();
-      this.exportFileDialog = new System.Windows.Forms.SaveFileDialog();
+      this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
       this.loadProblemDataButton = new System.Windows.Forms.Button();
       this.loadProblemDataFileDialog = new System.Windows.Forms.OpenFileDialog();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -56,46 +54,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.itemsGroupBox.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
+      //
+      // itemslistView
+      //
+      this.itemsListView.Location = new System.Drawing.Point(this.itemsListView.Location.X, this.itemsListView.Location.Y + 3);
+      //
+      // detailsGroupBox
+      //
+      this.detailsGroupBox.Location = new System.Drawing.Point(this.detailsGroupBox.Location.X, this.detailsGroupBox.Location.Y + 3);
+      //
       // 
       // splitContainer
       // 
       // 
       // splitContainer.Panel2
       // 
-      this.splitContainer.Panel2.Controls.Add(this.loadProblemDataButton);
-      this.splitContainer.Panel2.Controls.Add(this.exportButton);
+      this.splitContainer.Panel2.Controls.Add(this.flowLayoutPanel);
       // 
       // itemsGroupBox
       // 
       this.itemsGroupBox.Text = "Data Analysis Solution";
-      // 
-      // addButton
-      // 
-      this.toolTip.SetToolTip(this.addButton, "Add");
-      // 
-      // removeButton
-      // 
-      this.toolTip.SetToolTip(this.removeButton, "Remove");
-      // 
-      // exportButton
-      // 
-      this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.exportButton.Location = new System.Drawing.Point(194, 3);
-      this.exportButton.Name = "exportButton";
-      this.exportButton.Size = new System.Drawing.Size(75, 24);
-      this.exportButton.TabIndex = 6;
-      this.exportButton.Text = "Export";
-      this.exportButton.UseVisualStyleBackColor = true;
-      this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
+      //
+      // flowLayoutPanel
+      //
+      this.flowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+      this.flowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+      this.flowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+      this.flowLayoutPanel.Padding = new System.Windows.Forms.Padding(3, 0, 3, 0);
+      this.flowLayoutPanel.Size = new System.Drawing.Size(266, 30);
+      this.flowLayoutPanel.Controls.Add(this.loadProblemDataButton);
       //
       // loadProblemDataButton
       //
-      this.loadProblemDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.loadProblemDataButton.Location = new System.Drawing.Point(3, 3);
+      this.loadProblemDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+      this.loadProblemDataButton.AutoSize = true;
+      this.loadProblemDataButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
+      this.loadProblemDataButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.loadProblemDataButton.Name = "loadProblemDataButton";
-      this.loadProblemDataButton.Size = new System.Drawing.Size(75, 24);
-      this.loadProblemDataButton.TabIndex = 7;
-      this.loadProblemDataButton.Text = "Load Data";
+      this.loadProblemDataButton.Size = new System.Drawing.Size(105, 24);
+      this.loadProblemDataButton.TabIndex = 6;
+      this.loadProblemDataButton.Text = "Load new Data";
+      this.loadProblemDataButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.loadProblemDataButton.UseVisualStyleBackColor = true;
       this.loadProblemDataButton.Click += new System.EventHandler(this.loadProblemDataButton_Click);
       this.toolTip.SetToolTip(this.loadProblemDataButton, "Load new data");
@@ -121,10 +120,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     #endregion
 
-    private System.Windows.Forms.SaveFileDialog exportFileDialog;
-    protected System.Windows.Forms.Button exportButton;
     protected System.Windows.Forms.Button loadProblemDataButton;
     protected System.Windows.Forms.OpenFileDialog loadProblemDataFileDialog;
+    protected System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 
   }
 }

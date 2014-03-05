@@ -99,6 +99,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public string TargetVariable {
       get { return TargetVariableParameter.Value.Value; }
+      set {
+        if (value == null) throw new ArgumentNullException("targetVariable", "The provided value for the targetVariable is null.");
+        if (value == TargetVariable) return;
+
+        var matchingParameterValue = TargetVariableParameter.ValidValues.FirstOrDefault(v => v.Value == value);
+        if (matchingParameterValue == null) throw new ArgumentException("The provided value is not valid as the targetVariable.", "targetVariable");
+        TargetVariableParameter.Value = matchingParameterValue;
+      }
     }
 
     [StorableConstructor]
@@ -140,6 +148,32 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     private void TargetVariableParameter_ValueChanged(object sender, EventArgs e) {
       OnChanged();
+    }
+
+    protected override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      IRegressionProblemData regressionProblemData = problemData as IRegressionProblemData;
+      if (regressionProblemData == null)
+        throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+
+      var returnValue = base.IsProblemDataCompatible(problemData, out errorMessage);
+      //check targetVariable
+      if (problemData.InputVariables.All(var => var.Value != TargetVariable)) {
+        errorMessage = string.Format("The target variable {0} is not present in the new problem data.", TargetVariable)
+                       + Environment.NewLine + errorMessage;
+        return false;
+      }
+      return returnValue;
+    }
+
+    public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      RegressionProblemData regressionProblemData = problemData as RegressionProblemData;
+      if (regressionProblemData == null)
+        throw new ArgumentException("The problem data is not a regression problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+
+      base.AdjustProblemDataProperties(problemData);
+      TargetVariable = regressionProblemData.TargetVariable;
     }
   }
 }

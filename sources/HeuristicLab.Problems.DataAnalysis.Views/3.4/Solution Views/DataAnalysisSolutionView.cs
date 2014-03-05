@@ -21,10 +21,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
@@ -53,13 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       base.SetEnabledStateOfControls();
       addButton.Enabled = false;
       removeButton.Enabled = false;
-      if (Content == null) {
-        exportButton.Enabled = false;
-        loadProblemDataButton.Enabled = false;
-      } else {
-        exportButton.Enabled = !Locked;
-        loadProblemDataButton.Enabled = !Locked;
-      }
+      loadProblemDataButton.Enabled = Content != null && !Locked;
     }
 
     protected override void RegisterContentEvents() {
@@ -132,48 +124,33 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected virtual void loadProblemDataButton_Click(object sender, EventArgs e) {
       if (loadProblemDataFileDialog.ShowDialog(this) != DialogResult.OK) return;
-      object hlFile = XmlParser.Deserialize(loadProblemDataFileDialog.FileName);
+      try {
+        object hlFile = XmlParser.Deserialize(loadProblemDataFileDialog.FileName);
 
-      IDataAnalysisProblemData problemData = null;
-      if (hlFile is IDataAnalysisProblemData) {
-        problemData = (IDataAnalysisProblemData)hlFile;
-      } else if (hlFile is IDataAnalysisProblem) {
-        problemData = ((IDataAnalysisProblem)hlFile).ProblemData;
-      } else if (hlFile is IDataAnalysisSolution) {
-        problemData = ((IDataAnalysisSolution)hlFile).ProblemData;
-      }
+        IDataAnalysisProblemData problemData = null;
+        if (hlFile is IDataAnalysisProblemData) {
+          problemData = (IDataAnalysisProblemData)hlFile;
+        } else if (hlFile is IDataAnalysisProblem) {
+          problemData = ((IDataAnalysisProblem)hlFile).ProblemData;
+        } else if (hlFile is IDataAnalysisSolution) {
+          problemData = ((IDataAnalysisSolution)hlFile).ProblemData;
+        }
 
-      if (problemData == null) {
-        ErrorHandling.ShowErrorDialog(this, new NullReferenceException("The problem data is null." + Environment.NewLine
-                                      + "The .hl-file contains no DataAnalysisProblemData or DataAnylsisProblem."));
-        return;
-      }
+        if (problemData == null)
+          throw new InvalidOperationException("The chosen HeuristicLab file does not contain a ProblemData, Problem, or DataAnalysisSolution.");
 
-      if (CheckCompatibilityOfProblemData(problemData)) {
         var solution = (IDataAnalysisSolution)Content.Clone();
+        problemData.AdjustProblemDataProperties(solution.ProblemData);
         solution.ProblemData = problemData;
-        solution.Name += " with loaded problem data (" + loadProblemDataFileDialog + ")";
+        if (!solution.Name.EndsWith(" with loaded problemData"))
+          solution.Name += " with loaded problemData";
         MainFormManager.MainForm.ShowContent(solution);
       }
-    }
-
-    private void exportButton_Click(object sender, EventArgs e) {
-      var exporters = ApplicationManager.Manager.GetInstances<IDataAnalysisSolutionExporter>()
-        .Where(exporter => exporter.Supports(Content)).ToArray();
-      exportFileDialog.Filter = exporters.Skip(1)
-        .Aggregate(exporters.First().FileTypeFilter, (s, exporter) => s + "|" + exporter.FileTypeFilter);
-      var result = exportFileDialog.ShowDialog();
-      if (result == DialogResult.OK) {
-
-        var name = exportFileDialog.FileName;
-        var selectedExporter = exporters.Single(exporter => exporter.FileTypeFilter == exportFileDialog.Filter);
-
-        using (BackgroundWorker bg = new BackgroundWorker()) {
-          MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Exportion solution to " + name + ".");
-          bg.DoWork += (_, __) => selectedExporter.Export(Content, name);
-          bg.RunWorkerCompleted += (_, __) => MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
-          bg.RunWorkerAsync();
-        }
+      catch (InvalidOperationException invalidOperationException) {
+        ErrorHandling.ShowErrorDialog(this, invalidOperationException);
+      }
+      catch (ArgumentException argumentException) {
+        ErrorHandling.ShowErrorDialog(this, argumentException);
       }
     }
 
@@ -223,9 +200,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected override void itemsListView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = false;
       if (ReadOnly) return;
+      if (e.Effect != DragDropEffects.Copy) return;
 
       var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
-      if (dropData is DataAnalysisProblemData) validDragOperation = true;
+      if (dropData is IDataAnalysisProblemData) validDragOperation = true;
       else if (dropData is IDataAnalysisProblem) validDragOperation = true;
       else if (dropData is IValueParameter) {
         var param = (IValueParameter)dropData;
@@ -247,26 +225,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         problemData = param.Value as DataAnalysisProblemData;
       }
       if (problemData == null) return;
-      CheckCompatibilityOfProblemData(problemData);
-      Content.ProblemData = (IDataAnalysisProblemData)problemData.Clone();
+
+      try {
+        problemData.AdjustProblemDataProperties(Content.ProblemData);
+        Content.ProblemData = problemData;
+
+        if (!Content.Name.EndsWith(" with changed problemData"))
+          Content.Name += " with changed problemData";
+      }
+      catch (InvalidOperationException invalidOperationException) {
+        ErrorHandling.ShowErrorDialog(this, invalidOperationException);
+      }
+      catch (ArgumentException argumentException) {
+        ErrorHandling.ShowErrorDialog(this, argumentException);
+      }
     }
     #endregion
 
-    #region load problem data
-    protected virtual bool CheckCompatibilityOfProblemData(IDataAnalysisProblemData problemData) {
-      StringBuilder message = new StringBuilder();
-      List<string> variables = problemData.InputVariables.Select(x => x.Value).ToList();
-      foreach (var item in Content.ProblemData.InputVariables.CheckedItems) {
-        if (!variables.Contains(item.Value.Value))
-          message.AppendLine("Input variable '" + item.Value.Value + "' is not in the new problem data.");
-      }
-
-      if (message.Length != 0) {
-        ErrorHandling.ShowErrorDialog(this, new InvalidOperationException(message.ToString()));
-        return false;
-      }
-      return true;
-    }
-    #endregion
   }
 }

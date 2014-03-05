@@ -19,6 +19,7 @@
  */
 #endregion
 
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   partial class SymbolicRegressionSolutionView {
     /// <summary> 
@@ -44,6 +45,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.exportButton = new System.Windows.Forms.Button();
+      this.exportFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.btnSimplify = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
@@ -53,31 +56,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
-      // splitContainer
+      // flowLayoutPanel
       // 
-      // 
-      // splitContainer.Panel1
-      // 
-      this.splitContainer.Panel1.Controls.Add(this.btnSimplify);
-      // 
-      // addButton
-      // 
-      this.toolTip.SetToolTip(this.addButton, "Add");
-      // 
-      // removeButton
-      // 
-      this.toolTip.SetToolTip(this.removeButton, "Remove");
+      this.flowLayoutPanel.Controls.Add(this.btnSimplify);
+      this.flowLayoutPanel.Controls.Add(this.exportButton);
       // 
       // btnSimplify
       // 
-      this.btnSimplify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSimplify.Location = new System.Drawing.Point(172, 4);
+      this.btnSimplify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+      this.btnSimplify.Image = HeuristicLab.Common.Resources.VSImageLibrary.FormulaEvaluator;
+      this.btnSimplify.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnSimplify.Name = "btnSimplify";
-      this.btnSimplify.Size = new System.Drawing.Size(75, 23);
-      this.btnSimplify.TabIndex = 6;
-      this.btnSimplify.Text = "Simplify";
+      this.btnSimplify.TabIndex = 7;
+      this.btnSimplify.Size = new System.Drawing.Size(105, 24);
+      this.btnSimplify.Text = "Simplify Model";
+      this.btnSimplify.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.btnSimplify.UseVisualStyleBackColor = true;
       this.btnSimplify.Click += new System.EventHandler(this.btn_SimplifyModel_Click);
+      this.toolTip.SetToolTip(this.btnSimplify, "Simplify solution");
+      // 
+      // exportButton
+      // 
+      this.exportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+      this.exportButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Statistics;
+      this.exportButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.exportButton.Name = "exportButton";
+      this.exportButton.Size = new System.Drawing.Size(105, 24);
+      this.exportButton.TabIndex = 8;
+      this.exportButton.Text = "Export to Excel ";
+      this.exportButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.exportButton.UseVisualStyleBackColor = true;
+      this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
       // 
       // SymbolicRegressionSolutionView
       // 
@@ -94,6 +103,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     }
 
     #endregion
-    private System.Windows.Forms.Button btnSimplify;
+    protected System.Windows.Forms.SaveFileDialog exportFileDialog;
+    protected System.Windows.Forms.Button exportButton;
+    protected System.Windows.Forms.Button btnSimplify;
   }
 }

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -156,6 +157,45 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected virtual void OnChanged() {
       var listeners = Changed;
       if (listeners != null) listeners(this, EventArgs.Empty);
+    }
+
+    protected virtual bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      errorMessage = string.Empty;
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+
+      //check allowed input variables
+      StringBuilder message = new StringBuilder();
+      var variables = new HashSet<string>(problemData.InputVariables.Select(x => x.Value));
+      foreach (var item in AllowedInputVariables) {
+        if (!variables.Contains(item))
+          message.AppendLine("Input variable '" + item + "' is not present in the new problem data.");
+      }
+
+      if (message.Length != 0) {
+        errorMessage = message.ToString();
+        return false;
+      }
+      return true;
+
+    }
+
+    public virtual void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
+      DataAnalysisProblemData data = problemData as DataAnalysisProblemData;
+      if (data == null) throw new ArgumentException("The problem data is not a data analysis problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+
+      string errorMessage;
+      if (!data.IsProblemDataCompatible(this, out errorMessage)) {
+        throw new InvalidOperationException(errorMessage);
+      }
+
+      foreach (var inputVariable in InputVariables) {
+        var variable = data.InputVariables.FirstOrDefault(i => i.Value == inputVariable.Value);
+        InputVariables.SetItemCheckedState(inputVariable, variable != null && data.InputVariables.ItemChecked(variable));
+      }
+
+      TrainingPartition.Start = TrainingPartition.End = 0;
+      TestPartition.Start = 0;
+      TestPartition.End = Dataset.Rows;
     }
   }
 }

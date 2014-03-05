@@ -21,6 +21,6 @@
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IRegressionProblemData : IDataAnalysisProblemData {
-    string TargetVariable { get; }
+    string TargetVariable { get; set; }
   }
 }
