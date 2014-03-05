@@ -49,8 +49,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.lineColor = Color.Black;
       this.backgroundColor = Color.White;
       this.textFont = new Font(FontFamily.GenericSansSerif, 12);
-      //      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> {
-      layoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode> {
+      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
         HorizontalSpacing = minHorizontalDistance,
@@ -106,6 +105,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       set {
         tree = value;
         if (tree != null) {
+          //the layout engine needs to be initialized here so that the visualNodes and the visualLines dictionaries are populated 
+          InitializeLayout();
           Repaint();
         }
       }
@@ -234,6 +235,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void SymbolicExpressionTreeChart_MouseMove(object sender, MouseEventArgs e) {
+
       VisualTreeNode<ISymbolicExpressionTreeNode> visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
       if (draggedSymbolicExpressionTree != null &&
         draggedSymbolicExpressionTree != visualTreeNode) {
@@ -259,18 +261,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
     #endregion
 
-    #region methods for painting the symbolic expression tree
-    private void DrawFunctionTree(ISymbolicExpressionTree symbExprTree, Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
-      var root = symbExprTree.Root;
-      var actualRoot = root.SubtreeCount == 1 ? root.GetSubtree(0) : root;
-      layoutEngine.NodeWidth = preferredWidth;
-      layoutEngine.NodeHeight = preferredHeight;
-      layoutEngine.HorizontalSpacing = minHDistance;
-      layoutEngine.VerticalSpacing = minVDistance;
+    private void InitializeLayout() {
+      var actualRoot = tree.Root.SubtreeCount == 1 ? tree.Root.GetSubtree(0) : tree.Root;
       layoutEngine.Initialize(actualRoot, n => n.Subtrees, n => n.GetLength(), n => n.GetDepth());
-      layoutEngine.CalculateLayout(Width, Height);
-
+      layoutEngine.CalculateLayout(this.Width, this.Height);
       var visualNodes = layoutEngine.GetVisualNodes().ToList();
+      //populate the visual nodes and visual connections dictionaries
       visualTreeNodes = visualNodes.ToDictionary(x => x.Content, x => x);
       visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection>();
       foreach (var node in visualNodes.Select(n => n.Content)) {
@@ -278,7 +274,19 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           visualLines.Add(new Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>(node, subtree), new VisualTreeNodeConnection());
         }
       }
-      // draw nodes and connections
+    }
+
+    #region methods for painting the symbolic expression tree
+    private void DrawFunctionTree(ISymbolicExpressionTree symbExprTree, Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
+      //we assume here that the layout has already been initialized when the symbolic expression tree was changed
+      //recalculate layout according to new node widths and spacing
+      layoutEngine.NodeWidth = preferredWidth;
+      layoutEngine.NodeHeight = preferredHeight;
+      layoutEngine.HorizontalSpacing = minHDistance;
+      layoutEngine.VerticalSpacing = minVDistance;
+      layoutEngine.CalculateLayout(Width, Height);
+      var visualNodes = visualTreeNodes.Values;
+      //draw nodes and connections
       foreach (var visualNode in visualNodes) {
         DrawTreeNode(visualNode);
         var node = visualNode.Content;
@@ -374,6 +382,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         HorizontalSpacing = minHorizontalDistance,
         VerticalSpacing = minVerticalDistance
       };
+      InitializeLayout();
       Repaint();
     }
 
@@ -384,6 +393,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         HorizontalSpacing = minHorizontalDistance,
         VerticalSpacing = minVerticalDistance
       };
+      InitializeLayout();
       Repaint();
     }
   }

@@ -73,6 +73,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       });
     }
 
+    public IEnumerable<LayoutNode<T>> GetLayoutNodes() {
+      return nodeMap.Values;
+    }
+
     public void AddNode(T content) {
       if (nodeMap.ContainsKey(content)) { throw new ArgumentException("Content already present in the dictionary."); }
       var node = new LayoutNode<T> { Content = content };
