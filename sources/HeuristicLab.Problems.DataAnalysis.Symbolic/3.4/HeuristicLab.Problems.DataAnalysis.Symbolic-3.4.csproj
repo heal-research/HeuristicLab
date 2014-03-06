@@ -125,6 +125,12 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Matching\SymbolicExpressionTreeCanonicalSorter.cs" />
+    <Compile Include="Matching\SymbolicExpressionTreeEqualityComparer.cs" />
+    <Compile Include="Matching\SymbolicExpressionTreeMatching.cs" />
+    <Compile Include="Matching\SymbolicExpressionTreeMaxCommonSequenceCalculator.cs" />
+    <Compile Include="Matching\SymbolicExpressionTreeNodeComparer.cs" />
+    <Compile Include="Matching\SymbolicExpressionTreeNodeSimilarityComparer.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />

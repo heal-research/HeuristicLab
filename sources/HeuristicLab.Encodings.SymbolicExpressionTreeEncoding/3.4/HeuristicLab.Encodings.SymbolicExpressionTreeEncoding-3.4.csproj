@@ -139,6 +139,8 @@
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammarBase.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionTreeGrammar.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeNodeComparer.cs" />
+    <Compile Include="Interfaces\ISymbolicExpressionTreeNodeSimilarityComparer.cs" />
     <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeArchitectureAlteringOperator.cs" />
     <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeGrammarBasedOperator.cs" />
     <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />
