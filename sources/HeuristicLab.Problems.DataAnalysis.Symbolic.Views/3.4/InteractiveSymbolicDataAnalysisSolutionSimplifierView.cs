@@ -51,11 +51,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       base.RegisterContentEvents();
       Content.ModelChanged += Content_Changed;
       Content.ProblemDataChanged += Content_Changed;
+      treeChart.Repainted += treeChart_Repainted;
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.ModelChanged -= Content_Changed;
       Content.ProblemDataChanged -= Content_Changed;
+      treeChart.Repainted -= treeChart_Repainted;
     }
 
     private void Content_Changed(object sender, EventArgs e) {
@@ -67,6 +69,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
       UpdateView();
       viewHost.Content = this.Content;
+    }
+
+    private void treeChart_Repainted(object sender, EventArgs e) {
+      if (nodeImpacts != null && nodeImpacts.Count > 0)
+        PaintNodeImpacts();
     }
 
     private void UpdateView() {
