@@ -57,6 +57,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       };
     }
 
+    private ILayoutEngine<ISymbolicExpressionTreeNode> TreeLayoutEngine {
+      get { return layoutEngine; }
+      set {
+        layoutEngine = value;
+        InitializeLayout();
+        Repaint();
+      }
+    }
+
     public SymbolicExpressionTreeChart(ISymbolicExpressionTree tree)
       : this() {
       this.Tree = tree;
@@ -127,15 +136,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       base.OnResize(e);
       if (this.Width <= 1 || this.Height <= 1)
         this.image = new Bitmap(1, 1);
-      else
+      else {
         this.image = new Bitmap(Width, Height);
+      }
       this.Repaint();
+    }
+
+    public event EventHandler Repainted;//expose this event to notify the parent control that the tree was repainted
+    protected virtual void OnRepaint(object sender, EventArgs e) {
+      var repainted = Repainted;
+      if (repainted != null) {
+        repainted(sender, e);
+      }
     }
 
     public void Repaint() {
       if (!suspendRepaint) {
         this.GenerateImage();
         this.Refresh();
+        OnRepaint(this, EventArgs.Empty);
       }
     }
 
@@ -146,6 +165,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
           foreach (var visualNode in visualTreeNodes.Values) {
             DrawTreeNode(graphics, visualNode);
+            if (visualNode.Content.SubtreeCount > 0) {
+              foreach (var visualSubtree in visualNode.Content.Subtrees.Select(s => visualTreeNodes[s])) {
+                DrawLine(graphics, visualNode, visualSubtree);
+              }
+            }
           }
         }
         this.Refresh();
@@ -169,7 +193,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
         graphics.Clear(backgroundColor);
         if (tree != null) {
-          DrawFunctionTree(tree, graphics, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
+          DrawFunctionTree(graphics, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
         }
       }
     }
@@ -235,7 +259,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void SymbolicExpressionTreeChart_MouseMove(object sender, MouseEventArgs e) {
-
       VisualTreeNode<ISymbolicExpressionTreeNode> visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
       if (draggedSymbolicExpressionTree != null &&
         draggedSymbolicExpressionTree != visualTreeNode) {
@@ -261,10 +284,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
     #endregion
 
+    #region initialize the layout
     private void InitializeLayout() {
-      var actualRoot = tree.Root.SubtreeCount == 1 ? tree.Root.GetSubtree(0) : tree.Root;
+      var actualRoot = tree.Root;
+      if (actualRoot.Symbol is ProgramRootSymbol && actualRoot.SubtreeCount == 1) {
+        actualRoot = tree.Root.GetSubtree(0);
+      }
       layoutEngine.Initialize(actualRoot, n => n.Subtrees, n => n.GetLength(), n => n.GetDepth());
       layoutEngine.CalculateLayout(this.Width, this.Height);
+      UpdateDictionaries();
+    }
+
+    private void UpdateDictionaries() {
       var visualNodes = layoutEngine.GetVisualNodes().ToList();
       //populate the visual nodes and visual connections dictionaries
       visualTreeNodes = visualNodes.ToDictionary(x => x.Content, x => x);
@@ -275,9 +306,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         }
       }
     }
-
+    #endregion
     #region methods for painting the symbolic expression tree
-    private void DrawFunctionTree(ISymbolicExpressionTree symbExprTree, Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
+    private void DrawFunctionTree(Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
       //we assume here that the layout has already been initialized when the symbolic expression tree was changed
       //recalculate layout according to new node widths and spacing
       layoutEngine.NodeWidth = preferredWidth;
@@ -285,6 +316,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       layoutEngine.HorizontalSpacing = minHDistance;
       layoutEngine.VerticalSpacing = minVDistance;
       layoutEngine.CalculateLayout(Width, Height);
+      UpdateDictionaries();//this will reset the visual nodes, therefore colors will be reset to default values
       var visualNodes = visualTreeNodes.Values;
       //draw nodes and connections
       foreach (var visualNode in visualNodes) {
@@ -332,6 +364,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
       }
     }
+
+    protected void DrawLine(Graphics graphics, VisualTreeNode<ISymbolicExpressionTreeNode> startNode, VisualTreeNode<ISymbolicExpressionTreeNode> endNode) {
+      var origin = new Point(startNode.X + startNode.Width / 2, startNode.Y + startNode.Height);
+      var target = new Point(endNode.X + endNode.Width / 2, endNode.Y);
+      graphics.Clip = new Region(new Rectangle(Math.Min(origin.X, target.X), origin.Y, Math.Max(origin.X, target.X), target.Y));
+      var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(startNode.Content, endNode.Content);
+      using (var linePen = new Pen(visualLine.LineColor)) {
+        linePen.DashStyle = visualLine.DashStyle;
+        graphics.DrawLine(linePen, origin, target);
+      }
+    }
     #endregion
     #region save image
     private void saveImageToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -347,7 +390,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (tree == null) return;
       Image image = new Bitmap(Width, Height);
       using (Graphics g = Graphics.FromImage(image)) {
-        DrawFunctionTree(tree, g, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
+        DrawFunctionTree(g, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
       }
       image.Save(filename);
     }
@@ -357,7 +400,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       using (Graphics g = CreateGraphics()) {
         using (Metafile file = new Metafile(filename, g.GetHdc())) {
           using (Graphics emfFile = Graphics.FromImage(file)) {
-            DrawFunctionTree(tree, emfFile, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
+            DrawFunctionTree(emfFile, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
           }
         }
         g.ReleaseHdc();
@@ -376,25 +419,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
 
     private void reingoldTilfordToolStripMenuItem_Click(object sender, EventArgs e) {
-      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> {
+      TreeLayoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
         HorizontalSpacing = minHorizontalDistance,
         VerticalSpacing = minVerticalDistance
       };
-      InitializeLayout();
-      Repaint();
     }
 
     private void boxesToolStripMenuItem_Click(object sender, EventArgs e) {
-      layoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode> {
+      TreeLayoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode> {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
         HorizontalSpacing = minHorizontalDistance,
         VerticalSpacing = minVerticalDistance
       };
-      InitializeLayout();
-      Repaint();
     }
   }
 }

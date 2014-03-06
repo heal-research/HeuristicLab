@@ -104,7 +104,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
 
       var tree = new SymbolicExpressionTree(new SymbolicExpressionTreeNode(Symbol));
-      symbolicExpressionTreeChart.SuspendRepaint = true;
       if (Grammar.GetMaximumSubtreeCount(Symbol) > 0) {
         for (int i = 0; i < Grammar.GetMaximumSubtreeCount(Symbol); i++) {
           var node = new DummySymbol("Subtree " + i).CreateTreeNode();
@@ -117,7 +116,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         }
       }
       symbolicExpressionTreeChart.Tree = tree;
-
+      symbolicExpressionTreeChart.SuspendRepaint = true;
       foreach (var subtreeNode in tree.Root.Subtrees) {
         foreach (var allowedChildNode in subtreeNode.Subtrees) {
           var visualLine = symbolicExpressionTreeChart.GetVisualSymbolicExpressionTreeNodeConnection(subtreeNode, allowedChildNode);
@@ -143,7 +142,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           visualLine.LineColor = Color.LightGray;
         }
       }
-
       symbolicExpressionTreeChart.SuspendRepaint = false;
       UpdateSelectedSymbolicExpressionTreeNodes();
     }
@@ -154,7 +152,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         if (!selectedSymbolicExpressionTreeNodes.Contains(node)) visualNode.FillColor = Color.White;
         else visualNode.FillColor = Color.LightSteelBlue;
       }
-      symbolicExpressionTreeChart.Repaint();
+      symbolicExpressionTreeChart.RepaintNodes();
     }
 
     private void symbolicExpressionTreeChart_SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {

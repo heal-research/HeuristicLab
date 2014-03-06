@@ -130,6 +130,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
+    public IEnumerable<T> GetContentNodes() {
+      return nodeMap.Keys;
+    }
+
     public IEnumerable<VisualTreeNode<T>> GetVisualNodes() {
       return nodeMap.Values;
     }

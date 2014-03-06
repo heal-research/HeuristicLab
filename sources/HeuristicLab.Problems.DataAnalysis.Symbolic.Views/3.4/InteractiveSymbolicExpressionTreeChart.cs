@@ -217,7 +217,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         case EditOp.CutSubtree: {
             if (tempNode.IterateNodesBreadth().Contains(node))
               throw new ArgumentException();// cannot cut/paste a node into itself
-            ModifyTree(Tree, tempNode.Parent, tempNode, null); //remove node from its original parent 	 	 
+            ModifyTree(Tree, tempNode.Parent, tempNode, null); //remove node from its original parent
             ModifyTree(Tree, node, null, tempNode); //insert it as a child to the new parent 
             break;
           }

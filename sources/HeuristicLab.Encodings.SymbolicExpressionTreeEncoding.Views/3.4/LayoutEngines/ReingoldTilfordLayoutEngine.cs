@@ -64,6 +64,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
+    public IEnumerable<T> GetContentNodes() {
+      return nodeMap.Keys;
+    }
+
     public IEnumerable<VisualTreeNode<T>> GetVisualNodes() {
       return nodeMap.Values.Select(x => new VisualTreeNode<T>(x.Content) {
         Width = (int)Math.Round(x.Width),
@@ -190,6 +194,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       foreach (var layoutNode in nodeMap.Values) {
         // reset layout-related parameters 
         layoutNode.Reset();
+        // reset the width and height since they might have been affected by scaling
+        layoutNode.Width = NodeWidth;
+        layoutNode.Height = NodeHeight;
       }
     }
 

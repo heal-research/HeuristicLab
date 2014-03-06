@@ -21,6 +21,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     Func<T, int> GetLength { get; set; }
     Func<T, int> GetDepth { get; set; }
 
+    IEnumerable<T> GetContentNodes();
     IEnumerable<VisualTreeNode<T>> GetVisualNodes();
     Dictionary<T, PointF> GetCoordinates();
   }
