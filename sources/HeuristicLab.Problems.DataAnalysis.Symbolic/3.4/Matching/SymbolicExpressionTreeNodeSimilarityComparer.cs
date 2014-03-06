@@ -8,8 +8,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   public class SymbolicExpressionTreeNodeSimilarityComparer : Item, ISymbolicExpressionTreeNodeSimilarityComparer {
     [StorableConstructor]
-    private SymbolicExpressionTreeNodeSimilarityComparer(bool deserializing) : base(deserializing) { }
-    private SymbolicExpressionTreeNodeSimilarityComparer(SymbolicExpressionTreeNodeSimilarityComparer original, Cloner cloner)
+    protected SymbolicExpressionTreeNodeSimilarityComparer(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionTreeNodeSimilarityComparer(SymbolicExpressionTreeNodeSimilarityComparer original, Cloner cloner)
       : base(original, cloner) {
       matchConstantValues = original.matchConstantValues;
       matchVariableNames = original.matchVariableNames;
