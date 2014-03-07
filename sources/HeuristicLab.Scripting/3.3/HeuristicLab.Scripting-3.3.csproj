@@ -84,6 +84,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Variables.cs" />
     <Compile Include="VariableStore.cs" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Script.cs" />

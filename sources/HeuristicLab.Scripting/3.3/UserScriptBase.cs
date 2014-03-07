@@ -53,43 +53,6 @@ namespace HeuristicLab.Scripting {
       if (handler != null) handler(null, new EventArgs<string>(args));
     }
 
-    protected class Variables : DynamicObject, IEnumerable<KeyValuePair<string, object>> {
-      private readonly VariableStore variableStore;
-
-      public ICollection<string> Keys {
-        get { return variableStore.Keys; }
-      }
-
-      public ICollection<object> Values {
-        get { return variableStore.Values; }
-      }
-
-      public Variables(VariableStore variableStore) {
-        this.variableStore = variableStore;
-      }
-
-      public override bool TryGetMember(GetMemberBinder binder, out object result) {
-        return variableStore.TryGetValue(binder.Name, out result);
-      }
-
-      public override bool TrySetMember(SetMemberBinder binder, object value) {
-        variableStore[binder.Name] = value;
-        return true;
-      }
-
-      public bool Contains(string variableName) {
-        return variableStore.ContainsKey(variableName);
-      }
-
-      public IEnumerator<KeyValuePair<string, object>> GetEnumerator() {
-        return variableStore.GetEnumerator();
-      }
-
-      IEnumerator IEnumerable.GetEnumerator() {
-        return GetEnumerator();
-      }
-    }
-
     protected class EventWriter : TextWriter {
       private readonly UserScriptBase usb;
 

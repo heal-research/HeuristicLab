@@ -37,7 +37,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using Microsoft.CSharp;
 
 namespace HeuristicLab.Scripting {
-  [Item("Script", "An empty C# script.")]
+  [Item("C# Script", "An empty C# script.")]
   [Creatable("Scripts")]
   [StorableClass]
   public sealed class Script : NamedItem, IStorableContent {
