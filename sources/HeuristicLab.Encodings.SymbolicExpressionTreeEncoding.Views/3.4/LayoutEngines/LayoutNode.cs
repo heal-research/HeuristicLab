@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  public class LayoutNode<T> : object where T : class {
+  internal class LayoutNode<T> : object where T : class {
     public float Width { get; set; }
     public float Height { get; set; }
 

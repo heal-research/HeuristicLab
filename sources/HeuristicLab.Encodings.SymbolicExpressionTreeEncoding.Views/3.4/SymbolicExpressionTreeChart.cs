@@ -26,7 +26,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Point = System.Drawing.Point;
+
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   public partial class SymbolicExpressionTreeChart : UserControl {
@@ -49,22 +49,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.lineColor = Color.Black;
       this.backgroundColor = Color.White;
       this.textFont = new Font(FontFamily.GenericSansSerif, 12);
-      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> {
+
+      visualTreeNodes = new Dictionary<ISymbolicExpressionTreeNode, VisualTreeNode<ISymbolicExpressionTreeNode>>();
+      visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection>();
+
+      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
         HorizontalSpacing = minHorizontalDistance,
         VerticalSpacing = minVerticalDistance
       };
+      reingoldTilfordToolStripMenuItem.Checked = true;
     }
 
-    private ILayoutEngine<ISymbolicExpressionTreeNode> TreeLayoutEngine {
-      get { return layoutEngine; }
-      set {
-        layoutEngine = value;
-        InitializeLayout();
-        Repaint();
-      }
-    }
+    //private ILayoutEngine<ISymbolicExpressionTreeNode> TreeLayoutEngine {
+    //  get { return layoutEngine; }
+    //  set {
+    //    layoutEngine = value;
+    //    InitializeLayout();
+    //    Repaint();
+    //  }
+    //}
 
     public SymbolicExpressionTreeChart(ISymbolicExpressionTree tree)
       : this() {
@@ -113,11 +118,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       get { return this.tree; }
       set {
         tree = value;
-        if (tree != null) {
-          //the layout engine needs to be initialized here so that the visualNodes and the visualLines dictionaries are populated 
-          InitializeLayout();
-          Repaint();
-        }
+        Repaint();
       }
     }
 
@@ -284,20 +285,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
     #endregion
 
-    #region initialize the layout
-    private void InitializeLayout() {
+    private void CalculateLayout(int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
+      layoutEngine.NodeWidth = preferredWidth;
+      layoutEngine.NodeHeight = preferredHeight;
+      layoutEngine.HorizontalSpacing = minHDistance;
+      layoutEngine.VerticalSpacing = minVDistance;
+
       var actualRoot = tree.Root;
       if (actualRoot.Symbol is ProgramRootSymbol && actualRoot.SubtreeCount == 1) {
         actualRoot = tree.Root.GetSubtree(0);
       }
-      layoutEngine.Initialize(actualRoot, n => n.Subtrees, n => n.GetLength(), n => n.GetDepth());
-      layoutEngine.CalculateLayout(this.Width, this.Height);
-      UpdateDictionaries();
-    }
 
-    private void UpdateDictionaries() {
-      var visualNodes = layoutEngine.GetVisualNodes().ToList();
-      //populate the visual nodes and visual connections dictionaries
+      var visualNodes = layoutEngine.CalculateLayout(actualRoot, Width, Height).ToList();
       visualTreeNodes = visualNodes.ToDictionary(x => x.Content, x => x);
       visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection>();
       foreach (var node in visualNodes.Select(n => n.Content)) {
@@ -306,17 +305,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         }
       }
     }
-    #endregion
+
     #region methods for painting the symbolic expression tree
     private void DrawFunctionTree(Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
-      //we assume here that the layout has already been initialized when the symbolic expression tree was changed
-      //recalculate layout according to new node widths and spacing
-      layoutEngine.NodeWidth = preferredWidth;
-      layoutEngine.NodeHeight = preferredHeight;
-      layoutEngine.HorizontalSpacing = minHDistance;
-      layoutEngine.VerticalSpacing = minVDistance;
-      layoutEngine.CalculateLayout(Width, Height);
-      UpdateDictionaries();//this will reset the visual nodes, therefore colors will be reset to default values
+      CalculateLayout(preferredWidth, preferredHeight, minHDistance, minVDistance);
       var visualNodes = visualTreeNodes.Values;
       //draw nodes and connections
       foreach (var visualNode in visualNodes) {
@@ -419,21 +411,27 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
 
     private void reingoldTilfordToolStripMenuItem_Click(object sender, EventArgs e) {
-      TreeLayoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> {
+      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
         HorizontalSpacing = minHorizontalDistance,
         VerticalSpacing = minVerticalDistance
       };
+      reingoldTilfordToolStripMenuItem.Checked = true;
+      boxesToolStripMenuItem.Checked = false;
+      Repaint();
     }
 
     private void boxesToolStripMenuItem_Click(object sender, EventArgs e) {
-      TreeLayoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode> {
+      layoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees, n => n.GetLength(), n => n.GetDepth()) {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
         HorizontalSpacing = minHorizontalDistance,
         VerticalSpacing = minVerticalDistance
       };
+      reingoldTilfordToolStripMenuItem.Checked = false;
+      boxesToolStripMenuItem.Checked = true;
+      Repaint();
     }
   }
 }

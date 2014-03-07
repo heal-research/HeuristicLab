@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -35,11 +36,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       {"ProgramRootSymbol", "Prog"},
       {"StartSymbol","RPB"}
     };
-    private readonly ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>();
+
+    private readonly ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> layoutEngine;
 
     public SymbolicExpressionTreeLatexFormatter()
       : base("LaTeX/PDF Formatter", "Formatter for symbolic expression trees for use with latex package tikz.") {
-      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode> {
+      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
         HorizontalSpacing = 2,
         VerticalSpacing = 2,
         NodeWidth = 8,
@@ -56,12 +58,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     public string Format(ISymbolicExpressionTree symbolicExpressionTree) {
-      layoutEngine.Reset();
       var root = symbolicExpressionTree.Root;
       var actualRoot = root.SubtreeCount == 0 ? root.GetSubtree(0) : root;
-      layoutEngine.Initialize(actualRoot, x => x.Subtrees);
-      layoutEngine.CalculateLayout();
-      var nodeCoordinates = layoutEngine.GetCoordinates();
+      var nodeCoordinates = layoutEngine.CalculateLayout(actualRoot).ToDictionary(n => n.Content, n => new PointF(n.X, n.Y));
       var sb = new StringBuilder();
       var nl = Environment.NewLine;
       double ws = 1;

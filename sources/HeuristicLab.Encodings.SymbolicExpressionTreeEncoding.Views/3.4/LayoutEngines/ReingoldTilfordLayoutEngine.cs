@@ -6,7 +6,6 @@ using System.Linq;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   public class ReingoldTilfordLayoutEngine<T> : ILayoutEngine<T> where T : class {
-    private readonly Dictionary<T, LayoutNode<T>> nodeMap; // provides a reverse mapping T => LayoutNode
     public int NodeWidth { get; set; }
     public int NodeHeight { get; set; }
     private int minHorizontalSpacing = 5;
@@ -21,31 +20,40 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       set { minVerticalSpacing = value; }
     }
 
-    public Func<T, IEnumerable<T>> GetChildren { get; set; }
-    public Func<T, int> GetLength { get; set; }
-    public Func<T, int> GetDepth { get; set; }
-    private LayoutNode<T> layoutRoot;
+    private readonly Func<T, IEnumerable<T>> GetChildren;
 
-    public ReingoldTilfordLayoutEngine() {
-      nodeMap = new Dictionary<T, LayoutNode<T>>();
+    public ReingoldTilfordLayoutEngine(Func<T, IEnumerable<T>> GetChildren) {
+      this.GetChildren = GetChildren;
     }
 
-    public ReingoldTilfordLayoutEngine(T root, Func<T, IEnumerable<T>> childrenFunc)
-      : this() {
-      Initialize(root, childrenFunc);
+    public IEnumerable<VisualTreeNode<T>> CalculateLayout(T root) {
+      return CalculateLayout(root, 0, 0);
     }
 
-    public void Initialize(T root, Func<T, IEnumerable<T>> getChildren, Func<T, int> getLength = null, Func<T, int> getDepth = null) {
-      GetChildren = getChildren;
-      Clear();
-      var node = new LayoutNode<T> { Content = root, Width = NodeWidth, Height = NodeHeight };
-      node.Ancestor = node;
-      layoutRoot = node;
-      Expand(node);
+    public IEnumerable<VisualTreeNode<T>> CalculateLayout(T root, float width, float height) {
+      Dictionary<T, LayoutNode<T>> layoutNodeMap = new Dictionary<T, LayoutNode<T>>();
+      var layoutRoot = new LayoutNode<T> { Content = root, Width = NodeWidth, Height = NodeHeight, };
+      layoutRoot.Ancestor = layoutRoot;
+      Expand(layoutRoot, layoutNodeMap);
+
+      FirstWalk(layoutRoot);
+      SecondWalk(layoutRoot, -layoutRoot.Prelim);
+      NormalizeCoordinates(layoutNodeMap.Values);
+      if (height != 0 && width != 0) {
+        FitToBounds(width, height, layoutNodeMap.Values);
+        Center(width, height, layoutNodeMap.Values);
+      }
+
+      return layoutNodeMap.Values.Select(x => new VisualTreeNode<T>(x.Content) {
+        Width = (int)Math.Round(x.Width),
+        Height = (int)Math.Round(x.Height),
+        X = (int)Math.Round(x.X),
+        Y = (int)Math.Round(x.Y)
+      });
     }
 
-    private void Expand(LayoutNode<T> lRoot) {
-      nodeMap.Add(lRoot.Content, lRoot);
+    private void Expand(LayoutNode<T> lRoot, Dictionary<T, LayoutNode<T>> map) {
+      map.Add(lRoot.Content, lRoot);
       var children = GetChildren(lRoot.Content).ToList();
       if (!children.Any()) return;
       lRoot.Children = new List<LayoutNode<T>>(children.Count);
@@ -60,65 +68,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         };
         node.Ancestor = node;
         lRoot.Children.Add(node);
-        Expand(node);
+        Expand(node, map);
       }
     }
 
-    public IEnumerable<T> GetContentNodes() {
-      return nodeMap.Keys;
-    }
-
-    public IEnumerable<VisualTreeNode<T>> GetVisualNodes() {
-      return nodeMap.Values.Select(x => new VisualTreeNode<T>(x.Content) {
-        Width = (int)Math.Round(x.Width),
-        Height = (int)Math.Round(x.Height),
-        X = (int)Math.Round(x.X),
-        Y = (int)Math.Round(x.Y)
-      });
-    }
-
-    public IEnumerable<LayoutNode<T>> GetLayoutNodes() {
-      return nodeMap.Values;
-    }
-
-    public void AddNode(T content) {
-      if (nodeMap.ContainsKey(content)) { throw new ArgumentException("Content already present in the dictionary."); }
-      var node = new LayoutNode<T> { Content = content };
-      nodeMap.Add(content, node);
-    }
-
-    public void AddNode(LayoutNode<T> node) {
-      var content = node.Content;
-      if (nodeMap.ContainsKey(content)) { throw new ArgumentException("Content already present in the dictionary."); }
-      nodeMap.Add(content, node);
-    }
-
-    public void AddNodes(IEnumerable<LayoutNode<T>> nodes) {
-      foreach (var node in nodes)
-        nodeMap.Add(node.Content, node);
-    }
-
-    public LayoutNode<T> GetNode(T content) {
-      LayoutNode<T> layoutNode;
-      nodeMap.TryGetValue(content, out layoutNode);
-      return layoutNode;
-    }
-
-    public void ResetCoordinates() {
-      foreach (var node in nodeMap.Values) {
-        node.ResetCoordinates();
-      }
-    }
-
-    public Dictionary<T, PointF> GetCoordinates() {
-      return nodeMap.ToDictionary(x => x.Key, x => new PointF(x.Value.X, x.Value.Y));
-    }
 
     /// <summary>
     /// Transform LayoutNode coordinates so that all coordinates are positive and start from (0,0)
     /// </summary>
-    private void NormalizeCoordinates() {
-      var nodes = nodeMap.Values.ToList();
+    private static void NormalizeCoordinates(IEnumerable<LayoutNode<T>> nodes) {
       float xmin = 0, ymin = 0;
       foreach (var node in nodes) {
         if (xmin > node.X) xmin = node.X;
@@ -130,23 +88,23 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
-    public void Center(float width, float height) {
+    private void Center(float width, float height, IEnumerable<LayoutNode<T>> nodes) {
       // center layout on screen
-      var bounds = Bounds();
+      var bounds = Bounds(nodes);
       float dx = 0, dy = 0;
       if (width > bounds.Width) { dx = (width - bounds.Width) / 2f; }
       if (height > bounds.Height) { dy = (height - bounds.Height) / 2f; }
-      foreach (var node in nodeMap.Values) { node.Translate(dx, dy); }
+      foreach (var node in nodes) { node.Translate(dx, dy); }
     }
 
-    public void FitToBounds(float width, float height) {
-      var bounds = Bounds();
+    private void FitToBounds(float width, float height, IEnumerable<LayoutNode<T>> nodes) {
+      var bounds = Bounds(nodes);
       var myWidth = bounds.Width;
       var myHeight = bounds.Height;
 
       if (myWidth <= width && myHeight <= height) return; // no need to fit since we are within bounds
 
-      var layers = nodeMap.Values.GroupBy(node => node.Level, node => node).ToList();
+      var layers = nodes.GroupBy(node => node.Level, node => node).ToList();
 
       if (myWidth > width) {
         // need to scale horizontally
@@ -157,11 +115,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         }
         float spacing = minHorizontalSpacing * x;
         foreach (var layer in layers) {
-          var nodes = layer.ToList();
+          var nodesLayer = layer.ToList();
           float minWidth = float.MaxValue;
-          for (int i = 0; i < nodes.Count - 1; ++i) { minWidth = Math.Min(minWidth, nodes[i + 1].X - nodes[i].X); }
+          for (int i = 0; i < nodesLayer.Count - 1; ++i) { minWidth = Math.Min(minWidth, nodesLayer[i + 1].X - nodesLayer[i].X); }
           float w = Math.Min(NodeWidth, minWidth - spacing);
-          foreach (var node in nodes) {
+          foreach (var node in nodesLayer) {
             node.X += (node.Width - w) / 2f;
             node.Width = w;
             //this is a simple solution to ensure that the leftmost and rightmost nodes are not drawn partially offscreen due to scaling and offset
@@ -185,43 +143,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
     }
 
-    public void Clear() {
-      layoutRoot = null;
-      nodeMap.Clear();
-    }
-
-    public void Reset() {
-      foreach (var layoutNode in nodeMap.Values) {
-        // reset layout-related parameters 
-        layoutNode.Reset();
-        // reset the width and height since they might have been affected by scaling
-        layoutNode.Width = NodeWidth;
-        layoutNode.Height = NodeHeight;
-      }
-    }
-
-    public void CalculateLayout() {
-      if (layoutRoot == null) throw new Exception("Layout layoutRoot cannot be null.");
-      Reset(); // reset node parameters like Mod, Shift etc. and set coordinates to 0
-      FirstWalk(layoutRoot);
-      SecondWalk(layoutRoot, -layoutRoot.Prelim);
-      NormalizeCoordinates();
-    }
-
-    public void CalculateLayout(float width, float height) {
-      CalculateLayout();
-      FitToBounds(width, height);
-      Center(width, height);
-    }
 
     /// <summary>
     /// Returns the bounding box for this layout. When the layout is normalized, the rectangle should be [0,0,xmin,xmax].
     /// </summary>
     /// <returns></returns>
-    public RectangleF Bounds() {
+    private RectangleF Bounds(IEnumerable<LayoutNode<T>> nodes) {
       float xmin = 0, xmax = 0, ymin = 0, ymax = 0;
-      var list = nodeMap.Values.ToList();
-      foreach (LayoutNode<T> node in list) {
+      foreach (LayoutNode<T> node in nodes) {
         float x = node.X, y = node.Y;
         if (xmin > x) xmin = x;
         if (xmax < x) xmax = x;

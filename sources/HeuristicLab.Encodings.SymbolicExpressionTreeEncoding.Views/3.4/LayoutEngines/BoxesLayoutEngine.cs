@@ -1,91 +1,75 @@
-﻿
+﻿#region License Information
+
+/* HeuristicLab
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#endregion
+
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   public class BoxesLayoutEngine<T> : ILayoutEngine<T> where T : class {
-    private readonly Dictionary<T, VisualTreeNode<T>> nodeMap;
-
     public int NodeWidth { get; set; }
     public int NodeHeight { get; set; }
     public int HorizontalSpacing { get; set; }
     public int VerticalSpacing { get; set; }
-    private VisualTreeNode<T> layoutRoot;
 
-    public int Width { get; private set; }
-    public int Height { get; private set; }
+    private readonly Func<T, IEnumerable<T>> GetChildren;
+    private readonly Func<T, int> GetLength;
+    private readonly Func<T, int> GetDepth;
 
-    public Func<T, IEnumerable<T>> GetChildren { get; set; }
-    public Func<T, int> GetLength { get; set; }
-    public Func<T, int> GetDepth { get; set; }
+    public BoxesLayoutEngine(Func<T, IEnumerable<T>> GetChildren, Func<T, int> GetLength, Func<T, int> GetDepth) {
+      if (GetChildren == null) throw new ArgumentNullException("GetChildren");
+      if (GetLength == null) throw new ArgumentNullException("GetLength");
+      if (GetDepth == null) throw new ArgumentNullException("GetDepth");
 
-    public BoxesLayoutEngine() {
-      nodeMap = new Dictionary<T, VisualTreeNode<T>>();
+      this.GetChildren = GetChildren;
+      this.GetLength = GetLength;
+      this.GetDepth = GetDepth;
     }
 
-    public void CalculateLayout() {
-      throw new Exception("The BoxesLayoutEngine does not support arbitrary bounds. Please use method CalculateLayout(Width, Height)");
+
+    public IEnumerable<VisualTreeNode<T>> CalculateLayout(T root, float width, float height) {
+      var nodeMap = new Dictionary<T, VisualTreeNode<T>>();
+      CreateVisualNodes(root, nodeMap);
+      RecursiveLayout(nodeMap, nodeMap[root], 0, 0, (int)Math.Round(width), (int)Math.Round(height) / GetDepth(root));
+      return nodeMap.Values;
     }
 
-    public void CalculateLayout(float width, float height) {
-      Width = (int)Math.Round(width);
-      Height = (int)Math.Round(height);
-      Reset();
-      RecursiveLayout(layoutRoot, 0, 0, Width, Height / GetDepth(layoutRoot.Content));
-    }
-
-    public void Initialize(T root, Func<T, IEnumerable<T>> getChildren, Func<T, int> getLength, Func<T, int> getDepth) {
-      if (getChildren == null || getLength == null || getDepth == null)
-        throw new ArgumentNullException("The BoxesLayoutEngine requires all of the lambdas: (getChildren, getLength and getDepth) to be defined.");
-      GetChildren = getChildren;
-      GetLength = getLength;
-      GetDepth = getDepth;
-      Clear();
-      Expand(root); // produce the nodeMap
-      layoutRoot = nodeMap[root];
-    }
-
-    private void Expand(T root) {
+    private void CreateVisualNodes(T root, Dictionary<T, VisualTreeNode<T>> map) {
       var node = new VisualTreeNode<T>(root) {
         PreferredWidth = NodeWidth,
         PreferredHeight = NodeHeight
       };
-      nodeMap.Add(root, node);
+
+      map.Add(root, node);
       var children = GetChildren(root).ToList();
       if (children.Any()) {
         foreach (var child in children) {
-          Expand(child);
+          CreateVisualNodes(child, map);
         }
       }
     }
 
-    public void Center(float width, float height) {
-      // does nothing because the BoxesLayout centers the tree by default
-    }
-
-    public void Clear() {
-      nodeMap.Clear();
-      layoutRoot = null;
-    }
-
-    public void Reset() {
-      foreach (var node in nodeMap.Values) {
-        node.X = 0;
-        node.Y = 0;
-      }
-    }
-
-    public Dictionary<T, PointF> GetCoordinates() {
-      return nodeMap.ToDictionary(x => x.Key, x => new PointF(x.Value.X, x.Value.Y));
-    }
-
-    public void FitToBounds(float width, float height) {
-      // does nothing because the BoxesLayout is by default stretched on the whole drawing area
-    }
-
-    private void RecursiveLayout(VisualTreeNode<T> visualTreeNode, int x, int y, int width, int height) {
+    private void RecursiveLayout(Dictionary<T, VisualTreeNode<T>> nodeMap, VisualTreeNode<T> visualTreeNode, int x, int y, int width, int height) {
       float center_x = x + width / 2;
       float center_y = y + height / 2;
       int actualWidth = width - VerticalSpacing;
@@ -126,16 +110,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       xBoundaries[0] = x;
       for (int i = 0; i < children.Count; i++) {
         xBoundaries[i + 1] = (int)(xBoundaries[i] + (width * (double)GetLength(children[i])) / (GetLength(node) - 1));
-        RecursiveLayout(nodeMap[children[i]], xBoundaries[i], y + height, xBoundaries[i + 1] - xBoundaries[i], height);
+        RecursiveLayout(nodeMap, nodeMap[children[i]], xBoundaries[i], y + height, xBoundaries[i + 1] - xBoundaries[i], height);
       }
-    }
-
-    public IEnumerable<T> GetContentNodes() {
-      return nodeMap.Keys;
-    }
-
-    public IEnumerable<VisualTreeNode<T>> GetVisualNodes() {
-      return nodeMap.Values;
     }
   }
 }
