@@ -119,7 +119,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var qualities = treeIndexes
         .Select(i => tree[i])
         .Take(topN)
-        .AsParallel()
         .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
         .ToArray();
       #endregion

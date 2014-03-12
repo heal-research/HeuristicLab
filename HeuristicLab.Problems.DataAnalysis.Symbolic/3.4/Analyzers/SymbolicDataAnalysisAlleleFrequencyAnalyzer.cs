@@ -74,7 +74,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public static Allele[] CalculateAlleles(ISymbolicExpressionTree solution, int alleleTreedepth) {
       return GetAllSubtreesOfDepth(solution, alleleTreedepth)
-        .AsParallel()
         .Select(t => GetAlleleFromSubtreeOfDepth(t, alleleTreedepth))
         .ToArray();
     }

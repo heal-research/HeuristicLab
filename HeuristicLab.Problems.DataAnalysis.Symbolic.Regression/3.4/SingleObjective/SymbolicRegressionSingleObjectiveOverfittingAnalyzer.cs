@@ -83,7 +83,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       // evaluate on validation partition
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
       double[] validationQuality = SymbolicExpressionTree
-        .AsParallel()
         .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
         .ToArray();
       double r = 0.0;
