@@ -44,7 +44,8 @@ namespace HeuristicLab.Scripting {
     #region Constants
     private const string ExecuteMethodName = "Execute";
     private const string CodeTemplate =
-@"// use 'vars' to access global variables in the variable store
+@"// use 'vars' to access variables in the script's variable store
+// vars has a Contains(string) method to check if a variable exists and implements IEnumerable
 
 using System;
 using System.Linq;
@@ -58,7 +59,7 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
     // type your code here
   }
 
-  // further classes and methods
+  // implement further classes and methods
 
 }";
     #endregion
@@ -116,11 +117,15 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
       if (original.compileErrors != null)
         compileErrors = new CompilerErrorCollection(original.compileErrors);
     }
-
-    public Script()
-      : base("Script", "A HeuristicLab script.") {
+    public Script() {
+      name = ItemName;
+      description = ItemDescription;
       code = CodeTemplate;
       variableStore = new VariableStore();
+    }
+    public Script(string code)
+      : this() {
+      this.code = code;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
