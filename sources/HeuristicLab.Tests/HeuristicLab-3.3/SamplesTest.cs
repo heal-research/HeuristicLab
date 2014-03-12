@@ -264,6 +264,12 @@ namespace HeuristicLab.Tests {
       Assert.AreEqual(0.56758466520692641, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
       Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
       Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
+      var bestTrainingSolution = (IRegressionSolution)ga.Results["Best training solution"].Value;
+      Assert.AreEqual(0.85504801557844745, bestTrainingSolution.TrainingRSquared, 1E-8);
+      Assert.AreEqual(0.86259381948647817, bestTrainingSolution.TestRSquared, 1E-8);
+      var bestValidationSolution = (IRegressionSolution)ga.Results["Best validation solution"].Value;
+      Assert.AreEqual(0.84854338315539746, bestValidationSolution.TrainingRSquared, 1E-8);
+      Assert.AreEqual(0.8662813452656678, bestValidationSolution.TestRSquared, 1E-8);
     }
 
     private GeneticAlgorithm CreateGpSymbolicRegressionSample() {
@@ -376,6 +382,9 @@ namespace HeuristicLab.Tests {
       var bestTrainingSolution = (IClassificationSolution)ga.Results["Best training solution"].Value;
       Assert.AreEqual(0.80875, bestTrainingSolution.TrainingAccuracy, 1E-8);
       Assert.AreEqual(0.795031055900621, bestTrainingSolution.TestAccuracy, 1E-8);
+      var bestValidationSolution = (IClassificationSolution)ga.Results["Best validation solution"].Value;
+      Assert.AreEqual(0.81375, bestValidationSolution.TrainingAccuracy, 1E-8);
+      Assert.AreEqual(0.788819875776398, bestValidationSolution.TestAccuracy, 1E-8);
     }
 
     private GeneticAlgorithm CreateGpSymbolicClassificationSample() {
