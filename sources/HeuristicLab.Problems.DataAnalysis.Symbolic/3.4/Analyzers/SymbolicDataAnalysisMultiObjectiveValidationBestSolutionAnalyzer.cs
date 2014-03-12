@@ -120,7 +120,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       IExecutionContext childContext = (IExecutionContext)ExecutionContext.CreateChildOperation(evaluator);
 
       var qualities = tree
-        .AsParallel()
         .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
         .ToArray();
       for (int i = 0; i < tree.Length; i++) {

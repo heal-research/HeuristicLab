@@ -120,7 +120,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       // evaluate best n training trees on validiation set
       var quality = tree
         .Take(topN)
-        .AsParallel()
         .Select(t => evaluator.Evaluate(childContext, t, problemData, rows))
         .ToArray();
 
