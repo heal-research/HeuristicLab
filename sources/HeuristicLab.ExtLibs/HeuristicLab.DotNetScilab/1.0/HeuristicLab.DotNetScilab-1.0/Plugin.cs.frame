@@ -25,7 +25,8 @@ namespace HeuristicLab.DotNetScilab {
   [Plugin("HeuristicLab.DotNetScilab", "HeuristicLab wrapper for DotNetScilab", "1.0.0.$WCREV$")]
   [PluginFile("HeuristicLab.DotNetScilab-1.0.dll", PluginFileType.Assembly)]
   [PluginFile("DotNetScilab-1.0.dll", PluginFileType.Assembly)]
+  [PluginFile("DotNetScilab-1.0.dll.config", PluginFileType.Data)]
   [PluginFile("DotNetScilab License.txt", PluginFileType.License)]
-  public class HeuristicLabEPPlusPlugin : PluginBase {
+  public class HeuristicLabDotNetScilabPlugin : PluginBase {
   }
 }
