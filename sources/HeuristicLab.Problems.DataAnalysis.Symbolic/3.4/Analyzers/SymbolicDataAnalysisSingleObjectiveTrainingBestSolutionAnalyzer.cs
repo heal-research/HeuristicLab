@@ -34,11 +34,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// </summary>
   [Item("SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer", "An operator that analyzes the training best symbolic data analysis solution for single objective symbolic data analysis problems.")]
   [StorableClass]
-  public abstract class SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<T> : SymbolicDataAnalysisSingleObjectiveAnalyzer
+  public abstract class SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer<T> : SymbolicDataAnalysisSingleObjectiveAnalyzer, IIterationBasedOperator
+
     where T : class, ISymbolicDataAnalysisSolution {
     private const string TrainingBestSolutionParameterName = "Best training solution";
     private const string TrainingBestSolutionQualityParameterName = "Best training solution quality";
+    private const string TrainingBestSolutionGenerationParameterName = "Best training solution generation";
     private const string UpdateAlwaysParameterName = "Always update best solution";
+    private const string IterationsParameterName = "Iterations";
+    private const string MaximumIterationsParameterName = "Maximum Iterations";
 
     #region parameter properties
     public ILookupParameter<T> TrainingBestSolutionParameter {
@@ -47,8 +51,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ILookupParameter<DoubleValue> TrainingBestSolutionQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[TrainingBestSolutionQualityParameterName]; }
     }
+    public ILookupParameter<IntValue> TrainingBestSolutionGenerationParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[TrainingBestSolutionGenerationParameterName]; }
+    }
     public IFixedValueParameter<BoolValue> UpdateAlwaysParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateAlwaysParameterName]; }
+    }
+    public ILookupParameter<IntValue> IterationsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[IterationsParameterName]; }
+    }
+    public IValueLookupParameter<IntValue> MaximumIterationsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumIterationsParameterName]; }
     }
     #endregion
     #region properties
@@ -72,7 +85,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Parameters.Add(new LookupParameter<T>(TrainingBestSolutionParameterName, "The training best symbolic data analyis solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(TrainingBestSolutionQualityParameterName, "The quality of the training best symbolic data analysis solution."));
+      Parameters.Add(new LookupParameter<IntValue>(TrainingBestSolutionGenerationParameterName, "The generation in which the best training solution was found."));
       Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solution should always be updated regardless of its quality.", new BoolValue(false)));
+      Parameters.Add(new LookupParameter<IntValue>(IterationsParameterName, "The number of performed iterations."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumIterationsParameterName, "The maximum number of performed iterations.") { Hidden = true });
       UpdateAlwaysParameter.Hidden = true;
     }
 
@@ -82,6 +98,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solution should always be updated regardless of its quality.", new BoolValue(false)));
         UpdateAlwaysParameter.Hidden = true;
       }
+      if (!Parameters.ContainsKey(TrainingBestSolutionGenerationParameterName))
+        Parameters.Add(new LookupParameter<IntValue>(TrainingBestSolutionGenerationParameterName, "The generation in which the best training solution was found."));
+      if (!Parameters.ContainsKey(IterationsParameterName))
+        Parameters.Add(new LookupParameter<IntValue>(IterationsParameterName, "The number of performed iterations."));
+      if (!Parameters.ContainsKey(MaximumIterationsParameterName))
+        Parameters.Add(new ValueLookupParameter<IntValue>(MaximumIterationsParameterName, "The maximum number of performed iterations.") { Hidden = true });
     }
 
     public override IOperation Apply() {
@@ -103,13 +125,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         IsBetter(bestQuality, TrainingBestSolutionQuality.Value, Maximization.Value))) {
         TrainingBestSolution = CreateSolution(bestTree, bestQuality);
         TrainingBestSolutionQuality = new DoubleValue(bestQuality);
+        if (IterationsParameter.ActualValue != null)
+          TrainingBestSolutionGenerationParameter.ActualValue = new IntValue(IterationsParameter.ActualValue.Value);
 
         if (!results.ContainsKey(TrainingBestSolutionParameter.Name)) {
           results.Add(new Result(TrainingBestSolutionParameter.Name, TrainingBestSolutionParameter.Description, TrainingBestSolution));
           results.Add(new Result(TrainingBestSolutionQualityParameter.Name, TrainingBestSolutionQualityParameter.Description, TrainingBestSolutionQuality));
+          if (TrainingBestSolutionGenerationParameter.ActualValue != null)
+            results.Add(new Result(TrainingBestSolutionGenerationParameter.Name, TrainingBestSolutionGenerationParameter.Description, TrainingBestSolutionGenerationParameter.ActualValue));
         } else {
           results[TrainingBestSolutionParameter.Name].Value = TrainingBestSolution;
           results[TrainingBestSolutionQualityParameter.Name].Value = TrainingBestSolutionQuality;
+          if (TrainingBestSolutionGenerationParameter.ActualValue != null)
+            results[TrainingBestSolutionGenerationParameter.Name].Value = TrainingBestSolutionGenerationParameter.ActualValue;
+
         }
       }
       return base.Apply();
