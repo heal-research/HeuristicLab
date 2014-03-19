@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -27,6 +28,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
@@ -264,6 +266,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainOperator.SelectionPressureParameter.ActualName = "SelectionPressure";
       mainOperator.SelectorParameter.ActualName = SelectorParameter.Name;
       mainOperator.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
+      foreach (var offspringSelector in mainOperator.OperatorGraph.Operators.OfType<OffspringSelector>())
+        offspringSelector.FillPopulationWithParents = true;
 
       islandAnalyzer2.Name = "Island Analyzer (placeholder)";
       islandAnalyzer2.OperatorParameter.ActualName = IslandAnalyzerParameter.Name;

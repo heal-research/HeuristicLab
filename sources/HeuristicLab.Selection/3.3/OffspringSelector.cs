@@ -56,13 +56,31 @@ namespace HeuristicLab.Selection {
       get { return (OperatorParameter)Parameters["OffspringCreator"]; }
     }
 
+    public FixedValueParameter<BoolValue> FillPopulationWithParentsParameter {
+      get { return (FixedValueParameter<BoolValue>)Parameters["FillPopulationWithParents"]; }
+    }
+
     public IOperator OffspringCreator {
       get { return OffspringCreatorParameter.Value; }
       set { OffspringCreatorParameter.Value = value; }
     }
 
+    public bool FillPopulationWithParents {
+      get { return FillPopulationWithParentsParameter.Value.Value; }
+      set { FillPopulationWithParentsParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
     protected OffspringSelector(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("FillPopulationWithParents"))
+        Parameters.Add(new FixedValueParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individuals instead of lucky losers.", new BoolValue(false)));
+      #endregion
+    }
+
     protected OffspringSelector(OffspringSelector original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new OffspringSelector(this, cloner);
@@ -77,6 +95,7 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new LookupParameter<IntValue>("OffspringPopulationWinners", "Temporary store the number of successful offspring in the offspring population."));
       Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("SuccessfulOffspring", "True if the offspring was more successful than its parents.", 2));
       Parameters.Add(new OperatorParameter("OffspringCreator", "The operator used to create new offspring."));
+      Parameters.Add(new FixedValueParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individuals instead of lucky losers.", new BoolValue(false)));
     }
 
     public override IOperation Apply() {
@@ -132,11 +151,16 @@ namespace HeuristicLab.Selection {
           population.Add(currentOffspring);
           successfulOffspringAdded++;
         } else if (worseOffspringNeeded > 0 || tmpSelPress >= maxSelPress) {
-          IScope currentOffspring = offspring.SubScopes[i];
-          offspring.SubScopes.Remove(currentOffspring);
-          i--;
+          IScope currentOffspring;
+          if (!FillPopulationWithParents || worseOffspringNeeded > 0) {
+            currentOffspring = offspring.SubScopes[i];
+            offspring.SubScopes.Remove(currentOffspring);
+            i--;
+            worseOffspringNeeded--;
+          } else {
+            currentOffspring = parents.SubScopes[i];
+          }
           population.Add(currentOffspring);
-          worseOffspringNeeded--;
         }
         tmpSelPress += tmpSelPressInc;
         if (population.Count == populationSize) break;
