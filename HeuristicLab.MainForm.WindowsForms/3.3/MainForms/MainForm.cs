@@ -435,6 +435,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
     /// Removes an existing <see cref="ProgressView"/> from the specified view.
     /// </summary>
     public void RemoveOperationProgressFromView(Control control, bool finishProgress = true) {
+      if (InvokeRequired) {
+        Invoke((Action<Control, bool>)RemoveOperationProgressFromView, control, finishProgress);
+        return;
+      }
+
       IProgress progress;
       if (!viewProgressLookup.TryGetValue(control, out progress))
         throw new ArgumentException("No progress is registered for the specified control.", "control");
@@ -549,8 +554,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       System.Windows.Forms.ToolStripItem item = (System.Windows.Forms.ToolStripItem)sender;
       try {
         ((IActionUserInterfaceItem)item.Tag).Execute();
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, ex);
       }
     }
