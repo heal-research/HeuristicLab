@@ -160,16 +160,14 @@ namespace HeuristicLab.Scripting.Views {
               outputTextBox.Clear();
               Content.Execute();
               running = true;
-            } else
-              infoTabControl.SelectedTab = errorListTabPage;
+            }
           }
           break;
         case Keys.F5 | Keys.Shift:
           if (running) Content.Kill();
           break;
         case Keys.F6:
-          if (!Compile() || Content.CompileErrors.HasWarnings)
-            infoTabControl.SelectedTab = errorListTabPage;
+          Compile();
           break;
       }
       return base.ProcessCmdKey(ref msg, keyData);
@@ -191,6 +189,8 @@ namespace HeuristicLab.Scripting.Views {
         return false;
       } finally {
         ShowCompilationResults();
+        if (Content.CompileErrors.Count > 0)
+          infoTabControl.SelectedTab = errorListTabPage;
         ReadOnly = false;
         Locked = false;
         OnContentChanged();
