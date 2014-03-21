@@ -120,6 +120,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     private ValueParameter<IntValue> MaximumEvaluatedSolutionsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumEvaluatedSolutions"]; }
     }
+    private IFixedValueParameter<BoolValue> FillPopulationWithParentsParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters["FillPopulationWithParents"]; }
+    }
     #endregion
 
     #region Properties
@@ -211,6 +214,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       get { return MaximumEvaluatedSolutionsParameter.Value; }
       set { MaximumEvaluatedSolutionsParameter.Value = value; }
     }
+    public bool FillPopulationWithParents {
+      get { return FillPopulationWithParentsParameter.Value.Value; }
+      set { FillPopulationWithParentsParameter.Value.Value = value; }
+    }
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -246,6 +253,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       if (!Parameters.ContainsKey("ReevaluateElites")) {
         Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", (BoolValue)new BoolValue(false).AsReadOnly()) { Hidden = true });
       }
+      if (!Parameters.ContainsKey("FillPopulationWithParents"))
+        Parameters.Add(new FixedValueParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded.", new BoolValue(false)) { Hidden = true });
       #endregion
 
       Initialize();
@@ -286,6 +295,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze the villages.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<MultiAnalyzer>("VillageAnalyzer", "The operator used to analyze each village.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<IntValue>("MaximumEvaluatedSolutions", "The maximum number of evaluated solutions (approximately).", new IntValue(int.MaxValue)));
+      Parameters.Add(new FixedValueParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded.", new BoolValue(true)) { Hidden = true });
 
       RandomCreator randomCreator = new RandomCreator();
       SubScopesCreator populationCreator = new SubScopesCreator();
@@ -345,6 +355,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainLoop.MaximumGenerationsParameter.ActualName = MaximumGenerationsParameter.Name;
       mainLoop.OffspringSelectionBeforeMutationParameter.ActualName = OffspringSelectionBeforeMutationParameter.Name;
       mainLoop.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
+      mainLoop.FillPopulationWithParentsParameter.ActualName = FillPopulationWithParentsParameter.Name;
       mainLoop.Successor = null;
 
       foreach (ISelector selector in ApplicationManager.Manager.GetInstances<ISelector>().Where(x => !(x is IMultiObjectiveSelector)).OrderBy(x => x.Name))

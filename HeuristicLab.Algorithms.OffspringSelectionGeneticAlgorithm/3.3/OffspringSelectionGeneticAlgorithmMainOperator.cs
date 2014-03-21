@@ -87,6 +87,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public ValueLookupParameter<BoolValue> OffspringSelectionBeforeMutationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["OffspringSelectionBeforeMutation"]; }
     }
+    public IValueLookupParameter<BoolValue> FillPopulationWithParentsParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["FillPopulationWithParents"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -109,6 +112,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       if (!Parameters.ContainsKey("ReevaluateElites")) {
         Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
       }
+      if (!Parameters.ContainsKey("FillPopulationWithParents"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded."));
       #endregion
     }
 
@@ -131,6 +136,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new LookupParameter<DoubleValue>("SelectionPressure", "The actual selection pressure."));
       Parameters.Add(new ValueLookupParameter<DoubleValue>("MaximumSelectionPressure", "The maximum selection pressure that terminates the algorithm."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("OffspringSelectionBeforeMutation", "True if the offspring selection step should be applied before mutation, false if it should be applied after mutation."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded."));
       #endregion
 
       #region Create operators
@@ -260,6 +266,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       offspringSelector.OffspringPopulationParameter.ActualName = "OffspringPopulation";
       offspringSelector.OffspringPopulationWinnersParameter.ActualName = "OffspringPopulationWinners";
       offspringSelector.SuccessfulOffspringParameter.ActualName = "SuccessfulOffspring";
+      offspringSelector.FillPopulationWithParentsParameter.ActualName = FillPopulationWithParentsParameter.Name;
 
       bestSelector.CopySelected = new BoolValue(false);
       bestSelector.MaximizationParameter.ActualName = MaximizationParameter.Name;

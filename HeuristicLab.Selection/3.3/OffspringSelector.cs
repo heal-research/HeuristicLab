@@ -56,6 +56,10 @@ namespace HeuristicLab.Selection {
       get { return (OperatorParameter)Parameters["OffspringCreator"]; }
     }
 
+    public IValueLookupParameter<BoolValue> FillPopulationWithParentsParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["FillPopulationWithParents"]; }
+    }
+
     public IOperator OffspringCreator {
       get { return OffspringCreatorParameter.Value; }
       set { OffspringCreatorParameter.Value = value; }
@@ -63,6 +67,17 @@ namespace HeuristicLab.Selection {
 
     [StorableConstructor]
     protected OffspringSelector(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (Parameters.ContainsKey("FillPopulationWithParents") && Parameters["FillPopulationWithParents"] is FixedValueParameter<BoolValue>)
+        Parameters.Remove("FillPopulationWithParents");
+      if (!Parameters.ContainsKey("FillPopulationWithParents"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individuals instead of lucky losers."));
+      #endregion
+    }
+
     protected OffspringSelector(OffspringSelector original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new OffspringSelector(this, cloner);
@@ -77,11 +92,13 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new LookupParameter<IntValue>("OffspringPopulationWinners", "Temporary store the number of successful offspring in the offspring population."));
       Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("SuccessfulOffspring", "True if the offspring was more successful than its parents.", 2));
       Parameters.Add(new OperatorParameter("OffspringCreator", "The operator used to create new offspring."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded."));
     }
 
     public override IOperation Apply() {
       double maxSelPress = MaximumSelectionPressureParameter.ActualValue.Value;
       double successRatio = SuccessRatioParameter.ActualValue.Value;
+      bool fillPopulationWithParents = FillPopulationWithParentsParameter.ActualValue.Value;
       IScope scope = ExecutionContext.Scope;
       IScope parents = scope.SubScopes[0];
       IScope offspring = scope.SubScopes[1];
@@ -132,11 +149,16 @@ namespace HeuristicLab.Selection {
           population.Add(currentOffspring);
           successfulOffspringAdded++;
         } else if (worseOffspringNeeded > 0 || tmpSelPress >= maxSelPress) {
-          IScope currentOffspring = offspring.SubScopes[i];
-          offspring.SubScopes.Remove(currentOffspring);
-          i--;
+          IScope currentOffspring;
+          if (!fillPopulationWithParents || worseOffspringNeeded > 0) {
+            currentOffspring = offspring.SubScopes[i];
+            offspring.SubScopes.Remove(currentOffspring);
+            i--;
+            worseOffspringNeeded--;
+          } else {
+            currentOffspring = parents.SubScopes[i];
+          }
           population.Add(currentOffspring);
-          worseOffspringNeeded--;
         }
         tmpSelPress += tmpSelPressInc;
         if (population.Count == populationSize) break;

@@ -129,6 +129,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
     public LookupParameter<IntValue> EvaluatedSolutionsParameter {
       get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
     }
+    public IValueLookupParameter<BoolValue> FillPopulationWithParentsParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["FillPopulationWithParents"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -173,6 +176,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to the analyze the islands."));
       Parameters.Add(new ValueLookupParameter<IOperator>("IslandAnalyzer", "The operator used to analyze each island."));
       Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of times solutions have been evaluated."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded."));
       #endregion
 
       #region Create operators
@@ -264,6 +268,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       mainOperator.SelectionPressureParameter.ActualName = "SelectionPressure";
       mainOperator.SelectorParameter.ActualName = SelectorParameter.Name;
       mainOperator.SuccessRatioParameter.ActualName = SuccessRatioParameter.Name;
+      mainOperator.FillPopulationWithParentsParameter.ActualName = FillPopulationWithParentsParameter.Name;
 
       islandAnalyzer2.Name = "Island Analyzer (placeholder)";
       islandAnalyzer2.OperatorParameter.ActualName = IslandAnalyzerParameter.Name;
@@ -425,6 +430,8 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       if (!Parameters.ContainsKey("ReevaluateElites")) {
         Parameters.Add(new ValueLookupParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)"));
       }
+      if (!Parameters.ContainsKey("FillPopulationWithParents"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("FillPopulationWithParents", "True if the population should be filled with parent individual or false if worse children should be used when the maximum selection pressure is exceeded."));
       #endregion
     }
 
