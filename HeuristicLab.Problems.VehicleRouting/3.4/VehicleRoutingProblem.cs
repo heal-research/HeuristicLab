@@ -142,6 +142,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       AttachEventHandlers();
       AttachProblemInstanceEventHandlers();
+
+      EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -153,6 +155,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
       : base(original, cloner) {
       this.AttachEventHandlers();
       this.AttachProblemInstanceEventHandlers();
+
+      ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
     }
 
     #region Events
@@ -173,6 +177,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
     private void AfterDeserialization() {
       AttachEventHandlers();
       AttachProblemInstanceEventHandlers();
+
+      ProblemInstance.SolutionEvaluator = EvaluatorParameter.Value;
     }
 
     [Storable(Name = "operators", AllowOneWay = true)]
@@ -189,7 +195,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     private void AttachProblemInstanceEventHandlers() {
       if (ProblemInstance != null) {
-        EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
         ProblemInstance.EvaluationChanged += new EventHandler(ProblemInstance_EvaluationChanged);
       }
     }
@@ -209,13 +214,14 @@ namespace HeuristicLab.Problems.VehicleRouting {
     }
 
     void ProblemInstance_EvaluationChanged(object sender, EventArgs e) {
-      EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
       EvalBestKnownSolution();
     }
 
     void ProblemInstanceParameter_ValueChanged(object sender, EventArgs e) {
       InitializeOperators();
       AttachProblemInstanceEventHandlers();
+
+      EvaluatorParameter.Value = ProblemInstance.SolutionEvaluator;
 
       OnSolutionCreatorChanged();
       OnEvaluatorChanged();
