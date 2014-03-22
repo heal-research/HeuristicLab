@@ -111,11 +111,14 @@ namespace HeuristicLab.Core.Views {
         TreeNode selectedNode = typesTreeView.SelectedNode;
         typesTreeView.Nodes.Clear();
         treeNodes.Clear();
+
         imageList.Images.Clear();
         imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Class);      // default icon
         imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Namespace);  // plugins
         imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Interface);  // interfaces
         imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Template);   // generic types
+        // additional dictionary for image indexes as imageList.ContainsKey and imageList.IndexOfKey are very slow!
+        var imageNames = new Dictionary<string, int>();
 
         var plugins = from p in ApplicationManager.Manager.Plugins
                       orderby p.Name, p.Version ascending
@@ -140,12 +143,13 @@ namespace HeuristicLab.Core.Views {
               typeNode.ImageIndex = 0;
               if (type.IsInterface) typeNode.ImageIndex = 2;
               else if (type.ContainsGenericParameters) typeNode.ImageIndex = 3;
-              else if (imageList.Images.ContainsKey(type.FullName)) typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
+              else if (imageNames.ContainsKey(type.FullName)) typeNode.ImageIndex = imageNames[type.FullName];
               else {
                 var image = ItemAttribute.GetImage(type);
                 if (image != null) {
-                  imageList.Images.Add(type.FullName, image);
-                  typeNode.ImageIndex = imageList.Images.IndexOfKey(type.FullName);
+                  imageList.Images.Add(image);
+                  typeNode.ImageIndex = imageList.Images.Count - 1;
+                  imageNames.Add(type.FullName, imageList.Images.Count - 1);
                 }
               }
               typeNode.SelectedImageIndex = typeNode.ImageIndex;
