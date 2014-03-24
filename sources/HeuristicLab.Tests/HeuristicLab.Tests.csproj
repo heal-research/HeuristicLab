@@ -463,6 +463,7 @@
     <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\ZakharovEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.TravelingSalesman-3.3\TSPMoveEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.LinearAssignment-3.3\LinearAssignmentProblemSolverTest.cs" />
+    <Compile Include="HeuristicLab.Problems.VehicleRouting-3.4\VRPInstancesTest.cs" />
     <Compile Include="HeuristicLab.Random-3.3\RandomEnumerableSampleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestRandom.cs" />
