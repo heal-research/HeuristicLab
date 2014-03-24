@@ -388,23 +388,22 @@ namespace HeuristicLab.Problems.VehicleRouting {
     #region IProblemInstanceConsumer<VRPData> Members
 
     public void Load(VRPData data) {
-      Type interpreterType = typeof(IVRPDataInterpreter<>).MakeGenericType(data.GetType());
-      var interpreters = ApplicationManager.Manager.GetInstances(interpreterType);
-      IVRPDataInterpreter interpreter = null;
-      foreach (object i in interpreters) {
-        var parentInterfaces = i.GetType().BaseType.GetInterfaces();
-        var interfaces = i.GetType().GetInterfaces().Except(parentInterfaces);
-        var interpreterInterface = interfaces.First(j => typeof(IVRPDataInterpreter).IsAssignableFrom(j));
-        var interpreterDataType = interpreterInterface.GetGenericArguments()[0];
-        if (interpreterDataType == data.GetType()) {
-          interpreter = i as IVRPDataInterpreter;
-          break;
-        }
-      }
+      var interpreterDataType = data.GetType();
+      var interpreterType = typeof(IVRPDataInterpreter<>).MakeGenericType(interpreterDataType);
 
-      if (interpreter == null)
-        throw new ArgumentException("No interpreter found for the VRP type");
-      Load(data, interpreter);
+      var interpreters = ApplicationManager.Manager.GetTypes(interpreterType);
+
+      var concreteInterpreter = interpreters.Single(t => GetInterpreterDataType(t) == interpreterDataType);
+
+      Load(data, (IVRPDataInterpreter)Activator.CreateInstance(concreteInterpreter));
+    }
+
+    private Type GetInterpreterDataType(Type type) {
+      var parentInterfaces = type.BaseType.GetInterfaces();
+      var interfaces = type.GetInterfaces().Except(parentInterfaces);
+
+      var interpreterInterface = interfaces.Single(i => typeof(IVRPDataInterpreter).IsAssignableFrom(i));
+      return interpreterInterface.GetGenericArguments()[0];
     }
 
     #endregion
