@@ -6,14 +6,6 @@ namespace HeuristicLab.Scripting {
   public class Variables : DynamicObject, IEnumerable<KeyValuePair<string, object>> {
     private readonly VariableStore variableStore;
 
-    public ICollection<string> Keys {
-      get { return variableStore.Keys; }
-    }
-
-    public ICollection<object> Values {
-      get { return variableStore.Values; }
-    }
-
     public Variables(VariableStore variableStore) {
       this.variableStore = variableStore;
     }
@@ -29,6 +21,10 @@ namespace HeuristicLab.Scripting {
 
     public bool Contains(string variableName) {
       return variableStore.ContainsKey(variableName);
+    }
+
+    public void Clear() {
+      variableStore.Clear();
     }
 
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator() {

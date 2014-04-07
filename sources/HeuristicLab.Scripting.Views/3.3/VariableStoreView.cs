@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -395,7 +394,7 @@ namespace HeuristicLab.Scripting.Views {
       };
       string toolTipText = string.Join(Environment.NewLine, lines);
       if (!serializable)
-        toolTipText += Environment.NewLine + "CAUTION: Type is not serializable!";
+        toolTipText = "Caution: Type is not serializable!" + Environment.NewLine + toolTipText;
       return toolTipText;
     }
 

@@ -44,8 +44,10 @@ namespace HeuristicLab.Scripting {
     #region Constants
     private const string ExecuteMethodName = "Execute";
     private const string CodeTemplate =
-@"// use 'vars' to access variables in the script's variable store
-// vars has a Contains(string) method to check if a variable exists and implements IEnumerable
+@"// use 'vars' to access variables in the script's variable store (e.g. vars.x = 5)
+// use 'vars.Contains(string)' to check if a variable exists
+// use 'vars.Clear()' to remove all variables
+// use 'foreach (KeyValuePair<string, object> v in vars) { ... }' to iterate over all variables
 
 using System;
 using System.Linq;

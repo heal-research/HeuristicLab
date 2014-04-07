@@ -75,6 +75,7 @@ namespace HeuristicLab.Scripting.Views {
         Locked = true;
         ReadOnly = true;
         startStopButton.Image = VSImageLibrary.Stop;
+        toolTip.SetToolTip(startStopButton, "Stop (Shift+F5)");
         infoTabControl.SelectedTab = outputTabPage;
       }
     }
@@ -85,6 +86,7 @@ namespace HeuristicLab.Scripting.Views {
         Locked = false;
         ReadOnly = false;
         startStopButton.Image = VSImageLibrary.Play;
+        toolTip.SetToolTip(startStopButton, "Run (F5)");
         running = false;
         var ex = e.Value;
         if (ex != null)
@@ -155,7 +157,7 @@ namespace HeuristicLab.Scripting.Views {
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
       switch (keyData) {
         case Keys.F5:
-          if (Content != null && !Locked) {
+          if (Content != null && !Locked && !running) {
             if (Compile()) {
               outputTextBox.Clear();
               Content.Execute();
@@ -167,7 +169,7 @@ namespace HeuristicLab.Scripting.Views {
           if (running) Content.Kill();
           break;
         case Keys.F6:
-          Compile();
+          if (!running) Compile();
           break;
       }
       return base.ProcessCmdKey(ref msg, keyData);
