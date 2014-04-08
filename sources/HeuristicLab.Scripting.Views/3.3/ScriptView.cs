@@ -25,7 +25,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -35,83 +34,38 @@ namespace HeuristicLab.Scripting.Views {
   [View("Script View")]
   [Content(typeof(Script), true)]
   public partial class ScriptView : NamedItemView {
-    private bool running;
-
     public new Script Content {
       get { return (Script)base.Content; }
-      set { base.Content = (Script)value; }
+      set { base.Content = value; }
     }
 
     public ScriptView() {
       InitializeComponent();
       errorListView.SmallImageList.Images.AddRange(new Image[] { VSImageLibrary.Warning, VSImageLibrary.Error });
-      AdjustErrorListViewColumnSizes();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.CodeChanged += Content_CodeChanged;
-      Content.ScriptExecutionStarted += Content_ScriptExecutionStarted;
-      Content.ScriptExecutionFinished += Content_ScriptExecutionFinished;
-      Content.ConsoleOutputChanged += Content_ConsoleOutputChanged;
+      Content.CodeChanged += ContentOnCodeChanged;
     }
 
     protected override void DeregisterContentEvents() {
-      Content.CodeChanged -= Content_CodeChanged;
-      Content.ScriptExecutionStarted -= Content_ScriptExecutionStarted;
-      Content.ScriptExecutionFinished -= Content_ScriptExecutionFinished;
-      Content.ConsoleOutputChanged -= Content_ConsoleOutputChanged;
+      Content.CodeChanged -= ContentOnCodeChanged;
       base.DeregisterContentEvents();
     }
 
-    #region Content event handlers
-    private void Content_CodeChanged(object sender, EventArgs e) {
+    protected virtual void ContentOnCodeChanged(object sender, EventArgs e) {
       codeEditor.UserCode = Content.Code;
     }
-    private void Content_ScriptExecutionStarted(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke((Action<object, EventArgs>)Content_ScriptExecutionStarted, sender, e);
-      else {
-        Locked = true;
-        ReadOnly = true;
-        startStopButton.Image = VSImageLibrary.Stop;
-        toolTip.SetToolTip(startStopButton, "Stop (Shift+F5)");
-        infoTabControl.SelectedTab = outputTabPage;
-      }
-    }
-    private void Content_ScriptExecutionFinished(object sender, EventArgs<Exception> e) {
-      if (InvokeRequired)
-        Invoke((Action<object, EventArgs<Exception>>)Content_ScriptExecutionFinished, sender, e);
-      else {
-        Locked = false;
-        ReadOnly = false;
-        startStopButton.Image = VSImageLibrary.Play;
-        toolTip.SetToolTip(startStopButton, "Run (F5)");
-        running = false;
-        var ex = e.Value;
-        if (ex != null)
-          PluginInfrastructure.ErrorHandling.ShowErrorDialog(this, ex);
-      }
-    }
-    private void Content_ConsoleOutputChanged(object sender, EventArgs<string> e) {
-      if (InvokeRequired)
-        Invoke((Action<object, EventArgs<string>>)Content_ConsoleOutputChanged, sender, e);
-      else {
-        outputTextBox.AppendText(e.Value);
-      }
-    }
-    #endregion
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
         codeEditor.UserCode = string.Empty;
-        variableStoreView.Content = null;
       } else {
         codeEditor.UserCode = Content.Code;
         foreach (var asm in Content.GetAssemblies())
           codeEditor.AddAssembly(asm);
-        variableStoreView.Content = Content.VariableStore;
         if (Content.CompileErrors == null) {
           compilationLabel.ForeColor = SystemColors.ControlDarkDark;
           compilationLabel.Text = "Not compiled";
@@ -128,56 +82,27 @@ namespace HeuristicLab.Scripting.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       compileButton.Enabled = Content != null && !Locked && !ReadOnly;
-      startStopButton.Enabled = Content != null && (!Locked || running);
       codeEditor.Enabled = Content != null && !Locked && !ReadOnly;
     }
 
-    #region Child Control event handlers
-    private void compileButton_Click(object sender, EventArgs e) {
+    protected virtual void CompileButtonOnClick(object sender, EventArgs e) {
       Compile();
     }
 
-    private void startStopButton_Click(object sender, EventArgs e) {
-      if (running) {
-        Content.Kill();
-      } else
-        if (Compile()) {
-          outputTextBox.Clear();
-          Content.Execute();
-          running = true;
-        }
-    }
-
-    private void codeEditor_TextEditorTextChanged(object sender, EventArgs e) {
+    protected virtual void CodeEditorOnTextEditorTextChanged(object sender, EventArgs e) {
       Content.Code = codeEditor.UserCode;
     }
-    #endregion
-
-    #region global HotKeys
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
       switch (keyData) {
-        case Keys.F5:
-          if (Content != null && !Locked && !running) {
-            if (Compile()) {
-              outputTextBox.Clear();
-              Content.Execute();
-              running = true;
-            }
-          }
-          break;
-        case Keys.F5 | Keys.Shift:
-          if (running) Content.Kill();
-          break;
         case Keys.F6:
-          if (!running) Compile();
-          break;
+          if (Content != null && !Locked)
+            Compile();
+          return true;
       }
       return base.ProcessCmdKey(ref msg, keyData);
     }
-    #endregion
 
-    #region Auxiliary functions
-    private bool Compile() {
+    public virtual bool Compile() {
       ReadOnly = true;
       Locked = true;
       errorListView.Items.Clear();
@@ -198,9 +123,8 @@ namespace HeuristicLab.Scripting.Views {
         OnContentChanged();
       }
     }
-    #endregion
 
-    private void ShowCompilationResults() {
+    protected virtual void ShowCompilationResults() {
       if (Content.CompileErrors.Count == 0) return;
       var msgs = Content.CompileErrors.OfType<CompilerError>()
                                       .OrderBy(x => x.IsWarning)
@@ -221,7 +145,7 @@ namespace HeuristicLab.Scripting.Views {
       AdjustErrorListViewColumnSizes();
     }
 
-    private void AdjustErrorListViewColumnSizes() {
+    protected virtual void AdjustErrorListViewColumnSizes() {
       foreach (ColumnHeader ch in errorListView.Columns)
         // adjusts the column width to the width of the column
         // header or the column content, whichever is greater

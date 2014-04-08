@@ -28,8 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -37,69 +35,35 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using Microsoft.CSharp;
 
 namespace HeuristicLab.Scripting {
-  [Item("C# Script", "An empty C# script.")]
-  [Creatable("Scripts")]
   [StorableClass]
-  public sealed class Script : NamedItem, IStorableContent {
-    #region Constants
-    private const string ExecuteMethodName = "Execute";
-    private const string CodeTemplate =
-@"// use 'vars' to access variables in the script's variable store (e.g. vars.x = 5)
-// use 'vars.Contains(string)' to check if a variable exists
-// use 'vars.Clear()' to remove all variables
-// use 'foreach (KeyValuePair<string, object> v in vars) { ... }' to iterate over all variables
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using HeuristicLab.Common;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-
-public class UserScript : HeuristicLab.Scripting.UserScriptBase {
-  public override void Main() {
-    // type your code here
-  }
-
-  // implement further classes and methods
-
-}";
-    #endregion
+  public class Script : NamedItem {
+    protected virtual string CodeTemplate {
+      get { return string.Empty; }
+    }
 
     #region Fields & Properties
-    private UserScriptBase compiledScript;
-
-    public string Filename { get; set; }
-
     public static new Image StaticItemImage {
       get { return VSImageLibrary.Script; }
     }
 
     [Storable]
-    private VariableStore variableStore;
-    public VariableStore VariableStore {
-      get { return variableStore; }
-    }
-
-    [Storable]
     private string code;
-    public string Code {
+    public virtual string Code {
       get { return code; }
       set {
         if (value == code) return;
         code = value;
-        compiledScript = null;
         OnCodeChanged();
       }
     }
 
     private string compilationUnitCode;
-    public string CompilationUnitCode {
+    public virtual string CompilationUnitCode {
       get { return compilationUnitCode; }
     }
 
     private CompilerErrorCollection compileErrors;
-    public CompilerErrorCollection CompileErrors {
+    public virtual CompilerErrorCollection CompileErrors {
       get { return compileErrors; }
       private set {
         compileErrors = value;
@@ -110,11 +74,10 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
 
     #region Construction & Initialization
     [StorableConstructor]
-    private Script(bool deserializing) : base(deserializing) { }
-    private Script(Script original, Cloner cloner)
+    protected Script(bool deserializing) : base(deserializing) { }
+    protected Script(Script original, Cloner cloner)
       : base(original, cloner) {
       code = original.code;
-      variableStore = new VariableStore();
       compilationUnitCode = original.compilationUnitCode;
       if (original.compileErrors != null)
         compileErrors = new CompilerErrorCollection(original.compileErrors);
@@ -123,7 +86,6 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
       name = ItemName;
       description = ItemDescription;
       code = CodeTemplate;
-      variableStore = new VariableStore();
     }
     public Script(string code)
       : this() {
@@ -135,24 +97,17 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
     }
     #endregion
 
-    private void RegisterScriptEvents() {
-      if (compiledScript == null) return;
-      compiledScript.ConsoleOutputChanged += compiledScript_ConsoleOutputChanged;
-    }
-
-    private void DeregisterScriptEvents() {
-      if (compiledScript == null) return;
-      compiledScript.ConsoleOutputChanged -= compiledScript_ConsoleOutputChanged;
-    }
-
     #region Compilation
-    private CSharpCodeProvider codeProvider =
-      new CSharpCodeProvider(
-        new Dictionary<string, string> {
-          { "CompilerVersion", "v4.0" },  // support C# 4.0 syntax
-        });
+    protected virtual CSharpCodeProvider CodeProvider {
+      get {
+        return new CSharpCodeProvider(
+          new Dictionary<string, string> {
+                {"CompilerVersion", "v4.0"}, // support C# 4.0 syntax
+              });
+      }
+    }
 
-    private CompilerResults DoCompile() {
+    protected virtual CompilerResults DoCompile() {
       var parameters = new CompilerParameters {
         GenerateExecutable = false,
         GenerateInMemory = true,
@@ -165,7 +120,7 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
         .ToArray());
       var unit = CreateCompilationUnit();
       var writer = new StringWriter();
-      codeProvider.GenerateCodeFromCompileUnit(
+      CodeProvider.GenerateCodeFromCompileUnit(
         unit,
         writer,
         new CodeGeneratorOptions {
@@ -173,12 +128,11 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
           IndentString = "  ",
         });
       compilationUnitCode = writer.ToString();
-      return codeProvider.CompileAssemblyFromDom(parameters, unit);
+      return CodeProvider.CompileAssemblyFromDom(parameters, unit);
     }
 
-    public void Compile() {
+    public virtual Assembly Compile() {
       var results = DoCompile();
-      compiledScript = null;
       CompileErrors = results.Errors;
       if (results.Errors.HasErrors) {
         var sb = new StringBuilder();
@@ -187,20 +141,14 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
             .Append(error.Column).Append(": ")
             .AppendLine(error.ErrorText);
         }
-        throw new Exception(string.Format(
-          "Compilation of \"{0}\" failed:{1}{2}",
-          Name, Environment.NewLine,
-          sb.ToString()));
+        throw new Exception(string.Format("Compilation of \"{0}\" failed:{1}{2}",
+          Name, Environment.NewLine, sb.ToString()));
       } else {
-        var assembly = results.CompiledAssembly;
-        var types = assembly.GetTypes();
-        DeregisterScriptEvents();
-        compiledScript = (UserScriptBase)Activator.CreateInstance(types[0]);
-        RegisterScriptEvents();
+        return results.CompiledAssembly;
       }
     }
 
-    public IEnumerable<Assembly> GetAssemblies() {
+    public virtual IEnumerable<Assembly> GetAssemblies() {
       var assemblies = new List<Assembly>();
       foreach (var a in AppDomain.CurrentDomain.GetAssemblies()) {
         try {
@@ -216,86 +164,22 @@ public class UserScript : HeuristicLab.Scripting.UserScriptBase {
       return assemblies;
     }
 
-    private readonly Regex SafeTypeNameCharRegex = new Regex("[_a-zA-Z0-9]+");
-    private readonly Regex SafeTypeNameRegex = new Regex("[_a-zA-Z][_a-zA-Z0-9]*");
-
-    private CodeCompileUnit CreateCompilationUnit() {
+    protected virtual CodeCompileUnit CreateCompilationUnit() {
       var unit = new CodeSnippetCompileUnit(code);
       return unit;
     }
-
-    public string CompiledTypeName {
-      get {
-        var sb = new StringBuilder();
-        var strings = SafeTypeNameCharRegex.Matches(Name)
-                                           .Cast<Match>()
-                                           .Select(m => m.Value);
-        foreach (string s in strings)
-          sb.Append(s);
-        return SafeTypeNameRegex.Match(sb.ToString()).Value;
-      }
-    }
     #endregion
 
-    private Thread scriptThread;
-    public void Execute() {
-      if (compiledScript == null) return;
-      var executeMethod = typeof(UserScriptBase).GetMethod(ExecuteMethodName, BindingFlags.NonPublic | BindingFlags.Instance);
-      if (executeMethod != null) {
-        scriptThread = new Thread(() => {
-          Exception ex = null;
-          try {
-            OnScriptExecutionStarted();
-            executeMethod.Invoke(compiledScript, new[] { VariableStore });
-          } catch (ThreadAbortException) {
-            // the execution was cancelled by the user
-          } catch (TargetInvocationException e) {
-            ex = e.InnerException;
-          } finally {
-            OnScriptExecutionFinished(ex);
-          }
-        });
-        scriptThread.Start();
-      }
-    }
-
-    public void Kill() {
-      if (scriptThread.IsAlive)
-        scriptThread.Abort();
-    }
-
-    private void compiledScript_ConsoleOutputChanged(object sender, EventArgs<string> e) {
-      OnConsoleOutputChanged(e.Value);
-    }
-
     public event EventHandler CodeChanged;
-    private void OnCodeChanged() {
+    protected virtual void OnCodeChanged() {
       var handler = CodeChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event EventHandler CompileErrorsChanged;
-    private void OnCompileErrorsChanged() {
+    protected virtual void OnCompileErrorsChanged() {
       var handler = CompileErrorsChanged;
       if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler ScriptExecutionStarted;
-    private void OnScriptExecutionStarted() {
-      var handler = ScriptExecutionStarted;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler<EventArgs<Exception>> ScriptExecutionFinished;
-    private void OnScriptExecutionFinished(Exception e) {
-      var handler = ScriptExecutionFinished;
-      if (handler != null) handler(this, new EventArgs<Exception>(e));
-    }
-
-    public event EventHandler<EventArgs<string>> ConsoleOutputChanged;
-    private void OnConsoleOutputChanged(string args) {
-      var handler = ConsoleOutputChanged;
-      if (handler != null) handler(this, new EventArgs<string>(args));
     }
   }
 }

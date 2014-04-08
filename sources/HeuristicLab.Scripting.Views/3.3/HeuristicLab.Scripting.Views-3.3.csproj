@@ -85,6 +85,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
+    <Compile Include="CSharpScriptView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CSharpScriptView.Designer.cs">
+      <DependentUpon>CSharpScriptView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScriptView.cs">
       <SubType>UserControl</SubType>
     </Compile>
