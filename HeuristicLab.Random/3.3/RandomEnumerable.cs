@@ -35,7 +35,7 @@ namespace HeuristicLab.Random {
     }
 
     //algorithm taken from progamming pearls page 127
-    //IMPORTANT because IEnumerables with yield are used the seed must best be specified to return always 
+    //IMPORTANT because IEnumerables with yield are used the seed must be specified to return always 
     //the same sequence of numbers without caching the values.
     public static IEnumerable<int> SampleRandomNumbers(int seed, int start, int end, int count) {
       int remaining = end - start;
@@ -165,6 +165,8 @@ namespace HeuristicLab.Random {
     /// otherwise an InvalidOperationException is thrown.
     /// 
     /// The method internally holds two arrays: One that is the sequence itself and another one for the values.
+    /// 
+    /// The method does not check if the number of elements in source and weights are the same.
     /// </remarks>
     /// <typeparam name="T">The type of the items to be selected.</typeparam>
     /// <param name="source">The sequence of elements.</param>
@@ -172,15 +174,15 @@ namespace HeuristicLab.Random {
     /// <param name="count">The number of items to be selected.</param>
     /// <param name="weights">The weight values for the items.</param>
     /// <param name="windowing">Whether to scale the proportional values or not.</param>
-    /// <param name="maximization">Determines whether to choose proportionally (true) or inverse-proportionally (false).</param>
-    /// <returns>A sequence of selected items.</returns>
+    /// <param name="inverseProportional">Determines whether to choose proportionally (true) or inverse-proportionally (false).</param>
+    /// <returns>A sequence of selected items. Might actually be shorter than <paramref name="count"/> elements if source has less than <paramref name="count"/> elements.</returns>
     public static IEnumerable<T> SampleProportionalWithoutRepetition<T>(this IEnumerable<T> source, IRandom random, int count, IEnumerable<double> weights, bool windowing = true, bool inverseProportional = false) {
       return source.SampleProportionalWithoutRepetition(random, weights, windowing, inverseProportional).Take(count);
     }
     #region Proportional Helpers
     private static IEnumerable<T> SampleProportional<T>(this IEnumerable<T> source, IRandom random, IEnumerable<double> weights, bool windowing, bool inverseProportional) {
       var sourceArray = source.ToArray();
-      var valueArray = PrepareProportional<T>(sourceArray, weights, windowing, inverseProportional);
+      var valueArray = PrepareProportional(sourceArray, weights, windowing, inverseProportional);
       double total = valueArray.Sum();
 
       while (true) {
@@ -192,24 +194,23 @@ namespace HeuristicLab.Random {
       }
     }
     private static IEnumerable<T> SampleProportionalWithoutRepetition<T>(this IEnumerable<T> source, IRandom random, IEnumerable<double> weights, bool windowing, bool inverseProportional) {
-      var sourceArray = source.ToArray();
-      var valueArray = PrepareProportional<T>(sourceArray, weights, windowing, inverseProportional);
+      var valueArray = PrepareProportional(source.ToArray(), weights, windowing, inverseProportional);
+      var list = new LinkedList<Tuple<T, double>>(source.Zip(valueArray, Tuple.Create));
       double total = valueArray.Sum();
 
-      HashSet<int> chosenIndices = new HashSet<int>();
-      while (chosenIndices.Count < sourceArray.Length) {
-        int index = 0;
-        double ball = valueArray[index], sum = random.NextDouble() * total;
+      while (list.Count > 0) {        
+        var cur = list.First;        
+        double ball = cur.Value.Item2, sum = random.NextDouble() * total; // assert: sum < total. When there is only one item remaining: sum < ball
         while (ball < sum) {
-          index++;
-          if (!chosenIndices.Contains(index))
-            ball += valueArray[++index];
+          cur = cur.Next;
+          ball += cur.Value.Item2;
         }
-        yield return sourceArray[index];
-        chosenIndices.Add(index);
-        total -= valueArray[index];
+        yield return cur.Value.Item1;
+        list.Remove(cur);
+        total -= cur.Value.Item2;
       }
     }
+
     private static double[] PrepareProportional<T>(IList<T> sourceArray, IEnumerable<double> weights, bool windowing, bool inverseProportional) {
       double maxValue = double.MinValue, minValue = double.MaxValue;
       double[] valueArray = new double[sourceArray.Count];
@@ -273,3 +274,4 @@ namespace HeuristicLab.Random {
     }
   }
 }
+

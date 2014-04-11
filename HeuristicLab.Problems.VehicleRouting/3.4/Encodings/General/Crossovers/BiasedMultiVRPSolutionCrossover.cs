@@ -29,6 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("BiasedMultiVRPSolutionCrossover", "Randomly selects and applies one of its crossovers every time it is called based on the success progress.")]
@@ -139,17 +140,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       var checkedOperators = Operators.CheckedItems;
       if (checkedOperators.Count() > 0) {
         // select a random operator from the checked operators
-        double sum = (from indexedItem in checkedOperators select probabilities[indexedItem.Index]).Sum();
-        if (sum == 0) throw new InvalidOperationException(Name + ": All selected operators have zero probability.");
-        double r = random.NextDouble() * sum;
-        sum = 0;
-        foreach (var indexedItem in checkedOperators) {
-          sum += probabilities[indexedItem.Index];
-          if (sum > r) {
-            successor = indexedItem.Value;
-            break;
-          }
-        }
+        successor = checkedOperators.SampleProportional(random, 1, probabilities, false, false).First().Value;
       }
 
       IOperation successorOp = null;
