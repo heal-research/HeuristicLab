@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return alpha;
     }
 
-    private static PotvinEncoding CreateSolution(IVRPProblemInstance instance, IRandom random, bool adhereTimeWindows) {
+    public static PotvinEncoding CreateSolution(IVRPProblemInstance instance, IRandom random, bool adhereTimeWindows) {
       PotvinEncoding result = new PotvinEncoding(instance);
 
       IPickupAndDeliveryProblemInstance pdp = instance as IPickupAndDeliveryProblemInstance;
@@ -90,12 +90,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         if (pdp == null || pdp.GetDemand(i) >= 0)
           customers.Add(i);
 
-      customers.Sort(delegate(int city1, int city2) {
-            double angle1 = CalculateAngleToDepot(instance, city1);
-            double angle2 = CalculateAngleToDepot(instance, city2);
+      customers.Sort((city1, city2) => {
+        double angle1 = CalculateAngleToDepot(instance, city1);
+        double angle2 = CalculateAngleToDepot(instance, city2);
 
-            return angle1.CompareTo(angle2);
-          });
+        return angle1.CompareTo(angle2);
+      });
 
       Tour currentTour = new Tour();
       result.Tours.Add(currentTour);

@@ -51,8 +51,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       : base(original, cloner) {
     }
 
-    private bool FindBetterInsertionPlace(
-      PotvinEncoding individual, int tour, int city, int length,
+    private static bool FindBetterInsertionPlace(
+      PotvinEncoding individual, IVRPProblemInstance instance, int tour, int city, int length,
       out int insertionTour, out int insertionPlace) {
       bool insertionFound = false;
       insertionTour = -1;
@@ -69,7 +69,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         while (currentCity <= individual.Tours[currentTour].Stops.Count && !insertionFound) {
           distance = individual.GetTourLength(individual.Tours[currentTour]);
           individual.Tours[currentTour].Stops.InsertRange(currentCity, toBeDeleted);
-          if (ProblemInstance.TourFeasible(individual.Tours[currentTour], individual)) {
+          if (instance.TourFeasible(individual.Tours[currentTour], individual)) {
             double lengthIncrease =
               individual.GetTourLength(individual.Tours[currentTour]) - distance;
             if (removalBenefit > lengthIncrease) {
@@ -91,9 +91,9 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       return insertionFound;
     }
 
-    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+    public static void ApplyManipulation(IRandom random, PotvinEncoding individual, IVRPProblemInstance instance, int maxIterations) {
       //only apply to feasible individuals
-      if (ProblemInstance.Feasible(individual)) {
+      if (instance.Feasible(individual)) {
         bool insertionFound;
         int iterations = 0;
 
@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
               int city = 0;
               while (city <= individual.Tours[tour].Stops.Count - length && !insertionFound) {
                 int insertionTour, insertionPlace;
-                if (FindBetterInsertionPlace(individual, tour, city, length,
+                if (FindBetterInsertionPlace(individual, instance, tour, city, length,
                  out insertionTour, out insertionPlace)) {
                   insertionFound = true;
 
@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           }
           iterations++;
         } while (insertionFound &&
-          iterations < Iterations.Value.Value);
+          iterations < maxIterations);
 
         IList<Tour> toBeRemoved = new List<Tour>();
         foreach (Tour tour in individual.Tours) {
@@ -137,6 +137,11 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           individual.Tours.Remove(tour);
         }
       }
+    }
+ 
+
+    protected override void Manipulate(IRandom random, PotvinEncoding individual) {
+      ApplyManipulation(random, individual, ProblemInstance, Iterations.Value.Value);     
     }
   }
 }
