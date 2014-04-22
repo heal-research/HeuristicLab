@@ -90,6 +90,7 @@ namespace HeuristicLab.Scripting.Views {
     }
 
     protected virtual void CodeEditorOnTextEditorTextChanged(object sender, EventArgs e) {
+      if (Content == null) return;
       Content.Code = codeEditor.UserCode;
     }
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
