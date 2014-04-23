@@ -343,6 +343,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.NOT: {
             return Evaluate(dataset, ref row, state) > 0.0 ? -1.0 : 1.0;
           }
+        case OpCodes.XOR: {
+            double firstArgument = Evaluate(dataset, ref row, state);
+            double result = 1.0;
+            for (int i = 1; i < currentInstr.nArguments; i++) {
+              if (result <= 0.0) {
+                state.SkipInstructions();
+              } else {
+                double evalutationResult = Evaluate(dataset, ref row, state);
+                if (firstArgument <= 0 && evalutationResult > 0) result = -1.0;
+                else if (firstArgument > 0 && evalutationResult <= 0) result = -1.0;
+              }
+            }
+            return result > 0.0 ? 1.0 : -1.0;
+          }
         case OpCodes.GT: {
             double x = Evaluate(dataset, ref row, state);
             double y = Evaluate(dataset, ref row, state);
