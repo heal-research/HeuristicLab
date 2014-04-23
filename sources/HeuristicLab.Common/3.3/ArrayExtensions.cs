@@ -25,34 +25,29 @@ using System.Linq;
 
 namespace HeuristicLab.Common {
   public static class ArrayExtensions {
-    public static void StableSort<T>(this T[] values) {
-      values.StableSort(0, values.Length);
-    }
-
-    public static void StableSort<T>(this T[] values, int index, int count) {
-      var sortedArray = values.Skip(index).Take(count).OrderBy(x => x).ToArray();
-      Array.ConstrainedCopy(sortedArray, 0, values, index, count);
-    }
-
-    public static void StableSort<T>(this T[] values, IComparer<T> comparer) {
-      values.StableSort(0, values.Length, comparer);
-    }
-
-    public static void StableSort<T>(this T[] values, int index, int count, IComparer<T> comparer) {
-      var sortedArray = values.Skip(index).Take(count).OrderBy(x => x, comparer).ToArray();
-      Array.ConstrainedCopy(sortedArray, 0, values, index, count);
-    }
 
     public static void StableSort<T>(this T[] values, Comparison<T> comparison) {
-      values.StableSort(0, values.Length, comparison);
+      values.StableSort(new StableSortComparer<T>(comparison));
     }
 
-    public static void StableSort<T>(this T[] values, int index, int count, Comparison<T> comparison) {
-      var sortedArray = values.Skip(index).Take(count).OrderBy(x => x, new StableSortComparer<T>(comparison)).ToArray();
-      Array.ConstrainedCopy(sortedArray, 0, values, index, count);
+    public static void StableSort<T>(this T[] values, IComparer<T> comparer = null) {
+      var sorted = values.OrderBy(x => x, comparer ?? Comparer<T>.Default).ToArray();
+      Array.ConstrainedCopy(sorted, 0, values, 0, values.Length);
     }
 
-    public class StableSortComparer<T> : IComparer<T> {
+    public static void StableSort<T>(this T[] values, int index, int length, Comparison<T> comparison) {
+      values.StableSort(index, length, new StableSortComparer<T>(comparison));
+    }
+
+    public static void StableSort<T>(this T[] values, int index, int length, IComparer<T> comparer = null) {
+      if (index < 0) throw new ArgumentOutOfRangeException("index is less than zero.");
+      if (length < 0) throw new ArgumentOutOfRangeException("length is less than zero.");
+      if (index + length > values.Length) throw new ArgumentException("index and length do not specify a valid range in the array.");
+      var sortedArray = values.Skip(index).Take(length).OrderBy(x => x, comparer ?? Comparer<T>.Default).ToArray();
+      Array.ConstrainedCopy(sortedArray, 0, values, index, length);
+    }
+
+    private class StableSortComparer<T> : IComparer<T> {
       public StableSortComparer(Comparison<T> comparison) {
         this.comparison = comparison;
       }

@@ -25,40 +25,32 @@ using System.Linq;
 
 namespace HeuristicLab.Common {
   public static class ListExtensions {
-    public static void StableSort<T>(this List<T> values) {
-      values.StableSort(0, values.Count);
+
+    public static void StableSort<T>(this List<T> values, Comparison<T> comparison) {
+      values.StableSort(new StableSortComparer<T>(comparison));
     }
 
-    public static void StableSort<T>(this List<T> values, int index, int count) {
-      var orderedList = values.Skip(index).Take(count).OrderBy(x => x);
+    public static void StableSort<T>(this List<T> values, IComparer<T> comparer = null) {
+      int i = 0;
+      foreach (var e in values.OrderBy(x => x, comparer ?? Comparer<T>.Default))
+        values[i++] = e;
+    }
+
+    public static void StableSort<T>(this List<T> values, int index, int count, Comparison<T> comparison) {
+      values.StableSort(index, count, new StableSortComparer<T>(comparison));
+    }
+
+    public static void StableSort<T>(this List<T> values, int index, int count, IComparer<T> comparer = null) {
+      if (index < 0) throw new ArgumentOutOfRangeException("index is less than zero.");
+      if (count < 0) throw new ArgumentOutOfRangeException("count is less than zero.");
+      if (index + count > values.Count) throw new ArgumentException("index and count do not specify a valid range in the List<T>.");
+      var orderedList = values.Skip(index).Take(count).OrderBy(x => x, comparer ?? Comparer<T>.Default);
       int i = index;
       foreach (var e in orderedList)
         values[i++] = e;
     }
 
-    public static void StableSort<T>(this List<T> values, IComparer<T> comparer) {
-      values.StableSort(0, values.Count, comparer);
-    }
-
-    public static void StableSort<T>(this List<T> values, int index, int count, IComparer<T> comparer) {
-      var orderedList = values.OrderBy(x => x, comparer);
-      int i = 0;
-      foreach (var e in orderedList)
-        values[i++] = e;
-    }
-
-    public static void StableSort<T>(this List<T> values, Comparison<T> comparison) {
-      values.StableSort(0, values.Count, comparison);
-    }
-
-    public static void StableSort<T>(this List<T> values, int index, int count, Comparison<T> comparison) {
-      var orderedList = values.OrderBy(x => x, new StableSortComparer<T>(comparison));
-      int i = 0;
-      foreach (var e in orderedList)
-        values[i++] = e;
-    }
-
-    public class StableSortComparer<T> : IComparer<T> {
+    private class StableSortComparer<T> : IComparer<T> {
       public StableSortComparer(Comparison<T> comparison) {
         this.comparison = comparison;
       }
