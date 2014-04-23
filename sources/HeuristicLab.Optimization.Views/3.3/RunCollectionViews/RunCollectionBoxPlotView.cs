@@ -233,7 +233,7 @@ namespace HeuristicLab.Optimization.Views {
         }
       }
       matrix.ColumnNames = columnNames;
-      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Average", "Median", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile" };
+      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Median", "Average", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile" };
 
       for (int i = 0; i < seriesCache.Count; i++) {
         Series series = seriesCache.ElementAt(i).Value;
@@ -241,8 +241,8 @@ namespace HeuristicLab.Optimization.Views {
         matrix[0, i] = seriesValues.Length;
         matrix[1, i] = seriesValues.Min();
         matrix[2, i] = seriesValues.Max();
-        matrix[3, i] = seriesValues.Average();
-        matrix[4, i] = seriesValues.Median();
+        matrix[3, i] = seriesValues.Median();
+        matrix[4, i] = seriesValues.Average();
         matrix[5, i] = seriesValues.StandardDeviation();
         matrix[6, i] = seriesValues.Variance();
         matrix[7, i] = seriesValues.Percentile(0.25);
