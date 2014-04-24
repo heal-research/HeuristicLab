@@ -69,6 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         {"AND", new And()},
         {"OR", new Or()},
         {"NOT", new Not()},
+        {"XOR", new Xor()},
         {"DIFF", new Derivative()},
         {"PROG", new ProgramRootSymbol()},
         {"MAIN", new StartSymbol()},
