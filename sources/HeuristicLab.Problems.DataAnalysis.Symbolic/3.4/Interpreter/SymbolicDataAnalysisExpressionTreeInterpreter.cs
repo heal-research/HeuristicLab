@@ -344,18 +344,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             return Evaluate(dataset, ref row, state) > 0.0 ? -1.0 : 1.0;
           }
         case OpCodes.XOR: {
-            double firstArgument = Evaluate(dataset, ref row, state);
-            double result = 1.0;
-            for (int i = 1; i < currentInstr.nArguments; i++) {
-              if (result <= 0.0) {
-                state.SkipInstructions();
-              } else {
-                double evalutationResult = Evaluate(dataset, ref row, state);
-                if (firstArgument <= 0 && evalutationResult > 0) result = -1.0;
-                else if (firstArgument > 0 && evalutationResult <= 0) result = -1.0;
-              }
+            //mkommend: XOR on multiple inputs is defined as true if the number of positive signals is odd
+            // this is equal to a consecutive execution of binary XOR operations.
+            int positiveSignals = 0;
+            for (int i = 0; i < currentInstr.nArguments; i++) {
+              if (Evaluate(dataset, ref row, state) > 0.0) positiveSignals++;
             }
-            return result > 0.0 ? 1.0 : -1.0;
+            return positiveSignals % 2 != 0 ? 1.0 : -1.0;
           }
         case OpCodes.GT: {
             double x = Evaluate(dataset, ref row, state);

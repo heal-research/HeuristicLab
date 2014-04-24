@@ -311,15 +311,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         } else if (instr.opCode == OpCodes.NOT) {
           instr.value = code[instr.childIndex].value > 0.0 ? -1.0 : 1.0;
         } else if (instr.opCode == OpCodes.XOR) {
-          double firstArgument = code[instr.childIndex].value;
-          instr.value = 1.0;
-          for (int j = 1; j < instr.nArguments; j++) {
-            if (instr.value > 0.0) {
-              if (firstArgument <= 0 && code[instr.childIndex + j].value > 0) instr.value = -1.0;
-              if (firstArgument > 0 && code[instr.childIndex + j].value <= 0) instr.value = -1.0;
-            } else break;
+          int positiveSignals = 0;
+          for (int j = 0; j < instr.nArguments; j++) {
+            if (code[instr.childIndex + j].value > 0.0) positiveSignals++;
           }
-          instr.value = instr.value > 0.0 ? 1.0 : -1.0;
+          instr.value = positiveSignals % 2 != 0 ? 1.0 : -1.0;
         } else if (instr.opCode == OpCodes.GT) {
           double x = code[instr.childIndex].value;
           double y = code[instr.childIndex + 1].value;
