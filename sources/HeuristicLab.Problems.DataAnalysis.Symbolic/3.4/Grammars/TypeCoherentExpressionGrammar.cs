@@ -238,6 +238,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public void ConfigureAsDefaultClassificationGrammar() {
       Symbols.First(s => s is Average).Enabled = false;
       Symbols.First(s => s is VariableCondition).Enabled = false;
+      Symbols.First(s => s is Xor).Enabled = false;
       Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ExponentialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;
