@@ -41,7 +41,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       foreach (var treeCreator in ApplicationManager.Manager.GetInstances<ISymbolicExpressionTreeCreator>()) {
         treeCreatorComboBox.Items.Add(treeCreator);
       }
-      treeCreatorComboBox.SelectedIndex = 0;
+      treeCreatorComboBox.SelectedItem = treeCreatorComboBox.Items.OfType<ProbabilisticTreeCreator>().First();
     }
 
     private int maxSampleTreeLength;
