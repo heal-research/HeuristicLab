@@ -137,8 +137,12 @@ namespace HeuristicLab.Problems.TestFunctions {
 
       if (solution == null) {
         ResultCollection results = ResultsParameter.ActualValue;
-        solution = new SingleObjectiveTestFunctionSolution(realVectors[i], qualities[i], EvaluatorParameter.ActualValue);
-        solution.Population = realVectors[i].Length == 2 ? realVectors : null;
+        solution = new SingleObjectiveTestFunctionSolution((RealVector)realVectors[i].Clone(),
+                                                           (DoubleValue)qualities[i].Clone(),
+                                                           EvaluatorParameter.ActualValue);
+        solution.Population = realVectors[i].Length == 2
+          ? new ItemArray<RealVector>(realVectors.Select(x => x.Clone()).Cast<RealVector>())
+          : null;
         solution.BestKnownRealVector = BestKnownSolutionParameter.ActualValue;
         solution.Bounds = BoundsParameter.ActualValue;
         BestSolutionParameter.ActualValue = solution;
@@ -146,10 +150,12 @@ namespace HeuristicLab.Problems.TestFunctions {
       } else {
         if (max && qualities[i].Value > solution.BestQuality.Value
           || !max && qualities[i].Value < solution.BestQuality.Value) {
-          solution.BestRealVector = realVectors[i];
-          solution.BestQuality = qualities[i];
+          solution.BestRealVector = (RealVector)realVectors[i].Clone();
+          solution.BestQuality = (DoubleValue)qualities[i].Clone();
         }
-        solution.Population = realVectors[i].Length == 2 ? realVectors : null;
+        solution.Population = realVectors[i].Length == 2
+          ? new ItemArray<RealVector>(realVectors.Select(x => x.Clone()).Cast<RealVector>())
+          : null;
       }
 
       return base.Apply();
