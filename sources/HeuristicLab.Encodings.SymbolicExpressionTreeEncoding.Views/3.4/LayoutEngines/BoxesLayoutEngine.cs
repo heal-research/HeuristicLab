@@ -72,7 +72,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private void RecursiveLayout(Dictionary<T, VisualTreeNode<T>> nodeMap, VisualTreeNode<T> visualTreeNode, int x, int y, int width, int height) {
       float center_x = x + width / 2;
       float center_y = y + height / 2;
-      int actualWidth = width - VerticalSpacing;
+      int actualWidth = width - HorizontalSpacing;
       int actualHeight = height - VerticalSpacing;
 
       //calculate size of node
