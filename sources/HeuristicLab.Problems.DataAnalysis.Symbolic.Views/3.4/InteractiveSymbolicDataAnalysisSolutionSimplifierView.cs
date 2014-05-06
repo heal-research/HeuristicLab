@@ -104,22 +104,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void treeChart_SymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
       var visualNode = (VisualTreeNode<ISymbolicExpressionTreeNode>)sender;
+      if (visualNode.Content == null) { throw new Exception("Visual node content cannot be null."); }
       var symbExprTreeNode = (SymbolicExpressionTreeNode)visualNode.Content;
-      if (symbExprTreeNode == null) return;
-      var tree = Content.Model.SymbolicExpressionTree;
+      if (!foldedNodes.ContainsKey(symbExprTreeNode)) return; // constant nodes cannot be folded
       var parent = symbExprTreeNode.Parent;
       int indexOfSubtree = parent.IndexOfSubtree(symbExprTreeNode);
-      if (foldedNodes.ContainsKey(symbExprTreeNode)) {
-        // undo node folding
-        SwitchNodeWithReplacementNode(parent, indexOfSubtree);
-      }
-      UpdateModel(tree);
+      SwitchNodeWithReplacementNode(parent, indexOfSubtree);
+      UpdateModel(Content.Model.SymbolicExpressionTree);
     }
 
     private void SwitchNodeWithReplacementNode(ISymbolicExpressionTreeNode parent, int subTreeIndex) {
       ISymbolicExpressionTreeNode subTree = parent.GetSubtree(subTreeIndex);
-      parent.RemoveSubtree(subTreeIndex);
       if (foldedNodes.ContainsKey(subTree)) {
+        parent.RemoveSubtree(subTreeIndex);
         var replacementNode = foldedNodes[subTree];
         parent.InsertSubtree(subTreeIndex, replacementNode);
         // exchange key and value 
@@ -136,6 +133,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         VisualTreeNode<ISymbolicExpressionTreeNode> visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
 
         if (!(treeNode is ConstantTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
+          visualTree.ToolTip = visualTree.Content.ToString(); // to avoid duplicate tooltips
           double impact = nodeImpacts[treeNode];
 
           // impact = 0 if no change

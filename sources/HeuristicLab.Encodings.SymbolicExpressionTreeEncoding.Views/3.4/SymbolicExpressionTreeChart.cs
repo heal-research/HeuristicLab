@@ -38,8 +38,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private const int preferredNodeWidth = 70;
     private const int preferredNodeHeight = 46;
-    private const int minHorizontalDistance = 30;
-    private const int minVerticalDistance = 30;
+    private int minHorizontalDistance = 30;
+    private int minVerticalDistance = 30;
 
     public SymbolicExpressionTreeChart() {
       InitializeComponent();
@@ -61,15 +61,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       };
       reingoldTilfordToolStripMenuItem.Checked = true;
     }
-
-    //private ILayoutEngine<ISymbolicExpressionTreeNode> TreeLayoutEngine {
-    //  get { return layoutEngine; }
-    //  set {
-    //    layoutEngine = value;
-    //    InitializeLayout();
-    //    Repaint();
-    //  }
-    //}
 
     public SymbolicExpressionTreeChart(ISymbolicExpressionTree tree)
       : this() {
@@ -411,6 +402,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
 
     private void reingoldTilfordToolStripMenuItem_Click(object sender, EventArgs e) {
+      minHorizontalDistance = 30;
       layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
@@ -423,6 +415,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void boxesToolStripMenuItem_Click(object sender, EventArgs e) {
+      minHorizontalDistance = 1; // the boxes layout engine has no horizontal requirements, it automatically spaces nodes with boxes
       layoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees, n => n.GetLength(), n => n.GetDepth()) {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
