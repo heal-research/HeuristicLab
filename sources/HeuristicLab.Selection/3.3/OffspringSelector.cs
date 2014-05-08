@@ -98,7 +98,9 @@ namespace HeuristicLab.Selection {
     public override IOperation Apply() {
       double maxSelPress = MaximumSelectionPressureParameter.ActualValue.Value;
       double successRatio = SuccessRatioParameter.ActualValue.Value;
-      bool fillPopulationWithParents = FillPopulationWithParentsParameter.ActualValue.Value;
+      bool fillPopulationWithParents = false;
+      if (FillPopulationWithParentsParameter.ActualValue != null)
+        fillPopulationWithParents = FillPopulationWithParentsParameter.ActualValue.Value;
       IScope scope = ExecutionContext.Scope;
       IScope parents = scope.SubScopes[0];
       IScope offspring = scope.SubScopes[1];
