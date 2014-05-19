@@ -415,7 +415,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void boxesToolStripMenuItem_Click(object sender, EventArgs e) {
-      minHorizontalDistance = 1; // the boxes layout engine has no horizontal requirements, it automatically spaces nodes with boxes
+      minHorizontalDistance = 5; 
+      minVerticalDistance = 5;
       layoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees, n => n.GetLength(), n => n.GetDepth()) {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
