@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
@@ -94,31 +93,15 @@ namespace HeuristicLab.Scripting.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
-        codeEditor.UserCode = string.Empty;
         variableStoreView.Content = null;
       } else {
-        codeEditor.UserCode = Content.Code;
-        foreach (var asm in Content.GetAssemblies())
-          codeEditor.AddAssembly(asm);
         variableStoreView.Content = Content.VariableStore;
-        if (Content.CompileErrors == null) {
-          compilationLabel.ForeColor = SystemColors.ControlDarkDark;
-          compilationLabel.Text = "Not compiled";
-        } else if (Content.CompileErrors.HasErrors) {
-          compilationLabel.ForeColor = Color.DarkRed;
-          compilationLabel.Text = "Compilation failed";
-        } else {
-          compilationLabel.ForeColor = Color.DarkGreen;
-          compilationLabel.Text = "Compilation successful";
-        }
       }
     }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      compileButton.Enabled = Content != null && !Locked && !ReadOnly;
       startStopButton.Enabled = Content != null && (!Locked || Running);
-      codeEditor.Enabled = Content != null && !Locked && !ReadOnly;
     }
 
     protected virtual void StartStopButtonOnClick(object sender, EventArgs e) {

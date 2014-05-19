@@ -61,7 +61,7 @@ public class MyScript : HeuristicLab.Scripting.CSharpScriptBase {
     #endregion
 
     #region Fields & Properties
-    protected CSharpScriptBase CompiledScript;
+    private CSharpScriptBase compiledScript;
 
     public string Filename { get; set; }
 
@@ -81,6 +81,7 @@ public class MyScript : HeuristicLab.Scripting.CSharpScriptBase {
     }
     public CSharpScript() {
       variableStore = new VariableStore();
+      Code = CodeTemplate;
     }
     public CSharpScript(string code)
       : base(code) {
@@ -93,53 +94,50 @@ public class MyScript : HeuristicLab.Scripting.CSharpScriptBase {
     #endregion
 
     protected virtual void RegisterScriptEvents() {
-      if (CompiledScript != null)
-        CompiledScript.ConsoleOutputChanged += CompiledScriptOnConsoleOutputChanged;
+      if (compiledScript != null)
+        compiledScript.ConsoleOutputChanged += CompiledScriptOnConsoleOutputChanged;
     }
 
     protected virtual void DeregisterScriptEvents() {
-      if (CompiledScript != null)
-        CompiledScript.ConsoleOutputChanged -= CompiledScriptOnConsoleOutputChanged;
+      if (compiledScript != null)
+        compiledScript.ConsoleOutputChanged -= CompiledScriptOnConsoleOutputChanged;
     }
 
     #region Compilation
 
     public override Assembly Compile() {
-      CompiledScript = null;
+      DeregisterScriptEvents();
+      compiledScript = null;
       var assembly = base.Compile();
       var types = assembly.GetTypes();
-      DeregisterScriptEvents();
-      CompiledScript = (CSharpScriptBase)Activator.CreateInstance(types.First(x => typeof(CSharpScriptBase).IsAssignableFrom(x)));
+      compiledScript = (CSharpScriptBase)Activator.CreateInstance(types.Single(x => typeof(CSharpScriptBase).IsAssignableFrom(x)));
       RegisterScriptEvents();
       return assembly;
     }
     #endregion
 
-    protected Thread ScriptThread;
+    private Thread scriptThread;
     public virtual void Execute() {
-      if (CompiledScript == null) return;
-      var executeMethod = typeof(CSharpScriptBase).GetMethod(ExecuteMethodName, BindingFlags.NonPublic | BindingFlags.Instance);
-      if (executeMethod != null) {
-        ScriptThread = new Thread(() => {
-          Exception ex = null;
-          try {
-            OnScriptExecutionStarted();
-            executeMethod.Invoke(CompiledScript, new object[] { VariableStore });
-          } catch (ThreadAbortException) {
-            // the execution was cancelled by the user
-          } catch (TargetInvocationException e) {
-            ex = e.InnerException;
-          } finally {
-            OnScriptExecutionFinished(ex);
-          }
-        });
-        ScriptThread.Start();
-      }
+      if (compiledScript == null) return;
+      scriptThread = new Thread(() => {
+        Exception ex = null;
+        try {
+          OnScriptExecutionStarted();
+          compiledScript.Execute(VariableStore);
+        } catch (ThreadAbortException) {
+          // the execution was cancelled by the user
+        } catch (Exception e) {
+          ex = e;
+        } finally {
+          OnScriptExecutionFinished(ex);
+        }
+      });
+      scriptThread.Start();
     }
 
     public virtual void Kill() {
-      if (ScriptThread.IsAlive)
-        ScriptThread.Abort();
+      if (scriptThread.IsAlive)
+        scriptThread.Abort();
     }
 
     protected virtual void CompiledScriptOnConsoleOutputChanged(object sender, EventArgs<string> e) {

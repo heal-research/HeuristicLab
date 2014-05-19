@@ -48,7 +48,7 @@ namespace HeuristicLab.Scripting {
 
     [Storable]
     private string code;
-    public virtual string Code {
+    public string Code {
       get { return code; }
       set {
         if (value == code) return;
@@ -57,13 +57,8 @@ namespace HeuristicLab.Scripting {
       }
     }
 
-    private string compilationUnitCode;
-    public virtual string CompilationUnitCode {
-      get { return compilationUnitCode; }
-    }
-
     private CompilerErrorCollection compileErrors;
-    public virtual CompilerErrorCollection CompileErrors {
+    public CompilerErrorCollection CompileErrors {
       get { return compileErrors; }
       private set {
         compileErrors = value;
@@ -78,14 +73,12 @@ namespace HeuristicLab.Scripting {
     protected Script(Script original, Cloner cloner)
       : base(original, cloner) {
       code = original.code;
-      compilationUnitCode = original.compilationUnitCode;
       if (original.compileErrors != null)
         compileErrors = new CompilerErrorCollection(original.compileErrors);
     }
-    public Script() {
-      name = ItemName;
-      description = ItemDescription;
-      code = CodeTemplate;
+    public Script()
+      : base("Script", "An empty script.") {
+      code = string.Empty;
     }
     public Script(string code)
       : this() {
@@ -127,7 +120,6 @@ namespace HeuristicLab.Scripting {
           ElseOnClosing = true,
           IndentString = "  ",
         });
-      compilationUnitCode = writer.ToString();
       return CodeProvider.CompileAssemblyFromDom(parameters, unit);
     }
 
