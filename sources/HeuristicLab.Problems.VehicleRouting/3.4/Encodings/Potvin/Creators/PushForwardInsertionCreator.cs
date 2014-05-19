@@ -32,7 +32,7 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
-  [Item("PushForwardInsertionCreator", "Creates a randomly initialized VRP solution.")]
+  [Item("PushForwardInsertionCreator", "The push forward insertion heuristic. It is implemented as described in Sam, and Thangiah, R. (1999). A Hybrid Genetic Algorithms, Simulated Annealing and Tabu Search Heuristic for Vehicle Routing Problems with Time Windows. Practical Handbook of Genetic Algorithms, Volume III, pp 347–381.")]
   [StorableClass]
   public sealed class PushForwardInsertionCreator : PotvinCreator, IStochasticOperator {
     #region IStochasticOperator Members
@@ -137,15 +137,12 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
         if (dueTime == double.MaxValue)
           dueTime = 0;
 
-        double dist;
-        if (problemInstance.Coordinates[customer + depotCount - 1, 0] < x0)
-          dist = -distance;
-        else
-          dist = distance;
+        double x = problemInstance.Coordinates[customer + depotCount - 1, 0];
+        double y = problemInstance.Coordinates[customer + depotCount - 1, 1];
 
         double cost = alpha * distance + // distance 0 <-> City[i]
-                   -beta * dueTime + // latest arrival time
-                   -gamma * (Math.Asin((problemInstance.Coordinates[customer + depotCount - 1, 1] - y0) / dist) / 360 * dist); // polar angle
+                      -beta * dueTime + // latest arrival time
+                      -gamma * ((Math.Atan2(y - y0, x - x0) + Math.PI) / (2.0 * Math.PI) * distance); // polar angle
 
         if (cost < minCost) {
           minCost = cost;
