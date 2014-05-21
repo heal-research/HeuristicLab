@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Collections {
@@ -319,7 +320,7 @@ namespace HeuristicLab.Collections {
     public void Sort() {
       if (list.Count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems();
-        list.Sort();
+        list.StableSort();
         OnItemsMoved(GetIndexedItems(), oldItems);
         OnPropertyChanged("Item[]");
       }
@@ -327,7 +328,7 @@ namespace HeuristicLab.Collections {
     public void Sort(Comparison<T> comparison) {
       if (list.Count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems();
-        list.Sort(comparison);
+        list.StableSort(comparison);
         OnItemsMoved(GetIndexedItems(), oldItems);
         OnPropertyChanged("Item[]");
       }
@@ -335,7 +336,7 @@ namespace HeuristicLab.Collections {
     public void Sort(IComparer<T> comparer) {
       if (list.Count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems();
-        list.Sort(comparer);
+        list.StableSort(comparer);
         OnItemsMoved(GetIndexedItems(), oldItems);
         OnPropertyChanged("Item[]");
       }
@@ -343,7 +344,7 @@ namespace HeuristicLab.Collections {
     public void Sort(int index, int count, IComparer<T> comparer) {
       if (count > 1) {
         IndexedItem<T>[] oldItems = GetIndexedItems(index, count);
-        list.Sort(index, count, comparer);
+        list.StableSort(index, count, comparer);
         OnItemsMoved(GetIndexedItems(index, count), oldItems);
         OnPropertyChanged("Item[]");
       }
