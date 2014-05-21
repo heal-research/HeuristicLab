@@ -113,8 +113,13 @@ namespace HeuristicLab.Scripting.Views {
         outputTextBox.AppendText("Compilation succeeded.");
         return true;
       } catch {
-        outputTextBox.AppendText("Compilation failed.");
-        return false;
+        if (Content.CompileErrors.HasErrors) {
+          outputTextBox.AppendText("Compilation failed.");
+          return false;
+        } else {
+          outputTextBox.AppendText("Compilation succeeded.");
+          return true;
+        }
       } finally {
         ShowCompilationResults();
         if (Content.CompileErrors.Count > 0)
@@ -148,8 +153,7 @@ namespace HeuristicLab.Scripting.Views {
 
     protected virtual void AdjustErrorListViewColumnSizes() {
       foreach (ColumnHeader ch in errorListView.Columns)
-        // adjusts the column width to the width of the column
-        // header or the column content, whichever is greater
+        // adjusts the column width to the width of the column header
         ch.Width = -2;
     }
   }
