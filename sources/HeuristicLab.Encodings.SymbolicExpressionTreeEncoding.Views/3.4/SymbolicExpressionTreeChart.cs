@@ -303,7 +303,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       var visualNodes = visualTreeNodes.Values;
       //draw nodes and connections
       foreach (var visualNode in visualNodes) {
-        DrawTreeNode(visualNode);
+        DrawTreeNode(graphics, visualNode);
         var node = visualNode.Content;
         foreach (var subtree in node.Subtrees) {
           var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(node, subtree);
@@ -316,14 +316,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
             graphics.DrawLine(linePen, origin, target);
           }
         }
-      }
-    }
-
-    protected void DrawTreeNode(VisualTreeNode<ISymbolicExpressionTreeNode> visualTreeNode) {
-      using (var graphics = Graphics.FromImage(image)) {
-        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
-        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-        DrawTreeNode(graphics, visualTreeNode);
       }
     }
 
@@ -403,6 +395,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
 
     private void reingoldTilfordToolStripMenuItem_Click(object sender, EventArgs e) {
       minHorizontalDistance = 30;
+      minVerticalDistance = 30;
       layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
         NodeWidth = preferredNodeWidth,
         NodeHeight = preferredNodeHeight,
@@ -415,7 +408,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void boxesToolStripMenuItem_Click(object sender, EventArgs e) {
-      minHorizontalDistance = 5; 
+      minHorizontalDistance = 5;
       minVerticalDistance = 5;
       layoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees, n => n.GetLength(), n => n.GetDepth()) {
         NodeWidth = preferredNodeWidth,
