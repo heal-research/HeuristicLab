@@ -141,6 +141,13 @@ namespace HeuristicLab.CodeEditor {
         TextEditorValidated(this, EventArgs.Empty);
     }
 
+    public event EventHandler TextEditorTextChanged;
+
+    protected void OnTextEditorTextChanged() {
+      if (TextEditorTextChanged != null)
+        TextEditorTextChanged(this, EventArgs.Empty);
+    }
+
     public CodeEditor() {
       InitializeComponent();
 
@@ -187,6 +194,7 @@ namespace HeuristicLab.CodeEditor {
       parserThread.Start();
 
       textEditor.Validated += (s, a) => { OnTextEditorValidated(); };
+      textEditor.TextChanged += (s, a) => { OnTextEditorTextChanged(); };
       InitializeImageList();
     }
 
@@ -297,21 +305,21 @@ namespace HeuristicLab.CodeEditor {
     }
     public void AddAssembly(Assembly a) {
       ShowMessage("Loading " + a.GetName().Name + "...");
-      if (assemblies.Contains(a))
-        return;
-      var reference = projectContentRegistry.GetProjectContentForReference(a.GetName().Name, a.Location);
-      projectContent.AddReferencedContent(reference);
-      assemblies.Add(a);
+      if (!assemblies.Contains(a)) {
+        var reference = projectContentRegistry.GetProjectContentForReference(a.GetName().Name, a.Location);
+        projectContent.AddReferencedContent(reference);
+        assemblies.Add(a);
+      }
       ShowMessage("Ready");
     }
     public void RemoveAssembly(Assembly a) {
       ShowMessage("Unloading " + a.GetName().Name + "...");
-      if (!assemblies.Contains(a))
-        return;
-      var content = projectContentRegistry.GetExistingProjectContent(a.Location);
-      if (content != null) {
-        projectContent.ReferencedContents.Remove(content);
-        projectContentRegistry.UnloadProjectContent(content);
+      if (assemblies.Contains(a)) {
+        var content = projectContentRegistry.GetExistingProjectContent(a.Location);
+        if (content != null) {
+          projectContent.ReferencedContents.Remove(content);
+          projectContentRegistry.UnloadProjectContent(content);
+        }
       }
       ShowMessage("Ready");
     }
