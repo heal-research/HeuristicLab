@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Text;
@@ -49,23 +51,6 @@ namespace HeuristicLab.Scripting {
     private void OnConsoleOutputChanged(string args) {
       var handler = ConsoleOutputChanged;
       if (handler != null) handler(null, new EventArgs<string>(args));
-    }
-
-    private class Variables : DynamicObject {
-      private readonly VariableStore variableStore;
-
-      public Variables(VariableStore variableStore) {
-        this.variableStore = variableStore;
-      }
-
-      public override bool TryGetMember(GetMemberBinder binder, out object result) {
-        return variableStore.TryGetValue(binder.Name, out result);
-      }
-
-      public override bool TrySetMember(SetMemberBinder binder, object value) {
-        variableStore[binder.Name] = value;
-        return true;
-      }
     }
 
     protected class EventWriter : TextWriter {

@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -219,13 +218,13 @@ namespace HeuristicLab.Scripting.Views {
         }
 
         if (items.Count > 0) {
-          DataObject data = new DataObject();
+          var data = new DataObject();
           if (items.Count == 1) data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items[0]);
           else data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items);
           if (ReadOnly) {
-            DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
+            DoDragDrop(data, DragDropEffects.Copy);
           } else {
-            DragDropEffects result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
+            var result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
             if ((result & DragDropEffects.Move) == DragDropEffects.Move) {
               foreach (string item in items) Content.Remove(item);
             }
@@ -234,15 +233,7 @@ namespace HeuristicLab.Scripting.Views {
       }
     }
     protected virtual void variableListView_DragEnter(object sender, DragEventArgs e) {
-      validDragOperation = false;
-      if (!Locked && !ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is object)) {
-        validDragOperation = true;
-      } else if (!Locked && !ReadOnly && (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable)) {
-        validDragOperation = true;
-        IEnumerable items = (IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
-        foreach (object item in items)
-          validDragOperation = validDragOperation && (item is object);
-      }
+      validDragOperation = !Locked && !ReadOnly && e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) != null;
     }
     protected virtual void variableListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
@@ -256,35 +247,16 @@ namespace HeuristicLab.Scripting.Views {
     }
     protected virtual void variableListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        if (e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) is IEnumerable) {
-          IEnumerable<object> items = ((IEnumerable)e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat)).Cast<object>();
-          if (e.Effect.HasFlag(DragDropEffects.Copy)) {
-            var cloner = new Cloner();
-            var clonedItems = new List<object>();
-            foreach (var item in items) {
-              var dc = item as IDeepCloneable;
-              clonedItems.Add(dc != null ? cloner.Clone(dc) : item);
-            }
-            items = clonedItems;
-          }
-          foreach (var item in items) {
-            string name = GenerateNewVariableName();
-            Content.Add(name, item);
-            var listViewItem = variableListView.FindItemWithText(name);
-            listViewItem.BeginEdit();
-          }
-        } else {
-          object item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
-          if (e.Effect.HasFlag(DragDropEffects.Copy)) {
-            var cloner = new Cloner();
-            var dc = item as IDeepCloneable;
-            if (dc != null) item = cloner.Clone(dc);
-          }
-          string name = GenerateNewVariableName();
-          Content.Add(name, item);
-          var listViewItem = variableListView.FindItemWithText(name);
-          listViewItem.BeginEdit();
+        object item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+        if (e.Effect.HasFlag(DragDropEffects.Copy)) {
+          var cloner = new Cloner();
+          var dc = item as IDeepCloneable;
+          if (dc != null) item = cloner.Clone(dc);
         }
+        string name = GenerateNewVariableName();
+        Content.Add(name, item);
+        var listViewItem = variableListView.FindItemWithText(name);
+        listViewItem.BeginEdit();
       }
     }
 
@@ -422,7 +394,7 @@ namespace HeuristicLab.Scripting.Views {
       };
       string toolTipText = string.Join(Environment.NewLine, lines);
       if (!serializable)
-        toolTipText += Environment.NewLine + "CAUTION: Type is not serializable!";
+        toolTipText = "Caution: Type is not serializable!" + Environment.NewLine + toolTipText;
       return toolTipText;
     }
 

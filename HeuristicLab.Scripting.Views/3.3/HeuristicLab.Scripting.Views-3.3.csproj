@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{21977CC3-1757-4B3B-87BD-FF817AAA900F}</ProjectGuid>
+    <ProjectGuid>{0C2917C8-7AA8-4E18-800A-C4D064F992ED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Scripting</RootNamespace>
-    <AssemblyName>HeuristicLab.Scripting-3.3</AssemblyName>
+    <RootNamespace>HeuristicLab.Scripting.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.Scripting.Views-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -74,28 +74,48 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="VariableStore.cs" />
     <None Include="Plugin.cs.frame" />
-    <Compile Include="Script.cs" />
-    <Compile Include="UserScriptBase.cs" />
+    <Compile Include="CSharpScriptView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CSharpScriptView.Designer.cs">
+      <DependentUpon>CSharpScriptView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ScriptView.Designer.cs">
+      <DependentUpon>ScriptView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <Compile Include="VariableStoreView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VariableStoreView.Designer.cs">
+      <DependentUpon>VariableStoreView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.CodeEditor\3.3\HeuristicLab.CodeEditor-3.3.csproj">
+      <Project>{489cfe09-fdf7-4c89-bab5-bd09cadd61ad}</Project>
+      <Name>HeuristicLab.CodeEditor-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -111,13 +131,33 @@
       <Name>HeuristicLab.Common-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{e226881d-315f-423d-b419-a766fe0d8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{c36bd924-a541-4a00-afa8-41701378ddc5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Scripting\3.3\HeuristicLab.Scripting-3.3.csproj">
+      <Project>{21977cc3-1757-4b3b-87bd-ff817aaa900f}</Project>
+      <Name>HeuristicLab.Scripting-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
+      <Project>{ab687bbe-1bfe-476b-906d-44237135431d}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
+      <Project>{3bd61258-31da-4b09-89c0-4f71fef5f05a}</Project>
+      <Name>HeuristicLab.MainForm-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
-      <Project>{102bc7d3-0ef9-439c-8f6d-96ff0fdb8e1b}</Project>
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
