@@ -85,7 +85,7 @@ namespace HeuristicLab.Optimizer {
 
     protected override void OnClosing(CancelEventArgs e) {
       base.OnClosing(e);
-      if (MainFormManager.MainForm.Views.OfType<IContentView>().FirstOrDefault() != null) {
+      if (MainFormManager.MainForm.Views.OfType<IContentView>().Any(v => v.Content is IStorableContent)) {
         if (MessageBox.Show(this, "Some views are still opened. If their content has not been saved, it will be lost after closing. Do you really want to close HeuristicLab Optimizer?", "Close Optimizer", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.No)
           e.Cancel = true;
       }
@@ -109,7 +109,7 @@ namespace HeuristicLab.Optimizer {
         Invoke(new Action(UpdateTitle));
       else {
         IContentView activeView = ActiveView as IContentView;
-        if ((activeView != null) && (activeView.Content != null) && (activeView.Content is IStorableContent)) {
+        if ((activeView != null) && (activeView.Content is IStorableContent)) {
           IStorableContent content = (IStorableContent)activeView.Content;
           Title = title + " [" + (string.IsNullOrEmpty(content.Filename) ? "Unsaved" : content.Filename) + "]";
         } else {
