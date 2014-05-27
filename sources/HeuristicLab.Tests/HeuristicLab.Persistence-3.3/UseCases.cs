@@ -1440,6 +1440,30 @@ namespace HeuristicLab.Persistence.Tests {
       var s1 = XmlParser.Deserialize(tempFile);
     }
 
+    [TestMethod]
+    [TestCategory("Persistence")]
+    [TestProperty("Time", "short")]
+    public void TestSpecialCharacters() {
+      var s = "abc" + "\x15" + "def";
+      XmlGenerator.Serialize(s, tempFile);
+      var newS = XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(s, newS);
+    }
+
+    [TestMethod]
+    [TestCategory("Persistence")]
+    [TestProperty("Time", "short")]
+    public void TestByteArray() {
+      var b = new byte[3];
+      b[0] = 0;
+      b[1] = 200;
+      b[2] = byte.MaxValue;
+      XmlGenerator.Serialize(b, tempFile);
+      var newB = (byte[]) XmlParser.Deserialize(tempFile);
+      CollectionAssert.AreEqual(b, newB);
+    }
+
+
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
       ConfigurationService.Instance.Reset();
