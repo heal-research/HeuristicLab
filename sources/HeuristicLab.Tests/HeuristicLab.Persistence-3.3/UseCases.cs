@@ -1463,6 +1463,16 @@ namespace HeuristicLab.Persistence.Tests {
       CollectionAssert.AreEqual(b, newB);
     }
 
+    [TestMethod]
+    [TestCategory("Persistence")]
+    [TestProperty("Time", "short")]
+    public void TestOptionalNumberEnumerable() {
+      var values = new List<double?> {0, null, double.NaN, double.PositiveInfinity, double.MaxValue, 1};
+      XmlGenerator.Serialize(values, tempFile);
+      var newValues = (List<double?>) XmlParser.Deserialize(tempFile);
+      CollectionAssert.AreEqual(values, newValues);
+    }
+
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
