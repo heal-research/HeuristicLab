@@ -36,13 +36,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   /// </summary>
   [Item("SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer", "An operator that analyzes the validation best symbolic data analysis solution for single objective symbolic data analysis problems.")]
   [StorableClass]
-  public abstract class SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer<S, T, U> : SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<T, U>
+  public abstract class SymbolicDataAnalysisSingleObjectiveValidationBestSolutionAnalyzer<S, T, U> : SymbolicDataAnalysisSingleObjectiveValidationAnalyzer<T, U>, IIterationBasedOperator
     where S : class, ISymbolicDataAnalysisSolution
     where T : class, ISymbolicDataAnalysisSingleObjectiveEvaluator<U>
     where U : class, IDataAnalysisProblemData {
     private const string ValidationBestSolutionParameterName = "Best validation solution";
     private const string ValidationBestSolutionQualityParameterName = "Best validation solution quality";
+    private const string ValidationBestSolutionGenerationParameterName = "Best validation solution generation";
     private const string UpdateAlwaysParameterName = "Always update best solution";
+    private const string IterationsParameterName = "Iterations";
+    private const string MaximumIterationsParameterName = "Maximum Iterations";
 
     #region parameter properties
     public ILookupParameter<S> ValidationBestSolutionParameter {
@@ -51,8 +54,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ILookupParameter<DoubleValue> ValidationBestSolutionQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[ValidationBestSolutionQualityParameterName]; }
     }
+    public ILookupParameter<IntValue> ValidationBestSolutionGenerationParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[ValidationBestSolutionGenerationParameterName]; }
+    }
     public IFixedValueParameter<BoolValue> UpdateAlwaysParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[UpdateAlwaysParameterName]; }
+    }
+    public ILookupParameter<IntValue> IterationsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[IterationsParameterName]; }
+    }
+    public IValueLookupParameter<IntValue> MaximumIterationsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumIterationsParameterName]; }
     }
     #endregion
     #region properties
@@ -76,16 +88,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       : base() {
       Parameters.Add(new LookupParameter<S>(ValidationBestSolutionParameterName, "The validation best symbolic data analyis solution."));
       Parameters.Add(new LookupParameter<DoubleValue>(ValidationBestSolutionQualityParameterName, "The quality of the validation best symbolic data analysis solution."));
+      Parameters.Add(new LookupParameter<IntValue>(ValidationBestSolutionGenerationParameterName, "The generation in which the best validation solution was found."));
       Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best validation solution should always be updated regardless of its quality.", new BoolValue(false)));
+      Parameters.Add(new LookupParameter<IntValue>(IterationsParameterName, "The number of performed iterations."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumIterationsParameterName, "The maximum number of performed iterations.") { Hidden = true });
       UpdateAlwaysParameter.Hidden = true;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       if (!Parameters.ContainsKey(UpdateAlwaysParameterName)) {
-        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best training solution should always be updated regardless of its quality.", new BoolValue(false)));
+        Parameters.Add(new FixedValueParameter<BoolValue>(UpdateAlwaysParameterName, "Determines if the best validation solution should always be updated regardless of its quality.", new BoolValue(false)));
         UpdateAlwaysParameter.Hidden = true;
       }
+      if (!Parameters.ContainsKey(ValidationBestSolutionGenerationParameterName))
+        Parameters.Add(new LookupParameter<IntValue>(ValidationBestSolutionGenerationParameterName, "The generation in which the best validation solution was found."));
+      if (!Parameters.ContainsKey(IterationsParameterName))
+        Parameters.Add(new LookupParameter<IntValue>(IterationsParameterName, "The number of performed iterations."));
+      if (!Parameters.ContainsKey(MaximumIterationsParameterName))
+        Parameters.Add(new ValueLookupParameter<IntValue>(MaximumIterationsParameterName, "The maximum number of performed iterations.") { Hidden = true });
     }
 
     public override IOperation Apply() {
@@ -136,13 +157,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         IsBetter(bestValidationQuality, ValidationBestSolutionQuality.Value, Maximization.Value)) {
         ValidationBestSolution = CreateSolution(bestTree, bestValidationQuality);
         ValidationBestSolutionQuality = new DoubleValue(bestValidationQuality);
+        if (IterationsParameter.ActualValue != null)
+          ValidationBestSolutionGenerationParameter.ActualValue = new IntValue(IterationsParameter.ActualValue.Value);
 
         if (!results.ContainsKey(ValidationBestSolutionParameter.Name)) {
           results.Add(new Result(ValidationBestSolutionParameter.Name, ValidationBestSolutionParameter.Description, ValidationBestSolution));
           results.Add(new Result(ValidationBestSolutionQualityParameter.Name, ValidationBestSolutionQualityParameter.Description, ValidationBestSolutionQuality));
+          if (ValidationBestSolutionGenerationParameter.ActualValue != null)
+            results.Add(new Result(ValidationBestSolutionGenerationParameter.Name, ValidationBestSolutionGenerationParameter.Description, ValidationBestSolutionGenerationParameter.ActualValue));
         } else {
           results[ValidationBestSolutionParameter.Name].Value = ValidationBestSolution;
           results[ValidationBestSolutionQualityParameter.Name].Value = ValidationBestSolutionQuality;
+          if (ValidationBestSolutionGenerationParameter.ActualValue != null)
+            results[ValidationBestSolutionGenerationParameter.Name].Value = ValidationBestSolutionGenerationParameter.ActualValue;
         }
       }
       return base.Apply();
