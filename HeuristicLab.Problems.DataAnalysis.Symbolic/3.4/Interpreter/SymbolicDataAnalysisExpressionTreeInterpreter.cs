@@ -343,6 +343,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.NOT: {
             return Evaluate(dataset, ref row, state) > 0.0 ? -1.0 : 1.0;
           }
+        case OpCodes.XOR: {
+            //mkommend: XOR on multiple inputs is defined as true if the number of positive signals is odd
+            // this is equal to a consecutive execution of binary XOR operations.
+            int positiveSignals = 0;
+            for (int i = 0; i < currentInstr.nArguments; i++) {
+              if (Evaluate(dataset, ref row, state) > 0.0) positiveSignals++;
+            }
+            return positiveSignals % 2 != 0 ? 1.0 : -1.0;
+          }
         case OpCodes.GT: {
             double x = Evaluate(dataset, ref row, state);
             double y = Evaluate(dataset, ref row, state);

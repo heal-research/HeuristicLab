@@ -92,6 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var and = new And();
       var or = new Or();
       var not = new Not();
+      var xor = new Xor();
       var variableCondition = new VariableCondition();
 
       var timeLag = new TimeLag();
@@ -119,7 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var conditionSymbols = new GroupSymbol(ConditionsName, new List<ISymbol> { @if, variableCondition });
       var comparisonSymbols = new GroupSymbol(ComparisonsName, new List<ISymbol> { gt, lt });
-      var booleanOperationSymbols = new GroupSymbol(BooleanOperatorsName, new List<ISymbol> { and, or, not });
+      var booleanOperationSymbols = new GroupSymbol(BooleanOperatorsName, new List<ISymbol> { and, or, not, xor });
       var conditionalSymbols = new GroupSymbol(ConditionalSymbolsName, new List<ISymbol> { conditionSymbols, comparisonSymbols, booleanOperationSymbols });
 
       var timeSeriesSymbols = new GroupSymbol(TimeSeriesSymbolsName, new List<ISymbol> { timeLag, integral, derivative, laggedVariable, autoregressiveVariable });
@@ -147,6 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       SetSubtreeCount(and, 2, 2);
       SetSubtreeCount(or, 2, 2);
       SetSubtreeCount(not, 1, 1);
+      SetSubtreeCount(xor, 2, 2);
 
       SetSubtreeCount(timeLag, 1, 1);
       SetSubtreeCount(integral, 1, 1);
@@ -236,6 +238,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public void ConfigureAsDefaultClassificationGrammar() {
       Symbols.First(s => s is Average).Enabled = false;
       Symbols.First(s => s is VariableCondition).Enabled = false;
+      Symbols.First(s => s is Xor).Enabled = false;
       Symbols.First(s => s.Name == TrigonometricFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == ExponentialFunctionsName).Enabled = false;
       Symbols.First(s => s.Name == SpecialFunctionsName).Enabled = false;

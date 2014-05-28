@@ -98,6 +98,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var and = new And();
       var or = new Or();
       var not = new Not();
+      var xor = new Xor();
 
       var timeLag = new TimeLag();
       timeLag.InitialFrequency = 0.0;
@@ -121,13 +122,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var allSymbols = new List<Symbol>() { add, sub, mul, div, mean, sin, cos, tan, log, square, pow, sqrt, root, exp,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral,
-        @if, gt, lt, and, or, not, timeLag, integral, derivative, constant, variableSymbol, laggedVariable,autoregressiveVariable, variableCondition };
+        @if, gt, lt, and, or, not,xor, timeLag, integral, derivative, constant, variableSymbol, laggedVariable,autoregressiveVariable, variableCondition };
       var unaryFunctionSymbols = new List<Symbol>() { square, sqrt, sin, cos, tan, log, exp, not, timeLag, integral, derivative,
         airyA, airyB, bessel, cosineIntegral, dawson, erf, expIntegralEi, fresnelCosineIntegral, fresnelSineIntegral, gamma, hypCosineIntegral, hypSineIntegral, norm, psi, sineIntegral
       };
 
       var binaryFunctionSymbols = new List<Symbol>() { pow, root, gt, lt, variableCondition };
-      var ternarySymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or };
+      var ternarySymbols = new List<Symbol>() { add, sub, mul, div, mean, and, or, xor };
       var terminalSymbols = new List<Symbol>() { variableSymbol, constant, laggedVariable, autoregressiveVariable };
 
       foreach (var symb in allSymbols)

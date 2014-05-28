@@ -177,6 +177,7 @@
     <Compile Include="Symbols\AiryA.cs" />
     <Compile Include="Symbols\AiryB.cs" />
     <Compile Include="Symbols\Bessel.cs" />
+    <Compile Include="Symbols\Xor.cs" />
     <Compile Include="Symbols\Erf.cs" />
     <Compile Include="Symbols\Norm.cs" />
     <Compile Include="Symbols\FresnelCosineIntegral.cs" />

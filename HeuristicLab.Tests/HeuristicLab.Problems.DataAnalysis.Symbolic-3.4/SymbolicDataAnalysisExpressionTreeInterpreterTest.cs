@@ -21,10 +21,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -318,7 +316,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(and (log -1.0))", 0, -1.0); // (and NaN)
       Evaluate(interpreter, ds, "(and (log -1.0)  1.0)", 0, -1.0); // (and NaN 1.0)
 
-
       // OR
       Evaluate(interpreter, ds, "(or -1.0 -2.0)", 0, -1.0);
       Evaluate(interpreter, ds, "(or -1.0 2.0)", 0, 1.0);
@@ -329,6 +326,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(or -1.0 -2.0 3.0)", 0, 1.0);
       Evaluate(interpreter, ds, "(or (log -1.0))", 0, -1.0); // (or NaN)
       Evaluate(interpreter, ds, "(or (log -1.0)  1.0)", 0, -1.0); // (or NaN 1.0)
+
+      // XOR
+      Evaluate(interpreter, ds, "(xor -1.0 -2.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(xor -1.0 2.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(xor 1.0 -2.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(xor 1.0 2.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(xor 0.0 0.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(xor -1.0 -2.0 -3.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(xor -1.0 -2.0 3.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(xor -1.0 2.0 3.0)", 0, -1.0);
+      Evaluate(interpreter, ds, "(xor 1.0 2.0 3.0)", 0, 1.0);
+      Evaluate(interpreter, ds, "(xor (log -1.0))", 0, -1.0);
+      Evaluate(interpreter, ds, "(xor (log -1.0)  1.0)", 0, 1.0); 
 
       // sin, cos, tan
       Evaluate(interpreter, ds, "(sin " + Math.PI.ToString(NumberFormatInfo.InvariantInfo) + ")", 0, 0.0);

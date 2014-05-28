@@ -310,6 +310,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           instr.value = result > 0.0 ? 1.0 : -1.0;
         } else if (instr.opCode == OpCodes.NOT) {
           instr.value = code[instr.childIndex].value > 0.0 ? -1.0 : 1.0;
+        } else if (instr.opCode == OpCodes.XOR) {
+          int positiveSignals = 0;
+          for (int j = 0; j < instr.nArguments; j++) {
+            if (code[instr.childIndex + j].value > 0.0) positiveSignals++;
+          }
+          instr.value = positiveSignals % 2 != 0 ? 1.0 : -1.0;
         } else if (instr.opCode == OpCodes.GT) {
           double x = code[instr.childIndex].value;
           double y = code[instr.childIndex + 1].value;
