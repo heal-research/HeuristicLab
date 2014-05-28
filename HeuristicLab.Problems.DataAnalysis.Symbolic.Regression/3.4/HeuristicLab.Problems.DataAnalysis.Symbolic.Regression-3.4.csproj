@@ -120,6 +120,7 @@
     <Compile Include="Plugin.cs" />
     <Compile Include="SingleObjective\ConstantOptimizationAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />
+    <Compile Include="SingleObjective\SymbolicRegressionSolutionsAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionLogResidualEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />

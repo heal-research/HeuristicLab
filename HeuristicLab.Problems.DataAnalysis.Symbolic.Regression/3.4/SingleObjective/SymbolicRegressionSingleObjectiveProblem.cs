@@ -85,6 +85,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
         changed = true;
       }
+      if (!Operators.OfType<SymbolicRegressionSolutionsAnalyzer>().Any()) {
+        Operators.Add(new SymbolicRegressionSolutionsAnalyzer());
+        changed = true;
+      }
       if (changed) {
         ParameterizeOperators();
       }
@@ -105,6 +109,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       Operators.Add(new SymbolicRegressionSingleObjectiveOverfittingAnalyzer());
       Operators.Add(new SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer());
       Operators.Add(new SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer());
+      Operators.Add(new SymbolicRegressionSolutionsAnalyzer());
 
       ParameterizeOperators();
     }
