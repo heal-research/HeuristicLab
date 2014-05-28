@@ -69,6 +69,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         if (!typeof(MultiOperator<IIntegerVectorCrossover>).IsAssignableFrom(type))
           Operators.Add((IIntegerVectorCrossover)Activator.CreateInstance(type), true);
       }
+
+      SelectedOperatorParameter.ActualName = "SelectedCrossoverOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

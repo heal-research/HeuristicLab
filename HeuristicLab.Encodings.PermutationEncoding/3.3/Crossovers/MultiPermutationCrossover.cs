@@ -63,6 +63,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         if (!typeof(MultiOperator<IPermutationCrossover>).IsAssignableFrom(type))
           Operators.Add((IPermutationCrossover)Activator.CreateInstance(type), true);
       }
+
+      SelectedOperatorParameter.ActualName = "SelectedCrossoverOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

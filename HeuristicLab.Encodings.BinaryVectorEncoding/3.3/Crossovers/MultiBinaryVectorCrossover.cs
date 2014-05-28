@@ -63,6 +63,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
         if (!typeof(MultiOperator<IBinaryVectorCrossover>).IsAssignableFrom(type))
           Operators.Add((IBinaryVectorCrossover)Activator.CreateInstance(type), true);
       }
+
+      SelectedOperatorParameter.ActualName = "SelectedCrossoverOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

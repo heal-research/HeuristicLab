@@ -56,6 +56,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         if (!typeof(MultiOperator<IPermutationManipulator>).IsAssignableFrom(type))
           Operators.Add((IPermutationManipulator)Activator.CreateInstance(type), true);
       }
+
+      SelectedOperatorParameter.ActualName = "SelectedManipulationOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

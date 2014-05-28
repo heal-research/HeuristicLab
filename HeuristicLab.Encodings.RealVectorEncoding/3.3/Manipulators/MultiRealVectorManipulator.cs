@@ -61,6 +61,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Operators.Add(new PolynomialAllPositionManipulator());
       Operators.Add(new PolynomialOnePositionManipulator());
       Operators.Add(new UniformOnePositionManipulator());
+
+      SelectedOperatorParameter.ActualName = "SelectedManipulationOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

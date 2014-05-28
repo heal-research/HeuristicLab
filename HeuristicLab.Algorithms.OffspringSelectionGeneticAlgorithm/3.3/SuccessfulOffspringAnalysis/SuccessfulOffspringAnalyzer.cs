@@ -80,6 +80,9 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       Parameters.Add(new LookupParameter<IntValue>("Generations", "The current number of generations."));
       Parameters.Add(new LookupParameter<ResultCollection>("SuccessfulOffspringAnalysis", "The successful offspring analysis which is created."));
       Parameters.Add(new ValueParameter<IntValue>("Depth", "The depth of the individuals in the scope tree.", new IntValue(1)));
+
+      CollectedValuesParameter.Value.Add(new StringValue("SelectedCrossoverOperator"));
+      CollectedValuesParameter.Value.Add(new StringValue("SelectedManipulationOperator"));
     }
 
     public override IOperation Apply() {
@@ -109,59 +112,61 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
           }
         }
 
-        //create a data table containing the collected values
-        ResultCollection successfulOffspringAnalysis;
+        if (counts.Count > 0) {
+          //create a data table containing the collected values
+          ResultCollection successfulOffspringAnalysis;
 
-        if (SuccessfulOffspringAnalysisParameter.ActualValue == null) {
-          successfulOffspringAnalysis = new ResultCollection();
-          SuccessfulOffspringAnalysisParameter.ActualValue = successfulOffspringAnalysis;
-        } else {
-          successfulOffspringAnalysis = SuccessfulOffspringAnalysisParameter.ActualValue;
-        }
-
-        string resultKey = "SuccessfulOffspringAnalyzer Results";
-        if (!results.ContainsKey(resultKey)) {
-          results.Add(new Result(resultKey, successfulOffspringAnalysis));
-        } else {
-          results[resultKey].Value = successfulOffspringAnalysis;
-        }
-
-        DataTable successProgressAnalysis;
-        if (!successfulOffspringAnalysis.ContainsKey(collected.Value)) {
-          successProgressAnalysis = new DataTable();
-          successProgressAnalysis.Name = collected.Value;
-          successfulOffspringAnalysis.Add(new Result(collected.Value, successProgressAnalysis));
-        } else {
-          successProgressAnalysis = successfulOffspringAnalysis[collected.Value].Value as DataTable;
-        }
-
-        int successfulCount = 0;
-        foreach (string key in counts.Keys) {
-          successfulCount += counts[key];
-        }
-
-        foreach (String value in counts.Keys) {
-          DataRow row;
-          if (!successProgressAnalysis.Rows.ContainsKey(value)) {
-            row = new DataRow(value);
-            int iterations = GenerationsParameter.ActualValue.Value;
-
-            //fill up all values seen the first time
-            for (int i = 1; i < iterations; i++)
-              row.Values.Add(0);
-
-            successProgressAnalysis.Rows.Add(row);
+          if (SuccessfulOffspringAnalysisParameter.ActualValue == null) {
+            successfulOffspringAnalysis = new ResultCollection();
+            SuccessfulOffspringAnalysisParameter.ActualValue = successfulOffspringAnalysis;
           } else {
-            row = successProgressAnalysis.Rows[value];
+            successfulOffspringAnalysis = SuccessfulOffspringAnalysisParameter.ActualValue;
           }
 
-          row.Values.Add(counts[value] / (double)successfulCount);
-        }
+          string resultKey = "SuccessfulOffspringAnalyzer Results";
+          if (!results.ContainsKey(resultKey)) {
+            results.Add(new Result(resultKey, successfulOffspringAnalysis));
+          } else {
+            results[resultKey].Value = successfulOffspringAnalysis;
+          }
 
-        //fill up all values that are not present in the current generation
-        foreach (DataRow row in successProgressAnalysis.Rows) {
-          if (!counts.ContainsKey(row.Name))
-            row.Values.Add(0);
+          DataTable successProgressAnalysis;
+          if (!successfulOffspringAnalysis.ContainsKey(collected.Value)) {
+            successProgressAnalysis = new DataTable();
+            successProgressAnalysis.Name = collected.Value;
+            successfulOffspringAnalysis.Add(new Result(collected.Value, successProgressAnalysis));
+          } else {
+            successProgressAnalysis = successfulOffspringAnalysis[collected.Value].Value as DataTable;
+          }
+
+          int successfulCount = 0;
+          foreach (string key in counts.Keys) {
+            successfulCount += counts[key];
+          }
+
+          foreach (String value in counts.Keys) {
+            DataRow row;
+            if (!successProgressAnalysis.Rows.ContainsKey(value)) {
+              row = new DataRow(value);
+              int iterations = GenerationsParameter.ActualValue.Value;
+
+              //fill up all values seen the first time
+              for (int i = 1; i < iterations; i++)
+                row.Values.Add(0);
+
+              successProgressAnalysis.Rows.Add(row);
+            } else {
+              row = successProgressAnalysis.Rows[value];
+            }
+
+            row.Values.Add(counts[value] / (double)successfulCount);
+          }
+
+          //fill up all values that are not present in the current generation
+          foreach (DataRow row in successProgressAnalysis.Rows) {
+            if (!counts.ContainsKey(row.Name))
+              row.Values.Add(0);
+          }
         }
       }
 

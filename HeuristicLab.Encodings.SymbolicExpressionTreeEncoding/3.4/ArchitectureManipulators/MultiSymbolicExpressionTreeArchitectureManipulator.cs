@@ -105,6 +105,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       checkedItemList.AddRange(list.OrderBy(op => op.Name));
       Operators = checkedItemList.AsReadOnly();
       Operators_ItemsAdded(this, new CollectionItemsChangedEventArgs<IndexedItem<ISymbolicExpressionTreeManipulator>>(Operators.CheckedItems));
+
+      SelectedOperatorParameter.ActualName = "SelectedManipulationOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

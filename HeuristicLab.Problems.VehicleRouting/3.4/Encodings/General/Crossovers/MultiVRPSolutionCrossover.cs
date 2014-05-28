@@ -66,6 +66,8 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       ParentsParameter.ActualName = "VRPTours";
       Parameters.Add(new LookupParameter<IVRPEncoding>("Child", "The child permutation resulting from the crossover."));
       ChildParameter.ActualName = "VRPTours";
+
+      SelectedOperatorParameter.ActualName = "SelectedCrossoverOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
