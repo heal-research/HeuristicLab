@@ -42,20 +42,5 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       view.Content = (SymbolicRegressionSolution)this.Content.Clone();
       view.Show();
     }
-
-    private void exportButton_Click(object sender, EventArgs e) {
-      var exporter = new SymbolicSolutionExcelExporter();
-      exportFileDialog.Filter = exporter.FileTypeFilter;
-      if (exportFileDialog.ShowDialog(this) == DialogResult.OK) {
-
-        var name = exportFileDialog.FileName;
-        using (BackgroundWorker bg = new BackgroundWorker()) {
-          MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Exporting solution to " + name + ".");
-          bg.DoWork += (o, a) => exporter.Export(Content, name);
-          bg.RunWorkerCompleted += (o, a) => MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
-          bg.RunWorkerAsync();
-        }
-      }
-    }
   }
 }
