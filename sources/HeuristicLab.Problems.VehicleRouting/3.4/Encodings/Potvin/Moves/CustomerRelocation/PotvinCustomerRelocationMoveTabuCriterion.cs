@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -97,9 +98,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
       bool isTabu = false;
       PotvinCustomerRelocationMove move = CustomerRelocationMoveParameter.ActualValue;
 
-      foreach (IItem tabuMove in tabuList) {
-        PotvinCustomerRelocationMoveAttribute attribute = tabuMove as PotvinCustomerRelocationMoveAttribute;
-
+      foreach (var attribute in tabuList.OfType<PotvinCustomerRelocationMoveAttribute>()) {
         if (!useAspiration || moveQuality >= attribute.MoveQuality) {
           if (attribute.City == move.City && attribute.Tour == move.Tour) {
             isTabu = true;
