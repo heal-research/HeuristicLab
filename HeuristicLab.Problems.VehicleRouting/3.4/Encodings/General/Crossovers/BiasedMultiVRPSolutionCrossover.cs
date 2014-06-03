@@ -133,7 +133,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
         }
       }
 
-      ////////////////
+      //////////////// code has to be duplicated since ActualProbabilitiesParameter.ActualValue are updated and used for operator selection
       IRandom random = RandomParameter.ActualValue;
       DoubleArray probabilities = ActualProbabilitiesParameter.ActualValue;
       if (probabilities.Length != Operators.Count) {

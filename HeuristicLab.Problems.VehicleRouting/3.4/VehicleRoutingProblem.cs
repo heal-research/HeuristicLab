@@ -364,6 +364,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
       Name = instance.Name;
       Description = instance.Description;
+
+      BestKnownQuality = null;
+      BestKnownSolution = null;
+
       if (ProblemInstance != null && instance.ProblemInstance != null &&
         instance.ProblemInstance.GetType() == ProblemInstance.GetType())
         SetProblemInstance(instance.ProblemInstance);
@@ -371,8 +375,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
         ProblemInstance = instance.ProblemInstance;
 
       OnReset();
-      BestKnownQuality = null;
-      BestKnownSolution = null;
 
       if (instance.BestKnownQuality != null) {
         BestKnownQuality = new DoubleValue((double)instance.BestKnownQuality);
