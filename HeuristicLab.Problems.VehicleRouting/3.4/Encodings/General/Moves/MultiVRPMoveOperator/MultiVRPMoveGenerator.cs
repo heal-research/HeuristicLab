@@ -30,6 +30,8 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
@@ -98,7 +100,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
     public void SetOperators(IEnumerable<IOperator> operators) {
       foreach (IOperator op in operators) {
         if (op is IMultiVRPMoveGenerator && !(op is MultiOperator<IMultiVRPMoveGenerator>)) {
-          Operators.Add(op.Clone() as IMultiVRPMoveGenerator, true);
+          Operators.Add(op.Clone() as IMultiVRPMoveGenerator, !(op is IAlbaOperator || op is PotvinVehicleAssignmentMultiMoveGenerator));
         }
       }
     }
