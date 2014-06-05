@@ -53,7 +53,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.symbolicExpressionTreeView.Caption = "Graphical SymbolicExpressionTree View";
       this.symbolicExpressionTreeView.Content = null;
       this.symbolicExpressionTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.symbolicExpressionTreeView.Font = new System.Drawing.Font("Consolas", 8.25F);
       this.symbolicExpressionTreeView.Location = new System.Drawing.Point(0, 0);
       this.symbolicExpressionTreeView.Name = "symbolicExpressionTreeView";
       this.symbolicExpressionTreeView.ReadOnly = false;
