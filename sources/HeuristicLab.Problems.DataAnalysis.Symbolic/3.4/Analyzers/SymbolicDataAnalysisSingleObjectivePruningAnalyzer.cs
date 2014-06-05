@@ -147,6 +147,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var end = (int)Math.Round(PopulationSlice.End * count);
       if (end > count) end = count;
 
+      if (PopulationSlice.Start > 1 || PopulationSlice.End > 1) throw new ArgumentOutOfRangeException("The slice bounds should be expressed as unit percentages.");
       if (start >= end) throw new ArgumentOutOfRangeException("Invalid PopulationSlice bounds.");
       return new IntRange(start, end);
     }
