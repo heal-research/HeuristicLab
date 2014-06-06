@@ -46,6 +46,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       constructorCache = new Dictionary<Type, Constructor>();
       hookCache = new Dictionary<HookDesignator, List<StorableReflection.Hook>>();
     }
+
     [StorableConstructor]
     private StorableSerializer(bool deserializing) : this() { }
 
@@ -67,7 +68,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// 	<c>true</c> if this instance can serialize the specified type; otherwise, <c>false</c>.
     /// </returns>
     public bool CanSerialize(Type type) {
-      bool markedStorable = StorableReflection.HasStorableClassAttribute(type);
+      var markedStorable = StorableReflection.HasStorableClassAttribute(type);
       if (GetConstructor(type) == null)
         if (markedStorable)
           throw new Exception("[Storable] type has no default constructor and no [StorableConstructor]");
@@ -90,7 +91,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// A string justifying why type cannot be serialized.
     /// </returns>
     public string JustifyRejection(Type type) {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
       if (GetConstructor(type) == null)
         sb.Append("class has no default constructor and no [StorableConstructor]");
       if (!StorableReflection.IsEmptyOrStorableType(type, true))
@@ -116,10 +117,9 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// <param name="obj">An object.</param>
     /// <returns>An enumerable of <see cref="Tag"/>s.</returns>
     public IEnumerable<Tag> Decompose(object obj) {
-      foreach (var accessor in GetStorableAccessors(obj.GetType())) {
-        if (accessor.Get != null)
-          yield return new Tag(accessor.Name, accessor.Get(obj));
-      }
+      return from accessor in GetStorableAccessors(obj.GetType())
+             where accessor.Get != null
+             select new Tag(accessor.Name, accessor.Get(obj));
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     /// <param name="type">The type.</param>
     public void Populate(object instance, IEnumerable<Tag> objects, Type type) {
       var memberDict = new Dictionary<string, Tag>();
-      IEnumerator<Tag> iter = objects.GetEnumerator();
+      var iter = objects.GetEnumerator();
       while (iter.MoveNext()) {
         memberDict.Add(iter.Current.Name, iter.Current);
       }
@@ -169,17 +169,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
     private const BindingFlags ALL_CONSTRUCTORS =
       BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-    private static readonly object[] emptyArgs = new object[] { };
-    private static readonly object[] trueArgs = new object[] { true };
-
-    private sealed class HookDesignator {
-      public Type Type { get; private set; }
-      public HookType HookType { get; private set; }
-      public HookDesignator() { }
-      public HookDesignator(Type type, HookType hookType) {
-        Type = type;
-        HookType = HookType;
-      }
+    private sealed class HookDesignator : Tuple<Type, HookType> {
+      public HookDesignator(Type type, HookType hookType) : base(type, hookType) { }
     }
 
     private sealed class AccessorListCache : Dictionary<Type, IEnumerable<DataMemberAccessor>> { }
@@ -190,10 +181,10 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
 
     #region caches
 
-    private AccessorListCache accessorListCache;
-    private AccessorCache accessorCache;
-    private Dictionary<Type, Constructor> constructorCache;
-    private Dictionary<HookDesignator, List<StorableReflection.Hook>> hookCache;
+    private readonly AccessorListCache accessorListCache;
+    private readonly AccessorCache accessorCache;
+    private readonly Dictionary<Type, Constructor> constructorCache;
+    private readonly Dictionary<HookDesignator, List<StorableReflection.Hook>> hookCache;
 
     #endregion
 
@@ -205,7 +196,8 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
           return accessorListCache[type];
         var storableMembers = StorableReflection
           .GenerateStorableMembers(type)
-          .Select(mi => GetMemberAccessor(mi));
+          .Select(GetMemberAccessor)
+          .ToList();
         accessorListCache[type] = storableMembers;
         return storableMembers;
       }
@@ -215,7 +207,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       lock (accessorCache) {
         if (accessorCache.ContainsKey(mi.MemberInfo))
           return new DataMemberAccessor(accessorCache[mi.MemberInfo], mi.DisentangledName, mi.DefaultValue);
-        DataMemberAccessor dma = new DataMemberAccessor(mi.MemberInfo, mi.DisentangledName, mi.DefaultValue);
+        var dma = new DataMemberAccessor(mi.MemberInfo, mi.DisentangledName, mi.DefaultValue);
         accessorCache[mi.MemberInfo] = dma;
         return dma;
       }
@@ -225,44 +217,44 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers.Storable {
       lock (constructorCache) {
         if (constructorCache.ContainsKey(type))
           return constructorCache[type];
-        Constructor c = FindStorableConstructor(type) ?? GetDefaultConstructor(type);
+        var c = FindStorableConstructor(type) ?? GetDefaultConstructor(type);
         constructorCache.Add(type, c);
         return c;
       }
     }
 
     private Constructor GetDefaultConstructor(Type type) {
-      ConstructorInfo ci = type.GetConstructor(ALL_CONSTRUCTORS, null, Type.EmptyTypes, null);
+      var ci = type.GetConstructor(ALL_CONSTRUCTORS, null, Type.EmptyTypes, null);
       if (ci == null)
         return null;
-      DynamicMethod dm = new DynamicMethod("", typeof(object), null, type, true);
-      ILGenerator ilgen = dm.GetILGenerator();
+      var dm = new DynamicMethod("", typeof(object), null, type, true);
+      var ilgen = dm.GetILGenerator();
       ilgen.Emit(OpCodes.Newobj, ci);
       ilgen.Emit(OpCodes.Ret);
       return (Constructor)dm.CreateDelegate(typeof(Constructor));
     }
 
     private Constructor FindStorableConstructor(Type type) {
-      foreach (ConstructorInfo ci in type.GetConstructors(ALL_CONSTRUCTORS)) {
-        if (ci.GetCustomAttributes(typeof(StorableConstructorAttribute), false).Length > 0) {
-          if (ci.GetParameters().Length != 1 ||
-              ci.GetParameters()[0].ParameterType != typeof(bool))
-            throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");
-          DynamicMethod dm = new DynamicMethod("", typeof(object), null, type, true);
-          ILGenerator ilgen = dm.GetILGenerator();
-          ilgen.Emit(OpCodes.Ldc_I4_1); // load true
-          ilgen.Emit(OpCodes.Newobj, ci);
-          ilgen.Emit(OpCodes.Ret);
-          return (Constructor)dm.CreateDelegate(typeof(Constructor));
-        }
+      foreach (var ci in type
+        .GetConstructors(ALL_CONSTRUCTORS)
+        .Where(ci => ci.GetCustomAttributes(typeof(StorableConstructorAttribute), false).Length > 0)) {
+        if (ci.GetParameters().Length != 1 ||
+            ci.GetParameters()[0].ParameterType != typeof(bool))
+          throw new PersistenceException("StorableConstructor must have exactly one argument of type bool");
+        var dm = new DynamicMethod("", typeof(object), null, type, true);
+        var ilgen = dm.GetILGenerator();
+        ilgen.Emit(OpCodes.Ldc_I4_1); // load true
+        ilgen.Emit(OpCodes.Newobj, ci);
+        ilgen.Emit(OpCodes.Ret);
+        return (Constructor)dm.CreateDelegate(typeof(Constructor));
       }
       return null;
     }
 
     private void InvokeHook(HookType hookType, object obj) {
       if (obj == null)
-        throw new ArgumentNullException("Cannot invoke hooks on null");
-      foreach (StorableReflection.Hook hook in GetHooks(hookType, obj.GetType())) {
+        throw new ArgumentNullException("obj");
+      foreach (var hook in GetHooks(hookType, obj.GetType())) {
         hook(obj);
       }
     }
