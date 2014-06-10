@@ -106,7 +106,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
 
         int stopIdx = 0;
         if (currentTour.Stops.Count > 0)
-          result.FindBestInsertionPlace(currentTour, customers[index]);
+          stopIdx = result.FindBestInsertionPlace(currentTour, customers[index]);
         currentTour.Stops.Insert(stopIdx, customers[index]);
 
         if (pdp != null) {
