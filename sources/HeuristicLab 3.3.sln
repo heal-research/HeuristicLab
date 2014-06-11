@@ -78,6 +78,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab-3.3", "Heurist
 		{399EBB6E-37A1-4AE4-B8CD-0D461FF286A3} = {399EBB6E-37A1-4AE4-B8CD-0D461FF286A3}
 		{3C906172-E044-4DF0-B4FD-AA21192D5D3E} = {3C906172-E044-4DF0-B4FD-AA21192D5D3E}
 		{DC3D7072-7999-4719-B65D-3997744D5DC1} = {DC3D7072-7999-4719-B65D-3997744D5DC1}
+		{7FC70D74-1813-48B7-9CE5-0BD913457579} = {7FC70D74-1813-48B7-9CE5-0BD913457579}
 		{20831A74-D18F-42D9-A667-1CE3AF53DF93} = {20831A74-D18F-42D9-A667-1CE3AF53DF93}
 		{76945D76-CA61-4147-9DC2-0ACDCDDF87F9} = {76945D76-CA61-4147-9DC2-0ACDCDDF87F9}
 		{2E782078-FA81-4B70-B56F-74CE38DAC6C8} = {2E782078-FA81-4B70-B56F-74CE38DAC6C8}
@@ -393,7 +394,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Param
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation.Scilab-3.3", "HeuristicLab.Problems.ExternalEvaluation.Scilab\3.3\HeuristicLab.Problems.ExternalEvaluation.Scilab-3.3.csproj", "{C633FB23-BAE6-448E-BF5D-E1F9A839B5ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.GrammaticalEvolution-3.3", "HeuristicLab.Problems.GrammaticalEvolution\HeuristicLab.Problems.GrammaticalEvolution-3.3.csproj", "{7FC70D74-1813-48B7-9CE5-0BD913457579}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.GrammaticalEvolution-3.3", "HeuristicLab.Problems.GrammaticalEvolution\3.3\HeuristicLab.Problems.GrammaticalEvolution-3.3.csproj", "{7FC70D74-1813-48B7-9CE5-0BD913457579}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
