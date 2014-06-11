@@ -19,6 +19,9 @@
  */
 #endregion
 
+using System;
+using System.Text;
+using System.Text.RegularExpressions;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Interfaces;
 
@@ -26,14 +29,26 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
   internal sealed class Char2XmlSerializer : PrimitiveSerializerBase<char, XmlString> {
 
+    private static readonly Regex base64Regex = new Regex("<Base64>(.+)</Base64>");
+
+    private static bool IsSpecial(char c) {
+      return c <= 0x1F && c != 0x9 && c != 0xA && c != 0xD;
+    }
+
+    private static string ToBase64String(char c) {
+      return string.Format("<Base64>{0}</Base64>", Convert.ToBase64String(Encoding.ASCII.GetBytes(new[] {c})));
+    }
+
     public override XmlString Format(char c) {
-      return new XmlString(new string(c, 1));
+      return new XmlString(IsSpecial(c) ? ToBase64String(c) : new string(c, 1));
     }
 
     public override char Parse(XmlString x) {
-      if (x.Data.Length != 1)
-        throw new PersistenceException("Invalid character format, XML string length != 1");
-      return x.Data[0];
+      if (x.Data.Length <= 1) return x.Data[0];
+      var m = base64Regex.Match(x.Data);
+      if (m.Success)
+        return Encoding.ASCII.GetString(Convert.FromBase64String(m.Groups[1].Value))[0];
+      throw new PersistenceException("Invalid character format, XML string length != 1");
     }
   }
 }
