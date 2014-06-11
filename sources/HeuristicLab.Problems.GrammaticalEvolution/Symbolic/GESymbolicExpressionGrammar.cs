@@ -76,14 +76,16 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
 
       var constants = new List<Constant>(nConstants);
       for (int i = 0; i < nConstants; i++) {
-        var constVal = rand.NextDouble() * 20.0 - 10.0;
         var constant = new Constant();
-        constant.Name = string.Format("{0:0.000}", constVal);
-        constant.MinValue = constVal;
-        constant.MaxValue = constVal;
-        constant.ManipulatorSigma = 0.0;
-        constant.ManipulatorMu = 0.0;
-        constant.MultiplicativeManipulatorSigma = 0.0;
+        do {
+          var constVal = rand.NextDouble() * 20.0 - 10.0;
+          constant.Name = string.Format("{0:0.000}", constVal);
+          constant.MinValue = constVal;
+          constant.MaxValue = constVal;
+          constant.ManipulatorSigma = 0.0;
+          constant.ManipulatorMu = 0.0;
+          constant.MultiplicativeManipulatorSigma = 0.0;
+        } while (constants.Any(c => c.Name == constant.Name)); // unlikely, but it could happen that the same constant value is sampled twice. so we resample if necessary.
         constants.Add(constant);
       }
 
