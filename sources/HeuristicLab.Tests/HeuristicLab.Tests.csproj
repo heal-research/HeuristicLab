@@ -121,6 +121,10 @@
       <HintPath>..\bin\HeuristicLab.Algorithms.LocalSearch-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.dll</HintPath>
+    </Reference>
     <Reference Include="HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll</HintPath>
       <Private>False</Private>
@@ -248,6 +252,10 @@
     <Reference Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4">
       <HintPath>..\bin\HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="HeuristicLab.Problems.GrammaticalEvolution-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Problems.GrammaticalEvolution-3.3.dll</HintPath>
     </Reference>
     <Reference Include="HeuristicLab.Problems.Instances-3.3">
       <HintPath>..\bin\HeuristicLab.Problems.Instances-3.3.dll</HintPath>
