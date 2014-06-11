@@ -57,7 +57,7 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
       return new FontFamily(name);
     }
 
-    public string GetFontFamilyName(FontFamily ff) {
+    public static string GetFontFamilyName(FontFamily ff) {
       if (ff.Equals(FontFamily.GenericMonospace)) return GENERIC_MONOSPACE_NAME;
       if (ff.Equals(FontFamily.GenericSansSerif)) return GENERIC_SANS_SERIF_NAME;
       if (ff.Equals(FontFamily.GenericSerif)) return GENERIC_SERIF_NAME;
