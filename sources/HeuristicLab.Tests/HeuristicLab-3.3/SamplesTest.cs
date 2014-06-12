@@ -1252,9 +1252,6 @@ namespace HeuristicLab.Tests {
       RunAlgorithm(ga);
     }
 
-    [TestMethod]
-    [TestCategory("Samples.Create")]
-    [TestProperty("Time", "medium")]
     public OffspringSelectionGeneticAlgorithm CreateGeSymbolicRegressionSample() {
       var ga = new OffspringSelectionGeneticAlgorithm();
       #region Problem Configuration
