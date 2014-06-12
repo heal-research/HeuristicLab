@@ -130,47 +130,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static IClassificationSolution CreateRandomForestClassificationSolution(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double relClassificationError, out double outOfBagRmsError, out double outOfBagRelClassificationError) {
-      if (r <= 0 || r > 1) throw new ArgumentException("The R parameter in the random forest regression must be between 0 and 1.");
-      if (m <= 0 || m > 1) throw new ArgumentException("The M parameter in the random forest regression must be between 0 and 1.");
-
-      alglib.math.rndobject = new System.Random(seed);
-
-      Dataset dataset = problemData.Dataset;
-      string targetVariable = problemData.TargetVariable;
-      IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
-      IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
-        throw new NotSupportedException("Random forest classification does not support NaN or infinity values in the input dataset.");
-
-      int info = 0;
-      alglib.decisionforest dForest = new alglib.decisionforest();
-      alglib.dfreport rep = new alglib.dfreport(); ;
-      int nRows = inputMatrix.GetLength(0);
-      int nColumns = inputMatrix.GetLength(1);
-      int sampleSize = Math.Max((int)Math.Round(r * nRows), 1);
-      int nFeatures = Math.Max((int)Math.Round(m * (nColumns - 1)), 1);
-
-
-      double[] classValues = problemData.ClassValues.ToArray();
-      int nClasses = problemData.Classes;
-      // map original class values to values [0..nClasses-1]
-      Dictionary<double, double> classIndices = new Dictionary<double, double>();
-      for (int i = 0; i < nClasses; i++) {
-        classIndices[classValues[i]] = i;
-      }
-      for (int row = 0; row < nRows; row++) {
-        inputMatrix[row, nColumns - 1] = classIndices[inputMatrix[row, nColumns - 1]];
-      }
-      // execute random forest algorithm      
-      alglib.dforest.dfbuildinternal(inputMatrix, nRows, nColumns - 1, nClasses, nTrees, sampleSize, nFeatures, alglib.dforest.dfusestrongsplits + alglib.dforest.dfuseevs, ref info, dForest.innerobj, rep.innerobj);
-      if (info != 1) throw new ArgumentException("Error in calculation of random forest classification solution");
-
-      rmsError = rep.rmserror;
-      outOfBagRmsError = rep.oobrmserror;
-      relClassificationError = rep.relclserror;
-      outOfBagRelClassificationError = rep.oobrelclserror;
-      return new RandomForestClassificationSolution((IClassificationProblemData)problemData.Clone(), new RandomForestModel(dForest, targetVariable, allowedInputVariables, classValues));
+      var model = RandomForestModel.CreateClassificationModel(problemData, nTrees, r, m, seed, out rmsError, out relClassificationError, out outOfBagRmsError, out outOfBagRelClassificationError);
+      return new RandomForestClassificationSolution((IClassificationProblemData)problemData.Clone(), model);
     }
     #endregion
   }

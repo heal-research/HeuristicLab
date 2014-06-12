@@ -129,36 +129,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static IRegressionSolution CreateRandomForestRegressionSolution(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double avgRelError, out double outOfBagRmsError, out double outOfBagAvgRelError) {
-      if (r <= 0 || r > 1) throw new ArgumentException("The R parameter in the random forest regression must be between 0 and 1.");
-      if (m <= 0 || m > 1) throw new ArgumentException("The M parameter in the random forest regression must be between 0 and 1.");
-
-      alglib.math.rndobject = new System.Random(seed);
-
-      Dataset dataset = problemData.Dataset;
-      string targetVariable = problemData.TargetVariable;
-      IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
-      IEnumerable<int> rows = problemData.TrainingIndices;
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables.Concat(new string[] { targetVariable }), rows);
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
-        throw new NotSupportedException("Random forest regression does not support NaN or infinity values in the input dataset.");
-
-      int info = 0;
-      alglib.decisionforest dForest = new alglib.decisionforest();
-      alglib.dfreport rep = new alglib.dfreport(); ;
-      int nRows = inputMatrix.GetLength(0);
-      int nColumns = inputMatrix.GetLength(1);
-      int sampleSize = Math.Max((int)Math.Round(r * nRows), 1);
-      int nFeatures = Math.Max((int)Math.Round(m * (nColumns - 1)), 1);
-
-      alglib.dforest.dfbuildinternal(inputMatrix, nRows, nColumns - 1, 1, nTrees, sampleSize, nFeatures, alglib.dforest.dfusestrongsplits + alglib.dforest.dfuseevs, ref info, dForest.innerobj, rep.innerobj);
-      if (info != 1) throw new ArgumentException("Error in calculation of random forest regression solution");
-
-      rmsError = rep.rmserror;
-      avgRelError = rep.avgrelerror;
-      outOfBagAvgRelError = rep.oobavgrelerror;
-      outOfBagRmsError = rep.oobrmserror;
-
-      return new RandomForestRegressionSolution((IRegressionProblemData)problemData.Clone(), new RandomForestModel(dForest, targetVariable, allowedInputVariables));
+      var model = RandomForestModel.CreateRegressionModel(problemData, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+      return new RandomForestRegressionSolution((IRegressionProblemData)problemData.Clone(), model);
     }
     #endregion
   }
