@@ -121,7 +121,6 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Reset), sender, e);
       else {
-        this.categoricalMapping.Clear();
         UpdateDataPoints();
         UpdateAxisLabels();
       }
@@ -188,6 +187,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateDataPoints() {
+      this.categoricalMapping.Clear();
       this.chart.Series.Clear();
       this.seriesCache.Clear();
       if (Content != null) {
@@ -324,7 +324,7 @@ namespace HeuristicLab.Optimization.Views {
         return ret;
       }
     }
-    private double GetCategoricalValue(int dimension, string value) {
+    private double? GetCategoricalValue(int dimension, string value) {
       if (!this.categoricalMapping.ContainsKey(dimension)) {
         this.categoricalMapping[dimension] = new Dictionary<object, double>();
         var orderedCategories = Content.Where(r => r.Visible && Content.GetValue(r, dimension) != null).Select(r => Content.GetValue(r, dimension).ToString())
@@ -335,10 +335,11 @@ namespace HeuristicLab.Optimization.Views {
           count++;
         }
       }
+      if (!this.categoricalMapping[dimension].ContainsKey(value)) return null;
       return this.categoricalMapping[dimension][value];
     }
-    private double GetValue(IRun run, AxisDimension axisDimension) {
-      double value = double.NaN;
+    private double? GetValue(IRun run, AxisDimension axisDimension) {
+      double? value = double.NaN;
       switch (axisDimension) {
         case AxisDimension.Color: {
             value = GetCategoricalValue(-1, run.Color.ToString());
