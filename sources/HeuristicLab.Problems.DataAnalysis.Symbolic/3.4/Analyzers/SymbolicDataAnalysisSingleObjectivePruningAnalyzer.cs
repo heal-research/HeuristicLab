@@ -26,6 +26,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string NodeImpactThresholdParameterName = "ImpactThreshold";
     private const string PruningOperatorParameterName = "PruningOperator";
     private const string ResultsParameterName = "Results";
+    private const string PopulationSizeParameterName = "PopulationSize";
     #endregion
     #region private members
     private DataReducer prunedSubtreesReducer;
@@ -61,6 +62,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public IValueParameter<DoubleValue> PruningProbabilityParameter {
       get { return (IValueParameter<DoubleValue>)Parameters[PruningProbabilityParameterName]; }
+    }
+    public ILookupParameter<IntValue> PopulationSizeParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[PopulationSizeParameterName]; }
     }
     #endregion
     #region properties
@@ -98,6 +102,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (original.resultsCollector != null)
         this.resultsCollector = (ResultsCollector)original.resultsCollector.Clone();
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(PopulationSizeParameterName)) {
+        Parameters.Add(new LookupParameter<IntValue>(PopulationSizeParameterName, "The population of individuals."));
+      }
+    }
+
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer() {
       #region add parameters
       Parameters.Add(new ValueParameter<DoubleRange>(PopulationSliceParameterName, new DoubleRange(0.75, 1)));
@@ -108,6 +120,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<IDataAnalysisProblemData>(ProblemDataParameterName));
       Parameters.Add(new FixedValueParameter<DoubleValue>(NodeImpactThresholdParameterName, new DoubleValue(0.0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(PruneOnlyZeroImpactNodesParameterName, new BoolValue(false)));
+      Parameters.Add(new LookupParameter<IntValue>(PopulationSizeParameterName, "The population of individuals."));
       #endregion
     }
 
@@ -142,12 +155,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// </summary>
     /// <returns>Returns an int range [start, end]</returns>
     private IntRange GetSliceBounds() {
-      var count = ExecutionContext.Scope.SubScopes.Count;
+      if (PopulationSlice.Start < 0 || PopulationSlice.End < 0) throw new ArgumentOutOfRangeException("The slice bounds cannot be negative.");
+      if (PopulationSlice.Start > 1 || PopulationSlice.End > 1) throw new ArgumentOutOfRangeException("The slice bounds should be expressed as unit percentages.");
+      var count = PopulationSizeParameter.ActualValue.Value;
       var start = (int)Math.Round(PopulationSlice.Start * count);
       var end = (int)Math.Round(PopulationSlice.End * count);
       if (end > count) end = count;
 
-      if (PopulationSlice.Start > 1 || PopulationSlice.End > 1) throw new ArgumentOutOfRangeException("The slice bounds should be expressed as unit percentages.");
       if (start >= end) throw new ArgumentOutOfRangeException("Invalid PopulationSlice bounds.");
       return new IntRange(start, end);
     }
