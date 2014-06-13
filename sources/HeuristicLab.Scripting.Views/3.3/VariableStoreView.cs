@@ -350,7 +350,7 @@ namespace HeuristicLab.Scripting.Views {
           string value = (variable.Value.Value ?? "null").ToString();
           item.SubItems[1].Text = value;
           item.SubItems[2].Text = variable.Value.Value.GetType().ToString();
-          item.ToolTipText = GetToolTipText(variable.Value, item.ImageIndex == 0);
+          item.ToolTipText = GetToolTipText(variable.Value, item.ImageIndex != 0);
           return;
         }
       }
