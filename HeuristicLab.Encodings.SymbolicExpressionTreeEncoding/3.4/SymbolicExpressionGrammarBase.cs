@@ -322,16 +322,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       var key = Tuple.Create(parent.Name, child.Name);
       if (cachedIsAllowedChildSymbol.TryGetValue(key, out result)) return result;
 
-      List<string> temp;
-      if (allowedChildSymbols.TryGetValue(parent.Name, out temp)) {
-        //if (temp.Contains(child.Name)) return true;
-        if (temp.SelectMany(s => GetSymbol(s).Flatten()).Any(s => s.Name == child.Name)) {
-          cachedIsAllowedChildSymbol.Add(key, true);
-          return true;
+      // value has to be calculated and cached make sure this is done in only one thread
+      lock (cachedIsAllowedChildSymbol) {
+        // in case the value has been calculated on another thread in the meanwhile
+        if (cachedIsAllowedChildSymbol.TryGetValue(key, out result)) return result;
+
+        List<string> temp;
+        if (allowedChildSymbols.TryGetValue(parent.Name, out temp)) {
+          if (temp.SelectMany(s => GetSymbol(s).Flatten()).Any(s => s.Name == child.Name)) {
+            cachedIsAllowedChildSymbol.Add(key, true);
+            return true;
+          }
         }
+        cachedIsAllowedChildSymbol.Add(key, false);
+        return false;
       }
-      cachedIsAllowedChildSymbol.Add(key, false);
-      return false;
     }
 
     private readonly Dictionary<Tuple<string, string, int>, bool> cachedIsAllowedChildSymbolIndex;
@@ -344,15 +349,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       var key = Tuple.Create(parent.Name, child.Name, argumentIndex);
       if (cachedIsAllowedChildSymbolIndex.TryGetValue(key, out result)) return result;
 
-      List<string> temp;
-      if (allowedChildSymbolsPerIndex.TryGetValue(Tuple.Create(parent.Name, argumentIndex), out temp)) {
-        if (temp.SelectMany(s => GetSymbol(s).Flatten()).Any(s => s.Name == child.Name)) {
-          cachedIsAllowedChildSymbolIndex.Add(key, true);
-          return true;
+      // value has to be calculated and cached make sure this is done in only one thread
+      lock (cachedIsAllowedChildSymbolIndex) {
+        // in case the value has been calculated on another thread in the meanwhile
+        if (cachedIsAllowedChildSymbolIndex.TryGetValue(key, out result)) return result;
+
+        List<string> temp;
+        if (allowedChildSymbolsPerIndex.TryGetValue(Tuple.Create(parent.Name, argumentIndex), out temp)) {
+          if (temp.SelectMany(s => GetSymbol(s).Flatten()).Any(s => s.Name == child.Name)) {
+            cachedIsAllowedChildSymbolIndex.Add(key, true);
+            return true;
+          }
         }
+        cachedIsAllowedChildSymbolIndex.Add(key, false);
+        return false;
       }
-      cachedIsAllowedChildSymbolIndex.Add(key, false);
-      return false;
     }
 
     public IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent) {
@@ -390,11 +401,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (cachedMinExpressionLength.TryGetValue(symbol.Name, out res))
         return res;
 
-      res = GetMinimumExpressionLengthRec(symbol);
-      foreach (var entry in cachedMinExpressionLength.Where(e => e.Value >= int.MaxValue).ToList()) {
-        if (entry.Key != symbol.Name) cachedMinExpressionLength.Remove(entry.Key);
+      // value has to be calculated and cached make sure this is done in only one thread
+      lock (cachedMinExpressionLength) {
+        // in case the value has been calculated on another thread in the meanwhile
+        if (cachedMinExpressionLength.TryGetValue(symbol.Name, out res)) return res;
+
+        res = GetMinimumExpressionLengthRec(symbol);
+        foreach (var entry in cachedMinExpressionLength.Where(e => e.Value >= int.MaxValue).ToList()) {
+          if (entry.Key != symbol.Name) cachedMinExpressionLength.Remove(entry.Key);
+        }
+        return res;
       }
-      return res;
     }
 
     private int GetMinimumExpressionLengthRec(ISymbol symbol) {
@@ -417,7 +434,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public int GetMaximumExpressionLength(ISymbol symbol, int maxDepth) {
       int temp;
       var key = Tuple.Create(symbol.Name, maxDepth);
-      if (!cachedMaxExpressionLength.TryGetValue(key, out temp)) {
+      if (cachedMaxExpressionLength.TryGetValue(key, out temp)) return temp;
+      // value has to be calculated and cached make sure this is done in only one thread
+      lock (cachedMaxExpressionLength) {
+        // in case the value has been calculated on another thread in the meanwhile
+        if (cachedMaxExpressionLength.TryGetValue(key, out temp)) return temp;
+
         cachedMaxExpressionLength[key] = int.MaxValue; // prevent infinite recursion
         long sumOfMaxTrees = 1 + (from argIndex in Enumerable.Range(0, GetMaximumSubtreeCount(symbol))
                                   let maxForSlot = (long)(from s in GetAllowedChildSymbols(symbol, argIndex)
@@ -428,7 +450,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         cachedMaxExpressionLength[key] = (int)Math.Min(sumOfMaxTrees, int.MaxValue);
         return cachedMaxExpressionLength[key];
       }
-      return temp;
     }
 
     private readonly Dictionary<string, int> cachedMinExpressionDepth;
@@ -437,11 +458,17 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (cachedMinExpressionDepth.TryGetValue(symbol.Name, out res))
         return res;
 
-      res = GetMinimumExpressionDepthRec(symbol);
-      foreach (var entry in cachedMinExpressionDepth.Where(e => e.Value >= int.MaxValue).ToList()) {
-        if (entry.Key != symbol.Name) cachedMinExpressionDepth.Remove(entry.Key);
+      // value has to be calculated and cached make sure this is done in only one thread
+      lock (cachedMinExpressionDepth) {
+        // in case the value has been calculated on another thread in the meanwhile
+        if (cachedMinExpressionDepth.TryGetValue(symbol.Name, out res)) return res;
+
+        res = GetMinimumExpressionDepthRec(symbol);
+        foreach (var entry in cachedMinExpressionDepth.Where(e => e.Value >= int.MaxValue).ToList()) {
+          if (entry.Key != symbol.Name) cachedMinExpressionDepth.Remove(entry.Key);
+        }
+        return res;
       }
-      return res;
     }
     private int GetMinimumExpressionDepthRec(ISymbol symbol) {
       int temp;
@@ -461,7 +488,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private readonly Dictionary<string, int> cachedMaxExpressionDepth;
     public int GetMaximumExpressionDepth(ISymbol symbol) {
       int temp;
-      if (!cachedMaxExpressionDepth.TryGetValue(symbol.Name, out temp)) {
+      if (cachedMaxExpressionDepth.TryGetValue(symbol.Name, out temp)) return temp;
+      // value has to be calculated and cached make sure this is done in only one thread
+      lock (cachedMaxExpressionDepth) {
+        // in case the value has been calculated on another thread in the meanwhile
+        if (cachedMaxExpressionDepth.TryGetValue(symbol.Name, out temp)) return temp;
+
         cachedMaxExpressionDepth[symbol.Name] = int.MaxValue;
         long maxDepth = 1 + (from argIndex in Enumerable.Range(0, GetMaximumSubtreeCount(symbol))
                              let maxForSlot = (long)(from s in GetAllowedChildSymbols(symbol, argIndex)
@@ -471,7 +503,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         cachedMaxExpressionDepth[symbol.Name] = (int)Math.Min(maxDepth, int.MaxValue);
         return cachedMaxExpressionDepth[symbol.Name];
       }
-      return temp;
     }
 
     public event EventHandler Changed;
