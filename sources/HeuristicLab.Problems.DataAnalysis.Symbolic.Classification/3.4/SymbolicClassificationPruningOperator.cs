@@ -1,7 +1,29 @@
-﻿using System.Linq;
+﻿#region License Information
+
+/* HeuristicLab
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#endregion
+
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -11,25 +33,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   public class SymbolicClassificationPruningOperator : SymbolicDataAnalysisExpressionPruningOperator {
     private const string ImpactValuesCalculatorParameterName = "ImpactValuesCalculator";
     private const string ModelCreatorParameterName = "ModelCreator";
-    private const string ApplyLinearScalingParmameterName = "ApplyLinearScaling";
 
     #region parameter properties
     public ILookupParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter {
       get { return (ILookupParameter<ISymbolicClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
     }
-
-    public ILookupParameter<BoolValue> ApplyLinearScalingParameter {
-      get { return (ILookupParameter<BoolValue>)Parameters[ApplyLinearScalingParmameterName]; }
-    }
-    #endregion
-    #region properties
-    private ISymbolicClassificationModelCreator ModelCreator { get { return ModelCreatorParameter.ActualValue; } }
-    private BoolValue ApplyLinearScaling { get { return ApplyLinearScalingParameter.ActualValue; } }
     #endregion
 
     protected SymbolicClassificationPruningOperator(SymbolicClassificationPruningOperator original, Cloner cloner)
       : base(original, cloner) {
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicClassificationPruningOperator(this, cloner);
     }
@@ -43,9 +57,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     protected override ISymbolicDataAnalysisModel CreateModel() {
-      var model = ModelCreator.CreateSymbolicClassificationModel(SymbolicExpressionTree, Interpreter, EstimationLimits.Lower, EstimationLimits.Upper);
-      var rows = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
+      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(SymbolicExpressionTree, Interpreter, EstimationLimits.Lower, EstimationLimits.Upper);
       var problemData = (IClassificationProblemData)ProblemData;
+      var rows = problemData.TrainingIndices;
       model.RecalculateModelParameters(problemData, rows);
       return model;
     }
@@ -53,11 +67,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     protected override double Evaluate(IDataAnalysisModel model) {
       var classificationModel = (IClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)ProblemData;
-      var trainingIndices = ProblemData.TrainingIndices.ToList();
+      var trainingIndices = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size).ToArray();
       var estimatedValues = classificationModel.GetEstimatedClassValues(ProblemData.Dataset, trainingIndices);
       var targetValues = ProblemData.Dataset.GetDoubleValues(classificationProblemData.TargetVariable, trainingIndices);
       OnlineCalculatorError errorState;
-      var quality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, estimatedValues, out errorState);
+      var quality = OnlineAccuracyCalculator.Calculate(targetValues, estimatedValues, out errorState);
       if (errorState != OnlineCalculatorError.None) return double.NaN;
       return quality;
     }

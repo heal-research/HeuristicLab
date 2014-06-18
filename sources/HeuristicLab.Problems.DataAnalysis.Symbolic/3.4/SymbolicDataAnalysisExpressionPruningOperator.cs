@@ -84,12 +84,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return (ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName]; }
     }
     #endregion
+
     #region properties
     protected IDataAnalysisProblemData ProblemData { get { return ProblemDataParameter.ActualValue; } }
     protected ISymbolicDataAnalysisSolutionImpactValuesCalculator ImpactValuesCalculator { get { return ImpactValuesCalculatorParameter.Value; } }
     protected IntRange FitnessCalculationPartition { get { return FitnessCalculationPartitionParameter.ActualValue; } }
-    protected BoolValue PruneOnlyZeroImpactNodes { get { return PruneOnlyZeroImpactNodesParameter.Value; } }
-    protected DoubleValue NodeImpactThreshold { get { return NodeImpactThresholdParameter.Value; } }
+    protected bool PruneOnlyZeroImpactNodes {
+      get { return PruneOnlyZeroImpactNodesParameter.Value.Value; }
+      set { PruneOnlyZeroImpactNodesParameter.Value.Value = value; }
+    }
+    protected double NodeImpactThreshold {
+      get { return NodeImpactThresholdParameter.Value.Value; }
+      set { NodeImpactThresholdParameter.Value.Value = value; }
+    }
     protected ISymbolicExpressionTree SymbolicExpressionTree { get { return SymbolicExpressionTreeParameter.ActualValue; } }
     protected DoubleValue Quality { get { return QualityParameter.ActualValue; } }
     protected DoubleLimit EstimationLimits { get { return EstimationLimitsParameter.ActualValue; } }
@@ -116,11 +123,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName));
       #endregion
     }
+
+    protected abstract ISymbolicDataAnalysisModel CreateModel();
+
+    protected abstract double Evaluate(IDataAnalysisModel model);
+
     public override IOperation Apply() {
       var model = CreateModel();
       var nodes = SymbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
-      var rows = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size).ToList();
-
+      var rows = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
       var prunedSubtrees = 0;
       var prunedTrees = 0;
 
@@ -133,10 +144,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         double impactValue, replacementValue;
         ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, ProblemData, rows, out impactValue, out replacementValue, quality);
 
-        if (PruneOnlyZeroImpactNodes.Value && (!impactValue.IsAlmost(0.0))) continue;
-        else if (NodeImpactThreshold.Value < impactValue) continue;
+        if (PruneOnlyZeroImpactNodes) {
+          if (!impactValue.IsAlmost(0.0)) continue;
+        } else if (NodeImpactThreshold < impactValue) {
+          continue;
+        }
 
-        var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
+        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
+        constantNode.Value = replacementValue;
+
         ReplaceWithConstant(node, constantNode);
         i += node.GetLength() - 1; // skip subtrees under the node that was folded
 
@@ -151,13 +167,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       return base.Apply();
     }
+
     private static void ReplaceWithConstant(ISymbolicExpressionTreeNode original, ISymbolicExpressionTreeNode replacement) {
       var parent = original.Parent;
       var i = parent.IndexOfSubtree(original);
       parent.RemoveSubtree(i);
       parent.InsertSubtree(i, replacement);
     }
-    protected abstract ISymbolicDataAnalysisModel CreateModel();
-    protected abstract double Evaluate(IDataAnalysisModel model);
   }
 }
