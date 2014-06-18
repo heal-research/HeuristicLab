@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     protected override double Evaluate(IDataAnalysisModel model) {
       var regressionModel = (IRegressionModel)model;
       var regressionProblemData = (IRegressionProblemData)ProblemData;
-      var trainingIndices = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size).ToArray();
+      var trainingIndices = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
       var estimatedValues = regressionModel.GetEstimatedValues(ProblemData.Dataset, trainingIndices); // also bounds the values
       var targetValues = ProblemData.Dataset.GetDoubleValues(regressionProblemData.TargetVariable, trainingIndices);
       OnlineCalculatorError errorState;

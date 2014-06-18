@@ -67,7 +67,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     protected override double Evaluate(IDataAnalysisModel model) {
       var classificationModel = (IClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)ProblemData;
-      var trainingIndices = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size).ToArray();
+      var trainingIndices = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
       var estimatedValues = classificationModel.GetEstimatedClassValues(ProblemData.Dataset, trainingIndices);
       var targetValues = ProblemData.Dataset.GetDoubleValues(classificationProblemData.TargetVariable, trainingIndices);
       OnlineCalculatorError errorState;

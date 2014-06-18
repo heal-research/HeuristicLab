@@ -57,7 +57,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private DataReducer prunedTreesReducer;
     private DataTableValuesCollector valuesCollector;
     private ResultsCollector resultsCollector;
-    private EmptyOperator emptyOp;
     #endregion
 
     #region parameter properties
@@ -73,17 +72,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }
     }
-    public IValueParameter<IntValue> UpdateIntervalParameter {
-      get { return (IValueParameter<IntValue>)Parameters[UpdateIntervalParameterName]; }
+    public IFixedValueParameter<IntValue> UpdateIntervalParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[UpdateIntervalParameterName]; }
     }
-    public IValueParameter<IntValue> UpdateCounterParameter {
-      get { return (IValueParameter<IntValue>)Parameters[UpdateCounterParameterName]; }
+    public IFixedValueParameter<IntValue> UpdateCounterParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[UpdateCounterParameterName]; }
     }
-    public IValueParameter<DoubleRange> PopulationSliceParameter {
-      get { return (IValueParameter<DoubleRange>)Parameters[PopulationSliceParameterName]; }
+    public IFixedValueParameter<DoubleRange> PopulationSliceParameter {
+      get { return (IFixedValueParameter<DoubleRange>)Parameters[PopulationSliceParameterName]; }
     }
-    public IValueParameter<DoubleValue> PruningProbabilityParameter {
-      get { return (IValueParameter<DoubleValue>)Parameters[PruningProbabilityParameterName]; }
+    public IFixedValueParameter<DoubleValue> PruningProbabilityParameter {
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[PruningProbabilityParameterName]; }
     }
     public ILookupParameter<IntValue> PopulationSizeParameter {
       get { return (ILookupParameter<IntValue>)Parameters[PopulationSizeParameterName]; }
@@ -92,10 +91,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #region properties
     protected SymbolicDataAnalysisExpressionPruningOperator PruningOperator { get { return PruningOperatorParameter.Value; } }
-    protected IntValue UpdateInterval { get { return UpdateIntervalParameter.Value; } }
-    protected IntValue UpdateCounter { get { return UpdateCounterParameter.Value; } }
-    protected DoubleRange PopulationSlice { get { return PopulationSliceParameter.Value; } }
-    protected DoubleValue PruningProbability { get { return PruningProbabilityParameter.Value; } }
+    protected int UpdateInterval { get { return UpdateIntervalParameter.Value.Value; } }
+
+    protected int UpdateCounter {
+      get { return UpdateCounterParameter.Value.Value; }
+      set { UpdateCounterParameter.Value.Value = value; }
+    }
+
+    protected double PopulationSliceStart {
+      get { return PopulationSliceParameter.Value.Start; }
+      set { PopulationSliceParameter.Value.Start = value; }
+    }
+
+    protected double PopulationSliceEnd {
+      get { return PopulationSliceParameter.Value.End; }
+      set { PopulationSliceParameter.Value.End = value; }
+    }
+
+    protected double PruningProbability {
+      get { return PruningProbabilityParameter.Value.Value; }
+      set { PruningProbabilityParameter.Value.Value = value; }
+    }
 
     protected bool PruneOnlyZeroImpactNodes {
       get { return PruneOnlyZeroImpactNodesParameter.Value.Value; }
@@ -110,11 +126,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #region IStatefulItem members
     public override void InitializeState() {
       base.InitializeState();
-      UpdateCounter.Value = 0;
+      UpdateCounter = 0;
     }
     public override void ClearState() {
       base.ClearState();
-      UpdateCounter.Value = 0;
+      UpdateCounter = 0;
     }
     #endregion
 
@@ -142,14 +158,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer() {
       #region add parameters
-      Parameters.Add(new ValueParameter<DoubleRange>(PopulationSliceParameterName, new DoubleRange(0.75, 1)));
-      Parameters.Add(new ValueParameter<DoubleValue>(PruningProbabilityParameterName, new DoubleValue(0.5)));
-      Parameters.Add(new ValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
-      Parameters.Add(new ValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called", new IntValue(0)));
-      Parameters.Add(new LookupParameter<IRandom>(RandomParameterName));
-      Parameters.Add(new LookupParameter<IDataAnalysisProblemData>(ProblemDataParameterName));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(NodeImpactThresholdParameterName, new DoubleValue(0.0)));
-      Parameters.Add(new FixedValueParameter<BoolValue>(PruneOnlyZeroImpactNodesParameterName, new BoolValue(false)));
+      Parameters.Add(new FixedValueParameter<DoubleRange>(PopulationSliceParameterName, "The slice of the population where pruning should be applied.", new DoubleRange(0.75, 1)));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(PruningProbabilityParameterName, "The probability for pruning an individual.", new DoubleValue(0.5)));
+      Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, "The interval in which the tree length analysis should be applied.", new IntValue(1)));
+      Parameters.Add(new FixedValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called", new IntValue(0)));
+      Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random number generator."));
+      Parameters.Add(new LookupParameter<IDataAnalysisProblemData>(ProblemDataParameterName, "The problem data."));
+      Parameters.Add(new FixedValueParameter<DoubleValue>(NodeImpactThresholdParameterName, "The impact threshold  below which an individual should be pruned.", new DoubleValue(0.0)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(PruneOnlyZeroImpactNodesParameterName, "Switch to determine of only zero impact individuals should be pruned.", new BoolValue(false)));
       Parameters.Add(new LookupParameter<IntValue>(PopulationSizeParameterName, "The population of individuals."));
       #endregion
     }
@@ -160,11 +176,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// </summary>
     /// <returns>Returns an int range [start, end]</returns>
     private IntRange GetSliceBounds() {
-      if (PopulationSlice.Start < 0 || PopulationSlice.End < 0) throw new ArgumentOutOfRangeException("The slice bounds cannot be negative.");
-      if (PopulationSlice.Start > 1 || PopulationSlice.End > 1) throw new ArgumentOutOfRangeException("The slice bounds should be expressed as unit percentages.");
+      if (PopulationSliceStart < 0 || PopulationSliceEnd < 0) throw new ArgumentOutOfRangeException("The slice bounds cannot be negative.");
+      if (PopulationSliceStart > 1 || PopulationSliceEnd > 1) throw new ArgumentOutOfRangeException("The slice bounds should be expressed as unit percentages.");
       var count = PopulationSizeParameter.ActualValue.Value;
-      var start = (int)Math.Round(PopulationSlice.Start * count);
-      var end = (int)Math.Round(PopulationSlice.End * count);
+      var start = (int)Math.Round(PopulationSliceStart * count);
+      var end = (int)Math.Round(PopulationSliceEnd * count);
       if (end > count) end = count;
 
       if (start >= end) throw new ArgumentOutOfRangeException("Invalid PopulationSlice bounds.");
@@ -172,7 +188,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private IOperation CreatePruningOperation() {
-      var oc = new OperationCollection { Parallel = true };
+      var operations = new OperationCollection { Parallel = true };
       var range = GetSliceBounds();
       var qualities = Quality.Select(x => x.Value).ToArray();
       var indices = Enumerable.Range(0, qualities.Length).ToArray();
@@ -182,22 +198,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var subscopes = ExecutionContext.Scope.SubScopes;
       var random = RandomParameter.ActualValue;
 
+      var empty = new EmptyOperator();
+
       for (int i = 0; i < subscopes.Count; ++i) {
-        IOperator op;
-        if (range.Start <= i && i < range.End && random.NextDouble() <= PruningProbability.Value)
-          op = PruningOperator;
-        else op = emptyOp;
+        IOperator @operator;
+        if (range.Start <= i && i < range.End && random.NextDouble() <= PruningProbability)
+          @operator = PruningOperator;
+        else @operator = empty;
         var index = indices[i];
         var subscope = subscopes[index];
-        oc.Add(ExecutionContext.CreateChildOperation(op, subscope));
+        operations.Add(ExecutionContext.CreateChildOperation(@operator, subscope));
       }
-      return oc;
+      return operations;
     }
 
     public override IOperation Apply() {
-      UpdateCounter.Value++;
-      if (UpdateCounter.Value != UpdateInterval.Value) return base.Apply();
-      UpdateCounter.Value = 0;
+      UpdateCounter++;
+      if (UpdateCounter != UpdateInterval) return base.Apply();
+      UpdateCounter = 0;
 
       if (prunedSubtreesReducer == null || prunedTreesReducer == null || valuesCollector == null || resultsCollector == null) { InitializeOperators(); }
 
@@ -231,8 +249,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       resultsCollector = new ResultsCollector();
       resultsCollector.CollectedValues.Add(new LookupParameter<DataTable>("Population pruning"));
       resultsCollector.ResultsParameter.ActualName = ResultsParameterName;
-
-      emptyOp = new EmptyOperator();
     }
   }
 }
