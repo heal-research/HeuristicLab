@@ -154,6 +154,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (!Parameters.ContainsKey(PopulationSizeParameterName)) {
         Parameters.Add(new LookupParameter<IntValue>(PopulationSizeParameterName, "The population of individuals."));
       }
+      if (Parameters.ContainsKey(UpdateCounterParameterName)) {
+        var fixedValueParameter = Parameters[UpdateCounterParameterName] as FixedValueParameter<IntValue>;
+        if (fixedValueParameter == null) {
+          var valueParameter = (ValueParameter<IntValue>)Parameters[UpdateCounterParameterName];
+          Parameters.Remove(UpdateCounterParameterName);
+          Parameters.Add(new FixedValueParameter<IntValue>(UpdateCounterParameterName, valueParameter.Value));
+        }
+      }
+      if (Parameters.ContainsKey(UpdateIntervalParameterName)) {
+        var fixedValueParameter = Parameters[UpdateIntervalParameterName] as FixedValueParameter<IntValue>;
+        if (fixedValueParameter == null) {
+          var valueParameter = (ValueParameter<IntValue>)Parameters[UpdateIntervalParameterName];
+          Parameters.Remove(UpdateIntervalParameterName);
+          Parameters.Add(new FixedValueParameter<IntValue>(UpdateIntervalParameterName, valueParameter.Value));
+        }
+      }
+      if (Parameters.ContainsKey(PopulationSliceParameterName)) {
+        var fixedValueParameter = Parameters[PopulationSliceParameterName] as FixedValueParameter<DoubleRange>;
+        if (fixedValueParameter == null) {
+          var valueParameter = (ValueParameter<DoubleRange>)Parameters[PopulationSliceParameterName];
+          Parameters.Remove(PopulationSliceParameterName);
+          Parameters.Add(new FixedValueParameter<DoubleRange>(PopulationSliceParameterName, valueParameter.Value));
+        }
+      }
+      if (Parameters.ContainsKey(PruningProbabilityParameterName)) {
+        var fixedValueParameter = Parameters[PruningProbabilityParameterName] as FixedValueParameter<DoubleValue>;
+        if (fixedValueParameter == null) {
+          var valueParameter = (ValueParameter<DoubleValue>)Parameters[PruningProbabilityParameterName];
+          Parameters.Remove(PruningProbabilityParameterName);
+          Parameters.Add(new FixedValueParameter<DoubleValue>(PruningProbabilityParameterName, valueParameter.Value));
+        }
+      }
     }
 
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer() {
