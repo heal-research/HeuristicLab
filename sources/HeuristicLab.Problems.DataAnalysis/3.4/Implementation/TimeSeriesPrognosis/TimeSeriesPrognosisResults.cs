@@ -368,6 +368,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void CalculateTrainingPrognosisResults() {
       OnlineCalculatorError errorState;
       var problemData = Solution.ProblemData;
+      if (!problemData.TrainingIndices.Any()) return;
       var model = Solution.Model;
       //mean model
       double trainingMean = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).Average();
@@ -414,23 +415,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private void CalculateTestPrognosisResults() {
       OnlineCalculatorError errorState;
       var problemData = Solution.ProblemData;
+      if (!problemData.TestIndices.Any()) return;
       var model = Solution.Model;
-      //mean model
-      double trainingMean = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).Average();
-      var meanModel = new ConstantTimeSeriesPrognosisModel(trainingMean);
-
-      //AR1 model
-      double alpha, beta;
-      IEnumerable<double> trainingStartValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices.Select(r => r - 1).Where(r => r > 0)).ToList();
-      OnlineLinearScalingParameterCalculator.Calculate(problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices.Where(x => x > 0)), trainingStartValues, out alpha, out beta, out errorState);
-      var AR1model = new TimeSeriesPrognosisAutoRegressiveModel(problemData.TargetVariable, new double[] { beta }, alpha);
-
       var testHorizions = problemData.TestIndices.Select(r => Math.Min(testHorizon, problemData.TestPartition.End - r)).ToList();
       IEnumerable<IEnumerable<double>> testTargetValues = problemData.TestIndices.Zip(testHorizions, Enumerable.Range).Select(r => problemData.Dataset.GetDoubleValues(problemData.TargetVariable, r)).ToList();
       IEnumerable<IEnumerable<double>> testEstimatedValues = model.GetPrognosedValues(problemData.Dataset, problemData.TestIndices, testHorizions).ToList();
       IEnumerable<double> testStartValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TestIndices.Select(r => r - 1).Where(r => r > 0)).ToList();
-      IEnumerable<IEnumerable<double>> testMeanModelPredictions = meanModel.GetPrognosedValues(problemData.Dataset, problemData.TestIndices, testHorizions).ToList();
-      IEnumerable<IEnumerable<double>> testAR1ModelPredictions = AR1model.GetPrognosedValues(problemData.Dataset, problemData.TestIndices, testHorizions).ToList();
 
       IEnumerable<double> originalTestValues = testTargetValues.SelectMany(x => x).ToList();
       IEnumerable<double> estimatedTestValues = testEstimatedValues.SelectMany(x => x).ToList();
@@ -452,10 +442,27 @@ namespace HeuristicLab.Problems.DataAnalysis {
       PrognosisTestDirectionalSymmetry = errorState == OnlineCalculatorError.None ? PrognosisTestDirectionalSymmetry : 0.0;
       PrognosisTestWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(testStartValues, testTargetValues, testEstimatedValues, out errorState);
       PrognosisTestWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? PrognosisTestWeightedDirectionalSymmetry : 0.0;
-      PrognosisTestTheilsUStatisticAR1 = OnlineTheilsUStatisticCalculator.Calculate(testStartValues, testTargetValues, testAR1ModelPredictions, testEstimatedValues, out errorState);
-      PrognosisTestTheilsUStatisticAR1 = errorState == OnlineCalculatorError.None ? PrognosisTestTheilsUStatisticAR1 : double.PositiveInfinity;
-      PrognosisTestTheilsUStatisticMean = OnlineTheilsUStatisticCalculator.Calculate(testStartValues, testTargetValues, testMeanModelPredictions, testEstimatedValues, out errorState);
-      PrognosisTestTheilsUStatisticMean = errorState == OnlineCalculatorError.None ? PrognosisTestTheilsUStatisticMean : double.PositiveInfinity;
+
+
+      if (problemData.TrainingIndices.Any()) {
+        //mean model
+        double trainingMean = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).Average();
+        var meanModel = new ConstantTimeSeriesPrognosisModel(trainingMean);
+
+        //AR1 model
+        double alpha, beta;
+        IEnumerable<double> trainingStartValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices.Select(r => r - 1).Where(r => r > 0)).ToList();
+        OnlineLinearScalingParameterCalculator.Calculate(problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices.Where(x => x > 0)), trainingStartValues, out alpha, out beta, out errorState);
+        var AR1model = new TimeSeriesPrognosisAutoRegressiveModel(problemData.TargetVariable, new double[] { beta }, alpha);
+
+        IEnumerable<IEnumerable<double>> testMeanModelPredictions = meanModel.GetPrognosedValues(problemData.Dataset, problemData.TestIndices, testHorizions).ToList();
+        IEnumerable<IEnumerable<double>> testAR1ModelPredictions = AR1model.GetPrognosedValues(problemData.Dataset, problemData.TestIndices, testHorizions).ToList();
+
+        PrognosisTestTheilsUStatisticAR1 = OnlineTheilsUStatisticCalculator.Calculate(testStartValues, testTargetValues, testAR1ModelPredictions, testEstimatedValues, out errorState);
+        PrognosisTestTheilsUStatisticAR1 = errorState == OnlineCalculatorError.None ? PrognosisTestTheilsUStatisticAR1 : double.PositiveInfinity;
+        PrognosisTestTheilsUStatisticMean = OnlineTheilsUStatisticCalculator.Calculate(testStartValues, testTargetValues, testMeanModelPredictions, testEstimatedValues, out errorState);
+        PrognosisTestTheilsUStatisticMean = errorState == OnlineCalculatorError.None ? PrognosisTestTheilsUStatisticMean : double.PositiveInfinity;
+      }
     }
   }
 }

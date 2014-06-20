@@ -1620,12 +1620,32 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnChanged();
     }
 
+    protected override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      ITimeSeriesPrognosisProblemData timeseriesProblemData = problemData as ITimeSeriesPrognosisProblemData;
+      if (timeseriesProblemData == null)
+        throw new ArgumentException("The problem data is not a time-series problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+
+      var returnValue = base.IsProblemDataCompatible(problemData, out errorMessage);
+      //check targetVariable
+      if (problemData.InputVariables.All(var => var.Value != TargetVariable)) {
+        errorMessage = string.Format("The target variable {0} is not present in the new problem data.", TargetVariable)
+                       + Environment.NewLine + errorMessage;
+        return false;
+      }
+      return returnValue;
+    }
+
     public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
       TimeSeriesPrognosisProblemData timeSeriesProblemData = problemData as TimeSeriesPrognosisProblemData;
       if (timeSeriesProblemData == null)
         throw new ArgumentException("The problem data is not a timeseries problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
 
+      var trainingDataStart = TrainingIndices.First();
+      
       base.AdjustProblemDataProperties(problemData);
+      
+      TestPartition.Start = trainingDataStart;
 
       TrainingHorizon = timeSeriesProblemData.TrainingHorizon;
       TestHorizon = timeSeriesProblemData.TestHorizon;

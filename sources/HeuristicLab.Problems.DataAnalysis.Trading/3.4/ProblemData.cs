@@ -1651,7 +1651,32 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
     }
 
     public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
-      throw new NotImplementedException("TODO");
+      var data = problemData as ProblemData;
+      if (data == null) throw new ArgumentException("The problem data is not a problem data set for trading. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+
+      string errorMessage;
+      if (!data.IsProblemDataCompatible(this, out errorMessage)) {
+        throw new InvalidOperationException(errorMessage);
+      }
+
+      base.AdjustProblemDataProperties(data);
+
+      var toDelete = PriceChangeVariableParameter.ValidValues.ToList();
+      foreach (var entry in data.PriceChangeVariableParameter.ValidValues) {
+        if (toDelete.Any(x => x.Value == entry.Value)) {
+          toDelete.RemoveAll(x => x.Value == entry.Value);
+        } else {
+          PriceChangeVariableParameter.ValidValues.Add(new StringValue(entry.Value));
+        }
+      }
+      PriceChangeVariableParameter.Value =
+        PriceChangeVariableParameter.ValidValues.Single(v => v.Value == data.PriceChangeVariable);
+
+      foreach (var varToDelete in toDelete) PriceChangeVariableParameter.ValidValues.Remove(varToDelete);
+
+      TransactionCostsParameter.Value.Value = data.TransactionCosts;
+
+      OnChanged();
     }
   }
 }
