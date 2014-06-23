@@ -51,8 +51,21 @@ namespace HeuristicLab.Data {
       stringValue = cloner.Clone(original.stringValue);
     }
 
-    protected PathValue() : base() { }
+    protected PathValue()
+      : base() {
+      stringValue.ToStringChanged += (o, e) => OnToStringChanged();
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      stringValue.ToStringChanged += (o, e) => OnToStringChanged();
+    }
 
     public abstract bool Exists();
+
+    public override string ToString() {
+      return stringValue.ToString();
+    }
+
   }
 }
