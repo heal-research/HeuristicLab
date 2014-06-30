@@ -19,17 +19,53 @@
  */
 #endregion
 
+using System;
+using System.IO;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Scripting {
   [Item("VariableStore", "Represents a variable store.")]
   [StorableClass]
-  public class VariableStore : ObservableDictionary<string, object>, IContent {
+  public class VariableStore : ObservableDictionary<string, object>, IContent, IDeepCloneable {
     [StorableConstructor]
     protected VariableStore(bool deserializing) : base(deserializing) { }
+    protected VariableStore(VariableStore original, Cloner cloner) {
+      cloner.RegisterClonedObject(original, this);
+      foreach (var kvp in original.dict) {
+        var clonedValue = kvp.Value as IDeepCloneable;
+        if (clonedValue != null) {
+          dict[kvp.Key] = cloner.Clone(clonedValue);
+        } else {
+          try {
+            dict[kvp.Key] = CloneByPersistence(kvp.Value);
+          } catch (PersistenceException pe) {
+            throw new NotSupportedException("VariableStore: Variable " + kvp.Key + " could not be cloned.", pe);
+          }
+        }
+      }
+    }
     public VariableStore() : base() { }
+
+    public object Clone() {
+      return Clone(new Cloner());
+    }
+    public IDeepCloneable Clone(Cloner cloner) {
+      return new VariableStore(this, cloner);
+    }
+
+    protected object CloneByPersistence(object value) {
+      using (var serializerStream = new MemoryStream()) {
+        XmlGenerator.Serialize(value, serializerStream);
+        var bytes = serializerStream.GetBuffer();
+        using (var deserializerStream = new MemoryStream(bytes)) {
+          return XmlParser.Deserialize<VariableStore>(deserializerStream);
+        }
+      }
+    }
   }
 }

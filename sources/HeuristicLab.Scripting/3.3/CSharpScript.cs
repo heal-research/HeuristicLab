@@ -20,15 +20,12 @@
 #endregion
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Scripting {
   [Item("C# Script", "An empty C# script.")]
@@ -80,17 +77,7 @@ public class MyScript : HeuristicLab.Scripting.CSharpScriptBase {
     protected CSharpScript(bool deserializing) : base(deserializing) { }
     protected CSharpScript(CSharpScript original, Cloner cloner)
       : base(original, cloner) {
-      try {
-        using (var serializerStream = new MemoryStream()) {
-          XmlGenerator.Serialize(original.variableStore, serializerStream);
-          var bytes = serializerStream.GetBuffer();
-          using (var deserializerStream = new MemoryStream(bytes)) {
-            variableStore = XmlParser.Deserialize<VariableStore>(deserializerStream);
-          }
-        }
-      } catch (PersistenceException pe) {
-        throw new NotSupportedException("Could not clone the script because some of its variables could not be cloned.", pe);
-      }
+      variableStore = cloner.Clone(original.variableStore);
     }
     public CSharpScript() {
       variableStore = new VariableStore();
