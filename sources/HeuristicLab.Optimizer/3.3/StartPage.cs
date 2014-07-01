@@ -64,8 +64,7 @@ namespace HeuristicLab.Optimizer {
       try {
         using (Stream stream = assembly.GetManifestResourceStream(typeof(StartPage), "Documents.FirstSteps.rtf"))
           firstStepsRichTextBox.LoadFile(stream, RichTextBoxStreamType.RichText);
-      }
-      catch (Exception) { }
+      } catch (Exception) { }
 
       samplesListView.Enabled = false;
       samplesListView.Groups.Add(StandardProblemsGroup);
@@ -112,8 +111,7 @@ namespace HeuristicLab.Optimizer {
         }
 
         OnAllSamplesLoaded();
-      }
-      finally {
+      } finally {
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
       }
     }
@@ -125,8 +123,7 @@ namespace HeuristicLab.Optimizer {
           var item = XmlParser.Deserialize<INamedItem>(path);
           OnSampleLoaded(item, group, 1.0 / count);
         }
-      }
-      catch (Exception) { }
+      } catch (Exception) { }
     }
 
     private void FillGroupLookup() {
@@ -172,8 +169,16 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void samplesListView_DoubleClick(object sender, EventArgs e) {
-      if (samplesListView.SelectedItems.Count == 1)
-        MainFormManager.MainForm.ShowContent((IContent)((IItem)samplesListView.SelectedItems[0].Tag).Clone());
+      if (samplesListView.SelectedItems.Count == 1) {
+        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
+        try {
+          mainForm.SetWaitCursor();
+          mainForm.ShowContent((IContent)((IItem)samplesListView.SelectedItems[0].Tag).Clone());
+        } finally {
+          mainForm.ResetWaitCursor();
+        }
+
+      }
     }
     private void samplesListView_ItemDrag(object sender, ItemDragEventArgs e) {
       ListViewItem listViewItem = (ListViewItem)e.Item;
