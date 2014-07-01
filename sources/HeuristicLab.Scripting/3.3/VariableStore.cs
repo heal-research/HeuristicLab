@@ -44,7 +44,7 @@ namespace HeuristicLab.Scripting {
           try {
             dict[kvp.Key] = CloneByPersistence(kvp.Value);
           } catch (PersistenceException pe) {
-            throw new NotSupportedException("VariableStore: Variable " + kvp.Key + " could not be cloned.", pe);
+            throw new NotSupportedException(string.Format(@"VariableStore: Variable ""{0}"" could not be cloned.", kvp.Key), pe);
           }
         }
       }
@@ -58,12 +58,12 @@ namespace HeuristicLab.Scripting {
       return new VariableStore(this, cloner);
     }
 
-    protected object CloneByPersistence(object value) {
+    protected T CloneByPersistence<T>(T value) {
       using (var serializerStream = new MemoryStream()) {
         XmlGenerator.Serialize(value, serializerStream);
         var bytes = serializerStream.GetBuffer();
         using (var deserializerStream = new MemoryStream(bytes)) {
-          return XmlParser.Deserialize<VariableStore>(deserializerStream);
+          return XmlParser.Deserialize<T>(deserializerStream);
         }
       }
     }
