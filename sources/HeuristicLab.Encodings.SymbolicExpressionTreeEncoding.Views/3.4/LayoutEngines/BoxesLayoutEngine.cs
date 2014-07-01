@@ -103,7 +103,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         visualTreeNode.X = x;
         visualTreeNode.Y = y;
       }
-      //calculate areas for the subtrees according to their tree size and call drawFunctionTree
+      //calculate areas for the subtrees according to their tree size 
       var node = visualTreeNode.Content;
       var children = GetChildren(node).ToList();
       int[] xBoundaries = new int[children.Count + 1];

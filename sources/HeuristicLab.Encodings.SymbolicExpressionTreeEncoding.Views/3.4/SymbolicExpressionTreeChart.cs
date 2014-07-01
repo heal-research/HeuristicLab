@@ -384,11 +384,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     #endregion
     #region export pgf/tikz
     private void exportLatexToolStripMenuItem_Click(object sender, EventArgs e) {
+      var t = Tree;
+      if (t == null) return;
       using (var dialog = new SaveFileDialog { Filter = "Tex (*.tex)|*.tex" }) {
         if (dialog.ShowDialog() != DialogResult.OK) return;
         string filename = dialog.FileName.ToLower();
         var formatter = new SymbolicExpressionTreeLatexFormatter();
-        File.WriteAllText(filename, formatter.Format(Tree));
+        File.WriteAllText(filename, formatter.Format(t));
       }
     }
     #endregion
