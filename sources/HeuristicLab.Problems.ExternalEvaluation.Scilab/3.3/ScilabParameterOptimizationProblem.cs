@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
       : base(new ScilabParameterVectorEvaluator()) {
       Parameters.Add(new FixedValueParameter<StringValue>(QualityVariableParameterName, "The name of the quality variable of the Scilab script.", new StringValue("quality")));
       Parameters.Add(new FixedValueParameter<TextFileValue>(ScilabEvaluationScriptParameterName, "The path to the Scilab evaluation script.", new TextFileValue()));
-      Parameters.Add(new FixedValueParameter<TextFileValue>(ScilabInitializationScriptParameterName, "The path to a Scilab script the should be execute before the evaluation starts.", new TextFileValue()));
+      Parameters.Add(new FixedValueParameter<TextFileValue>(ScilabInitializationScriptParameterName, "The path to a Scilab script that should be executed once when the algorithm starts.", new TextFileValue()));
 
       ScilabEvaluationScript.FileDialogFilter = @"Scilab Scripts|*.sce|All files|*.*";
       ScilabInitializationScript.FileDialogFilter = @"Scilab Scripts|*.sce|All files|*.*";

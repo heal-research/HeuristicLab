@@ -34,11 +34,15 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
   [Item("SciLabParameterVectorEvaluator", "An evaluator which takes a parameter vector and returns a quality value, calculated by a Scilab script.")]
   [StorableClass]
   public sealed class ScilabParameterVectorEvaluator : ParameterVectorEvaluator {
+    private const string MaximizationParameterName = "Maximization";
     private const string QualityVariableParameterName = "QualityVariableName";
     private const string ScilabEvaluationScriptParameterName = "ScilabEvaluationScript";
     private const string ScilabInitializationScriptParameterName = "ScilabInitializationScript";
 
     #region parameters
+    public ILookupParameter<BoolValue> MaximizationParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[MaximizationParameterName]; }
+    }
     public ILookupParameter<StringValue> QualityVariableParameter {
       get { return (ILookupParameter<StringValue>)Parameters[QualityVariableParameterName]; }
     }
@@ -61,12 +65,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
 
     public ScilabParameterVectorEvaluator()
       : base() {
+      Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "The flag which determines if this is a maximization problem."));
       Parameters.Add(new LookupParameter<StringValue>(QualityVariableParameterName, "The name of the quality variable of the Scilab script."));
       Parameters.Add(new LookupParameter<TextFileValue>(ScilabEvaluationScriptParameterName, "The path to the Scilab evaluation script."));
-      Parameters.Add(new LookupParameter<TextFileValue>(ScilabInitializationScriptParameterName, "The path to a Scilab script the should be execute before the evaluation starts."));
+      Parameters.Add(new LookupParameter<TextFileValue>(ScilabInitializationScriptParameterName, "The path to a Scilab script that should be executed once when the algorithm starts."));
     }
 
-    private readonly object locker = new object();
+    private static readonly object locker = new object();
     private static ScilabConnector scilab = null;
     private bool startedScilab = false;
 
@@ -79,23 +84,24 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
       if (!string.IsNullOrEmpty(initializationScript.Value) && !initializationScript.Exists()) throw new FileNotFoundException(string.Format("The initialization script \"{0}\" cannot be found.", initializationScript.Value));
 
       int result;
-      //Scilab is used via a c++ wrapper that calls static methods. Hence it is not possible to parallelize the evaluation.
+      // Scilab is used via a c++ wrapper that calls static methods. Hence it is not possible to parallelize the evaluation.
+      // It is also not possible to run multiple algorithms solving separate Scilab optimization problems at the same time.
       lock (locker) {
         //initialize scilab and execute initialization script
         if (scilab == null) {
           startedScilab = true;
           scilab = new ScilabConnector(false);
-          if (!string.IsNullOrEmpty(initializationScript.Value)) {
-            result = scilab.execScilabScript(initializationScript.Value);
-            if (result != 0) ThrowSciLabException(initializationScript.Value, result);
-          }
+          result = scilab.execScilabScript(initializationScript.Value);
+          if (result != 0) ThrowSciLabException(initializationScript.Value, result);
         } else if (!startedScilab) {
           throw new InvalidOperationException("Could not run multiple optimization algorithms in parallel.");
         }
 
         var parameterVector = ParameterVectorParameter.ActualValue;
         var parameterNames = ParameterNamesParameter.ActualValue;
-        if (parameterNames.Any(string.IsNullOrEmpty)) throw new ArgumentException("Not all parameter names are provided.");
+        if (parameterNames.Any(string.IsNullOrEmpty)) throw new ArgumentException("Not all parameter names are provided. Change the 'ParameterNames' parameter in the 'Problem' tab.");
+        if (ProblemSizeParameter.ActualValue.Value != parameterVector.Length || ProblemSizeParameter.ActualValue.Value != parameterNames.Length)
+          throw new ArgumentException("The size of the parameter vector or the parameter names vector does not match the problem size.");
 
         for (int i = 0; i < ProblemSizeParameter.ActualValue.Value; i++) {
           result = scilab.createNamedMatrixOfDouble(parameterNames[i], 1, 1, new double[] { parameterVector[i] });
@@ -111,8 +117,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
         if (values == null) throw new InvalidOperationException(string.Format("Could not find the variable \"{0}\" in the Scilab workspace, that should hold the quality value.", qualityVariableName));
         double quality = values[0];
 
-        if (double.IsNaN(quality)) quality = double.MaxValue;
-        if (double.IsInfinity(quality)) quality = double.MaxValue;
+        var worstQualityValue = MaximizationParameter.ActualValue.Value ? double.MinValue : double.MaxValue;
+        if (double.IsNaN(quality)) quality = worstQualityValue;
+        if (double.IsInfinity(quality)) quality = worstQualityValue;
 
         QualityParameter.ActualValue = new DoubleValue(quality);
         return base.Apply();
