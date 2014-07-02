@@ -110,8 +110,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
               if (permutation != null && permutation.Length > 1) {
                 Point[] tour = new Point[permutation.Length];
                 for (int i = 0; i < permutation.Length; i++) {
-                  if (permutation[i] >= 0 && permutation[i] < points.Length)
-                    tour[i] = points[permutation[i]];
+                  tour[i] = points[permutation[i]];
                 }
                 graphics.DrawPolygon(Pens.Black, tour);
               }
