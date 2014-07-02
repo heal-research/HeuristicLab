@@ -74,26 +74,5 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       sb.Append("[" + JobNr + "," + ResourceNr + "]");
       return sb.ToString();
     }
-
-    public override bool Equals(object obj) {
-      if (obj.GetType() == typeof(ScheduledTask))
-        return AreEqual(this, obj as ScheduledTask);
-      else
-        return false;
-    }
-
-    public override int GetHashCode() {
-      return TaskNr ^ JobNr;
-    }
-
-    public static bool AreEqual(ScheduledTask task1, ScheduledTask task2) {
-      return (
-        task1.TaskNr == task2.TaskNr &&
-        task1.Duration == task2.Duration &&
-        task1.JobNr == task2.JobNr &&
-        task1.ResourceNr == task2.ResourceNr &&
-        task1.StartTime == task2.StartTime &&
-        task1.EndTime == task2.EndTime);
-    }
   }
 }

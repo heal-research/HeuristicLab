@@ -82,7 +82,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.resourceNrLabel.Location = new System.Drawing.Point(3, 32);
       this.resourceNrLabel.Name = "resourceNrLabel";
       this.resourceNrLabel.Size = new System.Drawing.Size(70, 13);
-      this.resourceNrLabel.TabIndex = 0;
+      this.resourceNrLabel.TabIndex = 2;
       this.resourceNrLabel.Text = "Resource Nr:";
       // 
       // resourceNrTextBox
@@ -92,7 +92,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.resourceNrTextBox.Location = new System.Drawing.Point(79, 29);
       this.resourceNrTextBox.Name = "resourceNrTextBox";
       this.resourceNrTextBox.Size = new System.Drawing.Size(437, 20);
-      this.resourceNrTextBox.TabIndex = 1;
+      this.resourceNrTextBox.TabIndex = 3;
       this.resourceNrTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.resourceNrTextBox_Validating);
       // 
       // errorProvider
@@ -105,7 +105,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.jobNrLabel.Location = new System.Drawing.Point(3, 58);
       this.jobNrLabel.Name = "jobNrLabel";
       this.jobNrLabel.Size = new System.Drawing.Size(41, 13);
-      this.jobNrLabel.TabIndex = 0;
+      this.jobNrLabel.TabIndex = 4;
       this.jobNrLabel.Text = "Job Nr:";
       // 
       // jobNrTextBox
@@ -115,7 +115,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.jobNrTextBox.Location = new System.Drawing.Point(79, 55);
       this.jobNrTextBox.Name = "jobNrTextBox";
       this.jobNrTextBox.Size = new System.Drawing.Size(437, 20);
-      this.jobNrTextBox.TabIndex = 1;
+      this.jobNrTextBox.TabIndex = 5;
       this.jobNrTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.jobNrTextBox_Validating);
       // 
       // durationLabel
@@ -124,7 +124,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.durationLabel.Location = new System.Drawing.Point(3, 84);
       this.durationLabel.Name = "durationLabel";
       this.durationLabel.Size = new System.Drawing.Size(50, 13);
-      this.durationLabel.TabIndex = 0;
+      this.durationLabel.TabIndex = 6;
       this.durationLabel.Text = "Duration:";
       // 
       // durationTextBox
@@ -134,7 +134,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.durationTextBox.Location = new System.Drawing.Point(79, 81);
       this.durationTextBox.Name = "durationTextBox";
       this.durationTextBox.Size = new System.Drawing.Size(437, 20);
-      this.durationTextBox.TabIndex = 1;
+      this.durationTextBox.TabIndex = 7;
       this.durationTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.durationTextBox_Validating);
       // 
       // TaskView

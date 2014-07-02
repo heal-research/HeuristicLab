@@ -37,7 +37,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       set {
         bool changed = taskNr != value;
         taskNr = value;
-        if (changed) OnPropertyChanged("TaskNr");
+        if (changed) {
+          OnPropertyChanged("TaskNr");
+          OnToStringChanged();
+        }
       }
     }
     [Storable(Name = "ResourceNr")]
@@ -47,7 +50,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       set {
         bool changed = resourceNr != value;
         resourceNr = value;
-        if (changed) OnPropertyChanged("ResourceNr");
+        if (changed) {
+          OnPropertyChanged("ResourceNr");
+          OnToStringChanged();
+        }
       }
     }
 
@@ -88,20 +94,20 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected Task(bool deserializing) : base(deserializing) { }
     protected Task(Task original, Cloner cloner)
       : base(original, cloner) {
-      this.ResourceNr = original.ResourceNr;
-      this.JobNr = original.JobNr;
-      this.Duration = original.Duration;
-      this.TaskNr = original.TaskNr;
-      this.IsScheduled = original.IsScheduled;
+      this.resourceNr = original.ResourceNr;
+      this.jobNr = original.JobNr;
+      this.duration = original.Duration;
+      this.taskNr = original.TaskNr;
+      this.isScheduled = original.IsScheduled;
     }
     public Task() : this(-1, -1, -1, 0) { }
     public Task(int taskNr, int resNr, int jobNr, double duration)
       : base() {
-      Duration = duration;
-      ResourceNr = resNr;
-      JobNr = jobNr;
-      TaskNr = taskNr;
-      IsScheduled = false;
+      this.duration = duration;
+      this.resourceNr = resNr;
+      this.jobNr = jobNr;
+      this.taskNr = taskNr;
+      this.isScheduled = false;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -112,25 +118,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       StringBuilder sb = new StringBuilder();
       sb.Append("[" + TaskNr + "," + ResourceNr + "]");
       return sb.ToString();
-    }
-
-    public override bool Equals(object obj) {
-      if (obj.GetType() == typeof(Task))
-        return AreEqual(this, obj as Task);
-      else
-        return false;
-    }
-
-    public override int GetHashCode() {
-      return TaskNr ^ JobNr;
-    }
-
-    public static bool AreEqual(Task task1, Task task2) {
-      return (task1.Duration == task2.Duration &&
-        task1.IsScheduled == task2.IsScheduled &&
-        task1.JobNr == task2.JobNr &&
-        task1.ResourceNr == task2.ResourceNr &&
-        task1.TaskNr == task2.TaskNr);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

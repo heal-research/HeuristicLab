@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
       JSMEncoding actual;
       actual = JSMJOXCrossover.Apply(random, p1, p2);
 
-      Assert.IsTrue(expected.Equals(actual));
+      Assert.IsTrue(TestUtils.JSMEncodingEquals(expected, actual));
     }
   }
 }

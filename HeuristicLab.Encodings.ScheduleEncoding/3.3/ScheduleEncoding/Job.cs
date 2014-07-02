@@ -19,8 +19,10 @@
  */
 #endregion
 
+using System;
 using System.ComponentModel;
 using System.Text;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -37,7 +39,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       set {
         bool changed = dueDate != value;
         dueDate = value;
-        if (changed) OnPropertyChanged("DueDate");
+        if (changed) {
+          OnPropertyChanged("DueDate");
+          OnToStringChanged();
+        }
       }
     }
 
@@ -48,7 +53,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       set {
         bool changed = index != value;
         index = value;
-        if (changed) OnPropertyChanged("Index");
+        if (changed) {
+          OnPropertyChanged("Index");
+          OnToStringChanged();
+        }
       }
     }
 
@@ -67,27 +75,66 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected Job(bool deserializing) : base(deserializing) { }
     protected Job(Job original, Cloner cloner)
       : base(original, cloner) {
-      this.DueDate = original.DueDate;
-      this.Index = original.Index;
-      this.Tasks = cloner.Clone(original.Tasks);
+      this.dueDate = original.DueDate;
+      this.index = original.Index;
+      this.tasks = cloner.Clone(original.Tasks);
+      RegisterEventHandlers();
     }
     public Job() : this(-1, double.MaxValue) { }
     public Job(int index, double dueDate)
       : base() {
-      DueDate = dueDate;
-      Index = index;
-      Tasks = new ItemList<Task>();
+      this.dueDate = dueDate;
+      this.index = index;
+      this.tasks = new ItemList<Task>();
+      RegisterEventHandlers();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Job(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
+      Tasks.ItemsAdded += TasksOnItemsChanged;
+      Tasks.ItemsRemoved += TasksOnItemsChanged;
+      Tasks.ItemsReplaced += TasksOnItemsChanged;
+      Tasks.CollectionReset += TasksOnItemsChanged;
+      foreach (var task in Tasks) {
+        task.PropertyChanged += TaskOnPropertyChanged;
+        task.ToStringChanged += TaskOnToStringChanged;
+      }
+    }
+
+    private void TasksOnItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<Task>> e) {
+      foreach (var task in e.OldItems) {
+        task.Value.PropertyChanged -= TaskOnPropertyChanged;
+        task.Value.ToStringChanged -= TaskOnToStringChanged;
+      }
+      foreach (var task in e.Items) {
+        task.Value.PropertyChanged += TaskOnPropertyChanged;
+        task.Value.ToStringChanged += TaskOnToStringChanged;
+      }
+      OnTasksChanged();
+      OnToStringChanged();
+    }
+
+    private void TaskOnPropertyChanged(object sender, EventArgs e) {
+      OnTasksChanged();
+    }
+
+    private void TaskOnToStringChanged(object sender, EventArgs e) {
+      OnToStringChanged();
+    }
+
     public override string ToString() {
       var sb = new StringBuilder();
       sb.Append("Job#" + Index + " [ ");
       foreach (Task t in Tasks) {
-        sb.Append(t.ToString() + " ");
+        sb.Append(t + " ");
       }
       sb.Append("{" + DueDate + "} ");
       sb.Append("]");
@@ -97,6 +144,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     internal Task GetPreviousTask(Task t) {
       if (t.TaskNr == 0) return null;
       return Tasks[t.TaskNr - 1];
+    }
+
+    public event EventHandler TasksChanged;
+    protected virtual void OnTasksChanged() {
+      var handler = TasksChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

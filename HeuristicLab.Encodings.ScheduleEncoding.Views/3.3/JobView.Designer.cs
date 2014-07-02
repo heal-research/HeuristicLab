@@ -79,7 +79,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.dueDateLabel.Location = new System.Drawing.Point(3, 32);
       this.dueDateLabel.Name = "dueDateLabel";
       this.dueDateLabel.Size = new System.Drawing.Size(56, 13);
-      this.dueDateLabel.TabIndex = 0;
+      this.dueDateLabel.TabIndex = 2;
       this.dueDateLabel.Text = "Due Date:";
       // 
       // dueDateTextBox
@@ -89,7 +89,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.dueDateTextBox.Location = new System.Drawing.Point(65, 29);
       this.dueDateTextBox.Name = "dueDateTextBox";
       this.dueDateTextBox.Size = new System.Drawing.Size(451, 20);
-      this.dueDateTextBox.TabIndex = 1;
+      this.dueDateTextBox.TabIndex = 3;
       this.dueDateTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.dueDateTextBox_Validating);
       // 
       // tasksGroupBox
@@ -100,7 +100,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
       this.tasksGroupBox.Location = new System.Drawing.Point(6, 55);
       this.tasksGroupBox.Name = "tasksGroupBox";
       this.tasksGroupBox.Size = new System.Drawing.Size(510, 214);
-      this.tasksGroupBox.TabIndex = 2;
+      this.tasksGroupBox.TabIndex = 4;
       this.tasksGroupBox.TabStop = false;
       this.tasksGroupBox.Text = "Tasks";
       // 
