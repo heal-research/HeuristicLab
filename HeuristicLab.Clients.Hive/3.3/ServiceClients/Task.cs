@@ -26,7 +26,9 @@ using HeuristicLab.Common;
 namespace HeuristicLab.Clients.Hive {
   public partial class Task : LightweightTask {
 
-    public Task() { }
+    public Task() {
+      Priority = 1;
+    }
 
     protected Task(Task original, Cloner cloner)
       : base(original, cloner) {
