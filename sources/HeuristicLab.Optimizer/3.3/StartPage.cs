@@ -41,11 +41,11 @@ namespace HeuristicLab.Optimizer {
     private const string SampleNamePrefix = "HeuristicLab.Optimizer.Documents.";
     private const string SampleNameSuffix = ".hl";
 
-    private readonly Dictionary<ListViewGroup, List<string>> GroupLookup = new Dictionary<ListViewGroup, List<string>>();
-    private readonly ListViewGroup StandardProblemsGroup = new ListViewGroup(StandardProblemsGroupName);
-    private readonly ListViewGroup DataAnalysisGroup = new ListViewGroup(DataAnalysisGroupName);
-    private readonly ListViewGroup ScriptsGroup = new ListViewGroup(ScriptsGroupName);
-    private readonly ListViewGroup UncategorizedGroup = new ListViewGroup(UncategorizedGroupName);
+    private readonly Dictionary<ListViewGroup, List<string>> groupLookup = new Dictionary<ListViewGroup, List<string>>();
+    private readonly ListViewGroup standardProblemsGroup = new ListViewGroup(StandardProblemsGroupName);
+    private readonly ListViewGroup dataAnalysisGroup = new ListViewGroup(DataAnalysisGroupName);
+    private readonly ListViewGroup scriptsGroup = new ListViewGroup(ScriptsGroupName);
+    private readonly ListViewGroup uncategorizedGroup = new ListViewGroup(UncategorizedGroupName);
 
     private IProgress progress;
 
@@ -67,10 +67,10 @@ namespace HeuristicLab.Optimizer {
       } catch (Exception) { }
 
       samplesListView.Enabled = false;
-      samplesListView.Groups.Add(StandardProblemsGroup);
-      samplesListView.Groups.Add(DataAnalysisGroup);
-      samplesListView.Groups.Add(ScriptsGroup);
-      samplesListView.Groups.Add(UncategorizedGroup);
+      samplesListView.Groups.Add(standardProblemsGroup);
+      samplesListView.Groups.Add(dataAnalysisGroup);
+      samplesListView.Groups.Add(scriptsGroup);
+      samplesListView.Groups.Add(uncategorizedGroup);
       FillGroupLookup();
 
       showStartPageCheckBox.Checked = Properties.Settings.Default.ShowStartPage;
@@ -92,22 +92,21 @@ namespace HeuristicLab.Optimizer {
         var assembly = Assembly.GetExecutingAssembly();
         var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(SampleNameSuffix));
         int count = samples.Count();
-        string path = Path.GetTempFileName();
 
-        foreach (var entry in GroupLookup) {
+        foreach (var entry in groupLookup) {
           var group = entry.Key;
           var sampleList = entry.Value;
           foreach (var sampleName in sampleList) {
             string resourceName = SampleNamePrefix + sampleName + SampleNameSuffix;
-            LoadSample(resourceName, assembly, path, group, count);
+            LoadSample(resourceName, assembly, group, count);
           }
         }
 
-        var categorizedSamples = GroupLookup.Select(x => x.Value).SelectMany(x => x).Select(x => SampleNamePrefix + x + SampleNameSuffix);
+        var categorizedSamples = groupLookup.Select(x => x.Value).SelectMany(x => x).Select(x => SampleNamePrefix + x + SampleNameSuffix);
         var uncategorizedSamples = samples.Except(categorizedSamples);
 
         foreach (var resourceName in uncategorizedSamples) {
-          LoadSample(resourceName, assembly, path, UncategorizedGroup, count);
+          LoadSample(resourceName, assembly, uncategorizedGroup, count);
         }
 
         OnAllSamplesLoaded();
@@ -116,27 +115,32 @@ namespace HeuristicLab.Optimizer {
       }
     }
 
-    private void LoadSample(string name, Assembly assembly, string path, ListViewGroup group, int count) {
+    private void LoadSample(string name, Assembly assembly, ListViewGroup group, int count) {
+      string path = Path.GetTempFileName();
       try {
         using (var stream = assembly.GetManifestResourceStream(name)) {
-          WriteStreamToTempFile(stream, path);
+          WriteStreamToTempFile(stream, path); // create a file in a temporary folder (persistence cannot load these files directly from the stream)
           var item = XmlParser.Deserialize<INamedItem>(path);
           OnSampleLoaded(item, group, 1.0 / count);
         }
-      } catch (Exception) { }
+      } catch (Exception) {
+      } finally {
+        if (File.Exists(path)) {
+          File.Delete(path); // make sure we remove the temporary file
+        }
+      }
     }
 
     private void FillGroupLookup() {
-      var standardProblems = new List<string>(
-        new[] { "ES_Griewank", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
+      var standardProblems = new List<string> { "ES_Griewank", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
                 "IslandGA_TSP", "LS_Knapsack", "PSO_Schwefel", "RAPGA_JSSP",
                 "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_TSP"
-        });
-      GroupLookup[StandardProblemsGroup] = standardProblems;
-      var dataAnalysisProblems = new List<string>(new[] { "GE_SymbReg", "GPR", "SGP_SymbClass", "SGP_SymbReg" });
-      GroupLookup[DataAnalysisGroup] = dataAnalysisProblems;
-      var scripts = new List<string>(new[] { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script" });
-      GroupLookup[ScriptsGroup] = scripts;
+        };
+      groupLookup[standardProblemsGroup] = standardProblems;
+      var dataAnalysisProblems = new List<string> { "GE_SymbReg", "GPR", "SGP_SymbClass", "SGP_SymbReg" };
+      groupLookup[dataAnalysisGroup] = dataAnalysisProblems;
+      var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script" };
+      groupLookup[scriptsGroup] = scripts;
     }
 
     private void OnSampleLoaded(INamedItem sample, ListViewGroup group, double progress) {
@@ -196,10 +200,7 @@ namespace HeuristicLab.Optimizer {
     #region Helpers
     private void WriteStreamToTempFile(Stream stream, string path) {
       using (FileStream output = new FileStream(path, FileMode.Create, FileAccess.Write)) {
-        int cnt = 0;
-        byte[] buffer = new byte[32 * 1024];
-        while ((cnt = stream.Read(buffer, 0, buffer.Length)) != 0)
-          output.Write(buffer, 0, cnt);
+        stream.CopyTo(output);
       }
     }
     #endregion
