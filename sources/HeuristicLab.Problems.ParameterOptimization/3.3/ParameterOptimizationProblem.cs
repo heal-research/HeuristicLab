@@ -93,7 +93,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
     protected ParameterOptimizationProblem(IParameterVectorEvaluator evaluator)
       : base(evaluator, new UniformRandomRealVectorCreator()) {
       Parameters.Add(new FixedValueParameter<IntValue>(ProblemSizeParameterName, "The dimension of the parameter vector that is to be optimized.", new IntValue(1)));
-      Parameters.Add(new ValueParameter<DoubleMatrix>(BoundsParameterName, "The bounds for each dimension of the parameter vector. If fewer bounds are", new DoubleMatrix(new double[,] { { 0, 100 } }, new string[] { "LowerBound", "UpperBound" })));
+      Parameters.Add(new ValueParameter<DoubleMatrix>(BoundsParameterName, "The bounds for each dimension of the parameter vector. If the number of bounds is smaller than the problem size then the bounds are reused in a cyclic manner.", new DoubleMatrix(new double[,] { { 0, 100 } }, new string[] { "LowerBound", "UpperBound" })));
       Parameters.Add(new ValueParameter<StringArray>(ParameterNamesParameterName, "The element names which are used to calculate the quality of a parameter vector.", new StringArray(new string[] { "Parameter0" })));
 
       SolutionCreator.LengthParameter.ActualName = "ProblemSize";
@@ -120,8 +120,6 @@ namespace HeuristicLab.Problems.ParameterOptimization {
 
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
-      strategyVectorManipulator.GeneralLearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * ProblemSize));
-      strategyVectorManipulator.LearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * Math.Sqrt(ProblemSize)));
       UpdateParameters();
     }
 
@@ -135,10 +133,10 @@ namespace HeuristicLab.Problems.ParameterOptimization {
       Evaluator.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
       Evaluator.ParameterNamesParameter.ActualName = ParameterNamesParameter.Name;
 
-      var bestSolutionAnalyzer = Operators.OfType<BestSolutionAnalyzer>().First();
-      bestSolutionAnalyzer.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
-      bestSolutionAnalyzer.ParameterNamesParameter.ActualName = ParameterNamesParameter.Name;
-
+      foreach (var bestSolutionAnalyzer in Operators.OfType<BestSolutionAnalyzer>()) {
+        bestSolutionAnalyzer.ParameterVectorParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
+        bestSolutionAnalyzer.ParameterNamesParameter.ActualName = ParameterNamesParameter.Name;
+      }
       Bounds = new DoubleMatrix(ProblemSize, 2);
       Bounds.RowNames = ParameterNames;
       for (int i = 0; i < Bounds.Rows; i++) {
@@ -170,6 +168,9 @@ namespace HeuristicLab.Problems.ParameterOptimization {
       for (int i = 0; i < ParameterNames.Length; i++) {
         if (string.IsNullOrEmpty(ParameterNames[i])) ParameterNames[i] = "Parameter" + i;
       }
+
+      strategyVectorManipulator.GeneralLearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * ProblemSize));
+      strategyVectorManipulator.LearningRateParameter.Value = new DoubleValue(1.0 / Math.Sqrt(2 * Math.Sqrt(ProblemSize)));
     }
 
     protected virtual void ParameterNames_Reset(object sender, EventArgs e) {

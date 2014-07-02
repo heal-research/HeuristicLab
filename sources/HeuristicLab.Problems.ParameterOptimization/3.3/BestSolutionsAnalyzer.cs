@@ -155,7 +155,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
 
     public int GetHashCode(DoubleArray obj) {
       if (obj == null) return 0;
-      return obj.Aggregate(23, (current, item) => current ^ (int)item);
+      return (int)obj.Aggregate(23L, (current, item) => current ^ System.BitConverter.DoubleToInt64Bits(item));
     }
   }
 }

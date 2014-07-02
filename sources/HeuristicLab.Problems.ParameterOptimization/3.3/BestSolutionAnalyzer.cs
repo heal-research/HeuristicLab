@@ -94,12 +94,12 @@ namespace HeuristicLab.Problems.ParameterOptimization {
       bool max = MaximizationParameter.ActualValue.Value;
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
 
-      int ind = -1;
-      if (!max) ind = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
-      else ind = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
+      int indexOfBest = -1;
+      if (!max) indexOfBest = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
+      else indexOfBest = qualities.Select((x, index) => new { index, x.Value }).OrderByDescending(x => x.Value).First().index;
 
-      var bestQuality = qualities[ind].Value;
-      var bestParameterVector = (RealVector)parameterVectors[ind].Clone();
+      var bestQuality = qualities[indexOfBest].Value;
+      var bestParameterVector = (RealVector)parameterVectors[indexOfBest].Clone();
       ResultCollection results = ResultsParameter.ActualValue;
 
       if (BestQualityParameter.ActualValue == null) {
@@ -122,7 +122,8 @@ namespace HeuristicLab.Problems.ParameterOptimization {
       }
 
       //update best known quality
-      if (bestKnownQuality == null || max && bestQuality > bestKnownQuality.Value
+      if (bestKnownQuality == null 
+        || max && bestQuality > bestKnownQuality.Value
         || !max && bestQuality < bestKnownQuality.Value) {
         BestKnownQualityParameter.ActualValue = new DoubleValue(bestQuality);
       }

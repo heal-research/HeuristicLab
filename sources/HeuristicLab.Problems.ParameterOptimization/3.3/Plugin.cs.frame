@@ -19,9 +19,7 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.PluginInfrastructure;
-using Microsoft.Win32;
 
 namespace HeuristicLab.Problems.ParameterOptimization {
   /// <summary>
