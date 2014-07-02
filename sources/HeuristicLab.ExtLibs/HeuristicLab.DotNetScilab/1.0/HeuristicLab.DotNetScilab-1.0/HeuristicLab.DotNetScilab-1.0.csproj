@@ -63,6 +63,10 @@
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DotNetScilab-1.0\DotNetScilab-1.0.csproj">
+      <Project>{c3f0c7dc-82ad-405b-990a-bf2c5b7f46ff}</Project>
+      <Name>DotNetScilab-1.0</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
