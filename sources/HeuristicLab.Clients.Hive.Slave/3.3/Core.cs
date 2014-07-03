@@ -203,7 +203,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void CalculateTaskAsync(Guid jobId) {
       TS.Task.Factory.StartNew(HandleCalculateTask, jobId)
       .ContinueWith((t) => {
-        SlaveStatusInfo.IncrementExceptionOccured();
+        SlaveStatusInfo.IncrementTasksFailed();
         SlaveClientCom.Instance.LogMessage(t.Exception.ToString());
       }, TaskContinuationOptions.OnlyOnFaulted);
     }
@@ -211,7 +211,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void StopTaskAsync(Guid jobId) {
       TS.Task.Factory.StartNew(HandleStopTask, jobId)
        .ContinueWith((t) => {
-         SlaveStatusInfo.IncrementExceptionOccured();
+         SlaveStatusInfo.IncrementTasksFailed();
          SlaveClientCom.Instance.LogMessage(t.Exception.ToString());
        }, TaskContinuationOptions.OnlyOnFaulted);
     }
@@ -219,7 +219,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void PauseTaskAsync(Guid jobId) {
       TS.Task.Factory.StartNew(HandlePauseTask, jobId)
        .ContinueWith((t) => {
-         SlaveStatusInfo.IncrementExceptionOccured();
+         SlaveStatusInfo.IncrementTasksFailed();
          SlaveClientCom.Instance.LogMessage(t.Exception.ToString());
        }, TaskContinuationOptions.OnlyOnFaulted);
     }
@@ -227,7 +227,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void AbortTaskAsync(Guid jobId) {
       TS.Task.Factory.StartNew(HandleAbortTask, jobId)
        .ContinueWith((t) => {
-         SlaveStatusInfo.IncrementExceptionOccured();
+         SlaveStatusInfo.IncrementTasksFailed();
          SlaveClientCom.Instance.LogMessage(t.Exception.ToString());
        }, TaskContinuationOptions.OnlyOnFaulted);
     }
@@ -327,7 +327,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       this.taskManager.TaskPaused += new EventHandler<EventArgs<SlaveTask, TaskData>>(taskManager_TaskPaused);
       this.taskManager.TaskStopped += new EventHandler<EventArgs<SlaveTask, TaskData>>(taskManager_TaskStopped);
       this.taskManager.TaskFailed += new EventHandler<EventArgs<Tuple<SlaveTask, TaskData, Exception>>>(taskManager_TaskFailed);
-      this.taskManager.ExceptionOccured += new EventHandler<EventArgs<SlaveTask, Exception>>(taskManager_ExceptionOccured);
       this.taskManager.TaskAborted += new EventHandler<EventArgs<SlaveTask>>(taskManager_TaskAborted);
     }
 
@@ -390,21 +389,13 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         SlaveClientCom.Instance.LogMessage(exception.Message);
       }
       catch (TaskNotFoundException ex) {
-        SlaveStatusInfo.IncrementExceptionOccured();
+        SlaveStatusInfo.IncrementTasksFailed();
         SlaveClientCom.Instance.LogMessage(ex.ToString());
       }
       catch (Exception ex) {
-        SlaveStatusInfo.IncrementExceptionOccured();
+        SlaveStatusInfo.IncrementTasksFailed();
         SlaveClientCom.Instance.LogMessage(ex.ToString());
       }
-    }
-
-    private void taskManager_ExceptionOccured(object sender, EventArgs<SlaveTask, Exception> e) {
-      SlaveStatusInfo.DecrementUsedCores(e.Value.CoresNeeded);
-      SlaveStatusInfo.IncrementExceptionOccured();
-      heartbeatManager.AwakeHeartBeatThread();
-      SlaveClientCom.Instance.LogMessage(string.Format("Exception occured for task {0}: {1}", e.Value.TaskId, e.Value2.ToString()));
-      wcfService.UpdateJobState(e.Value.TaskId, TaskState.Waiting, e.Value2.ToString());
     }
 
     private void taskManager_TaskAborted(object sender, EventArgs<SlaveTask> e) {

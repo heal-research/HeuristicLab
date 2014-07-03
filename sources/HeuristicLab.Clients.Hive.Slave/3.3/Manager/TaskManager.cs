@@ -70,7 +70,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         if (slaveTasks.ContainsKey(task.Id)) {
-          SlaveStatusInfo.IncrementExceptionOccured();
+          SlaveStatusInfo.IncrementTasksFailed();
           throw new TaskAlreadyRunningException(task.Id);
         } else {
           slaveTask = new SlaveTask(pluginManager, task.CoresNeeded, log);
@@ -184,7 +184,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTask.TaskPaused += new EventHandler<EventArgs<Guid>>(slaveTask_TaskPaused);
       slaveTask.TaskStopped += new EventHandler<EventArgs<Guid>>(slaveTask_TaskStopped);
       slaveTask.TaskFailed += new EventHandler<EventArgs<Guid, Exception>>(slaveTask_TaskFailed);
-      slaveTask.ExceptionOccured += new EventHandler<EventArgs<Guid, Exception>>(slaveTask_ExceptionOccured);
     }
 
     private void DeregisterSlaveTaskEvents(SlaveTask slaveTask) {
@@ -192,7 +191,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTask.TaskPaused -= new EventHandler<EventArgs<Guid>>(slaveTask_TaskPaused);
       slaveTask.TaskStopped -= new EventHandler<EventArgs<Guid>>(slaveTask_TaskStopped);
       slaveTask.TaskFailed -= new EventHandler<EventArgs<Guid, Exception>>(slaveTask_TaskFailed);
-      slaveTask.ExceptionOccured -= new EventHandler<EventArgs<Guid, Exception>>(slaveTask_ExceptionOccured);
     }
 
     private void slaveTask_TaskStarted(object sender, EventArgs<Guid> e) {
@@ -219,7 +217,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       TaskData taskData = null;
       try {
         taskData = slaveTask.GetTaskData();
-        if (taskData == null) throw new SerializationException();
         SlaveStatusInfo.IncrementTasksFinished();
         OnTaskPaused(slaveTask, taskData);
       }
@@ -242,7 +239,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       TaskData taskData = null;
       try {
         taskData = slaveTask.GetTaskData();
-        if (taskData == null) throw new SerializationException();
         SlaveStatusInfo.IncrementTasksFinished();
         OnTaskStopped(slaveTask, taskData);
       }
@@ -265,24 +261,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       TaskData taskData = null;
       try {
         taskData = slaveTask.GetTaskData();
-        if (taskData == null) throw new SerializationException();
       }
       catch { /* taskData will be null */ }
       SlaveStatusInfo.IncrementTasksFailed();
       OnTaskFailed(slaveTask, taskData, e.Value2);
-    }
-
-    private void slaveTask_ExceptionOccured(object sender, EventArgs<Guid, Exception> e) {
-      SlaveTask slaveTask;
-      slaveTasksLocker.EnterUpgradeableReadLock();
-      try {
-        slaveTask = slaveTasks[e.Value];
-        RemoveSlaveTask(e.Value, slaveTask);
-      }
-      finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
-
-      SlaveStatusInfo.IncrementExceptionOccured();
-      OnExceptionOccured(slaveTask, e.Value2);
     }
     #endregion
 
@@ -309,12 +291,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void OnTaskFailed(SlaveTask slaveTask, TaskData taskData, Exception exception) {
       var handler = TaskFailed;
       if (handler != null) handler(this, new EventArgs<Tuple<SlaveTask, TaskData, Exception>>(new Tuple<SlaveTask, TaskData, Exception>(slaveTask, taskData, exception)));
-    }
-
-    public event EventHandler<EventArgs<SlaveTask, Exception>> ExceptionOccured;
-    private void OnExceptionOccured(SlaveTask slaveTask, Exception exception) {
-      var handler = ExceptionOccured;
-      if (handler != null) handler(this, new EventArgs<SlaveTask, Exception>(slaveTask, exception));
     }
 
     public event EventHandler<EventArgs<SlaveTask>> TaskAborted;

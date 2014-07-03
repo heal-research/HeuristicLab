@@ -50,15 +50,13 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     [DataMember]
     public int JobsFailed { get; set; }
     [DataMember]
-    public int ExceptionsOccured { get; set; }
-    [DataMember]
     public List<TaskStatus> Jobs { get; set; }
     [DataMember]
     public bool Asleep { get; set; }
 
     public override string ToString() {
-      return string.Format("Status: {0}, Fetc,Start,Fin,Abor,Fail,Exc: {1},{2},{3},{4},{5},{6}",
-        Status, JobsFetched, JobsStarted, JobsFinished, JobsAborted, JobsFailed, ExceptionsOccured);
+      return string.Format("Status: {0}, Fetc,Start,Fin,Abor,Fail,Exc: {1},{2},{3},{4},{5}",
+        Status, JobsFetched, JobsStarted, JobsFinished, JobsAborted, JobsFailed);
     }
   }
 }

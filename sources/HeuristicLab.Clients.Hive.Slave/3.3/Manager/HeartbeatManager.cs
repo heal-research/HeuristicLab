@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using HeuristicLab.Clients.Hive.SlaveCore.Properties;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Hive.SlaveCore {
   /// <summary>
@@ -114,7 +113,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
               if (msgs == null) {
                 SlaveClientCom.Instance.LogMessage("Error getting response from HB");
-                OnExceptionOccured(new Exception("Error getting response from HB"));
               } else {
                 SlaveClientCom.Instance.LogMessage("HB Response received (" + msgs.Count + "): ");
                 msgs.ForEach(mc => SlaveClientCom.Instance.LogMessage(mc.Message.ToString()));
@@ -125,19 +123,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         }
         catch (Exception e) {
           SlaveClientCom.Instance.LogMessage("Heartbeat thread failed: " + e.ToString());
-          OnExceptionOccured(e);
         }
         waitHandle.WaitOne(this.interval);
       }
       SlaveClientCom.Instance.LogMessage("Heartbeat thread stopped");
     }
-
-    #region Eventhandler
-    public event EventHandler<EventArgs<Exception>> ExceptionOccured;
-    private void OnExceptionOccured(Exception e) {
-      var handler = ExceptionOccured;
-      if (handler != null) handler(this, new EventArgs<Exception>(e));
-    }
-    #endregion
   }
 }

@@ -42,6 +42,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private ILog log;
     public Guid TaskId { get; private set; }
     public bool IsPrepared { get; private set; }
+    private TaskData originalTaskData;
 
     private int coresNeeded;
     public int CoresNeeded {
@@ -73,6 +74,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public void StartJobAsync(Task task, TaskData taskData) {
       try {
         this.TaskId = task.Id;
+        originalTaskData = taskData;
         Prepare(task);
         StartTaskInAppDomain(taskData);
       }
@@ -142,7 +144,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         int repeat = Settings.Default.PluginDeletionRetries;
         while (repeat > 0) {
           try {
-            waitForStartBeforeKillSem.WaitOne();
+            waitForStartBeforeKillSem.WaitOne(Settings.Default.ExecutorSemTimeouts);
             AppDomain.Unload(appDomain);
             waitForStartBeforeKillSem.Dispose();
             repeat = 0;
@@ -163,13 +165,15 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
     private void AppDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
       DisposeAppDomain();
-      OnExceptionOccured(new Exception("Unhandled exception: " + e.ExceptionObject.ToString()));
+      OnTaskFailed(new Exception("Unhandled exception: " + e.ExceptionObject.ToString()));
     }
 
     public TaskData GetTaskData() {
       TaskData data = null;
       try {
         data = executor.GetTaskData();
+        //this means that there was a problem executing the task
+        if (data == null) return originalTaskData;
       }
       catch (Exception ex) {
         EventLogManager.LogException(ex);
@@ -232,16 +236,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
           case ExecutorMessageType.StopExecutorMonitoringThread:
             executorMonitoringRun = false;
             break;
-
-          case ExecutorMessageType.ExceptionOccured:
-            executorMonitoringRun = false;
-            DisposeAppDomain();
-            if (executor.CurrentException != null) {
-              OnExceptionOccured(executor.CurrentException);
-            } else {
-              OnExceptionOccured(new Exception(string.Format("Unknow exception occured in Executor for task {0}", TaskId)));
-            }
-            break;
         }
       }
     }
@@ -274,12 +268,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public event EventHandler<EventArgs<Guid, Exception>> TaskFailed;
     private void OnTaskFailed(Exception exception) {
       var handler = TaskFailed;
-      if (handler != null) handler(this, new EventArgs<Guid, Exception>(this.TaskId, exception));
-    }
-
-    public event EventHandler<EventArgs<Guid, Exception>> ExceptionOccured;
-    private void OnExceptionOccured(Exception exception) {
-      var handler = ExceptionOccured;
       if (handler != null) handler(this, new EventArgs<Guid, Exception>(this.TaskId, exception));
     }
   }

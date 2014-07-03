@@ -84,15 +84,13 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
         task.Start();
         if (!startTaskSem.WaitOne(Settings.Default.ExecutorSemTimeouts)) {
-          taskDataInvalid = true;
           throw new TimeoutException("Timeout when starting the task. TaskStarted event was not fired.");
         }
       }
       catch (Exception e) {
-        this.CurrentException = e;
-        taskDataInvalid = true;
-        Task_TaskFailed(this, new EventArgs<Exception>(e));
-      } finally {
+        HandleStartStopPauseError(e);
+      }
+      finally {
         taskStartedSem.Set();
       }
     }
@@ -102,8 +100,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       // wait until task is started. if this does not happen, the Task is null an we give up
       taskStartedSem.WaitOne(Settings.Default.ExecutorSemTimeouts);
       if (task == null) {
-        CurrentException = new Exception("Pausing task " + this.TaskId + ": Task is null");
-        executorQueue.AddMessage(ExecutorMessageType.ExceptionOccured);
+        HandleStartStopPauseError(new Exception("Pausing task " + this.TaskId + ": Task is null"));
         return;
       }
 
@@ -111,11 +108,12 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         try {
           task.Pause();
           //we need to block the pause...
-          pauseStopSem.WaitOne();
+          if (!pauseStopSem.WaitOne(Settings.Default.ExecutorSemTimeouts)) {
+            throw new Exception("Pausing task " + this.TaskId + " timed out.");
+          }
         }
         catch (Exception ex) {
-          CurrentException = new Exception("Error pausing task " + this.TaskId + ": " + ex.ToString());
-          executorQueue.AddMessage(ExecutorMessageType.ExceptionOccured);
+          HandleStartStopPauseError(ex);
         }
       }
     }
@@ -124,20 +122,22 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       IsStopping = true;
       // wait until task is started. if this does not happen, the Task is null an we give up
       taskStartedSem.WaitOne(Settings.Default.ExecutorSemTimeouts);
-      if (task == null) {
-        CurrentException = new Exception("Stopping task " + this.TaskId + ": Task is null");
-        executorQueue.AddMessage(ExecutorMessageType.ExceptionOccured);
-      }
       wasTaskAborted = true;
+
+      if (task == null) {
+        HandleStartStopPauseError(new Exception("Stopping task " + this.TaskId + ": Task is null"));
+        return;
+      }
 
       if ((ExecutionState == ExecutionState.Started) || (ExecutionState == ExecutionState.Paused)) {
         try {
           task.Stop();
-          pauseStopSem.WaitOne();
+          if (!pauseStopSem.WaitOne(Settings.Default.ExecutorSemTimeouts)) {
+            throw new Exception("Stopping task " + this.TaskId + " timed out.");
+          }
         }
         catch (Exception ex) {
-          CurrentException = new Exception("Error stopping task " + this.TaskId + ": " + ex.ToString());
-          executorQueue.AddMessage(ExecutorMessageType.ExceptionOccured);
+          HandleStartStopPauseError(ex);
         }
       }
     }
@@ -189,26 +189,30 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
       if (task != null && task.ExecutionState == ExecutionState.Started) {
         throw new InvalidStateException("Task is still running");
-      } else {
-        TaskData taskData = new TaskData();
-        if (task == null) {
-          //send empty task and save exception
-          taskData.Data = PersistenceUtil.Serialize(new TaskData());
-          if (CurrentException == null) {
-            CurrentException = new Exception("Task with id " + this.TaskId + " is null, sending empty task");
-          }
-        } else {
-          taskData.Data = PersistenceUtil.Serialize(task);
-        }
-        taskData.TaskId = TaskId;
-        return taskData;
       }
+
+      TaskData taskData = null;
+      if (task == null) {
+        if (CurrentException == null) {
+          CurrentException = new Exception("Task with id " + this.TaskId + " is null, sending empty task");
+        }
+      } else {
+        taskData = new TaskData();
+        taskData.Data = PersistenceUtil.Serialize(task);
+        taskData.TaskId = TaskId;
+      }
+      return taskData;
     }
 
     public void Dispose() {
       if (task != null)
         DeregisterJobEvents();
       task = null;
+    }
+
+    private void HandleStartStopPauseError(Exception e) {
+      taskDataInvalid = true;
+      Task_TaskFailed(this, new EventArgs<Exception>(e));
     }
   }
 }

@@ -116,7 +116,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       st.JobsFinished = SlaveStatusInfo.TasksFinished;
       st.JobsFetched = SlaveStatusInfo.TasksFetched;
       st.JobsFailed = SlaveStatusInfo.TasksFailed;
-      st.ExceptionsOccured = SlaveStatusInfo.ExceptionsOccured;
 
       st.Jobs = jobManager.GetExecutionTimes().Select(x => new TaskStatus { TaskId = x.Key, ExecutionTime = x.Value }).ToList();
 
