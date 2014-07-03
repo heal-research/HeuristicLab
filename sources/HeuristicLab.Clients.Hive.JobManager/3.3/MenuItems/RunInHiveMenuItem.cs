@@ -49,10 +49,10 @@ namespace HeuristicLab.Clients.Hive.JobManager {
         if (content != null) {
           Type contentType = content.GetType();
           ToolStripItem.Enabled = ItemTask.IsTypeSupported(contentType);
-        } else {
-          ToolStripItem.Enabled = false;
+          return;
         }
       }
+      ToolStripItem.Enabled = false;
     }
 
     private IProgress progress;

@@ -467,11 +467,10 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private void jobsTreeView_DragEnter(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
-      var obj = e.Data.GetData(Constants.DragDropDataFormat) as IDeepCloneable;
-      Type objType = obj.GetType();
+      var obj = (IDeepCloneable)e.Data.GetData(Constants.DragDropDataFormat);
 
-      var hiveTaskFound = ItemTask.IsTypeSupported(objType);
-      if (hiveTaskFound) {
+      Type objType = obj.GetType();
+      if (ItemTask.IsTypeSupported(objType)) {
         if (Content.Id != Guid.Empty) e.Effect = DragDropEffects.None;
         else if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
         else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
@@ -480,11 +479,11 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private void jobsTreeView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect != DragDropEffects.None) {
-        var obj = e.Data.GetData(Constants.DragDropDataFormat) as IItem;
+        var obj = (IItem)e.Data.GetData(Constants.DragDropDataFormat);
 
         IItem newObj = null;
         if (e.Effect.HasFlag(DragDropEffects.Copy)) {
-          newObj = obj.Clone(new Cloner()) as IItem;
+          newObj = (IItem)obj.Clone();
         } else {
           newObj = obj;
         }
@@ -494,7 +493,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           ((IOptimizer)newObj).Runs.Clear();
         }
         if (newObj is IExecutable) {
-          IExecutable exec = newObj as IExecutable;
+          IExecutable exec = (IExecutable)newObj;
           if (exec.ExecutionState != ExecutionState.Prepared) {
             exec.Prepare();
           }
