@@ -350,7 +350,7 @@ namespace HeuristicLab.Clients.Hive {
     /// Uploads the given task and all its child-jobs while setting the proper parentJobId values for the childs
     /// </summary>
     /// <param name="parentHiveTask">shall be null if its the root task</param>
-    private void UploadTaskWithChildren(Progress progress, HiveTask hiveTask, HiveTask parentHiveTask, IEnumerable<Guid> groups, int[] taskCount, int totalJobCount, Guid configPluginId, Guid jobId, ILog log, bool isPrivileged, CancellationToken cancellationToken) {
+    private void UploadTaskWithChildren(IProgress progress, HiveTask hiveTask, HiveTask parentHiveTask, IEnumerable<Guid> groups, int[] taskCount, int totalJobCount, Guid configPluginId, Guid jobId, ILog log, bool isPrivileged, CancellationToken cancellationToken) {
       taskUploadSemaphore.WaitOne();
       bool semaphoreReleased = false;
       try {
@@ -361,7 +361,7 @@ namespace HeuristicLab.Clients.Hive {
         TaskData taskData;
         List<IPluginDescription> plugins;
 
-        if (hiveTask.ItemTask.ComputeInParallel && (hiveTask.ItemTask.Item is Optimization.Experiment || hiveTask.ItemTask.Item is Optimization.BatchRun)) {
+        if (hiveTask.ItemTask.ComputeInParallel) {
           hiveTask.Task.IsParentTask = true;
           hiveTask.Task.FinishWhenChildJobsFinished = true;
           taskData = hiveTask.GetAsTaskData(true, out plugins);

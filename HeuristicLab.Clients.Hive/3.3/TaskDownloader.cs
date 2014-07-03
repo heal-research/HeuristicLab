@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using HeuristicLab.Clients.Hive.Jobs;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Clients.Hive {
@@ -78,27 +77,22 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public TaskDownloader(IEnumerable<Guid> jobIds) {
-      this.taskIds = jobIds;
-      this.taskDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
-      this.taskDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(taskDownloader_ExceptionOccured);
-      this.results = new Dictionary<Guid, HiveTask>();
+      taskIds = jobIds;
+      taskDownloader = new ConcurrentTaskDownloader<ItemTask>(Settings.Default.MaxParallelDownloads, Settings.Default.MaxParallelDownloads);
+      taskDownloader.ExceptionOccured += new EventHandler<EventArgs<Exception>>(taskDownloader_ExceptionOccured);
+      results = new Dictionary<Guid, HiveTask>();
     }
 
     public void StartAsync() {
       foreach (Guid taskId in taskIds) {
         taskDownloader.DownloadTaskDataAndTask(taskId,
-          (localJob, itemJob) => {
-            if (localJob != null && itemJob != null) {
-              HiveTask hiveTask;
-              if (itemJob is OptimizerTask) {
-                hiveTask = new OptimizerHiveTask((OptimizerTask)itemJob);
-              } else {
-                hiveTask = new HiveTask(itemJob, true);
-              }
-              hiveTask.Task = localJob;
+          (localTask, itemTask) => {
+            if (localTask != null && itemTask != null) {
+              HiveTask hiveTask = itemTask.CreateHiveTask();
+              hiveTask.Task = localTask;
               try {
                 resultsLock.EnterWriteLock();
-                this.results.Add(localJob.Id, hiveTask);
+                results.Add(localTask.Id, hiveTask);
               }
               finally { resultsLock.ExitWriteLock(); }
             }
@@ -112,8 +106,8 @@ namespace HeuristicLab.Clients.Hive {
 
     public event EventHandler<EventArgs<Exception>> ExceptionOccured;
     private void OnExceptionOccured(Exception exception) {
-      this.exceptionOccured = true;
-      this.currentException = exception;
+      exceptionOccured = true;
+      currentException = exception;
       var handler = ExceptionOccured;
       if (handler != null) handler(this, new EventArgs<Exception>(exception));
     }

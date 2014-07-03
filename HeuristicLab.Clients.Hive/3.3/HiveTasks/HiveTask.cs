@@ -181,16 +181,16 @@ namespace HeuristicLab.Clients.Hive {
       RegisterChildHiveTasksEvents();
     }
 
-    public HiveTask(ItemTask itemJob, bool autoCreateChildHiveJobs)
+    public HiveTask(ItemTask itemTask, bool autoCreateChildHiveTasks)
       : this() {
-      this.syncTasksWithOptimizers = autoCreateChildHiveJobs;
-      this.ItemTask = itemJob;
+      this.syncTasksWithOptimizers = autoCreateChildHiveTasks;
+      this.ItemTask = itemTask;
       this.syncTasksWithOptimizers = true;
     }
 
-    public HiveTask(Task job, TaskData taskData, bool autoCreateChildHiveTasks) {
+    public HiveTask(Task task, TaskData taskData, bool autoCreateChildHiveTasks) {
       this.syncTasksWithOptimizers = autoCreateChildHiveTasks;
-      this.Task = job;
+      this.Task = task;
       try {
         this.ItemTask = PersistenceUtil.Deserialize<ItemTask>(taskData.Data);
       }
@@ -544,14 +544,14 @@ namespace HeuristicLab.Clients.Hive {
 
     public new T ItemTask {
       get { return (T)base.ItemTask; }
-      internal set { base.ItemTask = value; }
+      set { base.ItemTask = value; }
     }
 
     #region Constructors and Cloning
     public HiveTask() : base() { }
     [StorableConstructor]
     protected HiveTask(bool deserializing) { }
-    public HiveTask(T itemJob) : base(itemJob, true) { }
+    public HiveTask(T itemTask) : base(itemTask, true) { }
     protected HiveTask(HiveTask<T> original, Cloner cloner)
       : base(original, cloner) {
     }

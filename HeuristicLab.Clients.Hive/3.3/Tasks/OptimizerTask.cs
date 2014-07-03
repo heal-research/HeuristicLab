@@ -29,6 +29,10 @@ namespace HeuristicLab.Clients.Hive.Jobs {
   [Item("Optimizer Task", "Represents Task which executes a IOptimizer object.")]
   [StorableClass]
   public class OptimizerTask : ItemTask {
+    public override HiveTask CreateHiveTask() {
+      return new OptimizerHiveTask(this);
+    }
+
     public override bool IsParallelizable {
       get { return this.Item is Experiment || this.Item is BatchRun; }
     }
@@ -45,13 +49,11 @@ namespace HeuristicLab.Clients.Hive.Jobs {
       set { this.indexInParentOptimizerList = value; }
     }
 
-    public OptimizerTask(IOptimizer optimizer) {
-      this.Item = optimizer;
+    public OptimizerTask(IOptimizer optimizer)
+      : base(optimizer) {
 
-      if (optimizer is Experiment) {
+      if (optimizer is Experiment || optimizer is BatchRun) {
         this.ComputeInParallel = true;
-      } else if (optimizer is BatchRun) {
-        this.ComputeInParallel = false;
       } else {
         this.ComputeInParallel = false;
       }

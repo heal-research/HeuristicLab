@@ -32,7 +32,7 @@ namespace HeuristicLab.Hive {
     /// <summary>
     /// indicates wether it is possible to create childjobs from this job
     /// </summary>
-    bool IsParallelizable { get; }
+    bool IsParallelizable { get; set; }
 
     /// <summary>
     /// Configuration to indicate if this job should create child-jobs which will be executed in hive
