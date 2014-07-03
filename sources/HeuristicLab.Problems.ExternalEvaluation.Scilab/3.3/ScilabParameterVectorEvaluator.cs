@@ -91,8 +91,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
         if (scilab == null) {
           startedScilab = true;
           scilab = new ScilabConnector(false);
-          result = scilab.execScilabScript(initializationScript.Value);
-          if (result != 0) ThrowSciLabException(initializationScript.Value, result);
+          if (!string.IsNullOrEmpty(initializationScript.Value)) {
+            result = scilab.execScilabScript(initializationScript.Value);
+            if (result != 0) ThrowSciLabException(initializationScript.Value, result);
+          }
         } else if (!startedScilab) {
           throw new InvalidOperationException("Could not run multiple optimization algorithms in parallel.");
         }
