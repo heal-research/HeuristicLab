@@ -120,8 +120,7 @@ namespace HeuristicLab.Problems.ParameterOptimization {
       var bestQuality = solutions.First().Quality.Value;
       var bestSolutions = (ItemSet<DoubleArray>)results[BestSolutionsResultName].Value;
       //clear best solutions if new found quality is better than the existing one
-      if (max && bestQuality > previousBestQuality
-          || !max && bestQuality < previousBestQuality)
+      if (max && bestQuality > previousBestQuality || !max && bestQuality < previousBestQuality)
         bestSolutions.Clear();
 
       //add new found solutions
@@ -133,13 +132,18 @@ namespace HeuristicLab.Problems.ParameterOptimization {
           bestSolutions.Add(newSolution);
         }
       }
-      PreviousBestQualityParameter.ActualValue = (DoubleValue)BestQualityParameter.ActualValue.Clone();
 
+      //update best quality
+      if (max && bestQuality >= BestQualityParameter.ActualValue.Value
+          || !max && bestQuality <= BestQualityParameter.ActualValue.Value) {
+        BestQualityParameter.ActualValue.Value = bestQuality;
+      }
       //update best known quality
       if (bestKnownQuality == null || max && bestQuality > bestKnownQuality.Value
         || !max && bestQuality < bestKnownQuality.Value) {
         BestKnownQualityParameter.ActualValue = new DoubleValue(bestQuality);
       }
+      PreviousBestQualityParameter.ActualValue = (DoubleValue)BestQualityParameter.ActualValue.Clone();
 
       return base.Apply();
     }
