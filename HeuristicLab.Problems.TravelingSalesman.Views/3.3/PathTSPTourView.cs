@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.TravelingSalesman.Views {
                                     bitmap.Height - (border + ((int)((coordinates[i, 1] - yMin) * yStep))));
 
             using (Graphics graphics = Graphics.FromImage(bitmap)) {
-              if ((permutation != null) && (permutation.Length == coordinates.Rows) && (permutation.Validate())) {
+              if (permutation != null && permutation.Length > 1) {
                 Point[] tour = new Point[permutation.Length];
                 for (int i = 0; i < permutation.Length; i++) {
                   tour[i] = points[permutation[i]];
