@@ -351,7 +351,13 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       MoveGeneratorParameter.ValidValues.Clear();
       if (Problem != null) {
         foreach (IMoveGenerator generator in Problem.Operators.OfType<IMoveGenerator>().OrderBy(x => x.Name)) {
-          MoveGeneratorParameter.ValidValues.Add(generator);
+          var moveTypes = generator.GetType().GetInterfaces().Where(x => typeof(IMoveOperator).IsAssignableFrom(x)).ToList();
+          foreach (var type in moveTypes.ToList()) {
+            if (moveTypes.Any(t => t != type && type.IsAssignableFrom(t))) moveTypes.Remove(type);
+          }
+          if (Problem.Operators.OfType<ITabuChecker>().Any(op => moveTypes.Any(m => m.IsInstanceOfType(op)))
+            && Problem.Operators.OfType<ITabuMaker>().Any(op => moveTypes.Any(m => m.IsInstanceOfType(op))))
+            MoveGeneratorParameter.ValidValues.Add(generator);
         }
       }
       if (oldMoveGenerator != null && MoveGeneratorParameter.ValidValues.Any(x => x.GetType() == oldMoveGenerator.GetType()))
