@@ -82,19 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     protected override void OnSymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
       currSelected = (VisualTreeNode<ISymbolicExpressionTreeNode>)sender; ;
-      if (currSelected != null) {
-        currSelected.LineColor = Color.FromArgb(130, currSelected.LineColor);
-        RepaintNode(currSelected);
-      }
       base.OnSymbolicExpressionTreeNodeClicked(sender, e);
-    }
-
-    protected override void SymbolicExpressionTreeChart_MouseClick(object sender, MouseEventArgs e) {
-      if (currSelected != null) {
-        currSelected.LineColor = Color.FromArgb(255, currSelected.LineColor);
-        RepaintNode(currSelected);
-      }
-      base.SymbolicExpressionTreeChart_MouseClick(sender, e);
     }
 
     protected override void OnSymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
@@ -107,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var parent = currSelected.Content;
 
       using (var dialog = new InsertNodeDialog()) {
-        dialog.SetAllowedSymbols(parent.Grammar.AllowedSymbols.Where(s => s.Enabled && s.InitialFrequency > 0.0 && !(s is ProgramRootSymbol || s is StartSymbol || s is Defun)));
+        dialog.SetAllowedSymbols(parent.Grammar.Symbols.Where(s => !(s is ProgramRootSymbol || s is StartSymbol || s is Defun))); // allow everything
         dialog.ShowDialog(this);
         if (dialog.DialogResult != DialogResult.OK) return;
 
@@ -171,26 +159,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       if (tempNode != null) {
         foreach (var subtree in tempNode.IterateNodesPostfix()) {
           var visualNode = GetVisualSymbolicExpressionTreeNode(subtree);
-          visualNode.LineColor = Color.FromArgb(255, visualNode.LineColor); // reset the alpha value to 255
-          visualNode.TextColor = Color.FromArgb(255, visualNode.TextColor);
+          visualNode.LineColor = Color.Black;
+          visualNode.TextColor = Color.Black;
           if (subtree.Parent != null) {
             var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(subtree.Parent, subtree);
-            visualLine.LineColor = Color.FromArgb(255, visualLine.LineColor);
+            visualLine.LineColor = Color.Black;
           }
         }
       }
       tempNode = currSelected.Content;
       foreach (var node in tempNode.IterateNodesPostfix()) {
         var visualNode = GetVisualSymbolicExpressionTreeNode(node);
-        visualNode.LineColor = Color.FromArgb(100, visualNode.LineColor);
-        visualNode.TextColor = Color.FromArgb(100, visualNode.TextColor);
+        visualNode.LineColor = Color.LightGray;
+        visualNode.TextColor = Color.LightGray;
         foreach (var subtree in node.Subtrees) {
           var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(node, subtree);
-          visualLine.LineColor = Color.FromArgb(100, visualLine.LineColor);
+          visualLine.LineColor = Color.LightGray;
         }
       }
       currSelected = null;
-      Repaint();
+      RepaintNodes(); // no need to redo the layout and repaint everything since this operation does not change the tree
     }
     private void removeNodeToolStripMenuItem_Click(object sender, EventArgs e) {
       var node = currSelected.Content;

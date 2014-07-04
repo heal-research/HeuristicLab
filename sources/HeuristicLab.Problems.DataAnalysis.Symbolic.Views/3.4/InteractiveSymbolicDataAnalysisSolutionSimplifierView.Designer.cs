@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.btnOptimizeConstants = new System.Windows.Forms.Button();
       this.btnSimplify = new System.Windows.Forms.Button();
       this.treeStatusLabel = new System.Windows.Forms.Label();
-      this.treeChart = new HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart();
+      this.treeChart = new HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart();
       this.grpViewHost = new System.Windows.Forms.GroupBox();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
@@ -229,7 +229,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     #endregion
 
-    private HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.SymbolicExpressionTreeChart treeChart;
+    private HeuristicLab.Problems.DataAnalysis.Symbolic.Views.InteractiveSymbolicExpressionTreeChart treeChart;
     private System.Windows.Forms.SplitContainer splitContainer;
     private HeuristicLab.MainForm.WindowsForms.ViewHost viewHost;
     private System.Windows.Forms.GroupBox grpSimplify;
