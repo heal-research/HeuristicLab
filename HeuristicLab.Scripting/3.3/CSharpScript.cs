@@ -77,7 +77,7 @@ public class MyScript : HeuristicLab.Scripting.CSharpScriptBase {
     protected CSharpScript(bool deserializing) : base(deserializing) { }
     protected CSharpScript(CSharpScript original, Cloner cloner)
       : base(original, cloner) {
-      variableStore = new VariableStore();
+      variableStore = cloner.Clone(original.variableStore);
     }
     public CSharpScript() {
       variableStore = new VariableStore();
