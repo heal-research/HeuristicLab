@@ -33,6 +33,9 @@ namespace HeuristicLab.Problems.LinearAssignment {
   public sealed class LinearAssignmentProblemSolver : SingleSuccessorOperator {
     private const int UNASSIGNED = -1;
 
+    public IValueLookupParameter<BoolValue> MaximizationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["Maximization"]; }
+    }
     public ILookupParameter<DoubleMatrix> CostsParameter {
       get { return (ILookupParameter<DoubleMatrix>)Parameters["Costs"]; }
     }
@@ -48,6 +51,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private LinearAssignmentProblemSolver(LinearAssignmentProblemSolver original, Cloner cloner) : base(original, cloner) { }
     public LinearAssignmentProblemSolver()
       : base() {
+      Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the costs should be maximized or minimized."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Costs", LinearAssignmentProblem.CostsDescription));
       Parameters.Add(new LookupParameter<Permutation>("Assignment", "The assignment solution to create."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the solution."));
@@ -57,12 +61,29 @@ namespace HeuristicLab.Problems.LinearAssignment {
       return new LinearAssignmentProblemSolver(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("Maximization"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "Whether the costs should be maximized or minimized."));
+      #endregion
+    }
+
     public override IOperation Apply() {
       var costs = CostsParameter.ActualValue;
+      var maximization = MaximizationParameter.ActualValue.Value;
+      if (maximization) {
+        costs = (DoubleMatrix)costs.Clone();
+        for (int i = 0; i < costs.Rows; i++)
+          for (int j = 0; j < costs.Rows; j++)
+            costs[i, j] = -costs[i, j];
+      }
       double quality;
       var solution = Solve(costs, out quality);
 
       AssignmentParameter.ActualValue = new Permutation(PermutationTypes.Absolute, solution);
+      if (maximization) quality = -quality;
       QualityParameter.ActualValue = new DoubleValue(quality);
 
       return base.Apply();
