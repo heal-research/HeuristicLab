@@ -113,46 +113,57 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
       <Project>{a9ad58b9-3ef9-4cc1-97e5-8d909039ff5c}</Project>
       <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{c36bd924-a541-4a00-afa8-41701378ddc5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{bbab9df5-5ef3-4ba8-ade9-b36e82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
       <Project>{bb6d334a-4bb6-4674-9883-31a6ebb32cab}</Project>
       <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56f9106a-079f-4c61-92f6-86a84c2d84b7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102bc7d3-0ef9-439c-8f6d-96ff0fdb8e1b}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Problems.ParameterOptimization\3.3\HeuristicLab.Problems.ParameterOptimization-3.3.csproj">
       <Project>{d2c39fba-a1d5-403a-9211-b0a299a76313}</Project>
       <Name>HeuristicLab.Problems.ParameterOptimization-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
