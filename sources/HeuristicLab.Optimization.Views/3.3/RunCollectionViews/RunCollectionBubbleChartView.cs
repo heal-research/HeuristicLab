@@ -662,7 +662,7 @@ namespace HeuristicLab.Optimization.Views {
       Axis xAxis = this.chart.ChartAreas[0].AxisX;
       Axis yAxis = this.chart.ChartAreas[0].AxisY;
       int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
-      //mkommend: combobox.SelectedIndex could not be used as this changes during hoovering over possible values
+      //mkommend: combobox.SelectedIndex could not be used as this changes during hovering over possible values
       var xSAxisSelectedIndex = xAxisValue == null ? 0 : xAxisComboBox.Items.IndexOf(xAxisValue);
       var ySAxisSelectedIndex = yAxisValue == null ? 0 : xAxisComboBox.Items.IndexOf(yAxisValue);
       SetCustomAxisLabels(xAxis, xSAxisSelectedIndex - axisDimensionCount);
