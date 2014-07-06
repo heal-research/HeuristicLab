@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
+using System.Linq;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
@@ -39,11 +39,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      btnSimplify.Enabled = Content != null && !Locked;
+      btnSimplify.Enabled = Content != null && !Locked && Content.ProblemData.TrainingIndices.Any(); // simplification is only possible if there are trainings samples
     }
 
     private void btn_SimplifyModel_Click(object sender, EventArgs e) {
-      InteractiveSymbolicTimeSeriesPrognosisSolutionSimplifierView view = new InteractiveSymbolicTimeSeriesPrognosisSolutionSimplifierView();
+      var view = new InteractiveSymbolicTimeSeriesPrognosisSolutionSimplifierView();
       view.Content = (SymbolicTimeSeriesPrognosisSolution)this.Content.Clone();
       view.Show();
     }
