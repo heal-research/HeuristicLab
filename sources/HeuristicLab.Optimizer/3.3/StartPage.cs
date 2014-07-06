@@ -137,7 +137,7 @@ namespace HeuristicLab.Optimizer {
                 "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_TSP"
         };
       groupLookup[standardProblemsGroup] = standardProblems;
-      var dataAnalysisProblems = new List<string> { "GE_SymbReg", "GPR", "SGP_SymbClass", "SGP_SymbReg" };
+      var dataAnalysisProblems = new List<string> { "SGP_SymbClass", "SGP_SymbReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
       groupLookup[dataAnalysisGroup] = dataAnalysisProblems;
       var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script" };
       groupLookup[scriptsGroup] = scripts;
