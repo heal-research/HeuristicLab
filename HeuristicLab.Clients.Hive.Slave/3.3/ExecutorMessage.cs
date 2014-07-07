@@ -29,8 +29,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     TaskPaused,
     TaskStopped,
     TaskFailed,
-    StopExecutorMonitoringThread,
-    ExceptionOccured
+    StopExecutorMonitoringThread
   }
 
   [Serializable]

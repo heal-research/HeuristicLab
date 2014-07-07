@@ -20,7 +20,7 @@
 #endregion
 
 using System;
-using System.Diagnostics;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core {
   public class OperatorExecutionException : Exception {
@@ -33,10 +33,10 @@ namespace HeuristicLab.Core {
     public override string Message {
       get {
         string name = "\"" + op.Name + "\"";
+        var assembly = op.GetType().Assembly;
         if (!op.Name.Equals(op.ItemName)) name += " (" + op.ItemName + ")";
-        if (!string.IsNullOrEmpty(op.GetType().Assembly.Location)) {
-          var fvi = FileVersionInfo.GetVersionInfo(op.GetType().Assembly.Location);
-          name += " [" + fvi.FileName + ": " + fvi.FileVersion + "]";
+        if (!string.IsNullOrEmpty(assembly.Location)) {
+          name += " [" + assembly.Location + ": " + AssemblyHelpers.GetFileVersion(assembly) + "]";
         }
         if (InnerException == null)
           return base.Message + name + message + ".";
