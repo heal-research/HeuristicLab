@@ -131,6 +131,7 @@
     <Compile Include="Matching\SymbolicExpressionTreeMaxCommonSequenceCalculator.cs" />
     <Compile Include="Matching\SymbolicExpressionTreeNodeComparer.cs" />
     <Compile Include="Matching\SymbolicExpressionTreeNodeSimilarityComparer.cs" />
+    <Compile Include="SymbolicExpressionTreeBacktransformator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Symbols\VariableCondition.cs" />
     <Compile Include="Symbols\VariableConditionTreeNode.cs" />
     <Compile Include="Symbols\VariableTreeNode.cs" />
+    <Compile Include="TransformationToSymbolicTreeMapper.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

@@ -169,6 +169,31 @@ namespace HeuristicLab.Problems.DataAnalysis {
       foreach (double value in values)
         yield return value;
     }
+
+    public IEnumerable<string> GetStringValues(string variableName) {
+      IList list;
+      if (!variableValues.TryGetValue(variableName, out list))
+        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
+      List<string> values = list as List<string>;
+      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a string variable.");
+
+      //mkommend yield return used to enable lazy evaluation
+      foreach (string value in values)
+        yield return value;
+    }
+
+    public IEnumerable<DateTime> GetDateTimeValues(string variableName) {
+      IList list;
+      if (!variableValues.TryGetValue(variableName, out list))
+        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
+      List<DateTime> values = list as List<DateTime>;
+      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a datetime variable.");
+
+      //mkommend yield return used to enable lazy evaluation
+      foreach (DateTime value in values)
+        yield return value;
+    }
+
     public ReadOnlyCollection<double> GetReadOnlyDoubleValues(string variableName) {
       IList list;
       if (!variableValues.TryGetValue(variableName, out list))
@@ -193,6 +218,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
 
       return rows.Select(index => values[index]);
+    }
+
+    public bool IsType<T>(string variableName) {
+      return variableValues[variableName] is IList<T>;
     }
 
     #region IStringConvertibleMatrix Members

@@ -140,6 +140,15 @@
     <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisResults.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisSolution.cs" />
     <Compile Include="Implementation\TimeSeriesPrognosis\TimeSeriesPrognosisSolutionBase.cs" />
+    <Compile Include="Implementation\Transformations\CopyColumnTransformation.cs" />
+    <Compile Include="Implementation\Transformations\ExponentialTransformation.cs" />
+    <Compile Include="Implementation\Transformations\LinearTransformation.cs" />
+    <Compile Include="Implementation\Transformations\LogarithmicTransformation.cs" />
+    <Compile Include="Implementation\Transformations\PowerTransformation.cs" />
+    <Compile Include="Implementation\Transformations\ReciprocalTransformation.cs" />
+    <Compile Include="Implementation\Transformations\ShiftStandardDistributionTransformation.cs" />
+    <Compile Include="Implementation\Transformations\ShiftToRangeTransformation.cs" />
+    <Compile Include="Implementation\Transformations\Transformation.cs" />
     <Compile Include="Interfaces\Classification\IClassificationEnsembleModel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -149,6 +158,9 @@
     <Compile Include="Interfaces\Classification\IDiscriminantFunctionThresholdCalculator.cs" />
     <Compile Include="Interfaces\IDataAnalysisSolutionExporter.cs" />
     <Compile Include="Interfaces\IDependencyCalculator.cs" />
+    <Compile Include="Interfaces\IModelBacktransformator.cs" />
+    <Compile Include="Interfaces\ITransformation.cs" />
+    <Compile Include="Interfaces\ITransformationMapper.cs" />
     <Compile Include="Interfaces\Regression\IRegressionEnsembleModel.cs">
       <SubType>Code</SubType>
     </Compile>

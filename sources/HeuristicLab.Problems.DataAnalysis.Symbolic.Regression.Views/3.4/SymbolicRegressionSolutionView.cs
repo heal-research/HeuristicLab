@@ -44,10 +44,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       base.SetEnabledStateOfControls();
       btnSimplify.Enabled = Content != null && !Locked && Content.ProblemData.TrainingIndices.Any(); // simplification is only possible if there are trainings samples
       exportButton.Enabled = Content != null && !Locked;
+      transformModelButton.Visible = Content != null && Content.ProblemData.Transformations.Any();
+      transformModelButton.Enabled = Content != null && !Locked;
     }
 
     private void btn_SimplifyModel_Click(object sender, EventArgs e) {
-      InteractiveSymbolicRegressionSolutionSimplifierView view = new InteractiveSymbolicRegressionSolutionSimplifierView();
+      var view = new InteractiveSymbolicRegressionSolutionSimplifierView();
       view.Content = (SymbolicRegressionSolution)this.Content.Clone();
       view.Show();
     }
@@ -56,7 +58,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       var exporter = new SymbolicSolutionExcelExporter();
       exportFileDialog.Filter = exporter.FileTypeFilter;
       if (exportFileDialog.ShowDialog(this) == DialogResult.OK) {
-
         var name = exportFileDialog.FileName;
         using (BackgroundWorker bg = new BackgroundWorker()) {
           MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Exporting solution to " + name + ".");
@@ -65,6 +66,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
           bg.RunWorkerAsync();
         }
       }
+    }
+
+    private void transformModelButton_Click(object sender, EventArgs e) {
+      var mapper = new TransformationToSymbolicTreeMapper();
+      var transformator = new SymbolicExpressionTreeBacktransformator(mapper);
+
+      var transformations = Content.ProblemData.Transformations;
+      var targetVar = Content.ProblemData.TargetVariable;
+      var newModel = transformator.Backtransform(Content.Model, transformations, targetVar);
+      Content.Model = (ISymbolicRegressionModel)newModel;
+
+      MessageBox.Show(this, "Backtransformation successful.");
     }
   }
 }
