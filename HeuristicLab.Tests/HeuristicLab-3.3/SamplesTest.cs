@@ -27,6 +27,7 @@ using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Algorithms.LocalSearch;
+using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
 using HeuristicLab.Algorithms.ParticleSwarmOptimization;
 using HeuristicLab.Algorithms.RAPGA;
 using HeuristicLab.Algorithms.ScatterSearch;
@@ -35,6 +36,7 @@ using HeuristicLab.Algorithms.TabuSearch;
 using HeuristicLab.Algorithms.VariableNeighborhoodSearch;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
@@ -61,6 +63,9 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StdDevStrategyVectorCreator = HeuristicLab.Encodings.RealVectorEncoding.StdDevStrategyVectorCreator;
+using StdDevStrategyVectorCrossover = HeuristicLab.Encodings.RealVectorEncoding.StdDevStrategyVectorCrossover;
+using StdDevStrategyVectorManipulator = HeuristicLab.Encodings.RealVectorEncoding.StdDevStrategyVectorManipulator;
 
 
 namespace HeuristicLab.Tests {
@@ -1193,6 +1198,85 @@ namespace HeuristicLab.Tests {
     #endregion
     #endregion
 
+    #region grammatical evolution
+    #region artificial ant
+    [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
+    public void CreateGeArtificialAntSampleTest() {
+      var geaa = CreateGeArtificialAntSample();
+      XmlGenerator.Serialize(geaa, @"Samples\GE_ArtificialAnt.hl");
+    }
+
+    [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
+    public void RunGeArtificalAntSampleTest() {
+      var ga = CreateGeArtificialAntSample();
+      ga.SetSeedRandomly.Value = false;
+      RunAlgorithm(ga);
+    }
+
+    public OffspringSelectionGeneticAlgorithm CreateGeArtificialAntSample() {
+      OffspringSelectionGeneticAlgorithm ga = new OffspringSelectionGeneticAlgorithm();
+      #region Problem Configuration
+      var problem = new HeuristicLab.Problems.GrammaticalEvolution.GEArtificialAntProblem();
+      #endregion
+      #region Algorithm Configuration
+      ga.Name = "Grammatical Evolution - Artificial Ant (SantaFe)";
+      ga.Description = "Grammatical evolution algorithm for solving a artificial ant problem";
+      ga.Problem = problem;
+      ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
+        ga, 200, 1, 50, 0.05, 200);
+      #endregion
+      return ga;
+    }
+    #endregion
+
+    #region symbolic regression
+    #endregion
+    [TestMethod]
+    [TestCategory("Samples.Create")]
+    [TestProperty("Time", "medium")]
+    public void CreateGeSymbolicRegressionSampleTest() {
+      var geSymbReg = CreateGeSymbolicRegressionSample();
+      XmlGenerator.Serialize(geSymbReg, @"Samples\GE_SymbReg.hl");
+    }
+
+    [TestMethod]
+    [TestCategory("Samples.Execute")]
+    [TestProperty("Time", "long")]
+    public void RunGeSymbolicRegressionSampleTest() {
+      var ga = CreateGeSymbolicRegressionSample();
+      ga.SetSeedRandomly.Value = false;
+      RunAlgorithm(ga);
+    }
+
+    public OffspringSelectionGeneticAlgorithm CreateGeSymbolicRegressionSample() {
+      var ga = new OffspringSelectionGeneticAlgorithm();
+      #region Problem Configuration
+      var problem = new HeuristicLab.Problems.GrammaticalEvolution.GESymbolicRegressionSingleObjectiveProblem();
+
+      #endregion
+      #region Algorithm Configuration
+      ga.Name = "Grammatical Evolution - Symbolic Regression (Poly-10)";
+      ga.Description = "Grammatical evolution algorithm for solving a symbolic regression problem problem";
+      ga.Problem = problem;
+      problem.Load(new PolyTen().GenerateRegressionData());
+
+      // must occur after loading problem data because the grammar creates symbols for random constants once the data is loaded
+      var consts = problem.SymbolicExpressionTreeGrammar.AllowedSymbols.OfType<Constant>().ToList();
+      foreach (var c in consts) {
+        problem.SymbolicExpressionTreeGrammar.RemoveSymbol(c);
+      }
+
+      ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
+        ga, 1000, 1, 50, 0.05, 200);
+      #endregion
+      return ga;
+    }
+    #endregion
+
     #region Helpers
     private void ConfigureEvolutionStrategyParameters<R, M, SC, SR, SM>(EvolutionStrategy es, int popSize, int children, int parentsPerChild, int maxGens, bool plusSelection)
       where R : ICrossover
@@ -1239,6 +1323,39 @@ namespace HeuristicLab.Tests {
       ga.PopulationSize.Value = popSize;
       ga.Seed.Value = 0;
       ga.SetSeedRandomly.Value = true;
+      ga.Selector = ga.SelectorParameter.ValidValues
+        .OfType<S>()
+        .First();
+
+      ga.Crossover = ga.CrossoverParameter.ValidValues
+        .OfType<C>()
+        .First();
+
+      ga.Mutator = ga.MutatorParameter.ValidValues
+        .OfType<M>()
+        .First();
+
+      var tSelector = ga.Selector as TournamentSelector;
+      if (tSelector != null) {
+        tSelector.GroupSizeParameter.Value.Value = tournGroupSize;
+      }
+      ga.Engine = new ParallelEngine.ParallelEngine();
+    }
+
+    private void ConfigureOsGeneticAlgorithmParameters<S, C, M>(OffspringSelectionGeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate=0.05, double maxSelPres=100, int tournGroupSize = 0)
+      where S : ISelector
+      where C : ICrossover
+      where M : IManipulator {
+      ga.Elites.Value = elites;
+      ga.MaximumGenerations.Value = maxGens;
+      ga.MutationProbability.Value = mutationRate;
+      ga.PopulationSize.Value = popSize;
+      ga.MaximumSelectionPressure.Value = maxSelPres;
+      ga.Seed.Value = 0;
+      ga.SetSeedRandomly.Value = true;
+      ga.ComparisonFactorLowerBound.Value = 1;
+      ga.ComparisonFactorUpperBound.Value = 1;
+
       ga.Selector = ga.SelectorParameter.ValidValues
         .OfType<S>()
         .First();
