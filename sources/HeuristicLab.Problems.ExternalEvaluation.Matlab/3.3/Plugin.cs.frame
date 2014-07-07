@@ -29,8 +29,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Matlab {
   /// </summary>
   [Plugin("HeuristicLab.Problems.ExternalEvaluation.MATLAB", "3.3.9.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.ExternalEvaluation.Matlab-3.3.dll", PluginFileType.Assembly)]
-  [PluginFile("Interop.MLApp.dll",PluginFileType.Assembly)]
-  [PluginFile("Mathworks Interop License.txt", PluginFileType.License)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
