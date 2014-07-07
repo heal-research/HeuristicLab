@@ -356,7 +356,10 @@
     <Compile Include="HeuristicLab-3.3\ParameterVisibilityTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
-    <Compile Include="HeuristicLab-3.3\SamplesTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPTimeSeriesSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPMultiplexerSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\SamplesTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\SamplesUtils.cs" />
     <Compile Include="HeuristicLab-3.3\StorableConstructorTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
     <Compile Include="HeuristicLab-3.3\ToStringTest.cs" />
@@ -487,6 +490,9 @@
     </None>
     <None Include="Test Resources\GA_TSP.hl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Test Resources\Multiplexer11.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Test Resources\SamplesExperimentFinished.hl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -36,7 +36,6 @@ using HeuristicLab.Algorithms.TabuSearch;
 using HeuristicLab.Algorithms.VariableNeighborhoodSearch;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
@@ -71,7 +70,7 @@ using StdDevStrategyVectorManipulator = HeuristicLab.Encodings.RealVectorEncodin
 namespace HeuristicLab.Tests {
   [TestClass]
   public class SamplesTest {
-    private const string samplesDirectory = @"Samples\";
+    private const string samplesDirectory = SamplesUtils.Directory;
 
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
@@ -94,11 +93,11 @@ namespace HeuristicLab.Tests {
     public void RunGaTspSampleTest() {
       var ga = CreateGaTspSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
-      Assert.AreEqual(12332, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(13123.2, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(14538, GetDoubleResult(ga, "CurrentWorstQuality"));
-      Assert.AreEqual(99100, GetIntResult(ga, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(ga);
+      Assert.AreEqual(12332, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(13123.2, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(14538, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(99100, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     private GeneticAlgorithm CreateGaTspSample() {
@@ -114,7 +113,7 @@ namespace HeuristicLab.Tests {
       ga.Name = "Genetic Algorithm - TSP";
       ga.Description = "A genetic algorithm which solves the \"ch130\" traveling salesman problem (imported from TSPLIB)";
       ga.Problem = tspProblem;
-      ConfigureGeneticAlgorithmParameters<ProportionalSelector, OrderCrossover2, InversionManipulator>(
+      SamplesUtils.ConfigureGeneticAlgorithmParameters<ProportionalSelector, OrderCrossover2, InversionManipulator>(
         ga, 100, 1, 1000, 0.05);
       #endregion
       return ga;
@@ -135,11 +134,11 @@ namespace HeuristicLab.Tests {
     public void RunGaVrpSampleTest() {
       var ga = CreateGaVrpSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
-      Assert.AreEqual(1828.9368669428338, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(1830.1444308908331, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(1871.7128510304112, GetDoubleResult(ga, "CurrentWorstQuality"));
-      Assert.AreEqual(99100, GetIntResult(ga, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(ga);
+      Assert.AreEqual(1828.9368669428338, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(1830.1444308908331, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(1871.7128510304112, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(99100, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     private GeneticAlgorithm CreateGaVrpSample() {
@@ -166,7 +165,7 @@ namespace HeuristicLab.Tests {
       ga.Name = "Genetic Algorithm - VRP";
       ga.Description = "A genetic algorithm which solves the \"C101\" vehicle routing problem (imported from Solomon)";
       ga.Problem = vrpProblem;
-      ConfigureGeneticAlgorithmParameters<TournamentSelector, MultiVRPSolutionCrossover, MultiVRPSolutionManipulator>(
+      SamplesUtils.ConfigureGeneticAlgorithmParameters<TournamentSelector, MultiVRPSolutionCrossover, MultiVRPSolutionManipulator>(
         ga, 100, 1, 1000, 0.05, 3);
 
       var xOver = (MultiVRPSolutionCrossover)ga.Crossover;
@@ -209,11 +208,11 @@ namespace HeuristicLab.Tests {
     public void RunGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
-      Assert.AreEqual(81, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(48.19, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"));
-      Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(ga);
+      Assert.AreEqual(81, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(48.19, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(0, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(50950, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     public GeneticAlgorithm CreateGpArtificialAntSample() {
@@ -231,7 +230,7 @@ namespace HeuristicLab.Tests {
       ga.Name = "Genetic Programming - Artificial Ant";
       ga.Description = "A standard genetic programming algorithm to solve the artificial ant problem (Santa-Fe trail)";
       ga.Problem = antProblem;
-      ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeArchitectureManipulator>(
+      SamplesUtils.ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeArchitectureManipulator>(
         ga, 1000, 1, 50, 0.15, 5);
       var mutator = (MultiSymbolicExpressionTreeArchitectureManipulator)ga.Mutator;
       mutator.Operators.SetItemCheckedState(mutator.Operators
@@ -264,11 +263,11 @@ namespace HeuristicLab.Tests {
     public void RunGpSymbolicRegressionSampleTest() {
       var ga = CreateGpSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
-      Assert.AreEqual(0.858344291534625, GetDoubleResult(ga, "BestQuality"), 1E-8);
-      Assert.AreEqual(0.56758466520692641, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-      Assert.AreEqual(0, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
-      Assert.AreEqual(50950, GetIntResult(ga, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(ga);
+      Assert.AreEqual(0.858344291534625, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(0.56758466520692641, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(0, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+      Assert.AreEqual(50950, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
       var bestTrainingSolution = (IRegressionSolution)ga.Results["Best training solution"].Value;
       Assert.AreEqual(0.85504801557844745, bestTrainingSolution.TrainingRSquared, 1E-8);
       Assert.AreEqual(0.86259381948647817, bestTrainingSolution.TestRSquared, 1E-8);
@@ -346,7 +345,7 @@ namespace HeuristicLab.Tests {
       ga.Problem = symbRegProblem;
       ga.Name = "Genetic Programming - Symbolic Regression";
       ga.Description = "A standard genetic programming algorithm to solve a symbolic regression problem (tower dataset)";
-      ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>(
+      SamplesUtils.ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>(
         ga, 1000, 1, 50, 0.15, 5);
       var mutator = (MultiSymbolicExpressionTreeManipulator)ga.Mutator;
       mutator.Operators.OfType<FullTreeShaker>().Single().ShakingFactor = 0.1;
@@ -379,11 +378,11 @@ namespace HeuristicLab.Tests {
     public void RunGpSymbolicClassificationSampleTest() {
       var ga = CreateGpSymbolicClassificationSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
-      Assert.AreEqual(0.141880203907627, GetDoubleResult(ga, "BestQuality"), 1E-8);
-      Assert.AreEqual(4.3246992327753295, GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
-      Assert.AreEqual(100.62175156249987, GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
-      Assert.AreEqual(100900, GetIntResult(ga, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(ga);
+      Assert.AreEqual(0.141880203907627, SamplesUtils.GetDoubleResult(ga, "BestQuality"), 1E-8);
+      Assert.AreEqual(4.3246992327753295, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(100.62175156249987, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"), 1E-8);
+      Assert.AreEqual(100900, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
       var bestTrainingSolution = (IClassificationSolution)ga.Results["Best training solution"].Value;
       Assert.AreEqual(0.80875, bestTrainingSolution.TrainingAccuracy, 1E-8);
       Assert.AreEqual(0.795031055900621, bestTrainingSolution.TestAccuracy, 1E-8);
@@ -458,7 +457,7 @@ namespace HeuristicLab.Tests {
       ga.Problem = symbClassProblem;
       ga.Name = "Genetic Programming - Symbolic Classification";
       ga.Description = "A standard genetic programming algorithm to solve a classification problem (Mammographic+Mass dataset)";
-      ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>(
+      SamplesUtils.ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>(
         ga, 1000, 1, 100, 0.15, 5
         );
 
@@ -485,7 +484,7 @@ namespace HeuristicLab.Tests {
     public void RunGpLawnMowerSampleTest() {
       var ga = CreateGpLawnMowerSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
+      SamplesUtils.RunAlgorithm(ga);
     }
 
     public GeneticAlgorithm CreateGpLawnMowerSample() {
@@ -497,7 +496,7 @@ namespace HeuristicLab.Tests {
       ga.Name = "Genetic Programming - Lawn Mower";
       ga.Description = "A standard genetic programming algorithm to solve the lawn mower problem";
       ga.Problem = problem;
-      ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeArchitectureManipulator>(
+      SamplesUtils.ConfigureGeneticAlgorithmParameters<TournamentSelector, SubtreeCrossover, MultiSymbolicExpressionTreeArchitectureManipulator>(
         ga, 1000, 1, 50, 0.25, 5);
       var mutator = (MultiSymbolicExpressionTreeArchitectureManipulator)ga.Mutator;
       mutator.Operators.SetItemCheckedState(mutator.Operators
@@ -524,11 +523,11 @@ namespace HeuristicLab.Tests {
     public void RunEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();
       es.SetSeedRandomly.Value = false;
-      RunAlgorithm(es);
-      Assert.AreEqual(0, GetDoubleResult(es, "BestQuality"));
-      Assert.AreEqual(0, GetDoubleResult(es, "CurrentAverageQuality"));
-      Assert.AreEqual(0, GetDoubleResult(es, "CurrentWorstQuality"));
-      Assert.AreEqual(100020, GetIntResult(es, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(es);
+      Assert.AreEqual(0, SamplesUtils.GetDoubleResult(es, "BestQuality"));
+      Assert.AreEqual(0, SamplesUtils.GetDoubleResult(es, "CurrentAverageQuality"));
+      Assert.AreEqual(0, SamplesUtils.GetDoubleResult(es, "CurrentWorstQuality"));
+      Assert.AreEqual(100020, SamplesUtils.GetIntResult(es, "EvaluatedSolutions"));
     }
 
     private EvolutionStrategy CreateEsGriewankSample() {
@@ -550,7 +549,7 @@ namespace HeuristicLab.Tests {
       es.Name = "Evolution Strategy - Griewank";
       es.Description = "An evolution strategy which solves the 10-dimensional Griewank test function";
       es.Problem = problem;
-      ConfigureEvolutionStrategyParameters<AverageCrossover, NormalAllPositionsManipulator,
+      SamplesUtils.ConfigureEvolutionStrategyParameters<AverageCrossover, NormalAllPositionsManipulator,
         StdDevStrategyVectorCreator, StdDevStrategyVectorCrossover, StdDevStrategyVectorManipulator>(
         es, 20, 500, 2, 200, false);
 
@@ -582,11 +581,11 @@ namespace HeuristicLab.Tests {
     public void RunIslandGaTspSampleTest() {
       var ga = CreateIslandGaTspSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
-      Assert.AreEqual(9918, GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(10324.64, GetDoubleResult(ga, "CurrentAverageQuality"));
-      Assert.AreEqual(11823, GetDoubleResult(ga, "CurrentWorstQuality"));
-      Assert.AreEqual(495500, GetIntResult(ga, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(ga);
+      Assert.AreEqual(9918, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(10324.64, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(11823, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(495500, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     private IslandGeneticAlgorithm CreateIslandGaTspSample() {
@@ -602,7 +601,7 @@ namespace HeuristicLab.Tests {
       ga.Name = "Island Genetic Algorithm - TSP";
       ga.Description = "An island genetic algorithm which solves the \"ch130\" traveling salesman problem (imported from TSPLIB)";
       ga.Problem = tspProblem;
-      ConfigureIslandGeneticAlgorithmParameters<ProportionalSelector, OrderCrossover2, InversionManipulator,
+      SamplesUtils.ConfigureIslandGeneticAlgorithmParameters<ProportionalSelector, OrderCrossover2, InversionManipulator,
         UnidirectionalRingMigrator, BestSelector, WorstReplacer>(
         ga, 100, 1, 1000, 0.05, 5, 50, 0.25);
       #endregion
@@ -626,11 +625,11 @@ namespace HeuristicLab.Tests {
     public void RunLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
       ls.SetSeedRandomly.Value = false;
-      RunAlgorithm(ls);
-      Assert.AreEqual(345, GetDoubleResult(ls, "BestQuality"));
-      Assert.AreEqual(340.70731707317071, GetDoubleResult(ls, "CurrentAverageQuality"));
-      Assert.AreEqual(337, GetDoubleResult(ls, "CurrentWorstQuality"));
-      Assert.AreEqual(82000, GetIntResult(ls, "EvaluatedMoves"));
+      SamplesUtils.RunAlgorithm(ls);
+      Assert.AreEqual(345, SamplesUtils.GetDoubleResult(ls, "BestQuality"));
+      Assert.AreEqual(340.70731707317071, SamplesUtils.GetDoubleResult(ls, "CurrentAverageQuality"));
+      Assert.AreEqual(337, SamplesUtils.GetDoubleResult(ls, "CurrentWorstQuality"));
+      Assert.AreEqual(82000, SamplesUtils.GetIntResult(ls, "EvaluatedMoves"));
     }
 
     private LocalSearch CreateLocalSearchKnapsackSample() {
@@ -691,17 +690,17 @@ namespace HeuristicLab.Tests {
     public void RunPsoSchwefelSampleTest() {
       var pso = CreatePsoSchwefelSample();
       pso.SetSeedRandomly.Value = false;
-      RunAlgorithm(pso);
+      SamplesUtils.RunAlgorithm(pso);
       if (!Environment.Is64BitProcess) {
-        Assert.AreEqual(118.44027985932837, GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(140.71570105946438, GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(220.956806502853, GetDoubleResult(pso, "CurrentWorstQuality"));
-        Assert.AreEqual(1000, GetIntResult(pso, "Iterations"));
+        Assert.AreEqual(118.44027985932837, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(140.71570105946438, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(220.956806502853, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(1000, SamplesUtils.GetIntResult(pso, "Iterations"));
       } else {
-        Assert.AreEqual(118.43958282879345, GetDoubleResult(pso, "BestQuality"));
-        Assert.AreEqual(139.43946864779372, GetDoubleResult(pso, "CurrentAverageQuality"));
-        Assert.AreEqual(217.14654589055152, GetDoubleResult(pso, "CurrentWorstQuality"));
-        Assert.AreEqual(1000, GetIntResult(pso, "Iterations"));
+        Assert.AreEqual(118.43958282879345, SamplesUtils.GetDoubleResult(pso, "BestQuality"));
+        Assert.AreEqual(139.43946864779372, SamplesUtils.GetDoubleResult(pso, "CurrentAverageQuality"));
+        Assert.AreEqual(217.14654589055152, SamplesUtils.GetDoubleResult(pso, "CurrentWorstQuality"));
+        Assert.AreEqual(1000, SamplesUtils.GetIntResult(pso, "Iterations"));
       }
     }
     private ParticleSwarmOptimization CreatePsoSchwefelSample() {
@@ -774,9 +773,9 @@ namespace HeuristicLab.Tests {
     public void RunSimulatedAnnealingRastriginSampleTest() {
       var sa = CreateSimulatedAnnealingRastriginSample();
       sa.SetSeedRandomly.Value = false;
-      RunAlgorithm(sa);
-      Assert.AreEqual(0.00014039606034543795, GetDoubleResult(sa, "BestQuality"));
-      Assert.AreEqual(5000, GetIntResult(sa, "EvaluatedMoves"));
+      SamplesUtils.RunAlgorithm(sa);
+      Assert.AreEqual(0.00014039606034543795, SamplesUtils.GetDoubleResult(sa, "BestQuality"));
+      Assert.AreEqual(5000, SamplesUtils.GetIntResult(sa, "EvaluatedMoves"));
     }
     private SimulatedAnnealing CreateSimulatedAnnealingRastriginSample() {
       SimulatedAnnealing sa = new SimulatedAnnealing();
@@ -844,11 +843,11 @@ namespace HeuristicLab.Tests {
     public void RunTabuSearchTspSampleTest() {
       var ts = CreateTabuSearchTspSample();
       ts.SetSeedRandomly.Value = false;
-      RunAlgorithm(ts);
-      Assert.AreEqual(6294, GetDoubleResult(ts, "BestQuality"));
-      Assert.AreEqual(7380.0386666666664, GetDoubleResult(ts, "CurrentAverageQuality"));
-      Assert.AreEqual(8328, GetDoubleResult(ts, "CurrentWorstQuality"));
-      Assert.AreEqual(750000, GetIntResult(ts, "EvaluatedMoves"));
+      SamplesUtils.RunAlgorithm(ts);
+      Assert.AreEqual(6294, SamplesUtils.GetDoubleResult(ts, "BestQuality"));
+      Assert.AreEqual(7380.0386666666664, SamplesUtils.GetDoubleResult(ts, "CurrentAverageQuality"));
+      Assert.AreEqual(8328, SamplesUtils.GetDoubleResult(ts, "CurrentWorstQuality"));
+      Assert.AreEqual(750000, SamplesUtils.GetIntResult(ts, "EvaluatedMoves"));
     }
 
     private TabuSearch CreateTabuSearchTspSample() {
@@ -915,11 +914,11 @@ namespace HeuristicLab.Tests {
     public void RunTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
       vrp.SetSeedRandomly.Value = false;
-      RunAlgorithm(vrp);
-      Assert.AreEqual(1473, GetDoubleResult(vrp, "BestQuality"));
-      Assert.AreEqual(2102.1192622950812, GetDoubleResult(vrp, "CurrentAverageQuality"));
-      Assert.AreEqual(4006, GetDoubleResult(vrp, "CurrentWorstQuality"));
-      Assert.AreEqual(119072, GetIntResult(vrp, "EvaluatedMoves"));
+      SamplesUtils.RunAlgorithm(vrp);
+      Assert.AreEqual(1473, SamplesUtils.GetDoubleResult(vrp, "BestQuality"));
+      Assert.AreEqual(2102.1192622950812, SamplesUtils.GetDoubleResult(vrp, "CurrentAverageQuality"));
+      Assert.AreEqual(4006, SamplesUtils.GetDoubleResult(vrp, "CurrentWorstQuality"));
+      Assert.AreEqual(119072, SamplesUtils.GetIntResult(vrp, "EvaluatedMoves"));
     }
 
     private TabuSearch CreateTabuSearchVrpSample() {
@@ -987,11 +986,11 @@ namespace HeuristicLab.Tests {
     public void RunVnsTspSampleTest() {
       var vns = CreateVnsTspSample();
       vns.SetSeedRandomly = false;
-      RunAlgorithm(vns);
-      Assert.AreEqual(867, GetDoubleResult(vns, "BestQuality"));
-      Assert.AreEqual(867, GetDoubleResult(vns, "CurrentAverageQuality"));
-      Assert.AreEqual(867, GetDoubleResult(vns, "CurrentWorstQuality"));
-      Assert.AreEqual(12975173, GetIntResult(vns, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(vns);
+      Assert.AreEqual(867, SamplesUtils.GetDoubleResult(vns, "BestQuality"));
+      Assert.AreEqual(867, SamplesUtils.GetDoubleResult(vns, "CurrentAverageQuality"));
+      Assert.AreEqual(867, SamplesUtils.GetDoubleResult(vns, "CurrentWorstQuality"));
+      Assert.AreEqual(12975173, SamplesUtils.GetIntResult(vns, "EvaluatedSolutions"));
     }
 
     private VariableNeighborhoodSearch CreateVnsTspSample() {
@@ -1069,9 +1068,9 @@ namespace HeuristicLab.Tests {
       var gpr = CreateGaussianProcessRegressionSample();
       gpr.SetSeedRandomly = false;
       gpr.Seed = 1618551877;
-      RunAlgorithm(gpr);
-      Assert.AreEqual(-940.48768748097029, GetDoubleResult(gpr, "NegativeLogLikelihood"));
-      Assert.AreEqual(0.99561947047986976, GetDoubleResult(gpr, "Training R²"));
+      SamplesUtils.RunAlgorithm(gpr);
+      Assert.AreEqual(-940.48768748097029, SamplesUtils.GetDoubleResult(gpr, "NegativeLogLikelihood"));
+      Assert.AreEqual(0.99561947047986976, SamplesUtils.GetDoubleResult(gpr, "Training R²"));
     }
 
     private GaussianProcessRegression CreateGaussianProcessRegressionSample() {
@@ -1112,11 +1111,11 @@ namespace HeuristicLab.Tests {
     public void RunScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
       ss.SetSeedRandomly.Value = false;
-      RunAlgorithm(ss);
-      Assert.AreEqual(828.93686694283383, GetDoubleResult(ss, "BestQuality"));
-      Assert.AreEqual(868.63623986983077, GetDoubleResult(ss, "CurrentAverageQuality"));
-      Assert.AreEqual(1048.8333559209832, GetDoubleResult(ss, "CurrentWorstQuality"));
-      Assert.AreEqual(262622, GetIntResult(ss, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(ss);
+      Assert.AreEqual(828.93686694283383, SamplesUtils.GetDoubleResult(ss, "BestQuality"));
+      Assert.AreEqual(868.63623986983077, SamplesUtils.GetDoubleResult(ss, "CurrentAverageQuality"));
+      Assert.AreEqual(1048.8333559209832, SamplesUtils.GetDoubleResult(ss, "CurrentWorstQuality"));
+      Assert.AreEqual(262622, SamplesUtils.GetIntResult(ss, "EvaluatedSolutions"));
     }
 
     private ScatterSearch CreateScatterSearchVRPSample() {
@@ -1172,11 +1171,11 @@ namespace HeuristicLab.Tests {
     public void RunRAPGASchedulingSampleTest() {
       var rapga = CreateRAPGASchedulingSample();
       rapga.SetSeedRandomly.Value = false;
-      RunAlgorithm(rapga);
-      Assert.AreEqual(988.00, GetDoubleResult(rapga, "BestQuality"));
-      Assert.AreEqual(988.00, GetDoubleResult(rapga, "CurrentAverageQuality"));
-      Assert.AreEqual(988.00, GetDoubleResult(rapga, "CurrentWorstQuality"));
-      Assert.AreEqual(27100, GetIntResult(rapga, "EvaluatedSolutions"));
+      SamplesUtils.RunAlgorithm(rapga);
+      Assert.AreEqual(988.00, SamplesUtils.GetDoubleResult(rapga, "BestQuality"));
+      Assert.AreEqual(988.00, SamplesUtils.GetDoubleResult(rapga, "CurrentAverageQuality"));
+      Assert.AreEqual(988.00, SamplesUtils.GetDoubleResult(rapga, "CurrentWorstQuality"));
+      Assert.AreEqual(27100, SamplesUtils.GetIntResult(rapga, "EvaluatedSolutions"));
     }
 
     private RAPGA CreateRAPGASchedulingSample() {
@@ -1214,7 +1213,7 @@ namespace HeuristicLab.Tests {
     public void RunGeArtificalAntSampleTest() {
       var ga = CreateGeArtificialAntSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
+      SamplesUtils.RunAlgorithm(ga);
     }
 
     public OffspringSelectionGeneticAlgorithm CreateGeArtificialAntSample() {
@@ -1226,7 +1225,7 @@ namespace HeuristicLab.Tests {
       ga.Name = "Grammatical Evolution - Artificial Ant (SantaFe)";
       ga.Description = "Grammatical evolution algorithm for solving a artificial ant problem";
       ga.Problem = problem;
-      ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
+      SamplesUtils.ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
         ga, 200, 1, 50, 0.05, 200);
       #endregion
       return ga;
@@ -1249,7 +1248,7 @@ namespace HeuristicLab.Tests {
     public void RunGeSymbolicRegressionSampleTest() {
       var ga = CreateGeSymbolicRegressionSample();
       ga.SetSeedRandomly.Value = false;
-      RunAlgorithm(ga);
+      SamplesUtils.RunAlgorithm(ga);
     }
 
     public OffspringSelectionGeneticAlgorithm CreateGeSymbolicRegressionSample() {
@@ -1270,7 +1269,7 @@ namespace HeuristicLab.Tests {
         problem.SymbolicExpressionTreeGrammar.RemoveSymbol(c);
       }
 
-      ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
+      SamplesUtils.ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
         ga, 1000, 1, 50, 0.05, 200);
       #endregion
       return ga;
@@ -1278,161 +1277,7 @@ namespace HeuristicLab.Tests {
     #endregion
 
     #region Helpers
-    private void ConfigureEvolutionStrategyParameters<R, M, SC, SR, SM>(EvolutionStrategy es, int popSize, int children, int parentsPerChild, int maxGens, bool plusSelection)
-      where R : ICrossover
-      where M : IManipulator
-      where SC : IStrategyParameterCreator
-      where SR : IStrategyParameterCrossover
-      where SM : IStrategyParameterManipulator {
-      es.PopulationSize.Value = popSize;
-      es.Children.Value = children;
-      es.ParentsPerChild.Value = parentsPerChild;
-      es.MaximumGenerations.Value = maxGens;
-      es.PlusSelection.Value = false;
 
-      es.Seed.Value = 0;
-      es.SetSeedRandomly.Value = true;
-
-      es.Recombinator = es.RecombinatorParameter.ValidValues
-        .OfType<R>()
-        .Single();
-
-      es.Mutator = es.MutatorParameter.ValidValues
-        .OfType<M>()
-        .Single();
-
-      es.StrategyParameterCreator = es.StrategyParameterCreatorParameter.ValidValues
-        .OfType<SC>()
-        .Single();
-      es.StrategyParameterCrossover = es.StrategyParameterCrossoverParameter.ValidValues
-        .OfType<SR>()
-        .Single();
-      es.StrategyParameterManipulator = es.StrategyParameterManipulatorParameter.ValidValues
-        .OfType<SM>()
-        .Single();
-      es.Engine = new ParallelEngine.ParallelEngine();
-    }
-
-    private void ConfigureGeneticAlgorithmParameters<S, C, M>(GeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate, int tournGroupSize = 0)
-      where S : ISelector
-      where C : ICrossover
-      where M : IManipulator {
-      ga.Elites.Value = elites;
-      ga.MaximumGenerations.Value = maxGens;
-      ga.MutationProbability.Value = mutationRate;
-      ga.PopulationSize.Value = popSize;
-      ga.Seed.Value = 0;
-      ga.SetSeedRandomly.Value = true;
-      ga.Selector = ga.SelectorParameter.ValidValues
-        .OfType<S>()
-        .First();
-
-      ga.Crossover = ga.CrossoverParameter.ValidValues
-        .OfType<C>()
-        .First();
-
-      ga.Mutator = ga.MutatorParameter.ValidValues
-        .OfType<M>()
-        .First();
-
-      var tSelector = ga.Selector as TournamentSelector;
-      if (tSelector != null) {
-        tSelector.GroupSizeParameter.Value.Value = tournGroupSize;
-      }
-      ga.Engine = new ParallelEngine.ParallelEngine();
-    }
-
-    private void ConfigureOsGeneticAlgorithmParameters<S, C, M>(OffspringSelectionGeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate=0.05, double maxSelPres=100, int tournGroupSize = 0)
-      where S : ISelector
-      where C : ICrossover
-      where M : IManipulator {
-      ga.Elites.Value = elites;
-      ga.MaximumGenerations.Value = maxGens;
-      ga.MutationProbability.Value = mutationRate;
-      ga.PopulationSize.Value = popSize;
-      ga.MaximumSelectionPressure.Value = maxSelPres;
-      ga.Seed.Value = 0;
-      ga.SetSeedRandomly.Value = true;
-      ga.ComparisonFactorLowerBound.Value = 1;
-      ga.ComparisonFactorUpperBound.Value = 1;
-
-      ga.Selector = ga.SelectorParameter.ValidValues
-        .OfType<S>()
-        .First();
-
-      ga.Crossover = ga.CrossoverParameter.ValidValues
-        .OfType<C>()
-        .First();
-
-      ga.Mutator = ga.MutatorParameter.ValidValues
-        .OfType<M>()
-        .First();
-
-      var tSelector = ga.Selector as TournamentSelector;
-      if (tSelector != null) {
-        tSelector.GroupSizeParameter.Value.Value = tournGroupSize;
-      }
-      ga.Engine = new ParallelEngine.ParallelEngine();
-    }
-
-    private void ConfigureIslandGeneticAlgorithmParameters<S, C, M, Mi, MiS, MiR>(IslandGeneticAlgorithm ga, int popSize, int elites, int maxGens, double mutationRate, int numberOfIslands, int migrationInterval, double migrationRate)
-      where S : ISelector
-      where C : ICrossover
-      where M : IManipulator
-      where Mi : IMigrator
-      where MiS : ISelector
-      where MiR : IReplacer {
-      ga.Elites.Value = elites;
-      ga.MaximumGenerations.Value = maxGens;
-      ga.MutationProbability.Value = mutationRate;
-      ga.PopulationSize.Value = popSize;
-      ga.NumberOfIslands.Value = numberOfIslands;
-      ga.MigrationInterval.Value = migrationInterval;
-      ga.MigrationRate.Value = migrationRate;
-      ga.Seed.Value = 0;
-      ga.SetSeedRandomly.Value = true;
-      ga.Selector = ga.SelectorParameter.ValidValues
-        .OfType<S>()
-        .Single();
-
-      ga.Crossover = ga.CrossoverParameter.ValidValues
-        .OfType<C>()
-        .Single();
-
-      ga.Mutator = ga.MutatorParameter.ValidValues
-        .OfType<M>()
-        .Single();
-      ga.Migrator = ga.MigratorParameter.ValidValues
-        .OfType<Mi>()
-        .Single();
-      ga.EmigrantsSelector = ga.EmigrantsSelectorParameter.ValidValues
-        .OfType<MiS>()
-        .Single();
-      ga.ImmigrationReplacer = ga.ImmigrationReplacerParameter.ValidValues
-        .OfType<MiR>()
-        .Single();
-      ga.Engine = new ParallelEngine.ParallelEngine();
-    }
-
-
-    private void RunAlgorithm(IAlgorithm a) {
-      var trigger = new EventWaitHandle(false, EventResetMode.ManualReset);
-      Exception ex = null;
-      a.Stopped += (src, e) => { trigger.Set(); };
-      a.ExceptionOccurred += (src, e) => { ex = e.Value; trigger.Set(); };
-      a.Prepare();
-      a.Start();
-      trigger.WaitOne();
-
-      Assert.AreEqual(ex, null);
-    }
-
-    private double GetDoubleResult(IAlgorithm a, string resultName) {
-      return ((DoubleValue)a.Results[resultName].Value).Value;
-    }
-    private int GetIntResult(IAlgorithm a, string resultName) {
-      return ((IntValue)a.Results[resultName].Value).Value;
-    }
     #endregion
   }
 }
