@@ -30,7 +30,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private static int tasksFinished; // everything went fine
     private static int tasksAborted;  // server sent abort
     private static int tasksFailed;   // tasks that failed in the sandbox
-    private static int exceptionsOccured; // number jobs failed caused by the business logic, not a faulted task
     private static int usedCores;    // number of cores currently used
 
     public static DateTime LoginTime { get; set; }
@@ -59,10 +58,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       get { return tasksFailed; }
     }
 
-    public static int ExceptionsOccured {
-      get { return exceptionsOccured; }
-    }
-
     public static void IncrementTasksStarted() {
       Interlocked.Increment(ref tasksStarted);
     }
@@ -81,10 +76,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
 
     public static void IncrementTasksFetched() {
       Interlocked.Increment(ref tasksFetched);
-    }
-
-    public static void IncrementExceptionOccured() {
-      Interlocked.Increment(ref exceptionsOccured);
     }
 
     public static void IncrementUsedCores(int val) {
