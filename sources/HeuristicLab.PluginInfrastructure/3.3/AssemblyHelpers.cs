@@ -33,14 +33,14 @@ namespace HeuristicLab.PluginInfrastructure {
 
       object[] attributes = assembly.GetCustomAttributes(typeof(T), false);
       if (attributes.Length == 0) {
-        throw new Exception(string.Format("No attributes of type {0} found in assembly {1}", typeof(T).Name,
+        throw new InvalidOperationException(string.Format("No attributes of type {0} found in assembly {1}", typeof(T).Name,
           assembly.FullName));
       }
 
       var attribute = (T)attributes[0];
       var propertyInfo = attribute.GetType().GetProperty(propertyName);
       if (propertyInfo == null) {
-        throw new Exception(string.Format("No property {0} found in attribute {1}, assembly: {2}",
+        throw new InvalidOperationException(string.Format("No property {0} found in attribute {1}, assembly: {2}",
           propertyName, typeof(T).Name, assembly.FullName));
       }
 
