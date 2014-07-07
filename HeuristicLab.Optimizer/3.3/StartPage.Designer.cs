@@ -85,7 +85,7 @@ namespace HeuristicLab.Optimizer {
       this.firstStepsRichTextBox.Location = new System.Drawing.Point(3, 33);
       this.firstStepsRichTextBox.Name = "firstStepsRichTextBox";
       this.firstStepsRichTextBox.ReadOnly = true;
-      this.firstStepsRichTextBox.Size = new System.Drawing.Size(725, 370);
+      this.firstStepsRichTextBox.Size = new System.Drawing.Size(389, 581);
       this.firstStepsRichTextBox.TabIndex = 1;
       this.firstStepsRichTextBox.Text = "First Steps";
       this.firstStepsRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.firstStepsRichTextBox_LinkClicked);
@@ -97,7 +97,7 @@ namespace HeuristicLab.Optimizer {
       this.titleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.titleLabel.Location = new System.Drawing.Point(-1, 0);
       this.titleLabel.Name = "titleLabel";
-      this.titleLabel.Size = new System.Drawing.Size(729, 30);
+      this.titleLabel.Size = new System.Drawing.Size(393, 30);
       this.titleLabel.TabIndex = 0;
       this.titleLabel.Text = "Title";
       this.titleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -110,7 +110,7 @@ namespace HeuristicLab.Optimizer {
       this.samplesGroupBox.Controls.Add(this.samplesListView);
       this.samplesGroupBox.Location = new System.Drawing.Point(0, 3);
       this.samplesGroupBox.Name = "samplesGroupBox";
-      this.samplesGroupBox.Size = new System.Drawing.Size(728, 201);
+      this.samplesGroupBox.Size = new System.Drawing.Size(332, 637);
       this.samplesGroupBox.TabIndex = 0;
       this.samplesGroupBox.TabStop = false;
       this.samplesGroupBox.Text = "Samples";
@@ -126,7 +126,7 @@ namespace HeuristicLab.Optimizer {
       this.samplesListView.MultiSelect = false;
       this.samplesListView.Name = "samplesListView";
       this.samplesListView.ShowItemToolTips = true;
-      this.samplesListView.Size = new System.Drawing.Size(722, 182);
+      this.samplesListView.Size = new System.Drawing.Size(326, 618);
       this.samplesListView.SmallImageList = this.imageList;
       this.samplesListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
       this.samplesListView.TabIndex = 0;
@@ -153,39 +153,36 @@ namespace HeuristicLab.Optimizer {
       // 
       // splitContainer
       // 
-      this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
       this.splitContainer.Location = new System.Drawing.Point(0, 0);
       this.splitContainer.Name = "splitContainer";
-      this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
       // 
       // splitContainer.Panel1
       // 
       this.splitContainer.Panel1.Controls.Add(this.titleLabel);
+      this.splitContainer.Panel1.Controls.Add(this.showStartPageCheckBox);
       this.splitContainer.Panel1.Controls.Add(this.firstStepsRichTextBox);
       // 
       // splitContainer.Panel2
       // 
       this.splitContainer.Panel2.Controls.Add(this.samplesGroupBox);
-      this.splitContainer.Size = new System.Drawing.Size(728, 614);
-      this.splitContainer.SplitterDistance = 406;
+      this.splitContainer.Size = new System.Drawing.Size(728, 640);
+      this.splitContainer.SplitterDistance = 392;
       this.splitContainer.TabIndex = 0;
       // 
       // StartPage
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitContainer);
-      this.Controls.Add(this.showStartPageCheckBox);
       this.Name = "StartPage";
       this.Size = new System.Drawing.Size(728, 640);
       this.samplesGroupBox.ResumeLayout(false);
       this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel1.PerformLayout();
       this.splitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
       this.splitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
-      this.PerformLayout();
 
     }
 

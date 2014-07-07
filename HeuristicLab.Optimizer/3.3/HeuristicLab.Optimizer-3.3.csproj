@@ -129,6 +129,11 @@
     <EmbeddedResource Include="Documents\TS_VRP.hl" />
     <EmbeddedResource Include="Documents\GE_ArtificialAnt.hl" />
     <EmbeddedResource Include="Documents\GE_SymbReg.hl" />
+    <EmbeddedResource Include="Documents\GA_QAP_Script.hl" />
+    <EmbeddedResource Include="Documents\GUI_Automation_Script.hl" />
+    <EmbeddedResource Include="Documents\OSGA_Rastrigin_Script.hl" />
+    <EmbeddedResource Include="Documents\GP_Multiplexer.hl" />
+    <EmbeddedResource Include="Documents\OSGP_TimeSeries.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>

@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +34,19 @@ using HeuristicLab.Persistence.Default.Xml;
 namespace HeuristicLab.Optimizer {
   [View("Start Page")]
   public partial class StartPage : HeuristicLab.MainForm.WindowsForms.View {
+    private const string StandardProblemsGroupName = "Standard Problems";
+    private const string DataAnalysisGroupName = "Data Analysis";
+    private const string ScriptsGroupName = "Scripts";
+    private const string UncategorizedGroupName = "Uncategorized";
+    private const string SampleNamePrefix = "HeuristicLab.Optimizer.Documents.";
+    private const string SampleNameSuffix = ".hl";
+
+    private readonly Dictionary<ListViewGroup, List<string>> groupLookup = new Dictionary<ListViewGroup, List<string>>();
+    private readonly ListViewGroup standardProblemsGroup = new ListViewGroup(StandardProblemsGroupName);
+    private readonly ListViewGroup dataAnalysisGroup = new ListViewGroup(DataAnalysisGroupName);
+    private readonly ListViewGroup scriptsGroup = new ListViewGroup(ScriptsGroupName);
+    private readonly ListViewGroup uncategorizedGroup = new ListViewGroup(UncategorizedGroupName);
+
     private IProgress progress;
 
     public StartPage() {
@@ -50,10 +64,15 @@ namespace HeuristicLab.Optimizer {
       try {
         using (Stream stream = assembly.GetManifestResourceStream(typeof(StartPage), "Documents.FirstSteps.rtf"))
           firstStepsRichTextBox.LoadFile(stream, RichTextBoxStreamType.RichText);
-      }
-      catch (Exception) { }
+      } catch (Exception) { }
 
       samplesListView.Enabled = false;
+      samplesListView.Groups.Add(standardProblemsGroup);
+      samplesListView.Groups.Add(dataAnalysisGroup);
+      samplesListView.Groups.Add(scriptsGroup);
+      samplesListView.Groups.Add(uncategorizedGroup);
+      FillGroupLookup();
+
       showStartPageCheckBox.Checked = Properties.Settings.Default.ShowStartPage;
 
       ThreadPool.QueueUserWorkItem(new WaitCallback(LoadSamples));
@@ -70,33 +89,65 @@ namespace HeuristicLab.Optimizer {
     private void LoadSamples(object state) {
       progress = MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(samplesListView, "Loading...");
       try {
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(".hl"));
+        var assembly = Assembly.GetExecutingAssembly();
+        var samples = assembly.GetManifestResourceNames().Where(x => x.EndsWith(SampleNameSuffix));
         int count = samples.Count();
-        string path = Path.GetTempFileName();
 
-        foreach (string name in samples) {
-          try {
-            using (Stream stream = assembly.GetManifestResourceStream(name)) {
-              WriteStreamToTempFile(stream, path);
-              INamedItem item = XmlParser.Deserialize<INamedItem>(path);
-              OnSampleLoaded(item, 1.0 / count);
-            }
-          }
-          catch (Exception) {
+        foreach (var entry in groupLookup) {
+          var group = entry.Key;
+          var sampleList = entry.Value;
+          foreach (var sampleName in sampleList) {
+            string resourceName = SampleNamePrefix + sampleName + SampleNameSuffix;
+            LoadSample(resourceName, assembly, group, count);
           }
         }
+
+        var categorizedSamples = groupLookup.Select(x => x.Value).SelectMany(x => x).Select(x => SampleNamePrefix + x + SampleNameSuffix);
+        var uncategorizedSamples = samples.Except(categorizedSamples);
+
+        foreach (var resourceName in uncategorizedSamples) {
+          LoadSample(resourceName, assembly, uncategorizedGroup, count);
+        }
+
         OnAllSamplesLoaded();
-      }
-      finally {
+      } finally {
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
       }
     }
-    private void OnSampleLoaded(INamedItem sample, double progress) {
+
+    private void LoadSample(string name, Assembly assembly, ListViewGroup group, int count) {
+      string path = Path.GetTempFileName();
+      try {
+        using (var stream = assembly.GetManifestResourceStream(name)) {
+          WriteStreamToTempFile(stream, path); // create a file in a temporary folder (persistence cannot load these files directly from the stream)
+          var item = XmlParser.Deserialize<INamedItem>(path);
+          OnSampleLoaded(item, group, 1.0 / count);
+        }
+      } catch (Exception) {
+      } finally {
+        if (File.Exists(path)) {
+          File.Delete(path); // make sure we remove the temporary file
+        }
+      }
+    }
+
+    private void FillGroupLookup() {
+      var standardProblems = new List<string> { "ES_Griewank", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
+                "IslandGA_TSP", "LS_Knapsack", "PSO_Schwefel", "RAPGA_JSSP",
+                "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_TSP"
+        };
+      groupLookup[standardProblemsGroup] = standardProblems;
+      var dataAnalysisProblems = new List<string> { "SGP_SymbClass", "SGP_SymbReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
+      groupLookup[dataAnalysisGroup] = dataAnalysisProblems;
+      var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script" };
+      groupLookup[scriptsGroup] = scripts;
+    }
+
+    private void OnSampleLoaded(INamedItem sample, ListViewGroup group, double progress) {
       if (InvokeRequired)
-        Invoke(new Action<INamedItem, double>(OnSampleLoaded), sample, progress);
+        Invoke(new Action<INamedItem, ListViewGroup, double>(OnSampleLoaded), sample, group, progress);
       else {
-        ListViewItem item = new ListViewItem(new string[] { sample.Name, sample.Description });
+        ListViewItem item = new ListViewItem(new string[] { sample.Name, sample.Description }, group);
         item.ToolTipText = sample.ItemName + ": " + sample.ItemDescription;
         samplesListView.SmallImageList.Images.Add(sample.ItemImage);
         item.ImageIndex = samplesListView.SmallImageList.Images.Count - 1;
@@ -122,8 +173,16 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void samplesListView_DoubleClick(object sender, EventArgs e) {
-      if (samplesListView.SelectedItems.Count == 1)
-        MainFormManager.MainForm.ShowContent((IContent)((IItem)samplesListView.SelectedItems[0].Tag).Clone());
+      if (samplesListView.SelectedItems.Count == 1) {
+        var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
+        try {
+          mainForm.SetWaitCursor();
+          mainForm.ShowContent((IContent)((IItem)samplesListView.SelectedItems[0].Tag).Clone());
+        } finally {
+          mainForm.ResetWaitCursor();
+        }
+
+      }
     }
     private void samplesListView_ItemDrag(object sender, ItemDragEventArgs e) {
       ListViewItem listViewItem = (ListViewItem)e.Item;
@@ -141,10 +200,7 @@ namespace HeuristicLab.Optimizer {
     #region Helpers
     private void WriteStreamToTempFile(Stream stream, string path) {
       using (FileStream output = new FileStream(path, FileMode.Create, FileAccess.Write)) {
-        int cnt = 0;
-        byte[] buffer = new byte[32 * 1024];
-        while ((cnt = stream.Read(buffer, 0, buffer.Length)) != 0)
-          output.Write(buffer, 0, cnt);
+        stream.CopyTo(output);
       }
     }
     #endregion
