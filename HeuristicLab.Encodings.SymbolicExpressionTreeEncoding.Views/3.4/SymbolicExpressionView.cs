@@ -77,6 +77,5 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     private void formattersComboBox_SelectedIndexChanged(object sender, System.EventArgs e) {
       UpdateTextbox();
     }
-
   }
 }
