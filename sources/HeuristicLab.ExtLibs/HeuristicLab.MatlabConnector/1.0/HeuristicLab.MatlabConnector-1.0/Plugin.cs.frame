@@ -29,7 +29,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MatlabConnector {
   [Plugin("HeuristicLab.MatlabConnector", "HeuristicLab transport plugin for the COM MATLAB connector Interop.MLAPP.dll", "1.0.$WCREV$")]
-  [PluginFile("HeuristicLab.MatlabConnecotr-1.0.dll", PluginFileType.Assembly)]
+  [PluginFile("HeuristicLab.MatlabConnector-1.0.dll", PluginFileType.Assembly)]
   [PluginFile("Interop.MLApp.dll",  PluginFileType.Assembly)]
   [PluginFile("Mathworks Interop License.txt", PluginFileType.License)]
   public class HeuristicLabMathJaxPlugin : PluginBase {  

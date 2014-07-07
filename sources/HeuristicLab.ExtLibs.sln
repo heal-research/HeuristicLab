@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetScilab-1.0", "Heurist
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.DotNetScilab-1.0", "HeuristicLab.ExtLibs\HeuristicLab.DotNetScilab\1.0\HeuristicLab.DotNetScilab-1.0\HeuristicLab.DotNetScilab-1.0.csproj", "{F2F242B0-9996-4B49-828D-2BFC5925FDE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.MatlabConnector-1.0", "HeuristicLab.ExtLibs\HeuristicLab.MatlabConnector\1.0\HeuristicLab.MatlabConnector-1.0\HeuristicLab.MatlabConnector-1.0.csproj", "{52C66DEA-0250-477B-97F8-5CD2CD4B7332}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -306,6 +308,14 @@ Global
 		{F2F242B0-9996-4B49-828D-2BFC5925FDE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F2F242B0-9996-4B49-828D-2BFC5925FDE0}.Release|x64.ActiveCfg = Release|Any CPU
 		{F2F242B0-9996-4B49-828D-2BFC5925FDE0}.Release|x86.ActiveCfg = Release|Any CPU
+		{52C66DEA-0250-477B-97F8-5CD2CD4B7332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52C66DEA-0250-477B-97F8-5CD2CD4B7332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52C66DEA-0250-477B-97F8-5CD2CD4B7332}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{52C66DEA-0250-477B-97F8-5CD2CD4B7332}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{52C66DEA-0250-477B-97F8-5CD2CD4B7332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52C66DEA-0250-477B-97F8-5CD2CD4B7332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52C66DEA-0250-477B-97F8-5CD2CD4B7332}.Release|x64.ActiveCfg = Release|Any CPU
+		{52C66DEA-0250-477B-97F8-5CD2CD4B7332}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
