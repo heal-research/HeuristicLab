@@ -182,10 +182,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.treeChart.BackgroundColor = System.Drawing.Color.White;
       this.treeChart.LineColor = System.Drawing.Color.Black;
-      this.treeChart.Location = new System.Drawing.Point(6, 32);
+      this.treeChart.Location = new System.Drawing.Point(6, 16);
       this.treeChart.ModifyTree = null;
       this.treeChart.Name = "treeChart";
-      this.treeChart.Size = new System.Drawing.Size(201, 332);
+      this.treeChart.Size = new System.Drawing.Size(201, 348);
       this.treeChart.Spacing = 5;
       this.treeChart.SuspendRepaint = false;
       this.treeChart.TabIndex = 0;
