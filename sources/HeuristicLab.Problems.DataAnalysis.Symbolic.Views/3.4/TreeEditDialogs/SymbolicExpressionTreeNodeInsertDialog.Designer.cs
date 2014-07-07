@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // nodeSymbolLabel
       // 
       this.nodeSymbolLabel.AutoSize = true;
-      this.nodeSymbolLabel.Location = new System.Drawing.Point(13, 13);
+      this.nodeSymbolLabel.Location = new System.Drawing.Point(19, 13);
       this.nodeSymbolLabel.Name = "nodeSymbolLabel";
       this.nodeSymbolLabel.Size = new System.Drawing.Size(41, 13);
       this.nodeSymbolLabel.TabIndex = 0;
@@ -72,9 +72,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.allowedSymbolsCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.allowedSymbolsCombo.FormattingEnabled = true;
-      this.allowedSymbolsCombo.Location = new System.Drawing.Point(120, 10);
+      this.allowedSymbolsCombo.Location = new System.Drawing.Point(101, 10);
       this.allowedSymbolsCombo.Name = "allowedSymbolsCombo";
-      this.allowedSymbolsCombo.Size = new System.Drawing.Size(108, 21);
+      this.allowedSymbolsCombo.Size = new System.Drawing.Size(127, 21);
       this.allowedSymbolsCombo.TabIndex = 1;
       this.allowedSymbolsCombo.SelectedIndexChanged += new System.EventHandler(this.allowedSymbolsCombo_SelectedIndexChanged);
       this.allowedSymbolsCombo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.childControl_KeyDown);
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // variableWeightLabel
       // 
       this.variableWeightLabel.AutoSize = true;
-      this.variableWeightLabel.Location = new System.Drawing.Point(13, 44);
+      this.variableWeightLabel.Location = new System.Drawing.Point(19, 40);
       this.variableWeightLabel.Name = "variableWeightLabel";
       this.variableWeightLabel.Size = new System.Drawing.Size(41, 13);
       this.variableWeightLabel.TabIndex = 2;
@@ -92,7 +92,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // variableNameLabel
       // 
       this.variableNameLabel.AutoSize = true;
-      this.variableNameLabel.Location = new System.Drawing.Point(13, 74);
+      this.variableNameLabel.Location = new System.Drawing.Point(19, 66);
       this.variableNameLabel.Name = "variableNameLabel";
       this.variableNameLabel.Size = new System.Drawing.Size(35, 13);
       this.variableNameLabel.TabIndex = 3;
@@ -103,15 +103,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.variableNamesCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.variableNamesCombo.FormattingEnabled = true;
-      this.variableNamesCombo.Location = new System.Drawing.Point(120, 71);
+      this.variableNamesCombo.Location = new System.Drawing.Point(101, 63);
       this.variableNamesCombo.Name = "variableNamesCombo";
-      this.variableNamesCombo.Size = new System.Drawing.Size(108, 21);
+      this.variableNamesCombo.Size = new System.Drawing.Size(127, 21);
       this.variableNamesCombo.TabIndex = 5;
       this.variableNamesCombo.Visible = false;
       // 
       // variableWeightTextBox
       // 
-      this.variableWeightTextBox.Location = new System.Drawing.Point(120, 41);
+      this.variableWeightTextBox.Location = new System.Drawing.Point(120, 37);
       this.variableWeightTextBox.Name = "variableWeightTextBox";
       this.variableWeightTextBox.Size = new System.Drawing.Size(108, 20);
       this.variableWeightTextBox.TabIndex = 6;
@@ -121,9 +121,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // constantValueTextBox
       // 
-      this.constantValueTextBox.Location = new System.Drawing.Point(120, 41);
+      this.constantValueTextBox.Location = new System.Drawing.Point(101, 37);
       this.constantValueTextBox.Name = "constantValueTextBox";
-      this.constantValueTextBox.Size = new System.Drawing.Size(108, 20);
+      this.constantValueTextBox.Size = new System.Drawing.Size(127, 20);
       this.constantValueTextBox.TabIndex = 7;
       this.constantValueTextBox.Text = "0.0";
       this.constantValueTextBox.Visible = false;
@@ -132,7 +132,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // constantValueLabel
       // 
       this.constantValueLabel.AutoSize = true;
-      this.constantValueLabel.Location = new System.Drawing.Point(13, 44);
+      this.constantValueLabel.Location = new System.Drawing.Point(19, 40);
       this.constantValueLabel.Name = "constantValueLabel";
       this.constantValueLabel.Size = new System.Drawing.Size(34, 13);
       this.constantValueLabel.TabIndex = 8;
@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // okButton
       // 
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(12, 112);
+      this.okButton.Location = new System.Drawing.Point(72, 98);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 9;
@@ -159,7 +159,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // cancelButton
       // 
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(153, 112);
+      this.cancelButton.Location = new System.Drawing.Point(153, 98);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 10;
@@ -172,7 +172,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(240, 147);
+      this.ClientSize = new System.Drawing.Size(241, 133);
       this.ControlBox = false;
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);

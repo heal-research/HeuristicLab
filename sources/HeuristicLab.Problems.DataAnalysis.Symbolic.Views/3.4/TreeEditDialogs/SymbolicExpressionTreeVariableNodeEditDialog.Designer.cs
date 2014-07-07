@@ -60,7 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // originalValueLabel
       // 
       this.originalValueLabel.AutoSize = true;
-      this.originalValueLabel.Location = new System.Drawing.Point(12, 48);
+      this.originalValueLabel.Location = new System.Drawing.Point(6, 42);
       this.originalValueLabel.Name = "originalValueLabel";
       this.originalValueLabel.Size = new System.Drawing.Size(72, 13);
       this.originalValueLabel.TabIndex = 2;
@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // oldValueTextBox
       // 
-      this.oldValueTextBox.Location = new System.Drawing.Point(123, 45);
+      this.oldValueTextBox.Location = new System.Drawing.Point(101, 39);
       this.oldValueTextBox.Name = "oldValueTextBox";
       this.oldValueTextBox.ReadOnly = true;
       this.oldValueTextBox.Size = new System.Drawing.Size(131, 20);
@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // newValueTextBox
       // 
-      this.newValueTextBox.Location = new System.Drawing.Point(123, 82);
+      this.newValueTextBox.Location = new System.Drawing.Point(101, 65);
       this.newValueTextBox.Name = "newValueTextBox";
       this.newValueTextBox.Size = new System.Drawing.Size(131, 20);
       this.newValueTextBox.TabIndex = 0;
@@ -87,7 +87,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // newValueLabel
       // 
       this.newValueLabel.AutoSize = true;
-      this.newValueLabel.Location = new System.Drawing.Point(12, 85);
+      this.newValueLabel.Location = new System.Drawing.Point(6, 68);
       this.newValueLabel.Name = "newValueLabel";
       this.newValueLabel.Size = new System.Drawing.Size(59, 13);
       this.newValueLabel.TabIndex = 5;
@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // variableNameLabel
       // 
       this.variableNameLabel.AutoSize = true;
-      this.variableNameLabel.Location = new System.Drawing.Point(12, 12);
+      this.variableNameLabel.Location = new System.Drawing.Point(6, 15);
       this.variableNameLabel.Name = "variableNameLabel";
       this.variableNameLabel.Size = new System.Drawing.Size(76, 13);
       this.variableNameLabel.TabIndex = 6;
@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.variableNamesCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.variableNamesCombo.FormattingEnabled = true;
-      this.variableNamesCombo.Location = new System.Drawing.Point(123, 9);
+      this.variableNamesCombo.Location = new System.Drawing.Point(101, 12);
       this.variableNamesCombo.Name = "variableNamesCombo";
       this.variableNamesCombo.Size = new System.Drawing.Size(131, 21);
       this.variableNamesCombo.TabIndex = 7;
@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // okButton
       // 
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(15, 119);
+      this.okButton.Location = new System.Drawing.Point(75, 98);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 8;
@@ -137,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.cancelButton.CausesValidation = false;
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(179, 119);
+      this.cancelButton.Location = new System.Drawing.Point(156, 98);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 9;
@@ -151,7 +151,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(269, 154);
+      this.ClientSize = new System.Drawing.Size(244, 134);
       this.ControlBox = false;
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);

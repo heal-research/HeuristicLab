@@ -75,8 +75,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
         pasteToolStripMenuItem.Visible = true;
         pasteToolStripMenuItem.Enabled = tempNode != null && insertNodeToolStripMenuItem.Enabled
-                                                          && !(lastOp == EditOp.CutSubtree
-                                                               && tempNode.IterateNodesBreadth().Contains(currSelected.Content));
+                                                          && !(lastOp == EditOp.CutSubtree && tempNode.IterateNodesBreadth().Contains(node))
+                                                          && node.SubtreeCount < node.Symbol.MaximumArity;
       }
     }
 
@@ -95,7 +95,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var parent = currSelected.Content;
 
       using (var dialog = new InsertNodeDialog()) {
-        dialog.SetAllowedSymbols(parent.Grammar.Symbols.Where(s => !(s is ProgramRootSymbol || s is StartSymbol || s is Defun))); // allow everything
+        dialog.SetAllowedSymbols(parent.Grammar.Symbols.Where(s => !(s is ProgramRootSymbol || s is StartSymbol || s is Defun || s is GroupSymbol))); // allow everything
         dialog.ShowDialog(this);
         if (dialog.DialogResult != DialogResult.OK) return;
 

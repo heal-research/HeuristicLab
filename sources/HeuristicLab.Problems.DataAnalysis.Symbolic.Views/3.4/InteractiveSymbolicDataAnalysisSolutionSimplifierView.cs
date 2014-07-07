@@ -115,13 +115,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       if (valid) {
         btnOptimizeConstants.Enabled = true;
         btnSimplify.Enabled = true;
-        treeStatusValue.Text = "Valid";
-        treeStatusValue.ForeColor = Color.Green;
+        treeStatusValue.Visible = false;
       } else {
         btnOptimizeConstants.Enabled = false;
         btnSimplify.Enabled = false;
-        treeStatusValue.Text = "Invalid";
-        treeStatusValue.ForeColor = Color.Red;
+        treeStatusValue.Visible = true;
       }
       this.Refresh();
       return valid;
