@@ -102,14 +102,6 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Interop.MLApp.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Mathworks Interop License.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
