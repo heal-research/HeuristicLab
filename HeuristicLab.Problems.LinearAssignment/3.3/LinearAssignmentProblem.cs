@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.LinearAssignment {
-  [Item("LinearAssignmentProblem", "In the linear assignment problem (LAP) an assignment of workers to jobs has to be found such that each worker is assigned to exactly one job, each job is assigned to exactly one worker and the sum of the resulting costs needs to be minimal.")]
+  [Item("Linear Assignment Problem", "In the linear assignment problem (LAP) an assignment of workers to jobs has to be found such that each worker is assigned to exactly one job, each job is assigned to exactly one worker and the sum of the resulting costs is minimal (or maximal).")]
   [Creatable("Problems")]
   [StorableClass]
   public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator>, IStorableContent {
@@ -152,6 +152,9 @@ namespace HeuristicLab.Problems.LinearAssignment {
         Parameterize();
       }
     }
+    private void Costs_Reset(object sender, EventArgs e) {
+      Parameterize();
+    }
     private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
       Parameterize();
     }
@@ -166,6 +169,7 @@ namespace HeuristicLab.Problems.LinearAssignment {
     private void AttachEventHandlers() {
       Costs.RowsChanged += new EventHandler(Costs_RowsChanged);
       Costs.ColumnsChanged += new EventHandler(Costs_ColumnsChanged);
+      Costs.Reset += new EventHandler(Costs_Reset);
       SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
     }
 
@@ -177,7 +181,9 @@ namespace HeuristicLab.Problems.LinearAssignment {
 
     private void Parameterize() {
       SolutionCreator.LengthParameter.Value = new IntValue(Costs.Rows);
-      SolutionCreator.LengthParameter.Hidden = false;
+      SolutionCreator.LengthParameter.Hidden = true;
+      SolutionCreator.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.Absolute);
+      SolutionCreator.PermutationTypeParameter.Hidden = true;
       Evaluator.CostsParameter.ActualName = CostsParameter.Name;
       Evaluator.CostsParameter.Hidden = true;
       Evaluator.AssignmentParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
