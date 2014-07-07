@@ -111,9 +111,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // variableWeightTextBox
       // 
-      this.variableWeightTextBox.Location = new System.Drawing.Point(120, 37);
+      this.variableWeightTextBox.Location = new System.Drawing.Point(101, 37);
       this.variableWeightTextBox.Name = "variableWeightTextBox";
-      this.variableWeightTextBox.Size = new System.Drawing.Size(108, 20);
+      this.variableWeightTextBox.Size = new System.Drawing.Size(127, 20);
       this.variableWeightTextBox.TabIndex = 6;
       this.variableWeightTextBox.Text = "0.0";
       this.variableWeightTextBox.Visible = false;
