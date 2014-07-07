@@ -67,8 +67,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // viewHost
       // 
-      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.viewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.viewHost.Caption = "View";
       this.viewHost.Content = null;
@@ -127,7 +127,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // flowLayoutPanel
       // 
-      this.flowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+      this.flowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.flowLayoutPanel.Controls.Add(this.btnSimplify);
       this.flowLayoutPanel.Controls.Add(this.btnOptimizeConstants);
@@ -140,7 +140,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // btnSimplify
       // 
       this.btnSimplify.AutoSize = true;
-      this.btnSimplify.Image = ((System.Drawing.Image)(resources.GetObject("btnSimplify.Image")));
+      this.btnSimplify.Image = HeuristicLab.Common.Resources.VSImageLibrary.FormulaEvaluator;
       this.btnSimplify.Location = new System.Drawing.Point(3, 3);
       this.btnSimplify.Name = "btnSimplify";
       this.btnSimplify.Size = new System.Drawing.Size(80, 24);
@@ -154,7 +154,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.btnOptimizeConstants.AutoSize = true;
       this.btnOptimizeConstants.Enabled = false;
-      this.btnOptimizeConstants.Image = ((System.Drawing.Image)(resources.GetObject("btnOptimizeConstants.Image")));
+      this.btnOptimizeConstants.Image = HeuristicLab.Common.Resources.VSImageLibrary.Performance;
       this.btnOptimizeConstants.Location = new System.Drawing.Point(89, 3);
       this.btnOptimizeConstants.Name = "btnOptimizeConstants";
       this.btnOptimizeConstants.Size = new System.Drawing.Size(80, 24);
@@ -177,8 +177,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // treeChart
       // 
-      this.treeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.treeChart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.treeChart.BackgroundColor = System.Drawing.Color.White;
       this.treeChart.LineColor = System.Drawing.Color.Black;
