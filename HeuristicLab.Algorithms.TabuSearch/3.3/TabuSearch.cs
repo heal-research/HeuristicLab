@@ -350,8 +350,19 @@ namespace HeuristicLab.Algorithms.TabuSearch {
       IMoveGenerator defaultMoveGenerator = Problem.Operators.OfType<IMoveGenerator>().FirstOrDefault();
       MoveGeneratorParameter.ValidValues.Clear();
       if (Problem != null) {
+        // only add move generators that also have a corresponding tabu-checker and tabu-maker
         foreach (IMoveGenerator generator in Problem.Operators.OfType<IMoveGenerator>().OrderBy(x => x.Name)) {
-          MoveGeneratorParameter.ValidValues.Add(generator);
+          // get all interfaces equal to or derived from IMoveOperator that this move generator implements 
+          var moveTypes = generator.GetType().GetInterfaces().Where(x => typeof(IMoveOperator).IsAssignableFrom(x)).ToList();
+          // keep only the most specific interfaces (e.g. IPermutationTranslocationMoveOperator);
+          // by removing all interfaces for which a derived interface is also contained in the moveTypes set
+          foreach (var type in moveTypes.ToList()) {
+            if (moveTypes.Any(t => t != type && type.IsAssignableFrom(t))) moveTypes.Remove(type);
+          }
+          // keep move generator only if there is a tabu checker and a tabu maker that is derived from the same move interface
+          if (Problem.Operators.OfType<ITabuChecker>().Any(op => moveTypes.Any(m => m.IsInstanceOfType(op)))
+            && Problem.Operators.OfType<ITabuMaker>().Any(op => moveTypes.Any(m => m.IsInstanceOfType(op))))
+            MoveGeneratorParameter.ValidValues.Add(generator);
         }
       }
       if (oldMoveGenerator != null && MoveGeneratorParameter.ValidValues.Any(x => x.GetType() == oldMoveGenerator.GetType()))

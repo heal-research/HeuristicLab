@@ -23,32 +23,52 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
-  /// The basic interface that marks all move operators.
+  /// The basic interface that marks all move operators. Derived interfaces
+  /// are used to group move operators together.
   /// </summary>
   /// <remarks>
-  /// A group of move operators that belong together should derive an interface from this one
-  /// and implement the interface in each operator.<br />
-  /// In an algorithm one can thus find out all move operators that belong together, by grouping operators
-  /// according to the most specific interface derived from this interface that they implement.<br /><br />
-  /// A concrete example:<br />
-  /// You have a solution representation <c>MyRep</c> and there you have a move <c>MyRepMove</c> that you want
-  /// to make available to the friendly GUIs. So in <c>MyRep</c> you derive an interface <c>IMyRepMoveOperator</c>.<br />
-  /// Now you need to implement at least three operators that handle these moves: A MoveGenerator, a MoveMaker, and a MoveEvaluator.
-  /// Note: The MoveEvaluator should be implemented in the problem plugin if you choose to separate representation and problem.<br />
-  /// In each of these operators you implement <c>IMyRepMoveOperator</c> as well as the appropriate operator specific interface.
-  /// For a MoveGenerator that would be one of <c>IExhaustiveMoveGenerator</c>, <c>ISingleMoveGenerator</c>,
-  /// or <c>IMultiMoveGenerator</c>, for a MoveMaker that would be <c>IMoveMaker</c>, and for a MoveEvaluator that would
-  /// either be <c>ISingleObjectiveMoveEvaluator</c> or <c>IMultiObjectiveMoveEvaluator</c>.<br />
-  /// If you have this you need to make sure that an instance of all your operators are loaded in the Operators collection of your IProblem
-  /// and you can select them in the respective algorithms.<br /><br />
-  /// For Tabu Search support you will need two additional operators: A TabuChecker (e.g. derived from <see cref="TabuChecker" />),
-  /// and a TabuMaker.<br /><br />
-  /// If you decide later that you want another move, e.g. <c>MyRepMove2</c>, you would do as before and group them under
-  /// the interface <c>IMyRepMove2Operator</c>.<br /><br />
-  /// If you want to make use of multiple different moves, all your operators would need to know about all the moves that you plan
-  /// to use.<br /><br />
-  /// Take a look at the Permutation and TSP plugin to see how this looks like in real code.
-  /// </remarks>
+  /// A group of move operators that belong together should derive a new
+  /// interface from IMoveOperator and implement the new interface in each
+  /// operator.<br />
+  /// 
+  /// E.g. a new move is to be implemented and INewMove is created as a derived
+  /// type of IMoveOperator. Then you create the additional following types<br />
+  /// <list type="bullet">
+  /// <item>
+  ///   <term>NewMoveGenerator</term>
+  ///   <description>
+  ///   implements INewMove as well as either IExhaustiveMoveGenerator,
+  ///   IMultiMoveGenerator or ISingleMoveGenerator
+  ///   </description>
+  /// </item>
+  /// <item>
+  ///   <term>NewMoveMaker</term>
+  ///   <description>
+  ///   implements INewMove as well as IMoveMaker
+  ///   </description>
+  /// </item>
+  /// <item>
+  ///   <term>NewMoveEvaluator</term>
+  ///   <description>
+  ///   (problem plugin) implements INewMove as well as ISingleObjectiveMoveEvaluator
+  ///   </description>
+  /// </item>
+  /// <item>
+  ///   <term>NewMoveTabuMaker</term>
+  ///   <description>
+  ///   (only for Tabu Search) implements INewMove as well as TabuMaker
+  ///   </description>
+  /// </item>
+  /// <item>
+  ///   <term>NewMoveTabuChecker</term>
+  ///   <description>
+  ///   (only for Tabu Search) implements INewMove as well as ITabuChecker
+  ///   </description>
+  /// </item>
+  /// </list>
+  /// 
+  /// These operators should not implement further move types. For further moves
+  /// a new interface derived from IMoveOperator should be created.
   public interface IMoveOperator : IOperator {
   }
 }
