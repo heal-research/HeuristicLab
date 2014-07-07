@@ -51,11 +51,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       base.RegisterContentEvents();
       Content.ModelChanged += Content_Changed;
       Content.ProblemDataChanged += Content_Changed;
+      treeChart.Repainted += treeChart_Repainted;
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
       Content.ModelChanged -= Content_Changed;
       Content.ProblemDataChanged -= Content_Changed;
+      treeChart.Repainted -= treeChart_Repainted;
     }
 
     private void Content_Changed(object sender, EventArgs e) {
@@ -67,6 +69,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
       UpdateView();
       viewHost.Content = this.Content;
+    }
+
+    private void treeChart_Repainted(object sender, EventArgs e) {
+      if (nodeImpacts != null && nodeImpacts.Count > 0)
+        PaintNodeImpacts();
     }
 
     private void UpdateView() {
@@ -95,23 +102,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void treeChart_SymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
-      var visualNode = (VisualSymbolicExpressionTreeNode)sender;
-      var symbExprTreeNode = (SymbolicExpressionTreeNode)visualNode.SymbolicExpressionTreeNode;
-      if (symbExprTreeNode == null) return;
-      var tree = Content.Model.SymbolicExpressionTree;
+      var visualNode = (VisualTreeNode<ISymbolicExpressionTreeNode>)sender;
+      if (visualNode.Content == null) { throw new Exception("Visual node content cannot be null."); }
+      var symbExprTreeNode = (SymbolicExpressionTreeNode)visualNode.Content;
+      if (!foldedNodes.ContainsKey(symbExprTreeNode)) return; // constant nodes cannot be folded
       var parent = symbExprTreeNode.Parent;
       int indexOfSubtree = parent.IndexOfSubtree(symbExprTreeNode);
-      if (foldedNodes.ContainsKey(symbExprTreeNode)) {
-        // undo node folding
-        SwitchNodeWithReplacementNode(parent, indexOfSubtree);
-      }
-      UpdateModel(tree);
+      SwitchNodeWithReplacementNode(parent, indexOfSubtree);
+      UpdateModel(Content.Model.SymbolicExpressionTree);
     }
 
     private void SwitchNodeWithReplacementNode(ISymbolicExpressionTreeNode parent, int subTreeIndex) {
       ISymbolicExpressionTreeNode subTree = parent.GetSubtree(subTreeIndex);
-      parent.RemoveSubtree(subTreeIndex);
       if (foldedNodes.ContainsKey(subTree)) {
+        parent.RemoveSubtree(subTreeIndex);
         var replacementNode = foldedNodes[subTree];
         parent.InsertSubtree(subTreeIndex, replacementNode);
         // exchange key and value 
@@ -124,10 +128,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var impacts = nodeImpacts.Values;
       double max = impacts.Max();
       double min = impacts.Min();
-      foreach (ISymbolicExpressionTreeNode treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
-        VisualSymbolicExpressionTreeNode visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
+      foreach (var treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
+        VisualTreeNode<ISymbolicExpressionTreeNode> visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
 
         if (!(treeNode is ConstantTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
+          visualTree.ToolTip = visualTree.Content.ToString(); // to avoid duplicate tooltips
           double impact = nodeImpacts[treeNode];
 
           // impact = 0 if no change

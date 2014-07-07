@@ -22,37 +22,37 @@
 using System.Drawing;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
-  public class VisualSymbolicExpressionTreeNode : object {
+  public class VisualTreeNode<T> where T : class {
     private static readonly Color defaultLineColor = Color.Black;
     private static readonly Color defaultTextColor = Color.Black;
     private static readonly Color defaultFillColor = Color.White;
     private const int defaultPreferredWidth = 70;
     private const int defaultPreferredHeight = 46;
 
-    public VisualSymbolicExpressionTreeNode(ISymbolicExpressionTreeNode symbolicExpressionTreeNode) :
-      this(symbolicExpressionTreeNode, defaultLineColor) {
+    public VisualTreeNode(T content) :
+      this(content, defaultLineColor) {
     }
 
-    public VisualSymbolicExpressionTreeNode(ISymbolicExpressionTreeNode symbolicExpressionTreeNode, Color lineColor) :
-      this(symbolicExpressionTreeNode, lineColor, defaultTextColor) {
+    public VisualTreeNode(T content, Color lineColor) :
+      this(content, lineColor, defaultTextColor) {
     }
 
-    public VisualSymbolicExpressionTreeNode(ISymbolicExpressionTreeNode symbolicExpressionTreeNode, Color lineColor, Color textColor) :
-      this(symbolicExpressionTreeNode, lineColor, textColor, defaultFillColor) {
+    public VisualTreeNode(T content, Color lineColor, Color textColor) :
+      this(content, lineColor, textColor, defaultFillColor) {
     }
 
-    public VisualSymbolicExpressionTreeNode(ISymbolicExpressionTreeNode symbolicExpressionTreeNode, Color lineColor, Color textColor, Color fillColor) :
-      this(symbolicExpressionTreeNode, lineColor, textColor, fillColor, defaultPreferredWidth, defaultPreferredHeight) {
+    public VisualTreeNode(T content, Color lineColor, Color textColor, Color fillColor) :
+      this(content, lineColor, textColor, fillColor, defaultPreferredWidth, defaultPreferredHeight) {
     }
 
-    public VisualSymbolicExpressionTreeNode(ISymbolicExpressionTreeNode symbolicExpressionTreeNode, Color lineColor, Color textColor, Color fillColor, int width, int height) {
-      this.symbolicExpressionTreeNode = symbolicExpressionTreeNode;
+    public VisualTreeNode(T content, Color lineColor, Color textColor, Color fillColor, int width, int height) {
+      this.content = content;
       this.lineColor = lineColor;
       this.textColor = textColor;
       this.fillColor = fillColor;
       this.preferredWidth = width;
       this.preferredHeight = height;
-      this.ToolTip = symbolicExpressionTreeNode.ToString();
+      this.ToolTip = content.ToString();
     }
 
     #region members for internal use only
@@ -81,12 +81,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
     #endregion
 
-    private ISymbolicExpressionTreeNode symbolicExpressionTreeNode;
-    public ISymbolicExpressionTreeNode SymbolicExpressionTreeNode {
-      get { return this.symbolicExpressionTreeNode; }
+    private T content;
+    public T Content {
+      get { return this.content; }
       set {
-        symbolicExpressionTreeNode = value;
-        ToolTip = SymbolicExpressionTreeNode.ToString();
+        content = value;
+        ToolTip = Content.ToString();
       }
     }
 

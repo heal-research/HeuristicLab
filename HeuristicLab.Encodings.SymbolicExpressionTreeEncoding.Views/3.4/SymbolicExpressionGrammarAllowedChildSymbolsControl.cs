@@ -28,6 +28,8 @@ using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.PluginInfrastructure;
 
+using VisualSymbolicExpressionTreeNode = HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views.VisualTreeNode<HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.ISymbolicExpressionTreeNode>;
+
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   public sealed partial class SymbolicExpressionGrammarAllowedChildSymbolsControl : UserControl {
     private ObservableList<ISymbolicExpressionTreeNode> selectedSymbolicExpressionTreeNodes;
@@ -102,7 +104,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       }
 
       var tree = new SymbolicExpressionTree(new SymbolicExpressionTreeNode(Symbol));
-      symbolicExpressionTreeChart.SuspendRepaint = true;
       if (Grammar.GetMaximumSubtreeCount(Symbol) > 0) {
         for (int i = 0; i < Grammar.GetMaximumSubtreeCount(Symbol); i++) {
           var node = new DummySymbol("Subtree " + i).CreateTreeNode();
@@ -115,7 +116,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         }
       }
       symbolicExpressionTreeChart.Tree = tree;
-
+      symbolicExpressionTreeChart.SuspendRepaint = true;
       foreach (var subtreeNode in tree.Root.Subtrees) {
         foreach (var allowedChildNode in subtreeNode.Subtrees) {
           var visualLine = symbolicExpressionTreeChart.GetVisualSymbolicExpressionTreeNodeConnection(subtreeNode, allowedChildNode);
@@ -141,7 +142,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           visualLine.LineColor = Color.LightGray;
         }
       }
-
       symbolicExpressionTreeChart.SuspendRepaint = false;
       UpdateSelectedSymbolicExpressionTreeNodes();
     }
@@ -152,7 +152,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         if (!selectedSymbolicExpressionTreeNodes.Contains(node)) visualNode.FillColor = Color.White;
         else visualNode.FillColor = Color.LightSteelBlue;
       }
-      symbolicExpressionTreeChart.Repaint();
+      symbolicExpressionTreeChart.RepaintNodes();
     }
 
     private void symbolicExpressionTreeChart_SymbolicExpressionTreeNodeClicked(object sender, MouseEventArgs e) {
@@ -161,7 +161,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         selectedSymbolicExpressionTreeNodes.Clear();
 
       VisualSymbolicExpressionTreeNode clickedNode = (VisualSymbolicExpressionTreeNode)sender;
-      var selectedNode = clickedNode.SymbolicExpressionTreeNode;
+      var selectedNode = clickedNode.Content;
       if (selectedNode.SubtreeCount == 0) {
         if (!selectedSymbolicExpressionTreeNodes.Contains(selectedNode))
           selectedSymbolicExpressionTreeNodes.Add(selectedNode);
@@ -206,7 +206,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         Point coordinates = symbolicExpressionTreeChart.PointToClient(new Point(e.X, e.Y));
         var visualNode = symbolicExpressionTreeChart.FindVisualSymbolicExpressionTreeNodeAt(coordinates.X, coordinates.Y);
         if (visualNode != null) {
-          var node = visualNode.SymbolicExpressionTreeNode;
+          var node = visualNode.Content;
           var root = symbolicExpressionTreeChart.Tree.Root;
           if (node == root || node.Parent == root) e.Effect = DragDropEffects.Copy;
         }
@@ -222,13 +222,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       var symbol = data as ISymbol;
       var symbols = data as IEnumerable<ISymbol>;
 
-      if (node.SymbolicExpressionTreeNode == root) {
+      if (node.Content == root) {
         if (symbol != null)
           Grammar.AddAllowedChildSymbol(root.Symbol, symbol);
         else if (symbols != null)
           foreach (var s in symbols) Grammar.AddAllowedChildSymbol(root.Symbol, s);
       } else {
-        int argumentIndex = root.IndexOfSubtree(node.SymbolicExpressionTreeNode);
+        int argumentIndex = root.IndexOfSubtree(node.Content);
         if (symbol != null)
           Grammar.AddAllowedChildSymbol(root.Symbol, symbol, argumentIndex);
         else if (symbols != null)

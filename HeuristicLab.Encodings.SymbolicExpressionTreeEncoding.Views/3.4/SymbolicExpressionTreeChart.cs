@@ -23,14 +23,23 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   public partial class SymbolicExpressionTreeChart : UserControl {
     private Image image;
-    private StringFormat stringFormat;
-    private Dictionary<ISymbolicExpressionTreeNode, VisualSymbolicExpressionTreeNode> visualTreeNodes;
-    private Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualSymbolicExpressionTreeNodeConnection> visualLines;
+    private readonly StringFormat stringFormat;
+    private Dictionary<ISymbolicExpressionTreeNode, VisualTreeNode<ISymbolicExpressionTreeNode>> visualTreeNodes;
+    private Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection> visualLines;
+    private ILayoutEngine<ISymbolicExpressionTreeNode> layoutEngine;
+
+    private const int preferredNodeWidth = 70;
+    private const int preferredNodeHeight = 46;
+    private int minHorizontalDistance = 30;
+    private int minVerticalDistance = 30;
 
     public SymbolicExpressionTreeChart() {
       InitializeComponent();
@@ -39,7 +48,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.spacing = 5;
       this.lineColor = Color.Black;
       this.backgroundColor = Color.White;
-      this.textFont = new Font("Times New Roman", 8);
+      this.textFont = new Font(FontFamily.GenericSansSerif, 12);
+
+      visualTreeNodes = new Dictionary<ISymbolicExpressionTreeNode, VisualTreeNode<ISymbolicExpressionTreeNode>>();
+      visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection>();
+
+      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
+        NodeWidth = preferredNodeWidth,
+        NodeHeight = preferredNodeHeight,
+        HorizontalSpacing = minHorizontalDistance,
+        VerticalSpacing = minVerticalDistance
+      };
+      reingoldTilfordToolStripMenuItem.Checked = true;
     }
 
     public SymbolicExpressionTreeChart(ISymbolicExpressionTree tree)
@@ -47,6 +67,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.Tree = tree;
     }
 
+    #region Public properties
     private int spacing;
     public int Spacing {
       get { return this.spacing; }
@@ -88,14 +109,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       get { return this.tree; }
       set {
         tree = value;
-        visualTreeNodes = new Dictionary<ISymbolicExpressionTreeNode, VisualSymbolicExpressionTreeNode>();
-        visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualSymbolicExpressionTreeNodeConnection>();
-        if (tree != null) {
-          foreach (ISymbolicExpressionTreeNode node in tree.IterateNodesPrefix()) {
-            visualTreeNodes[node] = new VisualSymbolicExpressionTreeNode(node);
-            if (node.Parent != null) visualLines[Tuple.Create(node.Parent, node)] = new VisualSymbolicExpressionTreeNodeConnection();
-          }
-        }
         Repaint();
       }
     }
@@ -105,6 +118,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       get { return suspendRepaint; }
       set { suspendRepaint = value; }
     }
+    #endregion
 
     protected override void OnPaint(PaintEventArgs e) {
       e.Graphics.DrawImage(image, 0, 0);
@@ -114,15 +128,25 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       base.OnResize(e);
       if (this.Width <= 1 || this.Height <= 1)
         this.image = new Bitmap(1, 1);
-      else
+      else {
         this.image = new Bitmap(Width, Height);
+      }
       this.Repaint();
+    }
+
+    public event EventHandler Repainted;//expose this event to notify the parent control that the tree was repainted
+    protected virtual void OnRepaint(object sender, EventArgs e) {
+      var repainted = Repainted;
+      if (repainted != null) {
+        repainted(sender, e);
+      }
     }
 
     public void Repaint() {
       if (!suspendRepaint) {
         this.GenerateImage();
         this.Refresh();
+        OnRepaint(this, EventArgs.Empty);
       }
     }
 
@@ -133,13 +157,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
           graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
           foreach (var visualNode in visualTreeNodes.Values) {
             DrawTreeNode(graphics, visualNode);
+            if (visualNode.Content.SubtreeCount > 0) {
+              foreach (var visualSubtree in visualNode.Content.Subtrees.Select(s => visualTreeNodes[s])) {
+                DrawLine(graphics, visualNode, visualSubtree);
+              }
+            }
           }
         }
         this.Refresh();
       }
     }
 
-    public void RepaintNode(VisualSymbolicExpressionTreeNode visualNode) {
+    public void RepaintNode(VisualTreeNode<ISymbolicExpressionTreeNode> visualNode) {
       if (!suspendRepaint) {
         using (var graphics = Graphics.FromImage(image)) {
           graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
@@ -156,22 +185,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
         graphics.Clear(backgroundColor);
         if (tree != null) {
-          int height = this.Height / tree.Depth;
-          DrawFunctionTree(tree, graphics, 0, 0, this.Width, height);
+          DrawFunctionTree(graphics, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
         }
       }
     }
 
-    public VisualSymbolicExpressionTreeNode GetVisualSymbolicExpressionTreeNode(ISymbolicExpressionTreeNode symbolicExpressionTreeNode) {
+    public VisualTreeNode<ISymbolicExpressionTreeNode> GetVisualSymbolicExpressionTreeNode(ISymbolicExpressionTreeNode symbolicExpressionTreeNode) {
       if (visualTreeNodes.ContainsKey(symbolicExpressionTreeNode))
         return visualTreeNodes[symbolicExpressionTreeNode];
       return null;
     }
 
-    public VisualSymbolicExpressionTreeNodeConnection GetVisualSymbolicExpressionTreeNodeConnection(ISymbolicExpressionTreeNode parent, ISymbolicExpressionTreeNode child) {
+    public VisualTreeNodeConnection GetVisualSymbolicExpressionTreeNodeConnection(ISymbolicExpressionTreeNode parent, ISymbolicExpressionTreeNode child) {
       if (child.Parent != parent) throw new ArgumentException();
       var key = Tuple.Create(parent, child);
-      VisualSymbolicExpressionTreeNodeConnection connection = null;
+      VisualTreeNodeConnection connection = null;
       visualLines.TryGetValue(key, out connection);
       return connection;
     }
@@ -185,7 +213,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     protected virtual void SymbolicExpressionTreeChart_MouseClick(object sender, MouseEventArgs e) {
-      VisualSymbolicExpressionTreeNode visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
+      var visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
       if (visualTreeNode != null) {
         OnSymbolicExpressionTreeNodeClicked(visualTreeNode, e);
       }
@@ -199,7 +227,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     protected virtual void SymbolicExpressionTreeChart_MouseDoubleClick(object sender, MouseEventArgs e) {
-      VisualSymbolicExpressionTreeNode visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
+      VisualTreeNode<ISymbolicExpressionTreeNode> visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
       if (visualTreeNode != null)
         OnSymbolicExpressionTreeNodeDoubleClicked(visualTreeNode, e);
     }
@@ -211,7 +239,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         dragged(sender, e);
     }
 
-    private VisualSymbolicExpressionTreeNode draggedSymbolicExpressionTree;
+    private VisualTreeNode<ISymbolicExpressionTreeNode> draggedSymbolicExpressionTree;
     private MouseButtons dragButtons;
     private void SymbolicExpressionTreeChart_MouseDown(object sender, MouseEventArgs e) {
       this.dragButtons = e.Button;
@@ -223,7 +251,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     private void SymbolicExpressionTreeChart_MouseMove(object sender, MouseEventArgs e) {
-      VisualSymbolicExpressionTreeNode visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
+      VisualTreeNode<ISymbolicExpressionTreeNode> visualTreeNode = FindVisualSymbolicExpressionTreeNodeAt(e.X, e.Y);
       if (draggedSymbolicExpressionTree != null &&
         draggedSymbolicExpressionTree != visualTreeNode) {
         OnSymbolicExpressionTreeNodeDragDrag(draggedSymbolicExpressionTree, new ItemDragEventArgs(dragButtons, draggedSymbolicExpressionTree));
@@ -238,7 +266,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         this.toolTip.SetToolTip(this, "");
     }
 
-    public VisualSymbolicExpressionTreeNode FindVisualSymbolicExpressionTreeNodeAt(int x, int y) {
+    public VisualTreeNode<ISymbolicExpressionTreeNode> FindVisualSymbolicExpressionTreeNodeAt(int x, int y) {
       foreach (var visualTreeNode in visualTreeNodes.Values) {
         if (x >= visualTreeNode.X && x <= visualTreeNode.X + visualTreeNode.Width &&
             y >= visualTreeNode.Y && y <= visualTreeNode.Y + visualTreeNode.Height)
@@ -248,105 +276,53 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
     #endregion
 
-    #region methods for painting the symbolic expression tree
-    private void DrawFunctionTree(ISymbolicExpressionTree tree, Graphics graphics, int x, int y, int width, int height) {
-      DrawFunctionTree(tree.Root, graphics, x, y, width, height, Point.Empty);
+    private void CalculateLayout(int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
+      layoutEngine.NodeWidth = preferredWidth;
+      layoutEngine.NodeHeight = preferredHeight;
+      layoutEngine.HorizontalSpacing = minHDistance;
+      layoutEngine.VerticalSpacing = minVDistance;
+
+      var actualRoot = tree.Root;
+      if (actualRoot.Symbol is ProgramRootSymbol && actualRoot.SubtreeCount == 1) {
+        actualRoot = tree.Root.GetSubtree(0);
+      }
+
+      var visualNodes = layoutEngine.CalculateLayout(actualRoot, Width, Height).ToList();
+      visualTreeNodes = visualNodes.ToDictionary(x => x.Content, x => x);
+      visualLines = new Dictionary<Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>, VisualTreeNodeConnection>();
+      foreach (var node in visualNodes.Select(n => n.Content)) {
+        foreach (var subtree in node.Subtrees) {
+          visualLines.Add(new Tuple<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>(node, subtree), new VisualTreeNodeConnection());
+        }
+      }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="functionTree"> function tree to draw</param>
-    /// <param name="graphics">graphics object to draw on</param>
-    /// <param name="x">x coordinate of drawing area</param>
-    /// <param name="y">y coordinate of drawing area</param>
-    /// <param name="width">width of drawing area</param>
-    /// <param name="height">height of drawing area</param>
-    private void DrawFunctionTree(ISymbolicExpressionTreeNode node, Graphics graphics, int x, int y, int width, int height, Point connectionPoint) {
-      VisualSymbolicExpressionTreeNode visualTreeNode = visualTreeNodes[node];
-      float center_x = x + width / 2;
-      float center_y = y + height / 2;
-      int actualWidth = width - spacing;
-      int actualHeight = height - spacing;
-
-      using (var textBrush = new SolidBrush(visualTreeNode.TextColor))
-      using (var nodeLinePen = new Pen(visualTreeNode.LineColor))
-      using (var nodeFillBrush = new SolidBrush(visualTreeNode.FillColor)) {
-
-        //calculate size of node
-        if (actualWidth >= visualTreeNode.PreferredWidth && actualHeight >= visualTreeNode.PreferredHeight) {
-          visualTreeNode.Width = visualTreeNode.PreferredWidth;
-          visualTreeNode.Height = visualTreeNode.PreferredHeight;
-          visualTreeNode.X = (int)center_x - visualTreeNode.Width / 2;
-          visualTreeNode.Y = (int)center_y - visualTreeNode.Height / 2;
-        }
-          //width too small to draw in desired sized
-        else if (actualWidth < visualTreeNode.PreferredWidth && actualHeight >= visualTreeNode.PreferredHeight) {
-          visualTreeNode.Width = actualWidth;
-          visualTreeNode.Height = visualTreeNode.PreferredHeight;
-          visualTreeNode.X = x;
-          visualTreeNode.Y = (int)center_y - visualTreeNode.Height / 2;
-        }
-          //height too small to draw in desired sized
-        else if (actualWidth >= visualTreeNode.PreferredWidth && actualHeight < visualTreeNode.PreferredHeight) {
-          visualTreeNode.Width = visualTreeNode.PreferredWidth;
-          visualTreeNode.Height = actualHeight;
-          visualTreeNode.X = (int)center_x - visualTreeNode.Width / 2;
-          visualTreeNode.Y = y;
-        }
-          //width and height too small to draw in desired size
-        else {
-          visualTreeNode.Width = actualWidth;
-          visualTreeNode.Height = actualHeight;
-          visualTreeNode.X = x;
-          visualTreeNode.Y = y;
-        }
-
-        //draw terminal node
-        if (node.SubtreeCount == 0) {
-          graphics.FillRectangle(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-          graphics.DrawRectangle(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-        } else {
-          graphics.FillEllipse(nodeFillBrush, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-          graphics.DrawEllipse(nodeLinePen, visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height);
-        }
-
-        //draw name of symbol
-        var text = node.ToString();
-        graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
-
-        //draw connection line to parent node
-        if (!connectionPoint.IsEmpty && node.Parent != null) {
-          var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(node.Parent, node);
-          using (Pen linePen = new Pen(visualLine.LineColor)) {
+    #region methods for painting the symbolic expression tree
+    private void DrawFunctionTree(Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
+      CalculateLayout(preferredWidth, preferredHeight, minHDistance, minVDistance);
+      var visualNodes = visualTreeNodes.Values;
+      //draw nodes and connections
+      foreach (var visualNode in visualNodes) {
+        DrawTreeNode(graphics, visualNode);
+        var node = visualNode.Content;
+        foreach (var subtree in node.Subtrees) {
+          var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(node, subtree);
+          var visualSubtree = visualTreeNodes[subtree];
+          var origin = new Point(visualNode.X + visualNode.Width / 2, visualNode.Y + visualNode.Height);
+          var target = new Point(visualSubtree.X + visualSubtree.Width / 2, visualSubtree.Y);
+          graphics.Clip = new Region(new Rectangle(Math.Min(origin.X, target.X), origin.Y, Math.Max(origin.X, target.X), target.Y));
+          using (var linePen = new Pen(visualLine.LineColor)) {
             linePen.DashStyle = visualLine.DashStyle;
-            graphics.DrawLine(linePen, connectionPoint, new Point(visualTreeNode.X + visualTreeNode.Width / 2, visualTreeNode.Y));
+            graphics.DrawLine(linePen, origin, target);
           }
         }
-
-        //calculate areas for the subtrees according to their tree size and call drawFunctionTree
-        Point connectFrom = new Point(visualTreeNode.X + visualTreeNode.Width / 2, visualTreeNode.Y + visualTreeNode.Height);
-        int[] xBoundaries = new int[node.SubtreeCount + 1];
-        xBoundaries[0] = x;
-        for (int i = 0; i < node.SubtreeCount; i++) {
-          xBoundaries[i + 1] = (int)(xBoundaries[i] + (width * (double)node.GetSubtree(i).GetLength()) / (node.GetLength() - 1));
-          DrawFunctionTree(node.GetSubtree(i), graphics, xBoundaries[i], y + height, xBoundaries[i + 1] - xBoundaries[i], height, connectFrom);
-        }
       }
     }
 
-    protected void DrawTreeNode(VisualSymbolicExpressionTreeNode visualTreeNode) {
-      using (var graphics = Graphics.FromImage(image)) {
-        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
-        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-        DrawTreeNode(graphics, visualTreeNode);
-      }
-    }
-
-    protected void DrawTreeNode(Graphics graphics, VisualSymbolicExpressionTreeNode visualTreeNode) {
+    protected void DrawTreeNode(Graphics graphics, VisualTreeNode<ISymbolicExpressionTreeNode> visualTreeNode) {
       graphics.Clip = new Region(new Rectangle(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width + 1, visualTreeNode.Height + 1));
       graphics.Clear(backgroundColor);
-      var node = visualTreeNode.SymbolicExpressionTreeNode;
+      var node = visualTreeNode.Content;
       using (var textBrush = new SolidBrush(visualTreeNode.TextColor))
       using (var nodeLinePen = new Pen(visualTreeNode.LineColor))
       using (var nodeFillBrush = new SolidBrush(visualTreeNode.FillColor)) {
@@ -361,10 +337,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         //draw name of symbol
         var text = node.ToString();
         graphics.DrawString(text, textFont, textBrush, new RectangleF(visualTreeNode.X, visualTreeNode.Y, visualTreeNode.Width, visualTreeNode.Height), stringFormat);
+      }
+    }
+
+    protected void DrawLine(Graphics graphics, VisualTreeNode<ISymbolicExpressionTreeNode> startNode, VisualTreeNode<ISymbolicExpressionTreeNode> endNode) {
+      var origin = new Point(startNode.X + startNode.Width / 2, startNode.Y + startNode.Height);
+      var target = new Point(endNode.X + endNode.Width / 2, endNode.Y);
+      graphics.Clip = new Region(new Rectangle(Math.Min(origin.X, target.X), origin.Y, Math.Max(origin.X, target.X), target.Y));
+      var visualLine = GetVisualSymbolicExpressionTreeNodeConnection(startNode.Content, endNode.Content);
+      using (var linePen = new Pen(visualLine.LineColor)) {
+        linePen.DashStyle = visualLine.DashStyle;
+        graphics.DrawLine(linePen, origin, target);
       }
     }
     #endregion
-
     #region save image
     private void saveImageToolStripMenuItem_Click(object sender, EventArgs e) {
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
@@ -379,8 +365,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (tree == null) return;
       Image image = new Bitmap(Width, Height);
       using (Graphics g = Graphics.FromImage(image)) {
-        int height = this.Height / tree.Depth;
-        DrawFunctionTree(tree, g, 0, 0, Width, height);
+        DrawFunctionTree(g, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
       }
       image.Save(filename);
     }
@@ -390,13 +375,52 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       using (Graphics g = CreateGraphics()) {
         using (Metafile file = new Metafile(filename, g.GetHdc())) {
           using (Graphics emfFile = Graphics.FromImage(file)) {
-            int height = this.Height / tree.Depth;
-            DrawFunctionTree(tree, emfFile, 0, 0, Width, height);
+            DrawFunctionTree(emfFile, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
           }
         }
         g.ReleaseHdc();
       }
     }
     #endregion
+    #region export pgf/tikz
+    private void exportLatexToolStripMenuItem_Click(object sender, EventArgs e) {
+      var t = Tree;
+      if (t == null) return;
+      using (var dialog = new SaveFileDialog { Filter = "Tex (*.tex)|*.tex" }) {
+        if (dialog.ShowDialog() != DialogResult.OK) return;
+        string filename = dialog.FileName.ToLower();
+        var formatter = new SymbolicExpressionTreeLatexFormatter();
+        File.WriteAllText(filename, formatter.Format(t));
+      }
+    }
+    #endregion
+
+    private void reingoldTilfordToolStripMenuItem_Click(object sender, EventArgs e) {
+      minHorizontalDistance = 30;
+      minVerticalDistance = 30;
+      layoutEngine = new ReingoldTilfordLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees) {
+        NodeWidth = preferredNodeWidth,
+        NodeHeight = preferredNodeHeight,
+        HorizontalSpacing = minHorizontalDistance,
+        VerticalSpacing = minVerticalDistance
+      };
+      reingoldTilfordToolStripMenuItem.Checked = true;
+      boxesToolStripMenuItem.Checked = false;
+      Repaint();
+    }
+
+    private void boxesToolStripMenuItem_Click(object sender, EventArgs e) {
+      minHorizontalDistance = 5;
+      minVerticalDistance = 5;
+      layoutEngine = new BoxesLayoutEngine<ISymbolicExpressionTreeNode>(n => n.Subtrees, n => n.GetLength(), n => n.GetDepth()) {
+        NodeWidth = preferredNodeWidth,
+        NodeHeight = preferredNodeHeight,
+        HorizontalSpacing = minHorizontalDistance,
+        VerticalSpacing = minVerticalDistance
+      };
+      reingoldTilfordToolStripMenuItem.Checked = false;
+      boxesToolStripMenuItem.Checked = true;
+      Repaint();
+    }
   }
 }
