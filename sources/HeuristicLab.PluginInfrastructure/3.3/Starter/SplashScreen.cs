@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -44,8 +43,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
 
       RegisterPluginManagerEventHandlers();
 
-      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
-      versionLabel.Text = "Version " + pluginInfrastructureVersion.FileVersion;
+      versionLabel.Text = "Version " + AssemblyHelpers.GetFileVersion(GetType().Assembly);
       infoLabel.Text = "";
 
       var attr = (AssemblyCopyrightAttribute)this.GetType().Assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false).Single();

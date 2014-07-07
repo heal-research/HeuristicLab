@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -59,8 +58,7 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       largeImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.UpdateAvailable.ToBitmap());
       smallImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.HeuristicLab.ToBitmap());
       smallImageList.Images.Add(HeuristicLab.PluginInfrastructure.Resources.UpdateAvailable.ToBitmap());
-      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
-      Text = "HeuristicLab " + pluginInfrastructureVersion.FileVersion;
+      Text = "HeuristicLab " + AssemblyHelpers.GetFileVersion(GetType().Assembly);
 
       string pluginPath = Path.GetFullPath(Application.StartupPath);
       pluginManager = new PluginManager(pluginPath);
@@ -203,10 +201,9 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     }
 
     private void AddPluginManagerItem() {
-      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
       pluginManagerListViewItem = new ListViewItem(pluginManagerItemName, 0);
       pluginManagerListViewItem.Group = applicationsListView.Groups["Plugin Management"];
-      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, pluginInfrastructureVersion.FileVersion));
+      pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, AssemblyHelpers.GetFileVersion(GetType().Assembly)));
       pluginManagerListViewItem.SubItems.Add(new ListViewItem.ListViewSubItem(pluginManagerListViewItem, "Install, upgrade or delete plugins"));
       pluginManagerListViewItem.ToolTipText = "Install, upgrade or delete plugins";
 

@@ -21,7 +21,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,8 +37,7 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     public PluginUpdaterForm(PluginManager pluginManager)
       : base() {
       InitializeComponent();
-      FileVersionInfo pluginInfrastructureVersion = FileVersionInfo.GetVersionInfo(GetType().Assembly.Location);
-      Text = "HeuristicLab Plugin Manager " + pluginInfrastructureVersion.FileVersion;
+      Text = "HeuristicLab Plugin Manager " + AssemblyHelpers.GetFileVersion(GetType().Assembly);
       pluginManager.PluginLoaded += pluginManager_PluginLoaded;
       pluginManager.PluginUnloaded += pluginManager_PluginUnloaded;
       pluginManager.Initializing += pluginManager_Initializing;
