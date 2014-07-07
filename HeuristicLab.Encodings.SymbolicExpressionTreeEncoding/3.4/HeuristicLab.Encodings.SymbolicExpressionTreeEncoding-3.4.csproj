@@ -134,7 +134,6 @@
     </Compile>
     <Compile Include="Creators\RampedHalfAndHalfTreeCreator.cs" />
     <Compile Include="Formatters\SymbolicExpressionTreeGraphvizFormatter.cs" />
-    <Compile Include="Formatters\SymbolicExpressionTreeHierarchicalFormatter.cs" />
     <Compile Include="Interfaces\IReadOnlySymbol.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammarBase.cs" />
