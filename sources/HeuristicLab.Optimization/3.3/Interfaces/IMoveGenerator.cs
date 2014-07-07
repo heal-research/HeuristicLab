@@ -25,6 +25,9 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents an operator for generating moves.
   /// </summary>
+  /// <remarks>
+  /// Please read the remarks on <see cref="IMoveOperator"/> on how to implement moves.
+  /// </remarks>
   public interface IMoveGenerator : IOperator {
   }
 }
