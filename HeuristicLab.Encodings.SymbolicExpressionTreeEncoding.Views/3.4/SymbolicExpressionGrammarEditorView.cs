@@ -83,6 +83,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
         foreach (var node in IterateTreeNodes())
           if (node.Checked) node.Expand();
 
+        //mkommend: scrolls to the top node
+        symbolsTreeView.Nodes[0].EnsureVisible();
+
         allowedChildSymbolsControl.Grammar = Content;
         allowedChildSymbolsControl.Symbol = null;
         symbolDetailsViewHost.Content = null;
@@ -135,7 +138,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       var groupSymbols = symbols.OfType<GroupSymbol>().ToList();
       var topLevelSymbols = Content.Symbols.Where(s => !groupSymbols.Any(g => g.Symbols.Contains(s)));
       UpdateChildTreeNodes(symbolsTreeView.Nodes, topLevelSymbols);
-
       RebuildImageList();
     }
 
