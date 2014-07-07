@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Drawing;
+
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
   partial class GraphicalSymbolicExpressionTreeView {
     /// <summary> 
@@ -58,7 +60,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.symbolicExpressionTreeChart.Size = new System.Drawing.Size(407, 367);
       this.symbolicExpressionTreeChart.Spacing = 5;
       this.symbolicExpressionTreeChart.TabIndex = 0;
-      this.symbolicExpressionTreeChart.TextFont = new System.Drawing.Font("Times New Roman", 6F);
+      this.symbolicExpressionTreeChart.TextFont = new System.Drawing.Font(FontFamily.GenericSerif, 8F);
       // 
       // FunctionTreeView
       // 

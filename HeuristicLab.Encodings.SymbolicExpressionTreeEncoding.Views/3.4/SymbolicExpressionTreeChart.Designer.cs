@@ -48,6 +48,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.exportPgfLaTeXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.layoutEngineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.reingoldTilfordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.boxesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
@@ -55,26 +59,58 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       // contextMenuStrip
       // 
       this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveImageToolStripMenuItem});
+            this.saveImageToolStripMenuItem,
+            this.exportPgfLaTeXToolStripMenuItem,
+            this.layoutEngineToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
-      this.contextMenuStrip.Size = new System.Drawing.Size(135, 26);
+      this.contextMenuStrip.Size = new System.Drawing.Size(166, 70);
       // 
       // saveImageToolStripMenuItem
       // 
       this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+      this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
       this.saveImageToolStripMenuItem.Text = "Save Image";
       this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
+      // 
+      // exportPgfLaTeXToolStripMenuItem
+      // 
+      this.exportPgfLaTeXToolStripMenuItem.Name = "exportPgfLaTeXToolStripMenuItem";
+      this.exportPgfLaTeXToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+      this.exportPgfLaTeXToolStripMenuItem.Text = "Export Pgf/LaTeX";
+      this.exportPgfLaTeXToolStripMenuItem.Click += new System.EventHandler(this.exportLatexToolStripMenuItem_Click);
+      // 
+      // layoutEngineToolStripMenuItem
+      // 
+      this.layoutEngineToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.reingoldTilfordToolStripMenuItem,
+            this.boxesToolStripMenuItem});
+      this.layoutEngineToolStripMenuItem.Name = "layoutEngineToolStripMenuItem";
+      this.layoutEngineToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+      this.layoutEngineToolStripMenuItem.Text = "Layout Engine:";
+      // 
+      // reingoldTilfordToolStripMenuItem
+      // 
+      this.reingoldTilfordToolStripMenuItem.Name = "reingoldTilfordToolStripMenuItem";
+      this.reingoldTilfordToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.reingoldTilfordToolStripMenuItem.Text = "Reingold-Tilford";
+      this.reingoldTilfordToolStripMenuItem.Click += new System.EventHandler(this.reingoldTilfordToolStripMenuItem_Click);
+      // 
+      // boxesToolStripMenuItem
+      // 
+      this.boxesToolStripMenuItem.Name = "boxesToolStripMenuItem";
+      this.boxesToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+      this.boxesToolStripMenuItem.Text = "Boxes";
+      this.boxesToolStripMenuItem.Click += new System.EventHandler(this.boxesToolStripMenuItem_Click);
       // 
       // saveFileDialog
       // 
       this.saveFileDialog.Filter = "Bitmap (*.bmp)|*.bmp|EMF (*.emf)|*.emf";
-      this.saveFileDialog.FilterIndex = 1;
+      // 
       // SymbolicExpressionTreeChart
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.ContextMenuStrip = this.contextMenuStrip;
+      this.DoubleBuffered = true;
       this.Name = "SymbolicExpressionTreeChart";
       this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseClick);
       this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SymbolicExpressionTreeChart_MouseDoubleClick);
@@ -92,5 +128,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     protected System.Windows.Forms.ContextMenuStrip contextMenuStrip;
     protected System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
     protected System.Windows.Forms.SaveFileDialog saveFileDialog;
+    private System.Windows.Forms.ToolStripMenuItem exportPgfLaTeXToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem layoutEngineToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem reingoldTilfordToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem boxesToolStripMenuItem;
   }
 }
