@@ -19,12 +19,26 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
+  [StorableClass]
+  [Item("SymbolicClassificationSolutionImpactValuesCalculator", "Calculate symbolic expression tree node impact values for classification problems.")]
   public class SymbolicClassificationSolutionImpactValuesCalculator : SymbolicDataAnalysisSolutionImpactValuesCalculator {
+    public SymbolicClassificationSolutionImpactValuesCalculator() { }
+    protected SymbolicClassificationSolutionImpactValuesCalculator(SymbolicClassificationSolutionImpactValuesCalculator original, Cloner cloner)
+      : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SymbolicClassificationSolutionImpactValuesCalculator(this, cloner);
+    }
+    [StorableConstructor]
+    protected SymbolicClassificationSolutionImpactValuesCalculator(bool deserializing) : base(deserializing) { }
+
     public override double CalculateReplacementValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows) {
       var classificationModel = (ISymbolicClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)problemData;
@@ -33,6 +47,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     public override double CalculateImpactValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, double originalQuality = double.NaN) {
+      double impactValue, replacementValue;
+      CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, originalQuality);
+      return impactValue;
+    }
+
+    public override void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node,
+      IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue,
+      double originalQuality = Double.NaN) {
       var classificationModel = (ISymbolicClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)problemData;
 
@@ -46,7 +68,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         if (errorState != OnlineCalculatorError.None) originalQuality = 0.0;
       }
 
-      var replacementValue = CalculateReplacementValue(classificationModel, node, classificationProblemData, rows);
+      replacementValue = CalculateReplacementValue(classificationModel, node, classificationProblemData, rows);
       var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
 
       var cloner = new Cloner();
@@ -62,8 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       double newQuality = OnlineAccuracyCalculator.Calculate(targetClassValues, estimatedClassValues, out errorState);
       if (errorState != OnlineCalculatorError.None) newQuality = 0.0;
 
-      return originalQuality - newQuality;
+      impactValue = originalQuality - newQuality;
     }
-
   }
 }
