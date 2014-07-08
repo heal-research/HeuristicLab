@@ -21,9 +21,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
+
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Error Characteristics Curve")]
   [Content(typeof(ITimeSeriesPrognosisSolution))]
@@ -50,14 +49,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       base.UpdateChart();
       if (Content == null) return;
 
-      //AR1 model
-      double alpha, beta;
-      OnlineCalculatorError errorState;
       IEnumerable<double> trainingStartValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices.Select(r => r - 1).Where(r => r > 0)).ToList();
-      OnlineLinearScalingParameterCalculator.Calculate(ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices.Where(x => x > 0)), trainingStartValues, out alpha, out beta, out errorState);
-      var AR1model = new TimeSeriesPrognosisAutoRegressiveModel(ProblemData.TargetVariable, new double[] { beta }, alpha).CreateTimeSeriesPrognosisSolution(ProblemData);
-      AR1model.Name = "AR(1) Model";
-      AddRegressionSolution(AR1model);
+      if (trainingStartValues.Any()) {
+        //AR1 model
+        double alpha, beta;
+        OnlineCalculatorError errorState;
+        OnlineLinearScalingParameterCalculator.Calculate(ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices.Where(x => x > 0)), trainingStartValues, out alpha, out beta, out errorState);
+        var ar1model = new TimeSeriesPrognosisAutoRegressiveModel(ProblemData.TargetVariable, new double[] { beta }, alpha).CreateTimeSeriesPrognosisSolution(ProblemData);
+        ar1model.Name = "AR(1) Model";
+        AddRegressionSolution(ar1model);
+      }
     }
   }
 }

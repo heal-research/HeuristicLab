@@ -98,24 +98,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected virtual void UpdateChart() {
       chart.Series.Clear();
       chart.Annotations.Clear();
+
       if (Content == null) return;
+      if (cmbSamples.SelectedItem.ToString() == TrainingSamples && !ProblemData.TrainingIndices.Any()) return;
+      if (cmbSamples.SelectedItem.ToString() == TestSamples && !ProblemData.TestIndices.Any()) return;
 
-      var constantModel = CreateConstantModel();
-      var originalValues = GetOriginalValues().ToList();
-      var baselineEstimatedValues = GetEstimatedValues(constantModel);
-      var baselineResiduals = GetResiduals(originalValues, baselineEstimatedValues);
+      if (Content.ProblemData.TrainingIndices.Any()) {
+        var constantModel = CreateConstantModel();
+        var originalValues = GetOriginalValues().ToList();
+        var baselineEstimatedValues = GetEstimatedValues(constantModel);
+        var baselineResiduals = GetResiduals(originalValues, baselineEstimatedValues);
 
-      baselineResiduals.Sort();
-      chart.ChartAreas[0].AxisX.Maximum = Math.Ceiling(baselineResiduals.Last());
-      chart.ChartAreas[0].CursorX.Interval = baselineResiduals.First() / 100;
-
-      Series baselineSeries = new Series("Baseline");
-      baselineSeries.ChartType = SeriesChartType.FastLine;
-      UpdateSeries(baselineResiduals, baselineSeries);
-      baselineSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(baselineSeries);
-      baselineSeries.Tag = constantModel;
-      baselineSeries.LegendToolTip = "Double-click to open model";
-      chart.Series.Add(baselineSeries);
+        Series baselineSeries = new Series("Baseline");
+        baselineSeries.ChartType = SeriesChartType.FastLine;
+        UpdateSeries(baselineResiduals, baselineSeries);
+        baselineSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(baselineSeries);
+        baselineSeries.Tag = constantModel;
+        baselineSeries.LegendToolTip = "Double-click to open model";
+        chart.Series.Add(baselineSeries);
+      }
 
       AddRegressionSolution(Content);
     }
@@ -126,8 +127,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Series solutionSeries = new Series(solution.Name);
       solutionSeries.Tag = solution;
       solutionSeries.ChartType = SeriesChartType.FastLine;
-      var estimatedValues = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
-      UpdateSeries(estimatedValues, solutionSeries);
+      var residuals = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
+      
+      chart.ChartAreas[0].AxisX.Maximum = Math.Ceiling(residuals.Max());
+      chart.ChartAreas[0].CursorX.Interval = residuals.Min() / 100;
+
+      UpdateSeries(residuals, solutionSeries);
+
       solutionSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(solutionSeries);
       solutionSeries.LegendToolTip = "Double-click to open model";
       chart.Series.Add(solutionSeries);
@@ -235,7 +241,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private IRegressionSolution CreateConstantModel() {
       double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average();
       var model = new ConstantRegressionModel(averageTrainingTarget);
-      var solution = new ConstantRegressionSolution(model,(IRegressionProblemData)ProblemData.Clone());
+      var solution = new ConstantRegressionSolution(model, (IRegressionProblemData)ProblemData.Clone());
       solution.Name = "Baseline";
       return solution;
     }

@@ -59,6 +59,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       if (Content == null) throw new InvalidOperationException();
       double rmse, cvRmsError;
       var problemData = (IRegressionProblemData)ProblemData.Clone();
+      if(!problemData.TrainingIndices.Any()) return null; // don't create an LR model if the problem does not have a training set (e.g. loaded into an existing model)
 
       //clear checked inputVariables
       foreach (var inputVariable in problemData.InputVariables.CheckedItems) {

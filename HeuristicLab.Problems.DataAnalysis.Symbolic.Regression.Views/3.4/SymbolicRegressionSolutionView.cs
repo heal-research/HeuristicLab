@@ -21,6 +21,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
@@ -41,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
-      btnSimplify.Enabled = Content != null && !Locked;
+      btnSimplify.Enabled = Content != null && !Locked && Content.ProblemData.TrainingIndices.Any(); // simplification is only possible if there are trainings samples
       exportButton.Enabled = Content != null && !Locked;
     }
 
