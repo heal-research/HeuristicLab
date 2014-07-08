@@ -112,11 +112,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     private IEnumerable<KeyValuePair<string, IDataAnalysisSolution>> GetDataAnalysisResults(IEnumerable<IRun> runs) {
       var cloner = new Cloner();
       var allResults = from r in runs
+                       where r.Visible
                        select r.Results;
       return from r in allResults
              from result in r
-             let s = cloner.Clone(result.Value) as IDataAnalysisSolution
-             where s != null
+             let solution = result.Value as IDataAnalysisSolution
+             where solution != null
+             let s = (IDataAnalysisSolution)cloner.Clone(result.Value)
              select new KeyValuePair<string, IDataAnalysisSolution>(result.Key, s);
     }
   }
