@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.PluginInfrastructure;
 
@@ -119,7 +120,14 @@ namespace HeuristicLab.Optimizer {
           saveFileDialog.Filter = "Uncompressed HeuristicLab Files|*.hl|HeuristicLab Files|*.hl|All Files|*.*";
           saveFileDialog.FilterIndex = 2;
         }
-        saveFileDialog.FileName = string.IsNullOrEmpty(content.Filename) ? "Item" : content.Filename;
+
+        INamedItem namedItem = content as INamedItem;
+        string suggestedFileName = string.Empty;
+        if (!string.IsNullOrEmpty(content.Filename)) suggestedFileName = content.Filename;
+        else if (namedItem != null) suggestedFileName = namedItem.Name;
+        else suggestedFileName = "Item";
+
+        saveFileDialog.FileName = suggestedFileName;
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK) {
           MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().SetAppStartingCursor();
