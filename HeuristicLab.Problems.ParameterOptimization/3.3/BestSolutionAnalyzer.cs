@@ -100,26 +100,25 @@ namespace HeuristicLab.Problems.ParameterOptimization {
 
       var bestQuality = qualities[indexOfBest].Value;
       var bestParameterVector = (RealVector)parameterVectors[indexOfBest].Clone();
+      ResultCollection results = ResultsParameter.ActualValue;
 
       if (BestQualityParameter.ActualValue == null) {
         if (max) BestQualityParameter.ActualValue = new DoubleValue(double.MinValue);
         else BestQualityParameter.ActualValue = new DoubleValue(double.MaxValue);
       }
 
-      if (max && bestQuality > BestQualityParameter.ActualValue.Value
-          || !max && bestQuality < BestQualityParameter.ActualValue.Value) {
+      if (!results.ContainsKey(BestSolutionResultName)) {
+        results.Add(new Result(BestSolutionResultName, new DoubleArray(bestParameterVector.ToArray())));
+        var bestSolution = (DoubleArray)results[BestSolutionResultName].Value;
+        bestSolution.ElementNames = ParameterNamesParameter.ActualValue;
         BestQualityParameter.ActualValue.Value = bestQuality;
-        ResultCollection results = ResultsParameter.ActualValue;
-        if (results.ContainsKey(BestSolutionResultName)) {
-          var bestSolution = (DoubleArray)results[BestSolutionResultName].Value;
-          bestSolution.ElementNames = ParameterNamesParameter.ActualValue;
-          for (int i = 0; i < bestParameterVector.Length; i++)
-            bestSolution[i] = bestParameterVector[i];
-        } else {
-          results.Add(new Result(BestSolutionResultName, new DoubleArray(bestParameterVector.ToArray())));
-          var bestSolution = (DoubleArray)results[BestSolutionResultName].Value;
-          bestSolution.ElementNames = ParameterNamesParameter.ActualValue;
-        }
+      } else if (max && bestQuality > BestQualityParameter.ActualValue.Value
+                || !max && bestQuality < BestQualityParameter.ActualValue.Value) {
+        var bestSolution = (DoubleArray)results[BestSolutionResultName].Value;
+        bestSolution.ElementNames = ParameterNamesParameter.ActualValue;
+        for (int i = 0; i < bestParameterVector.Length; i++)
+          bestSolution[i] = bestParameterVector[i];
+        BestQualityParameter.ActualValue.Value = bestQuality;
       }
 
       //update best known quality
