@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationProblemData : IDataAnalysisProblemData {
-    string TargetVariable { get; }
+    string TargetVariable { get; set; }
 
     IEnumerable<string> ClassNames { get; }
     IEnumerable<double> ClassValues { get; }

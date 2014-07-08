@@ -42,5 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     bool IsTestSample(int index);
 
     event EventHandler Changed;
+
+    void AdjustProblemDataProperties(IDataAnalysisProblemData problemData);
   }
 }

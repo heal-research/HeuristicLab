@@ -148,7 +148,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     protected void CalculateTimeSeriesResults() {
       OnlineCalculatorError errorState;
-      double trainingMean = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average();
+      double trainingMean = ProblemData.TrainingIndices.Any() ? ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average() : double.NaN;
       var meanModel = new ConstantTimeSeriesPrognosisModel(trainingMean);
 
       double alpha, beta;
@@ -158,35 +158,39 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
 
       #region Calculate training quality measures
-      IEnumerable<double> trainingTargetValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToList();
-      IEnumerable<double> trainingEstimatedValues = EstimatedTrainingValues.ToList();
-      IEnumerable<double> trainingMeanModelPredictions = meanModel.GetEstimatedValues(ProblemData.Dataset, ProblemData.TrainingIndices).ToList();
-      IEnumerable<double> trainingAR1ModelPredictions = AR1model.GetEstimatedValues(ProblemData.Dataset, ProblemData.TrainingIndices).ToList();
+      if (ProblemData.TrainingIndices.Any()) {
+        IEnumerable<double> trainingTargetValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToList();
+        IEnumerable<double> trainingEstimatedValues = EstimatedTrainingValues.ToList();
+        IEnumerable<double> trainingMeanModelPredictions = meanModel.GetEstimatedValues(ProblemData.Dataset, ProblemData.TrainingIndices).ToList();
+        IEnumerable<double> trainingAR1ModelPredictions = AR1model.GetEstimatedValues(ProblemData.Dataset, ProblemData.TrainingIndices).ToList();
 
-      TrainingDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(trainingTargetValues.First(), trainingTargetValues, trainingEstimatedValues, out errorState);
-      TrainingDirectionalSymmetry = errorState == OnlineCalculatorError.None ? TrainingDirectionalSymmetry : 0.0;
-      TrainingWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(trainingTargetValues.First(), trainingTargetValues, trainingEstimatedValues, out errorState);
-      TrainingWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? TrainingWeightedDirectionalSymmetry : 0.0;
-      TrainingTheilsUStatisticAR1 = OnlineTheilsUStatisticCalculator.Calculate(trainingTargetValues.First(), trainingTargetValues, trainingAR1ModelPredictions, trainingEstimatedValues, out errorState);
-      TrainingTheilsUStatisticAR1 = errorState == OnlineCalculatorError.None ? TrainingTheilsUStatisticAR1 : double.PositiveInfinity;
-      TrainingTheilsUStatisticMean = OnlineTheilsUStatisticCalculator.Calculate(trainingTargetValues.First(), trainingTargetValues, trainingMeanModelPredictions, trainingEstimatedValues, out errorState);
-      TrainingTheilsUStatisticMean = errorState == OnlineCalculatorError.None ? TrainingTheilsUStatisticMean : double.PositiveInfinity;
+        TrainingDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(trainingTargetValues.First(), trainingTargetValues, trainingEstimatedValues, out errorState);
+        TrainingDirectionalSymmetry = errorState == OnlineCalculatorError.None ? TrainingDirectionalSymmetry : 0.0;
+        TrainingWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(trainingTargetValues.First(), trainingTargetValues, trainingEstimatedValues, out errorState);
+        TrainingWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? TrainingWeightedDirectionalSymmetry : 0.0;
+        TrainingTheilsUStatisticAR1 = OnlineTheilsUStatisticCalculator.Calculate(trainingTargetValues.First(), trainingTargetValues, trainingAR1ModelPredictions, trainingEstimatedValues, out errorState);
+        TrainingTheilsUStatisticAR1 = errorState == OnlineCalculatorError.None ? TrainingTheilsUStatisticAR1 : double.PositiveInfinity;
+        TrainingTheilsUStatisticMean = OnlineTheilsUStatisticCalculator.Calculate(trainingTargetValues.First(), trainingTargetValues, trainingMeanModelPredictions, trainingEstimatedValues, out errorState);
+        TrainingTheilsUStatisticMean = errorState == OnlineCalculatorError.None ? TrainingTheilsUStatisticMean : double.PositiveInfinity;
+      }
       #endregion
 
       #region Calculate test quality measures
-      IEnumerable<double> testTargetValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices).ToList();
-      IEnumerable<double> testEstimatedValues = EstimatedTestValues.ToList();
-      IEnumerable<double> testMeanModelPredictions = meanModel.GetEstimatedValues(ProblemData.Dataset, ProblemData.TestIndices).ToList();
-      IEnumerable<double> testAR1ModelPredictions = AR1model.GetEstimatedValues(ProblemData.Dataset, ProblemData.TestIndices).ToList();
+      if (ProblemData.TestIndices.Any()) {
+        IEnumerable<double> testTargetValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices).ToList();
+        IEnumerable<double> testEstimatedValues = EstimatedTestValues.ToList();
+        IEnumerable<double> testMeanModelPredictions = meanModel.GetEstimatedValues(ProblemData.Dataset, ProblemData.TestIndices).ToList();
+        IEnumerable<double> testAR1ModelPredictions = AR1model.GetEstimatedValues(ProblemData.Dataset, ProblemData.TestIndices).ToList();
 
-      TestDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(testTargetValues.First(), testTargetValues, testEstimatedValues, out errorState);
-      TestDirectionalSymmetry = errorState == OnlineCalculatorError.None ? TestDirectionalSymmetry : 0.0;
-      TestWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(testTargetValues.First(), testTargetValues, testEstimatedValues, out errorState);
-      TestWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? TestWeightedDirectionalSymmetry : 0.0;
-      TestTheilsUStatisticAR1 = OnlineTheilsUStatisticCalculator.Calculate(testTargetValues.First(), testTargetValues, testAR1ModelPredictions, testEstimatedValues, out errorState);
-      TestTheilsUStatisticAR1 = errorState == OnlineCalculatorError.None ? TestTheilsUStatisticAR1 : double.PositiveInfinity;
-      TestTheilsUStatisticMean = OnlineTheilsUStatisticCalculator.Calculate(testTargetValues.First(), testTargetValues, testMeanModelPredictions, testEstimatedValues, out errorState);
-      TestTheilsUStatisticMean = errorState == OnlineCalculatorError.None ? TestTheilsUStatisticMean : double.PositiveInfinity;
+        TestDirectionalSymmetry = OnlineDirectionalSymmetryCalculator.Calculate(testTargetValues.First(), testTargetValues, testEstimatedValues, out errorState);
+        TestDirectionalSymmetry = errorState == OnlineCalculatorError.None ? TestDirectionalSymmetry : 0.0;
+        TestWeightedDirectionalSymmetry = OnlineWeightedDirectionalSymmetryCalculator.Calculate(testTargetValues.First(), testTargetValues, testEstimatedValues, out errorState);
+        TestWeightedDirectionalSymmetry = errorState == OnlineCalculatorError.None ? TestWeightedDirectionalSymmetry : 0.0;
+        TestTheilsUStatisticAR1 = OnlineTheilsUStatisticCalculator.Calculate(testTargetValues.First(), testTargetValues, testAR1ModelPredictions, testEstimatedValues, out errorState);
+        TestTheilsUStatisticAR1 = errorState == OnlineCalculatorError.None ? TestTheilsUStatisticAR1 : double.PositiveInfinity;
+        TestTheilsUStatisticMean = OnlineTheilsUStatisticCalculator.Calculate(testTargetValues.First(), testTargetValues, testMeanModelPredictions, testEstimatedValues, out errorState);
+        TestTheilsUStatisticMean = errorState == OnlineCalculatorError.None ? TestTheilsUStatisticMean : double.PositiveInfinity;
+      }
       #endregion
     }
 

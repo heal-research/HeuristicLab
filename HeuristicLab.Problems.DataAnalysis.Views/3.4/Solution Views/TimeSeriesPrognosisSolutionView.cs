@@ -43,6 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
       if (dropData is ITimeSeriesPrognosisProblemData) validDragOperation = true;
+      else if (dropData is ITimeSeriesPrognosisProblem) validDragOperation = true;
       else if (dropData is IValueParameter) {
         var param = (IValueParameter)dropData;
         if (param.Value is ITimeSeriesPrognosisProblemData) validDragOperation = true;
