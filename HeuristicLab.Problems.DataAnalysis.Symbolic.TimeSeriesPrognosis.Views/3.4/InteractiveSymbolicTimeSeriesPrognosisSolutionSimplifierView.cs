@@ -48,22 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
       tempTree = new SymbolicExpressionTree(root);
     }
 
-    protected override void UpdateModel(ISymbolicExpressionTree tree) {
-      var model = new SymbolicTimeSeriesPrognosisModel(tree, Content.Model.Interpreter);
-      model.Scale(Content.ProblemData);
-      Content.Model = model;
-    }
-
-    protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {
-      Dictionary<ISymbolicExpressionTreeNode, double> replacementValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
-      foreach (var componentBranch in tree.Root.GetSubtree(0).Subtrees)
-        foreach (ISymbolicExpressionTreeNode node in componentBranch.IterateNodesPrefix()) {
-          replacementValues[node] = CalculateReplacementValue(node, tree);
-        }
-      return replacementValues;
-    }
-
-    protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree) {
+    protected override Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree) {
       var interpreter = Content.Model.Interpreter;
       var rows = Content.ProblemData.TrainingIndices;
       var dataset = Content.ProblemData.Dataset;
@@ -71,7 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
       var targetValues = dataset.GetDoubleValues(targetVariable, rows);
       var originalOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows).ToArray();
 
-      Dictionary<ISymbolicExpressionTreeNode, double> impactValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
+      var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
       List<ISymbolicExpressionTreeNode> nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPostfix().ToList();
       OnlineCalculatorError errorState;
       double originalR2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, originalOutput, out errorState);
@@ -89,10 +74,31 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
         // impact = 0 if no change
         // impact < 0 if new solution is better
         // impact > 0 if new solution is worse
-        impactValues[node] = originalR2 - newR2;
+        double impact = originalR2 - newR2;
+        impactAndReplacementValues[node] = new Tuple<double, double>(impact, constantNode.Value);
         SwitchNode(parent, replacementNode, node);
       }
-      return impactValues;
+      return impactAndReplacementValues;
+    }
+
+    protected override void UpdateModel(ISymbolicExpressionTree tree) {
+      var model = new SymbolicTimeSeriesPrognosisModel(tree, Content.Model.Interpreter);
+      model.Scale(Content.ProblemData);
+      Content.Model = model;
+    }
+
+    protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {
+      var replacementValues = new Dictionary<ISymbolicExpressionTreeNode, double>();
+      foreach (var componentBranch in tree.Root.GetSubtree(0).Subtrees)
+        foreach (ISymbolicExpressionTreeNode node in componentBranch.IterateNodesPrefix()) {
+          replacementValues[node] = CalculateReplacementValue(node, tree);
+        }
+      return replacementValues;
+    }
+
+    protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree) {
+      var impactAndReplacementValues = CalculateImpactAndReplacementValues(tree);
+      return impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1); // item1 of the tuple is the impact value
     }
 
     private double CalculateReplacementValue(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree) {

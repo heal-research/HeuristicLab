@@ -58,7 +58,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       model.RecalculateModelParameters(Content.ProblemData, Content.ProblemData.TrainingIndices);
       return model;
     }
-
     protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree) {
       return tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToDictionary(
         n => n,
@@ -67,10 +66,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
     }
 
     protected override Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree) {
-      return tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToDictionary(
-        n => n,
-        n => calculator.CalculateImpactValue(Content.Model, n, Content.ProblemData, Content.ProblemData.TrainingIndices, Content.TrainingAccuracy)
-        );
+      var values = CalculateImpactAndReplacementValues(tree);
+      return values.ToDictionary(x => x.Key, x => x.Value.Item1);
+    }
+
+    protected override Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree) {
+      var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
+      foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix()) {
+        double impactValue, replacementValue;
+        calculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, out impactValue, out replacementValue);
+        impactAndReplacementValues.Add(node, new Tuple<double, double>(impactValue, replacementValue));
+      }
+      return impactAndReplacementValues;
     }
 
     protected override void btnOptimizeConstants_Click(object sender, EventArgs e) {
