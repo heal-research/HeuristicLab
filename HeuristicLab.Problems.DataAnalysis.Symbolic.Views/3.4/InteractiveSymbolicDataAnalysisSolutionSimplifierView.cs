@@ -81,17 +81,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var tree = Content.Model.SymbolicExpressionTree;
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
-      var replacementValues = CalculateReplacementValues(tree);
+      var impactAndReplacementValues = CalculateImpactAndReplacementValues(tree);
+      nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
+      var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
       foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
         foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
       }
-
-      nodeImpacts = CalculateImpactValues(tree);
       PaintNodeImpacts();
     }
 
     protected abstract Dictionary<ISymbolicExpressionTreeNode, double> CalculateReplacementValues(ISymbolicExpressionTree tree);
     protected abstract Dictionary<ISymbolicExpressionTreeNode, double> CalculateImpactValues(ISymbolicExpressionTree tree);
+    protected abstract Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree);
     protected abstract void UpdateModel(ISymbolicExpressionTree tree);
 
     private static ConstantTreeNode MakeConstantTreeNode(double value) {
