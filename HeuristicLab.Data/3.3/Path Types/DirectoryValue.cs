@@ -38,6 +38,7 @@ namespace HeuristicLab.Data {
     public DirectoryValue() : base() { }
 
     public override bool Exists() {
+      if (!Path.IsPathRooted(Value)) return false;
       return Directory.Exists(Value);
     }
   }

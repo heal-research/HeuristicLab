@@ -67,7 +67,9 @@ namespace HeuristicLab.Data.Views {
 
       if (Content != null && Content.Exists()) {
         fileSystemWatcher.Filter = Path.GetFileName(Content.Value);
-        fileSystemWatcher.Path = Path.GetDirectoryName(Content.Value);
+        var path = Path.GetDirectoryName(Content.Value);
+        if (string.IsNullOrEmpty(path)) path = Environment.CurrentDirectory;
+        fileSystemWatcher.Path = path;
       }
       fileSystemWatcher.EnableRaisingEvents = Content != null && File.Exists(Content.Value) && Visible;
     }

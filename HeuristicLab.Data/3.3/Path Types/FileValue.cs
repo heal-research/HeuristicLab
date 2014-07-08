@@ -55,6 +55,8 @@ namespace HeuristicLab.Data {
     }
 
     public override bool Exists() {
+      if (string.IsNullOrEmpty(Value)) return false;
+      if (string.IsNullOrEmpty(Path.GetDirectoryName(Value))) return false;
       return File.Exists(Value);
     }
   }
