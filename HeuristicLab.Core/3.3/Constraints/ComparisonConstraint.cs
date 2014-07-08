@@ -36,7 +36,7 @@ namespace HeuristicLab.Core {
       : base(constrainedValue, comparisonOperation, comparisonValue) {
     }
     public ComparisonConstraint(IItem constrainedValue, ConstraintOperation comparisonOperation, object comparisonValue, bool active)
-      : base(constrainedValue, comparisonOperation, comparisonOperation, active) {
+      : base(constrainedValue, comparisonOperation, comparisonValue, active) {
     }
 
     public override IEnumerable<ConstraintOperation> AllowedConstraintOperations {
