@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // oldValueTextBox
       // 
-      this.oldValueTextBox.Location = new System.Drawing.Point(123, 6);
+      this.oldValueTextBox.Location = new System.Drawing.Point(106, 6);
       this.oldValueTextBox.Name = "oldValueTextBox";
       this.oldValueTextBox.ReadOnly = true;
       this.oldValueTextBox.Size = new System.Drawing.Size(131, 20);
@@ -74,7 +74,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       // newValueTextBox
       // 
-      this.newValueTextBox.Location = new System.Drawing.Point(123, 42);
+      this.newValueTextBox.Location = new System.Drawing.Point(106, 32);
       this.newValueTextBox.Name = "newValueTextBox";
       this.newValueTextBox.Size = new System.Drawing.Size(131, 20);
       this.newValueTextBox.TabIndex = 0;
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // newValueLabel
       // 
       this.newValueLabel.AutoSize = true;
-      this.newValueLabel.Location = new System.Drawing.Point(12, 45);
+      this.newValueLabel.Location = new System.Drawing.Point(12, 35);
       this.newValueLabel.Name = "newValueLabel";
       this.newValueLabel.Size = new System.Drawing.Size(59, 13);
       this.newValueLabel.TabIndex = 5;
@@ -100,7 +100,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // okButton
       // 
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(15, 79);
+      this.okButton.Location = new System.Drawing.Point(81, 66);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 8;
@@ -112,7 +112,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // 
       this.cancelButton.CausesValidation = false;
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(179, 79);
+      this.cancelButton.Location = new System.Drawing.Point(162, 66);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 9;
@@ -126,7 +126,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.AutoSize = true;
       this.CancelButton = this.cancelButton;
-      this.ClientSize = new System.Drawing.Size(269, 116);
+      this.ClientSize = new System.Drawing.Size(248, 101);
       this.ControlBox = false;
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);

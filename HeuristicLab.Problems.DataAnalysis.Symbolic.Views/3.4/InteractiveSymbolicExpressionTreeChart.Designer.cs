@@ -55,27 +55,29 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
       this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       this.SuspendLayout();
       // 
       // insertNodeToolStripMenuItem
       // 
       this.insertNodeToolStripMenuItem.Name = "insertNodeToolStripMenuItem";
-      this.insertNodeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+      this.insertNodeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
       this.insertNodeToolStripMenuItem.Text = "Insert Node";
       this.insertNodeToolStripMenuItem.Click += new System.EventHandler(this.insertNodeToolStripMenuItem_Click);
       // 
       // changeNodeToolStripMenuItem
       // 
       this.changeNodeToolStripMenuItem.Name = "changeNodeToolStripMenuItem";
-      this.changeNodeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+      this.changeNodeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
       this.changeNodeToolStripMenuItem.Text = "Change Node";
       this.changeNodeToolStripMenuItem.Click += new System.EventHandler(this.changeNodeToolStripMenuItem_Click);
       // 
       // cutToolStripMenuItem
       // 
       this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-      this.cutToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-      this.cutToolStripMenuItem.Text = "Cut";
+      this.cutToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+      this.cutToolStripMenuItem.Text = "Cut Subtree";
       this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
       // 
       // removeToolStripMenuItem
@@ -84,7 +86,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
             this.removeNodeToolStripMenuItem,
             this.removeSubtreeToolStripMenuItem});
       this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-      this.removeToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+      this.removeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
       this.removeToolStripMenuItem.Text = "Remove";
       this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeSubtreeToolStripMenuItem_Click);
       // 
@@ -105,8 +107,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // pasteToolStripMenuItem
       // 
       this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-      this.pasteToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-      this.pasteToolStripMenuItem.Text = "Paste";
+      this.pasteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+      this.pasteToolStripMenuItem.Text = "Paste Subtree";
       this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Clicked);
       // 
       // toolStripSeparator
@@ -117,18 +119,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       // copyToolStripMenuItem
       // 
       this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-      this.copyToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-      this.copyToolStripMenuItem.Text = "Copy";
+      this.copyToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+      this.copyToolStripMenuItem.Text = "Copy Subtree";
       this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+      // 
+      // toolStripSeparator1
+      // 
+      this.toolStripSeparator1.Name = "toolStripSeparator1";
+      this.toolStripSeparator1.Size = new System.Drawing.Size(162, 6);
+      // 
+      // toolStripSeparator2
+      // 
+      this.toolStripSeparator2.Name = "toolStripSeparator2";
+      this.toolStripSeparator2.Size = new System.Drawing.Size(162, 6);
       //
       // contextMenuStrip
       //
       this.contextMenuStrip.Opened += this.contextMenuStrip_Opened;
-      this.contextMenuStrip.Items.AddRange(new ToolStripItem[] { insertNodeToolStripMenuItem, 
+      this.contextMenuStrip.Items.AddRange(new ToolStripItem[] { toolStripSeparator1,
+                                                                 insertNodeToolStripMenuItem, 
+                                                                 removeToolStripMenuItem, 
                                                                  changeNodeToolStripMenuItem, 
+                                                                 toolStripSeparator2,
                                                                  copyToolStripMenuItem, 
                                                                  cutToolStripMenuItem, 
-                                                                 removeToolStripMenuItem, 
                                                                  pasteToolStripMenuItem });
       // 
       // InteractiveSymbolicExpressionTreeChart
@@ -138,7 +152,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       this.DoubleBuffered = true;
       this.Name = "InteractiveSymbolicExpressionTreeChart";
       this.ResumeLayout(false);
-
     }
 
     private ToolStripMenuItem insertNodeToolStripMenuItem;
@@ -153,5 +166,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private ToolStripSeparator toolStripSeparator;
     private ToolStripMenuItem copyToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator1;
+    private ToolStripSeparator toolStripSeparator2;
   }
 }

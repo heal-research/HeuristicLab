@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -32,14 +32,97 @@ using HeuristicLab.MainForm.WindowsForms;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public abstract partial class InteractiveSymbolicDataAnalysisSolutionSimplifierView : AsynchronousContentView {
     private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> foldedNodes;
+    private Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode> changedNodes;
     private Dictionary<ISymbolicExpressionTreeNode, double> nodeImpacts;
-    private enum TreeState { Valid, Invalid }
 
-    public InteractiveSymbolicDataAnalysisSolutionSimplifierView() {
+    private enum TreeState { Valid, Invalid }
+    private TreeState treeState;
+
+    protected InteractiveSymbolicDataAnalysisSolutionSimplifierView() {
       InitializeComponent();
       foldedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
+      changedNodes = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>();
       nodeImpacts = new Dictionary<ISymbolicExpressionTreeNode, double>();
       this.Caption = "Interactive Solution Simplifier";
+
+      // initialize the tree modifier that will be used to perform edit operations over the tree
+      treeChart.ModifyTree = Modify;
+    }
+
+    /// <summary>
+    /// Remove, Replace or Insert subtrees
+    /// </summary>
+    /// <param name="tree">The symbolic expression tree</param>
+    /// <param name="parent">The insertion point (ie, the parent node who will receive a new child)</param>
+    /// <param name="oldChild">The subtree to be replaced</param>
+    /// <param name="newChild">The replacement subtree</param>
+    /// <param name="removeSubtree">Flag used to indicate if whole subtrees should be removed (default behavior), or just the subtree root</param>
+    private void Modify(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode parent,
+      ISymbolicExpressionTreeNode oldChild, ISymbolicExpressionTreeNode newChild, bool removeSubtree = true) {
+      if (oldChild == null && newChild == null)
+        throw new ArgumentNullException("Cannot deduce operation type from the arguments. Please provide non null operands.");
+      if (oldChild == null) {
+        // insertion operation
+        parent.AddSubtree(newChild);
+        newChild.Parent = parent;
+      } else if (newChild == null) {
+        // removal operation
+        parent.RemoveSubtree(parent.IndexOfSubtree(oldChild));
+        if (!removeSubtree) {
+          for (int i = oldChild.SubtreeCount - 1; i >= 0; --i) {
+            var subtree = oldChild.GetSubtree(i);
+            oldChild.RemoveSubtree(i);
+            parent.AddSubtree(subtree);
+          }
+        }
+      } else {
+        // replacement operation
+        var replacementIndex = parent.IndexOfSubtree(oldChild);
+        parent.RemoveSubtree(replacementIndex);
+        parent.InsertSubtree(replacementIndex, newChild);
+        newChild.Parent = parent;
+        if (changedNodes.ContainsKey(oldChild)) {
+          changedNodes.Add(newChild, changedNodes[oldChild]); // so that on double click the original node is restored
+          changedNodes.Remove(oldChild);
+        } else {
+          changedNodes.Add(newChild, oldChild);
+        }
+      }
+      treeState = IsValid(tree) ? TreeState.Valid : TreeState.Invalid;
+      switch (treeState) {
+        case TreeState.Valid:
+          this.grpViewHost.Enabled = true;
+          UpdateModel(Content.Model.SymbolicExpressionTree);
+          break;
+        case TreeState.Invalid:
+          this.grpViewHost.Enabled = false;
+          break;
+      }
+    }
+
+    // the optimizer always assumes 2 children for multiplication and addition nodes
+    // thus, we enforce that the tree stays valid so that the constant optimization won't throw an exception
+    // by returning 2 as the minimum allowed arity for addition and multiplication symbols
+    private readonly Func<ISymbol, int> GetMinArity = symbol => {
+      var min = symbol.MinimumArity;
+      if (symbol is Multiplication || symbol is Division) return Math.Max(2, min);
+      return min;
+    };
+    private bool IsValid(ISymbolicExpressionTree tree) {
+      treeChart.Tree = tree;
+      treeChart.Repaint();
+      bool valid = !tree.IterateNodesPostfix().Any(node => node.SubtreeCount < GetMinArity(node.Symbol) || node.SubtreeCount > node.Symbol.MaximumArity);
+      if (valid) {
+        btnOptimizeConstants.Enabled = true;
+        btnSimplify.Enabled = true;
+        treeStatusValue.Visible = false;
+      } else {
+        btnOptimizeConstants.Enabled = false;
+        btnSimplify.Enabled = false;
+        treeStatusValue.Visible = true;
+      }
+      this.Refresh();
+      return valid;
     }
 
     public new ISymbolicDataAnalysisSolution Content {
@@ -82,11 +165,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       treeChart.Tree = tree.Root.SubtreeCount > 1 ? new SymbolicExpressionTree(tree.Root) : new SymbolicExpressionTree(tree.Root.GetSubtree(0).GetSubtree(0));
 
       var impactAndReplacementValues = CalculateImpactAndReplacementValues(tree);
-      nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
       var replacementValues = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item2);
       foreach (var pair in replacementValues.Where(pair => !(pair.Key is ConstantTreeNode))) {
         foldedNodes[pair.Key] = MakeConstantTreeNode(pair.Value);
       }
+      nodeImpacts = impactAndReplacementValues.ToDictionary(x => x.Key, x => x.Value.Item1);
       PaintNodeImpacts();
     }
 
@@ -103,14 +186,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
 
     private void treeChart_SymbolicExpressionTreeNodeDoubleClicked(object sender, MouseEventArgs e) {
+      if (treeState == TreeState.Invalid) return;
       var visualNode = (VisualTreeNode<ISymbolicExpressionTreeNode>)sender;
-      if (visualNode.Content == null) { throw new Exception("Visual node content cannot be null."); }
+      if (visualNode.Content == null) { throw new Exception("VisualNode content cannot be null."); }
       var symbExprTreeNode = (SymbolicExpressionTreeNode)visualNode.Content;
-      if (!foldedNodes.ContainsKey(symbExprTreeNode)) return; // constant nodes cannot be folded
+      var tree = Content.Model.SymbolicExpressionTree;
       var parent = symbExprTreeNode.Parent;
       int indexOfSubtree = parent.IndexOfSubtree(symbExprTreeNode);
-      SwitchNodeWithReplacementNode(parent, indexOfSubtree);
-      UpdateModel(Content.Model.SymbolicExpressionTree);
+      if (changedNodes.ContainsKey(symbExprTreeNode)) {
+        // undo node change
+        parent.RemoveSubtree(indexOfSubtree);
+        var originalNode = changedNodes[symbExprTreeNode];
+        parent.InsertSubtree(indexOfSubtree, originalNode);
+        changedNodes.Remove(symbExprTreeNode);
+      } else if (foldedNodes.ContainsKey(symbExprTreeNode)) {
+        // undo node folding
+        SwitchNodeWithReplacementNode(parent, indexOfSubtree);
+      }
+      UpdateModel(tree);
     }
 
     private void SwitchNodeWithReplacementNode(ISymbolicExpressionTreeNode parent, int subTreeIndex) {
@@ -129,11 +222,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       var impacts = nodeImpacts.Values;
       double max = impacts.Max();
       double min = impacts.Min();
-      foreach (var treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
+      foreach (ISymbolicExpressionTreeNode treeNode in Content.Model.SymbolicExpressionTree.IterateNodesPostfix()) {
         VisualTreeNode<ISymbolicExpressionTreeNode> visualTree = treeChart.GetVisualSymbolicExpressionTreeNode(treeNode);
 
         if (!(treeNode is ConstantTreeNode) && nodeImpacts.ContainsKey(treeNode)) {
-          visualTree.ToolTip = visualTree.Content.ToString(); // to avoid duplicate tooltips
+          visualTree.ToolTip = visualTree.Content.ToString();
           double impact = nodeImpacts[treeNode];
 
           // impact = 0 if no change
@@ -155,7 +248,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
           }
         }
         if (visualTree != null)
-          if (treeNode is ConstantTreeNode && foldedNodes.ContainsKey(treeNode)) {
+          if (changedNodes.ContainsKey(treeNode)) {
+            visualTree.LineColor = Color.DodgerBlue;
+          } else if (treeNode is ConstantTreeNode && foldedNodes.ContainsKey(treeNode)) {
             visualTree.LineColor = Color.DarkOrange;
           }
       }
