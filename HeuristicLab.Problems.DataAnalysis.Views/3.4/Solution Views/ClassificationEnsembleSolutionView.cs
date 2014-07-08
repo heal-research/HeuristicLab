@@ -36,6 +36,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       set { base.Content = value; }
     }
 
+    protected override void SetEnabledStateOfControls() {
+      base.SetEnabledStateOfControls();
+      //loading of problemdata is currently not support for ensemble solutions
+      loadProblemDataButton.Enabled = false;
+      loadProblemDataButton.Visible = false;
+    }
+
     protected override void OnContentChanged() {
       base.OnContentChanged();
       itemsListView.Items.Remove(itemsListView.FindItemWithText("Model: ClassificationEnsembleModel"));
@@ -46,6 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (e.Effect != DragDropEffects.None) {
         var droppedData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
         if (droppedData is IValueParameter) droppedData = ((IValueParameter)droppedData).Value;
+        else if (droppedData is IClassificationProblem) droppedData = ((IClassificationProblem)droppedData).ProblemData;
 
         ClassificationEnsembleProblemData ensembleProblemData = droppedData as ClassificationEnsembleProblemData;
         ClassificationProblemData problemData = droppedData as ClassificationProblemData;

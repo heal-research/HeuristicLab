@@ -28,6 +28,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
   [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views","Provides views for symbolic classification problem classes.", "3.4.5.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
+  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.4")]

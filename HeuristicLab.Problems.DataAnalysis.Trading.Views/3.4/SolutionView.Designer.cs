@@ -51,24 +51,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
       this.itemsGroupBox.SuspendLayout();
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
-      this.exportButton.Visible = false;
       // 
-      // splitContainer
-      // 
-      // 
-      // itemsGroupBox
-      // 
-      this.itemsGroupBox.Text = "Trading Solution";
-      // 
-      // addButton
-      // 
-      this.toolTip.SetToolTip(this.addButton, "Add");
-      // 
-      // removeButton
-      // 
-      this.toolTip.SetToolTip(this.removeButton, "Remove");
-      // 
-      // RegressionSolutionView
+      // SolutionView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -80,9 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Views {
       this.itemsGroupBox.ResumeLayout(false);
       this.detailsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
-
     }
-
     #endregion
   }
 }

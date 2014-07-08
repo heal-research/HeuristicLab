@@ -42,7 +42,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (ReadOnly) return;
 
       var dropData = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
-      if (dropData is ClassificationProblemData) validDragOperation = true;
+      if (dropData is IClassificationProblemData) validDragOperation = true;
+      else if (dropData is IClassificationProblem) validDragOperation = true;
       else if (dropData is IValueParameter) {
         var param = (IValueParameter)dropData;
         if (param.Value is ClassificationProblemData) validDragOperation = true;

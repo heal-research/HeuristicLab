@@ -53,35 +53,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
       this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
-      // exportButton
+      // flowLayoutPanel
       // 
-      this.exportButton.Visible = false;
-      // 
-      // splitContainer
-      // 
-      // 
-      // splitContainer.Panel1
-      // 
-      this.splitContainer.Panel1.Controls.Add(this.btnSimplify);
-      // 
-      // addButton
-      // 
-      this.toolTip.SetToolTip(this.addButton, "Add");
-      // 
-      // removeButton
-      // 
-      this.toolTip.SetToolTip(this.removeButton, "Remove");
+      this.flowLayoutPanel.Controls.Add(this.btnSimplify);
       // 
       // btnSimplify
       // 
-      this.btnSimplify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnSimplify.Location = new System.Drawing.Point(172, 4);
+      this.btnSimplify.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+      this.btnSimplify.Image = HeuristicLab.Common.Resources.VSImageLibrary.FormulaEvaluator;
+      this.btnSimplify.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.btnSimplify.Name = "btnSimplify";
-      this.btnSimplify.Size = new System.Drawing.Size(75, 23);
-      this.btnSimplify.TabIndex = 6;
-      this.btnSimplify.Text = "Simplify";
+      this.btnSimplify.TabIndex = 7;
+      this.btnSimplify.Size = new System.Drawing.Size(105, 24);
+      this.btnSimplify.Text = "Simplify Model";
+      this.btnSimplify.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       this.btnSimplify.UseVisualStyleBackColor = true;
       this.btnSimplify.Click += new System.EventHandler(this.btn_SimplifyModel_Click);
+      this.toolTip.SetToolTip(this.btnSimplify, "Simplify solution");
       // 
       // SymbolicTimeSeriesPrognosisSolutionView
       // 

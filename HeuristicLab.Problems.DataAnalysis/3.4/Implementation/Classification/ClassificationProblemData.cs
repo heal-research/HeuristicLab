@@ -220,6 +220,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #region properties
     public string TargetVariable {
       get { return TargetVariableParameter.Value.Value; }
+      set {
+        if (value == null) throw new ArgumentNullException("targetVariable", "The provided value for the targetVariable is null.");
+        if (value == TargetVariable) return;
+
+
+        var matchingParameterValue = TargetVariableParameter.ValidValues.FirstOrDefault(v => v.Value == value);
+        if (matchingParameterValue == null) throw new ArgumentException("The provided value is not valid as the targetVariable.", "targetVariable");
+        TargetVariableParameter.Value = matchingParameterValue;
+      }
     }
 
     private List<double> classValuesCache;
@@ -407,5 +416,46 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnChanged();
     }
     #endregion
+
+    protected override bool IsProblemDataCompatible(IDataAnalysisProblemData problemData, out string errorMessage) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      IClassificationProblemData classificationProblemData = problemData as IClassificationProblemData;
+      if (classificationProblemData == null)
+        throw new ArgumentException("The problem data is no classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+
+      var returnValue = base.IsProblemDataCompatible(classificationProblemData, out errorMessage);
+      //check targetVariable
+      if (classificationProblemData.InputVariables.All(var => var.Value != TargetVariable)) {
+        errorMessage = string.Format("The target variable {0} is not present in the new problem data.", TargetVariable)
+                       + Environment.NewLine + errorMessage;
+        return false;
+      }
+
+      var newClassValues = classificationProblemData.Dataset.GetDoubleValues(TargetVariable).Distinct().OrderBy(x => x);
+      if (!newClassValues.SequenceEqual(ClassValues)) {
+        errorMessage = errorMessage + string.Format("The class values differ in the provided classification problem data.");
+        return false;
+      }
+
+      return returnValue;
+    }
+
+    public override void AdjustProblemDataProperties(IDataAnalysisProblemData problemData) {
+      if (problemData == null) throw new ArgumentNullException("problemData", "The provided problemData is null.");
+      ClassificationProblemData classificationProblemData = problemData as ClassificationProblemData;
+      if (classificationProblemData == null)
+        throw new ArgumentException("The problem data is not a classification problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
+
+      base.AdjustProblemDataProperties(problemData);
+      TargetVariable = classificationProblemData.TargetVariable;
+      for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
+        ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
+
+      for (int i = 0; i < Classes; i++) {
+        for (int j = 0; j < Classes; j++) {
+          ClassificationPenaltiesParameter.Value[i, j] = classificationProblemData.GetClassificationPenalty(ClassValuesCache[i], ClassValuesCache[j]);
+        }
+      }
+    }
   }
 }
