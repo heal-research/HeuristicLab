@@ -28,6 +28,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Problem Data View")]
@@ -98,6 +99,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         return;
 
       e.Effect = e.AllowedEffect;
+    }
+
+    private void DataPreprocessingButton_Click(object sender, EventArgs e) {
+      var preprocessingStarters = ApplicationManager.Manager.GetInstances<IDataPreprocessorStarter>();
+      var starter = preprocessingStarters.FirstOrDefault();
+      // TODO: handle possible multiple starters
+      if (starter != null) {
+        starter.Start(Content, this);
+      }
     }
   }
 }
