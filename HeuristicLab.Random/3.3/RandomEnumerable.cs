@@ -182,7 +182,7 @@ namespace HeuristicLab.Random {
     #region Proportional Helpers
     private static IEnumerable<T> SampleProportional<T>(this IEnumerable<T> source, IRandom random, IEnumerable<double> weights, bool windowing, bool inverseProportional) {
       var sourceArray = source.ToArray();
-      var valueArray = PrepareProportional(sourceArray, weights, windowing, inverseProportional);
+      var valueArray = PrepareProportional(weights, windowing, inverseProportional);
       double total = valueArray.Sum();
 
       while (true) {
@@ -194,12 +194,12 @@ namespace HeuristicLab.Random {
       }
     }
     private static IEnumerable<T> SampleProportionalWithoutRepetition<T>(this IEnumerable<T> source, IRandom random, IEnumerable<double> weights, bool windowing, bool inverseProportional) {
-      var valueArray = PrepareProportional(source.ToArray(), weights, windowing, inverseProportional);
+      var valueArray = PrepareProportional(weights, windowing, inverseProportional);
       var list = new LinkedList<Tuple<T, double>>(source.Zip(valueArray, Tuple.Create));
       double total = valueArray.Sum();
 
-      while (list.Count > 0) {        
-        var cur = list.First;        
+      while (list.Count > 0) {
+        var cur = list.First;
         double ball = cur.Value.Item2, sum = random.NextDouble() * total; // assert: sum < total. When there is only one item remaining: sum < ball
         while (ball < sum) {
           cur = cur.Next;
@@ -211,18 +211,16 @@ namespace HeuristicLab.Random {
       }
     }
 
-    private static double[] PrepareProportional<T>(IList<T> sourceArray, IEnumerable<double> weights, bool windowing, bool inverseProportional) {
+    private static double[] PrepareProportional(IEnumerable<double> weights, bool windowing, bool inverseProportional) {
       double maxValue = double.MinValue, minValue = double.MaxValue;
-      double[] valueArray = new double[sourceArray.Count];
+      double[] valueArray = weights.ToArray();
 
-      var weightsEnum = weights.GetEnumerator();
-      for (int i = 0; i < sourceArray.Count && weightsEnum.MoveNext(); i++) {
-        valueArray[i] = weightsEnum.Current;
+      for (int i = 0; i < valueArray.Length; i++) {
         if (valueArray[i] > maxValue) maxValue = valueArray[i];
         if (valueArray[i] < minValue) minValue = valueArray[i];
       }
       if (minValue == maxValue) {  // all values are equal
-        for (int i = 0; i < sourceArray.Count; i++) {
+        for (int i = 0; i < valueArray.Length; i++) {
           valueArray[i] = 1.0;
         }
       } else {
