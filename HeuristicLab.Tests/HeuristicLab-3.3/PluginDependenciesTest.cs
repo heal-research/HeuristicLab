@@ -91,6 +91,7 @@ namespace HeuristicLab.Tests {
           string pluginDependencyName = pluginDependencies[attribute];
 
           if (pluginDependencyName == "HeuristicLab.MathJax") continue; //is never referenced as this plugin contains HTML files
+          if (pluginDependencyName == "HeuristicLab.MatlabConnector") continue; //the matlab connector is loaded dynamically and hence not referenced by the dll
           var referencedPluginAssemblies = pluginAssembly.GetReferencedAssemblies().Where(IsPluginAssemblyName);
           if (referencedPluginAssemblies.Any(a => pluginNames[a.FullName] == pluginDependencyName)) continue;
 
