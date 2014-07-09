@@ -132,8 +132,8 @@ namespace HeuristicLab.DataPreprocessing.Implementations {
       return ActiveData.GetColumnIndex(variableName);
     }
 
-    public bool IsType<T>(int columnIndex) {
-      return originalData.IsType<T>(columnIndex);
+    public bool VariableHasType<T>(int columnIndex) {
+      return originalData.VariableHasType<T>(columnIndex);
     }
 
     public Dataset ExportToDataset() {
@@ -155,11 +155,11 @@ namespace HeuristicLab.DataPreprocessing.Implementations {
     public void PersistFilter() {
       originalData.InTransaction(() => {
         for (int i = 0; i < filteredData.Columns; ++i) {
-          if (filteredData.IsType<double>(i)) {
+          if (filteredData.VariableHasType<double>(i)) {
             originalData.SetValues<double>(i, filteredData.GetValues<double>(i));
-          } else if (filteredData.IsType<string>(i)) {
+          } else if (filteredData.VariableHasType<string>(i)) {
             originalData.SetValues<string>(i, filteredData.GetValues<string>(i));
-          } else if (filteredData.IsType<DateTime>(i)) {
+          } else if (filteredData.VariableHasType<DateTime>(i)) {
             originalData.SetValues<DateTime>(i, filteredData.GetValues<DateTime>(i));
           } else {
             throw new ArgumentException("Data types of columns do not match");

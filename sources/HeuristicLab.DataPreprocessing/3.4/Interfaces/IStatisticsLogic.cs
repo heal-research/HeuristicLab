@@ -45,7 +45,7 @@ namespace HeuristicLab.DataPreprocessing {
     T GetMostCommonValue<T>(int columnIndex, bool considerSelection = false);
     int GetDifferentValuesCount<T>(int columnIndex);
 
-    bool IsType<T>(int columnIndex);
+    bool VariableHasType<T>(int columnIndex);
     string GetColumnTypeAsString(int columnIndex);
     string GetVariableName(int columnIndex);
 

@@ -84,11 +84,11 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public bool IsMissingValue(int columnIndex, int rowIndex) {
-      if (preprocessingData.IsType<double>(columnIndex)) {
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
         return double.IsNaN(preprocessingData.GetCell<double>(columnIndex, rowIndex));
-      } else if (preprocessingData.IsType<string>(columnIndex)) {
+      } else if (preprocessingData.VariableHasType<string>(columnIndex)) {
         return string.IsNullOrEmpty(preprocessingData.GetCell<string>(columnIndex, rowIndex));
-      } else if (preprocessingData.IsType<DateTime>(columnIndex)) {
+      } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         return preprocessingData.GetCell<DateTime>(columnIndex, rowIndex).Equals(DateTime.MinValue);
       } else {
         throw new ArgumentException("cell in column " + columnIndex + " and row index " + rowIndex + " contains a non supported type.");
@@ -97,11 +97,11 @@ namespace HeuristicLab.DataPreprocessing {
 
     public IList<int> GetMissingValueIndices(int columnIndex) {
       if (!MissingValueIndicies.ContainsKey(columnIndex)){        
-          if (preprocessingData.IsType<double>(columnIndex)) {
+          if (preprocessingData.VariableHasType<double>(columnIndex)) {
             MissingValueIndicies[columnIndex] = GetMissingValueIndices<double>(columnIndex);
-          } else if (preprocessingData.IsType<string>(columnIndex)) {
+          } else if (preprocessingData.VariableHasType<string>(columnIndex)) {
             MissingValueIndicies[columnIndex] = GetMissingValueIndices<string>(columnIndex);
-          } else if (preprocessingData.IsType<DateTime>(columnIndex)) {
+          } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
             MissingValueIndicies[columnIndex] = GetMissingValueIndices<DateTime>(columnIndex);
           } else {
             throw new ArgumentException("column " + columnIndex + " contains a non supported type.");

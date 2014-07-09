@@ -22,8 +22,8 @@
 using System.Collections.Generic;
 
 
-namespace HeuristicLab.Problems.DataAnalysis {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public interface IModelBacktransformator {
-    IDataAnalysisModel Backtransform(IDataAnalysisModel model, IEnumerable<ITransformation> transformations, string targetVariable);
+    ISymbolicDataAnalysisModel Backtransform(ISymbolicDataAnalysisModel model, IEnumerable<ITransformation> transformations, string targetVariable);
   }
 }

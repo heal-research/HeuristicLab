@@ -357,11 +357,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private List<IFilter> CreateFilters(string match, ComparisonOperation comparisonOperation, int columnIndex) {
       IPreprocessingData preprocessingData = Content.FilterLogic.PreprocessingData;
       IStringConvertibleValue value;
-      if (preprocessingData.IsType<double>(columnIndex)) {
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
         value = new DoubleValue();
-      } else if (preprocessingData.IsType<String>(columnIndex)) {
+      } else if (preprocessingData.VariableHasType<String>(columnIndex)) {
         value = new StringValue();
-      } else if (preprocessingData.IsType<DateTime>(columnIndex)) {
+      } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         value = new DateTimeValue();
       } else {
         throw new ArgumentException("unsupported type");

@@ -41,8 +41,8 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public bool ApplyTransformations(IEnumerable<ITransformation> transformations, bool preserveColumns, out string errorMsg) {
-      bool success;
-
+      bool success = false;
+      errorMsg = string.Empty;
       preprocessingData.BeginTransaction(DataPreprocessingChangedEventType.Transformation);
 
       try {
@@ -63,6 +63,14 @@ namespace HeuristicLab.DataPreprocessing {
           originalColumns.Clear();
           renamedColumns.Clear();
         }
+        // only accept changes if everything was successful
+        if (!success) {
+          preprocessingData.Undo();
+        }
+      }
+      catch (Exception e) {
+        preprocessingData.Undo();
+        if (string.IsNullOrEmpty(errorMsg)) errorMsg = e.Message;
       }
       finally {
         preprocessingData.EndTransaction();
@@ -102,7 +110,11 @@ namespace HeuristicLab.DataPreprocessing {
 
     private IEnumerable<double> ApplyDoubleTransformation(Transformation<double> transformation, IList<double> data, out bool success, out string errorMsg) {
       success = transformation.Check(data, out errorMsg);
-      return transformation.Apply(data);
+      // don't apply when the check fails
+      if (success)
+        return transformation.Apply(data);
+      else
+        return data;
     }
 
     private void RenameTransformationColumnParameter(List<Transformation<double>> transformations) {

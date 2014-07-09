@@ -74,10 +74,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
 
       var transformations = Content.ProblemData.Transformations;
       var targetVar = Content.ProblemData.TargetVariable;
-      var newModel = transformator.Backtransform(Content.Model, transformations, targetVar);
-      Content.Model = (ISymbolicRegressionModel)newModel;
 
-      MessageBox.Show(this, "Backtransformation successful.");
+      var transformedModel = (ISymbolicRegressionModel)transformator.Backtransform(Content.Model, transformations, targetVar);
+      var transformedSolution = new SymbolicRegressionSolution(transformedModel, (IRegressionProblemData)Content.ProblemData.Clone());
+
+      MainFormManager.MainForm.ShowContent(transformedSolution);
     }
   }
 }

@@ -157,11 +157,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     private IStringConvertibleValue CreateStringConvertibleValue(int columnIndex) {
       IStringConvertibleValue value;
-      if (Content.ConstrainedValue.IsType<double>(columnIndex)) {
+      if (Content.ConstrainedValue.VariableHasType<double>(columnIndex)) {
         value = new DoubleValue();
-      } else if (Content.ConstrainedValue.IsType<String>(columnIndex)) {
+      } else if (Content.ConstrainedValue.VariableHasType<String>(columnIndex)) {
         value = new StringValue();
-      } else if (Content.ConstrainedValue.IsType<DateTime>(columnIndex)) {
+      } else if (Content.ConstrainedValue.VariableHasType<DateTime>(columnIndex)) {
         value = new DateTimeValue();
       } else {
         throw new ArgumentException("unsupported type");

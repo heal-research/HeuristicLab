@@ -90,7 +90,7 @@ namespace HeuristicLab.DataPreprocessing {
       var variableNames = new List<string>();
       for (int i = 0; i < context.Data.Columns; ++i) {
         var variableName = context.Data.GetVariableName(i);
-        if (context.Data.IsType<double>(i)
+        if (context.Data.VariableHasType<double>(i)
           && variableName != targetVariable
           && IsNotConstantInputVariable(context.Data.GetValues<double>(i))) {
 

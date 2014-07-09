@@ -220,7 +220,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return rows.Select(index => values[index]);
     }
 
-    public bool IsType<T>(string variableName) {
+    public bool VariableHasType<T>(string variableName) {
       return variableValues[variableName] is IList<T>;
     }
 

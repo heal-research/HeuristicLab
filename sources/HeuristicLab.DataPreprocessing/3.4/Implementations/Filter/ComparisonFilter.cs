@@ -94,9 +94,9 @@ namespace HeuristicLab.DataPreprocessing.Filter {
 
       for (int row = 0; row < ConstrainedValue.Rows; ++row) {
         object item = null;
-        if (ConstrainedValue.IsType<double>(constraintColumn)) {
+        if (ConstrainedValue.VariableHasType<double>(constraintColumn)) {
           item = new HeuristicLab.Data.DoubleValue(ConstrainedValue.GetCell<double>(ConstraintColumn, row));
-        } else if (ConstrainedValue.IsType<DateTime>(constraintColumn)) {
+        } else if (ConstrainedValue.VariableHasType<DateTime>(constraintColumn)) {
           item = new HeuristicLab.Data.DateTimeValue(ConstrainedValue.GetCell<DateTime>(ConstraintColumn, row));
         } else {
           item = new StringValue(ConstrainedValue.GetCell<string>(ConstraintColumn, row));

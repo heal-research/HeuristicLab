@@ -61,7 +61,7 @@ namespace HeuristicLab.DataPreprocessing {
     string GetVariableName(int columnIndex);
     int GetColumnIndex(string variableName);
 
-    bool IsType<T>(int columnIndex);
+    bool VariableHasType<T>(int columnIndex);
 
     int Columns { get; }
     int Rows { get; }

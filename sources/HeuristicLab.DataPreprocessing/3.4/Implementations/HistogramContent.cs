@@ -60,7 +60,7 @@ namespace HeuristicLab.DataPreprocessing {
 
       //only return variable names from type double
       for (int i = 0; i < PreprocessingData.Columns; ++i) {
-        if (PreprocessingData.IsType<double>(i)) {
+        if (PreprocessingData.VariableHasType<double>(i)) {
           double distinctValueCount = PreprocessingData.GetValues<double>(i).GroupBy(x => x).Count();
           bool distinctValuesOk = distinctValueCount <= MAX_DISTINCT_VALUES_FOR_CLASSIFCATION;
           if (distinctValuesOk)

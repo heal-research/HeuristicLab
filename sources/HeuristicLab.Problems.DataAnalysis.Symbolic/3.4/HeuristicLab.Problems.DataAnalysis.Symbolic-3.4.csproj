@@ -125,6 +125,7 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Interfaces\IModelBacktransformator.cs" />
     <Compile Include="Matching\SymbolicExpressionTreeCanonicalSorter.cs" />
     <Compile Include="Matching\SymbolicExpressionTreeEqualityComparer.cs" />
     <Compile Include="Matching\SymbolicExpressionTreeMatching.cs" />

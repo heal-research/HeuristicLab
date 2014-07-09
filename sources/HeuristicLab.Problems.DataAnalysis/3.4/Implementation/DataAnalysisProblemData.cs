@@ -125,14 +125,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandlers();
     }
 
-    protected DataAnalysisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations) {
+    protected DataAnalysisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null) {
       if (dataset == null) throw new ArgumentNullException("The dataset must not be null.");
       if (allowedInputVariables == null) throw new ArgumentNullException("The allowedInputVariables must not be null.");
 
       if (allowedInputVariables.Except(dataset.DoubleVariables).Any())
         throw new ArgumentException("All allowed input variables must be present in the dataset and of type double.");
-
-      if (transformations == null) throw new ArgumentNullException("The transformations must not be null.");
 
       var inputVariables = new CheckedItemList<StringValue>(dataset.DoubleVariables.Select(x => new StringValue(x)));
       foreach (StringValue x in inputVariables)
@@ -143,7 +141,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       int testPartitionStart = dataset.Rows / 2;
       int testPartitionEnd = dataset.Rows;
 
-      var transformationsList = new ItemList<ITransformation>(transformations);
+      var transformationsList = new ItemList<ITransformation>(transformations ?? Enumerable.Empty<ITransformation>());
 
       Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", dataset));
       Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, "", inputVariables.AsReadOnly()));

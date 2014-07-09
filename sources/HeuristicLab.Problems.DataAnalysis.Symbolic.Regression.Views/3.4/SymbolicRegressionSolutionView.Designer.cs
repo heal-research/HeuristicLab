@@ -96,7 +96,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       this.transformModelButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Event;
       this.transformModelButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
       this.transformModelButton.Name = "transformModelButton";
-      this.transformModelButton.Size = new System.Drawing.Size(135, 23);
+      this.transformModelButton.Size = new System.Drawing.Size(135, 24);
       this.transformModelButton.TabIndex = 9;
       this.transformModelButton.Text = "Backtransform Model";
       this.transformModelButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;

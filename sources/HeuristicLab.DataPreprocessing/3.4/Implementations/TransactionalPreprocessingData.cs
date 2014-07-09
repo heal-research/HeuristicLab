@@ -114,7 +114,7 @@ namespace HeuristicLab.DataPreprocessing {
       return variableNames.IndexOf(variableName);
     }
 
-    public override bool IsType<T>(int columnIndex) {
+    public override bool VariableHasType<T>(int columnIndex) {
       return variableValues[columnIndex] is List<T>;
     }
 
@@ -137,7 +137,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public override void SetValues<T>(int columnIndex, IList<T> values) {
       SaveSnapshot(DataPreprocessingChangedEventType.ChangeColumn, columnIndex, -1);
-      if (IsType<T>(columnIndex)) {
+      if (VariableHasType<T>(columnIndex)) {
         variableValues[columnIndex] = (IList)values;
       } else {
         throw new ArgumentException("The datatype of column " + columnIndex + " must be of type " + variableValues[columnIndex].GetType().Name + " but was " + typeof(T).Name);
@@ -148,14 +148,14 @@ namespace HeuristicLab.DataPreprocessing {
 
     public override bool SetValue(string value, int columnIndex, int rowIndex) {
       bool valid = false;
-      if (IsType<double>(columnIndex)) {
+      if (VariableHasType<double>(columnIndex)) {
         double val;
         valid = double.TryParse(value, out val);
         SetValueIfValid(columnIndex, rowIndex, valid, val);
-      } else if (IsType<string>(columnIndex)) {
+      } else if (VariableHasType<string>(columnIndex)) {
         valid = value != null;
         SetValueIfValid(columnIndex, rowIndex, valid, value);
-      } else if (IsType<DateTime>(columnIndex)) {
+      } else if (VariableHasType<DateTime>(columnIndex)) {
         DateTime date;
         valid = DateTime.TryParse(value, out date);
         SetValueIfValid(columnIndex, rowIndex, valid, date);
@@ -176,18 +176,18 @@ namespace HeuristicLab.DataPreprocessing {
 
       bool valid = false;
       errorMessage = string.Empty;
-      if (IsType<double>(columnIndex)) {
+      if (VariableHasType<double>(columnIndex)) {
         double val;
         valid = double.TryParse(value, out val);
         if (!valid) {
           errorMessage = "Invalid Value (Valid Value Format: \"" + FormatPatterns.GetDoubleFormatPattern() + "\")";
         }
-      } else if (IsType<string>(columnIndex)) {
+      } else if (VariableHasType<string>(columnIndex)) {
         valid = value != null;
         if (!valid) {
           errorMessage = "Invalid Value (string must not be null)";
         }
-      } else if (IsType<DateTime>(columnIndex)) {
+      } else if (VariableHasType<DateTime>(columnIndex)) {
         DateTime date;
         valid = DateTime.TryParse(value, out date);
         if (!valid) {
@@ -206,7 +206,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public override bool AreAllStringColumns(IEnumerable<int> columnIndices) {
-      return columnIndices.All(x => IsType<string>(x));
+      return columnIndices.All(x => VariableHasType<string>(x));
     }
 
     public override void DeleteRowsWithIndices(IEnumerable<int> rows) {

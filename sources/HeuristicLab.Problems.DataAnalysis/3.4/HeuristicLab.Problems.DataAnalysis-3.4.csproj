@@ -158,7 +158,6 @@
     <Compile Include="Interfaces\Classification\IDiscriminantFunctionThresholdCalculator.cs" />
     <Compile Include="Interfaces\IDataAnalysisSolutionExporter.cs" />
     <Compile Include="Interfaces\IDependencyCalculator.cs" />
-    <Compile Include="Interfaces\IModelBacktransformator.cs" />
     <Compile Include="Interfaces\ITransformation.cs" />
     <Compile Include="Interfaces\ITransformationMapper.cs" />
     <Compile Include="Interfaces\Regression\IRegressionEnsembleModel.cs">

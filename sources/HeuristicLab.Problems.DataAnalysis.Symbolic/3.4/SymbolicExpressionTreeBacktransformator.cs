@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       this.transformationMapper = transformationMapper;
     }
 
-    public IDataAnalysisModel Backtransform(IDataAnalysisModel model, IEnumerable<ITransformation> transformations, string targetVariable) {
+    public ISymbolicDataAnalysisModel Backtransform(ISymbolicDataAnalysisModel model, IEnumerable<ITransformation> transformations, string targetVariable) {
       var symbolicModel = (ISymbolicDataAnalysisModel)model.Clone();
 
       foreach (var transformation in transformations.Reverse()) {

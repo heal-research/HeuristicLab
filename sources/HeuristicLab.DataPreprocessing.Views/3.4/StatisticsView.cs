@@ -123,11 +123,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private List<string> GetList(int i) {
       List<string> list;
       var logic = Content.StatisticsLogic;
-      if (logic.IsType<double>(i)) {
+      if (logic.VariableHasType<double>(i)) {
         list = GetDoubleColumns(i);
-      } else if (logic.IsType<string>(i)) {
+      } else if (logic.VariableHasType<string>(i)) {
         list = GetStringColumns(i);
-      } else if (logic.IsType<DateTime>(i)) {
+      } else if (logic.VariableHasType<DateTime>(i)) {
         list = GetDateTimeColumns(i);
       } else {
         list = new List<string>();

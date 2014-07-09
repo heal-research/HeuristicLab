@@ -48,7 +48,7 @@ namespace HeuristicLab.DataPreprocessing {
       int count = 0;
 
       for (int i = 0; i < preprocessingData.Columns; ++i) {
-        if (preprocessingData.IsType<double>(i)) {
+        if (preprocessingData.VariableHasType<double>(i)) {
           ++count;
         }
       }
@@ -81,7 +81,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public double GetMedian(int columnIndex, bool considerSelection) {
       double median = double.NaN;
-      if (preprocessingData.IsType<double>(columnIndex)) {
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
         median = GetValuesWithoutNaN<double>(columnIndex, considerSelection).Median();
       }
       return median;
@@ -89,7 +89,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public double GetAverage(int columnIndex, bool considerSelection) {
       double avg = double.NaN;
-      if (preprocessingData.IsType<double>(columnIndex)) {
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
         avg = GetValuesWithoutNaN<double>(columnIndex, considerSelection).Average();
       }
       return avg;
@@ -97,7 +97,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public DateTime GetMedianDateTime(int columnIndex, bool considerSelection) {
       DateTime median = new DateTime();
-      if (preprocessingData.IsType<DateTime>(columnIndex)) {
+      if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         median = GetSecondsAsDateTime(GetDateTimeAsSeconds(columnIndex, considerSelection).Median());
       }
       return median;
@@ -105,7 +105,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public DateTime GetAverageDateTime(int columnIndex, bool considerSelection) {
       DateTime avg = new DateTime();
-      if (preprocessingData.IsType<DateTime>(columnIndex)) {
+      if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         avg = GetSecondsAsDateTime(GetDateTimeAsSeconds(columnIndex, considerSelection).Average());
       }
       return avg;
@@ -126,9 +126,9 @@ namespace HeuristicLab.DataPreprocessing {
 
     public double GetStandardDeviation(int columnIndex) {
       double stdDev = double.NaN;
-      if (preprocessingData.IsType<double>(columnIndex)) {
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
         stdDev = GetValuesWithoutNaN<double>(columnIndex).StandardDeviation();
-      } else if (preprocessingData.IsType<DateTime>(columnIndex)) {
+      } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         stdDev = GetDateTimeAsSeconds(columnIndex).StandardDeviation();
       }
       return stdDev;
@@ -136,9 +136,9 @@ namespace HeuristicLab.DataPreprocessing {
 
     public double GetVariance(int columnIndex) {
       double variance = double.NaN;
-      if (preprocessingData.IsType<double>(columnIndex)) {
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
         variance = GetValuesWithoutNaN<double>(columnIndex).Variance();
-      } else if (preprocessingData.IsType<DateTime>(columnIndex)) {
+      } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         variance = GetDateTimeAsSeconds(columnIndex).Variance();
       }
       return variance;
@@ -162,16 +162,16 @@ namespace HeuristicLab.DataPreprocessing {
       return preprocessingData.GetVariableName(columnIndex);
     }
 
-    public bool IsType<T>(int columnIndex) {
-      return preprocessingData.IsType<T>(columnIndex);
+    public bool VariableHasType<T>(int columnIndex) {
+      return preprocessingData.VariableHasType<T>(columnIndex);
     }
 
     public string GetColumnTypeAsString(int columnIndex) {
-      if (preprocessingData.IsType<double>(columnIndex)) {
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
         return "double";
-      } else if (preprocessingData.IsType<string>(columnIndex)) {
+      } else if (preprocessingData.VariableHasType<string>(columnIndex)) {
         return "string";
-      } else if (preprocessingData.IsType<DateTime>(columnIndex)) {
+      } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         return "DateTime";
       }
       return "Unknown Type";

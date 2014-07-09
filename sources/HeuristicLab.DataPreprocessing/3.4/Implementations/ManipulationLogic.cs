@@ -53,10 +53,10 @@ namespace HeuristicLab.DataPreprocessing {
     public void ReplaceIndicesByAverageValue(IDictionary<int, IList<int>> cells, bool considerSelection) {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
-          if (preprocessingData.IsType<double>(column.Key)) {
+          if (preprocessingData.VariableHasType<double>(column.Key)) {
             double average = statisticsLogic.GetAverage(column.Key, considerSelection);
             ReplaceIndicesByValue<double>(column.Key, column.Value, average);
-          } else if (preprocessingData.IsType<DateTime>(column.Key)) {
+          } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
             DateTime average = statisticsLogic.GetAverageDateTime(column.Key, considerSelection);
             ReplaceIndicesByValue<DateTime>(column.Key, column.Value, average);
           }
@@ -67,10 +67,10 @@ namespace HeuristicLab.DataPreprocessing {
     public void ReplaceIndicesByMedianValue(IDictionary<int, IList<int>> cells, bool considerSelection) {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
-          if (preprocessingData.IsType<double>(column.Key)) {
+          if (preprocessingData.VariableHasType<double>(column.Key)) {
             double median = statisticsLogic.GetMedian(column.Key, considerSelection);
             ReplaceIndicesByValue<double>(column.Key, column.Value, median);
-          } else if (preprocessingData.IsType<DateTime>(column.Key)) {
+          } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
             DateTime median = statisticsLogic.GetMedianDateTime(column.Key, considerSelection);
             ReplaceIndicesByValue<DateTime>(column.Key, column.Value, median);
           }
@@ -83,7 +83,7 @@ namespace HeuristicLab.DataPreprocessing {
         Random r = new Random();
 
         foreach (var column in cells) {
-          if (preprocessingData.IsType<double>(column.Key)) {
+          if (preprocessingData.VariableHasType<double>(column.Key)) {
             double max = statisticsLogic.GetMax<double>(column.Key, considerSelection);
             double min = statisticsLogic.GetMin<double>(column.Key, considerSelection);
             double randMultiplier = (max - min);
@@ -91,7 +91,7 @@ namespace HeuristicLab.DataPreprocessing {
               double rand = r.NextDouble() * randMultiplier + min;
               preprocessingData.SetCell<double>(column.Key, index, rand);
             }
-          } else if (preprocessingData.IsType<DateTime>(column.Key)) {
+          } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
             DateTime min = statisticsLogic.GetMin<DateTime>(column.Key, considerSelection);
             DateTime max = statisticsLogic.GetMax<DateTime>(column.Key, considerSelection);
             double randMultiplier = (max - min).TotalSeconds;
@@ -108,9 +108,9 @@ namespace HeuristicLab.DataPreprocessing {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
           int countValues = 0;
-          if (preprocessingData.IsType<double>(column.Key)) {
+          if (preprocessingData.VariableHasType<double>(column.Key)) {
             countValues = preprocessingData.GetValues<double>(column.Key).Count();
-          } else if (preprocessingData.IsType<DateTime>(column.Key)) {
+          } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
             countValues = preprocessingData.GetValues<DateTime>(column.Key).Count();
           }
 
@@ -169,7 +169,7 @@ namespace HeuristicLab.DataPreprocessing {
     private void Interpolate(KeyValuePair<int, IList<int>> column, int prevIndex, int nextIndex) {
       int valuesToInterpolate = nextIndex - prevIndex;
 
-      if (preprocessingData.IsType<double>(column.Key)) {
+      if (preprocessingData.VariableHasType<double>(column.Key)) {
         double prev = preprocessingData.GetCell<double>(column.Key, prevIndex);
         double next = preprocessingData.GetCell<double>(column.Key, nextIndex);
         double interpolationStep = (next - prev) / valuesToInterpolate;
@@ -178,7 +178,7 @@ namespace HeuristicLab.DataPreprocessing {
           double interpolated = prev + (interpolationStep * (i - prevIndex));
           preprocessingData.SetCell<double>(column.Key, i, interpolated);
         }
-      } else if (preprocessingData.IsType<DateTime>(column.Key)) {
+      } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
         DateTime prev = preprocessingData.GetCell<DateTime>(column.Key, prevIndex);
         DateTime next = preprocessingData.GetCell<DateTime>(column.Key, nextIndex);
         double interpolationStep = (next - prev).TotalSeconds / valuesToInterpolate;
@@ -211,11 +211,11 @@ namespace HeuristicLab.DataPreprocessing {
     public void ReplaceIndicesByMostCommonValue(IDictionary<int, IList<int>> cells, bool considerSelection) {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
-          if (preprocessingData.IsType<double>(column.Key)) {
+          if (preprocessingData.VariableHasType<double>(column.Key)) {
             ReplaceIndicesByValue<double>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<double>(column.Key, considerSelection));
-          } else if (preprocessingData.IsType<string>(column.Key)) {
+          } else if (preprocessingData.VariableHasType<string>(column.Key)) {
             ReplaceIndicesByValue<string>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<string>(column.Key, considerSelection));
-          } else if (preprocessingData.IsType<DateTime>(column.Key)) {
+          } else if (preprocessingData.VariableHasType<DateTime>(column.Key)) {
             ReplaceIndicesByValue<DateTime>(column.Key, column.Value, statisticsLogic.GetMostCommonValue<DateTime>(column.Key, considerSelection));
           } else {
             throw new ArgumentException("column with index: " + column.Key + " contains a non supported type.");
@@ -264,11 +264,11 @@ namespace HeuristicLab.DataPreprocessing {
     public void ReOrderToIndices(IList<System.Tuple<int, int>> indices) {
       preprocessingData.InTransaction(() => {
         for (int i = 0; i < preprocessingData.Columns; ++i) {
-          if (preprocessingData.IsType<double>(i)) {
+          if (preprocessingData.VariableHasType<double>(i)) {
             reOrderToIndices<double>(i, indices);
-          } else if (preprocessingData.IsType<string>(i)) {
+          } else if (preprocessingData.VariableHasType<string>(i)) {
             reOrderToIndices<string>(i, indices);
-          } else if (preprocessingData.IsType<DateTime>(i)) {
+          } else if (preprocessingData.VariableHasType<DateTime>(i)) {
             reOrderToIndices<DateTime>(i, indices);
           }
         }
@@ -278,11 +278,11 @@ namespace HeuristicLab.DataPreprocessing {
     public void ShuffleToIndices(IList<System.Tuple<int, int>> indices) {
       preprocessingData.InTransaction(() => {
         for (int i = 0; i < preprocessingData.Columns; ++i) {
-          if (preprocessingData.IsType<double>(i)) {
+          if (preprocessingData.VariableHasType<double>(i)) {
             ShuffleToIndices<double>(i, indices);
-          } else if (preprocessingData.IsType<string>(i)) {
+          } else if (preprocessingData.VariableHasType<string>(i)) {
             ShuffleToIndices<string>(i, indices);
-          } else if (preprocessingData.IsType<DateTime>(i)) {
+          } else if (preprocessingData.VariableHasType<DateTime>(i)) {
             ShuffleToIndices<DateTime>(i, indices);
           }
         }
@@ -359,7 +359,7 @@ namespace HeuristicLab.DataPreprocessing {
 
       List<int> columns = new List<int>();
       for (int i = 0; i < preprocessingData.Columns; ++i) {
-        if (preprocessingData.IsType<double>(i) || preprocessingData.IsType<DateTime>(i)) {
+        if (preprocessingData.VariableHasType<double>(i) || preprocessingData.VariableHasType<DateTime>(i)) {
           double columnVariance = statisticsLogic.GetVariance(i);
           if (columnVariance < variance) {
             columns.Add(i);

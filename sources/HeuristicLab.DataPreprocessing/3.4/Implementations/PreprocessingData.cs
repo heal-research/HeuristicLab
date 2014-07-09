@@ -51,7 +51,7 @@ namespace HeuristicLab.DataPreprocessing {
     public IEnumerable<string> GetDoubleVariableNames() {
       var doubleVariableNames = new List<string>();
       for (int i = 0; i < Columns; ++i) {
-        if (IsType<double>(i)) {
+        if (VariableHasType<double>(i)) {
           doubleVariableNames.Add(variableNames[i]);
         }
       }
@@ -99,11 +99,11 @@ namespace HeuristicLab.DataPreprocessing {
       int columnIndex = 0;
       variableValues = new List<IList>();
       foreach (var variableName in problemData.Dataset.VariableNames) {
-        if (dataset.IsType<double>(variableName)) {
+        if (dataset.VariableHasType<double>(variableName)) {
           variableValues.Insert(columnIndex, dataset.GetDoubleValues(variableName).ToList());
-        } else if (dataset.IsType<string>(variableName)) {
+        } else if (dataset.VariableHasType<string>(variableName)) {
           variableValues.Insert(columnIndex, dataset.GetStringValues(variableName).ToList());
-        } else if (dataset.IsType<DateTime>(variableName)) {
+        } else if (dataset.VariableHasType<DateTime>(variableName)) {
           variableValues.Insert(columnIndex, dataset.GetDateTimeValues(variableName).ToList());
         } else {
           throw new ArgumentException("The datatype of column " + variableName + " must be of type double, string or DateTime");
@@ -170,7 +170,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public abstract int GetColumnIndex(string variableName);
 
-    public abstract bool IsType<T>(int columnIndex);
+    public abstract bool VariableHasType<T>(int columnIndex);
 
     [Obsolete("use the index based variant, is faster")]
     public abstract IList<T> GetValues<T>(string variableName, bool considerSelection);
