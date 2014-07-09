@@ -38,6 +38,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     IEnumerable<int> TrainingIndices { get; }
     IEnumerable<int> TestIndices { get; }
 
+    IEnumerable<ITransformation> Transformations { get; }
+
     bool IsTrainingSample(int index);
     bool IsTestSample(int index);
 
