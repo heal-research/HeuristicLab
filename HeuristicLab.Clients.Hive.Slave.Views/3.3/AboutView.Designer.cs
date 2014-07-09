@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -130,7 +130,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Views {
       this.txtCopyright.ReadOnly = true;
       this.txtCopyright.Size = new System.Drawing.Size(308, 13);
       this.txtCopyright.TabIndex = 30;
-      this.txtCopyright.Text = "(c) 2002-2013 HEAL";
+      this.txtCopyright.Text = "(c) 2002-2014 HEAL";
       // 
       // versionTextBox
       // 
