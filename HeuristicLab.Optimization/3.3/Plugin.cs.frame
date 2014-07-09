@@ -25,7 +25,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// Plugin class for HeuristicLab.Optimization plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Optimization", "3.3.9.$WCREV$")]
+  [Plugin("HeuristicLab.Optimization", "3.3.10.$WCREV$")]
   [PluginFile("HeuristicLab.Optimization-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Scripting.Views {
-  [Plugin("HeuristicLab.Scripting.Views", "3.3.9.$WCREV$")]
+  [Plugin("HeuristicLab.Scripting.Views", "3.3.10.$WCREV$")]
   [PluginFile("HeuristicLab.Scripting.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.CodeEditor", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
