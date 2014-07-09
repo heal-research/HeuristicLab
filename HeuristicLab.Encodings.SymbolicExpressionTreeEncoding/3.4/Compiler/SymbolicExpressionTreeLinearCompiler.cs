@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           var s = node.GetSubtree(j);
           code[c + j] = new LinearInstruction { dynamicNode = s, nArguments = (byte)s.SubtreeCount, opCode = opCodeMapper(s) };
         }
-        code[i].childIndex = (byte)c;
+        code[i].childIndex = c;
         c += node.SubtreeCount;
         ++i;
       }

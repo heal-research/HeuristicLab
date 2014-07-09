@@ -24,7 +24,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   // total size of this class should be small to improve cache access while executing the code
   public class LinearInstruction : Instruction {
     public double value;
-    public byte childIndex;
+    public int childIndex;
     public bool skip;
   }
 }
