@@ -26,7 +26,7 @@ using HeuristicLab.Optimizer.Properties;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimizer {
-  [Plugin("HeuristicLab.Optimizer", "3.3.9.$WCREV$")]
+  [Plugin("HeuristicLab.Optimizer", "3.3.10.$WCREV$")]
   [PluginFile("HeuristicLab.Optimizer-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Clients.Common", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
@@ -46,7 +46,7 @@ namespace HeuristicLab.Optimizer {
   public class HeuristicLabOptimizerPlugin : PluginBase {
   }
 
-  [Application("Optimizer", "HeuristicLab Optimizer 3.3.9.$WCREV$")]
+  [Application("Optimizer", "HeuristicLab Optimizer 3.3.10.$WCREV$")]
   internal class HeuristicLabOptimizerApplication : ApplicationBase {
     public override void Run(ICommandLineArgument[] args) {
       HeuristicLab.MainForm.WindowsForms.MainForm mainForm = null;
