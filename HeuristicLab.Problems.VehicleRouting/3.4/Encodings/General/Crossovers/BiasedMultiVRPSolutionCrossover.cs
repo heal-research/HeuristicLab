@@ -142,7 +142,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
       var checkedOperators = Operators.CheckedItems;
       if (checkedOperators.Count() > 0) {
         // select a random operator from the checked operators
-        successor = checkedOperators.SampleProportional(random, 1, probabilities, false, false).First().Value;
+        successor = checkedOperators.SampleProportional(random, 1, checkedOperators.Select(x => probabilities[x.Index]), false, false).First().Value;
       }
 
       IOperation successorOp = null;
