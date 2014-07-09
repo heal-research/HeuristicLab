@@ -19,6 +19,11 @@ namespace HeuristicLab.Scripting {
       return true;
     }
 
+    public object this[string key] {
+      get { return variableStore[key]; }
+      set { variableStore[key] = value; }
+    }
+
     public bool Contains(string variableName) {
       return variableStore.ContainsKey(variableName);
     }
