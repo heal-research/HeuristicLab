@@ -1626,8 +1626,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
       : this(defaultDataset, defaultAllowedInputVariables, defaultPriceVariable) {
     }
 
-    public ProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
-      : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
+    public ProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
+      : base(dataset, allowedInputVariables) {
       var variables = InputVariables.Select(x => x.AsReadOnly()).ToList();
       Parameters.Add(new ConstrainedValueParameter<StringValue>(PriceChangeVariableParameterName, new ItemSet<StringValue>(variables), variables.First(x => x.Value == targetVariable)));
       Parameters.Add(new FixedValueParameter<DoubleValue>(TransactionCostsParameterName, "The absolute cost of on buy/sell transaction (assumed to be constant and independent of transaction volume)", new DoubleValue(0.0002)));

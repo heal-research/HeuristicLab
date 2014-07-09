@@ -299,8 +299,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public ClassificationProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
-      : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
+    public ClassificationProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
+      : base(dataset, allowedInputVariables) {
       var validTargetVariableValues = CheckVariablesForPossibleTargetVariables(dataset).Select(x => new StringValue(x).AsReadOnly()).ToList();
       var target = validTargetVariableValues.Where(x => x.Value == targetVariable).DefaultIfEmpty(validTargetVariableValues.First()).First();
 

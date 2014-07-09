@@ -168,7 +168,6 @@
     <Compile Include="FeatureCorrelation\FeatureCorrelationView.Designer.cs">
       <DependentUpon>FeatureCorrelationView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ProblemDataView.cs">
