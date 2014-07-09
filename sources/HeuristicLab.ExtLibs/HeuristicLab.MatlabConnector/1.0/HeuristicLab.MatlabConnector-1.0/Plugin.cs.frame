@@ -32,6 +32,6 @@ namespace HeuristicLab.MatlabConnector {
   [PluginFile("HeuristicLab.MatlabConnector-1.0.dll", PluginFileType.Assembly)]
   [PluginFile("Interop.MLApp.dll",  PluginFileType.Assembly)]
   [PluginFile("Mathworks Interop License.txt", PluginFileType.License)]
-  public class HeuristicLabMathJaxPlugin : PluginBase {  
+  public class HeuristicLabMatlabConnectorPlugin : PluginBase {  
   }
 }
