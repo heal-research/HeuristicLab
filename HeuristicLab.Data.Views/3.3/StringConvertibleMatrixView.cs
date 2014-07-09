@@ -35,7 +35,7 @@ namespace HeuristicLab.Data.Views {
   [Content(typeof(IStringConvertibleMatrix), true)]
   public partial class StringConvertibleMatrixView : AsynchronousContentView {
     protected int[] virtualRowIndices;
-    protected List<KeyValuePair<int, SortOrder>> sortedColumnIndices;
+    private List<KeyValuePair<int, SortOrder>> sortedColumnIndices;
     private RowComparer rowComparer;
 
     public new IStringConvertibleMatrix Content {
@@ -260,7 +260,7 @@ namespace HeuristicLab.Data.Views {
     #endregion
 
     #region DataGridView Events
-    protected virtual void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
+    private void dataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) {
       if (!dataGridView.ReadOnly) {
         string errorMessage;
         if (Content != null && !Content.Validate(e.FormattedValue.ToString(), out errorMessage)) {
@@ -269,7 +269,7 @@ namespace HeuristicLab.Data.Views {
         }
       }
     }
-    protected virtual void dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e) {
+    private void dataGridView_CellParsing(object sender, DataGridViewCellParsingEventArgs e) {
       if (!dataGridView.ReadOnly) {
         string value = e.Value.ToString();
         int rowIndex = virtualRowIndices[e.RowIndex];
@@ -363,7 +363,7 @@ namespace HeuristicLab.Data.Views {
       Clipboard.SetText(s.ToString());
     }
 
-    protected virtual void PasteValuesToDataGridView() {
+    private void PasteValuesToDataGridView() {
       string[,] values = SplitClipboardString(Clipboard.GetText());
       int rowIndex = 0;
       int columnIndex = 0;
@@ -431,7 +431,7 @@ namespace HeuristicLab.Data.Views {
       UpdateSortGlyph();
     }
 
-    protected void Sort() {
+    private void Sort() {
       virtualRowIndices = Sort(sortedColumnIndices);
       UpdateSortGlyph();
       UpdateRowHeaders();
@@ -541,7 +541,7 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Size = new Size(Size.Width, Size.Height - offset - statisticsTextBoxHeight);
     }
 
-    protected virtual void dataGridView_SelectionChanged(object sender, EventArgs e) {
+    private void dataGridView_SelectionChanged(object sender, EventArgs e) {
       string stringFormat = "{0,20:0.0000}";
       statisticsTextBox.Text = string.Empty;
       if (dataGridView.SelectedCells.Count > 1) {

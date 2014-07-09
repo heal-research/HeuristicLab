@@ -37,7 +37,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string InputVariablesParameterName = "InputVariables";
     protected const string TrainingPartitionParameterName = "TrainingPartition";
     protected const string TestPartitionParameterName = "TestPartition";
-    protected const string TransformationsParameterName = "Transformations";
 
     #region parameter properites
     public IFixedValueParameter<Dataset> DatasetParameter {
@@ -51,9 +50,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     public IFixedValueParameter<IntRange> TestPartitionParameter {
       get { return (IFixedValueParameter<IntRange>)Parameters[TestPartitionParameterName]; }
-    }
-    public IFixedValueParameter<ReadOnlyItemList<ITransformation>> TransformationsParameter {
-      get { return (IFixedValueParameter<ReadOnlyItemList<ITransformation>>)Parameters[TransformationsParameterName]; }
     }
     #endregion
 
@@ -92,10 +88,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public IEnumerable<ITransformation> Transformations {
-      get { return TransformationsParameter.Value; }
-    }
-
     public virtual bool IsTrainingSample(int index) {
       return index >= 0 && index < Dataset.Rows &&
         TrainingPartition.Start <= index && index < TrainingPartition.End &&
@@ -118,14 +110,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      if (!Parameters.ContainsKey(TransformationsParameterName)) {
-        Parameters.Add(new FixedValueParameter<ReadOnlyItemList<ITransformation>>(TransformationsParameterName, "", new ItemList<ITransformation>().AsReadOnly()));
-        TransformationsParameter.Hidden = true;
-      }
       RegisterEventHandlers();
     }
 
-    protected DataAnalysisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null) {
+    protected DataAnalysisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables) {
       if (dataset == null) throw new ArgumentNullException("The dataset must not be null.");
       if (allowedInputVariables == null) throw new ArgumentNullException("The allowedInputVariables must not be null.");
 
@@ -141,15 +129,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       int testPartitionStart = dataset.Rows / 2;
       int testPartitionEnd = dataset.Rows;
 
-      var transformationsList = new ItemList<ITransformation>(transformations ?? Enumerable.Empty<ITransformation>());
-
       Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", dataset));
       Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, "", inputVariables.AsReadOnly()));
       Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", new IntRange(trainingPartitionStart, trainingPartitionEnd)));
       Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", new IntRange(testPartitionStart, testPartitionEnd)));
-      Parameters.Add(new FixedValueParameter<ReadOnlyItemList<ITransformation>>(TransformationsParameterName, "", transformationsList.AsReadOnly()));
-
-      TransformationsParameter.Hidden = true;
 
       ((ValueParameter<Dataset>)DatasetParameter).ReactOnValueToStringChangedAndValueItemImageChanged = false;
       RegisterEventHandlers();
@@ -160,7 +143,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       InputVariables.CheckedItemsChanged += new CollectionItemsChangedEventHandler<IndexedItem<StringValue>>(InputVariables_CheckedItemsChanged);
       TrainingPartition.ValueChanged += new EventHandler(Parameter_ValueChanged);
       TestPartition.ValueChanged += new EventHandler(Parameter_ValueChanged);
-      TransformationsParameter.ValueChanged += new EventHandler(Parameter_ValueChanged);
     }
 
     private void InputVariables_CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<StringValue>> e) {
