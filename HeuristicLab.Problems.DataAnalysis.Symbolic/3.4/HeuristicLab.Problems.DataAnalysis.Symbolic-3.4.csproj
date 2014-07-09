@@ -125,6 +125,8 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Interfaces\IModelBacktransformator.cs" />
+    <Compile Include="SymbolicExpressionTreeBacktransformator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisAlleleFrequencyAnalyzer.cs" />
@@ -141,7 +143,7 @@
     <Compile Include="Crossovers\SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover.cs" />
     <Compile Include="Crossovers\SymbolicDataAnalysisExpressionSemanticSimilarityCrossover.cs" />
     <Compile Include="Formatters\SymbolicDataAnalysisExpressionExcelFormatter.cs" />
-	<Compile Include="Formatters\SymbolicDataAnalysisExpressionSmalltalkFormatter.cs" />
+    <Compile Include="Formatters\SymbolicDataAnalysisExpressionSmalltalkFormatter.cs" />
     <Compile Include="Interfaces\ISymbolicDataAnalysisExpressionCrossover.cs" />
     <Compile Include="Interfaces\ISymbolicDataAnalysisImpactValuesCalculator.cs" />
     <Compile Include="Interpreter\InterpreterState.cs" />
@@ -221,6 +223,7 @@
     <Compile Include="Symbols\VariableCondition.cs" />
     <Compile Include="Symbols\VariableConditionTreeNode.cs" />
     <Compile Include="Symbols\VariableTreeNode.cs" />
+    <Compile Include="TransformationToSymbolicTreeMapper.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

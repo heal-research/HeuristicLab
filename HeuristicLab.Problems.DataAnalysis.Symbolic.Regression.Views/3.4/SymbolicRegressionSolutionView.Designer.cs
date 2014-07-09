@@ -19,7 +19,6 @@
  */
 #endregion
 
-
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   partial class SymbolicRegressionSolutionView {
     /// <summary> 
@@ -48,6 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       this.exportButton = new System.Windows.Forms.Button();
       this.exportFileDialog = new System.Windows.Forms.SaveFileDialog();
       this.btnSimplify = new System.Windows.Forms.Button();
+      this.transformModelButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
@@ -60,6 +60,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       // 
       this.flowLayoutPanel.Controls.Add(this.btnSimplify);
       this.flowLayoutPanel.Controls.Add(this.exportButton);
+      this.flowLayoutPanel.Controls.Add(this.transformModelButton);
       // 
       // btnSimplify
       // 
@@ -89,6 +90,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
       this.toolTip.SetToolTip(this.exportButton, "Exports the symbolic regression solution to Excel.");
       // 
+      // transformModelButton
+      // 
+      this.transformModelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+      this.transformModelButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Event;
+      this.transformModelButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      this.transformModelButton.Name = "transformModelButton";
+      this.transformModelButton.Size = new System.Drawing.Size(135, 24);
+      this.transformModelButton.TabIndex = 9;
+      this.transformModelButton.Text = "Backtransform Model";
+      this.transformModelButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+      this.transformModelButton.UseVisualStyleBackColor = true;
+      this.transformModelButton.Click += new System.EventHandler(this.transformModelButton_Click);
+      this.toolTip.SetToolTip(this.transformModelButton, "Backtransform model based on the stored transformations.");
+      // 
       // SymbolicRegressionSolutionView
       // 
       this.Name = "SymbolicRegressionSolutionView";
@@ -107,5 +122,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     protected System.Windows.Forms.SaveFileDialog exportFileDialog;
     protected System.Windows.Forms.Button exportButton;
     protected System.Windows.Forms.Button btnSimplify;
+    protected System.Windows.Forms.Button transformModelButton;
   }
 }

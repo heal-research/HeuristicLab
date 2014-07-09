@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -85,8 +86,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : this(defaultDataset, defaultAllowedInputVariables) {
     }
 
-    public ClusteringProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables)
-      : base(dataset, allowedInputVariables) {
+    public ClusteringProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null)
+      : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
     }
   }
 }

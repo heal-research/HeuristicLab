@@ -56,6 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       correlationCalcComboBox.SelectedItem = calcList.First(c => c.Calculator.GetType().Equals(typeof(PearsonsRDependenceCalculator)));
       partitionComboBox.DataSource = Partitions;
       partitionComboBox.SelectedItem = TRAININGSAMPLES;
+      progressPanel.Visible = false;
     }
 
     protected override void RegisterContentEvents() {
@@ -77,6 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         fcc.ProblemData = Content;
         CalculateCorrelation();
       } else {
+        progressPanel.Visible = false;
         dataView.Maximum = 0;
         dataView.Minimum = 0;
         dataView.Content = null;

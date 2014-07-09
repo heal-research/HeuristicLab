@@ -1581,8 +1581,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable) {
       TrainingPartition.Start = 50;
     }
-    public TimeSeriesPrognosisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
-      : base(dataset, allowedInputVariables, targetVariable) {
+    public TimeSeriesPrognosisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
+      : base(dataset, allowedInputVariables, targetVariable, transformations ?? Enumerable.Empty<ITransformation>()) {
       Parameters.Add(new FixedValueParameter<IntValue>(TrainingHorizonParameterName, "Specifies the horizon (how far the prognosis reaches in the future) for each training sample.", new IntValue(1)));
       Parameters.Add(new FixedValueParameter<IntValue>(TestHorizonParameterName, "Specifies the horizon (how far the prognosis reaches in the future) for each test sample.", new IntValue(1)));
 
@@ -1642,9 +1642,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("The problem data is not a timeseries problem data. Instead a " + problemData.GetType().GetPrettyName() + " was provided.", "problemData");
 
       var trainingDataStart = TrainingIndices.First();
-      
+
       base.AdjustProblemDataProperties(problemData);
-      
+
       TestPartition.Start = trainingDataStart;
 
       TrainingHorizon = timeSeriesProblemData.TrainingHorizon;
