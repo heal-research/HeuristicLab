@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -28,7 +28,7 @@ namespace HeuristicLab.Random.Tests {
   [TestClass()]
   public class RandomEnumerableSampleTest {
     [TestMethod]
-    [TestCategory("Problems.Random")]
+    [TestCategory("General")]
     [TestProperty("Time", "short")]
     public void SampleProportionalWithoutRepetitionTest() {
       {
@@ -37,10 +37,8 @@ namespace HeuristicLab.Random.Tests {
         var random = new MersenneTwister(31415);
         var weights = Enumerable.Repeat(0.0, 100);
         for (int i = 0; i < 1000; i++) {
-          var sample =
-            RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 1, weights, false, false).ToArray();
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 1, weights, false, false).ToArray();
           Assert.AreEqual(sample.Count(), 1);
-          Assert.AreEqual(sample.Distinct().Count(), 1);
         }
       }
       {
@@ -49,10 +47,8 @@ namespace HeuristicLab.Random.Tests {
         var random = new MersenneTwister(31415);
         var weights = Enumerable.Repeat(0.0, 1);
         for (int i = 0; i < 1000; i++) {
-          var sample =
-            RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 1, weights, false, false).ToArray();
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 1, weights, false, false).ToArray();
           Assert.AreEqual(sample.Count(), 1);
-          Assert.AreEqual(sample.Distinct().Count(), 1);
         }
       }
       {
@@ -60,12 +56,13 @@ namespace HeuristicLab.Random.Tests {
         var items = Enumerable.Range(0, 2);
         var random = new MersenneTwister(31415);
         var weights = new double[] { 1.0, 2.0 };
+        var zeroSelected = 0;
         for (int i = 0; i < 1000; i++) {
-          var sample =
-            RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 1, weights, false, false).ToArray();
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 1, weights, false, false).ToArray();
           Assert.AreEqual(sample.Count(), 1);
-          Assert.AreEqual(sample.Distinct().Count(), 1);
+          if (sample[0] == 0) zeroSelected++;
         }
+        Assert.IsTrue(zeroSelected > 0 && zeroSelected < 1000);
       }
       {
         // select 2 of 2 non-uniformly (weights = 1, 1000)
@@ -73,10 +70,9 @@ namespace HeuristicLab.Random.Tests {
         var random = new MersenneTwister(31415);
         var weights = new double[] { 1.0, 1000.0 };
         for (int i = 0; i < 1000; i++) {
-          var sample =
-            RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 1, weights, false, false).ToArray();
-          Assert.AreEqual(sample.Count(), 1);
-          Assert.AreEqual(sample.Distinct().Count(), 1);
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 2, weights, false, false).ToArray();
+          Assert.AreEqual(sample.Count(), 2);
+          Assert.AreEqual(sample.Distinct().Count(), 2);
         }
       }
       {
@@ -84,8 +80,7 @@ namespace HeuristicLab.Random.Tests {
         var items = Enumerable.Range(0, 1);
         var random = new MersenneTwister(31415);
         var weights = Enumerable.Repeat(0.0, 1);
-        var sample =
-          RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 2, weights, false, false).ToArray();
+        var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 2, weights, false, false).ToArray();
         Assert.AreEqual(sample.Count(), 1);
       }
 
@@ -95,8 +90,7 @@ namespace HeuristicLab.Random.Tests {
         var random = new MersenneTwister(31415);
         var weights = Enumerable.Repeat(0.0, 100);
         for (int i = 0; i < 1000; i++) {
-          var sample =
-            RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 10, weights, false, false).ToArray();
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 10, weights, false, false).ToArray();
           Assert.AreEqual(sample.Count(), 10);
           Assert.AreEqual(sample.Distinct().Count(), 10);
         }
@@ -108,8 +102,7 @@ namespace HeuristicLab.Random.Tests {
         var random = new MersenneTwister(31415);
         var weights = Enumerable.Repeat(0.0, 100);
         for (int i = 0; i < 1000; i++) {
-          var sample =
-            RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 100, weights, false, false).ToArray();
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 100, weights, false, false).ToArray();
           Assert.AreEqual(sample.Count(), 100);
           Assert.AreEqual(sample.Distinct().Count(), 100);
         }
@@ -121,9 +114,7 @@ namespace HeuristicLab.Random.Tests {
         var random = new MersenneTwister(31415);
         var weights = Enumerable.Repeat(1.0, 10);
         for (int i = 0; i < 1000; i++) {
-
-          var sample =
-            RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 10, weights, false, false).ToArray();
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 10, weights, false, false).ToArray();
           Assert.AreEqual(sample.Count(), 10);
           Assert.AreEqual(sample.Distinct().Count(), 10);
         }
@@ -131,6 +122,66 @@ namespace HeuristicLab.Random.Tests {
 
       {
         // select 10 of 10 uniformly (weights = 1)
+        var items = Enumerable.Range(0, 10);
+        var random = new MersenneTwister(31415);
+        var weights = Enumerable.Repeat(1.0, 10);
+        for (int i = 0; i < 1000; i++) {
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 10, weights, true, false).ToArray();
+          Assert.AreEqual(sample.Count(), 10);
+          Assert.AreEqual(sample.Distinct().Count(), 10);
+        }
+      }
+
+      {
+        // select 10 of 10 uniformly (weights = 1)
+        var items = Enumerable.Range(0, 10);
+        var random = new MersenneTwister(31415);
+        var weights = Enumerable.Repeat(1.0, 10);
+        for (int i = 0; i < 1000; i++) {
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 10, weights, true, true).ToArray();
+          Assert.AreEqual(sample.Count(), 10);
+          Assert.AreEqual(sample.Distinct().Count(), 10);
+        }
+      }
+
+      {
+        // select 5 of 10 uniformly (weights = 0..n)
+        var items = Enumerable.Range(0, 10);
+        var random = new MersenneTwister(31415);
+        var weights = new double[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        for (int i = 0; i < 1000; i++) {
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 5, weights, false, false).ToArray();
+          Assert.AreEqual(sample.Count(), 5);
+          Assert.AreEqual(sample.Distinct().Count(), 5);
+        }
+      }
+
+      {
+        // select 5 of 10 uniformly (weights = 0..n)
+        var items = Enumerable.Range(0, 10);
+        var random = new MersenneTwister(31415);
+        var weights = new double[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        for (int i = 0; i < 1000; i++) {
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 5, weights, true, false).ToArray();
+          Assert.AreEqual(sample.Count(), 5);
+          Assert.AreEqual(sample.Distinct().Count(), 5);
+        }
+      }
+
+      {
+        // select 5 of 10 uniformly (weights = 0..n)
+        var items = Enumerable.Range(0, 10);
+        var random = new MersenneTwister(31415);
+        var weights = new double[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        for (int i = 0; i < 1000; i++) {
+          var sample = RandomEnumerable.SampleProportionalWithoutRepetition(items, random, 5, weights, true, true).ToArray();
+          Assert.AreEqual(sample.Count(), 5);
+          Assert.AreEqual(sample.Distinct().Count(), 5);
+        }
+      }
+
+      {
+        // select 10 of 100 uniformly (weights = 1)
         // repeat 1000000 times and calculate statistics
         var items = Enumerable.Range(0, 100);
         var random = new MersenneTwister(31415);
