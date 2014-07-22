@@ -19,10 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   public interface IDataPreprocessorStarter {
-    void Start(IDataAnalysisProblemData problemData, View currentView);
+    void Start(IDataAnalysisProblemData problemData, IContentView currentView);
   }
 }
