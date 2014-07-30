@@ -24,9 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Core {
-  /// <summary>
-  /// An arc that can have a weight, a label, and a data object for holding additional info
-  /// </summary>
+  [Item("Arc", "A graph arc connecting two graph vertices, that can have a weight, label, and data object for holding additional info")]
   [StorableClass]
   public class Arc : Item, IArc {
     [Storable]

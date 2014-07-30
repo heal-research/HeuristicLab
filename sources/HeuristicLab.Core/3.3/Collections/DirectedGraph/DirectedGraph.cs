@@ -70,8 +70,8 @@ namespace HeuristicLab.Core {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       foreach (var vertex in vertices) {
-        vertex.ArcAdded += OnArcAdded;
-        vertex.ArcRemoved += OnArcRemoved;
+        vertex.ArcAdded += OnVertexArcAdded;
+        vertex.ArcRemoved += OnVertexArcRemoved;
       }
 
       foreach (var arc in arcs) {
@@ -90,8 +90,9 @@ namespace HeuristicLab.Core {
     public virtual void AddVertex(IVertex vertex) {
       vertices.Add(vertex);
       // register event handlers
-      vertex.ArcAdded += OnArcAdded;
-      vertex.ArcRemoved += OnArcRemoved;
+      vertex.ArcAdded += OnVertexArcAdded;
+      vertex.ArcRemoved += OnVertexArcRemoved;
+      OnVertedAdded(this, EventArgs.Empty);
     }
 
     public virtual void RemoveVertex(IVertex vertex) {
@@ -101,8 +102,9 @@ namespace HeuristicLab.Core {
       foreach (var arc in arcList)
         RemoveArc(arc);
       // deregister event handlers
-      vertex.ArcAdded -= OnArcAdded;
-      vertex.ArcRemoved -= OnArcRemoved;
+      vertex.ArcAdded -= OnVertexArcAdded;
+      vertex.ArcRemoved -= OnVertexArcRemoved;
+      OnVertexRemoved(this, EventArgs.Empty); // do not pass the removed vertex in the event as we don't need it anymore
     }
 
     public virtual IArc AddArc(IVertex source, IVertex target) {
@@ -117,6 +119,7 @@ namespace HeuristicLab.Core {
       source.AddArc(arc);
       target.AddArc(arc);
       arcs.Add(arc);
+      OnArcAdded(this, EventArgs.Empty);
     }
 
     public virtual void RemoveArc(IArc arc) {
@@ -125,21 +128,19 @@ namespace HeuristicLab.Core {
       var target = (Vertex)arc.Target;
       source.RemoveArc(arc);
       target.RemoveArc(arc);
+      OnArcRemoved(this, EventArgs.Empty);
     }
 
-    public event EventHandler ArcAdded;
-    protected virtual void OnArcAdded(object sender, EventArgs<IArc> args) {
+    protected virtual void OnVertexArcAdded(object sender, EventArgs<IArc> args) {
       var arc = args.Value;
-      // the ArcAdded event is fired by a vertex when an arc from or towards another vertex is added to his list of connections
+      // the ArcAdded event is fired by a vertex when an arc from/to another vertex is added to its list of connections
       // because the arc is added in both directions by both the source and the target, this event will get fired twice 
       // here, we only want to add the arc once, so if its already contained, we return without complaining
       if (arcs.Contains(arc)) return;
       arcs.Add(arc);
     }
 
-
-    public event EventHandler ArcRemoved;
-    protected virtual void OnArcRemoved(object sender, EventArgs<IArc> args) {
+    protected virtual void OnVertexArcRemoved(object sender, EventArgs<IArc> args) {
       var arc = args.Value;
       if (!arcs.Contains(arc)) return; // the same rationale as above 
       arcs.Remove(arc);
@@ -147,6 +148,31 @@ namespace HeuristicLab.Core {
 
     // events
     public event EventHandler VertexAdded;
+    protected virtual void OnVertedAdded(object sender, EventArgs args) {
+      var added = VertexAdded;
+      if (added != null)
+        added(sender, args);
+    }
+
     public event EventHandler VertexRemoved;
+    protected virtual void OnVertexRemoved(object sender, EventArgs args) {
+      var removed = VertexRemoved;
+      if (removed != null)
+        removed(sender, args);
+    }
+
+    public event EventHandler ArcAdded;
+    protected virtual void OnArcAdded(object sender, EventArgs args) {
+      var added = ArcAdded;
+      if (added != null)
+        added(sender, args);
+    }
+
+    public event EventHandler ArcRemoved;
+    protected virtual void OnArcRemoved(object sender, EventArgs args) {
+      var removed = ArcRemoved;
+      if (removed != null)
+        removed(sender, args);
+    }
   }
 }
