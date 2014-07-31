@@ -142,7 +142,7 @@ namespace HeuristicLab.Core {
     }
 
     // events
-    public event EventHandler<EventArgs<IVertex> VertexAdded;
+    public event EventHandler<EventArgs<IVertex>> VertexAdded;
     protected virtual void OnVertedAdded(object sender, EventArgs<IVertex> args) {
       var added = VertexAdded;
       if (added != null)
