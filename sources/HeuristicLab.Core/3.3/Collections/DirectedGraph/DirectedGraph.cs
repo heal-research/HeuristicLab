@@ -70,8 +70,8 @@ namespace HeuristicLab.Core {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       foreach (var vertex in vertices) {
-        vertex.ArcAdded += OnVertexArcAdded;
-        vertex.ArcRemoved += OnVertexArcRemoved;
+        vertex.ArcAdded += Vertex_ArcAdded;
+        vertex.ArcRemoved += Vertex_ArcRemoved;
       }
 
       foreach (var arc in arcs) {
@@ -90,9 +90,9 @@ namespace HeuristicLab.Core {
     public virtual void AddVertex(IVertex vertex) {
       vertices.Add(vertex);
       // register event handlers
-      vertex.ArcAdded += OnVertexArcAdded;
-      vertex.ArcRemoved += OnVertexArcRemoved;
-      OnVertedAdded(this, EventArgs.Empty);
+      vertex.ArcAdded += Vertex_ArcAdded;
+      vertex.ArcRemoved += Vertex_ArcRemoved;
+      OnVertedAdded(this, new EventArgs<IVertex>(vertex));
     }
 
     public virtual void RemoveVertex(IVertex vertex) {
@@ -102,9 +102,9 @@ namespace HeuristicLab.Core {
       foreach (var arc in arcList)
         RemoveArc(arc);
       // deregister event handlers
-      vertex.ArcAdded -= OnVertexArcAdded;
-      vertex.ArcRemoved -= OnVertexArcRemoved;
-      OnVertexRemoved(this, EventArgs.Empty); // do not pass the removed vertex in the event as we don't need it anymore
+      vertex.ArcAdded -= Vertex_ArcAdded;
+      vertex.ArcRemoved -= Vertex_ArcRemoved;
+      OnVertexRemoved(this, new EventArgs<IVertex>(vertex));
     }
 
     public virtual IArc AddArc(IVertex source, IVertex target) {
@@ -119,7 +119,6 @@ namespace HeuristicLab.Core {
       source.AddArc(arc);
       target.AddArc(arc);
       arcs.Add(arc);
-      OnArcAdded(this, EventArgs.Empty);
     }
 
     public virtual void RemoveArc(IArc arc) {
@@ -128,48 +127,44 @@ namespace HeuristicLab.Core {
       var target = (Vertex)arc.Target;
       source.RemoveArc(arc);
       target.RemoveArc(arc);
-      OnArcRemoved(this, EventArgs.Empty);
     }
 
-    protected virtual void OnVertexArcAdded(object sender, EventArgs<IArc> args) {
-      var arc = args.Value;
+    protected virtual void Vertex_ArcAdded(object sender, EventArgs<IArc> args) {
       // the ArcAdded event is fired by a vertex when an arc from/to another vertex is added to its list of connections
-      // because the arc is added in both directions by both the source and the target, this event will get fired twice 
-      // here, we only want to add the arc once, so if its already contained, we return without complaining
-      if (arcs.Contains(arc)) return;
-      arcs.Add(arc);
+      // because the arc is added in both directions by both the source and the target, this event will get fired twice here
+      var arc = args.Value;
+      if (arcs.Add(arc)) OnArcAdded(this, new EventArgs<IArc>(arc));
     }
 
-    protected virtual void OnVertexArcRemoved(object sender, EventArgs<IArc> args) {
+    protected virtual void Vertex_ArcRemoved(object sender, EventArgs<IArc> args) {
       var arc = args.Value;
-      if (!arcs.Contains(arc)) return; // the same rationale as above 
-      arcs.Remove(arc);
+      if (arcs.Remove(arc)) OnArcRemoved(this, new EventArgs<IArc>(arc));
     }
 
     // events
     public event EventHandler VertexAdded;
-    protected virtual void OnVertedAdded(object sender, EventArgs args) {
+    protected virtual void OnVertedAdded(object sender, EventArgs<IVertex> args) {
       var added = VertexAdded;
       if (added != null)
         added(sender, args);
     }
 
     public event EventHandler VertexRemoved;
-    protected virtual void OnVertexRemoved(object sender, EventArgs args) {
+    protected virtual void OnVertexRemoved(object sender, EventArgs<IVertex> args) {
       var removed = VertexRemoved;
       if (removed != null)
         removed(sender, args);
     }
 
     public event EventHandler ArcAdded;
-    protected virtual void OnArcAdded(object sender, EventArgs args) {
+    protected virtual void OnArcAdded(object sender, EventArgs<IArc> args) {
       var added = ArcAdded;
       if (added != null)
         added(sender, args);
     }
 
     public event EventHandler ArcRemoved;
-    protected virtual void OnArcRemoved(object sender, EventArgs args) {
+    protected virtual void OnArcRemoved(object sender, EventArgs<IArc> args) {
       var removed = ArcRemoved;
       if (removed != null)
         removed(sender, args);
