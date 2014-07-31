@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   public interface IDirectedGraph : IItem {
@@ -33,9 +34,9 @@ namespace HeuristicLab.Core {
     IEnumerable<IVertex> Vertices { get; }
     IEnumerable<IArc> Arcs { get; }
 
-    event EventHandler VertexAdded;
-    event EventHandler VertexRemoved;
-    event EventHandler ArcAdded;
-    event EventHandler ArcRemoved;
+    event EventHandler<EventArgs<IVertex>> VertexAdded;
+    event EventHandler<EventArgs<IVertex>> VertexRemoved;
+    event EventHandler<EventArgs<IArc>> ArcAdded;
+    event EventHandler<EventArgs<IArc>> ArcRemoved;
   }
 }

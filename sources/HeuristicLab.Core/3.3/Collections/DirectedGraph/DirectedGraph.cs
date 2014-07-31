@@ -142,28 +142,28 @@ namespace HeuristicLab.Core {
     }
 
     // events
-    public event EventHandler VertexAdded;
+    public event EventHandler<EventArgs<IVertex> VertexAdded;
     protected virtual void OnVertedAdded(object sender, EventArgs<IVertex> args) {
       var added = VertexAdded;
       if (added != null)
         added(sender, args);
     }
 
-    public event EventHandler VertexRemoved;
+    public event EventHandler<EventArgs<IVertex>> VertexRemoved;
     protected virtual void OnVertexRemoved(object sender, EventArgs<IVertex> args) {
       var removed = VertexRemoved;
       if (removed != null)
         removed(sender, args);
     }
 
-    public event EventHandler ArcAdded;
+    public event EventHandler<EventArgs<IArc>> ArcAdded;
     protected virtual void OnArcAdded(object sender, EventArgs<IArc> args) {
       var added = ArcAdded;
       if (added != null)
         added(sender, args);
     }
 
-    public event EventHandler ArcRemoved;
+    public event EventHandler<EventArgs<IArc>> ArcRemoved;
     protected virtual void OnArcRemoved(object sender, EventArgs<IArc> args) {
       var removed = ArcRemoved;
       if (removed != null)
