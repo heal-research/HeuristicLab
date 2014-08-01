@@ -56,8 +56,8 @@ namespace HeuristicLab.Core {
     }
 
     [Storable]
-    protected IDeepCloneable data;
-    public IDeepCloneable Data {
+    protected object data;
+    public object Data {
       get { return data; }
       set {
         if (data == value) return;
@@ -80,7 +80,9 @@ namespace HeuristicLab.Core {
       Target = cloner.Clone(original.Target);
       label = original.Label;
       weight = original.Weight;
-      data = cloner.Clone(data);
+      if (data is IDeepCloneable)
+        data = cloner.Clone((IDeepCloneable)data);
+      else data = original.Data;
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new Arc(this, cloner); }
 
