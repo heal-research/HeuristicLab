@@ -56,6 +56,12 @@ namespace HeuristicLab.Core {
       : base(original, cloner) {
       vertices = new HashSet<IVertex>(original.vertices.Select(cloner.Clone));
       arcs = new HashSet<IArc>(original.arcs.Select(cloner.Clone));
+
+      // add the arcs to the newly cloned vertices
+      foreach (var arc in arcs) {
+        arc.Source.AddArc(arc);
+        arc.Target.AddArc(arc);
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -88,11 +94,15 @@ namespace HeuristicLab.Core {
     }
 
     public virtual void AddVertex(IVertex vertex) {
-      vertices.Add(vertex);
-      // register event handlers
-      vertex.ArcAdded += Vertex_ArcAdded;
-      vertex.ArcRemoved += Vertex_ArcRemoved;
-      OnVertedAdded(this, new EventArgs<IVertex>(vertex));
+      if (!vertices.Contains(vertex) && vertex.Degree > 0)
+        throw new ArgumentException("New vertices cannot have any arcs.");
+
+      if (vertices.Add(vertex)) {
+        // register event handlers
+        vertex.ArcAdded += Vertex_ArcAdded;
+        vertex.ArcRemoved += Vertex_ArcRemoved;
+        OnVertedAdded(this, new EventArgs<IVertex>(vertex));
+      }
     }
 
     public virtual void RemoveVertex(IVertex vertex) {

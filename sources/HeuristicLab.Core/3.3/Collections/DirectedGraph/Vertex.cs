@@ -92,8 +92,7 @@ namespace HeuristicLab.Core {
       label = original.Label;
       weight = original.Weight;
 
-      inArcs = original.InArcs.Select(cloner.Clone).ToList();
-      outArcs = original.OutArcs.Select(cloner.Clone).ToList();
+      // we do not clone the arcs here (would cause too much recursion and ultimately a stack overflow)
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -102,7 +101,10 @@ namespace HeuristicLab.Core {
 
     public void AddArc(IArc arc) {
       if (this != arc.Source && this != arc.Target)
-        throw new InvalidOperationException("The current vertex must be either the arc source or the arc target.");
+        throw new ArgumentException("The current vertex must be either the arc source or the arc target.");
+
+      if (arc.Source == arc.Target)
+        throw new ArgumentException("Arc source and target must be different.");
 
       if (this == arc.Source) {
         if (outArcs.Contains(arc)) throw new InvalidOperationException("Arc already added.");
@@ -117,7 +119,7 @@ namespace HeuristicLab.Core {
 
     public void RemoveArc(IArc arc) {
       if (this != arc.Source && this != arc.Target)
-        throw new InvalidOperationException("The current vertex must be either the arc source or the arc target.");
+        throw new ArgumentException("The current vertex must be either the arc source or the arc target.");
 
       if (this == arc.Source) {
         if (!outArcs.Remove(arc)) throw new InvalidOperationException("Arc is not present in this vertex' outgoing arcs.");
@@ -165,6 +167,10 @@ namespace HeuristicLab.Core {
 
     protected Vertex(Vertex<T> original, Cloner cloner)
       : base(original, cloner) {
+    }
+
+    public Vertex(IDeepCloneable data)
+      : base(data) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
