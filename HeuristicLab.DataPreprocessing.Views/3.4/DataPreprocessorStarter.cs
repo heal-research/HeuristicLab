@@ -20,43 +20,34 @@
 #endregion
 
 using System.Windows.Forms;
-using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Views;
-using View = HeuristicLab.MainForm.WindowsForms.View;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   public class DataPreprocessorStarter : IDataPreprocessorStarter {
 
-    public void Start(IDataAnalysisProblemData problemData, View currentView) {
+    public void Start(IDataAnalysisProblemData problemData, IContentView currentView) {
       IAlgorithm algorithm;
       IDataAnalysisProblem problem;
-      IItem parentItem = GetMostOuterContent(currentView, out algorithm, out problem);
+      GetMostOuterContent(currentView as Control, out algorithm, out problem);
       var context = new PreprocessingContext(problemData, algorithm, problem);
       MainFormManager.MainForm.ShowContent(context);
     }
 
-    private IItem GetMostOuterContent(Control control, out IAlgorithm algorithm, out IDataAnalysisProblem problem) {
+    private void GetMostOuterContent(Control control, out IAlgorithm algorithm, out IDataAnalysisProblem problem) {
       algorithm = null;
       problem = null;
-      ItemView itemView = null;
-      do {
-        control = control.Parent;
-        if (control is ItemView) {
-          itemView = (ItemView)control;
-          if (itemView.Content is IAlgorithm) {
-            algorithm = (IAlgorithm)itemView.Content;
-          }
-          if (itemView.Content is IDataAnalysisProblem) {
-            problem = (IDataAnalysisProblem)itemView.Content;
-          }
-        }
-      } while (control != null);
 
-      return itemView.Content;
+      while (control != null) {
+        IContentView contentView = control as IContentView;
+        if (contentView != null) {
+          algorithm = contentView.Content as IAlgorithm;
+          problem = contentView.Content as IDataAnalysisProblem;
+        }
+        control = control.Parent;
+      }
     }
   }
 }
