@@ -36,9 +36,9 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     public override string Description {
       get { return "LiLim test set"; }
     }
-    
+
     public override Uri WebLink {
-      get { return new Uri(@"http://www.sintef.no/Projectweb/TOP/Problems/PDPTW/Li--Lim-benchmark/"); }
+      get { return new Uri(@"http://www.sintef.no/Projectweb/TOP/PDPTW/Li--Lim-benchmark/"); }
     }
 
     public override string ReferencePublication {

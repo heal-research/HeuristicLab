@@ -36,9 +36,9 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     public override string Description {
       get { return "Cordeau test set"; }
     }
-    
+
     public override Uri WebLink {
-      get { return new Uri(@"http://neo.lcc.uma.es/radi-aeb/WebVRP/"); }
+      get { return new Uri(@"http://www.bernabe.dorronsoro.es/vrp/"); }
     }
 
     public override string ReferencePublication {
