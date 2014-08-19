@@ -38,11 +38,13 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     }
 
     public override Uri WebLink {
-      get { return new Uri(@"http://www.bernabe.dorronsoro.es/vrp/"); }
+      get { return new Uri(@"http://neo.lcc.uma.es/vrp/vrp-instances/"); }
     }
 
     public override string ReferencePublication {
-      get { return null; }
+      get { return @"J.-F. Cordeau, M. Gendreau, G. Laporte. 1997.
+A tabu search heuristic for periodic and multi-depot vehicle routing problems.
+Networks, 30, pp. 105–119."; }
     }
 
     protected override string FileName {
