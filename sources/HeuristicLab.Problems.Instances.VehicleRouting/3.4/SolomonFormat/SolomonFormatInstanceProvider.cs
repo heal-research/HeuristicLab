@@ -22,15 +22,15 @@
 using System.IO;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class SolomonFormatInstanceProvider : VRPInstanceProvider {
-    protected override VRPData LoadData(Stream stream) {
+  public abstract class SolomonFormatInstanceProvider : VRPInstanceProvider<CVRPTWData> {
+    protected override CVRPTWData LoadData(Stream stream) {
       return LoadInstance(new SolomonParser(stream));
     }
 
     public override bool CanImportData {
       get { return true; }
     }
-    public override VRPData ImportData(string path) {
+    public override CVRPTWData ImportData(string path) {
       return LoadInstance(new SolomonParser(path));
     }
 

@@ -24,15 +24,15 @@ using System.IO;
 using HeuristicLab.Problems.Instances.TSPLIB;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class TSPLibFormatInstanceProvider : VRPInstanceProvider {
-    protected override VRPData LoadData(Stream stream) {
+  public abstract class TSPLibFormatInstanceProvider : VRPInstanceProvider<CVRPData> {
+    protected override CVRPData LoadData(Stream stream) {
       return LoadInstance(new TSPLIBParser(stream));
     }
 
     public override bool CanImportData {
       get { return true; }
     }
-    public override VRPData ImportData(string path) {
+    public override CVRPData ImportData(string path) {
       return LoadInstance(new TSPLIBParser(path));
     }
 

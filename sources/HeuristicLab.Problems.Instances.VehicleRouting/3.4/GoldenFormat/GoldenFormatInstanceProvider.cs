@@ -23,15 +23,15 @@ using System;
 using System.IO;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class GoldenFormatInstanceProvider : VRPInstanceProvider {
-    protected override VRPData LoadData(Stream stream) {
+  public abstract class GoldenFormatInstanceProvider : VRPInstanceProvider<CVRPTWData> {
+    protected override CVRPTWData LoadData(Stream stream) {
       return LoadInstance(new GoldenParser(stream));
     }
 
     public override bool CanImportData {
       get { return true; }
     }
-    public override VRPData ImportData(string path) {
+    public override CVRPTWData ImportData(string path) {
       return LoadInstance(new GoldenParser(path));
     }
 

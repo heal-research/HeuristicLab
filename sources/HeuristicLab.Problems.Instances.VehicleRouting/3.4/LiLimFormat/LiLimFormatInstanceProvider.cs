@@ -22,15 +22,15 @@
 using System.IO;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class LiLimFormatInstanceProvider : VRPInstanceProvider {
-    protected override VRPData LoadData(Stream stream) {
+  public abstract class LiLimFormatInstanceProvider : VRPInstanceProvider<PDPTWData> {
+    protected override PDPTWData LoadData(Stream stream) {
       return LoadInstance(new LiLimParser(stream));
     }
 
     public override bool CanImportData {
       get { return true; }
     }
-    public override VRPData ImportData(string path) {
+    public override PDPTWData ImportData(string path) {
       return LoadInstance(new LiLimParser(path));
     }
 

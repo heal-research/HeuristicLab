@@ -28,7 +28,7 @@ using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class VRPInstanceProvider : ProblemInstanceProvider<VRPData>, IVRPInstanceProvider {
+  public abstract class VRPInstanceProvider<T> : ProblemInstanceProvider<T>, IVRPInstanceProvider<T> where T : IVRPData {
     protected abstract string FileName { get; }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       }
     }
 
-    public override VRPData LoadData(IDataDescriptor id) {
+    public override T LoadData(IDataDescriptor id) {
       var descriptor = (VRPDataDescriptor)id;
       var instanceArchiveName = GetResourceName(FileName + @"\.zip");
       using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       }
     }
 
-    private static void LoadSolution(Stream stream, VRPData instance) {
+    private static void LoadSolution(Stream stream, T instance) {
       List<List<int>> routes = new List<List<int>>();
 
       using (StreamReader reader = new StreamReader(stream)) {
@@ -98,15 +98,15 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       instance.BestKnownTour = routes.Select(x => x.ToArray()).ToArray();
     }
 
-    public static void LoadSolution(string path, VRPData instance) {
+    public static void LoadSolution(string path, T instance) {
       using (FileStream stream = new FileStream(path, FileMode.Open)) {
         LoadSolution(stream, instance);
       }
     }
 
-    protected abstract VRPData LoadData(Stream stream);
+    protected abstract T LoadData(Stream stream);
 
-    public IVRPData Import(string vrpFile, string tourFile) {
+    public T Import(string vrpFile, string tourFile) {
       var data = ImportData(vrpFile);
       if (!String.IsNullOrEmpty(tourFile)) {
         LoadSolution(tourFile, data);
@@ -114,8 +114,8 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       return data;
     }
 
-    public void Export(IVRPData instance, string path) {
-      ExportData((VRPData)instance, path);
+    public void Export(T instance, string path) {
+      ExportData(instance, path);
     }
 
     protected virtual string GetResourceName(string fileName) {

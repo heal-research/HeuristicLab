@@ -36,13 +36,13 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var provider = Content as IVRPInstanceProvider;
+      var provider = Content as IVRPInstanceProvider<T>;
       if (provider != null) {
         using (var dialog = new VRPImportDialog(Content.Name)) {
           if (dialog.ShowDialog() == DialogResult.OK) {
             var instance = provider.Import(dialog.VRPFileName, dialog.TourFileName);
             try {
-              GenericConsumer.Load(instance as T);
+              GenericConsumer.Load(instance);
               instancesComboBox.SelectedIndex = -1;
             } catch (Exception ex) {
               MessageBox.Show(String.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(openFileDialog.FileName), Environment.NewLine + ex.Message), "Cannot load instance");
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
     }
 
     protected override void exportButton_Click(object sender, EventArgs e) {
-      var provider = Content as IVRPInstanceProvider;
+      var provider = Content as IVRPInstanceProvider<T>;
       if (provider != null) {
         if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
           try {
