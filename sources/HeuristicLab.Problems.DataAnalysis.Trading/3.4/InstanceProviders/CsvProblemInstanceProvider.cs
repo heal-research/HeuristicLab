@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading {
       }
     }
     public override Uri WebLink {
-      get { return new Uri("http://dev.heuristiclab.com/trac/hl/core/wiki/UsersFAQ#DataAnalysisImportFileFormat"); }
+      get { return new Uri("http://dev.heuristiclab.com/trac.fcgi/wiki/Documentation/FAQ#DataAnalysisImportFileFormat"); }
     }
     public override string ReferencePublication {
       get { return ""; }
