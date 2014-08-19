@@ -20,33 +20,39 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using HeuristicLab.PluginInfrastructure;
-using HeuristicLab.Problems.Instances.VehicleRouting;
+using HeuristicLab.Problems.Instances;
+using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.VehicleRouting.Tests {
   [TestClass]
   public class VRPInstancesTest {
+    [ClassInitialize]
+    public static void MyClassInitialize(TestContext testContext) {
+      PluginLoader.Assemblies.Any();
+    }
+
     [TestMethod]
     [TestCategory("Problems.VehicleRouting")]
     [TestProperty("Time", "long")]
     public void TestVRPInstances() {
-      var providers = ApplicationManager.Manager.GetInstances<VRPInstanceProvider>();
       var vrp = new VehicleRoutingProblem();
+      var providers = ProblemInstanceManager.GetProviders(vrp);
       var failedInstances = new StringBuilder();
 
       Assert.IsTrue(providers.Any(), "No providers could be found.");
 
       foreach (var provider in providers) {
-        var instances = provider.GetDataDescriptors();
+        IEnumerable<IDataDescriptor> instances = ((dynamic)provider).GetDataDescriptors();
         Assert.IsTrue(instances.Any(), "No instances could be found.");
 
         foreach (var instance in instances) {
           try {
             // throws InvalidOperationException if zero or more than one interpreter is found
-            vrp.Load(provider.LoadData(instance));
+            ((dynamic)vrp).Load(((dynamic)provider).LoadData(instance));
           } catch (Exception exc) {
             failedInstances.AppendLine(instance + ": " + exc.Message);
           }
