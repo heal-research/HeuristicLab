@@ -22,9 +22,9 @@
 using System;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public class CordeauInstanceProvider : CordeauFormatInstanceProvider<MDCVRPData> {
+  public class CordeauTWInstanceProvider : CordeauFormatInstanceProvider<MDCVRPTWData> {
     public override string Name {
-      get { return "Cordeau (MDCVRP)"; }
+      get { return "Cordeau (MDCVRPTW)"; }
     }
 
     public override string Description {
@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     }
 
     public override Uri WebLink {
-      get { return new Uri(@"http://neo.lcc.uma.es/vrp/vrp-instances/multiple-depot-vrp-instances/"); }
+      get { return new Uri(@"http://neo.lcc.uma.es/vrp/vrp-instances/multiple-depot-vrp-with-time-windows-instances/"); }
     }
 
     public override string ReferencePublication {
@@ -44,19 +44,22 @@ Networks, 30, pp. 105–119.";
     }
 
     protected override string FileName {
-      get { return "Cordeau"; }
+      get { return "CordeauTW"; }
     }
 
-    internal override MDCVRPData LoadInstance(CordeauParser parser) {
+    internal override MDCVRPTWData LoadInstance(CordeauParser parser) {
       parser.Parse();
 
-      var instance = new MDCVRPData();
+      var instance = new MDCVRPTWData();
       instance.Dimension = parser.Cities + 1;
       instance.Depots = parser.Depots;
       instance.Coordinates = parser.Coordinates;
       instance.Capacity = parser.Capacity;
       instance.Demands = parser.Demands;
       instance.DistanceMeasure = DistanceMeasure.Euclidean;
+      instance.ReadyTimes = parser.Readytimes;
+      instance.ServiceTimes = parser.Servicetimes;
+      instance.DueTimes = parser.Duetimes;
       instance.MaximumVehicles = parser.Vehicles;
 
       int depots = parser.Depots;

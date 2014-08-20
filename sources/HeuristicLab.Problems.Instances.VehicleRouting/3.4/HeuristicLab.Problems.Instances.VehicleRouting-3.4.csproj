@@ -102,14 +102,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
-		<HintPath>..\..\HeuristicLab.PluginInfrastructure\3.3\ICSharpCode.SharpZipLib.dll</HintPath>
-		<Private>False</Private>
-	</Reference>
+      <HintPath>..\..\HeuristicLab.PluginInfrastructure\3.3\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CordeauFormat\CordeauTWInstanceProvider.cs" />
     <Compile Include="GoldenFormat\ChristofidesInstanceProvider.cs" />
     <Compile Include="GoldenFormat\KytojokiInstanceProvider.cs" />
     <Compile Include="GoldenFormat\GoldenInstanceProvider.cs" />
@@ -147,6 +148,7 @@
     <EmbeddedResource Include="Data\Kytojoki.zip" />
     <EmbeddedResource Include="Data\Taillard.opt.zip" />
     <EmbeddedResource Include="Data\Taillard.zip" />
+    <EmbeddedResource Include="Data\CordeauTW.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -179,13 +181,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-   <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
 set ProjectDir=$(ProjectDir)
 set SolutionDir=$(SolutionDir)
 set Outdir=$(Outdir)
 
 call PreBuildEvent.cmd</PreBuildEvent>
-<PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export ProjectDir=$(ProjectDir)
 export SolutionDir=$(SolutionDir)
 
