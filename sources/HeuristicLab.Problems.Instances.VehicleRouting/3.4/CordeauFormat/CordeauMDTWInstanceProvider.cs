@@ -22,7 +22,7 @@
 using System;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public class CordeauTWInstanceProvider : CordeauFormatInstanceProvider<MDCVRPTWData> {
+  public class CordeauMDTWInstanceProvider : CordeauFormatInstanceProvider<MDCVRPTWData> {
     public override string Name {
       get { return "Cordeau (MDCVRPTW)"; }
     }
