@@ -44,7 +44,7 @@ Networks, 30, pp. 105–119.";
     }
 
     protected override string FileName {
-      get { return "CordeauTW"; }
+      get { return "CordeauMDTW"; }
     }
 
     internal override MDCVRPTWData LoadInstance(CordeauParser parser) {

@@ -142,13 +142,13 @@
     <EmbeddedResource Include="Data\Solomon.zip" />
     <EmbeddedResource Include="Data\Homberger.zip" />
     <EmbeddedResource Include="Data\LiLim.zip" />
-    <EmbeddedResource Include="Data\Cordeau.zip" />
     <EmbeddedResource Include="Data\Golden.zip" />
     <EmbeddedResource Include="Data\Christofides.zip" />
     <EmbeddedResource Include="Data\Kytojoki.zip" />
     <EmbeddedResource Include="Data\Taillard.opt.zip" />
     <EmbeddedResource Include="Data\Taillard.zip" />
-    <EmbeddedResource Include="Data\CordeauTW.zip" />
+    <EmbeddedResource Include="Data\CordeauMD.zip" />
+    <EmbeddedResource Include="Data\CordeauMDTW.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
