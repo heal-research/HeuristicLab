@@ -292,14 +292,8 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
         ((ILocalImprovementAlgorithmOperator)LocalImprovementParameter.Value).Problem = Problem;
     }
     private void InitializeLocalImprovementOperators() {
-      if (Problem == null) {
-        LocalImprovementParameter.ValidValues.Clear();
-      } else {
-        foreach (var algOp in LocalImprovementParameter.ValidValues.OfType<ILocalImprovementAlgorithmOperator>()) {
-          if (!algOp.ProblemType.IsInstanceOfType(Problem)) {
-            LocalImprovementParameter.ValidValues.Remove(algOp);
-          }
-        }
+      LocalImprovementParameter.ValidValues.Clear();
+      if (Problem != null) {
         // Regular ILocalImprovementOperators queried from Problem
         foreach (var op in Problem.Operators.OfType<ILocalImprovementOperator>().Where(x => !(x is ILocalImprovementAlgorithmOperator))) {
           LocalImprovementParameter.ValidValues.Add(op);
