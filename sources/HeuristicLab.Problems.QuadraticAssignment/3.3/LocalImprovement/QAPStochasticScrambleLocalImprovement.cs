@@ -35,17 +35,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [StorableClass]
   public class QAPStochasticScrambleLocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator, IStochasticOperator {
 
-    public Type ProblemType {
-      get { return typeof(QuadraticAssignmentProblem); }
-    }
-
-    [Storable]
-    private QuadraticAssignmentProblem problem;
-    public IProblem Problem {
-      get { return problem; }
-      set { problem = (QuadraticAssignmentProblem)value; }
-    }
-
     public ILookupParameter<IntValue> LocalIterationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["LocalIterations"]; }
     }
@@ -94,7 +83,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     protected QAPStochasticScrambleLocalImprovement(bool deserializing) : base(deserializing) { }
     protected QAPStochasticScrambleLocalImprovement(QAPStochasticScrambleLocalImprovement original, Cloner cloner)
       : base(original, cloner) {
-      this.problem = cloner.Clone(original.problem);
     }
     public QAPStochasticScrambleLocalImprovement()
       : base() {

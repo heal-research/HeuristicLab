@@ -282,24 +282,33 @@ namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
     }
     private void ParameterizeLocalImprovementOperators() {
       foreach (ILocalImprovementOperator op in LocalImprovementParameter.ValidValues) {
-        if (op != LocalImprovementParameter.Value) op.Problem = null;
         op.MaximumIterationsParameter.Value = null;
         op.MaximumIterationsParameter.ActualName = LocalImprovementMaximumIterationsParameter.Name;
+
+        var algOp = op as ILocalImprovementAlgorithmOperator;
+        if (algOp != null && algOp != LocalImprovementParameter.Value) algOp.Problem = null;
       }
-      if (LocalImprovementParameter.Value != null)
-        LocalImprovementParameter.Value.Problem = Problem;
+      if (LocalImprovementParameter.Value is ILocalImprovementAlgorithmOperator)
+        ((ILocalImprovementAlgorithmOperator)LocalImprovementParameter.Value).Problem = Problem;
     }
     private void InitializeLocalImprovementOperators() {
       if (Problem == null) {
         LocalImprovementParameter.ValidValues.Clear();
       } else {
-        foreach (var entry in LocalImprovementParameter.ValidValues.ToList()) {
-          if (!entry.ProblemType.IsAssignableFrom(Problem.GetType())) {
-            LocalImprovementParameter.ValidValues.Remove(entry);
+        foreach (var algOp in LocalImprovementParameter.ValidValues.OfType<ILocalImprovementAlgorithmOperator>()) {
+          if (!algOp.ProblemType.IsInstanceOfType(Problem)) {
+            LocalImprovementParameter.ValidValues.Remove(algOp);
           }
         }
-        foreach (ILocalImprovementOperator op in ApplicationManager.Manager.GetInstances<ILocalImprovementOperator>().Where(x => x.ProblemType.IsAssignableFrom(Problem.GetType()))) {
-          if (!LocalImprovementParameter.ValidValues.Any(x => x.GetType() == op.GetType()))
+        // Regular ILocalImprovementOperators queried from Problem
+        foreach (var op in Problem.Operators.OfType<ILocalImprovementOperator>().Where(x => !(x is ILocalImprovementAlgorithmOperator))) {
+          LocalImprovementParameter.ValidValues.Add(op);
+        }
+        // ILocalImprovementAlgorithmOperators queried from ApplicationManager
+        var algOps = ApplicationManager.Manager.GetInstances<ILocalImprovementAlgorithmOperator>()
+                                               .Where(x => x.ProblemType.IsInstanceOfType(Problem));
+        foreach (var op in algOps) {
+          if (LocalImprovementParameter.ValidValues.All(x => x.GetType() != op.GetType()))
             LocalImprovementParameter.ValidValues.Add(op);
         }
       }

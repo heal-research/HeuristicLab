@@ -301,7 +301,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Operators.Add(new BestQAPSolutionAnalyzer());
       Operators.Add(new QAPAlleleFrequencyAnalyzer());
       Operators.Add(new QAPPopulationDiversityAnalyzer());
+
+      Operators.Add(new QAPExhaustiveInsertionLocalImprovement());
+      Operators.Add(new QAPExhaustiveInversionLocalImprovement());
+      Operators.Add(new QAPStochasticScrambleLocalImprovement());
       Operators.Add(new QAPExhaustiveSwap2LocalImprovement());
+
       Operators.Add(new QAPSimilarityCalculator());
       ParameterizeAnalyzers();
       ParameterizeOperators();
