@@ -48,6 +48,29 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     /// <summary>
+    /// Generate a logarithmic sequence between start and end by applying a power-of-10 function to an underlying evenly spaced sequence
+    /// </summary>
+    /// <param name="start">The start of the sequence</param>
+    /// <param name="end">The end of the sequence</param>
+    /// <param name="stepWidth">The stepwidth for the original sequence before the points are transformed</param>
+    /// <returns>A logarithmic sequence from start to end (inclusive)</returns>
+    public static IEnumerable<double> GenerateLogarithmicSteps(double start, double end, double stepWidth) {
+      return GenerateSteps(start, end, stepWidth, x => Math.Pow(10, x));
+    }
+
+    /// <summary>
+    /// Generates a sequence of points between start and end according to given transformation
+    /// </summary>
+    /// <param name="start">The smallest and first value of the sequence.</param>
+    /// <param name="end">The largest and last value of the sequence.</param>
+    /// <param name="stepWidth">The step size between subsequent values (before transform)</param>
+    /// <param name="transform">The transform function</param>
+    /// <returns></returns>
+    public static IEnumerable<double> GenerateSteps(double start, double end, double stepWidth, Func<double, double> transform) {
+      return GenerateSteps(start, end, stepWidth).Select(transform).Where(x => x < end || x.IsAlmost(end));
+    }
+
+    /// <summary>
     /// Generates uniformly distributed values between start and end (inclusive!) 
     /// </summary>
     /// <param name="n">Number of values to generate.</param>
