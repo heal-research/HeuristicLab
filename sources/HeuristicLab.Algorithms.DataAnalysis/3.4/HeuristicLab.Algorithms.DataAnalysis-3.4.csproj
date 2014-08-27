@@ -261,6 +261,7 @@
     <Compile Include="RandomForest\RandomForestModel.cs" />
     <Compile Include="RandomForest\RandomForestRegression.cs" />
     <Compile Include="RandomForest\RandomForestRegressionSolution.cs" />
+    <Compile Include="RandomForest\RandomForestUtil.cs" />
     <Compile Include="SupportVectorMachine\SupportVectorClassification.cs" />
     <Compile Include="SupportVectorMachine\SupportVectorClassificationSolution.cs" />
     <Compile Include="SupportVectorMachine\SupportVectorMachineModel.cs" />
