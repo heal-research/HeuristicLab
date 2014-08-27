@@ -75,7 +75,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       randomForest.innerobj.nvars = original.randomForest.innerobj.nvars;
       // we assume that the trees array (double[]) is immutable in alglib
       randomForest.innerobj.trees = original.randomForest.innerobj.trees;
-      
+
       // allowedInputVariables is immutable so we don't need to clone
       allowedInputVariables = original.allowedInputVariables;
 
@@ -188,7 +188,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double avgRelError, out double outOfBagAvgRelError, out double outOfBagRmsError) {
+      return CreateRegressionModel(problemData, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagAvgRelError, out outOfBagRmsError, problemData.TrainingIndices);
+    }
 
+    public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
+      out double rmsError, out double avgRelError, out double outOfBagAvgRelError, out double outOfBagRmsError, IEnumerable<int> trainingIndices) {
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
       double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, problemData.TrainingIndices);
 
