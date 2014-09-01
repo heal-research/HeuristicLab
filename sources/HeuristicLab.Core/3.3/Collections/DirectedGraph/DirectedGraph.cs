@@ -105,6 +105,18 @@ namespace HeuristicLab.Core {
       }
     }
 
+    public virtual void AddVertices(IEnumerable<IVertex> vertexList) {
+      var hash = new HashSet<IVertex>(vertexList);
+      var arcList = vertexList.SelectMany(v => v.InArcs.Concat(v.OutArcs));
+      if (arcList.Any(x => !hash.Contains(x.Source) || !hash.Contains(x.Target)))
+        throw new ArgumentException("Vertex arcs are connected to vertices not in the graph.");
+      // if everything is in order, add the vertices to the directed graph
+      foreach (var v in vertexList)
+        vertices.Add(v);
+      foreach (var a in arcList)
+        arcs.Add(a);
+    }
+
     public virtual void RemoveVertex(IVertex vertex) {
       vertices.Remove(vertex);
       // remove connections to/from the removed vertex
@@ -124,8 +136,12 @@ namespace HeuristicLab.Core {
     }
 
     public virtual void AddArc(IArc arc) {
-      var source = (Vertex)arc.Source;
-      var target = (Vertex)arc.Target;
+      var source = arc.Source;
+      var target = arc.Target;
+
+      if (!vertices.Contains(source) || !vertices.Contains(target))
+        throw new InvalidOperationException("Cannot add arc connecting vertices that are not in the graph.");
+
       source.AddArc(arc);
       target.AddArc(arc);
       arcs.Add(arc);
