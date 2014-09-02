@@ -22,47 +22,18 @@
 using System.IO;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class CordeauFormatInstanceProvider : VRPInstanceProvider<MDCVRPTWData> {
-    protected override MDCVRPTWData LoadData(Stream stream) {
+  public abstract class CordeauFormatInstanceProvider<T> : VRPInstanceProvider<T> where T : MDCVRPData {
+    protected override T LoadData(Stream stream) {
       return LoadInstance(new CordeauParser(stream));
     }
 
     public override bool CanImportData {
       get { return true; }
     }
-    public override MDCVRPTWData ImportData(string path) {
+    public override T ImportData(string path) {
       return LoadInstance(new CordeauParser(path));
     }
 
-    private MDCVRPTWData LoadInstance(CordeauParser parser) {
-      parser.Parse();
-
-      var instance = new MDCVRPTWData();
-      instance.Dimension = parser.Cities + 1;
-      instance.Depots = parser.Depots;
-      instance.Coordinates = parser.Coordinates;
-      instance.Capacity = parser.Capacity;
-      instance.Demands = parser.Demands;
-      instance.DistanceMeasure = DistanceMeasure.Euclidean;
-      instance.ReadyTimes = parser.Readytimes;
-      instance.ServiceTimes = parser.Servicetimes;
-      instance.DueTimes = parser.Duetimes;
-      instance.MaximumVehicles = parser.Vehicles;
-
-      int depots = parser.Depots;
-      int vehicles = parser.Vehicles / parser.Depots;
-      instance.VehicleDepotAssignment = new int[depots * vehicles];
-      int index = 0;
-
-      for (int i = 0; i < depots; i++)
-        for (int j = 0; j < vehicles; j++) {
-          instance.VehicleDepotAssignment[index] = i;
-          index++;
-        }
-
-      instance.Name = parser.ProblemName;
-
-      return instance;
-    }
+    internal abstract T LoadInstance(CordeauParser parser);
   }
 }

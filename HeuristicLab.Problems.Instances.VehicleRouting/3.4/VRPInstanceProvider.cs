@@ -92,6 +92,13 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
 
             routes.Add(route);
           }
+
+          if (line.StartsWith("Solution")) {
+            if (routes.Any()) {
+              // Skip remaining solutions since only one "best solution" is stored
+              break;
+            }
+          }
         }
       }
 

@@ -36,9 +36,9 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     public override string Description {
       get { return "Homberger test set"; }
     }
-    
+
     public override Uri WebLink {
-      get { return new Uri(@"http://www.fernuni-hagen.de/WINF/touren/inhalte/probinst.htm"); }
+      get { return new Uri(@"http://www.sintef.no/Projectweb/TOP/VRPTW/Homberger-benchmark/"); }
     }
 
     public override string ReferencePublication {
