@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Optimization;
@@ -104,6 +105,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var listeners = ProblemDataChanged;
       if (listeners != null) listeners(this, EventArgs.Empty);
     }
+
+    //mkommend avoid unnecessary event registration for result name changes
+    protected override void RegisterItemEvents(IEnumerable<IResult> items) { }
+    protected override void DeregisterItemEvents(IEnumerable<IResult> items) { }
 
     #region INamedItem Members
     [Storable]
