@@ -24,7 +24,7 @@ namespace HeuristicLab.Problems.Instances {
   /// <summary>
   /// Describes instances of the Vehicle Routing Problem (VRP).
   /// </summary>
-  public abstract class VRPData: IVRPData {
+  public class VRPData : IVRPData {
     /// <summary>
     /// The name of the instance
     /// </summary>

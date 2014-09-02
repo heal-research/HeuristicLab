@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<VRPData> {
+  public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {
     public string Filename { get; set; }
 
     public static new Image StaticItemImage {
@@ -389,7 +389,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
 
     #region IProblemInstanceConsumer<VRPData> Members
 
-    public void Load(VRPData data) {
+    public void Load(IVRPData data) {
       var interpreterDataType = data.GetType();
       var interpreterType = typeof(IVRPDataInterpreter<>).MakeGenericType(interpreterDataType);
 

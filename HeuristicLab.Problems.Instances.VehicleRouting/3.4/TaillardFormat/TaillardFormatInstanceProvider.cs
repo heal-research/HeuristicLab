@@ -22,15 +22,15 @@
 using System.IO;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class TaillardFormatInstanceProvider : VRPInstanceProvider {
-    protected override VRPData LoadData(Stream stream) {
+  public abstract class TaillardFormatInstanceProvider : VRPInstanceProvider<CVRPData> {
+    protected override CVRPData LoadData(Stream stream) {
       return LoadInstance(new TaillardParser(stream));
     }
 
     public override bool CanImportData {
       get { return true; }
     }
-    public override VRPData ImportData(string path) {
+    public override CVRPData ImportData(string path) {
       return LoadInstance(new TaillardParser(path));
     }
 
