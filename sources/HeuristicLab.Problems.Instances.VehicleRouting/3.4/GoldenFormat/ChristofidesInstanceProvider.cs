@@ -20,12 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
   public class ChristofidesInstanceProvider : GoldenFormatInstanceProvider {
@@ -36,9 +30,9 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     public override string Description {
       get { return "Christofides test set"; }
     }
-    
+
     public override Uri WebLink {
-      get { return new Uri(@"http://www.rhsmith.umd.edu/faculty/bgolden/vrp_data.htm"); }
+      get { return new Uri(@"http://www.terpconnect.umd.edu/~bgolden/vrp_data.htm"); }
     }
 
     public override string ReferencePublication {
