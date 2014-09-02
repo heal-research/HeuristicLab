@@ -94,7 +94,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="problemData">The problem data</param>
     /// <param name="nFolds">The number of folds to generate</param>
     /// <returns>A sequence of folds representing each a sequence of row numbers</returns>
-    public static IEnumerable<IEnumerable<int>> GenerateFolds(IRegressionProblemData problemData, int nFolds) {
+    public static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int nFolds) {
       int size = problemData.TrainingPartition.Size;
 
       int foldSize = size / nFolds; // rounding to integer
@@ -107,74 +107,75 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    /// <summary>
-    /// Performs crossvalidation
-    /// </summary>
-    /// <param name="problemData">The problem data</param>
-    /// <param name="parameters">The svm parameters</param>
-    /// <param name="folds">The svm_problem instances for each fold</param>
-    /// <param name="avgTestMSE">The average test mean squared error (not used atm)</param>
-    public static void CrossValidate(IRegressionProblemData problemData, svm_parameter parameters, IEnumerable<IEnumerable<int>> folds, out double avgTestMSE) {
-      avgTestMSE = 0;
-
+    public static void CrossValidate(IDataAnalysisProblemData problemData, svm_parameter parameters, int numFolds, out double avgTestMse) {
+      avgTestMse = 0;
+      var folds = GenerateFolds(problemData, numFolds).ToList();
       var calc = new OnlineMeanSquaredErrorCalculator();
-      var ds = problemData.Dataset;
-      var targetVariable = problemData.TargetVariable;
-      var inputVariables = problemData.AllowedInputVariables;
+      var targetVariable = GetTargetVariableName(problemData);
+      for (int i = 0; i < numFolds; ++i) {
+        int p = i; // avoid "access to modified closure" warning below
+        var training = folds.SelectMany((par, j) => j != p ? par : Enumerable.Empty<int>());
+        var testRows = folds[i];
+        var trainingSvmProblem = CreateSvmProblem(problemData.Dataset, targetVariable, problemData.AllowedInputVariables, training);
+        var testSvmProblem = CreateSvmProblem(problemData.Dataset, targetVariable, problemData.AllowedInputVariables, testRows);
 
-      var svmProblem = CreateSvmProblem(ds, targetVariable, inputVariables, problemData.TrainingIndices);
-      var partitions = folds.ToList();
-
-      for (int i = 0; i < partitions.Count; ++i) {
-        var test = partitions[i];
-        var training = new List<int>();
-        for (int j = 0; j < i; ++j)
-          training.AddRange(partitions[j]);
-
-        for (int j = i + 1; j < partitions.Count; ++j)
-          training.AddRange(partitions[j]);
-
-        var p = CreateSvmProblem(ds, targetVariable, inputVariables, training);
-        var model = svm.svm_train(p, parameters);
+        var model = svm.svm_train(trainingSvmProblem, parameters);
         calc.Reset();
-        foreach (var row in test) {
-          calc.Add(svmProblem.y[row], svm.svm_predict(model, svmProblem.x[row]));
-        }
-        double error = calc.MeanSquaredError;
-        avgTestMSE += error;
+        for (int j = 0; j < testSvmProblem.l; ++j)
+          calc.Add(testSvmProblem.y[j], svm.svm_predict(model, testSvmProblem.x[j]));
+        avgTestMse += calc.MeanSquaredError;
       }
-
-      avgTestMSE /= partitions.Count;
+      avgTestMse /= numFolds;
     }
 
-    /// <summary>
-    /// Dynamically generate a setter for svm_parameter fields
-    /// </summary>
-    /// <param name="parameters"></param>
-    /// <param name="fieldName"></param>
-    /// <returns></returns>
+    public static void CrossValidate(IDataAnalysisProblemData problemData, svm_parameter parameters, Tuple<svm_problem, svm_problem>[] partitions, out double avgTestMse) {
+      avgTestMse = 0;
+      var calc = new OnlineMeanSquaredErrorCalculator();
+      foreach (Tuple<svm_problem, svm_problem> tuple in partitions) {
+        var trainingSvmProblem = tuple.Item1;
+        var testSvmProblem = tuple.Item2;
+        var model = svm.svm_train(trainingSvmProblem, parameters);
+        calc.Reset();
+        for (int i = 0; i < testSvmProblem.l; ++i)
+          calc.Add(testSvmProblem.y[i], svm.svm_predict(model, testSvmProblem.x[i]));
+        avgTestMse += calc.MeanSquaredError;
+      }
+      avgTestMse /= partitions.Length;
+    }
+
     private static Action<svm_parameter, double> GenerateSetter(string fieldName) {
       var targetExp = Expression.Parameter(typeof(svm_parameter));
       var valueExp = Expression.Parameter(typeof(double));
-
-      // Expression.Property can be used here as well
       var fieldExp = Expression.Field(targetExp, fieldName);
       var assignExp = Expression.Assign(fieldExp, Expression.Convert(valueExp, fieldExp.Type));
       var setter = Expression.Lambda<Action<svm_parameter, double>>(assignExp, targetExp, valueExp).Compile();
       return setter;
     }
 
-    public static svm_parameter GridSearch(IRegressionProblemData problemData, IEnumerable<IEnumerable<int>> folds, Dictionary<string, IEnumerable<double>> parameterRanges, int maxDegreeOfParallelism = 1) {
+    public static svm_parameter GridSearch(IDataAnalysisProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int maxDegreeOfParallelism = 1) {
       DoubleValue mse = new DoubleValue(Double.MaxValue);
       var bestParam = DefaultParameters();
 
       // search for C, gamma and epsilon parameter combinations
-
       var pNames = parameterRanges.Keys.ToList();
       var pRanges = pNames.Select(x => parameterRanges[x]);
 
       var crossProduct = pRanges.CartesianProduct();
       var setters = pNames.Select(GenerateSetter).ToList();
+      var folds = GenerateFolds(problemData, numberOfFolds).ToList();
+
+      var partitions = new Tuple<svm_problem, svm_problem>[numberOfFolds];
+      var targetVariable = GetTargetVariableName(problemData);
+
+      for (int i = 0; i < numberOfFolds; ++i) {
+        int p = i; // avoid "access to modified closure" warning below
+        var trainingRows = folds.SelectMany((par, j) => j != p ? par : Enumerable.Empty<int>());
+        var testRows = folds[i];
+        var trainingSvmProblem = CreateSvmProblem(problemData.Dataset, targetVariable, problemData.AllowedInputVariables, trainingRows);
+        var testSvmProblem = CreateSvmProblem(problemData.Dataset, targetVariable, problemData.AllowedInputVariables, testRows);
+        partitions[i] = new Tuple<svm_problem, svm_problem>(trainingSvmProblem, testSvmProblem);
+      }
+
       Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, nuple => {
         //  foreach (var nuple in crossProduct) {
         var list = nuple.ToList();
@@ -183,16 +184,26 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           var s = setters[i];
           s(parameters, list[i]);
         }
-        double testMSE;
-        CrossValidate(problemData, parameters, folds, out testMSE);
-        if (testMSE < mse.Value) {
-          lock (mse) { mse.Value = testMSE; }
-          lock (bestParam) { // set best parameter values to the best found so far 
-            bestParam = (svm_parameter)parameters.Clone();
-          }
+        double testMse;
+        CrossValidate(problemData, parameters, partitions, out testMse);
+        if (testMse < mse.Value) {
+          lock (mse) { mse.Value = testMse; }
+          lock (bestParam) { bestParam = (svm_parameter)parameters.Clone(); } // set best parameter values to the best found so far 
         }
       });
       return bestParam;
+    }
+
+    private static string GetTargetVariableName(IDataAnalysisProblemData problemData) {
+      var regressionProblemData = problemData as IRegressionProblemData;
+      var classificationProblemData = problemData as IClassificationProblemData;
+
+      if (regressionProblemData != null)
+        return regressionProblemData.TargetVariable;
+      if (classificationProblemData != null)
+        return classificationProblemData.TargetVariable;
+
+      throw new ArgumentException("Problem data is neither regression or classification problem data.");
     }
   }
 }
