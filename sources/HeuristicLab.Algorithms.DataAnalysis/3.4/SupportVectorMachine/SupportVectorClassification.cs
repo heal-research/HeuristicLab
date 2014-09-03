@@ -141,16 +141,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static SupportVectorClassificationSolution CreateSupportVectorClassificationSolution(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
-      string svmType, string kernelType, double cost, double nu, double gamma, int degree,
-      out double trainingAccuracy, out double testAccuracy, out int nSv) {
+      string svmType, string kernelType, double cost, double nu, double gamma, int degree, out double trainingAccuracy, out double testAccuracy, out int nSv) {
+      return CreateSupportVectorClassificationSolution(problemData, allowedInputVariables, GetKernelType(svmType), GetKernelType(kernelType), cost, nu, gamma, degree,
+        out trainingAccuracy, out testAccuracy, out nSv);
+    }
+
+    public static SupportVectorClassificationSolution CreateSupportVectorClassificationSolution(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
+      int svmType, int kernelType, double cost, double nu, double gamma, int degree, out double trainingAccuracy, out double testAccuracy, out int nSv) {
       Dataset dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<int> rows = problemData.TrainingIndices;
 
       //extract SVM parameters from scope and set them
       svm_parameter parameter = new svm_parameter();
-      parameter.svm_type = GetSvmType(svmType);
-      parameter.kernel_type = GetKernelType(kernelType);
+      parameter.svm_type = svmType;
+      parameter.kernel_type = kernelType;
       parameter.C = cost;
       parameter.nu = nu;
       parameter.gamma = gamma;
@@ -160,7 +165,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       parameter.degree = degree;
       parameter.shrinking = 1;
       parameter.coef0 = 0;
-
 
       var weightLabels = new List<int>();
       var weights = new List<double>();
