@@ -187,12 +187,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
-      out double rmsError, out double avgRelError, out double outOfBagAvgRelError, out double outOfBagRmsError) {
+      out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError) {
       return CreateRegressionModel(problemData, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagAvgRelError, out outOfBagRmsError, problemData.TrainingIndices);
     }
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
-      out double rmsError, out double avgRelError, out double outOfBagAvgRelError, out double outOfBagRmsError, IEnumerable<int> trainingIndices) {
+      out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError, IEnumerable<int> trainingIndices) {
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
       double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, problemData.TrainingIndices);
 
@@ -211,9 +211,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError) {
+      return CreateClassificationModel(problemData, nTrees, r, m, seed, out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError, problemData.TrainingIndices);
+    }
+
+    public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
+      out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError, IEnumerable<int> trainingIndices) {
 
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, problemData.TrainingIndices);
+      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, trainingIndices);
 
       var classValues = problemData.ClassValues.ToArray();
       int nClasses = classValues.Length;
@@ -267,7 +272,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static void AssertInputMatrix(double[,] inputMatrix) {
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.Cast<double>().Any(x => Double.IsNaN(x) || Double.IsInfinity(x)))
         throw new NotSupportedException("Random forest modeling does not support NaN or infinity values in the input dataset.");
     }
 
