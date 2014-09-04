@@ -40,13 +40,102 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   }
 
   public static class RandomForestUtil {
-    private static Action<RFParameter, double> GenerateSetter(string field) {
-      var targetExp = Expression.Parameter(typeof(RFParameter));
-      var valueExp = Expression.Parameter(typeof(double));
-      var fieldExp = Expression.Field(targetExp, field);
-      var assignExp = Expression.Assign(fieldExp, Expression.Convert(valueExp, fieldExp.Type));
-      var setter = Expression.Lambda<Action<RFParameter, double>>(assignExp, targetExp, valueExp).Compile();
-      return setter;
+    private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, RFParameter parameters, int seed, out double avgTestMse) {
+      CrossValidate(problemData, partitions, (int)parameters.n, parameters.m, parameters.r, seed, out avgTestMse);
+    }
+    private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestMse) {
+      avgTestMse = 0;
+      var ds = problemData.Dataset;
+      var targetVariable = GetTargetVariableName(problemData);
+      foreach (var tuple in partitions) {
+        double rmsError, avgRelError, outOfBagAvgRelError, outOfBagRmsError;
+        var trainingRandomForestPartition = tuple.Item1;
+        var testRandomForestPartition = tuple.Item2;
+        var model = RandomForestModel.CreateRegressionModel(problemData, trainingRandomForestPartition, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+        var estimatedValues = model.GetEstimatedValues(ds, testRandomForestPartition);
+        var targetValues = ds.GetDoubleValues(targetVariable, testRandomForestPartition);
+        OnlineCalculatorError calculatorError;
+        double mse = OnlineMeanSquaredErrorCalculator.Calculate(estimatedValues, targetValues, out calculatorError);
+        if (calculatorError != OnlineCalculatorError.None)
+          mse = double.NaN;
+        avgTestMse += mse;
+      }
+      avgTestMse /= partitions.Length;
+    }
+
+    private static void CrossValidate(IClassificationProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, RFParameter parameters, int seed, out double avgTestMse) {
+      CrossValidate(problemData, partitions, (int)parameters.n, parameters.m, parameters.r, seed, out avgTestMse);
+    }
+    private static void CrossValidate(IClassificationProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestAccuracy) {
+      avgTestAccuracy = 0;
+      var ds = problemData.Dataset;
+      var targetVariable = GetTargetVariableName(problemData);
+      foreach (var tuple in partitions) {
+        double rmsError, avgRelError, outOfBagAvgRelError, outOfBagRmsError;
+        var trainingRandomForestPartition = tuple.Item1;
+        var testRandomForestPartition = tuple.Item2;
+        var model = RandomForestModel.CreateClassificationModel(problemData, trainingRandomForestPartition, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+        var estimatedValues = model.GetEstimatedClassValues(ds, testRandomForestPartition);
+        var targetValues = ds.GetDoubleValues(targetVariable, testRandomForestPartition);
+        OnlineCalculatorError calculatorError;
+        double accuracy = OnlineAccuracyCalculator.Calculate(estimatedValues, targetValues, out calculatorError);
+        if (calculatorError != OnlineCalculatorError.None)
+          accuracy = double.NaN;
+        avgTestAccuracy += accuracy;
+      }
+      avgTestAccuracy /= partitions.Length;
+    }
+
+    private static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
+      DoubleValue mse = new DoubleValue(Double.MaxValue);
+      RFParameter bestParameter = new RFParameter { n = 1, m = 0.1, r = 0.1 }; // some random defaults
+
+      var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
+      var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds);
+      var crossProduct = parameterRanges.Values.CartesianProduct();
+
+      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
+        var parameterValues = parameterCombination.ToList();
+        double testMSE;
+        var parameters = new RFParameter();
+        for (int i = 0; i < setters.Count; ++i) {
+          setters[i](parameters, parameterValues[i]);
+        }
+        CrossValidate(problemData, partitions, parameters, seed, out testMSE);
+        if (testMSE < mse.Value) {
+          lock (mse) {
+            mse.Value = testMSE;
+            bestParameter = (RFParameter)parameters.Clone();
+          }
+        }
+      });
+      return bestParameter;
+    }
+
+    private static RFParameter GridSearch(IClassificationProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
+      DoubleValue accuracy = new DoubleValue(0);
+      RFParameter bestParameter = new RFParameter { n = 1, m = 0.1, r = 0.1 }; // some random defaults
+
+      var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
+      var crossProduct = parameterRanges.Values.CartesianProduct();
+      var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds);
+
+      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
+        var parameterValues = parameterCombination.ToList();
+        double testAccuracy;
+        var parameters = new RFParameter();
+        for (int i = 0; i < setters.Count; ++i) {
+          setters[i](parameters, parameterValues[i]);
+        }
+        CrossValidate(problemData, partitions, parameters, seed, out testAccuracy);
+        if (testAccuracy > accuracy.Value) {
+          lock (accuracy) {
+            accuracy.Value = testAccuracy;
+            bestParameter = (RFParameter)parameters.Clone();
+          }
+        }
+      });
+      return bestParameter;
     }
 
     /// <summary>
@@ -56,7 +145,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="problemData">The problem data</param>
     /// <param name="numberOfFolds">The number of folds to generate</param>
     /// <returns>A sequence of folds representing each a sequence of row numbers</returns>
-    public static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int numberOfFolds) {
+    private static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int numberOfFolds) {
       int size = problemData.TrainingPartition.Size;
       int f = size / numberOfFolds, r = size % numberOfFolds; // number of folds rounded to integer and remainder
       int start = 0, end = f;
@@ -81,138 +170,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return partitions;
     }
 
-    public static void CrossValidate(IDataAnalysisProblemData problemData, int numberOfFolds, RFParameter parameters, int seed, out double error) {
-      var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds);
-      CrossValidate(problemData, partitions, parameters, seed, out error);
-    }
 
-    // user should call the more specific CrossValidate methods
-    public static void CrossValidate(IDataAnalysisProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, RFParameter parameters, int seed, out double error) {
-      CrossValidate(problemData, partitions, (int)parameters.n, parameters.m, parameters.r, seed, out error);
-    }
-
-    public static void CrossValidate(IDataAnalysisProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double error) {
-      var regressionProblemData = problemData as IRegressionProblemData;
-      var classificationProblemData = problemData as IClassificationProblemData;
-      if (regressionProblemData != null)
-        CrossValidate(regressionProblemData, partitions, nTrees, m, r, seed, out error);
-      else if (classificationProblemData != null)
-        CrossValidate(classificationProblemData, partitions, nTrees, m, r, seed, out error);
-      else throw new ArgumentException("Problem data is neither regression or classification problem data.");
-    }
-
-    private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, RFParameter parameters, int seed, out double avgTestMse) {
-      CrossValidate(problemData, partitions, (int)parameters.n, parameters.m, parameters.r, seed, out avgTestMse);
-    }
-
-    private static void CrossValidate(IClassificationProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, RFParameter parameters, int seed, out double avgTestMse) {
-      CrossValidate(problemData, partitions, (int)parameters.n, parameters.m, parameters.r, seed, out avgTestMse);
-    }
-
-    private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestMse) {
-      avgTestMse = 0;
-      var ds = problemData.Dataset;
-      var targetVariable = GetTargetVariableName(problemData);
-      foreach (var tuple in partitions) {
-        double rmsError, avgRelError, outOfBagAvgRelError, outOfBagRmsError;
-        var trainingRandomForestPartition = tuple.Item1;
-        var testRandomForestPartition = tuple.Item2;
-        var model = RandomForestModel.CreateRegressionModel(problemData, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError, trainingRandomForestPartition);
-        var estimatedValues = model.GetEstimatedValues(ds, testRandomForestPartition);
-        var targetValues = ds.GetDoubleValues(targetVariable, testRandomForestPartition);
-        OnlineCalculatorError calculatorError;
-        double mse = OnlineMeanSquaredErrorCalculator.Calculate(estimatedValues, targetValues, out calculatorError);
-        if (calculatorError != OnlineCalculatorError.None)
-          mse = double.NaN;
-        avgTestMse += mse;
-      }
-      avgTestMse /= partitions.Length;
-    }
-
-    private static void CrossValidate(IClassificationProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestAccuracy) {
-      avgTestAccuracy = 0;
-      var ds = problemData.Dataset;
-      var targetVariable = GetTargetVariableName(problemData);
-      foreach (var tuple in partitions) {
-        double rmsError, avgRelError, outOfBagAvgRelError, outOfBagRmsError;
-        var trainingRandomForestPartition = tuple.Item1;
-        var testRandomForestPartition = tuple.Item2;
-        var model = RandomForestModel.CreateClassificationModel(problemData, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError, trainingRandomForestPartition);
-        var estimatedValues = model.GetEstimatedClassValues(ds, testRandomForestPartition);
-        var targetValues = ds.GetDoubleValues(targetVariable, testRandomForestPartition);
-        OnlineCalculatorError calculatorError;
-        double accuracy = OnlineAccuracyCalculator.Calculate(estimatedValues, targetValues, out calculatorError);
-        if (calculatorError != OnlineCalculatorError.None)
-          accuracy = double.NaN;
-        avgTestAccuracy += accuracy;
-      }
-      avgTestAccuracy /= partitions.Length;
-    }
-
-    public static RFParameter GridSearch(IDataAnalysisProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
-      var regressionProblemData = problemData as IRegressionProblemData;
-      var classificationProblemData = problemData as IClassificationProblemData;
-
-      if (regressionProblemData != null)
-        return GridSearch(regressionProblemData, numberOfFolds, parameterRanges, seed, maxDegreeOfParallelism);
-      if (classificationProblemData != null)
-        return GridSearch(classificationProblemData, numberOfFolds, parameterRanges, seed, maxDegreeOfParallelism);
-
-      throw new ArgumentException("Problem data is neither regression or classification problem data.");
-    }
-
-    private static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
-      DoubleValue mse = new DoubleValue(Double.MaxValue);
-      RFParameter bestParameter = new RFParameter { n = 1, m = 0.1, r = 0.1 }; // some random defaults
-
-      var pNames = parameterRanges.Keys.ToList();
-      var pRanges = pNames.Select(x => parameterRanges[x]);
-      var setters = pNames.Select(GenerateSetter).ToList();
-      var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds);
-      var crossProduct = pRanges.CartesianProduct();
-
-      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, nuple => {
-        var list = nuple.ToList();
-        double testMSE;
-        var parameters = new RFParameter();
-        for (int i = 0; i < pNames.Count; ++i) {
-          var s = setters[i];
-          s(parameters, list[i]);
-        }
-        CrossValidate(problemData, partitions, parameters, seed, out testMSE);
-        if (testMSE < mse.Value) {
-          lock (mse) { mse.Value = testMSE; }
-          lock (bestParameter) { bestParameter = (RFParameter)parameters.Clone(); }
-        }
-      });
-      return bestParameter;
-    }
-
-    private static RFParameter GridSearch(IClassificationProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
-      DoubleValue accuracy = new DoubleValue(0);
-      RFParameter bestParameter = new RFParameter { n = 1, m = 0.1, r = 0.1 }; // some random defaults
-
-      var pNames = parameterRanges.Keys.ToList();
-      var pRanges = pNames.Select(x => parameterRanges[x]);
-      var setters = pNames.Select(GenerateSetter).ToList();
-      var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds);
-      var crossProduct = pRanges.CartesianProduct();
-
-      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, nuple => {
-        var list = nuple.ToList();
-        double testAccuracy;
-        var parameters = new RFParameter();
-        for (int i = 0; i < pNames.Count; ++i) {
-          var s = setters[i];
-          s(parameters, list[i]);
-        }
-        CrossValidate(problemData, partitions, parameters, seed, out testAccuracy);
-        if (testAccuracy > accuracy.Value) {
-          lock (accuracy) { accuracy.Value = testAccuracy; }
-          lock (bestParameter) { bestParameter = (RFParameter)parameters.Clone(); }
-        }
-      });
-      return bestParameter;
+    private static Action<RFParameter, double> GenerateSetter(string field) {
+      var targetExp = Expression.Parameter(typeof(RFParameter));
+      var valueExp = Expression.Parameter(typeof(double));
+      var fieldExp = Expression.Field(targetExp, field);
+      var assignExp = Expression.Assign(fieldExp, Expression.Convert(valueExp, fieldExp.Type));
+      var setter = Expression.Lambda<Action<RFParameter, double>>(assignExp, targetExp, valueExp).Compile();
+      return setter;
     }
 
     private static string GetTargetVariableName(IDataAnalysisProblemData problemData) {
