@@ -83,24 +83,48 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return parameter;
     }
 
-    /// <summary>
-    /// Generate a collection of row sequences corresponding to folds in the data (used for crossvalidation)
-    /// </summary>
-    /// <remarks>This method is aimed to be lightweight and as such does not clone the dataset.</remarks>
-    /// <param name="problemData">The problem data</param>
-    /// <param name="numberOfFolds">The number of folds to generate</param>
-    /// <returns>A sequence of folds representing each a sequence of row numbers</returns>
-    public static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int numberOfFolds) {
-      int size = problemData.TrainingPartition.Size;
-      int f = size / numberOfFolds, r = size % numberOfFolds; // number of folds rounded to integer and remainder
-      int start = 0, end = f;
-      for (int i = 0; i < numberOfFolds; ++i) {
-        if (r > 0) { ++end; --r; }
-        yield return problemData.TrainingIndices.Skip(start).Take(end - start);
-        start = end;
-        end += f;
-      }
+    public static void CrossValidate(IDataAnalysisProblemData problemData, svm_parameter parameters, int numberOfFolds, out double avgTestMse) {
+      var partitions = GenerateSvmPartitions(problemData, numberOfFolds);
+      CalculateCrossValidationPartitions(partitions, parameters, out avgTestMse);
     }
+
+    public static svm_parameter GridSearch(IDataAnalysisProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int maxDegreeOfParallelism = 1) {
+      DoubleValue mse = new DoubleValue(Double.MaxValue);
+      var bestParam = DefaultParameters();
+      var crossProduct = parameterRanges.Values.CartesianProduct();
+      var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
+      var partitions = GenerateSvmPartitions(problemData, numberOfFolds);
+      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
+        var parameters = DefaultParameters();
+        var parameterValues = parameterCombination.ToList();
+        for (int i = 0; i < parameterValues.Count; ++i) {
+          setters[i](parameters, parameterValues[i]);
+        }
+        double testMse;
+        CalculateCrossValidationPartitions(partitions, parameters, out testMse);
+        if (testMse < mse.Value) {
+          lock (mse) { mse.Value = testMse; }
+          lock (bestParam) { bestParam = (svm_parameter)parameters.Clone(); }
+        }
+      });
+      return bestParam;
+    }
+
+    private static void CalculateCrossValidationPartitions(Tuple<svm_problem, svm_problem>[] partitions, svm_parameter parameters, out double avgTestMse) {
+      avgTestMse = 0;
+      var calc = new OnlineMeanSquaredErrorCalculator();
+      foreach (Tuple<svm_problem, svm_problem> tuple in partitions) {
+        var trainingSvmProblem = tuple.Item1;
+        var testSvmProblem = tuple.Item2;
+        var model = svm.svm_train(trainingSvmProblem, parameters);
+        calc.Reset();
+        for (int i = 0; i < testSvmProblem.l; ++i)
+          calc.Add(testSvmProblem.y[i], svm.svm_predict(model, testSvmProblem.x[i]));
+        avgTestMse += calc.MeanSquaredError;
+      }
+      avgTestMse /= partitions.Length;
+    }
+
 
     private static Tuple<svm_problem, svm_problem>[] GenerateSvmPartitions(IDataAnalysisProblemData problemData, int numberOfFolds) {
       var folds = GenerateFolds(problemData, numberOfFolds).ToList();
@@ -117,24 +141,23 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return partitions;
     }
 
-    public static void CrossValidate(IDataAnalysisProblemData problemData, svm_parameter parameters, int numberOfFolds, out double avgTestMse) {
-      var partitions = GenerateSvmPartitions(problemData, numberOfFolds);
-      CrossValidate(problemData, parameters, partitions, out avgTestMse);
-    }
-
-    public static void CrossValidate(IDataAnalysisProblemData problemData, svm_parameter parameters, Tuple<svm_problem, svm_problem>[] partitions, out double avgTestMse) {
-      avgTestMse = 0;
-      var calc = new OnlineMeanSquaredErrorCalculator();
-      foreach (Tuple<svm_problem, svm_problem> tuple in partitions) {
-        var trainingSvmProblem = tuple.Item1;
-        var testSvmProblem = tuple.Item2;
-        var model = svm.svm_train(trainingSvmProblem, parameters);
-        calc.Reset();
-        for (int i = 0; i < testSvmProblem.l; ++i)
-          calc.Add(testSvmProblem.y[i], svm.svm_predict(model, testSvmProblem.x[i]));
-        avgTestMse += calc.MeanSquaredError;
+    /// <summary>
+    /// Generate a collection of row sequences corresponding to folds in the data (used for crossvalidation)
+    /// </summary>
+    /// <remarks>This method is aimed to be lightweight and as such does not clone the dataset.</remarks>
+    /// <param name="problemData">The problem data</param>
+    /// <param name="numberOfFolds">The number of folds to generate</param>
+    /// <returns>A sequence of folds representing each a sequence of row numbers</returns>
+    private static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int numberOfFolds) {
+      int size = problemData.TrainingPartition.Size;
+      int f = size / numberOfFolds, r = size % numberOfFolds; // number of folds rounded to integer and remainder
+      int start = 0, end = f;
+      for (int i = 0; i < numberOfFolds; ++i) {
+        if (r > 0) { ++end; --r; }
+        yield return problemData.TrainingIndices.Skip(start).Take(end - start);
+        start = end;
+        end += f;
       }
-      avgTestMse /= partitions.Length;
     }
 
     private static Action<svm_parameter, double> GenerateSetter(string fieldName) {
@@ -144,31 +167,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var assignExp = Expression.Assign(fieldExp, Expression.Convert(valueExp, fieldExp.Type));
       var setter = Expression.Lambda<Action<svm_parameter, double>>(assignExp, targetExp, valueExp).Compile();
       return setter;
-    }
-
-    public static svm_parameter GridSearch(IDataAnalysisProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int maxDegreeOfParallelism = 1) {
-      DoubleValue mse = new DoubleValue(Double.MaxValue);
-      var bestParam = DefaultParameters();
-      var pNames = parameterRanges.Keys.ToList();
-      var pRanges = pNames.Select(x => parameterRanges[x]);
-      var crossProduct = pRanges.CartesianProduct();
-      var setters = pNames.Select(GenerateSetter).ToList();
-      var partitions = GenerateSvmPartitions(problemData, numberOfFolds);
-      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, nuple => {
-        var list = nuple.ToList();
-        var parameters = DefaultParameters();
-        for (int i = 0; i < pNames.Count; ++i) {
-          var s = setters[i];
-          s(parameters, list[i]);
-        }
-        double testMse;
-        CrossValidate(problemData, parameters, partitions, out testMse);
-        if (testMse < mse.Value) {
-          lock (mse) { mse.Value = testMse; }
-          lock (bestParam) { bestParam = (svm_parameter)parameters.Clone(); }
-        }
-      });
-      return bestParam;
     }
 
     private static string GetTargetVariableName(IDataAnalysisProblemData problemData) {
@@ -182,5 +180,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       throw new ArgumentException("Problem data is neither regression or classification problem data.");
     }
+
   }
 }
