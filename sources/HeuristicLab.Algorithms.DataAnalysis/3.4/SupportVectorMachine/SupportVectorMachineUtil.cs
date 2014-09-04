@@ -103,8 +103,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         double testMse;
         CalculateCrossValidationPartitions(partitions, parameters, out testMse);
         if (testMse < mse.Value) {
-          lock (mse) { mse.Value = testMse; }
-          lock (bestParam) { bestParam = (svm_parameter)parameters.Clone(); }
+          lock (mse) {
+            mse.Value = testMse;
+            bestParam = (svm_parameter)parameters.Clone();
+          }
         }
       });
       return bestParam;
