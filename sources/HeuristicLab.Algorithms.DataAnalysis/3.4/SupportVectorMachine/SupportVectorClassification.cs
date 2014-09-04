@@ -142,7 +142,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static SupportVectorClassificationSolution CreateSupportVectorClassificationSolution(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
       string svmType, string kernelType, double cost, double nu, double gamma, int degree, out double trainingAccuracy, out double testAccuracy, out int nSv) {
-      return CreateSupportVectorClassificationSolution(problemData, allowedInputVariables, GetKernelType(svmType), GetKernelType(kernelType), cost, nu, gamma, degree,
+      return CreateSupportVectorClassificationSolution(problemData, allowedInputVariables, GetSvmType(svmType), GetKernelType(kernelType), cost, nu, gamma, degree,
         out trainingAccuracy, out testAccuracy, out nSv);
     }
 
