@@ -20,7 +20,11 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
@@ -33,6 +37,8 @@ namespace HeuristicLab.Optimization.Views {
   [View("Run View")]
   [Content(typeof(IRun), true)]
   public sealed partial class RunView : NamedItemView {
+    private readonly Dictionary<string, ListViewItem> parametersItemToListViewItem;
+    private readonly Dictionary<string, ListViewItem> resultsItemToListViewItem;
     /// <summary>
     /// Gets or sets the variable to represent visually.
     /// </summary>
@@ -48,21 +54,84 @@ namespace HeuristicLab.Optimization.Views {
     /// </summary>
     public RunView() {
       InitializeComponent();
+      parametersItemToListViewItem = new Dictionary<string, ListViewItem>();
+      resultsItemToListViewItem = new Dictionary<string, ListViewItem>();
     }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.Changed += new EventHandler(Content_Changed);
+      Content.PropertyChanged += Content_PropertyChanged;
+      RegisterContentParametersEvents();
+      RegisterContentResultsEents();
+    }
+    private void RegisterContentParametersEvents() {
+      Content.Parameters.ItemsAdded += ParametersOnItemsChanged;
+      Content.Parameters.ItemsRemoved += ParametersOnItemsChanged;
+      Content.Parameters.ItemsReplaced += ParametersOnItemsChanged;
+      Content.Parameters.CollectionReset += ParametersOnItemsChanged;
+    }
+    private void RegisterContentResultsEents() {
+      Content.Results.ItemsAdded += ResultsOnItemsChanged;
+      Content.Results.ItemsRemoved += ResultsOnItemsChanged;
+      Content.Results.ItemsReplaced += ResultsOnItemsChanged;
+      Content.Results.CollectionReset += ResultsOnItemsChanged;
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      Content.Changed -= new EventHandler(Content_Changed);
+      Content.PropertyChanged -= Content_PropertyChanged;
+      DeregisterContentParametersEvents();
+      DeregisterContentResultsEvents();
     }
-    private void Content_Changed(object sender, EventArgs e) {
-      if (InvokeRequired)
-        this.Invoke(new EventHandler(Content_Changed), sender, e);
-      else
-        UpdateColor();
+    private void DeregisterContentParametersEvents() {
+      Content.Parameters.ItemsAdded -= ParametersOnItemsChanged;
+      Content.Parameters.ItemsRemoved -= ParametersOnItemsChanged;
+      Content.Parameters.ItemsReplaced -= ParametersOnItemsChanged;
+      Content.Parameters.CollectionReset -= ParametersOnItemsChanged;
+    }
+    private void DeregisterContentResultsEvents() {
+      Content.Results.ItemsAdded -= ResultsOnItemsChanged;
+      Content.Results.ItemsRemoved -= ResultsOnItemsChanged;
+      Content.Results.ItemsReplaced -= ResultsOnItemsChanged;
+      Content.Results.CollectionReset -= ResultsOnItemsChanged;
+    }
+
+    private void Content_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      if (e.PropertyName == "Color") {
+        if (InvokeRequired) this.Invoke((Action)UpdateColor, null);
+        else UpdateColor();
+      } else if (e.PropertyName == "Parameters") {
+        if (InvokeRequired) this.Invoke((Action<bool>)FillParametersListView, true);
+        else FillParametersListView();
+        RegisterContentParametersEvents();
+      } else if (e.PropertyName == "Results") {
+        if (InvokeRequired) this.Invoke((Action<bool>)FillResultsListView, true);
+        else FillResultsListView();
+        RegisterContentResultsEents();
+      }
+    }
+
+    private void ParametersOnItemsChanged(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IItem>> e) {
+      foreach (var item in e.OldItems) {
+        listView.Items.Remove(parametersItemToListViewItem[item.Key]);
+        parametersItemToListViewItem.Remove(item.Key);
+      }
+      foreach (var item in e.Items) {
+        var listViewItem = CreateListViewItem(item.Key, Content.Parameters[item.Key], listView.Groups["parametersGroup"]);
+        listView.Items.Add(listViewItem);
+        parametersItemToListViewItem[item.Key] = listViewItem;
+      }
+    }
+
+    private void ResultsOnItemsChanged(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IItem>> e) {
+      foreach (var item in e.OldItems) {
+        listView.Items.Remove(resultsItemToListViewItem[item.Key]);
+        resultsItemToListViewItem.Remove(item.Key);
+      }
+      foreach (var item in e.Items) {
+        var listViewItem = CreateListViewItem(item.Key, Content.Results[item.Key], listView.Groups["resultsGroup"]);
+        listView.Items.Add(listViewItem);
+        resultsItemToListViewItem[item.Key] = listViewItem;
+      }
     }
 
     protected override void OnContentChanged() {
@@ -100,29 +169,76 @@ namespace HeuristicLab.Optimization.Views {
     private void FillListView() {
       if (listView.SelectedItems.Count == 1) selectedName = listView.SelectedItems[0].SubItems[0].Text;
 
-      listView.Items.Clear();
-      listView.SmallImageList.Images.Clear();
+      FillParametersListView(false);
+      FillResultsListView(false);
+      if (listView.Items.Count > 0) {
+        for (int i = 0; i < listView.Columns.Count; i++)
+          listView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        selectedName = null;
+      }
+    }
+
+    private void FillParametersListView(bool resize = true) {
+      listView.BeginUpdate();
+      foreach (var item in listView.Groups["parametersGroup"].Items.OfType<ListViewItem>().OrderByDescending(x => x.ImageIndex).ToList()) {
+        listView.SmallImageList.Images.RemoveAt(item.ImageIndex);
+        listView.Items.Remove(item);
+      }
+      parametersItemToListViewItem.Clear();
+
+      var counter = 0;
+      foreach (var item in listView.Items.OfType<ListViewItem>().OrderBy(x => x.ImageIndex).ToList())
+        item.ImageIndex = counter++;
+      listView.EndUpdate();
+
       if (Content != null) {
-        foreach (string key in Content.Parameters.Keys)
-          CreateListViewItem(key, Content.Parameters[key], listView.Groups["parametersGroup"], selectedName);
-        foreach (string key in Content.Results.Keys)
-          CreateListViewItem(key, Content.Results[key], listView.Groups["resultsGroup"], selectedName);
-        if (listView.Items.Count > 0) {
+        foreach (string key in Content.Parameters.Keys) {
+          var listViewItem = CreateListViewItem(key, Content.Parameters[key], listView.Groups["parametersGroup"]);
+          listView.Items.Add(listViewItem);
+          if ((selectedName != null) && key.Equals(selectedName)) listViewItem.Selected = true;
+          parametersItemToListViewItem[key] = listViewItem;
+        }
+        if (resize && listView.Items.Count > 0) {
           for (int i = 0; i < listView.Columns.Count; i++)
             listView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-          selectedName = null;
         }
       }
     }
 
-    private void CreateListViewItem(string name, IItem value, ListViewGroup group, string selectedName) {
-      ListViewItem item = new ListViewItem(new string[] { name, value != null ? value.ToString() : "-" });
+    private void FillResultsListView(bool resize = true) {
+      listView.BeginUpdate();
+      foreach (var item in listView.Groups["resultsGroup"].Items.OfType<ListViewItem>().OrderByDescending(x => x.ImageIndex).ToList()) {
+        listView.SmallImageList.Images.RemoveAt(item.ImageIndex);
+        listView.Items.Remove(item);
+      }
+      resultsItemToListViewItem.Clear();
+
+      var counter = 0;
+      foreach (var item in listView.Items.OfType<ListViewItem>().OrderBy(x => x.ImageIndex).ToList())
+        item.ImageIndex = counter++;
+      listView.EndUpdate();
+
+      if (Content != null) {
+        foreach (string key in Content.Results.Keys) {
+          var listViewItem = CreateListViewItem(key, Content.Results[key], listView.Groups["resultsGroup"]);
+          listView.Items.Add(listViewItem);
+          if ((selectedName != null) && key.Equals(selectedName)) listViewItem.Selected = true;
+          resultsItemToListViewItem[key] = listViewItem;
+        }
+        if (resize && listView.Items.Count > 0) {
+          for (int i = 0; i < listView.Columns.Count; i++)
+            listView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
+      }
+    }
+
+    private ListViewItem CreateListViewItem(string name, IItem value, ListViewGroup group) {
+      var item = new ListViewItem(new string[] { name, value != null ? value.ToString() : "-" });
       item.Tag = value;
       item.Group = group;
       listView.SmallImageList.Images.Add(value == null ? HeuristicLab.Common.Resources.VSImageLibrary.Nothing : value.ItemImage);
       item.ImageIndex = listView.SmallImageList.Images.Count - 1;
-      listView.Items.Add(item);
-      if ((selectedName != null) && name.Equals(selectedName)) item.Selected = true;
+      return item;
     }
 
     private void listView_SelectedIndexChanged(object sender, EventArgs e) {

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core;
@@ -69,7 +70,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void RegisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed += new EventHandler(run_Changed);
+        run.PropertyChanged += run_PropertyChanged;
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
@@ -82,7 +83,7 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed -= new EventHandler(run_Changed);
+        run.PropertyChanged -= run_PropertyChanged;
     }
     private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.OldItems);
@@ -99,13 +100,14 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_AlgorithmNameChanged), sender, e);
       else UpdateCaption();
     }
-    private void run_Changed(object sender, EventArgs e) {
+    private void run_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       if (suppressUpdates) return;
       if (InvokeRequired)
-        this.Invoke(new EventHandler(run_Changed), sender, e);
+        this.Invoke((Action<object, PropertyChangedEventArgs>)run_PropertyChanged, sender, e);
       else {
         IRun run = (IRun)sender;
-        UpdateRun(run);
+        if (e.PropertyName == "Color" || e.PropertyName == "Visible")
+          UpdateRun(run);
       }
     }
     #endregion

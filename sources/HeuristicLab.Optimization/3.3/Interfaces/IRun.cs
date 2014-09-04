@@ -19,22 +19,21 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
+using HeuristicLab.Collections;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   /// <summary>
   /// Represents the parameters and results of an algorithm run.
   /// </summary>
-  public interface IRun : INamedItem {
+  public interface IRun : INamedItem, INotifyPropertyChanged {
     IAlgorithm Algorithm { get; }
-    IDictionary<string, IItem> Parameters { get; }
-    IDictionary<string, IItem> Results { get; }
+    IObservableDictionary<string, IItem> Parameters { get; }
+    IObservableDictionary<string, IItem> Results { get; }
 
     Color Color { get; set; }
     bool Visible { get; set; }
-    event EventHandler Changed;
   }
 }

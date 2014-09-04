@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -115,11 +116,11 @@ namespace HeuristicLab.Optimization.Views {
     }
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed += new EventHandler(run_Changed);
+        run.PropertyChanged += run_PropertyChanged;
     }
     protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed -= new EventHandler(run_Changed);
+        run.PropertyChanged -= run_PropertyChanged;
     }
 
     private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
@@ -132,16 +133,18 @@ namespace HeuristicLab.Optimization.Views {
     private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
     }
-    private void run_Changed(object sender, EventArgs e) {
+    private void run_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       if (suppressUpdates) return;
       if (InvokeRequired)
-        this.Invoke(new EventHandler(run_Changed), sender, e);
+        this.Invoke((Action<object, PropertyChangedEventArgs>)run_PropertyChanged, sender, e);
       else {
-        IRun run = (IRun)sender;
-        UpdateRun(run);
-        UpdateCursorInterval();
-        chart.ChartAreas[0].RecalculateAxesScale();
-        UpdateAxisLabels();
+        if (e.PropertyName == "Color" || e.PropertyName == "Visible") {
+          IRun run = (IRun)sender;
+          UpdateRun(run);
+          UpdateCursorInterval();
+          chart.ChartAreas[0].RecalculateAxesScale();
+          UpdateAxisLabels();
+        }
       }
     }
 
@@ -669,8 +672,8 @@ namespace HeuristicLab.Optimization.Views {
       SetCustomAxisLabels(yAxis, ySAxisSelectedIndex - axisDimensionCount);
       if (xAxisValue != null)
         xAxis.Title = xAxisValue;
-      if(yAxisValue != null)
-      yAxis.Title = yAxisValue;
+      if (yAxisValue != null)
+        yAxis.Title = yAxisValue;
     }
 
     private void chart_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e) {
