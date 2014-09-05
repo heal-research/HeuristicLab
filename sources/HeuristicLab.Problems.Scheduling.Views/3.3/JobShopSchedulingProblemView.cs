@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.Scheduling.Views {
     protected override void DeregisterContentEvents() {
       Content.JobDataParameter.ValueChanged -= JobDataParameterOnValueChanged;
       Content.JobData.ItemsAdded -= JobsOnChanged;
-      Content.JobData.ItemsRemoved -= JobsOnChanged;
+      Content.JobData.ItemsRemoved -= JobsOnRemoved;
       Content.JobData.ItemsReplaced -= JobsOnChanged;
       Content.JobData.CollectionReset -= JobsOnChanged;
       foreach (var job in Content.JobData) {
@@ -63,7 +63,7 @@ namespace HeuristicLab.Problems.Scheduling.Views {
       base.RegisterContentEvents();
       Content.JobDataParameter.ValueChanged += JobDataParameterOnValueChanged;
       Content.JobData.ItemsAdded += JobsOnChanged;
-      Content.JobData.ItemsRemoved += JobsOnChanged;
+      Content.JobData.ItemsRemoved += JobsOnRemoved;
       Content.JobData.ItemsReplaced += JobsOnChanged;
       Content.JobData.CollectionReset += JobsOnChanged;
       foreach (var job in Content.JobData) {
@@ -79,9 +79,15 @@ namespace HeuristicLab.Problems.Scheduling.Views {
       FillGanttChart();
     }
 
+    private void JobsOnRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Job>> e) {
+      foreach (var job in e.Items)
+        job.Value.TasksChanged -= JobOnTasksChanged;
+      FillGanttChart();
+    }
+
     private void JobDataParameterOnValueChanged(object sender, EventArgs e) {
       Content.JobData.ItemsAdded += JobsOnChanged;
-      Content.JobData.ItemsRemoved += JobsOnChanged;
+      Content.JobData.ItemsRemoved += JobsOnRemoved;
       Content.JobData.ItemsReplaced += JobsOnChanged;
       Content.JobData.CollectionReset += JobsOnChanged;
       foreach (var job in Content.JobData) {
