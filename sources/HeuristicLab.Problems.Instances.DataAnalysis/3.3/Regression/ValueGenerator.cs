@@ -37,8 +37,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="stepWidth">The step size between subsequent values.</param>
     /// <returns>An sequence of values from start to end (inclusive)</returns>
     public static IEnumerable<double> GenerateSteps(double start, double end, double stepWidth) {
-      if (start > end) throw new ArgumentException("start must be less than or equal end.");
-      if (stepWidth <= 0) throw new ArgumentException("stepwith must be larger than zero.", "stepWidth");
+      if (stepWidth.IsAlmost(0))
+        throw new ArgumentException("The step width cannot be zero.");
+      if (start < end && stepWidth < 0)
+        throw new ArgumentException("The step width must be larger than zero for increasing sequences (start < end).");
+      if (start > end && stepWidth > 0)
+        throw new ArgumentException("The step width must be smaller than zero for decreasing sequences (start > end).");
       double x = start;
       // x<=end could skip the last value because of numerical problems
       while (x < end || x.IsAlmost(end)) {
@@ -67,7 +71,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="transform">The transform function</param>
     /// <returns></returns>
     public static IEnumerable<double> GenerateSteps(double start, double end, double stepWidth, Func<double, double> transform) {
-      return GenerateSteps(start, end, stepWidth).Select(transform).Where(x => x < end || x.IsAlmost(end));
+      return GenerateSteps(start, end, stepWidth).Select(transform);
     }
 
     /// <summary>
