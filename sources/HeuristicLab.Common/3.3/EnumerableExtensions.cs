@@ -95,7 +95,7 @@ namespace HeuristicLab.Common {
     /// <returns>An enumerable sequence of all the possible combinations of elements</returns>
     public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences) {
       IEnumerable<IEnumerable<T>> result = new[] { Enumerable.Empty<T>() };
-      return sequences.Aggregate(result, (current, s) => (from seq in current from item in s select seq.Concat(new[] { item })));
+      return sequences.Where(s => s.Any()).Aggregate(result, (current, s) => (from seq in current from item in s select seq.Concat(new[] { item })));
     }
   }
 }
