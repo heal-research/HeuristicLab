@@ -236,7 +236,7 @@ namespace HeuristicLab.Optimization {
     private void RegisterRunParametersEvents(IRun run) {
       IObservableDictionary<string, IItem> dict = run.Parameters;
       dict.ItemsAdded += RunOnParameterChanged;
-      dict.ItemsRemoved += RunOnParameterChanged;
+      dict.ItemsRemoved += RunOnParameterRemoved;
       dict.ItemsReplaced += RunOnParameterChanged;
       dict.CollectionReset += RunOnParameterChanged;
     }
@@ -244,7 +244,7 @@ namespace HeuristicLab.Optimization {
     private void RegisterRunResultsEvents(IRun run) {
       IObservableDictionary<string, IItem> dict = run.Results;
       dict.ItemsAdded += RunOnResultChanged;
-      dict.ItemsRemoved += RunOnResultChanged;
+      dict.ItemsRemoved += RunOnResultRemoved;
       dict.ItemsReplaced += RunOnResultChanged;
       dict.CollectionReset += RunOnResultChanged;
     }
@@ -252,7 +252,7 @@ namespace HeuristicLab.Optimization {
     private void DeregisterRunParametersEvents(IRun run) {
       IObservableDictionary<string, IItem> dict = run.Parameters;
       dict.ItemsAdded -= RunOnParameterChanged;
-      dict.ItemsRemoved -= RunOnParameterChanged;
+      dict.ItemsRemoved -= RunOnParameterRemoved;
       dict.ItemsReplaced -= RunOnParameterChanged;
       dict.CollectionReset -= RunOnParameterChanged;
     }
@@ -260,7 +260,7 @@ namespace HeuristicLab.Optimization {
     private void DeregisterRunResultsEvents(IRun run) {
       IObservableDictionary<string, IItem> dict = run.Results;
       dict.ItemsAdded -= RunOnResultChanged;
-      dict.ItemsRemoved -= RunOnResultChanged;
+      dict.ItemsRemoved -= RunOnResultRemoved;
       dict.ItemsReplaced -= RunOnResultChanged;
       dict.CollectionReset -= RunOnResultChanged;
     }
@@ -279,11 +279,35 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    private void RunOnParameterRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IItem>> e) {
+      bool columnsChanged = false;
+      foreach (var param in e.Items)
+        columnsChanged |= RemoveParameterName(param.Key);
+      if (columnsChanged) columnNameCache = null;
+      OnReset();
+      if (columnsChanged) {
+        OnColumnsChanged();
+        OnColumnNamesChanged();
+      }
+    }
+
     private void RunOnResultChanged(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IItem>> e) {
       bool columnsChanged = false;
       foreach (var result in e.Items)
         columnsChanged |= AddResult(result.Key, result.Value);
       foreach (var result in e.OldItems)
+        columnsChanged |= RemoveResultName(result.Key);
+      if (columnsChanged) columnNameCache = null;
+      OnReset();
+      if (columnsChanged) {
+        OnColumnsChanged();
+        OnColumnNamesChanged();
+      }
+    }
+
+    private void RunOnResultRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IItem>> e) {
+      bool columnsChanged = false;
+      foreach (var result in e.Items)
         columnsChanged |= RemoveResultName(result.Key);
       if (columnsChanged) columnNameCache = null;
       OnReset();

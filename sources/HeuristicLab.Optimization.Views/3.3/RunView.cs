@@ -66,13 +66,13 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void RegisterContentParametersEvents() {
       Content.Parameters.ItemsAdded += ParametersOnItemsChanged;
-      Content.Parameters.ItemsRemoved += ParametersOnItemsChanged;
+      Content.Parameters.ItemsRemoved += ParametersOnItemsRemoved;
       Content.Parameters.ItemsReplaced += ParametersOnItemsChanged;
       Content.Parameters.CollectionReset += ParametersOnItemsChanged;
     }
     private void RegisterContentResultsEents() {
       Content.Results.ItemsAdded += ResultsOnItemsChanged;
-      Content.Results.ItemsRemoved += ResultsOnItemsChanged;
+      Content.Results.ItemsRemoved += ResultsOnItemsRemoved;
       Content.Results.ItemsReplaced += ResultsOnItemsChanged;
       Content.Results.CollectionReset += ResultsOnItemsChanged;
     }
@@ -84,13 +84,13 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void DeregisterContentParametersEvents() {
       Content.Parameters.ItemsAdded -= ParametersOnItemsChanged;
-      Content.Parameters.ItemsRemoved -= ParametersOnItemsChanged;
+      Content.Parameters.ItemsRemoved -= ParametersOnItemsRemoved;
       Content.Parameters.ItemsReplaced -= ParametersOnItemsChanged;
       Content.Parameters.CollectionReset -= ParametersOnItemsChanged;
     }
     private void DeregisterContentResultsEvents() {
       Content.Results.ItemsAdded -= ResultsOnItemsChanged;
-      Content.Results.ItemsRemoved -= ResultsOnItemsChanged;
+      Content.Results.ItemsRemoved -= ResultsOnItemsRemoved;
       Content.Results.ItemsReplaced -= ResultsOnItemsChanged;
       Content.Results.CollectionReset -= ResultsOnItemsChanged;
     }
@@ -122,6 +122,13 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+    private void ParametersOnItemsRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IItem>> e) {
+      foreach (var item in e.Items) {
+        listView.Items.Remove(parametersItemToListViewItem[item.Key]);
+        parametersItemToListViewItem.Remove(item.Key);
+      }
+    }
+
     private void ResultsOnItemsChanged(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IItem>> e) {
       foreach (var item in e.OldItems) {
         listView.Items.Remove(resultsItemToListViewItem[item.Key]);
@@ -131,6 +138,13 @@ namespace HeuristicLab.Optimization.Views {
         var listViewItem = CreateListViewItem(item.Key, Content.Results[item.Key], listView.Groups["resultsGroup"]);
         listView.Items.Add(listViewItem);
         resultsItemToListViewItem[item.Key] = listViewItem;
+      }
+    }
+
+    private void ResultsOnItemsRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, IItem>> e) {
+      foreach (var item in e.Items) {
+        listView.Items.Remove(resultsItemToListViewItem[item.Key]);
+        resultsItemToListViewItem.Remove(item.Key);
       }
     }
 
