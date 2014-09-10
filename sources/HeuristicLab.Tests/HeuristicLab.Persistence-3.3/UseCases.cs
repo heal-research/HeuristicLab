@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -1471,6 +1472,47 @@ namespace HeuristicLab.Persistence.Tests {
       XmlGenerator.Serialize(values, tempFile);
       var newValues = (List<double?>) XmlParser.Deserialize(tempFile);
       CollectionAssert.AreEqual(values, newValues);
+    }
+
+    [TestMethod]
+    [TestCategory("Persistence")]
+    [TestProperty("Time", "short")]
+    public void TestOptionalDateTimeEnumerable() {
+      var values = new List<DateTime?> { DateTime.MinValue, null, DateTime.Now, DateTime.Now.Add(TimeSpan.FromDays(1)),
+        DateTime.ParseExact("10.09.2014 12:21", "dd.MM.yyyy hh:mm", CultureInfo.InvariantCulture), DateTime.MaxValue};
+      XmlGenerator.Serialize(values, tempFile);
+      var newValues = (List<DateTime?>) XmlParser.Deserialize(tempFile);
+      CollectionAssert.AreEqual(values, newValues);
+    }
+
+    [TestMethod]
+    [TestCategory("Persistence")]
+    [TestProperty("Time", "short")]
+    public void TestStringEnumerable() {
+      var values = new List<string> {"", null, "s", "string", string.Empty, "123", "<![CDATA[nice]]>", "<![CDATA[nasty unterminated"};
+      XmlGenerator.Serialize(values, tempFile);
+      var newValues = (List<String>) XmlParser.Deserialize(tempFile);
+      CollectionAssert.AreEqual(values, newValues);
+    }
+
+    [TestMethod]
+    [TestCategory("Persistence")]
+    [TestProperty("Time", "short")]
+    public void TestUnicodeCharArray() {
+      var s = Encoding.UTF8.GetChars(new byte[] {0, 1, 2, 03, 04, 05, 06, 07, 08, 09, 0xa, 0xb});
+      XmlGenerator.Serialize(s, tempFile);
+      var newS = (char[])XmlParser.Deserialize(tempFile);
+      CollectionAssert.AreEqual(s, newS);
+    }
+
+    [TestMethod]
+    [TestCategory("Persistence")]
+    [TestProperty("Time", "short")]
+    public void TestUnicode() {
+      var s = Encoding.UTF8.GetString(new byte[] {0, 1, 2, 03, 04, 05, 06, 07, 08, 09, 0xa, 0xb});
+      XmlGenerator.Serialize(s, tempFile);
+      var newS = XmlParser.Deserialize(tempFile);
+      Assert.AreEqual(s, newS);
     }
 
 
