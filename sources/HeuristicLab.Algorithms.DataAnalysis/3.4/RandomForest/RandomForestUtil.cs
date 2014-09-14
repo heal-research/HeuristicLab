@@ -27,8 +27,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public class RFParameter : ICloneable {
@@ -40,9 +42,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   }
 
   public static class RandomForestUtil {
-    private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, RFParameter parameters, int seed, out double avgTestMse) {
-      CrossValidate(problemData, partitions, (int)parameters.n, parameters.m, parameters.r, seed, out avgTestMse);
-    }
     private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestMse) {
       avgTestMse = 0;
       var ds = problemData.Dataset;
@@ -61,10 +60,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         avgTestMse += mse;
       }
       avgTestMse /= partitions.Length;
-    }
-
-    private static void CrossValidate(IClassificationProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, RFParameter parameters, int seed, out double avgTestMse) {
-      CrossValidate(problemData, partitions, (int)parameters.n, parameters.m, parameters.r, seed, out avgTestMse);
     }
     private static void CrossValidate(IClassificationProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestAccuracy) {
       avgTestAccuracy = 0;
@@ -86,9 +81,58 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       avgTestAccuracy /= partitions.Length;
     }
 
-    private static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
+    // grid search without cross-validation since in the case of random forests, the out-of-bag estimate is unbiased
+    public static RFParameter GridSearch(IRegressionProblemData problemData, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
+      var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
+      var crossProduct = parameterRanges.Values.CartesianProduct();
+      double bestOutOfBagRmsError = double.MaxValue;
+      RFParameter bestParameters = new RFParameter();
+
+      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
+        var parameterValues = parameterCombination.ToList();
+        double testMSE;
+        var parameters = new RFParameter();
+        for (int i = 0; i < setters.Count; ++i) { setters[i](parameters, parameterValues[i]); }
+        double rmsError, outOfBagRmsError, avgRelError, outOfBagAvgRelError;
+        var model = RandomForestModel.CreateRegressionModel(problemData, problemData.TrainingIndices, (int)parameters.n, parameters.r, parameters.m, seed,
+                                                            out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
+        if (bestOutOfBagRmsError > outOfBagRmsError) {
+          lock (bestParameters) {
+            bestOutOfBagRmsError = outOfBagRmsError;
+            bestParameters = (RFParameter)parameters.Clone();
+          }
+        }
+      });
+      return bestParameters;
+    }
+
+    public static RFParameter GridSearch(IClassificationProblemData problemData, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
+      var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
+      var crossProduct = parameterRanges.Values.CartesianProduct();
+
+      double bestOutOfBagRmsError = double.MaxValue;
+      RFParameter bestParameters = new RFParameter();
+
+      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
+        var parameterValues = parameterCombination.ToList();
+        var parameters = new RFParameter();
+        for (int i = 0; i < setters.Count; ++i) { setters[i](parameters, parameterValues[i]); }
+        double rmsError, outOfBagRmsError, avgRelError, outOfBagAvgRelError;
+        var model = RandomForestModel.CreateClassificationModel(problemData, problemData.TrainingIndices, (int)parameters.n, parameters.r, parameters.m, seed,
+                                                                out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
+        if (bestOutOfBagRmsError > outOfBagRmsError) {
+          lock (bestParameters) {
+            bestOutOfBagRmsError = outOfBagRmsError;
+            bestParameters = (RFParameter)parameters.Clone();
+          }
+        }
+      });
+      return bestParameters;
+    }
+
+    public static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, bool shuffleFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
       DoubleValue mse = new DoubleValue(Double.MaxValue);
-      RFParameter bestParameter = new RFParameter { n = 1, m = 0.1, r = 0.1 }; // some random defaults
+      RFParameter bestParameter = new RFParameter { n = 1, m = 0.1, r = 0.1 };
 
       var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
       var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds);
@@ -101,7 +145,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int i = 0; i < setters.Count; ++i) {
           setters[i](parameters, parameterValues[i]);
         }
-        CrossValidate(problemData, partitions, parameters, seed, out testMSE);
+        CrossValidate(problemData, partitions, (int)parameters.n, parameters.r, parameters.m, seed, out testMSE);
         if (testMSE < mse.Value) {
           lock (mse) {
             mse.Value = testMSE;
@@ -112,13 +156,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return bestParameter;
     }
 
-    private static RFParameter GridSearch(IClassificationProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
+    public static RFParameter GridSearch(IClassificationProblemData problemData, int numberOfFolds, bool shuffleFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
       DoubleValue accuracy = new DoubleValue(0);
-      RFParameter bestParameter = new RFParameter { n = 1, m = 0.1, r = 0.1 }; // some random defaults
+      RFParameter bestParameter = new RFParameter { n = 1, m = 0.1, r = 0.1 };
 
       var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
       var crossProduct = parameterRanges.Values.CartesianProduct();
-      var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds);
+      var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds, shuffleFolds);
 
       Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
         var parameterValues = parameterCombination.ToList();
@@ -127,7 +171,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         for (int i = 0; i < setters.Count; ++i) {
           setters[i](parameters, parameterValues[i]);
         }
-        CrossValidate(problemData, partitions, parameters, seed, out testAccuracy);
+        CrossValidate(problemData, partitions, (int)parameters.n, parameters.r, parameters.m, seed, out testAccuracy);
         if (testAccuracy > accuracy.Value) {
           lock (accuracy) {
             accuracy.Value = testAccuracy;
@@ -138,27 +182,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return bestParameter;
     }
 
-    /// <summary>
-    /// Generate a collection of row sequences corresponding to folds in the data (used for crossvalidation)
-    /// </summary>
-    /// <remarks>This method is aimed to be lightweight and as such does not clone the dataset.</remarks>
-    /// <param name="problemData">The problem data</param>
-    /// <param name="numberOfFolds">The number of folds to generate</param>
-    /// <returns>A sequence of folds representing each a sequence of row numbers</returns>
-    private static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int numberOfFolds) {
-      int size = problemData.TrainingPartition.Size;
-      int f = size / numberOfFolds, r = size % numberOfFolds; // number of folds rounded to integer and remainder
-      int start = 0, end = f;
-      for (int i = 0; i < numberOfFolds; ++i) {
-        if (r > 0) { ++end; --r; }
-        yield return problemData.TrainingIndices.Skip(start).Take(end - start);
-        start = end;
-        end += f;
-      }
-    }
-
-    private static Tuple<IEnumerable<int>, IEnumerable<int>>[] GenerateRandomForestPartitions(IDataAnalysisProblemData problemData, int numberOfFolds) {
-      var folds = GenerateFolds(problemData, numberOfFolds).ToList();
+    private static Tuple<IEnumerable<int>, IEnumerable<int>>[] GenerateRandomForestPartitions(IDataAnalysisProblemData problemData, int numberOfFolds, bool shuffleFolds = false) {
+      var folds = GenerateFolds(problemData, numberOfFolds, shuffleFolds).ToList();
       var partitions = new Tuple<IEnumerable<int>, IEnumerable<int>>[numberOfFolds];
 
       for (int i = 0; i < numberOfFolds; ++i) {
@@ -170,6 +195,58 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return partitions;
     }
 
+    public static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int numberOfFolds, bool shuffleFolds = false) {
+      var random = new MersenneTwister((uint)Environment.TickCount);
+      if (problemData is IRegressionProblemData) {
+        var trainingIndices = shuffleFolds ? problemData.TrainingIndices.OrderBy(x => random.Next()) : problemData.TrainingIndices;
+        return GenerateFolds(trainingIndices, problemData.TrainingPartition.Size, numberOfFolds);
+      }
+      if (problemData is IClassificationProblemData) {
+        // when shuffle is enabled do stratified folds generation, some folds may have zero elements 
+        // otherwise, generate folds normally
+        return shuffleFolds ? GenerateFoldsStratified(problemData as IClassificationProblemData, numberOfFolds, random) : GenerateFolds(problemData.TrainingIndices, problemData.TrainingPartition.Size, numberOfFolds);
+      }
+      throw new ArgumentException("Problem data is neither regression or classification problem data.");
+    }
+
+    /// <summary>
+    /// Stratified fold generation from classification data. Stratification means that we ensure the same distribution of class labels for each fold.
+    /// The samples are grouped by class label and each group is split into @numberOfFolds parts. The final folds are formed from the joining of 
+    /// the corresponding parts from each class label.
+    /// </summary>
+    /// <param name="problemData">The classification problem data.</param>
+    /// <param name="numberOfFolds">The number of folds in which to split the data.</param>
+    /// <param name="random">The random generator used to shuffle the folds.</param>
+    /// <returns>An enumerable sequece of folds, where a fold is represented by a sequence of row indices.</returns>
+    private static IEnumerable<IEnumerable<int>> GenerateFoldsStratified(IClassificationProblemData problemData, int numberOfFolds, IRandom random) {
+      var values = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
+      var valuesIndices = problemData.TrainingIndices.Zip(values, (i, v) => new { Index = i, Value = v }).ToList();
+      IEnumerable<IEnumerable<IEnumerable<int>>> foldsByClass = valuesIndices.GroupBy(x => x.Value, x => x.Index).Select(g => GenerateFolds(g, g.Count(), numberOfFolds));
+      var enumerators = foldsByClass.Select(f => f.GetEnumerator()).ToList();
+      while (enumerators.All(e => e.MoveNext())) {
+        yield return enumerators.SelectMany(e => e.Current).OrderBy(x => random.Next()).ToList();
+      }
+    }
+
+    private static IEnumerable<IEnumerable<T>> GenerateFolds<T>(IEnumerable<T> values, int valuesCount, int numberOfFolds) {
+      // if number of folds is greater than the number of values, some empty folds will be returned
+      if (valuesCount < numberOfFolds) {
+        for (int i = 0; i < numberOfFolds; ++i)
+          yield return i < valuesCount ? values.Skip(i).Take(1) : Enumerable.Empty<T>();
+      } else {
+        int f = valuesCount / numberOfFolds, r = valuesCount % numberOfFolds; // number of folds rounded to integer and remainder
+        int start = 0, end = f;
+        for (int i = 0; i < numberOfFolds; ++i) {
+          if (r > 0) {
+            ++end;
+            --r;
+          }
+          yield return values.Skip(start).Take(end - start);
+          start = end;
+          end += f;
+        }
+      }
+    }
 
     private static Action<RFParameter, double> GenerateSetter(string field) {
       var targetExp = Expression.Parameter(typeof(RFParameter));
