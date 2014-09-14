@@ -25,8 +25,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Random;
 using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -51,7 +53,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           // SVM also works with missing values
           // => don't add NaN values in the dataset to the sparse SVM matrix representation
           if (!double.IsNaN(value)) {
-            tempRow.Add(new svm_node() { index = colIndex, value = value }); // nodes must be sorted in ascending ordered by column index
+            tempRow.Add(new svm_node() { index = colIndex, value = value });
+            // nodes must be sorted in ascending ordered by column index
             if (colIndex > maxNodeIndex) maxNodeIndex = colIndex;
           }
           colIndex++;
@@ -83,25 +86,25 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return parameter;
     }
 
-    public static void CrossValidate(IDataAnalysisProblemData problemData, svm_parameter parameters, int numberOfFolds, out double avgTestMse) {
-      var partitions = GenerateSvmPartitions(problemData, numberOfFolds);
-      CalculateCrossValidationPartitions(partitions, parameters, out avgTestMse);
+    public static double CrossValidate(IDataAnalysisProblemData problemData, svm_parameter parameters, int numberOfFolds, bool shuffleFolds = true) {
+      var partitions = GenerateSvmPartitions(problemData, numberOfFolds, shuffleFolds);
+      return CalculateCrossValidationPartitions(partitions, parameters);
     }
 
-    public static svm_parameter GridSearch(IDataAnalysisProblemData problemData, int numberOfFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int maxDegreeOfParallelism = 1) {
+    public static svm_parameter GridSearch(IDataAnalysisProblemData problemData, Dictionary<string, IEnumerable<double>> parameterRanges, int numberOfFolds, bool shuffleFolds = true, int maxDegreeOfParallelism = 1) {
       DoubleValue mse = new DoubleValue(Double.MaxValue);
       var bestParam = DefaultParameters();
       var crossProduct = parameterRanges.Values.CartesianProduct();
       var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
-      var partitions = GenerateSvmPartitions(problemData, numberOfFolds);
-      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
+      var partitions = GenerateSvmPartitions(problemData, numberOfFolds, shuffleFolds);
+      Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism },
+      parameterCombination => {
         var parameters = DefaultParameters();
         var parameterValues = parameterCombination.ToList();
-        for (int i = 0; i < parameterValues.Count; ++i) {
+        for (int i = 0; i < parameterValues.Count; ++i)
           setters[i](parameters, parameterValues[i]);
-        }
-        double testMse;
-        CalculateCrossValidationPartitions(partitions, parameters, out testMse);
+
+        double testMse = CalculateCrossValidationPartitions(partitions, parameters);
         if (testMse < mse.Value) {
           lock (mse) {
             mse.Value = testMse;
@@ -112,8 +115,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return bestParam;
     }
 
-    private static void CalculateCrossValidationPartitions(Tuple<svm_problem, svm_problem>[] partitions, svm_parameter parameters, out double avgTestMse) {
-      avgTestMse = 0;
+    private static double CalculateCrossValidationPartitions(Tuple<svm_problem, svm_problem>[] partitions, svm_parameter parameters) {
+      double avgTestMse = 0;
       var calc = new OnlineMeanSquaredErrorCalculator();
       foreach (Tuple<svm_problem, svm_problem> tuple in partitions) {
         var trainingSvmProblem = tuple.Item1;
@@ -125,11 +128,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         avgTestMse += calc.MeanSquaredError;
       }
       avgTestMse /= partitions.Length;
+      return avgTestMse;
     }
 
-
-    private static Tuple<svm_problem, svm_problem>[] GenerateSvmPartitions(IDataAnalysisProblemData problemData, int numberOfFolds) {
-      var folds = GenerateFolds(problemData, numberOfFolds).ToList();
+    private static Tuple<svm_problem, svm_problem>[] GenerateSvmPartitions(IDataAnalysisProblemData problemData, int numberOfFolds, bool shuffleFolds = true) {
+      var folds = GenerateFolds(problemData, numberOfFolds, shuffleFolds).ToList();
       var targetVariable = GetTargetVariableName(problemData);
       var partitions = new Tuple<svm_problem, svm_problem>[numberOfFolds];
       for (int i = 0; i < numberOfFolds; ++i) {
@@ -143,22 +146,56 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return partitions;
     }
 
+    public static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int numberOfFolds, bool shuffleFolds = true) {
+      var random = new MersenneTwister((uint)Environment.TickCount);
+      if (problemData is IRegressionProblemData) {
+        var trainingIndices = shuffleFolds ? problemData.TrainingIndices.OrderBy(x => random.Next()) : problemData.TrainingIndices;
+        return GenerateFolds(trainingIndices, problemData.TrainingPartition.Size, numberOfFolds);
+      }
+      if (problemData is IClassificationProblemData) {
+        // when shuffle is enabled do stratified folds generation, some folds may have zero elements 
+        // otherwise, generate folds normally
+        return shuffleFolds ? GenerateFoldsStratified(problemData as IClassificationProblemData, numberOfFolds, random) : GenerateFolds(problemData.TrainingIndices, problemData.TrainingPartition.Size, numberOfFolds);
+      }
+      throw new ArgumentException("Problem data is neither regression or classification problem data.");
+    }
+
     /// <summary>
-    /// Generate a collection of row sequences corresponding to folds in the data (used for crossvalidation)
+    /// Stratified fold generation from classification data. Stratification means that we ensure the same distribution of class labels for each fold.
+    /// The samples are grouped by class label and each group is split into @numberOfFolds parts. The final folds are formed from the joining of 
+    /// the corresponding parts from each class label.
     /// </summary>
-    /// <remarks>This method is aimed to be lightweight and as such does not clone the dataset.</remarks>
-    /// <param name="problemData">The problem data</param>
-    /// <param name="numberOfFolds">The number of folds to generate</param>
-    /// <returns>A sequence of folds representing each a sequence of row numbers</returns>
-    private static IEnumerable<IEnumerable<int>> GenerateFolds(IDataAnalysisProblemData problemData, int numberOfFolds) {
-      int size = problemData.TrainingPartition.Size;
-      int f = size / numberOfFolds, r = size % numberOfFolds; // number of folds rounded to integer and remainder
-      int start = 0, end = f;
-      for (int i = 0; i < numberOfFolds; ++i) {
-        if (r > 0) { ++end; --r; }
-        yield return problemData.TrainingIndices.Skip(start).Take(end - start);
-        start = end;
-        end += f;
+    /// <param name="problemData">The classification problem data.</param>
+    /// <param name="numberOfFolds">The number of folds in which to split the data.</param>
+    /// <param name="random">The random generator used to shuffle the folds.</param>
+    /// <returns>An enumerable sequece of folds, where a fold is represented by a sequence of row indices.</returns>
+    private static IEnumerable<IEnumerable<int>> GenerateFoldsStratified(IClassificationProblemData problemData, int numberOfFolds, IRandom random) {
+      var values = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices);
+      var valuesIndices = problemData.TrainingIndices.Zip(values, (i, v) => new { Index = i, Value = v }).ToList();
+      IEnumerable<IEnumerable<IEnumerable<int>>> foldsByClass = valuesIndices.GroupBy(x => x.Value, x => x.Index).Select(g => GenerateFolds(g, g.Count(), numberOfFolds));
+      var enumerators = foldsByClass.Select(f => f.GetEnumerator()).ToList();
+      while (enumerators.All(e => e.MoveNext())) {
+        yield return enumerators.SelectMany(e => e.Current).OrderBy(x => random.Next()).ToList();
+      }
+    }
+
+    private static IEnumerable<IEnumerable<T>> GenerateFolds<T>(IEnumerable<T> values, int valuesCount, int numberOfFolds) {
+      // if number of folds is greater than the number of values, some empty folds will be returned
+      if (valuesCount < numberOfFolds) {
+        for (int i = 0; i < numberOfFolds; ++i)
+          yield return i < valuesCount ? values.Skip(i).Take(1) : Enumerable.Empty<T>();
+      } else {
+        int f = valuesCount / numberOfFolds, r = valuesCount % numberOfFolds; // number of folds rounded to integer and remainder
+        int start = 0, end = f;
+        for (int i = 0; i < numberOfFolds; ++i) {
+          if (r > 0) {
+            ++end;
+            --r;
+          }
+          yield return values.Skip(start).Take(end - start);
+          start = end;
+          end += f;
+        }
       }
     }
 
@@ -182,6 +219,5 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       throw new ArgumentException("Problem data is neither regression or classification problem data.");
     }
-
   }
 }
