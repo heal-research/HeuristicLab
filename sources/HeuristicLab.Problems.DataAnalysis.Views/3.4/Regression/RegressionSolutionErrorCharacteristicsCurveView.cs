@@ -104,18 +104,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (cmbSamples.SelectedItem.ToString() == TestSamples && !ProblemData.TestIndices.Any()) return;
 
       if (Content.ProblemData.TrainingIndices.Any()) {
-        var constantModel = CreateConstantModel();
-        var originalValues = GetOriginalValues().ToList();
-        var baselineEstimatedValues = GetEstimatedValues(constantModel);
-        var baselineResiduals = GetResiduals(originalValues, baselineEstimatedValues);
-
-        Series baselineSeries = new Series("Baseline");
-        baselineSeries.ChartType = SeriesChartType.FastLine;
-        UpdateSeries(baselineResiduals, baselineSeries);
-        baselineSeries.ToolTip = "Area over Curve: " + CalculateAreaOverCurve(baselineSeries);
-        baselineSeries.Tag = constantModel;
-        baselineSeries.LegendToolTip = "Double-click to open model";
-        chart.Series.Add(baselineSeries);
+        AddRegressionSolution(CreateConstantSolution());
       }
 
       AddRegressionSolution(Content);
@@ -238,7 +227,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       MainFormManager.MainForm.ShowContent((IRegressionSolution)result.Series.Tag);
     }
 
-    private IRegressionSolution CreateConstantModel() {
+    private ConstantRegressionSolution CreateConstantSolution() {
       double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average();
       var model = new ConstantRegressionModel(averageTrainingTarget);
       var solution = new ConstantRegressionSolution(model, (IRegressionProblemData)ProblemData.Clone());
