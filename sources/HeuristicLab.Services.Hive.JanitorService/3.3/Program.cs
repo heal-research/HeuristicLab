@@ -19,20 +19,38 @@
  */
 #endregion
 
+using System;
+using System.Configuration.Install;
+using System.Reflection;
 using System.ServiceProcess;
 
 namespace HeuristicLab.Services.Hive.JanitorService {
   static class Program {
-    /// <summary>
-    /// The main entry point for the application.
-    /// </summary>
-    static void Main() {
-      ServiceBase[] ServicesToRun;
-      ServicesToRun = new ServiceBase[] 
-			{ 
-				new JanitorService() 
-			};
-      ServiceBase.Run(ServicesToRun);
+    private static void Main(string[] args) {
+      // Install as service, see http://stackoverflow.com/a/12703878
+      if (Environment.UserInteractive) {
+        try {
+          string parameter = string.Concat(args);
+          switch (parameter) {
+            case "--install":
+              ManagedInstallerClass.InstallHelper(new[] { Assembly.GetExecutingAssembly().Location });
+              break;
+            case "--uninstall":
+              ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
+              break;
+          }
+        }
+        catch (Exception ex) {
+          Console.WriteLine("Error on (un)install of Hive Slave service: " + Environment.NewLine + ex);
+        }
+      } else {
+        ServiceBase[] ServicesToRun;
+        ServicesToRun = new ServiceBase[]
+        {
+          new JanitorService()
+        };
+        ServiceBase.Run(ServicesToRun);
+      }
     }
   }
 }
