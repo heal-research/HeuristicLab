@@ -2622,10 +2622,14 @@ namespace LibSVM {
       clone.eps = eps;
       clone.C = C;
       clone.nr_weight = nr_weight;
-      clone.weight_label = new int[weight_label.Length];
-      Array.Copy(weight_label, clone.weight_label, weight_label.Length);
-      clone.weight = new double[weight.Length];
-      Array.Copy(weight, clone.weight, weight.Length);
+      if (weight_label != null) {
+        clone.weight_label = new int[weight_label.Length];
+        Array.Copy(weight_label, clone.weight_label, weight_label.Length);
+      }
+      if (weight != null) {
+        clone.weight = new double[weight.Length];
+        Array.Copy(weight, clone.weight, weight.Length);
+      }
       clone.nu = nu;
       clone.p = p;
       clone.shrinking = shrinking;
