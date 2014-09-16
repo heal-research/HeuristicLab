@@ -77,7 +77,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     /// 	<c>true</c> if this instance can serialize the specified type; otherwise, <c>false</c>.
     /// </returns>
     public bool CanSerialize(Type type) {
-      return numberSerializerMap.ContainsKey(type);
+      return numberSerializerMap.ContainsKey(Nullable.GetUnderlyingType(type) ?? type);
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     /// A string justifying why type cannot be serialized.
     /// </returns>
     public string JustifyRejection(Type type) {
-      return string.Format("not a number type (one of {0})",
+      return string.Format("not a (nullable) number type (one of {0})",
         string.Join(", ", numberSerializers.Select(n => n.SourceType.Name).ToArray()));
     }
 
@@ -99,7 +99,9 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     /// <param name="obj">The obj.</param>
     /// <returns></returns>
     public string Format(object obj) {
-      return ((XmlString)numberSerializerMap[obj.GetType()].Format(obj)).Data;
+      if (obj == null) return "null";
+      Type type = obj.GetType();
+      return ((XmlString)numberSerializerMap[Nullable.GetUnderlyingType(type) ?? type].Format(obj)).Data;
     }
 
     /// <summary>
@@ -109,8 +111,9 @@ namespace HeuristicLab.Persistence.Default.CompositeSerializers {
     /// <param name="type">The type.</param>
     /// <returns></returns>
     public object Parse(string stringValue, Type type) {
+      if (stringValue == "null") return null;
       try {
-        return numberSerializerMap[type].Parse(new XmlString(stringValue));
+        return numberSerializerMap[Nullable.GetUnderlyingType(type) ?? type].Parse(new XmlString(stringValue));
       }
       catch (FormatException e) {
         throw new PersistenceException("Invalid element data during number parsing.", e);
