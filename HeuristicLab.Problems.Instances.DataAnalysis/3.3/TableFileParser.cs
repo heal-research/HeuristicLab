@@ -168,7 +168,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
       //create columns
       for (int col = 0; col < columns; col++) {
-        var types = rowValues.Select(r => r[col]).Where(v => v != null && v as string != string.Empty).Take(10).Select(v => v.GetType());
+        var types = rowValues.Select(r => r[col]).Where(v => v != null && v as string != string.Empty).Take(100).Select(v => v.GetType());
         if (!types.Any()) {
           values.Add(new List<string>());
           continue;
@@ -192,7 +192,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           else if (values[columnIndex] is List<DateTime> && !(element is DateTime))
             values[columnIndex].Add(DateTime.MinValue);
           else if (values[columnIndex] is List<string> && !(element is string))
-            values[columnIndex].Add(string.Empty);
+            values[columnIndex].Add(element.ToString());
           else
             values[columnIndex].Add(element);
           columnIndex++;
