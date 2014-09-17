@@ -19,10 +19,10 @@
  */
 #endregion
 
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using HeuristicLab.Persistence.Core;
-
 
 namespace HeuristicLab.Persistence.Default.Xml.Primitive {
 
@@ -41,10 +41,20 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
       sb.Append("<![CDATA[");
       sb.Append(s.Replace("]]>", "]]]]><![CDATA[>"));
       sb.Append("]]>");
-      return new XmlString(sb.ToString());
+      s = special.Replace(sb.ToString(), m => ToBase64Tag(m.Value));
+      return new XmlString(s);
     }
 
-    private static Regex re = new Regex(@"<!\[CDATA\[((?:[^]]|\](?!\]>))*)\]\]>", RegexOptions.Singleline);
+    private static readonly Regex re = new Regex(@"<!\[CDATA\[((?:[^]]|\](?!\]>))*)\]\]>|<Base64>([^<]*)</Base64>", RegexOptions.Singleline);
+    private static readonly Regex special = new Regex(@"[\x00-\x08\x0b\x0c\x0e-\x1f]+", RegexOptions.Singleline);
+
+    private static string ToBase64Tag(string s) {
+      return new StringBuilder()
+        .Append("]]><Base64>")
+        .Append(Convert.ToBase64String(Encoding.ASCII.GetBytes(s)))
+        .Append("</Base64><![CDATA[")
+        .ToString();
+    }
 
     /// <summary>
     /// Parses the specified XmlString into a string.
@@ -54,7 +64,11 @@ namespace HeuristicLab.Persistence.Default.Xml.Primitive {
     public override string Parse(XmlString x) {
       StringBuilder sb = new StringBuilder();
       foreach (Match m in re.Matches(x.Data)) {
-        sb.Append(m.Groups[1]);
+        if (m.Groups[1].Success)
+          sb.Append(m.Groups[1].Value);
+        else if (m.Groups[2].Success) {
+          sb.Append(Encoding.ASCII.GetString(Convert.FromBase64String(m.Groups[2].Value)));
+        }
       }
       string result = sb.ToString();
       if (result.Length == 0 && x.Data.Length > 0 && !x.Data.Equals("<![CDATA[]]>"))
