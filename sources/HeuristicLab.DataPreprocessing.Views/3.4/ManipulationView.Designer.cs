@@ -48,7 +48,7 @@
       this.label8 = new System.Windows.Forms.Label();
       this.label10 = new System.Windows.Forms.Label();
       this.tabDataShuffle = new System.Windows.Forms.TabPage();
-      this.label6 = new System.Windows.Forms.Label();
+      this.lblShuffleProperties = new System.Windows.Forms.Label();
       this.grpBoxPreview = new System.Windows.Forms.GroupBox();
       this.tabsPreview = new System.Windows.Forms.TabControl();
       this.tabPreviewInactive = new System.Windows.Forms.TabPage();
@@ -65,6 +65,7 @@
       this.tabPreviewShuffle = new System.Windows.Forms.TabPage();
       this.lblPreviewShuffle = new System.Windows.Forms.Label();
       this.label9 = new System.Windows.Forms.Label();
+      this.shuffleSeparatelyCheckbox = new System.Windows.Forms.CheckBox();
       this.grpBoxData.SuspendLayout();
       this.tabsData.SuspendLayout();
       this.tabPage1.SuspendLayout();
@@ -349,7 +350,8 @@
       // 
       // tabDataShuffle
       // 
-      this.tabDataShuffle.Controls.Add(this.label6);
+      this.tabDataShuffle.Controls.Add(this.shuffleSeparatelyCheckbox);
+      this.tabDataShuffle.Controls.Add(this.lblShuffleProperties);
       this.tabDataShuffle.Location = new System.Drawing.Point(4, 22);
       this.tabDataShuffle.Name = "tabDataShuffle";
       this.tabDataShuffle.Padding = new System.Windows.Forms.Padding(3);
@@ -358,15 +360,15 @@
       this.tabDataShuffle.Text = "shuffle";
       this.tabDataShuffle.UseVisualStyleBackColor = true;
       // 
-      // label6
+      // lblShuffleProperties
       // 
-      this.label6.AutoSize = true;
-      this.label6.Enabled = false;
-      this.label6.Location = new System.Drawing.Point(3, 3);
-      this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(115, 13);
-      this.label6.TabIndex = 0;
-      this.label6.Text = "No properties available";
+      this.lblShuffleProperties.AutoSize = true;
+      this.lblShuffleProperties.Enabled = false;
+      this.lblShuffleProperties.Location = new System.Drawing.Point(3, 3);
+      this.lblShuffleProperties.Name = "lblShuffleProperties";
+      this.lblShuffleProperties.Size = new System.Drawing.Size(115, 13);
+      this.lblShuffleProperties.TabIndex = 0;
+      this.lblShuffleProperties.Text = "No properties available";
       // 
       // grpBoxPreview
       // 
@@ -536,6 +538,16 @@
       this.label9.Size = new System.Drawing.Size(100, 23);
       this.label9.TabIndex = 0;
       // 
+      // shuffleSeparatelyCheckbox
+      // 
+      this.shuffleSeparatelyCheckbox.AutoSize = true;
+      this.shuffleSeparatelyCheckbox.Location = new System.Drawing.Point(6, 2);
+      this.shuffleSeparatelyCheckbox.Name = "shuffleSeparatelyCheckbox";
+      this.shuffleSeparatelyCheckbox.Size = new System.Drawing.Size(233, 17);
+      this.shuffleSeparatelyCheckbox.TabIndex = 1;
+      this.shuffleSeparatelyCheckbox.Text = "Shuffle training and test partitions separately";
+      this.shuffleSeparatelyCheckbox.UseVisualStyleBackColor = true;
+      // 
       // ManipulationView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -618,9 +630,10 @@
     private System.Windows.Forms.Label lblValueColon;
     private System.Windows.Forms.Label label10;
     private System.Windows.Forms.TabPage tabDataShuffle;
-    private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.Label lblShuffleProperties;
     private System.Windows.Forms.ComboBox cmbVariableNames;
     private System.Windows.Forms.Label label8;
     private System.Windows.Forms.Label lblPreviewInActive;
+    private System.Windows.Forms.CheckBox shuffleSeparatelyCheckbox;
   }
 }
