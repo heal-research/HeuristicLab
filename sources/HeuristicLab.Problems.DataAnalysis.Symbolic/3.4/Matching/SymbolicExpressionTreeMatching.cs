@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region License Information
+
+/* HeuristicLab
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -43,6 +66,58 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
       }
       return matrix[m, n] + 1;
+    }
+
+    /// <summary>
+    /// Calculates the difference between two symbolic expression trees.
+    /// </summary>
+    /// <param name="tree">The first symbolic expression tree</param>
+    /// <param name="other">The second symbolic expression tree</param>
+    /// <returns>Returns the root of the subtree (from T1) by which T1 differs from T2, or null if no difference is found.</returns>
+    public static ISymbolicExpressionTreeNode Difference(this ISymbolicExpressionTree tree, ISymbolicExpressionTree other) {
+      return Difference(tree.Root, other.Root);
+    }
+
+    public static ISymbolicExpressionTreeNode Difference(this ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNode other) {
+      var these = node.IterateNodesPrefix().ToList();
+      var others = other.IterateNodesPrefix().ToList();
+
+      var minCount = Math.Min(these.Count, others.Count);
+      var list = new List<ISymbolicExpressionTreeNode>();
+
+      for (int i = 0; i < minCount; ++i) {
+        if (these[i].ToString() != others[i].ToString())
+          list.Add(these[i]);
+      }
+
+      return list.Count > 0 ? LowestCommonAncestor(node, list) : null;
+    }
+
+    private static ISymbolicExpressionTreeNode LowestCommonAncestor(ISymbolicExpressionTreeNode root, List<ISymbolicExpressionTreeNode> nodes) {
+      if (nodes.Count == 0)
+        throw new ArgumentException("The nodes list should contain at least one element.");
+
+      if (nodes.Count == 1)
+        return nodes[0];
+
+      int lowestLevel = nodes.Min(x => root.GetBranchLevel(x));
+
+      // bring the nodes in the nodes to the same level (relative to the root)
+      for (int i = 0; i < nodes.Count; ++i) {
+        var node = nodes[i];
+        var level = root.GetBranchLevel(node);
+        for (int j = lowestLevel; j < level; ++j)
+          node = node.Parent;
+        nodes[i] = node;
+      }
+
+      // while not all the elements in the nodes are equal, go one level up
+      while (nodes.Any(x => x != nodes[0])) {
+        for (int i = 0; i < nodes.Count; ++i)
+          nodes[i] = nodes[i].Parent;
+      }
+
+      return nodes[0];
     }
   }
 }
