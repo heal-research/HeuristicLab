@@ -27,6 +27,7 @@ namespace HeuristicLab.Core {
   public interface IDirectedGraph : IItem {
     void Clear();
     void AddVertex(IVertex vertex);
+    void AddVertices(IEnumerable<IVertex> vertexList);
     IArc AddArc(IVertex source, IVertex target);
     void AddArc(IArc arc);
     void RemoveVertex(IVertex vertex);
