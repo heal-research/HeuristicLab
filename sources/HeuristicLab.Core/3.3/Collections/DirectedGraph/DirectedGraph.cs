@@ -117,6 +117,11 @@ namespace HeuristicLab.Core {
         arcs.Add(a);
     }
 
+    public virtual void RemoveVertices(IEnumerable<IVertex> vertexList) {
+      foreach (var v in vertexList)
+        RemoveVertex(v);
+    }
+
     public virtual void RemoveVertex(IVertex vertex) {
       vertices.Remove(vertex);
       // remove connections to/from the removed vertex

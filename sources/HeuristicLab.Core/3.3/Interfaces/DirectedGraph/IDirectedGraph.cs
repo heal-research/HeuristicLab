@@ -30,6 +30,7 @@ namespace HeuristicLab.Core {
     void AddVertices(IEnumerable<IVertex> vertexList);
     IArc AddArc(IVertex source, IVertex target);
     void AddArc(IArc arc);
+    void RemoveVertices(IEnumerable<IVertex> vertexList);
     void RemoveVertex(IVertex vertex);
     void RemoveArc(IArc arc);
     IEnumerable<IVertex> Vertices { get; }
