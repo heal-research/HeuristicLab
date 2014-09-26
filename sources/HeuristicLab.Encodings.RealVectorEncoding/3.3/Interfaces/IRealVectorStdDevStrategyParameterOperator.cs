@@ -19,8 +19,9 @@
  */
 #endregion
 
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorStdDevStrategyParameterOperator {
+  public interface IRealVectorStdDevStrategyParameterOperator : IItem {
   }
 }

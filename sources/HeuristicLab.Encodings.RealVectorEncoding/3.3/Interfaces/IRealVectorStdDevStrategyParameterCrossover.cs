@@ -24,6 +24,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   public interface IRealVectorStdDevStrategyParameterCrossover : IRealVectorStdDevStrategyParameterOperator, IStrategyParameterCrossover {
+    ILookupParameter<RealVector> StrategyParameterParameter { get; }
     ILookupParameter<ItemArray<RealVector>> ParentsParameter { get; }
   }
 }
