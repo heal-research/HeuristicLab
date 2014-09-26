@@ -79,18 +79,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static ISymbolicExpressionTreeNode Difference(this ISymbolicExpressionTreeNode node, ISymbolicExpressionTreeNode other) {
-      var these = node.IterateNodesPrefix().ToList();
-      var others = other.IterateNodesPrefix().ToList();
-
-      var minCount = Math.Min(these.Count, others.Count);
+      var a = node.IterateNodesPrefix().ToList();
+      var b = other.IterateNodesPrefix().ToList();
       var list = new List<ISymbolicExpressionTreeNode>();
-
-      for (int i = 0; i < minCount; ++i) {
-        if (these[i].ToString() != others[i].ToString())
-          list.Add(these[i]);
+      for (int i = 0, j = 0; i < a.Count && j < b.Count; ++i, ++j) {
+        var s1 = a[i].ToString();
+        var s2 = b[j].ToString();
+        if (s1 == s2) continue;
+        list.Add(a[i]);
+        // skip subtrees since the parents are already different
+        i += a[i].SubtreeCount;
+        j += b[j].SubtreeCount;
       }
-
-      return list.Count > 0 ? LowestCommonAncestor(node, list) : null;
+      ISymbolicExpressionTreeNode result = list.Count > 0 ? LowestCommonAncestor(node, list) : null;
+      return result;
     }
 
     private static ISymbolicExpressionTreeNode LowestCommonAncestor(ISymbolicExpressionTreeNode root, List<ISymbolicExpressionTreeNode> nodes) {
@@ -100,13 +102,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (nodes.Count == 1)
         return nodes[0];
 
-      int lowestLevel = nodes.Min(x => root.GetBranchLevel(x));
+      int minLevel = nodes.Min(x => root.GetBranchLevel(x));
 
       // bring the nodes in the nodes to the same level (relative to the root)
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
         var level = root.GetBranchLevel(node);
-        for (int j = lowestLevel; j < level; ++j)
+        for (int j = minLevel; j < level; ++j)
           node = node.Parent;
         nodes[i] = node;
       }
