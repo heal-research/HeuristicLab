@@ -58,7 +58,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         ()=>Content.ManipulationLogic.DeleteColumnsWithVarianceSmaller(getDeleteColumnsVariance()),
         ()=>Content.ManipulationLogic.DeleteRowsWithMissingValuesGreater(getRowsColumnsInfo()),
         ()=>replaceMissingValues(),
-        ()=>Content.ManipulationLogic.ShuffleWithRanges(shuffleSeparatelyCheckbox.Checked)
+        ()=>Content.ManipulationLogic.Shuffle(shuffleSeparatelyCheckbox.Checked)
       };
     }
 

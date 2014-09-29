@@ -224,15 +224,9 @@ namespace HeuristicLab.DataPreprocessing {
       });
     }
 
-    public void ShuffleWithRanges(bool shuffleRangesSeparately) {
-      var ranges = new[] { preprocessingData.TestPartition, preprocessingData.TrainingPartition };
-      ShuffleWithRanges(ranges, shuffleRangesSeparately);
-    }
-
-    public void ShuffleWithRanges(IEnumerable<IntRange> ranges, bool shuffleRangesSeparately) {
-      // init random outside loop
+    public void Shuffle(bool shuffleRangesSeparately) {
       Random random = new Random();
-
+      var ranges = new[] { preprocessingData.TestPartition, preprocessingData.TrainingPartition };
       if (shuffleRangesSeparately) {
         preprocessingData.InTransaction(() => {
           // process all given ranges - e.g. TrainingPartition, TestPartition
