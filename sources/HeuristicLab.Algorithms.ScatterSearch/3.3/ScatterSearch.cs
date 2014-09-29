@@ -61,7 +61,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       get { return (IConstrainedValueParameter<ICrossover>)Parameters["Crossover"]; }
     }
     public IValueParameter<BoolValue> ExecutePathRelinkingParameter {
-      get { return (IValueLookupParameter<BoolValue>)Parameters["ExecutePathRelinking"]; }
+      get { return (IValueParameter<BoolValue>)Parameters["ExecutePathRelinking"]; }
     }
     public IConstrainedValueParameter<IImprovementOperator> ImproverParameter {
       get { return (IConstrainedValueParameter<IImprovementOperator>)Parameters["Improver"]; }
