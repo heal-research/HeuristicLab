@@ -65,8 +65,9 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// </summary>
     /// <param name="random">The random number generator.</param>
     /// <param name="length">The length of the binary vector.</param>
+    /// <param name="trueProbability">The propability for true to occur at a certain position in the binary vector</param>
     /// <returns>The newly created binary vector.</returns>
-    public static BinaryVector Apply(IRandom random, int length, double trueProbability) {
+    public static BinaryVector Apply(IRandom random, int length, double trueProbability = 0.5) {
       BinaryVector result;
 
       //Backwards compatiblity code to ensure the same behavior for existing algorithm runs
