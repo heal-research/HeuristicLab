@@ -22,6 +22,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
@@ -31,13 +32,32 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("RandomBinaryVectorCreator", "An operator which creates a new random binary vector with each element randomly initialized.")]
   [StorableClass]
   public sealed class RandomBinaryVectorCreator : BinaryVectorCreator {
+    private const string TrueProbabilityParameterName = "TruePropability";
+
+    private IFixedValueParameter<DoubleValue> TrueProbabilityParameter {
+      get { return (IFixedValueParameter<DoubleValue>)Parameters[TrueProbabilityParameterName]; }
+    }
+
+    public double TrueProbability {
+      get { return TrueProbabilityParameter.Value.Value; }
+      set { TrueProbabilityParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
     private RandomBinaryVectorCreator(bool deserializing) : base(deserializing) { }
-    private RandomBinaryVectorCreator(RandomBinaryVectorCreator original, Cloner cloner) : base(original, cloner) { }
-    public RandomBinaryVectorCreator() : base() { }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new RandomBinaryVectorCreator(this, cloner);
+    private RandomBinaryVectorCreator(RandomBinaryVectorCreator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new RandomBinaryVectorCreator(this, cloner); }
+
+    public RandomBinaryVectorCreator()
+      : base() {
+      Parameters.Add(new FixedValueParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(0.5)));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(TrueProbabilityParameterName))
+        Parameters.Add(new FixedValueParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(0.5)));
     }
 
     /// <summary>
@@ -46,13 +66,24 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// <param name="random">The random number generator.</param>
     /// <param name="length">The length of the binary vector.</param>
     /// <returns>The newly created binary vector.</returns>
-    public static BinaryVector Apply(IRandom random, int length) {
-      BinaryVector result = new BinaryVector(length, random);
+    public static BinaryVector Apply(IRandom random, int length, double trueProbability) {
+      BinaryVector result;
+
+      //Backwards compatiblity code to ensure the same behavior for existing algorithm runs
+      //remove with HL 3.4
+      if (trueProbability.IsAlmost(0.5))
+      result = new BinaryVector(length, random);
+      else {
+        var values = new bool[length];
+        for (int i = 0; i < length; i++)
+          values[i] = random.NextDouble() < trueProbability;
+        result = new BinaryVector(values);
+      }
       return result;
     }
 
     protected override BinaryVector Create(IRandom random, IntValue length) {
-      return Apply(random, length.Value);
+      return Apply(random, length.Value, TrueProbability);
     }
   }
 }
