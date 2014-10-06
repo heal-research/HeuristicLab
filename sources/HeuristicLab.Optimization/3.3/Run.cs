@@ -151,7 +151,7 @@ namespace HeuristicLab.Optimization {
     private IObservableDictionary<string, IItem> results;
     public IObservableDictionary<string, IItem> Results {
       get { return results; }
-      set {
+      private set {
         if (results != value) {
           results = value;
           OnPropertyChanged("Results");
