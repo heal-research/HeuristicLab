@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
 
@@ -57,6 +58,12 @@ namespace HeuristicLab.DataPreprocessing {
       }
 
       SetTrainingAndTestPartition(problemData);
+      // set the input variables to the correct checked state
+      var inputVariables = problemData.InputVariables.ToDictionary(x => x.Value, x => x);
+      foreach (var variable in oldProblemData.InputVariables) {
+        bool @checked = oldProblemData.InputVariables.ItemChecked(variable);
+        problemData.InputVariables.SetItemCheckedState(inputVariables[variable.Value], @checked);
+      }
 
       return problemData;
     }
