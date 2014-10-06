@@ -28,7 +28,7 @@ using HeuristicLab.Problems.Instances.Views;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
   [View("VRP InstanceProvider View")]
-  [Content(typeof(IProblemInstanceProvider<IVRPData>), IsDefaultView = true)]
+  [Content(typeof(IVRPInstanceProvider<>), IsDefaultView = true)]
   public partial class VRPInstanceProviderView<T> : ProblemInstanceProviderView<T> where T : class, IVRPData {
 
     public VRPInstanceProviderView() {
@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
     }
 
     protected override void importButton_Click(object sender, EventArgs e) {
-      var provider = Content as IVRPInstanceProvider;
+      var provider = Content as IVRPInstanceProvider<T>;
       if (provider != null) {
         using (var dialog = new VRPImportDialog(Content.Name)) {
           if (dialog.ShowDialog() == DialogResult.OK) {
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
     }
 
     protected override void exportButton_Click(object sender, EventArgs e) {
-      var provider = Content as IVRPInstanceProvider;
+      var provider = Content as IVRPInstanceProvider<T>;
       if (provider != null) {
         if (saveFileDialog.ShowDialog(this) == DialogResult.OK) {
           try {
