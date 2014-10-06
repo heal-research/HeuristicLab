@@ -1515,6 +1515,17 @@ namespace HeuristicLab.Persistence.Tests {
       Assert.AreEqual(s, newS);
     }
 
+    [TestMethod]
+    [TestCategory("Persistence")]
+    [TestProperty("Time", "short")]
+    public void TestQueue() {
+      var q = new Queue<int>(new[] {1, 2, 3, 4, 0});
+      XmlGenerator.Serialize(q, tempFile);
+      var newQ = (Queue<int>)XmlParser.Deserialize(tempFile);
+      CollectionAssert.AreEqual(q, newQ);
+    }
+
+
 
     [ClassInitialize]
     public static void Initialize(TestContext testContext) {
