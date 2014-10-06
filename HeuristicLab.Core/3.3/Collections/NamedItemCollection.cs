@@ -74,7 +74,7 @@ namespace HeuristicLab.Core {
       base.OnCollectionReset(items, oldItems);
     }
 
-    protected void RegisterItemEvents(IEnumerable<T> items) {
+    protected virtual void RegisterItemEvents(IEnumerable<T> items) {
       foreach (T item in items) {
         if (item != null) {
           item.NameChanging += new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
@@ -82,7 +82,7 @@ namespace HeuristicLab.Core {
         }
       }
     }
-    private void DeregisterItemEvents(IEnumerable<T> items) {
+    protected virtual void DeregisterItemEvents(IEnumerable<T> items) {
       foreach (T item in items) {
         if (item != null) {
           item.NameChanging -= new EventHandler<CancelEventArgs<string>>(Item_NameChanging);
