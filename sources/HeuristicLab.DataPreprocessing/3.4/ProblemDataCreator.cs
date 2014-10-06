@@ -31,9 +31,10 @@ namespace HeuristicLab.DataPreprocessing {
     private readonly IPreprocessingContext context;
 
     private Dataset ExportedDataset {
-      get { return exporteDataset ?? (exporteDataset = context.Data.ExportToDataset()); }
+      get {
+        return context.Data.ExportToDataset();
+      }
     }
-    private Dataset exporteDataset;
 
     private IList<ITransformation> Transformations { get { return context.Data.Transformations; } }
 
