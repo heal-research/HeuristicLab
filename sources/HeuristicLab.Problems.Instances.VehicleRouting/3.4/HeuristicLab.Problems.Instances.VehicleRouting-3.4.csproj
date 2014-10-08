@@ -149,6 +149,8 @@
     <EmbeddedResource Include="Data\Taillard.zip" />
     <EmbeddedResource Include="Data\CordeauMD.zip" />
     <EmbeddedResource Include="Data\CordeauMDTW.zip" />
+    <EmbeddedResource Include="Data\CordeauMD.opt.zip" />
+    <EmbeddedResource Include="Data\CordeauMDTW.opt.zip" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
