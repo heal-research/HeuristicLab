@@ -42,6 +42,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   }
 
   public static class RandomForestUtil {
+    private static readonly object locker = new object();
+
     private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestMse) {
       avgTestMse = 0;
       var ds = problemData.Dataset;
@@ -90,14 +92,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
         var parameterValues = parameterCombination.ToList();
-        double testMSE;
         var parameters = new RFParameter();
         for (int i = 0; i < setters.Count; ++i) { setters[i](parameters, parameterValues[i]); }
         double rmsError, outOfBagRmsError, avgRelError, outOfBagAvgRelError;
-        var model = RandomForestModel.CreateRegressionModel(problemData, problemData.TrainingIndices, (int)parameters.n, parameters.r, parameters.m, seed,
-                                                            out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
-        if (bestOutOfBagRmsError > outOfBagRmsError) {
-          lock (bestParameters) {
+        RandomForestModel.CreateRegressionModel(problemData, problemData.TrainingIndices, (int)parameters.n, parameters.r, parameters.m, seed, out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
+
+        lock (locker) {
+          if (bestOutOfBagRmsError > outOfBagRmsError) {
             bestOutOfBagRmsError = outOfBagRmsError;
             bestParameters = (RFParameter)parameters.Clone();
           }
@@ -118,10 +119,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var parameters = new RFParameter();
         for (int i = 0; i < setters.Count; ++i) { setters[i](parameters, parameterValues[i]); }
         double rmsError, outOfBagRmsError, avgRelError, outOfBagAvgRelError;
-        var model = RandomForestModel.CreateClassificationModel(problemData, problemData.TrainingIndices, (int)parameters.n, parameters.r, parameters.m, seed,
+        RandomForestModel.CreateClassificationModel(problemData, problemData.TrainingIndices, (int)parameters.n, parameters.r, parameters.m, seed,
                                                                 out rmsError, out outOfBagRmsError, out avgRelError, out outOfBagAvgRelError);
-        if (bestOutOfBagRmsError > outOfBagRmsError) {
-          lock (bestParameters) {
+
+        lock (locker) {
+          if (bestOutOfBagRmsError > outOfBagRmsError) {
             bestOutOfBagRmsError = outOfBagRmsError;
             bestParameters = (RFParameter)parameters.Clone();
           }
@@ -146,8 +148,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           setters[i](parameters, parameterValues[i]);
         }
         CrossValidate(problemData, partitions, (int)parameters.n, parameters.r, parameters.m, seed, out testMSE);
-        if (testMSE < mse.Value) {
-          lock (mse) {
+
+        lock (locker) {
+          if (testMSE < mse.Value) {
             mse.Value = testMSE;
             bestParameter = (RFParameter)parameters.Clone();
           }
@@ -172,8 +175,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           setters[i](parameters, parameterValues[i]);
         }
         CrossValidate(problemData, partitions, (int)parameters.n, parameters.r, parameters.m, seed, out testAccuracy);
-        if (testAccuracy > accuracy.Value) {
-          lock (accuracy) {
+
+        lock (locker) {
+          if (testAccuracy > accuracy.Value) {
             accuracy.Value = testAccuracy;
             bestParameter = (RFParameter)parameters.Clone();
           }
