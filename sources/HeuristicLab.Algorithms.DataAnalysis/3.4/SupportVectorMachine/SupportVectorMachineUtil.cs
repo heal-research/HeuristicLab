@@ -33,6 +33,9 @@ using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public class SupportVectorMachineUtil {
+    private static readonly object locker = new object();
+
+
     /// <summary>
     /// Transforms <paramref name="problemData"/> into a data structure as needed by libSVM.
     /// </summary>
@@ -105,8 +108,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           setters[i](parameters, parameterValues[i]);
 
         double testMse = CalculateCrossValidationPartitions(partitions, parameters);
-        if (testMse < mse.Value) {
-          lock (mse) {
+        lock (locker) {
+          if (testMse < mse.Value) {
             mse.Value = testMse;
             bestParam = (svm_parameter)parameters.Clone();
           }
