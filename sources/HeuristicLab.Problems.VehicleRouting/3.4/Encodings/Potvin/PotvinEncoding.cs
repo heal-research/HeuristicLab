@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
     [Storable]
     public List<int> Unrouted { get; set; }
 
+    // VehicleAssignment[tour] retreives the assigned vehicle for the given tour
     [Storable]
     public Permutation VehicleAssignment { get; private set; }
 

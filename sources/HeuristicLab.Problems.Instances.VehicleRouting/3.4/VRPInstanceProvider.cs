@@ -28,16 +28,16 @@ using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public abstract class VRPInstanceProvider<T> : ProblemInstanceProvider<T>, IVRPInstanceProvider<T> where T : IVRPData {
+  public abstract class VRPInstanceProvider<TData> : ProblemInstanceProvider<TData>, IVRPInstanceProvider<TData> where TData : IVRPData {
     protected abstract string FileName { get; }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      Dictionary<string, string> solutions = new Dictionary<string, string>();
+      var solutions = new Dictionary<string, string>();
       var solutionsArchiveName = GetResourceName(FileName + @"\.opt\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
         using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
           foreach (var entry in GetZipContents(solutionsZipFile))
-            solutions.Add(entry.Substring(0, entry.Length - ".opt".Length) + "." + FileName, entry);
+            solutions.Add(Path.GetFileNameWithoutExtension(entry) + "." + FileName, entry);
         }
       }
       var instanceArchiveName = GetResourceName(FileName + @"\.zip");
@@ -45,13 +45,13 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
 
       using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
         foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
-          string solutionEntry = entry.Substring(0, entry.Length - ".opt".Length) + "." + FileName;
+          string solutionEntry = Path.GetFileNameWithoutExtension(entry) + "." + FileName;
           yield return new VRPDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetInstanceDescription(), entry, solutions.ContainsKey(solutionEntry) ? solutions[solutionEntry] : String.Empty);
         }
       }
     }
 
-    public override T LoadData(IDataDescriptor id) {
+    public override TData LoadData(IDataDescriptor id) {
       var descriptor = (VRPDataDescriptor)id;
       var instanceArchiveName = GetResourceName(FileName + @"\.zip");
       using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
@@ -75,7 +75,21 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       }
     }
 
-    private static void LoadSolution(Stream stream, T instance) {
+    #region IVRPInstanceProvider
+    public TData Import(string vrpFile, string tourFile) {
+      var data = ImportData(vrpFile);
+      if (!String.IsNullOrEmpty(tourFile)) {
+        LoadSolution(tourFile, data);
+      }
+      return data;
+    }
+
+    public void Export(TData instance, string path) {
+      ExportData(instance, path);
+    }
+    #endregion
+
+    protected virtual void LoadSolution(Stream stream, TData instance) {
       List<List<int>> routes = new List<List<int>>();
 
       using (StreamReader reader = new StreamReader(stream)) {
@@ -105,26 +119,15 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       instance.BestKnownTour = routes.Select(x => x.ToArray()).ToArray();
     }
 
-    public static void LoadSolution(string path, T instance) {
+    public void LoadSolution(string path, TData instance) {
       using (FileStream stream = new FileStream(path, FileMode.Open)) {
         LoadSolution(stream, instance);
       }
     }
 
-    protected abstract T LoadData(Stream stream);
+    protected abstract TData LoadData(Stream stream);
 
-    public T Import(string vrpFile, string tourFile) {
-      var data = ImportData(vrpFile);
-      if (!String.IsNullOrEmpty(tourFile)) {
-        LoadSolution(tourFile, data);
-      }
-      return data;
-    }
-
-    public void Export(T instance, string path) {
-      ExportData(instance, path);
-    }
-
+    #region Helpers
     protected virtual string GetResourceName(string fileName) {
       return Assembly.GetExecutingAssembly().GetManifestResourceNames()
               .Where(x => Regex.Match(x, @".*\.Data\." + fileName).Success).SingleOrDefault();
@@ -140,5 +143,6 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
         yield return entry.Name;
       }
     }
+    #endregion
   }
 }
