@@ -337,7 +337,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Tests 
 
       Assert.IsFalse(double.IsNaN(actual) && !double.IsNaN(expected));
       Assert.IsFalse(!double.IsNaN(actual) && double.IsNaN(expected));
-      Assert.AreEqual(expected, actual, 1.0E-12, expr);
+      if (!double.IsNaN(actual) && !double.IsNaN(expected))
+        Assert.AreEqual(expected, actual, 1.0E-12, expr);
     }
   }
 }
