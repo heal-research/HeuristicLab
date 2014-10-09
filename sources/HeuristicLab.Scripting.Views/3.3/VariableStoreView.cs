@@ -39,7 +39,8 @@ namespace HeuristicLab.Scripting.Views {
   [View("ItemCollection View")]
   [Content(typeof(VariableStore), true)]
   public partial class VariableStoreView : AsynchronousContentView {
-    protected Dictionary<string, ListViewItem> itemListViewItemMapping;
+    protected readonly Dictionary<string, ListViewItem> itemListViewItemMapping;
+    protected readonly Dictionary<Type, bool> serializableLookup;
     protected TypeSelectorDialog typeSelectorDialog;
     protected bool validDragOperation;
 
@@ -55,6 +56,7 @@ namespace HeuristicLab.Scripting.Views {
     public VariableStoreView() {
       InitializeComponent();
       itemListViewItemMapping = new Dictionary<string, ListViewItem>();
+      serializableLookup = new Dictionary<Type, bool>();
       variableListView.SmallImageList.Images.AddRange(new Image[] {
         HeuristicLab.Common.Resources.VSImageLibrary.Error,
         HeuristicLab.Common.Resources.VSImageLibrary.Warning,
@@ -396,11 +398,15 @@ namespace HeuristicLab.Scripting.Views {
     }
 
     private bool IsSerializable(KeyValuePair<string, object> variable) {
+      var type = variable.Value.GetType();
+      bool serializable;
+      if (serializableLookup.TryGetValue(type, out serializable))
+        return serializable;
       var ser = new Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
       try {
-        return ser.Count() > 0;
+        return serializableLookup[type] = ser.Any();
       } catch (PersistenceException) {
-        return false;
+        return serializableLookup[type] = false;
       }
     }
     #endregion
