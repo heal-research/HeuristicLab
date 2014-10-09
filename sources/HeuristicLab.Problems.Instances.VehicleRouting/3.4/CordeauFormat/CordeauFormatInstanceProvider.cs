@@ -45,14 +45,16 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
 
         var toursPerDepotQuery =
           from line in ReadAllLines(reader)
+          where !string.IsNullOrEmpty(line)
           let tokens = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
           let depot = int.Parse(tokens[0])
           //let vehicle = int.Parse(tokens[1])
           //let duration = double.Parse(tokens[2])
           //let load = double.Parse(tokens[3])
           let customers = tokens.Skip(4).Where(t => !t.StartsWith("(")).Select(int.Parse)
+          let numberOfCustomers = customers.Count()
           //let serviceTimes = tokens.Skip(5).Where(t => t.StartsWith("(")).Select(t => int.Parse(t.Trim('(', ')')))
-          let stops = customers.Where(s => s != 0).Select(s => s - 1)
+          let stops = customers.Skip(1).Take(numberOfCustomers - 2).Select(s => s - 1)
           select new { depot, /*vehicle,*/ stops } into assignment
           group assignment by assignment.depot;
 

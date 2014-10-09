@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Tests {
             // throws InvalidOperationException if zero or more than one interpreter is found
             ((dynamic)vrp).Load(((dynamic)provider).LoadData(instance));
           } catch (Exception exc) {
-            failedInstances.AppendLine(instance + ": " + exc.Message);
+            failedInstances.AppendLine(instance.Name + ": " + exc.Message);
           }
         }
       }
