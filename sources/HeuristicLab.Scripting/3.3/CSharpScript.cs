@@ -41,6 +41,7 @@ namespace HeuristicLab.Scripting {
 // use 'vars.Contains(string)' to check if a variable exists
 // use 'vars.Clear()' to remove all variables
 // use 'foreach (KeyValuePair<string, object> v in vars) { ... }' to iterate over all variables
+// use 'variables' to work with IEnumerable<T> extension methods on the script's variable store
 
 using System;
 using System.Linq;

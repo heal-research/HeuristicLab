@@ -44,6 +44,16 @@ namespace HeuristicLab.Scripting.Views {
       errorListView.SmallImageList.Images.AddRange(new Image[] { VSImageLibrary.Warning, VSImageLibrary.Error });
     }
 
+    public override bool ReadOnly {
+      get { return codeEditor.ReadOnly; }
+      set { codeEditor.ReadOnly = value; }
+    }
+
+    public override bool Locked {
+      get { return codeEditor.ReadOnly; }
+      set { codeEditor.ReadOnly = value; }
+    }
+
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
       Content.CodeChanged += ContentOnCodeChanged;
@@ -82,7 +92,7 @@ namespace HeuristicLab.Scripting.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       compileButton.Enabled = Content != null && !Locked && !ReadOnly;
-      codeEditor.Enabled = Content != null && !Locked && !ReadOnly;
+      codeEditor.Enabled = Content != null;
     }
 
     protected virtual void CompileButtonOnClick(object sender, EventArgs e) {

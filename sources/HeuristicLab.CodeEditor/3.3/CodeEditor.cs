@@ -132,6 +132,11 @@ namespace HeuristicLab.CodeEditor {
       }
     }
 
+    public bool ReadOnly {
+      get { return Doc.ReadOnly; }
+      set { Doc.ReadOnly = value; }
+    }
+
     #endregion
 
     public event EventHandler TextEditorValidated;

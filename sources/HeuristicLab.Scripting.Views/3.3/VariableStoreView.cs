@@ -57,6 +57,7 @@ namespace HeuristicLab.Scripting.Views {
       itemListViewItemMapping = new Dictionary<string, ListViewItem>();
       variableListView.SmallImageList.Images.AddRange(new Image[] {
         HeuristicLab.Common.Resources.VSImageLibrary.Error,
+        HeuristicLab.Common.Resources.VSImageLibrary.Warning,
         HeuristicLab.Common.Resources.VSImageLibrary.Object,
         HeuristicLab.Common.Resources.VSImageLibrary.Nothing
       });
@@ -89,7 +90,6 @@ namespace HeuristicLab.Scripting.Views {
       base.OnContentChanged();
       variableListView.Items.Clear();
       itemListViewItemMapping.Clear();
-      RebuildImageList();
       if (Content != null) {
         Caption += " (" + Content.GetType().Name + ")";
         foreach (var item in Content)
@@ -140,9 +140,11 @@ namespace HeuristicLab.Scripting.Views {
       string type = variable.Value == null ? "null" : variable.Value.GetType().ToString();
       bool serializable = IsSerializable(variable);
       var listViewItem = new ListViewItem(new[] { variable.Key, value, type }) { ToolTipText = GetToolTipText(variable, serializable), Tag = variable };
-      if (serializable) {
-        listViewItem.ImageIndex = variable.Value == null ? 2 : 1;
-      } else listViewItem.ImageIndex = 0;
+      bool validIdentifier = SafeVariableNameRegex.IsMatch(variable.Key);
+      if (!serializable) listViewItem.ImageIndex = 0;
+      else if (!validIdentifier) listViewItem.ImageIndex = 1;
+      else if (variable.Value != null) listViewItem.ImageIndex = 2;
+      else listViewItem.ImageIndex = 3;
       variableListView.Items.Add(listViewItem);
       itemListViewItemMapping[variable.Key] = listViewItem;
       sortAscendingButton.Enabled = variableListView.Items.Count > 1;
@@ -171,9 +173,9 @@ namespace HeuristicLab.Scripting.Views {
         string value = (variable.Value ?? "null").ToString();
         string type = variable.Value == null ? "null" : variable.Value.GetType().ToString();
         bool serializable = IsSerializable(variable);
-        if (serializable) {
-          listViewItem.ImageIndex = variable.Value == null ? 2 : 1;
-        } else listViewItem.ImageIndex = 0;
+        if (!serializable) listViewItem.ImageIndex = 0;
+        else if (variable.Value != null) listViewItem.ImageIndex = 2;
+        else listViewItem.ImageIndex = 3;
         listViewItem.SubItems[1].Text = value;
         listViewItem.SubItems[2].Text = type;
         listViewItem.ToolTipText = GetToolTipText(variable, serializable);
@@ -187,11 +189,24 @@ namespace HeuristicLab.Scripting.Views {
       AdjustListViewColumnSizes();
     }
     protected virtual void variableListView_KeyDown(object sender, KeyEventArgs e) {
-      if (e.KeyCode == Keys.Delete) {
-        if ((variableListView.SelectedItems.Count > 0) && !Locked && !ReadOnly) {
-          foreach (ListViewItem item in variableListView.SelectedItems)
-            Content.Remove(item.Text);
-        }
+      switch (e.KeyCode) {
+        case Keys.Delete:
+          if ((variableListView.SelectedItems.Count > 0) && !Locked && !ReadOnly) {
+            foreach (ListViewItem item in variableListView.SelectedItems)
+              Content.Remove(item.Text);
+          }
+          break;
+        case Keys.F2:
+          var focusedItem = variableListView.FocusedItem;
+          if (variableListView.LabelEdit && focusedItem.Selected)
+            focusedItem.BeginEdit();
+          break;
+        case Keys.A:
+          if (e.Modifiers.HasFlag(Keys.Control)) {
+            foreach (ListViewItem item in variableListView.Items)
+              item.Selected = true;
+          }
+          break;
       }
     }
     protected virtual void variableListView_DoubleClick(object sender, EventArgs e) {
@@ -210,26 +225,11 @@ namespace HeuristicLab.Scripting.Views {
       }
     }
     protected virtual void variableListView_ItemDrag(object sender, ItemDragEventArgs e) {
-      if (!Locked) {
-        var items = new List<object>();
-        foreach (ListViewItem listViewItem in variableListView.SelectedItems) {
-          var item = (KeyValuePair<string, object>)listViewItem.Tag as KeyValuePair<string, object>?;
-          if (item != null) items.Add(item.Value.Value);
-        }
-
-        if (items.Count > 0) {
-          var data = new DataObject();
-          if (items.Count == 1) data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items[0]);
-          else data.SetData(HeuristicLab.Common.Constants.DragDropDataFormat, items);
-          if (ReadOnly) {
-            DoDragDrop(data, DragDropEffects.Copy);
-          } else {
-            var result = DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link | DragDropEffects.Move);
-            if ((result & DragDropEffects.Move) == DragDropEffects.Move) {
-              foreach (string item in items) Content.Remove(item);
-            }
-          }
-        }
+      if (!Locked && variableListView.SelectedItems.Count == 1) {
+        var listViewItem = variableListView.SelectedItems[0];
+        var item = (KeyValuePair<string, object>)listViewItem.Tag;
+        var data = new DataObject(HeuristicLab.Common.Constants.DragDropDataFormat, item.Value);
+        DoDragDrop(data, DragDropEffects.Copy);
       }
     }
     protected virtual void variableListView_DragEnter(object sender, DragEventArgs e) {
@@ -238,29 +238,27 @@ namespace HeuristicLab.Scripting.Views {
     protected virtual void variableListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (validDragOperation) {
-        if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
-        else if ((e.KeyState & 4) == 4) e.Effect = DragDropEffects.Move;  // SHIFT key
-        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
-        else if (e.AllowedEffect.HasFlag(DragDropEffects.Move)) e.Effect = DragDropEffects.Move;
-        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
+        if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
       }
     }
     protected virtual void variableListView_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect != DragDropEffects.None) {
+      if (e.Effect == DragDropEffects.Copy) {
         object item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
-        if (e.Effect.HasFlag(DragDropEffects.Copy)) {
-          var cloner = new Cloner();
-          var dc = item as IDeepCloneable;
-          if (dc != null) item = cloner.Clone(dc);
-        }
-        string name = GenerateNewVariableName();
+        var cloner = new Cloner();
+        var dc = item as IDeepCloneable;
+        if (dc != null) item = cloner.Clone(dc);
+        var namedItem = item as INamedItem;
+        bool nameValid = namedItem != null && !string.IsNullOrEmpty(namedItem.Name);
+        string name = nameValid ? GenerateNewVariableName(namedItem.Name, false) : GenerateNewVariableName();
         Content.Add(name, item);
         var listViewItem = variableListView.FindItemWithText(name);
-        listViewItem.BeginEdit();
+        if (!nameValid) listViewItem.BeginEdit();
       }
     }
 
     private readonly Regex SafeVariableNameRegex = new Regex("^[@]?[_a-zA-Z][_a-zA-Z0-9]*$");
+    private const string DefaultVariableName = "enter_name";
+
     private void variableListView_AfterLabelEdit(object sender, LabelEditEventArgs e) {
       string name = e.Label;
       if (!string.IsNullOrEmpty(name) && SafeVariableNameRegex.IsMatch(name)) {
@@ -326,7 +324,6 @@ namespace HeuristicLab.Scripting.Views {
       else {
         foreach (var item in e.Items)
           RemoveVariable(item);
-        RebuildImageList();
         AdjustListViewColumnSizes();
       }
     }
@@ -336,7 +333,6 @@ namespace HeuristicLab.Scripting.Views {
       else {
         foreach (var item in e.OldItems)
           RemoveVariable(item);
-        RebuildImageList();
         foreach (var item in e.Items)
           AddVariable(item);
         AdjustListViewColumnSizes();
@@ -351,7 +347,6 @@ namespace HeuristicLab.Scripting.Views {
           item.SubItems[1].Text = value;
           item.SubItems[2].Text = variable.Value.Value.GetType().ToString();
           item.ToolTipText = GetToolTipText(variable.Value, item.ImageIndex != 0);
-          return;
         }
       }
     }
@@ -367,21 +362,6 @@ namespace HeuristicLab.Scripting.Views {
       foreach (ColumnHeader ch in variableListView.Columns)
         ch.Width = -2;
     }
-    protected virtual void RebuildImageList() {
-      variableListView.SmallImageList.Images.Clear();
-      variableListView.SmallImageList.Images.AddRange(new Image[] {
-        HeuristicLab.Common.Resources.VSImageLibrary.Error,
-        HeuristicLab.Common.Resources.VSImageLibrary.Object,
-        HeuristicLab.Common.Resources.VSImageLibrary.Nothing
-      });
-      foreach (ListViewItem listViewItem in variableListView.Items) {
-        var variable = (KeyValuePair<string, object>)listViewItem.Tag;
-        bool serializable = IsSerializable(variable);
-        if (serializable) {
-          listViewItem.ImageIndex = variable.Value == null ? 2 : 1;
-        } else listViewItem.ImageIndex = 0;
-      }
-    }
 
     private string GetToolTipText(KeyValuePair<string, object> variable, bool serializable) {
       if (string.IsNullOrEmpty(variable.Key)) throw new ArgumentException("The variable must have a name.", "variable");
@@ -393,17 +373,22 @@ namespace HeuristicLab.Scripting.Views {
         "Type: " + type
       };
       string toolTipText = string.Join(Environment.NewLine, lines);
+      if (!SafeVariableNameRegex.IsMatch(variable.Key))
+        toolTipText = "Caution: Identifier is no valid C# identifier!" + Environment.NewLine + toolTipText;
       if (!serializable)
         toolTipText = "Caution: Type is not serializable!" + Environment.NewLine + toolTipText;
       return toolTipText;
     }
 
-    private string GenerateNewVariableName(string defaultName = "enter_name") {
+    private string GenerateNewVariableName(string defaultName = DefaultVariableName, bool generateValidIdentifier = true) {
+      if (generateValidIdentifier && !SafeVariableNameRegex.IsMatch(defaultName))
+        defaultName = DefaultVariableName;
       if (Content.ContainsKey(defaultName)) {
         int i = 1;
+        string formatString = generateValidIdentifier ? "{0}{1}" : "{0} ({1})";
         string newName;
         do {
-          newName = defaultName + i++;
+          newName = string.Format(formatString, defaultName, i++);
         } while (Content.ContainsKey(newName));
         return newName;
       }
