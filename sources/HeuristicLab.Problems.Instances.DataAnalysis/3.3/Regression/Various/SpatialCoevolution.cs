@@ -52,7 +52,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
 
-      List<double> evenlySpacedSequence = ValueGenerator.GenerateSteps(-5, 5, 0.4).ToList();
+      List<double> evenlySpacedSequence = ValueGenerator.GenerateSteps(-5, 5, 0.4m).Select(v => (double)v).ToList();
       List<List<double>> trainingData = new List<List<double>>() { evenlySpacedSequence, evenlySpacedSequence };
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(trainingData).ToList();
 

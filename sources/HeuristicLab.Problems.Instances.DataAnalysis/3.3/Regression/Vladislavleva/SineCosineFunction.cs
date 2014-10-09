@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      List<double> oneVariableTestData = ValueGenerator.GenerateSteps(-0.05, 6.05, 0.02).ToList();
+      List<double> oneVariableTestData = ValueGenerator.GenerateSteps(-0.05m, 6.05m, 0.02m).Select(v => (double)v).ToList();
       List<List<double>> testData = new List<List<double>>() { oneVariableTestData, oneVariableTestData };
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
 

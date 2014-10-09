@@ -54,9 +54,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       data.Add(ValueGenerator.GenerateUniformDistributedValues(n, 0.05, 2).ToList());
 
       List<List<double>> testData = new List<List<double>>() { 
-        ValueGenerator.GenerateSteps(-0.05, 2.05, 0.15).ToList(), 
-        ValueGenerator.GenerateSteps( 0.95, 2.05, 0.1).ToList(),
-        ValueGenerator.GenerateSteps(-0.05, 2.05, 0.15).ToList()
+        ValueGenerator.GenerateSteps(-0.05m, 2.05m, 0.15m).Select(v => (double)v).ToList(), 
+        ValueGenerator.GenerateSteps( 0.95m, 2.05m, 0.1m).Select(v => (double)v).ToList(),
+        ValueGenerator.GenerateSteps(-0.05m, 2.05m, 0.15m).Select(v => (double)v).ToList()
       };
 
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();
