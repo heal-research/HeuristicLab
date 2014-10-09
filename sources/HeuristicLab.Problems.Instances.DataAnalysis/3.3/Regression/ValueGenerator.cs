@@ -36,14 +36,15 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="start">The smallest and first value of the sequence.</param>
     /// <param name="end">The largest and last value of the sequence.</param>
     /// <param name="stepWidth">The step size between subsequent values.</param>
+    /// <param name="includeEnd">Determines if the end should be included in the sequence regardless if the end is divisible by the stepwidth.</param>
     /// <returns>A sequence of values from start to end (inclusive)</returns>
     [Obsolete("It is recommended to use the decimal overload to achieve a higher numerical accuracy.")] 
-    public static IEnumerable<double> GenerateSteps(double start, double end, double stepWidth) {
+    public static IEnumerable<double> GenerateSteps(double start, double end, double stepWidth, bool includeEnd = false) {
       //mkommend: IEnumerable.Cast fails due to boxing and unboxing of the involved types
       // http://referencesource.microsoft.com/#System.Core/System/Linq/Enumerable.cs#27bb217a6d5457ec
       // http://blogs.msdn.com/b/ericlippert/archive/2009/03/19/representation-and-identity.aspx     
 
-      return GenerateSteps((decimal)start, (decimal)end, (decimal)stepWidth).Select(x => (double)x);
+      return GenerateSteps((decimal)start, (decimal)end, (decimal)stepWidth, includeEnd).Select(x => (double)x);
     }
 
     /// <summary>
@@ -52,8 +53,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="start">The smallest and first value of the sequence.</param>
     /// <param name="end">The largest and last value of the sequence.</param>
     /// <param name="stepWidth">The step size between subsequent values.</param>
+    /// /// <param name="includeEnd">Determines if the end should be included in the sequence regardless if the end is divisible by the stepwidth.</param>
     /// <returns>A sequence of values from start to end</returns>
-    public static IEnumerable<decimal> GenerateSteps(decimal start, decimal end, decimal stepWidth) {
+    public static IEnumerable<decimal> GenerateSteps(decimal start, decimal end, decimal stepWidth, bool includeEnd = false) {
       if (stepWidth == 0)
         throw new ArgumentException("The step width cannot be zero.");
       if (start < end && stepWidth < 0)
@@ -66,31 +68,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         yield return x;
         x += stepWidth;
       }
-    }
-
-    /// <summary>
-    /// Generates a sequence of points between start and end according to given transformation
-    /// </summary>
-    /// <param name="start">The smallest and first value of the sequence.</param>
-    /// <param name="end">The largest and last value of the sequence.</param>
-    /// <param name="stepWidth">The step size between subsequent values (before transform)</param>
-    /// <param name="transform">The transform function</param>
-    /// <returns></returns>
-    [Obsolete("It is recommended to use the decimal overload to achieve a higher numerical accuracy.")] 
-    public static IEnumerable<double> GenerateSteps(double start, double end, double stepWidth, Func<double, double> transform) {
-      return GenerateSteps(start,end, stepWidth).Select(transform);
-    }
-
-    /// <summary>
-    /// Generates a sequence of points between start and end according to given transformation
-    /// </summary>
-    /// <param name="start">The smallest and first value of the sequence.</param>
-    /// <param name="end">The largest and last value of the sequence.</param>
-    /// <param name="stepWidth">The step size between subsequent values (before transform)</param>
-    /// <param name="transform">The transform function</param>
-    /// <returns></returns>
-    public static IEnumerable<decimal> GenerateSteps(decimal start, decimal end, decimal stepWidth, Func<decimal, decimal> transform) {
-      return GenerateSteps(start, end, stepWidth).Select(transform);
+      if (x - stepWidth < end && includeEnd) yield return end;
     }
 
     /// <summary>
