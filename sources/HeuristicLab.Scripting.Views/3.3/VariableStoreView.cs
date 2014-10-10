@@ -175,7 +175,9 @@ namespace HeuristicLab.Scripting.Views {
         string value = (variable.Value ?? "null").ToString();
         string type = variable.Value == null ? "null" : variable.Value.GetType().ToString();
         bool serializable = IsSerializable(variable);
+        bool validIdentifier = SafeVariableNameRegex.IsMatch(variable.Key);
         if (!serializable) listViewItem.ImageIndex = 0;
+        else if (!validIdentifier) listViewItem.ImageIndex = 1;
         else if (variable.Value != null) listViewItem.ImageIndex = 2;
         else listViewItem.ImageIndex = 3;
         listViewItem.SubItems[1].Text = value;
