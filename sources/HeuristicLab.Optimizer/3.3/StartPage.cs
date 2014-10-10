@@ -64,7 +64,8 @@ namespace HeuristicLab.Optimizer {
       try {
         using (Stream stream = assembly.GetManifestResourceStream(typeof(StartPage), "Documents.FirstSteps.rtf"))
           firstStepsRichTextBox.LoadFile(stream, RichTextBoxStreamType.RichText);
-      } catch (Exception) { }
+      }
+      catch (Exception) { }
 
       samplesListView.Enabled = false;
       samplesListView.Groups.Add(standardProblemsGroup);
@@ -110,7 +111,8 @@ namespace HeuristicLab.Optimizer {
         }
 
         OnAllSamplesLoaded();
-      } finally {
+      }
+      finally {
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
       }
     }
@@ -123,8 +125,10 @@ namespace HeuristicLab.Optimizer {
           var item = XmlParser.Deserialize<INamedItem>(path);
           OnSampleLoaded(item, group, 1.0 / count);
         }
-      } catch (Exception) {
-      } finally {
+      }
+      catch (Exception) {
+      }
+      finally {
         if (File.Exists(path)) {
           File.Delete(path); // make sure we remove the temporary file
         }
@@ -139,7 +143,9 @@ namespace HeuristicLab.Optimizer {
       groupLookup[standardProblemsGroup] = standardProblems;
       var dataAnalysisProblems = new List<string> { "SGP_SymbClass", "SGP_SymbReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
       groupLookup[dataAnalysisGroup] = dataAnalysisProblems;
-      var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script" };
+      var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script", 
+                                       "GridSearch_RF_Classification", "GridSearch_RF_Regression",
+                                       "GridSearch_SVM_Classification", "GridSearch_SVM_Regression" };
       groupLookup[scriptsGroup] = scripts;
     }
 
@@ -178,7 +184,8 @@ namespace HeuristicLab.Optimizer {
         try {
           mainForm.SetWaitCursor();
           mainForm.ShowContent((IContent)((IItem)samplesListView.SelectedItems[0].Tag).Clone());
-        } finally {
+        }
+        finally {
           mainForm.ResetWaitCursor();
         }
 
