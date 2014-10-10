@@ -45,11 +45,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     [StorableConstructor]
-    private RFParameter(bool deserializing)
+    protected RFParameter(bool deserializing)
       : base(deserializing) {
     }
 
-    private RFParameter(RFParameter original, Cloner cloner)
+    protected RFParameter(RFParameter original, Cloner cloner)
       : base(original, cloner) {
       this.N = original.N;
       this.R = original.R;
