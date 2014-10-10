@@ -144,6 +144,9 @@ namespace HeuristicLab.Core {
       var source = arc.Source;
       var target = arc.Target;
 
+      if (source == target)
+        throw new InvalidOperationException("Source and target cannot be the same.");
+
       if (!vertices.Contains(source) || !vertices.Contains(target))
         throw new InvalidOperationException("Cannot add arc connecting vertices that are not in the graph.");
 
