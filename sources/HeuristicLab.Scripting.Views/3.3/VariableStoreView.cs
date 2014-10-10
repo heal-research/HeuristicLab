@@ -404,7 +404,7 @@ namespace HeuristicLab.Scripting.Views {
         return serializable;
       var ser = new Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
       try {
-        return serializableLookup[type] = ser.Any();
+        return serializableLookup[type] = ser.Count() > 0;
       } catch (PersistenceException) {
         return serializableLookup[type] = false;
       }
