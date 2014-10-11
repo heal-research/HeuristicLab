@@ -213,6 +213,11 @@
       <HintPath>..\bin\HeuristicLab.Optimization.Operators-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Optimizer-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Optimizer-3.3.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HeuristicLab.ParallelEngine-3.3">
       <HintPath>..\bin\HeuristicLab.ParallelEngine-3.3.dll</HintPath>
       <Private>False</Private>
@@ -321,6 +326,11 @@
       <HintPath>..\bin\HeuristicLab.Random-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Scripting-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Scripting-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HeuristicLab.Selection-3.3">
       <HintPath>..\bin\HeuristicLab.Selection-3.3.dll</HintPath>
       <Private>False</Private>
@@ -339,6 +349,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
@@ -357,10 +368,27 @@
     <Compile Include="HeuristicLab-3.3\ParameterVisibilityTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GaussianProcessRegressionSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GAVrpSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GeSymbolicRegressionSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPArtificialAntSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPLawnMowerSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicClassificationSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPTimeSeriesSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPMultiplexerSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\SamplesTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\LocalSearchKnapsackSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\PsoSchwefelSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\RAPGASchedulingSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\SamplesUtils.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GATspSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\IslandGaTspSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\ScatterSearchVRPSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\SimulatedAnnealingRastriginSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\TabuSearchTspSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\TabuSearchVRPSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\VnsTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\StorableConstructorTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
     <Compile Include="HeuristicLab-3.3\ToStringTest.cs" />
@@ -477,6 +505,7 @@
     <Compile Include="HeuristicLab.Problems.LinearAssignment-3.3\LinearAssignmentProblemSolverTest.cs" />
     <Compile Include="HeuristicLab.Problems.VehicleRouting-3.4\VRPInstancesTest.cs" />
     <Compile Include="HeuristicLab.Random-3.3\RandomEnumerableSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\GridSearchScriptTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
@@ -517,6 +546,9 @@
     <Content Include="Test Resources\co2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HeuristicLab.Scripting-3.3\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
