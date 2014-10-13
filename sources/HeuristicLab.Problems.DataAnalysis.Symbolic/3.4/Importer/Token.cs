@@ -21,7 +21,7 @@
 
 using System.Globalization;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   internal enum TokenSymbol { LPAR, RPAR, SYMB, NUMBER };
   internal class Token {
     public static readonly Token LPAR = Token.Parse("(");

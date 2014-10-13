@@ -480,8 +480,6 @@
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicDataAnalysisExpressionTreeSimplifierTest.cs" />
-    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionImporter.cs" />
-    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\Token.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\Util.cs" />
     <Compile Include="HeuristicLab.Problems.Instances-3.3\CordeauGQAPInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Instances-3.3\ElloumiCTAPInstanceProviderTest.cs" />
