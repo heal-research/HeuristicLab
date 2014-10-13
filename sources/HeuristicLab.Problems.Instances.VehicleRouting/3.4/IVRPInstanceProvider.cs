@@ -19,7 +19,6 @@
  */
 #endregion
 
-
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
   public interface IVRPInstanceProvider<TData> {
     bool CanImportData { get; }

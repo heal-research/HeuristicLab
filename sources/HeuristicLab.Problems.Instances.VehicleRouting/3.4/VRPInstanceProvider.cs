@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using HeuristicLab.Common;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
@@ -44,7 +45,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
 
       using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
-        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
+        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x, new NaturalStringComparer())) {
           string solutionEntry = Path.GetFileNameWithoutExtension(entry) + "." + FileName;
           yield return new VRPDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetInstanceDescription(), entry, solutions.ContainsKey(solutionEntry) ? solutions[solutionEntry] : String.Empty);
         }

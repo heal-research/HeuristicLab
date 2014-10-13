@@ -19,7 +19,10 @@
  */
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
   public abstract class SolomonFormatInstanceProvider : VRPInstanceProvider<CVRPTWData> {
@@ -52,6 +55,35 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       instance.Name = parser.ProblemName;
 
       return instance;
+    }
+
+    protected override void LoadSolution(Stream stream, CVRPTWData instance) {
+      using (var reader = new StreamReader(stream)) {
+        string instanceName = ExtractValue(reader.ReadLine());
+        string authors = ExtractValue(reader.ReadLine());
+        string date = ExtractValue(reader.ReadLine());
+        string reference = ExtractValue(reader.ReadLine());
+        reader.ReadLine(); // Solution
+
+        var routesQuery =
+          from line in ReadAllLines(reader)
+          where !string.IsNullOrEmpty(line)
+          let tokens = ExtractValue(line).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+          let stops = tokens.Select(int.Parse).Select(s => s - 1)
+          select stops;
+
+        var routes = routesQuery.Select(s => s.ToArray()).ToArray();
+
+        instance.BestKnownTour = routes;
+      }
+    }
+
+    private static string ExtractValue(string line) {
+      return line.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Last().Trim();
+    }
+    private IEnumerable<string> ReadAllLines(StreamReader reader) {
+      while (!reader.EndOfStream)
+        yield return reader.ReadLine();
     }
   }
 }
