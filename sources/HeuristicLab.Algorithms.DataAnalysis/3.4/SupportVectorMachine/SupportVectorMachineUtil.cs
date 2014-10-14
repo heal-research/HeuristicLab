@@ -33,9 +33,6 @@ using LibSVM;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public class SupportVectorMachineUtil {
-    private static readonly object locker = new object();
-
-
     /// <summary>
     /// Transforms <paramref name="problemData"/> into a data structure as needed by libSVM.
     /// </summary>
@@ -100,6 +97,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var crossProduct = parameterRanges.Values.CartesianProduct();
       var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
       var partitions = GenerateSvmPartitions(problemData, numberOfFolds, shuffleFolds);
+
+      var locker = new object(); // for thread synchronization
       Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism },
       parameterCombination => {
         var parameters = DefaultParameters();
@@ -143,8 +142,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var trainingRows = folds.SelectMany((par, j) => j != p ? par : Enumerable.Empty<int>());
         var testRows = folds[i];
         var trainingSvmProblem = CreateSvmProblem(problemData.Dataset, targetVariable, problemData.AllowedInputVariables, trainingRows);
-        var testSvmProblem = CreateSvmProblem(problemData.Dataset, targetVariable, problemData.AllowedInputVariables, testRows);
-        partitions[i] = new Tuple<svm_problem, svm_problem>(trainingSvmProblem, testSvmProblem);
+        var rangeTransform = RangeTransform.Compute(trainingSvmProblem);
+        var testSvmProblem = rangeTransform.Scale(CreateSvmProblem(problemData.Dataset, targetVariable, problemData.AllowedInputVariables, testRows));
+        partitions[i] = new Tuple<svm_problem, svm_problem>(rangeTransform.Scale(trainingSvmProblem), testSvmProblem);
       }
       return partitions;
     }
