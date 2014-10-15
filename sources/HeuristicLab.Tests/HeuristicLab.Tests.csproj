@@ -503,7 +503,7 @@
     <Compile Include="HeuristicLab.Problems.LinearAssignment-3.3\LinearAssignmentProblemSolverTest.cs" />
     <Compile Include="HeuristicLab.Problems.VehicleRouting-3.4\VRPInstancesTest.cs" />
     <Compile Include="HeuristicLab.Random-3.3\RandomEnumerableSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\GridSearchScriptTest.cs" />
+    <Compile Include="HeuristicLab.Scripting-3.3\GridSearchScriptTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestRandom.cs" />
   </ItemGroup>
@@ -545,9 +545,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="HeuristicLab.Scripting-3.3\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

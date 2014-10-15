@@ -51,7 +51,7 @@ namespace HeuristicLab.Tests {
     }
 
     [TestMethod]
-    [TestCategory("Samples.Execute")]
+    [TestCategory("Scripting")]
     public void RunRandomForestRegressionScriptTest() {
       var assembly = new StartPage().GetType().Assembly;
       const string name = PathPrefix + RandomForestRegressionScriptName + PathSuffix;
@@ -77,7 +77,7 @@ namespace HeuristicLab.Tests {
     }
 
     [TestMethod]
-    [TestCategory("Samples.Execute")]
+    [TestCategory("Scripting")]
     public void RunRandomForestClassificationScriptTest() {
       var assembly = new StartPage().GetType().Assembly;
       const string name = PathPrefix + RandomForestClassificationScriptName + PathSuffix;
@@ -98,12 +98,12 @@ namespace HeuristicLab.Tests {
         script.Execute();
         var vs = script.VariableStore;
         var solution = (IClassificationSolution)vs["demo_bestSolution"];
-        Assert.IsTrue(solution.TrainingAccuracy.IsAlmost(1));
+        Assert.IsTrue(solution.TrainingAccuracy.IsAlmost(1) && solution.TestAccuracy.IsAlmost(0.953125));
       }
     }
 
     [TestMethod]
-    [TestCategory("Samples.Execute")]
+    [TestCategory("Scripting")]
     public void RunSvmRegressionScriptTest() {
       var assembly = new StartPage().GetType().Assembly;
       const string name = PathPrefix + SvmRegressionScriptName + PathSuffix;
@@ -124,12 +124,12 @@ namespace HeuristicLab.Tests {
         script.Execute();
         var vs = script.VariableStore;
         var solution = (IRegressionSolution)vs["demo_bestSolution"];
-        Assert.IsTrue(solution.TrainingRSquared.IsAlmost(0.0662227492685859));
+        Assert.IsTrue(solution.TrainingRSquared.IsAlmost(0.066221959224331) && solution.TestRSquared.IsAlmost(0.0794407638195883));
       }
     }
 
     [TestMethod]
-    [TestCategory("Samples.Execute")]
+    [TestCategory("Scripting")]
     public void RunSvmClassificationScriptTest() {
       var assembly = new StartPage().GetType().Assembly;
       const string name = PathPrefix + SvmClassificationScriptName + PathSuffix;
@@ -150,7 +150,7 @@ namespace HeuristicLab.Tests {
         script.Execute();
         var vs = script.VariableStore;
         var solution = (IClassificationSolution)vs["demo_bestSolution"];
-        Assert.IsTrue(solution.TrainingAccuracy.IsAlmost(0.814352574102964));
+        Assert.IsTrue(solution.TrainingAccuracy.IsAlmost(0.817472698907956) && solution.TestAccuracy.IsAlmost(0.809375));
       }
     }
 
