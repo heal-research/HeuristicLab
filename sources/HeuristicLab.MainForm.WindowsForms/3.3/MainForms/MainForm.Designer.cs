@@ -56,6 +56,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.menuStrip.Size = new System.Drawing.Size(624, 24);
       this.menuStrip.TabIndex = 0;
       this.menuStrip.Text = "menuStrip";
+      this.menuStrip.AllowDrop = true;
+      this.menuStrip.DragEnter += MainFormBase_DragEnter;
+      this.menuStrip.DragDrop += MainFormBase_DragDrop;
       // 
       // toolStrip
       // 
@@ -63,6 +66,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.toolStrip.Name = "toolStrip";
       this.toolStrip.Size = new System.Drawing.Size(624, 25);
       this.toolStrip.TabIndex = 1;
+      this.toolStrip.AllowDrop = true;
+      this.toolStrip.DragEnter += MainFormBase_DragEnter;
+      this.toolStrip.DragDrop += MainFormBase_DragDrop;
       // 
       // statusStrip
       // 
@@ -72,7 +78,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.statusStrip.TabIndex = 2;
       this.statusStrip.Text = "statusStrip";
       // 
-      // MainFormBase
+      // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
