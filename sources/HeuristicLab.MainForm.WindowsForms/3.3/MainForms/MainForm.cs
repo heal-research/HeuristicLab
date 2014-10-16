@@ -554,8 +554,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       System.Windows.Forms.ToolStripItem item = (System.Windows.Forms.ToolStripItem)sender;
       try {
         ((IActionUserInterfaceItem)item.Tag).Execute();
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, ex);
       }
     }
@@ -600,35 +599,5 @@ namespace HeuristicLab.MainForm.WindowsForms {
       else Cursor = Cursors.Default;
     }
     #endregion
-
-    private void MainFormBase_DragEnter(object sender, DragEventArgs e) {
-      // perform type checking to ensure that the data being dragged is of an acceptable type
-      e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-    }
-
-    private void MainFormBase_DragDrop(object sender, DragEventArgs e) {
-      if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
-        string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-        foreach (var path in files) {
-          SetAppStartingCursor();
-          ContentManager.LoadAsync(path, LoadingCompleted);
-        }
-      }
-    }
-
-    private static void LoadingCompleted(IStorableContent content, Exception error) {
-      try {
-        if (error != null) throw error;
-        IView view = MainFormManager.MainForm.ShowContent(content);
-        if (view == null)
-          ErrorHandling.ShowErrorDialog("There is no view for the loaded item. It cannot be displayed.", new InvalidOperationException("No View Available"));
-      }
-      catch (Exception ex) {
-        ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, "Cannot open file.", ex);
-      }
-      finally {
-        ((MainForm)MainFormManager.MainForm).ResetAppStartingCursor();
-      }
-    }
   }
 }
