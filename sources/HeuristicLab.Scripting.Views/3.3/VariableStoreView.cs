@@ -201,9 +201,10 @@ namespace HeuristicLab.Scripting.Views {
           }
           break;
         case Keys.F2:
-          var focusedItem = variableListView.FocusedItem;
-          if (variableListView.LabelEdit && focusedItem.Selected)
-            focusedItem.BeginEdit();
+          if (variableListView.SelectedItems.Count != 1) return;
+          var selectedItem = variableListView.SelectedItems[0];
+          if (variableListView.LabelEdit)
+            selectedItem.BeginEdit();
           break;
         case Keys.A:
           if (e.Modifiers.HasFlag(Keys.Control)) {
@@ -248,15 +249,24 @@ namespace HeuristicLab.Scripting.Views {
     protected virtual void variableListView_DragDrop(object sender, DragEventArgs e) {
       if (e.Effect == DragDropEffects.Copy) {
         object item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
-        var cloner = new Cloner();
         var dc = item as IDeepCloneable;
-        if (dc != null) item = cloner.Clone(dc);
-        var namedItem = item as INamedItem;
-        bool nameValid = namedItem != null && !string.IsNullOrEmpty(namedItem.Name);
-        string name = nameValid ? GenerateNewVariableName(namedItem.Name, false) : GenerateNewVariableName();
+        if (dc != null) item = dc.Clone();
+
+        string name;
+        bool editLabel;
+        if (sender == variableListView) {
+          name = GenerateNewVariableName(variableListView.FocusedItem.Text, false);
+          editLabel = true;
+        } else {
+          var namedItem = item as INamedItem;
+          editLabel = namedItem == null || string.IsNullOrEmpty(namedItem.Name);
+          name = editLabel ? GenerateNewVariableName() : GenerateNewVariableName(namedItem.Name, false);
+        }
+
         Content.Add(name, item);
         var listViewItem = variableListView.FindItemWithText(name);
-        if (!nameValid) listViewItem.BeginEdit();
+        variableListView.SelectedItems.Clear();
+        if (editLabel) listViewItem.BeginEdit();
       }
     }
 
@@ -279,12 +289,15 @@ namespace HeuristicLab.Scripting.Views {
     #region Button Events
     protected virtual void addButton_Click(object sender, EventArgs e) {
       object newVar = CreateItem();
-      if (newVar != null) {
-        string name = GenerateNewVariableName();
-        Content.Add(name, newVar);
-        var item = variableListView.FindItemWithText(name);
-        item.BeginEdit();
-      }
+      if (newVar == null) return;
+
+      var namedItem = newVar as INamedItem;
+      bool editLabel = namedItem == null || string.IsNullOrEmpty(namedItem.Name);
+      string name = editLabel ? GenerateNewVariableName() : GenerateNewVariableName(namedItem.Name, false);
+      Content.Add(name, newVar);
+
+      var item = variableListView.FindItemWithText(name);
+      item.BeginEdit();
     }
     protected virtual void sortAscendingButton_Click(object sender, EventArgs e) {
       SortItemsListView(SortOrder.Ascending);
