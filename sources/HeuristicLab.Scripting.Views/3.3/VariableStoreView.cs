@@ -400,16 +400,25 @@ namespace HeuristicLab.Scripting.Views {
     }
 
     private bool IsSerializable(KeyValuePair<string, object> variable) {
-      var type = variable.Value.GetType();
+      Type type = null;
       bool serializable;
-      if (serializableLookup.TryGetValue(type, out serializable))
-        return serializable;
+
+      if (variable.Value != null) {
+        type = variable.Value.GetType();
+        if (serializableLookup.TryGetValue(type, out serializable))
+          return serializable;
+      }
+
       var ser = new Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
       try {
-        return serializableLookup[type] = ser.Count() > 0;
+        serializable = ser.Count() > 0; // try to create all serialization tokens
       } catch (PersistenceException) {
-        return serializableLookup[type] = false;
+        serializable = false;
       }
+
+      if (type != null)
+        serializableLookup[type] = serializable;
+      return serializable;
     }
     #endregion
   }
