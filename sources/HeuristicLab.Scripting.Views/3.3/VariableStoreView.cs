@@ -265,7 +265,7 @@ namespace HeuristicLab.Scripting.Views {
 
     private void variableListView_AfterLabelEdit(object sender, LabelEditEventArgs e) {
       string name = e.Label;
-      if (!string.IsNullOrEmpty(name) && SafeVariableNameRegex.IsMatch(name)) {
+      if (!string.IsNullOrEmpty(name)) {
         var variable = (KeyValuePair<string, object>)variableListView.Items[e.Item].Tag;
         if (!Content.ContainsKey(name)) {
           Content.Remove(variable.Key);
