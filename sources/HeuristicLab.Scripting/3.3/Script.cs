@@ -23,6 +23,7 @@ using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -141,17 +142,7 @@ namespace HeuristicLab.Scripting {
     }
 
     public virtual IEnumerable<Assembly> GetAssemblies() {
-      var assemblies = new List<Assembly>();
-      foreach (var a in AppDomain.CurrentDomain.GetAssemblies()) {
-        try {
-          if (File.Exists(a.Location)) assemblies.Add(a);
-        } catch (NotSupportedException) {
-          // NotSupportedException is thrown while accessing 
-          // the Location property of the anonymously hosted
-          // dynamic methods assembly, which is related to
-          // LINQ queries
-        }
-      }
+      var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && File.Exists(a.Location)).ToList();    
       assemblies.Add(typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly); // for dlr functionality
       return assemblies;
     }
