@@ -45,13 +45,13 @@ namespace HeuristicLab.Scripting.Views {
     }
 
     public override bool ReadOnly {
-      get { return codeEditor.ReadOnly; }
-      set { codeEditor.ReadOnly = value; }
+      get { return codeEditor.ReadOnly || base.ReadOnly; }
+      set { base.ReadOnly = codeEditor.ReadOnly = value; }
     }
 
     public override bool Locked {
-      get { return codeEditor.ReadOnly; }
-      set { codeEditor.ReadOnly = value; }
+      get { return codeEditor.ReadOnly || base.Locked; }
+      set { base.Locked = codeEditor.ReadOnly = value; }
     }
 
     protected override void RegisterContentEvents() {
