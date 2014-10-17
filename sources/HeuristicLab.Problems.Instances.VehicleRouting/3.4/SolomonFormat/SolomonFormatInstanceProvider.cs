@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
         reader.ReadLine(); // Solution
 
         var routesQuery =
-          from line in ReadAllLines(reader)
+          from line in reader.ReadAllLines()
           where !string.IsNullOrEmpty(line)
           let tokens = ExtractValue(line).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
           let stops = tokens.Select(int.Parse).Select(s => s - 1)
@@ -80,10 +80,6 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
 
     private static string ExtractValue(string line) {
       return line.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries).Last().Trim();
-    }
-    private IEnumerable<string> ReadAllLines(StreamReader reader) {
-      while (!reader.EndOfStream)
-        yield return reader.ReadLine();
     }
   }
 }

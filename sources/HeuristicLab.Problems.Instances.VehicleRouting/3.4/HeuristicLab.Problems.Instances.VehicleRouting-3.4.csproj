@@ -117,6 +117,7 @@
     <Compile Include="GoldenFormat\GoldenParser.cs" />
     <Compile Include="GoldenFormat\GoldenFormatInstanceProvider.cs" />
     <Compile Include="IVRPInstanceProvider.cs" />
+    <Compile Include="StreamReaderHelper.cs" />
     <Compile Include="TaillardFormat\TaillardInstanceProvider.cs" />
     <Compile Include="TaillardFormat\TaillardParser.cs" />
     <Compile Include="TaillardFormat\TaillardFormatInstanceProvider.cs" />

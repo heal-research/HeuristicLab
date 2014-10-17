@@ -91,6 +91,10 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     #endregion
 
     protected virtual void LoadSolution(Stream stream, TData instance) {
+      LoadOptFile(stream, instance);
+    }
+
+    private void LoadOptFile(Stream stream, TData instance) {
       List<List<int>> routes = new List<List<int>>();
 
       using (StreamReader reader = new StreamReader(stream)) {
@@ -121,8 +125,15 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     }
 
     public void LoadSolution(string path, TData instance) {
-      using (FileStream stream = new FileStream(path, FileMode.Open)) {
-        LoadSolution(stream, instance);
+      try {
+        using (var stream = new FileStream(path, FileMode.Open)) {
+          LoadSolution(stream, instance);
+        }
+      } catch (Exception) {
+        // new stream necessary because first try already read from stream
+        using (var stream = new FileStream(path, FileMode.Open)) {
+          LoadOptFile(stream, instance); // Fallback to .opt-Format
+        }
       }
     }
 

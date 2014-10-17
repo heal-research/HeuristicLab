@@ -42,19 +42,19 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
 
     protected override void LoadSolution(Stream stream, TData instance) {
       using (var reader = new StreamReader(stream)) {
-        double costs = double.Parse(reader.ReadLine(), new CultureInfo("en-US"));
+        double costs = double.Parse(reader.ReadLine(), CultureInfo.InvariantCulture);
 
         var toursPerDepotQuery =
-          from line in ReadAllLines(reader)
+          from line in reader.ReadAllLines()
           where !string.IsNullOrEmpty(line)
           let tokens = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
           let depot = int.Parse(tokens[0])
           //let vehicle = int.Parse(tokens[1])
-          //let duration = double.Parse(tokens[2], new CultureInfo("en-US"))
-          //let load = double.Parse(tokens[3], new CultureInfo("en-US"))
+          //let duration = double.Parse(tokens[2], CultureInfo.InvariantCulture)
+          //let load = double.Parse(tokens[3], new CultureInfo.InvariantCulture)
           let customers = tokens.Skip(4).Where(t => !t.StartsWith("(")).Select(int.Parse)
           let numberOfCustomers = customers.Count()
-          //let serviceTimes = tokens.Skip(5).Where(t => t.StartsWith("(")).Select(t => double.Parse(t.Trim('(', ')'), new CultureInfo("en-US")))
+          //let serviceTimes = tokens.Skip(5).Where(t => t.StartsWith("(")).Select(t => double.Parse(t.Trim('(', ')'), CultureInfo.InvariantCulture))
           let stops = customers.Skip(1).Take(numberOfCustomers - 2).Select(s => s - 1)
           select new { depot, /*vehicle,*/ stops } into assignment
           group assignment by assignment.depot;
@@ -87,11 +87,6 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
       tourToVehicle.AddRange(unusedVehicles);
 
       return tourToVehicle.ToArray();
-    }
-
-    private IEnumerable<string> ReadAllLines(StreamReader reader) {
-      while (!reader.EndOfStream)
-        yield return reader.ReadLine();
     }
   }
 }
