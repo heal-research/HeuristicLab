@@ -24,6 +24,7 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimizer;
@@ -42,6 +43,8 @@ namespace HeuristicLab.Tests {
     private const string RandomForestRegressionScriptName = "GridSearch_RF_Regression";
     private const string RandomForestClassificationScriptName = "GridSearch_RF_Classification";
     private const string SamplesDirectory = SamplesUtils.Directory;
+
+    private readonly ManualResetEvent manualResetEvent = new ManualResetEvent(false);
 
     [ClassInitialize]
     public static void MyClassInitialize(TestContext testContext) {
@@ -69,6 +72,7 @@ namespace HeuristicLab.Tests {
         }
       }
       finally {
+        script.ScriptExecutionFinished += script_ExecutionFinished;
         script.Execute();
         var vs = script.VariableStore;
         var solution = (IRegressionSolution)vs["demo_bestSolution"];
@@ -95,6 +99,7 @@ namespace HeuristicLab.Tests {
         }
       }
       finally {
+        script.ScriptExecutionFinished += script_ExecutionFinished;
         script.Execute();
         var vs = script.VariableStore;
         var solution = (IClassificationSolution)vs["demo_bestSolution"];
@@ -121,6 +126,7 @@ namespace HeuristicLab.Tests {
         }
       }
       finally {
+        script.ScriptExecutionFinished += script_ExecutionFinished;
         script.Execute();
         var vs = script.VariableStore;
         var solution = (IRegressionSolution)vs["demo_bestSolution"];
@@ -147,7 +153,9 @@ namespace HeuristicLab.Tests {
         }
       }
       finally {
+        script.ScriptExecutionFinished += script_ExecutionFinished;
         script.Execute();
+        manualResetEvent.WaitOne();
         var vs = script.VariableStore;
         var solution = (IClassificationSolution)vs["demo_bestSolution"];
         Assert.IsTrue(solution.TrainingAccuracy.IsAlmost(0.817472698907956) && solution.TestAccuracy.IsAlmost(0.809375));
@@ -189,6 +197,10 @@ namespace HeuristicLab.Tests {
       using (FileStream output = new FileStream(path, FileMode.Create, FileAccess.Write)) {
         stream.CopyTo(output);
       }
+    }
+
+    private void script_ExecutionFinished(object sender, EventArgs a) {
+      manualResetEvent.Set();
     }
     #endregion
   }
