@@ -32,29 +32,52 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public abstract class SymbolicExpressionTreeCreator : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeCreator {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
+    private const string SymbolicExpressionTreeGrammarParameterName = "SymbolicExpressionTreeGrammar";
+    private const string ClonedSymbolicExpressionTreeGrammarParameterName = "ClonedSymbolicExpressionTreeGrammar";
+
     #region Parameter Properties
     public ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
-    #endregion
 
-    #region Properties
-    public ISymbolicExpressionTree SymbolicExpressionTree {
-      get { return SymbolicExpressionTreeParameter.ActualValue; }
-      set { SymbolicExpressionTreeParameter.ActualValue = value; }
+    public IValueLookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionTreeGrammarParameter {
+      get { return (IValueLookupParameter<ISymbolicExpressionGrammar>)Parameters[SymbolicExpressionTreeGrammarParameterName]; }
     }
 
+    public ILookupParameter<ISymbolicExpressionGrammar> ClonedSymbolicExpressionTreeGrammarParameter {
+      get { return (ILookupParameter<ISymbolicExpressionGrammar>)Parameters[ClonedSymbolicExpressionTreeGrammarParameterName]; }
+    }
     #endregion
+
     [StorableConstructor]
     protected SymbolicExpressionTreeCreator(bool deserializing) : base(deserializing) { }
     protected SymbolicExpressionTreeCreator(SymbolicExpressionTreeCreator original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicExpressionTreeCreator()
       : base() {
       Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree that should be created."));
+      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName,
+        "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName,
+        "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ClonedSymbolicExpressionTreeGrammarParameterName))
+        Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName, "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
     }
 
     public override IOperation InstrumentedApply() {
-      SymbolicExpressionTree = Create(Random);
+      if (ClonedSymbolicExpressionTreeGrammarParameter.ActualValue == null) {
+        SymbolicExpressionTreeGrammarParameter.ActualValue.ReadOnly = true;
+        IScope globalScope = ExecutionContext.Scope;
+        while (globalScope.Parent != null)
+          globalScope = globalScope.Parent;
+
+        globalScope.Variables.Add(new Variable(ClonedSymbolicExpressionTreeGrammarParameterName,
+          (ISymbolicExpressionGrammar)SymbolicExpressionTreeGrammarParameter.ActualValue.Clone()));
+      }
+      SymbolicExpressionTreeParameter.ActualValue = Create(Random);
       return base.InstrumentedApply();
     }
 

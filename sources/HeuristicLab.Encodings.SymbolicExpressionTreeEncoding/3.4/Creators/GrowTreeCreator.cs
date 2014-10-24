@@ -37,8 +37,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                                  ISymbolicExpressionTreeGrammarBasedOperator {
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
-    private const string SymbolicExpressionTreeGrammarParameterName = "SymbolicExpressionTreeGrammar";
-    private const string ClonedSymbolicExpressionTreeGrammarParameterName = "ClonedSymbolicExpressionTreeGrammar";
 
     #region Parameter Properties
     public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
@@ -47,14 +45,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeDepthParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeDepthParameterName]; }
-    }
-
-    public IValueLookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionTreeGrammarParameter {
-      get { return (IValueLookupParameter<ISymbolicExpressionGrammar>)Parameters[SymbolicExpressionTreeGrammarParameterName]; }
-    }
-
-    public ILookupParameter<ISymbolicExpressionGrammar> ClonedSymbolicExpressionTreeGrammarParameter {
-      get { return (ILookupParameter<ISymbolicExpressionGrammar>)Parameters[ClonedSymbolicExpressionTreeGrammarParameterName]; }
     }
 
     #endregion
@@ -66,11 +56,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public IntValue MaximumSymbolicExpressionTreeLength {
       get { return MaximumSymbolicExpressionTreeLengthParameter.ActualValue; }
     }
-
-    public ISymbolicExpressionGrammar ClonedSymbolicExpressionTreeGrammar {
-      get { return ClonedSymbolicExpressionTreeGrammarParameter.ActualValue; }
-    }
-
     #endregion
 
     [StorableConstructor]
@@ -83,31 +68,15 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         "The maximal length (number of nodes) of the symbolic expression tree (this parameter is ignored)."));
       Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName,
         "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
-      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName,
-        "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
-      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName,
-        "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GrowTreeCreator(this, cloner);
     }
 
-    public override IOperation InstrumentedApply() {
-      if (ClonedSymbolicExpressionTreeGrammarParameter.ActualValue == null) {
-        SymbolicExpressionTreeGrammarParameter.ActualValue.ReadOnly = true;
-        IScope globalScope = ExecutionContext.Scope;
-        while (globalScope.Parent != null)
-          globalScope = globalScope.Parent;
-
-        globalScope.Variables.Add(new Variable(ClonedSymbolicExpressionTreeGrammarParameterName,
-          (ISymbolicExpressionGrammar)SymbolicExpressionTreeGrammarParameter.ActualValue.Clone()));
-      }
-      return base.InstrumentedApply();
-    }
 
     protected override ISymbolicExpressionTree Create(IRandom random) {
-      return Create(random, ClonedSymbolicExpressionTreeGrammar,
+      return Create(random, ClonedSymbolicExpressionTreeGrammarParameter.ActualValue,
         MaximumSymbolicExpressionTreeLength.Value, MaximumSymbolicExpressionTreeDepth.Value);
     }
 
@@ -127,12 +96,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public static ISymbolicExpressionTree Create(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
       var tree = new SymbolicExpressionTree();
       var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.ProgramRootSymbol.CreateTreeNode();
-      rootNode.SetGrammar(new SymbolicExpressionTreeGrammar(grammar));
       if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);
+      rootNode.SetGrammar(grammar.CreateExpressionTreeGrammar());
+
 
       var startNode = (SymbolicExpressionTreeTopLevelNode)grammar.StartSymbol.CreateTreeNode();
       if (startNode.HasLocalParameters) startNode.ResetLocalParameters(random);
-      startNode.SetGrammar(new SymbolicExpressionTreeGrammar(grammar));
+      startNode.SetGrammar(grammar.CreateExpressionTreeGrammar());
 
       rootNode.AddSubtree(startNode);
 
