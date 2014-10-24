@@ -46,6 +46,7 @@ namespace HeuristicLab.Tests {
       foreach (Type deepCloneableType in ApplicationManager.Manager.GetTypes(typeof(IDeepCloneable))) {
         //test only types contained in HL plugin assemblies
         if (!PluginLoader.Assemblies.Contains(deepCloneableType.Assembly)) continue;
+        if (deepCloneableType.IsSealed) continue;
 
         bool found = false;
         foreach (ConstructorInfo constructor in deepCloneableType.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {

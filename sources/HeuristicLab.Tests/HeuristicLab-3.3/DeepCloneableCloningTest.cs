@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
@@ -53,6 +54,7 @@ namespace HeuristicLab.Tests {
       excludedTypes.Add(typeof(HeuristicLab.Problems.TravelingSalesman.DistanceMatrix));
       excludedTypes.Add(typeof(HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution));
       excludedTypes.Add(typeof(HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution));
+      excludedTypes.Add(typeof(SymbolicExpressionGrammar).Assembly.GetType("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.EmptySymbolicExpressionTreeGrammar"));
 
       foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbol)))
         excludedTypes.Add(symbolType);
