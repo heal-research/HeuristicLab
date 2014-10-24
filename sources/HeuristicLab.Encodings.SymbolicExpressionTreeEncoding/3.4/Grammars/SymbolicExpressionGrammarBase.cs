@@ -63,10 +63,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     #endregion
 
     private bool suppressEvents;
-    protected Dictionary<string, ISymbol> symbols;
-    protected Dictionary<string, Tuple<int, int>> symbolSubtreeCount;
-    protected Dictionary<string, List<string>> allowedChildSymbols;
-    protected Dictionary<Tuple<string, int>, List<string>> allowedChildSymbolsPerIndex;
+    protected internal Dictionary<string, ISymbol> symbols;
+    protected internal Dictionary<string, Tuple<int, int>> symbolSubtreeCount;
+    protected internal Dictionary<string, List<string>> allowedChildSymbols;
+    protected internal Dictionary<Tuple<string, int>, List<string>> allowedChildSymbolsPerIndex;
 
     public override bool CanChangeName {
       get { return false; }

@@ -135,6 +135,7 @@
     <Compile Include="Creators\RampedHalfAndHalfTreeCreator.cs" />
     <Compile Include="Formatters\SymbolicExpressionTreeGraphvizFormatter.cs" />
     <Compile Include="Formatters\SymbolicExpressionTreeHierarchicalFormatter.cs" />
+    <Compile Include="Grammars\EmptySymbolicExpressionTreeGrammar.cs" />
     <Compile Include="Interfaces\IReadOnlySymbol.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammarBase.cs" />
@@ -165,9 +166,9 @@
     <Compile Include="Manipulators\OnePointShaker.cs" />
     <Compile Include="Manipulators\SymbolicExpressionTreeManipulator.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="SymbolicExpressionGrammarBase.cs" />
-    <Compile Include="SymbolicExpressionGrammar.cs" />
-    <Compile Include="SymbolicExpressionTreeGrammar.cs" />
+    <Compile Include="Grammars\SymbolicExpressionGrammarBase.cs" />
+    <Compile Include="Grammars\SymbolicExpressionGrammar.cs" />
+    <Compile Include="Grammars\SymbolicExpressionTreeGrammar.cs" />
     <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs">
       <SubType>Code</SubType>

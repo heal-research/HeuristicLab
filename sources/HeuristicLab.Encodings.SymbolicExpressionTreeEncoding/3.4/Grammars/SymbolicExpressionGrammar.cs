@@ -109,6 +109,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       get { return defunSymbol; }
       set { defunSymbol = (Defun)value; }
     }
+
+    private readonly ISymbolicExpressionTreeGrammar emptyGrammar;
     #endregion
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -116,10 +118,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       foreach (ISymbol symbol in symbols.Values)
         RegisterSymbolEvents(symbol);
     }
+
     [StorableConstructor]
-    protected SymbolicExpressionGrammar(bool deserializing) : base(deserializing) { }
+    protected SymbolicExpressionGrammar(bool deserializing)
+      : base(deserializing) {
+      emptyGrammar = new EmptySymbolicExpressionTreeGrammar(this);
+    }
     protected SymbolicExpressionGrammar(SymbolicExpressionGrammar original, Cloner cloner)
       : base(original, cloner) {
+      emptyGrammar = new EmptySymbolicExpressionTreeGrammar(this);
+
       foreach (ISymbol symbol in symbols.Values)
         RegisterSymbolEvents(symbol);
 
@@ -133,8 +141,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       minimumFunctionDefinitions = original.minimumFunctionDefinitions;
     }
 
-    public SymbolicExpressionGrammar(string name, string description)
+    protected SymbolicExpressionGrammar(string name, string description)
       : base(name, description) {
+      emptyGrammar = new EmptySymbolicExpressionTreeGrammar(this);
+
       programRootSymbol = new ProgramRootSymbol();
       AddSymbol(programRootSymbol);
       SetSubtreeCount(programRootSymbol, 1, 1);
@@ -159,6 +169,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         RemoveAllowedChildSymbol(programRootSymbol, defunSymbol, argumentIndex);
         AddAllowedChildSymbol(programRootSymbol, defunSymbol, argumentIndex);
       }
+    }
+
+    public ISymbolicExpressionTreeGrammar CreateExpressionTreeGrammar() {
+      if (MaximumFunctionDefinitions == 0) return emptyGrammar;
+      else return new SymbolicExpressionTreeGrammar(this);
     }
 
     protected override sealed void AddSymbol(ISymbol symbol) {
