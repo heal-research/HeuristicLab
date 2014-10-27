@@ -127,8 +127,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     void ISymbolicExpressionTreeGrammar.SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
       throw new NotSupportedException();
     }
-
+    
+    #pragma warning disable 0169 //disable usage warning
     public event EventHandler Changed;
+    #pragma warning restore 0169
     #endregion
   }
 }
