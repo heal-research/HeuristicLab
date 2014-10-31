@@ -29,25 +29,18 @@ using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for GeSymbolicRegressionSampleTest
-  /// </summary>
   [TestClass]
   public class GeSymbolicRegressionSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
-
     #region artificial ant
+    private const string GeArtificialAntSampleFileName = "GE_ArtificialAnt";
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGeArtificialAntSampleTest() {
       var geaa = CreateGeArtificialAntSample();
-      XmlGenerator.Serialize(geaa, @"Samples\GE_ArtificialAnt.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, GeArtificialAntSampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(geaa, path);
     }
 
     [TestMethod]
@@ -61,6 +54,7 @@ namespace HeuristicLab.Tests {
 
     public OffspringSelectionGeneticAlgorithm CreateGeArtificialAntSample() {
       OffspringSelectionGeneticAlgorithm ga = new OffspringSelectionGeneticAlgorithm();
+
       #region Problem Configuration
       var problem = new HeuristicLab.Problems.GrammaticalEvolution.GEArtificialAntProblem();
       #endregion
@@ -71,18 +65,21 @@ namespace HeuristicLab.Tests {
       SamplesUtils.ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
         ga, 200, 1, 50, 0.05, 200);
       #endregion
+
       return ga;
     }
     #endregion
 
     #region symbolic regression
-    #endregion
+    private const string GeSymbolicRegressionSampleFileName = "GE_SymbReg";
+
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGeSymbolicRegressionSampleTest() {
       var geSymbReg = CreateGeSymbolicRegressionSample();
-      XmlGenerator.Serialize(geSymbReg, @"Samples\GE_SymbReg.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, GeSymbolicRegressionSampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(geSymbReg, path);
     }
 
     [TestMethod]
@@ -96,6 +93,7 @@ namespace HeuristicLab.Tests {
 
     public OffspringSelectionGeneticAlgorithm CreateGeSymbolicRegressionSample() {
       var ga = new OffspringSelectionGeneticAlgorithm();
+
       #region Problem Configuration
       var problem = new HeuristicLab.Problems.GrammaticalEvolution.GESymbolicRegressionSingleObjectiveProblem();
 
@@ -115,7 +113,9 @@ namespace HeuristicLab.Tests {
       SamplesUtils.ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, Encodings.IntegerVectorEncoding.SinglePointCrossover, Encodings.IntegerVectorEncoding.UniformOnePositionManipulator>(
         ga, 1000, 1, 50, 0.05, 200);
       #endregion
+
       return ga;
     }
+    #endregion
   }
 }

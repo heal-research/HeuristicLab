@@ -29,24 +29,17 @@ using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for GPArtificialAntSampleTest
-  /// </summary>
   [TestClass]
   public class GPArtificialAntSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "SGP_SantaFe";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGpArtificialAntSampleTest() {
       var ga = CreateGpArtificialAntSample();
-      XmlGenerator.Serialize(ga, @"Samples\SGP_SantaFe.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(ga, path);
     }
 
     [TestMethod]
@@ -64,6 +57,7 @@ namespace HeuristicLab.Tests {
 
     public GeneticAlgorithm CreateGpArtificialAntSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
+
       #region Problem Configuration
       ArtificialAntProblem antProblem = new ArtificialAntProblem();
       antProblem.BestKnownQuality.Value = 89;
@@ -93,6 +87,7 @@ namespace HeuristicLab.Tests {
         .OfType<SubroutineDeleter>()
         .Single(), false);
       #endregion
+
       return ga;
     }
   }

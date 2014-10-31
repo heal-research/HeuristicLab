@@ -32,19 +32,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class GPMultiplexerSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "GP_Multiplexer";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGpMultiplexerSampleTest() {
       var ga = CreateGpMultiplexerSample();
-      var path = Path.Combine(samplesDirectory, "GP_Multiplexer.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
       XmlGenerator.Serialize(ga, path);
     }
     [TestMethod]

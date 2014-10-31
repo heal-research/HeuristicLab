@@ -29,24 +29,17 @@ using HeuristicLab.Problems.VehicleRouting.Encodings.Potvin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for TabuSearchVRPSampleTest
-  /// </summary>
   [TestClass]
   public class TabuSearchVRPSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "TS_VRP";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateTabuSearchVRPSampleTest() {
       var vrp = CreateTabuSearchVrpSample();
-      XmlGenerator.Serialize(vrp, @"Samples\TS_VRP.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(vrp, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

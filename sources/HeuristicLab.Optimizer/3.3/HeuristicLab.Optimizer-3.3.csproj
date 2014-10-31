@@ -134,10 +134,10 @@
     <EmbeddedResource Include="Documents\OSGA_Rastrigin_Script.hl" />
     <EmbeddedResource Include="Documents\GP_Multiplexer.hl" />
     <EmbeddedResource Include="Documents\OSGP_TimeSeries.hl" />
-    <EmbeddedResource Include="Documents\GridSearch_RF_Classification.hl" />
-    <EmbeddedResource Include="Documents\GridSearch_RF_Regression.hl" />
-    <EmbeddedResource Include="Documents\GridSearch_SVM_Classification.hl" />
-    <EmbeddedResource Include="Documents\GridSearch_SVM_Regression.hl" />
+    <EmbeddedResource Include="Documents\GridSearch_RF_Classification_Script.hl" />
+    <EmbeddedResource Include="Documents\GridSearch_RF_Regression_Script.hl" />
+    <EmbeddedResource Include="Documents\GridSearch_SVM_Classification_Script.hl" />
+    <EmbeddedResource Include="Documents\GridSearch_SVM_Regression_Script.hl" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="OptimizerSingleDocumentMainForm.cs">
       <SubType>Form</SubType>

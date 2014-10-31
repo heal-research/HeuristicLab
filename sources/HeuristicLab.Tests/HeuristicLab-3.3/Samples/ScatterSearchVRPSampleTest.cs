@@ -28,24 +28,17 @@ using HeuristicLab.Problems.VehicleRouting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for ScatterSearchVRPSampleTest
-  /// </summary>
   [TestClass]
   public class ScatterSearchVRPSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "SS_VRP";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateScatterSearchVRPSampleTest() {
       var ss = CreateScatterSearchVRPSample();
-      XmlGenerator.Serialize(ss, @"Samples\SS_VRP.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(ss, path);
     }
 
     [TestMethod]

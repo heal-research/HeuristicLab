@@ -28,25 +28,17 @@ using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for EsGriewankSampleTest
-  /// </summary>
   [TestClass]
   public class EsGriewankSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "ES_Griewank";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateEsGriewankSampleTest() {
       var es = CreateEsGriewankSample();
-      XmlGenerator.Serialize(es, @"Samples\ES_Griewank.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(es, path);
     }
 
     [TestMethod]

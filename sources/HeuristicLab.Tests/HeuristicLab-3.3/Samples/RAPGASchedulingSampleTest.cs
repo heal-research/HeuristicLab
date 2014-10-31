@@ -28,24 +28,17 @@ using HeuristicLab.Problems.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for RAPGASchedulingSampleTest
-  /// </summary>
   [TestClass]
   public class RAPGASchedulingSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "RAPGA_JSSP";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateRAPGASchedulingSampleTest() {
       var ss = CreateRAPGASchedulingSample();
-      XmlGenerator.Serialize(ss, @"Samples\RAPGA_JSSP.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(ss, path);
     }
 
     [TestMethod]

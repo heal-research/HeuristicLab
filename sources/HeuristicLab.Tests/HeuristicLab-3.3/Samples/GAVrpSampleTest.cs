@@ -33,25 +33,17 @@ using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for GAVrpSampleTest
-  /// </summary>
   [TestClass]
   public class GAVrpSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
-
+    private const string SampleFileName = "GA_VRP";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGaVrpSampleTest() {
       var ga = CreateGaVrpSample();
-      XmlGenerator.Serialize(ga, @"Samples\GA_VRP.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(ga, path);
     }
 
     [TestMethod]
@@ -69,6 +61,7 @@ namespace HeuristicLab.Tests {
 
     private GeneticAlgorithm CreateGaVrpSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
+
       #region Problem Configuration
       VehicleRoutingProblem vrpProblem = new VehicleRoutingProblem();
 
@@ -116,6 +109,7 @@ namespace HeuristicLab.Tests {
         .OfType<PotvinTwoLevelExchangeManipulator>()
         .Single(), true);
       #endregion
+
       return ga;
     }
   }

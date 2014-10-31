@@ -30,24 +30,17 @@ using HeuristicLab.Problems.TravelingSalesman;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for VnsTspSampleTest
-  /// </summary>
   [TestClass]
   public class VnsTspSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "VNS_TSP";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateVnsTspSampleTest() {
       var vns = CreateVnsTspSample();
-      XmlGenerator.Serialize(vns, @"Samples\VNS_TSP.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(vns, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

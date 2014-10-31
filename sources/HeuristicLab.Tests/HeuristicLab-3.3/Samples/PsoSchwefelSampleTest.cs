@@ -31,24 +31,17 @@ using HeuristicLab.Problems.TestFunctions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for PsoSchwefelSampleTest
-  /// </summary>
   [TestClass]
   public class PsoSchwefelSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "PSO_Schwefel";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreatePsoSchwefelSampleTest() {
       var pso = CreatePsoSchwefelSample();
-      XmlGenerator.Serialize(pso, @"Samples\PSO_Schwefel.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(pso, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

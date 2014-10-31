@@ -11,7 +11,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   public static class SamplesUtils {
-    public const string Directory = @"Samples\";
+    public const string SamplesDirectory = @"Samples\";
+    public const string SampleFileExtension = ".hl";
 
     public static void RunAlgorithm(IAlgorithm a) {
       var trigger = new EventWaitHandle(false, EventResetMode.ManualReset);

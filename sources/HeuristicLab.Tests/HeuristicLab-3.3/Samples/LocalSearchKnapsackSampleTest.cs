@@ -29,24 +29,17 @@ using HeuristicLab.Problems.Knapsack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for LocalSearchKnapsackSampleTest
-  /// </summary>
   [TestClass]
   public class LocalSearchKnapsackSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "LS_Knapsack";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateLocalSearchKnapsackSampleTest() {
       var ls = CreateLocalSearchKnapsackSample();
-      XmlGenerator.Serialize(ls, @"Samples\LS_Knapsack.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(ls, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

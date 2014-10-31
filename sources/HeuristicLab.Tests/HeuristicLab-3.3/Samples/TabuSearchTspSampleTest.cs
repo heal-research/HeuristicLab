@@ -29,25 +29,17 @@ using HeuristicLab.Problems.TravelingSalesman;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for TabuSearchTspSampleTest
-  /// </summary>
   [TestClass]
   public class TabuSearchTspSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
-
+    private const string SampleFileName = "TS_TSP";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateTabuSearchTspSampleTest() {
       var ts = CreateTabuSearchTspSample();
-      XmlGenerator.Serialize(ts, @"Samples\TS_TSP.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(ts, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]

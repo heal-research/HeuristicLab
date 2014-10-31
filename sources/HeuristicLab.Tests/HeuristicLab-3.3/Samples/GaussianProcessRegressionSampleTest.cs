@@ -28,25 +28,19 @@ using HeuristicLab.Problems.Instances.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for GaussianProcessRegressionSampleTest
-  /// </summary>
   [TestClass]
   public class GaussianProcessRegressionSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "GPR";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGaussianProcessRegressionSampleTest() {
       var gpr = CreateGaussianProcessRegressionSample();
-      XmlGenerator.Serialize(gpr, @"Samples\GPR.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(gpr, path);
     }
+
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestProperty("Time", "long")]
@@ -65,6 +59,7 @@ namespace HeuristicLab.Tests {
       var instance = provider.GetDataDescriptors().Where(x => x.Name.Contains("Spatial co-evolution")).Single();
       var regProblem = new RegressionProblem();
       regProblem.Load(provider.LoadData(instance));
+
       #region Algorithm Configuration
       gpr.Name = "Gaussian Process Regression";
       gpr.Description = "A Gaussian process regression algorithm which solves the spatial co-evolution benchmark problem";
@@ -76,6 +71,7 @@ namespace HeuristicLab.Tests {
       gpr.Seed = 0;
       gpr.SetSeedRandomly = true;
       #endregion
+
       gpr.Engine = new ParallelEngine.ParallelEngine();
       return gpr;
     }

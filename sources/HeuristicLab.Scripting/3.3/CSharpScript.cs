@@ -134,6 +134,7 @@ public class MyScript : HeuristicLab.Scripting.CSharpScriptBase {
           OnScriptExecutionFinished(ex);
         }
       });
+      scriptThread.SetApartmentState(ApartmentState.STA);
       scriptThread.Start();
     }
 

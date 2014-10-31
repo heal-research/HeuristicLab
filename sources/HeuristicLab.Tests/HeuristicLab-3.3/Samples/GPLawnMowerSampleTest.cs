@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.IO;
 using System.Linq;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -27,18 +26,8 @@ using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for GPLawnMowerSampleTest
-  /// </summary>
   [TestClass]
   public class GPLawnMowerSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
-
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestProperty("Time", "long")]
@@ -56,7 +45,6 @@ namespace HeuristicLab.Tests {
       var problem = new HeuristicLab.Problems.LawnMower.Problem();
 
       #endregion
-
       #region Algorithm Configuration
 
       ga.Name = "Genetic Programming - Lawn Mower";

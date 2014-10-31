@@ -32,21 +32,17 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class GATspSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
-
+    private const string SampleFileName = "GA_TSP";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGaTspSampleTest() {
       var ga = CreateGaTspSample();
-      XmlGenerator.Serialize(ga, @"Samples\GA_TSP.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
+      XmlGenerator.Serialize(ga, path);
     }
+
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestProperty("Time", "long")]
@@ -62,6 +58,7 @@ namespace HeuristicLab.Tests {
 
     private GeneticAlgorithm CreateGaTspSample() {
       GeneticAlgorithm ga = new GeneticAlgorithm();
+
       #region Problem Configuration
       var provider = new TSPLIBTSPInstanceProvider();
       var instance = provider.GetDataDescriptors().Where(x => x.Name == "ch130").Single();
@@ -76,6 +73,7 @@ namespace HeuristicLab.Tests {
       SamplesUtils.ConfigureGeneticAlgorithmParameters<ProportionalSelector, OrderCrossover2, InversionManipulator>(
         ga, 100, 1, 1000, 0.05);
       #endregion
+
       return ga;
     }
   }
