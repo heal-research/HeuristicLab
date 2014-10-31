@@ -4,7 +4,6 @@ using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.MainForm;
 using HeuristicLab.Problems.Instances.QAPLIB;
 using HeuristicLab.Problems.QuadraticAssignment;
 using HeuristicLab.Random;
@@ -39,7 +38,6 @@ public class GAQAPScript : HeuristicLab.Scripting.CSharpScriptBase {
     var qualityRow = new DataRow("Best Quality");
     qualityChart.Rows.Add(qualityRow);
     vars.qualityChart = qualityChart;
-    MainFormManager.MainForm.ShowContent(qualityChart);
 
     for (int i = 0; i < popSize; i++) {
       population[i] = new Permutation(PermutationTypes.Absolute, qap.Weights.Rows, random);

@@ -16,9 +16,6 @@ namespace HeuristicLab.Tests {
       // create output directories for samples and scripts
       if (!Directory.Exists(SamplesDirectory)) Directory.CreateDirectory(SamplesDirectory);
       if (!Directory.Exists(ScriptsDirectory)) Directory.CreateDirectory(ScriptsDirectory);
-
-      // initialize the MainForm
-      ScriptingUtils.InitializeMainForm();
     }
   }
 }

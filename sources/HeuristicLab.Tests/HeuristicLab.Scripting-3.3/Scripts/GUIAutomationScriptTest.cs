@@ -20,9 +20,6 @@
 #endregion
 
 using System.IO;
-using System.Linq;
-using HeuristicLab.MainForm;
-using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -42,21 +39,6 @@ namespace HeuristicLab.Tests {
       var script = CreateGUIAutomationScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
       XmlGenerator.Serialize(script, path);
-    }
-
-    [TestMethod]
-    [TestCategory("Scripts.Execute")]
-    [TestProperty("Time", "long")]
-    public void RunGUIAutomationScriptTest() {
-      var script = CreateGUIAutomationScript();
-
-      script.Compile();
-      ScriptingUtils.RunScript(script);
-
-      var experiment = ScriptingUtils.GetVariable<Experiment>(script, ExperimentVariableName);
-      var contentViews = MainFormManager.MainForm.Views.OfType<IContentView>().ToList();
-      Assert.IsNotNull(contentViews.SingleOrDefault(x => x.Content == experiment));
-      Assert.IsNotNull(contentViews.SingleOrDefault(x => x.Content == experiment.Runs));
     }
 
     private CSharpScript CreateGUIAutomationScript() {

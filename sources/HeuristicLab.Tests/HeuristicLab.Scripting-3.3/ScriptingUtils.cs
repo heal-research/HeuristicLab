@@ -22,8 +22,6 @@
 using System;
 using System.IO;
 using System.Threading;
-using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -52,12 +50,6 @@ namespace HeuristicLab.Tests {
     public static string LoadScriptCodeFromFile(string scriptName) {
       string path = Path.Combine(ScriptSourcesDirectory, scriptName + ScriptSourceFileExtension);
       return File.ReadAllText(path);
-    }
-
-    public static void InitializeMainForm() {
-      MainFormManager.RegisterMainForm(new DockingMainForm());
-      var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
-      mainForm.ShowContentInViewHost = true;
     }
   }
 }
