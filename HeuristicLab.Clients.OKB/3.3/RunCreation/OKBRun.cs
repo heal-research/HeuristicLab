@@ -21,9 +21,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using HeuristicLab.Clients.Access;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -50,7 +52,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       private set {
         if (value != stored) {
           stored = value;
-          OnStoredChanged();
+          OnPropertyChanged("Stored");
           OnItemImageChanged();
         }
       }
@@ -59,10 +61,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     public IAlgorithm Algorithm {
       get { return WrappedItem.Algorithm; }
     }
-    public IDictionary<string, IItem> Parameters {
+    public IObservableDictionary<string, IItem> Parameters {
       get { return WrappedItem.Parameters; }
     }
-    public IDictionary<string, IItem> Results {
+    public IObservableDictionary<string, IItem> Results {
       get { return WrappedItem.Results; }
     }
     public IRun WrappedRun {
@@ -161,28 +163,23 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     #region Events
-    public event EventHandler Changed;
-    private void OnChanged() {
-      var handler = Changed;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-    public event EventHandler StoredChanged;
-    private void OnStoredChanged() {
-      var handler = StoredChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void OnPropertyChanged(string property) {
+      var handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(property));
     }
 
     protected override void RegisterWrappedItemEvents() {
       base.RegisterWrappedItemEvents();
-      WrappedItem.Changed += new EventHandler(WrappedItem_Changed);
+      WrappedItem.PropertyChanged += WrappedItem_PropertyChanged;
     }
     protected override void DeregisterWrappedItemEvents() {
-      WrappedItem.Changed -= new EventHandler(WrappedItem_Changed);
+      WrappedItem.PropertyChanged -= WrappedItem_PropertyChanged;
       base.DeregisterWrappedItemEvents();
     }
 
-    private void WrappedItem_Changed(object sender, EventArgs e) {
-      OnChanged();
+    private void WrappedItem_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      OnPropertyChanged(e.PropertyName);
     }
     #endregion
 

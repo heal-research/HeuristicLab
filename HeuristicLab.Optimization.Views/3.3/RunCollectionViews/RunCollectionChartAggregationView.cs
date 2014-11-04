@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Analysis;
@@ -110,15 +111,20 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void RegisterRunEvents(IRun run) {
-      run.Changed += new System.EventHandler(run_Changed);
+      run.PropertyChanged += run_PropertyChanged;
     }
     private void DeregisterRunEvents(IRun run) {
-      run.Changed -= new System.EventHandler(run_Changed);
+      run.PropertyChanged -= run_PropertyChanged;
     }
-    private void run_Changed(object sender, EventArgs e) {
+    private void run_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       if (suppressUpdates) return;
-      var run = (IRun)sender;
-      UpdateRuns(new IRun[] { run });
+      if (InvokeRequired) {
+        Invoke((Action<object, PropertyChangedEventArgs>)run_PropertyChanged, sender, e);
+      } else {
+        var run = (IRun)sender;
+        if (e.PropertyName == "Color" || e.PropertyName == "Visible")
+          UpdateRuns(new IRun[] { run });
+      }
     }
     #endregion
 

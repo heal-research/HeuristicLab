@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -91,11 +92,11 @@ namespace HeuristicLab.Optimization.Views {
 
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed += new EventHandler(run_Changed);
+        run.PropertyChanged += run_PropertyChanged;
     }
     protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed -= new EventHandler(run_Changed);
+        run.PropertyChanged -= run_PropertyChanged;
     }
 
     private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
@@ -132,11 +133,12 @@ namespace HeuristicLab.Optimization.Views {
         UpdateComboBoxes();
       }
     }
-    private void run_Changed(object sender, EventArgs e) {
+    private void run_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       if (InvokeRequired)
-        this.Invoke(new EventHandler(run_Changed), sender, e);
+        this.Invoke((Action<object, PropertyChangedEventArgs>)run_PropertyChanged, sender, e);
       else if (!suppressUpdates) {
-        UpdateDataPoints();
+        if (e.PropertyName == "Visible")
+          UpdateDataPoints();
       }
     }
 

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -65,11 +66,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     }
     private void RegisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed += Run_Changed;
+        run.PropertyChanged += Run_PropertyChanged;
     }
     private void DeregisterRunEvents(IEnumerable<IRun> runs) {
       foreach (IRun run in runs)
-        run.Changed -= Run_Changed;
+        run.PropertyChanged -= Run_PropertyChanged;
     }
     private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
@@ -87,8 +88,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
       if (!Content.UpdateOfRunsInProgress) UpdateData();
     }
-    private void Run_Changed(object sender, EventArgs e) {
-      if (!Content.UpdateOfRunsInProgress) UpdateData();
+    private void Run_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      if (!Content.UpdateOfRunsInProgress && e.PropertyName == "Visible")
+        UpdateData();
     }
     #endregion
 

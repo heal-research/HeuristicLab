@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -78,12 +79,12 @@ namespace HeuristicLab.Optimization.Views {
     private void DeregisterItemEvents(IRun item) {
       item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
       item.ToStringChanged -= new EventHandler(Item_ToStringChanged);
-      item.Changed -= new EventHandler(Item_Changed);
+      item.PropertyChanged -= Item_PropertyChanged;
     }
     private void RegisterItemEvents(IRun item) {
       item.ItemImageChanged += new EventHandler(Item_ItemImageChanged);
       item.ToStringChanged += new EventHandler(Item_ToStringChanged);
-      item.Changed += new EventHandler(Item_Changed);
+      item.PropertyChanged += Item_PropertyChanged;
     }
 
     protected override void OnInitialized(EventArgs e) {
@@ -384,8 +385,7 @@ namespace HeuristicLab.Optimization.Views {
       ReadOnly = true;
       try {
         RunCollection.Modify();
-      }
-      finally {
+      } finally {
         ReadOnly = false;
       }
     }
@@ -461,12 +461,13 @@ namespace HeuristicLab.Optimization.Views {
         AdjustListViewColumnSizes();
       }
     }
-    private void Item_Changed(object sender, EventArgs e) {
+    private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
       if (InvokeRequired)
-        this.Invoke(new EventHandler(Item_Changed), sender, e);
+        this.Invoke((Action<object, PropertyChangedEventArgs>)Item_PropertyChanged, sender, e);
       else {
         IRun run = (IRun)sender;
-        UpdateRun(run);
+        if (e.PropertyName == "Color" || e.PropertyName == "Visible")
+          UpdateRun(run);
       }
     }
 

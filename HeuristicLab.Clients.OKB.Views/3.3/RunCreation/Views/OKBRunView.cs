@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -39,12 +40,12 @@ namespace HeuristicLab.Clients.OKB.RunCreation.Views {
     }
 
     protected override void DeregisterContentEvents() {
-      Content.StoredChanged -= new System.EventHandler(Content_StoredChanged);
+      Content.PropertyChanged -= Content_PropertyChanged;
       base.DeregisterContentEvents();
     }
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.StoredChanged += new System.EventHandler(Content_StoredChanged);
+      Content.PropertyChanged += Content_PropertyChanged;
     }
 
     protected override void OnContentChanged() {
@@ -58,8 +59,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation.Views {
     }
 
     #region Content Events
-    private void Content_StoredChanged(object sender, System.EventArgs e) {
-      storeButton.Enabled = !Content.Stored;
+    private void Content_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      if (e.PropertyName == "Stored")
+        storeButton.Enabled = !Content.Stored;
     }
     #endregion
 
@@ -67,12 +69,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation.Views {
     private void storeButton_Click(object sender, System.EventArgs e) {
       try {
         Content.Store();
-      }
-      catch (MissingClientRegistrationException) {
+      } catch (MissingClientRegistrationException) {
         MessageBox.Show("You have to register your client to be able to store OKB runs." + Environment.NewLine
           + " Please click in the menu bar on Services -> Access -> Client Information and register your client. ", "Missing client registration", MessageBoxButtons.OK, MessageBoxIcon.Information);
-      }
-      catch (Exception ex) {
+      } catch (Exception ex) {
         ErrorHandling.ShowErrorDialog(this, "Store failed.", ex);
       }
     }

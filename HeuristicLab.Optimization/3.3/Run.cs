@@ -21,8 +21,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -43,14 +44,15 @@ namespace HeuristicLab.Optimization {
       color = original.color;
       algorithm = cloner.Clone(original.algorithm);
 
-      parameters = new Dictionary<string, IItem>();
+      parameters = new ObservableDictionary<string, IItem>();
       foreach (string key in original.parameters.Keys)
         parameters.Add(key, cloner.Clone(original.parameters[key]));
 
-      results = new Dictionary<string, IItem>();
+      results = new ObservableDictionary<string, IItem>();
       foreach (string key in original.results.Keys)
         results.Add(key, cloner.Clone(original.results[key]));
     }
+
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Run(this, cloner);
     }
@@ -61,8 +63,8 @@ namespace HeuristicLab.Optimization {
       description = ItemDescription;
       color = Color.Black;
       algorithm = null;
-      parameters = new Dictionary<string, IItem>();
-      results = new Dictionary<string, IItem>();
+      parameters = new ObservableDictionary<string, IItem>();
+      results = new ObservableDictionary<string, IItem>();
     }
     public Run(IAlgorithm algorithm)
       : base() {
@@ -87,21 +89,23 @@ namespace HeuristicLab.Optimization {
     }
 
     private void Initialize(IAlgorithm algorithm) {
-      parameters = new Dictionary<string, IItem>();
-      results = new Dictionary<string, IItem>();
+      parameters = new ObservableDictionary<string, IItem>();
+      results = new ObservableDictionary<string, IItem>();
 
       if (algorithm.StoreAlgorithmInEachRun) {
-        IAlgorithm clone = (IAlgorithm)algorithm.Clone();
+        var clone = (IAlgorithm)algorithm.Clone();
         clone.CollectParameterValues(parameters);
         clone.CollectResultValues(results);
         clone.Runs.Clear();
         this.algorithm = clone;
       } else {
-        algorithm.CollectParameterValues(parameters);
-        algorithm.CollectResultValues(results);
-        Cloner cloner = new Cloner();
-        parameters = parameters.Select(x => new KeyValuePair<string, IItem>(x.Key, cloner.Clone(x.Value))).ToDictionary(x => x.Key, x => x.Value);
-        results = results.Select(x => new KeyValuePair<string, IItem>(x.Key, cloner.Clone(x.Value))).ToDictionary(x => x.Key, x => x.Value);
+        var par = new Dictionary<string, IItem>();
+        var res = new Dictionary<string, IItem>();
+        algorithm.CollectParameterValues(par);
+        algorithm.CollectResultValues(res);
+        var cloner = new Cloner();
+        foreach (var k in par) parameters.Add(k.Key, cloner.Clone(k.Value));
+        foreach (var k in res) results.Add(k.Key, cloner.Clone(k.Value));
       }
     }
     [StorableHook(HookType.AfterDeserialization)]
@@ -114,15 +118,45 @@ namespace HeuristicLab.Optimization {
     public IAlgorithm Algorithm {
       get { return algorithm; }
     }
-    [Storable]
-    private Dictionary<string, IItem> parameters;
-    public IDictionary<string, IItem> Parameters {
+
+    [Storable(Name = "parameters")]
+    private IDictionary<string, IItem> StorableParameters {
       get { return parameters; }
+      set {
+        if (!(value is IObservableDictionary<string, IItem>))
+          parameters = new ObservableDictionary<string, IItem>(value);
+        else parameters = (IObservableDictionary<string, IItem>)value;
+      }
     }
-    [Storable]
-    private Dictionary<string, IItem> results;
-    public IDictionary<string, IItem> Results {
+    private IObservableDictionary<string, IItem> parameters;
+    public IObservableDictionary<string, IItem> Parameters {
+      get { return parameters; }
+      private set {
+        if (parameters != value) {
+          parameters = value;
+          OnPropertyChanged("Parameters");
+        }
+      }
+    }
+
+    [Storable(Name = "results")]
+    private IDictionary<string, IItem> StorableResults {
       get { return results; }
+      set {
+        if (!(value is IObservableDictionary<string, IItem>))
+          results = new ObservableDictionary<string, IItem>(value);
+        else results = (IObservableDictionary<string, IItem>)value;
+      }
+    }
+    private IObservableDictionary<string, IItem> results;
+    public IObservableDictionary<string, IItem> Results {
+      get { return results; }
+      private set {
+        if (results != value) {
+          results = value;
+          OnPropertyChanged("Results");
+        }
+      }
     }
 
     [Storable]
@@ -132,7 +166,7 @@ namespace HeuristicLab.Optimization {
       set {
         if (color != value) {
           this.color = value;
-          this.OnChanged();
+          OnPropertyChanged("Color");
         }
       }
     }
@@ -142,15 +176,15 @@ namespace HeuristicLab.Optimization {
       set {
         if (visible != value) {
           this.visible = value;
-          this.OnChanged();
+          OnPropertyChanged("Visible");
         }
       }
     }
-    public event EventHandler Changed;
-    private void OnChanged() {
-      EventHandler handler = Changed;
-      if (handler != null)
-        handler(this, EventArgs.Empty);
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void OnPropertyChanged(string property) {
+      var handler = PropertyChanged;
+      if (handler != null) handler(this, new PropertyChangedEventArgs(property));
     }
   }
 }
