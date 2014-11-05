@@ -24,7 +24,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Views;
 using HeuristicLab.Problems.DataAnalysis.Views;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
@@ -53,7 +52,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
     }
 
     private void exportButton_Click(object sender, EventArgs e) {
-      var exporter = new SymbolicSolutionExcelExporter();
+      var exporter = new SymbolicDiscriminantFunctionClassificationSolutionExcelExporter();
       exportFileDialog.Filter = exporter.FileTypeFilter;
       if (exportFileDialog.ShowDialog(this) == DialogResult.OK) {
 
