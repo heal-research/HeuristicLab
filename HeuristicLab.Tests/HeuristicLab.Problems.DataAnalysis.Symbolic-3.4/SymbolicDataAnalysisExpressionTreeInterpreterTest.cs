@@ -338,7 +338,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(xor -1.0 2.0 3.0)", 0, -1.0);
       Evaluate(interpreter, ds, "(xor 1.0 2.0 3.0)", 0, 1.0);
       Evaluate(interpreter, ds, "(xor (log -1.0))", 0, -1.0);
-      Evaluate(interpreter, ds, "(xor (log -1.0)  1.0)", 0, 1.0); 
+      Evaluate(interpreter, ds, "(xor (log -1.0)  1.0)", 0, 1.0);
 
       // sin, cos, tan
       Evaluate(interpreter, ds, "(sin " + Math.PI.ToString(NumberFormatInfo.InvariantInfo) + ")", 0, 0.0);
@@ -477,7 +477,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       Assert.IsFalse(double.IsNaN(actual) && !double.IsNaN(expected));
       Assert.IsFalse(!double.IsNaN(actual) && double.IsNaN(expected));
-      Assert.AreEqual(expected, actual, 1.0E-12, expr);
+      if (!double.IsNaN(actual) && !double.IsNaN(expected))
+        Assert.AreEqual(expected, actual, 1.0E-12, expr);
     }
   }
 }
