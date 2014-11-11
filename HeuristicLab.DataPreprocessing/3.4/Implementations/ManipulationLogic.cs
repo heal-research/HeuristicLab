@@ -224,31 +224,31 @@ namespace HeuristicLab.DataPreprocessing {
       });
     }
 
-    public void ShuffleWithRanges() {
-      ShuffleWithRanges(new[] {
-        preprocessingData.TestPartition,
-        preprocessingData.TrainingPartition
-      });
-    }
-
-    public void ShuffleWithRanges(IEnumerable<IntRange> ranges) {
-      // init random outside loop
+    public void Shuffle(bool shuffleRangesSeparately) {
       Random random = new Random();
+      var ranges = new[] { preprocessingData.TestPartition, preprocessingData.TrainingPartition };
+      if (shuffleRangesSeparately) {
+        preprocessingData.InTransaction(() => {
+          // process all given ranges - e.g. TrainingPartition, TestPartition
+          foreach (IntRange range in ranges) {
+            List<Tuple<int, int>> shuffledIndices = new List<Tuple<int, int>>();
 
-      preprocessingData.InTransaction(() => {
-        // process all given ranges - e.g. TrainingPartition, TestPartition
-        foreach (IntRange range in ranges) {
-          List<Tuple<int, int>> shuffledIndices = new List<Tuple<int, int>>();
+            // generate random indices used for shuffeling each column
+            for (int i = range.End - 1; i >= range.Start; --i) {
+              int rand = random.Next(range.Start, i);
+              shuffledIndices.Add(new Tuple<int, int>(i, rand));
+            }
 
-          // generate random indices used for shuffeling each column
-          for (int i = range.End - 1; i >= range.Start; --i) {
-            int rand = random.Next(range.Start, i);
-            shuffledIndices.Add(new Tuple<int, int>(i, rand));
+            ShuffleToIndices(shuffledIndices);
           }
-
-          ShuffleToIndices(shuffledIndices);
-        }
-      });
+        });
+      } else {
+        preprocessingData.InTransaction(() => {
+          var indices = ranges.SelectMany(x => Enumerable.Range(x.Start, x.Size)).ToList();
+          var shuffledIndices = indices.OrderBy(x => random.Next());
+          ShuffleToIndices(indices.Zip(shuffledIndices, (i, j) => new Tuple<int, int>(i, j)).ToList());
+        });
+      }
     }
 
     public void ReOrderToIndices(IEnumerable<int> indices) {

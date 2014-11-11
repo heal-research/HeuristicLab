@@ -50,7 +50,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         ()=>validateDeleteColumnsVariance(),
         ()=>validateDeleteRowsInfo(),
         ()=>validateReplaceWith(),
-        ()=>{btnApply.Enabled = true; lblPreviewShuffle.Text = "Data will be shuffled randomly - preview not possible";} //shuffle
+        ()=>validateShuffle()
       };
 
       manipulations = new Action[] { 
@@ -58,9 +58,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
         ()=>Content.ManipulationLogic.DeleteColumnsWithVarianceSmaller(getDeleteColumnsVariance()),
         ()=>Content.ManipulationLogic.DeleteRowsWithMissingValuesGreater(getRowsColumnsInfo()),
         ()=>replaceMissingValues(),
-        ()=>Content.ManipulationLogic.ShuffleWithRanges()
+        ()=>Content.ManipulationLogic.Shuffle(shuffleSeparatelyCheckbox.Checked)
       };
-
     }
 
     protected override void OnContentChanged() {
@@ -225,6 +224,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
           btnApply.Enabled = false;
         }
       }
+    }
+
+    private void validateShuffle() {
+      btnApply.Enabled = true;
+      lblShuffleProperties.Enabled = false;
+      lblShuffleProperties.Visible = false;
+      shuffleSeparatelyCheckbox.Enabled = true;
+      shuffleSeparatelyCheckbox.Visible = true;
     }
 
     public new ManipulationContent Content {

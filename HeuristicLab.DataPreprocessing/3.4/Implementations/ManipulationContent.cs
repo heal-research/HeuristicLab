@@ -40,10 +40,10 @@ namespace HeuristicLab.DataPreprocessing {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
     }
 
-    public ManipulationContent(IManipulationLogic theManipulationLogic, ISearchLogic theSearchLogic, IFilterLogic theFitlerLogic) {
+    public ManipulationContent(IManipulationLogic theManipulationLogic, ISearchLogic theSearchLogic, IFilterLogic theFilterLogic) {
       manipulationLogic = theManipulationLogic;
       searchLogic = theSearchLogic;
-      filterLogic = theFitlerLogic;
+      filterLogic = theFilterLogic;
     }
 
     public ManipulationContent(ManipulationContent content, Cloner cloner) : base(content, cloner) { }
