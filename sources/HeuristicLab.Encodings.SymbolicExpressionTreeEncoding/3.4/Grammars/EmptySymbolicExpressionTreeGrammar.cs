@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private ISymbolicExpressionGrammar grammar;
 
     [StorableConstructor]
-    internal EmptySymbolicExpressionTreeGrammar(bool deserializing) : base(deserializing) {}
+    private EmptySymbolicExpressionTreeGrammar(bool deserializing) : base(deserializing) {}
     internal EmptySymbolicExpressionTreeGrammar(ISymbolicExpressionGrammar grammar)
       : base() {
       if (grammar == null) throw new ArgumentNullException();
