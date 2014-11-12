@@ -40,7 +40,7 @@ public class SVMClassificationCrossValidationScript : HeuristicLab.Scripting.CSh
         { "C", ValueGenerator.GenerateSteps(-1m, 10, 1).Select(x => Math.Pow(2,(double)x)) },
         { "gamma", ValueGenerator.GenerateSteps(-4m, -1, 1).Select(x => Math.Pow(2,(double)x)) },
 //        { "eps", ValueGenerator.GenerateSteps(-8m, -1, 1).Select(x => Math.Pow(2, (double)x)) },
-//        { "nu" , ValueGenerator.GenerateSteps(0m, 1, 0.05m).Select(x => Math.Pow(2, (double)x)) },
+        { "nu" , ValueGenerator.GenerateSteps(-10m, 0, 1m).Select(x => Math.Pow(2, (double)x)) },
 //        { "degree", ValueGenerator.GenerateSteps(1m, 4, 1).Select(x => (double)x) }
   };
 
@@ -56,8 +56,8 @@ public class SVMClassificationCrossValidationScript : HeuristicLab.Scripting.CSh
     { svm_parameter.SIGMOID, "SIGMOID" }
   };
 
-  private static SupportVectorClassificationSolution SvmGridSearch(IClassificationProblemData problemData, out svm_parameter bestParameters, out int nSv) {
-    bestParameters = SupportVectorMachineUtil.GridSearch(problemData, svmParameterRanges, numberOfFolds, shuffleFolds, maximumDegreeOfParallelism);
+  private static SupportVectorClassificationSolution SvmGridSearch(IClassificationProblemData problemData, out svm_parameter bestParameters, out int nSv, out double cvMse) {
+    bestParameters = SupportVectorMachineUtil.GridSearch(out cvMse, problemData, svmParameterRanges, numberOfFolds, shuffleFolds, maximumDegreeOfParallelism);
     double trainingError, testError;
     string svmType = svmTypes[bestParameters.svm_type];
     string kernelType = kernelTypes[bestParameters.kernel_type];
@@ -80,8 +80,9 @@ public class SVMClassificationCrossValidationScript : HeuristicLab.Scripting.CSh
       problemData = (IClassificationProblemData)item.Value;
 
     int nSv; // number of support vectors
+    double cvMse;
     svm_parameter bestParameters;
-    var bestSolution = SvmGridSearch(problemData, out bestParameters, out nSv);
+    var bestSolution = SvmGridSearch(problemData, out bestParameters, out nSv, out cvMse);
 
     vars["bestSolution"] = bestSolution;
     Console.WriteLine(name + " parameters: C = {0}, g = {1:0.000}, eps = {2:0.000}, nu = {3:0.000}, degree = {4}", bestParameters.C, bestParameters.gamma, bestParameters.eps, bestParameters.nu, bestParameters.degree);
@@ -102,3 +103,4 @@ public class SVMClassificationCrossValidationScript : HeuristicLab.Scripting.CSh
     return f;
   }
 }
+
