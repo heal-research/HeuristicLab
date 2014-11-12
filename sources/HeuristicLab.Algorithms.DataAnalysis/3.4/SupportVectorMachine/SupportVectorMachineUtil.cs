@@ -91,7 +91,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return CalculateCrossValidationPartitions(partitions, parameters);
     }
 
-    public static svm_parameter GridSearch(IDataAnalysisProblemData problemData, Dictionary<string, IEnumerable<double>> parameterRanges, int numberOfFolds, bool shuffleFolds = true, int maxDegreeOfParallelism = 1) {
+    public static svm_parameter GridSearch(out double cvMse, IDataAnalysisProblemData problemData, Dictionary<string, IEnumerable<double>> parameterRanges, int numberOfFolds, bool shuffleFolds = true, int maxDegreeOfParallelism = 1) {
       DoubleValue mse = new DoubleValue(Double.MaxValue);
       var bestParam = DefaultParameters();
       var crossProduct = parameterRanges.Values.CartesianProduct();
@@ -107,13 +107,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
           setters[i](parameters, parameterValues[i]);
 
         double testMse = CalculateCrossValidationPartitions(partitions, parameters);
-        lock (locker) {
-          if (testMse < mse.Value) {
-            mse.Value = testMse;
-            bestParam = (svm_parameter)parameters.Clone();
+        if (!double.IsNaN(testMse)) {
+          lock (locker) {
+            if (testMse < mse.Value) {
+              mse.Value = testMse;
+              bestParam = (svm_parameter)parameters.Clone();
+            }
           }
         }
       });
+      cvMse = mse.Value;
       return bestParam;
     }
 
@@ -127,7 +130,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         calc.Reset();
         for (int i = 0; i < testSvmProblem.l; ++i)
           calc.Add(testSvmProblem.y[i], svm.svm_predict(model, testSvmProblem.x[i]));
-        avgTestMse += calc.MeanSquaredError;
+        double mse = calc.ErrorState == OnlineCalculatorError.None ? calc.MeanSquaredError : double.NaN;
+        avgTestMse += mse;
       }
       avgTestMse /= partitions.Length;
       return avgTestMse;
