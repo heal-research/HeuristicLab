@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         solution is IRegressionSolution;
     }
 
-    public void Export(IDataAnalysisSolution solution, string fileName) {
+    public virtual void Export(IDataAnalysisSolution solution, string fileName) {
       var symbSolution = solution as ISymbolicDataAnalysisSolution;
       if (symbSolution == null) throw new NotSupportedException("This solution cannot be exported to Excel");
       var formatter = new SymbolicDataAnalysisExpressionExcelFormatter();
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       ExportChart(fileName, symbSolution, formula);
     }
 
-    protected virtual void ExportChart(string fileName, ISymbolicDataAnalysisSolution solution, string formula) {
+    private void ExportChart(string fileName, ISymbolicDataAnalysisSolution solution, string formula) {
       FileInfo newFile = new FileInfo(fileName);
       if (newFile.Exists) {
         newFile.Delete();
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
-    protected virtual void FormatModelSheet(ExcelWorksheet modelWorksheet, ISymbolicDataAnalysisSolution solution, IEnumerable<string> formulaParts) {
+    private void FormatModelSheet(ExcelWorksheet modelWorksheet, ISymbolicDataAnalysisSolution solution, IEnumerable<string> formulaParts) {
       int row = 1;
       modelWorksheet.Cells[row, 1].Value = "Model";
       modelWorksheet.Cells[row, 2].Value = solution.Name;
@@ -223,7 +223,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
-    protected virtual void AddCharts(ExcelWorksheet chartsWorksheet) {
+    private void AddCharts(ExcelWorksheet chartsWorksheet) {
       chartsWorksheet.Names.AddFormula("AllId", "OFFSET('Estimated Values'!$A$1,1,0, COUNTA('Estimated Values'!$A:$A)-1)");
       chartsWorksheet.Names.AddFormula("AllTarget", "OFFSET('Estimated Values'!$B$1,1,0, COUNTA('Estimated Values'!$B:$B)-1)");
       chartsWorksheet.Names.AddFormula("AllEstimated", "OFFSET('Estimated Values'!$C$1,1,0, COUNTA('Estimated Values'!$C:$C)-1)");
@@ -259,7 +259,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       lineTest.Header = "Test";
     }
 
-    protected virtual void AddModelTreePicture(ExcelWorksheet modelWorksheet, ISymbolicDataAnalysisModel model) {
+    protected void AddModelTreePicture(ExcelWorksheet modelWorksheet, ISymbolicDataAnalysisModel model) {
       SymbolicExpressionTreeChart modelTreePicture = new SymbolicExpressionTreeChart();
       modelTreePicture.Tree = model.SymbolicExpressionTree;
       string tmpFilename = Path.GetTempFileName();
