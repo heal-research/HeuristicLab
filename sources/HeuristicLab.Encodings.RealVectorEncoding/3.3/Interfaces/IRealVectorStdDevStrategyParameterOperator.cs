@@ -18,10 +18,9 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
-
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorStdDevStrategyParameterOperator : IItem {
+  public interface IRealVectorStdDevStrategyParameterOperator : IOperator {
   }
 }
