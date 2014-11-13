@@ -56,8 +56,8 @@ namespace HeuristicLab.Tests {
       ScriptingUtils.RunScript(script);
 
       var bestSolution = ScriptingUtils.GetVariable<IClassificationSolution>(script, BestSolutionVariableName);
-      Assert.AreEqual(0.817472698907956, bestSolution.TrainingAccuracy, 1E-8);
-      Assert.AreEqual(0.809375, bestSolution.TestAccuracy, 1E-8);
+      Assert.AreEqual(0.819032761310452, bestSolution.TrainingAccuracy, 1E-8);
+      Assert.AreEqual(0.721875, bestSolution.TestAccuracy, 1E-8);
     }
 
     private CSharpScript CreateGridSearchSVMClassificationScript() {

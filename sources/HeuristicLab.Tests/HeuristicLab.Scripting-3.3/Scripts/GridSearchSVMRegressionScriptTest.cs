@@ -33,7 +33,7 @@ namespace HeuristicLab.Tests {
     private const string ScriptFileName = "GridSearch_SVM_Regression_Script";
     private const string ScriptItemName = "Grid Search SVM Script - Regression";
     private const string ScriptItemDescription = "A script that runs a grid search for SVM parameters for solving symbolic regression problems";
-    private const string ProblemInstanceName = "Keijzer 3 f(x) = 0.3 * x *sin(2 * PI * x); Interval [-3, 3]";
+    private const string ProblemInstanceName = "Keijzer 9 f(x) = arcsinh(x)  i.e. ln(x + sqrt(x² + 1))";
     private const string ProblemInstanceDataVaribleName = "problem";
     private const string BestSolutionVariableName = "bestSolution";
 
@@ -56,8 +56,8 @@ namespace HeuristicLab.Tests {
       ScriptingUtils.RunScript(script);
 
       var bestSolution = ScriptingUtils.GetVariable<IRegressionSolution>(script, BestSolutionVariableName);
-      Assert.AreEqual(0.0662219592243362, bestSolution.TrainingRSquared, 1E-8);
-      Assert.AreEqual(0.0794407638195434, bestSolution.TestRSquared, 1E-8);
+      Assert.AreEqual(0.982485852864274, bestSolution.TrainingRSquared, 1E-8);
+      Assert.AreEqual(0.98817480950295, bestSolution.TestRSquared, 1E-8);
     }
 
     private CSharpScript CreateGridSearchSVMRegressionScript() {
