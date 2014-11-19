@@ -27,23 +27,21 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.Core.Views {
   public partial class NestingLevelErrorControl : UserControl {
     public Func<IContent> Content { get; set; }
+    public Type ViewType { get; set; }
 
     public NestingLevelErrorControl() {
       InitializeComponent();
     }
 
-    private void showButton_Click(object sender, System.EventArgs e) {
-      if (Content != null) {
-        if (MainFormManager.MainForm.ShowContent(Content()) == null) {
-          using (TypeSelectorDialog dialog = new TypeSelectorDialog()) {
-            dialog.Caption = "Unable to find view for content. Please choose a appropriate view.";
-            dialog.TypeSelector.Configure(typeof(IContentView), false, false);
+    public NestingLevelErrorControl(Func<IContent> content, Type viewType)
+      : this() {
+      Content = content;
+      ViewType = viewType;
+    }
 
-            if (dialog.ShowDialog(this) == DialogResult.OK) {
-              MainFormManager.MainForm.ShowContent(Content(), dialog.TypeSelector.SelectedType);
-            }
-          }
-        }
+    private void showButton_Click(object sender, System.EventArgs e) {
+      if (Content != null && ViewType != null) {
+        MainFormManager.MainForm.ShowContent(Content(), ViewType);
       }
     }
   }

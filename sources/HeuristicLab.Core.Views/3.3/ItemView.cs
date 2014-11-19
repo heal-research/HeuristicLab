@@ -46,10 +46,9 @@ namespace HeuristicLab.Core.Views {
       base.OnInitialized(e);
 
       if (CountParentControls() > MaximumNestingLevel) {
-        NestingLevelErrorControl errorControl = new NestingLevelErrorControl();
-        errorControl.Dock = DockStyle.Fill;
         //capture content, needed because it is set at a later time
-        errorControl.Content = () => Content;
+        NestingLevelErrorControl errorControl = new NestingLevelErrorControl(() => Content, this.GetType());
+        errorControl.Dock = DockStyle.Fill;
 
         Controls.Clear();
         Controls.Add(errorControl);
