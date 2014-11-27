@@ -28,7 +28,7 @@ namespace HeuristicLab.Core.Views {
   /// Base class for all visual representations.
   /// </summary>
   public partial class ItemView : AsynchronousContentView {
-    public const int MaximumNestingLevel = 37;
+    public const int MaximumNestingLevel = 32;
 
     public new IItem Content {
       get { return (IItem)base.Content; }

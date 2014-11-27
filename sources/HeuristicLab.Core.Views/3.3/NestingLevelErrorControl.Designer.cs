@@ -60,7 +60,7 @@ namespace HeuristicLab.Core.Views {
       // 
       // showButton
       // 
-      this.showButton.Location = new System.Drawing.Point(3, 19);
+      this.showButton.Location = new System.Drawing.Point(7, 21);
       this.showButton.Name = "showButton";
       this.showButton.Size = new System.Drawing.Size(132, 23);
       this.showButton.TabIndex = 1;
@@ -74,7 +74,7 @@ namespace HeuristicLab.Core.Views {
       this.Controls.Add(this.showButton);
       this.Controls.Add(this.infoLabel);
       this.Name = "NestingLevelErrorControl";
-      this.Size = new System.Drawing.Size(387, 46);
+      this.Size = new System.Drawing.Size(387, 50);
       this.ResumeLayout(false);
       this.PerformLayout();
 
