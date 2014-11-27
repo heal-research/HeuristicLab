@@ -29,7 +29,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Core {
   [Item("Log", "A log for logging string messages.")]
   [StorableClass]
-  public class Log : Item, ILog, IStorableContent {
+  public sealed class Log : Item, ILog, IStorableContent {
     public string Filename { get; set; }
 
     public static new Image StaticItemImage {
@@ -37,20 +37,20 @@ namespace HeuristicLab.Core {
     }
 
     [Storable]
-    protected IList<string> messages;
-    public virtual IEnumerable<string> Messages {
+    private IList<string> messages;
+    public IEnumerable<string> Messages {
       get { return messages; }
     }
 
     [Storable]
-    protected long maxMessageCount;
-    public virtual long MaxMessageCount {
+    private long maxMessageCount;
+    public long MaxMessageCount {
       get { return maxMessageCount; }
     }
 
     [StorableConstructor]
-    protected Log(bool deserializing) : base(deserializing) { }
-    protected Log(Log original, Cloner cloner)
+    private Log(bool deserializing) : base(deserializing) { }
+    private Log(Log original, Cloner cloner)
       : base(original, cloner) {
       this.messages = new List<string>(original.messages);
       this.maxMessageCount = original.maxMessageCount;
@@ -65,41 +65,41 @@ namespace HeuristicLab.Core {
       return new Log(this, cloner);
     }
 
-    public virtual void Clear() {
+    public void Clear() {
       messages.Clear();
       OnCleared();
     }
-    public virtual void LogMessage(string message) {
+    public void LogMessage(string message) {
       string s = FormatLogMessage(message);
       messages.Add(s);
       CapMessages();
       OnMessageAdded(s);
     }
-    public virtual void LogException(Exception ex) {
+    public void LogException(Exception ex) {
       string s = FormatException(ex);
       messages.Add(s);
       CapMessages();
       OnMessageAdded(s);
     }
-    protected virtual void CapMessages() {
+    private void CapMessages() {
       while (maxMessageCount >= 0 && messages.Count > maxMessageCount) {
         messages.RemoveAt(0);
       }
     }
-    protected virtual string FormatLogMessage(string message) {
+    public static string FormatLogMessage(string message) {
       return DateTime.Now.ToString() + "\t" + message;
     }
-    protected virtual string FormatException(Exception ex) {
+    public static string FormatException(Exception ex) {
       return DateTime.Now.ToString() + "\t" + "Exception occurred:" + Environment.NewLine + ErrorHandling.BuildErrorMessage(ex);
     }
 
     public event EventHandler<EventArgs<string>> MessageAdded;
-    protected virtual void OnMessageAdded(string message) {
+    private void OnMessageAdded(string message) {
       EventHandler<EventArgs<string>> handler = MessageAdded;
       if (handler != null) handler(this, new EventArgs<string>(message));
     }
     public event EventHandler Cleared;
-    protected virtual void OnCleared() {
+    private void OnCleared() {
       EventHandler handler = Cleared;
       if (handler != null) handler(this, EventArgs.Empty);
     }
