@@ -27,7 +27,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class ThreadSafeLogTest {
-
     [TestMethod]
     [TestCategory("General")]
     [TestProperty("Time", "short")]
@@ -41,6 +40,22 @@ namespace HeuristicLab.Tests {
       });
 
       Assert.AreEqual(count, log.Messages.Count());
+    }
+
+    [TestMethod]
+    [TestCategory("General")]
+    [TestProperty("Time", "short")]
+    public void ThreadSafeLogThreadCapTest() {
+      int count = 10000;
+      int cap = 500;
+      ThreadSafeLog log = new ThreadSafeLog(cap);
+
+      Parallel.For(0, count, (i) => {
+        log.LogMessage("Message " + i); // write something
+        log.Messages.Count(); // iterate over all messages
+      });
+
+      Assert.AreEqual(cap, log.Messages.Count());
     }
   }
 }
