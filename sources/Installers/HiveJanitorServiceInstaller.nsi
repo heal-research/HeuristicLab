@@ -1,5 +1,24 @@
+/* HeuristicLab
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
 ; NSIS installer script for HeuristicLab Hive Janitor Service
-; NSIS version: v3.0b0
+; NSIS version: 3.0b0
 
 Name "HeuristicLab Hive Janitor Service"
 OutFile "HeuristicLab Hive Janitor Service Installer.exe"
@@ -7,10 +26,9 @@ OutFile "HeuristicLab Hive Janitor Service Installer.exe"
 ; Build configuration is either Debug or Release
 !define BUILDCONFIGURATION "Debug"
 !define JANITORBUILDPATH "..\HeuristicLab.Services.Hive.JanitorService\3.3\bin\${BUILDCONFIGURATION}"
+!define VERSION "3.3.10"
 
 InstallDir $PROGRAMFILES\HeuristicLabHiveJanitorService
-InstallDirRegKey HKLM "Software\HeuristicLabHiveJanitorService" "Install_Dir"
-
 RequestExecutionLevel admin
 
 Page license
@@ -45,10 +63,10 @@ Section "HeuristicLabHiveJanitorService (required)"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\HeuristicLabHiveJanitorService" "UninstallString" '"$INSTDIR\uninstall.exe"'
 	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\HeuristicLabHiveJanitorService" "NoModify" 1
 	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\HeuristicLabHiveJanitorService" "NoRepair" 1
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\HeuristicLabHiveJanitorService" "DisplayVersion" "${VERSION}"
 	WriteUninstaller "uninstall.exe"
 
 	nsExec::ExecToLog '"$INSTDIR\HeuristicLab.Services.Hive.JanitorService-3.3.exe" --install'
-
 SectionEnd
 
 
@@ -73,7 +91,6 @@ Section "un.Uninstall"
 	Delete "$INSTDIR\uninstall.exe"
 
 	RMDir "$INSTDIR"
-
 SectionEnd
 
 

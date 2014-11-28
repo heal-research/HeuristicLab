@@ -1,5 +1,24 @@
+/* HeuristicLab
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
 ; NSIS installer script for HeuristicLab Hive Slave
-; NSIS version: v3.0b0
+; NSIS version: 3.0b0
 
 Name "HeuristicLab Hive Slave"
 OutFile "HeuristicLab Hive Slave Installer.exe"
@@ -7,10 +26,9 @@ OutFile "HeuristicLab Hive Slave Installer.exe"
 ; Build configuration is either Debug or Release
 !define BUILDCONFIGURATION "Debug"
 !define SLAVEBUILDPATH "..\HeuristicLab.Clients.Hive.Slave.WindowsService\3.3\bin\${BUILDCONFIGURATION}"
+!define VERSION "3.3.10"
 
 InstallDir $PROGRAMFILES\HeuristicLabHiveSlave
-InstallDirRegKey HKLM "Software\HeuristicLabHiveSlave" "Install_Dir"
-
 RequestExecutionLevel admin
 
 Page license
@@ -53,10 +71,10 @@ Section "HeuristicLabHiveSlave (required)"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\HeuristicLabHiveSlave" "UninstallString" '"$INSTDIR\uninstall.exe"'
 	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\HeuristicLabHiveSlave" "NoModify" 1
 	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\HeuristicLabHiveSlave" "NoRepair" 1
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\HeuristicLabHiveSlave" "DisplayVersion" "${VERSION}"
 	WriteUninstaller "uninstall.exe"
 
 	nsExec::ExecToLog '"$INSTDIR\HeuristicLab.Clients.Hive.Slave.WindowsService.exe" --install'
-
 SectionEnd
 
 
@@ -88,7 +106,6 @@ Section "un.Uninstall"
 	Delete $INSTDIR\uninstall.exe
 
 	RMDir "$INSTDIR"
-
 SectionEnd
 
 
