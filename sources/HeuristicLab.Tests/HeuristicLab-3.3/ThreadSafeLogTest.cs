@@ -45,7 +45,7 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("General")]
     [TestProperty("Time", "short")]
-    public void ThreadSafeLogThreadCapTest() {
+    public void ThreadSafeLogCapTest() {
       int count = 10000;
       int cap = 500;
       ThreadSafeLog log = new ThreadSafeLog(cap);
