@@ -28,9 +28,9 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace HeuristicLab.Visualization.ChartControlsExtensions {
   public partial class HistogramControl : UserControl {
-    private static readonly string SeriesName = "Histogram";
+    protected static readonly string SeriesName = "Histogram";
 
-    private List<double> points;
+    protected Dictionary<string, List<double>> points;
     public int NumberOfBins {
       get { return (int)binsNumericUpDown.Value; }
       set { binsNumericUpDown.Value = value; }
@@ -63,17 +63,57 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
 
     public HistogramControl() {
       InitializeComponent();
-      points = new List<double>();
+      points = new Dictionary<string, List<double>>();
       InitializeChart();
     }
 
+    protected void InitNewRow(string name) {
+      if (!points.ContainsKey(name)) {
+        points.Add(name, new List<double>());
+      }
+    }
+
+    protected void InitSeries(string name) {
+      if (!chart.Series.Any(x => x.Name == name)) {
+        Series s = chart.Series.Add(name);
+        s.ChartType = SeriesChartType.Column;
+        s.BorderColor = Color.Black;
+        s.BorderWidth = 1;
+        s.BorderDashStyle = ChartDashStyle.Solid;
+      }
+    }
+
     public void AddPoint(double point) {
-      points.Add(point);
+      InitNewRow(SeriesName);
+      InitSeries(SeriesName);
+      points[SeriesName].Add(point);
       UpdateHistogram();
     }
 
     public void AddPoints(IEnumerable<double> points) {
-      this.points.AddRange(points);
+      InitNewRow(SeriesName);
+      InitSeries(SeriesName);
+      this.points[SeriesName].AddRange(points);
+      UpdateHistogram();
+    }
+
+    public void AddPoint(string name, double point, bool replace = false) {
+      InitNewRow(name);
+      InitSeries(name);
+      if (replace) {
+        points[name].Clear();
+      }
+      points[name].Add(point);
+      UpdateHistogram();
+    }
+
+    public void AddPoints(string name, IEnumerable<double> points, bool replace = false) {
+      InitNewRow(name);
+      InitSeries(name);
+      if (replace) {
+        this.points[name].Clear();
+      }
+      this.points[name].AddRange(points);
       UpdateHistogram();
     }
 
@@ -82,64 +122,71 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       UpdateHistogram();
     }
 
-    private void InitializeChart() {
+    protected void InitializeChart() {
       chart.Series.Clear();
-      Series s = chart.Series.Add(SeriesName);
-      s.ChartType = SeriesChartType.Column;
-      s.BorderColor = Color.Black;
-      s.BorderWidth = 1;
-      s.BorderDashStyle = ChartDashStyle.Solid;
     }
 
-    private void UpdateHistogram() {
+    protected void UpdateHistogram() {
       if (InvokeRequired) {
         Invoke((Action)UpdateHistogram, null);
         return;
       }
-      Series histogramSeries = chart.Series[SeriesName];
-      histogramSeries.Points.Clear();
 
-      if (!points.Any()) return;
+      double overallMin = double.MaxValue;
+      double overallMax = double.MinValue;
       int bins = (int)binsNumericUpDown.Value;
 
-      double minValue = points.Min();
-      double maxValue = points.Max();
-      double intervalWidth = (maxValue - minValue) / bins;
-      if (intervalWidth <= 0) return;
+      chart.Series.Clear();
 
-      if (!exactCheckBox.Checked) {
-        intervalWidth = HumanRoundRange(intervalWidth);
-        minValue = Math.Floor(minValue / intervalWidth) * intervalWidth;
-        maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
-      }
+      foreach (var point in points) {
+        if (!point.Value.Any()) continue;
 
-      double current = minValue, intervalCenter = intervalWidth / 2.0;
-      int count = 0;
-      foreach (double v in points.OrderBy(x => x)) {
-        while (v > current + intervalWidth) {
-          histogramSeries.Points.AddXY(current + intervalCenter, count);
-          current += intervalWidth;
-          count = 0;
+        Series histogramSeries = new Series(point.Key);
+        chart.Series.Add(histogramSeries);
+
+        double minValue = point.Value.Min();
+        double maxValue = point.Value.Max();
+        double intervalWidth = (maxValue - minValue) / bins;
+        if (intervalWidth <= 0) continue;
+
+        if (!exactCheckBox.Checked) {
+          intervalWidth = HumanRoundRange(intervalWidth);
+          minValue = Math.Floor(minValue / intervalWidth) * intervalWidth;
+          maxValue = Math.Ceiling(maxValue / intervalWidth) * intervalWidth;
         }
-        count++;
+
+        double current = minValue, intervalCenter = intervalWidth / 2.0;
+        int count = 0;
+        foreach (double v in point.Value.OrderBy(x => x)) {
+          while (v > current + intervalWidth) {
+            histogramSeries.Points.AddXY(current + intervalCenter, count);
+            current += intervalWidth;
+            count = 0;
+          }
+          count++;
+        }
+        histogramSeries.Points.AddXY(current + intervalCenter, count);
+        histogramSeries["PointWidth"] = "1";
+
+        overallMax = Math.Max(overallMax, maxValue);
+        overallMin = Math.Min(overallMin, minValue);
       }
-      histogramSeries.Points.AddXY(current + intervalCenter, count);
 
-      histogramSeries["PointWidth"] = "1";
-
-      ChartArea chartArea = chart.ChartAreas[histogramSeries.ChartArea];
+      ChartArea chartArea = chart.ChartAreas[0];
       chartArea.AxisY.Title = "Frequency";
-      chartArea.AxisX.Minimum = minValue;
-      chartArea.AxisX.Maximum = maxValue;
+      chartArea.AxisX.Minimum = overallMin;
+      chartArea.AxisX.Maximum = overallMax;
 
-      double axisInterval = intervalWidth;
-      while ((maxValue - minValue) / axisInterval > 10.0) {
+      double overallIntervalWidth = (overallMax - overallMin) / bins;
+
+      double axisInterval = overallIntervalWidth;
+      while ((overallMax - overallMin) / axisInterval > 10.0) {
         axisInterval *= 2.0;
       }
       chartArea.AxisX.Interval = axisInterval;
     }
 
-    private double HumanRoundRange(double range) {
+    protected double HumanRoundRange(double range) {
       double base10 = Math.Pow(10.0, Math.Floor(Math.Log10(range)));
       double rounding = range / base10;
       if (rounding <= 1.5) rounding = 1;
