@@ -19,7 +19,9 @@
  */
 #endregion
 
-namespace HeuristicLab.Visualization.ChartControlsExtensions {
+using HeuristicLab.Visualization.ChartControlsExtensions;
+
+namespace HeuristicLab.Analysis.Views {
   partial class HistogramControl {
     /// <summary> 
     /// Required designer variable.

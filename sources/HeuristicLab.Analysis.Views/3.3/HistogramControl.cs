@@ -25,8 +25,9 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Analysis.Statistics;
 
-namespace HeuristicLab.Visualization.ChartControlsExtensions {
+namespace HeuristicLab.Analysis.Views {
   public partial class HistogramControl : UserControl {
     protected static readonly string SeriesName = "Histogram";
 
@@ -64,7 +65,6 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     public HistogramControl() {
       InitializeComponent();
       points = new Dictionary<string, List<double>>();
-      InitializeChart();
     }
 
     protected void InitNewRow(string name) {
@@ -122,10 +122,6 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       UpdateHistogram();
     }
 
-    protected void InitializeChart() {
-      chart.Series.Clear();
-    }
-
     protected void UpdateHistogram() {
       if (InvokeRequired) {
         Invoke((Action)UpdateHistogram, null);
@@ -168,22 +164,42 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
         histogramSeries.Points.AddXY(current + intervalCenter, count);
         histogramSeries["PointWidth"] = "1";
 
+        CalculateDensity(histogramSeries, point.Value);
+
         overallMax = Math.Max(overallMax, maxValue);
         overallMin = Math.Min(overallMin, minValue);
       }
 
       ChartArea chartArea = chart.ChartAreas[0];
       chartArea.AxisY.Title = "Frequency";
-      chartArea.AxisX.Minimum = overallMin;
-      chartArea.AxisX.Maximum = overallMax;
 
       double overallIntervalWidth = (overallMax - overallMin) / bins;
-
       double axisInterval = overallIntervalWidth;
       while ((overallMax - overallMin) / axisInterval > 10.0) {
         axisInterval *= 2.0;
       }
       chartArea.AxisX.Interval = axisInterval;
+    }
+
+    protected void CalculateDensity(Series series, List<double> row) {
+      string densitySeriesName = "Density " + series.Name;
+      double stepWidth = series.Points[1].XValue - series.Points[0].XValue;
+
+      if (chart.Series.Any(x => x.Name == densitySeriesName)) {
+        var ds = chart.Series.Single(x => x.Name == densitySeriesName);
+        chart.Series.Remove(ds);
+      }
+
+      var density = NormalDistribution.Density(row.ToArray(), row.Count, stepWidth);
+
+      Series newSeries = new Series(densitySeriesName);
+      newSeries.ChartType = SeriesChartType.FastLine;
+      newSeries.BorderWidth = 2;
+      foreach (var d in density) {
+        newSeries.Points.Add(new DataPoint(d.Item1, d.Item2));
+      }
+
+      chart.Series.Add(newSeries);
     }
 
     protected double HumanRoundRange(double range) {
