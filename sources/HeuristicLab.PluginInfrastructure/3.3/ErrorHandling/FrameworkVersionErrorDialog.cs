@@ -25,14 +25,25 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.PluginInfrastructure {
   public partial class FrameworkVersionErrorDialog : Form {
-    public static bool NET4FullProfileInstalled {
+    private const string NETVersionPath = @"Software\Microsoft\NET Framework Setup\NDP\v4\Full";
+    private const string NETVersion = "Version";
+
+    public static bool NET4_5Installed {
       get {
         try {
-          return Microsoft.Win32.Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full") != null;
+          var registryKey = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(NETVersionPath);
+          if (registryKey != null) {
+            var versionKey = registryKey.GetValue(NETVersion);
+            if (versionKey != null) {
+              Version version = new Version(versionKey.ToString());
+              return version.Major >= 4 && version.Minor >= 5;
+            }
+          }
         }
         catch (System.Security.SecurityException) {
           return false;
         }
+        return false;
       }
     }
 
@@ -43,9 +54,9 @@ namespace HeuristicLab.PluginInfrastructure {
     public static bool MonoCorrectVersionInstalled {
       get {
         var monoVersion = MonoVersion;
-        var minRequiredVersion = new Version(2, 11, 4);
-                                                                     
-        //we need at least mono version 2.11.4
+        var minRequiredVersion = new Version(3, 6, 0);
+
+        //we need at least mono version 3.6.0
         if (monoVersion != null && monoVersion >= minRequiredVersion) {
           return true;
         } else {
@@ -83,7 +94,7 @@ namespace HeuristicLab.PluginInfrastructure {
 
     private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
       try {
-        System.Diagnostics.Process.Start("http://www.microsoft.com/downloads/en/details.aspx?displaylang=en&FamilyID=0a391abd-25c1-4fc0-919f-b21f31ab88b7");
+        System.Diagnostics.Process.Start("http://www.microsoft.com/en-us/download/details.aspx?id=30653");
         linkLabel.LinkVisited = true;
       }
       catch (Exception) { }
