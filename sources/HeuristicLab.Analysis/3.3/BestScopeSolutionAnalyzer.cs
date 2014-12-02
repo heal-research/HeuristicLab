@@ -37,7 +37,6 @@ namespace HeuristicLab.Analysis {
   [Item("BestScopeSolutionAnalyzer", "An operator that extracts the scope containing the best quality.")]
   [StorableClass]
   public class BestScopeSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
-    private const string BestSolutionResultName = "Best Solution";
 
     public virtual bool EnabledByDefault {
       get { return true; }
@@ -48,11 +47,19 @@ namespace HeuristicLab.Analysis {
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
+    public IFixedValueParameter<StringValue> BestSolutionResultNameParameter {
+      get { return (IFixedValueParameter<StringValue>)Parameters["BestSolution ResultName"]; }
+    }
     public ILookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
     public IValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    }
+
+    public string BestSolutionResultName {
+      get { return BestSolutionResultNameParameter.Value.Value; }
+      set { BestSolutionResultNameParameter.Value.Value = value; }
     }
 
     #region Storing & Cloning
@@ -62,11 +69,18 @@ namespace HeuristicLab.Analysis {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new BestScopeSolutionAnalyzer(this, cloner);
     }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey("BestSolution ResultName"))
+        Parameters.Add(new FixedValueParameter<StringValue>("BestSolution ResultName", "The name of the result for storing the best solution.", new StringValue("Best Solution")));
+    }
     #endregion
     public BestScopeSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the solutions."));
+      Parameters.Add(new FixedValueParameter<StringValue>("BestSolution ResultName", "The name of the result for storing the best solution.", new StringValue("Best Solution")));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the solution should be stored."));
     }
@@ -78,7 +92,7 @@ namespace HeuristicLab.Analysis {
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
 
       if (results.ContainsKey(BestSolutionResultName) && !typeof(IScope).IsAssignableFrom(results[BestSolutionResultName].DataType)) {
-        throw new InvalidOperationException(string.Format("Could not add best solution result, because there is already a result with the name \"{0}\" present in the result collecdtion.", BestSolutionResultName));
+        throw new InvalidOperationException(string.Format("Could not add best solution result, because there is already a result with the name \"{0}\" present in the result collection.", BestSolutionResultName));
       }
 
       int i = -1;
