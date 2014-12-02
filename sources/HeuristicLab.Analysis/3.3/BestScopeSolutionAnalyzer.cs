@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -36,21 +37,16 @@ namespace HeuristicLab.Analysis {
   [Item("BestScopeSolutionAnalyzer", "An operator that extracts the scope containing the best quality.")]
   [StorableClass]
   public class BestScopeSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+    private const string BestSolutionResultName = "Best Solution";
+
     public virtual bool EnabledByDefault {
       get { return true; }
     }
-
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
     public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
-    }
-    public ILookupParameter<IScope> BestSolutionParameter {
-      get { return (ILookupParameter<IScope>)Parameters["BestSolution"]; }
-    }
-    public ILookupParameter<IScope> BestKnownSolutionParameter {
-      get { return (ILookupParameter<IScope>)Parameters["BestKnownSolution"]; }
     }
     public ILookupParameter<DoubleValue> BestKnownQualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
@@ -71,8 +67,6 @@ namespace HeuristicLab.Analysis {
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the solutions."));
-      Parameters.Add(new LookupParameter<IScope>("BestSolution", "The best solution."));
-      Parameters.Add(new LookupParameter<IScope>("BestKnownSolution", "The best known solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the solution should be stored."));
     }
@@ -83,6 +77,10 @@ namespace HeuristicLab.Analysis {
       bool max = MaximizationParameter.ActualValue.Value;
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
 
+      if (results.ContainsKey(BestSolutionResultName) && !typeof(IScope).IsAssignableFrom(results[BestSolutionResultName].DataType)) {
+        throw new InvalidOperationException(string.Format("Could not add best solution result, because there is already a result with the name \"{0}\" present in the result collecdtion.", BestSolutionResultName));
+      }
+
       int i = -1;
       if (!max)
         i = qualities.Select((x, index) => new { index, x.Value }).OrderBy(x => x.Value).First().index;
@@ -90,34 +88,38 @@ namespace HeuristicLab.Analysis {
 
       IEnumerable<IScope> scopes = new IScope[] { ExecutionContext.Scope };
       for (int j = 0; j < QualityParameter.Depth; j++)
-        scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
+        scopes = scopes.SelectMany(x => x.SubScopes);
       IScope currentBestScope = scopes.ToList()[i];
 
       if (bestKnownQuality == null ||
           max && qualities[i].Value > bestKnownQuality.Value
           || !max && qualities[i].Value < bestKnownQuality.Value) {
         BestKnownQualityParameter.ActualValue = new DoubleValue(qualities[i].Value);
-        BestKnownSolutionParameter.ActualValue = (IScope)currentBestScope.Clone();
       }
 
-      IScope solution = BestSolutionParameter.ActualValue;
-      if (solution == null) {
-        solution = (IScope)currentBestScope.Clone();
-        BestSolutionParameter.ActualValue = solution;
-        results.Add(new Result("Best Solution", solution));
+      if (!results.ContainsKey(BestSolutionResultName)) {
+        var cloner = new Cloner();
+        //avoid cloning of subscopes
+        cloner.RegisterClonedObject(currentBestScope.SubScopes, new ScopeList());
+        var solution = cloner.Clone(currentBestScope);
+
+        results.Add(new Result(BestSolutionResultName, solution));
       } else {
+        var bestSolution = (IScope)results[BestSolutionResultName].Value;
         string qualityName = QualityParameter.TranslatedName;
-        if (solution.Variables.ContainsKey(qualityName)) {
-          double bestSoFarQuality = (solution.Variables[qualityName].Value as DoubleValue).Value;
-          if (max && qualities[i].Value > bestSoFarQuality
-            || !max && qualities[i].Value < bestSoFarQuality) {
-            solution = (IScope)currentBestScope.Clone();
-            BestSolutionParameter.ActualValue = solution;
-            results["Best Solution"].Value = solution;
+        if (bestSolution.Variables.ContainsKey(qualityName)) {
+          double bestQuality = ((DoubleValue)bestSolution.Variables[qualityName].Value).Value;
+          if (max && qualities[i].Value > bestQuality
+              || !max && qualities[i].Value < bestQuality) {
+            var cloner = new Cloner();
+            //avoid cloning of subscopes
+            cloner.RegisterClonedObject(currentBestScope.SubScopes, new ScopeList());
+            var solution = cloner.Clone(currentBestScope);
+
+            results[BestSolutionResultName].Value = solution;
           }
         }
       }
-
       return base.Apply();
     }
   }
