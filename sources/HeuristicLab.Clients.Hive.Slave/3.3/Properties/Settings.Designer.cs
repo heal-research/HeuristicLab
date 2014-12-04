@@ -85,30 +85,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ICSharpCode.SharpZipLib.dll")]
-        public string SharpZipLibDll {
-            get {
-                return ((string)(this["SharpZipLibDll"]));
-            }
-            set {
-                this["SharpZipLibDll"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ICSharpCode.SharpZipLib License.txt")]
-        public string SharpZipLibLicense {
-            get {
-                return ((string)(this["SharpZipLibLicense"]));
-            }
-            set {
-                this["SharpZipLibLicense"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("HeuristicLab.Clients.Hive.SlaveCore-3.3.dll")]
         public string ClientsHiveSlaveCoreDll {
             get {
