@@ -45,13 +45,14 @@
       // 
       // textEditor
       // 
-      this.textEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.textEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.textEditor.ConvertTabsToSpaces = true;
       this.textEditor.IndentStyle = ICSharpCode.TextEditor.Document.IndentStyle.Auto;
       this.textEditor.IsIconBarVisible = true;
       this.textEditor.IsReadOnly = false;
+      this.textEditor.LineViewerStyle = ICSharpCode.TextEditor.Document.LineViewerStyle.FullRow;
       this.textEditor.Location = new System.Drawing.Point(0, 0);
       this.textEditor.Name = "textEditor";
       this.textEditor.ShowEOLMarkers = true;
@@ -96,7 +97,7 @@
       this.sharpDevelopLabel.Tag = "http://www.icsharpcode.net/OpenSource/SD/";
       this.sharpDevelopLabel.Text = "powered by #develop";
       this.sharpDevelopLabel.ToolTipText = "Syntax highlighting and code completion facilities provided through #develop libr" +
-          "aries";
+    "aries";
       this.sharpDevelopLabel.Click += new System.EventHandler(this.toolStripStatusLabel1_Click);
       // 
       // imageList1
@@ -107,7 +108,6 @@
       // 
       // CodeEditor
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.textEditor);
       this.Controls.Add(this.statusStrip1);

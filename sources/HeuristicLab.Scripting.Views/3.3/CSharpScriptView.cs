@@ -131,10 +131,10 @@ namespace HeuristicLab.Scripting.Views {
           if (Running) Content.Kill();
           return true;
         case Keys.F6:
-          if (!Running) Compile();
+          if (!Running) base.ProcessCmdKey(ref msg, keyData);
           return true;
       }
-      return base.ProcessCmdKey(ref msg, keyData); ;
+      return base.ProcessCmdKey(ref msg, keyData);
     }
     #endregion
   }

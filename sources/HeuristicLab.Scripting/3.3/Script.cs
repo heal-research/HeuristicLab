@@ -23,7 +23,6 @@ using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -79,7 +78,7 @@ namespace HeuristicLab.Scripting {
     }
     public Script()
       : base("Script", "An empty script.") {
-      code = string.Empty;
+      code = CodeTemplate;
     }
     public Script(string code)
       : this() {
@@ -108,20 +107,13 @@ namespace HeuristicLab.Scripting {
         IncludeDebugInformation = true,
         WarningLevel = 4
       };
+
       parameters.ReferencedAssemblies.AddRange(
         GetAssemblies()
         .Select(a => a.Location)
         .ToArray());
-      var unit = CreateCompilationUnit();
-      var writer = new StringWriter();
-      CodeProvider.GenerateCodeFromCompileUnit(
-        unit,
-        writer,
-        new CodeGeneratorOptions {
-          ElseOnClosing = true,
-          IndentString = "  ",
-        });
-      return CodeProvider.CompileAssemblyFromDom(parameters, unit);
+
+      return CodeProvider.CompileAssemblyFromSource(parameters, code);
     }
 
     public virtual Assembly Compile() {
@@ -134,7 +126,7 @@ namespace HeuristicLab.Scripting {
             .Append(error.Column).Append(": ")
             .AppendLine(error.ErrorText);
         }
-        throw new Exception(string.Format("Compilation of \"{0}\" failed:{1}{2}",
+        throw new InvalidOperationException(string.Format("Compilation of \"{0}\" failed:{1}{2}",
           Name, Environment.NewLine, sb.ToString()));
       } else {
         return results.CompiledAssembly;
@@ -142,7 +134,7 @@ namespace HeuristicLab.Scripting {
     }
 
     public virtual IEnumerable<Assembly> GetAssemblies() {
-      var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && File.Exists(a.Location)).ToList();    
+      var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && File.Exists(a.Location)).ToList();
       assemblies.Add(typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly); // for dlr functionality
       return assemblies;
     }

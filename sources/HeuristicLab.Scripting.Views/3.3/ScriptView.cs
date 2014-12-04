@@ -34,14 +34,10 @@ namespace HeuristicLab.Scripting.Views {
   [View("Script View")]
   [Content(typeof(Script), true)]
   public partial class ScriptView : NamedItemView {
+    #region Properties
     public new Script Content {
       get { return (Script)base.Content; }
       set { base.Content = value; }
-    }
-
-    public ScriptView() {
-      InitializeComponent();
-      errorListView.SmallImageList.Images.AddRange(new Image[] { VSImageLibrary.Warning, VSImageLibrary.Error });
     }
 
     public override bool ReadOnly {
@@ -53,27 +49,31 @@ namespace HeuristicLab.Scripting.Views {
       get { return codeEditor.ReadOnly || base.Locked; }
       set { base.Locked = codeEditor.ReadOnly = value; }
     }
+    #endregion
+
+    public ScriptView() {
+      InitializeComponent();
+      errorListView.SmallImageList.Images.AddRange(new Image[] { VSImageLibrary.Warning, VSImageLibrary.Error });
+    }
 
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.CodeChanged += ContentOnCodeChanged;
+      Content.CodeChanged += Content_CodeChanged;
     }
 
     protected override void DeregisterContentEvents() {
-      Content.CodeChanged -= ContentOnCodeChanged;
+      Content.CodeChanged -= Content_CodeChanged;
       base.DeregisterContentEvents();
     }
 
-    protected virtual void ContentOnCodeChanged(object sender, EventArgs e) {
-      codeEditor.UserCode = Content.Code;
-    }
-
+    #region Overrides
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
         codeEditor.UserCode = string.Empty;
       } else {
-        codeEditor.UserCode = Content.Code;
+        if (codeEditor.UserCode != Content.Code)
+          codeEditor.UserCode = Content.Code;
         foreach (var asm in Content.GetAssemblies())
           codeEditor.AddAssembly(asm);
         if (Content.CompileErrors == null) {
@@ -95,14 +95,6 @@ namespace HeuristicLab.Scripting.Views {
       codeEditor.Enabled = Content != null;
     }
 
-    protected virtual void CompileButtonOnClick(object sender, EventArgs e) {
-      Compile();
-    }
-
-    protected virtual void CodeEditorOnTextEditorTextChanged(object sender, EventArgs e) {
-      if (Content == null) return;
-      Content.Code = codeEditor.UserCode;
-    }
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
       switch (keyData) {
         case Keys.F6:
@@ -112,6 +104,7 @@ namespace HeuristicLab.Scripting.Views {
       }
       return base.ProcessCmdKey(ref msg, keyData);
     }
+    #endregion
 
     public virtual bool Compile() {
       ReadOnly = true;
@@ -122,7 +115,7 @@ namespace HeuristicLab.Scripting.Views {
         Content.Compile();
         outputTextBox.AppendText("Compilation succeeded.");
         return true;
-      } catch {
+      } catch (InvalidOperationException) {
         if (Content.CompileErrors.HasErrors) {
           outputTextBox.AppendText("Compilation failed.");
           return false;
@@ -136,18 +129,22 @@ namespace HeuristicLab.Scripting.Views {
           infoTabControl.SelectedTab = errorListTabPage;
         ReadOnly = false;
         Locked = false;
+        codeEditor.Focus();
         OnContentChanged();
       }
     }
 
+    #region Helpers
     protected virtual void ShowCompilationResults() {
       if (Content.CompileErrors.Count == 0) return;
-      var msgs = Content.CompileErrors.OfType<CompilerError>()
+
+      var messages = Content.CompileErrors.OfType<CompilerError>()
                                       .OrderBy(x => x.IsWarning)
                                       .ThenBy(x => x.Line)
                                       .ThenBy(x => x.Column);
-      foreach (var m in msgs) {
-        var item = new ListViewItem();
+
+      foreach (var m in messages) {
+        var item = new ListViewItem { Tag = m };
         item.SubItems.AddRange(new[] {
           m.IsWarning ? "Warning" : "Error",
           m.ErrorNumber,
@@ -158,6 +155,9 @@ namespace HeuristicLab.Scripting.Views {
         item.ImageIndex = m.IsWarning ? 0 : 1;
         errorListView.Items.Add(item);
       }
+
+      codeEditor.ShowCompileErrors(Content.CompileErrors, ".cs");
+
       AdjustErrorListViewColumnSizes();
     }
 
@@ -166,5 +166,34 @@ namespace HeuristicLab.Scripting.Views {
         // adjusts the column width to the width of the column header
         ch.Width = -2;
     }
+    #endregion
+
+    #region Event Handlers
+    private void Content_CodeChanged(object sender, EventArgs e) {
+      if (InvokeRequired)
+        Invoke(new EventHandler(Content_CodeChanged), sender, e);
+      else {
+        codeEditor.UserCode = Content.Code;
+      }
+    }
+
+    private void compileButton_Click(object sender, EventArgs e) {
+      Compile();
+    }
+
+    private void codeEditor_TextEditorTextChanged(object sender, EventArgs e) {
+      if (Content == null) return;
+      Content.Code = codeEditor.UserCode;
+    }
+
+    private void errorListView_MouseDoubleClick(object sender, MouseEventArgs e) {
+      if (e.Button == MouseButtons.Left) {
+        var item = errorListView.SelectedItems[0];
+        var message = (CompilerError)item.Tag;
+        codeEditor.ScrollToPosition(message.Line, message.Column);
+        codeEditor.Focus();
+      }
+    }
+    #endregion
   }
 }

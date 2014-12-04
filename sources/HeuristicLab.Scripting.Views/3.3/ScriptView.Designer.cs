@@ -109,7 +109,7 @@ namespace HeuristicLab.Scripting.Views {
       this.compileButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
       this.toolTip.SetToolTip(this.compileButton, "Compile (F6)");
       this.compileButton.UseVisualStyleBackColor = true;
-      this.compileButton.Click += new System.EventHandler(this.CompileButtonOnClick);
+      this.compileButton.Click += new System.EventHandler(this.compileButton_Click);
       // 
       // infoTabControl
       // 
@@ -177,6 +177,7 @@ namespace HeuristicLab.Scripting.Views {
       this.errorListView.TabIndex = 0;
       this.errorListView.UseCompatibleStateImageBehavior = false;
       this.errorListView.View = System.Windows.Forms.View.Details;
+      this.errorListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.errorListView_MouseDoubleClick);
       // 
       // iconColumnHeader
       // 
@@ -212,12 +213,12 @@ namespace HeuristicLab.Scripting.Views {
       this.codeEditor.Suffix = "";
       this.codeEditor.TabIndex = 0;
       this.codeEditor.UserCode = "";
-      this.codeEditor.TextEditorTextChanged += new System.EventHandler(this.CodeEditorOnTextEditorTextChanged);
+      this.codeEditor.TextEditorTextChanged += new System.EventHandler(this.codeEditor_TextEditorTextChanged);
       // 
       // splitContainer1
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer1.Location = new System.Drawing.Point(0, 56);
       this.splitContainer1.Name = "splitContainer1";

@@ -150,9 +150,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeCompletionData.cs" />
-    <EmbeddedResource Include="CodeEditor.resx">
-      <DependentUpon>CodeEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="CodeViewer.resx">
       <DependentUpon>CodeViewer.cs</DependentUpon>
     </EmbeddedResource>
