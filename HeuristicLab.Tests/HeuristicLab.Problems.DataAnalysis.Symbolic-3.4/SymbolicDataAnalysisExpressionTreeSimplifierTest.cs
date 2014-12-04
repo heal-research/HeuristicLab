@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {

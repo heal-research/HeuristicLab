@@ -25,8 +25,8 @@ using System.Diagnostics;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
-  internal class SymbolicExpressionImporter {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
+  public class SymbolicExpressionImporter {
     private const string VARSTART = "VAR";
     private const string LAGGEDVARSTART = "LAGVARIABLE";
     private const string INTEGRALSTART = "INTEG";
@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     ProgramRootSymbol programRootSymbol = new ProgramRootSymbol();
     StartSymbol startSymbol = new StartSymbol();
 
-    internal ISymbolicExpressionTree Import(string str) {
+    public ISymbolicExpressionTree Import(string str) {
       str = str.Replace("(", " ( ").Replace(")", " ) ");
       ISymbolicExpressionTreeNode root = programRootSymbol.CreateTreeNode();
       ISymbolicExpressionTreeNode start = startSymbol.CreateTreeNode();
