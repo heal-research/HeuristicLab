@@ -62,8 +62,6 @@ Section "HeuristicLabHiveSlave (required)"
 	File "${SLAVEBUILDPATH}\HeuristicLab.Persistence-3.3.dll"
 	File "${SLAVEBUILDPATH}\HeuristicLab.PluginInfrastructure-3.3.dll"
 	File "${SLAVEBUILDPATH}\HeuristicLab.Tracing-3.3.dll"
-	File "${SLAVEBUILDPATH}\ICSharpCode.SharpZipLib License.txt"
-	File "${SLAVEBUILDPATH}\ICSharpCode.SharpZipLib.dll"
 
 
 	WriteRegStr HKLM SOFTWARE\HeuristicLabHiveSlave "Install_Dir" "$INSTDIR"
@@ -101,8 +99,6 @@ Section "un.Uninstall"
 	Delete $INSTDIR\HeuristicLab.Persistence-3.3.dll
 	Delete $INSTDIR\HeuristicLab.PluginInfrastructure-3.3.dll
 	Delete $INSTDIR\HeuristicLab.Tracing-3.3.dll
-	Delete "$INSTDIR\ICSharpCode.SharpZipLib License.txt"
-	Delete $INSTDIR\ICSharpCode.SharpZipLib.dll
 	Delete $INSTDIR\uninstall.exe
 
 	RMDir "$INSTDIR"
