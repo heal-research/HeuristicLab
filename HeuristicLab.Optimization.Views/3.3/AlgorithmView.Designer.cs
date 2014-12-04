@@ -173,7 +173,7 @@ namespace HeuristicLab.Optimization.Views {
       this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
       this.parametersTabPage.Size = new System.Drawing.Size(671, 400);
       this.parametersTabPage.TabIndex = 1;
-      this.parametersTabPage.Text = "Parameters";
+      this.parametersTabPage.Text = "Algorithm";
       this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
       // parameterCollectionView
