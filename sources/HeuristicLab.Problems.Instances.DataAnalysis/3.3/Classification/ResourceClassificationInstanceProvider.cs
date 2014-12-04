@@ -22,11 +22,11 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using HeuristicLab.Problems.DataAnalysis;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public abstract class ResourceClassificationInstanceProvider : ClassificationInstanceProvider {
@@ -37,17 +37,17 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var descriptor = (ResourceClassificationDataDescriptor)id;
 
       var instanceArchiveName = GetResourceName(FileName + @"\.zip");
-      using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+      using (var instancesZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
         var entry = instancesZipFile.GetEntry(descriptor.ResourceName);
         NumberFormatInfo numberFormat;
         DateTimeFormatInfo dateFormat;
         char separator;
-        using (Stream stream = instancesZipFile.GetInputStream(entry)) {
+        using (Stream stream = entry.Open()) {
           TableFileParser.DetermineFileFormat(stream, out numberFormat, out dateFormat, out separator);
         }
 
         TableFileParser csvFileParser = new TableFileParser();
-        using (Stream stream = instancesZipFile.GetInputStream(entry)) {
+        using (Stream stream = entry.Open()) {
           csvFileParser.Parse(stream, numberFormat, dateFormat, separator, true);
         }
 

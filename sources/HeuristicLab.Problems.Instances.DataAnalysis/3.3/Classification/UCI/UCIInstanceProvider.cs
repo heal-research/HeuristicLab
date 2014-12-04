@@ -22,8 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class UCIInstanceProvider : ResourceClassificationInstanceProvider {
@@ -55,10 +55,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       descriptorList.Add(new WisconsinDiagnosticBreastCancer());
       var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
-        using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
+        using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
           IList<string> entries = new List<string>();
-          ZipEntry curEntry;
-          while ((curEntry = solutionsZipFile.GetNextEntry()) != null) {
+          foreach (var curEntry in solutionsZipFile.Entries) {
             entries.Add(curEntry.Name);
           }
           foreach (var entry in entries.OrderBy(x => x)) {

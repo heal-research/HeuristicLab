@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.CordeauGQAP {
   public class CordeauGQAPInstanceProvider : ProblemInstanceProvider<GQAPData> {
@@ -55,8 +55,8 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
       var instanceArchiveName = GetResourceName(FileName + @"\.zip");
       if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
 
-      using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
-        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
+      using (var instanceStream = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
+        foreach (var entry in instanceStream.Entries.Select(x => x.Name).OrderBy(x => x)) {
           yield return new CordeauGQAPDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetDescription(), entry);
         }
       }
@@ -65,9 +65,9 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
     public override GQAPData LoadData(IDataDescriptor id) {
       var descriptor = (CordeauGQAPDataDescriptor)id;
       var instanceArchiveName = GetResourceName(FileName + @"\.zip");
-      using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+      using (var instancesZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
         var entry = instancesZipFile.GetEntry(descriptor.InstanceIdentifier);
-        using (var stream = instancesZipFile.GetInputStream(entry)) {
+        using (var stream = entry.Open()) {
           var parser = new CordeauGQAPParser();
           parser.Parse(stream);
           var instance = Load(parser);
@@ -115,13 +115,6 @@ INFORMS Journal on Computing, 18, pp. 433–443.";
     protected virtual string GetResourceName(string fileName) {
       return Assembly.GetExecutingAssembly().GetManifestResourceNames()
               .Where(x => Regex.Match(x, @".*\.Data\." + fileName).Success).SingleOrDefault();
-    }
-
-    protected IEnumerable<string> GetZipContents(ZipInputStream zipFile) {
-      ZipEntry entry;
-      while ((entry = zipFile.GetNextEntry()) != null) {
-        yield return entry.Name;
-      }
     }
   }
 }

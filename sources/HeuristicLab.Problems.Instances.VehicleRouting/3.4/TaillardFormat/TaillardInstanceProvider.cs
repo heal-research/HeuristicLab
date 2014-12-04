@@ -20,12 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
   public class TaillardInstanceProvider : TaillardFormatInstanceProvider {
@@ -36,7 +30,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting {
     public override string Description {
       get { return "Taillard test set"; }
     }
-    
+
     public override Uri WebLink {
       get { return new Uri(@"http://mistic.heig-vd.ch/taillard/problemes.dir/vrp.dir/vrp.html"); }
     }
