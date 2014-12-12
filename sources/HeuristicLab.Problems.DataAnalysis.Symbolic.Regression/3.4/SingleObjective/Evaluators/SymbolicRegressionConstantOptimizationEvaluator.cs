@@ -154,9 +154,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private static readonly Func<Term, UnaryFunc> tan = UnaryFunc.Factory(
       eval: Math.Tan,
       diff: x => 1 + Math.Tan(x) * Math.Tan(x));
-    private static readonly Func<Term, UnaryFunc> square = UnaryFunc.Factory(
-       eval: x => x * x,
-       diff: x => 2 * x);
     private static readonly Func<Term, UnaryFunc> erf = UnaryFunc.Factory(
       eval: alglib.errorfunction,
       diff: x => 2.0 * Math.Exp(-(x * x)) / Math.Sqrt(Math.PI));
@@ -377,6 +374,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           term = AutoDiff.TermBuilder.Exp(t);
           return true;
         }
+      }
+      if (node.Symbol is Square) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = AutoDiff.TermBuilder.Power(t, 2.0);
+          return true;
+        }
+      } if (node.Symbol is SquareRoot) {
+        AutoDiff.Term t;
+        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
+          term = null;
+          return false;
+        } else {
+          term = AutoDiff.TermBuilder.Power(t, 0.5);
+          return true;
+        }
       } if (node.Symbol is Sine) {
         AutoDiff.Term t;
         if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
@@ -402,16 +418,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
           return false;
         } else {
           term = tan(t);
-          return true;
-        }
-      }
-      if (node.Symbol is Square) {
-        AutoDiff.Term t;
-        if (!TryTransformToAutoDiff(node.GetSubtree(0), variables, parameters, variableNames, out t)) {
-          term = null;
-          return false;
-        } else {
-          term = square(t);
           return true;
         }
       } if (node.Symbol is Erf) {
@@ -463,10 +469,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
          !(n.Symbol is Division) &&
          !(n.Symbol is Logarithm) &&
          !(n.Symbol is Exponential) &&
+         !(n.Symbol is SquareRoot) &&
+         !(n.Symbol is Square) &&
          !(n.Symbol is Sine) &&
          !(n.Symbol is Cosine) &&
          !(n.Symbol is Tangent) &&
-         !(n.Symbol is Square) &&
          !(n.Symbol is Erf) &&
          !(n.Symbol is Norm) &&
          !(n.Symbol is StartSymbol)
