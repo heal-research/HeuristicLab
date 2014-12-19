@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Analysis.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Statistics.UnitTests {
+namespace HeuristicLab.Analysis.Tests {
   [TestClass]
   public class BonferroniHolmUnitTest {
     [TestMethod]

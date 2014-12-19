@@ -24,7 +24,7 @@ using HeuristicLab.Analysis.Statistics;
 using HeuristicLab.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Statistics.UnitTests {
+namespace HeuristicLab.Analysis.Tests {
   [TestClass]
   public class KruskalWallisUnitTests {
     //tests the sample data from R's Kruskal.Test() help page

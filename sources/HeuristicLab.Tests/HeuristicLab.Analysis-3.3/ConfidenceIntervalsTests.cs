@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Analysis.Statistics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Statistics.UnitTests {
+namespace HeuristicLab.Analysis.Tests {
   [TestClass]
   public class ConfidenceIntervalsTests {
     private readonly double[] x = new double[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 1.5, 0.3 };
