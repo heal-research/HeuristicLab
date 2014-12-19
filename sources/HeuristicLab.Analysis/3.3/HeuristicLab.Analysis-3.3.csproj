@@ -158,7 +158,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QualityAnalysis\QualityDistributionAnalyzer.cs" />
     <Compile Include="QualityAnalysis\ScaledQualityDifferenceAnalyzer.cs" />
+    <Compile Include="Statistics\BonferroniHolm.cs" />
+    <Compile Include="Statistics\EnumerableStatisticsExtension.cs" />
+    <Compile Include="Statistics\ExpFitting.cs" />
+    <Compile Include="Statistics\IFitting.cs" />
+    <Compile Include="Statistics\KruskalWallisTest.cs" />
+    <Compile Include="Statistics\LinearLeastSquaresFitting.cs" />
+    <Compile Include="Statistics\LogFitting.cs" />
     <Compile Include="Statistics\NormalDistribution.cs" />
+    <Compile Include="Statistics\PairwiseTest.cs" />
+    <Compile Include="Statistics\SampleSizeDetermination.cs" />
     <Compile Include="ValueAnalysis\SingleValueAnalyzer.cs" />
     <Compile Include="ValueAnalysis\MinAverageMaxValueAnalyzer.cs" />
     <Compile Include="ValueAnalysis\MinAverageMaxValueCalculator.cs" />
