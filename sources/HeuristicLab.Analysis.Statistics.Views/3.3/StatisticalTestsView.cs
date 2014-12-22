@@ -472,9 +472,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private void openBoxPlotToolStripMenuItem_Click(object sender, EventArgs e) {
       RunCollectionBoxPlotView boxplotView = new RunCollectionBoxPlotView();
       boxplotView.Content = Content;
-      // TODO: enable as soon as we move to HeuristicLab.Optimization.Views
-      // boxplotView.xAxisComboBox.SelectedItem = xAxisComboBox.SelectedItem;
-      // boxplotView.yAxisComboBox.SelectedItem = yAxisComboBox.SelectedItem;
+      boxplotView.SetXAxis(groupComboBox.SelectedItem.ToString());
+      boxplotView.SetYAxis(resultComboBox.SelectedItem.ToString());
+
       boxplotView.Show();
     }
 
