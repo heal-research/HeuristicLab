@@ -57,6 +57,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.splitContainer3 = new System.Windows.Forms.SplitContainer();
       this.pairwiseTestGroupBox = new System.Windows.Forms.GroupBox();
+      this.pairwiseTextLabel = new System.Windows.Forms.Label();
       this.pairwiseStringConvertibleMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.pairwiseLabel = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
@@ -64,6 +65,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.label2 = new System.Windows.Forms.Label();
       this.groupCompComboBox = new System.Windows.Forms.ComboBox();
       this.allGroupTestGroupBox = new System.Windows.Forms.GroupBox();
+      this.groupComTextLabel = new System.Windows.Forms.Label();
       this.groupCompLabel = new System.Windows.Forms.Label();
       this.normalityGroupBox = new System.Windows.Forms.GroupBox();
       this.normalityTextLabel = new System.Windows.Forms.Label();
@@ -74,8 +76,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.histogramControl = new HeuristicLab.Analysis.Views.HistogramControl();
-      this.groupComTextLabel = new System.Windows.Forms.Label();
-      this.pairwiseTextLabel = new System.Windows.Forms.Label();
+      this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.contextMenuStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -92,12 +93,16 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.tabControl.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.tabPage2.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+      this.splitContainer2.Panel1.SuspendLayout();
+      this.splitContainer2.Panel2.SuspendLayout();
+      this.splitContainer2.SuspendLayout();
       this.SuspendLayout();
       // 
       // stringConvertibleMatrixView
       // 
-      this.stringConvertibleMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.stringConvertibleMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.stringConvertibleMatrixView.Caption = "StringConvertibleMatrix View";
       this.stringConvertibleMatrixView.Content = null;
@@ -146,14 +151,14 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       // resultComboBox
       // 
-      this.resultComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.resultComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.resultComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.resultComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.resultComboBox.FormattingEnabled = true;
       this.resultComboBox.Location = new System.Drawing.Point(62, 3);
       this.resultComboBox.Name = "resultComboBox";
-      this.resultComboBox.Size = new System.Drawing.Size(250, 21);
+      this.resultComboBox.Size = new System.Drawing.Size(244, 21);
       this.resultComboBox.TabIndex = 5;
       this.resultComboBox.SelectedValueChanged += new System.EventHandler(this.resultComboBox_SelectedValueChanged);
       // 
@@ -170,32 +175,32 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       // pValTextBox
       // 
-      this.pValTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.pValTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pValTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.pValTextBox.Location = new System.Drawing.Point(58, 36);
       this.pValTextBox.Name = "pValTextBox";
       this.pValTextBox.ReadOnly = true;
-      this.pValTextBox.Size = new System.Drawing.Size(263, 20);
+      this.pValTextBox.Size = new System.Drawing.Size(257, 20);
       this.pValTextBox.TabIndex = 13;
       // 
       // groupComboBox
       // 
-      this.groupComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.groupComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.groupComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.groupComboBox.FormattingEnabled = true;
       this.groupComboBox.Location = new System.Drawing.Point(62, 3);
       this.groupComboBox.Name = "groupComboBox";
-      this.groupComboBox.Size = new System.Drawing.Size(250, 21);
+      this.groupComboBox.Size = new System.Drawing.Size(244, 21);
       this.groupComboBox.TabIndex = 14;
       this.groupComboBox.SelectedValueChanged += new System.EventHandler(this.groupComboBox_SelectedValueChanged);
       // 
       // splitContainer1
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer1.Location = new System.Drawing.Point(6, 19);
       this.splitContainer1.Name = "splitContainer1";
@@ -210,14 +215,14 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       this.splitContainer1.Panel2.Controls.Add(this.groupByLabel);
       this.splitContainer1.Panel2.Controls.Add(this.groupComboBox);
-      this.splitContainer1.Size = new System.Drawing.Size(315, 54);
+      this.splitContainer1.Size = new System.Drawing.Size(309, 54);
       this.splitContainer1.SplitterDistance = 25;
       this.splitContainer1.TabIndex = 18;
       // 
       // splitContainer3
       // 
-      this.splitContainer3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.splitContainer3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer3.Location = new System.Drawing.Point(6, 6);
       this.splitContainer3.Name = "splitContainer3";
@@ -228,18 +233,15 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       // splitContainer3.Panel2
       // 
-      this.splitContainer3.Panel2.Controls.Add(this.pairwiseTestGroupBox);
-      this.splitContainer3.Panel2.Controls.Add(this.allGroupTestGroupBox);
-      this.splitContainer3.Panel2.Controls.Add(this.normalityGroupBox);
-      this.splitContainer3.Panel2.Controls.Add(this.selectDataGroupBox);
+      this.splitContainer3.Panel2.Controls.Add(this.splitContainer2);
       this.splitContainer3.Size = new System.Drawing.Size(910, 603);
       this.splitContainer3.SplitterDistance = 573;
       this.splitContainer3.TabIndex = 20;
       // 
       // pairwiseTestGroupBox
       // 
-      this.pairwiseTestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.pairwiseTestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pairwiseTestGroupBox.Controls.Add(this.pairwiseTextLabel);
       this.pairwiseTestGroupBox.Controls.Add(this.pairwiseStringConvertibleMatrixView);
@@ -249,17 +251,27 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.pairwiseTestGroupBox.Controls.Add(this.label2);
       this.pairwiseTestGroupBox.Controls.Add(this.groupCompComboBox);
       this.pairwiseTestGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.pairwiseTestGroupBox.Location = new System.Drawing.Point(3, 306);
+      this.pairwiseTestGroupBox.Location = new System.Drawing.Point(3, 3);
       this.pairwiseTestGroupBox.Name = "pairwiseTestGroupBox";
-      this.pairwiseTestGroupBox.Size = new System.Drawing.Size(327, 275);
+      this.pairwiseTestGroupBox.Size = new System.Drawing.Size(321, 287);
       this.pairwiseTestGroupBox.TabIndex = 22;
       this.pairwiseTestGroupBox.TabStop = false;
       this.pairwiseTestGroupBox.Text = "4. Pairwise Test for Inequalities in Distributions";
       // 
+      // pairwiseTextLabel
+      // 
+      this.pairwiseTextLabel.AutoSize = true;
+      this.pairwiseTextLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.pairwiseTextLabel.Location = new System.Drawing.Point(28, 46);
+      this.pairwiseTextLabel.Name = "pairwiseTextLabel";
+      this.pairwiseTextLabel.Size = new System.Drawing.Size(165, 13);
+      this.pairwiseTextLabel.TabIndex = 20;
+      this.pairwiseTextLabel.Text = "Groups have different distribution:";
+      // 
       // pairwiseStringConvertibleMatrixView
       // 
-      this.pairwiseStringConvertibleMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.pairwiseStringConvertibleMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.pairwiseStringConvertibleMatrixView.Caption = "StringConvertibleMatrix View";
       this.pairwiseStringConvertibleMatrixView.Content = null;
@@ -269,7 +281,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.pairwiseStringConvertibleMatrixView.ReadOnly = false;
       this.pairwiseStringConvertibleMatrixView.ShowRowsAndColumnsTextBox = false;
       this.pairwiseStringConvertibleMatrixView.ShowStatisticalInformation = false;
-      this.pairwiseStringConvertibleMatrixView.Size = new System.Drawing.Size(315, 172);
+      this.pairwiseStringConvertibleMatrixView.Size = new System.Drawing.Size(309, 172);
       this.pairwiseStringConvertibleMatrixView.TabIndex = 19;
       // 
       // pairwiseLabel
@@ -295,13 +307,13 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       // equalDistsTextBox
       // 
-      this.equalDistsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.equalDistsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.equalDistsTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.equalDistsTextBox.Location = new System.Drawing.Point(86, 65);
       this.equalDistsTextBox.Name = "equalDistsTextBox";
       this.equalDistsTextBox.ReadOnly = true;
-      this.equalDistsTextBox.Size = new System.Drawing.Size(235, 20);
+      this.equalDistsTextBox.Size = new System.Drawing.Size(229, 20);
       this.equalDistsTextBox.TabIndex = 18;
       // 
       // label2
@@ -316,20 +328,20 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       // groupCompComboBox
       // 
-      this.groupCompComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.groupCompComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupCompComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.groupCompComboBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.groupCompComboBox.FormattingEnabled = true;
       this.groupCompComboBox.Location = new System.Drawing.Point(123, 19);
       this.groupCompComboBox.Name = "groupCompComboBox";
-      this.groupCompComboBox.Size = new System.Drawing.Size(198, 21);
+      this.groupCompComboBox.Size = new System.Drawing.Size(192, 21);
       this.groupCompComboBox.TabIndex = 17;
       this.groupCompComboBox.SelectedValueChanged += new System.EventHandler(this.groupCompComboBox_SelectedValueChanged);
       // 
       // allGroupTestGroupBox
       // 
-      this.allGroupTestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.allGroupTestGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.allGroupTestGroupBox.Controls.Add(this.groupComTextLabel);
       this.allGroupTestGroupBox.Controls.Add(this.groupCompLabel);
@@ -338,10 +350,20 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.allGroupTestGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.allGroupTestGroupBox.Location = new System.Drawing.Point(3, 237);
       this.allGroupTestGroupBox.Name = "allGroupTestGroupBox";
-      this.allGroupTestGroupBox.Size = new System.Drawing.Size(327, 63);
+      this.allGroupTestGroupBox.Size = new System.Drawing.Size(321, 63);
       this.allGroupTestGroupBox.TabIndex = 21;
       this.allGroupTestGroupBox.TabStop = false;
       this.allGroupTestGroupBox.Text = "3. Kruskal Wallis Test for Inequalities in Distributions";
+      // 
+      // groupComTextLabel
+      // 
+      this.groupComTextLabel.AutoSize = true;
+      this.groupComTextLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.groupComTextLabel.Location = new System.Drawing.Point(28, 16);
+      this.groupComTextLabel.Name = "groupComTextLabel";
+      this.groupComTextLabel.Size = new System.Drawing.Size(165, 13);
+      this.groupComTextLabel.TabIndex = 19;
+      this.groupComTextLabel.Text = "Groups have different distribution:";
       // 
       // groupCompLabel
       // 
@@ -355,7 +377,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       // normalityGroupBox
       // 
-      this.normalityGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.normalityGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.normalityGroupBox.Controls.Add(this.normalityTextLabel);
       this.normalityGroupBox.Controls.Add(this.normalityStringConvertibleMatrixView);
@@ -363,7 +385,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.normalityGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.normalityGroupBox.Location = new System.Drawing.Point(3, 88);
       this.normalityGroupBox.Name = "normalityGroupBox";
-      this.normalityGroupBox.Size = new System.Drawing.Size(327, 143);
+      this.normalityGroupBox.Size = new System.Drawing.Size(321, 143);
       this.normalityGroupBox.TabIndex = 20;
       this.normalityGroupBox.TabStop = false;
       this.normalityGroupBox.Text = "2. Jarque-Bera Test for Normal Distribution";
@@ -380,8 +402,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       // normalityStringConvertibleMatrixView
       // 
-      this.normalityStringConvertibleMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.normalityStringConvertibleMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.normalityStringConvertibleMatrixView.Caption = "StringConvertibleMatrix View";
       this.normalityStringConvertibleMatrixView.Content = null;
@@ -391,7 +413,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.normalityStringConvertibleMatrixView.ReadOnly = false;
       this.normalityStringConvertibleMatrixView.ShowRowsAndColumnsTextBox = false;
       this.normalityStringConvertibleMatrixView.ShowStatisticalInformation = false;
-      this.normalityStringConvertibleMatrixView.Size = new System.Drawing.Size(312, 102);
+      this.normalityStringConvertibleMatrixView.Size = new System.Drawing.Size(306, 102);
       this.normalityStringConvertibleMatrixView.TabIndex = 17;
       // 
       // normalityLabel
@@ -406,21 +428,21 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       // 
       // selectDataGroupBox
       // 
-      this.selectDataGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.selectDataGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.selectDataGroupBox.Controls.Add(this.splitContainer1);
       this.selectDataGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.selectDataGroupBox.Location = new System.Drawing.Point(3, 3);
       this.selectDataGroupBox.Name = "selectDataGroupBox";
-      this.selectDataGroupBox.Size = new System.Drawing.Size(327, 79);
+      this.selectDataGroupBox.Size = new System.Drawing.Size(321, 79);
       this.selectDataGroupBox.TabIndex = 19;
       this.selectDataGroupBox.TabStop = false;
       this.selectDataGroupBox.Text = "1. Select Data";
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.tabPage1);
       this.tabControl.Controls.Add(this.tabPage2);
@@ -447,15 +469,15 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(922, 541);
+      this.tabPage2.Size = new System.Drawing.Size(922, 615);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Histogram";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
       // histogramControl
       // 
-      this.histogramControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.histogramControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.histogramControl.CalculateExactBins = false;
       this.histogramControl.IncrementNumberOfBins = 1;
@@ -465,28 +487,33 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.histogramControl.Name = "histogramControl";
       this.histogramControl.NumberOfBins = 10;
       this.histogramControl.ShowExactCheckbox = false;
-      this.histogramControl.Size = new System.Drawing.Size(910, 529);
+      this.histogramControl.Size = new System.Drawing.Size(910, 603);
       this.histogramControl.TabIndex = 0;
       // 
-      // groupComTextLabel
+      // splitContainer2
       // 
-      this.groupComTextLabel.AutoSize = true;
-      this.groupComTextLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.groupComTextLabel.Location = new System.Drawing.Point(28, 16);
-      this.groupComTextLabel.Name = "groupComTextLabel";
-      this.groupComTextLabel.Size = new System.Drawing.Size(165, 13);
-      this.groupComTextLabel.TabIndex = 19;
-      this.groupComTextLabel.Text = "Groups have different distribution:";
+      this.splitContainer2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.splitContainer2.IsSplitterFixed = true;
+      this.splitContainer2.Location = new System.Drawing.Point(3, 3);
+      this.splitContainer2.Name = "splitContainer2";
+      this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
       // 
-      // pairwiseTextLabel
+      // splitContainer2.Panel1
       // 
-      this.pairwiseTextLabel.AutoSize = true;
-      this.pairwiseTextLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.pairwiseTextLabel.Location = new System.Drawing.Point(28, 46);
-      this.pairwiseTextLabel.Name = "pairwiseTextLabel";
-      this.pairwiseTextLabel.Size = new System.Drawing.Size(165, 13);
-      this.pairwiseTextLabel.TabIndex = 20;
-      this.pairwiseTextLabel.Text = "Groups have different distribution:";
+      this.splitContainer2.Panel1.Controls.Add(this.selectDataGroupBox);
+      this.splitContainer2.Panel1.Controls.Add(this.allGroupTestGroupBox);
+      this.splitContainer2.Panel1.Controls.Add(this.normalityGroupBox);
+      // 
+      // splitContainer2.Panel2
+      // 
+      this.splitContainer2.Panel2.Controls.Add(this.pairwiseTestGroupBox);
+      this.splitContainer2.Size = new System.Drawing.Size(327, 597);
+      this.splitContainer2.SplitterDistance = 303;
+      this.splitContainer2.SplitterWidth = 1;
+      this.splitContainer2.TabIndex = 1;
       // 
       // StatisticalTestsView
       // 
@@ -514,6 +541,10 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       this.tabControl.ResumeLayout(false);
       this.tabPage1.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
+      this.splitContainer2.Panel1.ResumeLayout(false);
+      this.splitContainer2.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+      this.splitContainer2.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -550,5 +581,6 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private HeuristicLab.Analysis.Views.HistogramControl histogramControl;
     private System.Windows.Forms.Label pairwiseTextLabel;
     private System.Windows.Forms.Label groupComTextLabel;
+    private System.Windows.Forms.SplitContainer splitContainer2;
   }
 }
