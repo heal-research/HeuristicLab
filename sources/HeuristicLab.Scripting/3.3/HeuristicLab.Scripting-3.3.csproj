@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSharpScript.cs" />
+    <EmbeddedResource Include="CSharpScriptCode.cs" />
     <Compile Include="Variables.cs" />
     <Compile Include="VariableStore.cs" />
     <None Include="Plugin.cs.frame" />

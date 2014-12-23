@@ -156,5 +156,14 @@ namespace HeuristicLab.Scripting {
       var handler = CompileErrorsChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
+
+    #region Helpers
+    protected virtual string ReadCodeTemplate(string templateName) {
+      using (var stream = Assembly.GetAssembly(this.GetType()).GetManifestResourceStream(templateName))
+      using (var reader = new StreamReader(stream)) {
+        return reader.ReadToEnd();
+      }
+    }
+    #endregion
   }
 }
