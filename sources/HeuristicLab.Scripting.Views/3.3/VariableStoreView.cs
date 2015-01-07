@@ -240,12 +240,21 @@ namespace HeuristicLab.Scripting.Views {
       DoDragDrop(data, DragDropEffects.Copy);
     }
     protected virtual void variableListView_DragEnter(object sender, DragEventArgs e) {
-      validDragOperation = !Locked && !ReadOnly && e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat) != null;
+      validDragOperation = !Locked && !ReadOnly;
+
+      object item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+      if (item is KeyValuePair<string, object>) {
+        var variable = (KeyValuePair<string, object>)item;
+        validDragOperation &= variable.Value is IDeepCloneable;
+      } else {
+        validDragOperation &= item is IDeepCloneable;
+      }
     }
     protected virtual void variableListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (validDragOperation) {
-        if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+        if (e.AllowedEffect.HasFlag(DragDropEffects.Copy))
+          e.Effect = DragDropEffects.Copy;
       }
     }
     protected virtual void variableListView_DragDrop(object sender, DragEventArgs e) {
@@ -268,9 +277,10 @@ namespace HeuristicLab.Scripting.Views {
       }
 
       var cloneable = item as IDeepCloneable;
-      if (cloneable != null) item = cloneable.Clone();
+      if (cloneable == null) return;
 
-      Content.Add(variableName, item);
+      var clonedItem = cloneable.Clone();
+      Content.Add(variableName, clonedItem);
 
       var listViewItem = variableListView.FindItemWithText(variableName);
       variableListView.SelectedItems.Clear();

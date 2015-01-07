@@ -110,7 +110,7 @@ namespace HeuristicLab.Scripting.Views {
       } else
         if (Compile()) {
           outputTextBox.Clear();
-          Content.Execute();
+          Content.ExecuteAsync();
           Running = true;
         }
     }
@@ -122,7 +122,7 @@ namespace HeuristicLab.Scripting.Views {
           if (Content != null && !Locked && !Running) {
             if (Compile()) {
               outputTextBox.Clear();
-              Content.Execute();
+              Content.ExecuteAsync();
               Running = true;
             }
           }

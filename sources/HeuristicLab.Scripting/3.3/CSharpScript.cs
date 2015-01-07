@@ -94,7 +94,7 @@ namespace HeuristicLab.Scripting {
     #endregion
 
     private Thread scriptThread;
-    public virtual void Execute() {
+    public virtual void ExecuteAsync() {
       if (compiledScript == null) return;
       scriptThread = new Thread(() => {
         Exception ex = null;
