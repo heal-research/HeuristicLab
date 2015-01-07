@@ -26,15 +26,12 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Core.Views {
   public partial class NestingLevelErrorControl : UserControl {
-    public Func<IContent> Content { get; set; }
-    public Type ViewType { get; set; }
-
-    public NestingLevelErrorControl() {
-      InitializeComponent();
-    }
+    private Func<IContent> Content { get; set; }
+    private Type ViewType { get; set; }
 
     public NestingLevelErrorControl(Func<IContent> content, Type viewType)
-      : this() {
+      : base() {
+      InitializeComponent();
       Content = content;
       ViewType = viewType;
     }
