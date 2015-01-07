@@ -37,7 +37,7 @@ namespace HeuristicLab.Tests {
       Exception ex = null;
 
       s.ScriptExecutionFinished += (sender, e) => { ex = e.Value; trigger.Set(); };
-      s.Execute();
+      s.ExecuteAsync();
       trigger.WaitOne();
 
       Assert.IsNull(ex);
