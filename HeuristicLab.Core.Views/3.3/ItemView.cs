@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+using System.Windows.Forms;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
@@ -26,6 +28,8 @@ namespace HeuristicLab.Core.Views {
   /// Base class for all visual representations.
   /// </summary>
   public partial class ItemView : AsynchronousContentView {
+    public const int MaximumNestingLevel = 35;
+
     public new IItem Content {
       get { return (IItem)base.Content; }
       set { base.Content = value; }
@@ -36,6 +40,29 @@ namespace HeuristicLab.Core.Views {
     /// </summary>
     public ItemView() {
       InitializeComponent();
+    }
+
+    protected override void OnInitialized(EventArgs e) {
+      base.OnInitialized(e);
+
+      if (CountParentControls() > MaximumNestingLevel) {
+        //capture content, needed because it is set at a later time
+        NestingLevelErrorControl errorControl = new NestingLevelErrorControl(() => Content, this.GetType());
+        errorControl.Dock = DockStyle.Fill;
+
+        Controls.Clear();
+        Controls.Add(errorControl);
+      }
+    }
+
+    private int CountParentControls() {
+      int cnt = 0;
+      Control parent = Parent;
+      while (parent != null) {
+        parent = parent.Parent;
+        cnt++;
+      }
+      return cnt;
     }
   }
 }
