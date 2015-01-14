@@ -24,6 +24,7 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -46,6 +47,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
 
+    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
+    }
+
+
     [StorableConstructor]
     protected RealVectorShakingOperator(bool deserializing) : base(deserializing) { }
     protected RealVectorShakingOperator(RealVectorShakingOperator original, Cloner cloner) : base(original, cloner) { }
@@ -56,9 +62,18 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       : base() {
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real vector to shake."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator that will be used for stochastic shaking operators."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled."));
       foreach (IRealVectorManipulator shaker in ApplicationManager.Manager.GetInstances<IRealVectorManipulator>().OrderBy(x => x.Name))
         if (!(shaker is MultiRealVectorManipulator)
           && !(shaker is ISelfAdaptiveManipulator)) Operators.Add(shaker);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("Bounds"))
+        Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled."));
+      #endregion
     }
 
     #region Wiring of some parameters

@@ -24,6 +24,7 @@ using System.Linq;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
@@ -36,7 +37,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   /// </summary>
   [Item("IntegerVectorShakingOperator", "A shaking operator for VNS which uses available manipulation operators to perform the shaking.")]
   [StorableClass]
-  public class IntegerVectorShakingOperator : ShakingOperator<IIntegerVectorManipulator>, IIntegerVectorMultiNeighborhoodShakingOperator, IStochasticOperator {
+  public class IntegerVectorShakingOperator : ShakingOperator<IIntegerVectorManipulator>, IIntegerVectorMultiNeighborhoodShakingOperator, IStochasticOperator, IBoundedIntegerVectorOperator {
 
     public ILookupParameter<IntegerVector> IntegerVectorParameter {
       get { return (ILookupParameter<IntegerVector>)Parameters["IntegerVector"]; }
@@ -44,6 +45,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
+    }
+
+    public IValueLookupParameter<IntMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<IntMatrix>)Parameters["Bounds"]; }
     }
 
     [StorableConstructor]
@@ -56,8 +61,18 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       : base() {
       Parameters.Add(new LookupParameter<IntegerVector>("IntegerVector", "The integer vector to shake."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator that will be used for stochastic shaking operators."));
+      Parameters.Add(new ValueLookupParameter<IntMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled."));
+
       foreach (IIntegerVectorManipulator shaker in ApplicationManager.Manager.GetInstances<IIntegerVectorManipulator>().OrderBy(x => x.Name))
         if (!(shaker is ISelfAdaptiveManipulator)) Operators.Add(shaker);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("Bounds"))
+        Parameters.Add(new ValueLookupParameter<IntMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled."));
+      #endregion
     }
 
     #region Wiring of some parameters
