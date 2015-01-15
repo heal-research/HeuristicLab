@@ -121,7 +121,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// <param name="onlyInstantiable">Return only types that are instantiable 
     /// (interfaces, abstract classes...  are not returned)</param>
     /// <returns>Enumerable of the discovered types.</returns>
-    private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false) {
+    public IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false) {
       try {
         // necessary to make sure the exception is immediately thrown
         // instead of later when the enumerable is iterated?
@@ -144,6 +144,24 @@ namespace HeuristicLab.PluginInfrastructure {
       catch (ReflectionTypeLoadException) {
         return Enumerable.Empty<Type>();
       }
+    }
+
+    /// <summary>
+    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
+    /// </summary>
+    /// <param name="types">The types to discover.</param>
+    /// <param name="assembly">The declaring assembly.</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// /// <param name="assignableToAllTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
+    /// <returns>An enumerable of discovered types.</returns>
+    public IEnumerable<Type> GetTypes(IEnumerable<Type> types, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true) {
+      IEnumerable<Type> result = GetTypes(types.First(), assembly, onlyInstantiable, includeGenericTypeDefinitions);
+      foreach (Type type in types.Skip(1)) {
+        IEnumerable<Type> discoveredTypes = GetTypes(type, assembly, onlyInstantiable, includeGenericTypeDefinitions);
+        if (assignableToAllTypes) result = result.Intersect(discoveredTypes);
+        else result = result.Union(discoveredTypes);
+      }
+      return result;
     }
 
     /// <summary>
