@@ -326,7 +326,7 @@ namespace HeuristicLab.PluginInfrastructure {
       return GetTypes(type, assembly, onlyInstantiable, includeGenericTypeDefinitions);
     }
     IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true) {
-      return GetTypes(types, assembly, onlyInstantiable, includeGenericTypeDefinitions);
+      return GetTypes(types, assembly, onlyInstantiable, includeGenericTypeDefinitions,assignableToAllTypes);
     }
 
     /// <summary>
