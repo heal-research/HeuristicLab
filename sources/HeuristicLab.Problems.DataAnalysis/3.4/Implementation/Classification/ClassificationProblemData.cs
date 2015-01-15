@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string TargetVariableParameterName = "TargetVariable";
     protected const string ClassNamesParameterName = "ClassNames";
     protected const string ClassificationPenaltiesParameterName = "ClassificationPenalties";
+    protected const string PositiveClassNameParameterName = "PositiveClass";
     protected const int MaximumNumberOfClasses = 100;
     protected const int InspectedRowsToDetermineTargets = 2000;
 
@@ -212,6 +213,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IFixedValueParameter<StringMatrix> ClassNamesParameter {
       get { return (IFixedValueParameter<StringMatrix>)Parameters[ClassNamesParameterName]; }
     }
+    public IConstrainedValueParameter<StringValue> PositiveClassNameParameter {
+      get { return (IConstrainedValueParameter<StringValue>)Parameters[PositiveClassNameParameterName]; }
+    }
     public IFixedValueParameter<DoubleMatrix> ClassificationPenaltiesParameter {
       get { return (IFixedValueParameter<DoubleMatrix>)Parameters[ClassificationPenaltiesParameterName]; }
     }
@@ -261,6 +265,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IEnumerable<string> ClassNames {
       get { return ClassNamesCache; }
     }
+
+    public string PositiveClassName {
+      get { return PositiveClassNameParameter.Value.Value; }
+      set {
+        var matchingValue = PositiveClassNameParameter.ValidValues.SingleOrDefault(x => x.Value == value);
+        if (matchingValue == null) throw new ArgumentException(string.Format("{0} cannot be set as positive class.", value));
+        PositiveClassNameParameter.Value = matchingValue;
+      }
+    }
     #endregion
 
 
@@ -269,6 +282,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       RegisterParameterEvents();
+      // BackwardsCompatibility3.4
+      #region Backwards compatible code, remove with 3.5
+      if (!Parameters.ContainsKey(PositiveClassNameParameterName)) {
+        var validValues = new ItemSet<StringValue>(ClassNames.Select(s => new StringValue(s).AsReadOnly()));
+        Parameters.Add(new ConstrainedValueParameter<StringValue>(PositiveClassNameParameterName,
+          "The positive class which is used for quality measure calculation (e.g., specifity, sensitivity,...)", validValues, validValues.First()));
+      }
+      #endregion
+
     }
 
     protected ClassificationProblemData(ClassificationProblemData original, Cloner cloner)
@@ -306,6 +328,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       Parameters.Add(new ConstrainedValueParameter<StringValue>(TargetVariableParameterName, new ItemSet<StringValue>(validTargetVariableValues), target));
       Parameters.Add(new FixedValueParameter<StringMatrix>(ClassNamesParameterName, ""));
+      Parameters.Add(new ConstrainedValueParameter<StringValue>(PositiveClassNameParameterName, "The positive class which is used for quality measure calculation (e.g., specifity, sensitivity,...)"));
       Parameters.Add(new FixedValueParameter<DoubleMatrix>(ClassificationPenaltiesParameterName, ""));
 
       RegisterParameterEvents();
@@ -338,6 +361,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
         ClassNamesParameter.Value[i, 0] = "Class " + ClassValuesCache[i];
       ClassNamesParameter.Value.ColumnNames = new List<string>() { "ClassNames" };
       ClassNamesParameter.Value.RowNames = ClassValues.Select(s => "ClassValue: " + s);
+
+      PositiveClassNameParameter.ValidValues.Clear();
+      foreach (var className in ClassNames) {
+        PositiveClassNameParameter.ValidValues.Add(new StringValue(className).AsReadOnly());
+      }
 
       ((IStringConvertibleMatrix)ClassificationPenaltiesParameter.Value).Rows = Classes;
       ((IStringConvertibleMatrix)ClassificationPenaltiesParameter.Value).Columns = Classes;
@@ -410,9 +438,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
       OnChanged();
     }
     private void Parameter_ValueChanged(object sender, EventArgs e) {
+      var oldPositiveClass = PositiveClassName;
+      var oldClassNames = classNamesCache;
+      var index = oldClassNames.IndexOf(oldPositiveClass);
+
       classNamesCache = null;
       ClassificationPenaltiesParameter.Value.RowNames = ClassNames.Select(name => "Actual " + name);
       ClassificationPenaltiesParameter.Value.ColumnNames = ClassNames.Select(name => "Estimated " + name);
+
+      PositiveClassNameParameter.ValidValues.Clear();
+      foreach (var className in ClassNames) {
+        PositiveClassNameParameter.ValidValues.Add(new StringValue(className).AsReadOnly());
+      }
+      PositiveClassNameParameter.Value = PositiveClassNameParameter.ValidValues.ElementAt(index);
+
       OnChanged();
     }
     #endregion
@@ -434,7 +473,13 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var newClassValues = classificationProblemData.Dataset.GetDoubleValues(TargetVariable).Distinct().OrderBy(x => x);
       if (!newClassValues.SequenceEqual(ClassValues)) {
         errorMessage = errorMessage + string.Format("The class values differ in the provided classification problem data.");
-        return false;
+        returnValue = false;
+      }
+
+      var newPositivieClassName = classificationProblemData.PositiveClassName;
+      if (newPositivieClassName != PositiveClassName) {
+        errorMessage = errorMessage + string.Format("The positive class differs in the provided classification problem data.");
+        returnValue = false;
       }
 
       return returnValue;
@@ -450,6 +495,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TargetVariable = classificationProblemData.TargetVariable;
       for (int i = 0; i < classificationProblemData.ClassNames.Count(); i++)
         ClassNamesParameter.Value[i, 0] = classificationProblemData.ClassNames.ElementAt(i);
+
+      PositiveClassName = classificationProblemData.PositiveClassName;
 
       for (int i = 0; i < Classes; i++) {
         for (int j = 0; j < Classes; j++) {
