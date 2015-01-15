@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         Add(new Result(ClassificationPerformanceMeasuresResultName, @"Classification performance measures.\n
                               In a multiclass classification all misclassifications of the negative class will be treated as true negatives except on positive class estimations.",
                               new ClassificationPerformanceMeasuresResultCollection()));
-        RecalculateResults();
+        CalculateClassificationResults();
       }
     }
 
@@ -105,7 +105,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double[] estimatedTestClassValues = EstimatedTestClassValues.ToArray(); // cache values
       double[] originalTestClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices).ToArray();
 
-      var positiveClassName = ProblemData.PositiveClassName;
+      var positiveClassName = ProblemData.PositiveClass;
       double positiveClassValue = ProblemData.GetClassValue(positiveClassName);
       ClassificationPerformanceMeasuresCalculator trainingPerformanceCalculator = new ClassificationPerformanceMeasuresCalculator(positiveClassName, positiveClassValue);
       ClassificationPerformanceMeasuresCalculator testPerformanceCalculator = new ClassificationPerformanceMeasuresCalculator(positiveClassName, positiveClassValue);

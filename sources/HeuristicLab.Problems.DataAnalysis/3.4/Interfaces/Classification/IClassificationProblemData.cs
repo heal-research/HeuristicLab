@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     string TargetVariable { get; set; }
 
     IEnumerable<string> ClassNames { get; }
-    string PositiveClassName { get; set; }
+    string PositiveClass { get; set; }
     IEnumerable<double> ClassValues { get; }
     int Classes { get; }
 

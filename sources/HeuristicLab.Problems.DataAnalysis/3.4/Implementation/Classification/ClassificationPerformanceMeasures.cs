@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -50,6 +51,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
     [StorableConstructor]
     protected ClassificationPerformanceMeasuresResultCollection(bool deserializing)
       : base(deserializing) {
+    }
+
+    protected ClassificationPerformanceMeasuresResultCollection(ClassificationPerformanceMeasuresResultCollection original, Cloner cloner)
+      : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ClassificationPerformanceMeasuresResultCollection(this, cloner);
     }
 
     #region result properties
