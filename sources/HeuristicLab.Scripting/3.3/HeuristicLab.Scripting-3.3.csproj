@@ -145,6 +145,7 @@
     <EmbeddedResource Include="Scripts\Templates\ScriptTemplates.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ScriptTemplates.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>HeuristicLab.Scripting</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
