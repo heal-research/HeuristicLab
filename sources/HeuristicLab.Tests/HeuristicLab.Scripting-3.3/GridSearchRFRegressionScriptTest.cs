@@ -20,28 +20,28 @@
 #endregion
 
 using System.IO;
-using HeuristicLab.Data;
+using System.Linq;
 using HeuristicLab.Persistence.Default.Xml;
+using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
-  public class OSGARastriginScriptTest {
-    private const string ScriptFileName = "OSGA_Rastrigin_Script";
-    private const string ScriptItemName = "Offspring Selection Genetic Algorithm Script - Rastrigin";
-    private const string ScriptItemDescription = "A scripted offspring selection genetic algorithm that solves the 100-dimensional Rastrigin test function";
-    private const string LowerBoundVariableName = "minX";
-    private const string UpperBoundVariableName = "maxX";
-    private const string DimensionsVariableName = "N";
-    private const string SeedVariableName = "seed";
-    private const string BestQualityVariableName = "bestFitness";
+  public class GridSearchRFRegressionScriptTest {
+    private const string ScriptFileName = "GridSearch_RF_Regression_Script";
+    private const string ScriptItemName = "Grid Search Random Forest Script - Regression";
+    private const string ScriptItemDescription = "A script that runs a grid search for random forest parameters for solving symbolic regression problems";
+    private const string ProblemInstanceName = "Keijzer 3 f(x) = 0.3 * x *sin(2 * PI * x); Interval [-3, 3]";
+    private const string ProblemInstanceDataVaribleName = "problem";
+    private const string BestSolutionVariableName = "bestSolution";
 
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
-    public void CreateOSGARastriginScriptTest() {
-      var script = CreateOSGARastriginScript();
+    public void CreateGridSearchRFRegressionScriptTest() {
+      var script = CreateGridSearchRFRegressionScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
       XmlGenerator.Serialize(script, path);
     }
@@ -49,29 +49,30 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Scripts.Execute")]
     [TestProperty("Time", "long")]
-    public void RunOSGARastriginScriptTest() {
-      var script = CreateOSGARastriginScript();
+    public void RunGridSearchRFRegressionScriptTest() {
+      var script = CreateGridSearchRFRegressionScript();
 
       script.Compile();
       ScriptingUtils.RunScript(script);
 
-      var bestQuality = ScriptingUtils.GetVariable<double>(script, BestQualityVariableName);
-      Assert.AreEqual(0.176350329149955, bestQuality, 1E-8);
+      var bestSolution = ScriptingUtils.GetVariable<IRegressionSolution>(script, BestSolutionVariableName);
+      Assert.AreEqual(1.0, bestSolution.TrainingRSquared, 1E-8);
+      Assert.AreEqual(0.966618401251492, bestSolution.TestRSquared, 1E-8);
     }
 
-    private CSharpScript CreateOSGARastriginScript() {
+    private CSharpScript CreateGridSearchRFRegressionScript() {
       var script = new CSharpScript {
         Name = ScriptItemName,
         Description = ScriptItemDescription
       };
       #region Variables
-      script.VariableStore.Add(LowerBoundVariableName, new DoubleValue(-5.12));
-      script.VariableStore.Add(UpperBoundVariableName, new DoubleValue(5.12));
-      script.VariableStore.Add(DimensionsVariableName, new IntValue(100));
-      script.VariableStore.Add(SeedVariableName, new IntValue(0));
+      var provider = new KeijzerInstanceProvider();
+      var instance = (ArtificialRegressionDataDescriptor)provider.GetDataDescriptors().Single(x => x.Name == ProblemInstanceName);
+      var data = instance.GenerateRegressionData();
+      script.VariableStore.Add(ProblemInstanceDataVaribleName, data);
       #endregion
       #region Code
-      script.Code = ScriptingUtils.LoadScriptCodeFromFile(ScriptFileName);
+      script.Code = ScriptSources.GridSearchRFRegressionScriptSource;
       #endregion
       return script;
     }

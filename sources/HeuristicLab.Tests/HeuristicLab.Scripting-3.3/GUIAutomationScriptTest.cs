@@ -30,7 +30,6 @@ namespace HeuristicLab.Tests {
     private const string ScriptFileName = "GUI_Automation_Script";
     private const string ScriptItemName = "GUI Automation Script";
     private const string ScriptItemDescription = "A script that runs a genetic algorithm on a traveling salesman problem with 5 different settings for population sizes and with 10 repetitions, then opens a bubble chart of the results and chooses the appropriate values for x and y axis automatically";
-    private const string ExperimentVariableName = "experiment";
 
     [TestMethod]
     [TestCategory("Scripts.Create")]
@@ -47,7 +46,7 @@ namespace HeuristicLab.Tests {
         Description = ScriptItemDescription
       };
       #region Code
-      script.Code = ScriptingUtils.LoadScriptCodeFromFile(ScriptFileName);
+      script.Code = ScriptSources.GUIAutomationScriptSource;
       #endregion
       return script;
     }

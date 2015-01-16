@@ -29,38 +29,38 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
-  public class GridSearchRFRegressionScriptTest {
-    private const string ScriptFileName = "GridSearch_RF_Regression_Script";
-    private const string ScriptItemName = "Grid Search Random Forest Script - Regression";
-    private const string ScriptItemDescription = "A script that runs a grid search for random forest parameters for solving symbolic regression problems";
-    private const string ProblemInstanceName = "Keijzer 3 f(x) = 0.3 * x *sin(2 * PI * x); Interval [-3, 3]";
+  public class GridSearchSVMRegressionScriptTest {
+    private const string ScriptFileName = "GridSearch_SVM_Regression_Script";
+    private const string ScriptItemName = "Grid Search SVM Script - Regression";
+    private const string ScriptItemDescription = "A script that runs a grid search for SVM parameters for solving symbolic regression problems";
+    private const string ProblemInstanceName = "Keijzer 9 f(x) = arcsinh(x)  i.e. ln(x + sqrt(x² + 1))";
     private const string ProblemInstanceDataVaribleName = "problem";
     private const string BestSolutionVariableName = "bestSolution";
 
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
-    public void CreateGridSearchRFRegressionScriptTest() {
-      var script = CreateGridSearchRFRegressionScript();
+    public void CreateGridSearchSVMRegressionScriptTest() {
+      var script = CreateGridSearchSVMRegressionScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
       XmlGenerator.Serialize(script, path);
     }
 
     [TestMethod]
     [TestCategory("Scripts.Execute")]
-    [TestProperty("Time", "long")]
-    public void RunGridSearchRFRegressionScriptTest() {
-      var script = CreateGridSearchRFRegressionScript();
+    [TestProperty("Time", "medium")]
+    public void RunGridSearchSVMRegressionScriptTest() {
+      var script = CreateGridSearchSVMRegressionScript();
 
       script.Compile();
       ScriptingUtils.RunScript(script);
 
       var bestSolution = ScriptingUtils.GetVariable<IRegressionSolution>(script, BestSolutionVariableName);
-      Assert.AreEqual(1.0, bestSolution.TrainingRSquared, 1E-8);
-      Assert.AreEqual(0.966618401251492, bestSolution.TestRSquared, 1E-8);
+      Assert.AreEqual(0.982485852864274, bestSolution.TrainingRSquared, 1E-8);
+      Assert.AreEqual(0.98817480950295, bestSolution.TestRSquared, 1E-8);
     }
 
-    private CSharpScript CreateGridSearchRFRegressionScript() {
+    private CSharpScript CreateGridSearchSVMRegressionScript() {
       var script = new CSharpScript {
         Name = ScriptItemName,
         Description = ScriptItemDescription
@@ -72,7 +72,7 @@ namespace HeuristicLab.Tests {
       script.VariableStore.Add(ProblemInstanceDataVaribleName, data);
       #endregion
       #region Code
-      script.Code = ScriptingUtils.LoadScriptCodeFromFile(ScriptFileName);
+      script.Code = ScriptSources.GridSearchSVMRegressionScriptSource;
       #endregion
       return script;
     }

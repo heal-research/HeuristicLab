@@ -20,27 +20,28 @@
 #endregion
 
 using System.IO;
-using System.Linq;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.Xml;
-using HeuristicLab.Problems.Instances.QAPLIB;
-using HeuristicLab.Problems.QuadraticAssignment;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
-  public class GAQAPScriptTest {
-    private const string ScriptFileName = "GA_QAP_Script";
-    private const string ScriptItemName = "Genetic Algorithm Script - QAP";
-    private const string ScriptItemDescription = "A scripted genetic algorithm which solves the \"" + ProblemInstanceName + "\" quadratic assignment problem (imported from Drezner)";
-    private const string ProblemInstanceName = "dre56";
-    private const string BestQualityVariableName = "bestQuality";
+  public class OSGARastriginScriptTest {
+    private const string ScriptFileName = "OSGA_Rastrigin_Script";
+    private const string ScriptItemName = "Offspring Selection Genetic Algorithm Script - Rastrigin";
+    private const string ScriptItemDescription = "A scripted offspring selection genetic algorithm that solves the 100-dimensional Rastrigin test function";
+    private const string LowerBoundVariableName = "minX";
+    private const string UpperBoundVariableName = "maxX";
+    private const string DimensionsVariableName = "N";
+    private const string SeedVariableName = "seed";
+    private const string BestQualityVariableName = "bestFitness";
 
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
-    public void CreateGAQAPScriptScriptTest() {
-      var script = CreateGAQAPScript();
+    public void CreateOSGARastriginScriptTest() {
+      var script = CreateOSGARastriginScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
       XmlGenerator.Serialize(script, path);
     }
@@ -48,31 +49,29 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Scripts.Execute")]
     [TestProperty("Time", "long")]
-    public void RunGAQAPScriptTest() {
-      var script = CreateGAQAPScript();
+    public void RunOSGARastriginScriptTest() {
+      var script = CreateOSGARastriginScript();
 
       script.Compile();
       ScriptingUtils.RunScript(script);
 
       var bestQuality = ScriptingUtils.GetVariable<double>(script, BestQualityVariableName);
-      Assert.AreEqual(2410.0, bestQuality, 1E-8);
+      Assert.AreEqual(0.176350329149955, bestQuality, 1E-8);
     }
 
-    private CSharpScript CreateGAQAPScript() {
+    private CSharpScript CreateOSGARastriginScript() {
       var script = new CSharpScript {
         Name = ScriptItemName,
         Description = ScriptItemDescription
       };
       #region Variables
-      var provider = new DreznerQAPInstanceProvider();
-      var instance = provider.GetDataDescriptors().Single(x => x.Name == ProblemInstanceName);
-      var data = provider.LoadData(instance);
-      var problem = new QuadraticAssignmentProblem();
-      problem.Load(data);
-      script.VariableStore.Add(ProblemInstanceName, problem);
+      script.VariableStore.Add(LowerBoundVariableName, new DoubleValue(-5.12));
+      script.VariableStore.Add(UpperBoundVariableName, new DoubleValue(5.12));
+      script.VariableStore.Add(DimensionsVariableName, new IntValue(100));
+      script.VariableStore.Add(SeedVariableName, new IntValue(0));
       #endregion
       #region Code
-      script.Code = ScriptingUtils.LoadScriptCodeFromFile(ScriptFileName);
+      script.Code = ScriptSources.OSGARastriginScriptSource;
       #endregion
       return script;
     }

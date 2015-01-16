@@ -22,57 +22,57 @@
 using System.IO;
 using System.Linq;
 using HeuristicLab.Persistence.Default.Xml;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.Instances.DataAnalysis;
+using HeuristicLab.Problems.Instances.QAPLIB;
+using HeuristicLab.Problems.QuadraticAssignment;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
   [TestClass]
-  public class GridSearchSVMClassificationScriptTest {
-    private const string ScriptFileName = "GridSearch_SVM_Classification_Script";
-    private const string ScriptItemName = "Grid Search SVM Script - Classification";
-    private const string ScriptItemDescription = "A script that runs a grid search for SVM parameters for solving symbolic classification problems";
-    private const string ProblemInstanceName = "Mammography, M. Elter, 2007";
-    private const string ProblemInstanceDataVaribleName = "problem";
-    private const string BestSolutionVariableName = "bestSolution";
+  public class GAQAPScriptTest {
+    private const string ScriptFileName = "GA_QAP_Script";
+    private const string ScriptItemName = "Genetic Algorithm Script - QAP";
+    private const string ScriptItemDescription = "A scripted genetic algorithm which solves the \"" + ProblemInstanceName + "\" quadratic assignment problem (imported from Drezner)";
+    private const string ProblemInstanceName = "dre56";
+    private const string BestQualityVariableName = "bestQuality";
 
     [TestMethod]
     [TestCategory("Scripts.Create")]
     [TestProperty("Time", "short")]
-    public void CreateGridSearchSVMClassificationScriptTest() {
-      var script = CreateGridSearchSVMClassificationScript();
+    public void CreateGAQAPScriptScriptTest() {
+      var script = CreateGAQAPScript();
       string path = Path.Combine(ScriptingUtils.ScriptsDirectory, ScriptFileName + ScriptingUtils.ScriptFileExtension);
       XmlGenerator.Serialize(script, path);
     }
 
     [TestMethod]
     [TestCategory("Scripts.Execute")]
-    [TestProperty("Time", "medium")]
-    public void RunGridSearchSVMClassificationScriptTest() {
-      var script = CreateGridSearchSVMClassificationScript();
+    [TestProperty("Time", "long")]
+    public void RunGAQAPScriptTest() {
+      var script = CreateGAQAPScript();
 
       script.Compile();
       ScriptingUtils.RunScript(script);
 
-      var bestSolution = ScriptingUtils.GetVariable<IClassificationSolution>(script, BestSolutionVariableName);
-      Assert.AreEqual(0.819032761310452, bestSolution.TrainingAccuracy, 1E-8);
-      Assert.AreEqual(0.721875, bestSolution.TestAccuracy, 1E-8);
+      var bestQuality = ScriptingUtils.GetVariable<double>(script, BestQualityVariableName);
+      Assert.AreEqual(2410.0, bestQuality, 1E-8);
     }
 
-    private CSharpScript CreateGridSearchSVMClassificationScript() {
+    private CSharpScript CreateGAQAPScript() {
       var script = new CSharpScript {
         Name = ScriptItemName,
         Description = ScriptItemDescription
       };
       #region Variables
-      var provider = new UCIInstanceProvider();
-      var instance = (UCIDataDescriptor)provider.GetDataDescriptors().Single(x => x.Name == ProblemInstanceName);
+      var provider = new DreznerQAPInstanceProvider();
+      var instance = provider.GetDataDescriptors().Single(x => x.Name == ProblemInstanceName);
       var data = provider.LoadData(instance);
-      script.VariableStore.Add(ProblemInstanceDataVaribleName, data);
+      var problem = new QuadraticAssignmentProblem();
+      problem.Load(data);
+      script.VariableStore.Add(ProblemInstanceName, problem);
       #endregion
       #region Code
-      script.Code = ScriptingUtils.LoadScriptCodeFromFile(ScriptFileName);
+      script.Code = ScriptSources.GAQAPScriptSource;
       #endregion
       return script;
     }

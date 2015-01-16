@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.IO;
 using System.Threading;
 using HeuristicLab.Scripting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -45,11 +44,6 @@ namespace HeuristicLab.Tests {
 
     public static T GetVariable<T>(CSharpScript a, string resultName) {
       return (T)a.VariableStore[resultName];
-    }
-
-    public static string LoadScriptCodeFromFile(string scriptName) {
-      string path = Path.Combine(ScriptSourcesDirectory, scriptName + ScriptSourceFileExtension);
-      return File.ReadAllText(path);
     }
   }
 }
