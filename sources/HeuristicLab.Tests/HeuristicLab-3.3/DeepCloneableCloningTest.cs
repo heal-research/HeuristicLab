@@ -134,7 +134,7 @@ All IDeepCloneable items with a default constructor should be cloneable when usi
           success = false;
         } else {
           Array array = o as Array;
-          if (array != null && array.Length == 0) continue; //arrays of length 0 are used inside empty collectionss
+          if (array != null && array.Length == 0) continue; //arrays of length 0 are used inside empty collections
           if (!headerWritten) {
             TestContext.WriteLine(Environment.NewLine + item.GetType().FullName + ":");
             headerWritten = true;
