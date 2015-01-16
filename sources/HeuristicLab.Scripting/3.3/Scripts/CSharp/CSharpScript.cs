@@ -34,7 +34,7 @@ namespace HeuristicLab.Scripting {
   public class CSharpScript : Script, IStorableContent {
     #region Constants
     protected const string ExecuteMethodName = "Execute";
-    protected override string CodeTemplate { get { return ReadCodeTemplate("HeuristicLab.Scripting.CSharpScriptCode.cs"); } }
+    protected override string CodeTemplate { get { return ScriptTemplates.CSharpScriptTemplate; } }
     #endregion
 
     #region Fields & Properties

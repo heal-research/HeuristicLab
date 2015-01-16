@@ -8,9 +8,11 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using HeuristicLab.Common;
+
 using HeuristicLab.Core;
-using HeuristicLab.Data;
+using HeuristicLab.Common;
+//using HeuristicLab.Collections;
+//using HeuristicLab.Data;
 
 public class MyScript : HeuristicLab.Scripting.CSharpScriptBase {
   public override void Main() {
