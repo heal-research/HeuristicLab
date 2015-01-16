@@ -322,11 +322,11 @@ namespace HeuristicLab.PluginInfrastructure {
       return GetTypes(types, plugin, onlyInstantiable, includeGenericTypeDefinitions, assignableToAllTypes);
     }
 
-    IEnumerable<Type> IApplicationManager.GetTypes(Type type, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false) {
+    IEnumerable<Type> IApplicationManager.GetTypes(Type type, Assembly assembly, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
       return GetTypes(type, assembly, onlyInstantiable, includeGenericTypeDefinitions);
     }
-    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true) {
-      return GetTypes(types, assembly, onlyInstantiable, includeGenericTypeDefinitions,assignableToAllTypes);
+    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, Assembly assembly, bool onlyInstantiable, bool includeGenericTypeDefinitions, bool assignableToAllTypes) {
+      return GetTypes(types, assembly, onlyInstantiable, includeGenericTypeDefinitions, assignableToAllTypes);
     }
 
     /// <summary>
