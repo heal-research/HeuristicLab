@@ -87,33 +87,37 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// The sigma vector can contain 0 values in which case the dimension will be exactly the same as the given mean.
     /// </remarks>
     /// <param name="random">The random number generator.</param>
-    /// <param name="mean">The mean vector around which the resulting vector is sampled.</param>
-    /// <param name="sigma">The vector of standard deviations, must have at least one row.</param>
+    /// <param name="means">The mean vector around which the resulting vector is sampled.</param>
+    /// <param name="sigmas">The vector of standard deviations, must have at least one row.</param>
     /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <param name="maximumTries">The maximum number of tries to sample a value inside the bounds for each dimension. If a valid value cannot be obtained, the mean will be used.</param>
     /// <returns>The newly created real vector.</returns>
-    public static RealVector Apply(IRandom random, RealVector mean, DoubleArray sigma, DoubleMatrix bounds, int maximumTries = 1000) {
+    public static RealVector Apply(IntValue lengthValue, IRandom random, RealVector means, DoubleArray sigmas, DoubleMatrix bounds, int maximumTries = 1000) {
+      if (lengthValue == null || lengthValue.Value == 0) throw new ArgumentException("Length is not defined or zero");
       if (random == null) throw new ArgumentNullException("Random is not defined", "random");
-      if (mean == null || mean.Length == 0) throw new ArgumentNullException("Mean is not defined", "mean");
-      if (sigma == null || sigma.Length == 0) throw new ArgumentNullException("Sigma is not defined.", "sigma");
+      if (means == null || means.Length == 0) throw new ArgumentNullException("Mean is not defined", "mean");
+      if (sigmas == null || sigmas.Length == 0) throw new ArgumentNullException("Sigma is not defined.", "sigma");
       if (bounds == null || bounds.Rows == 0) bounds = new DoubleMatrix(new[,] { { double.MinValue, double.MaxValue } });
+      var length = lengthValue.Value;
       var nd = new NormalDistributedRandom(random, 0, 1);
-      var result = (RealVector)mean.Clone();
+      var result = new RealVector(length);
       for (int i = 0; i < result.Length; i++) {
         var min = bounds[i % bounds.Rows, 0];
         var max = bounds[i % bounds.Rows, 1];
-        if (min.IsAlmost(max) || mean[i] < min) result[i] = min;
-        else if (mean[i] > max) result[i] = max;
+        var mean = means[i % means.Length];
+        var sigma = sigmas[i % sigmas.Length];
+        if (min.IsAlmost(max) || mean < min) result[i] = min;
+        else if (mean > max) result[i] = max;
         else {
           int count = 0;
           bool inRange;
           do {
-            result[i] = mean[i] + sigma[i % sigma.Length] * nd.NextDouble();
-            inRange = result[i] >= bounds[i % bounds.Rows, 0] && result[i] < bounds[i % bounds.Rows, 1];
+            result[i] = mean + sigma * nd.NextDouble();
+            inRange = result[i] >= min && result[i] < max;
             count++;
           } while (count < maximumTries && !inRange);
           if (count == maximumTries && !inRange)
-            result[i] = mean[i];
+            result[i] = mean;
         }
       }
       return result;
@@ -127,7 +131,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     /// <param name="bounds">The lower and upper bound (1st and 2nd column) of the positions in the vector. If there are less rows than dimensions, the rows are cycled.</param>
     /// <returns>The newly created real vector.</returns>
     protected override RealVector Create(IRandom random, IntValue length, DoubleMatrix bounds) {
-      return Apply(random, MeanParameter.ActualValue, SigmaParameter.ActualValue, bounds, MaximumTriesParameter.Value.Value);
+      return Apply(length, random, MeanParameter.ActualValue, SigmaParameter.ActualValue, bounds, MaximumTriesParameter.Value.Value);
     }
   }
 }
