@@ -27,6 +27,7 @@ namespace HeuristicLab.NRefactory {
   [PluginFile("ICSharpCode.NRefactory.dll", PluginFileType.Assembly)]
   [PluginFile("ICSharpCode.NRefactory.Cecil.dll", PluginFileType.Assembly)]
   [PluginFile("ICSharpCode.NRefactory.CSharp.dll", PluginFileType.Assembly)]
+  [PluginFile("ICSharpCode.NRefactory.Xml.dll", PluginFileType.Assembly)]
   [PluginFile("ICSharpCode.NRefactory License-5.5.0.txt", PluginFileType.License)]
   public class HeuristicLabNRefactoryPlugin : PluginBase {
   }

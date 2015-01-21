@@ -115,6 +115,10 @@
       <Project>{c06a9187-4e8e-4129-bda3-91d2297682d2}</Project>
       <Name>ICSharpCode.NRefactory.CSharp-5.5.0</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NRefactory.Xml-5.5.0\ICSharpCode.NRefactory.Xml-5.5.0.csproj">
+      <Project>{c5ae5d30-ae8c-4017-b741-99e084281000}</Project>
+      <Name>ICSharpCode.NRefactory.Xml-5.5.0</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
