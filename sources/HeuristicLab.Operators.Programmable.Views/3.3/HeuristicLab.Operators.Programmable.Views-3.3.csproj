@@ -127,9 +127,9 @@
     <None Include="Plugin.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.CodeEditor\3.3\HeuristicLab.CodeEditor-3.3.csproj">
-      <Project>{489CFE09-FDF7-4C89-BAB5-BD09CADD61AD}</Project>
-      <Name>HeuristicLab.CodeEditor-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.CodeEditor\3.4\HeuristicLab.CodeEditor-3.4.csproj">
+      <Project>{C38691AE-ECB4-489A-A05D-B035554E0168}</Project>
+      <Name>HeuristicLab.CodeEditor-3.4</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

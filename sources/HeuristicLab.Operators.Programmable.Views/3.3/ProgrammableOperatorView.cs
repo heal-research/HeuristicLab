@@ -81,25 +81,21 @@ namespace HeuristicLab.Operators.Programmable {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (ProgrammableOperator == null) {
-        codeEditor.UserCode = "";
+        codeEditor.UserCode = string.Empty;
         assembliesTreeView.Nodes.Clear();
         parameterCollectionView.Content = null;
       } else {
         codeEditor.Prefix = GetGeneratedPrefix();
-        codeEditor.Suffix = String.Format("    {0}\n  }}\n}}", ProgrammableOperator.MethodSuffix);
+        codeEditor.Suffix = String.Format("    {0}{1}  }}{1}}}", ProgrammableOperator.MethodSuffix, Environment.NewLine);
         codeEditor.UserCode = ProgrammableOperator.Code;
-        if (codeEditor.UserCode == "")
-          codeEditor.UserCode = "    \n    \n    \n    \n";
+        if (codeEditor.UserCode == string.Empty)
+          codeEditor.UserCode = string.Format("    {0}", Environment.NewLine);
         InitializeAssemblyList();
         InitializeNamespacesList();
-        foreach (var a in ProgrammableOperator.SelectedAssemblies) {
-          codeEditor.AddAssembly(a);
-        }
+        codeEditor.AddAssemblies(ProgrammableOperator.SelectedAssemblies);
         codeEditor.ScrollAfterPrefix();
-        codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors, "ProgrammableOperator");
-        showCodeButton.Enabled =
-          ProgrammableOperator.CompilationUnitCode != null &&
-          ProgrammableOperator.CompilationUnitCode.Length > 0;
+        codeEditor.ShowCompileErrors(ProgrammableOperator.CompileErrors);
+        showCodeButton.Enabled = !string.IsNullOrEmpty(ProgrammableOperator.CompilationUnitCode);
         parameterCollectionView.Content = ProgrammableOperator.Parameters;
         if (ProgrammableOperator.CompileErrors == null) {
           compilationLabel.ForeColor = SystemColors.ControlDarkDark;

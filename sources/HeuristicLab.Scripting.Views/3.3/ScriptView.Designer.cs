@@ -19,6 +19,10 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Reflection;
+using HeuristicLab.Common;
+
 namespace HeuristicLab.Scripting.Views {
   partial class ScriptView {
     /// <summary> 
@@ -45,7 +49,6 @@ namespace HeuristicLab.Scripting.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptView));
       this.compilationLabel = new System.Windows.Forms.Label();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.compileButton = new System.Windows.Forms.Button();
@@ -213,12 +216,16 @@ namespace HeuristicLab.Scripting.Views {
       this.codeEditor.Suffix = "";
       this.codeEditor.TabIndex = 0;
       this.codeEditor.UserCode = "";
+      this.codeEditor.AssembliesLoaded += new System.EventHandler<EventArgs<IEnumerable<Assembly>>>(this.codeEditor_AssembliesLoaded);
+      this.codeEditor.AssembliesLoading += new System.EventHandler<EventArgs<IEnumerable<Assembly>>>(this.codeEditor_AssembliesLoading);
+      this.codeEditor.AssembliesUnloaded += new System.EventHandler<EventArgs<IEnumerable<Assembly>>>(this.codeEditor_AssembliesUnloaded);
+      this.codeEditor.AssembliesUnloading += new System.EventHandler<EventArgs<IEnumerable<Assembly>>>(this.codeEditor_AssembliesUnloading);
       this.codeEditor.TextEditorTextChanged += new System.EventHandler(this.codeEditor_TextEditorTextChanged);
       // 
       // splitContainer1
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer1.Location = new System.Drawing.Point(0, 56);
       this.splitContainer1.Name = "splitContainer1";
