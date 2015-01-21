@@ -155,7 +155,7 @@
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpDocumentationBuilder.cs" />
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionContext.cs" />
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionDataFactory.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionHelpers.cs" />
+    <Compile Include="LanguageFeatures\Helpers\CSharpParsingHelpers.cs" />
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\EntityCompletionData.cs" />
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\ImportCompletionData.cs" />
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\VariableCompletionData.cs" />

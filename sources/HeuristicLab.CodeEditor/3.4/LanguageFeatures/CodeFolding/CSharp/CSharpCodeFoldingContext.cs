@@ -24,17 +24,15 @@ using ICSharpCode.NRefactory.Editor;
 
 namespace HeuristicLab.CodeEditor {
   internal class CSharpCodeFoldingContext {
-    public readonly IDocument Document;
-    public readonly SyntaxTree SyntaxTree;
+    private readonly IDocument document;
+    public IDocument Document { get { return document; } }
+
+    private readonly SyntaxTree syntaxTree;
+    public SyntaxTree SyntaxTree { get { return syntaxTree; } }
 
     public CSharpCodeFoldingContext(IDocument document) {
-      Document = new ReadOnlyDocument(document, document.FileName);
-
-      var parser = new CSharpParser();
-      var syntaxTree = parser.Parse(document, document.FileName);
-      syntaxTree.Freeze();
-
-      SyntaxTree = syntaxTree;
+      this.document = new ReadOnlyDocument(document, document.FileName);
+      syntaxTree = CSharpParsingHelpers.CreateSyntaxTree(this.document);
     }
   }
 }

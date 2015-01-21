@@ -55,7 +55,7 @@ namespace HeuristicLab.CodeEditor {
         completionFactory,
         completionContext.ProjectContent,
         completionContext.TypeResolveContextAtCaret
-      ) { EolMarker = Environment.NewLine };
+        );
 
       char completionChar = completionContext.Document.GetCharAt(completionContext.Offset - 1);
       int startPos, triggerWordLength;
@@ -118,7 +118,7 @@ namespace HeuristicLab.CodeEditor {
         })
       );
 
-      var unresolvedFile = CSharpCodeCompletionHelpers.CreateCSharpUnresolvedFile(document);
+      var unresolvedFile = CSharpParsingHelpers.CreateCSharpUnresolvedFile(document);
       projectContent = projectContent.AddOrUpdateFiles(unresolvedFile);
     }
   }

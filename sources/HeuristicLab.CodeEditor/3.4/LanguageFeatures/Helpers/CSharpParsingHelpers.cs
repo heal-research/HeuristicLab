@@ -24,12 +24,18 @@ using ICSharpCode.NRefactory.CSharp.TypeSystem;
 using ICSharpCode.NRefactory.Editor;
 
 namespace HeuristicLab.CodeEditor {
-  internal class CSharpCodeCompletionHelpers {
-    public static CSharpUnresolvedFile CreateCSharpUnresolvedFile(IDocument document) {
+  internal class CSharpParsingHelpers {
+    public static SyntaxTree CreateSyntaxTree(IDocument document) {
       var parser = new CSharpParser();
       var syntaxTree = parser.Parse(document, document.FileName);
+      return syntaxTree;
+    }
+
+    public static CSharpUnresolvedFile CreateCSharpUnresolvedFile(IDocument document) {
+      var syntaxTree = CreateSyntaxTree(document);
       syntaxTree.Freeze();
-      return syntaxTree.ToTypeSystem();
+      var unresolvedFile = syntaxTree.ToTypeSystem();
+      return unresolvedFile;
     }
   }
 }

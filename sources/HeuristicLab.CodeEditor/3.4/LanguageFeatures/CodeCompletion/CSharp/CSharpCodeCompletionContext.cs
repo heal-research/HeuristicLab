@@ -45,7 +45,7 @@ namespace HeuristicLab.CodeEditor {
       this.document = new ReadOnlyDocument(document, document.FileName);
       this.offset = offset;
 
-      var unresolvedFile = CSharpCodeCompletionHelpers.CreateCSharpUnresolvedFile(this.document);
+      var unresolvedFile = CSharpParsingHelpers.CreateCSharpUnresolvedFile(this.document);
       this.projectContent = projectContent.AddOrUpdateFiles(unresolvedFile);
 
       completionContextProvider = new DefaultCompletionContextProvider(this.document, unresolvedFile);
