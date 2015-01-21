@@ -86,7 +86,7 @@ namespace HeuristicLab.Optimization {
     }
 
     public override void Pause() {
-      throw new NotSupportedException("Pause is not supported in simple Algorithms.");
+      throw new NotSupportedException("Pause is not supported in basic algorithms.");
     }
 
     public override void Stop() {
