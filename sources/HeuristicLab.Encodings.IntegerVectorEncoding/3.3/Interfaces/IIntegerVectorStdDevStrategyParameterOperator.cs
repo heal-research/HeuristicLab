@@ -22,6 +22,6 @@
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
-  public interface IIntegerVectorStdDevStrategyParameterOperator : IItem {
+  public interface IIntegerVectorStdDevStrategyParameterOperator : IOperator {
   }
 }
