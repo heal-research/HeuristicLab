@@ -114,7 +114,7 @@ namespace HeuristicLab.CodeEditor {
       );
 
       int parameterIndex = pce.GetCurrentParameterIndex(startOffset, completionContext.Offset);
-      if (parameterIndex < 0) {
+      if (parameterIndex < 0 || !items.Any()) {
         RequestClose = true;
         return;
       } else {

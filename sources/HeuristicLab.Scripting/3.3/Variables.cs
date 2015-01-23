@@ -6,6 +6,14 @@ namespace HeuristicLab.Scripting {
   public class Variables : DynamicObject, IEnumerable<KeyValuePair<string, object>> {
     private readonly VariableStore variableStore;
 
+    public IEnumerable<string> Keys {
+      get { return variableStore.Keys; }
+    }
+
+    public IEnumerable<object> Values {
+      get { return variableStore.Values; }
+    }
+
     public Variables(VariableStore variableStore) {
       this.variableStore = variableStore;
     }

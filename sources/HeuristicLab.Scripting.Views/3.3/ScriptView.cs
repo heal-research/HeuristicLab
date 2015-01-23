@@ -37,6 +37,9 @@ namespace HeuristicLab.Scripting.Views {
   [View("Script View")]
   [Content(typeof(Script), true)]
   public partial class ScriptView : NamedItemView {
+    private const string NotCompiledMessage = "Not compiled";
+    private const string CompilationSucceededMessage = "Compilation succeeded";
+    private const string CompilationFailedMessage = "Compilation failed";
     private const string AssembliesLoadingMessage = "Loading Assemblies";
     private const string AssembliesUnloadingMessage = "Unloading Assemblies";
     private const int SilentAssemblyLoadingOperationLimit = 10;
@@ -83,13 +86,7 @@ namespace HeuristicLab.Scripting.Views {
         codeEditor.AddAssembliesAsync(Content.GetAssemblies());
         if (Content.CompileErrors == null) {
           compilationLabel.ForeColor = SystemColors.ControlDarkDark;
-          compilationLabel.Text = "Not compiled";
-        } else if (Content.CompileErrors.HasErrors) {
-          compilationLabel.ForeColor = Color.DarkRed;
-          compilationLabel.Text = "Compilation failed";
-        } else {
-          compilationLabel.ForeColor = Color.DarkGreen;
-          compilationLabel.Text = "Compilation successful";
+          compilationLabel.Text = NotCompiledMessage;
         }
       }
     }
@@ -118,14 +115,20 @@ namespace HeuristicLab.Scripting.Views {
       outputTextBox.Text = "Compiling ... ";
       try {
         Content.Compile();
-        outputTextBox.AppendText("Compilation succeeded.");
+        outputTextBox.AppendText(CompilationSucceededMessage);
+        compilationLabel.ForeColor = Color.DarkGreen;
+        compilationLabel.Text = CompilationSucceededMessage;
         return true;
       } catch (InvalidOperationException) {
         if (Content.CompileErrors.HasErrors) {
-          outputTextBox.AppendText("Compilation failed.");
+          outputTextBox.AppendText(CompilationFailedMessage);
+          compilationLabel.ForeColor = Color.DarkRed;
+          compilationLabel.Text = CompilationFailedMessage;
           return false;
         } else {
-          outputTextBox.AppendText("Compilation succeeded.");
+          outputTextBox.AppendText(CompilationSucceededMessage);
+          compilationLabel.ForeColor = Color.DarkGreen;
+          compilationLabel.Text = CompilationSucceededMessage;
           return true;
         }
       } finally {
