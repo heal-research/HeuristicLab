@@ -24,7 +24,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.NRefactory.Completion;
+using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Completion;
+using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICompletionData = ICSharpCode.NRefactory.Completion.ICompletionData;
 
@@ -120,16 +122,18 @@ namespace HeuristicLab.CodeEditor {
     #endregion
 
     #region IParameterCompletionDataFactory Members
-    public IParameterDataProvider CreateConstructorProvider(int startOffset, IType type, ICSharpCode.NRefactory.CSharp.AstNode thisInitializer) {
-      return CreateMethodDataProvider(startOffset, type.GetConstructors());
+    public IParameterDataProvider CreateConstructorProvider(int startOffset, IType type, AstNode thisInitializer) {
+      return CreateConstructorProvider(startOffset, type);
     }
 
     public IParameterDataProvider CreateConstructorProvider(int startOffset, IType type) {
-      return CreateMethodDataProvider(startOffset, type.GetConstructors());
+      var constructors = FilterMethodsForAccessibility(type, type.GetConstructors());
+      return CreateMethodDataProvider(startOffset, constructors);
     }
 
     public IParameterDataProvider CreateDelegateDataProvider(int startOffset, IType type) {
-      return CreateMethodDataProvider(startOffset, new[] { type.GetDelegateInvokeMethod() });
+      var delegates = FilterMethodsForAccessibility(type, new[] { type.GetDelegateInvokeMethod() });
+      return CreateMethodDataProvider(startOffset, delegates);
     }
 
     public IParameterDataProvider CreateIndexerParameterDataProvider(int startOffset, IType type, IEnumerable<IProperty> accessibleIndexers, ICSharpCode.NRefactory.CSharp.AstNode resolvedNode) {
@@ -137,7 +141,7 @@ namespace HeuristicLab.CodeEditor {
     }
 
     public IParameterDataProvider CreateMethodDataProvider(int startOffset, IEnumerable<IMethod> methods) {
-      return new CSharpOverloadProvider(context, startOffset, from m in methods where m != null select new CSharpInsightItem(m));
+      return new CSharpOverloadProvider(context, startOffset, methods.Where(x => x != null).Select(x => new CSharpInsightItem(x)));
     }
 
     public IParameterDataProvider CreateTypeParameterDataProvider(int startOffset, IEnumerable<IMethod> methods) {
@@ -148,5 +152,12 @@ namespace HeuristicLab.CodeEditor {
       return null;
     }
     #endregion
+
+    private IEnumerable<IMethod> FilterMethodsForAccessibility(IType type, IEnumerable<IMethod> methods) {
+      var typeResolveContext = context.TypeResolveContextAtCaret;
+      var lookup = new MemberLookup(typeResolveContext.CurrentTypeDefinition, typeResolveContext.Compilation.MainAssembly);
+      bool protectedAccessAllowed = lookup.IsProtectedAccessAllowed(type);
+      return protectedAccessAllowed ? methods : methods.Where(x => !x.IsProtected);
+    }
   }
 }

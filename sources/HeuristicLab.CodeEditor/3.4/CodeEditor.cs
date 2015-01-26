@@ -382,7 +382,7 @@ namespace HeuristicLab.CodeEditor {
           var line = Doc.GetLineByNumber(lineNumber);
           int offset = line.Offset;
           if (TextUtilities.GetLeadingWhitespace(Doc, line).Length > 0)
-            offset = TextUtilities.GetNextCaretPosition(Doc, offset, LogicalDirection.Forward, CaretPositioningMode.WordStart);
+            offset = TextUtilities.GetNextCaretPosition(Doc, offset, LogicalDirection.Forward, CaretPositioningMode.WordBorder);
           TextEditor.CaretOffset = offset;
         }
       }
