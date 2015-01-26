@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override Uri WebLink {
-      get { return new Uri("http://dev.heuristiclab.com/trac/hl/core/wiki/TestFunctions"); }
+      get { return new Uri("http://dev.heuristiclab.com/trac.fcgi/wiki/Documentation/Reference/Test%20Functions"); }
     }
 
     public override string ReferencePublication {
