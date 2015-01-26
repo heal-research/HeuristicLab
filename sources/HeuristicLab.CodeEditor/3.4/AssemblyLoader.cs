@@ -77,7 +77,6 @@ namespace HeuristicLab.CodeEditor {
     #region Loading Helper
     private IUnresolvedAssembly Load(Assembly assembly) {
       var loader = new CecilLoader {
-        IncludeInternalMembers = true,
         DocumentationProvider = GetXmlDocumentation(assembly.Location)
       };
       return loader.LoadAssemblyFile(assembly.Location);
