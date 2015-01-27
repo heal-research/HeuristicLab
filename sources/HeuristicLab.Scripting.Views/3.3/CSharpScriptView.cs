@@ -110,8 +110,8 @@ namespace HeuristicLab.Scripting.Views {
       } else
         if (Compile()) {
           outputTextBox.Clear();
-          Content.ExecuteAsync();
           Running = true;
+          Content.ExecuteAsync();
         }
     }
 

@@ -106,6 +106,7 @@ namespace HeuristicLab.Scripting {
         } catch (Exception e) {
           ex = e;
         } finally {
+          scriptThread = null;
           OnScriptExecutionFinished(ex);
         }
       });
@@ -114,8 +115,8 @@ namespace HeuristicLab.Scripting {
     }
 
     public virtual void Kill() {
-      if (scriptThread.IsAlive)
-        scriptThread.Abort();
+      if (scriptThread == null) return;
+      scriptThread.Abort();
     }
 
     protected virtual void CompiledScriptOnConsoleOutputChanged(object sender, EventArgs<string> e) {
