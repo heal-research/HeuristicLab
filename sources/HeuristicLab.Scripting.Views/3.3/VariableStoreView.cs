@@ -46,6 +46,8 @@ namespace HeuristicLab.Scripting.Views {
     private const string NothingImageName = "Nothing";
     #endregion
 
+    private readonly Regex SafeVariableNameRegex = new Regex("^[@]?[_a-zA-Z][_a-zA-Z0-9]*$");
+    private const string DefaultVariableName = "enter_name";
     protected readonly Dictionary<string, ListViewItem> itemListViewItemMapping;
     protected readonly Dictionary<Type, bool> serializableLookup;
     protected TypeSelectorDialog typeSelectorDialog;
@@ -286,9 +288,6 @@ namespace HeuristicLab.Scripting.Views {
       variableListView.SelectedItems.Clear();
       if (editLabel) listViewItem.BeginEdit();
     }
-
-    private readonly Regex SafeVariableNameRegex = new Regex("^[@]?[_a-zA-Z][_a-zA-Z0-9]*$");
-    private const string DefaultVariableName = "enter_name";
 
     private void variableListView_AfterLabelEdit(object sender, LabelEditEventArgs e) {
       string name = e.Label;
