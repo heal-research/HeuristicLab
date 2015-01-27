@@ -214,8 +214,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         VariableConditionTreeNode variableConditionTreeNode = node as VariableConditionTreeNode;
         double threshold = variableConditionTreeNode.Threshold;
         double slope = variableConditionTreeNode.Slope;
-        string p = "(1 / (1 + EXP(-" + slope.ToString(CultureInfo.InvariantCulture) + "* (" + GetColumnToVariableName(variableConditionTreeNode.VariableName) + "-" + threshold.ToString(CultureInfo.InvariantCulture) + "))))";
-        stringBuilder.Append("INT((");
+        string p = "(1 / (1 + EXP(-" + slope.ToString(CultureInfo.InvariantCulture) + " * (" + GetColumnToVariableName(variableConditionTreeNode.VariableName) + "-" + threshold.ToString(CultureInfo.InvariantCulture) + "))))";
+        stringBuilder.Append("((");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
         stringBuilder.Append("*");
         stringBuilder.Append(p);
