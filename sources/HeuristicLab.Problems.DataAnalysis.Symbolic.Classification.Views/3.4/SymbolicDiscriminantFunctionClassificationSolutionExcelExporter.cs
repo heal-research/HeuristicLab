@@ -226,7 +226,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.Views {
       estimatedWorksheet.Cells["D2:D" + (rows + 1)].Formula = thresholdsFormula;
       estimatedWorksheet.Cells["D2:D" + (rows + 1)].Style.Numberformat.Format = "0.0";
 
-      estimatedWorksheet.Cells["F2:F" + (rows + 1)].Formula = "B2 - D2";
+      estimatedWorksheet.Cells["F2:F" + (rows + 1)].Formula = "B2 - C2";
       estimatedWorksheet.Cells["F2:F" + (rows + 1)].Style.Numberformat.Format = "0.0";
 
       estimatedWorksheet.Cells["G2:G" + (rows + 1)].Formula = "POWER(F2, 2)";
