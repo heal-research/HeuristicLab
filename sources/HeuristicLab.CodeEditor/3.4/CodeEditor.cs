@@ -78,7 +78,7 @@ namespace HeuristicLab.CodeEditor {
       set {
         if (value == null) value = string.Empty;
         if (prefix == value) return;
-        if (prefixMarker != null) textMarkerService.Remove(prefixMarker);
+        if (prefixMarker != null) prefixMarker.Delete();
         Doc.Remove(0, prefix.Length);
         prefix = value;
         if (value.Length > 0) {
@@ -96,7 +96,7 @@ namespace HeuristicLab.CodeEditor {
       set {
         if (value == null) value = string.Empty;
         if (suffix == value) return;
-        if (suffixMarker != null) textMarkerService.Remove(suffixMarker);
+        if (suffixMarker != null) suffixMarker.Delete();
         Doc.Remove(Doc.TextLength - suffix.Length, suffix.Length);
         suffix = value;
         if (value.Length > 0) {
@@ -243,7 +243,11 @@ namespace HeuristicLab.CodeEditor {
       TextEditor.TextArea.IndentationStrategy = new CSharpIndentationStrategy(TextEditor.Options);
 
       TextEditor.TextChanged += (sender, args) => {
-        textMarkerService.RemoveAll(x => x != prefixMarker && x != suffixMarker);
+        foreach (var marker in textMarkerService.TextMarkers) {
+          if (marker == prefixMarker || marker == suffixMarker) continue;
+          if (marker.Length != (int)marker.Tag)
+            marker.Delete();
+        }
         OnTextEditorTextChanged();
       };
     }
@@ -407,6 +411,7 @@ namespace HeuristicLab.CodeEditor {
       var marker = textMarkerService.Create(segment.Offset, segment.Length);
       marker.MarkerTypes = TextMarkerTypes.SquigglyUnderline;
       marker.MarkerColor = error.IsWarning ? WarningColor : ErrorColor;
+      marker.Tag = segment.Length;
     }
 
     private ISegment GetSegmentAtLocation(int line, int column) {
