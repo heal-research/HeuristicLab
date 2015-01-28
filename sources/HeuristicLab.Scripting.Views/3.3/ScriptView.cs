@@ -85,8 +85,7 @@ namespace HeuristicLab.Scripting.Views {
         codeEditor.UserCode = Content.Code;
         codeEditor.AddAssembliesAsync(Content.GetAssemblies());
         if (Content.CompileErrors == null) {
-          compilationLabel.ForeColor = SystemColors.ControlDarkDark;
-          compilationLabel.Text = NotCompiledMessage;
+          UpdateInfoTextLabel(NotCompiledMessage, SystemColors.ControlText);
         }
       }
     }
@@ -116,19 +115,16 @@ namespace HeuristicLab.Scripting.Views {
       try {
         Content.Compile();
         outputTextBox.AppendText(CompilationSucceededMessage);
-        compilationLabel.ForeColor = Color.DarkGreen;
-        compilationLabel.Text = CompilationSucceededMessage;
+        UpdateInfoTextLabel(CompilationSucceededMessage, Color.DarkGreen);
         return true;
       } catch (InvalidOperationException) {
         if (Content.CompileErrors.HasErrors) {
           outputTextBox.AppendText(CompilationFailedMessage);
-          compilationLabel.ForeColor = Color.DarkRed;
-          compilationLabel.Text = CompilationFailedMessage;
+          UpdateInfoTextLabel(CompilationFailedMessage, Color.DarkRed);
           return false;
         } else {
           outputTextBox.AppendText(CompilationSucceededMessage);
-          compilationLabel.ForeColor = Color.DarkGreen;
-          compilationLabel.Text = CompilationSucceededMessage;
+          UpdateInfoTextLabel(CompilationSucceededMessage, Color.DarkGreen);
           return true;
         }
       } finally {
@@ -143,8 +139,6 @@ namespace HeuristicLab.Scripting.Views {
 
     #region Helpers
     protected virtual void ShowCompilationResults() {
-      if (Content.CompileErrors.Count == 0) return;
-
       var messages = Content.CompileErrors.OfType<CompilerError>()
                                       .OrderBy(x => x.IsWarning)
                                       .ThenBy(x => x.Line)
@@ -166,6 +160,11 @@ namespace HeuristicLab.Scripting.Views {
       codeEditor.ShowCompileErrors(Content.CompileErrors);
 
       AdjustErrorListViewColumnSizes();
+    }
+
+    protected virtual void UpdateInfoTextLabel(string message, Color color) {
+      infoTextLabel.Text = message;
+      infoTextLabel.ForeColor = color;
     }
 
     protected virtual void AdjustErrorListViewColumnSizes() {

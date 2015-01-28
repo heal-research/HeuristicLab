@@ -101,8 +101,6 @@ namespace HeuristicLab.Scripting {
         try {
           OnScriptExecutionStarted();
           compiledScript.Execute(VariableStore);
-        } catch (ThreadAbortException) {
-          // the execution was cancelled by the user
         } catch (Exception e) {
           ex = e;
         } finally {

@@ -247,6 +247,13 @@ namespace HeuristicLab.CodeEditor {
           if (marker == prefixMarker || marker == suffixMarker) continue;
           if (marker.Length != (int)marker.Tag)
             marker.Delete();
+          else {
+            int caretOffset = TextEditor.CaretOffset;
+            var line = Doc.GetLineByOffset(marker.StartOffset);
+            int lineEndOffset = line.EndOffset;
+            if (caretOffset == lineEndOffset) // special case for markers beyond line length
+              marker.Delete();
+          }
         }
         OnTextEditorTextChanged();
       };
