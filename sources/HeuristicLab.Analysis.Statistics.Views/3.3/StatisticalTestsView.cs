@@ -77,7 +77,6 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       if (Content != null) {
         UpdateResultComboBox();
         UpdateGroupsComboBox();
-        FillCompComboBox();
         RebuildDataTable();
       }
       UpdateCaption();
@@ -229,6 +228,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void GenerateChart(DataTable histogramTable) {
+      histogramControl.ClearPoints();
       foreach (var row in histogramTable.Rows) {
         histogramControl.AddPoints(row.Name, row.Values, true);
       }
@@ -265,8 +265,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void groupComboBox_SelectedValueChanged(object sender, EventArgs e) {
-      FillCompComboBox();
       RebuildDataTable();
+      FillCompComboBox();
       ResetUI();
       CalculateValues();
     }
