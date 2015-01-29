@@ -174,7 +174,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       #region Create parameters
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The analyzer used to analyze each iteration.", new MultiAnalyzer()));
       Parameters.Add(new ConstrainedValueParameter<ICrossover>("Crossover", "The operator used to cross solutions."));
-      Parameters.Add(new ValueParameter<BoolValue>("ExecutePathRelinking", "True if path relinking should be executed instead of crossover, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new ValueParameter<BoolValue>("ExecutePathRelinking", "True if path relinking should be executed instead of crossover, otherwise false.", new BoolValue(false)));
       Parameters.Add(new ConstrainedValueParameter<IImprovementOperator>("Improver", "The operator used to improve solutions."));
       Parameters.Add(new ValueParameter<IntValue>("MaximumIterations", "The maximum number of iterations which should be processed.", new IntValue(100)));
       Parameters.Add(new ValueParameter<IntValue>("NumberOfHighQualitySolutions", "The number of high quality solutions in the reference set.", new IntValue(5)));
@@ -308,6 +308,9 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       ParameterizeAnalyzers();
       base.Problem_OperatorsChanged(sender, e);
     }
+    private void PathRelinkerParameter_ValueChanged(object sender, EventArgs e) {
+      ExecutePathRelinking.Value = PathRelinkerParameter.Value != null;
+    }
     private void SimilarityCalculatorParameter_ValueChanged(object sender, EventArgs e) {
       ParameterizeMainLoop();
     }
@@ -321,6 +324,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
     #region Helpers
     private void Initialize() {
+      PathRelinkerParameter.ValueChanged += new EventHandler(PathRelinkerParameter_ValueChanged);
       SimilarityCalculatorParameter.ValueChanged += new EventHandler(SimilarityCalculatorParameter_ValueChanged);
       if (Problem != null)
         Problem.Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
