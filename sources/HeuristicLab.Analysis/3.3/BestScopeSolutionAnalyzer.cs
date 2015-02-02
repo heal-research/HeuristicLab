@@ -118,7 +118,8 @@ namespace HeuristicLab.Analysis {
 
       if (!results.ContainsKey(BestSolutionResultName)) {
         var cloner = new Cloner();
-        //avoid cloning of subscopes
+        //avoid cloning of subscopes and the results collection that the solution is put in
+        cloner.RegisterClonedObject(results, new ResultCollection());
         cloner.RegisterClonedObject(currentBestScope.SubScopes, new ScopeList());
         var solution = cloner.Clone(currentBestScope);
 
@@ -131,7 +132,8 @@ namespace HeuristicLab.Analysis {
           if (max && qualities[i].Value > bestQuality
               || !max && qualities[i].Value < bestQuality) {
             var cloner = new Cloner();
-            //avoid cloning of subscopes
+            //avoid cloning of subscopes and the results collection that the solution is put in
+            cloner.RegisterClonedObject(results, new ResultCollection());
             cloner.RegisterClonedObject(currentBestScope.SubScopes, new ScopeList());
             var solution = cloner.Clone(currentBestScope);
 
