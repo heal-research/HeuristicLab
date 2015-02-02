@@ -208,6 +208,12 @@
     <Compile Include="DataTableView.Designer.cs">
       <DependentUpon>DataTableView.cs</DependentUpon>
     </Compile>
+	<Compile Include="HistogramControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="HistogramControl.Designer.cs">
+      <DependentUpon>HistogramControl.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

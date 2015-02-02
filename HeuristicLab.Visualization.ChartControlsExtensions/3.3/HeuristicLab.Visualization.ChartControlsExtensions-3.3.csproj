@@ -126,12 +126,6 @@
     <Compile Include="GanttChart.Designer.cs">
       <DependentUpon>GanttChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="HistogramControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="HistogramControl.Designer.cs">
-      <DependentUpon>HistogramControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="ImageExportDialog.cs">
       <SubType>Form</SubType>
     </Compile>

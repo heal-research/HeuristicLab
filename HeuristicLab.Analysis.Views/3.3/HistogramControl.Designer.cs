@@ -19,7 +19,9 @@
  */
 #endregion
 
-namespace HeuristicLab.Visualization.ChartControlsExtensions {
+using HeuristicLab.Visualization.ChartControlsExtensions;
+
+namespace HeuristicLab.Analysis.Views {
   partial class HistogramControl {
     /// <summary> 
     /// Required designer variable.
@@ -44,7 +46,9 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.binsNumericUpDown = new System.Windows.Forms.NumericUpDown();
@@ -57,13 +61,18 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // chart
       // 
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
+      legend1.Alignment = System.Drawing.StringAlignment.Center;
+      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+      legend1.Name = "Default";
+      this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 27);
       this.chart.Name = "chart";
       series1.ChartArea = "ChartArea1";
+      series1.Legend = "Default";
       series1.Name = "Series1";
       this.chart.Series.Add(series1);
       this.chart.Size = new System.Drawing.Size(465, 336);
@@ -115,7 +124,6 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       // 
       // HistogramControl
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.exactCheckBox);
       this.Controls.Add(this.label1);
