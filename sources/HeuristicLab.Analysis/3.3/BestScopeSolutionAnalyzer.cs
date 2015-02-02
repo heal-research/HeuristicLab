@@ -72,8 +72,13 @@ namespace HeuristicLab.Analysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("BestSolution ResultName"))
         Parameters.Add(new FixedValueParameter<StringValue>("BestSolution ResultName", "The name of the result for storing the best solution.", new StringValue("Best Solution")));
+      if (Parameters.ContainsKey("BestSolution")) Parameters.Remove("BestSolution");
+      if (Parameters.ContainsKey("BestKnownSolution")) Parameters.Remove("BestKnownSolution");
+      #endregion
     }
     #endregion
     public BestScopeSolutionAnalyzer()
