@@ -125,17 +125,29 @@ All IDeepCloneable items with a default constructor should be cloneable when usi
 
     private bool ProcessEqualObjects(IDeepCloneable item, IEnumerable<object> intersections) {
       bool success = true;
-      TestContext.WriteLine(Environment.NewLine + item.GetType().FullName + ":");
+      bool headerWritten = false;
+
       foreach (object o in intersections) {
         string typeName = o.GetType().FullName;
         if (excludedTypes.Contains(o.GetType())) {
           //TestContext.WriteLine("Skipping excluded type " + typeName);
         } else if (o is IDeepCloneable) {
           string info = (o is IItem) ? ((IItem)o).ItemName + ((o is INamedItem) ? ", " + ((INamedItem)o).Name : String.Empty) : String.Empty;
+          if (!headerWritten) {
+            TestContext.WriteLine(Environment.NewLine + item.GetType().FullName + ":");
+            headerWritten = true;
+          }
           TestContext.WriteLine("POTENTIAL ERROR! A DEEPCLONEABLE WAS NOT DEEP CLONED (" + info + "): " + typeName);
           success = false;
-        } else
+        } else {
+          Array array = o as Array;
+          if (array != null && array.Length == 0) continue; //arrays of length 0 are used inside empty collections
+          if (!headerWritten) {
+            TestContext.WriteLine(Environment.NewLine + item.GetType().FullName + ":");
+            headerWritten = true;
+          }
           TestContext.WriteLine("WARNING: An object of type " + typeName + " is referenced in the original and in the clone.");
+        }
       }
       return success;
     }
