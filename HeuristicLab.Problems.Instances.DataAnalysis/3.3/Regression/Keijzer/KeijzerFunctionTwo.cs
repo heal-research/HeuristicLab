@@ -47,8 +47,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateSteps(-2, 2, 0.1).ToList());
-      data[0].AddRange(ValueGenerator.GenerateSteps(-2, 2, 0.001));
+      data.Add(ValueGenerator.GenerateSteps(-2, 2, 0.1m).Select(v => (double)v).ToList());
+      data[0].AddRange(ValueGenerator.GenerateSteps(-2, 2, 0.001m).Select(v => (double)v));
 
       double x;
       List<double> results = new List<double>();
