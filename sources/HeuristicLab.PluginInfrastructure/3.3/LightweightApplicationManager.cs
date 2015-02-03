@@ -147,7 +147,7 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     /// <summary>
-    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
+    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly) that are declared in the assembly <paramref name="assembly"/>.
     /// </summary>
     /// <param name="types">The types to discover.</param>
     /// <param name="assembly">The declaring assembly.</param>
