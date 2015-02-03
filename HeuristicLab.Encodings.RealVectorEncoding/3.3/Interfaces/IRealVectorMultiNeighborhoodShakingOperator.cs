@@ -20,9 +20,11 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   public interface IRealVectorMultiNeighborhoodShakingOperator : IRealVectorOperator {
     ILookupParameter<RealVector> RealVectorParameter { get; }
+    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }
 }
