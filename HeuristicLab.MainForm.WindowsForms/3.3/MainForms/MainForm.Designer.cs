@@ -86,7 +86,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.Load += new System.EventHandler(this.MainFormBase_Load);
       this.ResumeLayout(false);
       this.PerformLayout();
-
     }
 
     #endregion

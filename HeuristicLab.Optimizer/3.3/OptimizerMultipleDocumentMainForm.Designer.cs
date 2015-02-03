@@ -57,7 +57,18 @@ namespace HeuristicLab.Optimizer {
       this.Icon = HeuristicLab.Common.Resources.HeuristicLab.Icon;
       this.ResumeLayout(false);
       this.PerformLayout();
-
+      //
+      // toolStrip
+      //
+      this.toolStrip.AllowDrop = true;
+      this.toolStrip.DragEnter += optimizerMainForm_DragEnter;
+      this.toolStrip.DragDrop += optimizerMainForm_DragDrop;
+      //
+      // menuStrip
+      //
+      this.menuStrip.AllowDrop = true;
+      this.menuStrip.DragEnter += optimizerMainForm_DragEnter;
+      this.menuStrip.DragDrop += optimizerMainForm_DragDrop;
     }
 
     #endregion

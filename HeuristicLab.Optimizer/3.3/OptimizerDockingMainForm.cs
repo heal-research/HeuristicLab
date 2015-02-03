@@ -85,7 +85,7 @@ namespace HeuristicLab.Optimizer {
 
     protected override void OnClosing(CancelEventArgs e) {
       base.OnClosing(e);
-      if (MainFormManager.MainForm.Views.OfType<IContentView>().Any(v=>v.Content is IStorableContent)) {
+      if (MainFormManager.MainForm.Views.OfType<IContentView>().Any(v => v.Content is IStorableContent)) {
         if (MessageBox.Show(this, "Some views are still opened. If their content has not been saved, it will be lost after closing. Do you really want to close HeuristicLab Optimizer?", "Close Optimizer", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.No)
           e.Cancel = true;
       }
@@ -115,6 +115,19 @@ namespace HeuristicLab.Optimizer {
         } else {
           Title = title;
         }
+      }
+    }
+
+    private void optimizerMainForm_DragEnter(object sender, DragEventArgs e) {
+      // perform type checking to ensure that the data being dragged is of an acceptable type
+      e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+
+    }
+
+    private void optimizerMainForm_DragDrop(object sender, DragEventArgs e) {
+      if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+        string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+        FileManager.OpenFiles(files);
       }
     }
   }
