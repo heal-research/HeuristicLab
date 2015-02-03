@@ -146,7 +146,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
       }
 
       foreach (var subtree in tree.Root.Subtrees) {
-        Assert.AreNotSame(subtree.Grammar, tree.Root.Grammar);
+        if (tree.Root.Grammar.GetType().Name != "EmptySymbolicExpressionTreeGrammar")
+          Assert.AreNotSame(subtree.Grammar, tree.Root.Grammar);
         IsValid(subtree.Grammar);
       }
 

@@ -47,5 +47,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     void StartGrammarManipulation();
     void FinishedGrammarManipulation();
+
+    ISymbolicExpressionTreeGrammar CreateExpressionTreeGrammar();
   }
 }

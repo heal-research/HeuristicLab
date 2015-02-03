@@ -179,6 +179,9 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       Evaluator.QualityParameter.ActualName = "FoodEaten";
       InitializeOperators();
       RegisterEventHandlers();
+
+      ArtificialAntExpressionGrammar.MaximumFunctionDefinitions = MaxFunctionDefinitions.Value;
+      ArtificialAntExpressionGrammar.MaximumFunctionArguments = MaxFunctionArguments.Value;
     }
 
     #region Events

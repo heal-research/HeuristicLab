@@ -22,33 +22,35 @@
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public class CutPoint {
-    public ISymbolicExpressionTreeNode Parent { get; set; }
-    public ISymbolicExpressionTreeNode Child { get; set; }
-    private int childIndex;
-    public int ChildIndex {
-      get { return childIndex; }
-    }
-    public CutPoint(ISymbolicExpressionTreeNode parent, ISymbolicExpressionTreeNode child) {
+    public ISymbolicExpressionTreeNode Parent { get; private set; }
+    public ISymbolicExpressionTreeNode Child { get; private set; }
+    private readonly ISymbolicExpressionTreeGrammar grammar;
+
+    public int ChildIndex { get; private set; }
+
+    public CutPoint(ISymbolicExpressionTreeNode parent, ISymbolicExpressionTreeNode child) {      
       this.Parent = parent;
       this.Child = child;
-      this.childIndex = parent.IndexOfSubtree(child);
+      this.ChildIndex = parent.IndexOfSubtree(child);
+      this.grammar = parent.Grammar;
     }
     public CutPoint(ISymbolicExpressionTreeNode parent, int childIndex) {
       this.Parent = parent;
-      this.childIndex = childIndex;
+      this.ChildIndex = childIndex;
       this.Child = null;
+      this.grammar = parent.Grammar;
     }
 
     public bool IsMatchingPointType(ISymbolicExpressionTreeNode newChild) {
       var parent = this.Parent;
       if (newChild == null) {
         // make sure that one subtree can be removed and that only the last subtree is removed 
-        return parent.Grammar.GetMinimumSubtreeCount(parent.Symbol) < parent.SubtreeCount &&
+        return grammar.GetMinimumSubtreeCount(parent.Symbol) < parent.SubtreeCount &&
           this.ChildIndex == parent.SubtreeCount - 1;
       } else {
         // check syntax constraints of direct parent - child relation
-        if (!parent.Grammar.ContainsSymbol(newChild.Symbol) ||
-            !parent.Grammar.IsAllowedChildSymbol(parent.Symbol, newChild.Symbol, this.ChildIndex))
+        if (!grammar.ContainsSymbol(newChild.Symbol) ||
+            !grammar.IsAllowedChildSymbol(parent.Symbol, newChild.Symbol, this.ChildIndex))
           return false;
 
         bool result = true;
@@ -56,9 +58,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         newChild.ForEachNodePostfix((n) => {
           result =
             result &&
-            parent.Grammar.ContainsSymbol(n.Symbol) &&
-            n.SubtreeCount >= parent.Grammar.GetMinimumSubtreeCount(n.Symbol) &&
-            n.SubtreeCount <= parent.Grammar.GetMaximumSubtreeCount(n.Symbol);
+            grammar.ContainsSymbol(n.Symbol) &&
+            n.SubtreeCount >= grammar.GetMinimumSubtreeCount(n.Symbol) &&
+            n.SubtreeCount <= grammar.GetMaximumSubtreeCount(n.Symbol);
         });
         return result;
       }

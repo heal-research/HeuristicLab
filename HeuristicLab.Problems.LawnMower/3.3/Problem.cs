@@ -85,8 +85,11 @@ namespace HeuristicLab.Problems.LawnMower {
       Parameters.Add(new ValueParameter<Grammar>(LawnMowerGrammarParameterName, "Grammar for the lawn mower program.",
                      new Grammar()));
       Maximization.Value = true;
-      InitializeOperators();
 
+      GrammarParameter.Value.MaximumFunctionDefinitions = MaxFunctionDefinitionsParameter.Value.Value;
+      GrammarParameter.Value.MaximumFunctionArguments = MaxArgumentDefinitionsParameter.Value.Value;
+
+      InitializeOperators();      
       RegisterEventHandlers();
     }
 
