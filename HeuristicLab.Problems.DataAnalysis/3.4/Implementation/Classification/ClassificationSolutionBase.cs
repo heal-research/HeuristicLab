@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     private const string TestAccuracyResultName = "Accuracy (test)";
     private const string TrainingNormalizedGiniCoefficientResultName = "Normalized Gini Coefficient (training)";
     private const string TestNormalizedGiniCoefficientResultName = "Normalized Gini Coefficient (test)";
+    private const string ClassificationPerformanceMeasuresResultName = "Classification Performance Measures";
 
     public new IClassificationModel Model {
       get { return (IClassificationModel)base.Model; }
@@ -61,6 +62,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return ((DoubleValue)this[TestNormalizedGiniCoefficientResultName].Value).Value; }
       protected set { ((DoubleValue)this[TestNormalizedGiniCoefficientResultName].Value).Value = value; }
     }
+    public ClassificationPerformanceMeasuresResultCollection ClassificationPerformanceMeasures {
+      get { return ((ClassificationPerformanceMeasuresResultCollection)this[ClassificationPerformanceMeasuresResultName].Value); }
+      protected set { (this[ClassificationPerformanceMeasuresResultName].Value) = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -74,6 +79,9 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestAccuracyResultName, "Accuracy of the model on the test partition (percentage of correctly classified instances).", new PercentValue()));
       Add(new Result(TrainingNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the training partition.", new DoubleValue()));
       Add(new Result(TestNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the test partition.", new DoubleValue()));
+      Add(new Result(ClassificationPerformanceMeasuresResultName, @"Classification performance measures.\n
+                              In a multiclass classification all misclassifications of the negative class will be treated as true negatives except on positive class estimations.",
+                            new ClassificationPerformanceMeasuresResultCollection()));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -82,13 +90,25 @@ namespace HeuristicLab.Problems.DataAnalysis {
         Add(new Result(TrainingNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the training partition.", new DoubleValue()));
       if (!this.ContainsKey(TestNormalizedGiniCoefficientResultName))
         Add(new Result(TestNormalizedGiniCoefficientResultName, "Normalized Gini coefficient of the model on the test partition.", new DoubleValue()));
+      if (!this.ContainsKey(ClassificationPerformanceMeasuresResultName)) {
+        Add(new Result(ClassificationPerformanceMeasuresResultName, @"Classification performance measures.\n
+                              In a multiclass classification all misclassifications of the negative class will be treated as true negatives except on positive class estimations.",
+                              new ClassificationPerformanceMeasuresResultCollection()));
+        CalculateClassificationResults();
+      }
     }
 
     protected void CalculateClassificationResults() {
       double[] estimatedTrainingClassValues = EstimatedTrainingClassValues.ToArray(); // cache values
       double[] originalTrainingClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).ToArray();
+
       double[] estimatedTestClassValues = EstimatedTestClassValues.ToArray(); // cache values
       double[] originalTestClassValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices).ToArray();
+
+      var positiveClassName = ProblemData.PositiveClass;
+      double positiveClassValue = ProblemData.GetClassValue(positiveClassName);
+      ClassificationPerformanceMeasuresCalculator trainingPerformanceCalculator = new ClassificationPerformanceMeasuresCalculator(positiveClassName, positiveClassValue);
+      ClassificationPerformanceMeasuresCalculator testPerformanceCalculator = new ClassificationPerformanceMeasuresCalculator(positiveClassName, positiveClassValue);
 
       OnlineCalculatorError errorState;
       double trainingAccuracy = OnlineAccuracyCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues, out errorState);
@@ -106,6 +126,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       TrainingNormalizedGiniCoefficient = trainingNormalizedGini;
       TestNormalizedGiniCoefficient = testNormalizedGini;
+
+      trainingPerformanceCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues);
+      if (trainingPerformanceCalculator.ErrorState == OnlineCalculatorError.None)
+        ClassificationPerformanceMeasures.SetTrainingResults(trainingPerformanceCalculator);
+
+      testPerformanceCalculator.Calculate(originalTestClassValues, estimatedTestClassValues);
+      if (testPerformanceCalculator.ErrorState == OnlineCalculatorError.None)
+        ClassificationPerformanceMeasures.SetTestResults(testPerformanceCalculator);
     }
 
     public abstract IEnumerable<double> EstimatedClassValues { get; }

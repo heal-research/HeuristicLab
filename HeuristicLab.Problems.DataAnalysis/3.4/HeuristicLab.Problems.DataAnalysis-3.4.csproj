@@ -117,6 +117,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Implementation\Classification\ClassificationEnsembleSolution.cs" />
+    <Compile Include="Implementation\Classification\ClassificationPerformanceMeasures.cs" />
     <Compile Include="Implementation\Classification\ClassificationProblemData.cs" />
     <Compile Include="Implementation\Classification\ClassificationProblem.cs" />
     <Compile Include="Implementation\Classification\ClassificationSolution.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisProblemData.cs" />
     <Compile Include="Interfaces\TimeSeriesPrognosis\ITimeSeriesPrognosisSolution.cs" />
     <Compile Include="OnlineCalculators\AutoCorrelationCalculator.cs" />
+    <Compile Include="OnlineCalculators\ClassificationPerformanceMeasuresCalculator.cs" />
     <Compile Include="OnlineCalculators\DependencyCalculator\HoeffdingsDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\DependencyCalculator\PearsonsRDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\DependencyCalculator\PearsonsRSquaredDependenceCalculator.cs" />

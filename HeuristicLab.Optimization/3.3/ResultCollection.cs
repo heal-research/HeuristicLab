@@ -43,5 +43,36 @@ namespace HeuristicLab.Optimization {
     public static new System.Drawing.Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Object; }
     }
+
+    public virtual void CollectResultValues(IDictionary<string, IItem> values) {
+      CollectResultValues(values, string.Empty);
+    }
+
+    public virtual void CollectResultValues(IDictionary<string, IItem> values, string rootPath) {
+      foreach (IResult result in this) {
+        var children = GetCollectedResults(result);
+        string path = string.Empty;
+        if (!string.IsNullOrWhiteSpace(rootPath))
+          path = rootPath + ".";
+        foreach (var c in children) {
+          if (string.IsNullOrEmpty(c.Key))
+            values.Add(path + result.Name, c.Value);
+          else values.Add(path + result.Name + "." + c.Key, c.Value);
+        }
+      }
+    }
+
+    protected virtual IEnumerable<KeyValuePair<string, IItem>> GetCollectedResults(IResult result) {
+      if (result.Value == null) yield break;
+      yield return new KeyValuePair<string, IItem>(string.Empty, result.Value);
+
+      var resultCollection = result.Value as ResultCollection;
+      if (resultCollection != null) {
+        var children = new Dictionary<string, IItem>();
+        resultCollection.CollectResultValues(children);
+        foreach (var child in children) yield return child;
+      }
+    }
+
   }
 }

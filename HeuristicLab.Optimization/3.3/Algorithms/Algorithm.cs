@@ -226,17 +226,7 @@ namespace HeuristicLab.Optimization {
     }
     public virtual void CollectResultValues(IDictionary<string, IItem> values) {
       values.Add("Execution Time", new TimeSpanValue(ExecutionTime));
-      CollectResultsRecursively("", Results, values);
-    }
-
-    private void CollectResultsRecursively(string path, ResultCollection results, IDictionary<string, IItem> values) {
-      foreach (IResult result in results) {
-        values.Add(path + result.Name, result.Value);
-        ResultCollection childCollection = result.Value as ResultCollection;
-        if (childCollection != null) {
-          CollectResultsRecursively(path + result.Name + ".", childCollection, values);
-        }
-      }
+      Results.CollectResultValues(values);
     }
 
     protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
