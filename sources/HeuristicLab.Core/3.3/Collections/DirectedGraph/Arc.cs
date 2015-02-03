@@ -67,7 +67,7 @@ namespace HeuristicLab.Core {
     }
 
     [StorableConstructor]
-    public Arc(bool deserializing) : base(deserializing) { }
+    protected Arc(bool deserializing) : base(deserializing) { }
 
     public Arc(IVertex source, IVertex target) {
       Source = source;
