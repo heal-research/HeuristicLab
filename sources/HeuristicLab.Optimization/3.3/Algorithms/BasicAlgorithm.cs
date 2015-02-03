@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -69,12 +69,10 @@ namespace HeuristicLab.Optimization {
       task.ContinueWith(t => {
         try {
           t.Wait();
-        }
-        catch (AggregateException ex) {
+        } catch (AggregateException ex) {
           try {
             ex.Flatten().Handle(x => x is OperationCanceledException);
-          }
-          catch (AggregateException remaining) {
+          } catch (AggregateException remaining) {
             if (remaining.InnerExceptions.Count == 1) OnExceptionOccurred(remaining.InnerExceptions[0]);
             else OnExceptionOccurred(remaining);
           }
@@ -90,7 +88,8 @@ namespace HeuristicLab.Optimization {
     }
 
     public override void Stop() {
-      //CancellationToken.ThrowIfCancellationRequested() must be called from within the Run method, otherwise stop does nothing
+      // CancellationToken.ThrowIfCancellationRequested() must be called from within the Run method, otherwise stop does nothing
+      // alternatively check the IsCancellationRequested property of the cancellation token
       base.Stop();
       CancellationTokenSource.Cancel();
     }
@@ -106,8 +105,7 @@ namespace HeuristicLab.Optimization {
       timer.Start();
       try {
         Run(cancellationToken);
-      }
-      finally {
+      } finally {
         timer.Elapsed -= new System.Timers.ElapsedEventHandler(timer_Elapsed);
         timer.Stop();
         ExecutionTime += DateTime.UtcNow - lastUpdateTime;
