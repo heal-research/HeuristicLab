@@ -117,7 +117,7 @@ namespace HeuristicLab.Scripting.Views {
         outputTextBox.AppendText(CompilationSucceededMessage);
         UpdateInfoTextLabel(CompilationSucceededMessage, Color.DarkGreen);
         return true;
-      } catch (InvalidOperationException) {
+      } catch (CompilationException) {
         if (Content.CompileErrors.HasErrors) {
           outputTextBox.AppendText(CompilationFailedMessage);
           UpdateInfoTextLabel(CompilationFailedMessage, Color.DarkRed);

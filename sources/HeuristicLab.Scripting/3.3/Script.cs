@@ -126,7 +126,7 @@ namespace HeuristicLab.Scripting {
             .Append(error.Column).Append(": ")
             .AppendLine(error.ErrorText);
         }
-        throw new InvalidOperationException(string.Format("Compilation of \"{0}\" failed:{1}{2}",
+        throw new CompilationException(string.Format("Compilation of \"{0}\" failed:{1}{2}",
           Name, Environment.NewLine, sb.ToString()));
       } else {
         return results.CompiledAssembly;
