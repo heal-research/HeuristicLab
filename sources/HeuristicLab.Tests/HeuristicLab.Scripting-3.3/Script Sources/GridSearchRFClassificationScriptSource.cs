@@ -29,7 +29,7 @@ public class RFClassificationCrossValidationScript : HeuristicLab.Scripting.CSha
   */
   static Dictionary<string, IEnumerable<double>> randomForestParameterRanges = new Dictionary<string, IEnumerable<double>> {
     { "N", ValueGenerator.GenerateSteps(5m, 10, 1).Select(x => Math.Pow(2,(double)x)) },
-    { "R", ValueGenerator.GenerateSteps(0.05m, 1, 0.05m).Select(x => (double)x) },
+    { "R", ValueGenerator.GenerateSteps(0.05m, 0.66m, 0.05m).Select(x => (double)x) },
     { "M", ValueGenerator.GenerateSteps(0.1m, 1, 0.1m).Select(x => (double)x) }
   };
 
