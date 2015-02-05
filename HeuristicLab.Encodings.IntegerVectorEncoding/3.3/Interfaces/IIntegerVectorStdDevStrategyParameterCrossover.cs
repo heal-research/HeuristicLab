@@ -25,6 +25,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   public interface IIntegerVectorStdDevStrategyParameterCrossover : IIntegerVectorStdDevStrategyParameterOperator, IStrategyParameterCrossover {
+    ILookupParameter<DoubleArray> StrategyParameterParameter { get; }
     ILookupParameter<ItemArray<DoubleArray>> ParentsParameter { get; }
   }
 }

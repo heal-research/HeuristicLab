@@ -25,6 +25,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   public interface IRealVectorStdDevStrategyParameterCreator : IRealVectorStdDevStrategyParameterOperator, IStrategyParameterCreator {
+    ILookupParameter<RealVector> StrategyParameterParameter { get; }
     IValueLookupParameter<IntValue> LengthParameter { get; }
     IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }

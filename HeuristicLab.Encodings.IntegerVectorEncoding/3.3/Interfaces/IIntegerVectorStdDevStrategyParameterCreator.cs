@@ -25,6 +25,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   public interface IIntegerVectorStdDevStrategyParameterCreator : IIntegerVectorStdDevStrategyParameterOperator, IStrategyParameterCreator {
+    ILookupParameter<DoubleArray> StrategyParameterParameter { get; }
     IValueLookupParameter<IntValue> LengthParameter { get; }
     IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }
