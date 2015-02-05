@@ -33,7 +33,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// </summary>
     /// <param name="args">Command line arguments</param>
     public static void Run(string[] args) {
-      if ((!FrameworkVersionErrorDialog.NET4FullProfileInstalled && !FrameworkVersionErrorDialog.MonoInstalled)
+      if ((!FrameworkVersionErrorDialog.NET4_5Installed && !FrameworkVersionErrorDialog.MonoInstalled)
         || (FrameworkVersionErrorDialog.MonoInstalled && !FrameworkVersionErrorDialog.MonoCorrectVersionInstalled)) {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);

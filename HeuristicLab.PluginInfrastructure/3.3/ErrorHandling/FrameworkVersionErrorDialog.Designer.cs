@@ -84,7 +84,7 @@ namespace HeuristicLab.PluginInfrastructure {
       this.linkLabel.Size = new System.Drawing.Size(301, 49);
       this.linkLabel.TabIndex = 2;
       this.linkLabel.TabStop = true;
-      this.linkLabel.Text = "Download Microsoft .NET Framework 4 (Full Profile)";
+      this.linkLabel.Text = "Download Microsoft .NET Framework 4.5";
       this.linkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_LinkClicked);
       // 
       // label
@@ -95,8 +95,8 @@ namespace HeuristicLab.PluginInfrastructure {
       this.label.Name = "label";
       this.label.Size = new System.Drawing.Size(301, 43);
       this.label.TabIndex = 1;
-      this.label.Text = "To run HeuristicLab you need at least the Microsoft .NET Framework 4 (Full Profil" +
-    "e) or Mono version 2.11.4 or higher. Please download and install it.";
+      this.label.Text = "To run HeuristicLab you need at least the Microsoft .NET Framework 4.5 or Mono ve" +
+    "rsion 3.6.0 or higher. Please download and install it.";
       // 
       // linkLabelMono
       // 

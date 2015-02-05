@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{96396439-A764-4022-A8D2-BE021449B8D1}"
 	ProjectSection(SolutionItems) = preProject
 		ConfigMerger.exe = ConfigMerger.exe
@@ -22,7 +24,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.Hive-
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Hive-3.3", "HeuristicLab.Services.Hive.Web\Hive-3.3\", "{0CA6706D-A569-45DE-A85C-4158891CC1BC}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
 		ProjectReferences = "{CF9DA321-AC1B-4FD3-9EC3-67BC6B861BDE}|HeuristicLab.Services.Hive-3.3.dll;{EC2C8109-6E1E-4C88-9A2B-908CFF2EF4AC}|HeuristicLab.Services.Hive.DataAccess-3.3.dll;{9FAC0B23-2730-452A-9BA0-D7CA1746C541}|HeuristicLab.Services.Access.dll;{BE9B0229-9150-49A4-AEA6-BB58E055992F}|HeuristicLab.GeoIP.dll;{0F652437-998A-4EAB-8BF1-444B5FE8CE97}|HeuristicLab.Services.Access.DataAccess.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/Hive-3.3"
 		Debug.AspNetCompiler.PhysicalPath = "HeuristicLab.Services.Hive.Web\Hive-3.3\"
@@ -40,6 +42,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Hive-3.3", "HeuristicLab.Se
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "4591"
 		VWDVirtualPath = "/Hive-3.3"
+		SlnRelativePath = "HeuristicLab.Services.Hive.Web\Hive-3.3\"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -56,9 +59,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Services.OKB-3.3", "HeuristicLab.Services.OKB\3.3\HeuristicLab.Services.OKB-3.3.csproj", "{766DA4B7-2A0E-4CDE-8F90-93D8B1AD62CF}"
 EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = HeuristicLab 3.3 Services.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -210,5 +210,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = HeuristicLab 3.3 Services.vsmdi
 	EndGlobalSection
 EndGlobal
