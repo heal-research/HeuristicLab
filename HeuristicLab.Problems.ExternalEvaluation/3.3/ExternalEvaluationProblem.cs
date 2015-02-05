@@ -239,7 +239,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       BestScopeSolutionAnalyzer.ResultsParameter.ActualName = "Results";
       BestScopeSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
       BestScopeSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
-      BestScopeSolutionAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
       BestScopeSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
     }
     private void ParameterizeEvaluator() {
