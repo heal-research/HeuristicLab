@@ -101,25 +101,16 @@ namespace HeuristicLab.Core {
         // register event handlers
         vertex.ArcAdded += Vertex_ArcAdded;
         vertex.ArcRemoved += Vertex_ArcRemoved;
-        OnVertedAdded(this, new EventArgs<IVertex>(vertex));
+        OnVertexAdded(this, new EventArgs<IVertex>(vertex));
       }
     }
 
     public virtual void AddVertices(IEnumerable<IVertex> vertexList) {
-      var hash = new HashSet<IVertex>(vertexList);
-      var arcList = vertexList.SelectMany(v => v.InArcs.Concat(v.OutArcs));
-      if (arcList.Any(x => !hash.Contains(x.Source) || !hash.Contains(x.Target)))
-        throw new ArgumentException("Vertex arcs are connected to vertices not in the graph.");
-      // if everything is in order, add the vertices to the directed graph
-      foreach (var v in vertexList)
-        vertices.Add(v);
-      foreach (var a in arcList)
-        arcs.Add(a);
+      foreach (var v in vertexList) { AddVertex(v); }
     }
 
     public virtual void RemoveVertices(IEnumerable<IVertex> vertexList) {
-      foreach (var v in vertexList)
-        RemoveVertex(v);
+      foreach (var v in vertexList) { RemoveVertex(v); }
     }
 
     public virtual void RemoveVertex(IVertex vertex) {
@@ -155,12 +146,20 @@ namespace HeuristicLab.Core {
       arcs.Add(arc);
     }
 
+    public virtual void AddArcs(IEnumerable<IArc> arcList) {
+      foreach (var a in arcList) { AddArc(a); }
+    }
+
     public virtual void RemoveArc(IArc arc) {
       arcs.Remove(arc);
       var source = (Vertex)arc.Source;
       var target = (Vertex)arc.Target;
       source.RemoveArc(arc);
       target.RemoveArc(arc);
+    }
+
+    public virtual void RemoveArcs(IEnumerable<IArc> arcList) {
+      foreach (var a in arcList) { RemoveArc(a); }
     }
 
     protected virtual void Vertex_ArcAdded(object sender, EventArgs<IArc> args) {
@@ -177,7 +176,7 @@ namespace HeuristicLab.Core {
 
     // events
     public event EventHandler<EventArgs<IVertex>> VertexAdded;
-    protected virtual void OnVertedAdded(object sender, EventArgs<IVertex> args) {
+    protected virtual void OnVertexAdded(object sender, EventArgs<IVertex> args) {
       var added = VertexAdded;
       if (added != null)
         added(sender, args);

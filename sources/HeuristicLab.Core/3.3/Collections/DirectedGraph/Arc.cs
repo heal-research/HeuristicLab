@@ -55,16 +55,6 @@ namespace HeuristicLab.Core {
       }
     }
 
-    [Storable]
-    protected object data;
-    public object Data {
-      get { return data; }
-      set {
-        if (data == value) return;
-        data = value;
-        OnChanged(this, EventArgs.Empty);
-      }
-    }
 
     [StorableConstructor]
     protected Arc(bool deserializing) : base(deserializing) { }
@@ -80,9 +70,6 @@ namespace HeuristicLab.Core {
       Target = cloner.Clone(original.Target);
       label = original.Label;
       weight = original.Weight;
-      if (data is IDeepCloneable)
-        data = cloner.Clone((IDeepCloneable)data);
-      else data = original.Data;
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new Arc(this, cloner); }
 
@@ -95,7 +82,28 @@ namespace HeuristicLab.Core {
   }
 
   [StorableClass]
-  public class Arc<T> : Arc, IArc<T> where T : class,IItem {
+  public class Arc<T> : Arc, IArc<T> where T : class,IDeepCloneable {
+    [Storable]
+    protected T data;
+    public T Data {
+      get { return data; }
+      set {
+        if (data == value) return;
+        data = value;
+        OnChanged(this, EventArgs.Empty);
+      }
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Arc<T>(this, cloner);
+    }
+
+    protected Arc(Arc<T> original, Cloner cloner)
+      : base(original, cloner) {
+      if (original.Data != null)
+        Data = cloner.Clone(original.Data);
+    }
+
     public Arc(bool deserializing)
       : base(deserializing) {
     }
@@ -106,13 +114,6 @@ namespace HeuristicLab.Core {
 
     protected Arc(Arc original, Cloner cloner)
       : base(original, cloner) {
-    }
-
-    new public IVertex<T> Source {
-      get { return (IVertex<T>)base.Source; }
-    }
-    new public IVertex<T> Target {
-      get { return (IVertex<T>)base.Target; }
     }
   }
 }

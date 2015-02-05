@@ -51,17 +51,6 @@ namespace HeuristicLab.Core {
       }
     }
 
-    [Storable]
-    private IDeepCloneable data;
-    public IDeepCloneable Data {
-      get { return data; }
-      set {
-        if (data == value) return;
-        data = value;
-        OnChanged(this, EventArgs.Empty);
-      }
-    }
-
     private readonly List<IArc> inArcs = new List<IArc>();
     public IEnumerable<IArc> InArcs {
       get { return inArcs; }
@@ -82,16 +71,12 @@ namespace HeuristicLab.Core {
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() { }
 
-    public Vertex(IDeepCloneable data) {
-      this.data = data;
-    }
+    public Vertex() { }
 
     protected Vertex(Vertex original, Cloner cloner)
       : base(original, cloner) {
-      data = cloner.Clone(original.Data);
       label = original.Label;
       weight = original.Weight;
-
       // we do not clone the arcs here (would cause too much recursion and ultimately a stack overflow)
     }
 
@@ -156,10 +141,16 @@ namespace HeuristicLab.Core {
   }
 
   [StorableClass]
-  public class Vertex<T> : Vertex, IVertex<T> where T : class,IItem {
-    public new T Data {
-      get { return (T)base.Data; }
-      set { base.Data = value; }
+  public class Vertex<T> : Vertex, IVertex<T> where T : class,IDeepCloneable {
+    [Storable]
+    private T data;
+    public T Data {
+      get { return data; }
+      set {
+        if (data == value) return;
+        data = value;
+        OnChanged(this, EventArgs.Empty);
+      }
     }
 
     [StorableConstructor]
@@ -167,11 +158,11 @@ namespace HeuristicLab.Core {
 
     protected Vertex(Vertex<T> original, Cloner cloner)
       : base(original, cloner) {
+      if (original.Data != null)
+        Data = cloner.Clone(original.Data);
     }
 
-    public Vertex(IDeepCloneable data)
-      : base(data) {
-    }
+    public Vertex() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Vertex<T>(this, cloner);
