@@ -29,14 +29,14 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public static class SymbolicExpressionTreeMatching {
-    public static bool ContainsSubtree(this ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode subtree, SymbolicExpressionTreeNodeSimilarityComparer comparer) {
+    public static bool ContainsSubtree(this ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode subtree, SymbolicExpressionTreeNodeEqualityComparer comparer) {
       return FindMatches(root, subtree, comparer).Any();
     }
-    public static IEnumerable<ISymbolicExpressionTreeNode> FindMatches(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode subtree, SymbolicExpressionTreeNodeSimilarityComparer comparer) {
+    public static IEnumerable<ISymbolicExpressionTreeNode> FindMatches(ISymbolicExpressionTree tree, ISymbolicExpressionTreeNode subtree, SymbolicExpressionTreeNodeEqualityComparer comparer) {
       return FindMatches(tree.Root, subtree, comparer);
     }
 
-    public static IEnumerable<ISymbolicExpressionTreeNode> FindMatches(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode subtree, SymbolicExpressionTreeNodeSimilarityComparer comp) {
+    public static IEnumerable<ISymbolicExpressionTreeNode> FindMatches(ISymbolicExpressionTreeNode root, ISymbolicExpressionTreeNode subtree, SymbolicExpressionTreeNodeEqualityComparer comp) {
       var fragmentLength = subtree.GetLength();
       // below, we use ">=" for Match(n, subtree, comp) >= fragmentLength because in case of relaxed conditions, 
       // we can have multiple matches of the same node
@@ -51,7 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     /// http://dl.acm.org/citation.cfm?id=360861
     /// </summary>
     /// <returns>Number of pairs that were matched</returns>
-    public static int Match(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b, SymbolicExpressionTreeNodeSimilarityComparer comp) {
+    public static int Match(ISymbolicExpressionTreeNode a, ISymbolicExpressionTreeNode b, ISymbolicExpressionTreeNodeSimilarityComparer comp) {
       if (!comp.Equals(a, b)) return 0;
       int m = a.SubtreeCount;
       int n = b.SubtreeCount;
