@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace HeuristicLab.PluginInfrastructure {
   /// <summary>
@@ -69,7 +70,7 @@ namespace HeuristicLab.PluginInfrastructure {
     IEnumerable<Type> GetTypes(IEnumerable<Type> types, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true);
 
     /// <summary>
-    /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
+    /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly) that are declared in any assembly of <paramref name="plugin"/>.
     /// </summary>
     /// <param name="type">The type to discover.</param>
     /// <param name="plugin">The declaring plugin.</param>
@@ -78,7 +79,7 @@ namespace HeuristicLab.PluginInfrastructure {
     IEnumerable<Type> GetTypes(Type type, IPluginDescription plugin, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false);
 
     /// <summary>
-    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
+    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly) that are declared in any assembly of <paramref name="plugin"/>.
     /// </summary>
     /// <param name="types">The types to discover.</param>
     /// <param name="plugin">The declaring plugin.</param>
@@ -86,6 +87,26 @@ namespace HeuristicLab.PluginInfrastructure {
     /// /// <param name="assignableToAllTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
     /// <returns>An enumerable of discovered types.</returns>
     IEnumerable<Type> GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true);
+
+
+    /// <summary>
+    /// Discovers all types implementing or inheriting <paramref name="type"/> (directly and indirectly) that are declared in the<paramref name="assembly"/>.
+    /// </summary>
+    /// <param name="type">The type to discover.</param>
+    /// <param name="assembly">The declaring assembly.</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// <returns>An enumerable of discovered types.</returns>
+    IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false);
+
+    /// <summary>
+    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly) that are declaed in any assembly of <paramref name="plugin"/>.
+    /// </summary>
+    /// <param name="types">The types to discover.</param>
+    /// <param name="assembly">The declaring assembly.</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// /// <param name="assignableToAllTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
+    /// <returns>An enumerable of discovered types.</returns>
+    IEnumerable<Type> GetTypes(IEnumerable<Type> types, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true);
 
     /// <summary>
     /// Finds the plugin that declares the <paramref name="type">type</paramref>.

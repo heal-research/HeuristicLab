@@ -259,7 +259,7 @@ namespace HeuristicLab.PluginInfrastructure {
     /// (interfaces, abstract classes...  are not returned)</param>
     /// <param name="includeGenericTypeDefinitions">Specifies if generic type definitions shall be included</param>
     /// <returns>Enumerable of the discovered types.</returns>
-    private static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
+    internal static IEnumerable<Type> GetTypes(Type type, Assembly assembly, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
       var matchingTypes = from assemblyType in assembly.GetTypes()
                           let t = assemblyType.BuildType(type)
                           where t != null
@@ -270,6 +270,24 @@ namespace HeuristicLab.PluginInfrastructure {
                           select t;
 
       return matchingTypes;
+    }
+
+    /// <summary>
+    /// Discovers all types implementing or inheriting all or any type in <paramref name="types"/> (directly and indirectly) that are declared in the assembly <paramref name="assembly"/>.
+    /// </summary>
+    /// <param name="types">The types to discover.</param>
+    /// <param name="assembly">The declaring assembly.</param>
+    /// <param name="onlyInstantiable">Return only types that are instantiable (instance, abstract... are not returned)</param>
+    /// /// <param name="assignableToAllTypes">Specifies if discovered types must implement or inherit all given <paramref name="types"/>.</param>
+    /// <returns>An enumerable of discovered types.</returns>
+    internal static IEnumerable<Type> GetTypes(IEnumerable<Type> types, Assembly assembly, bool onlyInstantiable = true, bool includeGenericTypeDefinitions = false, bool assignableToAllTypes = true) {
+      IEnumerable<Type> result = GetTypes(types.First(), assembly, onlyInstantiable, includeGenericTypeDefinitions);
+      foreach (Type type in types.Skip(1)) {
+        IEnumerable<Type> discoveredTypes = GetTypes(type, assembly, onlyInstantiable, includeGenericTypeDefinitions);
+        if (assignableToAllTypes) result = result.Intersect(discoveredTypes);
+        else result = result.Union(discoveredTypes);
+      }
+      return result;
     }
 
     private void OnPluginLoaded(PluginInfrastructureEventArgs e) {
@@ -302,6 +320,13 @@ namespace HeuristicLab.PluginInfrastructure {
     }
     IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, IPluginDescription plugin, bool onlyInstantiable, bool includeGenericTypeDefinitions, bool assignableToAllTypes) {
       return GetTypes(types, plugin, onlyInstantiable, includeGenericTypeDefinitions, assignableToAllTypes);
+    }
+
+    IEnumerable<Type> IApplicationManager.GetTypes(Type type, Assembly assembly, bool onlyInstantiable, bool includeGenericTypeDefinitions) {
+      return GetTypes(type, assembly, onlyInstantiable, includeGenericTypeDefinitions);
+    }
+    IEnumerable<Type> IApplicationManager.GetTypes(IEnumerable<Type> types, Assembly assembly, bool onlyInstantiable, bool includeGenericTypeDefinitions, bool assignableToAllTypes) {
+      return GetTypes(types, assembly, onlyInstantiable, includeGenericTypeDefinitions, assignableToAllTypes);
     }
 
     /// <summary>
