@@ -94,37 +94,22 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
 
     public override IOperation Apply() {
-      Permutation currSol = CurrentScope.Variables[SolutionParameter.ActualName].Value as Permutation;
-      if (currSol == null)
+      var solution = CurrentScope.Variables[SolutionParameter.ActualName].Value as Permutation;
+      if (solution == null)
         throw new ArgumentException("Cannot improve solution because it has the wrong type.");
-      if (currSol.PermutationType != PermutationTypes.RelativeUndirected)
+      if (solution.PermutationType != PermutationTypes.RelativeUndirected)
         throw new ArgumentException("Cannot improve solution because the permutation type is not supported.");
 
       for (int i = 0; i < ImprovementAttempts.Value; i++) {
-        int a = Random.Next(currSol.Length);
-        int b = Random.Next(currSol.Length);
-        double oldFirstEdgeLength = DistanceMatrix[currSol[a], currSol[(a - 1 + currSol.Length) % currSol.Length]];
-        double oldSecondEdgeLength = DistanceMatrix[currSol[b], currSol[(b + 1) % currSol.Length]];
-        double newFirstEdgeLength = DistanceMatrix[currSol[b], currSol[(a - 1 + currSol.Length) % currSol.Length]];
-        double newSecondEdgeLength = DistanceMatrix[currSol[a], currSol[(b + 1 + currSol.Length) % currSol.Length]];
-        if (newFirstEdgeLength + newSecondEdgeLength < oldFirstEdgeLength + oldSecondEdgeLength)
-          Invert(currSol, a, b);
+        var move = StochasticInversionSingleMoveGenerator.Apply(solution, Random);
+        double moveQualtiy = TSPInversionMovePathEvaluator.EvaluateByDistanceMatrix(solution, move, DistanceMatrix);
+        if (moveQualtiy < 0)
+          InversionManipulator.Apply(solution, move.Index1, move.Index2);
       }
 
       CurrentScope.Variables.Add(new Variable("LocalEvaluatedSolutions", ImprovementAttempts));
 
       return base.Apply();
-    }
-
-    private void Invert(Permutation sol, int i, int j) {
-      if (i != j)
-        for (int a = 0; a < Math.Abs(i - j) / 2; a++)
-          if (sol[(i + a) % sol.Length] != sol[(j - a + sol.Length) % sol.Length]) {
-            // XOR swap
-            sol[(i + a) % sol.Length] ^= sol[(j - a + sol.Length) % sol.Length];
-            sol[(j - a + sol.Length) % sol.Length] ^= sol[(i + a) % sol.Length];
-            sol[(i + a) % sol.Length] ^= sol[(j - a + sol.Length) % sol.Length];
-          }
     }
   }
 }
