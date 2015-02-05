@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public SymbolicExpressionTreeBottomUpSimilarityCalculator() { }
 
     [StorableConstructor]
-    private SymbolicExpressionTreeBottomUpSimilarityCalculator(bool deserializing)
+    protected SymbolicExpressionTreeBottomUpSimilarityCalculator(bool deserializing)
       : base(deserializing) {
     }
 
