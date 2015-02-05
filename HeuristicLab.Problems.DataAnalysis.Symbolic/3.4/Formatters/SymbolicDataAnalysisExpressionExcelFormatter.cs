@@ -202,6 +202,62 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         stringBuilder.Append(")^(1 / ROUND(");
         stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
         stringBuilder.Append(",0))");
+      } else if (symbol is IfThenElse) {
+        stringBuilder.Append("IF(");
+        stringBuilder.Append("(" + FormatRecursively(node.GetSubtree(0)) + " ) > 0");
+        stringBuilder.Append(",");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
+        stringBuilder.Append(",");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(2)));
+        stringBuilder.Append(")");
+      } else if (symbol is VariableCondition) {
+        VariableConditionTreeNode variableConditionTreeNode = node as VariableConditionTreeNode;
+        double threshold = variableConditionTreeNode.Threshold;
+        double slope = variableConditionTreeNode.Slope;
+        string p = "(1 / (1 + EXP(-" + slope.ToString(CultureInfo.InvariantCulture) + " * (" + GetColumnToVariableName(variableConditionTreeNode.VariableName) + "-" + threshold.ToString(CultureInfo.InvariantCulture) + "))))";
+        stringBuilder.Append("((");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append("*");
+        stringBuilder.Append(p);
+        stringBuilder.Append(") + (");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
+        stringBuilder.Append("*(");
+        stringBuilder.Append("1 - " + p + ")");
+        stringBuilder.Append("))");
+      } else if (symbol is Xor) {
+        stringBuilder.Append("IF(");
+        stringBuilder.Append("XOR(");
+        stringBuilder.Append("(" + FormatRecursively(node.GetSubtree(0)) + ") > 0,");
+        stringBuilder.Append("(" + FormatRecursively(node.GetSubtree(1)) + ") > 0");
+        stringBuilder.Append("), 1.0, -1.0)");
+      } else if (symbol is Or) {
+        stringBuilder.Append("IF(");
+        stringBuilder.Append("OR(");
+        stringBuilder.Append("(" + FormatRecursively(node.GetSubtree(0)) + ") > 0,");
+        stringBuilder.Append("(" + FormatRecursively(node.GetSubtree(1)) + ") > 0");
+        stringBuilder.Append("), 1.0, -1.0)");
+      } else if (symbol is And) {
+        stringBuilder.Append("IF(");
+        stringBuilder.Append("AND(");
+        stringBuilder.Append("(" + FormatRecursively(node.GetSubtree(0)) + ") > 0,");
+        stringBuilder.Append("(" + FormatRecursively(node.GetSubtree(1)) + ") > 0");
+        stringBuilder.Append("), 1.0, -1.0)");
+      } else if (symbol is Not) {
+        stringBuilder.Append("IF(");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(" > 0, -1.0, 1.0)");
+      } else if (symbol is GreaterThan) {
+        stringBuilder.Append("IF((");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(") > (");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
+        stringBuilder.Append("), 1.0, -1.0)");
+      } else if (symbol is LessThan) {
+        stringBuilder.Append("IF((");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(0)));
+        stringBuilder.Append(") < (");
+        stringBuilder.Append(FormatRecursively(node.GetSubtree(1)));
+        stringBuilder.Append("), 1.0, -1.0)");
       } else {
         throw new NotImplementedException("Excel export of " + node.Symbol + " is not implemented.");
       }

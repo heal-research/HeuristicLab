@@ -29,10 +29,10 @@ using OfficeOpenXml.Drawing.Chart;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
   public class SymbolicSolutionExcelExporter : IDataAnalysisSolutionExporter {
-    private const string TRAININGSTART = "TrainingStart";
-    private const string TRAININGEND = "TrainingEnd";
-    private const string TESTSTART = "TestStart";
-    private const string TESTEND = "TestEnd";
+    protected const string TRAININGSTART = "TrainingStart";
+    protected const string TRAININGEND = "TrainingEnd";
+    protected const string TESTSTART = "TestStart";
+    protected const string TESTEND = "TestEnd";
 
 
     public string FileTypeFilter {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         solution is IRegressionSolution;
     }
 
-    public void Export(IDataAnalysisSolution solution, string fileName) {
+    public virtual void Export(IDataAnalysisSolution solution, string fileName) {
       var symbSolution = solution as ISymbolicDataAnalysisSolution;
       if (symbSolution == null) throw new NotSupportedException("This solution cannot be exported to Excel");
       var formatter = new SymbolicDataAnalysisExpressionExcelFormatter();
@@ -215,7 +215,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       AddModelTreePicture(modelWorksheet, solution.Model);
     }
 
-    private string Indirect(string column, bool training) {
+    protected string Indirect(string column, bool training) {
       if (training) {
         return string.Format("INDIRECT(\"'Estimated Values'!{0}\"&{1}+2&\":{0}\"&{2}+1)", column, TRAININGSTART, TRAININGEND);
       } else {
@@ -259,7 +259,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       lineTest.Header = "Test";
     }
 
-    private void AddModelTreePicture(ExcelWorksheet modelWorksheet, ISymbolicDataAnalysisModel model) {
+    protected void AddModelTreePicture(ExcelWorksheet modelWorksheet, ISymbolicDataAnalysisModel model) {
       SymbolicExpressionTreeChart modelTreePicture = new SymbolicExpressionTreeChart();
       modelTreePicture.Tree = model.SymbolicExpressionTree;
       string tmpFilename = Path.GetTempFileName();
@@ -288,11 +288,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
       estimatedWorksheet.Cells[1, 1, 1, 10].AutoFitColumns();
 
+      // fill in id, target variable and unbounded estimated values
       int targetIndex = solution.ProblemData.Dataset.VariableNames.ToList().FindIndex(x => x.Equals(solution.ProblemData.TargetVariable)) + 1;
       for (int i = 0; i < rows; i++) {
-        estimatedWorksheet.Cells[i + 2, 1].Value = i;
-        estimatedWorksheet.Cells[i + 2, 2].Formula = datasetWorksheet.Cells[i + 2, targetIndex].FullAddress;
-        estimatedWorksheet.Cells[i + 2, 9].Formula = string.Format(preparedFormula, i + 2);
+        estimatedWorksheet.Cells[i + 2, 1].Value = i; // id
+        estimatedWorksheet.Cells[i + 2, 2].Formula = datasetWorksheet.Cells[i + 2, targetIndex].FullAddress; // target variable
+        estimatedWorksheet.Cells[i + 2, 9].Formula = string.Format(preparedFormula, i + 2); // unbounded estimated values
       }
       estimatedWorksheet.Cells["B2:B" + (rows + 1)].Style.Numberformat.Format = "0.000";
 
@@ -312,7 +313,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       estimatedWorksheet.Cells["J2:J" + (rows + 1)].Style.Numberformat.Format = "0.000";
     }
 
-    private string PrepareFormula(string[] formulaParts) {
+    protected string PrepareFormula(string[] formulaParts) {
       string preparedFormula = formulaParts[0];
       foreach (var part in formulaParts.Skip(2)) {
         var varMap = part.Split(new string[] { " = " }, StringSplitOptions.None);
@@ -322,7 +323,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       return preparedFormula;
     }
 
-    private void WriteInputSheet(ExcelWorksheet inputsWorksheet, ExcelWorksheet datasetWorksheet, IEnumerable<string> list, Dataset dataset) {
+    protected void WriteInputSheet(ExcelWorksheet inputsWorksheet, ExcelWorksheet datasetWorksheet, IEnumerable<string> list, Dataset dataset) {
       //remark the performance of EPPlus drops dramatically 
       //if the data is not written row wise (from left to right) due the internal indices used.
       var variableNames = dataset.VariableNames.Select((v, i) => new { variable = v, index = i + 1 }).ToDictionary(v => v.variable, v => v.index);
@@ -336,7 +337,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       }
     }
 
-    private void WriteDatasetToExcel(ExcelWorksheet datasetWorksheet, IDataAnalysisProblemData problemData) {
+    protected void WriteDatasetToExcel(ExcelWorksheet datasetWorksheet, IDataAnalysisProblemData problemData) {
       //remark the performance of EPPlus drops dramatically 
       //if the data is not written row wise (from left to right) due the internal indices used.
       Dataset dataset = problemData.Dataset;
