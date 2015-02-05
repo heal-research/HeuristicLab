@@ -40,8 +40,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// <summary>
     /// Number of crossover points.
     /// </summary>
-    public ValueLookupParameter<IntValue> NParameter {
-      get { return (ValueLookupParameter<IntValue>)Parameters["N"]; }
+    public IValueLookupParameter<IntValue> NParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["N"]; }
     }
 
     [StorableConstructor]
@@ -136,7 +136,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
       if (NParameter.ActualValue == null) throw new InvalidOperationException("NPointCrossover: Parameter " + NParameter.ActualName + " could not be found.");
 
-      return Apply(random, parents[0], parents[1], NParameter.Value);
+      return Apply(random, parents[0], parents[1], NParameter.ActualValue);
     }
   }
 }

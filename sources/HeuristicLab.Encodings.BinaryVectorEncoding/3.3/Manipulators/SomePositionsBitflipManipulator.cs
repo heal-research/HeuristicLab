@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -38,8 +39,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// <summary>
     /// Mmutation probability for each position.
     /// </summary>
-    public ValueLookupParameter<DoubleValue> MutationProbabilityParameter {
-      get { return (ValueLookupParameter<DoubleValue>)Parameters["MutationProbability"]; }
+    public IValueLookupParameter<DoubleValue> MutationProbabilityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters["MutationProbability"]; }
     }
 
     [StorableConstructor]
@@ -77,7 +78,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// <param name="random">The random number generator to use.</param>
     /// <param name="realVector">The vector of binary values to manipulate.</param>
     protected override void Manipulate(IRandom random, BinaryVector binaryVector) {
-      Apply(random, binaryVector, MutationProbabilityParameter.Value);
+      if (MutationProbabilityParameter.ActualValue == null) throw new InvalidOperationException("SomePositionsBitflipManipulator: Parameter " + MutationProbabilityParameter.ActualName + " could not be found.");
+      Apply(random, binaryVector, MutationProbabilityParameter.ActualValue);
     }
   }
 }

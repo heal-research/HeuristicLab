@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -34,30 +35,36 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   public sealed class RandomBinaryVectorCreator : BinaryVectorCreator {
     private const string TrueProbabilityParameterName = "TruePropability";
 
-    private IFixedValueParameter<DoubleValue> TrueProbabilityParameter {
-      get { return (IFixedValueParameter<DoubleValue>)Parameters[TrueProbabilityParameterName]; }
+    private IValueLookupParameter<DoubleValue> TrueProbabilityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[TrueProbabilityParameterName]; }
     }
 
-    public double TrueProbability {
-      get { return TrueProbabilityParameter.Value.Value; }
-      set { TrueProbabilityParameter.Value.Value = value; }
+    public DoubleValue TrueProbability {
+      get { return TrueProbabilityParameter.Value; }
+      set { TrueProbabilityParameter.Value = value; }
     }
 
     [StorableConstructor]
     private RandomBinaryVectorCreator(bool deserializing) : base(deserializing) { }
-
     private RandomBinaryVectorCreator(RandomBinaryVectorCreator original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new RandomBinaryVectorCreator(this, cloner); }
-
     public RandomBinaryVectorCreator()
       : base() {
-      Parameters.Add(new FixedValueParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(0.5)));
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(0.5)));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      var defaultValue = 0.5;
+      if (Parameters.ContainsKey(TrueProbabilityParameterName) && Parameters[TrueProbabilityParameterName] is IFixedValueParameter<DoubleValue>) {
+        defaultValue = ((IFixedValueParameter<DoubleValue>)Parameters[TrueProbabilityParameterName]).Value.Value;
+        Parameters.Remove(TrueProbabilityParameterName);
+      }
       if (!Parameters.ContainsKey(TrueProbabilityParameterName))
-        Parameters.Add(new FixedValueParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(0.5)));
+        Parameters.Add(new ValueLookupParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(defaultValue)));
+      #endregion
     }
 
     /// <summary>
@@ -73,7 +80,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       //Backwards compatiblity code to ensure the same behavior for existing algorithm runs
       //remove with HL 3.4
       if (trueProbability.IsAlmost(0.5))
-      result = new BinaryVector(length, random);
+        result = new BinaryVector(length, random);
       else {
         var values = new bool[length];
         for (int i = 0; i < length; i++)
@@ -84,7 +91,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
 
     protected override BinaryVector Create(IRandom random, IntValue length) {
-      return Apply(random, length.Value, TrueProbability);
+      if (TrueProbabilityParameter.ActualValue == null) throw new InvalidOperationException("RandomBinaryVectorCreator: Parameter " + TrueProbabilityParameter.ActualName + " could not be found.");
+      return Apply(random, length.Value, TrueProbabilityParameter.ActualValue.Value);
     }
   }
 }
