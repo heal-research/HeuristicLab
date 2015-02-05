@@ -40,6 +40,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     public SymbolicExpressionTreeBottomUpSimilarityCalculator() { }
 
+    [StorableConstructor]
+    private SymbolicExpressionTreeBottomUpSimilarityCalculator(bool deserializing)
+      : base(deserializing) {
+    }
+
     protected SymbolicExpressionTreeBottomUpSimilarityCalculator(SymbolicExpressionTreeBottomUpSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {
       MatchVariableWeights = original.MatchVariableWeights;
