@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void RegisterVariableNamesViewContentEvents() {
       variableNamesView.Content.ItemsAdded += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
-      variableNamesView.Content.ItemsRemoved += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
+      variableNamesView.Content.ItemsRemoved += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Removed);
       variableNamesView.Content.CheckedItemsChanged += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
       variableNamesView.Content.CollectionReset += new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
       foreach (var variable in variableNamesView.Content) {
@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
 
     private void DeregisterVariableNamesViewContentEvents() {
       variableNamesView.Content.ItemsAdded -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
-      variableNamesView.Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
+      variableNamesView.Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Removed);
       variableNamesView.Content.CheckedItemsChanged -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
       variableNamesView.Content.CollectionReset -= new CollectionItemsChangedEventHandler<StringValue>(VariableNames_Changed);
       foreach (var variable in variableNamesView.Content) {
@@ -114,6 +114,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
         newVar.ValueChanged += new EventHandler(Variable_ValueChanged);
       foreach (var oldVar in e.OldItems)
         oldVar.ValueChanged -= new EventHandler(Variable_ValueChanged);
+      UpdateContent();
+    }
+
+    private void VariableNames_Removed(object sender, CollectionItemsChangedEventArgs<StringValue> e) {
+      foreach (var newVar in e.Items)
+        newVar.ValueChanged -= new EventHandler(Variable_ValueChanged);
       UpdateContent();
     }
 

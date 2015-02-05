@@ -100,7 +100,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     private void RegisterEventHandlers() {
       Tasks.ItemsAdded += TasksOnItemsChanged;
-      Tasks.ItemsRemoved += TasksOnItemsChanged;
+      Tasks.ItemsRemoved += TasksOnItemsRemoved;
       Tasks.ItemsReplaced += TasksOnItemsChanged;
       Tasks.CollectionReset += TasksOnItemsChanged;
       foreach (var task in Tasks) {
@@ -117,6 +117,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       foreach (var task in e.Items) {
         task.Value.PropertyChanged += TaskOnPropertyChanged;
         task.Value.ToStringChanged += TaskOnToStringChanged;
+      }
+      OnTasksChanged();
+      OnToStringChanged();
+    }
+
+    private void TasksOnItemsRemoved(object sender, CollectionItemsChangedEventArgs<IndexedItem<Task>> e) {
+      foreach (var task in e.Items) {
+        task.Value.PropertyChanged -= TaskOnPropertyChanged;
+        task.Value.ToStringChanged -= TaskOnToStringChanged;
       }
       OnTasksChanged();
       OnToStringChanged();
