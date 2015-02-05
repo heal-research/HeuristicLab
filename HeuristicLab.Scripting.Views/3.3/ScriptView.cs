@@ -115,7 +115,7 @@ namespace HeuristicLab.Scripting.Views {
         Content.Compile();
         outputTextBox.AppendText("Compilation succeeded.");
         return true;
-      } catch (InvalidOperationException) {
+      } catch (CompilationException) {
         if (Content.CompileErrors.HasErrors) {
           outputTextBox.AppendText("Compilation failed.");
           return false;
