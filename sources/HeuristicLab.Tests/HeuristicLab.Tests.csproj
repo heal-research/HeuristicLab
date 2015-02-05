@@ -491,6 +491,8 @@
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\ThresholdCalculatorsTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\OnlineCalculatorPerformanceTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis-3.4\StatisticCalculatorsTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionTreeBottomUpSimilarityCalculatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic-3.4\SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4\SymbolicDataAnalysisExpressionTreeInterpreterTest.cs" />
     <Compile Include="HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis-3.4\Util.cs" />
     <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\RegressionInstanceProviderTest.cs" />
