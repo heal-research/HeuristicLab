@@ -35,8 +35,6 @@ namespace HeuristicLab.Core {
     string Label { get; set; }
     double Weight { get; set; }
 
-    IDeepCloneable Data { get; set; }
-
     void AddArc(IArc arc);
     void RemoveArc(IArc arc);
 
@@ -45,8 +43,7 @@ namespace HeuristicLab.Core {
     event EventHandler<EventArgs<IArc>> ArcRemoved;
   }
 
-  public interface IVertex<T> : IVertex
-  where T : class {
-    new T Data { get; set; }
+  public interface IVertex<T> : IVertex where T : class, IDeepCloneable {
+    T Data { get; set; }
   }
 }

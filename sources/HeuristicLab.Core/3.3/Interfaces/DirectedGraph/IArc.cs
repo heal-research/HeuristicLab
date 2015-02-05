@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   public interface IArc : IItem {
@@ -27,13 +28,11 @@ namespace HeuristicLab.Core {
     IVertex Target { get; }
     string Label { get; set; }
     double Weight { get; set; }
-    object Data { get; set; }
 
     event EventHandler Changed; // generic event for when the label, weight or data were changed
   }
 
-  public interface IArc<T> : IArc where T : class,IItem {
-    new IVertex<T> Source { get; }
-    new IVertex<T> Target { get; }
+  public interface IArc<T> : IArc where T : class,IDeepCloneable {
+    T Data { get; set; }
   }
 }

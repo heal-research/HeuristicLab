@@ -25,16 +25,22 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Core {
   public interface IDirectedGraph : IItem {
-    void Clear();
-    void AddVertex(IVertex vertex);
-    void AddVertices(IEnumerable<IVertex> vertexList);
-    IArc AddArc(IVertex source, IVertex target);
-    void AddArc(IArc arc);
-    void RemoveVertices(IEnumerable<IVertex> vertexList);
-    void RemoveVertex(IVertex vertex);
-    void RemoveArc(IArc arc);
     IEnumerable<IVertex> Vertices { get; }
     IEnumerable<IArc> Arcs { get; }
+
+    void Clear();
+    void AddVertex(IVertex vertex);
+    void RemoveVertex(IVertex vertex);
+
+    void AddVertices(IEnumerable<IVertex> vertexList);
+    void RemoveVertices(IEnumerable<IVertex> vertexList);
+
+    IArc AddArc(IVertex source, IVertex target);
+    void AddArc(IArc arc);
+    void RemoveArc(IArc arc);
+
+    void AddArcs(IEnumerable<IArc> arcs);
+    void RemoveArcs(IEnumerable<IArc> removeArcs);
 
     event EventHandler<EventArgs<IVertex>> VertexAdded;
     event EventHandler<EventArgs<IVertex>> VertexRemoved;
