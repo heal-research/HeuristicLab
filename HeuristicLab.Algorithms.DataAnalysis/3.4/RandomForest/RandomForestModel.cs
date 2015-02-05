@@ -75,7 +75,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       randomForest.innerobj.nvars = original.randomForest.innerobj.nvars;
       // we assume that the trees array (double[]) is immutable in alglib
       randomForest.innerobj.trees = original.randomForest.innerobj.trees;
-      
+
       // allowedInputVariables is immutable so we don't need to clone
       allowedInputVariables = original.allowedInputVariables;
 
@@ -187,10 +187,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
-      out double rmsError, out double avgRelError, out double outOfBagAvgRelError, out double outOfBagRmsError) {
+      out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError) {
+      return CreateRegressionModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagAvgRelError, out outOfBagRmsError);
+    }
 
+    public static RandomForestModel CreateRegressionModel(IRegressionProblemData problemData, IEnumerable<int> trainingIndices, int nTrees, double r, double m, int seed,
+      out double rmsError, out double outOfBagRmsError, out double avgRelError, out double outOfBagAvgRelError) {
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, problemData.TrainingIndices);
+      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, trainingIndices);
 
       alglib.dfreport rep;
       var dForest = CreateRandomForestModel(seed, inputMatrix, nTrees, r, m, 1, out rep);
@@ -200,16 +204,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       outOfBagAvgRelError = rep.oobavgrelerror;
       outOfBagRmsError = rep.oobrmserror;
 
-      return new RandomForestModel(dForest,
-        seed, problemData,
-        nTrees, r, m);
+      return new RandomForestModel(dForest,seed, problemData,nTrees, r, m);
     }
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError) {
+      return CreateClassificationModel(problemData, problemData.TrainingIndices, nTrees, r, m, seed, out rmsError, out outOfBagRmsError, out relClassificationError, out outOfBagRelClassificationError);
+    }
+
+    public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, IEnumerable<int> trainingIndices, int nTrees, double r, double m, int seed,
+      out double rmsError, out double outOfBagRmsError, out double relClassificationError, out double outOfBagRelClassificationError) {
 
       var variables = problemData.AllowedInputVariables.Concat(new string[] { problemData.TargetVariable });
-      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, problemData.TrainingIndices);
+      double[,] inputMatrix = AlglibUtil.PrepareInputMatrix(problemData.Dataset, variables, trainingIndices);
 
       var classValues = problemData.ClassValues.ToArray();
       int nClasses = classValues.Length;
@@ -234,9 +241,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       relClassificationError = rep.relclserror;
       outOfBagRelClassificationError = rep.oobrelclserror;
 
-      return new RandomForestModel(dForest,
-        seed, problemData,
-        nTrees, r, m, classValues);
+      return new RandomForestModel(dForest,seed, problemData,nTrees, r, m, classValues);
     }
 
     private static alglib.decisionforest CreateRandomForestModel(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib.dfreport rep) {
@@ -263,7 +268,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private static void AssertInputMatrix(double[,] inputMatrix) {
-      if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
+      if (inputMatrix.Cast<double>().Any(x => Double.IsNaN(x) || Double.IsInfinity(x)))
         throw new NotSupportedException("Random forest modeling does not support NaN or infinity values in the input dataset.");
     }
 
