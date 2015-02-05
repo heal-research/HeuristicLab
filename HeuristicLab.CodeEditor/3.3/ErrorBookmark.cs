@@ -24,21 +24,26 @@ using ICSharpCode.TextEditor.Document;
 
 namespace HeuristicLab.CodeEditor {
   public class ErrorBookmark : Bookmark {
+    private readonly Brush brush;
 
     public override bool CanToggle { get { return false; } }
 
     public ErrorBookmark(IDocument document, TextLocation location)
+      : this(document, location, Color.Red) { }
+
+    public ErrorBookmark(IDocument document, TextLocation location, Color color)
       : base(document, location) {
+      brush = new SolidBrush(color);
     }
 
-    public override void Draw(IconBarMargin margin, System.Drawing.Graphics g, System.Drawing.Point p) {
+    public override void Draw(IconBarMargin margin, Graphics g, Point p) {
       int delta = margin.TextArea.TextView.FontHeight / 4;
       Rectangle rect = new Rectangle(
         2,
         p.Y + delta,
         margin.DrawingPosition.Width - 6,
         margin.TextArea.TextView.FontHeight - delta * 2);
-      g.FillRectangle(Brushes.Red, rect);
+      g.FillRectangle(brush, rect);
       g.DrawRectangle(Pens.White, rect);
     }
   }

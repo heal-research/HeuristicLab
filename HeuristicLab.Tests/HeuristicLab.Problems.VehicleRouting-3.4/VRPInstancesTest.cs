@@ -24,17 +24,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HeuristicLab.Problems.Instances;
-using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Problems.VehicleRouting.Tests {
   [TestClass]
   public class VRPInstancesTest {
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      PluginLoader.Assemblies.Any();
-    }
-
     [TestMethod]
     [TestCategory("Problems.VehicleRouting")]
     [TestProperty("Time", "long")]

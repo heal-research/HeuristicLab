@@ -78,7 +78,7 @@ namespace HeuristicLab.Scripting {
     }
     public Script()
       : base("Script", "An empty script.") {
-      code = string.Empty;
+      code = CodeTemplate;
     }
     public Script(string code)
       : this() {
@@ -107,20 +107,13 @@ namespace HeuristicLab.Scripting {
         IncludeDebugInformation = true,
         WarningLevel = 4
       };
+
       parameters.ReferencedAssemblies.AddRange(
         GetAssemblies()
         .Select(a => a.Location)
         .ToArray());
-      var unit = CreateCompilationUnit();
-      var writer = new StringWriter();
-      CodeProvider.GenerateCodeFromCompileUnit(
-        unit,
-        writer,
-        new CodeGeneratorOptions {
-          ElseOnClosing = true,
-          IndentString = "  ",
-        });
-      return CodeProvider.CompileAssemblyFromDom(parameters, unit);
+
+      return CodeProvider.CompileAssemblyFromSource(parameters, code);
     }
 
     public virtual Assembly Compile() {
@@ -133,7 +126,7 @@ namespace HeuristicLab.Scripting {
             .Append(error.Column).Append(": ")
             .AppendLine(error.ErrorText);
         }
-        throw new Exception(string.Format("Compilation of \"{0}\" failed:{1}{2}",
+        throw new InvalidOperationException(string.Format("Compilation of \"{0}\" failed:{1}{2}",
           Name, Environment.NewLine, sb.ToString()));
       } else {
         return results.CompiledAssembly;
@@ -141,17 +134,7 @@ namespace HeuristicLab.Scripting {
     }
 
     public virtual IEnumerable<Assembly> GetAssemblies() {
-      var assemblies = new List<Assembly>();
-      foreach (var a in AppDomain.CurrentDomain.GetAssemblies()) {
-        try {
-          if (File.Exists(a.Location)) assemblies.Add(a);
-        } catch (NotSupportedException) {
-          // NotSupportedException is thrown while accessing 
-          // the Location property of the anonymously hosted
-          // dynamic methods assembly, which is related to
-          // LINQ queries
-        }
-      }
+      var assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic && File.Exists(a.Location)).ToList();
       assemblies.Add(typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly); // for dlr functionality
       return assemblies;
     }

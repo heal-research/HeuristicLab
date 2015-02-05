@@ -31,17 +31,8 @@ using HeuristicLab.PluginInfrastructure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Tests {
-  /// <summary>
-  /// Summary description for DeepCloneableCloningTest
-  /// </summary>
   [TestClass]
   public class DeepCloneableCloningTest {
-
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      PluginLoader.Assemblies.Any();
-    }
-
     private TestContext testContextInstance;
     public TestContext TestContext {
       get { return testContextInstance; }

@@ -31,19 +31,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class GPTimeSeriesSampleTest {
-    private const string samplesDirectory = SamplesUtils.Directory;
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      if (!Directory.Exists(samplesDirectory))
-        Directory.CreateDirectory(samplesDirectory);
-    }
+    private const string SampleFileName = "OSGP_TimeSeries";
 
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
     public void CreateGpTimeSeriesSampleTest() {
       var ga = CreateGpTimeSeriesSample();
-      var path = Path.Combine(samplesDirectory, "OSGP_TimeSeries.hl");
+      string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
       XmlGenerator.Serialize(ga, path);
     }
     [TestMethod]

@@ -30,12 +30,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class ParameterVisibilityTest {
-    // Use ClassInitialize to run code before running the first test in the class
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      PluginLoader.Assemblies.Any();
-    }
-
     private TestContext testContextInstance;
     public TestContext TestContext {
       get { return testContextInstance; }

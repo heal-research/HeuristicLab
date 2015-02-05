@@ -28,9 +28,6 @@ using HeuristicLab.Problems.DataAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.PluginInfrastructure.Tests {
-  /// <summary>
-  /// Summary description for TypeDiscoveryTest
-  /// </summary>
   [TestClass]
   public class TypeExtensionsTest {
     [TestMethod]

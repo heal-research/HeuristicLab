@@ -20,9 +20,11 @@
 #endregion
 
 using System;
+using System.Drawing;
 using System.IO;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,7 +33,26 @@ using HeuristicLab.Persistence.Default.Xml;
 namespace HeuristicLab.Scripting {
   [Item("VariableStore", "Represents a variable store.")]
   [StorableClass]
-  public class VariableStore : ObservableDictionary<string, object>, IContent, IDeepCloneable {
+  public class VariableStore : ObservableDictionary<string, object>, IItem {
+    #region Properties
+    public virtual string ItemName {
+      get { return ItemAttribute.GetName(GetType()); }
+    }
+    public virtual string ItemDescription {
+      get { return ItemAttribute.GetDescription(GetType()); }
+    }
+    public Version ItemVersion {
+      get { return ItemAttribute.GetVersion(GetType()); }
+    }
+    public static Image StaticItemImage {
+      get { return VSImageLibrary.Class; }
+    }
+    public virtual Image ItemImage {
+      get { return ItemAttribute.GetImage(GetType()); }
+    }
+    #endregion
+
+    #region Constructors & Cloning
     [StorableConstructor]
     protected VariableStore(bool deserializing) : base(deserializing) { }
     protected VariableStore(VariableStore original, Cloner cloner) {
@@ -67,5 +88,25 @@ namespace HeuristicLab.Scripting {
         }
       }
     }
+    #endregion
+
+    #region Overrides
+    public override string ToString() {
+      return ItemName;
+    }
+    #endregion
+
+    #region Events
+    public event EventHandler ItemImageChanged;
+    protected virtual void OnItemImageChanged() {
+      var handler = ItemImageChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    public event EventHandler ToStringChanged;
+    protected virtual void OnToStringChanged() {
+      var handler = ToStringChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+    #endregion
   }
 }

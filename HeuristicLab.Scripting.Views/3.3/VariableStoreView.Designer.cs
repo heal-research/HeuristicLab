@@ -65,7 +65,6 @@ namespace HeuristicLab.Scripting.Views {
       this.variableListView.HideSelection = false;
       this.variableListView.LabelEdit = true;
       this.variableListView.Location = new System.Drawing.Point(6, 49);
-      this.variableListView.MultiSelect = false;
       this.variableListView.Name = "variableListView";
       this.variableListView.ShowItemToolTips = true;
       this.variableListView.Size = new System.Drawing.Size(224, 395);

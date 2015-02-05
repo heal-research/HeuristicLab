@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
@@ -8,11 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace HeuristicLab.Tests {
   [TestClass]
   public class NamedItemTest {
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      PluginLoader.Assemblies.Any();
-    }
-
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]

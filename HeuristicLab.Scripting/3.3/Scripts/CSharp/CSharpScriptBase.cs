@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.Scripting {
   public abstract class CSharpScriptBase {
+    protected Variables variables;
     protected dynamic vars;
 
     private readonly EventWriter console;
@@ -40,7 +41,7 @@ namespace HeuristicLab.Scripting {
     public abstract void Main();
 
     internal void Execute(VariableStore variableStore) {
-      vars = new Variables(variableStore);
+      variables = vars = new Variables(variableStore);
       Main();
     }
 

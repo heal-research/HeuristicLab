@@ -144,8 +144,8 @@ namespace HeuristicLab.Optimizer {
       var dataAnalysisProblems = new List<string> { "SGP_SymbClass", "SGP_SymbReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
       groupLookup[dataAnalysisGroup] = dataAnalysisProblems;
       var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script", 
-                                       "GridSearch_RF_Classification", "GridSearch_RF_Regression",
-                                       "GridSearch_SVM_Classification", "GridSearch_SVM_Regression" };
+                                       "GridSearch_RF_Classification_Script", "GridSearch_RF_Regression_Script",
+                                       "GridSearch_SVM_Classification_Script", "GridSearch_SVM_Regression_Script" };
       groupLookup[scriptsGroup] = scripts;
     }
 

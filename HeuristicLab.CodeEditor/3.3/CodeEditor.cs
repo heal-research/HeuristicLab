@@ -45,6 +45,8 @@ namespace HeuristicLab.CodeEditor {
   public partial class CodeEditor : UserControl {
 
     #region Fields & Properties
+    private static Color WarningColor = Color.Blue;
+    private static Color ErrorColor = Color.Red;
 
     internal Dom.ProjectContentRegistry projectContentRegistry;
     internal Dom.DefaultProjectContent projectContent;
@@ -126,23 +128,27 @@ namespace HeuristicLab.CodeEditor {
           Doc.TextLength - suffix.Length - prefix.Length);
       }
       set {
+        if (Doc.TextContent == value) return;
         Doc.Replace(prefix.Length, Doc.TextLength - suffix.Length - prefix.Length, value);
         Doc.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
         Doc.CommitUpdate();
       }
     }
 
+    public bool ReadOnly {
+      get { return Doc.ReadOnly; }
+      set { Doc.ReadOnly = value; }
+    }
+
     #endregion
 
     public event EventHandler TextEditorValidated;
-
     protected void OnTextEditorValidated() {
       if (TextEditorValidated != null)
         TextEditorValidated(this, EventArgs.Empty);
     }
 
     public event EventHandler TextEditorTextChanged;
-
     protected void OnTextEditorTextChanged() {
       if (TextEditorTextChanged != null)
         TextEditorTextChanged(this, EventArgs.Empty);
@@ -153,9 +159,7 @@ namespace HeuristicLab.CodeEditor {
 
       textEditor.ActiveTextAreaControl.TextEditorProperties.SupportReadOnlySegments = true;
 
-      textEditor.SetHighlighting("C#");
-      textEditor.ShowEOLMarkers = false;
-      textEditor.ShowInvalidLines = false;
+      LoadHighlightingStrategy();
       HostCallbackImplementation.Register(this);
       CodeCompletionKeyHandler.Attach(this, textEditor);
       ToolTipProvider.Attach(this, textEditor);
@@ -186,16 +190,27 @@ namespace HeuristicLab.CodeEditor {
       if (DesignMode)
         return;
 
-      textEditor.ActiveTextAreaControl.TextArea.KeyEventHandler += new ICSharpCode.TextEditor.KeyEventHandler(TextArea_KeyEventHandler);
-      textEditor.ActiveTextAreaControl.TextArea.DoProcessDialogKey += new DialogKeyProcessor(TextArea_DoProcessDialogKey);
+      textEditor.ActiveTextAreaControl.TextArea.KeyEventHandler += TextArea_KeyEventHandler;
+      textEditor.ActiveTextAreaControl.TextArea.DoProcessDialogKey += TextArea_DoProcessDialogKey;
 
-      parserThread = new Thread(ParserThread);
-      parserThread.IsBackground = true;
+      parserThread = new Thread(ParserThread) { IsBackground = true };
       parserThread.Start();
 
-      textEditor.Validated += (s, a) => { OnTextEditorValidated(); };
-      textEditor.TextChanged += (s, a) => { OnTextEditorTextChanged(); };
+      textEditor.Validated += (s, a) => OnTextEditorValidated();
+      textEditor.TextChanged += (s, a) => {
+        Doc.MarkerStrategy.RemoveAll(m => errorMarkers.Contains(m)); errorMarkers.Clear();
+        Doc.BookmarkManager.RemoveMarks(m => errorBookmarks.Contains(m)); errorBookmarks.Clear();
+        Doc.RequestUpdate(new TextAreaUpdate(TextAreaUpdateType.WholeTextArea));
+        Doc.CommitUpdate();
+        OnTextEditorTextChanged();
+      };
       InitializeImageList();
+    }
+
+    private void LoadHighlightingStrategy() {
+      var strategy = (DefaultHighlightingStrategy)HighlightingManager.Manager.FindHighlighter("C#");
+      strategy.SetColorFor("CaretMarker", new HighlightColor(Color.Beige, false, false));
+      Doc.HighlightingStrategy = strategy;
     }
 
     private void InitializeImageList() {
@@ -210,7 +225,6 @@ namespace HeuristicLab.CodeEditor {
     }
 
     #region keyboard handlers: filter input in read-only areas
-
     bool TextArea_KeyEventHandler(char ch) {
       int caret = textEditor.ActiveTextAreaControl.Caret.Offset;
       return caret < prefix.Length || caret > Doc.TextLength - suffix.Length;
@@ -226,7 +240,6 @@ namespace HeuristicLab.CodeEditor {
       }
       return false;
     }
-
     #endregion
 
     public void ScrollAfterPrefix() {
@@ -234,13 +247,17 @@ namespace HeuristicLab.CodeEditor {
       textEditor.ActiveTextAreaControl.JumpTo(lineNr + 1);
     }
 
+    public void ScrollToPosition(int line, int column) {
+      var segment = GetSegmentAtOffset(line, column);
+      var position = Doc.OffsetToPosition(segment.Offset + segment.Length);
+      var caret = textEditor.ActiveTextAreaControl.Caret;
+      caret.Position = position;
+      textEditor.ActiveTextAreaControl.CenterViewOn(line, 0);
+    }
+
     private List<TextMarker> errorMarkers = new List<TextMarker>();
     private List<Bookmark> errorBookmarks = new List<Bookmark>();
     public void ShowCompileErrors(CompilerErrorCollection compilerErrors, string filename) {
-      Doc.MarkerStrategy.RemoveAll(m => errorMarkers.Contains(m));
-      Doc.BookmarkManager.RemoveMarks(m => errorBookmarks.Contains(m));
-      errorMarkers.Clear();
-      errorBookmarks.Clear();
       errorLabel.Text = "";
       errorLabel.ToolTipText = null;
       if (compilerErrors == null)
@@ -267,7 +284,7 @@ namespace HeuristicLab.CodeEditor {
 
     private void AddErrorMarker(CompilerError error) {
       var segment = GetSegmentAtOffset(error.Line, error.Column);
-      Color color = error.IsWarning ? Color.Blue : Color.Red;
+      Color color = error.IsWarning ? WarningColor : ErrorColor;
       var marker = new TextMarker(segment.Offset, segment.Length, TextMarkerType.WaveLine, color) {
         ToolTip = error.ErrorText,
       };
@@ -276,16 +293,17 @@ namespace HeuristicLab.CodeEditor {
     }
 
     private void AddErrorBookmark(CompilerError error) {
-      var bookmark = new ErrorBookmark(Doc, new TextLocation(error.Column, error.Line - 1));
+      Color color = error.IsWarning ? WarningColor : ErrorColor;
+      var bookmark = new ErrorBookmark(Doc, new TextLocation(error.Column, error.Line - 1), color);
       errorBookmarks.Add(bookmark);
       Doc.BookmarkManager.AddMark(bookmark);
     }
 
     private AbstractSegment GetSegmentAtOffset(int lineNr, int columnNr) {
-      lineNr = Math.Max(Doc.OffsetToPosition(prefix.Length).Line, lineNr);
+      lineNr = Math.Max(Doc.OffsetToPosition(prefix.Length).Line, lineNr - 1);
       lineNr = Math.Min(Doc.OffsetToPosition(Doc.TextLength - suffix.Length).Line, lineNr);
-      var line = Doc.GetLineSegment(lineNr - 1);
-      columnNr = Math.Max(0, columnNr);
+      var line = Doc.GetLineSegment(lineNr);
+      columnNr = Math.Max(0, columnNr - 1);
       columnNr = Math.Min(line.Length, columnNr);
       var word = line.GetWord(columnNr);
       AbstractSegment segment = new AbstractSegment();
@@ -293,7 +311,7 @@ namespace HeuristicLab.CodeEditor {
         segment.Offset = line.Offset + word.Offset;
         segment.Length = word.Length;
       } else {
-        segment.Offset = line.Offset + columnNr - 1;
+        segment.Offset = line.Offset + columnNr;
         segment.Length = 1;
       }
       return segment;

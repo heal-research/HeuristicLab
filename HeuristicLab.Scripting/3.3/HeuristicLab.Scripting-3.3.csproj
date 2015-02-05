@@ -84,12 +84,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CSharpScript.cs" />
+    <Compile Include="Scripts\CSharp\CSharpScript.cs" />
+    <Compile Include="Scripts\Templates\CSharpScriptTemplate.cs" />
+    <Compile Include="Scripts\Templates\ScriptTemplates.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScriptTemplates.resx</DependentUpon>
+    </Compile>
     <Compile Include="Variables.cs" />
     <Compile Include="VariableStore.cs" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Script.cs" />
-    <Compile Include="CSharpScriptBase.cs" />
+    <Compile Include="Scripts\CSharp\CSharpScriptBase.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
@@ -128,6 +134,13 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\Templates\ScriptTemplates.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ScriptTemplates.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>HeuristicLab.Scripting</CustomToolNamespace>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
    <PropertyGroup>

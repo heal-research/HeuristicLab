@@ -30,11 +30,6 @@ namespace HeuristicLab.Tests {
 
   [TestClass]
   public class InstantiateCreatablesTest {
-    // Use ClassInitialize to run code before running the first test in the class
-    [ClassInitialize]
-    public static void MyClassInitialize(TestContext testContext) {
-      PluginLoader.Assemblies.Any();
-    }
     [TestMethod]
     [TestCategory("General")]
     [TestCategory("Essential")]
