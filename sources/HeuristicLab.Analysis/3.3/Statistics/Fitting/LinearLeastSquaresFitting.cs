@@ -24,12 +24,12 @@ using System.Linq;
 
 namespace HeuristicLab.Analysis.Statistics {
   public class LinearLeastSquaresFitting : IFitting {
-    public void Calculate(double[] dataPoints, out double p0, out double p1) {
+    public void Calculate(double[] dataPoints, out double slope, out double intercept) {
       var stdX = Enumerable.Range(0, dataPoints.Count()).Select(x => (double)x).ToArray();
-      Calculate(dataPoints, stdX, out p0, out p1);
+      Calculate(dataPoints, stdX, out slope, out intercept);
     }
 
-    public void Calculate(double[] y, double[] x, out double p0, out double p1) {
+    public void Calculate(double[] y, double[] x, out double slope, out double intercept) {
       if (y.Count() != x.Count()) {
         throw new ArgumentException("The lenght of x and y needs do be equal. ");
       }
@@ -47,18 +47,18 @@ namespace HeuristicLab.Analysis.Statistics {
         sxx += x[i] * x[i];
       }
 
-      p0 = (sxy - (n * avgx * avgy)) / (sxx - (n * avgx * avgx));
-      p1 = avgy - p0 * avgx;
+      slope = (sxy - (n * avgx * avgy)) / (sxx - (n * avgx * avgx));
+      intercept = avgy - slope * avgx;
     }
 
-    public double CalculateError(double[] dataPoints, double p0, double p1) {
+    public double CalculateError(double[] dataPoints, double slope, double intercept) {
       double r;
       double avgy = dataPoints.Average();
       double sstot = 0.0;
       double sserr = 0.0;
 
       for (int i = 0; i < dataPoints.Count(); i++) {
-        double y = p0 * i + p1;
+        double y = slope * i + intercept;
         sstot += Math.Pow(dataPoints[i] - avgy, 2);
         sserr += Math.Pow(dataPoints[i] - y, 2);
       }
@@ -67,25 +67,25 @@ namespace HeuristicLab.Analysis.Statistics {
       return r;
     }
 
-    public DataRow CalculateFittedLine(double[] y, double[] x, string rowName) {
-      double k, d;
-      Calculate(y, x, out k, out d);
+    public DataRow CalculateFittedLine(double[] y, double[] x) {
+      double slope, intercept;
+      Calculate(y, x, out slope, out intercept);
 
-      DataRow newRow = new DataRow(rowName);
+      DataRow newRow = new DataRow();
       for (int i = 0; i < x.Count(); i++) {
-        newRow.Values.Add(k * x[i] + d);
+        newRow.Values.Add(slope * x[i] + intercept);
       }
       return newRow;
     }
 
-    public DataRow CalculateFittedLine(double[] dataPoints, string rowName) {
-      DataRow newRow = new DataRow(rowName);
-      double c0, c1;
-      Calculate(dataPoints, out c0, out c1);
+    public DataRow CalculateFittedLine(double[] dataPoints) {
+      DataRow newRow = new DataRow();
+      double slope, intercept;
+      Calculate(dataPoints, out slope, out intercept);
       var stdX = Enumerable.Range(0, dataPoints.Count()).Select(x => (double)x).ToArray();
 
       for (int i = 0; i < stdX.Count(); i++) {
-        newRow.Values.Add(c0 * stdX[i] + c1);
+        newRow.Values.Add(slope * stdX[i] + intercept);
       }
 
       return newRow;

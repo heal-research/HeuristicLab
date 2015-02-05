@@ -176,7 +176,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         var values = row.Values.ToArray();
 
         var fittingAlg = fittingComboBox.SelectedItem as IFitting;
-        DataRow newRow = fittingAlg.CalculateFittedLine(values, row.Name + " (" + fittingAlg + ")");
+        DataRow newRow = fittingAlg.CalculateFittedLine(values);
+        newRow.Name = row.Name + " (" + fittingAlg + ")";
 
         if (!resTable.Rows.ContainsKey(newRow.Name))
           resTable.Rows.Add(newRow);
@@ -264,7 +265,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private void RebuildDataTable(string resultName, string rowName) {
       LinearLeastSquaresFitting llsFitting = new LinearLeastSquaresFitting();
       string[] columnNames = new string[] { "Count", "Minimum", "Maximum", "Average", "Median", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile",
-        "Avg. of Upper 25 %", " Avg. of Lower 25 %", "Avg. of First 25 %", "Avg. of Last 25 %", "Linear Gradient", "Average Relative Error" };
+        "Avg. of Upper 25 %", " Avg. of Lower 25 %", "Avg. of First 25 %", "Avg. of Last 25 %", "Slope", "Intercept", "Average Relative Error" };
 
       runs = Content.Where(x => x.Results.ContainsKey(resultName) && x.Visible).ToList();
       DoubleMatrix dt = new DoubleMatrix(runs.Count(), columnNames.Count());
@@ -276,7 +277,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         DataTable resTable = (DataTable)run.Results[resultName];
         dt.SortableView = true;
         DataRow row = resTable.Rows[rowName];
-        var values = row.Values.AsEnumerable();
+        var values = row.Values.ToArray();
 
         double cnt = values.Count();
         double min = values.Min();
@@ -291,9 +292,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         double upperAvg = values.OrderByDescending(x => x).Take((int)(values.Count() * 0.25)).Average();
         double firstAvg = values.Take((int)(values.Count() * 0.25)).Average();
         double lastAvg = values.Skip((int)(values.Count() * 0.75)).Average();
-        double k, d, r;
-        llsFitting.Calculate(values.ToArray(), out k, out d);
-        r = llsFitting.CalculateError(values.ToArray(), k, d);
+        double slope, intercept, r;
+        llsFitting.Calculate(values, out slope, out intercept);
+        r = llsFitting.CalculateError(values, slope, intercept);
 
         dt[i, 0] = cnt;
         dt[i, 1] = min;
@@ -308,8 +309,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         dt[i, 10] = lowerAvg;
         dt[i, 11] = firstAvg;
         dt[i, 12] = lastAvg;
-        dt[i, 13] = k;
-        dt[i, 14] = r;
+        dt[i, 13] = slope;
+        dt[i, 14] = intercept;
+        dt[i, 15] = r;
 
         i++;
         progress.ProgressValue = ((double)runs.Count) / i;

@@ -23,9 +23,9 @@ using System;
 using System.Linq;
 
 namespace HeuristicLab.Analysis.Statistics {
-  public class ExpFitting : IFitting {
+  public class LogFitting : IFitting {
     private void LogFunc(double[] c, double[] x, ref double func, object obj) {
-      func = Math.Exp(-c[0] * Math.Pow(x[0], 2));
+      func = c[0] * Math.Exp(c[1] / x[0]);
     }
 
     private double[] GetDefaultXValues(int n) {
@@ -43,7 +43,7 @@ namespace HeuristicLab.Analysis.Statistics {
         throw new ArgumentException("The lenght of x and y needs do be equal. ");
       }
 
-      double[] c = new double[] { 0.3 };
+      double[] c = new double[] { 0.3, 0.3 };
       double epsf = 0;
       double epsx = 0.000001;
       int maxits = 0;
@@ -63,36 +63,36 @@ namespace HeuristicLab.Analysis.Statistics {
       alglib.lsfitresults(state, out info, out c, out rep);
 
       p0 = c[0];
-      p1 = c[0];
+      p1 = c[1];
     }
 
-    public DataRow CalculateFittedLine(double[] dataPoints, string rowName) {
-      DataRow newRow = new DataRow(rowName);
+    public DataRow CalculateFittedLine(double[] dataPoints) {
+      DataRow newRow = new DataRow();
       double c0, c1;
       Calculate(dataPoints, out c0, out c1);
       var stdX = GetDefaultXValues(dataPoints.Count());
 
       for (int i = 0; i < stdX.Count(); i++) {
-        newRow.Values.Add(Math.Exp(-c0 * Math.Pow(stdX[i], 2)));
+        newRow.Values.Add(c0 * Math.Exp(c1 / stdX[i]));
       }
 
       return newRow;
     }
 
-    public DataRow CalculateFittedLine(double[] y, double[] x, string rowName) {
-      DataRow newRow = new DataRow(rowName);
+    public DataRow CalculateFittedLine(double[] y, double[] x) {
+      DataRow newRow = new DataRow();
       double c0, c1;
       Calculate(y, x, out c0, out c1);
 
       for (int i = 0; i < x.Count(); i++) {
-        newRow.Values.Add(Math.Exp(-c0 * Math.Pow(x[i], 2)));
+        newRow.Values.Add(c0 * Math.Exp(c1 / x[i]));
       }
 
       return newRow;
     }
 
     public override string ToString() {
-      return "Exponential Fitting";
+      return "Logarithmic Fitting";
     }
   }
 }

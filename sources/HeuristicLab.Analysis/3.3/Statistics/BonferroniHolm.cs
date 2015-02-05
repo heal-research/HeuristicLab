@@ -40,19 +40,19 @@ namespace HeuristicLab.Analysis.Statistics {
       for (int i = 0; i < k; i++) {
         pValuesIndizes.Add(i, pValues[i]);
       }
-      var sortedPValues = pValuesIndizes.OrderBy(x => x.Value);
+      var sortedPValues = pValuesIndizes.OrderBy(x => x.Value).ToArray();
 
       for (int i = 1; i < k + 1; i++) {
         alphaNiveau[i - 1] = globalAlpha / (k - i + 1);
-        int idx = sortedPValues.ElementAt(i - 1).Key;
+        int idx = sortedPValues[i - 1].Key;
 
         if (i == 1) {
           //true means reject
-          decision[idx] = sortedPValues.ElementAt(i - 1).Value < alphaNiveau[i - 1];
-          adjustedPValues[idx] = sortedPValues.ElementAt(i - 1).Value * (k - i + 1);
+          decision[idx] = sortedPValues[i - 1].Value < alphaNiveau[i - 1];
+          adjustedPValues[idx] = sortedPValues[i - 1].Value * (k - i + 1);
         } else {
-          decision[idx] = decision[sortedPValues.ElementAt(i - 2).Key] ? (sortedPValues.ElementAt(i - 1).Value < alphaNiveau[i - 1]) : false;
-          adjustedPValues[idx] = Math.Max(adjustedPValues[sortedPValues.ElementAt(i - 2).Key], sortedPValues.ElementAt(i - 1).Value * (k - i + 1));
+          decision[idx] = decision[sortedPValues[i - 2].Key] && (sortedPValues[i - 1].Value < alphaNiveau[i - 1]);
+          adjustedPValues[idx] = Math.Max(adjustedPValues[sortedPValues[i - 2].Key], sortedPValues[i - 1].Value * (k - i + 1));
         }
         if (adjustedPValues[idx] > 1.0) {
           adjustedPValues[idx] = 1.0;

@@ -332,7 +332,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       List<double?> yValue = usableRuns.Select(x => GetValue(x, this.yAxisValue)).ToList();
       if (yValue.Any(x => !x.HasValue)) return;
 
-      double estimatedSampleSize = SampleSizeDetermination.DetermineSampleSizeByEstimatingMeanForLargeSampleSizes(yValue.Select(x => x.Value).ToArray());
+      double estimatedSampleSize = SampleSizeDetermination.DetermineSampleSizeByEstimatingMean(yValue.Select(x => x.Value).ToArray());
       sampleSizeTextBox.Text = estimatedSampleSize.ToString();
     }
 

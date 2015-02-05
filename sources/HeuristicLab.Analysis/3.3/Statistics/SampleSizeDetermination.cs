@@ -35,30 +35,13 @@ namespace HeuristicLab.Analysis.Statistics {
     public static int DetermineSampleSizeByEstimatingMean(double[] samples, double conf = 0.95) {
       if (conf < 0.0 || conf > 1.0) throw new ArgumentException("The confidence interval must be between zero and one.");
 
-      var confInterval = samples.ConfidenceIntervals(0.95);
+      var confInterval = samples.ConfidenceIntervals(conf);
       double e = (confInterval.Item2 - confInterval.Item1) / 2;
       double s = samples.StandardDeviation();
       double z = alglib.invnormaldistribution((conf + 1) / 2);
       double n = samples.Count();
 
       double result = Math.Pow(s, 2) / ((Math.Pow(e, 2) / Math.Pow(z, 2)) + (Math.Pow(s, 2) / n));
-
-      result = Math.Ceiling(result);
-      if (result > int.MaxValue)
-        return int.MaxValue;
-      else
-        return (int)result;
-    }
-
-    public static int DetermineSampleSizeByEstimatingMeanForLargeSampleSizes(double[] samples, double conf = 0.95) {
-      if (conf < 0.0 || conf > 1.0) throw new ArgumentException("The confidence interval must be between zero and one.");
-
-      var confInterval = samples.ConfidenceIntervals(0.95);
-      double e = (confInterval.Item2 - confInterval.Item1) / 2;
-      double s = samples.StandardDeviation();
-      double z = alglib.invnormaldistribution((conf + 1) / 2);
-
-      double result = Math.Pow(z, 2) * (Math.Pow(s, 2) / Math.Pow(e, 2));
 
       result = Math.Ceiling(result);
       if (result > int.MaxValue)

@@ -27,12 +27,16 @@ using HeuristicLab.Common;
 namespace HeuristicLab.Analysis.Statistics {
   public static class EnumerableStatisticExtensions {
     public static Tuple<double, double> ConfidenceIntervals(this IEnumerable<double> values, double alpha) {
-      if (values.Count() <= 1) return new Tuple<double, double>(double.NaN, double.NaN);
+      return ConfidenceIntervals(values.ToArray(), alpha);
+    }
 
+    public static Tuple<double, double> ConfidenceIntervals(this double[] values, double alpha) {
       double lower, upper;
+      int n = values.Length;
+      if (n <= 1) return new Tuple<double, double>(double.NaN, double.NaN);
+
       double s = values.StandardDeviation();
       double x = values.Average();
-      int n = values.Count();
       double t = alglib.invstudenttdistribution(n - 1, (1.0 - alpha) / 2.0);
 
       lower = x + t * (s / Math.Sqrt(n));

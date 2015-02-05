@@ -21,10 +21,7 @@
 
 namespace HeuristicLab.Analysis.Statistics {
   public interface IFitting {
-    void Calculate(double[] dataPoints, out double p0, out double p1);
-    void Calculate(double[] y, double[] x, out double p0, out double p1);
-
-    DataRow CalculateFittedLine(double[] dataPoints, string rowName);
-    DataRow CalculateFittedLine(double[] y, double[] x, string rowName);
+    DataRow CalculateFittedLine(double[] dataPoints);
+    DataRow CalculateFittedLine(double[] y, double[] x);
   }
 }
