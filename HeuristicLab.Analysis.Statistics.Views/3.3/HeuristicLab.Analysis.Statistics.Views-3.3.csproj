@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</ProjectGuid>
+    <ProjectGuid>{052881B5-4D5D-41C5-9555-FECA01E0BAC8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Analysis</RootNamespace>
-    <AssemblyName>HeuristicLab.Analysis-3.3</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>HeuristicLab.Analysis.Statistics.Views</RootNamespace>
+    <AssemblyName>HeuristicLab.Analysis.Statistics.Views-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -45,6 +45,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,6 +57,7 @@
     <DocumentationFile>
     </DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,6 +67,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
@@ -76,6 +79,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +89,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>$(SolutionDir)\bin\</OutputPath>
@@ -96,17 +101,22 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ALGLIB-3.7.0, Version=3.7.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\ALGLIB-3.7.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -117,61 +127,58 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="InfoResources\ChartAnalysisInfo.rtf" />
+    <EmbeddedResource Include="InfoResources\SampleSizeInfluenceInfo.rtf" />
+    <EmbeddedResource Include="InfoResources\StatisticalTestsInfo.rtf" />
     <None Include="Plugin.cs.frame" />
-    <Compile Include="AlleleFrequencyAnalysis\Allele.cs" />
-    <Compile Include="AlleleFrequencyAnalysis\AlleleFrequency.cs" />
-    <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyAnalyzer.cs" />
-    <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollection.cs" />
-    <Compile Include="AlleleFrequencyAnalysis\AlleleFrequencyCollectionHistory.cs" />
-    <Compile Include="BestScopeSolutionAnalyzer.cs" />
-    <Compile Include="DataVisualization\ScatterPlotDataRowVisualProperties.cs" />
-    <Compile Include="DataVisualization\ScatterPlotDataRow.cs" />
-    <Compile Include="DataVisualization\ScatterPlotVisualProperties.cs" />
-    <Compile Include="DataVisualization\ScatterPlotHistory.cs" />
-    <Compile Include="DataVisualization\DataRow.cs" />
-    <Compile Include="DataVisualization\DataRowVisualProperties.cs" />
-    <Compile Include="DataVisualization\DataTable.cs" />
-    <Compile Include="DataVisualization\DataTableHistory.cs" />
-    <Compile Include="DataVisualization\DataTableValuesCollector.cs" />
-    <Compile Include="DataVisualization\DataTableVisualProperties.cs" />
-    <Compile Include="DataVisualization\HeatMap.cs" />
-    <Compile Include="DataVisualization\HeatMapHistory.cs" />
-    <Compile Include="DataVisualization\ScatterPlot.cs" />
-    <Compile Include="MultidimensionalScaling\MultidimensionalScaling.cs" />
-    <Compile Include="MultiObjective\RankBasedParetoFrontAnalyzer.cs" />
-    <Compile Include="MultiObjective\ParetoFrontAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="PopulationDiversityAnalysis\PopulationDiversityAnalyzer.cs" />
-    <Compile Include="PopulationDiversityAnalysis\SingleObjectivePopulationDiversityAnalyzer.cs" />
-    <Compile Include="QualityAnalysis\BestAverageWorstQualityAnalyzer.cs" />
-    <Compile Include="QualityAnalysis\BestAverageWorstQualityCalculator.cs" />
-    <Compile Include="QualityAnalysis\BestQualityMemorizer.cs" />
-    <Compile Include="QualityAnalysis\QualityAnalyzer.cs" />
-    <Compile Include="QualityAnalysis\QualityDifferenceCalculator.cs" />
-    <Compile Include="MultiAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QualityAnalysis\QualityDistributionAnalyzer.cs" />
-    <Compile Include="QualityAnalysis\ScaledQualityDifferenceAnalyzer.cs" />
-    <Compile Include="Statistics\BonferroniHolm.cs" />
-    <Compile Include="Statistics\EnumerableStatisticsExtension.cs" />
-    <Compile Include="Statistics\Fitting\ExpFitting.cs" />
-    <Compile Include="Statistics\Fitting\IFitting.cs" />
-    <Compile Include="Statistics\KruskalWallisTest.cs" />
-    <Compile Include="Statistics\Fitting\LinearLeastSquaresFitting.cs" />
-    <Compile Include="Statistics\Fitting\LogFitting.cs" />
-    <Compile Include="Statistics\NormalDistribution.cs" />
-    <Compile Include="Statistics\PairwiseTest.cs" />
-    <Compile Include="Statistics\SampleSizeDetermination.cs" />
-    <Compile Include="ValueAnalysis\SingleValueAnalyzer.cs" />
-    <Compile Include="ValueAnalysis\MinAverageMaxValueAnalyzer.cs" />
-    <Compile Include="ValueAnalysis\MinAverageMaxValueCalculator.cs" />
-    <Compile Include="ValueAnalysis\ValueAnalyzer.cs" />
+    <Compile Include="SampleSizeInfluenceView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SampleSizeInfluenceView.Designer.cs">
+      <DependentUpon>SampleSizeInfluenceView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StatisticalTestsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="StatisticalTestsView.designer.cs">
+      <DependentUpon>StatisticalTestsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CorrelationView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CorrelationView.designer.cs">
+      <DependentUpon>CorrelationView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChartAnalysisView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ChartAnalysisView.designer.cs">
+      <DependentUpon>ChartAnalysisView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StatisticalTestsConfigurationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StatisticalTestsConfigurationDialog.Designer.cs">
+      <DependentUpon>StatisticalTestsConfigurationDialog.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis.Views\3.3\HeuristicLab.Analysis.Views-3.3.csproj">
+      <Project>{76945d76-ca61-4147-9dc2-0acdcddf87f9}</Project>
+      <Name>HeuristicLab.Analysis.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -187,9 +194,19 @@
       <Name>HeuristicLab.Common-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj">
+      <Project>{72104a0b-90e7-42f3-9abe-9bbbadd4b943}</Project>
+      <Name>HeuristicLab.Data.Views-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
@@ -197,34 +214,34 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
-      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
-      <Name>HeuristicLab.Operators-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
-      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
-      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Views\3.3\HeuristicLab.Optimization.Views-3.3.csproj">
+      <Project>{662b4b15-8f4d-4ae5-b3eb-d91c215f5af2}</Project>
+      <Name>HeuristicLab.Optimization.Views-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
-      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
-      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
-      <Name>HeuristicLab.Parameters-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
-      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
-      <Name>HeuristicLab.Persistence-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
+      <Project>{315BDA09-3F4F-49B3-9790-B37CFC1C5750}</Project>
+      <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
@@ -245,7 +262,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

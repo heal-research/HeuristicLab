@@ -21,31 +21,33 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
+using HeuristicLab.Optimization;
+using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Optimization.Views {
-  [View("Box Plot")]
+namespace HeuristicLab.Analysis.Statistics.Views {
+  [View("Sample Size Influence", "HeuristicLab.Analysis.Statistics.Views.InfoResources.SampleSizeInfluenceInfo.rtf")]
   [Content(typeof(RunCollection), false)]
-  public partial class RunCollectionBoxPlotView : AsynchronousContentView {
+  public partial class SampleSizeInfluenceView : AsynchronousContentView {
     private enum AxisDimension { Color = 0 }
     private const string BoxPlotSeriesName = "BoxPlotSeries";
     private const string BoxPlotChartAreaName = "BoxPlotChartArea";
+    private const string delimitor = ";";
 
     private bool suppressUpdates = false;
-    private string xAxisValue;
     private string yAxisValue;
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
     private SortedDictionary<double, Series> seriesCache;
 
-    public RunCollectionBoxPlotView() {
+    public SampleSizeInfluenceView() {
       InitializeComponent();
       categoricalMapping = new Dictionary<int, Dictionary<object, double>>();
       seriesCache = new SortedDictionary<double, Series>();
@@ -91,23 +93,63 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected virtual void RegisterRunEvents(IEnumerable<IRun> runs) {
-      foreach (IRun run in runs)
-        run.PropertyChanged += run_PropertyChanged;
-    }
-    protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
-      foreach (IRun run in runs)
-        run.PropertyChanged -= run_PropertyChanged;
+      foreach (IRun run in runs) {
+        RegisterRunParametersEvents(run);
+        RegisterRunResultsEvents(run);
+      }
     }
 
-    private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+    protected virtual void DeregisterRunEvents(IEnumerable<IRun> runs) {
+      foreach (IRun run in runs) {
+        DeregisterRunParametersEvents(run);
+        DeregisterRunResultsEvents(run);
+      }
+    }
+
+    private void RegisterRunParametersEvents(IRun run) {
+      IObservableDictionary<string, IItem> dict = run.Parameters;
+      dict.ItemsAdded += run_Changed;
+      dict.ItemsRemoved += run_Changed;
+      dict.ItemsReplaced += run_Changed;
+      dict.CollectionReset += run_Changed;
+    }
+
+    private void RegisterRunResultsEvents(IRun run) {
+      IObservableDictionary<string, IItem> dict = run.Results;
+      dict.ItemsAdded += run_Changed;
+      dict.ItemsRemoved += run_Changed;
+      dict.ItemsReplaced += run_Changed;
+      dict.CollectionReset += run_Changed;
+    }
+
+    private void DeregisterRunParametersEvents(IRun run) {
+      IObservableDictionary<string, IItem> dict = run.Parameters;
+      dict.ItemsAdded -= run_Changed;
+      dict.ItemsRemoved -= run_Changed;
+      dict.ItemsReplaced -= run_Changed;
+      dict.CollectionReset -= run_Changed;
+    }
+
+    private void DeregisterRunResultsEvents(IRun run) {
+      IObservableDictionary<string, IItem> dict = run.Results;
+      dict.ItemsAdded -= run_Changed;
+      dict.ItemsRemoved -= run_Changed;
+      dict.ItemsReplaced -= run_Changed;
+      dict.CollectionReset -= run_Changed;
+    }
+
+    private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.OldItems);
       RegisterRunEvents(e.Items);
+      UpdateAll();
     }
-    private void Content_ItemsRemoved(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+    private void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.Items);
+      UpdateComboBoxes();
     }
-    private void Content_ItemsAdded(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
+    private void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
+      UpdateComboBoxes();
     }
     private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -122,6 +164,7 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Reset), sender, e);
       else {
+        this.categoricalMapping.Clear();
         UpdateDataPoints();
         UpdateAxisLabels();
       }
@@ -133,12 +176,11 @@ namespace HeuristicLab.Optimization.Views {
         UpdateComboBoxes();
       }
     }
-    private void run_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+    private void run_Changed(object sender, EventArgs e) {
       if (InvokeRequired)
-        this.Invoke((Action<object, PropertyChangedEventArgs>)run_PropertyChanged, sender, e);
+        this.Invoke(new EventHandler(run_Changed), sender, e);
       else if (!suppressUpdates) {
-        if (e.PropertyName == "Visible")
-          UpdateDataPoints();
+        UpdateDataPoints();
       }
     }
 
@@ -152,6 +194,10 @@ namespace HeuristicLab.Optimization.Views {
     #region update comboboxes, datapoints, runs
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      UpdateAll();
+    }
+
+    private void UpdateAll() {
       this.categoricalMapping.Clear();
       UpdateComboBoxes();
       UpdateDataPoints();
@@ -159,42 +205,67 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateCaption() {
-      Caption = Content != null ? Content.OptimizerName + " Box Plot" : ViewAttribute.GetViewName(GetType());
+      Caption = Content != null ? Content.OptimizerName + " Sample Size Influence" : ViewAttribute.GetViewName(GetType());
+    }
+
+    private void UpdateSampleSizes(bool forceUpdate = false) {
+      string selectedYAxis = (string)this.yAxisComboBox.SelectedItem;
+
+      if (selectedYAxis != null && (xAxisTextBox.Text.Trim() == string.Empty || forceUpdate)) {
+        xAxisTextBox.Clear();
+        List<double> values = new List<double>();
+        foreach (IRun run in Content.Where(x => x.Visible)) {
+          double? cv = GetValue(run, selectedYAxis);
+          if (cv.HasValue) {
+            values.Add(cv.Value);
+          }
+        }
+
+        if (values.Any()) {
+          if (hypergeometricCheckBox.Checked) {
+            xAxisTextBox.Text += ((int)(values.Count() / 16)) + delimitor + " ";
+            xAxisTextBox.Text += ((int)(values.Count() / 8)) + delimitor + " ";
+            xAxisTextBox.Text += (int)(values.Count() / 4);
+          } else {
+            xAxisTextBox.Text += ((int)(values.Count() / 4)) + delimitor + " ";
+            xAxisTextBox.Text += ((int)(values.Count() / 2)) + delimitor + " ";
+            xAxisTextBox.Text += ((int)(values.Count() / 4 * 3)) + delimitor + " ";
+            xAxisTextBox.Text += (int)(values.Count());
+          }
+        }
+      }
     }
 
     private void UpdateComboBoxes() {
-      string selectedXAxis = (string)this.xAxisComboBox.SelectedItem;
       string selectedYAxis = (string)this.yAxisComboBox.SelectedItem;
-      this.xAxisComboBox.Items.Clear();
+      this.xAxisTextBox.Text = string.Empty;
       this.yAxisComboBox.Items.Clear();
       if (Content != null) {
         string[] additionalAxisDimension = Enum.GetNames(typeof(AxisDimension));
-        this.xAxisComboBox.Items.AddRange(additionalAxisDimension);
-        this.xAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+        UpdateSampleSizes();
         this.yAxisComboBox.Items.AddRange(additionalAxisDimension);
         this.yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
 
-        bool changed = false;
-        if (selectedXAxis != null && xAxisComboBox.Items.Contains(selectedXAxis)) {
-          xAxisComboBox.SelectedItem = selectedXAxis;
-          changed = true;
-        }
         if (selectedYAxis != null && yAxisComboBox.Items.Contains(selectedYAxis)) {
           yAxisComboBox.SelectedItem = selectedYAxis;
-          changed = true;
-        }
-        if (changed)
           UpdateDataPoints();
+        }
       }
     }
 
     private void UpdateDataPoints() {
-      this.categoricalMapping.Clear();
       this.chart.Series.Clear();
       this.seriesCache.Clear();
       if (Content != null) {
-        foreach (IRun run in this.Content.Where(r => r.Visible))
-          this.AddDataPoint(run);
+        var usableRuns = Content.Where(r => r.Visible).ToList();
+        List<int> groupSizes = ParseGroupSizesFromText(xAxisTextBox.Text);
+
+        if (hypergeometricCheckBox.Checked) {
+          CalculateGroupsHypergeometric(usableRuns, groupSizes);
+        } else {
+          CalculateGroups(usableRuns, groupSizes);
+        }
+
         foreach (Series s in this.seriesCache.Values)
           this.chart.Series.Add(s);
 
@@ -205,19 +276,98 @@ namespace HeuristicLab.Optimization.Views {
         }
 
         UpdateAxisLabels();
+        if (groupSizes.Any())
+          AddSampleSizeText();
+      } else {
+        sampleSizeTextBox.Text = string.Empty;
       }
       UpdateNoRunsVisibleLabel();
     }
 
+    private void CalculateGroups(List<IRun> usableRuns, List<int> groupSizes) {
+      Random rand = new Random();
+
+      foreach (int gs in groupSizes) {
+        int idx = gs;
+        List<IRun> runGroup = new List<IRun>();
+        if (idx > usableRuns.Count()) {
+          idx = usableRuns.Count();
+        }
+
+        for (int i = 0; i < idx; i++) {
+          int r = rand.Next(usableRuns.Count());
+          runGroup.Add(usableRuns[r]);
+        }
+        runGroup.ForEach(x => AddDataPoint(x, idx));
+      }
+    }
+
+    private void CalculateGroupsHypergeometric(List<IRun> usableRuns, List<int> groupSizes) {
+      Random rand = new Random();
+      var runs = new List<IRun>(usableRuns);
+
+      foreach (int gs in groupSizes) {
+        int idx = gs;
+        List<IRun> runGroup = new List<IRun>();
+        if (idx > runs.Count()) {
+          idx = runs.Count();
+        }
+
+        for (int i = 0; i < idx; i++) {
+          int r = rand.Next(runs.Count());
+          runGroup.Add(runs[r]);
+          runs.Remove(runs[r]);
+        }
+        runGroup.ForEach(x => AddDataPoint(x, idx));
+      }
+    }
+
+    private void AddSampleSizeText() {
+      sampleSizeTextBox.Text = string.Empty;
+      var usableRuns = Content.Where(r => r.Visible).ToList();
+
+      if (!yAxisComboBox.DroppedDown)
+        this.yAxisValue = (string)yAxisComboBox.SelectedItem;
+
+      List<double?> yValue = usableRuns.Select(x => GetValue(x, this.yAxisValue)).ToList();
+      if (yValue.Any(x => !x.HasValue)) return;
+
+      double estimatedSampleSize = SampleSizeDetermination.DetermineSampleSizeByEstimatingMean(yValue.Select(x => x.Value).ToArray());
+      sampleSizeTextBox.Text = estimatedSampleSize.ToString();
+    }
+
+    private List<int> ParseGroupSizesFromText(string groupsText, bool verbose = true) {
+      string[] gs = groupsText.Split(delimitor.ToCharArray());
+      List<int> vals = new List<int>();
+
+      foreach (string s in gs) {
+        string ns = s.Trim();
+
+        if (ns != string.Empty) {
+          int v = 0;
+          try {
+            v = int.Parse(ns);
+            vals.Add(v);
+          }
+          catch (Exception ex) {
+            if (verbose) {
+              ErrorHandling.ShowErrorDialog("Can't parse group sizes. Please only use numbers seperated by a " + delimitor + ". ", ex);
+            }
+          }
+        }
+      }
+      return vals;
+    }
+
     private void UpdateStatistics() {
-      DoubleMatrix matrix = new DoubleMatrix(9, seriesCache.Count);
+      DoubleMatrix matrix = new DoubleMatrix(11, seriesCache.Count);
       matrix.SortableView = false;
       List<string> columnNames = new List<string>();
       foreach (Series series in seriesCache.Values) {
         DataPoint datapoint = series.Points.FirstOrDefault();
         if (datapoint != null) {
           IRun run = (IRun)datapoint.Tag;
-          string selectedAxis = xAxisValue;
+          string selectedAxis = xAxisTextBox.Text;
           IItem value = null;
 
           if (Enum.IsDefined(typeof(AxisDimension), selectedAxis)) {
@@ -226,29 +376,30 @@ namespace HeuristicLab.Optimization.Views {
               case AxisDimension.Color: value = new StringValue(run.Color.ToString());
                 break;
             }
-          } else value = Content.GetValue(run, selectedAxis);
-          string columnName = string.Empty;
-          if (value is DoubleValue || value is IntValue)
-            columnName = selectedAxis + ": ";
-          columnName += value.ToString();
+          }
+
+          string columnName = series.Name;
           columnNames.Add(columnName);
         }
       }
       matrix.ColumnNames = columnNames;
-      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Median", "Average", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile" };
+      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Average", "Median", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile", "Lower Confidence Int.", "Upper Confidence Int." };
 
       for (int i = 0; i < seriesCache.Count; i++) {
         Series series = seriesCache.ElementAt(i).Value;
         double[] seriesValues = series.Points.Select(p => p.YValues[0]).OrderBy(d => d).ToArray();
+        Tuple<double, double> confIntervals = seriesValues.ConfidenceIntervals(0.95);
         matrix[0, i] = seriesValues.Length;
         matrix[1, i] = seriesValues.Min();
         matrix[2, i] = seriesValues.Max();
-        matrix[3, i] = seriesValues.Median();
-        matrix[4, i] = seriesValues.Average();
+        matrix[3, i] = seriesValues.Average();
+        matrix[4, i] = seriesValues.Median();
         matrix[5, i] = seriesValues.StandardDeviation();
         matrix[6, i] = seriesValues.Variance();
         matrix[7, i] = seriesValues.Percentile(0.25);
         matrix[8, i] = seriesValues.Percentile(0.75);
+        matrix[9, i] = confIntervals.Item1;
+        matrix[10, i] = confIntervals.Item2;
       }
       statisticsMatrixView.Content = matrix;
     }
@@ -271,24 +422,23 @@ namespace HeuristicLab.Optimization.Views {
       return boxPlotSeries;
     }
 
-    private void AddDataPoint(IRun run) {
-      double? xValue;
+    private void AddDataPoint(IRun run, int idx) {
+      double xValue;
       double? yValue;
 
-      if (!xAxisComboBox.DroppedDown)
-        this.xAxisValue = (string)xAxisComboBox.SelectedItem;
+
       if (!yAxisComboBox.DroppedDown)
         this.yAxisValue = (string)yAxisComboBox.SelectedItem;
 
-      xValue = GetValue(run, this.xAxisValue);
+      xValue = idx;
       yValue = GetValue(run, this.yAxisValue);
 
-      if (xValue.HasValue && yValue.HasValue) {
-        if (!this.seriesCache.ContainsKey(xValue.Value))
-          seriesCache[xValue.Value] = new Series(xValue.Value.ToString());
+      if (yValue.HasValue) {
+        if (!this.seriesCache.ContainsKey(xValue))
+          seriesCache[xValue] = new Series(xValue.ToString());
 
-        Series series = seriesCache[xValue.Value];
-        DataPoint point = new DataPoint(xValue.Value, yValue.Value);
+        Series series = seriesCache[xValue];
+        DataPoint point = new DataPoint(xValue, yValue.Value);
         point.Tag = run;
         series.Points.Add(point);
       }
@@ -326,22 +476,21 @@ namespace HeuristicLab.Optimization.Views {
         return ret;
       }
     }
-    private double? GetCategoricalValue(int dimension, string value) {
+    private double GetCategoricalValue(int dimension, string value) {
       if (!this.categoricalMapping.ContainsKey(dimension)) {
         this.categoricalMapping[dimension] = new Dictionary<object, double>();
         var orderedCategories = Content.Where(r => r.Visible && Content.GetValue(r, dimension) != null).Select(r => Content.GetValue(r, dimension).ToString())
-                                       .Distinct().OrderBy(x => x, new NaturalStringComparer());
+                                          .Distinct().OrderBy(x => x, new NaturalStringComparer());
         int count = 1;
         foreach (var category in orderedCategories) {
           this.categoricalMapping[dimension].Add(category, count);
           count++;
         }
       }
-      if (!this.categoricalMapping[dimension].ContainsKey(value)) return null;
       return this.categoricalMapping[dimension][value];
     }
-    private double? GetValue(IRun run, AxisDimension axisDimension) {
-      double? value = double.NaN;
+    private double GetValue(IRun run, AxisDimension axisDimension) {
+      double value = double.NaN;
       switch (axisDimension) {
         case AxisDimension.Color: {
             value = GetCategoricalValue(-1, run.Color.ToString());
@@ -368,22 +517,30 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
 
+    private void RecalculateButton_Click(object sender, EventArgs e) {
+      UpdateDataPoints();
+    }
+
+    private void hypergeometricCheckBox_CheckedChanged(object sender, EventArgs e) {
+      UpdateSampleSizes(true);
+      UpdateDataPoints();
+    }
+
     private void AxisComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      UpdateSampleSizes();
       UpdateDataPoints();
     }
     private void UpdateAxisLabels() {
       Axis xAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisX;
       Axis yAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisY;
       int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
-      //mkommend: combobox.SelectedIndex could not be used as this changes during hoovering over possible values
-      var xSAxisSelectedIndex = xAxisValue == null ? 0 : xAxisComboBox.Items.IndexOf(xAxisValue);
-      var ySAxisSelectedIndex = yAxisValue == null ? 0 : xAxisComboBox.Items.IndexOf(yAxisValue);
-      SetCustomAxisLabels(xAxis, xSAxisSelectedIndex - axisDimensionCount);
-      SetCustomAxisLabels(yAxis, ySAxisSelectedIndex - axisDimensionCount);
-      if (xAxisValue != null)
-        xAxis.Title = xAxisValue;
-      if (yAxisValue != null)
-        yAxis.Title = yAxisValue;
+
+      SetCustomAxisLabels(xAxis, -1);
+      SetCustomAxisLabels(yAxis, yAxisComboBox.SelectedIndex - axisDimensionCount);
+
+      xAxis.Title = "Group Size";
+      if (yAxisComboBox.SelectedItem != null)
+        yAxis.Title = yAxisComboBox.SelectedItem.ToString();
     }
 
     private void chart_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e) {
@@ -452,12 +609,46 @@ namespace HeuristicLab.Optimization.Views {
       splitContainer.Panel2Collapsed = !showStatisticsCheckBox.Checked;
     }
 
-    public void SetXAxis(string axisName) {
-      xAxisComboBox.SelectedItem = axisName;
+    private void defineSampleSizeButton_Click(object sender, EventArgs e) {
+      int min = 0, max = 0, step = 1;
+      var groupSizes = ParseGroupSizesFromText(xAxisTextBox.Text);
+      if (groupSizes.Count() > 0) {
+        min = groupSizes.Min();
+        max = groupSizes.Max();
+      }
+
+      using (var dialog = new DefineArithmeticProgressionDialog(true, min, max, step)) {
+        if (dialog.ShowDialog(this) == DialogResult.OK) {
+          var values = dialog.Values;
+          string newVals = "";
+          foreach (int v in values) {
+            newVals += v + delimitor + " ";
+          }
+          xAxisTextBox.Text = newVals;
+        }
+      }
     }
 
-    public void SetYAxis(string axisName) {
-      yAxisComboBox.SelectedItem = axisName;
+    private void xAxisTextBox_TextChanged(object sender, EventArgs e) {
+      var result = ParseGroupSizesFromText(xAxisTextBox.Text, false);
+
+      if (seriesCache.Count() == result.Count()) {
+        bool changed = false;
+        int i = 0;
+        foreach (var gs in seriesCache.Keys) {
+          if (((int)gs) != result[i]) {
+            changed = true;
+            break;
+          }
+          i++;
+        }
+
+        if (changed) {
+          UpdateDataPoints();
+        }
+      } else {
+        UpdateDataPoints();
+      }
     }
   }
 }
