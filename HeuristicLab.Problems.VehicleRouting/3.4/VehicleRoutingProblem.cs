@@ -32,6 +32,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
+using HeuristicLab.Problems.VehicleRouting.Encodings.Alba;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 using HeuristicLab.Problems.VehicleRouting.Interpreters;
 using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
@@ -262,6 +263,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
           if (creator is Encodings.Alba.RandomCreator)
             defaultCreator = creator;
         }
+        Operators.Add(new AlbaLambdaInterchangeLocalImprovementOperator());
         if (defaultCreator != null)
           solutionCreatorParameter.Value = defaultCreator;
       }

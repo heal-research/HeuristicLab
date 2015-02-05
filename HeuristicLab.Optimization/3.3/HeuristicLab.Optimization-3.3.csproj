@@ -113,6 +113,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectivePathRelinker.cs" />
     <Compile Include="Interfaces\ISingleObjectiveImprovementOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveSolutionSimilarityCalculator.cs" />

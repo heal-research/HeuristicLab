@@ -35,17 +35,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [StorableClass]
   public class QAPExhaustiveSwap2LocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator {
 
-    public Type ProblemType {
-      get { return typeof(QuadraticAssignmentProblem); }
-    }
-
-    [Storable]
-    private QuadraticAssignmentProblem problem;
-    public IProblem Problem {
-      get { return problem; }
-      set { problem = (QuadraticAssignmentProblem)value; }
-    }
-
     public ILookupParameter<IntValue> LocalIterationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["LocalIterations"]; }
     }
@@ -90,7 +79,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     protected QAPExhaustiveSwap2LocalImprovement(bool deserializing) : base(deserializing) { }
     protected QAPExhaustiveSwap2LocalImprovement(QAPExhaustiveSwap2LocalImprovement original, Cloner cloner)
       : base(original, cloner) {
-      this.problem = cloner.Clone(original.problem);
     }
     public QAPExhaustiveSwap2LocalImprovement()
       : base() {
