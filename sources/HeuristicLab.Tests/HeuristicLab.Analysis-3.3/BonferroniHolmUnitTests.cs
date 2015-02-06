@@ -27,6 +27,8 @@ namespace HeuristicLab.Analysis.Tests {
   [TestClass]
   public class BonferroniHolmUnitTest {
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void BonferroniHolmUnitTest1() {
       /* example taken from 
        * http://www.mathworks.com/matlabcentral/fileexchange/28303-bonferroni-holm-correction-for-multiple-comparisons
@@ -52,6 +54,8 @@ namespace HeuristicLab.Analysis.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void BonferroniHolmUnitTest2() {
       /* example taken from 
        * http://en.wikipedia.org/wiki/Holm-Bonferroni_method#Example
@@ -77,6 +81,8 @@ namespace HeuristicLab.Analysis.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void BonferroniHolmUnitTest3() {
       // comparison with R's p.adjust(p, "holm") method
       double[] correctedPValues = new double[] { 0.23262159, 0.05204139 };
@@ -91,6 +97,8 @@ namespace HeuristicLab.Analysis.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void BonferroniHolmUnitTest4() {
       // comparison with R's p.adjust(p, "holm") method
       double[] correctedPValues = new double[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
@@ -105,6 +113,8 @@ namespace HeuristicLab.Analysis.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void BonferroniHolmUnitTest5() {
       // comparison with R's p.adjust(p, "holm") method
       double[] correctedPValues = new double[] { 1.389563e-05, 7.293675e-05, 2.330999e-04, 2.330999e-04, 4.370736e-04, 5.539326e-04 };

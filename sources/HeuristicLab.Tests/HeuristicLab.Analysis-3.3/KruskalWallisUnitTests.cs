@@ -29,6 +29,8 @@ namespace HeuristicLab.Analysis.Tests {
   public class KruskalWallisUnitTests {
     //tests the sample data from R's Kruskal.Test() help page
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void KruskalWallisTest1() {
       double[][] data = new double[3][];
       data[0] = new double[] { 2.9, 3.0, 2.5, 2.6, 3.2 };
@@ -40,6 +42,8 @@ namespace HeuristicLab.Analysis.Tests {
 
     //compares groups of uniformly distributed random variables
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void KruskalWallisTest2() {
       double[][] data = new double[3][];
       data[0] = new double[] { 977,3848,2803,4097,3155,2745,25,3384,2587,1332,1407,2842,4089,4083,608,3246,1634
@@ -66,6 +70,8 @@ namespace HeuristicLab.Analysis.Tests {
 
     //compares groups of normally distributed random variables
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void KruskalWallisTest3() {
       double[][] data = new double[3][];
       data[0] = new double[] { 0.264589812,0.161585300,0.890091755,0.342488339,-1.596719857,0.120133657
@@ -114,6 +120,8 @@ namespace HeuristicLab.Analysis.Tests {
 
     //compares groups of normally and uniformly distributed random variables
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void KruskalWallisTest4() {
       double[][] data = new double[3][];
       data[0] = new double[] { 977,3848,2803,4097,3155,2745,25,3384,2587,1332,1407,2842,4089,4083,608,3246,1634
@@ -155,6 +163,8 @@ namespace HeuristicLab.Analysis.Tests {
 
     //compares groups containing the same random variables
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void KruskalWallisTest5() {
       double[][] data = new double[4][];
       data[0] = new double[] { 1477,764,4731,1048,822,974,3302,2258,1946,3067,974,206,2439,3022,2714,2559,28

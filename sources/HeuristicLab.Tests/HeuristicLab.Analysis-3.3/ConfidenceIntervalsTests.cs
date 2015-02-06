@@ -33,6 +33,8 @@ namespace HeuristicLab.Analysis.Tests {
     private readonly double[] z = new double[] { 45, 55, 67, 45, 68, 79, 98, 87, 84, 82 };
 
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void ConfidenceIntervalsTest1() {
       var result = z.ConfidenceIntervals(0.98);
       Assert.AreEqual(54.8, Math.Round(result.Item1, 1));
@@ -40,6 +42,8 @@ namespace HeuristicLab.Analysis.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void ConfidenceIntervalsTest2() {
       //comparison with R's t.test(..)
       var result = x.ConfidenceIntervals(0.95);
@@ -48,6 +52,8 @@ namespace HeuristicLab.Analysis.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void ConfidenceIntervalsTest3() {
       //comparison with R's t.test(..)
       var result = y.ConfidenceIntervals(0.1);
@@ -56,6 +62,8 @@ namespace HeuristicLab.Analysis.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Analysis.Statistics")]
+    [TestProperty("Time", "short")]
     public void ConfidenceIntervalsTest4() {
       //comparison with R's t.test(..)
       var result = y.ConfidenceIntervals(0.99);
