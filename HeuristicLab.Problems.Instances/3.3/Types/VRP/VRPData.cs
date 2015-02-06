@@ -77,6 +77,10 @@ namespace HeuristicLab.Problems.Instances {
     /// </summary>
     public int[][] BestKnownTour { get; set; }
     /// <summary>
+    /// Optional! Specifies the used vehicle for a given tour.
+    /// </summary>
+    public int[] BestKnownTourVehicleAssignment { get; set; }
+    /// <summary>
     /// Optional! The quality of the best-known solution.
     /// </summary>
     public double? BestKnownQuality { get; set; }

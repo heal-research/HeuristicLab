@@ -19,14 +19,14 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using System.Collections.Generic;
+using System.IO;
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  [Plugin("HeuristicLab.Problems.Instances.VehicleRouting", "3.4.3.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.Instances.VehicleRouting-3.4.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.Instances.TSPLIB", "3.3")]
-  public class HeuristicLabProblemsInstancesVehicleRoutingPlugin : PluginBase {
+  internal static class StreamReaderHelper {
+    public static IEnumerable<string> ReadAllLines(this StreamReader reader) {
+      while (!reader.EndOfStream)
+        yield return reader.ReadLine();
+    }
   }
 }

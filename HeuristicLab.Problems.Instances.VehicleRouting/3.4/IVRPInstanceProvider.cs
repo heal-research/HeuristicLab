@@ -20,11 +20,11 @@
 #endregion
 
 namespace HeuristicLab.Problems.Instances.VehicleRouting {
-  public interface IVRPInstanceProvider {
+  public interface IVRPInstanceProvider<TData> {
     bool CanImportData { get; }
-    IVRPData Import(string vrpFile, string tourFile);
+    TData Import(string instancePath, string solutionPath);
 
     bool CanExportData { get; }
-    void Export(IVRPData instance, string path);
+    void Export(TData instance, string path);
   }
 }

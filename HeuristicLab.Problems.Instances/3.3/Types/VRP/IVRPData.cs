@@ -30,5 +30,6 @@ namespace HeuristicLab.Problems.Instances {
     int Dimension { get; set; }
     double? BestKnownQuality { get; set; }
     int[][] BestKnownTour { get; set; }
+    int[] BestKnownTourVehicleAssignment { get; set; }
   }
 }

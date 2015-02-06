@@ -68,7 +68,7 @@ namespace HeuristicLab.Problems.Instances.VehicleRouting.Views {
     private void VRPImportDialog_HelpButtonClicked(object sender, CancelEventArgs e) {
       if (MessageBox.Show("Do you want to open the HeuristicLab wiki website?", "Help",
         MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == System.Windows.Forms.DialogResult.Yes) {
-        System.Diagnostics.Process.Start("http://dev.heuristiclab.com/trac/hl/core/wiki/Vehicle%20Routing%20Problem");
+        System.Diagnostics.Process.Start("http://dev.heuristiclab.com/trac.fcgi/wiki/Documentation/Reference/VehicleRoutingProblem");
       }
     }
   }
