@@ -351,7 +351,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return list.ToArray();
     }
 
-    private static void PrepareInstructions(LinearInstruction[] code, Dataset dataset) {
+    public static void PrepareInstructions(LinearInstruction[] code, Dataset dataset) {
       for (int i = 0; i != code.Length; ++i) {
         var instr = code[i];
         #region opcode switch

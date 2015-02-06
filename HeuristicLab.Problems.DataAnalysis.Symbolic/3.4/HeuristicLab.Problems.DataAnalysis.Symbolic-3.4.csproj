@@ -134,12 +134,6 @@
     <Compile Include="Importer\SymbolicExpressionImporter.cs" />
     <Compile Include="Importer\Token.cs" />
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
-    <Compile Include="Matching\SymbolicExpressionTreeCanonicalSorter.cs" />
-    <Compile Include="Matching\SymbolicExpressionTreeEqualityComparer.cs" />
-    <Compile Include="Matching\SymbolicExpressionTreeMatching.cs" />
-    <Compile Include="Matching\SymbolicExpressionTreeMaxCommonSequenceCalculator.cs" />
-    <Compile Include="Matching\SymbolicExpressionTreeNodeComparer.cs" />
-    <Compile Include="Matching\SymbolicExpressionTreeNodeSimilarityComparer.cs" />
     <Compile Include="SymbolicExpressionTreeBacktransformator.cs" />
     <Compile Include="SymbolicDataAnalysisExpressionPruningOperator.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisVariableFrequencyAnalyzer.cs" />
@@ -238,6 +232,13 @@
     <Compile Include="Symbols\VariableConditionTreeNode.cs" />
     <Compile Include="Symbols\VariableTreeNode.cs" />
     <Compile Include="TransformationToSymbolicTreeMapper.cs" />
+    <Compile Include="TreeMatching\SymbolicExpressionTreeBottomUpSimilarityCalculator.cs" />
+    <Compile Include="TreeMatching\SymbolicExpressionTreeCanonicalSorter.cs" />
+    <Compile Include="TreeMatching\SymbolicExpressionTreeEqualityComparer.cs" />
+    <Compile Include="TreeMatching\SymbolicExpressionTreeMatching.cs" />
+    <Compile Include="TreeMatching\SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator.cs" />
+    <Compile Include="TreeMatching\SymbolicExpressionTreeNodeComparer.cs" />
+    <Compile Include="TreeMatching\SymbolicExpressionTreeNodeEqualityComparer.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
