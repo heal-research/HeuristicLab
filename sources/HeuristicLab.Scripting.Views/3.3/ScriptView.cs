@@ -192,7 +192,7 @@ namespace HeuristicLab.Scripting.Views {
     #endregion
 
     #region Event Handlers
-    private void Content_CodeChanged(object sender, EventArgs e) {
+    protected virtual void Content_CodeChanged(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_CodeChanged, sender, e);
       else {
         codeEditor.UserCode = Content.Code;
