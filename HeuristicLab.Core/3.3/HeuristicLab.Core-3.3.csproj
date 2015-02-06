@@ -121,6 +121,9 @@
     <None Include="Plugin.cs.frame" />
     <Compile Include="Collections\CheckedItemCollection.cs" />
     <Compile Include="Collections\CheckedItemList.cs" />
+    <Compile Include="Collections\DirectedGraph\Arc.cs" />
+    <Compile Include="Collections\DirectedGraph\DirectedGraph.cs" />
+    <Compile Include="Collections\DirectedGraph\Vertex.cs" />
     <Compile Include="Collections\ReadOnlyCheckedItemCollection.cs" />
     <Compile Include="Collections\ReadOnlyCheckedItemList.cs">
       <SubType>Code</SubType>
@@ -153,6 +156,9 @@
     <Compile Include="Constraints\EqualityConstraint.cs" />
     <Compile Include="Constraints\IConstraint.cs" />
     <Compile Include="Constraints\TypeCompatibilityConstraint.cs" />
+    <Compile Include="Interfaces\DirectedGraph\IArc.cs" />
+    <Compile Include="Interfaces\DirectedGraph\IDirectedGraph.cs" />
+    <Compile Include="Interfaces\DirectedGraph\IVertex.cs" />
     <Compile Include="Interfaces\ICheckedMultiOperator.cs" />
     <Compile Include="Interfaces\IConstrainedValueParameter.cs" />
     <Compile Include="Interfaces\IInstrumentedOperator.cs" />
