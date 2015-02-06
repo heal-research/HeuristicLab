@@ -35,9 +35,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicExpressionTreeBottomUpSimilarityCalculator", "A similarity calculator which uses the tree bottom-up distance as a similarity metric.")]
   public class SymbolicExpressionTreeBottomUpSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     private readonly HashSet<string> commutativeSymbols = new HashSet<string> { "Addition", "Multiplication", "Average", "And", "Or", "Xor" };
-    public bool MatchVariableWeights { get; set; }
-    public bool MatchConstantValues { get; set; }
-
     public SymbolicExpressionTreeBottomUpSimilarityCalculator() { }
 
     [StorableConstructor]
@@ -47,8 +44,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     protected SymbolicExpressionTreeBottomUpSimilarityCalculator(SymbolicExpressionTreeBottomUpSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {
-      MatchVariableWeights = original.MatchVariableWeights;
-      MatchConstantValues = original.MatchConstantValues;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -219,11 +214,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var constant = node as ConstantTreeNode;
       if (constant != null)
-        return MatchConstantValues ? constant.Value.ToString(CultureInfo.InvariantCulture) : constant.Symbol.Name;
+        return constant.Value.ToString(CultureInfo.InvariantCulture);
+
       var variable = node as VariableTreeNode;
-      if (variable != null) {
-        return MatchVariableWeights ? variable.Weight + variable.VariableName : variable.VariableName;
-      }
+      if (variable != null)
+        return variable.Weight + variable.VariableName;
 
       return node.ToString();
     }
