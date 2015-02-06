@@ -410,6 +410,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Analysis.Stati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CodeEditor-3.4", "HeuristicLab.CodeEditor\3.4\HeuristicLab.CodeEditor-3.4.csproj", "{C38691AE-ECB4-489A-A05D-B035554E0168}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3", "HeuristicLab.Algorithms.ParameterlessPopulationPyramid\3.3\HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3.csproj", "{9319C447-8183-4DBC-8145-0E3CF98084CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1990,8 +1992,19 @@ Global
 		{C38691AE-ECB4-489A-A05D-B035554E0168}.Release|x64.Build.0 = Release|x64
 		{C38691AE-ECB4-489A-A05D-B035554E0168}.Release|x86.ActiveCfg = Release|x86
 		{C38691AE-ECB4-489A-A05D-B035554E0168}.Release|x86.Build.0 = Release|x86
+		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Release|x64.ActiveCfg = Release|Any CPU
+		{9319C447-8183-4DBC-8145-0E3CF98084CC}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

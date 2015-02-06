@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="UniformDistributedRandom.cs" />
     <Compile Include="FastRandom.cs" />
     <Compile Include="MersenneTwister.cs">

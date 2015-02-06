@@ -135,9 +135,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       throw new NotSupportedException();
     }
     
-    #pragma warning disable 0169 //disable usage warning
+    #pragma warning disable 0067 //disable usage warning
     public event EventHandler Changed;
-    #pragma warning restore 0169
+    #pragma warning restore 0067
     #endregion
   }
 }

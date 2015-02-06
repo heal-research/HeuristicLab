@@ -132,6 +132,11 @@
       <HintPath>..\bin\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\bin\HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.ParticleSwarmOptimization-3.3.dll</HintPath>
       <Private>False</Private>
@@ -410,6 +415,9 @@
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessModelTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessFunctionsTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GaussianProcessRegressionTest.cs" />
+    <Compile Include="HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3\EnumerableBoolEqualityComparerTest.cs" />
+    <Compile Include="HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3\LinkageTreeTest.cs" />
+    <Compile Include="HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3\ParameterlessPopulationPyramidTest.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\BonferroniHolmUnitTests.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\ConfidenceIntervalsTests.cs" />
     <Compile Include="HeuristicLab.Analysis-3.3\EffectSizeUnitTests.cs" />

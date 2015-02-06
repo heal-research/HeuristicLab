@@ -1,0 +1,92 @@
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2013 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * and the BEACON Center for the Study of Evolution in Action.
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System;
+using System.Collections.Generic;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+
+namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
+  // This code is based off the publication
+  // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
+  // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
+  [Item("Hierararchical If and only If problem", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
+  [StorableClass]
+  [Creatable("Parameterless Population Pyramid")]
+  public class HIFFProblem : BinaryVectorProblem {
+    [StorableConstructor]
+    protected HIFFProblem(bool deserializing) : base(deserializing) { }
+    protected HIFFProblem(HIFFProblem original, Cloner cloner)
+      : base(original, cloner) {
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new HIFFProblem(this, cloner);
+    }
+
+    public override bool Maximization {
+      get { return true; }
+    }
+
+    public HIFFProblem() : base() {
+      Length = 64;
+    }
+    // In the GECCO paper, Section 4.1
+    public override double Evaluate(bool[] individual) {
+      int[] level = new int[individual.Length];
+      int levelLength = individual.Length;
+
+      // Initialize the level to the current solution
+      for (int i = 0; i < levelLength; i++) {
+        level[i] = Convert.ToInt32(individual[i]);
+      }
+      int power = 1;
+      int nextLength = levelLength / 2;
+      int total = 0;
+      int maximum = 0;
+
+      // Keep going while the next level actual has bits in it
+      while (nextLength > 0) {
+        int[] nextLevel = new int[nextLength];
+        // Construct the next level using the current level
+        for (int i = 0; i + 1 < levelLength; i += 2) {
+          if (level[i] == level[i + 1] && level[i] != -1) {
+            // Score points for a correct setting at this level
+            total += power;
+            nextLevel[i / 2] = level[i];
+          } else {
+            nextLevel[i / 2] = -1;
+          }
+          // Keep track of the maximum possible score
+          maximum += power;
+        }
+        level = nextLevel;
+        levelLength = nextLength;
+        nextLength = levelLength / 2;
+        power *= 2;
+      }
+
+      // Convert to percentage of total
+      return (double)total / maximum;
+    }
+  }
+}
