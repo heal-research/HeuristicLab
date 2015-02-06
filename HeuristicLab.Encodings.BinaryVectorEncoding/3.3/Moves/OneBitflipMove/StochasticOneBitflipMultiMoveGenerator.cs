@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -29,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("StochasticOneBitflipMultiMoveGenerator", "Randomly samples n from all possible one bitflip moves from a given BinaryVector.")]
   [StorableClass]
-  public class StochasticOneBitflipMultiMoveGenerator : OneBitflipMoveGenerator, IMultiMoveGenerator {
+  public class StochasticOneBitflipMultiMoveGenerator : OneBitflipMoveGenerator, IStochasticOperator, IMultiMoveGenerator {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -65,6 +66,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
 
     protected override OneBitflipMove[] GenerateMoves(BinaryVector binaryVector) {
       IRandom random = RandomParameter.ActualValue;
+      if (SampleSizeParameter.ActualValue == null) throw new InvalidOperationException("StochasticOneBitflipMultiMoveGenerator: Parameter " + SampleSizeParameter.ActualName + " could not be found.");
       return Apply(binaryVector, random, SampleSizeParameter.ActualValue.Value);
     }
   }

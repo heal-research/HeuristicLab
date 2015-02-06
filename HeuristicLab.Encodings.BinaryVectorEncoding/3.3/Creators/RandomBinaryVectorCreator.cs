@@ -19,9 +19,11 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
@@ -31,13 +33,38 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("RandomBinaryVectorCreator", "An operator which creates a new random binary vector with each element randomly initialized.")]
   [StorableClass]
   public sealed class RandomBinaryVectorCreator : BinaryVectorCreator {
+    private const string TrueProbabilityParameterName = "TruePropability";
+
+    private IValueLookupParameter<DoubleValue> TrueProbabilityParameter {
+      get { return (IValueLookupParameter<DoubleValue>)Parameters[TrueProbabilityParameterName]; }
+    }
+
+    public DoubleValue TrueProbability {
+      get { return TrueProbabilityParameter.Value; }
+      set { TrueProbabilityParameter.Value = value; }
+    }
+
     [StorableConstructor]
     private RandomBinaryVectorCreator(bool deserializing) : base(deserializing) { }
     private RandomBinaryVectorCreator(RandomBinaryVectorCreator original, Cloner cloner) : base(original, cloner) { }
-    public RandomBinaryVectorCreator() : base() { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new RandomBinaryVectorCreator(this, cloner); }
+    public RandomBinaryVectorCreator()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(0.5)));
+    }
 
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new RandomBinaryVectorCreator(this, cloner);
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      var defaultValue = 0.5;
+      if (Parameters.ContainsKey(TrueProbabilityParameterName) && Parameters[TrueProbabilityParameterName] is IFixedValueParameter<DoubleValue>) {
+        defaultValue = ((IFixedValueParameter<DoubleValue>)Parameters[TrueProbabilityParameterName]).Value.Value;
+        Parameters.Remove(TrueProbabilityParameterName);
+      }
+      if (!Parameters.ContainsKey(TrueProbabilityParameterName))
+        Parameters.Add(new ValueLookupParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(defaultValue)));
+      #endregion
     }
 
     /// <summary>
@@ -45,14 +72,27 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     /// </summary>
     /// <param name="random">The random number generator.</param>
     /// <param name="length">The length of the binary vector.</param>
+    /// <param name="trueProbability">The propability for true to occur at a certain position in the binary vector</param>
     /// <returns>The newly created binary vector.</returns>
-    public static BinaryVector Apply(IRandom random, int length) {
-      BinaryVector result = new BinaryVector(length, random);
+    public static BinaryVector Apply(IRandom random, int length, double trueProbability = 0.5) {
+      BinaryVector result;
+
+      //Backwards compatiblity code to ensure the same behavior for existing algorithm runs
+      //remove with HL 3.4
+      if (trueProbability.IsAlmost(0.5))
+        result = new BinaryVector(length, random);
+      else {
+        var values = new bool[length];
+        for (int i = 0; i < length; i++)
+          values[i] = random.NextDouble() < trueProbability;
+        result = new BinaryVector(values);
+      }
       return result;
     }
 
     protected override BinaryVector Create(IRandom random, IntValue length) {
-      return Apply(random, length.Value);
+      if (TrueProbabilityParameter.ActualValue == null) throw new InvalidOperationException("RandomBinaryVectorCreator: Parameter " + TrueProbabilityParameter.ActualName + " could not be found.");
+      return Apply(random, length.Value, TrueProbabilityParameter.ActualValue.Value);
     }
   }
 }
