@@ -40,7 +40,8 @@ namespace HeuristicLab.CodeEditor {
     }
 
     public virtual void Initialize() {
-      backgroundParser.Start();
+      if (backgroundParser.Status == TaskStatus.Created)
+        backgroundParser.Start();
     }
 
     protected abstract CodeCompletionResult GetCodeCompletionResult(bool controlSpace);
