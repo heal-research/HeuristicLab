@@ -46,9 +46,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     }
 
-    [TestMethod]
-    [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
     private void TestMatchedNodes(string expr1, string expr2, int expected) {
       var t1 = importer.Import(expr1);
       var t2 = importer.Import(expr2);
