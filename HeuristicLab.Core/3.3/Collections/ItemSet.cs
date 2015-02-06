@@ -51,7 +51,7 @@ namespace HeuristicLab.Core {
     protected ItemSet(bool deserializing) : base(deserializing) { }
     protected ItemSet(ItemSet<T> original, Cloner cloner) {
       cloner.RegisterClonedObject(original, this);
-      set = new HashSet<T>(original.Select(x => cloner.Clone(x)));
+      set = new HashSet<T>(original.Select(cloner.Clone), original.set.Comparer);
     }
     public ItemSet() : base() { }
     public ItemSet(IEnumerable<T> collection) : base(collection) { }
