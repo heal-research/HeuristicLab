@@ -110,6 +110,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       get { return Problem.Operators; }
     }
 
+    public IEnumerable<IParameterizedItem> ExecutionContextItems { get { return new[] { this }; } }
+
     #region Persistence Properties
     [Storable(Name = "ProblemId")]
     private long StorableProblemId {

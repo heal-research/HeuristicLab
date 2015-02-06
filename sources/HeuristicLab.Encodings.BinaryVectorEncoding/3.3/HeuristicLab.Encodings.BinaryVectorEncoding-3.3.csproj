@@ -118,6 +118,7 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryVectorEncoding.cs" />
     <Compile Include="Creators\RandomBinaryVectorCreator.cs" />
     <Compile Include="Crossovers\MultiBinaryVectorCrossover.cs" />
     <Compile Include="Crossovers\UniformCrossover.cs" />

@@ -192,6 +192,7 @@
     <Compile Include="Moves\TwoOpt\InversionMoveTabuMaker.cs" />
     <Compile Include="Moves\TwoOpt\StochasticInversionMultiMoveGenerator.cs" />
     <Compile Include="Moves\TwoOpt\StochasticInversionSingleMoveGenerator.cs" />
+    <Compile Include="PermutationEncoding.cs" />
     <Compile Include="PermutationEqualityComparer.cs" />
     <Compile Include="PermutationManipulator.cs" />
     <Compile Include="PermutationCrossover.cs" />

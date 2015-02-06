@@ -135,6 +135,7 @@
     <Compile Include="RealVectorCreator.cs" />
     <Compile Include="RealVectorCrossover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealVectorEncoding.cs" />
     <Compile Include="RealVectorManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
