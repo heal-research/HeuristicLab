@@ -29,12 +29,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.BinaryVector {
-  // This code is based off the publication
-  // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
-  // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
   [Item("Deceptive Trap Problem", "Genome encodes completely separable blocks, where each block is fully deceptive.")]
   [StorableClass]
-  [Creatable("Parameterless Population Pyramid")]
+  [Creatable("Problems")]
   public class DeceptiveTrapProblem : BinaryVectorProblem {
     [StorableConstructor]
     protected DeceptiveTrapProblem(bool deserializing) : base(deserializing) { }

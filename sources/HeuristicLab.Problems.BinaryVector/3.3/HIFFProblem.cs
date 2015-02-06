@@ -27,12 +27,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.BinaryVector {
-  // This code is based off the publication
-  // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
-  // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
   [Item("Hierararchical If and only If problem", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
   [StorableClass]
-  [Creatable("Parameterless Population Pyramid")]
+  [Creatable("Problems")]
   public class HIFFProblem : BinaryVectorProblem {
     [StorableConstructor]
     protected HIFFProblem(bool deserializing) : base(deserializing) { }

@@ -38,9 +38,9 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  [Item("Parameter-less Population Pyramid", "Binary value optimization algorithm which requires no configuration.")]
+  [Item("Parameter-less Population Pyramid", "Binary value optimization algorithm which requires no configuration. B. W. Goldman and W. F. Punch, Parameter-less Population Pyramid, GECCO, pp. 785–792, 2014")]
   [StorableClass]
-  [Creatable("Parameterless Population Pyramid")]
+  [Creatable("Algorithms")]
   public class ParameterlessPopulationPyramid : BasicAlgorithm {
     public override Type ProblemType {
       get { return typeof(BinaryVectorProblem); }
