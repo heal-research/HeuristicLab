@@ -160,9 +160,7 @@ namespace HeuristicLab.CodeEditor {
     }
     #endregion
 
-
     public event PropertyChangedEventHandler PropertyChanged;
-
     private void OnPropertyChanged(string propertyName) {
       var args = new PropertyChangedEventArgs(propertyName);
       if (PropertyChanged != null)

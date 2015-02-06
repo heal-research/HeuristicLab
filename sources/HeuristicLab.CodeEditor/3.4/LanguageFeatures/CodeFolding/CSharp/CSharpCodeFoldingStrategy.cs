@@ -21,22 +21,10 @@
 
 using System.Linq;
 using CSharpBinding.Parser;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.TypeSystem;
 
 namespace HeuristicLab.CodeEditor {
   internal class CSharpCodeFoldingStrategy : CodeFoldingStrategy {
-    private IProjectContent projectContent = new CSharpProjectContent();
-
-    public CSharpCodeFoldingStrategy(CodeEditor codeEditor)
-      : base(codeEditor) {
-      codeEditor.InternalAssembliesLoaded += (sender, args) => {
-        projectContent = projectContent.AddAssemblyReferences(args.Value);
-      };
-      codeEditor.InternalAssembliesUnloaded += (sender, args) => {
-        projectContent = projectContent.RemoveAssemblyReferences(args.Value);
-      };
-    }
+    public CSharpCodeFoldingStrategy(CodeEditor codeEditor) : base(codeEditor) { }
 
     protected override CodeFoldingResult GetCodeFoldingResult(out int firstErrorOffset) {
       var document = codeEditor.TextEditor.Document;

@@ -157,7 +157,6 @@
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CSharpCodeCompletionDataFactory.cs" />
     <Compile Include="LanguageFeatures\Helpers\CSharpParsingHelpers.cs" />
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\EntityCompletionData.cs" />
-    <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\ImportCompletionData.cs" />
     <Compile Include="LanguageFeatures\CodeCompletion\CSharp\CompletionData\VariableCompletionData.cs" />
     <Compile Include="LanguageFeatures\Interfaces\ICodeFoldingStrategy.cs" />
     <Compile Include="LanguageFeatures\LanguageFeatures.cs" />

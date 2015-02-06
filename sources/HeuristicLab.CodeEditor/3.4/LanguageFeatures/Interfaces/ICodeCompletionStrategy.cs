@@ -22,6 +22,6 @@
 namespace HeuristicLab.CodeEditor {
   internal interface ICodeCompletionStrategy {
     void DoCodeCompletion(bool controlSpace);
-    void RunBackgroundParser();
+    void Initialize();
   }
 }

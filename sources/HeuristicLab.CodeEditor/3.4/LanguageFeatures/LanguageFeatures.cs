@@ -62,7 +62,7 @@ namespace HeuristicLab.CodeEditor {
     }
 
     private void LoadedHandler(object sender, EventArgs e) {
-      codeCompletionStrategy.RunBackgroundParser();
+      codeCompletionStrategy.Initialize();
     }
 
     private void CodeCompletionRequestedHandler(object sender, EventArgs e) {

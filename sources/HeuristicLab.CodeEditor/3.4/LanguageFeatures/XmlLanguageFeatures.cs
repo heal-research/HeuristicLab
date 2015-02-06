@@ -24,5 +24,9 @@ namespace HeuristicLab.CodeEditor {
     public XmlLanguageFeatures(CodeEditor codeEditor)
       : base(codeEditor, new XmlCodeFoldingStrategy(codeEditor), null) {
     }
+
+    public static ILanguageFeatures Apply(CodeEditor codeEditor) {
+      return new XmlLanguageFeatures(codeEditor);
+    }
   }
 }

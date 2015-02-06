@@ -39,7 +39,7 @@ namespace HeuristicLab.CodeEditor {
       ApplyCodeCompletionData(codeCompletionResult);
     }
 
-    public virtual void RunBackgroundParser() {
+    public virtual void Initialize() {
       backgroundParser.Start();
     }
 

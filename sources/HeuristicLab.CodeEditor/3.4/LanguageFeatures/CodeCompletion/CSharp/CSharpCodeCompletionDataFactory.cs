@@ -104,8 +104,7 @@ namespace HeuristicLab.CodeEditor {
     }
 
     public ICompletionData CreateImportCompletionData(IType type, bool useFullName, bool addForTypeCreation) {
-      var typeDef = type.GetDefinition();
-      return new ImportCompletionData(typeDef, context.TypeResolveContextAtCaret, useFullName);
+      return null;
     }
 
     public IEnumerable<ICompletionData> CreateCodeTemplateCompletionData() {

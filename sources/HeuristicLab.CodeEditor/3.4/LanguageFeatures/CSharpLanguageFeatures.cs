@@ -24,5 +24,9 @@ namespace HeuristicLab.CodeEditor {
     public CSharpLanguageFeatures(CodeEditor codeEditor)
       : base(codeEditor, new CSharpCodeFoldingStrategy(codeEditor), new CSharpCodeCompletionStrategy(codeEditor)) {
     }
+
+    public static ILanguageFeatures Apply(CodeEditor codeEditor) {
+      return new CSharpLanguageFeatures(codeEditor);
+    }
   }
 }

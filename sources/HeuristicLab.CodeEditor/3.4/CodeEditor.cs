@@ -60,7 +60,6 @@ namespace HeuristicLab.CodeEditor {
     private const int DefaultTextEditorIndentationSize = 2;
 
     private AssemblyLoader assemblyLoader;
-    private ILanguageFeatures languageFeatures;
     private TextMarkerService textMarkerService;
 
     #region Properties
@@ -190,7 +189,6 @@ namespace HeuristicLab.CodeEditor {
       TextEditor.TextArea.TextView.BackgroundRenderers.Add(textMarkerService);
       TextEditor.TextArea.TextView.LineTransformers.Add(textMarkerService);
       TextEditor.TextArea.TextView.Services.AddService(typeof(ITextMarkerService), textMarkerService);
-
       #endregion
 
       #region ReadOnlySectionProvider
@@ -440,10 +438,10 @@ namespace HeuristicLab.CodeEditor {
     private void ApplyLanguageFeatures() {
       switch (TextEditorSyntaxHighlighting) {
         case "XML":
-          languageFeatures = new XmlLanguageFeatures(this);
+          XmlLanguageFeatures.Apply(this);
           break;
         default:
-          languageFeatures = new CSharpLanguageFeatures(this);
+          CSharpLanguageFeatures.Apply(this);
           break;
       }
     }
