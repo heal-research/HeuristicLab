@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.Programmable.Views {
+namespace HeuristicLab.Optimization.Views {
   partial class MultiEncodingView {
     /// <summary> 
     /// Required designer variable.
@@ -86,8 +86,8 @@ namespace HeuristicLab.Problems.Programmable.Views {
       // 
       // encodingsListView
       // 
-      this.encodingsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.encodingsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.encodingsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.encodingNameColumnHeader,
@@ -156,8 +156,8 @@ namespace HeuristicLab.Problems.Programmable.Views {
       // 
       // encodingDetailsGroupBox
       // 
-      this.encodingDetailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.encodingDetailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.encodingDetailsGroupBox.Controls.Add(this.encodingDetailViewHost);
       this.encodingDetailsGroupBox.Location = new System.Drawing.Point(3, 27);
@@ -183,8 +183,8 @@ namespace HeuristicLab.Problems.Programmable.Views {
       // 
       // encodingsGroupBox
       // 
-      this.encodingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.encodingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.encodingsGroupBox.Controls.Add(this.splitContainer);
       this.encodingsGroupBox.Location = new System.Drawing.Point(6, 6);
@@ -196,8 +196,8 @@ namespace HeuristicLab.Problems.Programmable.Views {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.encodingsTabPage);
       this.tabControl.Controls.Add(this.parametersTabPage);

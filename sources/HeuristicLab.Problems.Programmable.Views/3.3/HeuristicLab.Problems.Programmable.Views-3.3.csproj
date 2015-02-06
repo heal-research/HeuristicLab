@@ -86,18 +86,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MultiEncodingView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MultiEncodingView.Designer.cs">
-      <DependentUpon>MultiEncodingView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CreateNewSingleEncodingDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CreateNewSingleEncodingDialog.Designer.cs">
-      <DependentUpon>CreateNewSingleEncodingDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="ProblemDefinitionScriptView.cs">
       <SubType>UserControl</SubType>
@@ -123,11 +111,6 @@
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="CreateNewSingleEncodingDialog.resx">
-      <DependentUpon>CreateNewSingleEncodingDialog.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.CodeEditor\3.4\HeuristicLab.CodeEditor-3.4.csproj">

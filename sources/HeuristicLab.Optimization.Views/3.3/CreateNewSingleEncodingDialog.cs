@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.Programmable.Views {
+namespace HeuristicLab.Optimization.Views {
   public partial class CreateNewSingleEncodingDialog : Form {
     private HashSet<string> forbiddenNames;
     public IEnumerable<string> ForbiddenNames {

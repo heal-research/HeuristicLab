@@ -27,9 +27,8 @@ using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.Programmable.Views {
+namespace HeuristicLab.Optimization.Views {
   [View("MultiEncoding View")]
   [Content(typeof(MultiEncoding), IsDefaultView = true)]
   public sealed partial class MultiEncodingView : ParameterizedNamedItemView {

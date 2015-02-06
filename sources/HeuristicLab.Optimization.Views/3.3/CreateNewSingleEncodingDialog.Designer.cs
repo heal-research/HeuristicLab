@@ -19,7 +19,7 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.Programmable.Views {
+namespace HeuristicLab.Optimization.Views {
   partial class CreateNewSingleEncodingDialog {
     /// <summary>
     /// Required designer variable.
