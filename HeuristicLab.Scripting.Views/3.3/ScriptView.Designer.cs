@@ -19,6 +19,10 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Reflection;
+using HeuristicLab.Common;
+
 namespace HeuristicLab.Scripting.Views {
   partial class ScriptView {
     /// <summary> 
@@ -45,8 +49,7 @@ namespace HeuristicLab.Scripting.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptView));
-      this.compilationLabel = new System.Windows.Forms.Label();
+      this.infoTextLabel = new System.Windows.Forms.Label();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
       this.compileButton = new System.Windows.Forms.Button();
       this.infoTabControl = new System.Windows.Forms.TabControl();
@@ -83,15 +86,15 @@ namespace HeuristicLab.Scripting.Views {
       // 
       this.infoLabel.Location = new System.Drawing.Point(816, 4);
       // 
-      // compilationLabel
+      // infoTextLabel
       // 
-      this.compilationLabel.AutoSize = true;
-      this.compilationLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-      this.compilationLabel.Location = new System.Drawing.Point(66, 32);
-      this.compilationLabel.Name = "compilationLabel";
-      this.compilationLabel.Size = new System.Drawing.Size(69, 13);
-      this.compilationLabel.TabIndex = 3;
-      this.compilationLabel.Text = "Not compiled";
+      this.infoTextLabel.AutoSize = true;
+      this.infoTextLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+      this.infoTextLabel.Location = new System.Drawing.Point(66, 32);
+      this.infoTextLabel.Name = "infoTextLabel";
+      this.infoTextLabel.Size = new System.Drawing.Size(69, 13);
+      this.infoTextLabel.TabIndex = 3;
+      this.infoTextLabel.Text = "Not compiled";
       // 
       // imageList
       // 
@@ -214,6 +217,10 @@ namespace HeuristicLab.Scripting.Views {
       this.codeEditor.TabIndex = 0;
       this.codeEditor.UserCode = "";
       this.codeEditor.TextEditorTextChanged += new System.EventHandler(this.codeEditor_TextEditorTextChanged);
+      this.codeEditor.AssembliesLoading += new System.EventHandler<HeuristicLab.Common.EventArgs<System.Collections.Generic.IEnumerable<System.Reflection.Assembly>>>(this.codeEditor_AssembliesLoading);
+      this.codeEditor.AssembliesLoaded += new System.EventHandler<HeuristicLab.Common.EventArgs<System.Collections.Generic.IEnumerable<System.Reflection.Assembly>>>(this.codeEditor_AssembliesLoaded);
+      this.codeEditor.AssembliesUnloading += new System.EventHandler<HeuristicLab.Common.EventArgs<System.Collections.Generic.IEnumerable<System.Reflection.Assembly>>>(this.codeEditor_AssembliesUnloading);
+      this.codeEditor.AssembliesUnloaded += new System.EventHandler<HeuristicLab.Common.EventArgs<System.Collections.Generic.IEnumerable<System.Reflection.Assembly>>>(this.codeEditor_AssembliesUnloaded);
       // 
       // splitContainer1
       // 
@@ -240,10 +247,10 @@ namespace HeuristicLab.Scripting.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.compileButton);
-      this.Controls.Add(this.compilationLabel);
+      this.Controls.Add(this.infoTextLabel);
       this.Name = "ScriptView";
       this.Size = new System.Drawing.Size(835, 602);
-      this.Controls.SetChildIndex(this.compilationLabel, 0);
+      this.Controls.SetChildIndex(this.infoTextLabel, 0);
       this.Controls.SetChildIndex(this.compileButton, 0);
       this.Controls.SetChildIndex(this.splitContainer1, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
@@ -265,7 +272,7 @@ namespace HeuristicLab.Scripting.Views {
 
     #endregion
 
-    protected System.Windows.Forms.Label compilationLabel;
+    protected System.Windows.Forms.Label infoTextLabel;
     protected System.Windows.Forms.Button compileButton;
     protected System.Windows.Forms.ImageList imageList;
     protected System.Windows.Forms.TabControl infoTabControl;

@@ -1,5 +1,5 @@
 ﻿// use 'vars' to access variables in the script's variable store (e.g. vars.x = 5)
-// use 'vars[string]' to access variables via runtime strings (e.g. vars[""x""] = 5)
+// use 'vars[string]' to access variables via runtime strings (e.g. vars["x"] = 5)
 // use 'vars.Contains(string)' to check if a variable exists
 // use 'vars.Clear()' to remove all variables
 // use 'foreach (KeyValuePair<string, object> v in vars) { ... }' to iterate over all variables

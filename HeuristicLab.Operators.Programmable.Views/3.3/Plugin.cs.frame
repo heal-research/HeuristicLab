@@ -27,7 +27,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Operators.Programmable {
   [Plugin("HeuristicLab.Operators.Programmable.Views", "3.3.10.$WCREV$")]
   [PluginFile("HeuristicLab.Operators.Programmable.Views-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.CodeEditor", "3.3")]
+  [PluginDependency("HeuristicLab.CodeEditor", "3.4")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Core.Views", "3.3")]

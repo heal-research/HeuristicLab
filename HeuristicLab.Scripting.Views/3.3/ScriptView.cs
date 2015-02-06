@@ -21,10 +21,13 @@
 
 using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -34,6 +37,13 @@ namespace HeuristicLab.Scripting.Views {
   [View("Script View")]
   [Content(typeof(Script), true)]
   public partial class ScriptView : NamedItemView {
+    private const string NotCompiledMessage = "Not compiled";
+    private const string CompilationSucceededMessage = "Compilation succeeded";
+    private const string CompilationFailedMessage = "Compilation failed";
+    private const string AssembliesLoadingMessage = "Loading Assemblies";
+    private const string AssembliesUnloadingMessage = "Unloading Assemblies";
+    private const int SilentAssemblyLoadingOperationLimit = 10;
+
     #region Properties
     public new Script Content {
       get { return (Script)base.Content; }
@@ -72,19 +82,10 @@ namespace HeuristicLab.Scripting.Views {
       if (Content == null) {
         codeEditor.UserCode = string.Empty;
       } else {
-        if (codeEditor.UserCode != Content.Code)
-          codeEditor.UserCode = Content.Code;
-        foreach (var asm in Content.GetAssemblies())
-          codeEditor.AddAssembly(asm);
+        codeEditor.UserCode = Content.Code;
+        codeEditor.AddAssembliesAsync(Content.GetAssemblies());
         if (Content.CompileErrors == null) {
-          compilationLabel.ForeColor = SystemColors.ControlDarkDark;
-          compilationLabel.Text = "Not compiled";
-        } else if (Content.CompileErrors.HasErrors) {
-          compilationLabel.ForeColor = Color.DarkRed;
-          compilationLabel.Text = "Compilation failed";
-        } else {
-          compilationLabel.ForeColor = Color.DarkGreen;
-          compilationLabel.Text = "Compilation successful";
+          UpdateInfoTextLabel(NotCompiledMessage, SystemColors.ControlText);
         }
       }
     }
@@ -113,14 +114,17 @@ namespace HeuristicLab.Scripting.Views {
       outputTextBox.Text = "Compiling ... ";
       try {
         Content.Compile();
-        outputTextBox.AppendText("Compilation succeeded.");
+        outputTextBox.AppendText(CompilationSucceededMessage);
+        UpdateInfoTextLabel(CompilationSucceededMessage, Color.DarkGreen);
         return true;
       } catch (CompilationException) {
         if (Content.CompileErrors.HasErrors) {
-          outputTextBox.AppendText("Compilation failed.");
+          outputTextBox.AppendText(CompilationFailedMessage);
+          UpdateInfoTextLabel(CompilationFailedMessage, Color.DarkRed);
           return false;
         } else {
-          outputTextBox.AppendText("Compilation succeeded.");
+          outputTextBox.AppendText(CompilationSucceededMessage);
+          UpdateInfoTextLabel(CompilationSucceededMessage, Color.DarkGreen);
           return true;
         }
       } finally {
@@ -130,14 +134,11 @@ namespace HeuristicLab.Scripting.Views {
         ReadOnly = false;
         Locked = false;
         codeEditor.Focus();
-        OnContentChanged();
       }
     }
 
     #region Helpers
     protected virtual void ShowCompilationResults() {
-      if (Content.CompileErrors.Count == 0) return;
-
       var messages = Content.CompileErrors.OfType<CompilerError>()
                                       .OrderBy(x => x.IsWarning)
                                       .ThenBy(x => x.Line)
@@ -156,9 +157,14 @@ namespace HeuristicLab.Scripting.Views {
         errorListView.Items.Add(item);
       }
 
-      codeEditor.ShowCompileErrors(Content.CompileErrors, ".cs");
+      codeEditor.ShowCompileErrors(Content.CompileErrors);
 
       AdjustErrorListViewColumnSizes();
+    }
+
+    protected virtual void UpdateInfoTextLabel(string message, Color color) {
+      infoTextLabel.Text = message;
+      infoTextLabel.ForeColor = color;
     }
 
     protected virtual void AdjustErrorListViewColumnSizes() {
@@ -166,12 +172,28 @@ namespace HeuristicLab.Scripting.Views {
         // adjusts the column width to the width of the column header
         ch.Width = -2;
     }
+
+    #region ProgressView
+    private bool progressViewCreated;
+
+    private void AddProgressView(string progressMessage) {
+      var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
+      mainForm.AddOperationProgressToView(this, progressMessage);
+      progressViewCreated = true;
+    }
+
+    private void RemoveProgressView() {
+      if (!progressViewCreated) return;
+      var mainForm = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>();
+      mainForm.RemoveOperationProgressFromView(this);
+      progressViewCreated = false;
+    }
+    #endregion
     #endregion
 
     #region Event Handlers
     private void Content_CodeChanged(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_CodeChanged), sender, e);
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_CodeChanged, sender, e);
       else {
         codeEditor.UserCode = Content.Code;
       }
@@ -195,5 +217,37 @@ namespace HeuristicLab.Scripting.Views {
       }
     }
     #endregion
+
+    private void codeEditor_AssembliesLoading(object sender, EventArgs<IEnumerable<Assembly>> e) {
+      if (InvokeRequired) Invoke((Action<object, EventArgs<IEnumerable<Assembly>>>)codeEditor_AssembliesLoading, sender, e);
+      else {
+        int nrOfAssemblies = e.Value.Count();
+        if (nrOfAssemblies > SilentAssemblyLoadingOperationLimit)
+          AddProgressView(AssembliesLoadingMessage);
+      }
+    }
+
+    private void codeEditor_AssembliesLoaded(object sender, EventArgs<IEnumerable<Assembly>> e) {
+      if (InvokeRequired) Invoke((Action<object, EventArgs<IEnumerable<Assembly>>>)codeEditor_AssembliesLoaded, sender, e);
+      else {
+        RemoveProgressView();
+      }
+    }
+
+    private void codeEditor_AssembliesUnloading(object sender, EventArgs<IEnumerable<Assembly>> e) {
+      if (InvokeRequired) Invoke((Action<object, EventArgs<IEnumerable<Assembly>>>)codeEditor_AssembliesUnloading, sender, e);
+      else {
+        int nrOfAssemblies = e.Value.Count();
+        if (nrOfAssemblies > SilentAssemblyLoadingOperationLimit)
+          AddProgressView(AssembliesUnloadingMessage);
+      }
+    }
+
+    private void codeEditor_AssembliesUnloaded(object sender, EventArgs<IEnumerable<Assembly>> e) {
+      if (InvokeRequired) Invoke((Action<object, EventArgs<IEnumerable<Assembly>>>)codeEditor_AssembliesUnloaded, sender, e);
+      else {
+        RemoveProgressView();
+      }
+    }
   }
 }

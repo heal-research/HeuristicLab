@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
@@ -30,6 +32,11 @@ namespace HeuristicLab.Scripting.Views {
   [View("C# Script View")]
   [Content(typeof(CSharpScript), true)]
   public partial class CSharpScriptView : ScriptView {
+    private const string ScriptExecutionStartedMessage = "Script execution started";
+    private const string ScriptExecutionCanceledMessage = "Script execution canceled";
+    private const string ScriptExecutionSuccessfulMessage = "Script execution successful";
+    private const string ScriptExecutionFailedMessage = "Script execution failed";
+
     protected bool Running { get; set; }
 
     public new CSharpScript Content {
@@ -64,6 +71,7 @@ namespace HeuristicLab.Scripting.Views {
         ReadOnly = true;
         startStopButton.Image = VSImageLibrary.Stop;
         toolTip.SetToolTip(startStopButton, "Stop (Shift+F5)");
+        UpdateInfoTextLabel(ScriptExecutionStartedMessage, SystemColors.ControlText);
         infoTabControl.SelectedTab = outputTabPage;
       }
     }
@@ -75,10 +83,19 @@ namespace HeuristicLab.Scripting.Views {
         ReadOnly = false;
         startStopButton.Image = VSImageLibrary.Play;
         toolTip.SetToolTip(startStopButton, "Run (F5)");
-        Running = false;
+
         var ex = e.Value;
-        if (ex != null)
+        if (ex == null) {
+          UpdateInfoTextLabel(ScriptExecutionSuccessfulMessage, Color.DarkGreen);
+        } else if (ex is ThreadAbortException) {
+          // the execution was canceled by the user
+          UpdateInfoTextLabel(ScriptExecutionCanceledMessage, Color.DarkOrange);
+        } else {
+          UpdateInfoTextLabel(ScriptExecutionFailedMessage, Color.DarkRed);
           PluginInfrastructure.ErrorHandling.ShowErrorDialog(this, ex);
+        }
+
+        Running = false;
       }
     }
     protected virtual void ContentOnConsoleOutputChanged(object sender, EventArgs<string> e) {
@@ -110,8 +127,8 @@ namespace HeuristicLab.Scripting.Views {
       } else
         if (Compile()) {
           outputTextBox.Clear();
-          Content.ExecuteAsync();
           Running = true;
+          Content.ExecuteAsync();
         }
     }
 

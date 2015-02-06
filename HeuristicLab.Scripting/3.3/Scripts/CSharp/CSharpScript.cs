@@ -101,11 +101,10 @@ namespace HeuristicLab.Scripting {
         try {
           OnScriptExecutionStarted();
           compiledScript.Execute(VariableStore);
-        } catch (ThreadAbortException) {
-          // the execution was cancelled by the user
         } catch (Exception e) {
           ex = e;
         } finally {
+          scriptThread = null;
           OnScriptExecutionFinished(ex);
         }
       });
@@ -114,8 +113,8 @@ namespace HeuristicLab.Scripting {
     }
 
     public virtual void Kill() {
-      if (scriptThread.IsAlive)
-        scriptThread.Abort();
+      if (scriptThread == null) return;
+      scriptThread.Abort();
     }
 
     protected virtual void CompiledScriptOnConsoleOutputChanged(object sender, EventArgs<string> e) {
