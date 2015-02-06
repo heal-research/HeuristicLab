@@ -1,6 +1,7 @@
 ﻿#region License Information
+
 /* HeuristicLab
- * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -17,6 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #endregion
 
 using HeuristicLab.Common;
@@ -26,7 +28,7 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
+namespace HeuristicLab.Problems.BinaryVector {
   [StorableClass]
   public abstract class BinaryVectorProblem : Problem, IBinaryVectorProblem {
     private const string LengthParameterName = "Length";

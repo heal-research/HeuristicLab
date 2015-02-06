@@ -21,7 +21,7 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
+using HeuristicLab.Problems.BinaryVector;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication

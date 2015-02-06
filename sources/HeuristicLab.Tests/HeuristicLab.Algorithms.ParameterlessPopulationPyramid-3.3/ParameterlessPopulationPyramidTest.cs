@@ -23,6 +23,7 @@ using System;
 using System.Threading;
 using HeuristicLab.Algorithms.ParameterlessPopulationPyramid;
 using HeuristicLab.Common;
+using HeuristicLab.Problems.BinaryVector;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ParameterlessPopulationPyramid.Test {

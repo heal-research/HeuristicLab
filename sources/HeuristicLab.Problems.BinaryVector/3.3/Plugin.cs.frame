@@ -24,23 +24,16 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
-  /// <summary>
-  /// Plugin class for HeuristicLab.Algorithms.ParameterlessPopulationPyramid plugin.
-  /// </summary>
-  [Plugin("HeuristicLab.Algorithms.ParameterlessPopulationPyramid", "3.3.10.$WCREV$")]
-  [PluginFile("HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Analysis", "3.3")]
+namespace HeuristicLab.Problems.BinaryVector {
+  [Plugin("HeuristicLab.Problems.BinaryVector","Provides binary benchmark problems.", "3.3.10.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.BinaryVector-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.BinaryVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.BinaryVector", "3.3")]
-  [PluginDependency("HeuristicLab.Random", "3.3")]
   public class Plugin : PluginBase {
   }
 }
