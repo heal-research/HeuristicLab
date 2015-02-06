@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.ServiceModel;
 using HeuristicLab.PluginInfrastructure.Manager;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal class InstallationManager {
@@ -182,31 +182,35 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
     }
 
     private void Unpack(byte[] zippedPackage) {
-      using (ZipInputStream s = new ZipInputStream(new MemoryStream(zippedPackage))) {
-        ZipEntry theEntry;
-        while ((theEntry = s.GetNextEntry()) != null) {
-          string directoryName = pluginDir;
-          string fileName = Path.GetFileName(theEntry.Name);
-          // create directory 
-          if (!string.IsNullOrEmpty(directoryName)) {
-            Directory.CreateDirectory(directoryName);
-          }
-          if (!string.IsNullOrEmpty(fileName)) {
-            string fullPath = Path.Combine(directoryName, fileName);
-            string fullDirPath = Path.GetDirectoryName(fullPath);
-            if (!Directory.Exists(fullDirPath)) Directory.CreateDirectory(fullDirPath);
-            using (FileStream streamWriter = File.Create(fullPath)) {
-              int size = 2048;
-              byte[] data = new byte[2048];
-              while (true) {
-                size = s.Read(data, 0, data.Length);
-                if (size > 0) {
-                  streamWriter.Write(data, 0, size);
-                } else {
-                  break;
+      using (MemoryStream memStream = new MemoryStream(zippedPackage)) {
+        using (ZipArchive zip = new ZipArchive(memStream, ZipArchiveMode.Read)) {
+          foreach (var theEntry in zip.Entries) {
+            string directoryName = pluginDir;
+            string fileName = Path.GetFileName(theEntry.Name);
+            // create directory 
+            if (!string.IsNullOrEmpty(directoryName)) {
+              Directory.CreateDirectory(directoryName);
+            }
+            if (!string.IsNullOrEmpty(fileName)) {
+              string fullPath = Path.Combine(directoryName, fileName);
+              string fullDirPath = Path.GetDirectoryName(fullPath);
+              if (!Directory.Exists(fullDirPath)) Directory.CreateDirectory(fullDirPath);
+              using (FileStream streamWriter = File.Create(fullPath)) {
+                int size = 2048;
+                byte[] data = new byte[2048];
+
+                using (BinaryReader reader = new BinaryReader(theEntry.Open())) {
+                  while (true) {
+                    size = reader.Read(data, 0, data.Length);
+                    if (size > 0) {
+                      streamWriter.Write(data, 0, size);
+                    } else {
+                      break;
+                    }
+                  }
                 }
+                streamWriter.Close();
               }
-              streamWriter.Close();
             }
           }
         }

@@ -113,13 +113,11 @@
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Advanced\AvailablePluginsView.cs">
@@ -315,12 +313,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ICSharpCode.SharpZipLib License.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ICSharpCode.SharpZipLib.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="Advanced\DeploymentService\services.heuristiclab.com.cer" />
     <None Include="Resources\Error.ico" />
     <Content Include="Resources\HeuristicLab.ico" />

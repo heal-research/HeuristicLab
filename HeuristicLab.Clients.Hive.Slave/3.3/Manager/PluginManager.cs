@@ -112,8 +112,6 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       // copy files from PluginInfrastructure (which are not declared in any plugins)
       string baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.PluginInfrastructureDll);
-      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.SharpZipLibDll);
-      CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.SharpZipLibLicense);
 
       // copy slave plugins, otherwise its not possible to register the UnhandledException handler to the appdomain        
       CopyFile(baseDir, targetDir, CoreProperties.Settings.Default.ClientsHiveSlaveCoreDll);

@@ -29,7 +29,6 @@ using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;
 using HeuristicLab.Tracing;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -285,7 +284,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="o">The object.</param>
     /// <param name="filename">The filename.</param>
     public static void Serialize(object o, string filename) {
-      Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, 5);
+      Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, CompressionLevel.Optimal);
     }
 
     /// <summary>
@@ -296,7 +295,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="o">The object.</param>
     /// <param name="filename">The filename.</param>
     /// <param name="compression">ZIP file compression level</param>
-    public static void Serialize(object o, string filename, int compression) {
+    public static void Serialize(object o, string filename, CompressionLevel compression) {
       Serialize(o, filename, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), false, compression);
     }
 
@@ -308,7 +307,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="filename">The filename.</param>
     /// <param name="config">The configuration.</param>
     public static void Serialize(object obj, string filename, Configuration config) {
-      Serialize(obj, filename, config, false, 5);
+      Serialize(obj, filename, config, false, CompressionLevel.Optimal);
     }
 
     /// <summary>
@@ -319,7 +318,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="config">The configuration.</param>
     /// <param name="includeAssemblies">if set to <c>true</c> include needed assemblies.</param>
     /// <param name="compression">The ZIP compression level.</param>
-    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies, int compression) {
+    public static void Serialize(object obj, string filename, Configuration config, bool includeAssemblies, CompressionLevel compression) {
       try {
         string tempfile = Path.GetTempFileName();
         DateTime start = DateTime.Now;
@@ -327,21 +326,20 @@ namespace HeuristicLab.Persistence.Default.Xml {
           Serializer serializer = new Serializer(obj, config);
           serializer.InterleaveTypeInformation = false;
           XmlGenerator generator = new XmlGenerator();
-          using (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
-            zipStream.IsStreamOwner = false;
-            zipStream.SetLevel(compression);
-            zipStream.PutNextEntry(new ZipEntry("data.xml") { DateTime = DateTime.MinValue });
-            StreamWriter writer = new StreamWriter(zipStream);
-            foreach (ISerializationToken token in serializer) {
-              string line = generator.Format(token);
-              writer.Write(line);
+          using (ZipArchive zipArchive = new ZipArchive(stream, ZipArchiveMode.Create)) {
+            ZipArchiveEntry entry = zipArchive.CreateEntry("data.xml", compression);
+            using (StreamWriter writer = new StreamWriter(entry.Open())) {
+              foreach (ISerializationToken token in serializer) {
+                string line = generator.Format(token);
+                writer.Write(line);
+              }
             }
-            writer.Flush();
-            zipStream.PutNextEntry(new ZipEntry("typecache.xml") { DateTime = DateTime.MinValue });
-            foreach (string line in generator.Format(serializer.TypeCache)) {
-              writer.Write(line);
+            entry = zipArchive.CreateEntry("typecache.xml", compression);
+            using (StreamWriter writer = new StreamWriter(entry.Open())) {
+              foreach (string line in generator.Format(serializer.TypeCache)) {
+                writer.Write(line);
+              }
             }
-            writer.Flush();
             if (includeAssemblies) {
               foreach (string name in serializer.RequiredFiles) {
                 Uri uri = new Uri(name);
@@ -349,16 +347,18 @@ namespace HeuristicLab.Persistence.Default.Xml {
                   Logger.Warn("cannot read non-local files");
                   continue;
                 }
-                zipStream.PutNextEntry(new ZipEntry(Path.GetFileName(uri.PathAndQuery)));
-                FileStream reader = File.OpenRead(uri.PathAndQuery);
-                byte[] buffer = new byte[1024 * 1024];
-                while (true) {
-                  int bytesRead = reader.Read(buffer, 0, 1024 * 1024);
-                  if (bytesRead == 0)
-                    break;
-                  zipStream.Write(buffer, 0, bytesRead);
+                entry = zipArchive.CreateEntry(Path.GetFileName(uri.PathAndQuery), compression);
+                using (BinaryWriter bw = new BinaryWriter(entry.Open())) {
+                  using (FileStream reader = File.OpenRead(uri.PathAndQuery)) {
+                    byte[] buffer = new byte[1024 * 1024];
+                    while (true) {
+                      int bytesRead = reader.Read(buffer, 0, 1024 * 1024);
+                      if (bytesRead == 0)
+                        break;
+                      bw.Write(buffer, 0, bytesRead);
+                    }
+                  }
                 }
-                writer.Flush();
               }
             }
           }
@@ -406,9 +406,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
       try {
         Serializer serializer = new Serializer(obj, config);
         Serialize(stream, serializer);
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         throw;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
       }
     }
@@ -426,9 +428,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
         Serializer serializer = new Serializer(obj, config);
         Serialize(stream, serializer);
         types = serializer.SerializedTypes;
-      } catch (PersistenceException) {
+      }
+      catch (PersistenceException) {
         throw;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         throw new PersistenceException("Unexpected exception during Serialization.", e);
       }
     }

@@ -28,7 +28,6 @@ using System.Xml;
 using HeuristicLab.Persistence.Core;
 using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Persistence.Default.Xml {
 
@@ -192,8 +191,10 @@ namespace HeuristicLab.Persistence.Default.Xml {
     public static object Deserialize(string filename) {
       TimeSpan start = System.Diagnostics.Process.GetCurrentProcess().TotalProcessorTime;
       try {
-        using (ZipFile file = new ZipFile(filename)) {
-          return Deserialize(file);
+        using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
+          using (ZipArchive zip = new ZipArchive(fs)) {
+            return Deserialize(zip);
+          }
         }
       }
       finally {
@@ -246,19 +247,23 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return (T)Deserialize(stream);
     }
 
-    private static object Deserialize(ZipFile zipFile) {
+    private static object Deserialize(ZipArchive zipFile) {
       try {
-        ZipEntry typecache = zipFile.GetEntry("typecache.xml");
-        if (typecache == null)
-          throw new PersistenceException("file does not contain typecache.xml");
-        Deserializer deSerializer = new Deserializer(ParseTypeCache(new StreamReader(zipFile.GetInputStream(typecache))));
-        ZipEntry data = zipFile.GetEntry("data.xml");
-        if (data == null)
-          throw new PersistenceException("file does not contain data.xml");
-        XmlParser parser = new XmlParser(
-          new StreamReader(zipFile.GetInputStream(data)));
-        object result = deSerializer.Deserialize(parser);
-        zipFile.Close();
+        ZipArchiveEntry typecache = zipFile.GetEntry("typecache.xml");
+        if (typecache == null) throw new PersistenceException("file does not contain typecache.xml");
+        Deserializer deSerializer;
+        using (StreamReader sr = new StreamReader(typecache.Open())) {
+          deSerializer = new Deserializer(ParseTypeCache(sr));
+        }
+
+        ZipArchiveEntry data = zipFile.GetEntry("data.xml");
+        if (data == null) throw new PersistenceException("file does not contain data.xml");
+        object result;
+        using (StreamReader sr = new StreamReader(data.Open())) {
+          XmlParser parser = new XmlParser(sr);
+          result = deSerializer.Deserialize(parser);
+        }
+
         return result;
       }
       catch (PersistenceException) {

@@ -17,12 +17,6 @@
     <Setting Name="PluginInfrastructureDll" Type="System.String" Scope="User">
       <Value Profile="(Default)">HeuristicLab.PluginInfrastructure-3.3.dll</Value>
     </Setting>
-    <Setting Name="SharpZipLibDll" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ICSharpCode.SharpZipLib.dll</Value>
-    </Setting>
-    <Setting Name="SharpZipLibLicense" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ICSharpCode.SharpZipLib License.txt</Value>
-    </Setting>
     <Setting Name="ClientsHiveSlaveCoreDll" Type="System.String" Scope="User">
       <Value Profile="(Default)">HeuristicLab.Clients.Hive.SlaveCore-3.3.dll</Value>
     </Setting>

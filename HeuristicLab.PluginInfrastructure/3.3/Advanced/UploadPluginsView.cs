@@ -24,11 +24,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.ServiceModel;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Manager;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.PluginInfrastructure.Advanced {
   internal partial class UploadPluginsView : InstallationManagerControl {
@@ -261,12 +261,10 @@ namespace HeuristicLab.PluginInfrastructure.Advanced {
 
     private static byte[] CreateZipPackage(IPluginDescription plugin) {
       using (MemoryStream stream = new MemoryStream()) {
-        ZipFile zipFile = new ZipFile(stream);
-        zipFile.BeginUpdate();
+        ZipArchive zipFile = new ZipArchive(stream, ZipArchiveMode.Create);
         foreach (var file in plugin.Files) {
-          zipFile.Add(file.Name);
+          zipFile.CreateEntry(file.Name);
         }
-        zipFile.CommitUpdate();
         stream.Seek(0, SeekOrigin.Begin);
         return stream.GetBuffer();
       }

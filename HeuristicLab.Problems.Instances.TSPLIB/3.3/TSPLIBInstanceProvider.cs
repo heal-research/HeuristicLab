@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.TSPLIB {
   public abstract class TSPLIBInstanceProvider<T> : ProblemInstanceProvider<T> {
@@ -51,16 +51,16 @@ ORSA Journal on Computing, 3, pp. 376-384.";
       Dictionary<string, string> solutions = new Dictionary<string, string>();
       var solutionsArchiveName = GetResourceName(FileExtension + @"\.opt\.tour\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
-        using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
-          foreach (var entry in GetZipContents(solutionsZipFile))
-            solutions.Add(entry.Substring(0, entry.Length - ".opt.tour".Length) + "." + FileExtension, entry);
+        using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
+          foreach (var entry in solutionsZipFile.Entries)
+            solutions.Add(entry.Name.Substring(0, entry.Name.Length - ".opt.tour".Length) + "." + FileExtension, entry.Name);
         }
       }
       var instanceArchiveName = GetResourceName(FileExtension + @"\.zip");
       if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
 
-      using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
-        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
+      using (var instanceStream = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
+        foreach (var entry in instanceStream.Entries.Select(x => x.Name).OrderBy(x => x)) {
           yield return new TSPLIBDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetInstanceDescription(), entry, solutions.ContainsKey(entry) ? solutions[entry] : String.Empty);
         }
       }
@@ -69,17 +69,17 @@ ORSA Journal on Computing, 3, pp. 376-384.";
     public override T LoadData(IDataDescriptor id) {
       var descriptor = (TSPLIBDataDescriptor)id;
       var instanceArchiveName = GetResourceName(FileExtension + @"\.zip");
-      using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+      using (var instancesZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
         var entry = instancesZipFile.GetEntry(descriptor.InstanceIdentifier);
-        var stream = instancesZipFile.GetInputStream(entry);
+        var stream = entry.Open();
         var parser = new TSPLIBParser(stream);
         var instance = LoadInstance(parser);
 
         if (!String.IsNullOrEmpty(descriptor.SolutionIdentifier)) {
           var solutionsArchiveName = GetResourceName(FileExtension + @"\.opt\.tour\.zip");
-          using (var solutionsZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
+          using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
             entry = solutionsZipFile.GetEntry(descriptor.SolutionIdentifier);
-            stream = solutionsZipFile.GetInputStream(entry);
+            stream = entry.Open();
             parser = new TSPLIBParser(stream);
             LoadSolution(parser, instance);
           }
@@ -103,13 +103,6 @@ ORSA Journal on Computing, 3, pp. 376-384.";
 
     protected virtual string GetInstanceDescription() {
       return "Embedded instance of plugin version " + Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true).Cast<AssemblyFileVersionAttribute>().First().Version + ".";
-    }
-
-    protected IEnumerable<string> GetZipContents(ZipInputStream zipFile) {
-      ZipEntry entry;
-      while ((entry = zipFile.GetNextEntry()) != null) {
-        yield return entry.Name;
-      }
     }
   }
 }

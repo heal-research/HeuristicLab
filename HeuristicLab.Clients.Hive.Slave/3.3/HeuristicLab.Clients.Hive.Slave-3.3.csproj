@@ -182,11 +182,6 @@
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="ICSharpCode.SharpZipLib License.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

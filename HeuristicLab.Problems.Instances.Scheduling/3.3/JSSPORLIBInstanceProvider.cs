@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.Scheduling {
   public class JSSPORLIBInstanceProvider : ProblemInstanceProvider<JSSPData> {
@@ -50,8 +50,8 @@ namespace HeuristicLab.Problems.Instances.Scheduling {
       var instanceArchiveName = GetResourceName("JSSPORLIB.zip");
       if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
 
-      using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
-        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
+      using (var instanceStream = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
+        foreach (var entry in instanceStream.Entries.Select(x => x.Name).OrderBy(x => x)) {
           yield return new JSSPORLIBDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetDescription(), entry, null);
         }
       }
@@ -60,10 +60,10 @@ namespace HeuristicLab.Problems.Instances.Scheduling {
     public override JSSPData LoadData(IDataDescriptor id) {
       var descriptor = (JSSPORLIBDataDescriptor)id;
       var instanceArchiveName = GetResourceName("JSSPORLIB.zip");
-      using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+      using (var instancesZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
         var entry = instancesZipFile.GetEntry(descriptor.InstanceIdentifier);
 
-        using (var stream = instancesZipFile.GetInputStream(entry)) {
+        using (var stream = entry.Open()) {
           var parser = new JSSPORLIBParser();
           parser.Parse(stream);
           var instance = Load(parser);
@@ -122,13 +122,6 @@ namespace HeuristicLab.Problems.Instances.Scheduling {
     protected virtual string GetResourceName(string fileName) {
       return Assembly.GetExecutingAssembly().GetManifestResourceNames()
         .SingleOrDefault(x => Regex.Match(x, @".*\.Data\." + fileName).Success);
-    }
-
-    protected IEnumerable<string> GetZipContents(ZipInputStream zipFile) {
-      ZipEntry entry;
-      while ((entry = zipFile.GetNextEntry()) != null) {
-        yield return entry.Name;
-      }
     }
   }
 }

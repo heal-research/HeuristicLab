@@ -22,10 +22,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using ICSharpCode.SharpZipLib.Zip;
 
 namespace HeuristicLab.Problems.Instances.QAPLIB {
   public class QAPLIBInstanceProvider : ProblemInstanceProvider<QAPData> {
@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Instances.QAPLIB {
     // These instances specified their best known solution in the wrong order
     protected virtual HashSet<string> ReversedSolutions {
       get {
-            return new HashSet<string>(new string[] {
+        return new HashSet<string>(new string[] {
               "bur26a",
               "bur26b",
               "bur26c",
@@ -176,16 +176,16 @@ Journal of Global Optimization, 10, pp. 391-403.";
       Dictionary<string, string> solutions = new Dictionary<string, string>();
       var solutionsArchiveName = GetResourceName(FileName + @"\.sln\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
-        using (var solutionsZipFile = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
-          foreach (var entry in GetZipContents(solutionsZipFile))
-            solutions.Add(Path.GetFileNameWithoutExtension(entry) + ".dat", entry);
+        using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
+          foreach (var entry in solutionsZipFile.Entries)
+            solutions.Add(Path.GetFileNameWithoutExtension(entry.Name) + ".dat", entry.Name);
         }
       }
       var instanceArchiveName = GetResourceName(FileName + @"\.dat\.zip");
       if (String.IsNullOrEmpty(instanceArchiveName)) yield break;
 
-      using (var instanceStream = new ZipInputStream(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
-        foreach (var entry in GetZipContents(instanceStream).OrderBy(x => x)) {
+      using (var instanceStream = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
+        foreach (var entry in instanceStream.Entries.Select(x => x.Name).OrderBy(x => x)) {
           yield return new QAPLIBDataDescriptor(Path.GetFileNameWithoutExtension(entry), GetDescription(), entry, solutions.ContainsKey(entry) ? solutions[entry] : String.Empty);
         }
       }
@@ -194,10 +194,10 @@ Journal of Global Optimization, 10, pp. 391-403.";
     public override QAPData LoadData(IDataDescriptor id) {
       var descriptor = (QAPLIBDataDescriptor)id;
       var instanceArchiveName = GetResourceName(FileName + @"\.dat\.zip");
-      using (var instancesZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(instanceArchiveName))) {
+      using (var instancesZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(instanceArchiveName), ZipArchiveMode.Read)) {
         var entry = instancesZipFile.GetEntry(descriptor.InstanceIdentifier);
 
-        using (var stream = instancesZipFile.GetInputStream(entry)) {
+        using (var stream = entry.Open()) {
           var parser = new QAPLIBParser();
           parser.Parse(stream);
           var instance = Load(parser);
@@ -206,9 +206,9 @@ Journal of Global Optimization, 10, pp. 391-403.";
 
           if (!String.IsNullOrEmpty(descriptor.SolutionIdentifier)) {
             var solutionsArchiveName = GetResourceName(FileName + @"\.sln\.zip");
-            using (var solutionsZipFile = new ZipFile(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName))) {
+            using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
               entry = solutionsZipFile.GetEntry(descriptor.SolutionIdentifier);
-              using (var solStream = solutionsZipFile.GetInputStream(entry)) {
+              using (var solStream = entry.Open()) {
                 var slnParser = new QAPLIBSolutionParser();
                 slnParser.Parse(solStream, true);
                 if (slnParser.Error != null) throw slnParser.Error;
@@ -256,13 +256,6 @@ Journal of Global Optimization, 10, pp. 391-403.";
     protected virtual string GetResourceName(string fileName) {
       return Assembly.GetExecutingAssembly().GetManifestResourceNames()
               .Where(x => Regex.Match(x, @".*\.Data\." + fileName).Success).SingleOrDefault();
-    }
-
-    protected IEnumerable<string> GetZipContents(ZipInputStream zipFile) {
-      ZipEntry entry;
-      while ((entry = zipFile.GetNextEntry()) != null) {
-        yield return entry.Name;
-      }
     }
   }
 }
