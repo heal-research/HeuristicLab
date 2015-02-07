@@ -26,7 +26,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents an evaluation operator for single-objective optimization problems.
   /// </summary>
-  public interface ISingleObjectiveEvaluator : IEvaluator {
+  public interface ISingleObjectiveEvaluator : IEvaluator, ISingleObjectiveOperator {
     ILookupParameter<DoubleValue> QualityParameter { get; }
   }
 }

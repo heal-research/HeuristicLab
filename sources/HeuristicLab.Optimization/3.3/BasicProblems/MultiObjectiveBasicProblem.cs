@@ -62,6 +62,24 @@ namespace HeuristicLab.Optimization {
       Parameters["Maximization"].ActualValue = new BoolArray(Maximization);
     }
 
+    protected override void OnOperatorsChanged() {
+      base.OnOperatorsChanged();
+      if (Encoding != null) {
+        PruneSingleObjectiveOperators(Encoding);
+        var multiEncoding = Encoding as MultiEncoding;
+        if (multiEncoding != null) {
+          foreach (var encoding in multiEncoding.Encodings.ToList()) {
+            PruneSingleObjectiveOperators(encoding);
+          }
+        }
+      }
+    }
+
+    private void PruneSingleObjectiveOperators(IEncoding encoding) {
+      if (encoding != null && encoding.Operators.Any(x => x is ISingleObjectiveOperator && !(x is IMultiObjectiveOperator)))
+        encoding.Operators = encoding.Operators.Where(x => !(x is ISingleObjectiveOperator) || x is IMultiObjectiveOperator).ToList();
+    }
+
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
       ParameterizeOperators();

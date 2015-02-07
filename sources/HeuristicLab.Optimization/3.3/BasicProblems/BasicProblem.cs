@@ -85,10 +85,17 @@ namespace HeuristicLab.Optimization {
 
     private void RegisterEvents() {
       EncodingParameter.ValueChanged += (o, e) => OnEncodingChanged();
+      var multiEncoding = Encoding as MultiEncoding;
+      if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
     }
 
     protected virtual void OnEncodingChanged() {
-      if (oldEncoding != null) AdaptEncodingOperators(oldEncoding, Encoding);
+      if (oldEncoding != null) {
+        AdaptEncodingOperators(oldEncoding, Encoding);
+        var oldMultiEncoding = oldEncoding as MultiEncoding;
+        if (oldMultiEncoding != null)
+          oldMultiEncoding.EncodingsChanged -= MultiEncodingOnEncodingsChanged;
+      }
       oldEncoding = Encoding;
 
       foreach (var op in Operators.OfType<IEncodingOperator>())
@@ -103,6 +110,9 @@ namespace HeuristicLab.Optimization {
 
       //TODO register solution creator changed event, change access modifier to private
       //((IValueParameter)solutionCreatorParam).ValueChanged += SolutionCreatorParameter_ValueChanged;      
+
+      var multiEncoding = Encoding as MultiEncoding;
+      if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
 
       OnOperatorsChanged();
       OnReset();
@@ -140,5 +150,8 @@ namespace HeuristicLab.Optimization {
       newEncoding.Operators = operators;
     }
 
+    protected virtual void MultiEncodingOnEncodingsChanged(object sender, EventArgs e) {
+      OnOperatorsChanged();
+    }
   }
 }

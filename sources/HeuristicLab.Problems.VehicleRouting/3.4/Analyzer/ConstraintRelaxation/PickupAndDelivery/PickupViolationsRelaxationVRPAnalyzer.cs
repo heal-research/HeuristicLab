@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("PickupViolationsRelaxationVRPAnalyzer", "An operator for adaptively relaxing the pickup constraints.")]
   [StorableClass]
-  public class PickupViolationsRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator {
+  public class PickupViolationsRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }

@@ -26,7 +26,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents a selection operator for selecting solutions of single-objective optimization problems.
   /// </summary>
-  public interface ISingleObjectiveSelector : ISelector {
+  public interface ISingleObjectiveSelector : ISelector, ISingleObjectiveOperator {
     IValueLookupParameter<BoolValue> MaximizationParameter { get; }
     ILookupParameter<ItemArray<DoubleValue>> QualityParameter { get; }
   }

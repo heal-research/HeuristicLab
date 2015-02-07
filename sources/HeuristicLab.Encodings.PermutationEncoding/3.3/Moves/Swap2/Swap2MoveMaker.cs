@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap2MoveMaker", "Peforms a swap-2 move on a given permutation and updates the quality.")]
   [StorableClass]
-  public class Swap2MoveMaker : SingleSuccessorOperator, IPermutationSwap2MoveOperator, IMoveMaker {
+  public class Swap2MoveMaker : SingleSuccessorOperator, IPermutationSwap2MoveOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
     }

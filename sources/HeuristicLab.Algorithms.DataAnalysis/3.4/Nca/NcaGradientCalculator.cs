@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
@@ -34,7 +35,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("NcaGradientCalculator", "Calculates the quality and gradient of a certain NCA matrix.")]
   [StorableClass]
-  public class NcaGradientCalculator : SingleSuccessorOperator {
+  public class NcaGradientCalculator : SingleSuccessorOperator, ISingleObjectiveOperator {
 
     #region Parameter Properties
     public ILookupParameter<IntValue> DimensionsParameter {

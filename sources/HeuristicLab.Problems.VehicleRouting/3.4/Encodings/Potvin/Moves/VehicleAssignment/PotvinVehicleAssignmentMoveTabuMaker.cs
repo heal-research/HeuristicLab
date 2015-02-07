@@ -31,7 +31,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinVehicleAssignmentMoveTabuMaker", "Declares a given vehicle assignment move as tabu.")]
   [StorableClass]
-  public class PotvinVehicleAssignmentMoveTabuMaker : SingleSuccessorOperator, ITabuMaker, IPotvinVehicleAssignmentMoveOperator, IPotvinOperator, IVRPMoveOperator {
+  public class PotvinVehicleAssignmentMoveTabuMaker : SingleSuccessorOperator, ITabuMaker, IPotvinVehicleAssignmentMoveOperator, IPotvinOperator, ISingleObjectiveOperator {
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
     }

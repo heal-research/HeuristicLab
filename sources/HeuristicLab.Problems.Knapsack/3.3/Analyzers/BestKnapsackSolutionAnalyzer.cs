@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.Knapsack {
   /// </summary>
   [Item("BestKnapsackSolutionAnalyzer", "An operator for analyzing the best solution for a Knapsack problem.")]
   [StorableClass]
-  public class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public class BestKnapsackSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
     }

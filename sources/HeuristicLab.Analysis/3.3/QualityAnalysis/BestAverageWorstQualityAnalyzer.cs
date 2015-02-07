@@ -35,7 +35,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("BestAverageWorstQualityAnalyzer", "An operator which analyzes the best, average and worst quality of solutions in the scope tree.")]
   [StorableClass]
-  public sealed class BestAverageWorstQualityAnalyzer : AlgorithmOperator, IAnalyzer {
+  public sealed class BestAverageWorstQualityAnalyzer : AlgorithmOperator, IAnalyzer, ISingleObjectiveOperator {
     #region Parameter properties
     public ValueLookupParameter<BoolValue> MaximizationParameter {
       get { return (ValueLookupParameter<BoolValue>)Parameters["Maximization"]; }

@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.OneMax {
   /// </summary>
   [Item("BestOneMaxSolutionAnalyzer", "An operator for analyzing the best solution for a OneMax problem.")]
   [StorableClass]
-  public class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public class BestOneMaxSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
     }

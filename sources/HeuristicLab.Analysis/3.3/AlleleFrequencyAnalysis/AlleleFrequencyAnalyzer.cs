@@ -36,7 +36,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("AlleleFrequencyAnalyzer", "An operator for analyzing the frequency of alleles.")]
   [StorableClass]
-  public abstract class AlleleFrequencyAnalyzer<T> : SingleSuccessorOperator, IAnalyzer where T : class, IItem {
+  public abstract class AlleleFrequencyAnalyzer<T> : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator where T : class, IItem {
     public virtual bool EnabledByDefault {
       get { return false; }
     }

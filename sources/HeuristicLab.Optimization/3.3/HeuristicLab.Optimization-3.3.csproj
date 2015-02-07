@@ -153,6 +153,8 @@
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveMaker.cs" />
     <Compile Include="BasicProblems\SingleObjectiveBasicProblem.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
+    <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectivePathRelinker.cs" />
     <Compile Include="Interfaces\ISingleObjectiveImprovementOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveSolutionSimilarityCalculator.cs" />

@@ -24,6 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -33,7 +34,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
   /// </summary>
   [Item("PopulationRebuildMethod", "An operator that updates the reference set and rebuilds the population.")]
   [StorableClass]
-  public sealed class PopulationRebuildMethod : SingleSuccessorOperator {
+  public sealed class PopulationRebuildMethod : SingleSuccessorOperator, ISingleObjectiveOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }

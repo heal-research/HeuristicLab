@@ -25,7 +25,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents an operator for improvement of a single objective solution.
   /// </summary>
-  public interface ISingleObjectiveImprovementOperator : IImprovementOperator {
+  public interface ISingleObjectiveImprovementOperator : IImprovementOperator, ISingleObjectiveOperator {
     IValueLookupParameter<IItem> SolutionParameter { get; }
   }
 }

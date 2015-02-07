@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPExhaustiveSwap2LocalImprovement", "Takes a solution and finds the local optimum with respect to the swap2 neighborhood by decending along the steepest gradient.")]
   [StorableClass]
-  public class QAPExhaustiveSwap2LocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator {
+  public class QAPExhaustiveSwap2LocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator, ISingleObjectiveOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["LocalIterations"]; }

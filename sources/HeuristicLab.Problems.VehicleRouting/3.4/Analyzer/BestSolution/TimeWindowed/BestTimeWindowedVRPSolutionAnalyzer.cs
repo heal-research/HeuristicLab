@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("BestTimeWindowedVRPSolutionAnalyzer", "An operator for analyzing the best solution of time windowed Vehicle Routing Problems.")]
   [StorableClass]
-  public sealed class BestTimeWindowedVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator {
+  public sealed class BestTimeWindowedVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }

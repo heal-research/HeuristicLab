@@ -32,7 +32,7 @@ using System.Linq;
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("Terminator", "Decides if the algorithm should terminate or not.")]
   [StorableClass]
-  public class Terminator : Operator, IIterationBasedOperator {
+  public class Terminator : Operator, IIterationBasedOperator, ISingleObjectiveOperator {
 
     protected OperatorParameter ContinueParameter {
       get { return (OperatorParameter)Parameters["Continue"]; }

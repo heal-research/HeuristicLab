@@ -23,6 +23,7 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,7 +37,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// </remarks>
   [Item("HeuristicCrossover", "The heuristic crossover produces offspring that extend the better parent in direction from the worse to the better parent. It is implemented as described in Wright, A.H. (1994), Genetic algorithms for real parameter optimization, Foundations of Genetic Algorithms, G.J.E. Rawlins (Ed.), Morgan Kaufmann, San Mateo, CA, 205-218.")]
   [StorableClass]
-  public class HeuristicCrossover : RealVectorCrossover {
+  public class HeuristicCrossover : RealVectorCrossover, ISingleObjectiveOperator {
     /// <summary>
     /// Whether the problem is a maximization or minimization problem.
     /// </summary>

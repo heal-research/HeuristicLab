@@ -34,7 +34,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMAAnalyzer", "Analyzes the development of strategy parameters and visualizes the performance of CMA-ES.")]
   [StorableClass]
-  public sealed class CMAAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public sealed class CMAAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
 
     public bool EnabledByDefault {
       get { return false; }

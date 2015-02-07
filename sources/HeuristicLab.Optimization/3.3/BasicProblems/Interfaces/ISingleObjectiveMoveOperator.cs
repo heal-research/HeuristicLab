@@ -20,6 +20,6 @@
 #endregion
 
 namespace HeuristicLab.Optimization {
-  public interface ISingleObjectiveMoveOperator : IMoveOperator {
+  public interface ISingleObjectiveMoveOperator : IMoveOperator, ISingleObjectiveOperator {
   }
 }

@@ -26,7 +26,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// An interface which represents operators for analyzing the best solution of single objective TestFunction Problems given in real vector representation.
   /// </summary>
-  public interface IBestSingleObjectiveTestFunctionSolutionAnalyzer : IAnalyzer {
+  public interface IBestSingleObjectiveTestFunctionSolutionAnalyzer : IAnalyzer, ISingleObjectiveOperator {
     ILookupParameter RealVectorParameter { get; }
     ILookupParameter QualityParameter { get; }
     ILookupParameter<SingleObjectiveTestFunctionSolution> BestSolutionParameter { get; }

@@ -25,7 +25,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents an operator for path relinking between single objective solutions.
   /// </summary>
-  public interface ISingleObjectivePathRelinker : IPathRelinker {
+  public interface ISingleObjectivePathRelinker : IPathRelinker, ISingleObjectiveOperator {
     ILookupParameter<ItemArray<IItem>> ParentsParameter { get; }
   }
 }

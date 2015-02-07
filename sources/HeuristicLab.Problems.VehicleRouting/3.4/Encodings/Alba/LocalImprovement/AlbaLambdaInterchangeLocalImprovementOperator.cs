@@ -35,7 +35,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Alba {
   [Item("AlbaLambdaInterchangeLocalImprovementOperator", "Takes a solution and finds the local optimum with respect to the lambda interchange neighborhood by decending along the steepest gradient.")]
   [StorableClass]
-  public class AlbaLambdaInterchangeLocalImprovementOperator : VRPOperator, IStochasticOperator, ILocalImprovementOperator {
+  public class AlbaLambdaInterchangeLocalImprovementOperator : VRPOperator, IStochasticOperator, ILocalImprovementOperator, ISingleObjectiveOperator {
 
     public IValueLookupParameter<IntValue> MaximumIterationsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["MaximumIterations"]; }

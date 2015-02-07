@@ -24,13 +24,14 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Operators;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("LinearAssignmentProblemSolver", "Uses the hungarian algorithm to solve linear assignment problems.")]
   [StorableClass]
-  public sealed class LinearAssignmentProblemSolver : SingleSuccessorOperator {
+  public sealed class LinearAssignmentProblemSolver : SingleSuccessorOperator, ISingleObjectiveOperator {
     private const int UNASSIGNED = -1;
 
     public IValueLookupParameter<BoolValue> MaximizationParameter {

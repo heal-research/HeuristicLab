@@ -32,7 +32,7 @@ namespace HeuristicLab.Analysis.QualityAnalysis {
 The difference lies in the interval [0;1] if the range [min;max] is as large as the observed quality values, otherwise the difference will become < 0 or > 1.
 A value towards 0 always means that it's closer to the better fitness value, while a value towards 1 means that it's closer to the worse fitness value.")]
   [StorableClass]
-  public class ScaledQualityDifferenceAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public class ScaledQualityDifferenceAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
     }

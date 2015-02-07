@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// </summary>
   [Item("BestSingleObjectiveTestFunctionSolutionAnalyzer", "An operator for analyzing the best solution for a SingleObjectiveTestFunction problem.")]
   [StorableClass]
-  public class BestSingleObjectiveTestFunctionSolutionAnalyzer : SingleSuccessorOperator, IBestSingleObjectiveTestFunctionSolutionAnalyzer, IAnalyzer {
+  public class BestSingleObjectiveTestFunctionSolutionAnalyzer : SingleSuccessorOperator, IBestSingleObjectiveTestFunctionSolutionAnalyzer {
     public virtual bool EnabledByDefault {
       get { return true; }
     }

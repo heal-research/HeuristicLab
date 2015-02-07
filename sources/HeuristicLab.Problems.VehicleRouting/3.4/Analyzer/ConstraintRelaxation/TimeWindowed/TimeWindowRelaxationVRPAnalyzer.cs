@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("TimeWindowRelaxationVRPAnalyzer", "An operator for adaptively relaxing the time window constraints.")]
   [StorableClass]
-  public class TimeWindowRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator {
+  public class TimeWindowRelaxationVRPAnalyzer : SingleSuccessorOperator, IAnalyzer, ITimeWindowedOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }

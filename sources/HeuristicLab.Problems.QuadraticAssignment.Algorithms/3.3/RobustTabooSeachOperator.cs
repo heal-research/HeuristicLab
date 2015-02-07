@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
   [Item("RobustTabooSearchOperator", "Performs an iteration of the robust taboo search algorithm as descrbied in Taillard 1991.")]
   [StorableClass]
-  public sealed class RobustTabooSeachOperator : SingleSuccessorOperator, IIterationBasedOperator, IStochasticOperator {
+  public sealed class RobustTabooSeachOperator : SingleSuccessorOperator, IIterationBasedOperator, IStochasticOperator, ISingleObjectiveOperator {
 
     #region Parameter Properties
     public ILookupParameter<IntValue> IterationsParameter {

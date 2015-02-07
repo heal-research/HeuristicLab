@@ -23,7 +23,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
-  public interface ISingleObjectiveMoveEvaluator : IOperator {
+  public interface ISingleObjectiveMoveEvaluator : IOperator, ISingleObjectiveOperator {
     ILookupParameter<DoubleValue> QualityParameter { get; }
     ILookupParameter<DoubleValue> MoveQualityParameter { get; }
   }

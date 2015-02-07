@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Scheduling {
   [Item("SchedulingAnalyzer", "Represents the generalized form of Analyzers for Scheduling Problems.")]
   [StorableClass]
-  public abstract class SchedulingAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public abstract class SchedulingAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
     public virtual bool EnabledByDefault {
       get { return true; }
     }

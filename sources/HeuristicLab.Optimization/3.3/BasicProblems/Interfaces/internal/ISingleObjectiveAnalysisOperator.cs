@@ -23,7 +23,7 @@ using System;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  internal interface ISingleObjectiveAnalysisOperator : IEncodingOperator {
+  internal interface ISingleObjectiveAnalysisOperator : IEncodingOperator, ISingleObjectiveOperator {
     Action<Individual[], double[], ResultCollection, IRandom> AnalyzeAction { get; set; }
   }
 }

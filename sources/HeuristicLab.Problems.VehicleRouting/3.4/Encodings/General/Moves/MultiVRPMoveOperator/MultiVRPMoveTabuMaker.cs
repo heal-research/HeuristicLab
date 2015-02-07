@@ -32,7 +32,7 @@ using HeuristicLab.Problems.VehicleRouting.Variants;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("MultiVRPMoveTabuMaker", "A multi VRP move tabu maker.")]
   [StorableClass]
-  public class MultiVRPMoveTabuMaker : SingleSuccessorOperator, IMultiVRPMoveOperator, ITabuMaker, IGeneralVRPOperator {
+  public class MultiVRPMoveTabuMaker : SingleSuccessorOperator, IMultiVRPMoveOperator, ITabuMaker, IGeneralVRPOperator, ISingleObjectiveOperator {
     public ILookupParameter VRPMoveParameter {
       get { return (ILookupParameter)Parameters["VRPMove"]; }
     }

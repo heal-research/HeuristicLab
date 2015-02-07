@@ -36,7 +36,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("BestScopeSolutionAnalyzer", "An operator that extracts the scope containing the best quality.")]
   [StorableClass]
-  public class BestScopeSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
+  public class BestScopeSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
 
     public virtual bool EnabledByDefault {
       get { return true; }
