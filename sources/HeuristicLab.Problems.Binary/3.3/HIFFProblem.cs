@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.Binary {
 
     public HIFFProblem()
       : base() {
-      Length = 64;
+        Encoding.Length = 64;
     }
     // In the GECCO paper, Section 4.1
     public override double Evaluate(BinaryVector individual, IRandom random) {

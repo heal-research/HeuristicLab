@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.Binary {
     public DeceptiveTrapProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(TrapSizeParameterName, "", new IntValue(7)));
-      Length = 49;
+      Encoding.Length = 49;
     }
 
     // In the GECCO paper, calculates Equation 3

@@ -58,7 +58,7 @@ namespace HeuristicLab.Optimization {
 
     protected SingleObjectiveBasicProblem()
       : base() {
-      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", new BoolValue()));
+      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
 
       Operators.Add(Evaluator);
@@ -81,13 +81,6 @@ namespace HeuristicLab.Optimization {
     public virtual void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) { }
     public virtual IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
       return Enumerable.Empty<Individual>();
-    }
-
-
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      var max = (BoolValue)Parameters["Maximization"].ActualValue;
-      max.Value = Maximization;
     }
 
     protected override void OnOperatorsChanged() {

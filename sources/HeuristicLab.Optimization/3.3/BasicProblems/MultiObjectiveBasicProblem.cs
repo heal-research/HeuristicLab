@@ -40,7 +40,7 @@ namespace HeuristicLab.Optimization {
 
     protected MultiObjectiveBasicProblem()
       : base() {
-      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", new BoolArray()));
+      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
 
       Operators.Add(Evaluator);
       Operators.Add(new MultiObjectiveAnalyzer());
@@ -56,11 +56,6 @@ namespace HeuristicLab.Optimization {
     public abstract bool[] Maximization { get; }
     public abstract double[] Evaluate(Individual individual, IRandom random);
     public virtual void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
-
-    protected override void OnEncodingChanged() {
-      base.OnEncodingChanged();
-      Parameters["Maximization"].ActualValue = new BoolArray(Maximization);
-    }
 
     protected override void OnOperatorsChanged() {
       base.OnOperatorsChanged();

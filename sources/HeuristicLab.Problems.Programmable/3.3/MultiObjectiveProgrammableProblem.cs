@@ -23,6 +23,7 @@ using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -72,6 +73,9 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     private void OnProblemDefinitionChanged() {
+      if (Parameters.ContainsKey("Maximization")) Parameters.Remove("Maximization");
+      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
+
       Encoding = ProblemDefinition.Encoding;
       OnOperatorsChanged();
       OnReset();

@@ -38,8 +38,8 @@ namespace HeuristicLab.Problems.Binary {
 
     public OneMaxProblem()
       : base() {
-      Encoding = new BinaryVectorEncoding("BinaryVector", 10);
-      BestKnownQuality = Length;
+      Encoding.Length = 10;
+      BestKnownQuality = Encoding.Length;
     }
 
     [StorableConstructor]
@@ -48,15 +48,6 @@ namespace HeuristicLab.Problems.Binary {
     protected OneMaxProblem(OneMaxProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new OneMaxProblem(this, cloner);
-    }
-
-    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(individuals, qualities, results, random);
-      var best = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderByDescending(z => z.Quality).First();
-      if (!results.ContainsKey("Best Solution")) {
-        results.Add(new Result("Best Solution", typeof(BinaryVector)));
-      }
-      results["Best Solution"].Value = best.Individual.BinaryVector();
     }
 
     public override double Evaluate(BinaryVector vector, IRandom random) {

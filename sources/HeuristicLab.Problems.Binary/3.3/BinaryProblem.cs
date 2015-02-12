@@ -22,6 +22,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -66,11 +67,19 @@ namespace HeuristicLab.Problems.Binary {
       return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
     }
 
+    public abstract double Evaluate(BinaryVector vector, IRandom random);
     public sealed override double Evaluate(Individual individual, IRandom random) {
       return Evaluate(individual.BinaryVector(), random);
     }
 
-    public abstract double Evaluate(BinaryVector vector, IRandom random);
+    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+      base.Analyze(individuals, qualities, results, random);
+      var best = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderByDescending(z => z.Quality).First();
+      if (!results.ContainsKey("Best Solution")) {
+        results.Add(new Result("Best Solution", typeof(BinaryVector)));
+      }
+      results["Best Solution"].Value = best.Individual.BinaryVector();
+    }
 
     protected override void OnEncodingChanged() {
       base.OnEncodingChanged();

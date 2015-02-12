@@ -66,6 +66,7 @@ namespace HeuristicLab.Optimization {
       : base() {
       Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any."));
       oldEncoding = Encoding;
+      Parameterize();
       RegisterEvents();
     }
 
@@ -90,6 +91,13 @@ namespace HeuristicLab.Optimization {
     }
 
     protected virtual void OnEncodingChanged() {
+      Parameterize();
+
+      OnOperatorsChanged();
+      OnReset();
+    }
+
+    private void Parameterize() {
       if (oldEncoding != null) {
         AdaptEncodingOperators(oldEncoding, Encoding);
         var oldMultiEncoding = oldEncoding as MultiEncoding;
@@ -106,14 +114,11 @@ namespace HeuristicLab.Optimization {
       var solutionCreatorParam = (IParameter)Activator.CreateInstance(paramType, SolutionCreatorParameter.Name, SolutionCreatorParameter.Description,
         Encoding.SolutionCreator);
       Parameters.Remove(SolutionCreatorParameter);
-      Parameters.Add(solutionCreatorParam);  
-      ((IValueParameter)solutionCreatorParam).ValueChanged += SolutionCreatorParameter_ValueChanged;      
+      Parameters.Add(solutionCreatorParam);
+      ((IValueParameter)solutionCreatorParam).ValueChanged += SolutionCreatorParameter_ValueChanged;
 
       var multiEncoding = Encoding as MultiEncoding;
       if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
-
-      OnOperatorsChanged();
-      OnReset();
     }
 
     protected override void OnSolutionCreatorChanged() {
