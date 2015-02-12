@@ -41,6 +41,8 @@ namespace HeuristicLab.Netron {
       SetStyle(ControlStyles.UserPaint, true);
       SetStyle(ControlStyles.ResizeRedraw, true);
 
+      AutoScroll = true;
+
       if (!DesignMode) {
         this.Controller = new Controller(this);
         this.Document = new Document();

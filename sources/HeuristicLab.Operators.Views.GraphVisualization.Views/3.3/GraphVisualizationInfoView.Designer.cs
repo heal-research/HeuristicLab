@@ -52,7 +52,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       // graphVisualization
       // 
       this.graphVisualization.AllowDrop = false;
-      this.graphVisualization.AutoScroll = true;
       this.graphVisualization.BackColor = System.Drawing.Color.DarkGray;
       this.graphVisualization.BackgroundType = global::Netron.Diagramming.Core.CanvasBackgroundTypes.FlatColor;
       this.graphVisualization.Dock = System.Windows.Forms.DockStyle.Fill;
