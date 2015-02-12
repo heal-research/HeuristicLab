@@ -22,13 +22,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
   public class Population {
-    public List<bool[]> Solutions {
+    public List<BinaryVector> Solutions {
       get;
       private set;
     }
@@ -39,10 +40,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     }
 
     public Population(int length, IRandom rand) {
-      Solutions = new List<bool[]>();
+      Solutions = new List<BinaryVector>();
       Tree = new LinkageTree(length, rand);
     }
-    public void Add(bool[] solution) {
+    public void Add(BinaryVector solution) {
       Solutions.Add(solution);
       Tree.Add(solution);
     }

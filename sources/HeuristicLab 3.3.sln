@@ -419,7 +419,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.CodeEditor-3.4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3", "HeuristicLab.Algorithms.ParameterlessPopulationPyramid\3.3\HeuristicLab.Algorithms.ParameterlessPopulationPyramid-3.3.csproj", "{9319C447-8183-4DBC-8145-0E3CF98084CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.BinaryVector-3.3", "HeuristicLab.Problems.BinaryVector\3.3\HeuristicLab.Problems.BinaryVector-3.3.csproj", "{FC627BE5-0F93-47D8-BD2E-530EA2B8AA5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Binary-3.3", "HeuristicLab.Problems.Binary\3.3\HeuristicLab.Problems.Binary-3.3.csproj", "{FC627BE5-0F93-47D8-BD2E-530EA2B8AA5F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Programmable-3.3", "HeuristicLab.Problems.Programmable\3.3\HeuristicLab.Problems.Programmable-3.3.csproj", "{EE07BFF8-B23D-41F5-8AD7-AC9598D7A2C9}"
 EndProject

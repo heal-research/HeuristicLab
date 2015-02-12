@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
@@ -63,7 +64,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       }
     }
 
-    public void Add(bool[] solution) {
+    public void Add(BinaryVector solution) {
       if (solution.Length != length) throw new ArgumentException("The individual has not the correct length.");
       for (int i = 1; i < solution.Length; i++) {
         for (int j = 0; j < i; j++) {

@@ -21,6 +21,7 @@
 
 using System.Linq;
 using HeuristicLab.Algorithms.ParameterlessPopulationPyramid;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,17 +29,17 @@ namespace ParameterlessPopulationPyramid.Test {
   [TestClass]
   public class LinkageTreeTest {
     private static int Length = 9;
-    private static bool[][] solutions = new bool[][] {
-    new bool[] { true, true, false, false, false, false, false, false, false }, // 110000000
-    new bool[] { false, false, true, true, false, false, false, false, false }, // 001100000
-    new bool[] { false, false, false, false, true, true, false, false, false }, // 000011000
-    new bool[] { false, false, false, false, false, false, true, true, true },  // 000000111
-    new bool[] { true, true, true, true, false, false, false, false, false },   // 111100000
-    new bool[] { true, true, true, true, true, true, true, true, true },        // 111111111
+    private static BinaryVector[] solutions = {
+    new BinaryVector(new [] { true, true, false, false, false, false, false, false, false }), // 110000000
+    new BinaryVector(new [] { false, false, true, true, false, false, false, false, false }), // 001100000
+    new BinaryVector(new [] { false, false, false, false, true, true, false, false, false }), // 000011000
+    new BinaryVector(new [] { false, false, false, false, false, false, true, true, true }),  // 000000111
+    new BinaryVector(new [] { true, true, true, true, false, false, false, false, false }),   // 111100000
+    new BinaryVector(new [] { true, true, true, true, true, true, true, true, true }),        // 111111111
     };
 
     // These are the clusters that should be built using "solutions" and the seed 123
-    private static int[][] correctClusters = new int[][] {
+    private static int[][] correctClusters = {
       new int[] { 4, 5 },
       new int[] { 2, 3 },
       new int[] { 0, 1 },

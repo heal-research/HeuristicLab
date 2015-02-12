@@ -147,7 +147,7 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.BinaryVector\3.3\HeuristicLab.Problems.BinaryVector-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Binary\3.3\HeuristicLab.Problems.Binary-3.3.csproj">
       <Project>{fc627be5-0f93-47d8-bd2e-530ea2b8aa5f}</Project>
       <Name>HeuristicLab.Problems.BinaryVector-3.3</Name>
       <Private>False</Private>

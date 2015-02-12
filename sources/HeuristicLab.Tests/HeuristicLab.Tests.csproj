@@ -253,9 +253,9 @@
       <HintPath>..\bin\HeuristicLab.Problems.ArtificialAnt-3.4.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Problems.BinaryVector-3.3">
+    <Reference Include="HeuristicLab.Problems.Binary-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\HeuristicLab.Problems.BinaryVector-3.3.dll</HintPath>
+      <HintPath>..\bin\HeuristicLab.Problems.Binary-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HeuristicLab.Problems.DataAnalysis-3.4">

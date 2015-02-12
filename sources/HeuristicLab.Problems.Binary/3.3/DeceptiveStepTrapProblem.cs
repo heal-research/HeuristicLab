@@ -24,10 +24,11 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.BinaryVector {
+namespace HeuristicLab.Problems.Binary {
   [Item("Deceptive Step Trap Problem", "Genome encodes completely separable blocks, where each block deceptive with fitness plateaus.")]
   [StorableClass]
   [Creatable("Problems")]
@@ -82,7 +83,7 @@ namespace HeuristicLab.Problems.BinaryVector {
       get { return (Offset + TrapSize) / StepSize; }
     }
 
-    protected override int Score(bool[] individual, int trapIndex, int trapSize) {
+    protected override int Score(BinaryVector individual, int trapIndex, int trapSize) {
       int partial = base.Score(individual, trapIndex, trapSize);
       // introduce plateaus using integer division
       return (Offset + partial) / StepSize;

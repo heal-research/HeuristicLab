@@ -24,13 +24,14 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.BinaryVector {
+namespace HeuristicLab.Problems.Binary {
   [Item("Hierararchical If and only If problem", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
   [StorableClass]
   [Creatable("Problems")]
-  public class HIFFProblem : BinaryVectorProblem {
+  public class HIFFProblem : BinaryProblem {
     [StorableConstructor]
     protected HIFFProblem(bool deserializing) : base(deserializing) { }
     protected HIFFProblem(HIFFProblem original, Cloner cloner)
@@ -49,7 +50,7 @@ namespace HeuristicLab.Problems.BinaryVector {
       Length = 64;
     }
     // In the GECCO paper, Section 4.1
-    public override double Evaluate(bool[] individual) {
+    public override double Evaluate(BinaryVector individual, IRandom random) {
       int[] level = new int[individual.Length];
       int levelLength = individual.Length;
 

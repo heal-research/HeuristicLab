@@ -27,10 +27,11 @@ using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.BinaryVector;
+using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
 
 
@@ -48,10 +49,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private const string IterationsParameterName = "Iterations";
 
     public override Type ProblemType {
-      get { return typeof(BinaryVectorProblem); }
+      get { return typeof(BinaryProblem); }
     }
-    public new BinaryVectorProblem Problem {
-      get { return (BinaryVectorProblem)base.Problem; }
+    public new BinaryProblem Problem {
+      get { return (BinaryProblem)base.Problem; }
       set { base.Problem = value; }
     }
 
@@ -82,12 +83,12 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       var BestQuality = new DoubleValue(double.NaN);
       Results.Add(new Result("Best quality", BestQuality));
       for (int iteration = 0; iteration < Iterations; iteration++) {
-        bool[] solution = new bool[Problem.Length];
+        var solution = new BinaryVector(Problem.Length);
         for (int i = 0; i < solution.Length; i++) {
           solution[i] = random.Next(2) == 1;
         }
 
-        var fitness = Problem.Evaluate(solution);
+        var fitness = Problem.Evaluate(solution, random);
 
         fitness = ImproveToLocalOptimum(Problem, solution, fitness, random);
         if (double.IsNaN(BestQuality.Value) || Problem.IsBetter(fitness, BestQuality.Value)) {
@@ -96,14 +97,14 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       }
     }
     // In the GECCO paper, Section 2.1
-    public static double ImproveToLocalOptimum(IBinaryVectorProblem problem, bool[] solution, double fitness, IRandom rand) {
+    public static double ImproveToLocalOptimum(BinaryProblem problem, BinaryVector solution, double fitness, IRandom rand) {
       var tried = new HashSet<int>();
       do {
         var options = Enumerable.Range(0, solution.Length).Shuffle(rand);
         foreach (var option in options) {
           if (tried.Contains(option)) continue;
           solution[option] = !solution[option];
-          double newFitness = problem.Evaluate(solution);
+          double newFitness = problem.Evaluate(solution, rand);
           if (problem.IsBetter(newFitness, fitness)) {
             fitness = newFitness;
             tried.Clear();

@@ -25,14 +25,15 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.BinaryVector {
+namespace HeuristicLab.Problems.Binary {
   [Item("Deceptive Trap Problem", "Genome encodes completely separable blocks, where each block is fully deceptive.")]
   [StorableClass]
   [Creatable("Problems")]
-  public class DeceptiveTrapProblem : BinaryVectorProblem {
+  public class DeceptiveTrapProblem : BinaryProblem {
     [StorableConstructor]
     protected DeceptiveTrapProblem(bool deserializing) : base(deserializing) { }
     protected DeceptiveTrapProblem(DeceptiveTrapProblem original, Cloner cloner)
@@ -68,7 +69,7 @@ namespace HeuristicLab.Problems.BinaryVector {
     }
 
     // In the GECCO paper, calculates Equation 3
-    protected virtual int Score(bool[] individual, int trapIndex, int trapSize) {
+    protected virtual int Score(BinaryVector individual, int trapIndex, int trapSize) {
       int result = 0;
       // count number of bits in trap set to 1
       for (int index = trapIndex; index < trapIndex + trapSize; index++) {
@@ -82,7 +83,7 @@ namespace HeuristicLab.Problems.BinaryVector {
       return result;
     }
 
-    public override double Evaluate(bool[] individual) {
+    public override double Evaluate(BinaryVector individual, IRandom random) {
       if (individual.Length != Length) throw new ArgumentException("The individual has not the correct length.");
       int total = 0;
       var trapSize = TrapSize;

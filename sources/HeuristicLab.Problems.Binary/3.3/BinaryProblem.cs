@@ -24,42 +24,33 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.BinaryVector {
+namespace HeuristicLab.Problems.Binary {
   [StorableClass]
-  public abstract class BinaryVectorProblem : Problem, IBinaryVectorProblem {
-    private const string LengthParameterName = "Length";
+  public abstract class BinaryProblem : SingleObjectiveBasicProblem<BinaryVectorEncoding> {
 
-    public IFixedValueParameter<IntValue> LengthParameter {
-      get { return (IFixedValueParameter<IntValue>)Parameters[LengthParameterName]; }
-    }
-
-    public int Length {
-      get { return LengthParameter.Value.Value; }
-      set { LengthParameter.Value.Value = value; }
-    }
-
-    public abstract bool Maximization {
-      get;
+    public virtual int Length {
+      get { return Encoding.Length; }
+      set { Encoding.Length = value; }
     }
 
     [StorableConstructor]
-    protected BinaryVectorProblem(bool deserializing) : base(deserializing) { }
-    protected BinaryVectorProblem(BinaryVectorProblem original, Cloner cloner) : base(original, cloner) { }
-    public bool IsBetter(double quality, double bestQuality) {
+    protected BinaryProblem(bool deserializing) : base(deserializing) { }
+    protected BinaryProblem(BinaryProblem original, Cloner cloner) : base(original, cloner) { }
+    protected BinaryProblem() : base() { }
+
+    public virtual bool IsBetter(double quality, double bestQuality) {
       return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
     }
 
-    public BinaryVectorProblem()
-      : base() {
-      Parameters.Add(new FixedValueParameter<IntValue>(LengthParameterName, "", new IntValue(20)));
+    public sealed override double Evaluate(Individual individual, IRandom random) {
+      return Evaluate(individual.BinaryVector(), random);
     }
 
-    public abstract double Evaluate(bool[] individual);
-
-
+    public abstract double Evaluate(BinaryVector vector, IRandom random);
   }
 }

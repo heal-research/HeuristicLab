@@ -22,7 +22,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Problems.BinaryVector;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
@@ -31,7 +32,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
   public static class LinkageCrossover {
     // In the GECCO paper, Figure 3
-    public static double ImproveUsingTree(LinkageTree tree, IList<bool[]> donors, bool[] solution, double fitness, IBinaryVectorProblem problem, IRandom rand) {
+    public static double ImproveUsingTree(LinkageTree tree, IList<BinaryVector> donors, BinaryVector solution, double fitness, BinaryProblem problem, IRandom rand) {
       var options = Enumerable.Range(0, donors.Count).ToArray();
       foreach (var cluster in tree.Clusters) {
         // Find a donor which has at least one gene value different
@@ -39,14 +40,14 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         bool donorFound = false;
         foreach (var donorIndex in options.ShuffleList(rand)) {
           // Attempt the donation
-          fitness = Donate(solution, fitness, donors[donorIndex], cluster, problem, out donorFound);
+          fitness = Donate(solution, fitness, donors[donorIndex], cluster, problem, rand, out donorFound);
           if (donorFound) break;
         }
       }
       return fitness;
     }
 
-    private static double Donate(bool[] solution, double fitness, bool[] source, IEnumerable<int> cluster, IBinaryVectorProblem problem, out bool changed) {
+    private static double Donate(BinaryVector solution, double fitness, BinaryVector source, IEnumerable<int> cluster, BinaryProblem problem, IRandom rand, out bool changed) {
       // keep track of which bits flipped to make the donation
       List<int> flipped = new List<int>();
       foreach (var index in cluster) {
@@ -57,7 +58,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       }
       changed = flipped.Count > 0;
       if (changed) {
-        double newFitness = problem.Evaluate(solution);
+        double newFitness = problem.Evaluate(solution, rand);
         // if the original is strictly better, revert the change
         if (problem.IsBetter(fitness, newFitness)) {
           foreach (var index in flipped) {

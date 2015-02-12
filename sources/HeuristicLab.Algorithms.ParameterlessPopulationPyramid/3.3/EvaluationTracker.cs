@@ -21,14 +21,18 @@
 #endregion
 
 using System;
-using HeuristicLab.Problems.BinaryVector;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.Binary;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  public class EvaluationTracker : IBinaryVectorProblem {
-    private readonly IBinaryVectorProblem problem;
+  internal sealed class EvaluationTracker : BinaryProblem {
+    private readonly BinaryProblem problem;
 
     private int maxEvaluations;
 
@@ -48,43 +52,61 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       private set;
     }
 
-    public bool[] BestSolution {
+    public BinaryVector BestSolution {
       get;
       private set;
     }
     #endregion
 
-    public EvaluationTracker(IBinaryVectorProblem problem, int maxEvaluations) {
+    [StorableConstructor]
+    private EvaluationTracker(bool deserializing) : base(deserializing) { }
+    private EvaluationTracker(EvaluationTracker original, Cloner cloner)
+      : base(original, cloner) {
+      problem = cloner.Clone(original.problem);
+      maxEvaluations = original.maxEvaluations;
+      BestQuality = original.BestQuality;
+      Evaluations = original.Evaluations;
+      BestFoundOnEvaluation = original.BestFoundOnEvaluation;
+      BestSolution = cloner.Clone(BestSolution);
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EvaluationTracker(this, cloner);
+    }
+    public EvaluationTracker(BinaryProblem problem, int maxEvaluations) {
       this.problem = problem;
       this.maxEvaluations = maxEvaluations;
-      BestSolution = new bool[0];
+      BestSolution = new BinaryVector(Length);
       BestQuality = double.NaN;
       Evaluations = 0;
       BestFoundOnEvaluation = 0;
     }
 
-    public double Evaluate(bool[] individual) {
+
+
+    public override double Evaluate(BinaryVector vector, IRandom random) {
       if (Evaluations >= maxEvaluations) throw new OperationCanceledException("Maximum Evaluation Limit Reached");
       Evaluations++;
-      double fitness = problem.Evaluate(individual);
+      double fitness = problem.Evaluate(vector, random);
       if (double.IsNaN(BestQuality) || problem.IsBetter(fitness, BestQuality)) {
         BestQuality = fitness;
-        BestSolution = (bool[])individual.Clone();
+        BestSolution = (BinaryVector)vector.Clone();
         BestFoundOnEvaluation = Evaluations;
       }
       return fitness;
     }
 
-    #region ForwardedInteraface
-    public int Length {
+    public override int Length {
       get { return problem.Length; }
+      set { problem.Length = value; }
     }
-    public bool Maximization {
+
+    public override bool Maximization {
       get { return problem.Maximization; }
     }
+
     public bool IsBetter(double quality, double bestQuality) {
       return problem.IsBetter(quality, bestQuality);
     }
-    #endregion
+
   }
 }

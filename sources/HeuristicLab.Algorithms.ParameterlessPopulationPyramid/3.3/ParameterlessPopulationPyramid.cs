@@ -31,7 +31,7 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.BinaryVector;
+using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
@@ -43,10 +43,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   [Creatable("Algorithms")]
   public class ParameterlessPopulationPyramid : BasicAlgorithm {
     public override Type ProblemType {
-      get { return typeof(BinaryVectorProblem); }
+      get { return typeof(BinaryProblem); }
     }
-    public new BinaryVectorProblem Problem {
-      get { return (BinaryVectorProblem)base.Problem; }
+    public new BinaryProblem Problem {
+      get { return (BinaryProblem)base.Problem; }
       set { base.Problem = value; }
     }
 
@@ -55,7 +55,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private EvaluationTracker tracker;
 
     // Tracks all solutions in Pyramid for quick membership checks
-    private HashSet<bool[]> seen = new HashSet<bool[]>(new EnumerableBoolEqualityComparer());
+    private HashSet<BinaryVector> seen = new HashSet<BinaryVector>(new EnumerableBoolEqualityComparer());
 
     #region ParameterNames
     private const string MaximumIterationsParameterName = "Maximum Iterations";
@@ -178,13 +178,13 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       if (ExecutionTime.TotalSeconds > MaximumRuntime) CancellationTokenSource.Cancel();
     }
 
-    private void AddIfUnique(bool[] solution, int level) {
+    private void AddIfUnique(BinaryVector solution, int level) {
       // Don't add things you have seen
       if (seen.Contains(solution)) return;
       if (level == pyramid.Count) {
         pyramid.Add(new Population(tracker.Length, random));
       }
-      var copied = (bool[])solution.Clone();
+      var copied = (BinaryVector)solution.Clone();
       pyramid[level].Add(copied);
       seen.Add(copied);
     }
@@ -192,11 +192,11 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     // In the GECCO paper, Figure 1
     private double iterate() {
       // Create a random solution
-      bool[] solution = new bool[tracker.Length];
+      BinaryVector solution = new BinaryVector(tracker.Length);
       for (int i = 0; i < solution.Length; i++) {
         solution[i] = random.Next(2) == 1;
       }
-      double fitness = tracker.Evaluate(solution);
+      double fitness = tracker.Evaluate(solution, random);
       fitness = HillClimber.ImproveToLocalOptimum(tracker, solution, fitness, random);
       AddIfUnique(solution, 0);
 
@@ -248,8 +248,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         try {
           fitness = iterate();
           cancellationToken.ThrowIfCancellationRequested();
-        }
-        finally {
+        } finally {
           ResultsEvaluations = tracker.Evaluations;
           ResultsBestSolution = new BinaryVector(tracker.BestSolution);
           ResultsBestQuality = tracker.BestQuality;

@@ -24,9 +24,9 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.BinaryVector {
-  [Plugin("HeuristicLab.Problems.BinaryVector","Provides binary benchmark problems.", "3.3.10.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.BinaryVector-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.Problems.Binary {
+  [Plugin("HeuristicLab.Problems.Binary","Provides binary benchmark problems.", "3.3.10.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.Binary-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
@@ -34,6 +34,6 @@ namespace HeuristicLab.Problems.BinaryVector {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  public class Plugin : PluginBase {
+  public class HeuristicLabProblemsBinaryPlugin : PluginBase {
   }
 }
