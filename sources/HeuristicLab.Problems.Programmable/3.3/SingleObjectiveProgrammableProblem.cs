@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -60,6 +61,7 @@ namespace HeuristicLab.Problems.Programmable {
     public SingleObjectiveProgrammableProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript() { Name = Name }));
+      Operators.Add(new BestScopeSolutionAnalyzer());
       RegisterEvents();
     }
 
