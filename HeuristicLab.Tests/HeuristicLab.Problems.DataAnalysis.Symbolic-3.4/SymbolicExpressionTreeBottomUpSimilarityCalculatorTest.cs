@@ -36,6 +36,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
         "(* (- (variable 9.581e-1 X6) (+ (- (variable 5.1491e-1 X5) 1.614e+1) (+ (/ (variable 2.0539 X5) (variable -9.2452e-1 X6)) (log (/ (variable 2.0539 X5) (variable -9.2452e-1 X6)))))) 2.9081)",
         9);
 
+      TestMatchedNodes("(* (* (* (variable 1.68 x) (* (variable 1.68 x) (variable 2.55 x))) (variable 1.68 x)) (* (* (variable 1.68 x) (* (variable 1.68 x) (* (variable 1.68 x) (variable 2.55 x)))) (variable 2.55 x)))", "(* (variable 2.55 x) (* (variable 1.68 x) (* (variable 1.68 x) (* (variable 1.68 x) (variable 2.55 x)))))", 9);
+
       TestMatchedNodes("(+ (exp 2.1033) (/ -4.3072 (variable 2.4691 X7)))", "(/ 1 (+ (/ -4.3072 (variable 2.4691 X7)) (exp 2.1033)))", 6);
       TestMatchedNodes("(+ (exp 2.1033) (/ -4.3072 (variable 2.4691 X7)))", "(/ 1 (+ (/ (variable 2.4691 X7) -4.3072) (exp 2.1033)))", 4);
 

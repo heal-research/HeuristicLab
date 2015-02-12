@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -80,7 +80,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var reverseMap = new Dictionary<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode>(); // nodes of t2 => nodes of t1
 
       // visit nodes in order of decreasing height to ensure correct mapping
-      var nodes1 = n1.IterateNodesPrefix().ToList();
+      var nodes1 = n1.IterateNodesPrefix().OrderByDescending(x => x.GetDepth()).ToList();
       var nodes2 = n2.IterateNodesPrefix().ToList();
       for (int i = 0; i < nodes1.Count; ++i) {
         var v = nodes1[i];
@@ -97,8 +97,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         }
         if (w == null) continue;
 
-        // at this point we know that v and w are isomorphic, however, the mapping cannot be done directly (as in the paper) because the trees are unordered (subtree order might differ)
-        // the solution is to sort subtrees by label using IterateBreadthOrdered (this will work because the subtrees are isomorphic!) and simultaneously iterate over the two subtrees
+        // at this point we know that v and w are isomorphic, however, the mapping cannot be done directly
+        // (as in the paper) because the trees are unordered (subtree order might differ). the solution is 
+        // to sort subtrees from under commutative labels (this will work because the subtrees are isomorphic!)
+        // while iterating over the two subtrees
         var vv = IterateBreadthOrdered(v, comparer).ToList();
         var ww = IterateBreadthOrdered(w, comparer).ToList();
         int len = Math.Min(vv.Count, ww.Count);
@@ -132,7 +134,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       foreach (var n in nodes) {
         if (n.SubtreeCount == 0) {
-          var label = Label(n);
+          var label = GetLabel(n);
           if (!labelMap.ContainsKey(label)) {
             var z = new GraphNode { SymbolicExpressionTreeNode = n, Label = label };
             labelMap[z.Label] = z;
@@ -208,7 +210,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return list;
     }
 
-    private string Label(ISymbolicExpressionTreeNode node) {
+    private static string GetLabel(ISymbolicExpressionTreeNode node) {
       if (node.SubtreeCount > 0)
         return node.Symbol.Name;
 
