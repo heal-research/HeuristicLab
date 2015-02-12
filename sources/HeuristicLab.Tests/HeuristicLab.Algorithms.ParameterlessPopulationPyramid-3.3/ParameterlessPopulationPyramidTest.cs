@@ -94,7 +94,7 @@ namespace ParameterlessPopulationPyramid.Test {
       DoRun(problem, 1000, 12345, 1, 976);
       problem.Length = 512;
       DoRun(problem, 1000, 54321, 0.17361111111111, 440);
-      DoRun(problem, 130000, 54321, 1, 126082);
+      DoRun(problem, 130000, 54321, 1, 89214);
     }
   }
 }
