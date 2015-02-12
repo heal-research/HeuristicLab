@@ -106,10 +106,8 @@ namespace HeuristicLab.Optimization {
       var solutionCreatorParam = (IParameter)Activator.CreateInstance(paramType, SolutionCreatorParameter.Name, SolutionCreatorParameter.Description,
         Encoding.SolutionCreator);
       Parameters.Remove(SolutionCreatorParameter);
-      Parameters.Add(solutionCreatorParam);
-
-      //TODO register solution creator changed event, change access modifier to private
-      //((IValueParameter)solutionCreatorParam).ValueChanged += SolutionCreatorParameter_ValueChanged;      
+      Parameters.Add(solutionCreatorParam);  
+      ((IValueParameter)solutionCreatorParam).ValueChanged += SolutionCreatorParameter_ValueChanged;      
 
       var multiEncoding = Encoding as MultiEncoding;
       if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
