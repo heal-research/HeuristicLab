@@ -85,6 +85,7 @@
     <Compile Include="DeceptiveStepTrapProblem.cs" />
     <Compile Include="DeceptiveTrapProblem.cs" />
     <Compile Include="HIFFProblem.cs" />
+    <Compile Include="OneMaxProblem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

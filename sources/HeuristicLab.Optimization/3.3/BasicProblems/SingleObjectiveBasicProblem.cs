@@ -32,6 +32,22 @@ namespace HeuristicLab.Optimization {
   public abstract class SingleObjectiveBasicProblem<TEncoding> : BasicProblem<TEncoding, SingleObjectiveEvaluator>,
     ISingleObjectiveProblemDefinition, ISingleObjectiveHeuristicOptimizationProblem
   where TEncoding : class, IEncoding {
+
+    protected IValueParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (IValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    }
+
+    public double BestKnownQuality {
+      get {
+        if (BestKnownQualityParameter.Value == null) return double.NaN;
+        return BestKnownQualityParameter.Value.Value;
+      }
+      set {
+        if (BestKnownQualityParameter.Value == null) BestKnownQualityParameter.Value = new DoubleValue(value);
+        else BestKnownQualityParameter.Value.Value = value;
+      }
+    }
+
     [StorableConstructor]
     protected SingleObjectiveBasicProblem(bool deserializing) : base(deserializing) { }
 

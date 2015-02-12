@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -32,16 +33,34 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Binary {
   [StorableClass]
   public abstract class BinaryProblem : SingleObjectiveBasicProblem<BinaryVectorEncoding> {
-
     public virtual int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
     }
 
+    private IFixedValueParameter<IntValue> LengthParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters["Length"]; }
+    }
+
     [StorableConstructor]
     protected BinaryProblem(bool deserializing) : base(deserializing) { }
-    protected BinaryProblem(BinaryProblem original, Cloner cloner) : base(original, cloner) { }
-    protected BinaryProblem() : base() { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    protected BinaryProblem(BinaryProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
+
+    protected BinaryProblem()
+      : base() {
+      var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(10));
+      Parameters.Add(lengthParameter);
+      Encoding.LengthParameter = lengthParameter;
+      RegisterEventHandlers();
+    }
 
     public virtual bool IsBetter(double quality, double bestQuality) {
       return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
@@ -52,5 +71,17 @@ namespace HeuristicLab.Problems.Binary {
     }
 
     public abstract double Evaluate(BinaryVector vector, IRandom random);
+
+    protected override void OnEncodingChanged() {
+      base.OnEncodingChanged();
+      Encoding.LengthParameter = LengthParameter;
+    }
+
+
+    private void RegisterEventHandlers() {
+      LengthParameter.Value.ValueChanged += LengthParameter_ValueChanged;
+    }
+
+    protected virtual void LengthParameter_ValueChanged(object sender, EventArgs e) { }
   }
 }
