@@ -43,10 +43,14 @@ namespace HeuristicLab.Problems.Programmable {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       // Write or update results given the range of vectors and resulting qualities
       // Uncomment the following lines if you want to retrieve the best individual
-      //var bestIndex = Maximization ?
-      //         qualities.Select((v, i) => Tuple.Create(i, v)).OrderByDescending(x => x.Item2).First().Item1
-      //       : qualities.Select((v, i) => Tuple.Create(i, v)).OrderBy(x => x.Item2).First().Item1;
-      //var best = individuals[bestIndex];
+
+      //var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
+      //var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
+
+      //if (!results.ContainsKey("Best Solution")) {
+      //  results.Add(new Result("Best Solution", typeof(RealVector)));
+      //}
+      //results["Best Solution"].Value = (IItem)best.RealVector("r").Clone();
     }
 
     public IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
