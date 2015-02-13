@@ -1,0 +1,327 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C9CF6AE8-4637-4A75-9141-042F479B5D50}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Clients.Access.Administration</RootNamespace>
+    <AssemblyName>HeuristicLab.Clients.Access.Administration-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccessAdministrationClient.cs" />
+    <Compile Include="MenuItems\UserAdministrationMenuItem.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\PasswordDisplayDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PasswordDisplayDialog.Designer.cs">
+      <DependentUpon>PasswordDisplayDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RefreshableRoleSelectionListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RefreshableRoleSelectionListView.Designer.cs">
+      <DependentUpon>RefreshableRoleSelectionListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RoleSelectionListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RoleSelectionListView.Designer.cs">
+      <DependentUpon>RoleSelectionListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RefreshableRoleListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RefreshableRoleListView.Designer.cs">
+      <DependentUpon>RefreshableRoleListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RoleListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RoleListView.Designer.cs">
+      <DependentUpon>RoleListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserGroupListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserGroupListView.Designer.cs">
+      <DependentUpon>UserGroupListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RefreshableUserGroupListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RefreshableUserGroupListView.Designer.cs">
+      <DependentUpon>RefreshableUserGroupListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserGroupView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserGroupView.Designer.cs">
+      <DependentUpon>UserGroupView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RoleView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RoleView.Designer.cs">
+      <DependentUpon>RoleView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RefreshableUserListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RefreshableUserListView.Designer.cs">
+      <DependentUpon>RefreshableUserListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RefreshableView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\RefreshableView.Designer.cs">
+      <DependentUpon>RefreshableView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserAdministrationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\UserAdministrationDialog.Designer.cs">
+      <DependentUpon>UserAdministrationDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserListView.Designer.cs">
+      <DependentUpon>UserListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\UserView.Designer.cs">
+      <DependentUpon>UserView.cs</DependentUpon>
+    </Compile>
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Access.Views\3.3\HeuristicLab.Clients.Access.Views-3.3.csproj">
+      <Project>{FE856595-64CD-46DA-9CD2-FFF3E6B0D4F2}</Project>
+      <Name>HeuristicLab.Clients.Access.Views-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Access\3.3\HeuristicLab.Clients.Access-3.3.csproj">
+      <Project>{494F87F4-0F25-4D33-A382-10CDB2174D48}</Project>
+      <Name>HeuristicLab.Clients.Access-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Clients.Common\3.3\HeuristicLab.Clients.Common-3.3.csproj">
+      <Project>{730A9104-D4D1-4360-966B-E49B7571DDA3}</Project>
+      <Name>HeuristicLab.Clients.Common-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{E226881D-315F-423D-B419-A766FE0D8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
+      <Project>{AB687BBE-1BFE-476B-906D-44237135431D}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
+      <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
+      <Name>HeuristicLab.MainForm-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimizer\3.3\HeuristicLab.Optimizer-3.3.csproj">
+      <Project>{C664305E-497C-4533-A140-967DEDB05C19}</Project>
+      <Name>HeuristicLab.Optimizer-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+call PreBuildEvent.cmd</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
