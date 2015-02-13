@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   /// </summary>
   [Item("SimulatedAnnealingImprovementOperator", "A simulated annealing improvement operator.")]
   [StorableClass]
-  public sealed class SimulatedAnnealingImprovementOperator : SingleSuccessorOperator, ILocalImprovementAlgorithmOperator, IStochasticOperator {
+  public sealed class SimulatedAnnealingImprovementOperator : SingleSuccessorOperator, ILocalImprovementAlgorithmOperator, IStochasticOperator, ISingleObjectiveOperator {
     #region IGenericLocalImprovementOperator Properties
     public Type ProblemType { get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); } }
     public IProblem Problem {

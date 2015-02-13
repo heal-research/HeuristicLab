@@ -120,7 +120,41 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\BasicAlgorithm.cs" />
+    <Compile Include="BasicProblems\BasicProblem.cs" />
+    <Compile Include="BasicProblems\Encoding.cs" />
+    <Compile Include="BasicProblems\Individuals\Individual.cs" />
+    <Compile Include="BasicProblems\Individuals\MultiEncodingIndividual.cs" />
+    <Compile Include="BasicProblems\Individuals\SingleEncodingIndividual.cs" />
+    <Compile Include="BasicProblems\Interfaces\IEncoding.cs" />
+    <Compile Include="BasicProblems\Interfaces\IEncodingOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\IMultiEncodingOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\IMultiObjectiveProblemDefinition.cs" />
+    <Compile Include="BasicProblems\Interfaces\internal\IMultiObjectiveAnalysisOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\internal\IMultiObjectiveEvaluationOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\internal\INeighborBasedOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\internal\ISingleObjectiveAnalysisOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\internal\ISingleObjectiveEvaluationOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\IProblemDefinition.cs" />
+    <Compile Include="BasicProblems\Interfaces\ISingleObjectiveMoveOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblemDefinition.cs" />
+    <Compile Include="BasicProblems\MultiEncoding.cs" />
+    <Compile Include="BasicProblems\MultiObjectiveBasicProblem.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingCreator.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingCrossover.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingManipulator.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingOperator.cs" />
+    <Compile Include="BasicProblems\Operators\MultiObjectiveAnalyzer.cs" />
+    <Compile Include="BasicProblems\Operators\MultiObjectiveEvaluator.cs" />
+    <Compile Include="BasicProblems\Operators\SingleObjectiveAnalyzer.cs" />
+    <Compile Include="BasicProblems\Operators\SingleObjectiveEvaluator.cs" />
+    <Compile Include="BasicProblems\Operators\SingleObjectiveImprover.cs" />
+    <Compile Include="BasicProblems\Operators\SingleObjectiveMoveEvaluator.cs" />
+    <Compile Include="BasicProblems\Operators\SingleObjectiveMoveGenerator.cs" />
+    <Compile Include="BasicProblems\Operators\SingleObjectiveMoveMaker.cs" />
+    <Compile Include="BasicProblems\SingleObjectiveBasicProblem.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
+    <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectivePathRelinker.cs" />
     <Compile Include="Interfaces\ISingleObjectiveImprovementOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveSolutionSimilarityCalculator.cs" />
@@ -243,6 +277,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">

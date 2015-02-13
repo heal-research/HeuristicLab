@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.OneMax {
   /// </summary>
   [Item("OneMaxMoveEvaluator", "A base class for operators which evaluate OneMax moves.")]
   [StorableClass]
-  public abstract class OneMaxMoveEvaluator : SingleSuccessorOperator, IOneMaxMoveEvaluator, IMoveOperator, IBinaryVectorMoveOperator {
+  public abstract class OneMaxMoveEvaluator : SingleSuccessorOperator, IOneMaxMoveEvaluator, IBinaryVectorMoveOperator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }

@@ -35,7 +35,7 @@ namespace HeuristicLab.Analysis {
   /// </summary>
   [Item("SingleObjectivePopulationDiversityAnalyzer", "An operator for analyzing the solution diversity in a population.")]
   [StorableClass]
-  public class SingleObjectivePopulationDiversityAnalyzer : SingleSuccessorOperator, IAnalyzer, ISimilarityBasedOperator {
+  public class SingleObjectivePopulationDiversityAnalyzer : SingleSuccessorOperator, IAnalyzer, ISimilarityBasedOperator, ISingleObjectiveOperator {
     #region ISimilarityBasedOperator Members
     [Storable]
     public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }

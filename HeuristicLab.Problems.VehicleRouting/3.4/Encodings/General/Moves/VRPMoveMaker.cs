@@ -31,7 +31,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
   [Item("VRPMoveMaker", "Performs a VRP move.")]
   [StorableClass]
-  public abstract class VRPMoveMaker : VRPMoveOperator, IMoveMaker {
+  public abstract class VRPMoveMaker : VRPMoveOperator, IMoveMaker, ISingleObjectiveOperator {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
@@ -90,8 +90,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.General {
             result.ActualValue = moveResult.ActualValue;
           }
         }
-      }
-      finally {
+      } finally {
         foreach (IParameter parameter in addedParameters) {
           this.Parameters.Remove(parameter);
         }

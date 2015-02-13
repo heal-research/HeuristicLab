@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
   /// </summary>
   [Item("SolutionPoolUpdateMethod", "An operator that updates the solution pool.")]
   [StorableClass]
-  public sealed class SolutionPoolUpdateMethod : SingleSuccessorOperator, ISimilarityBasedOperator {
+  public sealed class SolutionPoolUpdateMethod : SingleSuccessorOperator, ISimilarityBasedOperator, ISingleObjectiveOperator {
     #region ISimilarityBasedOperator Members
     [Storable]
     public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }

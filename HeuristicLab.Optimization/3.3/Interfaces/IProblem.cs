@@ -30,6 +30,8 @@ namespace HeuristicLab.Optimization {
   public interface IProblem : IParameterizedNamedItem {
     IEnumerable<IItem> Operators { get; }
 
+
+    IEnumerable<IParameterizedItem> ExecutionContextItems { get; }
     event EventHandler OperatorsChanged;
     event EventHandler Reset;
   }

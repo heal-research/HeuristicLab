@@ -158,7 +158,10 @@ namespace HeuristicLab.Optimization {
 
       if ((engine != null) && (operatorGraph.InitialOperator != null)) {
         ExecutionContext context = null;
-        if (Problem != null) context = new ExecutionContext(context, Problem, globalScope);
+        if (Problem != null) {
+          foreach (var item in Problem.ExecutionContextItems)
+            context = new ExecutionContext(context, item, globalScope);
+        }
         context = new ExecutionContext(context, this, globalScope);
         context = new ExecutionContext(context, operatorGraph.InitialOperator, globalScope);
         engine.Prepare(context);

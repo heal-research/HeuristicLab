@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Analysis.QualityAnalysis {
   [Item("QualityDistributionAnalyzer", "Analyzes the distribution of the quality values in that it adds a Histogram of them into the result collection.")]
   [StorableClass]
-  public class QualityDistributionAnalyzer : SingleSuccessorOperator, IAnalyzer, IIterationBasedOperator {
+  public class QualityDistributionAnalyzer : SingleSuccessorOperator, IAnalyzer, IIterationBasedOperator, ISingleObjectiveOperator {
 
     #region Parameter properties
     public IScopeTreeLookupParameter<DoubleValue> QualityParameter {

@@ -26,7 +26,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents a replacement operator for replacing solutions of single-objective optimization problems.
   /// </summary>
-  public interface ISingleObjectiveReplacer : IReplacer {
+  public interface ISingleObjectiveReplacer : IReplacer, ISingleObjectiveOperator {
     IValueLookupParameter<BoolValue> MaximizationParameter { get; }
     ILookupParameter<ItemArray<DoubleValue>> QualityParameter { get; }
   }

@@ -32,7 +32,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
   [Item("PotvinTwoOptStarMoveTabuMaker", "Declares a given two opt star move as tabu.")]
   [StorableClass]
-  public class PotvinTwoOptStarMoveTabuMaker : SingleSuccessorOperator, ITabuMaker, IPotvinTwoOptStarMoveOperator, IPotvinOperator, IVRPMoveOperator {
+  public class PotvinTwoOptStarMoveTabuMaker : SingleSuccessorOperator, ITabuMaker, IPotvinTwoOptStarMoveOperator, IPotvinOperator, ISingleObjectiveOperator {
     public LookupParameter<ItemList<IItem>> TabuListParameter {
       get { return (LookupParameter<ItemList<IItem>>)Parameters["TabuList"]; }
     }

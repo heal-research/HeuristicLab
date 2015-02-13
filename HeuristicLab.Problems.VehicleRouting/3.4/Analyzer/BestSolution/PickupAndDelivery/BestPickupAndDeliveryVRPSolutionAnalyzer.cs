@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// </summary>
   [Item("BestPickupAndDeliveryVRPSolutionAnalyzer", "An operator for analyzing the best solution of Pickup and Delivery Routing Problems.")]
   [StorableClass]
-  public sealed class BestPickupAndDeliveryVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator {
+  public sealed class BestPickupAndDeliveryVRPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, IPickupAndDeliveryOperator, ISingleObjectiveOperator {
     public ILookupParameter<IVRPProblemInstance> ProblemInstanceParameter {
       get { return (ILookupParameter<IVRPProblemInstance>)Parameters["ProblemInstance"]; }
     }

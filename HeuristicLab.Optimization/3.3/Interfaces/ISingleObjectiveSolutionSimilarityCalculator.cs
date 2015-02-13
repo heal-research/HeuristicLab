@@ -23,7 +23,7 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// An interface which represents an operator for similarity calculation between single objective solutions.
   /// </summary>
-  public interface ISingleObjectiveSolutionSimilarityCalculator : ISolutionSimilarityCalculator {
+  public interface ISingleObjectiveSolutionSimilarityCalculator : ISolutionSimilarityCalculator, ISingleObjectiveOperator {
     string SolutionVariableName { get; set; }
     string QualityVariableName { get; set; }
   }

@@ -114,6 +114,10 @@ namespace HeuristicLab.Optimization {
     public IEnumerable<IItem> Operators {
       get { return OperatorsParameter.Value; }
     }
+
+    public IEnumerable<IParameterizedItem> ExecutionContextItems {
+      get { yield return this; }
+    }
     #endregion
 
     [StorableConstructor]

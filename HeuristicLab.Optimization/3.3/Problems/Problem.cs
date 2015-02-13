@@ -113,7 +113,15 @@ namespace HeuristicLab.Optimization {
         return OperatorsParameter.Value;
       }
     }
-    IEnumerable<IItem> IProblem.Operators { get { return Operators; } }
+    IEnumerable<IItem> IProblem.Operators { get { return GetOperators(); } }
+
+    protected virtual IEnumerable<IItem> GetOperators() {
+      return Operators;
+    }
+
+    public virtual IEnumerable<IParameterizedItem> ExecutionContextItems {
+      get { yield return this; }
+    }
     #endregion
 
     protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {

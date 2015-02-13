@@ -25,13 +25,12 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.VehicleRouting.Encodings.General;
 using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Encodings.Zhu {
   [Item("ZhuEncoding", "Represents a Zhu encoding of VRP solutions. It is implemented as described in Zhu, K.Q. (2000). A New Genetic Algorithm For VRPTW. Proceedings of the International Conference on Artificial Intelligence.")]
   [StorableClass]
-  public class ZhuEncoding : PermutationEncoding {
+  public class ZhuEncoding : General.PermutationEncoding {
     #region IVRPEncoding Members
     public override int GetTourIndex(Tour tour) {
       return 0;

@@ -35,7 +35,7 @@ namespace HeuristicLab.Problems.ArtificialAnt.Analyzers {
   /// </summary>
   [Item("BestAntTrailAnalyzer", "An operator for analyzing the best ant trail of an artificial ant problem.")]
   [StorableClass]
-  public sealed class BestAntTrailAnalyzer : SingleSuccessorOperator, IAntTrailAnalyzer {
+  public sealed class BestAntTrailAnalyzer : SingleSuccessorOperator, IAntTrailAnalyzer, ISingleObjectiveOperator {
     public bool EnabledByDefault {
       get { return true; }
     }

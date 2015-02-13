@@ -285,7 +285,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Algorithms.GradientDescent\3.3\HeuristicLab.Algorithms.GradientDescent-3.3.csproj">
       <Project>{1256B945-EEA9-4BE4-9880-76B5B113F089}</Project>
-      <Name>HeuristicLab.Algorithms.GradientDescent</Name>
+      <Name>HeuristicLab.Algorithms.GradientDescent-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
