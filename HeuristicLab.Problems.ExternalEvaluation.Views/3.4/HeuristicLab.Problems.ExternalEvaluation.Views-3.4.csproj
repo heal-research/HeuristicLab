@@ -207,9 +207,9 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.ExternalEvaluation\3.3\HeuristicLab.Problems.ExternalEvaluation-3.3.csproj">
-      <Project>{25735db4-8e54-4a2c-83e3-a60c76565e55}</Project>
-      <Name>HeuristicLab.Problems.ExternalEvaluation-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.ExternalEvaluation\3.4\HeuristicLab.Problems.ExternalEvaluation-3.4.csproj">
+      <Project>{8a0b2a2b-47a7-410d-97a0-4296293bb00d}</Project>
+      <Name>HeuristicLab.Problems.ExternalEvaluation-3.4</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
