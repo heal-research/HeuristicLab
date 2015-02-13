@@ -34,6 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.OneMax {
   [Item("OneMax Problem", "Represents a OneMax Problem.")]
   [StorableClass]
+  [NonDiscoverableType]
   public sealed class OneMaxProblem : SingleObjectiveHeuristicOptimizationProblem<IOneMaxEvaluator, IBinaryVectorCreator>, IStorableContent {
     public string Filename { get; set; }
 
