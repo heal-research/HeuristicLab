@@ -85,7 +85,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     public override bool Maximization {
-      get { return ProblemDefinition.Maximization; }
+      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : false; }
     }
 
     public override double Evaluate(Individual individual, IRandom random) {

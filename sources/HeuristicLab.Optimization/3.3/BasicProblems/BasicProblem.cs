@@ -66,7 +66,7 @@ namespace HeuristicLab.Optimization {
       : base() {
       Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any."));
       oldEncoding = Encoding;
-      Parameterize();
+      if(Encoding != null) Parameterize();
       RegisterEvents();
     }
 
