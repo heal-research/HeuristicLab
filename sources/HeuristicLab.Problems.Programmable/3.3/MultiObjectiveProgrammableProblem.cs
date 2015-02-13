@@ -73,8 +73,8 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     private void OnProblemDefinitionChanged() {
-      if (Parameters.ContainsKey("Maximization")) Parameters.Remove("Maximization");
-      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
+      Parameters.Remove("Maximization");
+      Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()) { Hidden = true });
 
       Encoding = ProblemDefinition.Encoding;
       OnOperatorsChanged();
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     public override bool[] Maximization {
-      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : new []{false}; }
+      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : new[] { false }; }
     }
 
     public override double[] Evaluate(Individual individual, IRandom random) {

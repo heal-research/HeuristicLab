@@ -76,7 +76,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
 
     private void OnProblemDefinitionChanged() {
-      if (Parameters.ContainsKey("Maximization")) Parameters.Remove("Maximization");
+      Parameters.Remove("Maximization");
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
 
       Encoding = ProblemDefinition.Encoding;
