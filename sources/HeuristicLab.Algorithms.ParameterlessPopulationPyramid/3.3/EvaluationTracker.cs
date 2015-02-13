@@ -23,7 +23,9 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Binary;
 
@@ -79,9 +81,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       BestQuality = double.NaN;
       Evaluations = 0;
       BestFoundOnEvaluation = 0;
+
+      if (Parameters.ContainsKey("Maximization")) Parameters.Remove("Maximization");
+      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
     }
-
-
 
     public override double Evaluate(BinaryVector vector, IRandom random) {
       if (Evaluations >= maxEvaluations) throw new OperationCanceledException("Maximum Evaluation Limit Reached");
@@ -101,7 +104,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     }
 
     public override bool Maximization {
-      get { return problem.Maximization; }
+      get {
+        if (problem == null) return false;
+        return problem.Maximization;
+      }
     }
 
     public bool IsBetter(double quality, double bestQuality) {
