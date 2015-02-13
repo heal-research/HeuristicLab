@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("FH-Hagenberg")]
 [assembly: AssemblyProduct("HeuristicLab.DataPreprocessing.Views")]
-[assembly: AssemblyCopyright("Copyright © FH-Hagenberg 2014")]
+[assembly: AssemblyCopyright("Copyright © FH-Hagenberg 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

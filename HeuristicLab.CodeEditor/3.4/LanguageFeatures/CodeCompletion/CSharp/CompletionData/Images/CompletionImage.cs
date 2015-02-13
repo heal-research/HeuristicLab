@@ -3,7 +3,7 @@
 // This code is distributed under the GNU LGPL (for details please see \doc\license.txt)
 
 /* HeuristicLab
- * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
