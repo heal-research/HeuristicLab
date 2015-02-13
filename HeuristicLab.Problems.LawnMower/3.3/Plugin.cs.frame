@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.LawnMower {
-  [Plugin("HeuristicLab.Problems.LawnMower", "Lawn mower demo problem for genetic programming", "3.3.10.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.LawnMower", "Lawn mower demo problem for genetic programming", "3.3.11.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.LawnMower-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
