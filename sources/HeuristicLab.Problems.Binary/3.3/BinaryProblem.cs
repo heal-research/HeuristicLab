@@ -74,11 +74,13 @@ namespace HeuristicLab.Problems.Binary {
 
     public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
-      var best = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderByDescending(z => z.Quality).First();
+      var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
+      var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
+
       if (!results.ContainsKey("Best Solution")) {
         results.Add(new Result("Best Solution", typeof(BinaryVector)));
       }
-      results["Best Solution"].Value = best.Individual.BinaryVector();
+      results["Best Solution"].Value = (IItem)best.BinaryVector().Clone();
     }
 
     protected override void OnEncodingChanged() {
