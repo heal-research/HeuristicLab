@@ -25,7 +25,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// Plugin class for HeuristicLab.Encodings.BinaryVectorEncoding plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Encodings.BinaryVectorEncoding", "3.3.10.$WCREV$")]
+  [Plugin("HeuristicLab.Encodings.BinaryVectorEncoding", "3.3.11.$WCREV$")]
   [PluginFile("HeuristicLab.Encodings.BinaryVectorEncoding-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
