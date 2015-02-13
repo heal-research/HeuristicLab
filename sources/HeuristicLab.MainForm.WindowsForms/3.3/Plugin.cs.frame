@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.MainForm.WindowsForms {
-  [Plugin("HeuristicLab.MainForm.WindowsForms", "3.3.10.$WCREV$")]
+  [Plugin("HeuristicLab.MainForm.WindowsForms", "3.3.11.$WCREV$")]
   [PluginFile("HeuristicLab.MainForm.WindowsForms-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]

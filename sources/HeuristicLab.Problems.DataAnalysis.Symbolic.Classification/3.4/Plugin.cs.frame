@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Classification","Provides classes to perform symbolic classification (single- or multiobjective).", "3.4.6.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Symbolic.Classification","Provides classes to perform symbolic classification (single- or multiobjective).", "3.4.7.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Symbolic.Classification-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.7.0")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]

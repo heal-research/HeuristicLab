@@ -1,6 +1,6 @@
 #region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,7 +25,7 @@ namespace HeuristicLab.Algorithms.Benchmarks {
   /// <summary>
   /// Plugin class for HeuristicLab.Algorithms.Benchmark plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Algorithms.Benchmarks", "Provides different performance benchmark algorithms.", "3.3.10.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.Benchmarks", "Provides different performance benchmark algorithms.", "3.3.11.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.Benchmarks-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
