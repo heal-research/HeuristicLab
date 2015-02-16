@@ -97,7 +97,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
     public PermutationEncoding() : this("Permutation", 10, PermutationTypes.Absolute) { }
     public PermutationEncoding(string name) : this(name, 10, PermutationTypes.Absolute) { }
-    public PermutationEncoding(int length) : this("Permuration", length, PermutationTypes.Absolute) { }
+    public PermutationEncoding(int length) : this("Permutation", length, PermutationTypes.Absolute) { }
     public PermutationEncoding(string name, int length, PermutationTypes type)
       : base(name) {
       lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
@@ -207,7 +207,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
     private void ConfigureScrambleMoveOperators(IEnumerable<IPermutationScrambleMoveOperator> scrambleMoveOperators) {
       foreach (var scrambleMoveOperator in scrambleMoveOperators) {
-        scrambleMoveOperator.ScrambleMoveParameter.ActualName = Name + ".ScambleMove";
+        scrambleMoveOperator.ScrambleMoveParameter.ActualName = Name + ".ScrambleMove";
       }
     }
     private void ConfigureSwap2MoveOperators(IEnumerable<IPermutationSwap2MoveOperator> swap2MoveOperators) {
