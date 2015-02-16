@@ -1,4 +1,25 @@
-﻿using System.Reflection;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,9 +29,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("HeuristicLab.DataPreprocessing")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("FH-Hagenberg")]
-[assembly: AssemblyProduct("HeuristicLab.DataPreprocessing")]
-[assembly: AssemblyCopyright("Copyright © FH-Hagenberg 2015")]
+[assembly: AssemblyCompany("HEAL")]
+[assembly: AssemblyProduct("HeuristicLab")]
+[assembly: AssemblyCopyright("(c) 2002-2015 HEAL")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
