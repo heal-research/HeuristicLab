@@ -59,6 +59,11 @@ namespace HeuristicLab.Optimization {
       RegisterConstraintsEvents();
       RegisterConstraintEvents(constraints);
 
+      foreach (var run in this) {
+        RegisterRunParametersEvents(run);
+        RegisterRunResultsEvents(run);
+      }
+
       UpdateFiltering(true);
     }
     public RunCollection() : base() { Initialize(); }
@@ -132,6 +137,11 @@ namespace HeuristicLab.Optimization {
       if (modifiers == null) modifiers = new CheckedItemList<IRunCollectionModifier>();
       RegisterConstraintsEvents();
       RegisterConstraintEvents(constraints);
+
+      foreach (var run in this) {
+        RegisterRunParametersEvents(run);
+        RegisterRunResultsEvents(run);
+      }
       UpdateFiltering(true);
     }
 
@@ -488,7 +498,7 @@ namespace HeuristicLab.Optimization {
       constraints.CollectionReset += new CollectionItemsChangedEventHandler<IRunCollectionConstraint>(Constraints_CollectionReset);
     }
 
-    protected virtual void RegisterConstraintEvents(IEnumerable<IRunCollectionConstraint> constraints) {
+    private void RegisterConstraintEvents(IEnumerable<IRunCollectionConstraint> constraints) {
       foreach (IRunCollectionConstraint constraint in constraints) {
         constraint.ActiveChanged += new EventHandler(Constraint_ActiveChanged);
         constraint.ConstrainedValueChanged += new EventHandler(Constraint_ConstrainedValueChanged);
@@ -496,7 +506,7 @@ namespace HeuristicLab.Optimization {
         constraint.ConstraintDataChanged += new EventHandler(Constraint_ConstraintDataChanged);
       }
     }
-    protected virtual void DeregisterConstraintEvents(IEnumerable<IRunCollectionConstraint> constraints) {
+    private void DeregisterConstraintEvents(IEnumerable<IRunCollectionConstraint> constraints) {
       foreach (IRunCollectionConstraint constraint in constraints) {
         constraint.ActiveChanged -= new EventHandler(Constraint_ActiveChanged);
         constraint.ConstrainedValueChanged -= new EventHandler(Constraint_ConstrainedValueChanged);
