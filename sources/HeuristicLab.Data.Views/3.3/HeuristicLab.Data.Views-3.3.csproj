@@ -132,6 +132,12 @@
     <Compile Include="EnhancedStringConvertibleMatrixView.Designer.cs">
       <DependentUpon>EnhancedStringConvertibleMatrixView.cs</DependentUpon>
     </Compile>
+    <Compile Include="EnumValueView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EnumValueView.Designer.cs">
+      <DependentUpon>EnumValueView.cs</DependentUpon>
+    </Compile>
     <Compile Include="IntRangeView.cs">
       <SubType>UserControl</SubType>
     </Compile>
