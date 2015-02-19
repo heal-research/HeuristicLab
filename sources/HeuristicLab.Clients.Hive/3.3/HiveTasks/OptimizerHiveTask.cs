@@ -233,11 +233,24 @@ namespace HeuristicLab.Clients.Hive {
     private void UpdateOptimizerInBatchRun(BatchRun batchRun, OptimizerTask optimizerTask) {
       itemTaskLock.EnterWriteLock();
       try {
-        if (batchRun.Optimizer == null) {
-          batchRun.Optimizer = (IOptimizer)optimizerTask.Item; // only set the first optimizer as Optimizer. if every time the Optimizer would be set, the runs would be cleared each time
-        }
-        foreach (IRun run in optimizerTask.Item.Runs) {
-          if (!batchRun.Runs.Contains(run)) {
+        if (optimizerTask.Item is IAlgorithm) {
+          // only set the first optimizer as Optimizer. if every time the Optimizer would be set, the runs would be cleared each time
+          if (batchRun.Optimizer == null) {
+            batchRun.Optimizer = (IOptimizer)optimizerTask.Item.Clone();
+            batchRun.Optimizer.Runs.Clear();
+          }
+
+          foreach (IRun run in optimizerTask.Item.Runs) {
+            run.Name = GetNewRunName(run, batchRun.Runs);
+            batchRun.Optimizer.Runs.Add(run);
+          }
+        } else {
+          // only set the first optimizer as Optimizer. if every time the Optimizer would be set, the runs would be cleared each time
+          if (batchRun.Optimizer == null) {
+            batchRun.Optimizer = optimizerTask.Item;
+          }
+          foreach (IRun run in optimizerTask.Item.Runs) {
+            if (batchRun.Runs.Contains(run)) continue;
             run.Name = GetNewRunName(run, batchRun.Runs);
             batchRun.Runs.Add(run);
           }
