@@ -163,7 +163,6 @@ namespace HeuristicLab.Problems.Scheduling {
     private void RegisterEventHandlers() {
       ScheduleEvaluatorParameter.ValueChanged += ScheduleEvaluatorParameter_ValueChanged;
       ScheduleEvaluator.QualityParameter.ActualNameChanged += ScheduleEvaluator_QualityParameter_ActualNameChanged;
-      SolutionCreatorParameter.ValueChanged += SolutionCreatorParameter_ValueChanged;
       SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
       ScheduleDecoderParameter.ValueChanged += ScheduleDecoderParameter_ValueChanged;
       if (ScheduleDecoder != null) ScheduleDecoder.ScheduleParameter.ActualNameChanged += ScheduleDecoder_ScheduleParameter_ActualNameChanged;
@@ -171,6 +170,7 @@ namespace HeuristicLab.Problems.Scheduling {
 
     #region Events
     protected override void OnSolutionCreatorChanged() {
+      SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
       InitializeOperators();
     }
     protected override void OnEvaluatorChanged() {
@@ -184,10 +184,7 @@ namespace HeuristicLab.Problems.Scheduling {
     private void ScheduleEvaluator_QualityParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
       ParameterizeOperators();
     }
-    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs eventArgs) {
-      SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
-      ParameterizeOperators();
-    }
+
     private void SolutionCreator_SchedulingEncodingParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
       ParameterizeOperators();
     }
