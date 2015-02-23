@@ -110,7 +110,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       }
     }
 
-    public bool IsBetter(double quality, double bestQuality) {
+    public override bool IsBetter(double quality, double bestQuality) {
       return problem.IsBetter(quality, bestQuality);
     }
 
