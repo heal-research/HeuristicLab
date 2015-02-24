@@ -78,6 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.TrainingPartition.End = classificationProblemData.TrainingPartition.End;
       this.TestPartition.Start = classificationProblemData.TestPartition.Start;
       this.TestPartition.End = classificationProblemData.TestPartition.End;
+      this.PositiveClass = classificationProblemData.PositiveClass;
     }
 
     public ClassificationEnsembleProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable)
