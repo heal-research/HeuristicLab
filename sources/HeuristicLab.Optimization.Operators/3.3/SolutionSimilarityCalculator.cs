@@ -32,6 +32,8 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("SimilarityCalculator", "A base class for items that perform similarity calculation between two solutions.")]
   [StorableClass]
   public abstract class SolutionSimilarityCalculator : Item, ISolutionSimilarityCalculator {
+    protected abstract bool IsCommutative { get; }
+
     [StorableConstructor]
     protected SolutionSimilarityCalculator(bool deserializing) : base(deserializing) { }
     protected SolutionSimilarityCalculator(SolutionSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
@@ -70,9 +72,19 @@ namespace HeuristicLab.Optimization.Operators {
       var similarityMatrix = new double[individuals.Count][];
       for (int i = 0; i < individuals.Count; i++) similarityMatrix[i] = new double[individuals.Count];
 
-      for (int i = 0; i < individuals.Count; i++) {
-        for (int j = i; j < individuals.Count; j++) {
-          similarityMatrix[i][j] = similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+      if (IsCommutative) {
+        for (int i = 0; i < individuals.Count; i++) {
+          for (int j = i; j < individuals.Count; j++) {
+            similarityMatrix[i][j] = similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+          }
+        }
+      } else {
+        for (int i = 0; i < individuals.Count; i++) {
+          for (int j = i; j < individuals.Count; j++) {
+            similarityMatrix[i][j] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+            if (i == j) continue;
+            similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[j], individuals[i]);
+          }
         }
       }
 

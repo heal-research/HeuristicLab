@@ -35,6 +35,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SymbolicExpressionTreeBottomUpSimilarityCalculator", "A similarity calculator which uses the tree bottom-up distance as a similarity metric.")]
   public class SymbolicExpressionTreeBottomUpSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
     private readonly HashSet<string> commutativeSymbols = new HashSet<string> { "Addition", "Multiplication", "Average", "And", "Or", "Xor" };
+
+    protected override bool IsCommutative { get { return true; } }
+
     public SymbolicExpressionTreeBottomUpSimilarityCalculator() { }
 
     [StorableConstructor]

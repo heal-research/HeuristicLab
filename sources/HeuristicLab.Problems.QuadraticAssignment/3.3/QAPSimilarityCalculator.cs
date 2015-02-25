@@ -34,6 +34,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   /// </remarks>
   [Item("QAPSimilarityCalculator", "An operator that performs similarity calculation between two quadratic assignment solutions. The operator calculates the similarity based on the number of edges the two solutions have in common.")]
   public sealed class QAPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+    protected override bool IsCommutative { get { return true; } }
+
     private QAPSimilarityCalculator(bool deserializing) : base(deserializing) { }
     private QAPSimilarityCalculator(QAPSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public QAPSimilarityCalculator() : base() { }

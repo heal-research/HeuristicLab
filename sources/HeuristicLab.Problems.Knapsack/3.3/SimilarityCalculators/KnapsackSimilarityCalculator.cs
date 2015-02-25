@@ -34,6 +34,8 @@ namespace HeuristicLab.Problems.Knapsack {
   /// </remarks>
   [Item("KnapsackSimilarityCalculator", "An operator that performs similarity calculation between two knapsack solutions. The operator calculates the similarity based on the number of elements the two solutions have in common.")]
   public sealed class KnapsackSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+    protected override bool IsCommutative { get { return true; } }
+
     private KnapsackSimilarityCalculator(bool deserializing) : base(deserializing) { }
     private KnapsackSimilarityCalculator(KnapsackSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public KnapsackSimilarityCalculator() : base() { }

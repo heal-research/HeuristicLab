@@ -34,6 +34,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   /// </remarks>
   [Item("TSPSimilarityCalculator", "An operator that performs similarity calculation between two traveling salesman solutions. The operator calculates the similarity based on the number of edges the two solutions have in common.")]
   public sealed class TSPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+    protected override bool IsCommutative { get { return true; } }
+
     private TSPSimilarityCalculator(bool deserializing) : base(deserializing) { }
     private TSPSimilarityCalculator(TSPSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public TSPSimilarityCalculator() : base() { }

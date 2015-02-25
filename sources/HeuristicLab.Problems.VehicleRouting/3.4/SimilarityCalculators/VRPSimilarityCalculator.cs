@@ -39,10 +39,10 @@ namespace HeuristicLab.Problems.VehicleRouting {
   [Item("VRPSimilarityCalculator", "An operator which performs similarity calculation between two VRP solutions.")]
   [StorableClass]
   public sealed class VRPSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
-    #region Properties
+    protected override bool IsCommutative { get { return true; } }
+
     [Storable]
     public IVRPProblemInstance ProblemInstance { get; set; }
-    #endregion
 
     private VRPSimilarityCalculator(bool deserializing) : base(deserializing) { }
     private VRPSimilarityCalculator(VRPSimilarityCalculator original, Cloner cloner)
