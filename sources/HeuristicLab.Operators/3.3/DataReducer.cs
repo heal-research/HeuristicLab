@@ -39,11 +39,11 @@ namespace HeuristicLab.Operators {
     public LookupParameter<IItem> TargetParameter {
       get { return (LookupParameter<IItem>)Parameters["TargetParameter"]; }
     }
-    public ValueParameter<ReductionOperation> ReductionOperation {
-      get { return (ValueParameter<ReductionOperation>)Parameters["ReductionOperation"]; }
+    public ValueLookupParameter<ReductionOperation> ReductionOperation {
+      get { return (ValueLookupParameter<ReductionOperation>)Parameters["ReductionOperation"]; }
     }
-    public ValueParameter<ReductionOperation> TargetOperation {
-      get { return (ValueParameter<ReductionOperation>)Parameters["TargetOperation"]; }
+    public ValueLookupParameter<ReductionOperation> TargetOperation {
+      get { return (ValueLookupParameter<ReductionOperation>)Parameters["TargetOperation"]; }
     }
     #endregion
 
@@ -57,13 +57,28 @@ namespace HeuristicLab.Operators {
       #region Create parameters
       Parameters.Add(new ScopeTreeLookupParameter<IItem>("ParameterToReduce", "The parameter on which the reduction operation should be applied."));
       Parameters.Add(new LookupParameter<IItem>("TargetParameter", "The target variable in which the reduced value should be stored."));
-      Parameters.Add(new ValueParameter<ReductionOperation>("ReductionOperation", "The operation which is applied on the parameters to reduce."));
-      Parameters.Add(new ValueParameter<ReductionOperation>("TargetOperation", "The operation used to apply the reduced value to the target variable."));
+      Parameters.Add(new ValueLookupParameter<ReductionOperation>("ReductionOperation", "The operation which is applied on the parameters to reduce.", new ReductionOperation()));
+      Parameters.Add(new ValueLookupParameter<ReductionOperation>("TargetOperation", "The operation used to apply the reduced value to the target variable.", new ReductionOperation()));
       #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DataReducer(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      var oldReductionOperation = Parameters["ReductionOperation"] as ValueParameter<ReductionOperation>;
+      if (oldReductionOperation != null) {
+        Parameters.Remove("ReductionOperation");
+        Parameters.Add(new ValueLookupParameter<ReductionOperation>("ReductionOperation", "The operation which is applied on the parameters to reduce.", oldReductionOperation.Value));
+      }
+      var oldTargetOperation = Parameters["TargetOperation"] as ValueParameter<ReductionOperation>;
+      if (oldTargetOperation != null) {
+        Parameters.Remove("TargetOperation");
+        Parameters.Add(new ValueLookupParameter<ReductionOperation>("TargetOperation", "The operation used to apply the reduced value to the target variable.", oldTargetOperation.Value));
+      }
     }
 
     public override IOperation Apply() {
@@ -88,7 +103,7 @@ namespace HeuristicLab.Operators {
     #region integer reduction
     private void CalculateResult(IEnumerable<int> values, Type targetType) {
       int result;
-      switch (ReductionOperation.Value.Value) {
+      switch (ReductionOperation.ActualValue.Value) {
         case ReductionOperations.Sum:
           result = values.Sum();
           break;
@@ -111,11 +126,11 @@ namespace HeuristicLab.Operators {
           result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, targetType));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.ActualValue.Value, targetType));
       }
 
       IntValue target;
-      switch (TargetOperation.Value.Value) {
+      switch (TargetOperation.ActualValue.Value) {
         case ReductionOperations.Sum:
           target = InitializeTarget<IntValue, int>(targetType, 0);
           target.Value += result;
@@ -141,14 +156,14 @@ namespace HeuristicLab.Operators {
           target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, targetType));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.ActualValue.Value, targetType));
       }
     }
     #endregion
     #region double reduction
     private void CalculateResult(IEnumerable<double> values, Type targetType) {
       double result;
-      switch (ReductionOperation.Value.Value) {
+      switch (ReductionOperation.ActualValue.Value) {
         case ReductionOperations.Sum:
           result = values.Sum();
           break;
@@ -171,11 +186,11 @@ namespace HeuristicLab.Operators {
           result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, targetType));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.ActualValue.Value, targetType));
       }
 
       DoubleValue target;
-      switch (TargetOperation.Value.Value) {
+      switch (TargetOperation.ActualValue.Value) {
         case ReductionOperations.Sum:
           target = InitializeTarget<DoubleValue, double>(targetType, 0.0);
           target.Value += result;
@@ -201,14 +216,14 @@ namespace HeuristicLab.Operators {
           target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, targetType));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.ActualValue.Value, targetType));
       }
     }
     #endregion
     #region TimeSpan reduction
     private void CalculateResult(IEnumerable<TimeSpan> values, Type targetType) {
       TimeSpan result;
-      switch (ReductionOperation.Value.Value) {
+      switch (ReductionOperation.ActualValue.Value) {
         case ReductionOperations.Sum:
           result = values.Aggregate(new TimeSpan(), (x, y) => x + y);
           break;
@@ -225,11 +240,11 @@ namespace HeuristicLab.Operators {
           result = values.Last();
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, targetType));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.ActualValue.Value, targetType));
       }
 
       TimeSpanValue target;
-      switch (TargetOperation.Value.Value) {
+      switch (TargetOperation.ActualValue.Value) {
         case ReductionOperations.Sum:
           target = InitializeTarget<TimeSpanValue, TimeSpan>(targetType, new TimeSpan());
           target.Value += result;
@@ -251,14 +266,14 @@ namespace HeuristicLab.Operators {
           target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, targetType));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.ActualValue.Value, targetType));
       }
     }
     #endregion
     #region bool reduction
     private void CalculateResult(IEnumerable<bool> values, Type targetType) {
       bool result;
-      switch (ReductionOperation.Value.Value) {
+      switch (ReductionOperation.ActualValue.Value) {
         case ReductionOperations.All:
           result = values.All(x => x);
           break;
@@ -266,17 +281,17 @@ namespace HeuristicLab.Operators {
           result = values.Any(x => x);
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.Value.Value, targetType));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as ReductionOperation for type: {1}.", ReductionOperation.ActualValue.Value, targetType));
       }
 
       BoolValue target;
-      switch (TargetOperation.Value.Value) {
+      switch (TargetOperation.ActualValue.Value) {
         case ReductionOperations.Assign:
           target = InitializeTarget<BoolValue, bool>(targetType, true);
           target.Value = result;
           break;
         default:
-          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.Value.Value, targetType));
+          throw new InvalidOperationException(string.Format("Operation {0} is not supported as TargetOperation for type: {1}.", TargetOperation.ActualValue.Value, targetType));
       }
     }
     #endregion
