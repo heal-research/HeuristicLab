@@ -37,12 +37,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// </remarks>
   [Item("ProgressiveOffspringPreserver", "An operator that progressively selects offspring by adding it to a scope list. The operator also performs duplication control.")]
   [StorableClass]
-  public sealed class ProgressiveOffspringPreserver : SingleSuccessorOperator, ISimilarityBasedOperator {
-    #region ISimilarityBasedOperator Members
-    [Storable]
-    public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
-    #endregion
-
+  public sealed class ProgressiveOffspringPreserver : SingleSuccessorOperator {
     #region Parameter Properties
     public ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -55,6 +50,9 @@ namespace HeuristicLab.Algorithms.RAPGA {
     }
     public ILookupParameter<IntValue> MaximumPopulationSizeParameter {
       get { return (ILookupParameter<IntValue>)Parameters["MaximumPopulationSize"]; }
+    }
+    public IValueLookupParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
+      get { return (IValueLookupParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
     }
     #endregion
 
@@ -75,20 +73,29 @@ namespace HeuristicLab.Algorithms.RAPGA {
 
     [StorableConstructor]
     private ProgressiveOffspringPreserver(bool deserializing) : base(deserializing) { }
-    private ProgressiveOffspringPreserver(ProgressiveOffspringPreserver original, Cloner cloner)
-      : base(original, cloner) {
-      this.SimilarityCalculator = cloner.Clone(original.SimilarityCalculator);
-    }
+    private ProgressiveOffspringPreserver(ProgressiveOffspringPreserver original, Cloner cloner) : base(original, cloner) { }
     public ProgressiveOffspringPreserver()
       : base() {
+      #region Create parameters
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that contains the offspring."));
       Parameters.Add(new LookupParameter<ScopeList>("OffspringList", "The list that contains the offspring."));
       Parameters.Add(new LookupParameter<IntValue>("Elites", "The numer of elite solutions which are kept in each generation."));
       Parameters.Add(new LookupParameter<IntValue>("MaximumPopulationSize", "The maximum size of the population of solutions."));
+      Parameters.Add(new ValueLookupParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ProgressiveOffspringPreserver(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("SimilarityCalculator"))
+        Parameters.Add(new ValueLookupParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
+      #endregion
     }
 
     public override IOperation Apply() {
@@ -97,7 +104,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
         else { // stored offspring exists
           var storedOffspringScope = new Scope();
           storedOffspringScope.SubScopes.AddRange(OffspringList);
-          var similarityMatrix = SimilarityCalculator.CalculateSolutionCrowdSimilarity(CurrentScope, storedOffspringScope);
+          var similarityMatrix = SimilarityCalculatorParameter.ActualValue.CalculateSolutionCrowdSimilarity(CurrentScope, storedOffspringScope);
 
           var createdOffspring = CurrentScope.SubScopes.ToArray();
 

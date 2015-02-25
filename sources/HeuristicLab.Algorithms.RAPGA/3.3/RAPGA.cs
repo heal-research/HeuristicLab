@@ -393,8 +393,6 @@ namespace HeuristicLab.Algorithms.RAPGA {
       RAPGAMainLoop.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
       RAPGAMainLoop.MaximizationParameter.ActualName = Problem.MaximizationParameter.Name;
       RAPGAMainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-      foreach (ISimilarityBasedOperator op in RAPGAMainLoop.OperatorGraph.Operators.OfType<ISimilarityBasedOperator>())
-        op.SimilarityCalculator = SimilarityCalculator;
     }
     private void ParameterizeStochasticOperator(IOperator op) {
       IStochasticOperator stochasticOp = op as IStochasticOperator;

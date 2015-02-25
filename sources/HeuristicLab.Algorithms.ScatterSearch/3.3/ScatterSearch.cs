@@ -422,8 +422,6 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
         MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         MainLoop.OperatorGraph.Operators.OfType<PopulationRebuildMethod>().Single().QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         MainLoop.OperatorGraph.Operators.OfType<SolutionPoolUpdateMethod>().Single().QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-        foreach (ISimilarityBasedOperator op in MainLoop.OperatorGraph.Operators.OfType<ISimilarityBasedOperator>())
-          op.SimilarityCalculator = SimilarityCalculator;
       }
     }
     private void ParameterizeStochasticOperator(IOperator op) {

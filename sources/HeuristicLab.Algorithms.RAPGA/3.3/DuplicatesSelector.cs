@@ -24,6 +24,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
@@ -36,22 +37,30 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// </remarks>
   [Item("DuplicatesSelector", "A selection operator which considers a single solution representation and selects duplicates. The remaining scope then contains unique solutions and the selected scope their duplicates.")]
   [StorableClass]
-  public sealed class DuplicatesSelector : SingleObjectiveSelector, ISimilarityBasedOperator {
-    #region ISimilarityBasedOperator Members
-    [Storable]
-    public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
-    #endregion
+  public sealed class DuplicatesSelector : SingleObjectiveSelector {
+    public IValueLookupParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
+      get { return (IValueLookupParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
+    }
 
     [StorableConstructor]
     private DuplicatesSelector(bool deserializing) : base(deserializing) { }
-    private DuplicatesSelector(DuplicatesSelector original, Cloner cloner)
-      : base(original, cloner) {
-      this.SimilarityCalculator = cloner.Clone(original.SimilarityCalculator);
+    private DuplicatesSelector(DuplicatesSelector original, Cloner cloner) : base(original, cloner) { }
+    public DuplicatesSelector()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
     }
-    public DuplicatesSelector() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new DuplicatesSelector(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("SimilarityCalculator"))
+        Parameters.Add(new ValueLookupParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
+      #endregion
     }
 
     protected override IScope[] Select(List<IScope> scopes) {
@@ -60,7 +69,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
       var marks = new bool[scopes.Count];
       for (int i = 0; i < scopes.Count; i++)
         for (int j = i + 1; j < scopes.Count; j++)
-          marks[j] = SimilarityCalculator.Equals(scopes[i], scopes[j]);
+          marks[j] = SimilarityCalculatorParameter.ActualValue.Equals(scopes[i], scopes[j]);
 
 
       var selected = new IScope[marks.Count(x => x)];

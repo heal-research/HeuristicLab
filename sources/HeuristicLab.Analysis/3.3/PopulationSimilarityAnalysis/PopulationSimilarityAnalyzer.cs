@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,66 +32,88 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Analysis {
   /// <summary>
-  /// An operator for analyzing the solution diversity in a population.
+  /// An operator for analyzing the solution similarity in a population.
   /// </summary>
-  [Item("SingleObjectivePopulationDiversityAnalyzer", "An operator for analyzing the solution diversity in a population.")]
+  [Item("PopulationSimilarityAnalyzer", "An operator for analyzing the solution similarity in a population.")]
   [StorableClass]
-  public class SingleObjectivePopulationDiversityAnalyzer : SingleSuccessorOperator, IAnalyzer, ISimilarityBasedOperator, ISingleObjectiveOperator {
-    #region ISimilarityBasedOperator Members
-    [Storable]
-    public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
+  public class PopulationSimilarityAnalyzer : SingleSuccessorOperator, IAnalyzer, ISimilarityBasedOperator {
+    private const string DiversityResultNameParameterName = "DiversityResultsName";
+
+    #region Backwards compatible code, remove with 3.4
+    private ISolutionSimilarityCalculator oldSimilarityCalculator;
+    [Storable(AllowOneWay = true, Name = "SimilarityCalculator")]
+    [Obsolete]
+    private ISolutionSimilarityCalculator SimilarityCalculator { set { oldSimilarityCalculator = value; } }
     #endregion
 
     public virtual bool EnabledByDefault {
       get { return false; }
     }
-
     public ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
-    public LookupParameter<BoolValue> MaximizationParameter {
-      get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
+    public IValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
-    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public IConstrainedValueParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
+      get { return (IConstrainedValueParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
     }
-    public ValueLookupParameter<ResultCollection> ResultsParameter {
-      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    public IValueParameter<BoolValue> StoreHistoryParameter {
+      get { return (IValueParameter<BoolValue>)Parameters["StoreHistory"]; }
     }
-    public ValueParameter<BoolValue> StoreHistoryParameter {
-      get { return (ValueParameter<BoolValue>)Parameters["StoreHistory"]; }
+    public IValueParameter<IntValue> UpdateIntervalParameter {
+      get { return (IValueParameter<IntValue>)Parameters["UpdateInterval"]; }
     }
-    public ValueParameter<IntValue> UpdateIntervalParameter {
-      get { return (ValueParameter<IntValue>)Parameters["UpdateInterval"]; }
+    public ILookupParameter<IntValue> UpdateCounterParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["UpdateCounter"]; }
     }
-    public LookupParameter<IntValue> UpdateCounterParameter {
-      get { return (LookupParameter<IntValue>)Parameters["UpdateCounter"]; }
+    public IFixedValueParameter<StringValue> DiversityResultNameParameter {
+      get { return (FixedValueParameter<StringValue>)Parameters[DiversityResultNameParameterName]; }
+    }
+
+    public string DiversityResultName {
+      get { return DiversityResultNameParameter.Value.Value; }
+      set { DiversityResultNameParameter.Value.Value = value; }
     }
 
     [StorableConstructor]
-    protected SingleObjectivePopulationDiversityAnalyzer(bool deserializing) : base(deserializing) { }
-    protected SingleObjectivePopulationDiversityAnalyzer(SingleObjectivePopulationDiversityAnalyzer original, Cloner cloner)
-      : base(original, cloner) {
-      SimilarityCalculator = cloner.Clone(original.SimilarityCalculator);
-    }
-    public SingleObjectivePopulationDiversityAnalyzer()
+    protected PopulationSimilarityAnalyzer(bool deserializing) : base(deserializing) { }
+    protected PopulationSimilarityAnalyzer(PopulationSimilarityAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public PopulationSimilarityAnalyzer(IEnumerable<ISolutionSimilarityCalculator> validSimilarityCalculators)
       : base() {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that contains the solutions which should be analyzed."));
-      Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
-      Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the solutions which should be analyzed."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the population diversity analysis results should be stored."));
+      Parameters.Add(new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate population similarity."));
       Parameters.Add(new ValueParameter<BoolValue>("StoreHistory", "True if the history of the population diversity analysis should be stored.", new BoolValue(false)));
       Parameters.Add(new ValueParameter<IntValue>("UpdateInterval", "The interval in which the population diversity analysis should be applied.", new IntValue(1)));
       Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the operator was called since the last update.", "PopulationDiversityAnalyzerUpdateCounter"));
+      Parameters.Add(new FixedValueParameter<StringValue>(DiversityResultNameParameterName, "Specifies how the diversity results should be named.", new StringValue("PopulationDiversity")));
 
-      MaximizationParameter.Hidden = true;
-      QualityParameter.Hidden = true;
+      var similarityCalculators = SimilarityCalculatorParameter.ValidValues;
+      foreach (var sc in validSimilarityCalculators)
+        similarityCalculators.Add(sc);
+
+
       ResultsParameter.Hidden = true;
       UpdateCounterParameter.Hidden = true;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectivePopulationDiversityAnalyzer(this, cloner);
+      return new PopulationSimilarityAnalyzer(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(DiversityResultNameParameterName))
+        Parameters.Add(new FixedValueParameter<StringValue>(DiversityResultNameParameterName, "Specifies how the diversity results should be named.", new StringValue("PopulationDiversity")));
+
+      if (!Parameters.ContainsKey("SimilarityCalculator"))
+        Parameters.Add(new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
+
+      SimilarityCalculatorParameter.ValidValues.Add(oldSimilarityCalculator);
+      #endregion
     }
 
     public override IOperation Apply() {
@@ -107,30 +130,13 @@ namespace HeuristicLab.Analysis {
       if (updateCounter.Value == updateInterval) {
         updateCounter.Value = 0;
 
-        bool max = MaximizationParameter.ActualValue.Value;
-        ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
         bool storeHistory = StoreHistoryParameter.Value.Value;
         int count = CurrentScopeParameter.ActualValue.SubScopes.Count;
 
         if (count > 1) {
+          var similarityCalculator = SimilarityCalculatorParameter.Value;
           // calculate solution similarities
-          var similarityMatrix = SimilarityCalculator.CalculateSolutionCrowdSimilarity(CurrentScopeParameter.ActualValue);
-
-          // sort similarities by quality
-          double[][] sortedSimilarityMatrix = null;
-          if (max)
-            sortedSimilarityMatrix = similarityMatrix
-              .Select((x, index) => new { Solutions = x, Quality = qualities[index] })
-              .OrderByDescending(x => x.Quality)
-              .Select(x => x.Solutions)
-              .ToArray();
-          else
-            sortedSimilarityMatrix = similarityMatrix
-              .Select((x, index) => new { Solutions = x, Quality = qualities[index] })
-              .OrderBy(x => x.Quality)
-              .Select(x => x.Solutions)
-              .ToArray();
-
+          var similarityMatrix = similarityCalculator.CalculateSolutionCrowdSimilarity(CurrentScopeParameter.ActualValue);
           double[,] similarities = new double[similarityMatrix.Length, similarityMatrix[0].Length];
           for (int i = 0; i < similarityMatrix.Length; i++)
             for (int j = 0; j < similarityMatrix[0].Length; j++)
@@ -165,11 +171,11 @@ namespace HeuristicLab.Analysis {
 
           // fetch results collection
           ResultCollection results;
-          if (!ResultsParameter.ActualValue.ContainsKey(Name + " Results")) {
+          if (!ResultsParameter.ActualValue.ContainsKey(DiversityResultName)) {
             results = new ResultCollection();
-            ResultsParameter.ActualValue.Add(new Result(Name + " Results", results));
+            ResultsParameter.ActualValue.Add(new Result(DiversityResultName, results));
           } else {
-            results = (ResultCollection)ResultsParameter.ActualValue[Name + " Results"].Value;
+            results = (ResultCollection)ResultsParameter.ActualValue[DiversityResultName].Value;
           }
 
           // store similarities

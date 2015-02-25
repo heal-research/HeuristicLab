@@ -23,6 +23,6 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   public interface ISimilarityBasedOperator : IOperator {
-    ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
+    IConstrainedValueParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter { get; }
   }
 }

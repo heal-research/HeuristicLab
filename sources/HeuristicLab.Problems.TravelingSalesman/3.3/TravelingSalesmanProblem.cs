@@ -81,8 +81,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private TSPAlleleFrequencyAnalyzer TSPAlleleFrequencyAnalyzer {
       get { return Operators.OfType<TSPAlleleFrequencyAnalyzer>().FirstOrDefault(); }
     }
-    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
-      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
+    private PopulationSimilarityAnalyzer PopulationSimilarityAnalyzer {
+      get { return Operators.OfType<PopulationSimilarityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -238,7 +238,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
 
       Operators.Add(new BestTSPSolutionAnalyzer());
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
-      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       ParameterizeAnalyzers();
       var operators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
         new OrderCrossover2(),
@@ -317,13 +317,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         TSPAlleleFrequencyAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         TSPAlleleFrequencyAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
         TSPAlleleFrequencyAnalyzer.ResultsParameter.ActualName = "Results";
-      }
-
-      if (SingleObjectivePopulationDiversityAnalyzer != null) {
-        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
-        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<TSPSimilarityCalculator>().SingleOrDefault();
       }
     }
     private void ParameterizeOperators() {

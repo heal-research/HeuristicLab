@@ -71,8 +71,8 @@ namespace HeuristicLab.Problems.TestFunctions {
     private BestSingleObjectiveTestFunctionSolutionAnalyzer BestSingleObjectiveTestFunctionSolutionAnalyzer {
       get { return Operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
     }
-    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
-      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
+    private PopulationSimilarityAnalyzer PopulationSimilarityAnalyzer {
+      get { return Operators.OfType<PopulationSimilarityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -257,13 +257,6 @@ namespace HeuristicLab.Problems.TestFunctions {
         BestSingleObjectiveTestFunctionSolutionAnalyzer.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
         BestSingleObjectiveTestFunctionSolutionAnalyzer.BoundsParameter.ActualName = BoundsParameter.Name;
       }
-
-      if (SingleObjectivePopulationDiversityAnalyzer != null) {
-        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
-        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<SingleObjectiveTestFunctionSimilarityCalculator>().SingleOrDefault();
-      }
     }
     private void InitializeOperators() {
       Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
@@ -271,7 +264,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
 
       Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
-      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       ParameterizeAnalyzers();
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
       Operators.Add(strategyVectorCreator);

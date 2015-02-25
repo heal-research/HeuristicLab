@@ -81,8 +81,8 @@ namespace HeuristicLab.Problems.Knapsack {
     private BestKnapsackSolutionAnalyzer BestKnapsackSolutionAnalyzer {
       get { return Operators.OfType<BestKnapsackSolutionAnalyzer>().FirstOrDefault(); }
     }
-    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
-      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
+    private PopulationSimilarityAnalyzer PopulationSimilarityAnalyzer {
+      get { return Operators.OfType<PopulationSimilarityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -247,13 +247,6 @@ namespace HeuristicLab.Problems.Knapsack {
         BestKnapsackSolutionAnalyzer.ValuesParameter.ActualName = ValuesParameter.Name;
         BestKnapsackSolutionAnalyzer.ValuesParameter.Hidden = true;
       }
-
-      if (SingleObjectivePopulationDiversityAnalyzer != null) {
-        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
-        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<KnapsackSimilarityCalculator>().SingleOrDefault();
-      }
     }
     private void InitializeOperators() {
       Operators.Add(new KnapsackImprovementOperator());
@@ -262,7 +255,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Operators.Add(new KnapsackSimilarityCalculator());
 
       Operators.Add(new BestKnapsackSolutionAnalyzer());
-      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       ParameterizeAnalyzer();
       foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
         if (!(op is ISingleObjectiveMoveEvaluator) || (op is IKnapsackMoveEvaluator)) {

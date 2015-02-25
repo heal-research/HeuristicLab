@@ -35,12 +35,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
   /// </summary>
   [Item("SolutionPoolUpdateMethod", "An operator that updates the solution pool.")]
   [StorableClass]
-  public sealed class SolutionPoolUpdateMethod : SingleSuccessorOperator, ISimilarityBasedOperator, ISingleObjectiveOperator {
-    #region ISimilarityBasedOperator Members
-    [Storable]
-    public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
-    #endregion
-
+  public sealed class SolutionPoolUpdateMethod : SingleSuccessorOperator, ISingleObjectiveOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
@@ -56,6 +51,9 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     }
     public IValueLookupParameter<IntValue> ReferenceSetSizeParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["ReferenceSetSize"]; }
+    }
+    public IValueLookupParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
+      get { return (IValueLookupParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
     }
     #endregion
 
@@ -81,23 +79,29 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
     [StorableConstructor]
     private SolutionPoolUpdateMethod(bool deserializing) : base(deserializing) { }
-    private SolutionPoolUpdateMethod(SolutionPoolUpdateMethod original, Cloner cloner)
-      : base(original, cloner) {
-      this.SimilarityCalculator = cloner.Clone(original.SimilarityCalculator);
-    }
-    public SolutionPoolUpdateMethod() : base() { Initialize(); }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SolutionPoolUpdateMethod(this, cloner);
-    }
-
-    private void Initialize() {
+    private SolutionPoolUpdateMethod(SolutionPoolUpdateMethod original, Cloner cloner) : base(original, cloner) { }
+    public SolutionPoolUpdateMethod()
+      : base() {
       #region Create parameters
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that is the reference set."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem, otherwise false."));
       Parameters.Add(new ValueLookupParameter<BoolValue>("NewSolutions", "True if new solutions have been found, otherwise false."));
       Parameters.Add(new ValueLookupParameter<IItem>("Quality", "This parameter is used for name translation only."));
       Parameters.Add(new ValueLookupParameter<IntValue>("ReferenceSetSize", "The size of the reference set."));
+      Parameters.Add(new ValueLookupParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
+      #endregion
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SolutionPoolUpdateMethod(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("SimilarityCalculator"))
+        Parameters.Add(new ValueLookupParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
       #endregion
     }
 
@@ -131,7 +135,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       // is there any offspring better than the worst parent?
       if (orderedOffspring.Any(hasBetterQuality)) {
         // produce the set union
-        var union = orderedParents.Union(orderedOffspring.Where(hasBetterQuality), SimilarityCalculator);
+        var union = orderedParents.Union(orderedOffspring.Where(hasBetterQuality), SimilarityCalculatorParameter.ActualValue);
         if (union.Count() > orderedParents.Count()) {
           var orderedUnion = Maximization.Value ? union.OrderByDescending(x => x.Variables[QualityParameter.ActualName].Value) :
                                                   union.OrderBy(x => x.Variables[QualityParameter.ActualName].Value);
