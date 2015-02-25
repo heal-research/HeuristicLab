@@ -116,6 +116,11 @@ namespace HeuristicLab.Optimization.Views {
       Caption = Content != null ? Content.OptimizerName + " Table" : ViewAttribute.GetViewName(GetType());
     }
 
+    protected override void UpdateData() {
+      if (suppressUpdates) return;
+      base.UpdateData();
+    }
+
     protected override void UpdateColumnHeaders() {
       HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
        .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
@@ -144,7 +149,10 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
       else {
         suppressUpdates = Content.UpdateOfRunsInProgress;
-        if (!suppressUpdates) UpdateRowAttributes();
+        if (!suppressUpdates) {
+          UpdateRowAttributes();
+          UpdateData();
+        }
       }
     }
 

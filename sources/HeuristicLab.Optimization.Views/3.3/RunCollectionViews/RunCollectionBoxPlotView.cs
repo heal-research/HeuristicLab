@@ -121,7 +121,7 @@ namespace HeuristicLab.Optimization.Views {
     private void Content_Reset(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Reset), sender, e);
-      else {
+      else if (!suppressUpdates) {
         UpdateDataPoints();
         UpdateAxisLabels();
       }
@@ -375,7 +375,7 @@ namespace HeuristicLab.Optimization.Views {
       Axis xAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisX;
       Axis yAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisY;
       int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
-      //mkommend: combobox.SelectedIndex could not be used as this changes during hoovering over possible values
+      //mkommend: combobox.SelectedIndex could not be used as this changes during hovering over possible values
       var xSAxisSelectedIndex = xAxisValue == null ? 0 : xAxisComboBox.Items.IndexOf(xAxisValue);
       var ySAxisSelectedIndex = yAxisValue == null ? 0 : xAxisComboBox.Items.IndexOf(yAxisValue);
       SetCustomAxisLabels(xAxis, xSAxisSelectedIndex - axisDimensionCount);

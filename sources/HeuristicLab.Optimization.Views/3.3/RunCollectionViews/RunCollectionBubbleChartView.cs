@@ -261,6 +261,7 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void Content_Reset(object sender, EventArgs e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
         Invoke(new EventHandler(Content_Reset), sender, e);
       else {
