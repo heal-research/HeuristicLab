@@ -81,9 +81,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     private TSPAlleleFrequencyAnalyzer TSPAlleleFrequencyAnalyzer {
       get { return Operators.OfType<TSPAlleleFrequencyAnalyzer>().FirstOrDefault(); }
     }
-    private PopulationSimilarityAnalyzer PopulationSimilarityAnalyzer {
-      get { return Operators.OfType<PopulationSimilarityAnalyzer>().FirstOrDefault(); }
-    }
     #endregion
 
     // BackwardsCompatibility3.3

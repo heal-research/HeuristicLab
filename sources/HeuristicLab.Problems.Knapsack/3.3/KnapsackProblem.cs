@@ -81,9 +81,6 @@ namespace HeuristicLab.Problems.Knapsack {
     private BestKnapsackSolutionAnalyzer BestKnapsackSolutionAnalyzer {
       get { return Operators.OfType<BestKnapsackSolutionAnalyzer>().FirstOrDefault(); }
     }
-    private PopulationSimilarityAnalyzer PopulationSimilarityAnalyzer {
-      get { return Operators.OfType<PopulationSimilarityAnalyzer>().FirstOrDefault(); }
-    }
     #endregion
 
     // BackwardsCompatibility3.3

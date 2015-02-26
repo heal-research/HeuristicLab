@@ -71,9 +71,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     private BestSingleObjectiveTestFunctionSolutionAnalyzer BestSingleObjectiveTestFunctionSolutionAnalyzer {
       get { return Operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
     }
-    private PopulationSimilarityAnalyzer PopulationSimilarityAnalyzer {
-      get { return Operators.OfType<PopulationSimilarityAnalyzer>().FirstOrDefault(); }
-    }
     #endregion
 
     // BackwardsCompatibility3.3

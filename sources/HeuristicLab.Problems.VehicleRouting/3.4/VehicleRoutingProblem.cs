@@ -113,9 +113,6 @@ namespace HeuristicLab.Problems.VehicleRouting {
       get { return SolutionCreatorParameter.Value; }
       set { SolutionCreatorParameter.Value = value; }
     }
-    private PopulationSimilarityAnalyzer PopulationSimilarityAnalyzer {
-      get { return Operators.OfType<PopulationSimilarityAnalyzer>().FirstOrDefault(); }
-    }
     #endregion
 
     [StorableConstructor]
