@@ -31,19 +31,11 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("SimilarityCalculator", "A base class for items that perform similarity calculation between two solutions.")]
   [StorableClass]
   public abstract class SingleObjectiveSolutionSimilarityCalculator : SolutionSimilarityCalculator, ISingleObjectiveSolutionSimilarityCalculator {
-    #region Properties
-    [Storable]
-    public string SolutionVariableName { get; set; }
-    [Storable]
-    public string QualityVariableName { get; set; }
-    #endregion
-
     [StorableConstructor]
     protected SingleObjectiveSolutionSimilarityCalculator(bool deserializing) : base(deserializing) { }
     protected SingleObjectiveSolutionSimilarityCalculator(SingleObjectiveSolutionSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {
-      this.SolutionVariableName = original.SolutionVariableName;
-      this.QualityVariableName = original.QualityVariableName;
+
     }
     protected SingleObjectiveSolutionSimilarityCalculator() : base() { }
 

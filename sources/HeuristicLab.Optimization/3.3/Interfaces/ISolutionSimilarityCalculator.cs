@@ -27,6 +27,9 @@ namespace HeuristicLab.Optimization {
   /// An interface which represents an operator for similarity calculation.
   /// </summary>
   public interface ISolutionSimilarityCalculator : IItem, IEqualityComparer<IScope> {
+    string SolutionVariableName { get; set; }
+    string QualityVariableName { get; set; }
+
     /// <summary>
     /// Calculates the similarity of two solutions.
     /// </summary>
