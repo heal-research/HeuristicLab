@@ -72,8 +72,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPPlus-4.0.3", "HeuristicLa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.EPPlus-4.0.3", "HeuristicLab.ExtLibs\HeuristicLab.EPPlus\4.0.3\HeuristicLab.EPPlus-4.0.3\HeuristicLab.EPPlus-4.0.3.csproj", "{675A6EE4-DE7C-413E-8BEF-EB21E0384C87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPPlus-Benchmark", "HeuristicLab.ExtLibs\EPPlus-Benchmark\EPPlus-Benchmark.csproj", "{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -464,14 +462,6 @@ Global
 		{675A6EE4-DE7C-413E-8BEF-EB21E0384C87}.Release|x64.Build.0 = Release|x64
 		{675A6EE4-DE7C-413E-8BEF-EB21E0384C87}.Release|x86.ActiveCfg = Release|x86
 		{675A6EE4-DE7C-413E-8BEF-EB21E0384C87}.Release|x86.Build.0 = Release|x86
-		{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}.Release|x64.ActiveCfg = Release|Any CPU
-		{0A6B4220-31D1-444F-9D9E-DA0BBF743E7C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
