@@ -89,8 +89,7 @@ namespace HeuristicLab.Optimization {
             Apply(token, stack, variables);
           }
         }
-      }
-      catch (Exception x) {
+      } catch (Exception x) {
         throw new Exception(string.Format(
           "Calculation of '{1}'{0}failed at token #{2}: {3} {0}current stack is: {0}{4}", Environment.NewLine,
           Formula, i, TokenWithContext(tokens, i, 3),
@@ -103,6 +102,7 @@ namespace HeuristicLab.Optimization {
           stack.Count, Formula));
       var result = stack.Pop();
       if (result is string) return new StringValue((string)result);
+      if (result is int) return new IntValue((int)result);
       if (result is double) return new DoubleValue((double)result);
       if (result is bool) return new BoolValue((bool)result);
       return null;
@@ -138,22 +138,25 @@ namespace HeuristicLab.Optimization {
           stack.Push(next);
           break;
 
-        case "log": Apply(stack, x => Math.Log((double)x)); break;
-        case "+": Apply(stack, (x, y) => (double)x + (double)y); break;
-        case "-": Apply(stack, (x, y) => (double)x - (double)y); break;
-        case "*": Apply(stack, (x, y) => (double)x * (double)y); break;
-        case "/": Apply(stack, (x, y) => (double)x / (double)y); break;
-        case "^": Apply(stack, (x, y) => Math.Pow((double)x, (double)y)); break;
-        case "<": Apply(stack, (x, y) => (double)x < (double)y); break;
-        case ">": Apply(stack, (x, y) => (double)x > (double)y); break;
+        case "log": Apply(stack, x => Math.Log(Convert.ToDouble(x))); break;
+        case "+": Apply(stack, (x, y) => Convert.ToDouble(x) + Convert.ToDouble(y)); break;
+        case "-": Apply(stack, (x, y) => Convert.ToDouble(x) - Convert.ToDouble(y)); break;
+        case "*": Apply(stack, (x, y) => Convert.ToDouble(x) * Convert.ToDouble(y)); break;
+        case "/": Apply(stack, (x, y) => Convert.ToDouble(x) / Convert.ToDouble(y)); break;
+        case "^": Apply(stack, (x, y) => Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y))); break;
+        case "<": Apply(stack, (x, y) => Convert.ToDouble(x) < Convert.ToDouble(y)); break;
+        case ">": Apply(stack, (x, y) => Convert.ToDouble(x) > Convert.ToDouble(y)); break;
+
+        case "toint": Apply(stack, x => Convert.ToInt32(x)); break;
+        case "todouble": Apply(stack, x => Convert.ToDouble(x)); break;
 
         case "==": Apply(stack, (x, y) => Equal(x, y)); break;
-        case "not": Apply(stack, x => !(bool)x); break;
+        case "not": Apply(stack, x => !Convert.ToBoolean(x)); break;
         case "isnull": Apply(stack, x => x == null); break;
-        case "if": Apply(stack, (then, else_, cond) => (bool)cond ? then : else_); break;
+        case "if": Apply(stack, (then, else_, cond) => Convert.ToBoolean(cond) ? then : else_); break;
 
-        case "ismatch": Apply(stack, (s, p) => new Regex((string)p).IsMatch((string)s)); break;
-        case "rename": Apply(stack, (s, p, r) => new Regex((string)p).Replace((string)s, (string)r)); break;
+        case "ismatch": Apply(stack, (s, p) => new Regex(Convert.ToString(p)).IsMatch(Convert.ToString(s))); break;
+        case "rename": Apply(stack, (s, p, r) => new Regex(Convert.ToString(p)).Replace(Convert.ToString(s), Convert.ToString(r))); break;
 
         default: stack.Push(GetVariableValue(variables, token)); break;
       }
@@ -207,8 +210,7 @@ namespace HeuristicLab.Optimization {
       var a = stack.Pop();
       try {
         stack.Push(func(a));
-      }
-      catch (Exception) {
+      } catch (Exception) {
         stack.Push(a);
         throw;
       }
@@ -221,8 +223,7 @@ namespace HeuristicLab.Optimization {
       var a = stack.Pop();
       try {
         stack.Push(func(a, b));
-      }
-      catch (Exception) {
+      } catch (Exception) {
         stack.Push(b);
         stack.Push(a);
         throw;
@@ -237,8 +238,7 @@ namespace HeuristicLab.Optimization {
       var a = stack.Pop();
       try {
         stack.Push(func(a, b, c));
-      }
-      catch (Exception) {
+      } catch (Exception) {
         stack.Push(a);
         stack.Push(b);
         stack.Push(c);
