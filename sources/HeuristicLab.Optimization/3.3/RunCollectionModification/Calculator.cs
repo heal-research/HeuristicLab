@@ -150,6 +150,8 @@ namespace HeuristicLab.Optimization {
         case "toint": Apply(stack, x => Convert.ToInt32(x)); break;
         case "todouble": Apply(stack, x => Convert.ToDouble(x)); break;
 
+        case "[]": Apply(stack, (a, i) => GetArrayValueAtIndex(a, Convert.ToInt32(i))); break;
+
         case "==": Apply(stack, (x, y) => Equal(x, y)); break;
         case "not": Apply(stack, x => !Convert.ToBoolean(x)); break;
         case "isnull": Apply(stack, x => x == null); break;
@@ -183,6 +185,12 @@ namespace HeuristicLab.Optimization {
       return null;
     }
 
+    private static object GetArrayValue(IItem value) {
+      if (value is IntArray || value is DoubleArray || value is BoolArray || value is StringArray)
+        return value;
+      return null;
+    }
+
     private static object GetVariableValue(IDictionary<string, IItem> variables, string name) {
       if (variables.ContainsKey(name)) {
         var item = variables[name];
@@ -190,15 +198,29 @@ namespace HeuristicLab.Optimization {
           GetIntValue(item) ??
           GetDoubleValue(item) ??
           GetBoolValue(item) ??
+          GetArrayValue(item) ??
           item.ToString();
       }
       return null;
     }
+
+    private static object GetArrayValueAtIndex(object array, int index) {
+      if (array is IntArray)
+        return ((IntArray)array)[index];
+      if (array is DoubleArray)
+        return ((DoubleArray)array)[index];
+      if (array is BoolArray)
+        return ((BoolArray)array)[index];
+      if (array is StringArray)
+        return ((StringArray)array)[index];
+      throw new NotSupportedException(string.Format("Type {0} is not a supported array type", array.GetType().Name));
+    }
     #endregion
 
     #region variadic equality
-    private static bool Equal(object a, object b) { return EqualNumber(a, b) || EqualBool(a, b) || EqualString(a, b) || a == b; }
-    private static bool EqualNumber(object a, object b) { return a is double && b is double && (double)a == (double)b; }
+    private static bool Equal(object a, object b) { return EqualIntegerNumber(a, b) || EqualFloatingNumber(a, b) || EqualBool(a, b) || EqualString(a, b) || a == b; }
+    private static bool EqualIntegerNumber(object a, object b) { return a is int && b is int && (int)a == (int)b; }
+    private static bool EqualFloatingNumber(object a, object b) { return a is double && b is double && (double)a == (double)b; }
     private static bool EqualBool(object a, object b) { return a is bool && b is bool && (bool)a == (bool)b; }
     private static bool EqualString(object a, object b) { return a is string && b is string && ((string)a).Equals((string)b); }
     #endregion
