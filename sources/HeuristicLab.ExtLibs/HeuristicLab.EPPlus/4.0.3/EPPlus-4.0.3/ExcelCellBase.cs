@@ -536,14 +536,14 @@ namespace OfficeOpenXml
                 }
                 else
                 {
+                    row = 0;
+                    col = 0;
                     if (throwException)
                     {
                         throw (new Exception(string.Format("Invalid Address format {0}", address)));
                     }
                     else
                     {
-                        row = 0;
-                        col = 0;
                         return false;
                     }
                 }
