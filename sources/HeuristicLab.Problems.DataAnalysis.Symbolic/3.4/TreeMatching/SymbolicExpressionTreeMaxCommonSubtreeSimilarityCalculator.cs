@@ -29,9 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator", "A similarity calculator based on the size of the maximum common subtree between two trees")]
-  public class SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
-    protected override bool IsCommutative { get { return true; } }
-
+  public class SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator : SolutionSimilarityCalculator {
     [Storable]
     private readonly SymbolicExpressionTreeNodeEqualityComparer comparer;
     public bool MatchVariableWeights {
@@ -43,6 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       get { return comparer.MatchConstantValues; }
       set { comparer.MatchConstantValues = value; }
     }
+
+    protected override bool IsCommutative { get { return true; } }
 
     [StorableConstructor]
     protected SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator(bool deserializing) : base(deserializing) { }

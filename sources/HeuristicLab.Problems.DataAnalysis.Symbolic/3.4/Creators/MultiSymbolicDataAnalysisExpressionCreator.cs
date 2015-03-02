@@ -33,7 +33,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Creators {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public class MultiSymbolicDataAnalysisExpressionCreator : StochasticMultiBranch<ISymbolicDataAnalysisSolutionCreator>,
     ISymbolicDataAnalysisSolutionCreator,
     ISymbolicExpressionTreeSizeConstraintOperator,

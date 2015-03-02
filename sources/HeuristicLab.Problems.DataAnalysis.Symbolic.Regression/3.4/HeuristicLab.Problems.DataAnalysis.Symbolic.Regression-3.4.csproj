@@ -127,6 +127,7 @@
     <Compile Include="SingleObjective\ConstantOptimizationAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSolutionsAnalyzer.cs" />
+    <Compile Include="SymbolicRegressionPhenotypicDiversityAnalyzer.cs" />
     <Compile Include="SymbolicRegressionPruningAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionLogResidualEvaluator.cs" />
     <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
@@ -211,6 +212,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">

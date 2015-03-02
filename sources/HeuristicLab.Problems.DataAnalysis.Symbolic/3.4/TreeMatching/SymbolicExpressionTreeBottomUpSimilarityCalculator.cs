@@ -33,12 +33,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SymbolicExpressionTreeBottomUpSimilarityCalculator", "A similarity calculator which uses the tree bottom-up distance as a similarity metric.")]
-  public class SymbolicExpressionTreeBottomUpSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+  public class SymbolicExpressionTreeBottomUpSimilarityCalculator : SolutionSimilarityCalculator {
     private readonly HashSet<string> commutativeSymbols = new HashSet<string> { "Addition", "Multiplication", "Average", "And", "Or", "Xor" };
 
-    protected override bool IsCommutative { get { return true; } }
-
     public SymbolicExpressionTreeBottomUpSimilarityCalculator() { }
+    protected override bool IsCommutative { get { return true; } }
 
     [StorableConstructor]
     protected SymbolicExpressionTreeBottomUpSimilarityCalculator(bool deserializing)
@@ -62,6 +61,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {
+      if (leftSolution == rightSolution)
+        return 1.0;
+
       var t1 = leftSolution.Variables[SolutionVariableName].Value as ISymbolicExpressionTree;
       var t2 = rightSolution.Variables[SolutionVariableName].Value as ISymbolicExpressionTree;
 
