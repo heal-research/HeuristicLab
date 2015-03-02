@@ -20,7 +20,7 @@
 #endregion
 
 namespace HeuristicLab.Optimization.Views {
-  partial class ISingleObjectiveSolutionSimilarityCalculatorView {
+  partial class ISolutionSimilarityCalculatorView {
     /// <summary> 
     /// Required designer variable.
     /// </summary>

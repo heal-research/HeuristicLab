@@ -28,6 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -259,6 +260,8 @@ namespace HeuristicLab.Problems.TestFunctions {
       Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
       Operators.Add(new SingleObjectiveTestFunctionPathRelinker());
       Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator { QualityVariableName = SolutionCreator.RealVectorParameter.ActualName });
+      Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
@@ -314,7 +317,8 @@ namespace HeuristicLab.Problems.TestFunctions {
       Evaluator.PointParameter.Hidden = true;
       try {
         BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
-      } catch (ArgumentException e) {
+      }
+      catch (ArgumentException e) {
         ErrorHandling.ShowErrorDialog(e);
         ProblemSize.Value = Evaluator.MinimumProblemSize;
       }

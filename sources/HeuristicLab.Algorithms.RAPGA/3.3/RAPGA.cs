@@ -102,8 +102,8 @@ namespace HeuristicLab.Algorithms.RAPGA {
     private ValueParameter<IntValue> MaximumGenerationsParameter {
       get { return (ValueParameter<IntValue>)Parameters["MaximumGenerations"]; }
     }
-    public IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator> SimilarityCalculatorParameter {
-      get { return (IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
+    public IConstrainedValueParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
+      get { return (IConstrainedValueParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
     }
     #endregion
 
@@ -172,7 +172,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
       get { return MaximumGenerationsParameter.Value; }
       set { MaximumGenerationsParameter.Value = value; }
     }
-    public ISingleObjectiveSolutionSimilarityCalculator SimilarityCalculator {
+    public ISolutionSimilarityCalculator SimilarityCalculator {
       get { return SimilarityCalculatorParameter.Value; }
       set { SimilarityCalculatorParameter.Value = value; }
     }
@@ -204,6 +204,14 @@ namespace HeuristicLab.Algorithms.RAPGA {
       if (!Parameters.ContainsKey("ReevaluateElites")) {
         Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", (BoolValue)new BoolValue(false).AsReadOnly()) { Hidden = true });
       }
+      if (Parameters.ContainsKey("SimilarityCalculator")) {
+        var oldParameter = (IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>)Parameters["SimilarityCalculator"];
+        Parameters.Remove(oldParameter);
+        var newParameter = new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions.", new ItemSet<ISolutionSimilarityCalculator>(oldParameter.ValidValues));
+        var selectedSimilarityCalculator = newParameter.ValidValues.SingleOrDefault(x => x.GetType() == oldParameter.Value.GetType());
+        newParameter.Value = selectedSimilarityCalculator;
+        Parameters.Add(newParameter);
+      }
       #endregion
       Initialize();
     }
@@ -233,7 +241,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
       Parameters.Add(new FixedValueParameter<BoolValue>("ReevaluateElites", "Flag to determine if elite individuals should be reevaluated (i.e., if stochastic fitness functions are used.)", new BoolValue(false)) { Hidden = true });
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
-      Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions."));
+      Parameters.Add(new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions."));
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -447,7 +455,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
       }
     }
     private void ParameterizeSimilarityCalculators() {
-      foreach (ISingleObjectiveSolutionSimilarityCalculator calc in SimilarityCalculatorParameter.ValidValues) {
+      foreach (ISolutionSimilarityCalculator calc in SimilarityCalculatorParameter.ValidValues) {
         calc.QualityVariableName = Problem.Evaluator.QualityParameter.ActualName;
       }
     }
@@ -492,18 +500,15 @@ namespace HeuristicLab.Algorithms.RAPGA {
       Analyzer.Operators.Add(selectionPressureAnalyzer, selectionPressureAnalyzer.EnabledByDefault);
     }
     private void UpdateSimilarityCalculators() {
-      ISingleObjectiveSolutionSimilarityCalculator oldSimilarityCalculator = SimilarityCalculatorParameter.Value;
+      ISolutionSimilarityCalculator oldSimilarityCalculator = SimilarityCalculatorParameter.Value;
       SimilarityCalculatorParameter.ValidValues.Clear();
-      ISingleObjectiveSolutionSimilarityCalculator defaultSimilarityCalculator = Problem.Operators.OfType<ISingleObjectiveSolutionSimilarityCalculator>().FirstOrDefault();
+      ISolutionSimilarityCalculator defaultSimilarityCalculator = Problem.Operators.OfType<ISolutionSimilarityCalculator>().FirstOrDefault();
 
-      SimilarityCalculatorParameter.ValidValues.Add(new QualitySimilarityCalculator { QualityVariableName = Problem.Evaluator.QualityParameter.ActualName });
-      SimilarityCalculatorParameter.ValidValues.Add(new NoSimilarityCalculator());
-
-      foreach (ISingleObjectiveSolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISingleObjectiveSolutionSimilarityCalculator>())
+      foreach (ISolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISolutionSimilarityCalculator>())
         SimilarityCalculatorParameter.ValidValues.Add(similarityCalculator);
 
       if (oldSimilarityCalculator != null) {
-        ISingleObjectiveSolutionSimilarityCalculator similarityCalculator = SimilarityCalculatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSimilarityCalculator.GetType());
+        ISolutionSimilarityCalculator similarityCalculator = SimilarityCalculatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSimilarityCalculator.GetType());
         if (similarityCalculator != null) SimilarityCalculatorParameter.Value = similarityCalculator;
         else oldSimilarityCalculator = null;
       }

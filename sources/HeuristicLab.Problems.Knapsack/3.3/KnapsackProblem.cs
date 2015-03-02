@@ -28,6 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -250,6 +251,8 @@ namespace HeuristicLab.Problems.Knapsack {
       Operators.Add(new KnapsackPathRelinker());
       Operators.Add(new KnapsackSimultaneousPathRelinker());
       Operators.Add(new KnapsackSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator { QualityVariableName = SolutionCreator.BinaryVectorParameter.ActualName });
+      Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestKnapsackSolutionAnalyzer());
       Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));

@@ -23,15 +23,15 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Optimization.Views {
-  [View("ISingleObjectiveSolutionSimilarityCalculator View")]
-  [Content(typeof(ISingleObjectiveSolutionSimilarityCalculator), true)]
-  public partial class ISingleObjectiveSolutionSimilarityCalculatorView : ISimilarityCalculatorView {
-    public ISingleObjectiveSolutionSimilarityCalculatorView() {
+  [View("ISolutionSimilarityCalculator View")]
+  [Content(typeof(ISolutionSimilarityCalculator), true)]
+  public partial class ISolutionSimilarityCalculatorView : AsynchronousContentView {
+    public ISolutionSimilarityCalculatorView() {
       InitializeComponent();
     }
 
-    public new ISingleObjectiveSolutionSimilarityCalculator Content {
-      get { return (ISingleObjectiveSolutionSimilarityCalculator)base.Content; }
+    public new ISolutionSimilarityCalculator Content {
+      get { return (ISolutionSimilarityCalculator)base.Content; }
       set { base.Content = value; }
     }
 

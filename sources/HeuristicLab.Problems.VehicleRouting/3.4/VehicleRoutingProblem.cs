@@ -28,6 +28,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -252,6 +253,8 @@ namespace HeuristicLab.Problems.VehicleRouting {
         ProblemInstance.Operators.Concat(
           ApplicationManager.Manager.GetInstances<IGeneralVRPOperator>().Cast<IOperator>()).OrderBy(op => op.Name));
         Operators.Add(new VRPSimilarityCalculator());
+        Operators.Add(new QualitySimilarityCalculator());
+        Operators.Add(new NoSimilarityCalculator());
         Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
 
         IVRPCreator defaultCreator = null;
@@ -283,10 +286,11 @@ namespace HeuristicLab.Problems.VehicleRouting {
           op.ParentsParameter.ActualName = SolutionCreator.VRPToursParameter.ActualName;
           op.ParentsParameter.Hidden = true;
         }
-        foreach (VRPSimilarityCalculator op in Operators.OfType<VRPSimilarityCalculator>()) {
+        foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
           op.SolutionVariableName = SolutionCreator.VRPToursParameter.ActualName;
           op.QualityVariableName = ProblemInstance.SolutionEvaluator.QualityParameter.ActualName;
-          op.ProblemInstance = ProblemInstance;
+          var calc = op as VRPSimilarityCalculator;
+          if (calc != null) calc.ProblemInstance = ProblemInstance;
         }
       }
     }

@@ -29,6 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -232,6 +233,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Operators.Add(new TSPPathRelinker());
       Operators.Add(new TSPSimultaneousPathRelinker());
       Operators.Add(new TSPSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator { QualityVariableName = SolutionCreator.PermutationParameter.ActualName });
+      Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestTSPSolutionAnalyzer());
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
