@@ -150,10 +150,7 @@ namespace OfficeOpenXml.Table.PivotTable
 
             LoadFields();
 
-            using (var r=sheet.Cells[address.Address])
-            {
-                r.Clear();
-            }
+            sheet.Cells[address.Address].Clear();
         }
         private void init()
         {

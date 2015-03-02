@@ -58,7 +58,7 @@ namespace OfficeOpenXml
     /// <summary>
 	/// A range of cells 
 	/// </summary>
-	public class ExcelRangeBase : ExcelAddress, IExcelCell, IDisposable, IEnumerable<ExcelRangeBase>, IEnumerator<ExcelRangeBase>
+	public class ExcelRangeBase : ExcelAddress, IExcelCell, IEnumerable<ExcelRangeBase>
 	{
 		/// <summary>
 		/// Reference to the worksheet
@@ -2757,69 +2757,84 @@ namespace OfficeOpenXml
         CellsStoreEnumerator<object> cellEnum;
 		public IEnumerator<ExcelRangeBase> GetEnumerator()
 		{
-			Reset();
-			return this;
+            return new ExcelRangeBaseEnumerator(this);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			Reset();
-			return this;
+            return new ExcelRangeBaseEnumerator(this);
 		}
 
 		/// <summary>
 		/// The current range when enumerating
 		/// </summary>
-		public ExcelRangeBase Current
-		{
-			get
-			{
-				return new ExcelRangeBase(_worksheet, ExcelAddressBase.GetAddress(cellEnum.Row, cellEnum.Column));
-			}
-		}
+        public class ExcelRangeBaseEnumerator : IEnumerator<ExcelRangeBase> {
+            private CellsStoreEnumerator<object> _cellEnum;
+            private int _enumAddressIx = -1;
+            private ExcelRangeBase _range;
+            private ExcelRangeBase _current;
 
-		/// <summary>
-		/// The current range when enumerating
-		/// </summary>
-		object IEnumerator.Current
-		{
-			get
-			{
-				return ((object)(new ExcelRangeBase(_worksheet, ExcelAddressBase.GetAddress(cellEnum.Row, cellEnum.Column))));
-			}
-		}
-
-		int _enumAddressIx = -1;
-        public bool MoveNext()
-		{
-            if (cellEnum.Next())
-            {
-                return true;
-            }
-            else if (_addresses!=null)
-            {
-                _enumAddressIx++;
-                if (_enumAddressIx < _addresses.Count)
-                {
-                    cellEnum = new CellsStoreEnumerator<object>(_worksheet._values, 
-                        _addresses[_enumAddressIx]._fromRow, 
-                        _addresses[_enumAddressIx]._fromCol, 
-                        _addresses[_enumAddressIx]._toRow, 
-                        _addresses[_enumAddressIx]._toCol);
-                    return MoveNext();
-                }
-                else
-                {
-                    return false;
+            /// <summary>
+            /// The current range when enumerating
+            /// </summary>
+            public ExcelRangeBase Current {
+                get {
+                    return _current;
                 }
             }
-            return false;
-		}
 
-		public void Reset()
-		{
-            _enumAddressIx = -1;
-            cellEnum = new CellsStoreEnumerator<object>(_worksheet._values, _fromRow, _fromCol, _toRow, _toCol);
+            /// <summary>
+            /// The current range when enumerating
+            /// </summary>
+            object IEnumerator.Current {
+                get {
+                    return _current;
+                }
+            }
+
+            public ExcelRangeBaseEnumerator(ExcelRangeBase range) {
+                this._range = range;
+                Reset();
+            }
+            public bool MoveNext() {
+                if (_cellEnum.Next()) {
+                    _current._fromCol = _cellEnum.Column;
+                    _current._fromRow = _cellEnum.Row;
+                    _current._toCol = _cellEnum.Column;
+                    _current._toRow = _cellEnum.Row;
+                    _current.Address = GetAddress(_current._fromRow, _current._fromCol);
+                    return true;
+                }
+                else if (_range._addresses != null) {
+                    _enumAddressIx++;
+                    if (_enumAddressIx < _range._addresses.Count) {
+                        _cellEnum = new CellsStoreEnumerator<object>(_range._worksheet._values,
+                            _range._addresses[_enumAddressIx]._fromRow,
+                            _range._addresses[_enumAddressIx]._fromCol,
+                            _range._addresses[_enumAddressIx]._toRow,
+                            _range._addresses[_enumAddressIx]._toCol);
+                        return MoveNext();
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            public void Reset() {
+                _enumAddressIx = -1;
+                _cellEnum = new CellsStoreEnumerator<object>(_range._worksheet._values, _range._fromRow, _range._fromCol, _range._toRow, _range._toCol);
+                _current = new ExcelRangeBase(_range._worksheet, ExcelAddressBase.GetAddress(_cellEnum.Row, _cellEnum.Column));
+            }
+
+            public void Dispose() {
+                if (_cellEnum != null) {
+                    _cellEnum.Dispose();
+                    _cellEnum = null;
+                }
+            }
+
         }
 
         //private void GetNextIndexEnum(int fromRow, int fromCol, int toRow, int toCol)
