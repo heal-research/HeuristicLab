@@ -162,7 +162,9 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
       if (Parameters.ContainsKey("SimilarityCalculator")) {
+#pragma warning disable 0618
         var oldParameter = (IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>)Parameters["SimilarityCalculator"];
+#pragma warning restore 0618
         Parameters.Remove(oldParameter);
         var newParameter = new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions.", new ItemSet<ISolutionSimilarityCalculator>(oldParameter.ValidValues));
         var selectedSimilarityCalculator = newParameter.ValidValues.SingleOrDefault(x => x.GetType() == oldParameter.Value.GetType());
@@ -406,6 +408,11 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
       foreach (ISolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISolutionSimilarityCalculator>())
         SimilarityCalculatorParameter.ValidValues.Add(similarityCalculator);
+
+      if (!SimilarityCalculatorParameter.ValidValues.Any()) {
+        SimilarityCalculatorParameter.ValidValues.Add(new QualitySimilarityCalculator { QualityVariableName = Problem.Evaluator.QualityParameter.ActualName });
+        SimilarityCalculatorParameter.ValidValues.Add(new NoSimilarityCalculator());
+      }
 
       if (oldSimilarityCalculator != null) {
         ISolutionSimilarityCalculator similarityCalculator = SimilarityCalculatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSimilarityCalculator.GetType());

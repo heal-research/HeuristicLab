@@ -30,7 +30,9 @@ namespace HeuristicLab.Optimization.Operators {
   /// </summary>
   [Item("SimilarityCalculator", "A base class for items that perform similarity calculation between two solutions.")]
   [StorableClass]
+#pragma warning disable 0618
   public abstract class SingleObjectiveSolutionSimilarityCalculator : SolutionSimilarityCalculator, ISingleObjectiveSolutionSimilarityCalculator {
+#pragma warning restore 0618
     [StorableConstructor]
     protected SingleObjectiveSolutionSimilarityCalculator(bool deserializing) : base(deserializing) { }
     protected SingleObjectiveSolutionSimilarityCalculator(SingleObjectiveSolutionSimilarityCalculator original, Cloner cloner)
