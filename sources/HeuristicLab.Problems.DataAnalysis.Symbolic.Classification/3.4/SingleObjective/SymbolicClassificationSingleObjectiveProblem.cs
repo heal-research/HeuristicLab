@@ -24,7 +24,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjective;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("Symbolic Classification Problem (single objective)", "Represents a single objective symbolic classfication problem.")]
