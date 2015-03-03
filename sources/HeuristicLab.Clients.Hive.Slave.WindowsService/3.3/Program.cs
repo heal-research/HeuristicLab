@@ -28,22 +28,25 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.WindowsService {
   static class Program {
     private static void Main(string[] args) {
       // Install as service, see http://stackoverflow.com/a/12703878
-      if (Environment.UserInteractive) {
-        try {
-          string parameter = string.Concat(args);
-          switch (parameter) {
-            case "--install":
-              ManagedInstallerClass.InstallHelper(new[] { Assembly.GetExecutingAssembly().Location });
-              break;
-            case "--uninstall":
-              ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
-              break;
-          }
+      bool installDone = false;
+      try {
+        string parameter = string.Concat(args);
+        switch (parameter) {
+          case "--install":
+            installDone = true;
+            ManagedInstallerClass.InstallHelper(new[] { Assembly.GetExecutingAssembly().Location });
+            break;
+          case "--uninstall":
+            installDone = true;
+            ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
+            break;
         }
-        catch (Exception ex) {
-          Console.WriteLine("Error on (un)install of Hive Slave service: " + Environment.NewLine + ex);
-        }
-      } else {
+      }
+      catch (Exception ex) {
+        Console.WriteLine("Error on (un)install of Hive Slave service: " + Environment.NewLine + ex);
+      }
+
+      if (!installDone) {
         ServiceBase[] ServicesToRun;
         ServicesToRun = new ServiceBase[]
         {
