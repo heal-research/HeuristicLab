@@ -111,7 +111,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     void Content_ColumnsChanged(object sender, EventArgs e) {
-      RebuildDataTableAsync();
+      if (!suppressUpdates) {
+        RebuildDataTableAsync();
+      }
     }
 
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
