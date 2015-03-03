@@ -27,7 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
+namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification.SingleObjective {
   [Item("Mean squared error Evaluator", "Calculates the mean squared error of a symbolic classification solution.")]
   [StorableClass]
   public class SymbolicClassificationSingleObjectiveMeanSquaredErrorEvaluator : SymbolicClassificationSingleObjectiveEvaluator {
