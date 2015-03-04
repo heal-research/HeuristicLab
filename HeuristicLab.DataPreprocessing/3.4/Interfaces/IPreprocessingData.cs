@@ -34,8 +34,6 @@ namespace HeuristicLab.DataPreprocessing {
 
     string GetCellAsString(int columnIndex, int rowIndex);
 
-    [Obsolete("use the index based variant, is faster")]
-    IList<T> GetValues<T>(string variableName, bool considerSelection = false);
     IList<T> GetValues<T>(int columnIndex, bool considerSelection = false);
 
     void SetValues<T>(int columnIndex, IList<T> values);

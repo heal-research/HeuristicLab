@@ -82,10 +82,6 @@ namespace HeuristicLab.DataPreprocessing.Implementations {
       return ActiveData.GetCellAsString(columnIndex, rowIndex);
     }
 
-    public IList<T> GetValues<T>(string variableName, bool considerSelection) {
-      return ActiveData.GetValues<T>(variableName, considerSelection);
-    }
-
     public IList<T> GetValues<T>(int columnIndex, bool considerSelection) {
       return ActiveData.GetValues<T>(columnIndex, considerSelection);
     }
