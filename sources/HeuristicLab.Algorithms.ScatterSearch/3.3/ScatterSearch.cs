@@ -409,10 +409,12 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       foreach (ISolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISolutionSimilarityCalculator>())
         SimilarityCalculatorParameter.ValidValues.Add(similarityCalculator);
 
-      if (!SimilarityCalculatorParameter.ValidValues.Any()) {
-        SimilarityCalculatorParameter.ValidValues.Add(new QualitySimilarityCalculator { QualityVariableName = Problem.Evaluator.QualityParameter.ActualName });
+      if (!SimilarityCalculatorParameter.ValidValues.OfType<QualitySimilarityCalculator>().Any())
+        SimilarityCalculatorParameter.ValidValues.Add(new QualitySimilarityCalculator {
+          QualityVariableName = Problem.Evaluator.QualityParameter.ActualName
+        });
+      if (!SimilarityCalculatorParameter.ValidValues.OfType<NoSimilarityCalculator>().Any())
         SimilarityCalculatorParameter.ValidValues.Add(new NoSimilarityCalculator());
-      }
 
       if (oldSimilarityCalculator != null) {
         ISolutionSimilarityCalculator similarityCalculator = SimilarityCalculatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSimilarityCalculator.GetType());
