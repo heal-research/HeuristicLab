@@ -87,6 +87,10 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     private ValueParameter<IntValue> SelectedParentsParameter {
       get { return (ValueParameter<IntValue>)Parameters["SelectedParents"]; }
     }
+
+    private IFixedValueParameter<BoolValue> DominateOnEqualQualitiesParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters["DominateOnEqualQualities"]; }
+    }
     #endregion
 
     #region Properties
@@ -134,6 +138,11 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       get { return SelectedParentsParameter.Value; }
       set { SelectedParentsParameter.Value = value; }
     }
+    public bool DominateOnEqualQualities {
+      get { return DominateOnEqualQualitiesParameter.Value.Value; }
+      set { DominateOnEqualQualitiesParameter.Value.Value = value; }
+    }
+
     private RandomCreator RandomCreator {
       get { return (RandomCreator)OperatorGraph.InitialOperator; }
     }
@@ -170,6 +179,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       Parameters.Add(new ValueParameter<MultiAnalyzer>("Analyzer", "The operator used to analyze each generation.", new MultiAnalyzer()));
       Parameters.Add(new ValueParameter<IntValue>("MaximumGenerations", "The maximum number of generations which should be processed.", new IntValue(1000)));
       Parameters.Add(new ValueParameter<IntValue>("SelectedParents", "Each two parents form a new child, typically this value should be twice the population size, but because the NSGA-II is maximally elitist it can be any multiple of 2 greater than 0.", new IntValue(200)));
+      Parameters.Add(new FixedValueParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated.", new BoolValue(false)));
 
       RandomCreator randomCreator = new RandomCreator();
       SolutionsCreator solutionsCreator = new SolutionsCreator();
@@ -194,6 +204,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       subScopesCounter.ValueParameter.ActualName = "EvaluatedSolutions";
       subScopesCounter.Successor = rankAndCrowdingSorter;
 
+      rankAndCrowdingSorter.DominateOnEqualQualitiesParameter.ActualName = DominateOnEqualQualitiesParameter.Name;
       rankAndCrowdingSorter.CrowdingDistanceParameter.ActualName = "CrowdingDistance";
       rankAndCrowdingSorter.RankParameter.ActualName = "Rank";
       rankAndCrowdingSorter.Successor = resultsCollector;
@@ -310,6 +321,12 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     #region Helpers
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("DominateOnEqualQualities"))
+        Parameters.Add(new FixedValueParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated.", new BoolValue(false)));
+      #endregion
+
       PopulationSizeParameter.ValueChanged += new EventHandler(PopulationSizeParameter_ValueChanged);
       PopulationSize.ValueChanged += new EventHandler(PopulationSize_ValueChanged);
       SelectedParentsParameter.ValueChanged += new EventHandler(SelectedParentsParameter_ValueChanged);

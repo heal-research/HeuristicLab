@@ -78,10 +78,22 @@ namespace HeuristicLab.Algorithms.NSGA2 {
     public LookupParameter<IntValue> EvaluatedSolutionsParameter {
       get { return (LookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
     }
+    public IValueLookupParameter<BoolValue> DominateOnEqualQualitiesParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["DominateOnEqualQualities"]; }
+    }
     #endregion
 
     [StorableConstructor]
     protected NSGA2MainLoop(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("DominateOnEqualQualities"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
+      #endregion
+    }
+
     protected NSGA2MainLoop(NSGA2MainLoop original, Cloner cloner) : base(original, cloner) { }
     public NSGA2MainLoop()
       : base() {
@@ -104,6 +116,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       Parameters.Add(new ValueLookupParameter<VariableCollection>("Results", "The variable collection where results should be stored."));
       Parameters.Add(new ValueLookupParameter<IOperator>("Analyzer", "The operator used to analyze each generation."));
       Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of times solutions have been evaluated."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
       #endregion
 
       #region Create operators
@@ -170,6 +183,7 @@ namespace HeuristicLab.Algorithms.NSGA2 {
       subScopesCounter.Name = "Increment EvaluatedSolutions";
       subScopesCounter.ValueParameter.ActualName = EvaluatedSolutionsParameter.Name;
 
+      rankAndCrowdingSorter.DominateOnEqualQualitiesParameter.ActualName = DominateOnEqualQualitiesParameter.Name;
       rankAndCrowdingSorter.CrowdingDistanceParameter.ActualName = "CrowdingDistance";
       rankAndCrowdingSorter.RankParameter.ActualName = "Rank";
 
