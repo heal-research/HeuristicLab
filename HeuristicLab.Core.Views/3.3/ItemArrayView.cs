@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
@@ -140,8 +141,7 @@ namespace HeuristicLab.Core.Views {
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         try {
           return (T)typeSelectorDialog.TypeSelector.CreateInstanceOfSelectedType();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           ErrorHandling.ShowErrorDialog(this, ex);
         }
       }
@@ -255,6 +255,14 @@ namespace HeuristicLab.Core.Views {
         if ((itemsListView.SelectedItems.Count > 0) && !Content.IsReadOnly && !ReadOnly) {
           foreach (ListViewItem item in itemsListView.SelectedItems)
             Content[item.Index] = null;
+        }
+      } else if (e.KeyData == (Keys.Control | Keys.C)) {
+        if (itemsListView.SelectedItems.Count > 0) {
+          var builder = new StringBuilder();
+          foreach (ListViewItem selected in itemsListView.SelectedItems) {
+            builder.AppendLine(selected.Text);
+          }
+          Clipboard.SetText(builder.ToString());
         }
       }
     }
