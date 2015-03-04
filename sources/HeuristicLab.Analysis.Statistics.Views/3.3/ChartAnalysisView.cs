@@ -290,10 +290,10 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         double variance = values.Variance();
         double percentile25 = values.Percentile(0.25);
         double percentile75 = values.Percentile(0.75);
-        double lowerAvg = values.OrderBy(x => x).Take((int)(values.Count() * 0.25)).Average();
-        double upperAvg = values.OrderByDescending(x => x).Take((int)(values.Count() * 0.25)).Average();
-        double firstAvg = values.Take((int)(values.Count() * 0.25)).Average();
-        double lastAvg = values.Skip((int)(values.Count() * 0.75)).Average();
+        double lowerAvg = values.Count() > 4 ? values.OrderBy(x => x).Take((int)(values.Count() * 0.25)).Average() : double.NaN;
+        double upperAvg = values.Count() > 4 ? values.OrderByDescending(x => x).Take((int)(values.Count() * 0.25)).Average() : double.NaN;
+        double firstAvg = values.Count() > 4 ? values.Take((int)(values.Count() * 0.25)).Average() : double.NaN;
+        double lastAvg = values.Count() > 4 ? values.Skip((int)(values.Count() * 0.75)).Average() : double.NaN;
         double slope, intercept, r;
         llsFitting.Calculate(values, out slope, out intercept);
         r = llsFitting.CalculateError(values, slope, intercept);
