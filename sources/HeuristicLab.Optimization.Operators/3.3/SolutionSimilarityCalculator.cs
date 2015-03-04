@@ -145,8 +145,17 @@ namespace HeuristicLab.Optimization.Operators {
       var da1 = q1 as DoubleArray;
       var da2 = q2 as DoubleArray;
 
-      if (da1 != null && da2 != null)
-        return !da1.Zip(da2, Tuple.Create).Any(x => !x.Item1.IsAlmost(x.Item2));
+      if (da1 != null && da2 != null) {
+        if (da1.Length != da2.Length)
+          throw new ArgumentException("The quality arrays must have the same length.");
+
+        for (int i = 0; i < da1.Length; ++i) {
+          if (!da1[i].IsAlmost(da2[i]))
+            return false;
+        }
+
+        return true;
+      }
 
       throw new ArgumentException("Could not determine quality equality.");
     }
