@@ -108,7 +108,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     void Content_ColumnsChanged(object sender, EventArgs e) {
-      RebuildDataTable();
+      if (!Content.UpdateOfRunsInProgress) {
+        RebuildDataTable();
+      }
     }
 
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
@@ -290,7 +292,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       if (!VerifyDataLength(true))
         return;
 
-      if (data != null) {
+      if (data != null && data.All(x => x != null)) {
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>()
           .AddOperationProgressToView(this, "Calculating...");
 

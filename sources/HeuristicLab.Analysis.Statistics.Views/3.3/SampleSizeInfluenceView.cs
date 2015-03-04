@@ -173,7 +173,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ColumnNamesChanged), sender, e);
       else {
-        UpdateComboBoxes();
+        if (!suppressUpdates) {
+          UpdateComboBoxes();
+        }
       }
     }
     private void run_Changed(object sender, EventArgs e) {

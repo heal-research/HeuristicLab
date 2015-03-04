@@ -96,7 +96,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     void Content_ColumnsChanged(object sender, EventArgs e) {
-      UpdateUI();
+      if (!suppressUpdates) {
+        UpdateUI();
+      }
     }
 
     private void Content_CollectionReset(object sender, HeuristicLab.Collections.CollectionItemsChangedEventArgs<IRun> e) {
