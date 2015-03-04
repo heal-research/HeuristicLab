@@ -233,7 +233,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Operators.Add(new TSPPathRelinker());
       Operators.Add(new TSPSimultaneousPathRelinker());
       Operators.Add(new TSPSimilarityCalculator());
-      Operators.Add(new QualitySimilarityCalculator { QualityVariableName = SolutionCreator.PermutationParameter.ActualName });
+      Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestTSPSolutionAnalyzer());
@@ -358,7 +358,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
-      foreach (TSPSimilarityCalculator op in Operators.OfType<TSPSimilarityCalculator>()) {
+      foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
         op.SolutionVariableName = SolutionCreator.PermutationParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }

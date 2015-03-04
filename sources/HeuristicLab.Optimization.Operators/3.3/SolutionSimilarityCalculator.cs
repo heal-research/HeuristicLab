@@ -110,8 +110,8 @@ namespace HeuristicLab.Optimization.Operators {
       if (ReferenceEquals(x, y)) return true;
       if (x == null || y == null) return false;
 
-      var q1 = x.Variables[QualityVariableName];
-      var q2 = x.Variables[QualityVariableName];
+      var q1 = x.Variables[QualityVariableName].Value;
+      var q2 = y.Variables[QualityVariableName].Value;
 
       return CheckQualityEquality(q1, q2) && CalculateSolutionSimilarity(x, y).IsAlmost(1.0);
     }
@@ -132,7 +132,7 @@ namespace HeuristicLab.Optimization.Operators {
           return hash;
         }
       }
-      return 0; // throw exception?
+      return 0;
     }
 
     private static bool CheckQualityEquality(IItem q1, IItem q2) {
@@ -146,7 +146,7 @@ namespace HeuristicLab.Optimization.Operators {
       var da2 = q2 as DoubleArray;
 
       if (da1 != null && da2 != null)
-        return da1.SequenceEqual(da2);
+        return !da1.Zip(da2, Tuple.Create).Any(x => !x.Item1.IsAlmost(x.Item2));
 
       throw new ArgumentException("Could not determine quality equality.");
     }

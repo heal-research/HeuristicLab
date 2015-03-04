@@ -260,7 +260,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
       Operators.Add(new SingleObjectiveTestFunctionPathRelinker());
       Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
-      Operators.Add(new QualitySimilarityCalculator { QualityVariableName = SolutionCreator.RealVectorParameter.ActualName });
+      Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
@@ -384,10 +384,11 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.ParentsParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
-      foreach (var op in Operators.OfType<SingleObjectiveTestFunctionSimilarityCalculator>()) {
+      foreach (var op in Operators.OfType<ISolutionSimilarityCalculator>()) {
         op.SolutionVariableName = SolutionCreator.RealVectorParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
-        op.Bounds = Bounds;
+        var calc = op as SingleObjectiveTestFunctionSimilarityCalculator;
+        if (calc != null) calc.Bounds = Bounds;
       }
     }
     private void UpdateStrategyVectorBounds() {

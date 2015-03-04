@@ -251,7 +251,7 @@ namespace HeuristicLab.Problems.Knapsack {
       Operators.Add(new KnapsackPathRelinker());
       Operators.Add(new KnapsackSimultaneousPathRelinker());
       Operators.Add(new KnapsackSimilarityCalculator());
-      Operators.Add(new QualitySimilarityCalculator { QualityVariableName = SolutionCreator.BinaryVectorParameter.ActualName });
+      Operators.Add(new QualitySimilarityCalculator());
       Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestKnapsackSolutionAnalyzer());
@@ -309,7 +309,7 @@ namespace HeuristicLab.Problems.Knapsack {
         op.ParentsParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
-      foreach (KnapsackSimilarityCalculator op in Operators.OfType<KnapsackSimilarityCalculator>()) {
+      foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
         op.SolutionVariableName = SolutionCreator.BinaryVectorParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
