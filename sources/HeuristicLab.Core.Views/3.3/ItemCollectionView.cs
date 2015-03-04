@@ -241,10 +241,7 @@ namespace HeuristicLab.Core.Views {
               Content.Remove((T)item.Tag);
           }
         }
-      }
-    }
-    protected virtual void itemsListView_KeyUp(object sender, KeyEventArgs e) {
-      if (e.KeyData == (Keys.Control | Keys.C)) {
+      } else if (e.KeyData == (Keys.Control | Keys.C)) {
         if (itemsListView.SelectedItems.Count > 0) {
           var builder = new StringBuilder();
           foreach (ListViewItem selected in itemsListView.SelectedItems) {

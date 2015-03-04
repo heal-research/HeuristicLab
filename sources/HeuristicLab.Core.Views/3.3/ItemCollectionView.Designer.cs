@@ -106,7 +106,6 @@ namespace HeuristicLab.Core.Views {
       this.itemsListView.DragOver += new System.Windows.Forms.DragEventHandler(this.itemsListView_DragOver);
       this.itemsListView.DoubleClick += new System.EventHandler(this.itemsListView_DoubleClick);
       this.itemsListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyDown);
-      this.itemsListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.itemsListView_KeyUp);
       // 
       // imageList
       // 
