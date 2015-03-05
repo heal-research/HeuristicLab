@@ -198,7 +198,7 @@ namespace HeuristicLab.Analysis.Views {
       if (double.IsNaN(bandwidth)) {
         bandwidth = KernelDensityEstimator.EstimateBandwidth(rowArray);
         suppressUpdate = true;
-        BandwidthNumericUpDown.Value = (decimal)bandwidth;
+        bandwidthNumericUpDown.Value = (decimal)bandwidth;
       }
       var density = KernelDensityEstimator.Density(rowArray, rowArray.Length, stepWidth, bandwidth);
 
@@ -233,9 +233,9 @@ namespace HeuristicLab.Analysis.Views {
       UpdateHistogram();
     }
 
-    private void BandwidthNumericUpDown_ValueChanged(object sender, EventArgs e) {
+    private void bandwidthNumericUpDown_ValueChanged(object sender, EventArgs e) {
       if (!suppressUpdate) {
-        UpdateHistogram(decimal.ToDouble(BandwidthNumericUpDown.Value));
+        UpdateHistogram(decimal.ToDouble(bandwidthNumericUpDown.Value));
       }
       suppressUpdate = false;
     }

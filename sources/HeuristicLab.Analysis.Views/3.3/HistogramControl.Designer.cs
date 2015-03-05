@@ -47,18 +47,18 @@ namespace HeuristicLab.Analysis.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.binsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.label1 = new System.Windows.Forms.Label();
       this.exactCheckBox = new System.Windows.Forms.CheckBox();
       this.label2 = new System.Windows.Forms.Label();
-      this.BandwidthNumericUpDown = new System.Windows.Forms.NumericUpDown();
+      this.bandwidthNumericUpDown = new System.Windows.Forms.NumericUpDown();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.BandwidthNumericUpDown)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bandwidthNumericUpDown)).BeginInit();
       this.SuspendLayout();
       // 
       // chart
@@ -66,18 +66,18 @@ namespace HeuristicLab.Analysis.Views {
       this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      chartArea2.Name = "ChartArea1";
-      this.chart.ChartAreas.Add(chartArea2);
-      legend2.Alignment = System.Drawing.StringAlignment.Center;
-      legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-      legend2.Name = "Default";
-      this.chart.Legends.Add(legend2);
+      chartArea1.Name = "ChartArea1";
+      this.chart.ChartAreas.Add(chartArea1);
+      legend1.Alignment = System.Drawing.StringAlignment.Center;
+      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+      legend1.Name = "Default";
+      this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(0, 27);
       this.chart.Name = "chart";
-      series2.ChartArea = "ChartArea1";
-      series2.Legend = "Default";
-      series2.Name = "Series1";
-      this.chart.Series.Add(series2);
+      series1.ChartArea = "ChartArea1";
+      series1.Legend = "Default";
+      series1.Name = "Series1";
+      this.chart.Series.Add(series1);
       this.chart.Size = new System.Drawing.Size(465, 336);
       this.chart.TabIndex = 0;
       // 
@@ -134,35 +134,35 @@ namespace HeuristicLab.Analysis.Views {
       this.label2.TabIndex = 5;
       this.label2.Text = "Bandwidth:";
       // 
-      // BandwidthNumericUpDown
+      // bandwidthNumericUpDown
       // 
-      this.BandwidthNumericUpDown.DecimalPlaces = 2;
-      this.BandwidthNumericUpDown.Location = new System.Drawing.Point(224, 3);
-      this.BandwidthNumericUpDown.Maximum = new decimal(new int[] {
+      this.bandwidthNumericUpDown.DecimalPlaces = 2;
+      this.bandwidthNumericUpDown.Location = new System.Drawing.Point(224, 3);
+      this.bandwidthNumericUpDown.Maximum = new decimal(new int[] {
             100000000,
             0,
             0,
             0});
-      this.BandwidthNumericUpDown.Minimum = new decimal(new int[] {
+      this.bandwidthNumericUpDown.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-      this.BandwidthNumericUpDown.Name = "BandwidthNumericUpDown";
-      this.BandwidthNumericUpDown.Size = new System.Drawing.Size(61, 20);
-      this.BandwidthNumericUpDown.TabIndex = 4;
-      this.BandwidthNumericUpDown.Value = new decimal(new int[] {
+      this.bandwidthNumericUpDown.Name = "bandwidthNumericUpDown";
+      this.bandwidthNumericUpDown.Size = new System.Drawing.Size(61, 20);
+      this.bandwidthNumericUpDown.TabIndex = 4;
+      this.bandwidthNumericUpDown.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-      this.BandwidthNumericUpDown.ValueChanged += new System.EventHandler(this.BandwidthNumericUpDown_ValueChanged);
+      this.bandwidthNumericUpDown.ValueChanged += new System.EventHandler(this.bandwidthNumericUpDown_ValueChanged);
       // 
       // HistogramControl
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.label2);
-      this.Controls.Add(this.BandwidthNumericUpDown);
+      this.Controls.Add(this.bandwidthNumericUpDown);
       this.Controls.Add(this.exactCheckBox);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.binsNumericUpDown);
@@ -171,7 +171,7 @@ namespace HeuristicLab.Analysis.Views {
       this.Size = new System.Drawing.Size(465, 363);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.BandwidthNumericUpDown)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bandwidthNumericUpDown)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -184,6 +184,6 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.CheckBox exactCheckBox;
     private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.NumericUpDown BandwidthNumericUpDown;
+    private System.Windows.Forms.NumericUpDown bandwidthNumericUpDown;
   }
 }
