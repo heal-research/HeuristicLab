@@ -140,7 +140,6 @@ namespace HeuristicLab.Analysis.Views {
 
         Series histogramSeries = new Series(point.Key);
         chart.Series.Add(histogramSeries);
-
         double minValue = point.Value.Min();
         double maxValue = point.Value.Max();
         double intervalWidth = (maxValue - minValue) / bins;
@@ -165,11 +164,22 @@ namespace HeuristicLab.Analysis.Views {
         histogramSeries.Points.AddXY(current + intervalCenter, count);
         histogramSeries["PointWidth"] = "1";
 
-        CalculateDensity(histogramSeries, point.Value, bandwith);
-
         overallMax = Math.Max(overallMax, maxValue);
         overallMin = Math.Min(overallMin, minValue);
       }
+
+      chart.ApplyPaletteColors();
+
+      int i = 0;
+      foreach (var point in points) {
+        if (!point.Value.Any()) continue;
+
+        var histogramSeries = chart.Series[i];
+        CalculateDensity(histogramSeries, point.Value, bandwith);
+
+        i++;
+      }
+
 
       ChartArea chartArea = chart.ChartAreas[0];
       // don't show grid lines for second y-axis
@@ -208,6 +218,7 @@ namespace HeuristicLab.Analysis.Views {
       var density = KernelDensityEstimator.Density(rowArray, rowArray.Length, stepWidth, bandwidth);
 
       Series newSeries = new Series(densitySeriesName);
+      newSeries.Color = series.Color;
       newSeries.ChartType = SeriesChartType.FastLine;
       newSeries.BorderWidth = 2;
       foreach (var d in density) {
