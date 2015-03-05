@@ -64,5 +64,17 @@ namespace HeuristicLab.Services.Hive {
     #region Resource Methods
     IEnumerable<Guid> GetAssignedResourceIds(Guid jobId);
     #endregion
+
+    #region Website Methods
+
+    IEnumerable<Guid> GetAllResourceIds();
+
+    int GetNumberOfWaitingTasks();
+
+    Dictionary<Guid, int> GetCalculatingTasksByUser();
+
+    Dictionary<Guid, int> GetWaitingTasksByUser();
+
+    #endregion
   }
 }

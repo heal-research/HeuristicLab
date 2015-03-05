@@ -22,13 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using HeuristicLab.Services.Hive.DataAccess;
 using HeuristicLab.Services.Hive;
-using HeuristicLab.Services.Hive.DataTransfer;
-using System.Text;
 using System.Web.UI.DataVisualization.Charting;
 using DA = HeuristicLab.Services.Hive.DataAccess;
 using DT = HeuristicLab.Services.Hive.DataTransfer;
@@ -36,46 +31,48 @@ using DT = HeuristicLab.Services.Hive.DataTransfer;
 public partial class Status : System.Web.UI.Page {
   protected void Page_Load(object sender, EventArgs e) {
     var dao = ServiceLocator.Instance.HiveDao;
+    var optDao = ServiceLocator.Instance.OptimizedHiveDao;
     var transactionManager = ServiceLocator.Instance.TransactionManager;
     var resourceName = Request.QueryString["resource"];
-    IEnumerable<Guid> resourceIds = new List<Guid>();
-    IEnumerable<DT.Slave> onlineSlaves = new List<DT.Slave>();
+    List<Guid> resourceIds = new List<Guid>();
+    List<DT.Slave> onlineSlaves = new List<DT.Slave>();
     int currentlyJobsWaiting = 0;
-    Dictionary<Guid, int> calculatingTasksByUser = new Dictionary<Guid,int>();
+    Dictionary<Guid, int> calculatingTasksByUser = new Dictionary<Guid, int>();
     Dictionary<Guid, int> waitingTasksByUser = new Dictionary<Guid, int>();
     List<DT.Resource> groups = new List<DT.Resource>();
 
     transactionManager.UseTransaction(() => {
-       groups = dao.GetResources(x => x.ResourceType == "GROUP").ToList();
-    }, false, false);    
+      groups = dao.GetResources(x => x.ResourceType == "GROUP").ToList();
+    }, false, false);
 
     if (!string.IsNullOrEmpty(resourceName)) {
-        transactionManager.UseTransaction(() =>
-        {
-            var resId = dao.GetResources(x => x.Name == resourceName).Single().Id;
-            resourceIds = dao.GetChildResources(resId).Select(x => x.Id).Union(new List<Guid> { resId });
-            calculatingTasksByUser = dao.GetCalculatingTasksByUserForResources(resourceIds.ToList());
-            waitingTasksByUser = dao.GetWaitingTasksByUserForResources(resourceIds.ToList());
-        }, false, false);        
+      transactionManager.UseTransaction(() => {
+        var resId = dao.GetResources(x => x.Name == resourceName).Single().Id;
+        resourceIds = dao.GetChildResources(resId).Select(x => x.Id).Union(new List<Guid> { resId }).ToList();
+        calculatingTasksByUser = dao.GetCalculatingTasksByUserForResources(resourceIds);
+        waitingTasksByUser = dao.GetWaitingTasksByUserForResources(resourceIds);
+      }, false, false);
     } else {
-        transactionManager.UseTransaction(() =>
-        {
-             resourceIds = dao.GetResources(x => true).Select(y => y.Id);
-             calculatingTasksByUser = dao.GetCalculatingTasksByUser();
-             waitingTasksByUser = dao.GetWaitingTasksByUser();            
-        }, false, false);
-    }   
+      transactionManager.UseTransaction(() => {
+        resourceIds = optDao.GetAllResourceIds().ToList();
+        calculatingTasksByUser = optDao.GetCalculatingTasksByUser();
+        waitingTasksByUser = optDao.GetWaitingTasksByUser();
+      }, false, false);
+    }
 
-    transactionManager.UseTransaction(() =>
-    {                     
-        onlineSlaves = dao.GetSlaves(x => (x.SlaveState == DA.SlaveState.Calculating || x.SlaveState == DA.SlaveState.Idle) && resourceIds.Contains(x.ResourceId));
-        currentlyJobsWaiting = dao.GetLightweightTasks(x => x.State == DA.TaskState.Waiting).Count();            
+    transactionManager.UseTransaction(() => {
+      if (string.IsNullOrEmpty(resourceName)) {
+        onlineSlaves = dao.GetSlaves(x => x.SlaveState == DA.SlaveState.Calculating || x.SlaveState == DA.SlaveState.Idle).ToList();
+      } else {
+        onlineSlaves = dao.GetSlaves(x => (x.SlaveState == DA.SlaveState.Calculating || x.SlaveState == DA.SlaveState.Idle) && resourceIds.Contains(x.ResourceId)).ToList();
+      }
+      currentlyJobsWaiting = optDao.GetNumberOfWaitingTasks();
     }, false, false);
 
     int overallCurrentlyAvailableCores = onlineSlaves.Where(s => s.Cores.HasValue).Sum(s => s.Cores.Value);
     int currentlyAvailableCores = onlineSlaves.Where(s => s.Cores.HasValue && s.IsAllowedToCalculate).Sum(s => s.Cores.Value);
     int currentlyUsedCores = overallCurrentlyAvailableCores - onlineSlaves.Where(s => s.FreeCores.HasValue).Sum(s => s.FreeCores.Value);
-    
+
     this.overallAvailableCoresLabel.Text = overallCurrentlyAvailableCores.ToString();
     this.availableCoresLabel.Text = currentlyAvailableCores.ToString();
     this.usedCoresLabel.Text = currentlyUsedCores.ToString();
@@ -85,24 +82,23 @@ public partial class Status : System.Web.UI.Page {
     groupsLabel.Text = "<a href=\"Status.aspx\">All</a>, ";
     groupsLabel.Text += string.Join(", ", groups.Select(x => string.Format("<a href=\"?resource={0}\">{0}</a>", x.Name)));
 
-    overallCpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
-    cpuUtilizationLabel.Text = (onlineSlaves.Count() > 0 && onlineSlaves.Where(x => x.IsAllowedToCalculate).Count() > 0 ? Math.Round(onlineSlaves.Where(x => x.IsAllowedToCalculate).Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
+    overallCpuUtilizationLabel.Text = (onlineSlaves.Any() ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
+    cpuUtilizationLabel.Text = (onlineSlaves.Any() && onlineSlaves.Any(x => x.IsAllowedToCalculate) ? Math.Round(onlineSlaves.Where(x => x.IsAllowedToCalculate).Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
 
-    DT.Statistics[] stats = new DT.Statistics[0];    
-    transactionManager.UseTransaction(() =>
-    {   
-        if (daysDropDownList.SelectedValue == "All") {
-          stats = dao.GetStatistics(x => true).OrderBy(x => x.TimeStamp).ToArray();
-        } else {
-          stats = dao.GetStatistics(x => x.Timestamp >= DateTime.Now.Subtract(TimeSpan.FromDays(int.Parse(daysDropDownList.SelectedValue)))).OrderBy(x => x.TimeStamp).ToArray();
-        }
+    DT.Statistics[] stats = new DT.Statistics[0];
+    transactionManager.UseTransaction(() => {
+      if (daysDropDownList.SelectedValue == "All") {
+        stats = dao.GetStatistics(x => true).OrderBy(x => x.TimeStamp).ToArray();
+      } else {
+        stats = dao.GetStatistics(x => x.Timestamp >= DateTime.Now.Subtract(TimeSpan.FromDays(int.Parse(daysDropDownList.SelectedValue)))).OrderBy(x => x.TimeStamp).ToArray();
+      }
     }, false, false);
-    
+
     for (int i = 0; i < stats.Length; i++) {
       var s = stats[i];
-      var slaveStats = s.SlaveStatistics.Where(x => resourceIds.Contains(x.SlaveId));
+      var slaveStats = s.SlaveStatistics.Where(x => resourceIds.Contains(x.SlaveId)).ToArray();
 
-      var averageCpuUtilization = slaveStats.Count() > 0 ? slaveStats.Average(x => x.CpuUtilization) : 0.0;
+      var averageCpuUtilization = slaveStats.Any() ? slaveStats.Average(x => x.CpuUtilization) : 0.0;
       cpuUtilizationChart.Series[0].Points.Add(new DataPoint(s.TimeStamp.ToOADate(), averageCpuUtilization));
 
       var cores = slaveStats.Sum(x => x.Cores);
@@ -117,8 +113,8 @@ public partial class Status : System.Web.UI.Page {
       memoryChart.Series[1].Points.AddXY(s.TimeStamp.ToOADate(), usedMemory / 1024.0);
     }
 
-    GenerateTasksByUserTable(waitingTasksByUser, waitingTasksByUserTable);  
-    GenerateTasksByUserTable(calculatingTasksByUser, calculatingTasksByUserTable);  
+    GenerateTasksByUserTable(waitingTasksByUser, waitingTasksByUserTable);
+    GenerateTasksByUserTable(calculatingTasksByUser, calculatingTasksByUserTable);
   }
 
   private void GenerateTasksByUserTable(Dictionary<Guid, int> tasksByUser, Table table) {
@@ -133,8 +129,8 @@ public partial class Status : System.Web.UI.Page {
       curRow.Cells.Add(cellCnt);
       table.Rows.Add(curRow);
     }
-    if (tasksByUser.Count() > 0) {
-      TableRow sumRow = new TableRow();        
+    if (tasksByUser.Any()) {
+      TableRow sumRow = new TableRow();
       TableCell sumCell = new TableCell();
       sumCell.BorderWidth = Unit.Pixel(3);
       sumCell.Text = tasksByUser.Sum(x => x.Value).ToString();
@@ -142,5 +138,5 @@ public partial class Status : System.Web.UI.Page {
       sumRow.Cells.Add(sumCell);
       table.Rows.Add(sumRow);
     }
-  }  
+  }
 }
