@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Analysis.Statistics {
-  public static class NormalDistribution {
+  public static class KernelDensityEstimator {
     public static double[] Density(double[] x, double mean, double stdDev) {
       return x.Select(xi => Density(xi, mean, stdDev)).ToArray();
     }
@@ -35,7 +35,6 @@ namespace HeuristicLab.Analysis.Statistics {
                   Math.Exp(-((Math.Pow(x - mean, 2.0)) /
                              (2.0 * Math.Pow(stdDev, 2.0))));
     }
-
 
     // the scale (sigma) of the kernel is a parameter
     public static List<Tuple<double, double>> Density(double[] x, int nrOfPoints, double stepWidth, double sigma = 1.0) {
@@ -60,6 +59,11 @@ namespace HeuristicLab.Analysis.Statistics {
                       select Density(xi, obsX, sigma)).Sum();
 
       return newX.Zip(y, Tuple.Create).ToList();
+    }
+
+    //Silverman's rule of thumb for bandwidth estimation (sigma)
+    public static double EstimateBandwidth(double[] x) {
+      return 1.06 * x.StandardDeviation() * Math.Pow(x.Length, -0.2);
     }
   }
 }

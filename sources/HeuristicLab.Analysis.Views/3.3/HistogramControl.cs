@@ -32,6 +32,8 @@ namespace HeuristicLab.Analysis.Views {
     protected static readonly string SeriesName = "Histogram";
 
     protected Dictionary<string, List<double>> points;
+    private bool suppressUpdate;
+
     public int NumberOfBins {
       get { return (int)binsNumericUpDown.Value; }
       set { binsNumericUpDown.Value = value; }
@@ -122,9 +124,9 @@ namespace HeuristicLab.Analysis.Views {
       UpdateHistogram();
     }
 
-    protected void UpdateHistogram() {
+    protected void UpdateHistogram(double bandwith = double.NaN) {
       if (InvokeRequired) {
-        Invoke((Action)UpdateHistogram, null);
+        Invoke((Action<double>)UpdateHistogram, bandwith);
         return;
       }
 
@@ -163,7 +165,7 @@ namespace HeuristicLab.Analysis.Views {
         histogramSeries.Points.AddXY(current + intervalCenter, count);
         histogramSeries["PointWidth"] = "1";
 
-        CalculateDensity(histogramSeries, point.Value);
+        CalculateDensity(histogramSeries, point.Value, bandwith);
 
         overallMax = Math.Max(overallMax, maxValue);
         overallMin = Math.Min(overallMin, minValue);
@@ -183,16 +185,22 @@ namespace HeuristicLab.Analysis.Views {
       chartArea.AxisX.Interval = axisInterval;
     }
 
-    protected void CalculateDensity(Series series, List<double> row) {
+    protected void CalculateDensity(Series series, List<double> row, double bandwidth = double.NaN) {
       string densitySeriesName = "Density " + series.Name;
       double stepWidth = series.Points[1].XValue - series.Points[0].XValue;
+      var rowArray = row.ToArray();
 
       if (chart.Series.Any(x => x.Name == densitySeriesName)) {
         var ds = chart.Series.Single(x => x.Name == densitySeriesName);
         chart.Series.Remove(ds);
       }
 
-      var density = NormalDistribution.Density(row.ToArray(), row.Count, stepWidth);
+      if (double.IsNaN(bandwidth)) {
+        bandwidth = KernelDensityEstimator.EstimateBandwidth(rowArray);
+        suppressUpdate = true;
+        BandwidthNumericUpDown.Value = (decimal)bandwidth;
+      }
+      var density = KernelDensityEstimator.Density(rowArray, rowArray.Length, stepWidth, bandwidth);
 
       Series newSeries = new Series(densitySeriesName);
       newSeries.ChartType = SeriesChartType.FastLine;
@@ -223,6 +231,13 @@ namespace HeuristicLab.Analysis.Views {
 
     private void exactCheckBox_CheckedChanged(object sender, EventArgs e) {
       UpdateHistogram();
+    }
+
+    private void BandwidthNumericUpDown_ValueChanged(object sender, EventArgs e) {
+      if (!suppressUpdate) {
+        UpdateHistogram(decimal.ToDouble(BandwidthNumericUpDown.Value));
+      }
+      suppressUpdate = false;
     }
   }
 }
