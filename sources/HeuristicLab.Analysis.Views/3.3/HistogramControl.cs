@@ -133,7 +133,6 @@ namespace HeuristicLab.Analysis.Views {
       int bins = (int)binsNumericUpDown.Value;
 
       chart.Series.Clear();
-
       foreach (var point in points) {
         if (!point.Value.Any()) continue;
 
@@ -171,6 +170,9 @@ namespace HeuristicLab.Analysis.Views {
       }
 
       ChartArea chartArea = chart.ChartAreas[0];
+      // don't show grid lines for second y-axis
+      chartArea.AxisY2.MajorGrid.Enabled = false;
+      chartArea.AxisY2.MinorGrid.Enabled = false;
       chartArea.AxisY.Title = "Frequency";
 
       double overallIntervalWidth = (overallMax - overallMin) / bins;
@@ -199,6 +201,8 @@ namespace HeuristicLab.Analysis.Views {
         newSeries.Points.Add(new DataPoint(d.Item1, d.Item2));
       }
 
+      // densities should be plotted on the second axis (different scale)
+      newSeries.YAxisType = AxisType.Secondary;
       chart.Series.Add(newSeries);
     }
 

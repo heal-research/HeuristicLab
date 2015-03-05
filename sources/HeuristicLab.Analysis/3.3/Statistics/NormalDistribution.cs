@@ -27,22 +27,19 @@ using HeuristicLab.Common;
 namespace HeuristicLab.Analysis.Statistics {
   public static class NormalDistribution {
     public static double[] Density(double[] x, double mean, double stdDev) {
-      double[] result = new double[x.Length];
+      return x.Select(xi => Density(xi, mean, stdDev)).ToArray();
+    }
 
-      for (int i = 0; i < x.Length; i++) {
-        result[i] = (1.0 / (stdDev * Math.Sqrt(2.0 * Math.PI))) *
-                    Math.Exp(-((Math.Pow(x[i] - mean, 2.0)) /
-                               (2.0 * Math.Pow(stdDev, 2.0))));
-      }
-
-      return result;
+    public static double Density(double x, double mean, double stdDev) {
+      return (1.0 / (stdDev * Math.Sqrt(2.0 * Math.PI))) *
+                  Math.Exp(-((Math.Pow(x - mean, 2.0)) /
+                             (2.0 * Math.Pow(stdDev, 2.0))));
     }
 
     // based on the idea from http://www.statmethods.net/graphs/density.html
     public static List<Tuple<double, double>> Density(double[] x, int nrOfPoints, double stepWidth) {
+      // calculate grid for which to estimate the density
       double[] newX = new double[nrOfPoints];
-      double mean = x.Average();
-      double stdDev = x.StandardDeviation();
       double margin = stepWidth * 2;
 
       double dataMin = x.Min() - margin;
@@ -55,14 +52,15 @@ namespace HeuristicLab.Analysis.Statistics {
         newX[i] = cur;
       }
 
-      var y = Density(newX, mean, stdDev).Select(k => k * stepWidth * x.Length).ToList();
+      // the scale (std.-dev. of the kernel is a parameter)
+      var sigma = 1.0; // TODO allow configuration in the view
+      // for each of the points for which we want to calculate the density
+      // we sum up all the densities of the observed points assuming they are at the center of a normal distribution
+      var y = from xi in newX
+              select (from obsX in x
+                      select Density(xi, obsX, sigma)).Sum();
 
-      var points = new List<Tuple<double, double>>();
-      for (int i = 0; i < newX.Length; i++) {
-        points.Add(new Tuple<double, double>(newX[i], y[i]));
-      }
-
-      return points;
+      return newX.Zip(y, Tuple.Create).ToList();
     }
   }
 }
