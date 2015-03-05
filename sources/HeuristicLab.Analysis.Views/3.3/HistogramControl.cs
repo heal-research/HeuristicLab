@@ -30,9 +30,9 @@ using HeuristicLab.Analysis.Statistics;
 namespace HeuristicLab.Analysis.Views {
   public partial class HistogramControl : UserControl {
     protected static readonly string SeriesName = "Histogram";
-
+    protected static readonly decimal bandwidthMin = 0.0000000000001m;
     protected Dictionary<string, List<double>> points;
-    private bool suppressUpdate;
+    protected bool suppressUpdate;
 
     public int NumberOfBins {
       get { return (int)binsNumericUpDown.Value; }
@@ -197,8 +197,13 @@ namespace HeuristicLab.Analysis.Views {
 
       if (double.IsNaN(bandwidth)) {
         bandwidth = KernelDensityEstimator.EstimateBandwidth(rowArray);
+        decimal bwDecimal = (decimal)bandwidth;
+        if (bwDecimal < bandwidthMin) {
+          bwDecimal = bandwidthMin;
+          bandwidth = decimal.ToDouble(bwDecimal);
+        }
         suppressUpdate = true;
-        bandwidthNumericUpDown.Value = (decimal)bandwidth;
+        bandwidthNumericUpDown.Value = bwDecimal;
       }
       var density = KernelDensityEstimator.Density(rowArray, rowArray.Length, stepWidth, bandwidth);
 

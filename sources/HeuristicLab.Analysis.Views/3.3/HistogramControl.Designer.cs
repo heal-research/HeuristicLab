@@ -147,7 +147,7 @@ namespace HeuristicLab.Analysis.Views {
             1,
             0,
             0,
-            65536});
+            851968});
       this.bandwidthNumericUpDown.Name = "bandwidthNumericUpDown";
       this.bandwidthNumericUpDown.Size = new System.Drawing.Size(61, 20);
       this.bandwidthNumericUpDown.TabIndex = 4;
