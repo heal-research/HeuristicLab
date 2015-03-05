@@ -36,8 +36,9 @@ namespace HeuristicLab.Analysis.Statistics {
                              (2.0 * Math.Pow(stdDev, 2.0))));
     }
 
-    // based on the idea from http://www.statmethods.net/graphs/density.html
-    public static List<Tuple<double, double>> Density(double[] x, int nrOfPoints, double stepWidth) {
+
+    // the scale (sigma) of the kernel is a parameter
+    public static List<Tuple<double, double>> Density(double[] x, int nrOfPoints, double stepWidth, double sigma = 1.0) {
       // calculate grid for which to estimate the density
       double[] newX = new double[nrOfPoints];
       double margin = stepWidth * 2;
@@ -52,8 +53,6 @@ namespace HeuristicLab.Analysis.Statistics {
         newX[i] = cur;
       }
 
-      // the scale (std.-dev. of the kernel is a parameter)
-      var sigma = 1.0; // TODO allow configuration in the view
       // for each of the points for which we want to calculate the density
       // we sum up all the densities of the observed points assuming they are at the center of a normal distribution
       var y = from xi in newX
