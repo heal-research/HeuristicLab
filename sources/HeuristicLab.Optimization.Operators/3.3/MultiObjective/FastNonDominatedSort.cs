@@ -45,7 +45,7 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       get { return (IValueLookupParameter<BoolArray>)Parameters["Maximization"]; }
     }
     public IValueLookupParameter<BoolValue> DominateOnEqualQualitiesParameter {
-      get { return (ValueLookupParameter<BoolValue>)Parameters["DominateOnEqualQualities "]; }
+      get { return (ValueLookupParameter<BoolValue>)Parameters["DominateOnEqualQualities"]; }
     }
     public IScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
       get { return (IScopeTreeLookupParameter<DoubleArray>)Parameters["Qualities"]; }
@@ -60,7 +60,7 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
     protected FastNonDominatedSort(FastNonDominatedSort original, Cloner cloner) : base(original, cloner) { }
     public FastNonDominatedSort() {
       Parameters.Add(new ValueLookupParameter<BoolArray>("Maximization", "Whether each objective is maximization or minimization."));
-      Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities ", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The qualities of a solution.", 1));
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("Rank", "The rank of a solution.", 1));
     }
@@ -172,8 +172,8 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
-      if (!Parameters.ContainsKey("DominateOnEqualQualities "))
-        Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities ", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
+      if (!Parameters.ContainsKey("DominateOnEqualQualities"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
       #endregion
     }
   }
