@@ -278,7 +278,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         return false;
 
       //alglib needs at least 5 samples for computation
-      if (data.Any(x => x.Length <= requiredSampleSize)) {
+      if (data.Any(x => x.Length < requiredSampleSize)) {
         if (showMessage)
           MessageBox.Show(this, "You need at least " + requiredSampleSize
             + " samples per group for computing hypothesis tests.", "HeuristicLab", MessageBoxButtons.OK,
