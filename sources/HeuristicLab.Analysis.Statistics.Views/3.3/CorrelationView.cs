@@ -213,13 +213,15 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           var columnValues = GetValuesFromResultsParameters(runs, cres.Key, cres.Value)
                 .Where(x => !double.IsNaN(x) && !double.IsNegativeInfinity(x) && !double.IsPositiveInfinity(x));
 
-          if (!rowValues.Any() || !columnValues.Any() || i == j || rowValues.Count() != columnValues.Count()) {
+          if (!rowValues.Any() || !columnValues.Any() || rowValues.Count() != columnValues.Count()) {
             dt[i, j] = double.NaN;
+          } else if (i == j) {
+            dt[i, j] = 1.0;
           } else {
             if (methodName == PearsonName) {
-              dt[i, j] = alglib.pearsoncorr2(rowValues.ToArray(), columnValues.ToArray());
+              dt[i, j] = Math.Round(alglib.pearsoncorr2(rowValues.ToArray(), columnValues.ToArray()), 3); // for correlations it is usually sufficient to show only 3 digits
             } else {
-              dt[i, j] = alglib.spearmancorr2(rowValues.ToArray(), columnValues.ToArray());
+              dt[i, j] = Math.Round(alglib.spearmancorr2(rowValues.ToArray(), columnValues.ToArray()), 3); // for correlations it is usually sufficient to show only 3 digits
             }
           }
           j++;

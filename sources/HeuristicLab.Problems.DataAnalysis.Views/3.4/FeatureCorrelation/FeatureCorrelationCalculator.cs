@@ -138,7 +138,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
           IEnumerable<double> var1 = problemData.Dataset.GetDoubleValues(doubleVariableNames[i], indices);
           IEnumerable<double> var2 = problemData.Dataset.GetDoubleValues(doubleVariableNames[j], indices);
 
-          elements[i, j] = calc.Calculate(var1, var2, out error);
+          elements[i, j] = Math.Round(calc.Calculate(var1, var2, out error), 3); // only show correlations to 3 digits accuracy
 
           if (!error.Equals(OnlineCalculatorError.None)) {
             elements[i, j] = double.NaN;
