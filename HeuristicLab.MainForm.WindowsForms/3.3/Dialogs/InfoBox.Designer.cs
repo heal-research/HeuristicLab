@@ -73,6 +73,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       this.infoRichTextBox.Size = new System.Drawing.Size(612, 441);
       this.infoRichTextBox.TabIndex = 1;
       this.infoRichTextBox.Text = "";
+      this.infoRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.infoRichTextBox_LinkClicked);
       // 
       // InfoBox
       // 

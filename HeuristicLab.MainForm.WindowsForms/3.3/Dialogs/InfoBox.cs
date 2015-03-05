@@ -58,5 +58,9 @@ namespace HeuristicLab.MainForm.WindowsForms {
     private void InfoBox_Load(object sender, EventArgs e) {
       LoadEmbeddedResource();
     }
+
+    private void infoRichTextBox_LinkClicked(object sender, LinkClickedEventArgs e) {
+      System.Diagnostics.Process.Start(e.LinkText);
+    }
   }
 }
