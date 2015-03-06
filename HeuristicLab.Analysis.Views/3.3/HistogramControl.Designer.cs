@@ -54,14 +54,17 @@ namespace HeuristicLab.Analysis.Views {
       this.binsNumericUpDown = new System.Windows.Forms.NumericUpDown();
       this.label1 = new System.Windows.Forms.Label();
       this.exactCheckBox = new System.Windows.Forms.CheckBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.bandwidthNumericUpDown = new System.Windows.Forms.NumericUpDown();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bandwidthNumericUpDown)).BeginInit();
       this.SuspendLayout();
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       chartArea1.Name = "ChartArea1";
       this.chart.ChartAreas.Add(chartArea1);
@@ -87,7 +90,7 @@ namespace HeuristicLab.Analysis.Views {
             0,
             0});
       this.binsNumericUpDown.Minimum = new decimal(new int[] {
-            1,
+            2,
             0,
             0,
             0});
@@ -114,7 +117,7 @@ namespace HeuristicLab.Analysis.Views {
       // 
       this.exactCheckBox.AutoSize = true;
       this.exactCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-      this.exactCheckBox.Location = new System.Drawing.Point(158, 4);
+      this.exactCheckBox.Location = new System.Drawing.Point(291, 4);
       this.exactCheckBox.Name = "exactCheckBox";
       this.exactCheckBox.Size = new System.Drawing.Size(56, 17);
       this.exactCheckBox.TabIndex = 3;
@@ -122,9 +125,44 @@ namespace HeuristicLab.Analysis.Views {
       this.exactCheckBox.UseVisualStyleBackColor = true;
       this.exactCheckBox.CheckedChanged += new System.EventHandler(this.exactCheckBox_CheckedChanged);
       // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(158, 5);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(60, 13);
+      this.label2.TabIndex = 5;
+      this.label2.Text = "Bandwidth:";
+      // 
+      // bandwidthNumericUpDown
+      // 
+      this.bandwidthNumericUpDown.DecimalPlaces = 2;
+      this.bandwidthNumericUpDown.Location = new System.Drawing.Point(224, 3);
+      this.bandwidthNumericUpDown.Maximum = new decimal(new int[] {
+            100000000,
+            0,
+            0,
+            0});
+      this.bandwidthNumericUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            851968});
+      this.bandwidthNumericUpDown.Name = "bandwidthNumericUpDown";
+      this.bandwidthNumericUpDown.Size = new System.Drawing.Size(61, 20);
+      this.bandwidthNumericUpDown.TabIndex = 4;
+      this.bandwidthNumericUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.bandwidthNumericUpDown.ValueChanged += new System.EventHandler(this.bandwidthNumericUpDown_ValueChanged);
+      // 
       // HistogramControl
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.label2);
+      this.Controls.Add(this.bandwidthNumericUpDown);
       this.Controls.Add(this.exactCheckBox);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.binsNumericUpDown);
@@ -133,6 +171,7 @@ namespace HeuristicLab.Analysis.Views {
       this.Size = new System.Drawing.Size(465, 363);
       ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.binsNumericUpDown)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bandwidthNumericUpDown)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -144,5 +183,7 @@ namespace HeuristicLab.Analysis.Views {
     private System.Windows.Forms.NumericUpDown binsNumericUpDown;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.CheckBox exactCheckBox;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.NumericUpDown bandwidthNumericUpDown;
   }
 }

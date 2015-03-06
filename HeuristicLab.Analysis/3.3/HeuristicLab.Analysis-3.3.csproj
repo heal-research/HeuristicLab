@@ -165,7 +165,7 @@
     <Compile Include="Statistics\KruskalWallisTest.cs" />
     <Compile Include="Statistics\Fitting\LinearLeastSquaresFitting.cs" />
     <Compile Include="Statistics\Fitting\LogFitting.cs" />
-    <Compile Include="Statistics\NormalDistribution.cs" />
+    <Compile Include="Statistics\KernelDensityEstimator.cs" />
     <Compile Include="Statistics\PairwiseTest.cs" />
     <Compile Include="Statistics\SampleSizeDetermination.cs" />
     <Compile Include="ValueAnalysis\SingleValueAnalyzer.cs" />

@@ -30,8 +30,10 @@ using HeuristicLab.Analysis.Statistics;
 namespace HeuristicLab.Analysis.Views {
   public partial class HistogramControl : UserControl {
     protected static readonly string SeriesName = "Histogram";
-
+    protected static readonly decimal bandwidthMin = 0.0000000000001m;
     protected Dictionary<string, List<double>> points;
+    protected bool suppressUpdate;
+
     public int NumberOfBins {
       get { return (int)binsNumericUpDown.Value; }
       set { binsNumericUpDown.Value = value; }
@@ -122,9 +124,9 @@ namespace HeuristicLab.Analysis.Views {
       UpdateHistogram();
     }
 
-    protected void UpdateHistogram() {
+    protected void UpdateHistogram(double bandwith = double.NaN) {
       if (InvokeRequired) {
-        Invoke((Action)UpdateHistogram, null);
+        Invoke((Action<double>)UpdateHistogram, bandwith);
         return;
       }
 
@@ -133,13 +135,11 @@ namespace HeuristicLab.Analysis.Views {
       int bins = (int)binsNumericUpDown.Value;
 
       chart.Series.Clear();
-
       foreach (var point in points) {
         if (!point.Value.Any()) continue;
 
         Series histogramSeries = new Series(point.Key);
         chart.Series.Add(histogramSeries);
-
         double minValue = point.Value.Min();
         double maxValue = point.Value.Max();
         double intervalWidth = (maxValue - minValue) / bins;
@@ -164,13 +164,27 @@ namespace HeuristicLab.Analysis.Views {
         histogramSeries.Points.AddXY(current + intervalCenter, count);
         histogramSeries["PointWidth"] = "1";
 
-        CalculateDensity(histogramSeries, point.Value);
-
         overallMax = Math.Max(overallMax, maxValue);
         overallMin = Math.Min(overallMin, minValue);
       }
 
+      chart.ApplyPaletteColors();
+
+      int i = 0;
+      foreach (var point in points) {
+        if (!point.Value.Any()) continue;
+
+        var histogramSeries = chart.Series[i];
+        CalculateDensity(histogramSeries, point.Value, bandwith);
+
+        i++;
+      }
+
+
       ChartArea chartArea = chart.ChartAreas[0];
+      // don't show grid lines for second y-axis
+      chartArea.AxisY2.MajorGrid.Enabled = false;
+      chartArea.AxisY2.MinorGrid.Enabled = false;
       chartArea.AxisY.Title = "Frequency";
 
       double overallIntervalWidth = (overallMax - overallMin) / bins;
@@ -181,24 +195,38 @@ namespace HeuristicLab.Analysis.Views {
       chartArea.AxisX.Interval = axisInterval;
     }
 
-    protected void CalculateDensity(Series series, List<double> row) {
+    protected void CalculateDensity(Series series, List<double> row, double bandwidth = double.NaN) {
       string densitySeriesName = "Density " + series.Name;
       double stepWidth = series.Points[1].XValue - series.Points[0].XValue;
+      var rowArray = row.ToArray();
 
       if (chart.Series.Any(x => x.Name == densitySeriesName)) {
         var ds = chart.Series.Single(x => x.Name == densitySeriesName);
         chart.Series.Remove(ds);
       }
 
-      var density = NormalDistribution.Density(row.ToArray(), row.Count, stepWidth);
+      if (double.IsNaN(bandwidth)) {
+        bandwidth = KernelDensityEstimator.EstimateBandwidth(rowArray);
+        decimal bwDecimal = (decimal)bandwidth;
+        if (bwDecimal < bandwidthMin) {
+          bwDecimal = bandwidthMin;
+          bandwidth = decimal.ToDouble(bwDecimal);
+        }
+        suppressUpdate = true;
+        bandwidthNumericUpDown.Value = bwDecimal;
+      }
+      var density = KernelDensityEstimator.Density(rowArray, rowArray.Length, stepWidth, bandwidth);
 
       Series newSeries = new Series(densitySeriesName);
+      newSeries.Color = series.Color;
       newSeries.ChartType = SeriesChartType.FastLine;
       newSeries.BorderWidth = 2;
       foreach (var d in density) {
         newSeries.Points.Add(new DataPoint(d.Item1, d.Item2));
       }
 
+      // densities should be plotted on the second axis (different scale)
+      newSeries.YAxisType = AxisType.Secondary;
       chart.Series.Add(newSeries);
     }
 
@@ -219,6 +247,13 @@ namespace HeuristicLab.Analysis.Views {
 
     private void exactCheckBox_CheckedChanged(object sender, EventArgs e) {
       UpdateHistogram();
+    }
+
+    private void bandwidthNumericUpDown_ValueChanged(object sender, EventArgs e) {
+      if (!suppressUpdate) {
+        UpdateHistogram(decimal.ToDouble(bandwidthNumericUpDown.Value));
+      }
+      suppressUpdate = false;
     }
   }
 }
