@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Data {
   [Item("EnumValue", "An abstract base class for representing values of enum types.")]
   [StorableClass]
-  public abstract class EnumValue<T> : ValueTypeValue<T>, IComparable<EnumValue<T>> where T : struct, IComparable {
+  public sealed class EnumValue<T> : ValueTypeValue<T>, IComparable<EnumValue<T>> where T : struct, IComparable {
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
     }
@@ -38,23 +38,28 @@ namespace HeuristicLab.Data {
         throw new InvalidOperationException("Generic type " + typeof(T).Name + " is not an enum.");
     }
 
-    [StorableConstructor]
-    protected EnumValue(bool deserializing) : base(deserializing) { }
-    protected EnumValue(EnumValue<T> original, Cloner cloner)
-      : base(original, cloner) {
-      this.value = original.value;
-      this.readOnly = original.readOnly;
-    }
-    protected EnumValue() {
+    public EnumValue() {
       this.value = default(T);
       this.readOnly = false;
     }
-    protected EnumValue(T value) {
+    public EnumValue(T value) {
       this.value = value;
       this.readOnly = false;
     }
 
-    public virtual int CompareTo(EnumValue<T> other) {
+    [StorableConstructor]
+    private EnumValue(bool deserializing) : base(deserializing) { }
+    private EnumValue(EnumValue<T> original, Cloner cloner)
+      : base(original, cloner) {
+      this.value = original.value;
+      this.readOnly = original.readOnly;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EnumValue<T>(this, cloner);
+    }
+
+    public int CompareTo(EnumValue<T> other) {
       return Value.CompareTo(other.Value);
     }
   }
