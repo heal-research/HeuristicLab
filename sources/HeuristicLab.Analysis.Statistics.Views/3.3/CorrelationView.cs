@@ -55,6 +55,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       InitializeComponent();
       stringConvertibleMatrixView.Minimum = -1.0;
       stringConvertibleMatrixView.Maximum = 1.0;
+      stringConvertibleMatrixView.FormatPattern = "0.000";
 
       methodComboBox.Items.Add(PearsonName);
       methodComboBox.Items.Add(SpearmanName);
@@ -215,13 +216,11 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
           if (!rowValues.Any() || !columnValues.Any() || rowValues.Count() != columnValues.Count()) {
             dt[i, j] = double.NaN;
-          } else if (i == j) {
-            dt[i, j] = 1.0;
           } else {
             if (methodName == PearsonName) {
-              dt[i, j] = Math.Round(alglib.pearsoncorr2(rowValues.ToArray(), columnValues.ToArray()), 3); // for correlations it is usually sufficient to show only 3 digits
+              dt[i, j] = alglib.pearsoncorr2(rowValues.ToArray(), columnValues.ToArray());
             } else {
-              dt[i, j] = Math.Round(alglib.spearmancorr2(rowValues.ToArray(), columnValues.ToArray()), 3); // for correlations it is usually sufficient to show only 3 digits
+              dt[i, j] = alglib.spearmancorr2(rowValues.ToArray(), columnValues.ToArray());
             }
           }
           j++;

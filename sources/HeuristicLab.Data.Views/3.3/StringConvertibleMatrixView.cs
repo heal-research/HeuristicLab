@@ -280,7 +280,7 @@ namespace HeuristicLab.Data.Views {
     private void dataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
       dataGridView.Rows[e.RowIndex].ErrorText = string.Empty;
     }
-    private void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
+    protected virtual void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
       if (Content != null && e.RowIndex < Content.Rows && e.ColumnIndex < Content.Columns) {
         int rowIndex = virtualRowIndices[e.RowIndex];
         e.Value = Content.GetValue(rowIndex, e.ColumnIndex);

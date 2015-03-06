@@ -47,6 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected AbstractFeatureCorrelationView() {
       InitializeComponent();
+      dataView.FormatPattern = "0.000";
       fcc = new FeatureCorrelationCalculator();
       var calculators = ApplicationManager.Manager.GetInstances<IDependencyCalculator>();
       var calcList = calculators.OrderBy(c => c.Name).Select(c => new { Name = c.Name, Calculator = c }).ToList();
@@ -114,6 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       correlation.SortableView = true;
       dataView.Maximum = calc.Maximum;
       dataView.Minimum = calc.Minimum;
+
       dataView.Content = correlation;
       dataView.Enabled = true;
     }
