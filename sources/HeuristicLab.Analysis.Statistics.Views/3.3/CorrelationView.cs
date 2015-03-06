@@ -216,6 +216,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
           if (!rowValues.Any() || !columnValues.Any() || rowValues.Count() != columnValues.Count()) {
             dt[i, j] = double.NaN;
+          } else if (i == j) {
+            dt[i, j] = 1.0;
           } else {
             if (methodName == PearsonName) {
               dt[i, j] = alglib.pearsoncorr2(rowValues.ToArray(), columnValues.ToArray());
