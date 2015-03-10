@@ -31,6 +31,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
@@ -473,8 +474,8 @@ namespace HeuristicLab.Scripting.Views {
 
       if (variable.Value != null) {
         type = variable.Value.GetType();
-        if (serializableLookup.TryGetValue(type, out serializable))
-          return serializable;
+        if (serializableLookup.TryGetValue(type, out serializable)) return serializable;
+        if (StorableClassAttribute.IsStorableClass(type)) return serializableLookup[type] = true;
       }
 
       var ser = new Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
