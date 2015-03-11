@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     public SymbolicClassificationPruningAnalyzer() {
       Parameters.Add(new ValueParameter<SymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName, "The impact values calculator", new SymbolicClassificationSolutionImpactValuesCalculator()));
-      Parameters.Add(new ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator()));
+      Parameters.Add(new ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));
     }
   }
 }

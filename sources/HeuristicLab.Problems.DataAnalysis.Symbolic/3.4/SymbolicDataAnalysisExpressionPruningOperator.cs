@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected SymbolicDataAnalysisExpressionPruningOperator(SymbolicDataAnalysisExpressionPruningOperator original, Cloner cloner)
       : base(original, cloner) { }
 
-    protected SymbolicDataAnalysisExpressionPruningOperator() {
+    protected SymbolicDataAnalysisExpressionPruningOperator(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactValuesCalculator) {
       #region add parameters
       Parameters.Add(new LookupParameter<IDataAnalysisProblemData>(ProblemDataParameterName));
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisModel>(SymbolicDataAnalysisModelParameterName));
@@ -121,15 +121,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(InterpreterParameterName));
       Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName));
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName));
+      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName, impactValuesCalculator));
       #endregion
     }
 
-    protected abstract ISymbolicDataAnalysisModel CreateModel();
+    protected abstract ISymbolicDataAnalysisModel CreateModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits);
 
     protected abstract double Evaluate(IDataAnalysisModel model);
 
     public override IOperation Apply() {
-      var model = CreateModel();
+      var model = CreateModel(SymbolicExpressionTree, Interpreter, ProblemData, EstimationLimits);
       var nodes = SymbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
       var rows = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
       var prunedSubtrees = 0;
@@ -168,7 +169,38 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return base.Apply();
     }
 
-    private static void ReplaceWithConstant(ISymbolicExpressionTreeNode original, ISymbolicExpressionTreeNode replacement) {
+    public ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
+      var model = CreateModel((ISymbolicExpressionTree)tree.Clone(), Interpreter, ProblemData, EstimationLimits);
+      var nodes = SymbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
+      var rows = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
+
+      double quality = Evaluate(model);
+
+      for (int i = 0; i < nodes.Count; ++i) {
+        var node = nodes[i];
+        if (node is ConstantTreeNode) continue;
+
+        double impactValue, replacementValue;
+        ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, ProblemData, rows, out impactValue, out replacementValue, quality);
+
+        if (PruneOnlyZeroImpactNodes) {
+          if (!impactValue.IsAlmost(0.0)) continue;
+        } else if (NodeImpactThreshold < impactValue) {
+          continue;
+        }
+
+        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
+        constantNode.Value = replacementValue;
+
+        ReplaceWithConstant(node, constantNode);
+        i += node.GetLength() - 1; // skip subtrees under the node that was folded
+
+        quality -= impactValue;
+      }
+      return model.SymbolicExpressionTree;
+    }
+
+    protected static void ReplaceWithConstant(ISymbolicExpressionTreeNode original, ISymbolicExpressionTreeNode replacement) {
       var parent = original.Parent;
       var i = parent.IndexOfSubtree(original);
       parent.RemoveSubtree(i);

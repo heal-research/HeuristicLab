@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public SymbolicRegressionPruningAnalyzer() {
       Parameters.Add(new ValueParameter<SymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName, "The impact values calculator", new SymbolicRegressionSolutionImpactValuesCalculator()));
-      Parameters.Add(new ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicRegressionPruningOperator()));
+      Parameters.Add(new ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicRegressionPruningOperator(new SymbolicRegressionSolutionImpactValuesCalculator())));
     }
   }
 }
