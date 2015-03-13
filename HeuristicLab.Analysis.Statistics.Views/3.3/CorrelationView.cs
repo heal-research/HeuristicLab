@@ -55,6 +55,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       InitializeComponent();
       stringConvertibleMatrixView.Minimum = -1.0;
       stringConvertibleMatrixView.Maximum = 1.0;
+      stringConvertibleMatrixView.FormatPattern = "0.000";
 
       methodComboBox.Items.Add(PearsonName);
       methodComboBox.Items.Add(SpearmanName);
@@ -211,8 +212,10 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           var columnValues = GetValuesFromResultsParameters(runs, cres.Key, cres.Value)
                 .Where(x => !double.IsNaN(x) && !double.IsNegativeInfinity(x) && !double.IsPositiveInfinity(x));
 
-          if (!rowValues.Any() || !columnValues.Any() || i == j || rowValues.Count() != columnValues.Count()) {
+          if (!rowValues.Any() || !columnValues.Any() || rowValues.Count() != columnValues.Count()) {
             dt[i, j] = double.NaN;
+          } else if (i == j) {
+            dt[i, j] = 1.0;
           } else {
             if (methodName == PearsonName) {
               dt[i, j] = alglib.pearsoncorr2(rowValues.ToArray(), columnValues.ToArray());

@@ -44,6 +44,8 @@ namespace HeuristicLab.Data.Views {
     public double Maximum { get; set; }
     public double Minimum { get; set; }
 
+    public string FormatPattern { get; set; }
+
     public new DoubleMatrix Content {
       get { return (DoubleMatrix)base.Content; }
       set { base.Content = value; }
@@ -51,11 +53,19 @@ namespace HeuristicLab.Data.Views {
 
     public EnhancedStringConvertibleMatrixView() {
       InitializeComponent();
+      FormatPattern = string.Empty;
     }
 
     public void ResetVisibility() {
       columnVisibility = null;
       rowVisibility = null;
+    }
+
+    protected override void dataGridView_CellValueNeeded(object sender, DataGridViewCellValueEventArgs e) {
+      if (Content != null && e.RowIndex < Content.Rows && e.ColumnIndex < Content.Columns) {
+        int rowIndex = virtualRowIndices[e.RowIndex];
+        e.Value = Content[rowIndex, e.ColumnIndex].ToString(FormatPattern);
+      }
     }
 
     protected override void UpdateColumnHeaders() {
