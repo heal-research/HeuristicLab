@@ -298,9 +298,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make multiplication (x0 * 1/(x1 * x1 * .. * xn))
-        var simplifiedTrees = original.Subtrees.Select(x => GetSimplifiedTree(x));
+        var simplifiedTrees = original.Subtrees.Select(GetSimplifiedTree).ToArray();
         return
-          MakeProduct(simplifiedTrees.First(), Invert(simplifiedTrees.Skip(1).Aggregate((a, b) => MakeProduct(a, b))));
+          MakeProduct(simplifiedTrees.First(), Invert(simplifiedTrees.Skip(1).Aggregate(MakeProduct)));
       }
     }
 
@@ -309,8 +309,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return GetSimplifiedTree(original.GetSubtree(0));
       } else {
         return original.Subtrees
-          .Select(x => GetSimplifiedTree(x))
-          .Aggregate((a, b) => MakeProduct(a, b));
+          .Select(GetSimplifiedTree).ToArray()
+          .Aggregate(MakeProduct);
       }
     }
 
@@ -320,10 +320,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make addition (x0,-x1..-xn)
-        var simplifiedTrees = original.Subtrees.Select(x => GetSimplifiedTree(x));
+        var simplifiedTrees = original.Subtrees.Select(GetSimplifiedTree).ToArray();
         return simplifiedTrees.Take(1)
-          .Concat(simplifiedTrees.Skip(1).Select(x => Negate(x)))
-          .Aggregate((a, b) => MakeSum(a, b));
+          .Concat(simplifiedTrees.Skip(1).Select(Negate))
+          .Aggregate(MakeSum);
       }
     }
 
@@ -334,8 +334,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // simplify expression x0..xn
         // make addition (x0..xn)
         return original.Subtrees
-          .Select(x => GetSimplifiedTree(x))
-          .Aggregate((a, b) => MakeSum(a, b));
+          .Select(GetSimplifiedTree).ToArray()
+          .Aggregate(MakeSum);
       }
     }
 
