@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Net.NetworkInformation;
 using HeuristicLab.Clients.Hive.SlaveCore.Properties;
 
 
@@ -33,6 +34,10 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
   /// </summary>
   public class ConfigManager {
     private static ConfigManager instance = null;
+    private const string vmwareNameString = "VMware";
+    private const string virtualboxNameString = "VirtualBox";
+    private const int macLength = 12;
+
     public static ConfigManager Instance {
       get { return instance; }
       set { instance = value; }
@@ -178,35 +183,31 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// D1 contains the hash of the machinename. 
     /// </summary>    
     private static Guid GetUniqueMachineIdFromMac() {
-      ManagementClass mgtClass = new ManagementClass("Win32_NetworkAdapterConfiguration");
-      ManagementObjectCollection mgtCol = mgtClass.GetInstances();
+      //try to get a real network interface, not a virtual one 
+      NetworkInterface validNic = NetworkInterface.GetAllNetworkInterfaces()
+                      .FirstOrDefault(x =>
+                                  !x.Name.Contains(vmwareNameString) &&
+                                  !x.Name.Contains(virtualboxNameString) &&
+                                  (x.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
+                                   x.NetworkInterfaceType == NetworkInterfaceType.GigabitEthernet));
 
-      foreach (ManagementObject mgtObj in mgtCol) {
-        foreach (var prop in mgtObj.Properties) {
-          if (prop.Value != null && prop.Name == "MACAddress") {
-            try {
-              //simply take the first nic
-              string mac = prop.Value.ToString();
-              byte[] b = new byte[8];
-              string[] macParts = mac.Split(':');
-              if (macParts.Length == 6) {
-                for (int i = 0; i < macParts.Length; i++) {
-                  b[i + 2] = (byte)((ParseNybble(macParts[i][0]) << 4) | ParseNybble(macParts[i][1]));
-                }
-
-                // also get machine name and save it to the first 4 bytes                
-                Guid guid = new Guid(Environment.MachineName.GetHashCode(), 0, 0, b);
-                return guid;
-              } else
-                throw new Exception("Error getting mac addresse");
-            }
-            catch {
-              throw new Exception("Error getting mac addresse");
-            }
-          }
-        }
+      if (validNic == default(NetworkInterface)) {
+        validNic = NetworkInterface.GetAllNetworkInterfaces().First();
       }
-      throw new Exception("Error getting mac addresse");
+
+      string addr = validNic.GetPhysicalAddress().ToString();
+      if (addr.Length != macLength) {
+        throw new Exception("Error generating slave UID: MAC address has to have " + macLength + " digits. Actual MAC address is: " + addr);
+      }
+
+      byte[] b = new byte[8];
+      int j = 2;
+      for (int i = 0; i < macLength; i += 2) {
+        b[j++] = (byte)((ParseNybble(addr[i]) << 4) | ParseNybble(addr[i + 1]));
+      }
+      // also get machine name and save it to the first 4 bytes                
+      Guid guid = new Guid(Environment.MachineName.GetHashCode(), 0, 0, b);
+      return guid;
     }
 
     /// <summary>
