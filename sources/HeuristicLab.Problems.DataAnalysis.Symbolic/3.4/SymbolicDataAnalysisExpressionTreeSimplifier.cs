@@ -298,9 +298,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make multiplication (x0 * 1/(x1 * x1 * .. * xn))
-        var simplifiedTrees = original.Subtrees.Select(GetSimplifiedTree).ToArray();
+        var first = original.Subtrees.First();
+        var remaining = original.Subtrees.Skip(1);
         return
-          MakeProduct(simplifiedTrees.First(), Invert(simplifiedTrees.Skip(1).Aggregate(MakeProduct)));
+          MakeProduct(GetSimplifiedTree(first), Invert(remaining.Aggregate((a, b) => MakeProduct(a, GetSimplifiedTree(b)))));
       }
     }
 
@@ -309,7 +310,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return GetSimplifiedTree(original.GetSubtree(0));
       } else {
         return original.Subtrees
-          .Select(GetSimplifiedTree).ToArray()
+          .Select(GetSimplifiedTree)
           .Aggregate(MakeProduct);
       }
     }
@@ -320,10 +321,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make addition (x0,-x1..-xn)
-        var simplifiedTrees = original.Subtrees.Select(GetSimplifiedTree).ToArray();
-        return simplifiedTrees.Take(1)
-          .Concat(simplifiedTrees.Skip(1).Select(Negate))
-          .Aggregate(MakeSum);
+        var first = original.Subtrees.First();
+        var remaining = original.Subtrees.Skip(1);
+        return remaining.Aggregate(GetSimplifiedTree(first), (a, b) => MakeSum(a, Negate(GetSimplifiedTree(b))));
       }
     }
 
@@ -334,7 +334,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // simplify expression x0..xn
         // make addition (x0..xn)
         return original.Subtrees
-          .Select(GetSimplifiedTree).ToArray()
+          .Select(GetSimplifiedTree)
           .Aggregate(MakeSum);
       }
     }
@@ -344,13 +344,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     private ISymbolicExpressionTreeNode SimplifyOr(ISymbolicExpressionTreeNode original) {
       return original.Subtrees
-        .Select(x => GetSimplifiedTree(x))
-        .Aggregate((a, b) => MakeOr(a, b));
+        .Select(GetSimplifiedTree)
+        .Aggregate(MakeOr);
     }
     private ISymbolicExpressionTreeNode SimplifyAnd(ISymbolicExpressionTreeNode original) {
       return original.Subtrees
-        .Select(x => GetSimplifiedTree(x))
-        .Aggregate((a, b) => MakeAnd(a, b));
+        .Select(GetSimplifiedTree)
+        .Aggregate(MakeAnd);
     }
     private ISymbolicExpressionTreeNode SimplifyLessThan(ISymbolicExpressionTreeNode original) {
       return MakeLessThan(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
