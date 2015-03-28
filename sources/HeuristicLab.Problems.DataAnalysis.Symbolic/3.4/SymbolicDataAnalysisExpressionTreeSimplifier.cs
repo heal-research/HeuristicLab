@@ -286,8 +286,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // simplify expressions x0..xn
         // make sum(x0..xn) / n
         var sum = original.Subtrees
-          .Select(x => GetSimplifiedTree(x))
-          .Aggregate((a, b) => MakeSum(a, b));
+          .Select(GetSimplifiedTree)
+          .Aggregate(MakeSum);
         return MakeFraction(sum, MakeConstant(original.Subtrees.Count()));
       }
     }
@@ -298,10 +298,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make multiplication (x0 * 1/(x1 * x1 * .. * xn))
-        var first = original.Subtrees.First();
-        var remaining = original.Subtrees.Skip(1);
+        var first = original.GetSubtree(0);
+        var second = original.GetSubtree(1);
+        var remaining = original.Subtrees.Skip(2);
         return
-          MakeProduct(GetSimplifiedTree(first), Invert(remaining.Aggregate((a, b) => MakeProduct(a, GetSimplifiedTree(b)))));
+          MakeProduct(GetSimplifiedTree(first), Invert(remaining.Aggregate(GetSimplifiedTree(second), (a, b) => MakeProduct(a, GetSimplifiedTree(b)))));
       }
     }
 
@@ -830,7 +831,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // possible improvement: combine sums of products where the products only reference the same variable
     private void MergeVariablesInSum(ISymbolicExpressionTreeNode sum) {
       var subtrees = new List<ISymbolicExpressionTreeNode>(sum.Subtrees);
-      while (sum.Subtrees.Count() > 0) sum.RemoveSubtree(0);
+      while (sum.Subtrees.Any()) sum.RemoveSubtree(0);
       var groupedVarNodes = from node in subtrees.OfType<VariableTreeNode>()
                             let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
                             group node by node.VariableName + lag into g
@@ -948,7 +949,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // helper to combine the constant factors in products and to combine variables (powers of 2, 3...)
     private void MergeVariablesAndConstantsInProduct(ISymbolicExpressionTreeNode prod) {
       var subtrees = new List<ISymbolicExpressionTreeNode>(prod.Subtrees);
-      while (prod.Subtrees.Count() > 0) prod.RemoveSubtree(0);
+      while (prod.Subtrees.Any()) prod.RemoveSubtree(0);
       var groupedVarNodes = from node in subtrees.OfType<VariableTreeNode>()
                             let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
                             group node by node.VariableName + lag into g
@@ -1003,8 +1004,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         variableTree.Weight *= -1.0;
       } else if (IsAddition(x)) {
         // (x0 + x1 + .. + xn) * -1 => (-x0 + -x1 + .. + -xn)        
-        List<ISymbolicExpressionTreeNode> subtrees = new List<ISymbolicExpressionTreeNode>(x.Subtrees);
-        while (x.Subtrees.Count() > 0) x.RemoveSubtree(0);
+        var subtrees = new List<ISymbolicExpressionTreeNode>(x.Subtrees);
+        while (x.Subtrees.Any()) x.RemoveSubtree(0);
         foreach (var subtree in subtrees) {
           x.AddSubtree(Negate(subtree));
         }
