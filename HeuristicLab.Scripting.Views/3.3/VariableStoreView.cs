@@ -159,8 +159,6 @@ namespace HeuristicLab.Scripting.Views {
       itemListViewItemMapping[variable.Key] = listViewItem;
       sortAscendingButton.Enabled = variableListView.Items.Count > 1;
       sortDescendingButton.Enabled = variableListView.Items.Count > 1;
-      var item = variable.Value as IItem;
-      if (item != null) item.ToStringChanged += item_ToStringChanged;
     }
 
     protected virtual void RemoveVariable(KeyValuePair<string, object> variable) {
@@ -173,8 +171,6 @@ namespace HeuristicLab.Scripting.Views {
       variableListView.Items.Remove(listViewItem);
       sortAscendingButton.Enabled = variableListView.Items.Count > 1;
       sortDescendingButton.Enabled = variableListView.Items.Count > 1;
-      var item = variable.Value as IItem;
-      if (item != null) item.ToStringChanged -= item_ToStringChanged;
     }
 
     protected virtual void UpdateVariable(KeyValuePair<string, object> variable) {
@@ -337,34 +333,37 @@ namespace HeuristicLab.Scripting.Views {
 
     #region Content Events
     protected virtual void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, object>> e) {
-      if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<KeyValuePair<string, object>>(Content_ItemsAdded), sender, e);
-      else {
-        foreach (var item in e.Items)
-          AddVariable(item);
-        AdjustListViewColumnSizes();
+      var variables = e.Items;
+      foreach (var variable in variables) {
+        var item = variable.Value as IItem;
+        if (item != null) item.ToStringChanged += item_ToStringChanged;
       }
+      InvokeVariableAction(AddVariable, variables);
     }
 
     protected virtual void Content_ItemsReplaced(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, object>> e) {
-      if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<KeyValuePair<string, object>>(Content_ItemsReplaced), sender, e);
-      else {
-        foreach (var item in e.Items)
-          UpdateVariable(item);
-        AdjustListViewColumnSizes();
+      var oldVariables = e.OldItems;
+      foreach (var variable in oldVariables) {
+        var item = variable.Value as IItem;
+        if (item != null) item.ToStringChanged -= item_ToStringChanged;
       }
+      var newVariables = e.Items;
+      foreach (var variable in newVariables) {
+        var item = variable.Value as IItem;
+        if (item != null) item.ToStringChanged += item_ToStringChanged;
+      }
+      InvokeVariableAction(UpdateVariable, e.Items);
     }
 
     protected virtual void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, object>> e) {
-      if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<KeyValuePair<string, object>>(Content_ItemsRemoved), sender, e);
-      else {
-        foreach (var item in e.Items)
-          RemoveVariable(item);
-        AdjustListViewColumnSizes();
+      var variables = e.Items;
+      foreach (var variable in variables) {
+        var item = variable.Value as IItem;
+        if (item != null) item.ToStringChanged -= item_ToStringChanged;
       }
+      InvokeVariableAction(RemoveVariable, variables);
     }
+
     protected virtual void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, object>> e) {
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<KeyValuePair<string, object>>(Content_CollectionReset), sender, e);
@@ -488,6 +487,16 @@ namespace HeuristicLab.Scripting.Views {
       if (type != null)
         serializableLookup[type] = serializable;
       return serializable;
+    }
+
+    private void InvokeVariableAction(Action<KeyValuePair<string, object>> action, IEnumerable<KeyValuePair<string, object>> variables) {
+      if (InvokeRequired)
+        Invoke((Action<Action<KeyValuePair<string, object>>, IEnumerable<KeyValuePair<string, object>>>)InvokeVariableAction, action, variables);
+      else {
+        foreach (var variable in variables)
+          action(variable);
+        AdjustListViewColumnSizes();
+      }
     }
     #endregion
   }
