@@ -31,6 +31,8 @@ namespace HeuristicLab.Optimization.Operators {
   /// </remarks>
   [Item("NoSimilarityCalculator", "An item that performs similarity calculation between two solutions. The item always considers two solutions to be distinct.")]
   public sealed class NoSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+    protected override bool IsCommutative { get { return true; } }
+
     private NoSimilarityCalculator(bool deserializing) : base(deserializing) { }
     private NoSimilarityCalculator(NoSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public NoSimilarityCalculator() : base() { }

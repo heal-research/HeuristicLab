@@ -29,6 +29,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -80,9 +81,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     private TSPAlleleFrequencyAnalyzer TSPAlleleFrequencyAnalyzer {
       get { return Operators.OfType<TSPAlleleFrequencyAnalyzer>().FirstOrDefault(); }
-    }
-    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
-      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -235,10 +233,12 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       Operators.Add(new TSPPathRelinker());
       Operators.Add(new TSPSimultaneousPathRelinker());
       Operators.Add(new TSPSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestTSPSolutionAnalyzer());
       Operators.Add(new TSPAlleleFrequencyAnalyzer());
-      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       ParameterizeAnalyzers();
       var operators = new HashSet<IPermutationOperator>(new IPermutationOperator[] {
         new OrderCrossover2(),
@@ -318,13 +318,6 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         TSPAlleleFrequencyAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
         TSPAlleleFrequencyAnalyzer.ResultsParameter.ActualName = "Results";
       }
-
-      if (SingleObjectivePopulationDiversityAnalyzer != null) {
-        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
-        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<TSPSimilarityCalculator>().SingleOrDefault();
-      }
     }
     private void ParameterizeOperators() {
       foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {
@@ -365,7 +358,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
         op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
-      foreach (TSPSimilarityCalculator op in Operators.OfType<TSPSimilarityCalculator>()) {
+      foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
         op.SolutionVariableName = SolutionCreator.PermutationParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }

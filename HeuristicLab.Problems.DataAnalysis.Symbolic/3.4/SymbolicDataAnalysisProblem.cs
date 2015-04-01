@@ -232,7 +232,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Operators.Add(new SymbolicDataAnalysisVariableFrequencyAnalyzer());
       Operators.Add(new MinAverageMaxSymbolicExpressionTreeLengthAnalyzer());
       Operators.Add(new SymbolicExpressionTreeLengthAnalyzer());
-      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
+      Operators.Add(new PopulationSimilarityAnalyzer(new[] { new SymbolicExpressionTreeBottomUpSimilarityCalculator() }));
       ParameterizeOperators();
     }
 
@@ -355,9 +355,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var op in operators.OfType<SingleObjectiveSolutionSimilarityCalculator>()) {
         op.QualityVariableName = "Quality";
         op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-      }
-      foreach (var op in operators.OfType<SingleObjectivePopulationDiversityAnalyzer>()) {
-        op.SimilarityCalculator = new SymbolicExpressionTreeBottomUpSimilarityCalculator();
       }
     }
 

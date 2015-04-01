@@ -147,23 +147,17 @@
     <Compile Include="CreateNewSingleEncodingDialog.Designer.cs">
       <DependentUpon>CreateNewSingleEncodingDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="ISingleObjectiveSolutionSimilarityCalculatorView.cs">
+    <Compile Include="ISolutionSimilarityCalculatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ISingleObjectiveSolutionSimilarityCalculatorView.Designer.cs">
-      <DependentUpon>ISingleObjectiveSolutionSimilarityCalculatorView.cs</DependentUpon>
+    <Compile Include="ISolutionSimilarityCalculatorView.Designer.cs">
+      <DependentUpon>ISolutionSimilarityCalculatorView.cs</DependentUpon>
     </Compile>
     <Compile Include="ExperimentListView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ExperimentListView.Designer.cs">
       <DependentUpon>ExperimentListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ISimilarityCalculatorView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ISimilarityCalculatorView.Designer.cs">
-      <DependentUpon>ISimilarityCalculatorView.cs</DependentUpon>
     </Compile>
     <Compile Include="MultiEncodingView.cs">
       <SubType>UserControl</SubType>

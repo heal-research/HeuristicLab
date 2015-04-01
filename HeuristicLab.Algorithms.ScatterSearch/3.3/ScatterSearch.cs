@@ -87,8 +87,8 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     public IValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (IValueParameter<BoolValue>)Parameters["SetSeedRandomly"]; }
     }
-    public IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator> SimilarityCalculatorParameter {
-      get { return (IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
+    public IConstrainedValueParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
+      get { return (IConstrainedValueParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
     }
     #endregion
 
@@ -137,7 +137,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       get { return SetSeedRandomlyParameter.Value; }
       set { SetSeedRandomlyParameter.Value = value; }
     }
-    public ISingleObjectiveSolutionSimilarityCalculator SimilarityCalculator {
+    public ISolutionSimilarityCalculator SimilarityCalculator {
       get { return SimilarityCalculatorParameter.Value; }
       set { SimilarityCalculatorParameter.Value = value; }
     }
@@ -159,6 +159,19 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
     private ScatterSearch(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (Parameters.ContainsKey("SimilarityCalculator")) {
+#pragma warning disable 0618
+        var oldParameter = (IConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>)Parameters["SimilarityCalculator"];
+#pragma warning restore 0618
+        Parameters.Remove(oldParameter);
+        var newParameter = new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions.", new ItemSet<ISolutionSimilarityCalculator>(oldParameter.ValidValues));
+        var selectedSimilarityCalculator = newParameter.ValidValues.SingleOrDefault(x => x.GetType() == oldParameter.Value.GetType());
+        newParameter.Value = selectedSimilarityCalculator;
+        Parameters.Add(newParameter);
+      }
+      #endregion
       Initialize();
     }
     private ScatterSearch(ScatterSearch original, Cloner cloner)
@@ -183,7 +196,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       Parameters.Add(new ValueParameter<IntValue>("ReferenceSetSize", "The size of the reference set.", new IntValue(20)));
       Parameters.Add(new ValueParameter<IntValue>("Seed", "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new ValueParameter<BoolValue>("SetSeedRandomly", "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
-      Parameters.Add(new ConstrainedValueParameter<ISingleObjectiveSolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions."));
+      Parameters.Add(new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The operator used to calculate the similarity between two solutions."));
       #endregion
 
       #region Create operators
@@ -389,18 +402,22 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
         PathRelinkerParameter.Value = defaultPathRelinker;
     }
     private void UpdateSimilarityCalculators() {
-      ISingleObjectiveSolutionSimilarityCalculator oldSimilarityCalculator = SimilarityCalculatorParameter.Value;
+      ISolutionSimilarityCalculator oldSimilarityCalculator = SimilarityCalculatorParameter.Value;
       SimilarityCalculatorParameter.ValidValues.Clear();
-      ISingleObjectiveSolutionSimilarityCalculator defaultSimilarityCalculator = Problem.Operators.OfType<ISingleObjectiveSolutionSimilarityCalculator>().FirstOrDefault();
+      ISolutionSimilarityCalculator defaultSimilarityCalculator = Problem.Operators.OfType<ISolutionSimilarityCalculator>().FirstOrDefault();
 
-      SimilarityCalculatorParameter.ValidValues.Add(new QualitySimilarityCalculator { QualityVariableName = Problem.Evaluator.QualityParameter.ActualName });
-      SimilarityCalculatorParameter.ValidValues.Add(new NoSimilarityCalculator { QualityVariableName = Problem.Evaluator.QualityParameter.ActualName });
-
-      foreach (ISingleObjectiveSolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISingleObjectiveSolutionSimilarityCalculator>())
+      foreach (ISolutionSimilarityCalculator similarityCalculator in Problem.Operators.OfType<ISolutionSimilarityCalculator>())
         SimilarityCalculatorParameter.ValidValues.Add(similarityCalculator);
 
+      if (!SimilarityCalculatorParameter.ValidValues.OfType<QualitySimilarityCalculator>().Any())
+        SimilarityCalculatorParameter.ValidValues.Add(new QualitySimilarityCalculator {
+          QualityVariableName = Problem.Evaluator.QualityParameter.ActualName
+        });
+      if (!SimilarityCalculatorParameter.ValidValues.OfType<NoSimilarityCalculator>().Any())
+        SimilarityCalculatorParameter.ValidValues.Add(new NoSimilarityCalculator());
+
       if (oldSimilarityCalculator != null) {
-        ISingleObjectiveSolutionSimilarityCalculator similarityCalculator = SimilarityCalculatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSimilarityCalculator.GetType());
+        ISolutionSimilarityCalculator similarityCalculator = SimilarityCalculatorParameter.ValidValues.FirstOrDefault(x => x.GetType() == oldSimilarityCalculator.GetType());
         if (similarityCalculator != null) SimilarityCalculatorParameter.Value = similarityCalculator;
         else oldSimilarityCalculator = null;
       }
@@ -422,8 +439,6 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
         MainLoop.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         MainLoop.OperatorGraph.Operators.OfType<PopulationRebuildMethod>().Single().QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         MainLoop.OperatorGraph.Operators.OfType<SolutionPoolUpdateMethod>().Single().QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
-        foreach (ISimilarityBasedOperator op in MainLoop.OperatorGraph.Operators.OfType<ISimilarityBasedOperator>())
-          op.SimilarityCalculator = SimilarityCalculator;
       }
     }
     private void ParameterizeStochasticOperator(IOperator op) {
@@ -448,7 +463,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       }
     }
     private void ParameterizeSimilarityCalculators() {
-      foreach (ISingleObjectiveSolutionSimilarityCalculator calc in SimilarityCalculatorParameter.ValidValues) {
+      foreach (ISolutionSimilarityCalculator calc in SimilarityCalculatorParameter.ValidValues) {
         calc.QualityVariableName = Problem.Evaluator.QualityParameter.ActualName;
       }
     }

@@ -28,6 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -80,9 +81,6 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     private BestKnapsackSolutionAnalyzer BestKnapsackSolutionAnalyzer {
       get { return Operators.OfType<BestKnapsackSolutionAnalyzer>().FirstOrDefault(); }
-    }
-    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
-      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -247,22 +245,17 @@ namespace HeuristicLab.Problems.Knapsack {
         BestKnapsackSolutionAnalyzer.ValuesParameter.ActualName = ValuesParameter.Name;
         BestKnapsackSolutionAnalyzer.ValuesParameter.Hidden = true;
       }
-
-      if (SingleObjectivePopulationDiversityAnalyzer != null) {
-        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
-        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<KnapsackSimilarityCalculator>().SingleOrDefault();
-      }
     }
     private void InitializeOperators() {
       Operators.Add(new KnapsackImprovementOperator());
       Operators.Add(new KnapsackPathRelinker());
       Operators.Add(new KnapsackSimultaneousPathRelinker());
       Operators.Add(new KnapsackSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestKnapsackSolutionAnalyzer());
-      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       ParameterizeAnalyzer();
       foreach (IBinaryVectorOperator op in ApplicationManager.Manager.GetInstances<IBinaryVectorOperator>()) {
         if (!(op is ISingleObjectiveMoveEvaluator) || (op is IKnapsackMoveEvaluator)) {
@@ -316,7 +309,7 @@ namespace HeuristicLab.Problems.Knapsack {
         op.ParentsParameter.ActualName = SolutionCreator.BinaryVectorParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
-      foreach (KnapsackSimilarityCalculator op in Operators.OfType<KnapsackSimilarityCalculator>()) {
+      foreach (ISolutionSimilarityCalculator op in Operators.OfType<ISolutionSimilarityCalculator>()) {
         op.SolutionVariableName = SolutionCreator.BinaryVectorParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }

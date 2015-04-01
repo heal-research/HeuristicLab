@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization.Operators {
@@ -32,9 +33,23 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("SimilarityCalculator", "A base class for items that perform similarity calculation between two solutions.")]
   [StorableClass]
   public abstract class SolutionSimilarityCalculator : Item, ISolutionSimilarityCalculator {
+    protected abstract bool IsCommutative { get; }
+
+    #region Properties
+    [Storable]
+    public string SolutionVariableName { get; set; }
+    [Storable]
+    public string QualityVariableName { get; set; }
+    #endregion
+
     [StorableConstructor]
     protected SolutionSimilarityCalculator(bool deserializing) : base(deserializing) { }
-    protected SolutionSimilarityCalculator(SolutionSimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
+
+    protected SolutionSimilarityCalculator(SolutionSimilarityCalculator original, Cloner cloner)
+      : base(original, cloner) {
+      this.SolutionVariableName = original.SolutionVariableName;
+      this.QualityVariableName = original.QualityVariableName;
+    }
     protected SolutionSimilarityCalculator() : base() { }
 
     public double[][] CalculateSolutionCrowdSimilarity(IScope leftSolutionCrowd, IScope rightSolutionCrowd) {
@@ -70,9 +85,19 @@ namespace HeuristicLab.Optimization.Operators {
       var similarityMatrix = new double[individuals.Count][];
       for (int i = 0; i < individuals.Count; i++) similarityMatrix[i] = new double[individuals.Count];
 
-      for (int i = 0; i < individuals.Count; i++) {
-        for (int j = i; j < individuals.Count; j++) {
-          similarityMatrix[i][j] = similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+      if (IsCommutative) {
+        for (int i = 0; i < individuals.Count; i++) {
+          for (int j = i; j < individuals.Count; j++) {
+            similarityMatrix[i][j] = similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+          }
+        }
+      } else {
+        for (int i = 0; i < individuals.Count; i++) {
+          for (int j = i; j < individuals.Count; j++) {
+            similarityMatrix[i][j] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+            if (i == j) continue;
+            similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[j], individuals[i]);
+          }
         }
       }
 
@@ -80,7 +105,59 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     public abstract double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution);
-    public abstract bool Equals(IScope x, IScope y);
-    public abstract int GetHashCode(IScope obj);
+
+    public virtual bool Equals(IScope x, IScope y) {
+      if (ReferenceEquals(x, y)) return true;
+      if (x == null || y == null) return false;
+
+      var q1 = x.Variables[QualityVariableName].Value;
+      var q2 = y.Variables[QualityVariableName].Value;
+
+      return CheckQualityEquality(q1, q2) && CalculateSolutionSimilarity(x, y).IsAlmost(1.0);
+    }
+
+    public virtual int GetHashCode(IScope scope) {
+      var quality = scope.Variables[QualityVariableName].Value;
+      var dv = quality as DoubleValue;
+      if (dv != null)
+        return dv.Value.GetHashCode();
+
+      var da = quality as DoubleArray;
+      if (da != null) {
+        int hash = 17;
+        unchecked {
+          for (int i = 0; i < da.Length; ++i) {
+            hash += hash * 23 + da[i].GetHashCode();
+          }
+          return hash;
+        }
+      }
+      return 0;
+    }
+
+    private static bool CheckQualityEquality(IItem q1, IItem q2) {
+      var d1 = q1 as DoubleValue;
+      var d2 = q2 as DoubleValue;
+
+      if (d1 != null && d2 != null)
+        return d1.Value.IsAlmost(d2.Value);
+
+      var da1 = q1 as DoubleArray;
+      var da2 = q2 as DoubleArray;
+
+      if (da1 != null && da2 != null) {
+        if (da1.Length != da2.Length)
+          throw new ArgumentException("The quality arrays must have the same length.");
+
+        for (int i = 0; i < da1.Length; ++i) {
+          if (!da1[i].IsAlmost(da2[i]))
+            return false;
+        }
+
+        return true;
+      }
+
+      throw new ArgumentException("Could not determine quality equality.");
+    }
   }
 }

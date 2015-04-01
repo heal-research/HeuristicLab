@@ -19,12 +19,18 @@
  */
 #endregion
 
+using System;
+
 namespace HeuristicLab.Optimization {
+  // use HeuristicLab.Optimization.ISolutionSimilarityCalculator instead
+  // BackwardsCompatibility3.3
+  #region Backwards compatible code, remove with 3.4
   /// <summary>
   /// An interface which represents an operator for similarity calculation between single objective solutions.
   /// </summary>
+  [Obsolete("use HeuristicLab.Optimization.ISolutionSimilarityCalculator instead")]
   public interface ISingleObjectiveSolutionSimilarityCalculator : ISolutionSimilarityCalculator, ISingleObjectiveOperator {
-    string SolutionVariableName { get; set; }
-    string QualityVariableName { get; set; }
+
   }
+  #endregion
 }

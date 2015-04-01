@@ -35,18 +35,16 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
   /// </summary>
   [Item("ReferenceSetUpdateMethod", "An operator that updates the reference set.")]
   [StorableClass]
-  public sealed class ReferenceSetUpdateMethod : SingleSuccessorOperator, ISimilarityBasedOperator {
-    #region ISimilarityBasedOperator Members
-    [Storable]
-    public ISolutionSimilarityCalculator SimilarityCalculator { get; set; }
-    #endregion
-
+  public sealed class ReferenceSetUpdateMethod : SingleSuccessorOperator {
     #region Parameter properties
     public ScopeParameter CurrentScopeParameter {
       get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
     public IValueLookupParameter<IntValue> ReferenceSetSizeParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["ReferenceSetSize"]; }
+    }
+    public IValueLookupParameter<ISolutionSimilarityCalculator> SimilarityCalculatorParameter {
+      get { return (IValueLookupParameter<ISolutionSimilarityCalculator>)Parameters["SimilarityCalculator"]; }
     }
     #endregion
 
@@ -61,15 +59,13 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
 
     [StorableConstructor]
     private ReferenceSetUpdateMethod(bool deserializing) : base(deserializing) { }
-    private ReferenceSetUpdateMethod(ReferenceSetUpdateMethod original, Cloner cloner)
-      : base(original, cloner) {
-      this.SimilarityCalculator = cloner.Clone(original.SimilarityCalculator);
-    }
+    private ReferenceSetUpdateMethod(ReferenceSetUpdateMethod original, Cloner cloner) : base(original, cloner) { }
     public ReferenceSetUpdateMethod()
       : base() {
       #region Create parameters
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that contains the population and the reference set."));
       Parameters.Add(new ValueLookupParameter<IntValue>("ReferenceSetSize", "The size of the reference set."));
+      Parameters.Add(new ValueLookupParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
       #endregion
     }
 
@@ -77,11 +73,20 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
       return new ReferenceSetUpdateMethod(this, cloner);
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("SimilarityCalculator"))
+        Parameters.Add(new ValueLookupParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
+      #endregion
+    }
+
     public override IOperation Apply() {
       var populationSimilarity = new Dictionary<IScope, double>();
       var populationScope = CurrentScope.SubScopes[0];
       var refSetScope = CurrentScope.SubScopes[1];
-      var similarityMatrix = SimilarityCalculator.CalculateSolutionCrowdSimilarity(populationScope, refSetScope);
+      var similarityMatrix = SimilarityCalculatorParameter.ActualValue.CalculateSolutionCrowdSimilarity(populationScope, refSetScope);
       for (int i = 0; i < populationScope.SubScopes.Count; i++) {
         populationSimilarity[populationScope.SubScopes[i]] = similarityMatrix[i].Sum();
       }

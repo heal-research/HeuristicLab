@@ -33,6 +33,8 @@ namespace HeuristicLab.Optimization.Operators {
   /// </remarks>
   [Item("QualitySimilarityCalculator", "An item that performs similarity calculation between two solutions. The item only considers the qualities of the two solutions.")]
   public sealed class QualitySimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+    protected override bool IsCommutative { get { return true; } }
+
     private QualitySimilarityCalculator(bool deserializing) : base(deserializing) { }
     private QualitySimilarityCalculator(QualitySimilarityCalculator original, Cloner cloner) : base(original, cloner) { }
     public QualitySimilarityCalculator() : base() { }

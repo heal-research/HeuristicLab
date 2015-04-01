@@ -30,6 +30,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator", "A similarity calculator based on the size of the maximum common subtree between two trees")]
   public class SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+    protected override bool IsCommutative { get { return true; } }
+
     [Storable]
     private readonly SymbolicExpressionTreeNodeEqualityComparer comparer;
     public bool MatchVariableWeights {

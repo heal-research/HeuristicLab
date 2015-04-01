@@ -250,7 +250,7 @@ namespace HeuristicLab.Algorithms.LocalSearch {
       if (problem != null) {
         foreach (IAnalyzer analyzer in problem.Operators.OfType<IAnalyzer>()) {
           if (!IsSubclassOfGeneric(typeof(AlleleFrequencyAnalyzer<>), analyzer.GetType()) &&
-              !(analyzer is SingleObjectivePopulationDiversityAnalyzer)) {
+              !(analyzer is PopulationSimilarityAnalyzer)) {
             IAnalyzer clone = analyzer.Clone() as IAnalyzer;
             foreach (IScopeTreeLookupParameter param in clone.Parameters.OfType<IScopeTreeLookupParameter>())
               param.Depth = 0;

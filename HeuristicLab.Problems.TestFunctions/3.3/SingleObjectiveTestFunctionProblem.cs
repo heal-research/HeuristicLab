@@ -28,6 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
+using HeuristicLab.Optimization.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
@@ -70,9 +71,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
     private BestSingleObjectiveTestFunctionSolutionAnalyzer BestSingleObjectiveTestFunctionSolutionAnalyzer {
       get { return Operators.OfType<BestSingleObjectiveTestFunctionSolutionAnalyzer>().FirstOrDefault(); }
-    }
-    private SingleObjectivePopulationDiversityAnalyzer SingleObjectivePopulationDiversityAnalyzer {
-      get { return Operators.OfType<SingleObjectivePopulationDiversityAnalyzer>().FirstOrDefault(); }
     }
     #endregion
 
@@ -257,21 +255,16 @@ namespace HeuristicLab.Problems.TestFunctions {
         BestSingleObjectiveTestFunctionSolutionAnalyzer.EvaluatorParameter.ActualName = EvaluatorParameter.Name;
         BestSingleObjectiveTestFunctionSolutionAnalyzer.BoundsParameter.ActualName = BoundsParameter.Name;
       }
-
-      if (SingleObjectivePopulationDiversityAnalyzer != null) {
-        SingleObjectivePopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        SingleObjectivePopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        SingleObjectivePopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
-        SingleObjectivePopulationDiversityAnalyzer.SimilarityCalculator = Operators.OfType<SingleObjectiveTestFunctionSimilarityCalculator>().SingleOrDefault();
-      }
     }
     private void InitializeOperators() {
       Operators.Add(new SingleObjectiveTestFunctionImprovementOperator());
       Operators.Add(new SingleObjectiveTestFunctionPathRelinker());
       Operators.Add(new SingleObjectiveTestFunctionSimilarityCalculator());
+      Operators.Add(new QualitySimilarityCalculator());
+      Operators.Add(new NoSimilarityCalculator());
 
       Operators.Add(new BestSingleObjectiveTestFunctionSolutionAnalyzer());
-      Operators.Add(new SingleObjectivePopulationDiversityAnalyzer());
+      Operators.Add(new PopulationSimilarityAnalyzer(Operators.OfType<ISolutionSimilarityCalculator>()));
       ParameterizeAnalyzers();
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IRealVectorOperator>().Cast<IOperator>());
       Operators.Add(strategyVectorCreator);
@@ -324,7 +317,8 @@ namespace HeuristicLab.Problems.TestFunctions {
       Evaluator.PointParameter.Hidden = true;
       try {
         BestKnownSolutionParameter.Value = Evaluator.GetBestKnownSolution(ProblemSize.Value);
-      } catch (ArgumentException e) {
+      }
+      catch (ArgumentException e) {
         ErrorHandling.ShowErrorDialog(e);
         ProblemSize.Value = Evaluator.MinimumProblemSize;
       }
@@ -390,10 +384,11 @@ namespace HeuristicLab.Problems.TestFunctions {
         op.ParentsParameter.ActualName = SolutionCreator.RealVectorParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
-      foreach (var op in Operators.OfType<SingleObjectiveTestFunctionSimilarityCalculator>()) {
+      foreach (var op in Operators.OfType<ISolutionSimilarityCalculator>()) {
         op.SolutionVariableName = SolutionCreator.RealVectorParameter.ActualName;
         op.QualityVariableName = Evaluator.QualityParameter.ActualName;
-        op.Bounds = Bounds;
+        var calc = op as SingleObjectiveTestFunctionSimilarityCalculator;
+        if (calc != null) calc.Bounds = Bounds;
       }
     }
     private void UpdateStrategyVectorBounds() {
