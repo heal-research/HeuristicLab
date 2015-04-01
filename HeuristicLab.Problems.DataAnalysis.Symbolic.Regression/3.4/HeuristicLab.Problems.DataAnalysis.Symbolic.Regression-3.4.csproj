@@ -122,24 +122,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="SingleObjective\ConstantOptimizationAnalyzer.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSolutionsAnalyzer.cs" />   
-	<Compile Include="SymbolicRegressionPruningAnalyzer.cs" />    
-    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveProblem.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer.cs" />
-	<Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveTrainingBestSolutionAnalyzer.cs" />
-	<Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
-    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveOverfittingAnalyzer.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />
+    <Compile Include="SingleObjective\SymbolicRegressionSolutionsAnalyzer.cs" />
+    <Compile Include="SymbolicRegressionPhenotypicDiversityAnalyzer.cs" />
+    <Compile Include="SymbolicRegressionPruningAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionLogResidualEvaluator.cs" />
-    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionMeanRelativeErrorEvaluator.cs" />    
+    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
+    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMaxAbsoluteErrorEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMeanAbsoluteErrorEvaluator.cs" />
     <Compile Include="SingleObjective\Evaluators\SymbolicRegressionConstantOptimizationEvaluator.cs" />
-    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveEvaluator.cs" />
-    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.cs" />
-    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.cs" />
+    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveOverfittingAnalyzer.cs" />
     <Compile Include="SymbolicRegressionModel.cs" />
     <Compile Include="Interfaces\ISymbolicRegressionModel.cs" />
     <Compile Include="Interfaces\ISymbolicRegressionSolution.cs" />
@@ -148,10 +144,15 @@
     <Compile Include="Interfaces\ISymbolicRegressionSingleObjectiveEvaluator.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveProblem.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer.cs" />
+    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveProblem.cs" />
+    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveValidationBestSolutionAnalyzer.cs" />
+    <Compile Include="SingleObjective\SymbolicRegressionSingleObjectiveTrainingBestSolutionAnalyzer.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveEvaluator.cs" />
-    <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveMeanSquaredErrorTreeSizeEvaluator.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveEvaluator.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.cs" />
+    <Compile Include="SingleObjective\Evaluators\SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.cs" />
     <Compile Include="SymbolicRegressionPruningOperator.cs" />
     <Compile Include="SymbolicRegressionSolution.cs" />
     <Compile Include="SymbolicRegressionSolutionImpactValuesCalculator.cs" />
@@ -211,6 +212,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">

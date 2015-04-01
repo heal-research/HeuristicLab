@@ -117,6 +117,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\SymbolicDataAnalysisBottomUpDiversityAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectivePruningAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveValidationParetoBestSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingParetoBestSolutionAnalyzer.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="TreeMatching\SymbolicExpressionTreeMaxCommonSubtreeSimilarityCalculator.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreeNodeComparer.cs" />
     <Compile Include="TreeMatching\SymbolicExpressionTreeNodeEqualityComparer.cs" />
+    <Compile Include="TreeMatching\SymbolicExpressionTreePhenotypicSimilarityCalculator.cs" />
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />

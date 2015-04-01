@@ -22,6 +22,7 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -104,6 +105,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private void InitializeOperators() {
       Operators.Add(new SymbolicClassificationMultiObjectiveTrainingBestSolutionAnalyzer());
       Operators.Add(new SymbolicClassificationMultiObjectiveValidationBestSolutionAnalyzer());
+      Operators.Add(new SymbolicExpressionTreePhenotypicSimilarityCalculator());
+      Operators.Add(new SymbolicClassificationPhenotypicDiversityAnalyzer(Operators.OfType<SymbolicExpressionTreePhenotypicSimilarityCalculator>()));
       ParameterizeOperators();
     }
 
@@ -133,6 +136,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
           op.EstimationLimitsParameter.ActualName = EstimationLimitsParameter.Name;
         foreach (var op in operators.OfType<ISymbolicClassificationModelCreatorOperator>())
           op.ModelCreatorParameter.ActualName = ModelCreatorParameter.Name;
+      }
+
+      foreach (var op in Operators.OfType<ISolutionSimilarityCalculator>()) {
+        op.SolutionVariableName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        op.QualityVariableName = Evaluator.QualitiesParameter.ActualName;
+
+        if (op is SymbolicExpressionTreePhenotypicSimilarityCalculator) {
+          var phenotypicSimilarityCalculator = (SymbolicExpressionTreePhenotypicSimilarityCalculator)op;
+          phenotypicSimilarityCalculator.ProblemData = ProblemData;
+          phenotypicSimilarityCalculator.Interpreter = SymbolicExpressionTreeInterpreter;
+        }
       }
     }
   }
