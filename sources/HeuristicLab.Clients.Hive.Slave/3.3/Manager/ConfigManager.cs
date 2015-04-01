@@ -36,7 +36,8 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private static ConfigManager instance = null;
     private const string vmwareNameString = "VMware";
     private const string virtualboxNameString = "VirtualBox";
-    private const int macLength = 12;
+    private const int macLength = 6;
+    private const int macLongLength = 8;
 
     public static ConfigManager Instance {
       get { return instance; }
@@ -195,36 +196,21 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
         validNic = NetworkInterface.GetAllNetworkInterfaces().First();
       }
 
-      string addr = validNic.GetPhysicalAddress().ToString();
-      if (addr.Length != macLength) {
-        throw new Exception("Error generating slave UID: MAC address has to have " + macLength + " digits. Actual MAC address is: " + addr);
+      byte[] addr = validNic.GetPhysicalAddress().GetAddressBytes();
+      if (addr.Length < macLength || addr.Length > macLongLength) {
+        throw new ArgumentException(string.Format("Error generating slave UID: MAC address has to have a length between {0} and {1} bytes. Actual MAC address is: {2}",
+              macLength, macLongLength, addr));
       }
 
-      byte[] b = new byte[8];
-      int j = 2;
-      for (int i = 0; i < macLength; i += 2) {
-        b[j++] = (byte)((ParseNybble(addr[i]) << 4) | ParseNybble(addr[i + 1]));
+      if (addr.Length < macLongLength) {
+        byte[] b = new byte[8];
+        Array.Copy(addr, 0, b, 2, addr.Length);
+        addr = b;
       }
+
       // also get machine name and save it to the first 4 bytes                
-      Guid guid = new Guid(Environment.MachineName.GetHashCode(), 0, 0, b);
+      Guid guid = new Guid(Environment.MachineName.GetHashCode(), 0, 0, addr);
       return guid;
-    }
-
-    /// <summary>
-    /// return numeric value of a single hex-char
-    /// (see: http://stackoverflow.com/questions/854012/how-to-convert-hex-to-a-byte-array)
-    /// </summary>    
-    static int ParseNybble(char c) {
-      if (c >= '0' && c <= '9') {
-        return c - '0';
-      }
-      if (c >= 'A' && c <= 'F') {
-        return c - 'A' + 10;
-      }
-      if (c >= 'a' && c <= 'f') {
-        return c - 'a' + 10;
-      }
-      throw new ArgumentException("Invalid hex digit: " + c);
     }
 
     private static long? GetWMIValue(string clazz, string property) {
