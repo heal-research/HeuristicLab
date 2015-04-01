@@ -122,6 +122,7 @@
     <Compile Include="BoolValue.cs" />
     <Compile Include="Comparison.cs" />
     <Compile Include="ComparisonType.cs" />
+    <Compile Include="EnumValue.cs" />
     <Compile Include="Path Types\DirectoryValue.cs" />
     <Compile Include="Path Types\FileValue.cs" />
     <Compile Include="Path Types\PathValue.cs" />
