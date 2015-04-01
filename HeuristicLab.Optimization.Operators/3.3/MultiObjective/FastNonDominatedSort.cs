@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -39,28 +40,33 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
   public class FastNonDominatedSort : SingleSuccessorOperator, IMultiObjectiveOperator {
     private enum DominationResult { Dominates, IsDominated, IsNonDominated };
 
+    #region Parameter properties
     public IValueLookupParameter<BoolArray> MaximizationParameter {
       get { return (IValueLookupParameter<BoolArray>)Parameters["Maximization"]; }
     }
-
+    public IValueLookupParameter<BoolValue> DominateOnEqualQualitiesParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["DominateOnEqualQualities"]; }
+    }
     public IScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
       get { return (IScopeTreeLookupParameter<DoubleArray>)Parameters["Qualities"]; }
     }
-
     public IScopeTreeLookupParameter<IntValue> RankParameter {
       get { return (IScopeTreeLookupParameter<IntValue>)Parameters["Rank"]; }
     }
+    #endregion
 
     [StorableConstructor]
     protected FastNonDominatedSort(bool deserializing) : base(deserializing) { }
     protected FastNonDominatedSort(FastNonDominatedSort original, Cloner cloner) : base(original, cloner) { }
     public FastNonDominatedSort() {
       Parameters.Add(new ValueLookupParameter<BoolArray>("Maximization", "Whether each objective is maximization or minimization."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The qualities of a solution.", 1));
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("Rank", "The rank of a solution.", 1));
     }
 
     public override IOperation Apply() {
+      bool dominateOnEqualQualities = DominateOnEqualQualitiesParameter.ActualValue.Value;
       BoolArray maximization = MaximizationParameter.ActualValue;
       ItemArray<DoubleArray> qualities = QualitiesParameter.ActualValue;
       if (qualities == null) throw new InvalidOperationException(Name + ": No qualities found.");
@@ -78,7 +84,7 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
         if (!dominatedScopes.ContainsKey(p))
           dominatedScopes[p] = new List<int>();
         for (int qI = pI + 1; qI < populationSize; qI++) {
-          DominationResult test = Dominates(qualities[pI], qualities[qI], maximization);
+          DominationResult test = Dominates(qualities[pI], qualities[qI], maximization, dominateOnEqualQualities);
           if (test == DominationResult.Dominates) {
             dominatedScopes[p].Add(qI);
             dominationCounter[qI] += 1;
@@ -133,30 +139,42 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       return base.Apply();
     }
 
-    private DominationResult Dominates(DoubleArray left, DoubleArray right, BoolArray maximizations) {
+    private static DominationResult Dominates(DoubleArray left, DoubleArray right, BoolArray maximizations, bool dominateOnEqualQualities) {
+      if (dominateOnEqualQualities && left.SequenceEqual(right)) return DominationResult.Dominates;
+
       bool leftIsBetter = false, rightIsBetter = false;
       for (int i = 0; i < left.Length; i++) {
         if (IsDominated(left[i], right[i], maximizations[i])) rightIsBetter = true;
         else if (IsDominated(right[i], left[i], maximizations[i])) leftIsBetter = true;
         if (leftIsBetter && rightIsBetter) break;
       }
+
       if (leftIsBetter && !rightIsBetter) return DominationResult.Dominates;
       if (!leftIsBetter && rightIsBetter) return DominationResult.IsDominated;
       return DominationResult.IsNonDominated;
     }
 
-    private bool IsDominated(double left, double right, bool maximization) {
+    private static bool IsDominated(double left, double right, bool maximization) {
       return maximization && left < right
         || !maximization && left > right;
     }
 
-    private void AddToFront(IScope p, List<ScopeList> fronts, int i) {
+    private static void AddToFront(IScope p, List<ScopeList> fronts, int i) {
       if (i == fronts.Count) fronts.Add(new ScopeList());
       fronts[i].Add(p);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new FastNonDominatedSort(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("DominateOnEqualQualities"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
+      #endregion
     }
   }
 }

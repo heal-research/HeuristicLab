@@ -29,6 +29,7 @@ using HeuristicLab.Selection;
 
 namespace HeuristicLab.Optimization.Operators {
   public class RankAndCrowdingSorter : AlgorithmOperator, IMultiObjectiveOperator {
+    #region Parameter properties
     public ValueLookupParameter<BoolArray> MaximizationParameter {
       get { return (ValueLookupParameter<BoolArray>)Parameters["Maximization"]; }
     }
@@ -41,6 +42,10 @@ namespace HeuristicLab.Optimization.Operators {
     public ScopeTreeLookupParameter<DoubleValue> CrowdingDistanceParameter {
       get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["CrowdingDistance"]; }
     }
+    public IValueLookupParameter<BoolValue> DominateOnEqualQualitiesParameter {
+      get { return (ValueLookupParameter<BoolValue>)Parameters["DominateOnEqualQualities"]; }
+    }
+    #endregion
 
     [StorableConstructor]
     protected RankAndCrowdingSorter(bool deserializing) : base(deserializing) { }
@@ -48,6 +53,7 @@ namespace HeuristicLab.Optimization.Operators {
     public RankAndCrowdingSorter()
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolArray>("Maximization", "For each objective a value that is true if that objective should be maximized, or false if it should be minimized."));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The vector of quality values."));
       Parameters.Add(new ScopeTreeLookupParameter<IntValue>("Rank", "The rank of a solution (to which front it belongs)."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("CrowdingDistance", "The crowding distance of a solution in a population."));
@@ -59,6 +65,7 @@ namespace HeuristicLab.Optimization.Operators {
       MergingReducer mergingReducer = new MergingReducer();
 
       fastNonDominatedSort.MaximizationParameter.ActualName = MaximizationParameter.Name;
+      fastNonDominatedSort.DominateOnEqualQualitiesParameter.ActualName = DominateOnEqualQualitiesParameter.Name;
       fastNonDominatedSort.QualitiesParameter.ActualName = QualitiesParameter.Name;
       fastNonDominatedSort.RankParameter.ActualName = RankParameter.Name;
 
@@ -79,6 +86,15 @@ namespace HeuristicLab.Optimization.Operators {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RankAndCrowdingSorter(this, cloner);
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey("DominateOnEqualQualities"))
+        Parameters.Add(new ValueLookupParameter<BoolValue>("DominateOnEqualQualities", "Flag which determines wether solutions with equal quality values should be treated as dominated."));
+      #endregion
     }
   }
 }
