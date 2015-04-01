@@ -286,8 +286,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // simplify expressions x0..xn
         // make sum(x0..xn) / n
         var sum = original.Subtrees
-          .Select(x => GetSimplifiedTree(x))
-          .Aggregate((a, b) => MakeSum(a, b));
+          .Select(GetSimplifiedTree)
+          .Aggregate(MakeSum);
         return MakeFraction(sum, MakeConstant(original.Subtrees.Count()));
       }
     }
@@ -298,9 +298,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make multiplication (x0 * 1/(x1 * x1 * .. * xn))
-        var simplifiedTrees = original.Subtrees.Select(x => GetSimplifiedTree(x));
+        var first = original.GetSubtree(0);
+        var second = original.GetSubtree(1);
+        var remaining = original.Subtrees.Skip(2);
         return
-          MakeProduct(simplifiedTrees.First(), Invert(simplifiedTrees.Skip(1).Aggregate((a, b) => MakeProduct(a, b))));
+          MakeProduct(GetSimplifiedTree(first), Invert(remaining.Aggregate(GetSimplifiedTree(second), (a, b) => MakeProduct(a, GetSimplifiedTree(b)))));
       }
     }
 
@@ -309,8 +311,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return GetSimplifiedTree(original.GetSubtree(0));
       } else {
         return original.Subtrees
-          .Select(x => GetSimplifiedTree(x))
-          .Aggregate((a, b) => MakeProduct(a, b));
+          .Select(GetSimplifiedTree)
+          .Aggregate(MakeProduct);
       }
     }
 
@@ -320,10 +322,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       } else {
         // simplify expressions x0..xn
         // make addition (x0,-x1..-xn)
-        var simplifiedTrees = original.Subtrees.Select(x => GetSimplifiedTree(x));
-        return simplifiedTrees.Take(1)
-          .Concat(simplifiedTrees.Skip(1).Select(x => Negate(x)))
-          .Aggregate((a, b) => MakeSum(a, b));
+        var first = original.Subtrees.First();
+        var remaining = original.Subtrees.Skip(1);
+        return remaining.Aggregate(GetSimplifiedTree(first), (a, b) => MakeSum(a, Negate(GetSimplifiedTree(b))));
       }
     }
 
@@ -334,8 +335,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         // simplify expression x0..xn
         // make addition (x0..xn)
         return original.Subtrees
-          .Select(x => GetSimplifiedTree(x))
-          .Aggregate((a, b) => MakeSum(a, b));
+          .Select(GetSimplifiedTree)
+          .Aggregate(MakeSum);
       }
     }
 
@@ -344,13 +345,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     private ISymbolicExpressionTreeNode SimplifyOr(ISymbolicExpressionTreeNode original) {
       return original.Subtrees
-        .Select(x => GetSimplifiedTree(x))
-        .Aggregate((a, b) => MakeOr(a, b));
+        .Select(GetSimplifiedTree)
+        .Aggregate(MakeOr);
     }
     private ISymbolicExpressionTreeNode SimplifyAnd(ISymbolicExpressionTreeNode original) {
       return original.Subtrees
-        .Select(x => GetSimplifiedTree(x))
-        .Aggregate((a, b) => MakeAnd(a, b));
+        .Select(GetSimplifiedTree)
+        .Aggregate(MakeAnd);
     }
     private ISymbolicExpressionTreeNode SimplifyLessThan(ISymbolicExpressionTreeNode original) {
       return MakeLessThan(GetSimplifiedTree(original.GetSubtree(0)), GetSimplifiedTree(original.GetSubtree(1)));
@@ -830,7 +831,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // possible improvement: combine sums of products where the products only reference the same variable
     private void MergeVariablesInSum(ISymbolicExpressionTreeNode sum) {
       var subtrees = new List<ISymbolicExpressionTreeNode>(sum.Subtrees);
-      while (sum.Subtrees.Count() > 0) sum.RemoveSubtree(0);
+      while (sum.Subtrees.Any()) sum.RemoveSubtree(0);
       var groupedVarNodes = from node in subtrees.OfType<VariableTreeNode>()
                             let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
                             group node by node.VariableName + lag into g
@@ -948,7 +949,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     // helper to combine the constant factors in products and to combine variables (powers of 2, 3...)
     private void MergeVariablesAndConstantsInProduct(ISymbolicExpressionTreeNode prod) {
       var subtrees = new List<ISymbolicExpressionTreeNode>(prod.Subtrees);
-      while (prod.Subtrees.Count() > 0) prod.RemoveSubtree(0);
+      while (prod.Subtrees.Any()) prod.RemoveSubtree(0);
       var groupedVarNodes = from node in subtrees.OfType<VariableTreeNode>()
                             let lag = (node is LaggedVariableTreeNode) ? ((LaggedVariableTreeNode)node).Lag : 0
                             group node by node.VariableName + lag into g
@@ -1003,8 +1004,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         variableTree.Weight *= -1.0;
       } else if (IsAddition(x)) {
         // (x0 + x1 + .. + xn) * -1 => (-x0 + -x1 + .. + -xn)        
-        List<ISymbolicExpressionTreeNode> subtrees = new List<ISymbolicExpressionTreeNode>(x.Subtrees);
-        while (x.Subtrees.Count() > 0) x.RemoveSubtree(0);
+        var subtrees = new List<ISymbolicExpressionTreeNode>(x.Subtrees);
+        while (x.Subtrees.Any()) x.RemoveSubtree(0);
         foreach (var subtree in subtrees) {
           x.AddSubtree(Negate(subtree));
         }
