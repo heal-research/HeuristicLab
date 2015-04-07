@@ -4,11 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using HeuristicLab.Algorithms.DataAnalysis;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Scripting;
 
 using LibSVM;
@@ -37,11 +37,11 @@ public class SVMRegressionCrossValidationScript : HeuristicLab.Scripting.CSharpS
   static Dictionary<string, IEnumerable<double>> svmParameterRanges = new Dictionary<string, IEnumerable<double>> {
         { "svm_type", new List<double> {svm_parameter.NU_SVR } },
         { "kernel_type", new List<double> { svm_parameter.RBF }},
-        { "C", ValueGenerator.GenerateSteps(-1m, 12, 1).Select(x => Math.Pow(2, (double)x)) },
-        { "gamma", ValueGenerator.GenerateSteps(-4m, -1, 1).Select(x => Math.Pow(2, (double)x)) },
-//        { "eps", ValueGenerator.GenerateSteps(-8m, -1, 1).Select(x => Math.Pow(2, (double)x)) },
-        { "nu" , ValueGenerator.GenerateSteps(-10m, 0, 1m).Select(x => Math.Pow(2, (double)x)) },
-//        { "degree", ValueGenerator.GenerateSteps(1m, 4, 1).Select(x => (double)x) }
+        { "C", SequenceGenerator.GenerateSteps(-1m, 12, 1).Select(x => Math.Pow(2, (double)x)) },
+        { "gamma", SequenceGenerator.GenerateSteps(-4m, -1, 1).Select(x => Math.Pow(2, (double)x)) },
+//        { "eps", SequenceGenerator.GenerateSteps(-8m, -1, 1).Select(x => Math.Pow(2, (double)x)) },
+        { "nu" , SequenceGenerator.GenerateSteps(-10m, 0, 1m).Select(x => Math.Pow(2, (double)x)) },
+//        { "degree", SequenceGenerator.GenerateSteps(1m, 4, 1).Select(x => (double)x) }
   };
 
   static Dictionary<int, string> svmTypes = new Dictionary<int, string> {

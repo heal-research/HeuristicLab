@@ -142,6 +142,7 @@
     <Compile Include="IDeepCloneable.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ReferenceEqualityComparer.cs" />
+    <Compile Include="SequenceGenerator.cs" />
     <Compile Include="TimeSpanHelper.cs" />
     <Compile Include="TypeEqualityComparer.cs" />
     <Compile Include="TypeExtensions.cs" />

@@ -19,57 +19,13 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Common;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public static class ValueGenerator {
+  internal static class ValueGenerator {
     private static FastRandom rand = new FastRandom();
-
-    /// <summary>
-    /// Generates a sequence of evenly spaced points by returning the start value and adding the stepwidth until the end is reached or surpassed.
-    /// 
-    /// </summary>
-    /// <param name="start">The smallest and first value of the sequence.</param>
-    /// <param name="end">The largest and last value of the sequence.</param>
-    /// <param name="stepWidth">The step size between subsequent values.</param>
-    /// <param name="includeEnd">Determines if the end should be included in the sequence regardless if the end is divisible by the stepwidth.</param>
-    /// <returns>A sequence of values from start to end (inclusive)</returns>
-    [Obsolete("It is recommended to use the decimal overload to achieve a higher numerical accuracy.")] 
-    public static IEnumerable<double> GenerateSteps(double start, double end, double stepWidth, bool includeEnd = false) {
-      //mkommend: IEnumerable.Cast fails due to boxing and unboxing of the involved types
-      // http://referencesource.microsoft.com/#System.Core/System/Linq/Enumerable.cs#27bb217a6d5457ec
-      // http://blogs.msdn.com/b/ericlippert/archive/2009/03/19/representation-and-identity.aspx     
-
-      return GenerateSteps((decimal)start, (decimal)end, (decimal)stepWidth, includeEnd).Select(x => (double)x);
-    }
-
-    /// <summary>
-    /// Generates a sequence of evenly spaced points by returning the start value and adding the stepwidth until the end is reached or surpassed.
-    /// </summary>
-    /// <param name="start">The smallest and first value of the sequence.</param>
-    /// <param name="end">The largest and last value of the sequence.</param>
-    /// <param name="stepWidth">The step size between subsequent values.</param>
-    /// /// <param name="includeEnd">Determines if the end should be included in the sequence regardless if the end is divisible by the stepwidth.</param>
-    /// <returns>A sequence of values from start to end</returns>
-    public static IEnumerable<decimal> GenerateSteps(decimal start, decimal end, decimal stepWidth, bool includeEnd = false) {
-      if (stepWidth == 0)
-        throw new ArgumentException("The step width cannot be zero.");
-      if (start < end && stepWidth < 0)
-        throw new ArgumentException("The step width must be larger than zero for increasing sequences (start < end).");
-      if (start > end && stepWidth > 0)
-        throw new ArgumentException("The step width must be smaller than zero for decreasing sequences (start > end).");
-
-      decimal x = start;
-      while (x <= end) {
-        yield return x;
-        x += stepWidth;
-      }
-      if (x - stepWidth < end && includeEnd) yield return end;
-    }
 
     /// <summary>
     /// Generates uniformly distributed values between start and end (inclusive!) 
@@ -99,7 +55,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         yield return NormalDistributedRandom.NextDouble(rand, mu, sigma);
     }
 
-    // iterative approach
+    // Generate the cartesian product.
+    // The result is transposed, therefore the inner lists represent a column of values instead of a combination-pair.
     public static IEnumerable<IEnumerable<double>> GenerateAllCombinationsOfValuesInLists(List<List<double>> lists) {
       List<List<double>> allCombinations = new List<List<double>>();
       if (lists.Count < 1) {
