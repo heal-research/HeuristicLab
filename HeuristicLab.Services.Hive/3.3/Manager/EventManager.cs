@@ -121,8 +121,18 @@ namespace HeuristicLab.Services.Hive {
     /// Searches for slaves that are disposable and deletes them if they were offline for too long
     /// </summary>
     private void DeleteObsoleteSlaves() {
-      var slaves = dao.GetSlaves(x => x.IsDisposable.GetValueOrDefault() && x.SlaveState == SlaveState.Offline && (DateTime.Now - x.LastHeartbeat) > HeuristicLab.Services.Hive.Properties.Settings.Default.SweepInterval);
-      foreach (DT.Slave slave in slaves) dao.DeleteSlave(slave.Id);
+      var slaves = dao.GetSlaves(x => x.IsDisposable.GetValueOrDefault() &&
+                                      x.SlaveState == SlaveState.Offline &&
+                                      (DateTime.Now - x.LastHeartbeat) > Hive.Properties.Settings.Default.SweepInterval)
+                                .Select(x => x.Id)
+                                .ToArray();
+
+      foreach (Guid slaveId in slaves) {
+        var downtimesAvailable = dao.GetDowntimes(x => x.ResourceId == slaveId).Any();
+        if (!downtimesAvailable) {
+          dao.DeleteSlave(slaveId);
+        }
+      }
     }
   }
 }
