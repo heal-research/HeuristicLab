@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Net.NetworkInformation;
 using HeuristicLab.Clients.Hive.SlaveCore.Properties;
 
 
@@ -33,6 +34,11 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
   /// </summary>
   public class ConfigManager {
     private static ConfigManager instance = null;
+    private const string vmwareNameString = "VMware";
+    private const string virtualboxNameString = "VirtualBox";
+    private const int macLength = 6;
+    private const int macLongLength = 8;
+
     public static ConfigManager Instance {
       get { return instance; }
       set { instance = value; }
@@ -178,52 +184,33 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     /// D1 contains the hash of the machinename. 
     /// </summary>    
     private static Guid GetUniqueMachineIdFromMac() {
-      ManagementClass mgtClass = new ManagementClass("Win32_NetworkAdapterConfiguration");
-      ManagementObjectCollection mgtCol = mgtClass.GetInstances();
+      //try to get a real network interface, not a virtual one 
+      NetworkInterface validNic = NetworkInterface.GetAllNetworkInterfaces()
+                      .FirstOrDefault(x =>
+                                  !x.Name.Contains(vmwareNameString) &&
+                                  !x.Name.Contains(virtualboxNameString) &&
+                                  (x.NetworkInterfaceType == NetworkInterfaceType.Ethernet ||
+                                   x.NetworkInterfaceType == NetworkInterfaceType.GigabitEthernet));
 
-      foreach (ManagementObject mgtObj in mgtCol) {
-        foreach (var prop in mgtObj.Properties) {
-          if (prop.Value != null && prop.Name == "MACAddress") {
-            try {
-              //simply take the first nic
-              string mac = prop.Value.ToString();
-              byte[] b = new byte[8];
-              string[] macParts = mac.Split(':');
-              if (macParts.Length == 6) {
-                for (int i = 0; i < macParts.Length; i++) {
-                  b[i + 2] = (byte)((ParseNybble(macParts[i][0]) << 4) | ParseNybble(macParts[i][1]));
-                }
+      if (validNic == default(NetworkInterface)) {
+        validNic = NetworkInterface.GetAllNetworkInterfaces().First();
+      }
 
-                // also get machine name and save it to the first 4 bytes                
-                Guid guid = new Guid(Environment.MachineName.GetHashCode(), 0, 0, b);
-                return guid;
-              } else
-                throw new Exception("Error getting mac addresse");
-            }
-            catch {
-              throw new Exception("Error getting mac addresse");
-            }
-          }
-        }
+      byte[] addr = validNic.GetPhysicalAddress().GetAddressBytes();
+      if (addr.Length < macLength || addr.Length > macLongLength) {
+        throw new ArgumentException(string.Format("Error generating slave UID: MAC address has to have a length between {0} and {1} bytes. Actual MAC address is: {2}",
+              macLength, macLongLength, addr));
       }
-      throw new Exception("Error getting mac addresse");
-    }
 
-    /// <summary>
-    /// return numeric value of a single hex-char
-    /// (see: http://stackoverflow.com/questions/854012/how-to-convert-hex-to-a-byte-array)
-    /// </summary>    
-    static int ParseNybble(char c) {
-      if (c >= '0' && c <= '9') {
-        return c - '0';
+      if (addr.Length < macLongLength) {
+        byte[] b = new byte[8];
+        Array.Copy(addr, 0, b, 2, addr.Length);
+        addr = b;
       }
-      if (c >= 'A' && c <= 'F') {
-        return c - 'A' + 10;
-      }
-      if (c >= 'a' && c <= 'f') {
-        return c - 'a' + 10;
-      }
-      throw new ArgumentException("Invalid hex digit: " + c);
+
+      // also get machine name and save it to the first 4 bytes                
+      Guid guid = new Guid(Environment.MachineName.GetHashCode(), 0, 0, addr);
+      return guid;
     }
 
     private static long? GetWMIValue(string clazz, string property) {
