@@ -35,8 +35,12 @@ namespace HeuristicLab.Core {
       }
     }
 
+    public int Priority { get; set; }
+
+
     public CreatableAttribute() {
       Category = "Other Items";
+      Priority = int.MaxValue;
     }
     public CreatableAttribute(string category)
       : this() {
@@ -51,6 +55,12 @@ namespace HeuristicLab.Core {
       object[] attribs = type.GetCustomAttributes(typeof(CreatableAttribute), false);
       if (attribs.Length > 0) return ((CreatableAttribute)attribs[0]).Category;
       else return null;
+    }
+
+    public static int GetPriority(Type type) {
+      var attribs = type.GetCustomAttributes(typeof(CreatableAttribute), false);
+      if (attribs.Length > 0) return ((CreatableAttribute)attribs[0]).Priority;
+      else return int.MaxValue;
     }
   }
 }

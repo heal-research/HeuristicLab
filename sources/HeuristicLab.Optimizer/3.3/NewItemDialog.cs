@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -28,7 +30,21 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimizer {
   internal partial class NewItemDialog : Form {
-    private bool initialized;
+    private bool isInitialized;
+
+    private readonly List<TreeNode> treeNodes;
+    private string currentSearchString;
+
+    private Type selectedType;
+    public Type SelectedType {
+      get { return selectedType; }
+      private set {
+        if (value != selectedType) {
+          selectedType = value;
+          OnSelectedTypeChanged();
+        }
+      }
+    }
 
     private IItem item;
     public IItem Item {
@@ -36,65 +52,388 @@ namespace HeuristicLab.Optimizer {
     }
 
     public NewItemDialog() {
-      initialized = false;
-      item = null;
       InitializeComponent();
+      treeNodes = new List<TreeNode>();
+      currentSearchString = string.Empty;
+      item = null;
+      SelectedTypeChanged += this_SelectedTypeChanged;
     }
 
     private void NewItemDialog_Load(object sender, EventArgs e) {
-      if (!initialized) {
-        var categories = from t in ApplicationManager.Manager.GetTypes(typeof(IItem))
-                         where CreatableAttribute.IsCreatable(t)
-                         orderby CreatableAttribute.GetCategory(t), ItemAttribute.GetName(t), ItemAttribute.GetVersion(t) ascending
-                         group t by CreatableAttribute.GetCategory(t) into c
-                         select c;
+      if (isInitialized) return;
 
-        itemsListView.SmallImageList = new ImageList();
-        itemsListView.SmallImageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Class);  // default icon
-        foreach (var category in categories) {
-          ListViewGroup group = new ListViewGroup(category.Key);
-          itemsListView.Groups.Add(group);
-          foreach (var creatable in category) {
-            string name = ItemAttribute.GetName(creatable);
-            string version = ItemAttribute.GetVersion(creatable).ToString();
-            string description = ItemAttribute.GetDescription(creatable);
-            ListViewItem item = new ListViewItem(new string[] { name, version, description }, group);
-            item.ImageIndex = 0;
-            Image image = ItemAttribute.GetImage(creatable);
-            if (image != null) {
-              itemsListView.SmallImageList.Images.Add(image);
-              item.ImageIndex = itemsListView.SmallImageList.Images.Count - 1;
-            }
-            item.Tag = creatable;
-            itemsListView.Items.Add(item);
-          }
-        }
-        for (int i = 0; i < itemsListView.Columns.Count; i++)
-          itemsListView.Columns[i].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-        initialized = true;
+      var categories =
+        from type in ApplicationManager.Manager.GetTypes(typeof(IItem))
+        let category = CreatableAttribute.GetCategory(type)
+        let name = ItemAttribute.GetName(type)
+        let priority = CreatableAttribute.GetPriority(type)
+        let version = ItemAttribute.GetVersion(type)
+        where CreatableAttribute.IsCreatable(type)
+        orderby category, priority, name, version ascending
+        group type by category into categoryGroup
+        select categoryGroup;
+
+      var rootNode = CreateCategoryTree(categories);
+      CreateItemNodes(rootNode, categories);
+
+      foreach (TreeNode topNode in rootNode.Nodes)
+        treeNodes.Add(topNode);
+      foreach (var node in treeNodes)
+        typesTreeView.Nodes.Add((TreeNode)node.Clone());
+
+      typesTreeView.TreeViewNodeSorter = new ItemTreeNodeComparer();
+      typesTreeView.Sort();
+
+      isInitialized = true;
+    }
+
+    private TreeNode CreateCategoryTree(IEnumerable<IGrouping<string, Type>> categories) {
+      imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Class);      // default icon
+      imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Namespace);  // plugins
+
+      var rootNode = new TreeNode();
+
+      foreach (var category in categories) {
+        var fullName = category.Key;
+        var tokens = fullName.Split('#');
+        var name = tokens.Last();
+        var parents = tokens.Take(tokens.Length - 1);
+
+        var categoryNode = new TreeNode(name, imageIndex: 1, selectedImageIndex: 1) {
+          Name = fullName,
+          Tag = fullName
+        };
+
+        var parentNode = FindOrCreateParentNode(rootNode, parents);
+        if (parentNode != null)
+          parentNode.Nodes.Add(categoryNode);
+        else
+          rootNode.Nodes.Add(categoryNode);
       }
+
+      return rootNode;
+    }
+    private TreeNode FindOrCreateParentNode(TreeNode node, IEnumerable<string> parentCategories) {
+      TreeNode parentNode = null;
+      string fullName = null;
+      foreach (string parentCategory in parentCategories) {
+        fullName = fullName == null ? parentCategory : fullName + "#" + parentCategory;
+        parentNode = node.Nodes.Find(fullName, searchAllChildren: false).SingleOrDefault();
+        if (parentNode == null) {
+          parentNode = new TreeNode(parentCategory, imageIndex: 1, selectedImageIndex: 1) {
+            Name = fullName,
+            Tag = fullName
+          };
+          node.Nodes.Add(parentNode);
+        }
+        node = parentNode;
+      }
+      return parentNode;
+    }
+    private void CreateItemNodes(TreeNode node, IEnumerable<IGrouping<string, Type>> categories) {
+      foreach (var category in categories) {
+        var categoryNode = node.Nodes.Find(category.Key, searchAllChildren: true).Single();
+        foreach (var creatable in category) {
+          var itemNode = CreateItemNode(creatable);
+          itemNode.Name = itemNode.Name + ":" + category.Key;
+          categoryNode.Nodes.Add(itemNode);
+        }
+      }
+    }
+    private TreeNode CreateItemNode(Type creatable) {
+      string name = ItemAttribute.GetName(creatable);
+
+      var itemNode = new TreeNode(name) {
+        ImageIndex = 0,
+        Tag = creatable,
+        Name = name
+      };
+
+      var image = ItemAttribute.GetImage(creatable);
+      if (image != null) {
+        imageList.Images.Add(image);
+        itemNode.ImageIndex = imageList.Images.Count - 1;
+      }
+      itemNode.SelectedImageIndex = itemNode.ImageIndex;
+
+      return itemNode;
     }
 
     private void NewItemDialog_Shown(object sender, EventArgs e) {
-      item = null;
+      searchTextBox.Text = string.Empty;
+      searchTextBox.Focus();
+      SelectedType = null;
+      typesTreeView.SelectedNode = null;
+      typesTreeView.CollapseAll();
+      UpdateDescription();
     }
 
-    private void itemTypesListView_SelectedIndexChanged(object sender, EventArgs e) {
-      okButton.Enabled = itemsListView.SelectedItems.Count == 1;
+    public virtual void Filter(string searchString) {
+      if (InvokeRequired) {
+        Invoke(new Action<string>(Filter), searchString);
+      } else {
+        searchString = searchString.ToLower();
+
+        if (!searchString.Contains(currentSearchString)) {
+          typesTreeView.BeginUpdate();
+          // expand search -> restore all tree nodes
+          var selectedNode = typesTreeView.SelectedNode;
+          typesTreeView.Nodes.Clear();
+          foreach (TreeNode node in treeNodes)
+            typesTreeView.Nodes.Add((TreeNode)node.Clone());
+          RestoreSelectedNode(selectedNode);
+          typesTreeView.EndUpdate();
+        }
+
+        // remove nodes
+        typesTreeView.BeginUpdate();
+        var searchTokens = searchString.Split(' ');
+
+        int i = 0;
+        while (i < typesTreeView.Nodes.Count) {
+          var categoryNode = typesTreeView.Nodes[i];
+          bool remove = FilterNode(categoryNode, searchTokens);
+          if (remove)
+            typesTreeView.Nodes.RemoveAt(i);
+          else i++;
+        }
+        typesTreeView.EndUpdate();
+        currentSearchString = searchString;
+
+        // select first item
+        var firstNode = FirstVisibleNode;
+        while (firstNode != null && !(firstNode.Tag is Type))
+          firstNode = firstNode.NextVisibleNode;
+        if (firstNode != null)
+          typesTreeView.SelectedNode = firstNode;
+
+        if (typesTreeView.Nodes.Count == 0) {
+          SelectedType = null;
+          typesTreeView.Enabled = false;
+        } else {
+          SetTreeNodeVisibility();
+          typesTreeView.Enabled = true;
+        }
+        UpdateDescription();
+      }
     }
+
+    private bool FilterNode(TreeNode node, string[] searchTokens) {
+      if (node.Tag is string) { // Category node
+        int i = 0;
+        while (i < node.Nodes.Count) {
+          bool remove = FilterNode(node.Nodes[i], searchTokens);
+          if (remove)
+            node.Nodes.RemoveAt(i);
+          else i++;
+        }
+        return node.Nodes.Count == 0;
+      } if (node.Tag is Type) { // Type node
+        var text = node.Text;
+        if (searchTokens.Any(searchToken => !text.ToLower().Contains(searchToken))) {
+          var typeTag = (Type)node.Tag;
+          if (typeTag == SelectedType) {
+            SelectedType = null;
+            typesTreeView.SelectedNode = null;
+          }
+          return true;
+        }
+        return false;
+      }
+      throw new InvalidOperationException("Encountered neither a category nor a creatable node during tree traversal.");
+    }
+
+    protected virtual void UpdateDescription() {
+      itemDescriptionTextBox.Text = string.Empty;
+      pluginDescriptionTextBox.Text = string.Empty;
+      pluginTextBox.Text = string.Empty;
+      versionTextBox.Text = string.Empty;
+
+      if (typesTreeView.SelectedNode != null) {
+        string category = typesTreeView.SelectedNode.Tag as string;
+        if (category != null) {
+          itemDescriptionTextBox.Text = category;
+        }
+        Type type = typesTreeView.SelectedNode.Tag as Type;
+        if (type != null) {
+          string description = ItemAttribute.GetDescription(type);
+          var version = ItemAttribute.GetVersion(type);
+          var plugin = ApplicationManager.Manager.GetDeclaringPlugin(type);
+          if (description != null)
+            itemDescriptionTextBox.Text = description;
+          if (plugin != null) {
+            pluginTextBox.Text = plugin.Name;
+            pluginDescriptionTextBox.Text = plugin.Description;
+          }
+          if (version != null)
+            versionTextBox.Text = version.ToString();
+        }
+      } else if (typesTreeView.Nodes.Count == 0) {
+        itemDescriptionTextBox.Text = "No types found";
+      }
+    }
+
+    #region Events
+    public event EventHandler SelectedTypeChanged;
+    protected virtual void OnSelectedTypeChanged() {
+      if (SelectedTypeChanged != null)
+        SelectedTypeChanged(this, EventArgs.Empty);
+    }
+    #endregion
+
+    #region Control Events
+    protected virtual void searchTextBox_TextChanged(object sender, EventArgs e) {
+      Filter(searchTextBox.Text);
+    }
+
+    protected virtual void itemsTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
+      if (typesTreeView.SelectedNode == null) SelectedType = null;
+      else SelectedType = typesTreeView.SelectedNode.Tag as Type;
+      UpdateDescription();
+    }
+
+    protected virtual void itemsTreeView_VisibleChanged(object sender, EventArgs e) {
+      if (Visible) SetTreeNodeVisibility();
+    }
+    #endregion
+
+    #region Helpers
+    private void RestoreSelectedNode(TreeNode selectedNode) {
+      if (selectedNode != null) {
+        var node = typesTreeView.Nodes.Find(selectedNode.Name, searchAllChildren: true).SingleOrDefault();
+        typesTreeView.SelectedNode = node;
+        if (typesTreeView.SelectedNode == null) SelectedType = null;
+      }
+    }
+    private void SetTreeNodeVisibility() {
+      TreeNode selectedNode = typesTreeView.SelectedNode;
+      if (string.IsNullOrEmpty(currentSearchString) && (typesTreeView.Nodes.Count > 1)) {
+        typesTreeView.CollapseAll();
+        if (selectedNode != null) typesTreeView.SelectedNode = selectedNode;
+      } else {
+        typesTreeView.ExpandAll();
+      }
+      if (selectedNode != null) selectedNode.EnsureVisible();
+    }
+    #endregion
 
     private void okButton_Click(object sender, EventArgs e) {
-      if (itemsListView.SelectedItems.Count == 1) {
-        item = (IItem)Activator.CreateInstance((Type)itemsListView.SelectedItems[0].Tag);
+      if (SelectedType != null) {
+        item = (IItem)Activator.CreateInstance(SelectedType);
         DialogResult = DialogResult.OK;
         Close();
       }
     }
-    private void itemTypesListView_DoubleClick(object sender, EventArgs e) {
-      if (itemsListView.SelectedItems.Count == 1) {
-        item = (IItem)Activator.CreateInstance((Type)itemsListView.SelectedItems[0].Tag);
+    private void itemTreeView_DoubleClick(object sender, EventArgs e) {
+      if (SelectedType != null) {
+        item = (IItem)Activator.CreateInstance(SelectedType);
         DialogResult = DialogResult.OK;
         Close();
+      }
+    }
+    private void this_SelectedTypeChanged(object sender, EventArgs e) {
+      okButton.Enabled = SelectedType != null;
+    }
+
+    private void expandAllButton_Click(object sender, EventArgs e) {
+      typesTreeView.ExpandAll();
+    }
+    private void collapseAllButton_Click(object sender, EventArgs e) {
+      typesTreeView.CollapseAll();
+    }
+
+    private TreeNode toolStripMenuNode = null;
+    private void typesTreeView_MouseDown(object sender, MouseEventArgs e) {
+      if (e.Button == MouseButtons.Right) {
+        Point coordinates = typesTreeView.PointToClient(Cursor.Position);
+        toolStripMenuNode = typesTreeView.GetNodeAt(coordinates);
+
+        if (toolStripMenuNode != null && coordinates.X >= toolStripMenuNode.Bounds.Left &&
+            coordinates.X <= toolStripMenuNode.Bounds.Right) {
+          typesTreeView.SelectedNode = toolStripMenuNode;
+
+          expandToolStripMenuItem.Enabled =
+            expandToolStripMenuItem.Visible = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
+          collapseToolStripMenuItem.Enabled = collapseToolStripMenuItem.Visible = toolStripMenuNode.IsExpanded;
+        } else {
+          expandToolStripMenuItem.Enabled = expandToolStripMenuItem.Visible = false;
+          collapseToolStripMenuItem.Enabled = collapseToolStripMenuItem.Visible = false;
+        }
+        expandAllToolStripMenuItem.Enabled =
+          expandAllToolStripMenuItem.Visible =
+            !typesTreeView.Nodes.OfType<TreeNode>().All(x => TreeNodeIsFullyExpanded(x));
+        collapseAllToolStripMenuItem.Enabled =
+          collapseAllToolStripMenuItem.Visible = typesTreeView.Nodes.OfType<TreeNode>().Any(x => x.IsExpanded);
+        if (contextMenuStrip.Items.Cast<ToolStripMenuItem>().Any(item => item.Enabled))
+          contextMenuStrip.Show(Cursor.Position);
+      }
+    }
+    private bool TreeNodeIsFullyExpanded(TreeNode node) {
+      return (node.Nodes.Count == 0) || (node.IsExpanded && node.Nodes.OfType<TreeNode>().All(x => TreeNodeIsFullyExpanded(x)));
+    }
+
+    private void expandToolStripMenuItem_Click(object sender, EventArgs e) {
+      if (toolStripMenuNode != null) toolStripMenuNode.ExpandAll();
+    }
+    private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.ExpandAll();
+    }
+    private void collapseToolStripMenuItem_Click(object sender, EventArgs e) {
+      if (toolStripMenuNode != null) toolStripMenuNode.Collapse();
+    }
+    private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.CollapseAll();
+    }
+
+    private void clearSearchButton_Click(object sender, EventArgs e) {
+      searchTextBox.Text = string.Empty;
+      searchTextBox.Focus();
+    }
+
+    private void searchTextBox_KeyDown(object sender, KeyEventArgs e) {
+      if (typesTreeView.Nodes.Count == 0)
+        return;
+
+      if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) {
+        var selectedNode = typesTreeView.SelectedNode;
+
+        if (selectedNode == null) { // nothing selected => select first or last
+          if (e.KeyCode == Keys.Down) typesTreeView.SelectedNode = FirstVisibleNode;
+          if (e.KeyCode == Keys.Up) typesTreeView.SelectedNode = LastVisibleNode;
+        } else {
+          if (e.KeyCode == Keys.Down)
+            typesTreeView.SelectedNode = selectedNode.NextVisibleNode ?? FirstVisibleNode; // select next or cycle to first
+          if (e.KeyCode == Keys.Up)
+            typesTreeView.SelectedNode = selectedNode.PrevVisibleNode ?? LastVisibleNode; // select prev or cycle to last
+        }
+        e.Handled = true;
+      }
+    }
+
+    private TreeNode FirstVisibleNode {
+      get {
+        return typesTreeView.Nodes.Count > 0 ? typesTreeView.Nodes[0] : null;
+      }
+    }
+    private TreeNode LastVisibleNode {
+      get {
+        var node = FirstVisibleNode;
+        while (node != null && node.NextVisibleNode != null) node = node.NextVisibleNode;
+        return node;
+      }
+    }
+
+    private class ItemTreeNodeComparer : IComparer {
+      public int Compare(object x, object y) {
+        var lhs = (TreeNode)x;
+        var rhs = (TreeNode)y;
+
+        if (lhs.Tag is string && rhs.Tag is string) {
+          return lhs.Name.CompareTo(rhs.Name);
+        } else if (lhs.Tag is string) {
+          return -1;
+        } else
+          return 1;
       }
     }
   }
