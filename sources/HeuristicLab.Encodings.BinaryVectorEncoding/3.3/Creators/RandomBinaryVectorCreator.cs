@@ -33,7 +33,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("RandomBinaryVectorCreator", "An operator which creates a new random binary vector with each element randomly initialized.")]
   [StorableClass]
   public sealed class RandomBinaryVectorCreator : BinaryVectorCreator {
-    private const string TrueProbabilityParameterName = "TruePropability";
+    private const string TrueProbabilityParameterName = "TrueProbability";
 
     private IValueLookupParameter<DoubleValue> TrueProbabilityParameter {
       get { return (IValueLookupParameter<DoubleValue>)Parameters[TrueProbabilityParameterName]; }
@@ -58,9 +58,10 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       // BackwardsCompatibility3.3
       #region Backwards compatible code, remove with 3.4
       var defaultValue = 0.5;
-      if (Parameters.ContainsKey(TrueProbabilityParameterName) && Parameters[TrueProbabilityParameterName] is IFixedValueParameter<DoubleValue>) {
-        defaultValue = ((IFixedValueParameter<DoubleValue>)Parameters[TrueProbabilityParameterName]).Value.Value;
-        Parameters.Remove(TrueProbabilityParameterName);
+      const string parameterNameWithTypo = "TruePropability";
+      if (Parameters.ContainsKey(parameterNameWithTypo) && Parameters[parameterNameWithTypo] is IValueParameter<DoubleValue>) {
+        defaultValue = ((IValueParameter<DoubleValue>)Parameters[parameterNameWithTypo]).Value.Value;
+        Parameters.Remove(parameterNameWithTypo);
       }
       if (!Parameters.ContainsKey(TrueProbabilityParameterName))
         Parameters.Add(new ValueLookupParameter<DoubleValue>(TrueProbabilityParameterName, "Probability of true value", new DoubleValue(defaultValue)));
