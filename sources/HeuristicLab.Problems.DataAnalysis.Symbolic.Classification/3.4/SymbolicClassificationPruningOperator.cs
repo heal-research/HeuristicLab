@@ -41,13 +41,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
     #endregion
 
-    protected SymbolicClassificationPruningOperator(SymbolicClassificationPruningOperator original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicClassificationPruningOperator(this, cloner);
-    }
+    protected SymbolicClassificationPruningOperator(SymbolicClassificationPruningOperator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicClassificationPruningOperator(this, cloner); }
 
     [StorableConstructor]
     protected SymbolicClassificationPruningOperator(bool deserializing) : base(deserializing) { }
@@ -67,10 +62,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     protected override double Evaluate(IDataAnalysisModel model) {
       var classificationModel = (IClassificationModel)model;
-      var classificationProblemData = (IClassificationProblemData)ProblemData;
-      var trainingIndices = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
+      var classificationProblemData = (IClassificationProblemData)ProblemDataParameter.ActualValue;
+      var rows = Enumerable.Range(FitnessCalculationPartitionParameter.ActualValue.Start, FitnessCalculationPartitionParameter.ActualValue.Size);
 
-      return Evaluate(classificationModel, classificationProblemData, trainingIndices);
+      return Evaluate(classificationModel, classificationProblemData, rows);
     }
 
     private static double Evaluate(IClassificationModel model, IClassificationProblemData problemData, IEnumerable<int> rows) {
@@ -99,11 +94,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         double impactValue, replacementValue;
         impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, quality);
 
-        if (pruneOnlyZeroImpactNodes) {
-          if (!impactValue.IsAlmost(0.0)) continue;
-        } else if (nodeImpactThreshold < impactValue) {
-          continue;
-        }
+        if (pruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
+        if (!pruneOnlyZeroImpactNodes && impactValue > nodeImpactThreshold) continue;
 
         var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
         constantNode.Value = replacementValue;

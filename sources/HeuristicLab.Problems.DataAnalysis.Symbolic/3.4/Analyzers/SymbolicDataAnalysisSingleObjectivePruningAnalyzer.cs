@@ -60,15 +60,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     #region parameter properties
-    public IValueParameter<SymbolicDataAnalysisExpressionPruningOperator> PruningOperatorParameter {
-      get { return (IValueParameter<SymbolicDataAnalysisExpressionPruningOperator>)Parameters[PruningOperatorParameterName]; }
-    }
-    public IFixedValueParameter<BoolValue> PruneOnlyZeroImpactNodesParameter {
-      get { return (IFixedValueParameter<BoolValue>)Parameters[PruneOnlyZeroImpactNodesParameterName]; }
-    }
-    public IFixedValueParameter<DoubleValue> NodeImpactThresholdParameter {
-      get { return (IFixedValueParameter<DoubleValue>)Parameters[NodeImpactThresholdParameterName]; }
-    }
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters[RandomParameterName]; }
     }
@@ -90,7 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     #region properties
-    protected SymbolicDataAnalysisExpressionPruningOperator PruningOperator { get { return PruningOperatorParameter.Value; } }
+    protected abstract SymbolicDataAnalysisExpressionPruningOperator PruningOperator { get; }
     protected int UpdateInterval { get { return UpdateIntervalParameter.Value.Value; } }
 
     protected int UpdateCounter {
@@ -111,15 +102,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected double PruningProbability {
       get { return PruningProbabilityParameter.Value.Value; }
       set { PruningProbabilityParameter.Value.Value = value; }
-    }
-
-    protected bool PruneOnlyZeroImpactNodes {
-      get { return PruneOnlyZeroImpactNodesParameter.Value.Value; }
-      set { PruneOnlyZeroImpactNodesParameter.Value.Value = value; }
-    }
-    protected double NodeImpactThreshold {
-      get { return NodeImpactThresholdParameter.Value.Value; }
-      set { NodeImpactThresholdParameter.Value.Value = value; }
     }
     #endregion
 
@@ -196,8 +178,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new FixedValueParameter<IntValue>(UpdateCounterParameterName, "The value which counts how many times the operator was called", new IntValue(0)));
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The random number generator."));
       Parameters.Add(new LookupParameter<IDataAnalysisProblemData>(ProblemDataParameterName, "The problem data."));
-      Parameters.Add(new FixedValueParameter<DoubleValue>(NodeImpactThresholdParameterName, "The impact threshold  below which an individual should be pruned.", new DoubleValue(0.0)));
-      Parameters.Add(new FixedValueParameter<BoolValue>(PruneOnlyZeroImpactNodesParameterName, "Switch to determine of only zero impact individuals should be pruned.", new BoolValue(false)));
       Parameters.Add(new LookupParameter<IntValue>(PopulationSizeParameterName, "The population of individuals."));
       #endregion
     }

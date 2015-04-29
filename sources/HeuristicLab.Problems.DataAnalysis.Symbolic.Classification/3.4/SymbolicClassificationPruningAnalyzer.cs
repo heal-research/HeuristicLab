@@ -28,20 +28,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("SymbolicClassificationPruningAnalyzer", "An analyzer that prunes introns from the population.")]
   [StorableClass]
   public sealed class SymbolicClassificationPruningAnalyzer : SymbolicDataAnalysisSingleObjectivePruningAnalyzer {
-    private const string ImpactValuesCalculatorParameterName = "ImpactValuesCalculator";
     private const string PruningOperatorParameterName = "PruningOperator";
-    private SymbolicClassificationPruningAnalyzer(SymbolicClassificationPruningAnalyzer original, Cloner cloner)
-      : base(original, cloner) {
+    public IValueParameter<SymbolicClassificationPruningOperator> PruningOperatorParameter {
+      get { return (IValueParameter<SymbolicClassificationPruningOperator>)Parameters[PruningOperatorParameterName]; }
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicClassificationPruningAnalyzer(this, cloner);
+
+    protected override SymbolicDataAnalysisExpressionPruningOperator PruningOperator {
+      get { return PruningOperatorParameter.Value; }
     }
+
+    private SymbolicClassificationPruningAnalyzer(SymbolicClassificationPruningAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicClassificationPruningAnalyzer(this, cloner); }
 
     [StorableConstructor]
     private SymbolicClassificationPruningAnalyzer(bool deserializing) : base(deserializing) { }
 
     public SymbolicClassificationPruningAnalyzer() {
-      Parameters.Add(new ValueParameter<SymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName, "The impact values calculator", new SymbolicClassificationSolutionImpactValuesCalculator()));
       Parameters.Add(new ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));
     }
   }

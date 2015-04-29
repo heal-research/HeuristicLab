@@ -30,21 +30,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("SymbolicRegressionPruningAnalyzer", "An analyzer that prunes introns from the population.")]
   [StorableClass]
   public sealed class SymbolicRegressionPruningAnalyzer : SymbolicDataAnalysisSingleObjectivePruningAnalyzer {
-    private const string ImpactValuesCalculatorParameterName = "ImpactValuesCalculator";
     private const string PruningOperatorParameterName = "PruningOperator";
-    private SymbolicRegressionPruningAnalyzer(SymbolicRegressionPruningAnalyzer original, Cloner cloner)
-      : base(original, cloner) {
+    public IValueParameter<SymbolicRegressionPruningOperator> PruningOperatorParameter {
+      get { return (IValueParameter<SymbolicRegressionPruningOperator>)Parameters[PruningOperatorParameterName]; }
     }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicRegressionPruningAnalyzer(this, cloner);
+
+    protected override SymbolicDataAnalysisExpressionPruningOperator PruningOperator {
+      get { return PruningOperatorParameter.Value; }
     }
+
+    private SymbolicRegressionPruningAnalyzer(SymbolicRegressionPruningAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicRegressionPruningAnalyzer(this, cloner); }
 
     [StorableConstructor]
     private SymbolicRegressionPruningAnalyzer(bool deserializing) : base(deserializing) { }
 
     public SymbolicRegressionPruningAnalyzer() {
-      Parameters.Add(new ValueParameter<SymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName, "The impact values calculator", new SymbolicRegressionSolutionImpactValuesCalculator()));
-      Parameters.Add(new ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicRegressionPruningOperator(new SymbolicRegressionSolutionImpactValuesCalculator())));
+      Parameters.Add(new ValueParameter<SymbolicRegressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicRegressionPruningOperator(new SymbolicRegressionSolutionImpactValuesCalculator())));
     }
   }
 }

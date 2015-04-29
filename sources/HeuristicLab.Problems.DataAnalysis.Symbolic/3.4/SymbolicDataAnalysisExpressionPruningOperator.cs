@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [StorableClass]
   [Item("SymbolicExpressionTreePruningOperator", "An operator that replaces introns with constant values in a symbolic expression tree.")]
-  public abstract class SymbolicDataAnalysisExpressionPruningOperator : SingleSuccessorOperator {
+  public abstract class SymbolicDataAnalysisExpressionPruningOperator : SingleSuccessorOperator, ISymbolicExpressionTreeOperator {
     #region parameter names
     private const string ProblemDataParameterName = "ProblemData";
     private const string SymbolicDataAnalysisModelParameterName = "SymbolicDataAnalysisModel";
@@ -86,21 +86,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     #endregion
 
     #region properties
-    protected IDataAnalysisProblemData ProblemData { get { return ProblemDataParameter.ActualValue; } }
-    protected ISymbolicDataAnalysisSolutionImpactValuesCalculator ImpactValuesCalculator { get { return ImpactValuesCalculatorParameter.Value; } }
-    protected IntRange FitnessCalculationPartition { get { return FitnessCalculationPartitionParameter.ActualValue; } }
-    protected bool PruneOnlyZeroImpactNodes {
+    public ISymbolicDataAnalysisSolutionImpactValuesCalculator ImpactValuesCalculator {
+      get { return ImpactValuesCalculatorParameter.Value; }
+      set { ImpactValuesCalculatorParameter.Value = value; }
+    }
+    public bool PruneOnlyZeroImpactNodes {
       get { return PruneOnlyZeroImpactNodesParameter.Value.Value; }
       set { PruneOnlyZeroImpactNodesParameter.Value.Value = value; }
     }
-    protected double NodeImpactThreshold {
+    public double NodeImpactThreshold {
       get { return NodeImpactThresholdParameter.Value.Value; }
       set { NodeImpactThresholdParameter.Value.Value = value; }
     }
-    protected ISymbolicExpressionTree SymbolicExpressionTree { get { return SymbolicExpressionTreeParameter.ActualValue; } }
-    protected DoubleValue Quality { get { return QualityParameter.ActualValue; } }
-    protected DoubleLimit EstimationLimits { get { return EstimationLimitsParameter.ActualValue; } }
-    protected ISymbolicDataAnalysisExpressionTreeInterpreter Interpreter { get { return InterpreterParameter.ActualValue; } }
     #endregion
 
     [StorableConstructor]
@@ -130,9 +127,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected abstract double Evaluate(IDataAnalysisModel model);
 
     public override IOperation Apply() {
-      var model = CreateModel(SymbolicExpressionTree, Interpreter, ProblemData, EstimationLimits);
-      var nodes = SymbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
-      var rows = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
+      var tree = SymbolicExpressionTreeParameter.ActualValue;
+      var problemData = ProblemDataParameter.ActualValue;
+      var fitnessCalculationPartition = FitnessCalculationPartitionParameter.ActualValue;
+      var estimationLimits = EstimationLimitsParameter.ActualValue;
+      var interpreter = InterpreterParameter.ActualValue;
+
+      var model = CreateModel(tree, interpreter, problemData, estimationLimits);
+      var nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
+      var rows = Enumerable.Range(fitnessCalculationPartition.Start, fitnessCalculationPartition.Size);
       var prunedSubtrees = 0;
       var prunedTrees = 0;
 
@@ -143,13 +146,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (node is ConstantTreeNode) continue;
 
         double impactValue, replacementValue;
-        ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, ProblemData, rows, out impactValue, out replacementValue, quality);
+        ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, quality);
 
-        if (PruneOnlyZeroImpactNodes) {
-          if (!impactValue.IsAlmost(0.0)) continue;
-        } else if (NodeImpactThreshold < impactValue) {
-          continue;
-        }
+        if (PruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
+        if (!PruneOnlyZeroImpactNodes && impactValue > NodeImpactThreshold) continue;
 
         var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
         constantNode.Value = replacementValue;
@@ -158,47 +158,47 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         i += node.GetLength() - 1; // skip subtrees under the node that was folded
 
         quality -= impactValue;
-
         prunedSubtrees++;
       }
 
       if (prunedSubtrees > 0) prunedTrees = 1;
       PrunedSubtreesParameter.ActualValue = new IntValue(prunedSubtrees);
       PrunedTreesParameter.ActualValue = new IntValue(prunedTrees);
+      QualityParameter.ActualValue.Value = quality;
 
       return base.Apply();
     }
 
-    public ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
-      var model = CreateModel((ISymbolicExpressionTree)tree.Clone(), Interpreter, ProblemData, EstimationLimits);
-      var nodes = SymbolicExpressionTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
-      var rows = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
+    //public ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
+    //  var model = CreateModel((ISymbolicExpressionTree)tree.Clone(), interpreter, problemData, estimationLimits);
+    //  var nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
+    //  var rows = Enumerable.Range(fitnessCalculationPartition.Start, fitnessCalculationPartition.Size);
 
-      double quality = Evaluate(model);
+    //  double quality = Evaluate(model);
 
-      for (int i = 0; i < nodes.Count; ++i) {
-        var node = nodes[i];
-        if (node is ConstantTreeNode) continue;
+    //  for (int i = 0; i < nodes.Count; ++i) {
+    //    var node = nodes[i];
+    //    if (node is ConstantTreeNode) continue;
 
-        double impactValue, replacementValue;
-        ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, ProblemData, rows, out impactValue, out replacementValue, quality);
+    //    double impactValue, replacementValue;
+    //    ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, quality);
 
-        if (PruneOnlyZeroImpactNodes) {
-          if (!impactValue.IsAlmost(0.0)) continue;
-        } else if (NodeImpactThreshold < impactValue) {
-          continue;
-        }
+    //    if (PruneOnlyZeroImpactNodes) {
+    //      if (!impactValue.IsAlmost(0.0)) continue;
+    //    } else if (NodeImpactThreshold < impactValue) {
+    //      continue;
+    //    }
 
-        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
-        constantNode.Value = replacementValue;
+    //    var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
+    //    constantNode.Value = replacementValue;
 
-        ReplaceWithConstant(node, constantNode);
-        i += node.GetLength() - 1; // skip subtrees under the node that was folded
+    //    ReplaceWithConstant(node, constantNode);
+    //    i += node.GetLength() - 1; // skip subtrees under the node that was folded
 
-        quality -= impactValue;
-      }
-      return model.SymbolicExpressionTree;
-    }
+    //    quality -= impactValue;
+    //  }
+    //  return model.SymbolicExpressionTree;
+    //}
 
     protected static void ReplaceWithConstant(ISymbolicExpressionTreeNode original, ISymbolicExpressionTreeNode replacement) {
       var parent = original.Parent;
