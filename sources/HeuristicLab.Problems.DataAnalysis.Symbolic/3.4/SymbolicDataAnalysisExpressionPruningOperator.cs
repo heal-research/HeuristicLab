@@ -169,37 +169,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return base.Apply();
     }
 
-    //public ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
-    //  var model = CreateModel((ISymbolicExpressionTree)tree.Clone(), interpreter, problemData, estimationLimits);
-    //  var nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
-    //  var rows = Enumerable.Range(fitnessCalculationPartition.Start, fitnessCalculationPartition.Size);
-
-    //  double quality = Evaluate(model);
-
-    //  for (int i = 0; i < nodes.Count; ++i) {
-    //    var node = nodes[i];
-    //    if (node is ConstantTreeNode) continue;
-
-    //    double impactValue, replacementValue;
-    //    ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, quality);
-
-    //    if (PruneOnlyZeroImpactNodes) {
-    //      if (!impactValue.IsAlmost(0.0)) continue;
-    //    } else if (NodeImpactThreshold < impactValue) {
-    //      continue;
-    //    }
-
-    //    var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
-    //    constantNode.Value = replacementValue;
-
-    //    ReplaceWithConstant(node, constantNode);
-    //    i += node.GetLength() - 1; // skip subtrees under the node that was folded
-
-    //    quality -= impactValue;
-    //  }
-    //  return model.SymbolicExpressionTree;
-    //}
-
     protected static void ReplaceWithConstant(ISymbolicExpressionTreeNode original, ISymbolicExpressionTreeNode replacement) {
       var parent = original.Parent;
       var i = parent.IndexOfSubtree(original);
