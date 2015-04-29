@@ -44,15 +44,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string PruningProbabilityParameterName = "PruningProbability";
     private const string TotalNumberOfPrunedSubtreesParameterName = "Number of pruned subtrees";
     private const string TotalNumberOfPrunedTreesParameterName = "Number of pruned trees";
+    private const string TotalNumberOfPrunedNodesParameterName = "Number of pruned nodes";
     private const string RandomParameterName = "Random";
-    private const string PruneOnlyZeroImpactNodesParameterName = "PruneOnlyZeroImpactNodes";
-    private const string NodeImpactThresholdParameterName = "ImpactThreshold";
-    private const string PruningOperatorParameterName = "PruningOperator";
     private const string ResultsParameterName = "Results";
     private const string PopulationSizeParameterName = "PopulationSize";
     #endregion
 
     #region private members
+    private DataReducer prunedNodesReducer;
     private DataReducer prunedSubtreesReducer;
     private DataReducer prunedTreesReducer;
     private DataTableValuesCollector valuesCollector;
@@ -121,6 +120,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     protected SymbolicDataAnalysisSingleObjectivePruningAnalyzer(SymbolicDataAnalysisSingleObjectivePruningAnalyzer original, Cloner cloner)
       : base(original, cloner) {
+      if (original.prunedNodesReducer != null)
+        this.prunedNodesReducer = (DataReducer)original.prunedNodesReducer.Clone();
       if (original.prunedSubtreesReducer != null)
         this.prunedSubtreesReducer = (DataReducer)original.prunedSubtreesReducer.Clone();
       if (original.prunedTreesReducer != null)
@@ -229,18 +230,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (UpdateCounter != UpdateInterval) return base.Apply();
       UpdateCounter = 0;
 
-      if (prunedSubtreesReducer == null || prunedTreesReducer == null || valuesCollector == null || resultsCollector == null) { InitializeOperators(); }
+      if (prunedNodesReducer == null || prunedSubtreesReducer == null || prunedTreesReducer == null || valuesCollector == null || resultsCollector == null) { InitializeOperators(); }
 
       var prune = CreatePruningOperation();
+      var reducePrunedNodes = ExecutionContext.CreateChildOperation(prunedNodesReducer);
       var reducePrunedSubtrees = ExecutionContext.CreateChildOperation(prunedSubtreesReducer);
       var reducePrunedTrees = ExecutionContext.CreateChildOperation(prunedTreesReducer);
       var collectValues = ExecutionContext.CreateChildOperation(valuesCollector);
       var collectResults = ExecutionContext.CreateChildOperation(resultsCollector);
 
-      return new OperationCollection { prune, reducePrunedSubtrees, reducePrunedTrees, collectValues, collectResults, base.Apply() };
+      return new OperationCollection { prune, reducePrunedNodes, reducePrunedSubtrees, reducePrunedTrees, collectValues, collectResults, base.Apply() };
     }
 
     private void InitializeOperators() {
+      prunedNodesReducer = new DataReducer();
+      prunedNodesReducer.ParameterToReduce.ActualName = PruningOperator.PrunedNodesParameter.ActualName;
+      prunedNodesReducer.ReductionOperation.Value = new ReductionOperation(ReductionOperations.Sum); // sum all the pruned subtrees parameter values
+      prunedNodesReducer.TargetOperation.Value = new ReductionOperation(ReductionOperations.Assign); // asign the sum to the target parameter
+      prunedNodesReducer.TargetParameter.ActualName = TotalNumberOfPrunedNodesParameterName;
+
       prunedSubtreesReducer = new DataReducer();
       prunedSubtreesReducer.ParameterToReduce.ActualName = PruningOperator.PrunedSubtreesParameter.ActualName;
       prunedSubtreesReducer.ReductionOperation.Value = new ReductionOperation(ReductionOperations.Sum); // sum all the pruned subtrees parameter values
@@ -254,6 +262,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       prunedTreesReducer.TargetParameter.ActualName = TotalNumberOfPrunedTreesParameterName;
 
       valuesCollector = new DataTableValuesCollector();
+      valuesCollector.CollectedValues.Add(new LookupParameter<IntValue>(TotalNumberOfPrunedNodesParameterName));
       valuesCollector.CollectedValues.Add(new LookupParameter<IntValue>(TotalNumberOfPrunedSubtreesParameterName));
       valuesCollector.CollectedValues.Add(new LookupParameter<IntValue>(TotalNumberOfPrunedTreesParameterName));
       valuesCollector.DataTableParameter.ActualName = "Population pruning";

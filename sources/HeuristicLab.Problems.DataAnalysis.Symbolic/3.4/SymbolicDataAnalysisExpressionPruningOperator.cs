@@ -40,6 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string ImpactValuesCalculatorParameterName = "ImpactValuesCalculator";
     private const string PrunedSubtreesParameterName = "PrunedSubtrees";
     private const string PrunedTreesParameterName = "PrunedTrees";
+    private const string PrunedNodesParameterName = "PrunedNodes";
     private const string FitnessCalculationPartitionParameterName = "FitnessCalculationPartition";
     private const string NodeImpactThresholdParameterName = "ImpactThreshold";
     private const string PruneOnlyZeroImpactNodesParameterName = "PruneOnlyZeroImpactNodes";
@@ -70,6 +71,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     public ILookupParameter<IntValue> PrunedTreesParameter {
       get { return (ILookupParameter<IntValue>)Parameters[PrunedTreesParameterName]; }
+    }
+    public ILookupParameter<IntValue> PrunedNodesParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[PrunedNodesParameterName]; }
     }
     public IFixedValueParameter<DoubleValue> NodeImpactThresholdParameter {
       get { return (IFixedValueParameter<DoubleValue>)Parameters[NodeImpactThresholdParameterName]; }
@@ -110,6 +114,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<IDataAnalysisProblemData>(ProblemDataParameterName));
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisModel>(SymbolicDataAnalysisModelParameterName));
       Parameters.Add(new LookupParameter<IntRange>(FitnessCalculationPartitionParameterName));
+      Parameters.Add(new LookupParameter<IntValue>(PrunedNodesParameterName, "A counter of how many nodes were pruned."));
       Parameters.Add(new LookupParameter<IntValue>(PrunedSubtreesParameterName, "A counter of how many subtrees were replaced."));
       Parameters.Add(new LookupParameter<IntValue>(PrunedTreesParameterName, "A counter of how many trees were pruned."));
       Parameters.Add(new FixedValueParameter<BoolValue>(PruneOnlyZeroImpactNodesParameterName, "Specify whether or not only zero impact nodes should be pruned."));
@@ -138,6 +143,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var rows = Enumerable.Range(fitnessCalculationPartition.Start, fitnessCalculationPartition.Size);
       var prunedSubtrees = 0;
       var prunedTrees = 0;
+      var prunedNodes = 0;
 
       double quality = Evaluate(model);
 
@@ -154,16 +160,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
         constantNode.Value = replacementValue;
 
+        var length = node.GetLength();
         ReplaceWithConstant(node, constantNode);
-        i += node.GetLength() - 1; // skip subtrees under the node that was folded
+        i += length - 1; // skip subtrees under the node that was folded
 
         quality -= impactValue;
         prunedSubtrees++;
+        prunedNodes += length;
       }
 
       if (prunedSubtrees > 0) prunedTrees = 1;
       PrunedSubtreesParameter.ActualValue = new IntValue(prunedSubtrees);
       PrunedTreesParameter.ActualValue = new IntValue(prunedTrees);
+      PrunedNodesParameter.ActualValue = new IntValue(prunedNodes);
       QualityParameter.ActualValue.Value = quality;
 
       return base.Apply();
