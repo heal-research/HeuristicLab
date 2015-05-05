@@ -298,8 +298,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
     }
 
     #region methods for painting the symbolic expression tree
-    private void DrawFunctionTree(Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance) {
-      CalculateLayout(preferredWidth, preferredHeight, minHDistance, minVDistance);
+    private void DrawFunctionTree(Graphics graphics, int preferredWidth, int preferredHeight, int minHDistance, int minVDistance, bool recalculateLayout = true) {
+      if (recalculateLayout)
+        CalculateLayout(preferredWidth, preferredHeight, minHDistance, minVDistance);
       var visualNodes = visualTreeNodes.Values;
       //draw nodes and connections
       foreach (var visualNode in visualNodes) {
@@ -365,7 +366,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       if (tree == null) return;
       Image image = new Bitmap(Width, Height);
       using (Graphics g = Graphics.FromImage(image)) {
-        DrawFunctionTree(g, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
+        DrawFunctionTree(g, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance, false);
       }
       image.Save(filename);
     }
@@ -375,7 +376,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Views {
       using (Graphics g = CreateGraphics()) {
         using (Metafile file = new Metafile(filename, g.GetHdc())) {
           using (Graphics emfFile = Graphics.FromImage(file)) {
-            DrawFunctionTree(emfFile, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance);
+            DrawFunctionTree(emfFile, preferredNodeWidth, preferredNodeHeight, minHorizontalDistance, minVerticalDistance, false);
           }
         }
         g.ReleaseHdc();
