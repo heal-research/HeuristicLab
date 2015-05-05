@@ -34,7 +34,7 @@ namespace HeuristicLab.Core {
     public string Label {
       get { return label; }
       set {
-        if (label.Equals(value)) return;
+        if (String.Equals(Label, value)) return;
         label = value;
         OnChanged(this, EventArgs.Empty);
       }
