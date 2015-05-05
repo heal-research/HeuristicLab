@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.CustomizeAllChartAreas();
       chart.ChartAreas[0].AxisX.Title = "Absolute Error";
       chart.ChartAreas[0].AxisX.Minimum = 0.0;
-      chart.ChartAreas[0].AxisX.Maximum = 1.0;
+      chart.ChartAreas[0].AxisX.Maximum = 0.0;
       chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
       chart.ChartAreas[0].CursorX.Interval = 0.01;
 
@@ -117,8 +117,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       solutionSeries.Tag = solution;
       solutionSeries.ChartType = SeriesChartType.FastLine;
       var residuals = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
-      
-      chart.ChartAreas[0].AxisX.Maximum = Math.Ceiling(residuals.Max());
+
+
+      var maxValue = residuals.Max();
+      if (maxValue >= chart.ChartAreas[0].AxisX.Maximum) {
+        double scale = Math.Pow(10, Math.Floor(Math.Log10(maxValue)));
+        var maximum = scale * (1 + (int)(maxValue / scale));
+        chart.ChartAreas[0].AxisX.Maximum = maximum;
+      }
       chart.ChartAreas[0].CursorX.Interval = residuals.Min() / 100;
 
       UpdateSeries(residuals, solutionSeries);
