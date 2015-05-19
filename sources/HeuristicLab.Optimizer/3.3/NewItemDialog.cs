@@ -335,13 +335,6 @@ namespace HeuristicLab.Optimizer {
       okButton.Enabled = SelectedType != null;
     }
 
-    private void expandAllButton_Click(object sender, EventArgs e) {
-      typesTreeView.ExpandAll();
-    }
-    private void collapseAllButton_Click(object sender, EventArgs e) {
-      typesTreeView.CollapseAll();
-    }
-
     private TreeNode toolStripMenuNode = null;
     private void typesTreeView_MouseDown(object sender, MouseEventArgs e) {
       if (e.Button == MouseButtons.Right) {
@@ -397,14 +390,13 @@ namespace HeuristicLab.Optimizer {
       if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) {
         var selectedNode = typesTreeView.SelectedNode;
 
-        if (selectedNode == null) { // nothing selected => select first or last
+        if (selectedNode == null) { // nothing selected => select first
           if (e.KeyCode == Keys.Down) typesTreeView.SelectedNode = FirstVisibleNode;
-          if (e.KeyCode == Keys.Up) typesTreeView.SelectedNode = LastVisibleNode;
         } else {
-          if (e.KeyCode == Keys.Down)
-            typesTreeView.SelectedNode = selectedNode.NextVisibleNode ?? FirstVisibleNode; // select next or cycle to first
-          if (e.KeyCode == Keys.Up)
-            typesTreeView.SelectedNode = selectedNode.PrevVisibleNode ?? LastVisibleNode; // select prev or cycle to last
+          if (e.KeyCode == Keys.Down && selectedNode.NextVisibleNode != null)
+            typesTreeView.SelectedNode = selectedNode.NextVisibleNode;
+          if (e.KeyCode == Keys.Up && selectedNode.PrevVisibleNode != null)
+            typesTreeView.SelectedNode = selectedNode.PrevVisibleNode;
         }
         e.Handled = true;
       }

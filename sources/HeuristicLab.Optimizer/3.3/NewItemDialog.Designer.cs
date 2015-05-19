@@ -50,14 +50,13 @@ namespace HeuristicLab.Optimizer {
       this.cancelButton = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.searchLabel = new System.Windows.Forms.Label();
-      this.expandAllButton = new System.Windows.Forms.Button();
-      this.collapseAllButton = new System.Windows.Forms.Button();
       this.searchTextBox = new System.Windows.Forms.TextBox();
       this.clearSearchButton = new System.Windows.Forms.Button();
       this.splitContainer = new System.Windows.Forms.SplitContainer();
       this.availableItemsGroupBox = new System.Windows.Forms.GroupBox();
       this.typesTreeView = new System.Windows.Forms.TreeView();
       this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.descriptionSplitContainer = new System.Windows.Forms.SplitContainer();
       this.itemGroupBox = new System.Windows.Forms.GroupBox();
       this.itemDescriptionTextBox = new System.Windows.Forms.TextBox();
       this.pluginDescriptionGroupBox = new System.Windows.Forms.GroupBox();
@@ -69,20 +68,19 @@ namespace HeuristicLab.Optimizer {
       this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.collapseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.descriptionSplitContainer = new System.Windows.Forms.SplitContainer();
       this.searchTextBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
       this.splitContainer.Panel1.SuspendLayout();
       this.splitContainer.Panel2.SuspendLayout();
       this.splitContainer.SuspendLayout();
       this.availableItemsGroupBox.SuspendLayout();
-      this.itemGroupBox.SuspendLayout();
-      this.pluginDescriptionGroupBox.SuspendLayout();
-      this.contextMenuStrip.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.descriptionSplitContainer)).BeginInit();
       this.descriptionSplitContainer.Panel1.SuspendLayout();
       this.descriptionSplitContainer.Panel2.SuspendLayout();
       this.descriptionSplitContainer.SuspendLayout();
+      this.itemGroupBox.SuspendLayout();
+      this.pluginDescriptionGroupBox.SuspendLayout();
+      this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // okButton
@@ -117,32 +115,6 @@ namespace HeuristicLab.Optimizer {
       this.searchLabel.Size = new System.Drawing.Size(20, 20);
       this.searchLabel.TabIndex = 0;
       this.toolTip.SetToolTip(this.searchLabel, "Enter string to search for items");
-      // 
-      // expandAllButton
-      // 
-      this.expandAllButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.expandAllButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ZoomIn;
-      this.expandAllButton.Location = new System.Drawing.Point(12, 587);
-      this.expandAllButton.Name = "expandAllButton";
-      this.expandAllButton.Size = new System.Drawing.Size(23, 23);
-      this.expandAllButton.TabIndex = 0;
-      this.expandAllButton.TabStop = false;
-      this.toolTip.SetToolTip(this.expandAllButton, "Expand all nodes.");
-      this.expandAllButton.UseVisualStyleBackColor = true;
-      this.expandAllButton.Click += new System.EventHandler(this.expandAllButton_Click);
-      // 
-      // collapseAllButton
-      // 
-      this.collapseAllButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.collapseAllButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.ZoomOut;
-      this.collapseAllButton.Location = new System.Drawing.Point(41, 587);
-      this.collapseAllButton.Name = "collapseAllButton";
-      this.collapseAllButton.Size = new System.Drawing.Size(23, 23);
-      this.collapseAllButton.TabIndex = 0;
-      this.collapseAllButton.TabStop = false;
-      this.toolTip.SetToolTip(this.collapseAllButton, "Collapse all nodes.");
-      this.collapseAllButton.UseVisualStyleBackColor = true;
-      this.collapseAllButton.Click += new System.EventHandler(this.collapseAllButton_Click);
       // 
       // searchTextBox
       // 
@@ -238,6 +210,25 @@ namespace HeuristicLab.Optimizer {
       this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
       this.imageList.ImageSize = new System.Drawing.Size(16, 16);
       this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
+      // descriptionSplitContainer
+      // 
+      this.descriptionSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.descriptionSplitContainer.Location = new System.Drawing.Point(0, 0);
+      this.descriptionSplitContainer.Name = "descriptionSplitContainer";
+      this.descriptionSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+      // 
+      // descriptionSplitContainer.Panel1
+      // 
+      this.descriptionSplitContainer.Panel1.Controls.Add(this.itemGroupBox);
+      // 
+      // descriptionSplitContainer.Panel2
+      // 
+      this.descriptionSplitContainer.Panel2.Controls.Add(this.pluginDescriptionGroupBox);
+      this.descriptionSplitContainer.Size = new System.Drawing.Size(600, 192);
+      this.descriptionSplitContainer.SplitterDistance = 81;
+      this.descriptionSplitContainer.TabIndex = 1;
+      this.descriptionSplitContainer.TabStop = false;
       // 
       // itemGroupBox
       // 
@@ -352,25 +343,6 @@ namespace HeuristicLab.Optimizer {
       this.collapseAllToolStripMenuItem.Text = "Collapse All";
       this.collapseAllToolStripMenuItem.Click += new System.EventHandler(this.collapseAllToolStripMenuItem_Click);
       // 
-      // descriptionSplitContainer
-      // 
-      this.descriptionSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.descriptionSplitContainer.Location = new System.Drawing.Point(0, 0);
-      this.descriptionSplitContainer.Name = "descriptionSplitContainer";
-      this.descriptionSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
-      // 
-      // descriptionSplitContainer.Panel1
-      // 
-      this.descriptionSplitContainer.Panel1.Controls.Add(this.itemGroupBox);
-      // 
-      // descriptionSplitContainer.Panel2
-      // 
-      this.descriptionSplitContainer.Panel2.Controls.Add(this.pluginDescriptionGroupBox);
-      this.descriptionSplitContainer.Size = new System.Drawing.Size(600, 192);
-      this.descriptionSplitContainer.SplitterDistance = 81;
-      this.descriptionSplitContainer.TabIndex = 1;
-      this.descriptionSplitContainer.TabStop = false;
-      // 
       // NewItemDialog
       // 
       this.AcceptButton = this.okButton;
@@ -380,8 +352,6 @@ namespace HeuristicLab.Optimizer {
       this.Controls.Add(this.splitContainer);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
-      this.Controls.Add(this.expandAllButton);
-      this.Controls.Add(this.collapseAllButton);
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "NewItemDialog";
@@ -399,15 +369,15 @@ namespace HeuristicLab.Optimizer {
       this.splitContainer.ResumeLayout(false);
       this.availableItemsGroupBox.ResumeLayout(false);
       this.availableItemsGroupBox.PerformLayout();
+      this.descriptionSplitContainer.Panel1.ResumeLayout(false);
+      this.descriptionSplitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.descriptionSplitContainer)).EndInit();
+      this.descriptionSplitContainer.ResumeLayout(false);
       this.itemGroupBox.ResumeLayout(false);
       this.itemGroupBox.PerformLayout();
       this.pluginDescriptionGroupBox.ResumeLayout(false);
       this.pluginDescriptionGroupBox.PerformLayout();
       this.contextMenuStrip.ResumeLayout(false);
-      this.descriptionSplitContainer.Panel1.ResumeLayout(false);
-      this.descriptionSplitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.descriptionSplitContainer)).EndInit();
-      this.descriptionSplitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -423,8 +393,6 @@ namespace HeuristicLab.Optimizer {
     private System.Windows.Forms.TextBox searchTextBox;
     private System.Windows.Forms.TreeView typesTreeView;
     private System.Windows.Forms.ImageList imageList;
-    private System.Windows.Forms.Button expandAllButton;
-    private System.Windows.Forms.Button collapseAllButton;
     private System.Windows.Forms.GroupBox availableItemsGroupBox;
     private System.Windows.Forms.GroupBox pluginDescriptionGroupBox;
     private System.Windows.Forms.TextBox versionTextBox;
