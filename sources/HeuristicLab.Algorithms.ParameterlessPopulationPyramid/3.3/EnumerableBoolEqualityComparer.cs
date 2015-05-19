@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,24 +28,13 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       return first.SequenceEqual(second);
     }
     public int GetHashCode(IEnumerable<bool> obj) {
-      int hash = 0;
-      int word = 1;
-      foreach (bool bit in obj) {
-        // load bits into an integer
-        word <<= 1;
-        word |= Convert.ToInt32(bit);
-        // only happens when the leading 1 reaches the sign bit
-        if (word < 0) {
-          // combine word into the hash
-          hash ^= word;
-          word = 1;
+      unchecked {
+        int hash = 17;
+        foreach (var bit in obj) {
+          hash = hash * 29 + (bit ? 1231 : 1237);
         }
+        return hash;
       }
-      // combine in any remaining content
-      if (word > 1) {
-        hash ^= word;
-      }
-      return hash;
     }
   }
 }
