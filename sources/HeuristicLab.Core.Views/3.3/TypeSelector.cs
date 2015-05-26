@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -395,6 +396,56 @@ namespace HeuristicLab.Core.Views {
     private void clearSearchButton_Click(object sender, EventArgs e) {
       searchTextBox.Text = string.Empty;
       searchTextBox.Focus();
+    }
+
+    private TreeNode toolStripMenuNode = null;
+    private void typesTreeView_MouseDown(object sender, MouseEventArgs e) {
+      if (e.Button == MouseButtons.Right) {
+        Point coordinates = typesTreeView.PointToClient(Cursor.Position);
+        toolStripMenuNode = typesTreeView.GetNodeAt(coordinates);
+
+        if (toolStripMenuNode != null && coordinates.X >= toolStripMenuNode.Bounds.Left &&
+            coordinates.X <= toolStripMenuNode.Bounds.Right) {
+          typesTreeView.SelectedNode = toolStripMenuNode;
+
+          expandToolStripMenuItem.Enabled =
+            expandToolStripMenuItem.Visible = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
+          collapseToolStripMenuItem.Enabled = collapseToolStripMenuItem.Visible = toolStripMenuNode.IsExpanded;
+        } else {
+          expandToolStripMenuItem.Enabled = expandToolStripMenuItem.Visible = false;
+          collapseToolStripMenuItem.Enabled = collapseToolStripMenuItem.Visible = false;
+        }
+        expandAllToolStripMenuItem.Enabled =
+          expandAllToolStripMenuItem.Visible =
+            !typesTreeView.Nodes.OfType<TreeNode>().All(x => TreeNodeIsFullyExpanded(x));
+        collapseAllToolStripMenuItem.Enabled =
+          collapseAllToolStripMenuItem.Visible = typesTreeView.Nodes.OfType<TreeNode>().Any(x => x.IsExpanded);
+        if (contextMenuStrip.Items.Cast<ToolStripMenuItem>().Any(item => item.Enabled))
+          contextMenuStrip.Show(Cursor.Position);
+      }
+    }
+    private bool TreeNodeIsFullyExpanded(TreeNode node) {
+      return (node.Nodes.Count == 0) || (node.IsExpanded && node.Nodes.OfType<TreeNode>().All(x => TreeNodeIsFullyExpanded(x)));
+    }
+    private void expandToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.BeginUpdate();
+      if (toolStripMenuNode != null) toolStripMenuNode.ExpandAll();
+      typesTreeView.EndUpdate();
+    }
+    private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.BeginUpdate();
+      typesTreeView.ExpandAll();
+      typesTreeView.EndUpdate();
+    }
+    private void collapseToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.BeginUpdate();
+      if (toolStripMenuNode != null) toolStripMenuNode.Collapse();
+      typesTreeView.EndUpdate();
+    }
+    private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.BeginUpdate();
+      typesTreeView.CollapseAll();
+      typesTreeView.EndUpdate();
     }
     #endregion
 
