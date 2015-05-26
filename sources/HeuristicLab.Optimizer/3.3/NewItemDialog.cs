@@ -173,22 +173,20 @@ namespace HeuristicLab.Optimizer {
         Invoke(new Action<string>(Filter), searchString);
       } else {
         searchString = searchString.ToLower();
+        var selectedNode = typesTreeView.SelectedNode;
 
         if (!searchString.Contains(currentSearchString)) {
           typesTreeView.BeginUpdate();
           // expand search -> restore all tree nodes
-          var selectedNode = typesTreeView.SelectedNode;
           typesTreeView.Nodes.Clear();
           foreach (TreeNode node in treeNodes)
             typesTreeView.Nodes.Add((TreeNode)node.Clone());
-          RestoreSelectedNode(selectedNode);
           typesTreeView.EndUpdate();
         }
 
         // remove nodes
         typesTreeView.BeginUpdate();
         var searchTokens = searchString.Split(' ');
-
         int i = 0;
         while (i < typesTreeView.Nodes.Count) {
           var categoryNode = typesTreeView.Nodes[i];
@@ -216,6 +214,8 @@ namespace HeuristicLab.Optimizer {
           typesTreeView.Enabled = true;
         }
         typesTreeView.EndUpdate();
+
+        RestoreSelectedNode(selectedNode);
         UpdateDescription();
       }
     }

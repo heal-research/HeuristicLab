@@ -176,23 +176,20 @@ namespace HeuristicLab.Core.Views {
         Invoke(new Action<string>(Filter), searchString);
       else {
         searchString = searchString.ToLower();
+        TreeNode selectedNode = typesTreeView.SelectedNode;
 
         if (!searchString.Contains(currentSearchString)) {
           typesTreeView.BeginUpdate();
           // expand search -> restore all tree nodes
-          TreeNode selectedNode = typesTreeView.SelectedNode;
           typesTreeView.Nodes.Clear();
           foreach (TreeNode node in treeNodes)
             typesTreeView.Nodes.Add((TreeNode)node.Clone());
-          RestoreSelectedNode(selectedNode);
           typesTreeView.EndUpdate();
         }
-
 
         // remove nodes
         typesTreeView.BeginUpdate();
         var searchTokens = searchString.Split(' ');
-
         int i = 0;
         while (i < typesTreeView.Nodes.Count) {
           var node = typesTreeView.Nodes[i];
@@ -220,6 +217,8 @@ namespace HeuristicLab.Core.Views {
           typesTreeView.Enabled = true;
         }
         typesTreeView.EndUpdate();
+
+        RestoreSelectedNode(selectedNode);
         UpdateDescription();
       }
     }
@@ -392,6 +391,10 @@ namespace HeuristicLab.Core.Views {
         }
         e.Handled = true;
       }
+    }
+    private void clearSearchButton_Click(object sender, EventArgs e) {
+      searchTextBox.Text = string.Empty;
+      searchTextBox.Focus();
     }
     #endregion
 

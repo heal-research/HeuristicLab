@@ -41,6 +41,7 @@ namespace HeuristicLab.Core.Views {
       this.typeParametersSplitContainer = new System.Windows.Forms.SplitContainer();
       this.searchLabel = new System.Windows.Forms.Label();
       this.searchTextBox = new System.Windows.Forms.TextBox();
+      this.clearSearchButton = new System.Windows.Forms.Button();
       this.typeParametersGroupBox = new System.Windows.Forms.GroupBox();
       this.setTypeParameterButton = new System.Windows.Forms.Button();
       this.typeParametersListView = new System.Windows.Forms.ListView();
@@ -145,13 +146,34 @@ namespace HeuristicLab.Core.Views {
       // 
       this.searchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
+      this.searchTextBox.Controls.Add(this.clearSearchButton);
       this.searchTextBox.Location = new System.Drawing.Point(29, 3);
       this.searchTextBox.Name = "searchTextBox";
       this.searchTextBox.Size = new System.Drawing.Size(193, 20);
       this.searchTextBox.TabIndex = 1;
-      this.toolTip.SetToolTip(this.searchTextBox, "Enter string to search for types");
+      this.toolTip.SetToolTip(this.searchTextBox, "Filters the available Types.\r\nThe search term is tokenized by space and a name ha" +
+        "s to contain all tokens to be displayed.\r\n(E.g. \"Sym Reg\" matches \"SymbolicRegr" +
+        "ession\")");
       this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
       this.searchTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.searchTextBox_KeyDown);
+      // 
+      // clearSearchButton
+      // 
+      this.clearSearchButton.BackColor = System.Drawing.Color.Transparent;
+      this.clearSearchButton.Cursor = System.Windows.Forms.Cursors.Default;
+      this.clearSearchButton.Dock = System.Windows.Forms.DockStyle.Right;
+      this.clearSearchButton.FlatAppearance.BorderSize = 0;
+      this.clearSearchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+      this.clearSearchButton.ForeColor = System.Drawing.Color.Transparent;
+      this.clearSearchButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Delete;
+      this.clearSearchButton.Location = new System.Drawing.Point(543, 0);
+      this.clearSearchButton.Margin = new System.Windows.Forms.Padding(0);
+      this.clearSearchButton.Name = "clearSearchButton";
+      this.clearSearchButton.Size = new System.Drawing.Size(15, 16);
+      this.clearSearchButton.TabIndex = 0;
+      this.clearSearchButton.TabStop = false;
+      this.clearSearchButton.UseVisualStyleBackColor = false;
+      this.clearSearchButton.Click += new System.EventHandler(this.clearSearchButton_Click);
       // 
       // typeParametersGroupBox
       // 
@@ -244,6 +266,7 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.SplitContainer splitContainer;
     protected System.Windows.Forms.Label searchLabel;
     protected System.Windows.Forms.TextBox searchTextBox;
+    protected System.Windows.Forms.Button clearSearchButton;
     protected System.Windows.Forms.ToolTip toolTip;
     protected System.Windows.Forms.SplitContainer typeParametersSplitContainer;
     protected System.Windows.Forms.GroupBox typeParametersGroupBox;
