@@ -368,16 +368,24 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void expandToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.BeginUpdate();
       if (toolStripMenuNode != null) toolStripMenuNode.ExpandAll();
+      typesTreeView.EndUpdate();
     }
     private void expandAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.BeginUpdate();
       typesTreeView.ExpandAll();
+      typesTreeView.EndUpdate();
     }
     private void collapseToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.BeginUpdate();
       if (toolStripMenuNode != null) toolStripMenuNode.Collapse();
+      typesTreeView.EndUpdate();
     }
     private void collapseAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      typesTreeView.BeginUpdate();
       typesTreeView.CollapseAll();
+      typesTreeView.EndUpdate();
     }
 
     private void clearSearchButton_Click(object sender, EventArgs e) {

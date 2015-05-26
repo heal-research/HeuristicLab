@@ -42,6 +42,11 @@ namespace HeuristicLab.Core.Views {
       this.searchLabel = new System.Windows.Forms.Label();
       this.searchTextBox = new System.Windows.Forms.TextBox();
       this.clearSearchButton = new System.Windows.Forms.Button();
+      this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.expandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.collapseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.collapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.typeParametersGroupBox = new System.Windows.Forms.GroupBox();
       this.setTypeParameterButton = new System.Windows.Forms.Button();
       this.typeParametersListView = new System.Windows.Forms.ListView();
@@ -56,6 +61,7 @@ namespace HeuristicLab.Core.Views {
       this.typeParametersSplitContainer.Panel2.SuspendLayout();
       this.typeParametersSplitContainer.SuspendLayout();
       this.typeParametersGroupBox.SuspendLayout();
+      this.contextMenuStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // typesTreeView
@@ -75,6 +81,7 @@ namespace HeuristicLab.Core.Views {
       this.typesTreeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.typesTreeView_ItemDrag);
       this.typesTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typesTreeView_AfterSelect);
       this.typesTreeView.VisibleChanged += new System.EventHandler(this.typesTreeView_VisibleChanged);
+      this.typesTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.typesTreeView_MouseDown);
       // 
       // imageList
       // 
@@ -236,6 +243,44 @@ namespace HeuristicLab.Core.Views {
       this.descriptionTextBox.Size = new System.Drawing.Size(219, 114);
       this.descriptionTextBox.TabIndex = 0;
       // 
+      // contextMenuStrip
+      // 
+      this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.expandToolStripMenuItem,
+            this.expandAllToolStripMenuItem,
+            this.collapseToolStripMenuItem,
+            this.collapseAllToolStripMenuItem});
+      this.contextMenuStrip.Name = "contextMenuStrip";
+      this.contextMenuStrip.Size = new System.Drawing.Size(137, 92);
+      // 
+      // expandToolStripMenuItem
+      // 
+      this.expandToolStripMenuItem.Name = "expandToolStripMenuItem";
+      this.expandToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.expandToolStripMenuItem.Text = "Expand";
+      this.expandToolStripMenuItem.Click += new System.EventHandler(this.expandToolStripMenuItem_Click);
+      // 
+      // expandAllToolStripMenuItem
+      // 
+      this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
+      this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.expandAllToolStripMenuItem.Text = "Expand All";
+      this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem_Click);
+      // 
+      // collapseToolStripMenuItem
+      // 
+      this.collapseToolStripMenuItem.Name = "collapseToolStripMenuItem";
+      this.collapseToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.collapseToolStripMenuItem.Text = "Collapse";
+      this.collapseToolStripMenuItem.Click += new System.EventHandler(this.collapseToolStripMenuItem_Click);
+      // 
+      // collapseAllToolStripMenuItem
+      // 
+      this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
+      this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+      this.collapseAllToolStripMenuItem.Text = "Collapse All";
+      this.collapseAllToolStripMenuItem.Click += new System.EventHandler(this.collapseAllToolStripMenuItem_Click);
+      // 
       // TypeSelector
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -253,6 +298,7 @@ namespace HeuristicLab.Core.Views {
       this.typeParametersSplitContainer.Panel2.ResumeLayout(false);
       this.typeParametersSplitContainer.ResumeLayout(false);
       this.typeParametersGroupBox.ResumeLayout(false);
+      this.contextMenuStrip.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -268,11 +314,15 @@ namespace HeuristicLab.Core.Views {
     protected System.Windows.Forms.TextBox searchTextBox;
     protected System.Windows.Forms.Button clearSearchButton;
     protected System.Windows.Forms.ToolTip toolTip;
+    protected System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+    protected System.Windows.Forms.ToolStripMenuItem expandToolStripMenuItem;
+    protected System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
+    protected System.Windows.Forms.ToolStripMenuItem collapseToolStripMenuItem;
+    protected System.Windows.Forms.ToolStripMenuItem collapseAllToolStripMenuItem;
     protected System.Windows.Forms.SplitContainer typeParametersSplitContainer;
     protected System.Windows.Forms.GroupBox typeParametersGroupBox;
     protected System.Windows.Forms.ListView typeParametersListView;
     protected System.Windows.Forms.Button setTypeParameterButton;
     protected System.Windows.Forms.ColumnHeader columnHeader1;
-
   }
 }
