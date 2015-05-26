@@ -303,8 +303,10 @@ namespace HeuristicLab.Optimizer {
     private void RestoreSelectedNode(TreeNode selectedNode) {
       if (selectedNode != null) {
         var node = typesTreeView.Nodes.Find(selectedNode.Name, searchAllChildren: true).SingleOrDefault();
-        typesTreeView.SelectedNode = node;
-        if (typesTreeView.SelectedNode == null) SelectedType = null;
+        if (node != null)
+          typesTreeView.SelectedNode = node;
+        if (typesTreeView.SelectedNode == null)
+          SelectedType = null;
       }
     }
     private void SetTreeNodeVisibility() {
