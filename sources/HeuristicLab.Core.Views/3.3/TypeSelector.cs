@@ -191,31 +191,26 @@ namespace HeuristicLab.Core.Views {
 
         // remove nodes
         typesTreeView.BeginUpdate();
+        var searchTokens = searchString.Split(' ');
+
         int i = 0;
         while (i < typesTreeView.Nodes.Count) {
-          int j = 0;
-          while (j < typesTreeView.Nodes[i].Nodes.Count) {
-            if (!typesTreeView.Nodes[i].Nodes[j].Text.ToLower().Contains(searchString)) {
-              if ((typesTreeView.Nodes[i].Nodes[j].Tag as Type).Equals(selectedType))
-                SelectedType = null;
-              typesTreeView.Nodes[i].Nodes[j].Remove();
-            } else
-              j++;
-          }
-          if (typesTreeView.Nodes[i].Nodes.Count == 0)
-            typesTreeView.Nodes[i].Remove();
-          else
-            i++;
+          var node = typesTreeView.Nodes[i];
+          bool remove = FilterNode(node, searchTokens);
+          if (remove)
+            typesTreeView.Nodes.RemoveAt(i);
+          else i++;
         }
         typesTreeView.EndUpdate();
         currentSearchString = searchString;
 
-        // if there is just one type node left, select by default
-        if (typesTreeView.Nodes.Count == 1) {
-          if (typesTreeView.Nodes[0].Nodes.Count == 1) {
-            typesTreeView.SelectedNode = typesTreeView.Nodes[0].Nodes[0];
-          }
-        }
+        // select first item
+        typesTreeView.BeginUpdate();
+        var firstNode = typesTreeView.Nodes.Count > 0 ? typesTreeView.Nodes[0] : null;
+        while (firstNode != null && !(firstNode.Tag is Type))
+          firstNode = firstNode.NextVisibleNode;
+        if (firstNode != null)
+          typesTreeView.SelectedNode = firstNode;
 
         if (typesTreeView.Nodes.Count == 0) {
           SelectedType = null;
@@ -224,8 +219,34 @@ namespace HeuristicLab.Core.Views {
           SetTreeNodeVisibility();
           typesTreeView.Enabled = true;
         }
+        typesTreeView.EndUpdate();
         UpdateDescription();
       }
+    }
+
+    private bool FilterNode(TreeNode node, string[] searchTokens) {
+      if (node.Tag is IPluginDescription) { // Plugin node
+        int i = 0;
+        while (i < node.Nodes.Count) {
+          bool remove = FilterNode(node.Nodes[i], searchTokens);
+          if (remove)
+            node.Nodes.RemoveAt(i);
+          else i++;
+        }
+        return node.Nodes.Count == 0;
+      } if (node.Tag is Type) { // Type node
+        var text = node.Text;
+        if (searchTokens.Any(searchToken => !text.ToLower().Contains(searchToken))) {
+          var typeTag = (Type)node.Tag;
+          if (typeTag == SelectedType) {
+            SelectedType = null;
+            typesTreeView.SelectedNode = null;
+          }
+          return true;
+        }
+        return false;
+      }
+      throw new InvalidOperationException("Encountered neither a plugin nor a type node during tree traversal.");
     }
 
     public virtual object CreateInstanceOfSelectedType(params object[] args) {
@@ -353,6 +374,24 @@ namespace HeuristicLab.Core.Views {
 
     protected virtual void setTypeParameterButton_Click(object sender, EventArgs e) {
       SetTypeParameter();
+    }
+    private void searchTextBox_KeyDown(object sender, KeyEventArgs e) {
+      if (typesTreeView.Nodes.Count == 0)
+        return;
+
+      if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down) {
+        var selectedNode = typesTreeView.SelectedNode;
+
+        if (selectedNode == null) { // nothing selected => select first
+          if (e.KeyCode == Keys.Down) typesTreeView.SelectedNode = typesTreeView.Nodes.Count > 0 ? typesTreeView.Nodes[0] : null;
+        } else {
+          if (e.KeyCode == Keys.Down && selectedNode.NextVisibleNode != null)
+            typesTreeView.SelectedNode = selectedNode.NextVisibleNode;
+          if (e.KeyCode == Keys.Up && selectedNode.PrevVisibleNode != null)
+            typesTreeView.SelectedNode = selectedNode.PrevVisibleNode;
+        }
+        e.Handled = true;
+      }
     }
     #endregion
 

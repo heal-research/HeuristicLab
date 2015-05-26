@@ -151,6 +151,7 @@ namespace HeuristicLab.Core.Views {
       this.searchTextBox.TabIndex = 1;
       this.toolTip.SetToolTip(this.searchTextBox, "Enter string to search for types");
       this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
+      this.searchTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.searchTextBox_KeyDown);
       // 
       // typeParametersGroupBox
       // 

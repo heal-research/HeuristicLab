@@ -201,6 +201,7 @@ namespace HeuristicLab.Optimizer {
         currentSearchString = searchString;
 
         // select first item
+        typesTreeView.BeginUpdate();
         var firstNode = FirstVisibleNode;
         while (firstNode != null && !(firstNode.Tag is Type))
           firstNode = firstNode.NextVisibleNode;
@@ -214,6 +215,7 @@ namespace HeuristicLab.Optimizer {
           SetTreeNodeVisibility();
           typesTreeView.Enabled = true;
         }
+        typesTreeView.EndUpdate();
         UpdateDescription();
       }
     }
