@@ -1,0 +1,161 @@
+﻿<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li class="active">
+            <a ng-href="#/status">Status</a>
+        </li>
+        <li>
+            <a ng-href="#/status/history">History</a>
+        </li>
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Cores</h3>
+                </div>
+                <div class="panel-body">
+                    <center>
+                        <knob knob-data="core.knobData" knob-options="knobOptions"></knob>
+                    </center>
+                    <p>Total Cores: {{status.CoreStatus.TotalCores}}</p>
+                    <p>Used Cores: {{status.CoreStatus.TotalCores - status.CoreStatus.FreeCores}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">CPU Utilization</h3>
+                </div>
+                <div class="panel-body">
+                    <center>
+                        <knob knob-data="cpu.knobData" knob-options="knobOptions"></knob>
+                    </center>
+                    <p>Total Utilization: {{status.CpuUtilizationStatus.TotalCpuUtilization}} %</p>
+                    <p>Used Utilization: {{status.CpuUtilizationStatus.UsedCpuUtilization}} %</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Memory</h3>
+                </div>
+                <div class="panel-body">
+                    <center>
+                        <knob knob-data="memory.knobData" knob-options="knobOptions"></knob>
+                    </center>
+                    <p>TotalMemory: {{status.MemoryStatus.TotalMemory}} GB</p>
+                    <p>UsedMemory: {{status.MemoryStatus.TotalMemory - status.MemoryStatus.FreeMemory}} GB</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tasks</h3>
+                </div>
+                <div class="panel-body">
+                    <p>Total: {{tasks.WaitingTasks + tasks.CalculatingTasks}}</p>
+                    <p>Waiting: {{tasks.WaitingTasks}}</p>
+                    <p>Calculating: {{tasks.CalculatingTasks}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">CPU Utilization Chart</h3>
+                </div>
+                <div class="panel-body">
+                    <flot dataset="cpu.series" options="chartOptions"></flot>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Core Chart</h3>
+                </div>
+                <div class="panel-body">
+                    <flot dataset="core.series" options="fillChartOptions"></flot>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Memory Chart</h3>
+                </div>
+                <div class="panel-body">
+                    <flot dataset="memory.series" options="fillChartOptions"></flot>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tasks by User</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Calculating Tasks</th>
+                                <th>Waiting Tasks</th>
+                            </tr>
+                        </thead>
+                        <tr ng-repeat="task in status.TasksStatus">
+                            <td>{{task.User.Name}}</td>
+                            <td>{{task.CalculatingTasks}}</td>
+                            <td>{{task.WaitingTasks}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">CPU Utilization by Slave</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Slave</th>
+                                <th>CPU Utilization</th>
+                            </tr>
+                        </thead>
+                        <tr ng-repeat="slave in status.SlavesCpuStatus">
+                            <td>{{slave.Slave.Name}}</td>
+                            <td>{{slave.CpuUtilization}} %</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
