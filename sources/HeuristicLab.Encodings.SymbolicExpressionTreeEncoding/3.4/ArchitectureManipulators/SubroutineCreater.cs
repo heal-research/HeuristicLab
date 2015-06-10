@@ -28,6 +28,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -112,11 +113,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       var allCutPoints = (from parent in selectedBody.IterateNodesPrefix()
                           from subtree in parent.Subtrees
                           select new CutPoint(parent, subtree)).ToList();
-      if (allCutPoints.Count() == 0)
+      if (!allCutPoints.Any())
         // no cut points => abort
         return false;
       string newFunctionName = allowedFunctionNames.Except(functionDefiningBranches.Select(x => x.FunctionName)).First();
-      var selectedCutPoint = allCutPoints.SelectRandom(random);
+      var selectedCutPoint = allCutPoints.SampleRandom(random);
+
       // select random branches as argument cut-off points (replaced by argument terminal nodes in the function)
       List<CutPoint> argumentCutPoints = SelectRandomArgumentBranches(selectedCutPoint.Child, random, ARGUMENT_CUTOFF_PROBABILITY, maxFunctionArguments);
       ISymbolicExpressionTreeNode functionBody = selectedCutPoint.Child;

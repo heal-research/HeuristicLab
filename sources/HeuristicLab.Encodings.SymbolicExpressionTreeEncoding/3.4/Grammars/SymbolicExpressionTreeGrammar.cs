@@ -54,9 +54,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         foreach (var s in base.symbols.Values) yield return s;
       }
     }
-    public override IEnumerable<ISymbol> AllowedSymbols {
-      get { return base.AllowedSymbols; }
-    }
     public IEnumerable<ISymbol> ModifyableSymbols {
       get { return base.symbols.Values; }
     }
@@ -75,11 +72,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       throw new ArgumentException();
     }
 
-    public override bool IsAllowedChildSymbol(ISymbol parent, ISymbol child) {
-      return grammar.IsAllowedChildSymbol(parent, child) || base.IsAllowedChildSymbol(parent, child);
-    }
-    public override bool IsAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
-      return grammar.IsAllowedChildSymbol(parent, child, argumentIndex) || base.IsAllowedChildSymbol(parent, child, argumentIndex);
+    public override void RemoveSymbol(ISymbol symbol) {
+      if (!IsModifyableSymbol(symbol)) throw new InvalidOperationException();
+      base.RemoveSymbol(symbol);
     }
 
     public override int GetMinimumSubtreeCount(ISymbol symbol) {
@@ -90,48 +85,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       if (grammar.ContainsSymbol(symbol)) return grammar.GetMaximumSubtreeCount(symbol);
       return base.GetMaximumSubtreeCount(symbol);
     }
-
-    void ISymbolicExpressionTreeGrammar.AddSymbol(ISymbol symbol) {
-      base.AddSymbol(symbol);
-    }
-    void ISymbolicExpressionTreeGrammar.RemoveSymbol(ISymbol symbol) {
-      if (!IsModifyableSymbol(symbol)) throw new InvalidOperationException();
-      base.RemoveSymbol(symbol);
-    }
-    void ISymbolicExpressionTreeGrammar.AddAllowedChildSymbol(ISymbol parent, ISymbol child) {
-      base.AddAllowedChildSymbol(parent, child);
-    }
-    void ISymbolicExpressionTreeGrammar.AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
-      base.AddAllowedChildSymbol(parent, child, argumentIndex);
-    }
-    void ISymbolicExpressionTreeGrammar.RemoveAllowedChildSymbol(ISymbol parent, ISymbol child) {
-      base.RemoveAllowedChildSymbol(parent, child);
-    }
-    void ISymbolicExpressionTreeGrammar.RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
-      base.RemoveAllowedChildSymbol(parent, child, argumentIndex);
-    }
-
-    void ISymbolicExpressionTreeGrammar.SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
+    public override void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
       if (!IsModifyableSymbol(symbol)) throw new InvalidOperationException();
       base.SetSubtreeCount(symbol, minimumSubtreeCount, maximumSubtreeCount);
     }
 
-    int ISymbolicExpressionGrammarBase.GetMinimumExpressionDepth(ISymbol symbol) {
-      if (symbols.Count == 0) return grammar.GetMinimumExpressionDepth(symbol);
-      else return base.GetMinimumExpressionDepth(symbol);
+    public override bool IsAllowedChildSymbol(ISymbol parent, ISymbol child) {
+      return grammar.IsAllowedChildSymbol(parent, child) || base.IsAllowedChildSymbol(parent, child);
     }
-    int ISymbolicExpressionGrammarBase.GetMaximumExpressionDepth(ISymbol symbol) {
-      if (symbols.Count == 0) return grammar.GetMaximumExpressionDepth(symbol);
-      else return base.GetMaximumExpressionDepth(symbol);
+    public override bool IsAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
+      return grammar.IsAllowedChildSymbol(parent, child, argumentIndex) || base.IsAllowedChildSymbol(parent, child, argumentIndex);
     }
-    int ISymbolicExpressionGrammarBase.GetMinimumExpressionLength(ISymbol symbol) {
-      if (symbols.Count == 0) return grammar.GetMinimumExpressionLength(symbol);
-      else return base.GetMinimumExpressionLength(symbol);
-    }
-    int ISymbolicExpressionGrammarBase.GetMaximumExpressionLength(ISymbol symbol, int maxDepth) {
-      if (symbols.Count == 0) return grammar.GetMaximumExpressionLength(symbol, maxDepth);
-      else return base.GetMaximumExpressionLength(symbol, maxDepth);
-    }
-
   }
 }

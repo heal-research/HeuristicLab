@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -55,19 +56,21 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       IRandom random,
       ISymbolicExpressionTree symbolicExpressionTree,
       int maxFunctionDefinitions, int maxFunctionArguments) {
-      var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>();
+      var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>().ToList();
 
       var allowedArgumentIndexes = Enumerable.Range(0, maxFunctionArguments);
-      if (functionDefiningBranches.Count() == 0)
+      if (!functionDefiningBranches.Any())
         // no function defining branches => abort
         return false;
 
-      var selectedDefunBranch = functionDefiningBranches.SelectRandom(random);
-      var argumentSymbols = selectedDefunBranch.Grammar.Symbols.OfType<Argument>();
-      if (argumentSymbols.Count() == 0 || argumentSymbols.Count() >= maxFunctionArguments)
+      var selectedDefunBranch = functionDefiningBranches.SampleRandom(random);
+
+      var argumentSymbols = selectedDefunBranch.Grammar.Symbols.OfType<Argument>().ToList();
+      if (!argumentSymbols.Any() || argumentSymbols.Count() >= maxFunctionArguments)
         // when no argument or number of arguments is already at max allowed value => abort
         return false;
-      var selectedArgumentSymbol = argumentSymbols.SelectRandom(random);
+
+      var selectedArgumentSymbol = argumentSymbols.SampleRandom(random);
       var takenIndexes = argumentSymbols.Select(s => s.ArgumentIndex);
       var newArgumentIndex = allowedArgumentIndexes.Except(takenIndexes).First();
 

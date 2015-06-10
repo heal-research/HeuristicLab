@@ -21,8 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
@@ -30,50 +28,20 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [NonDiscoverableType]
   [StorableClass]
   [Item("RampedHalfAndHalfTreeCreator", "An operator that creates new symbolic expression trees in an alternate way: half the trees are created usign the 'Grow' method while the other half are created using the 'Full' method")]
-  public class RampedHalfAndHalfTreeCreator : SymbolicExpressionTreeCreator,
-                                 ISymbolicExpressionTreeSizeConstraintOperator,
-                                 ISymbolicExpressionTreeGrammarBasedOperator {
-    private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
-    private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
-
-    #region Parameter Properties
-    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
-    }
-
-    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeDepthParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeDepthParameterName]; }
-    }
-
-    #endregion
-    #region Properties
-    public IntValue MaximumSymbolicExpressionTreeDepth {
-      get { return MaximumSymbolicExpressionTreeDepthParameter.ActualValue; }
-    }
-
-    public IntValue MaximumSymbolicExpressionTreeLength {
-      get { return MaximumSymbolicExpressionTreeLengthParameter.ActualValue; }
-    }
-    #endregion
-
+  public class RampedHalfAndHalfTreeCreator : SymbolicExpressionTreeCreator {
     [StorableConstructor]
     protected RampedHalfAndHalfTreeCreator(bool deserializing) : base(deserializing) { }
     protected RampedHalfAndHalfTreeCreator(RampedHalfAndHalfTreeCreator original, Cloner cloner) : base(original, cloner) { }
 
-    public RampedHalfAndHalfTreeCreator()
-      : base() {
-      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName,
-        "The maximal length (number of nodes) of the symbolic expression tree (this parameter is ignored)."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName,
-        "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
-    }
+    public RampedHalfAndHalfTreeCreator() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new RampedHalfAndHalfTreeCreator(this, cloner);
     }
 
     protected override ISymbolicExpressionTree Create(IRandom random) {
-      return Create(random, ClonedSymbolicExpressionTreeGrammarParameter.ActualValue, MaximumSymbolicExpressionTreeLength.Value, MaximumSymbolicExpressionTreeDepth.Value);
+      return Create(random, ClonedSymbolicExpressionTreeGrammarParameter.ActualValue,
+        MaximumSymbolicExpressionTreeLengthParameter.ActualValue.Value, MaximumSymbolicExpressionTreeDepthParameter.ActualValue.Value);
     }
 
     public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {

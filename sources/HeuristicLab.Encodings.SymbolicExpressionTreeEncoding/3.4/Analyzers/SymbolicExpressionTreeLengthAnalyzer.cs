@@ -50,6 +50,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public IScopeTreeLookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
       get { return (IScopeTreeLookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
+
+    public ILookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
+    }
     public ValueLookupParameter<DataTable> SymbolicExpressionTreeLengthsParameter {
       get { return (ValueLookupParameter<DataTable>)Parameters[SymbolicExpressionTreeLengthsParameterName]; }
     }
@@ -177,7 +181,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           treeLengthsTableRow.Values.Replace(treeLengths.Select(x => (double)x));
         }
 
-        double maximumAllowedTreeLength = ((LookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]).ActualValue.Value;
+        double maximumAllowedTreeLength = MaximumSymbolicExpressionTreeLengthParameter.ActualValue.Value;
 
         treeLengthsTableRow.VisualProperties.ChartType = DataRowVisualProperties.DataRowChartType.Histogram;
         treeLengthsTableRow.VisualProperties.ExactBins = false;

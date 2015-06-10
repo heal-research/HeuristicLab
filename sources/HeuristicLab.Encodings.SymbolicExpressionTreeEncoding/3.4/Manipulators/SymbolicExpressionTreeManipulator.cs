@@ -31,26 +31,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("SymbolicExpressionTreeManipulator", "A base class for operators that manipulate symbolic expression trees.")]
   [StorableClass]
   public abstract class SymbolicExpressionTreeManipulator : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeManipulator {
-    private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
-
-    #region Parameter Properties
-    public ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
-    }
-    #endregion
-
-    #region Properties
-    public ISymbolicExpressionTree SymbolicExpressionTree {
-      get { return SymbolicExpressionTreeParameter.ActualValue; }
-    }
-    #endregion
-
     [StorableConstructor]
     protected SymbolicExpressionTreeManipulator(bool deserializing) : base(deserializing) { }
     protected SymbolicExpressionTreeManipulator(SymbolicExpressionTreeManipulator original, Cloner cloner) : base(original, cloner) { }
     public SymbolicExpressionTreeManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
+      
     }
 
     public sealed override IOperation InstrumentedApply() {

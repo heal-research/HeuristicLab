@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("DeterministicBestCrossover", "An operator which performs subtree swapping by choosing the best subtree to be swapped in a certain position:\n" +
@@ -66,7 +67,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (n.Parent != null && n.Parent != parent0.Root)
           crossoverPoints0.Add(new CutPoint(n.Parent, n));
       });
-      CutPoint crossoverPoint0 = crossoverPoints0.SelectRandom(random);
+
+      CutPoint crossoverPoint0 = crossoverPoints0.SampleRandom(random);
       int level = parent0.Root.GetBranchLevel(crossoverPoint0.Child);
       int length = parent0.Root.GetLength() - crossoverPoint0.Child.GetLength();
 

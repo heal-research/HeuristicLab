@@ -26,6 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -79,7 +80,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
       var nodes = symbolicExpressionTree.Root.IterateNodesPrefix().Skip(1).Where(n => n.SubtreeCount > 0).ToList();
       do {
-        parent = nodes.SelectRandom(random);
+        parent = nodes.SampleRandom(random);
+
         childIndex = random.Next(parent.SubtreeCount);
         var child = parent.GetSubtree(childIndex);
         maxLength = maxTreeLength - symbolicExpressionTree.Length + child.GetLength();
@@ -110,7 +112,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                              orderby g.Key
                              select g).First().ToList();
       var weights = possibleSymbols.Select(x => x.InitialFrequency).ToList();
+
+#pragma warning disable 612, 618
       var selectedSymbol = possibleSymbols.SelectRandom(weights, random);
+#pragma warning restore 612, 618
+
       var newTreeNode = selectedSymbol.CreateTreeNode();
       if (newTreeNode.HasLocalParameters) newTreeNode.ResetLocalParameters(random);
       parent.RemoveSubtree(childIndex);

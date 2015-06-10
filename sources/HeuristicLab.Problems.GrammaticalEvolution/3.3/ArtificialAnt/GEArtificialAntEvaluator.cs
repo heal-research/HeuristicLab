@@ -48,8 +48,8 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       get { return (ILookupParameter<IntegerVector>)Parameters["IntegerVector"]; }
     }
     // phenotype:
-    public ILookupParameter<SymbolicExpressionTree> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<SymbolicExpressionTree>)Parameters["SymbolicExpressionTree"]; }
+    public ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters["SymbolicExpressionTree"]; }
     }
     public ILookupParameter<BoolMatrix> WorldParameter {
       get { return (ILookupParameter<BoolMatrix>)Parameters["World"]; }
@@ -83,7 +83,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the evaluated artificial ant solution."));
       Parameters.Add(new LookupParameter<IntegerVector>("IntegerVector", "The artificial ant solution encoded as an integer vector genome."));
-      Parameters.Add(new LookupParameter<SymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solution encoded as a symbolic expression tree that should be evaluated"));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solution encoded as a symbolic expression tree that should be evaluated"));
       Parameters.Add(new LookupParameter<BoolMatrix>("World", "The world for the artificial ant with scattered food items."));
       Parameters.Add(new LookupParameter<IntValue>("MaxTimeSteps", "The maximal number of time steps that the artificial ant should be simulated."));
       Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>("SymbolicExpressionTreeGrammar", "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
@@ -92,6 +92,21 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
 
       Parameters.Add(new LookupParameter<IntMatrix>("Bounds", "The integer number range in which the single genomes of a genotype are created."));
       Parameters.Add(new LookupParameter<IntValue>("MaximumExpressionLength", "Maximal length of the expression to control the artificial ant (genotype length)."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+
+      if (Parameters.ContainsKey("SymbolicExpressionTree") &&
+          Parameters["SymbolicExpressionTree"] is ILookupParameter<SymbolicExpressionTree>) {
+        Parameters.Remove("SymbolicExpressionTree");
+        Parameters.Add(new LookupParameter<ISymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solution encoded as a symbolic expression tree that should be evaluated"));
+      }
+
+      #endregion
+
     }
 
     public sealed override IOperation Apply() {

@@ -30,6 +30,7 @@ using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// <summary>
@@ -67,7 +68,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       // no terminal node exists for the given parent node
       if (!possibleSymbolsList.Any()) return null;
 
-      var newNode = possibleSymbolsList.SelectRandom(random).CreateTreeNode();
+      var newNode = possibleSymbolsList.SampleRandom(random).CreateTreeNode();
       if (newNode.HasLocalParameters) newNode.ResetLocalParameters(random);
       return newNode;
     }

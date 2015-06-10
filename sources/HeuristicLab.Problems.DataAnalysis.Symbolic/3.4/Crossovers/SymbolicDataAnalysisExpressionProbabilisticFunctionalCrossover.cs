@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("ProbabilisticFunctionalCrossover", "An operator which performs subtree swapping based on the behavioral similarity between subtrees:\n" +
@@ -68,7 +69,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           crossoverPoints0.Add(new CutPoint(n.Parent, n));
         }
       });
-      var crossoverPoint0 = crossoverPoints0.SelectRandom(random);
+
+      var crossoverPoint0 = crossoverPoints0.SampleRandom(random);
       int level = parent0.Root.GetBranchLevel(crossoverPoint0.Child);
       int length = parent0.Root.GetLength() - crossoverPoint0.Child.GetLength();
 
@@ -136,7 +138,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         for (int i = 0; i != weights.Count; ++i)
           weights[i] /= sum;
 
+#pragma warning disable 612, 618
         selectedBranch = allowedBranches.SelectRandom(weights, random);
+#pragma warning restore 612, 618
       }
       Swap(crossoverPoint0, selectedBranch);
       return parent0;

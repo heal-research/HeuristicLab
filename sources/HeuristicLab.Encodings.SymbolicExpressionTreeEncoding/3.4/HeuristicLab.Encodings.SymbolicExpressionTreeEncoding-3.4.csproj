@@ -175,6 +175,7 @@
     <Compile Include="Grammars\SymbolicExpressionGrammarBase.cs" />
     <Compile Include="Grammars\SymbolicExpressionGrammar.cs" />
     <Compile Include="Grammars\SymbolicExpressionTreeGrammar.cs" />
+    <Compile Include="SymbolicExpressionTreeEncoding.cs" />
     <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs">
       <SubType>Code</SubType>

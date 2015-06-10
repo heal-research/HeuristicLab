@@ -320,7 +320,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeCrossover>()) {
         op.ParentsParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        op.ChildParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
+        op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
       }
       foreach (var op in operators.OfType<ISymbolicExpressionTreeManipulator>()) {
         op.SymbolicExpressionTreeParameter.ActualName = SolutionCreator.SymbolicExpressionTreeParameter.ActualName;

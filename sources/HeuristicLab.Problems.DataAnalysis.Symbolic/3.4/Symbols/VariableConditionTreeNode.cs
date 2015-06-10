@@ -73,7 +73,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
       threshold = NormalDistributedRandom.NextDouble(random, Symbol.ThresholdInitializerMu, Symbol.ThresholdInitializerSigma);
+
+#pragma warning disable 612, 618
       variableName = Symbol.VariableNames.SelectRandom(random);
+#pragma warning restore 612, 618
+
       slope = NormalDistributedRandom.NextDouble(random, Symbol.SlopeInitializerMu, Symbol.SlopeInitializerSigma);
     }
 
@@ -81,7 +85,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       base.ShakeLocalParameters(random, shakingFactor);
       double x = NormalDistributedRandom.NextDouble(random, Symbol.ThresholdManipulatorMu, Symbol.ThresholdManipulatorSigma);
       threshold = threshold + x * shakingFactor;
+
+#pragma warning disable 612, 618
       variableName = Symbol.VariableNames.SelectRandom(random);
+#pragma warning restore 612, 618
+
       x = NormalDistributedRandom.NextDouble(random, Symbol.SlopeManipulatorMu, Symbol.SlopeManipulatorSigma);
       slope = slope + x * shakingFactor;
     }

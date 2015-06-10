@@ -24,6 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -53,11 +54,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       ISymbolicExpressionTree symbolicExpressionTree,
       int maxFunctionDefinitions, int maxFunctionArguments) {
 
-      var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>();
-      if (functionDefiningBranches.Count() == 0)
+      var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>().ToList();
+      if (!functionDefiningBranches.Any())
         // no function defining branch => abort
         return false;
-      var selectedDefunBranch = functionDefiningBranches.SelectRandom(random);
+
+      var selectedDefunBranch = functionDefiningBranches.SampleRandom(random);
       if (selectedDefunBranch.NumberOfArguments <= 1)
         // argument deletion by consolidation is not possible => abort
         return false;
@@ -76,12 +78,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       DeleteArgumentByConsolidation(random, selectedDefunBranch, removedArgument);
 
       // delete the dynamic argument symbol that matches the argument to be removed
-      var matchingSymbol = selectedDefunBranch.Grammar.Symbols.OfType<Argument>().Where(s => s.ArgumentIndex == removedArgument).Single();
+      var matchingSymbol = selectedDefunBranch.Grammar.Symbols.OfType<Argument>().Single(s => s.ArgumentIndex == removedArgument);
       selectedDefunBranch.Grammar.RemoveSymbol(matchingSymbol);
       selectedDefunBranch.NumberOfArguments--;
       // reduce arity in known functions of all root branches
       foreach (var subtree in symbolicExpressionTree.Root.Subtrees) {
-        var matchingInvokeSymbol = subtree.Grammar.Symbols.OfType<InvokeFunction>().Where(s => s.FunctionName == selectedDefunBranch.FunctionName).SingleOrDefault();
+        var matchingInvokeSymbol = subtree.Grammar.Symbols.OfType<InvokeFunction>().SingleOrDefault(s => s.FunctionName == selectedDefunBranch.FunctionName);
         if (matchingInvokeSymbol != null) {
           subtree.Grammar.SetSubtreeCount(matchingInvokeSymbol, selectedDefunBranch.NumberOfArguments, selectedDefunBranch.NumberOfArguments);
         }
@@ -98,7 +100,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                      where node.Symbol.ArgumentIndex == removedArgumentIndex
                      select node;
       foreach (var argNode in argNodes) {
-        var replacementSymbol = possibleArgumentSymbols.SelectRandom(random);
+        var replacementSymbol = possibleArgumentSymbols.SampleRandom(random);
         argNode.Symbol = replacementSymbol;
       }
     }

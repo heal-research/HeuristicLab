@@ -19,13 +19,18 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
-using System;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+
+  //This class should not be used anymore. Use HeuristicLab.Random.RandomEnumberable instead
+  //This could not be fixed right now, because the algorithm behavior would be modified => version increment
+  [Obsolete("This class will be removed in the future, because the functionality is provided in HeuristicLab.Random.RandomEnumerable.")]
   public static class EnumerableExtensions {
+    [Obsolete("This method should not be used anymore. Use the extensions provided by HeuristicLab.Random.RandomEnumberable instead.")]
     public static T SelectRandom<T>(this IEnumerable<T> xs, IRandom random) {
       var list = xs as IList<T>;
       if (list != null) {
@@ -35,6 +40,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         return list[random.Next(list.Count)];
       }
     }
+    [Obsolete("This method should not be used anymore. Use the extensions provided by HeuristicLab.Random.RandomEnumberable instead.")]
     public static T SelectRandom<T>(this IEnumerable<T> xs, IEnumerable<double> weights, IRandom random) {
       var list = xs as IList<T>;
       var weightsList = weights as IList<double>;

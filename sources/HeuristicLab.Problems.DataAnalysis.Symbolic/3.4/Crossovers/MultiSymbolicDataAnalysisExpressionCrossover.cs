@@ -34,10 +34,11 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("MultiSymbolicDataAnalysisExpressionCrossover", "Randomly selects and applies one of its crossovers every time it is called.")]
+  [StorableClass]
   public class MultiSymbolicDataAnalysisExpressionCrossover<T> : StochasticMultiBranch<ISymbolicExpressionTreeCrossover>,
     ISymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     private const string ParentsParameterName = "Parents";
-    private const string ChildParameterName = "Child";
+    private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
     private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicExpressionTreeInterpreter";
@@ -61,8 +62,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ILookupParameter<ItemArray<ISymbolicExpressionTree>> ParentsParameter {
       get { return (ScopeTreeLookupParameter<ISymbolicExpressionTree>)Parameters[ParentsParameterName]; }
     }
-    public ILookupParameter<ISymbolicExpressionTree> ChildParameter {
-      get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[ChildParameterName]; }
+    public ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
     public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
@@ -98,7 +99,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisSingleObjectiveEvaluator<T>>(EvaluatorParameterName, "The single objective solution evaluator"));
       Parameters.Add(new ValueLookupParameter<IntRange>(SymbolicDataAnalysisEvaluationPartitionParameterName, "The start index of the dataset partition on which the symbolic data analysis solution should be evaluated."));
       Parameters.Add(new ScopeTreeLookupParameter<ISymbolicExpressionTree>(ParentsParameterName, "The parent symbolic expression trees which should be crossed."));
-      Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(ChildParameterName, "The child symbolic expression tree resulting from the crossover."));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The child symbolic expression tree resulting from the crossover."));
 
       EvaluatorParameter.Hidden = true;
       EvaluationPartitionParameter.Hidden = true;
@@ -110,6 +111,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       name = "MultiSymbolicDataAnalysisExpressionCrossover";
 
       SelectedOperatorParameter.ActualName = "SelectedCrossoverOperator";
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(SymbolicExpressionTreeParameterName))
+        Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
+      #endregion
     }
 
     private void InitializeOperators() {
@@ -154,7 +164,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     private void ParameterizeCrossovers() {
       foreach (ISymbolicExpressionTreeCrossover op in Operators) {
-        op.ChildParameter.ActualName = ChildParameter.Name;
+        op.SymbolicExpressionTreeParameter.ActualName = SymbolicExpressionTreeParameter.Name;
         op.ParentsParameter.ActualName = ParentsParameter.Name;
       }
       foreach (IStochasticOperator op in Operators.OfType<IStochasticOperator>()) {
