@@ -47,7 +47,9 @@ namespace HeuristicLab.Data {
     }
 
     public override string ToString() {
-      return Value.ToString("r");  // round-trip format
+      return Value.ToString("G17");  // round-trip format
+      // Note that the round-trip format "r" can still lead to different values when run on an 64-bit machine, therefore using G17 instead.
+      // (https://msdn.microsoft.com/en-us/library/kfsatb94.aspx)
     }
 
     public virtual int CompareTo(object obj) {
@@ -72,7 +74,7 @@ namespace HeuristicLab.Data {
       return valid;
     }
     protected virtual string GetValue() {
-      return Value.ToString("r");  // round-trip format
+      return ToString();
     }
     protected virtual bool SetValue(string value) {
       double val;

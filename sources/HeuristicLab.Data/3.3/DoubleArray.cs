@@ -55,7 +55,7 @@ namespace HeuristicLab.Data {
       return valid;
     }
     protected virtual string GetValue(int index) {
-      return this[index].ToString();
+      return this[index].ToString("G17");
     }
     protected virtual bool SetValue(string value, int index) {
       double val;

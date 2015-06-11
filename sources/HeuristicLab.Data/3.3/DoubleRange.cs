@@ -55,7 +55,7 @@ namespace HeuristicLab.Data {
     public DoubleRange(double start, double end) : base(new DoubleValue(start), new DoubleValue(end)) { }
 
     public override string ToString() {
-      return string.Format("Start: {0}, End: {1}", Start, End);
+      return string.Format("Start: {0:G17}, End: {1:G17}", Start, End);
     }
 
     public override StringConvertibleValueTuple<DoubleValue, DoubleValue> AsReadOnly() {
