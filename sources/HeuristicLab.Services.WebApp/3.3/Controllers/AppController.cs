@@ -20,7 +20,6 @@
 #endregion
 
 using System.Web.Mvc;
-using HeuristicLab.Services.WebApp.Configs;
 
 namespace HeuristicLab.Services.WebApp.Controllers {
 
@@ -30,7 +29,6 @@ namespace HeuristicLab.Services.WebApp.Controllers {
       if (!Request.Path.EndsWith("/")) {
         return RedirectPermanent(Request.Url + "/");
       }
-      BundleConfig.AddOrUpdateWebAppBundle();
       return View("~/WebApp/shared/layout/layout.cshtml");
     }
 

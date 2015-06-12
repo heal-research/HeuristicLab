@@ -5,10 +5,11 @@
             restrict: 'E',
             link: function (scope, element, attrs) {
                 var chart = null, opts = scope[attrs.options];
+                var div = null;
 
                 scope.$watchCollection(attrs.dataset, function (newData, oldData) {
                     if (!chart) {
-                        var div = element.append("<div>");
+                        div = element.append("<div>");
                         div.bind("plotselected", function (event, ranges) {
                             $.each(chart.getXAxes(), function (_, axis) {
                                 var opts2 = axis.options;

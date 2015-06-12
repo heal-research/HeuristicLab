@@ -1,5 +1,6 @@
 ﻿<li ng-repeat="section in entries" ng-class="{'category':section.isCategory === true, 'active': isActive(section.route)}">
-    <a ng-href="{{section.route}}" ng-if="!section.isCategory">
+    <a ng-href="{{section.route}}" ng-if="!section.isCategory"
+       data-toggle="collapse" data-target="#menu .navbar-collapse">
         <span ng-if="section.icon != ''" ng-class="section.icon" style="padding-right: 10px;"></span>
         <span>{{section.name}}</span>
     </a>

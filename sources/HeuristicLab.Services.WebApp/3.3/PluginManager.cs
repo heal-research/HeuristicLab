@@ -1,4 +1,25 @@
-﻿using System.Collections.Concurrent;
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Web;
@@ -16,17 +37,57 @@ namespace HeuristicLab.Services.WebApp {
 
     public HttpConfiguration Configuration { get; set; }
 
-    private string PluginsDirectory {
+    public static string PluginsDirectory {
       get { return string.Format(@"{0}WebApp\plugins", HttpRuntime.AppDomainAppPath); }
     }
 
     public PluginManager() {
       plugins = new ConcurrentDictionary<string, Plugin>();
+      var fileWatcher = new FileSystemWatcher(PluginsDirectory, "*") {
+        IncludeSubdirectories = true,
+        EnableRaisingEvents = true
+      };
+      fileWatcher.Created += OnFilesChanged;
+      fileWatcher.Changed += OnFilesChanged;
+      fileWatcher.Deleted += OnFilesChanged;
+      fileWatcher.Renamed += OnFilesChanged;
+    }
+
+    private void OnFilesChanged(object sender, FileSystemEventArgs args) {
+      string path = args.FullPath.Remove(0, PluginsDirectory.Length + 1);
+      var pathParts = path.Split('\\');
+      string pluginName = pathParts[0];
+      if (pathParts.Length == 1) {
+        switch (args.ChangeType) {
+          case WatcherChangeTypes.Created:
+            GetPlugin(pluginName);
+            break;
+
+          case WatcherChangeTypes.Deleted:
+            plugins.Remove(pluginName);
+            break;
+
+          case WatcherChangeTypes.Renamed:
+            RenamedEventArgs renamedArgs = (RenamedEventArgs)args;
+            string oldPath = renamedArgs.OldFullPath.Remove(0, PluginsDirectory.Length + 1);
+            var oldPathParts = oldPath.Split('\\');
+            string oldPluginName = oldPathParts[0];
+            plugins.Remove(oldPluginName);
+            GetPlugin(pluginName);
+            break;
+
+          case WatcherChangeTypes.Changed:
+            Plugin plugin = LookupPlugin(pluginName);
+            if (plugin != null) {
+              plugin.ReloadControllers();
+            }
+            break;
+        }
+      }
     }
 
     public Plugin GetPlugin(string name) {
-      Plugin plugin;
-      plugins.TryGetValue(name, out plugin);
+      Plugin plugin = LookupPlugin(name);
       if (plugin == null) {
         string directory = string.Format(@"{0}\{1}", PluginsDirectory, name);
         if (Directory.Exists(directory)) {
@@ -42,16 +103,14 @@ namespace HeuristicLab.Services.WebApp {
     }
 
     public IEnumerable<Plugin> GetPlugins() {
-      DiscoverPlugins();
       return plugins.Values;
     }
 
-    private void DiscoverPlugins() {
+    public void DiscoverPlugins() {
       var pluginDirectories = Directory.GetDirectories(PluginsDirectory);
       foreach (var directory in pluginDirectories) {
         string pluginName = Path.GetFileName(directory);
-        Plugin plugin;
-        plugins.TryGetValue(pluginName, out plugin);
+        Plugin plugin = LookupPlugin(pluginName);
         if (plugin == null) {
           plugin = new Plugin {
             Name = pluginName,
@@ -61,6 +120,12 @@ namespace HeuristicLab.Services.WebApp {
           plugins.Add(pluginName, plugin);
         }
       }
+    }
+
+    private Plugin LookupPlugin(string name) {
+      Plugin plugin;
+      plugins.TryGetValue(name, out plugin);
+      return plugin;
     }
   }
 }

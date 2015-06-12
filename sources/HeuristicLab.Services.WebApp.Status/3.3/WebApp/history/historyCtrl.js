@@ -3,7 +3,6 @@
     module.controller('app.status.historyCtrl',
         ['$scope', '$interval', 'app.status.data.service',
         function ($scope, $interval, dataService) {
-
             $scope.chartOptions = {
                 grid: {
                     borderWidth: 1,
@@ -58,6 +57,7 @@
                 }
             };
 
+
             $scope.fromDate = new Date();
             $scope.toDate = new Date();
 
@@ -88,21 +88,19 @@
             $scope.memorySeries = [[]];
 
             var updateCharts = function () {
-                dataService.getStatusHistory({start: ConvertFromDate($scope.fromDate), end: ConvertToDate($scope.toDate)}, function (status) {
+                dataService.getStatusHistory({ start: ConvertFromDate($scope.fromDate), end: ConvertToDate($scope.toDate) }, function (status) {
                     var noOfStatus = status.length;
                     var cpuSeries = [];
                     var coreSeries = [[], []];
                     var memorySeries = [[], []];
                     for (var i = 0; i < noOfStatus; ++i) {
                         var curStatus = status[i];
-                        var cpuData = Math.round(curStatus.CpuUtilizationStatus.UsedCpuUtilization);
-                        var usedCores = curStatus.CoreStatus.TotalCores - curStatus.CoreStatus.FreeCores;
-                        var usedMemory = curStatus.MemoryStatus.TotalMemory - curStatus.MemoryStatus.FreeMemory;
+                        var cpuData = Math.round(curStatus.CpuUtilizationStatus.ActiveCpuUtilization);
                         cpuSeries.push([curStatus.Timestamp, cpuData]);
-                        coreSeries[0].push([curStatus.Timestamp, curStatus.CoreStatus.TotalCores]);
-                        coreSeries[1].push([curStatus.Timestamp, usedCores]);
-                        memorySeries[0].push([curStatus.Timestamp, curStatus.MemoryStatus.TotalMemory]);
-                        memorySeries[1].push([curStatus.Timestamp, usedMemory]);
+                        coreSeries[0].push([curStatus.Timestamp, curStatus.CoreStatus.ActiveCores]);
+                        coreSeries[1].push([curStatus.Timestamp, curStatus.CoreStatus.CalculatingCores]);
+                        memorySeries[0].push([curStatus.Timestamp, curStatus.MemoryStatus.ActiveMemory]);
+                        memorySeries[1].push([curStatus.Timestamp, curStatus.MemoryStatus.UsedMemory]);
                     }
                     $scope.cpuSeries = [{ data: cpuSeries, label: "&nbsp;CPU Utilization", color: "#f7921d" }];
                     $scope.coreSeries = [

@@ -78,13 +78,12 @@ body {
 }
 
 #menu {
-  position: absolute;
-  min-height: inherit;
-  width: 250px;
+  position: relative;
   background: #FAFAFA;
   display: block;
   overflow: hidden;
-  border-right: 1px solid #D3D3D3;
+  z-index: 10000;
+  width: 100%;
 }
 
 .category  {
@@ -100,11 +99,12 @@ body {
 
 #view {
   position: relative;
-  left: 0px;
-  margin-left: 250px;
+  left: 0;
+  margin-left: 0px;
   display: block;
   overflow: hidden;
 }
+
 
 .view-header {
   background: #FAFAFA;
@@ -123,10 +123,57 @@ body {
   padding: 0;
 }
 
-.navbar-header{
-  width: 250px;
+.navbar-header {
+  width: 100%;
   background: #3c3a39;
   color: #FFFFFF;
+  float: left;
+}
+
+
+@media (min-width: 768px) {
+  #view {
+    margin-left: 250px;
+  }
+
+  #menu {
+    visibility: visible;
+    position: absolute;
+    width: 250px;
+    min-height: inherit;
+    border-right: 1px solid #D3D3D3;
+    z-index: 0;
+  }
+
+  .navbar-header {
+    width: 250px;
+  }
+}
+.container-fluid .navbar-header {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-nav {
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-right {
+  float: right!important
+}
+
+.navbar-nav>li>a {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.navbar-content {
+  padding-right: 15px;
+}
+
+.navbar-nav > li {
+  float: left;
 }
 
 .navbar-default {
@@ -139,6 +186,7 @@ body {
 
 .nav-sidebar {
   font-size: 12px;
+  padding-bottom: 30px;
 }
 
 .nav-sidebar > li > a {
@@ -278,6 +326,30 @@ input[type="color"]:focus,
   height: 300px;
 }
 
+.table-no-border>thead>tr>th, 
+.table-no-border>tbody>tr>th, 
+.table-no-border>tfoot>tr>th, 
+.table-no-border>thead>tr>td, 
+.table-no-border>tbody>tr>td, 
+.table-no-border>tfoot>tr>td,
+.table-no-border>tbody,
+.table-no-border>thead,
+.table-no-border>tfoot{
+  border-top: none !important; 
+  border-bottom: none !important; 
+}
+
+.table-auto-width {
+  width: auto !important;
+}
+
+.center-element {
+  margin: 0 auto;
+}
+
+.table-content {
+  margin-bottom: 0;
+}
 
 #top-navbar {
   margin-right: 15px;
@@ -310,11 +382,58 @@ input[type="color"]:focus,
 }
 
 .navbar-default .navbar-text {
+  display: block;
   color: #ffffff;
   text-shadow: none !important;
+  margin: 0;
+  padding: 15px;
 }
 
+.navbar-nav {
+  float:left;
+  margin:0
+}
+
+.navbar-nav>li {
+  float:left
+}
+
+.navbar-nav>li>a {
+  padding-top:15px;
+  padding-bottom:15px
+}
+
+.navbar-toggle {
+  border: none !important;
+}
+
+.navbar-toggle:focus {
+  background-color: transparent !important;
+}
+
+.navbar-toggle:hover {
+  background-color: #D3D3D3 !important;
+}
+
+#menu .navbar-collapse {
+  padding: 0;
+  margin: 0;
+}
 
 .default-view-container {
   padding: 30px;
+}
+
+.panel-heading a:after {
+    font-family:'Glyphicons Halflings';
+    content:"\e114";
+    float: right;
+    color: grey;
+}
+.panel-heading a.collapsed:after {
+    content:"\e080";
+}
+
+.panel-heading a:focus, a:hover {
+  text-decoration: none;
 }

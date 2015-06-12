@@ -26,6 +26,10 @@
                     $window.location.reload();
                 });
             };
+
+            $scope.hideMenu = function() {
+                $(".navbar-collapse").collapse('hide');
+            };
         }]
     );
 })();
