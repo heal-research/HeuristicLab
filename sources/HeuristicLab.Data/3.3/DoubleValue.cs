@@ -72,7 +72,7 @@ namespace HeuristicLab.Data {
       return valid;
     }
     protected virtual string GetValue() {
-      return ToString();
+      return Value.ToString("r");  // round-trip format
     }
     protected virtual bool SetValue(string value) {
       double val;
