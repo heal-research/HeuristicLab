@@ -41,10 +41,9 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
         )
         SELECT 
           DISTINCT UserId,
-          (SELECT Count FROM UserTasks WHERE TaskState = 'Calculating' AND UserId = ut.UserId) AS CalculatingTasks,
-          (SELECT Count FROM UserTasks WHERE TaskState = 'Waiting' AND UserId = ut.UserId) AS WaitingTasks
+          ISNULL((SELECT Count FROM UserTasks WHERE TaskState = 'Calculating' AND UserId = ut.UserId), 0) AS CalculatingTasks,
+          ISNULL((SELECT Count FROM UserTasks WHERE TaskState = 'Waiting' AND UserId = ut.UserId), 0) AS WaitingTasks
         FROM UserTasks ut;";
-
 
     private class UserTaskStatus {
       public Guid UserId { get; set; }
@@ -128,7 +127,8 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
         increment += 5;
       }
       using (var db = new HiveDataContext()) {
-        var statistics = db.Statistics.Where(s => s.Timestamp >= start && s.Timestamp <= end);
+        var statistics = db.Statistics.Where(s => s.Timestamp >= start && s.Timestamp <= end)
+                                      .OrderBy(s => s.Timestamp);
         var status = new DTO.Status {
           CoreStatus = new DTO.CoreStatus(),
           CpuUtilizationStatus = new DTO.CpuUtilizationStatus(),
