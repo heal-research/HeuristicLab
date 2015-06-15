@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Web.Http;
 using HeuristicLab.Services.Hive;
@@ -71,7 +72,6 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
                             select slave).ToList();
         var activeSlaves = onlineSlaves.Where(s => s.IsAllowedToCalculate).ToList();
         var calculatingSlaves = activeSlaves.Where(s => s.SlaveState == SlaveState.Calculating).ToList();
-
         int calculatingMemory = calculatingSlaves.Any() ? (int)calculatingSlaves.Sum(s => s.Memory) / 1024 : 0;
         int freeCalculatingMemory = calculatingSlaves.Any() ? (int)calculatingSlaves.Sum(s => s.FreeMemory) / 1024 : 0;
 
@@ -127,8 +127,13 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
         increment += 5;
       }
       using (var db = new HiveDataContext()) {
+        DataLoadOptions loadOptions = new DataLoadOptions();
+        loadOptions.LoadWith<Statistics>(o => o.SlaveStatistics);
+        db.LoadOptions = loadOptions;
+        db.DeferredLoadingEnabled = false;
         var statistics = db.Statistics.Where(s => s.Timestamp >= start && s.Timestamp <= end)
-                                      .OrderBy(s => s.Timestamp);
+                                      .OrderBy(s => s.Timestamp)
+                                      .ToList();
         var status = new DTO.Status {
           CoreStatus = new DTO.CoreStatus(),
           CpuUtilizationStatus = new DTO.CpuUtilizationStatus(),

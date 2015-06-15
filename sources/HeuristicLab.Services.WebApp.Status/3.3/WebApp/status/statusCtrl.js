@@ -142,7 +142,7 @@
 
                     // charts are currently filled with old total/used data
                     // start temporary
-                    var usedCores = status.CoreStatus.TotalCores - status.getCoreStatus.FreeCores;
+                    var usedCores = status.CoreStatus.TotalCores - status.CoreStatus.FreeCores;
                     var usedMemory = status.MemoryStatus.TotalMemory - status.MemoryStatus.FreeMemory;
                     // end temporary
                     coreSeries[0].push([$scope.status.Timestamp, status.CoreStatus.TotalCores]);
