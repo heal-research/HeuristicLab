@@ -221,7 +221,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// </summary>
     /// <param name="stream">The stream.</param>
     /// <returns>A fresh object instance.</returns>
-    public static object DeserializeWithGZip(Stream stream) {
+    private static object DeserializeWithGZip(Stream stream) {
       try {
         using (StreamReader reader = new StreamReader(new GZipStream(stream, CompressionMode.Decompress))) {
           XmlParser parser = new XmlParser(reader);
