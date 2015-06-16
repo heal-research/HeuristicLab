@@ -36,6 +36,7 @@ namespace HeuristicLab.Clients.Access.Administration {
 
     protected override User CreateItem() {
       var user = new User();
+      user.IsApproved = true;
       user.UserName = "New User";
       return user;
     }
