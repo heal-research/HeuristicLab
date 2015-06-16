@@ -138,12 +138,13 @@ namespace HeuristicLab.Analysis.Views {
       foreach (var point in points) {
         if (!point.Value.Any()) continue;
 
-        Series histogramSeries = new Series(point.Key);
-        chart.Series.Add(histogramSeries);
         double minValue = point.Value.Min();
         double maxValue = point.Value.Max();
         double intervalWidth = (maxValue - minValue) / bins;
         if (intervalWidth <= 0) continue;
+
+        Series histogramSeries = new Series(point.Key);
+        chart.Series.Add(histogramSeries);
 
         if (!exactCheckBox.Checked) {
           intervalWidth = HumanRoundRange(intervalWidth);
@@ -169,6 +170,12 @@ namespace HeuristicLab.Analysis.Views {
 
         chart.ApplyPaletteColors();
         CalculateDensity(histogramSeries, point.Value, bandwith);
+      }
+
+      if (chart.Series.Any()) {
+        noDataLabel.Visible = false;
+      } else {
+        noDataLabel.Visible = true;
       }
 
       ChartArea chartArea = chart.ChartAreas[0];
