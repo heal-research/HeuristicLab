@@ -83,7 +83,7 @@ public partial class Status : System.Web.UI.Page {
     groupsLabel.Text += string.Join(", ", groups.Select(x => string.Format("<a href=\"?resource={0}\">{0}</a>", x.Name)));
 
     overallCpuUtilizationLabel.Text = (onlineSlaves.Any() ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
-    cpuUtilizationLabel.Text = (onlineSlaves.Any() && onlineSlaves.Any(x => x.IsAllowedToCalculate) ? Math.Round(onlineSlaves.Where(x => x.IsAllowedToCalculate).Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
+    cpuUtilizationLabel.Text = (onlineSlaves.Any(x => x.IsAllowedToCalculate) ? Math.Round(onlineSlaves.Where(x => x.IsAllowedToCalculate).Average(s => s.CpuUtilization), 2).ToString() : "0.0") + " %";
 
     DT.Statistics[] stats = new DT.Statistics[0];
     transactionManager.UseTransaction(() => {
