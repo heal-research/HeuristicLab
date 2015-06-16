@@ -217,11 +217,11 @@ namespace HeuristicLab.Persistence.Default.Xml {
 
 
     /// <summary>
-    /// Deserializes an object from the specified stream.
+    /// Deserializes an object from the specified stream using GZip compression.
     /// </summary>
     /// <param name="stream">The stream.</param>
     /// <returns>A fresh object instance.</returns>
-    public static object Deserialize(Stream stream) {
+    public static object DeserializeWithGZip(Stream stream) {
       try {
         using (StreamReader reader = new StreamReader(new GZipStream(stream, CompressionMode.Decompress))) {
           XmlParser parser = new XmlParser(reader);
@@ -238,13 +238,38 @@ namespace HeuristicLab.Persistence.Default.Xml {
     }
 
     /// <summary>
+    /// Deserializes an object from the specified stream using Zip compression.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <returns>A fresh object instance.</returns>
+    private static object DeserializeWithZip(Stream stream) {
+      ZipArchive zipFile = new ZipArchive(stream);
+      return Deserialize(zipFile);
+    }
+
+    /// <summary>
     /// Deserializes an object from the specified stream.
     /// </summary>
     /// <typeparam name="T">object type expected from the serialized stream</typeparam>
     /// <param name="stream">The stream.</param>
+    /// <param name="useZip">If true, uses zip for decompression, otherwise gzip.</param>
     /// <returns>A fresh object instance.</returns>
-    public static T Deserialize<T>(Stream stream) {
-      return (T)Deserialize(stream);
+    public static T Deserialize<T>(Stream stream, bool useZip = false) {
+      return (T)Deserialize(stream, useZip);
+    }
+
+    /// <summary>
+    /// Deserializes an object from the specified stream.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="useZip">If true, uses zip for decompression, otherwise gzip.</param>
+    /// <returns>A fresh object instance.</returns>
+    public static object Deserialize(Stream stream, bool useZip = false) {
+      if (useZip) {
+        return DeserializeWithZip(stream);
+      } else {
+        return DeserializeWithGZip(stream);
+      }
     }
 
     private static object Deserialize(ZipArchive zipFile) {
