@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var clonedTree = (ISymbolicExpressionTree)tree.Clone();
       var model = modelCreator.CreateSymbolicClassificationModel(clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
 
-      var nodes = clonedTree.IterateNodesPrefix().ToList();
+      var nodes = clonedTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
       double quality = Evaluate(model, problemData, rows);
 
       for (int i = 0; i < nodes.Count; ++i) {
