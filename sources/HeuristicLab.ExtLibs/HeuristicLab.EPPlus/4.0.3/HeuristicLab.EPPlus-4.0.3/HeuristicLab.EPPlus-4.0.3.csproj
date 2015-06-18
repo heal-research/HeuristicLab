@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="epplus-4.0.3 memory improvement.diff" />
+    <None Include="epplus-4.0.3-Mono.patch" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
