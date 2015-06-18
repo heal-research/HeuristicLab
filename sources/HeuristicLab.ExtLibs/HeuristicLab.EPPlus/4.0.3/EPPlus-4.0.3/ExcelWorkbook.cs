@@ -336,6 +336,9 @@ namespace OfficeOpenXml
                 if (_standardFontWidth == decimal.MinValue || _fontID != Styles.Fonts[0].Id)
 				{
 					var font = Styles.Fonts[0];
+#if __MonoCS__
+		_standardFontWidth = (int)(font.Size * (2D / 3D)); //Aprox for Calibri.
+#else
                     try
                     {
                         //Font f = new Font(font.Name, font.Size);
@@ -373,6 +376,7 @@ namespace OfficeOpenXml
                     {
                         _standardFontWidth = (int)(font.Size * (2D / 3D)); //Aprox for Calibri.
                     }
+#endif
 				}
 				return _standardFontWidth;
 			}
