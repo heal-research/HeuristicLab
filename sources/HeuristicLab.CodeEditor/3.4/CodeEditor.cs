@@ -26,7 +26,6 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Documents;
-using HeuristicLab.Common;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.AddIn;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -36,14 +35,13 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Indentation.CSharp;
 using ICSharpCode.AvalonEdit.Search;
 using ICSharpCode.NRefactory.Editor;
-using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.SharpDevelop.Editor;
 using Forms = System.Windows.Forms;
 using Input = System.Windows.Input;
 using Media = System.Windows.Media;
 
 namespace HeuristicLab.CodeEditor {
-  public partial class CodeEditor : Forms.UserControl {
+  public partial class CodeEditor : CodeEditorBase {
     private static readonly Media.Color WarningColor = Media.Colors.Blue;
     private static readonly Media.Color ErrorColor = Media.Colors.Red;
     private static readonly Media.Color ReadOnlyColor = Media.Colors.Moccasin;
@@ -72,7 +70,7 @@ namespace HeuristicLab.CodeEditor {
 
     private ITextMarker prefixMarker;
     private string prefix = string.Empty;
-    public string Prefix {
+    public override string Prefix {
       get { return prefix; }
       set {
         if (value == null) value = string.Empty;
@@ -90,7 +88,7 @@ namespace HeuristicLab.CodeEditor {
 
     private ITextMarker suffixMarker;
     private string suffix = string.Empty;
-    public string Suffix {
+    public override string Suffix {
       get { return suffix; }
       set {
         if (value == null) value = string.Empty;
@@ -107,7 +105,7 @@ namespace HeuristicLab.CodeEditor {
       }
     }
 
-    public string UserCode {
+    public override string UserCode {
       get { return Doc.GetText(prefix.Length, Doc.TextLength - suffix.Length - prefix.Length); }
       set {
         if (Doc.Text == value) return;
@@ -162,7 +160,7 @@ namespace HeuristicLab.CodeEditor {
     }
     #endregion
 
-    public bool ReadOnly {
+    public override bool ReadOnly {
       get { return TextEditor.IsReadOnly; }
       set { TextEditor.IsReadOnly = value; }
     }
@@ -258,30 +256,30 @@ namespace HeuristicLab.CodeEditor {
     }
 
     #region Assembly Management
-    public void AddAssembly(Assembly a) {
+    public override void AddAssembly(Assembly a) {
       assemblyLoader.AddAssembly(a);
     }
 
-    public void AddAssemblies(IEnumerable<Assembly> assemblies) {
+    public override void AddAssemblies(IEnumerable<Assembly> assemblies) {
       assemblyLoader.AddAssemblies(assemblies);
     }
 
-    public async Task AddAssembliesAsync(IEnumerable<Assembly> assemblies) {
+    public override async Task AddAssembliesAsync(IEnumerable<Assembly> assemblies) {
       await assemblyLoader.AddAssembliesAsync(assemblies);
     }
 
-    public void RemoveAssembly(Assembly a) {
+    public override void RemoveAssembly(Assembly a) {
       assemblyLoader.RemoveAssembly(a);
     }
     #endregion
 
-    public void ScrollToPosition(int line, int column) {
+    public override void ScrollToPosition(int line, int column) {
       var segment = GetSegmentAtLocation(line, column);
       TextEditor.CaretOffset = segment.Offset + segment.Length;
       TextEditor.ScrollToLine(line);
     }
 
-    public void ScrollAfterPrefix() {
+    public override void ScrollAfterPrefix() {
       var location = Doc.GetLocation(prefix.Length);
       ScrollToPosition(location.Line, location.Column);
     }
@@ -398,7 +396,7 @@ namespace HeuristicLab.CodeEditor {
     }
 
     #region Compiler Errors
-    public void ShowCompileErrors(CompilerErrorCollection compilerErrors) {
+    public override void ShowCompileErrors(CompilerErrorCollection compilerErrors) {
       if (compilerErrors == null) return;
 
       textMarkerService.RemoveAll(x => x != prefixMarker && x != suffixMarker);
@@ -445,49 +443,5 @@ namespace HeuristicLab.CodeEditor {
           break;
       }
     }
-
-    #region Events
-    public event EventHandler TextEditorTextChanged;
-    private void OnTextEditorTextChanged() {
-      var handler = TextEditorTextChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler<EventArgs<IEnumerable<Assembly>>> AssembliesLoading;
-    private void OnAssembliesLoading(IEnumerable<Assembly> args) {
-      var handler = AssembliesLoading;
-      if (handler != null) handler(this, new EventArgs<IEnumerable<Assembly>>(args));
-    }
-
-    public event EventHandler<EventArgs<IEnumerable<Assembly>>> AssembliesLoaded;
-    private void OnAssembliesLoaded(IEnumerable<Assembly> args) {
-      var handler = AssembliesLoaded;
-      if (handler != null) handler(this, new EventArgs<IEnumerable<Assembly>>(args));
-    }
-
-    public event EventHandler<EventArgs<IEnumerable<IUnresolvedAssembly>>> InternalAssembliesLoaded;
-    private void OnInternalAssembliesLoaded(IEnumerable<IUnresolvedAssembly> args) {
-      var handler = InternalAssembliesLoaded;
-      if (handler != null) handler(this, new EventArgs<IEnumerable<IUnresolvedAssembly>>(args));
-    }
-
-    public event EventHandler<EventArgs<IEnumerable<Assembly>>> AssembliesUnloading;
-    private void OnAssembliesUnloading(IEnumerable<Assembly> args) {
-      var handler = AssembliesUnloading;
-      if (handler != null) handler(this, new EventArgs<IEnumerable<Assembly>>(args));
-    }
-
-    public event EventHandler<EventArgs<IEnumerable<Assembly>>> AssembliesUnloaded;
-    private void OnAssembliesUnloaded(IEnumerable<Assembly> args) {
-      var handler = AssembliesUnloaded;
-      if (handler != null) handler(this, new EventArgs<IEnumerable<Assembly>>(args));
-    }
-
-    public event EventHandler<EventArgs<IEnumerable<IUnresolvedAssembly>>> InternalAssembliesUnloaded;
-    private void OnInternalAssembliesUnloaded(IEnumerable<IUnresolvedAssembly> args) {
-      var handler = InternalAssembliesUnloaded;
-      if (handler != null) handler(this, new EventArgs<IEnumerable<IUnresolvedAssembly>>(args));
-    }
-    #endregion
   }
 }

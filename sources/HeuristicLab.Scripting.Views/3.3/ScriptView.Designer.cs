@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
-using System.Reflection;
-using HeuristicLab.Common;
 
 namespace HeuristicLab.Scripting.Views {
   partial class ScriptView {
@@ -63,7 +60,11 @@ namespace HeuristicLab.Scripting.Views {
       this.lineColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.columnColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.descriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+#if __MonoCS__
+      this.codeEditor = new HeuristicLab.CodeEditor.SimpleCodeEditor();
+#else
       this.codeEditor = new HeuristicLab.CodeEditor.CodeEditor();
+#endif
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.infoTabControl.SuspendLayout();
@@ -224,8 +225,8 @@ namespace HeuristicLab.Scripting.Views {
       // 
       // splitContainer1
       // 
-      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.splitContainer1.Location = new System.Drawing.Point(0, 56);
       this.splitContainer1.Name = "splitContainer1";
@@ -286,7 +287,7 @@ namespace HeuristicLab.Scripting.Views {
     protected System.Windows.Forms.ColumnHeader lineColumnHeader;
     protected System.Windows.Forms.ColumnHeader columnColumnHeader;
     protected System.Windows.Forms.ColumnHeader descriptionColumnHeader;
-    protected CodeEditor.CodeEditor codeEditor;
+    protected CodeEditor.CodeEditorBase codeEditor;
     protected System.Windows.Forms.SplitContainer splitContainer1;
   }
 }

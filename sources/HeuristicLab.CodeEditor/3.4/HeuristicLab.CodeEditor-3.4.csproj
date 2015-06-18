@@ -136,6 +136,9 @@
     <Compile Include="GoToLineDialog.Designer.cs">
       <DependentUpon>GoToLineDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="CodeEditorBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="LanguageFeatures\CodeFolding\CodeFoldingResult.cs" />
     <Compile Include="LanguageFeatures\CodeFolding\CodeFoldingStrategy.cs" />
     <Compile Include="LanguageFeatures\CodeFolding\CSharp\CSharpCodeFoldingContext.cs" />
@@ -171,6 +174,12 @@
     </Compile>
     <Compile Include="CodeEditor.Designer.cs">
       <DependentUpon>CodeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SimpleCodeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SimpleCodeEditor.Designer.cs">
+      <DependentUpon>SimpleCodeEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="AvalonEditWrapper.xaml.cs">
       <DependentUpon>AvalonEditWrapper.xaml</DependentUpon>
