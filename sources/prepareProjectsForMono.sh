@@ -25,6 +25,10 @@ else
    echo "Unsupported operating system, compiling HeuristicLab may not work!"
 fi
 
+#remove code from HeuristicLab.CodeEditor that depends on WPF and therefore does not work with Mono
+sed -e '/ITextMarker.cs/d' -e '/MethodDefinitionReadOnlySectionProvider.cs/d' -e '/GoToLineDialog/,+2d' -e '/TextMarkerService.cs/d' -e '/Compile Include\=\"LanguageFeatures/d' -e '/AvalonEditWrapper.xaml.cs/,+2d' -e '/AvalonEditWrapper.xaml/,+3d' -e '/CodeViewer/,+2d' -e '/\"CodeEditor.cs/,+2d' -e '/\"CodeEditor.Designer.cs/,+2d' HeuristicLab.CodeEditor/3.4/HeuristicLab.CodeEditor-3.4.csproj > tmp
+mv tmp HeuristicLab.CodeEditor/3.4/HeuristicLab.CodeEditor-3.4.csproj 
+
 
 # switch to MultiDocument MainForm type as Docking doesn't properly work on Linux
 sed "s/DockingMainForm/MultipleDocumentMainForm/g" HeuristicLab.Optimizer/3.3/Properties/Settings.settings > tmp
