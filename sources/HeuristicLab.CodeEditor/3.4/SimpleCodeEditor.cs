@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System;
+
 namespace HeuristicLab.CodeEditor {
   public partial class SimpleCodeEditor : CodeEditorBase {
 
@@ -32,6 +34,10 @@ namespace HeuristicLab.CodeEditor {
         if (TextEditor.Text == value) return;
         TextEditor.Text = value;
       }
+    }
+
+    protected virtual void TextEditor_TextChanged(object sender, EventArgs e) {
+      OnTextEditorTextChanged();
     }
   }
 }

@@ -28,21 +28,22 @@
       // 
       // TextEditor
       // 
-      this.TextEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.TextEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.TextEditor.Location = new System.Drawing.Point(3, 3);
       this.TextEditor.Multiline = true;
       this.TextEditor.Name = "TextEditor";
       this.TextEditor.Size = new System.Drawing.Size(158, 57);
       this.TextEditor.TabIndex = 0;
+      this.TextEditor.TextChanged += new System.EventHandler(this.TextEditor_TextChanged);
       // 
-      // CodeEditor
+      // SimpleCodeEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.TextEditor);
-      this.Name = "CodeEditor";
+      this.Name = "SimpleCodeEditor";
       this.Size = new System.Drawing.Size(164, 63);
       this.ResumeLayout(false);
       this.PerformLayout();

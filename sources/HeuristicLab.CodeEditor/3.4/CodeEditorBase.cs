@@ -59,11 +59,6 @@ namespace HeuristicLab.CodeEditor {
 
     #region Events
     public event EventHandler TextEditorTextChanged;
-    protected virtual void TextEditor_TextChanged(object sender, EventArgs e) {
-      if (TextEditorTextChanged != null) {
-        TextEditorTextChanged(this, new EventArgs());
-      }
-    }
     protected virtual void OnTextEditorTextChanged() {
       var handler = TextEditorTextChanged;
       if (handler != null) handler(this, EventArgs.Empty);
