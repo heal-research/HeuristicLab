@@ -67,5 +67,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public abstract ISymbolicExpressionTree Crossover(IRandom random, ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1);
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.4
+      #region Backwards compatible code, remove with 3.5
+      if (Parameters.ContainsKey("Child")) {
+        var oldChildParameter = (ILookupParameter<ISymbolicExpressionTree>)Parameters["Child"];
+        Parameters.Remove("Child");
+        SymbolicExpressionTreeParameter.ActualName = oldChildParameter.ActualName;
+      }
+      #endregion
+    }
   }
 }
