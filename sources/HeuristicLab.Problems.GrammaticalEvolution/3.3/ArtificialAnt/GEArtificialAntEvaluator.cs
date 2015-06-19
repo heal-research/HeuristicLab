@@ -101,8 +101,9 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
 
       if (Parameters.ContainsKey("SymbolicExpressionTree") &&
           Parameters["SymbolicExpressionTree"] is ILookupParameter<SymbolicExpressionTree>) {
+        var previousActualName = ((ILookupParameter<SymbolicExpressionTree>)Parameters["SymbolicExpressionTree"]).ActualName;
         Parameters.Remove("SymbolicExpressionTree");
-        Parameters.Add(new LookupParameter<ISymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solution encoded as a symbolic expression tree that should be evaluated"));
+        Parameters.Add(new LookupParameter<ISymbolicExpressionTree>("SymbolicExpressionTree", "The artificial ant solution encoded as a symbolic expression tree that should be evaluated", previousActualName));
       }
 
       #endregion
