@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// Represents a classification data analysis solution
   /// </summary>
   [StorableClass]
-  public abstract class ClassificationSolution : ClassificationSolutionBase {
+  public class ClassificationSolution : ClassificationSolutionBase {
     protected readonly Dictionary<int, double> evaluationCache;
 
     [StorableConstructor]
@@ -45,6 +45,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : base(model, problemData) {
       evaluationCache = new Dictionary<int, double>(problemData.Dataset.Rows);
       CalculateClassificationResults();
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new ClassificationSolution(this, cloner);
     }
 
     public override IEnumerable<double> EstimatedClassValues {
