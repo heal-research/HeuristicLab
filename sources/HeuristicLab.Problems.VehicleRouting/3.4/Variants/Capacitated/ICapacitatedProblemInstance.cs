@@ -24,6 +24,7 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
   public interface ICapacitatedProblemInstance : IVRPProblemInstance {
-    DoubleValue OverloadPenalty { get; set; }
+    DoubleValue OverloadPenalty { get; }
+    DoubleValue CurrentOverloadPenalty { get; set; }
   }
 }

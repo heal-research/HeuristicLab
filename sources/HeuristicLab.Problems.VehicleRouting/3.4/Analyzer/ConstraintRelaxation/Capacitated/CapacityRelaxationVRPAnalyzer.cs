@@ -135,20 +135,20 @@ namespace HeuristicLab.Problems.VehicleRouting {
       double min = cvrp.OverloadPenalty.Value / (1 + sigma);
       double max = cvrp.OverloadPenalty.Value * (1 + phi);
 
-      cvrp.OverloadPenalty = new DoubleValue(min + (max - min) * factor);
-      if (cvrp.OverloadPenalty.Value < minPenalty)
-        cvrp.OverloadPenalty.Value = minPenalty;
-      if (cvrp.OverloadPenalty.Value > maxPenalty)
-        cvrp.OverloadPenalty.Value = maxPenalty;
+      cvrp.CurrentOverloadPenalty = new DoubleValue(min + (max - min) * factor);
+      if (cvrp.CurrentOverloadPenalty.Value < minPenalty)
+        cvrp.CurrentOverloadPenalty.Value = minPenalty;
+      if (cvrp.CurrentOverloadPenalty.Value > maxPenalty)
+        cvrp.CurrentOverloadPenalty.Value = maxPenalty;
 
       for (int j = 0; j < qualities.Length; j++) {
-        qualities[j].Value += overloads[j].Value * cvrp.OverloadPenalty.Value;
+        qualities[j].Value += overloads[j].Value * cvrp.CurrentOverloadPenalty.Value;
       }
 
       if (!results.ContainsKey("Current Overload Penalty")) {
-        results.Add(new Result("Current Overload Penalty", new DoubleValue(cvrp.OverloadPenalty.Value)));
+        results.Add(new Result("Current Overload Penalty", new DoubleValue(cvrp.CurrentOverloadPenalty.Value)));
       } else {
-        (results["Current Overload Penalty"].Value as DoubleValue).Value = cvrp.OverloadPenalty.Value;
+        (results["Current Overload Penalty"].Value as DoubleValue).Value = cvrp.CurrentOverloadPenalty.Value;
       }
 
       return base.Apply();

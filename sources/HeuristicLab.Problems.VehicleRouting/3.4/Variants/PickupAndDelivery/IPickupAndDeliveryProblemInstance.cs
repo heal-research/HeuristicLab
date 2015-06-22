@@ -25,7 +25,8 @@ using HeuristicLab.Problems.VehicleRouting.Interfaces;
 namespace HeuristicLab.Problems.VehicleRouting.Variants {
   public interface IPickupAndDeliveryProblemInstance : IVRPProblemInstance {
     IntArray PickupDeliveryLocation { get; }
-    DoubleValue PickupViolationPenalty { get; set; }
+    DoubleValue PickupViolationPenalty { get; }
+    DoubleValue CurrentPickupViolationPenalty { get; set; }
 
     int GetPickupDeliveryLocation(int city);
   }
