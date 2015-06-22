@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Common;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
@@ -44,8 +45,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
       cmbSamples.SelectedIndex = 0;
 
+      residualComboBox.SelectedIndex = 0;
+
       chart.CustomizeAllChartAreas();
-      chart.ChartAreas[0].AxisX.Title = "Absolute Error";
+      chart.ChartAreas[0].AxisX.Title = residualComboBox.SelectedItem.ToString();
       chart.ChartAreas[0].AxisX.Minimum = 0.0;
       chart.ChartAreas[0].AxisX.Maximum = 0.0;
       chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
@@ -108,6 +111,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
 
       AddRegressionSolution(Content);
+
+      chart.ChartAreas[0].AxisX.Title = residualComboBox.SelectedItem.ToString();
     }
 
     protected void AddRegressionSolution(IRegressionSolution solution) {
@@ -118,13 +123,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       solutionSeries.ChartType = SeriesChartType.FastLine;
       var residuals = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
 
-
       var maxValue = residuals.Max();
-      if (maxValue >= chart.ChartAreas[0].AxisX.Maximum) {
-        double scale = Math.Pow(10, Math.Floor(Math.Log10(maxValue)));
-        var maximum = scale * (1 + (int)(maxValue / scale));
-        chart.ChartAreas[0].AxisX.Maximum = maximum;
-      }
+      double scale = Math.Pow(10, Math.Floor(Math.Log10(maxValue)));
+      var maximum = scale * (1 + (int)(maxValue / scale));
+      chart.ChartAreas[0].AxisX.Maximum = maximum;
       chart.ChartAreas[0].CursorX.Interval = residuals.Min() / 100;
 
       UpdateSeries(residuals, solutionSeries);
@@ -202,7 +204,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     protected virtual List<double> GetResiduals(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues) {
-      return originalValues.Zip(estimatedValues, (x, y) => Math.Abs(x - y)).ToList();
+      switch (residualComboBox.SelectedItem.ToString()) {
+        case "Absolute error": return originalValues.Zip(estimatedValues, (x, y) => Math.Abs(x - y)).ToList();
+        case "Squared error": return originalValues.Zip(estimatedValues, (x, y) => (x - y) * (x - y)).ToList();
+        case "Relative error": return originalValues.Zip(estimatedValues, (x, y) => x.IsAlmost(0.0) ? -1 : Math.Abs((x - y) / x))
+          .Where(x => x > 0) // remove entries where the original value is 0
+          .ToList();
+      }
+      // should never happen
+      return new List<double>();
     }
 
     private double CalculateAreaOverCurve(Series series) {
@@ -249,6 +259,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       } else {
         Cursor = Cursors.Default;
       }
+    }
+
+    private void residualComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      UpdateChart();
     }
   }
 }

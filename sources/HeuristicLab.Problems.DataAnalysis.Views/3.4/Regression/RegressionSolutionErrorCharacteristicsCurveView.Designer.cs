@@ -45,25 +45,26 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     /// </summary>
     private void InitializeComponent() {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
       this.chart = new HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart();
       this.label1 = new System.Windows.Forms.Label();
       this.cmbSamples = new System.Windows.Forms.ComboBox();
+      this.residualComboBox = new System.Windows.Forms.ComboBox();
       ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
       this.SuspendLayout();
       // 
       // chart
       // 
-      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
-      chartArea1.Name = "ChartArea1";
-      this.chart.ChartAreas.Add(chartArea1);
-      legend1.Alignment = System.Drawing.StringAlignment.Center;
-      legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-      legend1.Name = "Legend1";
-      this.chart.Legends.Add(legend1);
+      this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      chartArea2.Name = "ChartArea1";
+      this.chart.ChartAreas.Add(chartArea2);
+      legend2.Alignment = System.Drawing.StringAlignment.Center;
+      legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+      legend2.Name = "Legend1";
+      this.chart.Legends.Add(legend2);
       this.chart.Location = new System.Drawing.Point(6, 28);
       this.chart.Name = "chart";
       this.chart.Size = new System.Drawing.Size(366, 202);
@@ -91,9 +92,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       this.cmbSamples.TabIndex = 3;
       this.cmbSamples.SelectedIndexChanged += new System.EventHandler(this.cmbSamples_SelectedIndexChanged);
       // 
+      // residualComboBox
+      // 
+      this.residualComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.residualComboBox.FormattingEnabled = true;
+      this.residualComboBox.Items.AddRange(new object[] {
+            "Absolute error",
+            "Squared error",
+            "Relative error"});
+      this.residualComboBox.Location = new System.Drawing.Point(183, 3);
+      this.residualComboBox.Name = "residualComboBox";
+      this.residualComboBox.Size = new System.Drawing.Size(121, 21);
+      this.residualComboBox.TabIndex = 5;
+      this.residualComboBox.SelectedIndexChanged += new System.EventHandler(this.residualComboBox_SelectedIndexChanged);
+      // 
       // RegressionSolutionErrorCharacteristicsCurveView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+      this.Controls.Add(this.residualComboBox);
       this.Controls.Add(this.label1);
       this.Controls.Add(this.cmbSamples);
       this.Controls.Add(this.chart);
@@ -110,5 +126,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected HeuristicLab.Visualization.ChartControlsExtensions.EnhancedChart chart;
     protected System.Windows.Forms.Label label1;
     protected System.Windows.Forms.ComboBox cmbSamples;
+    protected System.Windows.Forms.ComboBox residualComboBox;
   }
 }
