@@ -221,6 +221,7 @@
     <Compile Include="OnlineCalculators\OnlineMeanAndVarianceCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineMeanSquaredErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineNormalizedMeanSquaredErrorCalculator.cs" />
+    <Compile Include="OnlineCalculators\OnlinePearsonsRCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlinePearsonsRSquaredCalculator.cs" />
     <Compile Include="Implementation\Regression\RegressionSolution.cs" />
     <Compile Include="OnlineCalculators\OnlineTheilsUStatisticCalculator.cs" />

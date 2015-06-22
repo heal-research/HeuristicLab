@@ -32,7 +32,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public string Name { get { return "Pearsons R"; } }
 
     public double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      return Math.Sqrt(OnlinePearsonsRSquaredCalculator.Calculate(originalValues, estimatedValues, out errorState));
+      return OnlinePearsonsRCalculator.Calculate(originalValues, estimatedValues, out errorState);
     }
   }
 }

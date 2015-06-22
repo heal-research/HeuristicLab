@@ -24,21 +24,14 @@ using System.Collections.Generic;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [Obsolete("Use OnlinePearsonsRCalculator directly")]
   public class OnlinePearsonsRSquaredCalculator : IOnlineCalculator {
-    private OnlineCovarianceCalculator covCalculator = new OnlineCovarianceCalculator();
-    private OnlineMeanAndVarianceCalculator sxCalculator = new OnlineMeanAndVarianceCalculator();
-    private OnlineMeanAndVarianceCalculator syCalculator = new OnlineMeanAndVarianceCalculator();
+    private readonly OnlinePearsonsRCalculator rCalculator = new OnlinePearsonsRCalculator();
 
     public double RSquared {
       get {
-        double xVar = sxCalculator.PopulationVariance;
-        double yVar = syCalculator.PopulationVariance;
-        if (xVar.IsAlmost(0.0) || yVar.IsAlmost(0.0)) {
-          return 0.0;
-        } else {
-          double r = covCalculator.Covariance / (Math.Sqrt(xVar) * Math.Sqrt(yVar));
-          return r * r;
-        }
+        if (rCalculator.ErrorState != OnlineCalculatorError.None) return 0.0;
+        else return rCalculator.R * rCalculator.R;
       }
     }
 
@@ -46,47 +39,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region IOnlineCalculator Members
     public OnlineCalculatorError ErrorState {
-      get { return covCalculator.ErrorState | sxCalculator.PopulationVarianceErrorState | syCalculator.PopulationVarianceErrorState; }
+      get { return rCalculator.ErrorState; }
     }
     public double Value {
       get { return RSquared; }
     }
     public void Reset() {
-      covCalculator.Reset();
-      sxCalculator.Reset();
-      syCalculator.Reset();
+      rCalculator.Reset();
     }
 
     public void Add(double x, double y) {
-      // no need to check validity of values explicitly here as it is checked in all three evaluators 
-      covCalculator.Add(x, y);
-      sxCalculator.Add(x);
-      syCalculator.Add(y);
+      rCalculator.Add(x, y);
     }
 
     #endregion
 
     public static double Calculate(IEnumerable<double> first, IEnumerable<double> second, out OnlineCalculatorError errorState) {
-      IEnumerator<double> firstEnumerator = first.GetEnumerator();
-      IEnumerator<double> secondEnumerator = second.GetEnumerator();
-      OnlinePearsonsRSquaredCalculator rSquaredCalculator = new OnlinePearsonsRSquaredCalculator();
-
-      // always move forward both enumerators (do not use short-circuit evaluation!)
-      while (firstEnumerator.MoveNext() & secondEnumerator.MoveNext()) {
-        double original = firstEnumerator.Current;
-        double estimated = secondEnumerator.Current;
-        rSquaredCalculator.Add(original, estimated);
-        if (rSquaredCalculator.ErrorState != OnlineCalculatorError.None) break;
-      }
-
-      // check if both enumerators are at the end to make sure both enumerations have the same length
-      if (rSquaredCalculator.ErrorState == OnlineCalculatorError.None &&
-           (secondEnumerator.MoveNext() || firstEnumerator.MoveNext())) {
-        throw new ArgumentException("Number of elements in first and second enumeration doesn't match.");
-      } else {
-        errorState = rSquaredCalculator.ErrorState;
-        return rSquaredCalculator.RSquared;
-      }
+      var r = OnlinePearsonsRCalculator.Calculate(first, second, out errorState);
+      return r * r;
     }
   }
 }
