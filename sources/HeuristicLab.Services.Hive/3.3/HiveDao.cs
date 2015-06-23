@@ -316,7 +316,7 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       var jobs = db.Tasks.Where(j => j.JobId == exp.Id);
       exp.JobCount = jobs.Count();
       exp.CalculatingCount = jobs.Count(j => j.State == TaskState.Calculating);
-      exp.FinishedCount = jobs.Count(j => j.State == TaskState.Finished);
+      exp.FinishedCount = jobs.Count(j => j.State == TaskState.Finished || j.State == TaskState.Aborted || j.State == TaskState.Failed);
       return exp;
     }
 
