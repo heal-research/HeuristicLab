@@ -59,9 +59,14 @@ namespace HeuristicLab.Tests {
       StringBuilder errorMessage = new StringBuilder();
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
         Type plugin = loadedPlugins[pluginAssembly];
+        var pluginFiles = new HashSet<string>(Attribute.GetCustomAttributes(plugin, false)
+            .OfType<PluginFileAttribute>().Where(pf => pf.FileType == PluginFileType.Assembly).Select(pf => pf.FileName));
+        var pluginAssemblies = PluginLoader.Assemblies.Where(a => pluginFiles.Contains(Path.GetFileName(a.Location))).ToList();
+        var referencedAssemblies = pluginAssemblies.SelectMany(a => a.GetReferencedAssemblies()).ToList();
+
         Dictionary<string, PluginDependencyAttribute> pluginDependencies = Attribute.GetCustomAttributes(plugin, false).OfType<PluginDependencyAttribute>().ToDictionary(a => a.Dependency);
 
-        foreach (AssemblyName referencedAssemblyName in pluginAssembly.GetReferencedAssemblies()) {
+        foreach (AssemblyName referencedAssemblyName in referencedAssemblies) {
           if (IsPluginAssemblyName(referencedAssemblyName)) {
             if (!pluginDependencies.ContainsKey(pluginNames[referencedAssemblyName.FullName]))
               errorMessage.AppendLine("Missing dependency in plugin " + plugin + " to referenced plugin " + pluginNames[referencedAssemblyName.FullName] + ".");
@@ -86,16 +91,20 @@ namespace HeuristicLab.Tests {
       foreach (Assembly pluginAssembly in loadedPlugins.Keys) {
         Type plugin = loadedPlugins[pluginAssembly];
         Dictionary<PluginDependencyAttribute, string> pluginDependencies = Attribute.GetCustomAttributes(plugin, false).OfType<PluginDependencyAttribute>().ToDictionary(a => a, a => a.Dependency);
+        var pluginFiles = new HashSet<string>(Attribute.GetCustomAttributes(plugin, false)
+          .OfType<PluginFileAttribute>().Where(pf => pf.FileType == PluginFileType.Assembly).Select(pf => pf.FileName));
+        var pluginAssemblies = PluginLoader.Assemblies.Where(a => pluginFiles.Contains(Path.GetFileName(a.Location))).ToList();
+        var referencedAssemblies = pluginAssemblies.SelectMany(a => a.GetReferencedAssemblies()).ToList();
 
         foreach (PluginDependencyAttribute attribute in pluginDependencies.Keys) {
           string pluginDependencyName = pluginDependencies[attribute];
 
           if (pluginDependencyName == "HeuristicLab.MathJax") continue; //is never referenced as this plugin contains HTML files
           if (pluginDependencyName == "HeuristicLab.MatlabConnector") continue; //the matlab connector is loaded dynamically and hence not referenced by the dll
-          var referencedPluginAssemblies = pluginAssembly.GetReferencedAssemblies().Where(IsPluginAssemblyName);
+          var referencedPluginAssemblies = referencedAssemblies.Where(IsPluginAssemblyName);
           if (referencedPluginAssemblies.Any(a => pluginNames[a.FullName] == pluginDependencyName)) continue;
 
-          var referencedNonPluginAssemblies = pluginAssembly.GetReferencedAssemblies().Where(a => !IsPluginAssemblyName(a));
+          var referencedNonPluginAssemblies = referencedAssemblies.Where(a => !IsPluginAssemblyName(a));
           bool found = (from referencedNonPluginAssembly in referencedNonPluginAssemblies
                         select referencedNonPluginAssembly.Name into assemblyName
                         where pluginFilesToPluginLookup.ContainsKey(assemblyName)
