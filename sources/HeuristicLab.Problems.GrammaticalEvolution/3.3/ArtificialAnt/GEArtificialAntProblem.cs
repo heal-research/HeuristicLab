@@ -39,7 +39,7 @@ using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [Item("Grammatical Evolution Artificial Ant Problem", "Represents the Artificial Ant problem, implemented in Grammatical Evolution.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
   [StorableClass]
   public sealed class GEArtificialAntProblem : SingleObjectiveHeuristicOptimizationProblem<GEArtificialAntEvaluator, IIntegerVectorCreator>, IStorableContent {
     public string Filename { get; set; }

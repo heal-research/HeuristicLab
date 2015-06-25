@@ -24,6 +24,31 @@ using System;
 namespace HeuristicLab.Core {
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
   public sealed class CreatableAttribute : Attribute {
+    #region Predefined Categories
+    public static class Categories {
+      public const string Splitter = "###";
+
+      public const string Algorithms = "Algorithms";
+      public const string PopulationBasedAlgorithms = Algorithms + Splitter + "Population Based";
+      public const string SingleSolutionAlgorithms = Algorithms + Splitter + "Single Solution";
+
+      public const string Problems = "Problems";
+      public const string CombinatorialProblems = Problems + Splitter + "Combinatorial";
+      public const string GeneticProgrammingProblems = Problems + Splitter + "Genetic Programming";
+      public const string ExternalEvaluationProblems = Problems + Splitter + "External Evaluation";
+
+      public const string DataAnalysis = "Data Analysis";
+      public const string DataAnalysisClassification = DataAnalysis + Splitter + "Classification";
+      public const string DataAnalysisRegression = DataAnalysis + Splitter + "Regression";
+      public const string DataAnalysisEnsembles = DataAnalysis + Splitter + "Ensembles";
+
+      public const string TestingAndAnalysis = "Testing & Analysis";
+      public const string TestingAndAnalysisOKB = TestingAndAnalysis + Splitter + "OKB";
+
+      public const string Scripts = "5 - Scripts";
+    }
+    #endregion
+
     private string category;
     public string Category {
       get {
@@ -42,9 +67,9 @@ namespace HeuristicLab.Core {
       Category = "Other Items";
       Priority = int.MaxValue;
     }
-    public CreatableAttribute(string category)
+    public CreatableAttribute(object category)
       : this() {
-      Category = category;
+      Category = (string)category;
     }
 
     public static bool IsCreatable(Type type) {

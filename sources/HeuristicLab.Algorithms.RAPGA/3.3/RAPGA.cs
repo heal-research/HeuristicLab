@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.RAPGA {
   /// A relevant alleles preserving genetic algorithm.
   /// </summary>
   [Item("RAPGA", "A relevant alleles preserving genetic algorithm (Affenzeller, M. et al. 2007. Self-adaptive population size adjustment for genetic algorithms. Proceedings of Computer Aided Systems Theory: EuroCAST 2007, Lecture Notes in Computer Science, pp 820–828. Springer).")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 140)]
   [StorableClass]
   public sealed class RAPGA : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

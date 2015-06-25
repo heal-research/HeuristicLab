@@ -35,7 +35,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.VariableNeighborhoodSearch {
   [Item("Variable Neighborhood Search", "A variable neighborhood search algorithm based on the description in Mladenovic, N. and Hansen, P. (1997). Variable neighborhood search. Computers & Operations Research Volume 24, Issue 11, pp. 1097-1100.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 110)]
   [StorableClass]
   public sealed class VariableNeighborhoodSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

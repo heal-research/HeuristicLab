@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Regression Problem", "A general regression problem.")]
-  [Creatable("Problems")]
   public class RegressionProblem : DataAnalysisProblem<IRegressionProblemData>, IRegressionProblem, IStorableContent {
     public string Filename { get; set; }
 

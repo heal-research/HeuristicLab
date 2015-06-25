@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
   /// Limited-Memory BFGS optimization algorithm.
   /// </summary>
   [Item("LM-BFGS", "The limited-memory BFGS (Broyden–Fletcher–Goldfarb–Shanno) optimization algorithm.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 160)]
   [StorableClass]
   public sealed class LbfgsAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public override Type ProblemType {

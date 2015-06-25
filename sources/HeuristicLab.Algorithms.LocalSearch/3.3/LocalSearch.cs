@@ -35,7 +35,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.LocalSearch {
   [Item("Local Search", "A local search algorithm.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 100)]
   [StorableClass]
   public sealed class LocalSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

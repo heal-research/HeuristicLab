@@ -95,7 +95,7 @@ namespace HeuristicLab.Optimizer {
 
       foreach (var category in categories) {
         var fullName = category.Key;
-        var tokens = fullName.Split('#');
+        var tokens = fullName.Split(new[] { CreatableAttribute.Categories.Splitter }, StringSplitOptions.RemoveEmptyEntries);
         var name = tokens.Last();
         var parents = tokens.Take(tokens.Length - 1);
 
@@ -164,8 +164,11 @@ namespace HeuristicLab.Optimizer {
       searchTextBox.Focus();
       SelectedType = null;
       typesTreeView.SelectedNode = null;
-      typesTreeView.CollapseAll();
       UpdateDescription();
+
+      foreach (TreeNode node in typesTreeView.Nodes)
+        node.Expand();
+      typesTreeView.Nodes[0].EnsureVisible();
     }
 
     public virtual void Filter(string searchString) {

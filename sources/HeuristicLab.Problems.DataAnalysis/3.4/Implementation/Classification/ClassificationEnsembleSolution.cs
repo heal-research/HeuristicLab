@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("Classification Ensemble Solution", "A classification solution that contains an ensemble of multiple classification models")]
-  [Creatable("Data Analysis - Ensembles")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisEnsembles, Priority = 110)]
   public sealed class ClassificationEnsembleSolution : ClassificationSolutionBase, IClassificationEnsembleSolution {
     private readonly Dictionary<int, double> trainingEvaluationCache = new Dictionary<int, double>();
     private readonly Dictionary<int, double> testEvaluationCache = new Dictionary<int, double>();

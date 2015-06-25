@@ -35,7 +35,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 100)]
   [StorableClass]
   public sealed class ExternalEvaluationProblem : SingleObjectiveBasicProblem<IEncoding> {
 
@@ -129,7 +129,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       try {
         return client.Evaluate(message, GetQualityMessageExtensions());
-      } finally {
+      }
+      finally {
         lock (clientLock) {
           activeClients.Remove(client);
           Monitor.PulseAll(clientLock);
@@ -150,7 +151,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         foreach (var variable in scope.Variables) {
           try {
             MessageBuilder.AddToMessage(variable.Value, variable.Name, protobufBuilder);
-          } catch (ArgumentException ex) {
+          }
+          catch (ArgumentException ex) {
             throw new InvalidOperationException(string.Format("ERROR while building solution message: Parameter {0} cannot be added to the message", name), ex);
           }
         }

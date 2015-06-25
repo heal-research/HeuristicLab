@@ -34,7 +34,7 @@ using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("OKB Algorithm", "An algorithm which is stored in the OKB.")]
-  [Creatable("Optimization Knowledge Base (OKB)")]
+  [Creatable(CreatableAttribute.Categories.TestingAndAnalysisOKB, Priority = 100)]
   [StorableClass]
   public sealed class OKBAlgorithm : Item, IAlgorithm, IStorableContent {
     public string Filename { get; set; }

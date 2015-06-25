@@ -34,7 +34,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
   [Item("Autoregressive Modeling", "Timeseries modeling algorithm that creates AR-N models.")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 130)]
   [StorableClass]
   public class AutoregressiveModeling : FixedDataAnalysisAlgorithm<ITimeSeriesPrognosisProblem> {
     private const string TimeOffesetParameterName = "Maximum Time Offset";

@@ -35,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Knapsack {
   [Item("Knapsack Problem", "Represents a Knapsack problem.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 200)]
   [StorableClass]
   public sealed class KnapsackProblem : SingleObjectiveHeuristicOptimizationProblem<IKnapsackEvaluator, IBinaryVectorCreator>, IStorableContent {
     public string Filename { get; set; }

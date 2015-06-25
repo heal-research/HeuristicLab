@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Neural network ensemble classification data analysis algorithm.
   /// </summary>
   [Item("Neural Network Ensemble Classification", "Neural network ensemble classification data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/mlpensembles.php")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 140)]
   [StorableClass]
   public sealed class NeuralNetworkEnsembleClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string EnsembleSizeParameterName = "EnsembleSize";
@@ -123,7 +123,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public NeuralNetworkEnsembleClassification()
       : base() {
-        var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { 
+      var validHiddenLayerValues = new ItemSet<IntValue>(new IntValue[] { 
         (IntValue)new IntValue(0).AsReadOnly(), 
         (IntValue)new IntValue(1).AsReadOnly(), 
         (IntValue)new IntValue(2).AsReadOnly() });

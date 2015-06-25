@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (multi-objective)", "Represents a multi-objective problem that can be programmed with a script.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 120)]
   [StorableClass]
   public sealed class MultiObjectiveProgrammableProblem : MultiObjectiveBasicProblem<IEncoding> {
     public static new Image StaticItemImage {

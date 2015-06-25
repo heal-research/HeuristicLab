@@ -37,7 +37,7 @@ using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Traveling Salesman Problem", "Represents a symmetric Traveling Salesman Problem.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 100)]
   [StorableClass]
   public sealed class TravelingSalesmanProblem : SingleObjectiveHeuristicOptimizationProblem<ITSPEvaluator, IPermutationCreator>, IStorableContent,
     IProblemInstanceConsumer<TSPData> {
