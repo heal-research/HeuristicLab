@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
@@ -62,14 +63,17 @@ namespace HeuristicLab.Optimizer {
     private void NewItemDialog_Load(object sender, EventArgs e) {
       if (isInitialized) return;
 
+      // Sorted by hasOrdering to create category nodes first with concrete ordering.
+      // Items with categoryname without ordering are inserted afterwards correctly
       var categories =
         from type in ApplicationManager.Manager.GetTypes(typeof(IItem))
+        where CreatableAttribute.IsCreatable(type)
         let category = CreatableAttribute.GetCategory(type)
+        let hasOrdering = category.Contains(CreatableAttribute.Categories.OrderToken)
         let name = ItemAttribute.GetName(type)
         let priority = CreatableAttribute.GetPriority(type)
         let version = ItemAttribute.GetVersion(type)
-        where CreatableAttribute.IsCreatable(type)
-        orderby category, priority, name, version ascending
+        orderby category, hasOrdering descending, priority, name, version ascending
         group type by category into categoryGroup
         select categoryGroup;
 
@@ -93,18 +97,26 @@ namespace HeuristicLab.Optimizer {
 
       var rootNode = new TreeNode();
 
+      // CategoryNode
+      // Tag: raw string, used for sorting, e.g. 1$$$Algorithms###2$$$Single Solution
+      // Name: full name = combined category name with parent categories, used for finding nodes in tree, e.g. Algorithms###Single Solution
+      // Text: category name, used for displaying on node itself, e.g. Single Solution
+
       foreach (var category in categories) {
-        var fullName = category.Key;
-        var tokensWithOrdering = fullName.Split(new[] { CreatableAttribute.Categories.SplitToken }, StringSplitOptions.RemoveEmptyEntries);
-        var tokens = tokensWithOrdering.Select(t => t.Split(new[] { CreatableAttribute.Categories.OrderToken }, StringSplitOptions.RemoveEmptyEntries).Last()).ToList();
-        var name = tokens.Last();
-        var parents = tokensWithOrdering.Take(tokens.Count - 1);
+        var rawName = category.Key;
+        string fullName = CreatableAttribute.Categories.GetFullName(rawName);
+        string name = CreatableAttribute.Categories.GetName(rawName);
+
+        // Skip categories with same full name because the raw name can still be different (missing order)
+        if (rootNode.Nodes.Find(fullName, searchAllChildren: true).Length > 0)
+          continue;
 
         var categoryNode = new TreeNode(name, imageIndex: 1, selectedImageIndex: 1) {
           Name = fullName,
-          Tag = fullName
+          Tag = rawName
         };
 
+        var parents = CreatableAttribute.Categories.GetParentRawNames(rawName);
         var parentNode = FindOrCreateParentNode(rootNode, parents);
         if (parentNode != null)
           parentNode.Nodes.Add(categoryNode);
@@ -114,16 +126,18 @@ namespace HeuristicLab.Optimizer {
 
       return rootNode;
     }
-    private TreeNode FindOrCreateParentNode(TreeNode node, IEnumerable<string> parentCategories) {
+    private TreeNode FindOrCreateParentNode(TreeNode node, IEnumerable<string> rawParentNames) {
       TreeNode parentNode = null;
-      string fullName = null;
-      foreach (string parentCategory in parentCategories) {
-        fullName = fullName == null ? parentCategory : fullName + CreatableAttribute.Categories.SplitToken + parentCategory;
+      string rawName = null;
+      foreach (string rawParentName in rawParentNames) {
+        rawName = rawName == null ? rawParentName : rawName + CreatableAttribute.Categories.SplitToken + rawParentName;
+        var fullName = CreatableAttribute.Categories.GetFullName(rawName);
         parentNode = node.Nodes.Find(fullName, searchAllChildren: false).SingleOrDefault();
         if (parentNode == null) {
-          parentNode = new TreeNode(parentCategory, imageIndex: 1, selectedImageIndex: 1) {
+          var name = CreatableAttribute.Categories.GetName(rawName);
+          parentNode = new TreeNode(name, imageIndex: 1, selectedImageIndex: 1) {
             Name = fullName,
-            Tag = fullName
+            Tag = rawName
           };
           node.Nodes.Add(parentNode);
         }
@@ -133,10 +147,11 @@ namespace HeuristicLab.Optimizer {
     }
     private void CreateItemNodes(TreeNode node, IEnumerable<IGrouping<string, Type>> categories) {
       foreach (var category in categories) {
-        var categoryNode = node.Nodes.Find(category.Key, searchAllChildren: true).Single();
+        var fullName = CreatableAttribute.Categories.GetFullName(category.Key);
+        var categoryNode = node.Nodes.Find(fullName, searchAllChildren: true).Single();
         foreach (var creatable in category) {
           var itemNode = CreateItemNode(creatable);
-          itemNode.Name = itemNode.Name + ":" + category.Key;
+          itemNode.Name = itemNode.Name + ":" + fullName;
           categoryNode.Nodes.Add(itemNode);
         }
       }
@@ -256,11 +271,12 @@ namespace HeuristicLab.Optimizer {
       versionTextBox.Text = string.Empty;
 
       if (typesTreeView.SelectedNode != null) {
-        string category = typesTreeView.SelectedNode.Tag as string;
+        var node = typesTreeView.SelectedNode;
+        string category = node.Tag as string;
         if (category != null) {
-          itemDescriptionTextBox.Text = category;
+          itemDescriptionTextBox.Text = string.Join(" - ", node.Name.Split(new[] { CreatableAttribute.Categories.SplitToken }, StringSplitOptions.RemoveEmptyEntries));
         }
-        Type type = typesTreeView.SelectedNode.Tag as Type;
+        Type type = node.Tag as Type;
         if (type != null) {
           string description = ItemAttribute.GetDescription(type);
           var version = ItemAttribute.GetVersion(type);
@@ -432,12 +448,13 @@ namespace HeuristicLab.Optimizer {
     }
 
     private class ItemTreeNodeComparer : IComparer {
+      private static readonly IComparer<string> Comparer = new NaturalStringComparer();
       public int Compare(object x, object y) {
         var lhs = (TreeNode)x;
         var rhs = (TreeNode)y;
 
         if (lhs.Tag is string && rhs.Tag is string) {
-          return lhs.Name.CompareTo(rhs.Name);
+          return Comparer.Compare((string)lhs.Tag, (string)rhs.Tag);
         } else if (lhs.Tag is string) {
           return -1;
         } else

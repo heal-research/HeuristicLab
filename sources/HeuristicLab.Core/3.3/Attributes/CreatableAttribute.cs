@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HeuristicLab.Core {
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
@@ -48,7 +50,24 @@ namespace HeuristicLab.Core {
 
       public const string Scripts = "5" + OrderToken + "Scripts";
 
+      public static string GetFullName(string rawName) {
+        return string.Join(SplitToken, GetTokens(rawName));
+      }
+      public static string GetName(string rawName) {
+        return GetTokens(rawName).Last();
+      }
+      public static IEnumerable<string> GetParentRawNames(string rawName) {
+        var tokens = GetTokensWithOrdering(rawName).ToList();
+        return tokens.Take(tokens.Count - 1);
+      }
 
+      private static IEnumerable<string> GetTokensWithOrdering(string rawName) {
+        return rawName.Split(new[] { SplitToken }, StringSplitOptions.RemoveEmptyEntries);
+      }
+      private static IEnumerable<string> GetTokens(string rawName) {
+        return GetTokensWithOrdering(rawName)
+          .Select(t => t.Split(new[] { OrderToken }, StringSplitOptions.RemoveEmptyEntries).Last());
+      }
     }
     #endregion
 
