@@ -89,8 +89,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   }
 
   public static class RandomForestUtil {
-    private static readonly object locker = new object();
-
     private static void CrossValidate(IRegressionProblemData problemData, Tuple<IEnumerable<int>, IEnumerable<int>>[] partitions, int nTrees, double r, double m, int seed, out double avgTestMse) {
       avgTestMse = 0;
       var ds = problemData.Dataset;
@@ -131,13 +129,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       avgTestAccuracy /= partitions.Length;
     }
 
-    // grid search without cross-validation since in the case of random forests, the out-of-bag estimate is unbiased
+    /// <summary>
+    /// Grid search without crossvalidation (since for random forests the out-of-bag estimate is unbiased)
+    /// </summary>
+    /// <param name="problemData">The regression problem data</param>
+    /// <param name="parameterRanges">The ranges for each parameter in the grid search</param>
+    /// <param name="seed">The random seed (required by the random forest model)</param>
+    /// <param name="maxDegreeOfParallelism">The maximum allowed number of threads (to parallelize the grid search)</param>
     public static RFParameter GridSearch(IRegressionProblemData problemData, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
       var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
       var crossProduct = parameterRanges.Values.CartesianProduct();
       double bestOutOfBagRmsError = double.MaxValue;
       RFParameter bestParameters = new RFParameter();
 
+      var locker = new object();
       Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
         var parameterValues = parameterCombination.ToList();
         var parameters = new RFParameter();
@@ -155,6 +160,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return bestParameters;
     }
 
+    /// <summary>
+    /// Grid search without crossvalidation (since for random forests the out-of-bag estimate is unbiased)
+    /// </summary>
+    /// <param name="problemData">The classification problem data</param>
+    /// <param name="parameterRanges">The ranges for each parameter in the grid search</param>
+    /// <param name="seed">The random seed (required by the random forest model)</param>
+    /// <param name="maxDegreeOfParallelism">The maximum allowed number of threads (to parallelize the grid search)</param>
     public static RFParameter GridSearch(IClassificationProblemData problemData, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
       var setters = parameterRanges.Keys.Select(GenerateSetter).ToList();
       var crossProduct = parameterRanges.Values.CartesianProduct();
@@ -162,6 +174,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double bestOutOfBagRmsError = double.MaxValue;
       RFParameter bestParameters = new RFParameter();
 
+      var locker = new object();
       Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
         var parameterValues = parameterCombination.ToList();
         var parameters = new RFParameter();
@@ -180,6 +193,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return bestParameters;
     }
 
+    /// <summary>
+    /// Grid search with crossvalidation
+    /// </summary>
+    /// <param name="problemData">The regression problem data</param>
+    /// <param name="numberOfFolds">The number of folds for crossvalidation</param>
+    /// <param name="shuffleFolds">Specifies whether the folds should be shuffled</param>
+    /// <param name="parameterRanges">The ranges for each parameter in the grid search</param>
+    /// <param name="seed">The random seed (required by the random forest model)</param>
+    /// <param name="maxDegreeOfParallelism">The maximum allowed number of threads (to parallelize the grid search)</param>
+    /// <returns>The best parameter values found by the grid search</returns>
     public static RFParameter GridSearch(IRegressionProblemData problemData, int numberOfFolds, bool shuffleFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
       DoubleValue mse = new DoubleValue(Double.MaxValue);
       RFParameter bestParameter = new RFParameter();
@@ -188,6 +211,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds);
       var crossProduct = parameterRanges.Values.CartesianProduct();
 
+      var locker = new object();
       Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
         var parameterValues = parameterCombination.ToList();
         double testMSE;
@@ -207,6 +231,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return bestParameter;
     }
 
+    /// <summary>
+    /// Grid search with crossvalidation
+    /// </summary>
+    /// <param name="problemData">The classification problem data</param>
+    /// <param name="numberOfFolds">The number of folds for crossvalidation</param>
+    /// <param name="shuffleFolds">Specifies whether the folds should be shuffled</param>
+    /// <param name="parameterRanges">The ranges for each parameter in the grid search</param>
+    /// <param name="seed">The random seed (for shuffling)</param>
+    /// <param name="maxDegreeOfParallelism">The maximum allowed number of threads (to parallelize the grid search)</param>
     public static RFParameter GridSearch(IClassificationProblemData problemData, int numberOfFolds, bool shuffleFolds, Dictionary<string, IEnumerable<double>> parameterRanges, int seed = 12345, int maxDegreeOfParallelism = 1) {
       DoubleValue accuracy = new DoubleValue(0);
       RFParameter bestParameter = new RFParameter();
@@ -215,6 +248,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var crossProduct = parameterRanges.Values.CartesianProduct();
       var partitions = GenerateRandomForestPartitions(problemData, numberOfFolds, shuffleFolds);
 
+      var locker = new object();
       Parallel.ForEach(crossProduct, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, parameterCombination => {
         var parameterValues = parameterCombination.ToList();
         double testAccuracy;

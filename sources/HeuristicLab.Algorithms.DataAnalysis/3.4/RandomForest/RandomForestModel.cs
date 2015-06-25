@@ -128,7 +128,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
       AssertInputMatrix(inputData);
 
@@ -146,7 +146,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, AllowedInputVariables, rows);
       AssertInputMatrix(inputData);
 
@@ -204,7 +204,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       outOfBagAvgRelError = rep.oobavgrelerror;
       outOfBagRmsError = rep.oobrmserror;
 
-      return new RandomForestModel(dForest,seed, problemData,nTrees, r, m);
+      return new RandomForestModel(dForest, seed, problemData, nTrees, r, m);
     }
 
     public static RandomForestModel CreateClassificationModel(IClassificationProblemData problemData, int nTrees, double r, double m, int seed,
@@ -241,7 +241,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       relClassificationError = rep.relclserror;
       outOfBagRelClassificationError = rep.oobrelclserror;
 
-      return new RandomForestModel(dForest,seed, problemData,nTrees, r, m, classValues);
+      return new RandomForestModel(dForest, seed, problemData, nTrees, r, m, classValues);
     }
 
     private static alglib.decisionforest CreateRandomForestModel(int seed, double[,] inputMatrix, int nTrees, double r, double m, int nClasses, out alglib.dfreport rep) {

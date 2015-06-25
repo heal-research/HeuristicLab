@@ -57,7 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       TargetVariable = targetVariable;
     }
 
-    public IEnumerable<IEnumerable<double>> GetPrognosedValues(Dataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
+    public IEnumerable<IEnumerable<double>> GetPrognosedValues(IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
       var rowsEnumerator = rows.GetEnumerator();
       var horizonsEnumerator = horizons.GetEnumerator();
       var targetValues = dataset.GetReadOnlyDoubleValues(TargetVariable);
@@ -90,7 +90,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
         throw new ArgumentException("Number of elements in rows and horizon enumerations doesn't match.");
     }
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       var targetVariables = dataset.GetReadOnlyDoubleValues(TargetVariable);
       foreach (int row in rows) {
         double estimatedValue = 0.0;

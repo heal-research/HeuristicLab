@@ -82,7 +82,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static KMeansClusteringSolution CreateKMeansSolution(IClusteringProblemData problemData, int k, int restarts) {
-      Dataset dataset = problemData.Dataset;
+      var dataset = problemData.Dataset;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;
       int info;

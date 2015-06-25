@@ -230,7 +230,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return rows.Select(row => evaluationCache[row]);
     }
 
-    public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(IDataset dataset, IEnumerable<int> rows) {
       if (!Model.Models.Any()) yield break;
       var estimatedValuesEnumerators = (from model in Model.Models
                                         select model.GetEstimatedClassValues(dataset, rows).GetEnumerator())

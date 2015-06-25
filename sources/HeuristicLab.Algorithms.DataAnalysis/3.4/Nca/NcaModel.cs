@@ -55,7 +55,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.nnModel = cloner.Clone(original.nnModel);
       this.classValues = (double[])original.classValues.Clone();
     }
-    public NcaModel(int k, double[,] transformationMatrix, Dataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues) {
+    public NcaModel(int k, double[,] transformationMatrix, IDataset dataset, IEnumerable<int> rows, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues) {
       Name = ItemName;
       Description = ItemDescription;
       this.transformationMatrix = (double[,])transformationMatrix.Clone();
@@ -71,7 +71,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new NcaModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       var ds = ReduceDataset(dataset, rows);
       return nnModel.GetEstimatedClassValues(ds, Enumerable.Range(0, ds.Rows));
     }
@@ -84,7 +84,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return CreateClassificationSolution(problemData);
     }
 
-    public double[,] Reduce(Dataset dataset, IEnumerable<int> rows) {
+    public double[,] Reduce(IDataset dataset, IEnumerable<int> rows) {
       var data = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
       var targets = dataset.GetDoubleValues(targetVariable, rows).ToArray();
@@ -99,7 +99,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return result;
     }
 
-    public Dataset ReduceDataset(Dataset dataset, IEnumerable<int> rows) {
+    public Dataset ReduceDataset(IDataset dataset, IEnumerable<int> rows) {
       return new Dataset(Enumerable
           .Range(0, transformationMatrix.GetLength(1))
           .Select(x => "X" + x.ToString())

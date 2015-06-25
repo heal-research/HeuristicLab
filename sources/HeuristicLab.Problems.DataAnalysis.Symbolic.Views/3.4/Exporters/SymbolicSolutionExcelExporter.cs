@@ -323,7 +323,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
       return preparedFormula;
     }
 
-    protected void WriteInputSheet(ExcelWorksheet inputsWorksheet, ExcelWorksheet datasetWorksheet, IEnumerable<string> list, Dataset dataset) {
+    protected void WriteInputSheet(ExcelWorksheet inputsWorksheet, ExcelWorksheet datasetWorksheet, IEnumerable<string> list, IDataset dataset) {
       //remark the performance of EPPlus drops dramatically 
       //if the data is not written row wise (from left to right) due the internal indices used.
       var variableNames = dataset.VariableNames.Select((v, i) => new { variable = v, index = i + 1 }).ToDictionary(v => v.variable, v => v.index);
@@ -340,7 +340,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Views {
     protected void WriteDatasetToExcel(ExcelWorksheet datasetWorksheet, IDataAnalysisProblemData problemData) {
       //remark the performance of EPPlus drops dramatically 
       //if the data is not written row wise (from left to right) due the internal indices used.
-      Dataset dataset = problemData.Dataset;
+      IDataset dataset = problemData.Dataset;
       var variableNames = dataset.VariableNames.ToList();
       var doubleVariables = new HashSet<string>(dataset.DoubleVariables);
 

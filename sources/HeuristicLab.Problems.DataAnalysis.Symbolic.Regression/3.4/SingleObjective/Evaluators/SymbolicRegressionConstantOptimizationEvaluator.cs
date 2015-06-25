@@ -201,7 +201,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       alglib.lsfitreport rep;
       int info;
 
-      Dataset ds = problemData.Dataset;
+      IDataset ds = problemData.Dataset;
       double[,] x = new double[rows.Count(), variableNames.Count];
       int row = 0;
       foreach (var r in rows) {

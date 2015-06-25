@@ -87,9 +87,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public void SetThresholdsAndClassValues(IEnumerable<double> thresholds, IEnumerable<double> classValues) {
       var classValuesArr = classValues.ToArray();
       var thresholdsArr = thresholds.ToArray();
-      if (thresholdsArr.Length != classValuesArr.Length || thresholdsArr.Length < 1) 
+      if (thresholdsArr.Length != classValuesArr.Length || thresholdsArr.Length < 1)
         throw new ArgumentException();
-      if (!double.IsNegativeInfinity(thresholds.First())) 
+      if (!double.IsNegativeInfinity(thresholds.First()))
         throw new ArgumentException();
 
       this.classValues = classValuesArr;
@@ -106,11 +106,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       SetThresholdsAndClassValues(thresholds, classValues);
     }
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows).LimitToRange(LowerEstimationLimit, UpperEstimationLimit);
     }
 
-    public override IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       if (!Thresholds.Any() && !ClassValues.Any()) throw new ArgumentException("No thresholds and class values were set for the current symbolic classification model.");
       foreach (var x in GetEstimatedValues(dataset, rows)) {
         int classIndex = 0;

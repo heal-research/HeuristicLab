@@ -116,7 +116,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.l = original.l;
       this.x = original.x;
     }
-    public GaussianProcessModel(Dataset ds, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows,
+    public GaussianProcessModel(IDataset ds, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows,
       IEnumerable<double> hyp, IMeanFunction meanFunction, ICovarianceFunction covarianceFunction)
       : base() {
       this.name = ItemName;
@@ -140,7 +140,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       CalculateModel(ds, rows);
     }
 
-    private void CalculateModel(Dataset ds, IEnumerable<int> rows) {
+    private void CalculateModel(IDataset ds, IEnumerable<int> rows) {
       inputScaling = new Scaling(ds, allowedInputVariables, rows);
       x = AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputVariables, rows, inputScaling);
       var y = ds.GetDoubleValues(targetVariable, rows);
@@ -244,7 +244,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region IRegressionModel Members
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return GetEstimatedValuesHelper(dataset, rows);
     }
     public GaussianProcessRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
@@ -256,7 +256,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
 
-    private IEnumerable<double> GetEstimatedValuesHelper(Dataset dataset, IEnumerable<int> rows) {
+    private IEnumerable<double> GetEstimatedValuesHelper(IDataset dataset, IEnumerable<int> rows) {
       var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, inputScaling);
       int newN = newX.GetLength(0);
       int n = x.GetLength(0);
@@ -276,7 +276,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha));
     }
 
-    public IEnumerable<double> GetEstimatedVariance(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedVariance(IDataset dataset, IEnumerable<int> rows) {
       var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, inputScaling);
       int newN = newX.GetLength(0);
       int n = x.GetLength(0);

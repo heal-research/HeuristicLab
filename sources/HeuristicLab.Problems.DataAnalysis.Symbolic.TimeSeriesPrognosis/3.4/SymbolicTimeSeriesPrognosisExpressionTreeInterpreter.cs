@@ -68,11 +68,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
     }
 
     // for each row several (=#horizon) future predictions
-    public IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows, int horizon) {
+    public IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, int horizon) {
       return GetSymbolicExpressionTreeValues(tree, dataset, rows, rows.Select(row => horizon));
     }
 
-    public IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
+    public IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
       if (CheckExpressionsWithIntervalArithmetic.Value)
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
       if (targetVariableCache == null || targetVariableCache.GetLength(0) < dataset.Rows)
@@ -115,7 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
         throw new ArgumentException("Number of elements in rows and horizon enumerations doesn't match.");
     }
 
-    private static InterpreterState PrepareInterpreterState(ISymbolicExpressionTree tree, Dataset dataset, double[] targetVariableCache, string targetVariable) {
+    private static InterpreterState PrepareInterpreterState(ISymbolicExpressionTree tree, IDataset dataset, double[] targetVariableCache, string targetVariable) {
       Instruction[] code = SymbolicExpressionTreeCompiler.Compile(tree, OpCodes.MapSymbolToOpCode);
       int necessaryArgStackSize = 0;
       foreach (Instruction instr in code) {

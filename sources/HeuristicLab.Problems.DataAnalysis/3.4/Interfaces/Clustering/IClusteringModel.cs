@@ -22,6 +22,6 @@
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClusteringModel : IDataAnalysisModel {
-    IEnumerable<int> GetClusterValues(Dataset dataset, IEnumerable<int> rows);
+    IEnumerable<int> GetClusterValues(IDataset dataset, IEnumerable<int> rows);
   }
 }

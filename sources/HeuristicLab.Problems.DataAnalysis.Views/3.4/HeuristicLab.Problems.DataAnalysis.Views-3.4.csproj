@@ -176,6 +176,12 @@
     </Compile>
     <Compile Include="Interfaces\IDataPreprocessorStarter.cs" />
     <Compile Include="MenuItems\ShrinkDataAnalysisRunsMenuItem.cs" />
+    <Compile Include="ModifiableDatasetView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ModifiableDatasetView.Designer.cs">
+      <DependentUpon>ModifiableDatasetView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="ProblemDataView.cs">
       <SubType>UserControl</SubType>

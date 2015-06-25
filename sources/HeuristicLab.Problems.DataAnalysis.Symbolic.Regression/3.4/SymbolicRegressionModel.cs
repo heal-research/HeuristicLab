@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return new SymbolicRegressionModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows)
         .LimitToRange(LowerEstimationLimit, UpperEstimationLimit);
     }

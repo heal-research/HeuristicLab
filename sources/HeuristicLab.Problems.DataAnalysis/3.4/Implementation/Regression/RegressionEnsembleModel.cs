@@ -79,7 +79,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       models.Remove(model);
     }
 
-    public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models
                                         select model.GetEstimatedValues(dataset, rows).GetEnumerator())
                                        .ToList();
@@ -94,7 +94,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region IRegressionModel Members
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       foreach (var estimatedValuesVector in GetEstimatedValueVectors(dataset, rows)) {
         yield return estimatedValuesVector.Average();
       }

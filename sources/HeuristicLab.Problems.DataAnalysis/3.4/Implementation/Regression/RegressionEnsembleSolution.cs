@@ -231,7 +231,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return rows.Select(row => evaluationCache[row]);
     }
 
-    public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows) {
       if (!Model.Models.Any()) yield break;
       var estimatedValuesEnumerators = (from model in Model.Models
                                         select model.GetEstimatedValues(dataset, rows).GetEnumerator())

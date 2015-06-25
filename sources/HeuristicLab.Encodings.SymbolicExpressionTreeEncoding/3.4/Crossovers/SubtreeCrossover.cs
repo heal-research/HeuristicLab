@@ -134,7 +134,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       List<CutPoint> leafCrossoverPoints = new List<CutPoint>();
       parent0.Root.ForEachNodePostfix((n) => {
         if (n.SubtreeCount > 0 && n != parent0.Root) {
-          foreach (var child in n.Subtrees) {
+          //avoid linq to reduce memory pressure
+          for (int i = 0; i < n.SubtreeCount; i++) {
+            var child = n.GetSubtree(i);
             if (child.GetLength() <= maxBranchLength &&
                 child.GetDepth() <= maxBranchDepth) {
               if (child.SubtreeCount > 0)

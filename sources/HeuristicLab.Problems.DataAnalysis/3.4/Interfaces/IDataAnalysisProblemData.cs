@@ -28,7 +28,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public interface IDataAnalysisProblemData : INamedItem {
     bool IsEmpty { get; }
 
-    Dataset Dataset { get; }
+    IDataset Dataset { get; }
     ICheckedItemList<StringValue> InputVariables { get; }
     IEnumerable<string> AllowedInputVariables { get; }
 

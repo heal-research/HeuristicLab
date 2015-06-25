@@ -48,7 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
 
     public SymbolicTimeSeriesPrognosisModel(ISymbolicExpressionTree tree, ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter interpreter, double lowerLimit = double.MinValue, double upperLimit = double.MaxValue) : base(tree, interpreter, lowerLimit, upperLimit) { }
 
-    public IEnumerable<IEnumerable<double>> GetPrognosedValues(Dataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
+    public IEnumerable<IEnumerable<double>> GetPrognosedValues(IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
       var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows, horizons);
       return estimatedValues.Select(predictionPerRow => predictionPerRow.LimitToRange(LowerEstimationLimit, UpperEstimationLimit));
     }

@@ -337,9 +337,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
         List<string> temp;
         if (allowedChildSymbols.TryGetValue(parent.Name, out temp)) {
-          if (temp.SelectMany(s => GetSymbol(s).Flatten()).Any(s => s.Name == child.Name)) {
-            cachedIsAllowedChildSymbol.Add(key, true);
-            return true;
+          for (int i = 0; i < temp.Count; i++) {
+            var symbol = GetSymbol(temp[i]);
+            foreach (var s in symbol.Flatten())
+              if (s.Name == child.Name) {
+                cachedIsAllowedChildSymbol.Add(key, true);
+                return true;
+              }
           }
         }
         cachedIsAllowedChildSymbol.Add(key, false);
@@ -364,9 +368,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
         List<string> temp;
         if (allowedChildSymbolsPerIndex.TryGetValue(Tuple.Create(parent.Name, argumentIndex), out temp)) {
-          if (temp.SelectMany(s => GetSymbol(s).Flatten()).Any(s => s.Name == child.Name)) {
-            cachedIsAllowedChildSymbolIndex.Add(key, true);
-            return true;
+          for (int i = 0; i < temp.Count; i++) {
+            var symbol = GetSymbol(temp[i]);
+            foreach (var s in symbol.Flatten())
+              if (s.Name == child.Name) {
+                cachedIsAllowedChildSymbolIndex.Add(key, true);
+                return true;
+              }
           }
         }
         cachedIsAllowedChildSymbolIndex.Add(key, false);

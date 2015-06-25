@@ -174,7 +174,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public IEnumerable<ISymbolicExpressionTreeNode> IterateNodesBreadth() {
-      var list = new List<ISymbolicExpressionTreeNode>() { this };
+      var list = new List<ISymbolicExpressionTreeNode>(GetLength()) { this };
       int i = 0;
       while (i != list.Count) {
         for (int j = 0; j != list[i].SubtreeCount; ++j)
@@ -192,9 +192,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     public void ForEachNodePrefix(Action<ISymbolicExpressionTreeNode> a) {
       a(this);
-      if (Subtrees != null) {
-        foreach (var subtree in Subtrees) {
-          subtree.ForEachNodePrefix(a);
+      if (subtrees != null) {
+        //avoid linq to reduce memory pressure
+        for (int i = 0; i < subtrees.Count; i++) {
+          subtrees[i].ForEachNodePrefix(a);
         }
       }
     }
@@ -206,9 +207,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
 
     public void ForEachNodePostfix(Action<ISymbolicExpressionTreeNode> a) {
-      if (Subtrees != null) {
-        foreach (var subtree in Subtrees) {
-          subtree.ForEachNodePostfix(a);
+      if (subtrees != null) {
+        //avoid linq to reduce memory pressure
+        for (int i = 0; i < subtrees.Count; i++) {
+          subtrees[i].ForEachNodePostfix(a);
         }
       }
       a(this);

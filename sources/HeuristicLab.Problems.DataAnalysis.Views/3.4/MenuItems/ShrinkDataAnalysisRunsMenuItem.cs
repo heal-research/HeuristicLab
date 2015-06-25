@@ -115,22 +115,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       return true;
     }
 
-    private static readonly Action<Dataset, Dictionary<string, IList>> variableValuesSetter;
-    private static readonly Func<Dataset, Dictionary<string, IList>> variableValuesGetter;
+    private static readonly Action<IDataset, Dictionary<string, IList>> variableValuesSetter;
+    private static readonly Func<IDataset, Dictionary<string, IList>> variableValuesGetter;
     /// <summary>
     /// The static initializer is used to create expressions for getting and setting the private variableValues field in the dataset.
     /// This is done by expressions because the field is private and compiled expression calls are much faster compared to standad reflection calls.
     /// </summary>
     static ShrinkDataAnalysisRunsMenuItem() {
-      var dataset = Expression.Parameter(typeof(Dataset));
+      var dataset = Expression.Parameter(typeof(IDataset));
       var variableValues = Expression.Parameter(typeof(ValuesType));
       var valuesExpression = Expression.Field(dataset, "variableValues");
       var assignExpression = Expression.Assign(valuesExpression, variableValues);
 
-      var variableValuesSetExpression = Expression.Lambda<Action<Dataset, ValuesType>>(assignExpression, dataset, variableValues);
+      var variableValuesSetExpression = Expression.Lambda<Action<IDataset, ValuesType>>(assignExpression, dataset, variableValues);
       variableValuesSetter = variableValuesSetExpression.Compile();
 
-      var variableValuesGetExpression = Expression.Lambda<Func<Dataset, ValuesType>>(valuesExpression, dataset);
+      var variableValuesGetExpression = Expression.Lambda<Func<IDataset, ValuesType>>(valuesExpression, dataset);
       variableValuesGetter = variableValuesGetExpression.Compile();
     }
   }

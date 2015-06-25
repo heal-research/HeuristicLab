@@ -137,7 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
     #endregion
 
-    public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows) {
       if (CheckExpressionsWithIntervalArithmetic.Value)
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
 
@@ -160,7 +160,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       }
     }
 
-    private InterpreterState PrepareInterpreterState(ISymbolicExpressionTree tree, Dataset dataset) {
+    private InterpreterState PrepareInterpreterState(ISymbolicExpressionTree tree, IDataset dataset) {
       Instruction[] code = SymbolicExpressionTreeCompiler.Compile(tree, OpCodes.MapSymbolToOpCode);
       Dictionary<string, int> doubleVariableNames = dataset.DoubleVariables.Select((x, i) => new { x, i }).ToDictionary(e => e.x, e => e.i);
       int necessaryArgStackSize = 0;
@@ -181,7 +181,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return new InterpreterState(code, necessaryArgStackSize);
     }
 
-    private void CompileInstructions(ILGenerator il, InterpreterState state, Dataset ds) {
+    private void CompileInstructions(ILGenerator il, InterpreterState state, IDataset ds) {
       Instruction currentInstr = state.NextInstruction();
       int nArgs = currentInstr.nArguments;
 

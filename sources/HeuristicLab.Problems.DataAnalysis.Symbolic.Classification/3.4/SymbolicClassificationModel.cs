@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       double lowerEstimationLimit = double.MinValue, double upperEstimationLimit = double.MaxValue)
       : base(tree, interpreter, lowerEstimationLimit, upperEstimationLimit) { }
 
-    public abstract IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows);
+    public abstract IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     public abstract void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);
 
     public abstract ISymbolicClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);

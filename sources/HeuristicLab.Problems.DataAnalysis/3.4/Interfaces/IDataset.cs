@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2014 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -19,12 +19,23 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+
 namespace HeuristicLab.Problems.DataAnalysis {
-  public interface IClassificationEnsembleSolution : IClassificationSolution {
-    new IClassificationEnsembleModel Model { get; }
-    IItemCollection<IClassificationSolution> ClassificationSolutions { get; }
-    IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(IDataset dataset, IEnumerable<int> rows);
+  public interface IDataset : IItem, IStringConvertibleMatrix {
+    IEnumerable<string> VariableNames { get; }
+    IEnumerable<string> DoubleVariables { get; }
+
+    double GetDoubleValue(string variableName, int row);
+    IEnumerable<double> GetDoubleValues(string variableName);
+    IEnumerable<double> GetDoubleValues(string variableName, IEnumerable<int> rows);
+    ReadOnlyCollection<double> GetReadOnlyDoubleValues(string variableName);
+
+    IEnumerable<string> GetStringValues(string variableName);
+    IEnumerable<DateTime> GetDateTimeValues(string variableName);
   }
 }

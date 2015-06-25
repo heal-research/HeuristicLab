@@ -80,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    public IEnumerable<int> GetClusterValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<int> GetClusterValues(IDataset dataset, IEnumerable<int> rows) {
       return KMeansClusteringUtil.FindClosestCenters(centers, dataset, allowedInputVariables, rows);
     }
   }

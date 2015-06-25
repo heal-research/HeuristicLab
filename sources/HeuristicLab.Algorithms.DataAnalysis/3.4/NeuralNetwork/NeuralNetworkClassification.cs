@@ -178,7 +178,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static IClassificationSolution CreateNeuralNetworkClassificationSolution(IClassificationProblemData problemData, int nLayers, int nHiddenNodes1, int nHiddenNodes2, double decay, int restarts,
       out double rmsError, out double avgRelError, out double relClassError) {
-      Dataset dataset = problemData.Dataset;
+      var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;

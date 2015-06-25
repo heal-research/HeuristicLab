@@ -71,7 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    private void CalculateElements(Dataset dataset, IDependencyCalculator calc, string partition, string variable = null, int frames = 0, double[,] alreadyCalculated = null) {
+    private void CalculateElements(IDataset dataset, IDependencyCalculator calc, string partition, string variable = null, int frames = 0, double[,] alreadyCalculated = null) {
       var indices = GetRelevantIndices(problemData, partition);
       bwInfo = new BackgroundWorkerInfo {
         Dataset = dataset, Calculator = calc, Partition = partition, Indices = indices,
@@ -116,7 +116,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       BackgroundWorker worker = sender as BackgroundWorker;
 
       BackgroundWorkerInfo bwInfo = (BackgroundWorkerInfo)e.Argument;
-      Dataset dataset = bwInfo.Dataset;
+      var dataset = bwInfo.Dataset;
       IEnumerable<int> indices = bwInfo.Indices;
       IDependencyCalculator calc = bwInfo.Calculator;
 
@@ -155,7 +155,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       BackgroundWorker worker = sender as BackgroundWorker;
 
       BackgroundWorkerInfo bwInfo = (BackgroundWorkerInfo)e.Argument;
-      Dataset dataset = bwInfo.Dataset;
+      var dataset = bwInfo.Dataset;
       IEnumerable<int> indices = bwInfo.Indices;
       IDependencyCalculator calc = bwInfo.Calculator;
       string variable = bwInfo.Variable;
@@ -254,7 +254,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     #endregion
 
     private class BackgroundWorkerInfo {
-      public Dataset Dataset { get; set; }
+      public IDataset Dataset { get; set; }
       public IDependencyCalculator Calculator { get; set; }
       public string Partition { get; set; }
       public IEnumerable<int> Indices { get; set; }

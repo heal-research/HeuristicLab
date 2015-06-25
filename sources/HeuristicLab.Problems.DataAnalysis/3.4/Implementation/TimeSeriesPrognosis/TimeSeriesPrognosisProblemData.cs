@@ -1581,7 +1581,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       : this(defaultDataset, defaultAllowedInputVariables, defaultTargetVariable) {
       TrainingPartition.Start = 50;
     }
-    public TimeSeriesPrognosisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
+    public TimeSeriesPrognosisProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
       : base(dataset, allowedInputVariables, targetVariable, transformations ?? Enumerable.Empty<ITransformation>()) {
       Parameters.Add(new FixedValueParameter<IntValue>(TrainingHorizonParameterName, "Specifies the horizon (how far the prognosis reaches in the future) for each training sample.", new IntValue(1)));
       Parameters.Add(new FixedValueParameter<IntValue>(TestHorizonParameterName, "Specifies the horizon (how far the prognosis reaches in the future) for each test sample.", new IntValue(1)));
