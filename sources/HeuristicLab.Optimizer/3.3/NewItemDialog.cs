@@ -95,9 +95,10 @@ namespace HeuristicLab.Optimizer {
 
       foreach (var category in categories) {
         var fullName = category.Key;
-        var tokens = fullName.Split(new[] { CreatableAttribute.Categories.Splitter }, StringSplitOptions.RemoveEmptyEntries);
+        var tokensWithOrdering = fullName.Split(new[] { CreatableAttribute.Categories.SplitToken }, StringSplitOptions.RemoveEmptyEntries);
+        var tokens = tokensWithOrdering.Select(t => t.Split(new[] { CreatableAttribute.Categories.OrderToken }, StringSplitOptions.RemoveEmptyEntries).Last()).ToList();
         var name = tokens.Last();
-        var parents = tokens.Take(tokens.Length - 1);
+        var parents = tokensWithOrdering.Take(tokens.Count - 1);
 
         var categoryNode = new TreeNode(name, imageIndex: 1, selectedImageIndex: 1) {
           Name = fullName,
@@ -117,7 +118,7 @@ namespace HeuristicLab.Optimizer {
       TreeNode parentNode = null;
       string fullName = null;
       foreach (string parentCategory in parentCategories) {
-        fullName = fullName == null ? parentCategory : fullName + "#" + parentCategory;
+        fullName = fullName == null ? parentCategory : fullName + CreatableAttribute.Categories.SplitToken + parentCategory;
         parentNode = node.Nodes.Find(fullName, searchAllChildren: false).SingleOrDefault();
         if (parentNode == null) {
           parentNode = new TreeNode(parentCategory, imageIndex: 1, selectedImageIndex: 1) {

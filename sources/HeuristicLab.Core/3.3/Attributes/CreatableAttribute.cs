@@ -26,26 +26,29 @@ namespace HeuristicLab.Core {
   public sealed class CreatableAttribute : Attribute {
     #region Predefined Categories
     public static class Categories {
-      public const string Splitter = "###";
+      public const string SplitToken = "###";
+      public const string OrderToken = "$$$";
 
-      public const string Algorithms = "Algorithms";
-      public const string PopulationBasedAlgorithms = Algorithms + Splitter + "Population Based";
-      public const string SingleSolutionAlgorithms = Algorithms + Splitter + "Single Solution";
+      public const string Algorithms = "1" + OrderToken + "Algorithms";
+      public const string PopulationBasedAlgorithms = Algorithms + SplitToken + "1" + OrderToken + "Population Based";
+      public const string SingleSolutionAlgorithms = Algorithms + SplitToken + "2" + OrderToken + "Single Solution";
 
-      public const string Problems = "Problems";
-      public const string CombinatorialProblems = Problems + Splitter + "Combinatorial";
-      public const string GeneticProgrammingProblems = Problems + Splitter + "Genetic Programming";
-      public const string ExternalEvaluationProblems = Problems + Splitter + "External Evaluation";
+      public const string Problems = "2" + OrderToken + "Problems";
+      public const string CombinatorialProblems = Problems + SplitToken + "1" + OrderToken + "Combinatorial";
+      public const string GeneticProgrammingProblems = Problems + SplitToken + "2" + OrderToken + "Genetic Programming";
+      public const string ExternalEvaluationProblems = Problems + SplitToken + "3" + OrderToken + "External Evaluation";
 
-      public const string DataAnalysis = "Data Analysis";
-      public const string DataAnalysisClassification = DataAnalysis + Splitter + "Classification";
-      public const string DataAnalysisRegression = DataAnalysis + Splitter + "Regression";
-      public const string DataAnalysisEnsembles = DataAnalysis + Splitter + "Ensembles";
+      public const string DataAnalysis = "3" + OrderToken + "Data Analysis";
+      public const string DataAnalysisRegression = DataAnalysis + SplitToken + "1" + OrderToken + "Regression";
+      public const string DataAnalysisClassification = DataAnalysis + SplitToken + "2" + OrderToken + "Classification";
+      public const string DataAnalysisEnsembles = DataAnalysis + SplitToken + "3" + OrderToken + "Ensembles";
 
-      public const string TestingAndAnalysis = "Testing & Analysis";
-      public const string TestingAndAnalysisOKB = TestingAndAnalysis + Splitter + "OKB";
+      public const string TestingAndAnalysis = "4" + OrderToken + "Testing & Analysis";
+      public const string TestingAndAnalysisOKB = TestingAndAnalysis + SplitToken + "1" + OrderToken + "OKB";
 
-      public const string Scripts = "5 - Scripts";
+      public const string Scripts = "5" + OrderToken + "Scripts";
+
+
     }
     #endregion
 
