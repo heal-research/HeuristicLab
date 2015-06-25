@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("ModifiableDataset", "Represents a dataset containing data that should be analyzed, which can be modified by adding or replacing variables and values.")]
   [StorableClass]
-  public class ModifiableDataset : Dataset, IStringConvertibleMatrix {
+  public sealed class ModifiableDataset : Dataset, IStringConvertibleMatrix {
     [StorableConstructor]
     private ModifiableDataset(bool deserializing) : base(deserializing) { }
     private ModifiableDataset(ModifiableDataset original, Cloner cloner) : base(original, cloner) { }
