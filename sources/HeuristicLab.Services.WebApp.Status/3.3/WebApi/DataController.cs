@@ -80,7 +80,7 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
             TotalCores = onlineSlaves.Sum(s => s.Cores ?? 0),
             FreeCores = onlineSlaves.Sum(s => s.FreeCores ?? 0), // temporary for old chart data
             ActiveCores = activeSlaves.Sum(s => s.Cores ?? 0),
-            CalculatingCores = calculatingSlaves.Sum(s => s.Cores ?? 0)
+            CalculatingCores = calculatingSlaves.Sum(s => s.Cores ?? 0) - calculatingSlaves.Sum(s => s.FreeCores ?? 0)
           },
           CpuUtilizationStatus = new DTO.CpuUtilizationStatus {
             TotalCpuUtilization = onlineSlaves.Any()

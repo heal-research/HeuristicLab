@@ -98,7 +98,7 @@ namespace HeuristicLab.Services.WebApp.Configs {
         "WebApp/app.js"
       };
       PluginManager pluginManager = PluginManager.Instance;
-      foreach (var plugin in pluginManager.GetPlugins()) {
+      foreach (var plugin in pluginManager.Plugins) {
         if (File.Exists(string.Format(@"{0}\{1}\{1}.js", PluginManager.PluginsDirectory, plugin.Name))) {
           jsFiles.Add(string.Format("WebApp/plugins/{0}/{0}.js", plugin.Name));
         }

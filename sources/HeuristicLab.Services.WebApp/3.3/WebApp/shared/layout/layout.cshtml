@@ -95,5 +95,10 @@
         <ui-view/>
     </section>
 </div>
+<script type="text/javascript">
+$('.navbar-collapse').on('click', 'li a', function () {
+    $('.navbar-collapse').collapse('hide');
+});
+</script>
 </body>
 </html>

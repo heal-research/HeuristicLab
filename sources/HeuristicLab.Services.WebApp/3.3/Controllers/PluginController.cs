@@ -33,7 +33,7 @@ namespace HeuristicLab.Services.WebApp.Controllers {
     private readonly PluginManager pluginManager = PluginManager.Instance;
 
     public IEnumerable<DTO.Plugin> GetPlugins() {
-      var plugins = pluginManager.GetPlugins();
+      var plugins = pluginManager.Plugins;
       return plugins.Select(plugin => new DTO.Plugin {
         Name = plugin.Name,
         AssemblyName = plugin.AssemblyName,

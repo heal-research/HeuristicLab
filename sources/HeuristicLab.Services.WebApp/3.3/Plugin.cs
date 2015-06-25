@@ -30,22 +30,31 @@ using System.Web.Http.Controllers;
 
 namespace HeuristicLab.Services.WebApp {
   public class Plugin {
-    private HttpConfiguration configuration;
     public string Name { get; set; }
     public string Directory { get; set; }
     public string AssemblyName { get; set; }
     public DateTime? LastReload { get; set; }
+
+    private HttpConfiguration configuration;
+    public HttpConfiguration Configuration {
+      get { return configuration; }
+      set {
+        if (configuration != value) {
+          configuration = value;
+          ReloadControllers();
+        }
+      }
+    }
 
     private IDictionary<string, HttpControllerDescriptor> controllers;
     public IDictionary<string, HttpControllerDescriptor> Controllers {
       get { return controllers ?? (controllers = new ConcurrentDictionary<string, HttpControllerDescriptor>()); }
     }
 
-    public void Configure(HttpConfiguration configuration) {
-      if (this.configuration != configuration) {
-        this.configuration = configuration;
-        ReloadControllers();
-      }
+    public Plugin(string name, string directory, HttpConfiguration configuration) {
+      Name = name;
+      Directory = directory;
+      Configuration = configuration;
     }
 
     public HttpControllerDescriptor GetController(string name) {

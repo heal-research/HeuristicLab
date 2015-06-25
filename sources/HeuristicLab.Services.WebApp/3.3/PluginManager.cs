@@ -37,6 +37,10 @@ namespace HeuristicLab.Services.WebApp {
 
     public HttpConfiguration Configuration { get; set; }
 
+    public IEnumerable<Plugin> Plugins {
+      get { return plugins.Values; }
+    }
+
     public static string PluginsDirectory {
       get { return string.Format(@"{0}WebApp\plugins", HttpRuntime.AppDomainAppPath); }
     }
@@ -55,7 +59,7 @@ namespace HeuristicLab.Services.WebApp {
 
     private void OnFilesChanged(object sender, FileSystemEventArgs args) {
       string path = args.FullPath.Remove(0, PluginsDirectory.Length + 1);
-      var pathParts = path.Split('\\');
+      var pathParts = path.Split(Path.PathSeparator);
       string pluginName = pathParts[0];
       if (pathParts.Length == 1) {
         switch (args.ChangeType) {
@@ -70,7 +74,7 @@ namespace HeuristicLab.Services.WebApp {
           case WatcherChangeTypes.Renamed:
             RenamedEventArgs renamedArgs = (RenamedEventArgs)args;
             string oldPath = renamedArgs.OldFullPath.Remove(0, PluginsDirectory.Length + 1);
-            var oldPathParts = oldPath.Split('\\');
+            var oldPathParts = oldPath.Split(Path.PathSeparator);
             string oldPluginName = oldPathParts[0];
             plugins.Remove(oldPluginName);
             GetPlugin(pluginName);
@@ -91,11 +95,7 @@ namespace HeuristicLab.Services.WebApp {
       if (plugin == null) {
         string directory = string.Format(@"{0}\{1}", PluginsDirectory, name);
         if (Directory.Exists(directory)) {
-          plugin = new Plugin {
-            Name = name,
-            Directory = directory
-          };
-          plugin.Configure(Configuration);
+          plugin = new Plugin(name, directory, Configuration);
           plugins.Add(name, plugin);
         }
       }
@@ -112,11 +112,7 @@ namespace HeuristicLab.Services.WebApp {
         string pluginName = Path.GetFileName(directory);
         Plugin plugin = LookupPlugin(pluginName);
         if (plugin == null) {
-          plugin = new Plugin {
-            Name = pluginName,
-            Directory = directory
-          };
-          plugin.Configure(Configuration);
+          plugin = new Plugin(pluginName, directory, Configuration);
           plugins.Add(pluginName, plugin);
         }
       }
