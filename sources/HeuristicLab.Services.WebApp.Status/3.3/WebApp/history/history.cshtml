@@ -11,7 +11,7 @@
 
 <div id="history-header">
     <form class="form-inline">
-        <div class="form-group">
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
             <label for="fromDate">From:&nbsp;</label>
             <div class="input-group">
                 <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="fromDate" is-open="fromIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
@@ -20,14 +20,19 @@
                 </span>
             </div>
         </div>
-        <div class="form-group">
-            <label for="fromDate">&nbsp;&nbsp;To:&nbsp;</label>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <label for="fromDate">To:&nbsp;</label>
             <div class="input-group">
                 <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="toDate" is-open="toIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="openToDateSelection($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
             </div>
+        </div>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <button type="button" class="btn btn-default" ng-click="updateCharts()">
+                Apply
+            </button>
         </div>
     </form>
 </div>

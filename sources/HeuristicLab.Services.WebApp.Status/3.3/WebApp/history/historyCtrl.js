@@ -13,19 +13,11 @@
                 },
                 yaxis: {
                     min: 0,
-                    max: 100,
-                    zoomRange: false,
-                    panRange: false
+                    max: 100
                 },
                 xaxis: {
                     mode: "time",
                     twelveHourClock: false
-                },
-                zoom: {
-                    interactive: true
-                },
-                pan: {
-                    interactive: true
                 }
             };
 
@@ -41,22 +33,11 @@
                         fill: true
                     }
                 },
-                yaxis: {
-                    zoomRange: false,
-                    panRange: false
-                },
                 xaxis: {
                     mode: "time",
                     twelveHourClock: false
-                },
-                zoom: {
-                    interactive: true
-                },
-                pan: {
-                    interactive: true
                 }
             };
-
 
             $scope.fromDate = new Date();
             $scope.toDate = new Date();
@@ -87,7 +68,7 @@
             $scope.coreSeries = [[]];
             $scope.memorySeries = [[]];
 
-            var updateCharts = function () {
+            $scope.updateCharts = function () {
                 dataService.getStatusHistory({ start: ConvertFromDate($scope.fromDate), end: ConvertToDate($scope.toDate) }, function (status) {
                     var noOfStatus = status.length;
                     var cpuSeries = [];
@@ -114,13 +95,7 @@
 
                 });
             };
-
-            $scope.$watch('fromDate', function (newValue, oldValue) {
-                updateCharts();
-            });
-            $scope.$watch('toDate', function (newValue, oldValue) {
-                updateCharts();
-            });
+            $scope.updateCharts();
         }]
     );
 })();
