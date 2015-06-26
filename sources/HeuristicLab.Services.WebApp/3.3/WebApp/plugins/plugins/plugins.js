@@ -4,7 +4,8 @@
     plugin.dependencies = ['ngResource', 'ui.bootstrap'];
     plugin.files = [
         'pluginsService.js',
-        'pluginsCtrl.js'
+        'pluginsCtrl.js',
+        'pluginsExceptionCtrl.js'
     ];
     plugin.view = 'plugins.cshtml';
     plugin.controller = 'app.plugins.ctrl';

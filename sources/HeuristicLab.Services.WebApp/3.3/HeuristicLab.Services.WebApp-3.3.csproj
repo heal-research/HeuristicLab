@@ -177,6 +177,7 @@
     <Content Include="WebApp\plugins\login\loginCtrl.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="WebApp\plugins\plugins\pluginsExceptionCtrl.js" />
     <Content Include="WebApp\plugins\plugins\plugins.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

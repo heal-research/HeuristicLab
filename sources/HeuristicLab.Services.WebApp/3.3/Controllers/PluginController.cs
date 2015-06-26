@@ -37,7 +37,8 @@ namespace HeuristicLab.Services.WebApp.Controllers {
       return plugins.Select(plugin => new DTO.Plugin {
         Name = plugin.Name,
         AssemblyName = plugin.AssemblyName,
-        LastReload = plugin.LastReload
+        LastReload = plugin.LastReload,
+        Exception = plugin.Exception
       });
     }
 

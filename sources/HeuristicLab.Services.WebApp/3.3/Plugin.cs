@@ -33,6 +33,7 @@ namespace HeuristicLab.Services.WebApp {
     public string Name { get; set; }
     public string Directory { get; set; }
     public string AssemblyName { get; set; }
+    public string Exception { get; set; }
     public DateTime? LastReload { get; set; }
 
     private HttpConfiguration configuration;
@@ -65,6 +66,7 @@ namespace HeuristicLab.Services.WebApp {
 
     public void ReloadControllers() {
       AssemblyName = null;
+      Exception = null;
       Controllers.Clear();
       LastReload = DateTime.Now;
       if (configuration == null)
@@ -75,6 +77,7 @@ namespace HeuristicLab.Services.WebApp {
         if (!assemblies.Any())
           return;
         var assemblyPath = assemblies.First();
+        AssemblyName = Path.GetFileName(assemblyPath);
         var assembly = Assembly.Load(File.ReadAllBytes(assemblyPath));
         var assemblyTypes = assembly.GetTypes();
         var apiControllers = assemblyTypes.Where(c => typeof(ApiController).IsAssignableFrom(c)).ToList();
@@ -82,10 +85,9 @@ namespace HeuristicLab.Services.WebApp {
           var controllerName = apiController.Name.Remove(apiController.Name.Length - 10).ToLower();
           Controllers.Add(controllerName, new HttpControllerDescriptor(configuration, controllerName, apiController));
         }
-        AssemblyName = Path.GetFileName(assemblyPath);
       }
-      catch (Exception) {
-        AssemblyName = "Error loading assembly";
+      catch (Exception e) {
+        Exception = e.ToString();
         Controllers.Clear();
       }
     }

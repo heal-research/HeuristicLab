@@ -27,5 +27,6 @@ namespace HeuristicLab.Services.WebApp.Controllers.DataTransfer {
     public string AssemblyName { get; set; }
     public DateTime? LastReload { get; set; }
     public int Reloads { get; set; }
+    public string Exception { get; set; }
   }
 }

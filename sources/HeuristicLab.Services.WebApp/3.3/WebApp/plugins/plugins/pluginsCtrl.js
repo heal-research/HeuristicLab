@@ -1,7 +1,7 @@
 ﻿(function () {
     var module = appPluginsPlugin.getAngularModule();
     module.controller('app.plugins.ctrl',
-        ['$scope', 'app.plugins.service', function ($scope, pluginService) {
+        ['$scope', '$modal', 'app.plugins.service', function ($scope, $modal, pluginService) {
             var getPlugins = function () {
                 pluginService.getPlugins({}, function (plugins) {
                     $scope.plugins = plugins;
@@ -21,8 +21,26 @@
             };
 
             $scope.reloadPlugin = function (name) {
-                pluginService.reloadPlugin({ name: name }, function() {
+                pluginService.reloadPlugin({ name: name }, function () {
                     getPlugins();
+                });
+            };
+
+            $scope.open = function (pluginName, exception) {
+                $scope.pluginName = pluginName;
+                $scope.exception = exception;
+                $modal.open({
+                    animation: true,
+                    templateUrl: 'pluginsExceptionDialog',
+                    controller: 'app.plugins.pluginsExceptionCtrl',
+                    resolve: {
+                        pluginName: function () {
+                            return $scope.pluginName;
+                        },
+                        exception: function () {
+                            return $scope.exception;
+                        }
+                    }
                 });
             };
 
