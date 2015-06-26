@@ -6,28 +6,33 @@
             $scope.modules = app.modules;
             $scope.menuEntries = app.getMenu().getMenuEntries();
             $scope.isActive = function (viewLocation) {
-                var loc = viewLocation.toUpperCase().substr(1);
-                var actualLocation = $location.path().toUpperCase();
-                var splitLoc = loc.split("/");
-                if (splitLoc.length <= 2) {
-                    var actualLocationSplit = actualLocation.split("/");
-                    if (actualLocationSplit.length > 1) {
-                        if (splitLoc[1] == actualLocationSplit[1]) {
-                            return true;
+                var linkLocation = viewLocation.toUpperCase().substr(1);
+                var currentLocation = $location.path().toUpperCase();
+                if (linkLocation == currentLocation) {
+                    return true;
+                }
+                var linkLocationParts = linkLocation.split("/");
+                var currentLocationParts = currentLocation.split("/");
+                var linkLocationPartsLength = linkLocationParts.length;
+                if (linkLocationPartsLength < currentLocationParts.length) {
+                    for (var i = 0; i < linkLocationPartsLength; ++i) {
+                        if (linkLocationParts[i] !== currentLocationParts[i]) {
+                            return false;
                         }
                     }
+                    return true;
                 }
-                return $location.path().toUpperCase() == loc;
+                return false;
             };
 
-            $scope.logout = function() {
-                authService.logout({}, function() {
+            $scope.logout = function () {
+                authService.logout({}, function () {
                     $window.location.hash = "";
                     $window.location.reload();
                 });
             };
 
-            $scope.hideMenu = function() {
+            $scope.hideMenu = function () {
                 $(".navbar-collapse").collapse('hide');
             };
         }]
