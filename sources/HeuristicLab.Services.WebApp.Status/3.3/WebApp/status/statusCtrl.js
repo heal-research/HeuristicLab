@@ -147,8 +147,8 @@
                     // end temporary
                     coreSeries[0].push([$scope.status.Timestamp, status.CoreStatus.TotalCores]);
                     coreSeries[1].push([$scope.status.Timestamp, usedCores]);
-                    memorySeries[0].push([$scope.status.Timestamp, status.MemoryStatus.TotalMemory]);
-                    memorySeries[1].push([$scope.status.Timestamp, usedMemory]);
+                    memorySeries[0].push([$scope.status.Timestamp, Math.round(status.MemoryStatus.TotalMemory / 1024)]);
+                    memorySeries[1].push([$scope.status.Timestamp, Math.round(usedMemory / 1024)]);
                     $scope.cpu.series = [{ data: cpuSeries, label: "&nbsp;CPU Utilization", color: "#f7921d" }];
                     $scope.core.series = [
                         { data: coreSeries[0], label: "&nbsp;Total Cores", color: "LightGreen" },
@@ -169,16 +169,16 @@
                 dataService.getStatusHistory({ start: ConvertDate(startDate), end: ConvertDate(nowDate) }, function (status) {
                     var noOfStatus = status.length;
                     var cpuSeries = [];
-                    var coreSeries = [[],[]];
-                    var memorySeries = [[],[]];
+                    var coreSeries = [[], []];
+                    var memorySeries = [[], []];
                     for (var i = 0; i < noOfStatus; ++i) {
                         var curStatus = status[i];
                         var cpuData = Math.round(curStatus.CpuUtilizationStatus.ActiveCpuUtilization);
                         cpuSeries.push([curStatus.Timestamp, cpuData]);
                         coreSeries[0].push([curStatus.Timestamp, curStatus.CoreStatus.ActiveCores]);
                         coreSeries[1].push([curStatus.Timestamp, curStatus.CoreStatus.CalculatingCores]);
-                        memorySeries[0].push([curStatus.Timestamp, curStatus.MemoryStatus.ActiveMemory]);
-                        memorySeries[1].push([curStatus.Timestamp, curStatus.MemoryStatus.UsedMemory]);
+                        memorySeries[0].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.ActiveMemory / 1024)]);
+                        memorySeries[1].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.UsedMemory / 1024)]);
                     }
                     $scope.cpu.series = [{ data: cpuSeries, label: "&nbsp;CPU Utilization", color: "#f7921d" }];
                     $scope.core.series = [
@@ -201,4 +201,13 @@
             });
         }]
     );
+
+    module.filter('toGB', function () {
+        return function (text, length, end) {
+            if (text == null || text == '') text = '0';
+            text = Math.round(parseInt(text) / 1024);
+            return text + ' GB';
+        };
+    });
+
 })();

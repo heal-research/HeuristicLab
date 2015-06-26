@@ -39,6 +39,7 @@
                 }
             };
 
+
             $scope.fromDate = new Date();
             $scope.toDate = new Date();
 
@@ -80,8 +81,8 @@
                         cpuSeries.push([curStatus.Timestamp, cpuData]);
                         coreSeries[0].push([curStatus.Timestamp, curStatus.CoreStatus.ActiveCores]);
                         coreSeries[1].push([curStatus.Timestamp, curStatus.CoreStatus.CalculatingCores]);
-                        memorySeries[0].push([curStatus.Timestamp, curStatus.MemoryStatus.ActiveMemory]);
-                        memorySeries[1].push([curStatus.Timestamp, curStatus.MemoryStatus.UsedMemory]);
+                        memorySeries[0].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.ActiveMemory / 1024)]);
+                        memorySeries[1].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.UsedMemory / 1024)]);
                     }
                     $scope.cpuSeries = [{ data: cpuSeries, label: "&nbsp;CPU Utilization", color: "#f7921d" }];
                     $scope.coreSeries = [

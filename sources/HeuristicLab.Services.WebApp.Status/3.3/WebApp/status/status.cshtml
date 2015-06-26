@@ -79,15 +79,15 @@
                 <table class="table table-no-border table-condensed table-auto-width table-content">
                     <tr data-toggle="tooltip" data-placement="bottom" title="All online slaves">
                         <td class="text-left">Total:</td>
-                        <td class="text-right">{{status.MemoryStatus.TotalMemory | number}} GB</td>
+                        <td class="text-right">{{status.MemoryStatus.TotalMemory | toGB}}</td>
                     </tr>
                     <tr data-toggle="tooltip" data-placement="bottom" title="All calculating and idle slaves that are allowed to calculate">
                         <td class="text-left">Active:</td>
-                        <td class="text-right">{{status.MemoryStatus.ActiveMemory | number}} GB</td>
+                        <td class="text-right">{{status.MemoryStatus.ActiveMemory | toGB}}</td>
                     </tr>
                     <tr data-toggle="tooltip" data-placement="bottom" title="All calculating slaves that are allowed to calculate">
                         <td class="text-left">Calculating:</td>
-                        <td class="text-right">{{status.MemoryStatus.UsedMemory | number}} GB</td>
+                        <td class="text-right">{{status.MemoryStatus.UsedMemory | toGB}}</td>
                     </tr>
                 </table>
             </div>
@@ -233,7 +233,7 @@
                             <td>{{slave.Slave.Name}}</td>
                             <td>{{slave.CpuUtilization | number: 2}} %</td>
                             <td>{{slave.Cores | number}}</td>
-                            <td>{{slave.Memory | number}} GB</td>
+                            <td>{{slave.Memory | toGB}}</td>
                         </tr>
                         <tr ng-hide="activeCalculatingSlaves.length">
                             <td colspan="4" class="text-center">
@@ -291,7 +291,7 @@
                             <td>{{slave.Slave.Name}}</td>
                             <td>{{slave.CpuUtilization | number: 2}} %</td>
                             <td>{{slave.Cores | number}}</td>
-                            <td>{{slave.Memory | number}} GB</td>
+                            <td>{{slave.Memory | toGB}}</td>
                         </tr>
                         <tr ng-hide="activeIdleSlaves.length">
                             <td colspan="4" class="text-center">
@@ -348,7 +348,7 @@
                             <td>{{slave.Slave.Name}}</td>
                             <td>{{slave.CpuUtilization | number: 2}} %</td>
                             <td>{{slave.Cores | number}}</td>
-                            <td>{{slave.Memory | number}} GB</td>
+                            <td>{{slave.Memory | toGB}}</td>
                         </tr>
                         <tr ng-hide="inactiveSlaves.length">
                             <td colspan="4" class="text-center">No inactive slaves available!</td>

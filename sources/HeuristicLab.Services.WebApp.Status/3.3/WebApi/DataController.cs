@@ -72,8 +72,8 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
                             select slave).ToList();
         var activeSlaves = onlineSlaves.Where(s => s.IsAllowedToCalculate).ToList();
         var calculatingSlaves = activeSlaves.Where(s => s.SlaveState == SlaveState.Calculating).ToList();
-        int calculatingMemory = calculatingSlaves.Any() ? (int)calculatingSlaves.Sum(s => s.Memory) / 1024 : 0;
-        int freeCalculatingMemory = calculatingSlaves.Any() ? (int)calculatingSlaves.Sum(s => s.FreeMemory) / 1024 : 0;
+        int calculatingMemory = calculatingSlaves.Any() ? (int)calculatingSlaves.Sum(s => s.Memory) : 0;
+        int freeCalculatingMemory = calculatingSlaves.Any() ? (int)calculatingSlaves.Sum(s => s.FreeMemory) : 0;
 
         return new DTO.Status {
           CoreStatus = new DTO.CoreStatus {
@@ -94,9 +94,9 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
                                         : 0.0
           },
           MemoryStatus = new DTO.MemoryStatus {
-            TotalMemory = onlineSlaves.Any() ? (int)onlineSlaves.Sum(s => s.Memory) / 1024 : 0,
-            FreeMemory = onlineSlaves.Any() ? (int)onlineSlaves.Sum(s => s.FreeMemory) / 1024 : 0,
-            ActiveMemory = activeSlaves.Any() ? (int)activeSlaves.Sum(s => s.Memory) / 1024 : 0,
+            TotalMemory = onlineSlaves.Any() ? (int)onlineSlaves.Sum(s => s.Memory) : 0,
+            FreeMemory = onlineSlaves.Any() ? (int)onlineSlaves.Sum(s => s.FreeMemory) : 0,
+            ActiveMemory = activeSlaves.Any() ? (int)activeSlaves.Sum(s => s.Memory) : 0,
             UsedMemory = calculatingMemory - freeCalculatingMemory
           },
           TasksStatus = GetTaskStatus(db),
@@ -108,8 +108,8 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
             CpuUtilization = x.CpuUtilization,
             Cores = x.Cores ?? 0,
             FreeCores = x.FreeCores ?? 0,
-            Memory = (x.Memory ?? 0) / 1024,
-            FreeMemory = (x.FreeMemory ?? 0) / 1024,
+            Memory = x.Memory ?? 0,
+            FreeMemory = x.FreeMemory ?? 0,
             IsAllowedToCalculate = x.IsAllowedToCalculate,
             State = x.SlaveState.ToString()
           }).OrderBy(x => x.Slave.Name),
@@ -148,8 +148,8 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
           status.CpuUtilizationStatus.TotalCpuUtilization += statistic.SlaveStatistics.Any()
                                                              ? statistic.SlaveStatistics.Average(x => x.CpuUtilization)
                                                              : 0.0;
-          status.MemoryStatus.TotalMemory += statistic.SlaveStatistics.Sum(x => x.Memory) / 1024;
-          freeMemory += statistic.SlaveStatistics.Sum(x => x.FreeMemory) / 1024;
+          status.MemoryStatus.TotalMemory += statistic.SlaveStatistics.Sum(x => x.Memory);
+          freeMemory += statistic.SlaveStatistics.Sum(x => x.FreeMemory);
           if (i >= increment) {
             status.Timestamp = JavascriptUtils.ToTimestamp(statistic.Timestamp);
             status.CoreStatus.TotalCores /= i;
