@@ -201,13 +201,4 @@
             });
         }]
     );
-
-    module.filter('toGB', function () {
-        return function (text, length, end) {
-            if (text == null || text == '') text = '0';
-            text = Math.round(parseInt(text) / 1024);
-            return text + ' GB';
-        };
-    });
-
 })();

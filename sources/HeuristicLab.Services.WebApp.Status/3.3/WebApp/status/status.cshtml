@@ -79,15 +79,15 @@
                 <table class="table table-no-border table-condensed table-auto-width table-content">
                     <tr data-toggle="tooltip" data-placement="bottom" title="All online slaves">
                         <td class="text-left">Total:</td>
-                        <td class="text-right">{{status.MemoryStatus.TotalMemory | toGB}}</td>
+                        <td class="text-right">{{status.MemoryStatus.TotalMemory | kbToGB}} GB</td>
                     </tr>
                     <tr data-toggle="tooltip" data-placement="bottom" title="All calculating and idle slaves that are allowed to calculate">
                         <td class="text-left">Active:</td>
-                        <td class="text-right">{{status.MemoryStatus.ActiveMemory | toGB}}</td>
+                        <td class="text-right">{{status.MemoryStatus.ActiveMemory | kbToGB}} GB</td>
                     </tr>
                     <tr data-toggle="tooltip" data-placement="bottom" title="All calculating slaves that are allowed to calculate">
                         <td class="text-left">Calculating:</td>
-                        <td class="text-right">{{status.MemoryStatus.UsedMemory | toGB}}</td>
+                        <td class="text-right">{{status.MemoryStatus.UsedMemory | kbToGB}} GB</td>
                     </tr>
                 </table>
             </div>
@@ -232,8 +232,8 @@
                                 | orderBy: activeCalculatingSlavesOrderColumn:activeCalculatingSlavesReverseSort)">
                             <td>{{slave.Slave.Name}}</td>
                             <td>{{slave.CpuUtilization | number: 2}} %</td>
-                            <td>{{slave.Cores | number}}</td>
-                            <td>{{slave.Memory | toGB}}</td>
+                            <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                            <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
                         </tr>
                         <tr ng-hide="activeCalculatingSlaves.length">
                             <td colspan="4" class="text-center">
@@ -290,8 +290,8 @@
                                 | orderBy: activeIdleSlavesOrderColumn:activeIdleSlavesReverseSort)">
                             <td>{{slave.Slave.Name}}</td>
                             <td>{{slave.CpuUtilization | number: 2}} %</td>
-                            <td>{{slave.Cores | number}}</td>
-                            <td>{{slave.Memory | toGB}}</td>
+                            <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                            <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
                         </tr>
                         <tr ng-hide="activeIdleSlaves.length">
                             <td colspan="4" class="text-center">
@@ -347,8 +347,8 @@
                                 | orderBy: inactiveSlavesOrderColumn:inactiveSlavesReverseSort)">
                             <td>{{slave.Slave.Name}}</td>
                             <td>{{slave.CpuUtilization | number: 2}} %</td>
-                            <td>{{slave.Cores | number}}</td>
-                            <td>{{slave.Memory | toGB}}</td>
+                            <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                            <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
                         </tr>
                         <tr ng-hide="inactiveSlaves.length">
                             <td colspan="4" class="text-center">No inactive slaves available!</td>

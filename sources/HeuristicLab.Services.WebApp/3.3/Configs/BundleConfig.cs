@@ -88,6 +88,7 @@ namespace HeuristicLab.Services.WebApp.Configs {
       bundles.Add(new ScriptBundle("~/Bundles/WebApp/Shared")
         .IncludeDirectory("~/WebApp/shared/services", "*.js", true)
         .IncludeDirectory("~/WebApp/shared/directives", "*.js", true)
+        .IncludeDirectory("~/WebApp/shared/filter", "*.js", true)
         .IncludeDirectory("~/WebApp/shared/menu", "*.js", true)
       );
     }
