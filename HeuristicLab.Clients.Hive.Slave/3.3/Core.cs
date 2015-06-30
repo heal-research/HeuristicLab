@@ -270,7 +270,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       }
       catch (Exception e) {
         SlaveStatusInfo.DecrementUsedCores(usedCores);
-        wcfService.UpdateJobState(taskId, TaskState.Waiting, e.ToString()); // unknown internal error - report and set waiting again
+        wcfService.UpdateJobState(taskId, TaskState.Failed, e.ToString());
         throw;
       }
     }
