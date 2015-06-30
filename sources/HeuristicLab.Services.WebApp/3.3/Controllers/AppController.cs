@@ -46,5 +46,8 @@ namespace HeuristicLab.Services.WebApp.Controllers {
       return View(string.Format("~/WebApp/plugins/{0}/{1}", plugin, view));
     }
 
+    public ActionResult RedirectUrl(string url) {
+      return RedirectPermanent(url);
+    }
   }
 }

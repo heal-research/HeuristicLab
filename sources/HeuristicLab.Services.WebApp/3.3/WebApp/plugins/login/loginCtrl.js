@@ -8,7 +8,7 @@
                         $window.location.hash = "";
                         $window.location.reload();
                     } else {
-                        $scope.result = "error logging in";
+                        $scope.result = "Invalid username or password. Please try again.";
                     }
                 });
             };
