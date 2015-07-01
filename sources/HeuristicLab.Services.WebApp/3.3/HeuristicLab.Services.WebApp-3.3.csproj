@@ -143,6 +143,8 @@
   <ItemGroup>
     <Content Include="WebApp\app.css" />
     <Content Include="Global.asax" />
+    <Content Include="WebApp\libs\angularjs\angular-tablesort\angular-tablesort.js" />
+    <Content Include="WebApp\libs\angularjs\angular-tablesort\tablesort.css" />
     <Content Include="WebApp\main.js" />
     <Content Include="WebApp\helper.js" />
     <Content Include="WebApp\HeuristicLab.ico" />
