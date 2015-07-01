@@ -868,16 +868,6 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       }
     }
 
-    public Dictionary<Guid, int> GetWaitingTasksByUser() {
-      using (var db = CreateContext()) {
-        var waitingTasksByUser = from task in db.Tasks
-                                 where task.State == TaskState.Waiting
-                                 group task by task.Job.OwnerUserId into g
-                                 select new { UserId = g.Key, UsedCores = g.Count() };
-        return waitingTasksByUser.ToDictionary(x => x.UserId, x => x.UsedCores);
-      }
-    }
-
     public Dictionary<Guid, int> GetWaitingTasksByUserForResources(List<Guid> resourceIds) {
       using (var db = CreateContext()) {
         var waitingTasksByUser = from task in db.Tasks
@@ -885,16 +875,6 @@ namespace HeuristicLab.Services.Hive.DataAccess {
                                  group task by task.Job.OwnerUserId into g
                                  select new { UserId = g.Key, UsedCores = g.Count() };
         return waitingTasksByUser.ToDictionary(x => x.UserId, x => x.UsedCores);
-      }
-    }
-
-    public Dictionary<Guid, int> GetCalculatingTasksByUser() {
-      using (var db = CreateContext()) {
-        var calculatingTasksByUser = from task in db.Tasks
-                                     where task.State == TaskState.Calculating
-                                     group task by task.Job.OwnerUserId into g
-                                     select new { UserId = g.Key, UsedCores = g.Count() };
-        return calculatingTasksByUser.ToDictionary(x => x.UserId, x => x.UsedCores);
       }
     }
 

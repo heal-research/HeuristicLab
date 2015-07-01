@@ -244,5 +244,55 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       select ar.ResourceId
     );
     #endregion
+
+
+    #region Website Methods
+    private const string GetAllResourceIdsString = @"SELECT ResourceId FROM [Resource]";
+    public IEnumerable<Guid> GetAllResourceIds() {
+      return Db.ExecuteQuery<Guid>(GetAllResourceIdsString);
+    }
+
+    private const string GetNumberOfWaitingTasksString = @"SELECT COUNT(TaskId) 
+                                                           FROM [Task] 
+                                                           WHERE TaskState LIKE 'Waiting'";
+    public int GetNumberOfWaitingTasks() {
+      return Db.ExecuteQuery<int>(GetNumberOfWaitingTasksString).Single();
+    }
+
+    private class UserTasks {
+      public Guid OwnerUserId;
+      public int Count;
+    }
+
+    private const string GetCalculatingTasksByUserString = @"SELECT Job.OwnerUserId, COUNT(Task.TaskId) as Count 
+                                                             FROM Task, Job 
+                                                             WHERE TaskState LIKE 'Calculating' AND Task.JobId = Job.JobId
+                                                             GROUP BY Job.OwnerUserId";
+
+    public Dictionary<Guid, int> GetCalculatingTasksByUser() {
+      var result = Db.ExecuteQuery<UserTasks>(GetCalculatingTasksByUserString);
+      Dictionary<Guid, int> lst = new Dictionary<Guid, int>();
+
+      foreach (var userTask in result) {
+        lst.Add(userTask.OwnerUserId, userTask.Count);
+      }
+      return lst;
+    }
+
+    private const string GetWaitingTasksByUserString = @"SELECT Job.OwnerUserId, COUNT(Task.TaskId) as Count 
+                                                         FROM Task, Job 
+                                                         WHERE TaskState LIKE 'Waiting' AND Task.JobId = Job.JobId
+                                                         GROUP BY Job.OwnerUserId";
+
+    public Dictionary<Guid, int> GetWaitingTasksByUser() {
+      var result = Db.ExecuteQuery<UserTasks>(GetWaitingTasksByUserString);
+      Dictionary<Guid, int> lst = new Dictionary<Guid, int>();
+
+      foreach (var userTask in result) {
+        lst.Add(userTask.OwnerUserId, userTask.Count);
+      }
+      return lst;
+    }
+    #endregion
   }
 }

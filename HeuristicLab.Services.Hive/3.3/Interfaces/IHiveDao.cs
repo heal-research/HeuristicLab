@@ -149,9 +149,7 @@ namespace HeuristicLab.Services.Hive {
     #endregion
 
     #region Statistics Methods
-    Dictionary<Guid, int> GetWaitingTasksByUser();
     Dictionary<Guid, int> GetWaitingTasksByUserForResources(List<Guid> resourceIds);
-    Dictionary<Guid, int> GetCalculatingTasksByUser();
     Dictionary<Guid, int> GetCalculatingTasksByUserForResources(List<Guid> resourceIds);
     DT.Statistics GetStatistic(Guid id);
     IEnumerable<DT.Statistics> GetStatistics(Expression<Func<Statistics, bool>> predicate);
