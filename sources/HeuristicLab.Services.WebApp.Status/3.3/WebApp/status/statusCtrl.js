@@ -124,8 +124,8 @@
                             memorySeries[1].splice(0, 1);
                         }
                     }
-                    cpuSeries.push([$scope.status.Timestamp, $scope.cpu.knobData]);
-
+                    
+                    cpuSeries.push([$scope.status.Timestamp, Math.round(status.CpuUtilizationStatus.TotalCpuUtilization)]);
                     // charts are currently filled with old total/used data
                     // start temporary
                     var usedCores = status.CoreStatus.TotalCores - status.CoreStatus.FreeCores;
