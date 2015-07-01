@@ -140,10 +140,9 @@
     <None Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.GeoIP\1.12\HeuristicLab.GeoIP.csproj">
-      <Project>{BE9B0229-9150-49A4-AEA6-BB58E055992F}</Project>
+    <ProjectReference Include="..\..\HeuristicLab.ExtLibs\HeuristicLab.GeoIP\1.12\HeuristicLab.GeoIP.csproj">
+      <Project>{be9b0229-9150-49a4-aea6-bb58e055992f}</Project>
       <Name>HeuristicLab.GeoIP</Name>
-      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Services.Access.DataAccess\3.3\HeuristicLab.Services.Access.DataAccess-3.3.csproj">
       <Project>{0F652437-998A-4EAB-8BF1-444B5FE8CE97}</Project>
