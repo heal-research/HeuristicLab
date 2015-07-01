@@ -1,7 +1,7 @@
 ﻿var appStatusPlugin = app.registerPlugin('status');
 (function () {
     var plugin = appStatusPlugin;
-    plugin.dependencies = ['ngResource', 'ui.knob', 'ui.bootstrap'];
+    plugin.dependencies = ['ngResource', 'ui.knob', 'ui.bootstrap', 'tableSort'];
     plugin.files = [
         'WebApp/status.css',
         'WebApp/services/statusService.js',
@@ -14,7 +14,7 @@
         new Route('history', 'WebApp/history/history.cshtml', 'app.status.historyCtrl')
     ];
     var menu = app.getMenu();
-    var section = menu.getSection('Menü', 1);
+    var section = menu.getSection('Menu', 1);
     section.addEntry({
         name: 'Status',
         route: '#/status',

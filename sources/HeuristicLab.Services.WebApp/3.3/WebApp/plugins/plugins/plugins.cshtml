@@ -15,31 +15,33 @@
                     <h3 class="panel-title">WebApp Plugins</h3>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-hover table-condensed">
+                    <table class="table table-hover table-condensed" ts-wrapper>
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>Assembly</th>
-                                <th>Last reload</th>
+                                <th ts-criteria="Name">Name</th>
+                                <th ts-criteria ="AssemblyName">Assembly</th>
+                                <th ts-criteria="LastReload">Last reload</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
                         </thead>
-                        <tr ng-repeat="plugin in plugins">
-                            <td>{{$index + 1}}</td>
-                            <td>{{plugin.Name}}</td>
-                            <td>{{plugin.AssemblyName}}</td>
-                            <td>{{plugin.LastReload}}</td>
-                            <td>
-                                <span ng-hide="plugin.Exception" class="glyphicon glyphicon glyphicon-ok" style="color: green"></span>
-                                <span ng-show="plugin.Exception" class="glyphicon glyphicon glyphicon-remove" style="color: darkred"
-                                      ng-click="open(plugin.Name, plugin.Exception)"></span>
-                            </td>
-                            <td>
-                                <a ng-href="" data-ng-click="reloadPlugin(plugin.Name)">Reload</a>
-                            </td>
-                        </tr>
+                        <tbody>
+                            <tr ng-repeat="plugin in plugins" ts-repeat>
+                                <td>{{$index + 1}}</td>
+                                <td>{{plugin.Name}}</td>
+                                <td>{{plugin.AssemblyName}}</td>
+                                <td>{{plugin.LastReload}}</td>
+                                <td>
+                                    <span ng-hide="plugin.Exception" class="glyphicon glyphicon glyphicon-ok" style="color: green"></span>
+                                    <span ng-show="plugin.Exception" class="glyphicon glyphicon glyphicon-remove" style="color: darkred"
+                                          ng-click="open(plugin.Name, plugin.Exception)"></span>
+                                </td>
+                                <td>
+                                    <a ng-href="" data-ng-click="reloadPlugin(plugin.Name)">Reload</a>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>

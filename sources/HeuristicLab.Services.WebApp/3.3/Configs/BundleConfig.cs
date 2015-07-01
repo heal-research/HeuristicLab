@@ -40,7 +40,8 @@ namespace HeuristicLab.Services.WebApp.Configs {
         "~/WebApp/libs/bootstrap/css/bootstrap.min.css",
         "~/WebApp/libs/bootstrap/css/bootstrap-theme.min.css",
         "~/WebApp/libs/font-aweseome/font-aweseome.min.css",
-        "~/WebApp/libs/angularjs/loading-bar/loading-bar.css"
+        "~/WebApp/libs/angularjs/loading-bar/loading-bar.css",
+        "~/WebApp/libs/angularjs/angular-tablesort/tablesort.css"
       ));
 
       bundles.Add(new ScriptBundle("~/Bundles/Vendors/js").Include(
@@ -69,6 +70,7 @@ namespace HeuristicLab.Services.WebApp.Configs {
         "~/WebApp/libs/angularjs/angular-touch.min.js",
         "~/WebApp/libs/angularjs/angular-ui-router.min.js",
         "~/WebApp/libs/angularjs/angular-knob/angular-knob.js",
+        "~/WebApp/libs/angularjs/angular-tablesort/angular-tablesort.js",
         "~/WebApp/libs/angularjs/angular-ui/ui-bootstrap-tpls-0.13.0.min.js",
         "~/WebApp/libs/angularjs/loading-bar/loading-bar.js",
         "~/WebApp/libs/angularjs/ocLazyLoad/ocLazyLoad.min.js",

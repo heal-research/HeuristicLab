@@ -8,7 +8,7 @@
     plugin.routes = [];
 
     var menu = app.getMenu();
-    var section = menu.getSection('Menü', -1);
+    var section = menu.getSection('Menu', -1);
     section.addEntry({
         index: 10000,
         name: 'About',

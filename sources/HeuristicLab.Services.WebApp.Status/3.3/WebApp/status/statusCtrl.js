@@ -84,20 +84,6 @@
                 CalculatingTasks: 0
             };
 
-            $scope.activeIdleSlaveFilter = function (slave) {
-                return (slave.IsAllowedToCalculate == true) && (slave.State == 'Idle');
-            };
-
-            $scope.activeCalculatingSlavesReverseSort = false;
-            $scope.activeCalculatingSlavesOrderColumn = 'slave.Slave.Name';
-
-            $scope.activeIdleSlavesReverseSort = false;
-            $scope.activeIdleSlavesOrderColumn = 'slave.Slave.Name';
-
-            $scope.inactiveSlavesReverseSort = false;
-            $scope.inactiveSlavesOrderColumn = 'slave.Slave.Name';
-
-
             var updateStatus = function () {
                 // update status data
                 dataService.getStatus({}, function (status) {

@@ -165,24 +165,26 @@
                 <h3 class="panel-title">Tasks by User</h3>
             </div>
             <div class="panel-body">
-                <table class="table table-hover">
+                <table class="table table-hover" ts-wrapper>
                     <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Calculating Tasks</th>
-                        <th>Waiting Tasks</th>
-                    </tr>
+                        <tr>
+                            <th ts-criteria="User.Name">Username</th>
+                            <th ts-criteria="CalculatingTasks|parseInt">Calculating Tasks</th>
+                            <th ts-criteria="WaitingTasks|parseInt">Waiting Tasks</th>
+                        </tr>
                     </thead>
-                    <tr ng-repeat="task in status.TasksStatus">
-                        <td>{{task.User.Name}}</td>
-                        <td>{{task.CalculatingTasks | number}}</td>
-                        <td>{{task.WaitingTasks | number}}</td>
-                    </tr>
-                    <tr ng-hide="status.TasksStatus.length">
-                        <td colspan="3" class="text-center">
-                            There are no waiting or calculating tasks available!
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr ng-repeat="task in status.TasksStatus" ts-repeat>
+                            <td>{{task.User.Name}}</td>
+                            <td>{{task.CalculatingTasks | number}}</td>
+                            <td>{{task.WaitingTasks | number}}</td>
+                        </tr>
+                        <tr ng-hide="status.TasksStatus.length">
+                            <td colspan="3" class="text-center">
+                                There are no waiting or calculating tasks available!
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -203,43 +205,32 @@
             <div id="collapseActiveCalculatingSlaves"
                  class="panel-collapse collapse in">
                 <div class="panel-body">
-                    <table class="table table-hover">
+                    <table class="table table-hover" ts-wrapper>
                         <thead>
-                        <tr>
-                            <th ng-click="activeCalculatingSlavesOrderColumn='Slave.Name';
-                                                  activeCalculatingSlavesReverseSort=!activeCalculatingSlavesReverseSort">
-                                Slave
-                            </th>
-                            <th ng-click="activeCalculatingSlavesOrderColumn='CpuUtilization';
-                                                  activeCalculatingSlavesReverseSort=!activeCalculatingSlavesReverseSort">
-                                CPU Utilization
-                            </th>
-                            <th ng-click="activeCalculatingSlavesOrderColumn='Cores';
-                                                  activeCalculatingSlavesReverseSort=!activeCalculatingSlavesReverseSort">
-                                Cores
-                            </th>
-                            <th ng-click="activeCalculatingSlavesOrderColumn='Memory';
-                                                  activeCalculatingSlavesReverseSort=!activeCalculatingSlavesReverseSort">
-                                Memory
-                            </th>
-                        </tr>
+                            <tr>
+                                <th ts-criteria="Slave.Name">Slave</th>
+                                <th ts-criteria="CpuUtilization|parseFloat">CPU Utilization</th>
+                                <th ts-criteria="Cores|parseInt">Cores</th>
+                                <th ts-criteria="Memory|parseInt">Memory</th>
+                            </tr>
                         </thead>
-                        <tr ng-repeat="slave in activeCalculatingSlaves = (status.SlavesStatus
+                        <tbody>
+                            <tr ng-repeat="slave in activeCalculatingSlaves = (status.SlavesStatus
                                 | filter: {
                                     IsAllowedToCalculate: true,
                                     State: 'Calculating'
-                                  }
-                                | orderBy: activeCalculatingSlavesOrderColumn:activeCalculatingSlavesReverseSort)">
-                            <td>{{slave.Slave.Name}}</td>
-                            <td>{{slave.CpuUtilization | number: 2}} %</td>
-                            <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
-                            <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
-                        </tr>
-                        <tr ng-hide="activeCalculatingSlaves.length">
-                            <td colspan="4" class="text-center">
-                                There are no active calculating slaves available!
-                            </td>
-                        </tr>
+                                  })" ts-repeat>
+                                <td>{{slave.Slave.Name}}</td>
+                                <td>{{slave.CpuUtilization | number: 2}} %</td>
+                                <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                                <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
+                            </tr>
+                            <tr ng-hide="activeCalculatingSlaves.length">
+                                <td colspan="4" class="text-center">
+                                    There are no active calculating slaves available!
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -261,43 +252,32 @@
             <div id="collapseActiveIdleSlaves"
                  class="panel-collapse collapse">
                 <div class="panel-body">
-                    <table class="table table-hover">
+                    <table class="table table-hover" ts-wrapper>
                         <thead>
                         <tr>
-                            <th ng-click="activeIdleSlavesOrderColumn='Slave.Name';
-                                                  activeIdleSlavesReverseSort=!activeIdleSlavesReverseSort">
-                                Slave
-                            </th>
-                            <th ng-click="activeIdleSlavesOrderColumn='CpuUtilization';
-                                                  activeIdleSlavesReverseSort=!activeIdleSlavesReverseSort">
-                                CPU Utilization
-                            </th>
-                            <th ng-click="activeIdleSlavesOrderColumn='Cores';
-                                                  activeIdleSlavesReverseSort=!activeIdleSlavesReverseSort">
-                                Cores
-                            </th>
-                            <th ng-click="activeIdleSlavesOrderColumn='Memory';
-                                                  activeIdleSlavesReverseSort=!activeIdleSlavesReverseSort">
-                                Memory
-                            </th>
+                            <th ts-criteria="Slave.Name">Slave</th>
+                            <th ts-criteria="CpuUtilization|parseFloat">CPU Utilization</th>
+                            <th ts-criteria="Cores|parseInt">Cores</th>
+                            <th ts-criteria="Memory|parseInt">Memory</th>
                         </tr>
                         </thead>
-                        <tr ng-repeat="slave in activeIdleSlaves = (status.SlavesStatus
+                        <tbody>
+                            <tr ng-repeat="slave in activeIdleSlaves = (status.SlavesStatus
                                 | filter: {
                                     IsAllowedToCalculate: true,
                                     State: 'Idle'
-                                  }
-                                | orderBy: activeIdleSlavesOrderColumn:activeIdleSlavesReverseSort)">
-                            <td>{{slave.Slave.Name}}</td>
-                            <td>{{slave.CpuUtilization | number: 2}} %</td>
-                            <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
-                            <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
-                        </tr>
-                        <tr ng-hide="activeIdleSlaves.length">
-                            <td colspan="4" class="text-center">
-                            There are no active idle slaves available!
-                            <td>
-                        </tr>
+                                  })" ts-repeat>
+                                <td>{{slave.Slave.Name}}</td>
+                                <td>{{slave.CpuUtilization | number: 2}} %</td>
+                                <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                                <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
+                            </tr>
+                            <tr ng-hide="activeIdleSlaves.length">
+                                <td colspan="4" class="text-center">
+                                    There are no active idle slaves available!
+                                <td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -319,40 +299,29 @@
             <div id="collapseInactiveSlaves"
                  class="panel-collapse collapse">
                 <div class="panel-body">
-                    <table class="table table-hover">
+                    <table class="table table-hover" ts-wrapper>
                         <thead>
-                        <tr>
-                            <th ng-click="inactiveSlavesOrderColumn='Slave.Name';
-                                                  inactiveSlavesReverseSort=!inactiveSlavesReverseSort">
-                                Slave
-                            </th>
-                            <th ng-click="inactiveSlavesOrderColumn='CpuUtilization';
-                                                  inactiveSlavesReverseSort=!inactiveSlavesReverseSort">
-                                CPU Utilization
-                            </th>
-                            <th ng-click="inactiveSlavesOrderColumn='Cores';
-                                                  inactiveSlavesReverseSort=!inactiveSlavesReverseSort">
-                                Cores
-                            </th>
-                            <th ng-click="inactiveSlavesOrderColumn='Memory';
-                                                  inactiveSlavesReverseSort=!inactiveSlavesReverseSort">
-                                Memory
-                            </th>
-                        </tr>
+                            <tr>
+                                <th ts-criteria="Slave.Name">Slave</th>
+                                <th ts-criteria="CpuUtilization|parseFloat">CPU Utilization</th>
+                                <th ts-criteria="Cores|parseInt">Cores</th>
+                                <th ts-criteria="Memory|parseInt">Memory</th>
+                            </tr>
                         </thead>
-                        <tr ng-repeat="slave in inactiveSlaves = (status.SlavesStatus
+                        <tbody>
+                            <tr ng-repeat="slave in inactiveSlaves = (status.SlavesStatus
                                 | filter: {
                                     IsAllowedToCalculate: false
-                                  }
-                                | orderBy: inactiveSlavesOrderColumn:inactiveSlavesReverseSort)">
-                            <td>{{slave.Slave.Name}}</td>
-                            <td>{{slave.CpuUtilization | number: 2}} %</td>
-                            <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
-                            <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
-                        </tr>
-                        <tr ng-hide="inactiveSlaves.length">
-                            <td colspan="4" class="text-center">No inactive slaves available!</td>
-                        </tr>
+                                  })" ts-repeat>
+                                <td>{{slave.Slave.Name}}</td>
+                                <td>{{slave.CpuUtilization | number: 2}} %</td>
+                                <td>{{slave.Cores - slave.FreeCores | number}} / {{slave.Cores | number}}</td>
+                                <td>{{slave.Memory - slave.FreeMemory | kbToGB}} / {{slave.Memory | kbToGB}} GB</td>
+                            </tr>
+                            <tr ng-hide="inactiveSlaves.length">
+                                <td colspan="4" class="text-center">No inactive slaves available!</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>

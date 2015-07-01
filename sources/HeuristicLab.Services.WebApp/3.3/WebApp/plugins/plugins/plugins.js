@@ -1,7 +1,7 @@
 ﻿var appPluginsPlugin = app.registerPlugin('plugins');
 (function () {
     var plugin = appPluginsPlugin;
-    plugin.dependencies = ['ngResource', 'ui.bootstrap'];
+    plugin.dependencies = ['ngResource', 'ui.bootstrap', 'tableSort'];
     plugin.files = [
         'pluginsService.js',
         'pluginsCtrl.js',
