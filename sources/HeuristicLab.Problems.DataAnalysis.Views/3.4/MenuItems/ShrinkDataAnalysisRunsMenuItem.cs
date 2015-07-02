@@ -81,9 +81,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Action<IContentView> action = (view) => {
         var variableValuesMapping = new Dictionary<ValuesType, ValuesType>();
         foreach (var problemData in view.Content.GetObjectGraphObjects(excludeStaticMembers: true).OfType<IDataAnalysisProblemData>()) {
-          var originalValues = variableValuesGetter(problemData.Dataset);
+          var dataset = problemData.Dataset as Dataset;
+          if (dataset == null) continue;
+          var originalValues = variableValuesGetter(dataset);
           var matchingValues = GetEqualValues(originalValues, variableValuesMapping);
-          variableValuesSetter(problemData.Dataset, matchingValues);
+          variableValuesSetter(dataset, matchingValues);
         }
       };
 
@@ -115,22 +117,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       return true;
     }
 
-    private static readonly Action<IDataset, Dictionary<string, IList>> variableValuesSetter;
-    private static readonly Func<IDataset, Dictionary<string, IList>> variableValuesGetter;
+    private static readonly Action<Dataset, Dictionary<string, IList>> variableValuesSetter;
+    private static readonly Func<Dataset, Dictionary<string, IList>> variableValuesGetter;
     /// <summary>
     /// The static initializer is used to create expressions for getting and setting the private variableValues field in the dataset.
     /// This is done by expressions because the field is private and compiled expression calls are much faster compared to standad reflection calls.
     /// </summary>
     static ShrinkDataAnalysisRunsMenuItem() {
-      var dataset = Expression.Parameter(typeof(IDataset));
+      var dataset = Expression.Parameter(typeof(Dataset));
       var variableValues = Expression.Parameter(typeof(ValuesType));
       var valuesExpression = Expression.Field(dataset, "variableValues");
       var assignExpression = Expression.Assign(valuesExpression, variableValues);
 
-      var variableValuesSetExpression = Expression.Lambda<Action<IDataset, ValuesType>>(assignExpression, dataset, variableValues);
+      var variableValuesSetExpression = Expression.Lambda<Action<Dataset, ValuesType>>(assignExpression, dataset, variableValues);
       variableValuesSetter = variableValuesSetExpression.Compile();
 
-      var variableValuesGetExpression = Expression.Lambda<Func<IDataset, ValuesType>>(valuesExpression, dataset);
+      var variableValuesGetExpression = Expression.Lambda<Func<Dataset, ValuesType>>(valuesExpression, dataset);
       variableValuesGetter = variableValuesGetExpression.Compile();
     }
   }
