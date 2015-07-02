@@ -124,10 +124,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       var residuals = GetResiduals(GetOriginalValues(), GetEstimatedValues(solution));
 
       var maxValue = residuals.Max();
-      double scale = Math.Pow(10, Math.Floor(Math.Log10(maxValue)));
-      var maximum = scale * (1 + (int)(maxValue / scale));
-      chart.ChartAreas[0].AxisX.Maximum = maximum;
-      chart.ChartAreas[0].CursorX.Interval = residuals.Min() / 100;
+      if (maxValue >= chart.ChartAreas[0].AxisX.Maximum) {
+        double scale = Math.Pow(10, Math.Floor(Math.Log10(maxValue)));
+        var maximum = scale * (1 + (int)(maxValue / scale));
+        chart.ChartAreas[0].AxisX.Maximum = maximum;
+        chart.ChartAreas[0].CursorX.Interval = residuals.Min() / 100;
+      }
 
       UpdateSeries(residuals, solutionSeries);
 
@@ -210,9 +212,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
         case "Relative error": return originalValues.Zip(estimatedValues, (x, y) => x.IsAlmost(0.0) ? -1 : Math.Abs((x - y) / x))
           .Where(x => x > 0) // remove entries where the original value is 0
           .ToList();
+        default: throw new NotSupportedException();
       }
-      // should never happen
-      return new List<double>();
     }
 
     private double CalculateAreaOverCurve(Series series) {
