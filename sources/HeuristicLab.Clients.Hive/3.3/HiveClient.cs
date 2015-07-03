@@ -75,15 +75,7 @@ namespace HeuristicLab.Clients.Hive {
     }
     #endregion
 
-    private HiveClient() {
-      //this will never be deregistered
-      TaskScheduler.UnobservedTaskException += new EventHandler<UnobservedTaskExceptionEventArgs>(TaskScheduler_UnobservedTaskException);
-    }
-
-    private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
-      e.SetObserved(); // avoid crash of process because task crashes. first exception found is handled in Results property
-      throw new HiveException("Unobserved Exception in ConcurrentTaskDownloader", e.Exception);
-    }
+    private HiveClient() { }
 
     public void ClearHiveClient() {
       Jobs.ClearWithoutHiveDeletion();
