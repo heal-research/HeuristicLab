@@ -43,3 +43,7 @@ var CSharpDateToString = function (datetime) {
     var second = date.getSeconds().zeropad(2);
     return day + '.' + month + '.' + year + ' ' + hour + ':' + minute + ':' + second;
 };
+
+var decryptString = function(s) {
+    return CryptoJS.AES.decrypt(s, "heuristiclab").toString(CryptoJS.enc.Utf8);
+};

@@ -46,11 +46,45 @@
             $scope.fromIsOpen = false;
             $scope.toIsOpen = false;
 
+            $scope.quickSelectionList = [
+                { id: 0, name: 'Custom' },
+                { id: 1, name: 'Today' },
+                { id: 2, name: 'Yesterday' },
+                { id: 3, name: 'Last 7 Days' },
+                { id: 4, name: 'Last 30 Days' }
+            ];
+            $scope.changeQuickSelection = function (quickSelection) {
+                var today = new Date();
+                var oneDayInMs = 24 * 60 * 60 * 1000;
+                switch (quickSelection.id) {
+                    case 1:
+                        $scope.fromDate = new Date(today.valueOf());
+                        $scope.toDate = new Date(today.valueOf());
+                        break;
+                    case 2:
+                        $scope.fromDate = new Date(today.valueOf() - oneDayInMs);
+                        $scope.toDate = new Date(today.valueOf() - oneDayInMs);
+                        break;
+                    case 3:
+                        $scope.fromDate = new Date(today.valueOf() - (7 * oneDayInMs));
+                        $scope.toDate = new Date(today.valueOf());
+                        break;
+                    case 4:
+                        $scope.fromDate = new Date(today.valueOf() - (30 * oneDayInMs));
+                        $scope.toDate = new Date(today.valueOf());
+                        break;
+                }
+                $scope.curQuickSelection = quickSelection;
+            };
+            // set default 'today'
+            $scope.changeQuickSelection($scope.quickSelectionList[1]);
+
             $scope.openFromDateSelection = function ($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
                 $scope.toIsOpen = false;
                 $scope.fromIsOpen = true;
+                $scope.curQuickSelection = $scope.quickSelectionList[0];
             };
 
             $scope.openToDateSelection = function ($event) {
@@ -58,6 +92,7 @@
                 $event.stopPropagation();
                 $scope.fromIsOpen = false;
                 $scope.toIsOpen = true;
+                $scope.curQuickSelection = $scope.quickSelectionList[0];
             };
 
             $scope.dateOptions = {

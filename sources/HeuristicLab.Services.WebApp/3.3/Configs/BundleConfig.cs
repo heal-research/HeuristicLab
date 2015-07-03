@@ -58,6 +58,8 @@ namespace HeuristicLab.Services.WebApp.Configs {
         "~/WebApp/libs/jquery/jquery-flot/jquery.flot.stack.min.js",
         // bootstrap
         "~/WebApp/libs/bootstrap/js/bootstrap.min.js",
+        // crypto js
+        "~/WebApp/libs/cryptojs/aes.js",
         // angular js
         "~/WebApp/libs/angularjs/angular.min.js",
         "~/WebApp/libs/angularjs/angular-route.min.js",
