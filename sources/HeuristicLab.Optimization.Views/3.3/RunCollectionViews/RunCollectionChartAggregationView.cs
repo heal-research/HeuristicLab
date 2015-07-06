@@ -167,20 +167,26 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     private void UpdateRuns(IEnumerable<IRun> runs) {
-      if (suppressUpdates) return;
       foreach (var run in runs) {
         //update color
-        foreach (var dataRow in runMapping[run]) {
-          dataRow.VisualProperties.Color = run.Color;
+        if (!runMapping.ContainsKey(run)) {
+          runMapping[run] = ExtractDataRowsFromRun(run).ToList();
+          RegisterRunEvents(run);
+        } else {
+          foreach (var dataRow in runMapping[run]) {
+            dataRow.VisualProperties.Color = run.Color;
+          }
         }
-        //update visibility - remove and add all rows to keep the same order as before
-        combinedDataTable.Rows.Clear();
-        combinedDataTable.Rows.AddRange(runMapping.Where(mapping => mapping.Key.Visible).SelectMany(mapping => mapping.Value));
       }
+      //update visibility - remove and add all rows to keep the same order as before
+      combinedDataTable.Rows.Clear();
+      combinedDataTable.Rows.AddRange(runMapping.Where(mapping => mapping.Key.Visible).SelectMany(mapping => mapping.Value));
     }
 
     private IEnumerable<DataRow> ExtractDataRowsFromRun(IRun run) {
       var resultName = (string)dataTableComboBox.SelectedItem;
+      if (string.IsNullOrEmpty(resultName)) yield break;
+
       var rowName = (string)dataRowComboBox.SelectedItem;
       if (!run.Results.ContainsKey(resultName)) yield break;
 

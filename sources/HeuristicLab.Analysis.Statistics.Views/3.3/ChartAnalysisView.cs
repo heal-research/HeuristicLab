@@ -107,28 +107,41 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     void Content_RowsChanged(object sender, EventArgs e) {
-      RebuildDataTableAsync();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_RowsChanged, sender, e);
+      else {
+        RebuildDataTableAsync();
+      }
     }
 
     void Content_ColumnsChanged(object sender, EventArgs e) {
-      if (!suppressUpdates) {
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_ColumnsChanged, sender, e);
+      else {
         RebuildDataTableAsync();
       }
     }
 
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      UpdateComboboxes();
-      RebuildDataTableAsync();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, CollectionItemsChangedEventArgs<IRun>>)Content_CollectionReset, sender, e);
+      else {
+        UpdateComboboxes();
+        RebuildDataTableAsync();
+      }
     }
 
     private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
-      suppressUpdates = Content.UpdateOfRunsInProgress;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_UpdateOfRunsInProgressChanged, sender, e);
+      else {
+        suppressUpdates = Content.UpdateOfRunsInProgress;
 
-      if (!suppressUpdates && !valuesAdded) {
-        RebuildDataTableAsync();
-      }
-      if (valuesAdded) {
-        valuesAdded = false;
+        if (!suppressUpdates && !valuesAdded) {
+          RebuildDataTableAsync();
+        }
+        if (valuesAdded) {
+          valuesAdded = false;
+        }
       }
     }
     #endregion
@@ -247,11 +260,12 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void RebuildDataTableAsync() {
-      progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Calculating values...");
-
       string resultName = (string)dataTableComboBox.SelectedItem;
+      if (string.IsNullOrEmpty(resultName)) return;
+
       string rowName = (string)dataRowComboBox.SelectedItem;
 
+      progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Calculating values...");
       var task = Task.Factory.StartNew(() => RebuildDataTable(resultName, rowName));
 
       task.ContinueWith((t) => {

@@ -39,6 +39,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private double significanceLevel = 0.05;
     private const int requiredSampleSize = 5;
     private double[][] data;
+    private bool suppressUpdates = false;
 
     public double SignificanceLevel {
       get { return significanceLevel; }
@@ -104,22 +105,34 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     void Content_RowsChanged(object sender, EventArgs e) {
-      RebuildDataTable();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_RowsChanged, sender, e);
+      else {
+        RebuildDataTable();
+      }
     }
 
     void Content_ColumnsChanged(object sender, EventArgs e) {
-      if (!Content.UpdateOfRunsInProgress) {
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_ColumnsChanged, sender, e);
+      else {
         RebuildDataTable();
       }
     }
 
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      RebuildDataTable();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, CollectionItemsChangedEventArgs<IRun>>)Content_CollectionReset, sender, e);
+      else {
+        RebuildDataTable();
+      }
     }
 
     void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
-      if (!Content.UpdateOfRunsInProgress) {
-        RebuildDataTable();
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_UpdateOfRunsInProgressChanged, sender, e);
+      else {
+        suppressUpdates = Content.UpdateOfRunsInProgress;
+        if (!suppressUpdates) RebuildDataTable();
       }
     }
     #endregion

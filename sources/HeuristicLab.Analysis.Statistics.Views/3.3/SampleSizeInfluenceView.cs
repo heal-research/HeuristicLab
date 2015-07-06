@@ -40,7 +40,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private enum AxisDimension { Color = 0 }
     private const string BoxPlotSeriesName = "BoxPlotSeries";
     private const string BoxPlotChartAreaName = "BoxPlotChartArea";
-    private const string delimitor = ";";
+    private const string delimiter = ";";
 
     private bool suppressUpdates = false;
     private string yAxisValue;
@@ -71,7 +71,6 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     #region RunCollection and Run events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.Reset += new EventHandler(Content_Reset);
       Content.ColumnNamesChanged += new EventHandler(Content_ColumnNamesChanged);
       Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
@@ -82,7 +81,6 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      Content.Reset -= new EventHandler(Content_Reset);
       Content.ColumnNamesChanged -= new EventHandler(Content_ColumnNamesChanged);
       Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
@@ -141,55 +139,41 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.OldItems);
       RegisterRunEvents(e.Items);
-      UpdateAll();
+      if (!suppressUpdates) UpdateAll();
     }
     private void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       DeregisterRunEvents(e.Items);
-      UpdateComboBoxes();
+      if (!suppressUpdates) UpdateComboBoxes();
     }
     private void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       RegisterRunEvents(e.Items);
-      UpdateComboBoxes();
+      if (!suppressUpdates) UpdateComboBoxes();
     }
     private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
       else {
         suppressUpdates = Content.UpdateOfRunsInProgress;
-        if (!suppressUpdates) UpdateDataPoints();
-      }
-    }
-
-    private void Content_Reset(object sender, EventArgs e) {
-      if (InvokeRequired)
-        Invoke(new EventHandler(Content_Reset), sender, e);
-      else {
-        this.categoricalMapping.Clear();
-        UpdateDataPoints();
-        UpdateAxisLabels();
+        if (!suppressUpdates) UpdateAll();
       }
     }
     private void Content_ColumnNamesChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ColumnNamesChanged), sender, e);
       else {
-        if (!suppressUpdates) {
-          UpdateComboBoxes();
-        }
+        if (!suppressUpdates) UpdateComboBoxes();
       }
     }
     private void run_Changed(object sender, EventArgs e) {
       if (InvokeRequired)
         this.Invoke(new EventHandler(run_Changed), sender, e);
-      else if (!suppressUpdates) {
-        UpdateDataPoints();
-      }
+      else if (!suppressUpdates) UpdateDataPoints();
     }
 
     private void Content_AlgorithmNameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_AlgorithmNameChanged), sender, e);
-      else UpdateCaption();
+      else if (!suppressUpdates) UpdateCaption();
     }
     #endregion
 
@@ -225,13 +209,13 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
         if (values.Any()) {
           if (hypergeometricCheckBox.Checked) {
-            xAxisTextBox.Text += ((int)(values.Count() / 16)) + delimitor + " ";
-            xAxisTextBox.Text += ((int)(values.Count() / 8)) + delimitor + " ";
+            xAxisTextBox.Text += ((int)(values.Count() / 16)) + delimiter + " ";
+            xAxisTextBox.Text += ((int)(values.Count() / 8)) + delimiter + " ";
             xAxisTextBox.Text += (int)(values.Count() / 4);
           } else {
-            xAxisTextBox.Text += ((int)(values.Count() / 4)) + delimitor + " ";
-            xAxisTextBox.Text += ((int)(values.Count() / 2)) + delimitor + " ";
-            xAxisTextBox.Text += ((int)(values.Count() / 4 * 3)) + delimitor + " ";
+            xAxisTextBox.Text += ((int)(values.Count() / 4)) + delimiter + " ";
+            xAxisTextBox.Text += ((int)(values.Count() / 2)) + delimiter + " ";
+            xAxisTextBox.Text += ((int)(values.Count() / 4 * 3)) + delimiter + " ";
             xAxisTextBox.Text += (int)(values.Count());
           }
         }
@@ -339,7 +323,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private List<int> ParseGroupSizesFromText(string groupsText, bool verbose = true) {
-      string[] gs = groupsText.Split(delimitor.ToCharArray());
+      string[] gs = groupsText.Split(delimiter.ToCharArray());
       List<int> vals = new List<int>();
 
       foreach (string s in gs) {
@@ -350,10 +334,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           try {
             v = int.Parse(ns);
             vals.Add(v);
-          }
-          catch (Exception ex) {
+          } catch (Exception ex) {
             if (verbose) {
-              ErrorHandling.ShowErrorDialog("Can't parse group sizes. Please only use numbers seperated by a " + delimitor + ". ", ex);
+              ErrorHandling.ShowErrorDialog("Can't parse group sizes. Please only use numbers seperated by a " + delimiter + ". ", ex);
             }
           }
         }
@@ -624,7 +607,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           var values = dialog.Values;
           string newVals = "";
           foreach (int v in values) {
-            newVals += v + delimitor + " ";
+            newVals += v + delimiter + " ";
           }
           xAxisTextBox.Text = newVals;
         }
