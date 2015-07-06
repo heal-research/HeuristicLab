@@ -294,14 +294,15 @@ namespace HeuristicLab.Clients.Hive {
     ///   if true the Child-Optimizers will not be serialized (if the task contains an Experiment)
     /// </param>
     public virtual TaskData GetAsTaskData(bool withoutChildOptimizers, out List<IPluginDescription> plugins) {
-      plugins = new List<IPluginDescription>();
-      if (this.itemTask == null)
+      if (ItemTask == null) {
+        plugins = new List<IPluginDescription>();
         return null;
+      }
 
       IEnumerable<Type> usedTypes;
-      byte[] taskByteArray = PersistenceUtil.Serialize(this.ItemTask, out usedTypes);
+      byte[] taskByteArray = PersistenceUtil.Serialize(ItemTask, out usedTypes);
       TaskData taskData = new TaskData() { TaskId = task.Id, Data = taskByteArray };
-      PluginUtil.CollectDeclaringPlugins(plugins, usedTypes);
+      plugins = PluginUtil.GetPluginsForTask(usedTypes, ItemTask);
       return taskData;
     }
 

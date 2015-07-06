@@ -35,7 +35,7 @@ namespace HeuristicLab.MathJax {
     public override void OnLoad() {
       base.OnLoad();
       if (!Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory, "MathJax.js", SearchOption.TopDirectoryOnly).Any()) {
-        ZipFile.ExtractToDirectory("mathjax.zip", AppDomain.CurrentDomain.BaseDirectory);
+        ZipFile.ExtractToDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "mathjax.zip"), AppDomain.CurrentDomain.BaseDirectory);
       }
     }
   }
