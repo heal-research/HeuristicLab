@@ -28,6 +28,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableClass]
   [Item("CopyColumnTransformation", "Represents a transformation which represents a copied Column.")]
   public class CopyColumnTransformation : Transformation {
     protected const string CopiedColumnNameParameterName = "CopiedColumnName";

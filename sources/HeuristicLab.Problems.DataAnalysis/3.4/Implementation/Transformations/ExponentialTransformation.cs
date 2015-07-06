@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -7,6 +8,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableClass]
   [Item("Exponential Transformation", "f(x) = b ^ x | Represents a exponential transformation.")]
   public class ExponentialTransformation : Transformation<double> {
     protected const string BaseParameterName = "Base";
@@ -43,9 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> Apply(IEnumerable<double> data) {
-      foreach (double d in data) {
-        yield return Math.Pow(Base, d);
-      }
+      return data.Select(d => Math.Pow(Base, d));
     }
 
     public override bool Check(IEnumerable<double> data, out string errorMsg) {

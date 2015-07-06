@@ -30,7 +30,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
 
   [Item("Transformation", "Represents the base class for a transformation.")]
-  [StorableClass]
   public abstract class Transformation : ParameterizedNamedItem, ITransformation {
     protected const string ColumnParameterName = "Column";
     #region parameter properties

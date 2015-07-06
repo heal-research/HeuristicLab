@@ -6,6 +6,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableClass]
   [Item("Reciprocal Transformation", "f(x) = 1 / x | Represents a reciprocal transformation.")]
   public class ReciprocalTransformation : Transformation<double> {
 
@@ -15,7 +16,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     #endregion
 
-    //TODO: is a special case of Linear
     [StorableConstructor]
     protected ReciprocalTransformation(bool deserializing) : base(deserializing) { }
     protected ReciprocalTransformation(ReciprocalTransformation original, Cloner cloner)
@@ -30,12 +30,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> Apply(IEnumerable<double> data) {
-      foreach (double i in data) {
-        if (i > 0.0)
-          yield return 1.0 / i;
-        else
-          yield return i;
-      }
+      return data.Select(d => d > 0 ? 1.0 / d : d);
     }
 
     public override bool Check(IEnumerable<double> data, out string errorMsg) {
