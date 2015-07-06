@@ -174,7 +174,7 @@ namespace HeuristicLab.Visualization.ChartControlsExtensions {
       #endregion
 
       chartAreaComboBox.Items.Clear();
-      foreach (var area in originalChart.ChartAreas) {
+      foreach (var area in originalChart.ChartAreas.Where(x => x.Visible)) {
         chartAreaComboBox.Items.Add(area.Name);
       }
       chartAreaComboBox.SelectedIndex = 0;
