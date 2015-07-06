@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Multinomial logit regression data analysis algorithm.
   /// </summary>
   [Item("Multinomial Logit Classification", "Multinomial logit classification data analysis algorithm (wrapper for ALGLIB).")]
-  [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 180)]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 180)]
   [StorableClass]
   public sealed class MultiNomialLogitClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string LogitClassificationModelResultName = "Logit classification solution";
