@@ -31,6 +31,7 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Persistence.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.PluginInfrastructure;
 
@@ -235,7 +236,7 @@ namespace HeuristicLab.Scripting.Views {
       var item = (KeyValuePair<string, object>)listViewItem.Tag;
       if (!(item.Value is IDeepCloneable)) return;
       var data = new DataObject(HeuristicLab.Common.Constants.DragDropDataFormat, item);
-      DoDragDrop(data, DragDropEffects.Copy);
+      DoDragDrop(data, DragDropEffects.Copy | DragDropEffects.Link);
     }
     protected virtual void variableListView_DragEnter(object sender, DragEventArgs e) {
       validDragOperation = !Locked && !ReadOnly;
@@ -251,12 +252,14 @@ namespace HeuristicLab.Scripting.Views {
     protected virtual void variableListView_DragOver(object sender, DragEventArgs e) {
       e.Effect = DragDropEffects.None;
       if (validDragOperation) {
-        if (e.AllowedEffect.HasFlag(DragDropEffects.Copy))
-          e.Effect = DragDropEffects.Copy;
+        if ((e.KeyState & 32) == 32) e.Effect = DragDropEffects.Link;  // ALT key
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy)) e.Effect = DragDropEffects.Copy;
+        else if (e.AllowedEffect.HasFlag(DragDropEffects.Link)) e.Effect = DragDropEffects.Link;
       }
     }
     protected virtual void variableListView_DragDrop(object sender, DragEventArgs e) {
-      if (e.Effect != DragDropEffects.Copy) return;
+      if (e.Effect == DragDropEffects.None) return;
+
       object item = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
 
       string variableName;
@@ -277,8 +280,7 @@ namespace HeuristicLab.Scripting.Views {
       var cloneable = item as IDeepCloneable;
       if (cloneable == null) return;
 
-      var clonedItem = cloneable.Clone();
-      Content.Add(variableName, clonedItem);
+      Content.Add(variableName, e.Effect.HasFlag(DragDropEffects.Copy) ? cloneable.Clone() : cloneable);
 
       var listViewItem = variableListView.FindItemWithText(variableName);
       variableListView.SelectedItems.Clear();
@@ -473,8 +475,8 @@ namespace HeuristicLab.Scripting.Views {
 
       if (variable.Value != null) {
         type = variable.Value.GetType();
-        if (serializableLookup.TryGetValue(type, out serializable))
-          return serializable;
+        if (serializableLookup.TryGetValue(type, out serializable)) return serializable;
+        if (StorableClassAttribute.IsStorableClass(type)) return serializableLookup[type] = true;
       }
 
       var ser = new Serializer(variable, ConfigurationService.Instance.GetDefaultConfig(new XmlFormat()), "ROOT", true);
