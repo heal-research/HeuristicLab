@@ -27,6 +27,7 @@ namespace HeuristicLab.Core.Views {
   [View("ItemSet View")]
   [Content(typeof(ItemSet<>), true)]
   [Content(typeof(IItemSet<>), false)]
+  [Content(typeof(ReadOnlyItemSet<>), true)]
   public partial class ItemSetView<T> : ItemCollectionView<T> where T : class, IItem {
     protected bool draggedItemsAlreadyContained;
 
