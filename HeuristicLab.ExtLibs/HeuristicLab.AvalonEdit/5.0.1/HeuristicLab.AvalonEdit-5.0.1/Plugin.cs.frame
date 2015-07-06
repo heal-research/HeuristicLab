@@ -26,6 +26,7 @@ namespace HeuristicLab.AvalonEdit {
   [PluginFile("HeuristicLab.AvalonEdit-5.0.1.dll", PluginFileType.Assembly)]
   [PluginFile("ICSharpCode.AvalonEdit.dll", PluginFileType.Assembly)]
   [PluginFile("ICSharpCode.AvalonEdit License-5.0.1.txt", PluginFileType.License)]
+  [PluginDependency("HeuristicLab.NRefactory", "5.5")]
   public class HeuristicLabAvalonEditPlugin : PluginBase {
   }
 }
