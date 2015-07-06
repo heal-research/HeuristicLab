@@ -188,6 +188,12 @@
     <Compile Include="BoolValueView.Designer.cs">
       <DependentUpon>BoolValueView.cs</DependentUpon>
     </Compile>
+	 <Compile Include="BoolMatrixView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BoolMatrixView.Designer.cs">
+      <DependentUpon>BoolMatrixView.cs</DependentUpon>
+    </Compile>
     <Compile Include="StringConvertibleMatrixVisibilityDialog.cs">
       <SubType>Form</SubType>
     </Compile>
