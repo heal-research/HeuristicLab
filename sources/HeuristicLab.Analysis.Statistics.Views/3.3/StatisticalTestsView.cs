@@ -40,6 +40,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private const int requiredSampleSize = 5;
     private double[][] data;
     private bool suppressUpdates = false;
+    private bool initializing = false;
 
     public double SignificanceLevel {
       get { return significanceLevel; }
@@ -76,9 +77,14 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       base.OnContentChanged();
 
       if (Content != null) {
+        initializing = true;
         UpdateResultComboBox();
         UpdateGroupsComboBox();
         RebuildDataTable();
+        FillCompComboBox();
+        ResetUI();
+        CalculateValues();
+        initializing = false;
       }
       UpdateCaption();
     }
@@ -134,6 +140,36 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         suppressUpdates = Content.UpdateOfRunsInProgress;
         if (!suppressUpdates) RebuildDataTable();
       }
+    }
+
+    private void openBoxPlotToolStripMenuItem_Click(object sender, EventArgs e) {
+      RunCollectionBoxPlotView boxplotView = new RunCollectionBoxPlotView();
+      boxplotView.Content = Content;
+      boxplotView.SetXAxis(groupComboBox.SelectedItem.ToString());
+      boxplotView.SetYAxis(resultComboBox.SelectedItem.ToString());
+
+      boxplotView.Show();
+    }
+
+    private void groupCompComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (initializing) return;
+      string curItem = (string)groupCompComboBox.SelectedItem;
+      CalculatePairwise(curItem);
+    }
+
+    private void resultComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (initializing) return;
+      RebuildDataTable();
+      ResetUI();
+      CalculateValues();
+    }
+
+    private void groupComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (initializing) return;
+      RebuildDataTable();
+      FillCompComboBox();
+      ResetUI();
+      CalculateValues();
     }
     #endregion
 
@@ -271,19 +307,6 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
       pValTextBox.Text = string.Empty;
       equalDistsTextBox.Text = string.Empty;
-    }
-
-    private void resultComboBox_SelectedValueChanged(object sender, EventArgs e) {
-      RebuildDataTable();
-      ResetUI();
-      CalculateValues();
-    }
-
-    private void groupComboBox_SelectedValueChanged(object sender, EventArgs e) {
-      RebuildDataTable();
-      FillCompComboBox();
-      ResetUI();
-      CalculateValues();
     }
 
     private bool VerifyDataLength(bool showMessage) {
@@ -482,20 +505,6 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         }
       }
       return newData;
-    }
-
-    private void openBoxPlotToolStripMenuItem_Click(object sender, EventArgs e) {
-      RunCollectionBoxPlotView boxplotView = new RunCollectionBoxPlotView();
-      boxplotView.Content = Content;
-      boxplotView.SetXAxis(groupComboBox.SelectedItem.ToString());
-      boxplotView.SetYAxis(resultComboBox.SelectedItem.ToString());
-
-      boxplotView.Show();
-    }
-
-    private void groupCompComboBox_SelectedValueChanged(object sender, EventArgs e) {
-      string curItem = (string)groupCompComboBox.SelectedItem;
-      CalculatePairwise(curItem);
     }
   }
 }
