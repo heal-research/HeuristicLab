@@ -379,14 +379,17 @@ namespace HeuristicLab.Scripting.Views {
     }
 
     private void item_ToStringChanged(object sender, EventArgs e) {
-      foreach (ListViewItem item in variableListView.Items) {
-        var variable = item.Tag as KeyValuePair<string, object>?;
-        if (variable == null || variable.Value.Value != sender) continue;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)item_ToStringChanged, sender, e);
+      else {
+        foreach (ListViewItem item in variableListView.Items) {
+          var variable = item.Tag as KeyValuePair<string, object>?;
+          if (variable == null || variable.Value.Value != sender) continue;
 
-        string value = (variable.Value.Value ?? "null").ToString();
-        item.SubItems[1].Text = value;
-        item.SubItems[2].Text = variable.Value.Value.GetType().ToString();
-        SetToolTipText(item, item.ImageIndex != 0);
+          string value = (variable.Value.Value ?? "null").ToString();
+          item.SubItems[1].Text = value;
+          item.SubItems[2].Text = variable.Value.Value.GetType().ToString();
+          SetToolTipText(item, item.ImageIndex != 0);
+        }
       }
     }
     #endregion
