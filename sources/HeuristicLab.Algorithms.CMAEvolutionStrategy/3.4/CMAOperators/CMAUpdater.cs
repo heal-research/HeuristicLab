@@ -240,10 +240,8 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
         double[] d;
         double[,] b;
         var success = alglib.smatrixevd(sp.C, N, 1, true, out d, out b);
-        Array.Copy(d, sp.D, N);
-        for (var i = 0; i < N; i++)
-          for (var j = 0; j < N; j++)
-            sp.B[i, j] = b[i, j];
+        sp.D = d;
+        sp.B = b;
 
         DegenerateStateParameter.ActualValue = new BoolValue(!success);
 
