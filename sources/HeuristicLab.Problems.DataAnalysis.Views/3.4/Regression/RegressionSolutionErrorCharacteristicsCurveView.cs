@@ -101,6 +101,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     protected virtual void UpdateChart() {
       chart.Series.Clear();
       chart.Annotations.Clear();
+      chart.ChartAreas[0].AxisX.Maximum = 0.0;
+      chart.ChartAreas[0].CursorX.Interval = 0.01;
 
       if (Content == null) return;
       if (cmbSamples.SelectedItem.ToString() == TrainingSamples && !ProblemData.TrainingIndices.Any()) return;
