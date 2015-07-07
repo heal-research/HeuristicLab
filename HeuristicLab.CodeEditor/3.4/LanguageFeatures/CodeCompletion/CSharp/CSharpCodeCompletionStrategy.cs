@@ -19,13 +19,11 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ICSharpCode.NRefactory.Completion;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Completion;
-using ICSharpCode.NRefactory.Editor;
 using ICSharpCode.NRefactory.TypeSystem;
 
 namespace HeuristicLab.CodeEditor {
@@ -111,13 +109,7 @@ namespace HeuristicLab.CodeEditor {
     }
 
     protected override void DoParseStep() {
-      var document = (IDocument)codeEditor.Invoke(
-        (Func<IDocument>)(() => {
-          var doc = codeEditor.TextEditor.Document;
-          return new ReadOnlyDocument(doc, doc.FileName);
-        })
-      );
-
+      if (document == null) return;
       var unresolvedFile = CSharpParsingHelpers.CreateCSharpUnresolvedFile(document);
       projectContent = projectContent.AddOrUpdateFiles(unresolvedFile);
     }

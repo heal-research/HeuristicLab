@@ -19,19 +19,30 @@
  */
 #endregion
 
+using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.NRefactory.Editor;
+using Timer = System.Timers.Timer;
 
 namespace HeuristicLab.CodeEditor {
   internal abstract class CodeCompletionStrategy : ICodeCompletionStrategy {
     protected readonly CodeEditor codeEditor;
-    protected readonly Task backgroundParser;
+    protected readonly Timer parserTimer;
+    protected IDocument document;
 
     protected CodeCompletionStrategy(CodeEditor codeEditor) {
       this.codeEditor = codeEditor;
-      backgroundParser = new Task(DoBackgroundParsing);
+      this.codeEditor.TextEditorTextChanged += codeEditor_TextEditorTextChanged;
+      parserTimer = new Timer(1000);
+      parserTimer.Elapsed += (sender, args) => Task.Run(() => {
+        DoParseStep();
+        if (codeEditor.IsDisposed && parserTimer.Enabled) {
+          parserTimer.Stop();
+          parserTimer.Dispose();
+        }
+      });
     }
 
     public virtual void DoCodeCompletion(bool controlSpace) {
@@ -40,8 +51,7 @@ namespace HeuristicLab.CodeEditor {
     }
 
     public virtual void Initialize() {
-      if (backgroundParser.Status == TaskStatus.Created)
-        backgroundParser.Start();
+      parserTimer.Enabled = true;
     }
 
     protected abstract CodeCompletionResult GetCodeCompletionResult(bool controlSpace);
@@ -88,11 +98,9 @@ namespace HeuristicLab.CodeEditor {
       }
     }
 
-    protected virtual void DoBackgroundParsing() {
-      while (!codeEditor.IsDisposed) {
-        DoParseStep();
-        Thread.Sleep(1000);
-      }
+    private void codeEditor_TextEditorTextChanged(object sender, EventArgs e) {
+      var doc = codeEditor.TextEditor.Document;
+      document = new ReadOnlyDocument(doc, doc.FileName);
     }
   }
 }
