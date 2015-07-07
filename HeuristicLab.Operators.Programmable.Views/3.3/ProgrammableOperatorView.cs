@@ -130,7 +130,11 @@ namespace HeuristicLab.Operators.Programmable {
       if (ProgrammableOperator != null) ProgrammableOperator.Breakpoint = breakpointCheckBox.Checked;
     }
     private void showCodeButton_Click(object sender, EventArgs e) {
+#if __MonoCS__
+      new TextDialog("CodeViewer", ProgrammableOperator.CompilationUnitCode, true).ShowDialog(this);
+#else
       new CodeViewer(ProgrammableOperator.CompilationUnitCode).ShowDialog(this);
+#endif
     }
     private void codeEditor_Validated(object sender, EventArgs e) {
       ProgrammableOperator.Code = codeEditor.UserCode;
@@ -198,7 +202,8 @@ namespace HeuristicLab.Operators.Programmable {
       this.Enabled = false;
       try {
         ProgrammableOperator.Compile();
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         ErrorHandling.ShowErrorDialog(this, ex);
       }
       OnContentChanged();

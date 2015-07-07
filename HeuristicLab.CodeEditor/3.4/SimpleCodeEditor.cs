@@ -19,17 +19,25 @@
  */
 #endregion
 
-using HeuristicLab.PluginInfrastructure;
+using System;
 
 namespace HeuristicLab.CodeEditor {
-  [Plugin("HeuristicLab.CodeEditor", "3.4.0.$WCREV$")]
-  [PluginFile("HeuristicLab.CodeEditor-3.4.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
-  [PluginDependency("HeuristicLab.NRefactory", "5.5.0")]
-#if !__MonoCS__
-  [PluginDependency("HeuristicLab.AvalonEdit", "5.0.1")]
-#endif
-  public class HeuristicLabCodeEditorPlugin : PluginBase {
+  public partial class SimpleCodeEditor : CodeEditorBase {
+
+    public SimpleCodeEditor() {
+      InitializeComponent();
+    }
+
+    public override string UserCode {
+      get { return TextEditor.Text; }
+      set {
+        if (TextEditor.Text == value) return;
+        TextEditor.Text = value;
+      }
+    }
+
+    protected virtual void TextEditor_TextChanged(object sender, EventArgs e) {
+      OnTextEditorTextChanged();
+    }
   }
 }

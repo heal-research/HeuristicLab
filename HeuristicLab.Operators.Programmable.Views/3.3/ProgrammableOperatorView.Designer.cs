@@ -54,7 +54,11 @@ namespace HeuristicLab.Operators.Programmable {
       this.namespacesTreeView = new System.Windows.Forms.TreeView();
       this.showCodeButton = new System.Windows.Forms.Button();
       this.compileButton = new System.Windows.Forms.Button();
+#if __MonoCS__
+      this.codeEditor = new HeuristicLab.CodeEditor.SimpleCodeEditor();
+#else
       this.codeEditor = new HeuristicLab.CodeEditor.CodeEditor();
+#endif
       this.tabControl1 = new HeuristicLab.MainForm.WindowsForms.DragOverTabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
@@ -323,7 +327,7 @@ namespace HeuristicLab.Operators.Programmable {
     private System.Windows.Forms.TabPage tabPage1;
     private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
     private System.Windows.Forms.SplitContainer splitContainer1;
-    private HeuristicLab.CodeEditor.CodeEditor codeEditor;
+    private HeuristicLab.CodeEditor.CodeEditorBase codeEditor;
     private System.Windows.Forms.Button compileButton;
     private System.Windows.Forms.Button showCodeButton;
     private System.Windows.Forms.SplitContainer splitContainer2;
