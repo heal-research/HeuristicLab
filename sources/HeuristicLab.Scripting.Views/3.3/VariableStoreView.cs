@@ -367,8 +367,7 @@ namespace HeuristicLab.Scripting.Views {
     }
 
     protected virtual void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<KeyValuePair<string, object>> e) {
-      if (InvokeRequired)
-        Invoke(new CollectionItemsChangedEventHandler<KeyValuePair<string, object>>(Content_CollectionReset), sender, e);
+      if (InvokeRequired) Invoke((Action<object, CollectionItemsChangedEventArgs<KeyValuePair<string, object>>>)Content_CollectionReset, sender, e);
       else {
         foreach (var item in e.OldItems)
           RemoveVariable(item);
