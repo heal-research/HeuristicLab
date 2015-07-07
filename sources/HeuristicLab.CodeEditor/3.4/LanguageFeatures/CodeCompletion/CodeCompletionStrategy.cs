@@ -36,7 +36,13 @@ namespace HeuristicLab.CodeEditor {
       this.codeEditor = codeEditor;
       this.codeEditor.TextEditorTextChanged += codeEditor_TextEditorTextChanged;
       parserTimer = new Timer(1000);
-      parserTimer.Elapsed += (sender, args) => Task.Run(() => DoParseStep());
+      parserTimer.Elapsed += (sender, args) => Task.Run(() => {
+        DoParseStep();
+        if (codeEditor.IsDisposed && parserTimer.Enabled) {
+          parserTimer.Stop();
+          parserTimer.Dispose();
+        }
+      });
     }
 
     public virtual void DoCodeCompletion(bool controlSpace) {
