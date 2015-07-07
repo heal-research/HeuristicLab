@@ -132,6 +132,7 @@
     <Compile Include="Analyzers\SymbolicDataAnalysisSingleObjectiveTrainingBestSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Formatters\SymbolicDataAnalysisExpressionCSharpFormatter.cs" />
     <Compile Include="Importer\SymbolicExpressionImporter.cs" />
     <Compile Include="Importer\Token.cs" />
     <Compile Include="Interfaces\IModelBacktransformator.cs" />
