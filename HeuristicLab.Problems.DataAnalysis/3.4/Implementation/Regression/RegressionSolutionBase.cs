@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Data;
@@ -38,8 +39,15 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string TestRelativeErrorResultName = "Average relative error (test)";
     protected const string TrainingNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (training)";
     protected const string TestNormalizedMeanSquaredErrorResultName = "Normalized mean squared error (test)";
-    protected const string TrainingMeanErrorResultName = "Mean error (training)";
-    protected const string TestMeanErrorResultName = "Mean error (test)";
+    protected const string TrainingRootMeanSquaredErrorResultName = "Root mean squared error (training)";
+    protected const string TestRootMeanSquaredErrorResultName = "Root mean squared error (test)";
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.5
+    private const string TrainingMeanErrorResultName = "Mean error (training)";
+    private const string TestMeanErrorResultName = "Mean error (test)";
+    #endregion
+
 
     protected const string TrainingMeanSquaredErrorResultDescription = "Mean of squared errors of the model on the training partition";
     protected const string TestMeanSquaredErrorResultDescription = "Mean of squared errors of the model on the test partition";
@@ -51,8 +59,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string TestRelativeErrorResultDescription = "Average of the relative errors of the model output and the actual values on the test partition";
     protected const string TrainingNormalizedMeanSquaredErrorResultDescription = "Normalized mean of squared errors of the model on the training partition";
     protected const string TestNormalizedMeanSquaredErrorResultDescription = "Normalized mean of squared errors of the model on the test partition";
-    protected const string TrainingMeanErrorResultDescription = "Mean of errors of the model on the training partition";
-    protected const string TestMeanErrorResultDescription = "Mean of errors of the model on the test partition";
+    protected const string TrainingRootMeanSquaredErrorResultDescription = "Root mean of squared errors of the model on the training partition";
+    protected const string TestRootMeanSquaredErrorResultDescription = "Root mean of squared errors of the model on the test partition";
 
     public new IRegressionModel Model {
       get { return (IRegressionModel)base.Model; }
@@ -110,14 +118,38 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value; }
       private set { ((DoubleValue)this[TestNormalizedMeanSquaredErrorResultName].Value).Value = value; }
     }
-    public double TrainingMeanError {
-      get { return ((DoubleValue)this[TrainingMeanErrorResultName].Value).Value; }
-      private set { ((DoubleValue)this[TrainingMeanErrorResultName].Value).Value = value; }
+    public double TrainingRootMeanSquaredError {
+      get { return ((DoubleValue)this[TrainingRootMeanSquaredErrorResultName].Value).Value; }
+      private set { ((DoubleValue)this[TrainingRootMeanSquaredErrorResultName].Value).Value = value; }
     }
-    public double TestMeanError {
-      get { return ((DoubleValue)this[TestMeanErrorResultName].Value).Value; }
-      private set { ((DoubleValue)this[TestMeanErrorResultName].Value).Value = value; }
+    public double TestRootMeanSquaredError {
+      get { return ((DoubleValue)this[TestRootMeanSquaredErrorResultName].Value).Value; }
+      private set { ((DoubleValue)this[TestRootMeanSquaredErrorResultName].Value).Value = value; }
     }
+
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.5
+    private double TrainingMeanError {
+      get {
+        if (!ContainsKey(TrainingMeanErrorResultName)) return double.NaN;
+        return ((DoubleValue)this[TrainingMeanErrorResultName].Value).Value;
+      }
+      set {
+        if (ContainsKey(TrainingMeanErrorResultName))
+          ((DoubleValue)this[TrainingMeanErrorResultName].Value).Value = value;
+      }
+    }
+    private double TestMeanError {
+      get {
+        if (!ContainsKey(TestMeanErrorResultName)) return double.NaN;
+        return ((DoubleValue)this[TestMeanErrorResultName].Value).Value;
+      }
+      set {
+        if (ContainsKey(TestMeanErrorResultName))
+          ((DoubleValue)this[TestMeanErrorResultName].Value).Value = value;
+      }
+    }
+    #endregion
     #endregion
 
     [StorableConstructor]
@@ -137,16 +169,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestRelativeErrorResultName, TestRelativeErrorResultDescription, new PercentValue()));
       Add(new Result(TrainingNormalizedMeanSquaredErrorResultName, TrainingNormalizedMeanSquaredErrorResultDescription, new DoubleValue()));
       Add(new Result(TestNormalizedMeanSquaredErrorResultName, TestNormalizedMeanSquaredErrorResultDescription, new DoubleValue()));
-      Add(new Result(TrainingMeanErrorResultName, TrainingMeanErrorResultDescription, new DoubleValue()));
-      Add(new Result(TestMeanErrorResultName, TestMeanErrorResultDescription, new DoubleValue()));
+      Add(new Result(TrainingRootMeanSquaredErrorResultName, TrainingRootMeanSquaredErrorResultDescription, new DoubleValue()));
+      Add(new Result(TestRootMeanSquaredErrorResultName, TestRootMeanSquaredErrorResultDescription, new DoubleValue()));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.4
-
       #region Backwards compatible code, remove with 3.5
-
       if (!ContainsKey(TrainingMeanAbsoluteErrorResultName)) {
         OnlineCalculatorError errorState;
         Add(new Result(TrainingMeanAbsoluteErrorResultName, "Mean of absolute errors of the model on the training partition", new DoubleValue()));
@@ -161,17 +191,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
         TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
       }
 
-      if (!ContainsKey(TrainingMeanErrorResultName)) {
+      if (!ContainsKey(TrainingRootMeanSquaredErrorResultName)) {
         OnlineCalculatorError errorState;
-        Add(new Result(TrainingMeanErrorResultName, "Mean of errors of the model on the training partition", new DoubleValue()));
-        double trainingME = OnlineMeanErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices), out errorState);
-        TrainingMeanError = errorState == OnlineCalculatorError.None ? trainingME : double.NaN;
+        Add(new Result(TrainingRootMeanSquaredErrorResultName, TrainingRootMeanSquaredErrorResultDescription, new DoubleValue()));
+        double trainingMSE = OnlineMeanSquaredErrorCalculator.Calculate(EstimatedTrainingValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices), out errorState);
+        TrainingRootMeanSquaredError = errorState == OnlineCalculatorError.None ? Math.Sqrt(trainingMSE) : double.NaN;
       }
-      if (!ContainsKey(TestMeanErrorResultName)) {
+
+      if (!ContainsKey(TestRootMeanSquaredErrorResultName)) {
         OnlineCalculatorError errorState;
-        Add(new Result(TestMeanErrorResultName, "Mean of errors of the model on the test partition", new DoubleValue()));
-        double testME = OnlineMeanErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices), out errorState);
-        TestMeanError = errorState == OnlineCalculatorError.None ? testME : double.NaN;
+        Add(new Result(TestRootMeanSquaredErrorResultName, TestRootMeanSquaredErrorResultDescription, new DoubleValue()));
+        double testMSE = OnlineMeanSquaredErrorCalculator.Calculate(EstimatedTestValues, ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TestIndices), out errorState);
+        TestRootMeanSquaredError = errorState == OnlineCalculatorError.None ? Math.Sqrt(testMSE) : double.NaN;
       }
       #endregion
     }
@@ -212,10 +243,20 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double testNMSE = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestNormalizedMeanSquaredError = errorState == OnlineCalculatorError.None ? testNMSE : double.NaN;
 
-      double trainingME = OnlineMeanErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
-      TrainingMeanError = errorState == OnlineCalculatorError.None ? trainingME : double.NaN;
-      double testME = OnlineMeanErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
-      TestMeanError = errorState == OnlineCalculatorError.None ? testME : double.NaN;
+      TrainingRootMeanSquaredError = Math.Sqrt(TrainingMeanSquaredError);
+      TestRootMeanSquaredError = Math.Sqrt(TestMeanSquaredError);
+
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.5
+      if (ContainsKey(TrainingMeanErrorResultName)) {
+        double trainingME = OnlineMeanErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+        TrainingMeanError = errorState == OnlineCalculatorError.None ? trainingME : double.NaN;
+      }
+      if (ContainsKey(TestMeanErrorResultName)) {
+        double testME = OnlineMeanErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+        TestMeanError = errorState == OnlineCalculatorError.None ? testME : double.NaN;
+      }
+      #endregion
     }
   }
 }
