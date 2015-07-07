@@ -24,11 +24,12 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using HeuristicLab.Common;
 using ICSharpCode.NRefactory.TypeSystem;
 
 namespace HeuristicLab.CodeEditor {
-  public class CodeEditorBase : System.Windows.Forms.UserControl {
+  public class CodeEditorBase : UserControl {
     public virtual string UserCode { get; set; }
 
     public virtual string Prefix { get; set; }
