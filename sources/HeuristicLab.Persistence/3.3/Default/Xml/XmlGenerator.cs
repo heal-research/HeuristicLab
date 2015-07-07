@@ -397,9 +397,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// </summary>
     /// <param name="obj">The object.</param>
     /// <param name="stream">The stream.</param>
-    /// <param name="useZip">If true, uses zip for compression, otherwise gzip.</param>
-    public static void Serialize(object obj, Stream stream, bool useZip = false) {
-      Serialize(obj, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), useZip);
+    /// <param name="compressionType">Type of compression, default is GZip.</param>
+    public static void Serialize(object obj, Stream stream, CompressionType compressionType = CompressionType.GZip) {
+      Serialize(obj, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()), compressionType);
     }
 
 
@@ -409,9 +409,9 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="obj">The object.</param>
     /// <param name="stream">The stream.</param>
     /// <param name="config">The configuration.</param>
-    /// <param name="useZip">If true, uses zip for compression, otherwise gzip.</param>
-    public static void Serialize(object obj, Stream stream, Configuration config, bool useZip = false) {
-      Serialize(obj, stream, config, false, useZip);
+    /// <param name="compressionType">Type of compression, default is GZip.</param>
+    public static void Serialize(object obj, Stream stream, Configuration config, CompressionType compressionType = CompressionType.GZip) {
+      Serialize(obj, stream, config, false, compressionType);
     }
 
     /// <summary>
@@ -421,11 +421,12 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="stream">The stream.</param>
     /// <param name="config">The configuration.</param>
     /// <param name="includeAssemblies">if set to <c>true</c> include need assemblies.</param>
-    /// <param name="useZip">If true, uses zip for compression, otherwise gzip.</param>
-    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, bool useZip = false) {
+    /// <param name="compressionType">Type of compression, default is GZip.</param>
+    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies,
+                                 CompressionType compressionType = CompressionType.GZip) {
       try {
         Serializer serializer = new Serializer(obj, config);
-        if (useZip) {
+        if (compressionType == CompressionType.Zip) {
           Serialize(obj, stream, config, includeAssemblies, CompressionLevel.Optimal);
         } else {
           Serialize(stream, serializer);
@@ -447,11 +448,12 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="config">The configuration.</param>
     /// <param name="includeAssemblies">if set to <c>true</c> include need assemblies.</param>
     /// <param name="types">The list of all serialized types.</param>
-    /// <param name="useZip">If true, uses zip for compression, otherwise gzip.</param>
-    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, out IEnumerable<Type> types, bool useZip = false) {
+    /// <param name="compressionType">Type of compression, default is GZip.</param>
+    public static void Serialize(object obj, Stream stream, Configuration config, bool includeAssemblies, out IEnumerable<Type> types,
+                                 CompressionType compressionType = CompressionType.GZip) {
       try {
         Serializer serializer = new Serializer(obj, config);
-        if (useZip) {
+        if (compressionType == CompressionType.Zip) {
           Serialize(stream, includeAssemblies, CompressionLevel.Optimal, serializer);
         } else {
           Serialize(stream, serializer);
