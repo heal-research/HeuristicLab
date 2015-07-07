@@ -25,7 +25,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.ServiceModel;
-using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
@@ -40,7 +39,8 @@ namespace HeuristicLab.Clients.Hive {
     /// <param name="alreadyUploadedPlugins">List of plugins which have been uploaded from this Task</param>
     /// <param name="neededPlugins">List of plugins which need to be uploaded</param>
     /// <returns></returns>
-    public static List<Guid> GetPluginDependencies(IHiveService service, List<Plugin> onlinePlugins, List<Plugin> alreadyUploadedPlugins, IEnumerable<IPluginDescription> neededPlugins) {
+    public static List<Guid> GetPluginDependencies(IHiveService service, List<Plugin> onlinePlugins, List<Plugin> alreadyUploadedPlugins,
+                                                   IEnumerable<IPluginDescription> neededPlugins) {
       var pluginIds = new List<Guid>();
       Dictionary<IPluginDescription, byte[]> checksumsNeededPlugins = CalcChecksumsForPlugins(neededPlugins);
 
@@ -94,7 +94,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public static List<IPluginDescription> GetPluginsForTask(IEnumerable<Type> usedTypes, object task) {
-      if (task.GetObjectGraphObjects().Any(x => typeof(IProgrammableItem).IsInstanceOfType(x))) {
+      if (usedTypes.Any(x => x.GetInterfaces().Any(y => y == typeof(IProgrammableItem)))) {
         //when a programmable item is used all plugins that are currently loaded need to be sent to Hive
         return ApplicationManager.Manager.Plugins.ToList();
       } else {
