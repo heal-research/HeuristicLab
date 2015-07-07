@@ -34,7 +34,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.NK {
   [Item("NK Landscape", "Represents an NK landscape optimization problem.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 215)]
   [StorableClass]
   public sealed class NKLandscape : BinaryProblem {
     public override bool Maximization {
