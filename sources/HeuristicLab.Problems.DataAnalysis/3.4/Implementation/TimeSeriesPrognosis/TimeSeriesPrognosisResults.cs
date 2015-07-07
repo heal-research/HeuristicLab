@@ -393,8 +393,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       PrognosisTrainingMeanSquaredError = errorState == OnlineCalculatorError.None ? trainingMSE : double.NaN;
       double trainingMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       PrognosisTrainingMeanAbsoluteError = errorState == OnlineCalculatorError.None ? trainingMAE : double.NaN;
-      double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
-      PrognosisTrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR2 : double.NaN;
+      double trainingR = OnlinePearsonsRCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+      PrognosisTrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR*trainingR : double.NaN;
       double trainingRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       PrognosisTrainingRelativeError = errorState == OnlineCalculatorError.None ? trainingRelError : double.NaN;
       double trainingNMSE = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
@@ -429,8 +429,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       PrognosisTestMeanSquaredError = errorState == OnlineCalculatorError.None ? testMSE : double.NaN;
       double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       PrognosisTestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
-      double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
-      PrognosisTestRSquared = errorState == OnlineCalculatorError.None ? testR2 : double.NaN;
+      double testR = OnlinePearsonsRCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+      PrognosisTestRSquared = errorState == OnlineCalculatorError.None ? testR*testR : double.NaN;
       double testRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       PrognosisTestRelativeError = errorState == OnlineCalculatorError.None ? testRelError : double.NaN;
       double testNMSE = OnlineNormalizedMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);

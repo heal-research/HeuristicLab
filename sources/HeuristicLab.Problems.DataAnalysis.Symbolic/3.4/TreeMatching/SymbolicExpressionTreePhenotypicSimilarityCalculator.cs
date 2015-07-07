@@ -64,12 +64,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return 1.0;
 
       OnlineCalculatorError error;
-      var r2 = OnlinePearsonsRSquaredCalculator.Calculate(v1, v2, out error);
+      var r = OnlinePearsonsRCalculator.Calculate(v1, v2, out error);
 
-      if (r2 > 1.0)
-        r2 = 1.0;
+      if (r > 1.0)
+        r = 1.0;
 
-      return error == OnlineCalculatorError.None ? r2 : 0;
+      return error == OnlineCalculatorError.None ? r*r : 0;
     }
 
     public override double CalculateSolutionSimilarity(IScope leftSolution, IScope rightSolution) {
@@ -86,12 +86,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         return 1.0;
 
       OnlineCalculatorError error;
-      var r2 = OnlinePearsonsRSquaredCalculator.Calculate(leftValues, rightValues, out error);
+      var r = OnlinePearsonsRCalculator.Calculate(leftValues, rightValues, out error);
 
-      if (r2 > 1.0)
-        r2 = 1.0; // sometimes due to fp errors it can happen that the r2 is over 1 (like 1.0000000009)
+      if (r > 1.0)
+        r = 1.0; // sometimes due to fp errors it can happen that the correlation is over 1 (like 1.0000000009)
 
-      return error == OnlineCalculatorError.None ? r2 : 0;
+      return error == OnlineCalculatorError.None ? r*r : 0;
     }
   }
 }

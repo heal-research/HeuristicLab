@@ -62,9 +62,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimatedValues = model.GetEstimatedValues(problemData.Dataset, rows); // also bounds the values
       var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
       OnlineCalculatorError errorState;
-      var quality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, estimatedValues, out errorState);
+      var quality = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
       if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return quality;
+      return quality*quality;
     }
 
     public static ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, SymbolicRegressionSolutionImpactValuesCalculator impactValuesCalculator, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IRegressionProblemData problemData, DoubleLimit estimationLimits, IEnumerable<int> rows, double nodeImpactThreshold = 0.0, bool pruneOnlyZeroImpactNodes = false) {
