@@ -19,18 +19,22 @@
  */
 #endregion
 
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.NRefactory.Editor;
 
 namespace HeuristicLab.CodeEditor {
   internal abstract class CodeCompletionStrategy : ICodeCompletionStrategy {
     protected readonly CodeEditor codeEditor;
     protected readonly Task backgroundParser;
+    protected IDocument document;
 
     protected CodeCompletionStrategy(CodeEditor codeEditor) {
       this.codeEditor = codeEditor;
+      this.codeEditor.TextEditorTextChanged += codeEditor_TextEditorTextChanged;
       backgroundParser = new Task(DoBackgroundParsing);
     }
 
@@ -93,6 +97,11 @@ namespace HeuristicLab.CodeEditor {
         DoParseStep();
         Thread.Sleep(1000);
       }
+    }
+
+    private void codeEditor_TextEditorTextChanged(object sender, EventArgs e) {
+      var doc = codeEditor.TextEditor.Document;
+      document = new ReadOnlyDocument(doc, doc.FileName);
     }
   }
 }
