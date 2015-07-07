@@ -174,12 +174,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       foreach (var node in symbolicExpressionTree.IterateNodesPostfix().Where(x => x is VariableTreeNode)) {
         varNames.Add(((VariableTreeNode)node).VariableName);
       }
-      foreach (var varName in varNames) {
-        strBuilder.Append("double " + varName);
-        if (varName != varNames.Last()) {
-          strBuilder.Append(", ");
-        }
-      }
+
+      var orderedNames = varNames.OrderBy(n => n, new NaturalStringComparer()).Select(n=> "double " + n);
+      strBuilder.Append(string.Join(", ", orderedNames));
 
       strBuilder.AppendLine(") {");
       strBuilder.Append("double result = ");
