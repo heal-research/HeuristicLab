@@ -87,18 +87,10 @@ namespace HeuristicLab.Core {
       Category = "Other Items";
       Priority = int.MaxValue;
     }
-    public CreatableAttribute(object category)
-      : this() {
-      Category = (string)category;
-    }
-    // BackwardsCompatibility3.3
-    #region Backwards compatible code, remove with 3.4
-    [Obsolete]
     public CreatableAttribute(string category)
       : this() {
       Category = category;
     }
-    #endregion
 
     public static bool IsCreatable(Type type) {
       object[] attribs = type.GetCustomAttributes(typeof(CreatableAttribute), false);
