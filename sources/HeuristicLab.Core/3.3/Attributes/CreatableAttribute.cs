@@ -60,7 +60,6 @@ namespace HeuristicLab.Core {
         var tokens = GetTokensWithOrdering(rawName).ToList();
         return tokens.Take(tokens.Count - 1);
       }
-
       private static IEnumerable<string> GetTokensWithOrdering(string rawName) {
         return rawName.Split(new[] { SplitToken }, StringSplitOptions.RemoveEmptyEntries);
       }
@@ -83,7 +82,6 @@ namespace HeuristicLab.Core {
     }
 
     public int Priority { get; set; }
-
 
     public CreatableAttribute() {
       Category = "Other Items";
@@ -111,7 +109,6 @@ namespace HeuristicLab.Core {
       if (attribs.Length > 0) return ((CreatableAttribute)attribs[0]).Category;
       else return null;
     }
-
     public static int GetPriority(Type type) {
       var attribs = type.GetCustomAttributes(typeof(CreatableAttribute), false);
       if (attribs.Length > 0) return ((CreatableAttribute)attribs[0]).Priority;

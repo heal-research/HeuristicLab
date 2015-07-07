@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
@@ -92,8 +93,8 @@ namespace HeuristicLab.Optimizer {
     }
 
     private TreeNode CreateCategoryTree(IEnumerable<IGrouping<string, Type>> categories) {
-      imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Class);      // default icon
-      imageList.Images.Add(HeuristicLab.Common.Resources.VSImageLibrary.Namespace);  // plugins
+      imageList.Images.Add(VSImageLibrary.Class);      // default icon
+      imageList.Images.Add(VSImageLibrary.Namespace);  // plugins
 
       var rootNode = new TreeNode();
 
@@ -108,10 +109,10 @@ namespace HeuristicLab.Optimizer {
         string name = CreatableAttribute.Categories.GetName(rawName);
 
         // Skip categories with same full name because the raw name can still be different (missing order)
-        if (rootNode.Nodes.Find(fullName, searchAllChildren: true).Length > 0)
+        if (rootNode.Nodes.Find(fullName, true).Length > 0)
           continue;
 
-        var categoryNode = new TreeNode(name, imageIndex: 1, selectedImageIndex: 1) {
+        var categoryNode = new TreeNode(name, 1, 1) {
           Name = fullName,
           Tag = rawName
         };
@@ -132,10 +133,10 @@ namespace HeuristicLab.Optimizer {
       foreach (string rawParentName in rawParentNames) {
         rawName = rawName == null ? rawParentName : rawName + CreatableAttribute.Categories.SplitToken + rawParentName;
         var fullName = CreatableAttribute.Categories.GetFullName(rawName);
-        parentNode = node.Nodes.Find(fullName, searchAllChildren: false).SingleOrDefault();
+        parentNode = node.Nodes.Find(fullName, false).SingleOrDefault();
         if (parentNode == null) {
           var name = CreatableAttribute.Categories.GetName(rawName);
-          parentNode = new TreeNode(name, imageIndex: 1, selectedImageIndex: 1) {
+          parentNode = new TreeNode(name, 1, 1) {
             Name = fullName,
             Tag = rawName
           };
@@ -148,7 +149,7 @@ namespace HeuristicLab.Optimizer {
     private void CreateItemNodes(TreeNode node, IEnumerable<IGrouping<string, Type>> categories) {
       foreach (var category in categories) {
         var fullName = CreatableAttribute.Categories.GetFullName(category.Key);
-        var categoryNode = node.Nodes.Find(fullName, searchAllChildren: true).Single();
+        var categoryNode = node.Nodes.Find(fullName, true).Single();
         foreach (var creatable in category) {
           var itemNode = CreateItemNode(creatable);
           itemNode.Name = itemNode.Name + ":" + fullName;
@@ -322,7 +323,7 @@ namespace HeuristicLab.Optimizer {
     #region Helpers
     private void RestoreSelectedNode(TreeNode selectedNode) {
       if (selectedNode != null) {
-        var node = typesTreeView.Nodes.Find(selectedNode.Name, searchAllChildren: true).SingleOrDefault();
+        var node = typesTreeView.Nodes.Find(selectedNode.Name, true).SingleOrDefault();
         if (node != null)
           typesTreeView.SelectedNode = node;
         if (typesTreeView.SelectedNode == null)
@@ -359,7 +360,7 @@ namespace HeuristicLab.Optimizer {
       okButton.Enabled = SelectedType != null;
     }
 
-    private TreeNode toolStripMenuNode = null;
+    private TreeNode toolStripMenuNode;
     private void typesTreeView_MouseDown(object sender, MouseEventArgs e) {
       if (e.Button == MouseButtons.Right) {
         Point coordinates = typesTreeView.PointToClient(Cursor.Position);
@@ -439,13 +440,6 @@ namespace HeuristicLab.Optimizer {
         return typesTreeView.Nodes.Count > 0 ? typesTreeView.Nodes[0] : null;
       }
     }
-    private TreeNode LastVisibleNode {
-      get {
-        var node = FirstVisibleNode;
-        while (node != null && node.NextVisibleNode != null) node = node.NextVisibleNode;
-        return node;
-      }
-    }
 
     private class ItemTreeNodeComparer : IComparer {
       private static readonly IComparer<string> Comparer = new NaturalStringComparer();
@@ -455,10 +449,11 @@ namespace HeuristicLab.Optimizer {
 
         if (lhs.Tag is string && rhs.Tag is string) {
           return Comparer.Compare((string)lhs.Tag, (string)rhs.Tag);
-        } else if (lhs.Tag is string) {
+        }
+        if (lhs.Tag is string) {
           return -1;
-        } else
-          return 1;
+        }
+        return 1;
       }
     }
   }
