@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
@@ -51,6 +52,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private IProgress progress;
     private bool valuesAdded = false;
     private bool suppressUpdates = false;
+    private SemaphoreSlim sem = new SemaphoreSlim(1, 1);
 
     public ChartAnalysisView() {
       InitializeComponent();
@@ -118,6 +120,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       if (suppressUpdates) return;
       if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_ColumnsChanged, sender, e);
       else {
+        UpdateDataTableComboBox();
         RebuildDataTableAsync();
       }
     }
@@ -137,6 +140,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         suppressUpdates = Content.UpdateOfRunsInProgress;
 
         if (!suppressUpdates && !valuesAdded) {
+          UpdateDataTableComboBox();
           RebuildDataTableAsync();
         }
         if (valuesAdded) {
@@ -163,6 +167,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void dataRowComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (suppressUpdates) return;
       RebuildDataTableAsync();
     }
 
@@ -265,16 +270,21 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
       string rowName = (string)dataRowComboBox.SelectedItem;
 
-      progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Calculating values...");
-      var task = Task.Factory.StartNew(() => RebuildDataTable(resultName, rowName));
+      var task = Task.Factory.StartNew(() => {
+        sem.Wait();
+        progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Calculating values...");
+        RebuildDataTable(resultName, rowName);
+      });
 
       task.ContinueWith((t) => {
         MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
         ErrorHandling.ShowErrorDialog("An error occured while calculating values. ", t.Exception);
+        sem.Release();
       }, TaskContinuationOptions.OnlyOnFaulted);
 
       task.ContinueWith((t) => {
         MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+        sem.Release();
       }, TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 
