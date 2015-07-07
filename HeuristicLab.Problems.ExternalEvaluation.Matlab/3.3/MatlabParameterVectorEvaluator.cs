@@ -69,10 +69,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Matlab {
     public override void ClearState() {
       //mkommend: necessary because matlabConnector.Quit() does not work
       try {
-        matLabConnector.Execute("exit");
-      }
-      catch (COMException) { }
-      finally {
+        if (matLabConnector != null)
+          matLabConnector.Execute("exit");
+      } catch (COMException) { } finally {
         matLabConnector = null;
       }
 
