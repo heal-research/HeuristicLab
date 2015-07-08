@@ -113,9 +113,13 @@ namespace HeuristicLab.DataPreprocessing {
       return new DataGridContent(this, cloner);
     }
 
-    public void DeleteRow(IEnumerable<int> rows) {
+    public void DeleteRows(IEnumerable<int> rows) {
       PreProcessingData.DeleteRowsWithIndices(rows);
       createRowNames();
+    }
+
+    public void DeleteColumn(int column) {
+      PreProcessingData.DeleteColumn(column);
     }
 
     public bool Validate(string value, out string errorMessage, int columnIndex) {

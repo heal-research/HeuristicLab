@@ -45,10 +45,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
       base.OnContentChanged();
       if (Content != null) {
         var data = Content.Data;
-        var searchLogic = new SearchLogic(data);
+        var filterLogic = new FilterLogic(data);
+        var searchLogic = new SearchLogic(data, filterLogic);
         var statisticsLogic = new StatisticsLogic(data, searchLogic);
         var manipulationLogic = new ManipulationLogic(data, searchLogic, statisticsLogic);
-        var filterLogic = new FilterLogic(data);
 
         var viewShortcuts = new ItemList<IViewShortcut> {
           new DataGridContent(data, manipulationLogic, filterLogic),

@@ -69,8 +69,19 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
 
       Content.ClassifierVariableIndex = classifierComboBox.SelectedIndex;
-
-      GenerateChart();
+      if (Content.IsDetailedChartViewEnabled != IsDetailedChartViewEnabled) {
+        displayDetailsCheckBox.Checked = Content.IsDetailedChartViewEnabled;
+      } else {
+        GenerateChart();
+      }
+    }
+    private void displayDetailsCheckBox_CheckedChanged(object sender, EventArgs e) {
+      bool isChecked = displayDetailsCheckBox.Checked;
+      if (IsDetailedChartViewEnabled != isChecked) {
+        IsDetailedChartViewEnabled = isChecked;
+        Content.IsDetailedChartViewEnabled = isChecked;
+        GenerateChart();
+      }
     }
   }
 }

@@ -41,6 +41,7 @@ namespace HeuristicLab.DataPreprocessing {
       get { return this.classifierVariableIndex; }
       set { this.classifierVariableIndex = value; }
     }
+    public bool IsDetailedChartViewEnabled { get; set; }
 
 
     public HistogramContent(IFilteredPreprocessingData preprocessingData)

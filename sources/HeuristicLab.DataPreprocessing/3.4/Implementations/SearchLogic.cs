@@ -22,11 +22,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace HeuristicLab.DataPreprocessing {
   public class SearchLogic : ISearchLogic {
     private readonly ITransactionalPreprocessingData preprocessingData;
+    private readonly IFilterLogic filterLogic;
 
     private Dictionary<int, IList<int>> MissingValueIndicies { get; set; }
     private Dictionary<int, IList> ValuesWithoutNaN { get; set; }
@@ -43,17 +43,26 @@ namespace HeuristicLab.DataPreprocessing {
       get { return preprocessingData.Rows; }
     }
 
-    public SearchLogic(ITransactionalPreprocessingData thePreprocessingData) {
+    public SearchLogic(ITransactionalPreprocessingData thePreprocessingData, IFilterLogic theFilterLogic) {
       preprocessingData = thePreprocessingData;
+      filterLogic = theFilterLogic;
 
       MissingValueIndicies = new Dictionary<int, IList<int>>();
       ValuesWithoutNaN = new Dictionary<int, IList>();
 
-      preprocessingData.Changed += preprocessingData_Changed;
+      preprocessingData.Changed += PreprocessingData_Changed;
+      filterLogic.FilterChanged += FilterLogic_FilterChanged;
     }
 
-    void preprocessingData_Changed(object sender, DataPreprocessingChangedEventArgs e)
-    {
+    void FilterLogic_FilterChanged(object sender, EventArgs e) {
+      //recalculate
+      for (int i = 0; i < Columns; i++) {
+        MissingValueIndicies.Remove(i);
+        ValuesWithoutNaN.Remove(i);
+      }
+    }
+
+    void PreprocessingData_Changed(object sender, DataPreprocessingChangedEventArgs e) {
       switch (e.Type) {
         case DataPreprocessingChangedEventType.DeleteColumn:
         case DataPreprocessingChangedEventType.ChangeColumn:
@@ -72,7 +81,7 @@ namespace HeuristicLab.DataPreprocessing {
           MissingValueIndicies = new Dictionary<int, IList<int>>();
           ValuesWithoutNaN = new Dictionary<int, IList>();
           break;
-      } 
+      }
     }
 
     public IDictionary<int, IList<int>> GetMissingValueIndices() {
@@ -96,24 +105,24 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public IList<int> GetMissingValueIndices(int columnIndex) {
-      if (!MissingValueIndicies.ContainsKey(columnIndex)){        
-          if (preprocessingData.VariableHasType<double>(columnIndex)) {
-            MissingValueIndicies[columnIndex] = GetMissingValueIndices<double>(columnIndex);
-          } else if (preprocessingData.VariableHasType<string>(columnIndex)) {
-            MissingValueIndicies[columnIndex] = GetMissingValueIndices<string>(columnIndex);
-          } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
-            MissingValueIndicies[columnIndex] = GetMissingValueIndices<DateTime>(columnIndex);
-          } else {
-            throw new ArgumentException("column " + columnIndex + " contains a non supported type.");
-          }
-      } 
-
+      if (!MissingValueIndicies.ContainsKey(columnIndex)) {
+        if (preprocessingData.VariableHasType<double>(columnIndex)) {
+          MissingValueIndicies[columnIndex] = GetMissingValueIndices<double>(columnIndex);
+        } else if (preprocessingData.VariableHasType<string>(columnIndex)) {
+          MissingValueIndicies[columnIndex] = GetMissingValueIndices<string>(columnIndex);
+        } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
+          MissingValueIndicies[columnIndex] = GetMissingValueIndices<DateTime>(columnIndex);
+        } else {
+          throw new ArgumentException("column " + columnIndex + " contains a non supported type.");
+        }
+      }
       return MissingValueIndicies[columnIndex];
-   }
+    }
+
     private IList<int> GetMissingValueIndices<T>(int columnIndex) {
       List<int> missingIndices = new List<int>();
-     
-      for(int row = 0; row < preprocessingData.Rows; ++row) {
+
+      for (int row = 0; row < preprocessingData.Rows; ++row) {
         if (IsMissingValue(columnIndex, row)) {
           missingIndices.Add(row);
         }
@@ -122,11 +131,10 @@ namespace HeuristicLab.DataPreprocessing {
       return missingIndices;
     }
 
-    public IEnumerable<T> GetValuesWithoutNaN<T>(int columnIndex, bool considerSelection)
-    {
-      if (considerSelection) {     
-        var selectedRows =  preprocessingData.Selection[columnIndex];
-        
+    public IEnumerable<T> GetValuesWithoutNaN<T>(int columnIndex, bool considerSelection) {
+      if (considerSelection) {
+        var selectedRows = preprocessingData.Selection[columnIndex];
+
         List<T> values = new List<T>();
         foreach (var rowIdx in selectedRows) {
           if (!IsMissingValue(columnIndex, rowIdx)) {

@@ -37,17 +37,17 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public int GetColumnCount() {
-      return preprocessingData.Columns;
+      return searchLogic.Columns;
     }
 
     public int GetRowCount() {
-      return preprocessingData.Rows;
+      return searchLogic.Rows;
     }
 
     public int GetNumericColumnCount() {
       int count = 0;
 
-      for (int i = 0; i < preprocessingData.Columns; ++i) {
+      for (int i = 0; i < searchLogic.Columns; ++i) {
         if (preprocessingData.VariableHasType<double>(i)) {
           ++count;
         }
@@ -56,12 +56,12 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public int GetNominalColumnCount() {
-      return preprocessingData.Columns - GetNumericColumnCount();
+      return searchLogic.Columns - GetNumericColumnCount();
     }
 
     public int GetMissingValueCount() {
       int count = 0;
-      for (int i = 0; i < preprocessingData.Columns; ++i) {
+      for (int i = 0; i < searchLogic.Columns; ++i) {
         count += GetMissingValueCount(i);
       }
       return count;
@@ -72,17 +72,34 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public T GetMin<T>(int columnIndex, bool considerSelection) where T : IComparable<T> {
-      return preprocessingData.GetValues<T>(columnIndex, considerSelection).Min();
+      var min = default(T);
+      if (preprocessingData.VariableHasType<T>(columnIndex)) {
+        var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
+        if (values.Any()) {
+          min = values.Min();
+        }
+      }
+      return min;
     }
 
     public T GetMax<T>(int columnIndex, bool considerSelection) where T : IComparable<T> {
-      return preprocessingData.GetValues<T>(columnIndex, considerSelection).Max();
+      var max = default(T);
+      if (preprocessingData.VariableHasType<T>(columnIndex)) {
+        var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
+        if (values.Any()) {
+          max = values.Max();
+        }
+      }
+      return max;
     }
 
     public double GetMedian(int columnIndex, bool considerSelection) {
       double median = double.NaN;
       if (preprocessingData.VariableHasType<double>(columnIndex)) {
-        median = GetValuesWithoutNaN<double>(columnIndex, considerSelection).Median();
+        var values = GetValuesWithoutNaN<double>(columnIndex, considerSelection);
+        if (values.Any()) {
+          median = values.Median();
+        }
       }
       return median;
     }
@@ -90,7 +107,10 @@ namespace HeuristicLab.DataPreprocessing {
     public double GetAverage(int columnIndex, bool considerSelection) {
       double avg = double.NaN;
       if (preprocessingData.VariableHasType<double>(columnIndex)) {
-        avg = GetValuesWithoutNaN<double>(columnIndex, considerSelection).Average();
+        var values = GetValuesWithoutNaN<double>(columnIndex, considerSelection);
+        if (values.Any()) {
+          avg = values.Average();
+        }
       }
       return avg;
     }
@@ -112,12 +132,10 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public T GetMostCommonValue<T>(int columnIndex, bool considerSelection) {
-      var t = preprocessingData.GetValues<T>(columnIndex, considerSelection);
-      var t2 = t.GroupBy(x => x);
-      var t3 = t2.Select(g => g.Key);
-
-      return preprocessingData.GetValues<T>(columnIndex, considerSelection)
-                              .GroupBy(x => x)
+      var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
+      if (!values.Any())
+        return default(T);
+      return values.GroupBy(x => x)
                               .OrderByDescending(g => g.Count())
                               .Select(g => g.Key)
                               .First();

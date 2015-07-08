@@ -108,8 +108,9 @@ namespace HeuristicLab.Data.Views {
         dataGridView.Rows.Clear();
         dataGridView.Columns.Clear();
         virtualRowIndices = new int[0];
-      } else
+      } else if (!dataGridView.IsCurrentCellInEditMode) {
         UpdateData();
+      }
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -294,7 +295,7 @@ namespace HeuristicLab.Data.Views {
       this.UpdateRowHeaders();
     }
 
-    private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
+    protected virtual void dataGridView_KeyDown(object sender, KeyEventArgs e) {
       if (!ReadOnly && e.Control && e.KeyCode == Keys.V)
         PasteValuesToDataGridView();
       else if (e.Control && e.KeyCode == Keys.C)
@@ -397,30 +398,10 @@ namespace HeuristicLab.Data.Views {
       return values;
     }
 
-    private void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+    protected virtual void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (Content != null) {
         if (e.Button == MouseButtons.Left && Content.SortableView) {
-          bool addToSortedIndices = (Control.ModifierKeys & Keys.Control) == Keys.Control;
-          SortOrder newSortOrder = SortOrder.Ascending;
-          if (sortedColumnIndices.Any(x => x.Key == e.ColumnIndex)) {
-            SortOrder oldSortOrder = sortedColumnIndices.Where(x => x.Key == e.ColumnIndex).First().Value;
-            int enumLength = Enum.GetValues(typeof(SortOrder)).Length;
-            newSortOrder = oldSortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), ((((int)oldSortOrder) + 1) % enumLength).ToString());
-          }
-
-          if (!addToSortedIndices)
-            sortedColumnIndices.Clear();
-
-          if (sortedColumnIndices.Any(x => x.Key == e.ColumnIndex)) {
-            int sortedIndex = sortedColumnIndices.FindIndex(x => x.Key == e.ColumnIndex);
-            if (newSortOrder != SortOrder.None)
-              sortedColumnIndices[sortedIndex] = new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder);
-            else
-              sortedColumnIndices.RemoveAt(sortedIndex);
-          } else
-            if (newSortOrder != SortOrder.None)
-              sortedColumnIndices.Add(new KeyValuePair<int, SortOrder>(e.ColumnIndex, newSortOrder));
-          Sort();
+          SortColumn(e.ColumnIndex);
         }
       }
     }
@@ -437,6 +418,31 @@ namespace HeuristicLab.Data.Views {
       UpdateRowHeaders();
       dataGridView.Invalidate();
     }
+
+    protected virtual void SortColumn(int columnIndex) {
+      bool addToSortedIndices = (Control.ModifierKeys & Keys.Control) == Keys.Control;
+      SortOrder newSortOrder = SortOrder.Ascending;
+      if (sortedColumnIndices.Any(x => x.Key == columnIndex)) {
+        SortOrder oldSortOrder = sortedColumnIndices.Where(x => x.Key == columnIndex).First().Value;
+        int enumLength = Enum.GetValues(typeof(SortOrder)).Length;
+        newSortOrder = oldSortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), ((((int)oldSortOrder) + 1) % enumLength).ToString());
+      }
+
+      if (!addToSortedIndices)
+        sortedColumnIndices.Clear();
+
+      if (sortedColumnIndices.Any(x => x.Key == columnIndex)) {
+        int sortedIndex = sortedColumnIndices.FindIndex(x => x.Key == columnIndex);
+        if (newSortOrder != SortOrder.None)
+          sortedColumnIndices[sortedIndex] = new KeyValuePair<int, SortOrder>(columnIndex, newSortOrder);
+        else
+          sortedColumnIndices.RemoveAt(sortedIndex);
+      } else
+        if (newSortOrder != SortOrder.None)
+          sortedColumnIndices.Add(new KeyValuePair<int, SortOrder>(columnIndex, newSortOrder));
+      Sort();
+    }
+
     protected virtual int[] Sort(IEnumerable<KeyValuePair<int, SortOrder>> sortedColumns) {
       int[] newSortedIndex = Enumerable.Range(0, Content.Rows).ToArray();
       if (sortedColumns.Count() != 0) {
@@ -509,7 +515,7 @@ namespace HeuristicLab.Data.Views {
       }
     }
 
-    private void dataGridView_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e) {
+    protected virtual void dataGridView_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e) {
       if (Content == null) return;
       if (e.Button == MouseButtons.Right && Content.ColumnNames.Count() != 0)
         contextMenu.Show(MousePosition);
@@ -542,7 +548,6 @@ namespace HeuristicLab.Data.Views {
     }
 
     protected virtual void dataGridView_SelectionChanged(object sender, EventArgs e) {
-      string stringFormat = "{0,20:0.0000}";
       statisticsTextBox.Text = string.Empty;
       if (dataGridView.SelectedCells.Count > 1) {
         List<double> selectedValues = new List<double>();
@@ -552,17 +557,28 @@ namespace HeuristicLab.Data.Views {
           selectedValues.Add(value);
         }
         if (selectedValues.Count > 1) {
-          StringBuilder labelText = new StringBuilder();
-          labelText.Append("Count: " + string.Format(stringFormat, selectedValues.Count) + "    ");
-          labelText.Append("Sum: " + string.Format(stringFormat, selectedValues.Sum()) + "    ");
-          labelText.Append("Min: " + string.Format(stringFormat, selectedValues.Min()) + "    ");
-          labelText.Append("Max: " + string.Format(stringFormat, selectedValues.Max()) + "    ");
-          labelText.Append("Average: " + string.Format(stringFormat, selectedValues.Average()) + "    ");
-          labelText.Append("Standard Deviation: " + string.Format(stringFormat, selectedValues.StandardDeviation()) + "    ");
-
-          statisticsTextBox.Text = labelText.ToString();
+          statisticsTextBox.Text = CreateStatisticsText(selectedValues);
         }
       }
+    }
+
+    protected virtual string CreateStatisticsText(ICollection<double> values) {
+      string stringFormat = "{0,20:0.0000}";
+      int overallCount = values.Count;
+      values = values.Where(x => !double.IsNaN(x)).ToList();
+      if (!values.Any()) {
+        return "";
+      }
+      StringBuilder statisticsText = new StringBuilder();
+      statisticsText.Append("Count: " + values.Count + "    ");
+      statisticsText.Append("Sum: " + string.Format(stringFormat, values.Sum()) + "    ");
+      statisticsText.Append("Min: " + string.Format(stringFormat, values.Min()) + "    ");
+      statisticsText.Append("Max: " + string.Format(stringFormat, values.Max()) + "    ");
+      statisticsText.Append("Average: " + string.Format(stringFormat, values.Average()) + "    ");
+      statisticsText.Append("Standard Deviation: " + string.Format(stringFormat, values.StandardDeviation()) + "    ");
+      if (overallCount > 0)
+        statisticsText.Append("Missing Values: " + string.Format(stringFormat, ((overallCount - values.Count) / (double)overallCount) * 100) + "%    ");
+      return statisticsText.ToString();
     }
   }
 }
