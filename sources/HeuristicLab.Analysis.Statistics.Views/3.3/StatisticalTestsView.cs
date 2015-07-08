@@ -382,17 +382,21 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
     private void CalculateAllGroupsTest() {
       double pval = KruskalWallisTest.Test(data);
-      pValTextBox.Text = pval.ToString();
-      if (pval < significanceLevel) {
-        Invoke(new Action(() => {
+      DisplayAllGroupsTextResults(pval);
+    }
+
+    private void DisplayAllGroupsTextResults(double pval) {
+      if (InvokeRequired) {
+        Invoke((Action<double>)DisplayAllGroupsTextResults, pval);
+      } else {
+        pValTextBox.Text = pval.ToString();
+        if (pval < significanceLevel) {
           groupCompLabel.Image = VSImageLibrary.Default;
           groupComTextLabel.Text = "There are groups with different distributions";
-        }));
-      } else {
-        Invoke(new Action(() => {
+        } else {
           groupCompLabel.Image = VSImageLibrary.Warning;
           groupComTextLabel.Text = "Groups have an equal distribution";
-        }));
+        }
       }
     }
 

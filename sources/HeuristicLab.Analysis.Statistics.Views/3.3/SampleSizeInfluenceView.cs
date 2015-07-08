@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -32,6 +33,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
+using ViewEventArgs = System.Windows.Forms.DataVisualization.Charting.ViewEventArgs;
 
 namespace HeuristicLab.Analysis.Statistics.Views {
   [View("Sample Size Influence", "HeuristicLab.Analysis.Statistics.Views.InfoResources.SampleSizeInfluenceInfo.rtf")]
@@ -42,7 +44,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private const string BoxPlotChartAreaName = "BoxPlotChartArea";
     private const string delimiter = ";";
 
-    private bool suppressUpdates = false;
+    private bool suppressUpdates;
     private string yAxisValue;
     private Dictionary<int, Dictionary<object, double>> categoricalMapping;
     private SortedDictionary<double, Series> seriesCache;
@@ -65,28 +67,28 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       set { base.Content = value; }
     }
     public IStringConvertibleMatrix Matrix {
-      get { return this.Content; }
+      get { return Content; }
     }
 
     #region RunCollection and Run events
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
-      Content.ColumnNamesChanged += new EventHandler(Content_ColumnNamesChanged);
-      Content.ItemsAdded += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
-      Content.ItemsRemoved += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
-      Content.CollectionReset += new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgressChanged += new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.OptimizerNameChanged += new EventHandler(Content_AlgorithmNameChanged);
+      Content.ColumnNamesChanged += Content_ColumnNamesChanged;
+      Content.ItemsAdded += Content_ItemsAdded;
+      Content.ItemsRemoved += Content_ItemsRemoved;
+      Content.CollectionReset += Content_CollectionReset;
+      Content.UpdateOfRunsInProgressChanged += Content_UpdateOfRunsInProgressChanged;
+      Content.OptimizerNameChanged += Content_AlgorithmNameChanged;
       RegisterRunEvents(Content);
     }
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      Content.ColumnNamesChanged -= new EventHandler(Content_ColumnNamesChanged);
-      Content.ItemsAdded -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
-      Content.ItemsRemoved -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
-      Content.CollectionReset -= new HeuristicLab.Collections.CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
-      Content.UpdateOfRunsInProgressChanged -= new EventHandler(Content_UpdateOfRunsInProgressChanged);
-      Content.OptimizerNameChanged -= new EventHandler(Content_AlgorithmNameChanged);
+      Content.ColumnNamesChanged -= Content_ColumnNamesChanged;
+      Content.ItemsAdded -= Content_ItemsAdded;
+      Content.ItemsRemoved -= Content_ItemsRemoved;
+      Content.CollectionReset -= Content_CollectionReset;
+      Content.UpdateOfRunsInProgressChanged -= Content_UpdateOfRunsInProgressChanged;
+      Content.OptimizerNameChanged -= Content_AlgorithmNameChanged;
       DeregisterRunEvents(Content);
     }
 
@@ -166,7 +168,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
     private void run_Changed(object sender, EventArgs e) {
       if (InvokeRequired)
-        this.Invoke(new EventHandler(run_Changed), sender, e);
+        Invoke(new EventHandler(run_Changed), sender, e);
       else if (!suppressUpdates) UpdateDataPoints();
     }
 
@@ -184,7 +186,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void UpdateAll() {
-      this.categoricalMapping.Clear();
+      categoricalMapping.Clear();
       UpdateComboBoxes();
       UpdateDataPoints();
       UpdateCaption();
@@ -195,7 +197,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void UpdateSampleSizes(bool forceUpdate = false) {
-      string selectedYAxis = (string)this.yAxisComboBox.SelectedItem;
+      string selectedYAxis = (string)yAxisComboBox.SelectedItem;
 
       if (selectedYAxis != null && (xAxisTextBox.Text.Trim() == string.Empty || forceUpdate)) {
         xAxisTextBox.Clear();
@@ -209,39 +211,43 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
         if (values.Any()) {
           if (hypergeometricCheckBox.Checked) {
-            xAxisTextBox.Text += ((int)(values.Count() / 16)) + delimiter + " ";
-            xAxisTextBox.Text += ((int)(values.Count() / 8)) + delimiter + " ";
-            xAxisTextBox.Text += (int)(values.Count() / 4);
+            xAxisTextBox.Text += values.Count() / 16 + delimiter + " ";
+            xAxisTextBox.Text += values.Count() / 8 + delimiter + " ";
+            xAxisTextBox.Text += values.Count() / 4;
           } else {
-            xAxisTextBox.Text += ((int)(values.Count() / 4)) + delimiter + " ";
-            xAxisTextBox.Text += ((int)(values.Count() / 2)) + delimiter + " ";
-            xAxisTextBox.Text += ((int)(values.Count() / 4 * 3)) + delimiter + " ";
-            xAxisTextBox.Text += (int)(values.Count());
+            xAxisTextBox.Text += values.Count() / 4 + delimiter + " ";
+            xAxisTextBox.Text += values.Count() / 2 + delimiter + " ";
+            xAxisTextBox.Text += values.Count() / 4 * 3 + delimiter + " ";
+            xAxisTextBox.Text += values.Count();
           }
         }
       }
     }
 
     private void UpdateComboBoxes() {
-      string selectedYAxis = (string)this.yAxisComboBox.SelectedItem;
-      this.xAxisTextBox.Text = string.Empty;
-      this.yAxisComboBox.Items.Clear();
-      if (Content != null) {
-        string[] additionalAxisDimension = Enum.GetNames(typeof(AxisDimension));
-        UpdateSampleSizes();
-        this.yAxisComboBox.Items.AddRange(additionalAxisDimension);
-        this.yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
+      if (InvokeRequired) {
+        Invoke((Action)UpdateComboBoxes);
+      } else {
+        string selectedYAxis = (string)yAxisComboBox.SelectedItem;
+        xAxisTextBox.Text = string.Empty;
+        yAxisComboBox.Items.Clear();
+        if (Content != null) {
+          string[] additionalAxisDimension = Enum.GetNames(typeof(AxisDimension));
+          UpdateSampleSizes();
+          yAxisComboBox.Items.AddRange(additionalAxisDimension);
+          yAxisComboBox.Items.AddRange(Matrix.ColumnNames.ToArray());
 
-        if (selectedYAxis != null && yAxisComboBox.Items.Contains(selectedYAxis)) {
-          yAxisComboBox.SelectedItem = selectedYAxis;
-          UpdateDataPoints();
+          if (selectedYAxis != null && yAxisComboBox.Items.Contains(selectedYAxis)) {
+            yAxisComboBox.SelectedItem = selectedYAxis;
+            UpdateDataPoints();
+          }
         }
       }
     }
 
     private void UpdateDataPoints() {
-      this.chart.Series.Clear();
-      this.seriesCache.Clear();
+      chart.Series.Clear();
+      seriesCache.Clear();
       if (Content != null) {
         var usableRuns = Content.Where(r => r.Visible).ToList();
         List<int> groupSizes = ParseGroupSizesFromText(xAxisTextBox.Text);
@@ -252,13 +258,13 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           CalculateGroups(usableRuns, groupSizes);
         }
 
-        foreach (Series s in this.seriesCache.Values)
-          this.chart.Series.Add(s);
+        foreach (Series s in seriesCache.Values)
+          chart.Series.Add(s);
 
         UpdateStatistics();
         if (seriesCache.Count > 0) {
           Series boxPlotSeries = CreateBoxPlotSeries();
-          this.chart.Series.Add(boxPlotSeries);
+          chart.Series.Add(boxPlotSeries);
         }
 
         UpdateAxisLabels();
@@ -313,9 +319,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       var usableRuns = Content.Where(r => r.Visible).ToList();
 
       if (!yAxisComboBox.DroppedDown)
-        this.yAxisValue = (string)yAxisComboBox.SelectedItem;
+        yAxisValue = (string)yAxisComboBox.SelectedItem;
 
-      List<double?> yValue = usableRuns.Select(x => GetValue(x, this.yAxisValue)).ToList();
+      List<double?> yValue = usableRuns.Select(x => GetValue(x, yAxisValue)).ToList();
       if (yValue.Any(x => !x.HasValue)) return;
 
       double estimatedSampleSize = SampleSizeDetermination.DetermineSampleSizeByEstimatingMean(yValue.Select(x => x.Value).ToArray());
@@ -334,7 +340,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           try {
             v = int.Parse(ns);
             vals.Add(v);
-          } catch (Exception ex) {
+          }
+          catch (Exception ex) {
             if (verbose) {
               ErrorHandling.ShowErrorDialog("Can't parse group sizes. Please only use numbers seperated by a " + delimiter + ". ", ex);
             }
@@ -368,7 +375,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         }
       }
       matrix.ColumnNames = columnNames;
-      matrix.RowNames = new string[] { "Count", "Minimum", "Maximum", "Average", "Median", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile", "Lower Confidence Int.", "Upper Confidence Int." };
+      matrix.RowNames = new[] { "Count", "Minimum", "Maximum", "Average", "Median", "Standard Deviation", "Variance", "25th Percentile", "75th Percentile", "Lower Confidence Int.", "Upper Confidence Int." };
 
       for (int i = 0; i < seriesCache.Count; i++) {
         Series series = seriesCache.ElementAt(i).Value;
@@ -399,10 +406,10 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       boxPlotSeries["BoxPlotSeries"] = seriesNames;
       boxPlotSeries["BoxPlotShowUnusualValues"] = "true";
       boxPlotSeries["PointWidth"] = "0.4";
-      boxPlotSeries.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.VerticalCenter;
-      boxPlotSeries.BackSecondaryColor = System.Drawing.Color.FromArgb(130, 224, 64, 10);
-      boxPlotSeries.BorderColor = System.Drawing.Color.FromArgb(64, 64, 64);
-      boxPlotSeries.Color = System.Drawing.Color.FromArgb(224, 64, 10);
+      boxPlotSeries.BackGradientStyle = GradientStyle.VerticalCenter;
+      boxPlotSeries.BackSecondaryColor = Color.FromArgb(130, 224, 64, 10);
+      boxPlotSeries.BorderColor = Color.FromArgb(64, 64, 64);
+      boxPlotSeries.Color = Color.FromArgb(224, 64, 10);
 
       return boxPlotSeries;
     }
@@ -413,13 +420,13 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
 
       if (!yAxisComboBox.DroppedDown)
-        this.yAxisValue = (string)yAxisComboBox.SelectedItem;
+        yAxisValue = (string)yAxisComboBox.SelectedItem;
 
       xValue = idx;
-      yValue = GetValue(run, this.yAxisValue);
+      yValue = GetValue(run, yAxisValue);
 
       if (yValue.HasValue) {
-        if (!this.seriesCache.ContainsKey(xValue))
+        if (!seriesCache.ContainsKey(xValue))
           seriesCache[xValue] = new Series(xValue.ToString());
 
         Series series = seriesCache[xValue];
@@ -438,41 +445,40 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       if (Enum.IsDefined(typeof(AxisDimension), columnName)) {
         AxisDimension axisDimension = (AxisDimension)Enum.Parse(typeof(AxisDimension), columnName);
         return GetValue(run, axisDimension);
-      } else {
-        int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
-        IItem value = Content.GetValue(run, columnIndex);
-        if (value == null)
-          return null;
-
-        DoubleValue doubleValue = value as DoubleValue;
-        IntValue intValue = value as IntValue;
-        TimeSpanValue timeSpanValue = value as TimeSpanValue;
-        double? ret = null;
-        if (doubleValue != null) {
-          if (!double.IsNaN(doubleValue.Value) && !double.IsInfinity(doubleValue.Value))
-            ret = doubleValue.Value;
-        } else if (intValue != null)
-          ret = intValue.Value;
-        else if (timeSpanValue != null) {
-          ret = timeSpanValue.Value.TotalSeconds;
-        } else
-          ret = GetCategoricalValue(columnIndex, value.ToString());
-
-        return ret;
       }
+      int columnIndex = Matrix.ColumnNames.ToList().IndexOf(columnName);
+      IItem value = Content.GetValue(run, columnIndex);
+      if (value == null)
+        return null;
+
+      DoubleValue doubleValue = value as DoubleValue;
+      IntValue intValue = value as IntValue;
+      TimeSpanValue timeSpanValue = value as TimeSpanValue;
+      double? ret = null;
+      if (doubleValue != null) {
+        if (!double.IsNaN(doubleValue.Value) && !double.IsInfinity(doubleValue.Value))
+          ret = doubleValue.Value;
+      } else if (intValue != null)
+        ret = intValue.Value;
+      else if (timeSpanValue != null) {
+        ret = timeSpanValue.Value.TotalSeconds;
+      } else
+        ret = GetCategoricalValue(columnIndex, value.ToString());
+
+      return ret;
     }
     private double GetCategoricalValue(int dimension, string value) {
-      if (!this.categoricalMapping.ContainsKey(dimension)) {
-        this.categoricalMapping[dimension] = new Dictionary<object, double>();
+      if (!categoricalMapping.ContainsKey(dimension)) {
+        categoricalMapping[dimension] = new Dictionary<object, double>();
         var orderedCategories = Content.Where(r => r.Visible && Content.GetValue(r, dimension) != null).Select(r => Content.GetValue(r, dimension).ToString())
                                           .Distinct().OrderBy(x => x, new NaturalStringComparer());
         int count = 1;
         foreach (var category in orderedCategories) {
-          this.categoricalMapping[dimension].Add(category, count);
+          categoricalMapping[dimension].Add(category, count);
           count++;
         }
       }
-      return this.categoricalMapping[dimension][value];
+      return categoricalMapping[dimension][value];
     }
     private double GetValue(IRun run, AxisDimension axisDimension) {
       double value = double.NaN;
@@ -482,7 +488,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
             break;
           }
         default: {
-            throw new ArgumentException("No handling strategy for " + axisDimension.ToString() + " is defined.");
+            throw new ArgumentException("No handling strategy for " + axisDimension + " is defined.");
           }
       }
       return value;
@@ -491,7 +497,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
     #region GUI events
     private void UpdateNoRunsVisibleLabel() {
-      if (this.chart.Series.Count > 0) {
+      if (chart.Series.Count > 0) {
         noRunsLabel.Visible = false;
         showStatisticsCheckBox.Enabled = true;
         splitContainer.Panel2Collapsed = !showStatisticsCheckBox.Checked;
@@ -516,8 +522,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       UpdateDataPoints();
     }
     private void UpdateAxisLabels() {
-      Axis xAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisX;
-      Axis yAxis = this.chart.ChartAreas[BoxPlotChartAreaName].AxisY;
+      Axis xAxis = chart.ChartAreas[BoxPlotChartAreaName].AxisX;
+      Axis yAxis = chart.ChartAreas[BoxPlotChartAreaName].AxisY;
       int axisDimensionCount = Enum.GetNames(typeof(AxisDimension)).Count();
 
       SetCustomAxisLabels(xAxis, -1);
@@ -528,8 +534,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         yAxis.Title = yAxisComboBox.SelectedItem.ToString();
     }
 
-    private void chart_AxisViewChanged(object sender, System.Windows.Forms.DataVisualization.Charting.ViewEventArgs e) {
-      this.UpdateAxisLabels();
+    private void chart_AxisViewChanged(object sender, ViewEventArgs e) {
+      UpdateAxisLabels();
     }
 
     private void SetCustomAxisLabels(Axis axis, int dimension) {
@@ -550,13 +556,13 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           position++;
         }
       } else if (dimension > 0 && Content.GetValue(0, dimension) is TimeSpanValue) {
-        this.chart.ChartAreas[0].RecalculateAxesScale();
-        Axis correspondingAxis = this.chart.ChartAreas[0].Axes.Where(x => x.Name == axis.Name).SingleOrDefault();
+        chart.ChartAreas[0].RecalculateAxesScale();
+        Axis correspondingAxis = chart.ChartAreas[0].Axes.Where(x => x.Name == axis.Name).SingleOrDefault();
         if (correspondingAxis == null)
           correspondingAxis = axis;
         for (double i = correspondingAxis.Minimum; i <= correspondingAxis.Maximum; i += correspondingAxis.LabelStyle.Interval) {
           TimeSpan time = TimeSpan.FromSeconds(i);
-          string x = string.Format("{0:00}:{1:00}:{2:00}", (int)time.Hours, time.Minutes, time.Seconds);
+          string x = string.Format("{0:00}:{1:00}:{2:00}", time.Hours, time.Minutes, time.Seconds);
           axis.CustomLabels.Add(i - correspondingAxis.LabelStyle.Interval / 2, i + correspondingAxis.LabelStyle.Interval / 2, x);
         }
       } else if (chart.ChartAreas[BoxPlotChartAreaName].AxisX == axis) {
@@ -579,14 +585,14 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private void chart_MouseMove(object sender, MouseEventArgs e) {
       string newTooltipText = string.Empty;
       string oldTooltipText;
-      HitTestResult h = this.chart.HitTest(e.X, e.Y);
+      HitTestResult h = chart.HitTest(e.X, e.Y);
       if (h.ChartElementType == ChartElementType.AxisLabels) {
         newTooltipText = ((CustomLabel)h.Object).ToolTip;
       }
 
-      oldTooltipText = this.tooltip.GetToolTip(chart);
+      oldTooltipText = tooltip.GetToolTip(chart);
       if (newTooltipText != oldTooltipText)
-        this.tooltip.SetToolTip(chart, newTooltipText);
+        tooltip.SetToolTip(chart, newTooltipText);
     }
     #endregion
 
