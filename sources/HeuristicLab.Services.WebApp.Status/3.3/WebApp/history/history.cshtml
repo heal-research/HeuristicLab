@@ -32,7 +32,8 @@
         <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
             <div class="btn-group" dropdown dropdown-append-to-body>
                 <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle style="width: 130px; text-align: left;">
-                    {{curQuickSelection.name}} <span class="glyphicon glyphicon-chevron-down" style="margin-top: 3px; float:right"></span>
+                    <span class="text-left" style="display: inline-block; width: 85px;">{{curQuickSelection.name}}</span>
+                    <span class="glyphicon glyphicon-chevron-down" style="margin-top: 3px;"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <li ng-repeat="quickSelection in quickSelectionList">
