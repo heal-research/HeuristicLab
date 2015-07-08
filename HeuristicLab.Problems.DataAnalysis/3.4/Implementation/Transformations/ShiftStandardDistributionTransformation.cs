@@ -7,6 +7,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableClass]
   [Item("Shift Standard Distribution Transformation", "f(x) = ((x - m_org) / s_org ) * s_tar + m_tar | Represents Transformation to unit standard deviation and additional linear transformation to a target Mean and Standard deviation")]
   public class ShiftStandardDistributionTransformation : Transformation<double> {
     protected const string OriginalMeanParameterName = "Original Mean";
@@ -68,28 +69,24 @@ namespace HeuristicLab.Problems.DataAnalysis {
       return new ShiftStandardDistributionTransformation(this, cloner);
     }
 
-    // http://en.wikipedia.org/wiki/Standard_deviation
-    // http://www.statistics4u.info/fundstat_germ/ee_ztransform.html
-    // https://www.uni-due.de/~bm0061/vorl12.pdf p5
     public override IEnumerable<double> Apply(IEnumerable<double> data) {
       ConfigureParameters(data);
-      if (OriginalStandardDeviation == 0.0) {
-        foreach (var e in data) {
-          yield return e;
-        }
-        yield break;
+      if (OriginalStandardDeviation.IsAlmost(0.0)) {
+        return data;
       }
-
-      foreach (var e in data) {
-        double unitNormalDistributedValue = (e - OriginalMean) / OriginalStandardDeviation;
-        yield return unitNormalDistributedValue * StandardDeviation + Mean;
-      }
+      var old_m = OriginalMean;
+      var old_s = OriginalStandardDeviation;
+      var m = Mean;
+      var s = StandardDeviation;
+      return data
+        .Select(d => (d - old_m) / old_s) // standardized
+        .Select(d => d * s + m);
     }
 
     public override bool Check(IEnumerable<double> data, out string errorMsg) {
       ConfigureParameters(data);
       errorMsg = "";
-      if (OriginalStandardDeviation == 0.0) {
+      if (OriginalStandardDeviation.IsAlmost(0.0)) {
         errorMsg = "Standard deviaton for the original data is 0.0, Transformation cannot be applied onto these values.";
         return false;
       }

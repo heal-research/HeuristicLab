@@ -30,6 +30,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableClass]
   [Item("Linear Transformation", "f(x) = k * x + d | Represents a linear transformation with multiplication and addition.")]
   public class LinearTransformation : Transformation<double> {
     protected const string MultiplierParameterName = "Multiplier";
@@ -79,12 +80,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> Apply(IEnumerable<double> data) {
-      return data.Select(e => e * Multiplier + Addend);
+      var m = Multiplier;
+      var a = Addend;
+      return data.Select(e => e * m + a);
     }
 
     public override bool Check(IEnumerable<double> data, out string errorMsg) {
       errorMsg = null;
-      if (Multiplier == 0.0) {
+      if (Multiplier.IsAlmost(0.0)) {
         errorMsg = String.Format("Multiplicand is 0, all {0} entries will be set to {1}. Inverse apply will not be possible (division by 0).", data.Count(), Addend);
         return false;
       }

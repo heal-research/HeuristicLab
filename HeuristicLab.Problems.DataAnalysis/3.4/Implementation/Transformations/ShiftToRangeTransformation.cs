@@ -7,6 +7,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableClass]
   [Item("Shift to Range Transformation", "f(x) = k * x + d, start <= f(x) <= end | Represents a linear Transformation using Parameters defining a target range")]
   public class ShiftToRangeTransformation : LinearTransformation {
     protected const string RangeParameterName = "Range";

@@ -8,6 +8,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
+  [StorableClass]
   [Item("Logarithmic Transformation", "f(x) = log(x, b) | Represents a logarithmic transformation.")]
   public class LogarithmicTransformation : Transformation<double> {
     protected const string BaseParameterName = "Base";
@@ -42,12 +43,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> Apply(IEnumerable<double> data) {
-      foreach (double i in data) {
-        if (i > 0.0)
-          yield return Math.Log(i, Base);
-        else
-          yield return i;
-      }
+      var b = Base;
+      return data.Select(d => d > 0.0 ? Math.Log(d, b) : d);
     }
 
     public override bool Check(IEnumerable<double> data, out string errorMsg) {
