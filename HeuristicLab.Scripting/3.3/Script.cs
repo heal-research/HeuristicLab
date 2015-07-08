@@ -36,7 +36,7 @@ using Microsoft.CSharp;
 
 namespace HeuristicLab.Scripting {
   [StorableClass]
-  public class Script : NamedItem {
+  public class Script : NamedItem, IProgrammableItem {
     protected virtual string CodeTemplate {
       get { return string.Empty; }
     }

@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.ServiceModel;
+using HeuristicLab.Core;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.Hive {
@@ -38,7 +39,8 @@ namespace HeuristicLab.Clients.Hive {
     /// <param name="alreadyUploadedPlugins">List of plugins which have been uploaded from this Task</param>
     /// <param name="neededPlugins">List of plugins which need to be uploaded</param>
     /// <returns></returns>
-    public static List<Guid> GetPluginDependencies(IHiveService service, List<Plugin> onlinePlugins, List<Plugin> alreadyUploadedPlugins, IEnumerable<IPluginDescription> neededPlugins) {
+    public static List<Guid> GetPluginDependencies(IHiveService service, List<Plugin> onlinePlugins, List<Plugin> alreadyUploadedPlugins,
+                                                   IEnumerable<IPluginDescription> neededPlugins) {
       var pluginIds = new List<Guid>();
       Dictionary<IPluginDescription, byte[]> checksumsNeededPlugins = CalcChecksumsForPlugins(neededPlugins);
 
@@ -60,8 +62,7 @@ namespace HeuristicLab.Clients.Hive {
               p.Id = service.AddPlugin(p, pd);
               alreadyUploadedPlugins.Add(p);
               pluginIds.Add(p.Id);
-            }
-            catch (FaultException<PluginAlreadyExistsFault> fault) {
+            } catch (FaultException<PluginAlreadyExistsFault> fault) {
               onlinePlugins.Add(service.GetPlugin(fault.Detail.Id));
             }
           } else {
@@ -78,10 +79,6 @@ namespace HeuristicLab.Clients.Hive {
       return new Plugin() { Name = plugin.Name, Version = plugin.Version, Hash = hash };
     }
 
-    public static Plugin CreatePlugin(IPluginDescription plugin) {
-      return new Plugin() { Name = plugin.Name, Version = plugin.Version };
-    }
-
     public static List<PluginData> CreatePluginDatas(IPluginDescription plugin) {
       List<PluginData> pluginDatas = new List<PluginData>();
 
@@ -95,7 +92,17 @@ namespace HeuristicLab.Clients.Hive {
       return pluginDatas;
     }
 
-    public static void CollectDeclaringPlugins(List<IPluginDescription> plugins, IEnumerable<Type> usedTypes) {
+    public static List<IPluginDescription> GetPluginsForTask(IEnumerable<Type> usedTypes, object task) {
+      if (usedTypes.Any(x => typeof(IProgrammableItem).IsAssignableFrom(x))) {
+        //when a programmable item is used all plugins that are currently loaded need to be sent to Hive
+        return ApplicationManager.Manager.Plugins.ToList();
+      } else {
+        return CollectDeclaringPlugins(usedTypes);
+      }
+    }
+
+    private static List<IPluginDescription> CollectDeclaringPlugins(IEnumerable<Type> usedTypes) {
+      List<IPluginDescription> plugins = new List<IPluginDescription>();
       foreach (Type type in usedTypes) {
         var plugin = ApplicationManager.Manager.GetDeclaringPlugin(type);
         if (plugin != null && !plugins.Contains(plugin)) {
@@ -103,9 +110,10 @@ namespace HeuristicLab.Clients.Hive {
           CollectPluginDependencies(plugins, plugin);
         }
       }
+      return plugins;
     }
 
-    public static void CollectPluginDependencies(List<IPluginDescription> plugins, IPluginDescription plugin) {
+    private static void CollectPluginDependencies(List<IPluginDescription> plugins, IPluginDescription plugin) {
       if (plugin == null) return;
       foreach (var dependency in plugin.Dependencies) {
         if (!plugins.Contains(dependency)) {

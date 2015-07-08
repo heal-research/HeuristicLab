@@ -41,7 +41,7 @@ namespace HeuristicLab.Operators.Programmable {
 
   [Item("ProgrammableOperator", "An operator that can be programmed for arbitrary needs.")]
   [StorableClass]
-  public class ProgrammableOperator : Operator, IParameterizedNamedItem, IStorableContent {
+  public class ProgrammableOperator : Operator, IParameterizedNamedItem, IStorableContent, IProgrammableItem {
 
     #region Fields & Properties
 
@@ -279,8 +279,7 @@ namespace HeuristicLab.Operators.Programmable {
           if (File.Exists(a.Location)) {
             assemblies.Add(a, false);
           }
-        }
-        catch (NotSupportedException) {
+        } catch (NotSupportedException) {
           // NotSupportedException is thrown while accessing 
           // the Location property of the anonymously hosted
           // dynamic methods assembly, which is related to

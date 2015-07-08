@@ -46,9 +46,10 @@ namespace HeuristicLab.Clients.Hive {
     #endregion
 
     public override TaskData GetAsTaskData(bool withoutChildOptimizers, out List<IPluginDescription> plugins) {
-      plugins = new List<IPluginDescription>();
-      if (this.itemTask == null)
+      if (ItemTask == null) {
+        plugins = new List<IPluginDescription>();
         return null;
+      }
 
       TaskData jobData = new TaskData();
       IEnumerable<Type> usedTypes;
@@ -59,7 +60,7 @@ namespace HeuristicLab.Clients.Hive {
       ((IAtomicOperation)ItemTask.InitialOperation).Scope.ClearParentScopes();
       jobData.Data = PersistenceUtil.Serialize(ItemTask, out usedTypes);
 
-      PluginUtil.CollectDeclaringPlugins(plugins, usedTypes);
+      plugins = PluginUtil.GetPluginsForTask(usedTypes, ItemTask);
       return jobData;
     }
 

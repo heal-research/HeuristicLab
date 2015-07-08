@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (single-objective)", "Represents a single-objective problem that can be programmed with a script.")]
   [Creatable("Problems")]
   [StorableClass]
-  public sealed class SingleObjectiveProgrammableProblem : SingleObjectiveBasicProblem<IEncoding> {
+  public sealed class SingleObjectiveProgrammableProblem : SingleObjectiveBasicProblem<IEncoding>, IProgrammableItem {
     public static new Image StaticItemImage {
       get { return VSImageLibrary.Script; }
     }
