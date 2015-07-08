@@ -23,10 +23,23 @@
         <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
             <label for="fromDate">To:&nbsp;</label>
             <div class="input-group">
-                <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="toDate" is-open="toIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="toDate" is-open="toIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close"/>
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="openToDateSelection($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                 </span>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <div class="btn-group" dropdown dropdown-append-to-body>
+                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle style="width: 130px; text-align: left;">
+                    <span class="text-left" style="display: inline-block; width: 85px;">{{curQuickSelection.name}}</span>
+                    <span class="glyphicon glyphicon-chevron-down" style="margin-top: 3px;"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="quickSelection in quickSelectionList">
+                        <a ng-click="changeQuickSelection(quickSelection)">{{quickSelection.name}}</a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
