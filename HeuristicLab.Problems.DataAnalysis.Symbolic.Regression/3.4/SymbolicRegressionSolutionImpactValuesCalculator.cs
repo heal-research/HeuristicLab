@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       OnlineCalculatorError errorState;
       if (double.IsNaN(originalQuality)) {
         var originalValues = regressionModel.GetEstimatedValues(dataset, rows);
-        originalQuality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, originalValues, out errorState);
+        originalQuality = OnlinePearsonsRCalculator.Calculate(targetValues, originalValues, out errorState);
         if (errorState != OnlineCalculatorError.None) originalQuality = 0.0;
       }
 
@@ -82,10 +82,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       tempModelParentNode.InsertSubtree(i, constantNode);
 
       var estimatedValues = tempModel.GetEstimatedValues(dataset, rows);
-      double newQuality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, estimatedValues, out errorState);
+      double newQuality = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
       if (errorState != OnlineCalculatorError.None) newQuality = 0.0;
 
-      impactValue = originalQuality - newQuality;
+      impactValue = (originalQuality*originalQuality) - (newQuality*newQuality);
     }
   }
 }

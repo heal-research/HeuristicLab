@@ -59,8 +59,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
       var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
       List<ISymbolicExpressionTreeNode> nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPostfix().ToList();
       OnlineCalculatorError errorState;
-      double originalR2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, originalOutput, out errorState);
-      if (errorState != OnlineCalculatorError.None) originalR2 = 0.0;
+      double originalR = OnlinePearsonsRCalculator.Calculate(targetValues, originalOutput, out errorState);
+      if (errorState != OnlineCalculatorError.None) originalR = 0.0;
 
       foreach (ISymbolicExpressionTreeNode node in nodes) {
         var parent = node.Parent;
@@ -68,13 +68,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis.Views 
         ISymbolicExpressionTreeNode replacementNode = constantNode;
         SwitchNode(parent, node, replacementNode);
         var newOutput = interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows);
-        double newR2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, newOutput, out errorState);
-        if (errorState != OnlineCalculatorError.None) newR2 = 0.0;
+        double newR = OnlinePearsonsRCalculator.Calculate(targetValues, newOutput, out errorState);
+        if (errorState != OnlineCalculatorError.None) newR = 0.0;
 
         // impact = 0 if no change
         // impact < 0 if new solution is better
         // impact > 0 if new solution is worse
-        double impact = originalR2 - newR2;
+        double impact = (originalR*originalR) - (newR*newR);
         impactAndReplacementValues[node] = new Tuple<double, double>(impact, constantNode.Value);
         SwitchNode(parent, replacementNode, node);
       }

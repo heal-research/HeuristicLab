@@ -228,10 +228,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double testMAE = OnlineMeanAbsoluteErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestMeanAbsoluteError = errorState == OnlineCalculatorError.None ? testMAE : double.NaN;
 
-      double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
-      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR2 : double.NaN;
-      double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
-      TestRSquared = errorState == OnlineCalculatorError.None ? testR2 : double.NaN;
+      double trainingR = OnlinePearsonsRCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR*trainingR : double.NaN;
+      double testR = OnlinePearsonsRCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+      TestRSquared = errorState == OnlineCalculatorError.None ? testR*testR : double.NaN;
 
       double trainingRelError = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       TrainingRelativeError = errorState == OnlineCalculatorError.None ? trainingRelError : double.NaN;

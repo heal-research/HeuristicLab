@@ -58,18 +58,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
       OnlineCalculatorError errorState;
 
-      double r2;
+      double r;
       if (applyLinearScaling) {
-        var r2Calculator = new OnlinePearsonsRSquaredCalculator();
-        CalculateWithScaling(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit, r2Calculator, problemData.Dataset.Rows);
-        errorState = r2Calculator.ErrorState;
-        r2 = r2Calculator.RSquared;
+        var rCalculator = new OnlinePearsonsRCalculator();
+        CalculateWithScaling(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit, rCalculator, problemData.Dataset.Rows);
+        errorState = rCalculator.ErrorState;
+        r = rCalculator.R;
       } else {
         IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
-        r2 = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
+        r = OnlinePearsonsRCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
       }
       if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return r2;
+      return r*r;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {

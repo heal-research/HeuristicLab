@@ -59,9 +59,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var estimatedValues = regressionModel.GetEstimatedValues(ProblemData.Dataset, trainingIndices); // also bounds the values
       var targetValues = ProblemData.Dataset.GetDoubleValues(regressionProblemData.TargetVariable, trainingIndices);
       OnlineCalculatorError errorState;
-      var quality = OnlinePearsonsRSquaredCalculator.Calculate(targetValues, estimatedValues, out errorState);
+      var quality = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
       if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return quality;
+      return quality*quality;
     }
   }
 }

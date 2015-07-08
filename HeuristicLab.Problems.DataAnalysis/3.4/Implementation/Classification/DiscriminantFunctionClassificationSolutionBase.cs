@@ -104,10 +104,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
       double testMSE = OnlineMeanSquaredErrorCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
       TestMeanSquaredError = errorState == OnlineCalculatorError.None ? testMSE : double.NaN;
 
-      double trainingR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
-      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR2 : double.NaN;
-      double testR2 = OnlinePearsonsRSquaredCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
-      TestRSquared = errorState == OnlineCalculatorError.None ? testR2 : double.NaN;
+      double trainingR = OnlinePearsonsRCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
+      TrainingRSquared = errorState == OnlineCalculatorError.None ? trainingR*trainingR : double.NaN;
+      double testR = OnlinePearsonsRCalculator.Calculate(originalTestValues, estimatedTestValues, out errorState);
+      TestRSquared = errorState == OnlineCalculatorError.None ? testR*testR : double.NaN;
 
       double trainingNormalizedGini = NormalizedGiniCalculator.Calculate(originalTrainingValues, estimatedTrainingValues, out errorState);
       if (errorState != OnlineCalculatorError.None) trainingNormalizedGini = double.NaN;
