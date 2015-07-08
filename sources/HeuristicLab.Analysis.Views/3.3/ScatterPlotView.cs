@@ -195,11 +195,6 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     private void RecalculateAxesScale(ChartArea area) {
-      // Reset the axes bounds so that RecalculateAxesScale() will assign new bounds
-      /*area.AxisX.Minimum = double.NaN;
-      area.AxisX.Maximum = double.NaN;
-      area.AxisY.Minimum = double.NaN;
-      area.AxisY.Maximum = double.NaN;*/
       area.AxisX.Minimum = CalculateMinBound(xMin);
       area.AxisX.Maximum = CalculateMaxBound(xMax);
       if (area.AxisX.Minimum == area.AxisX.Maximum) {
