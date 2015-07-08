@@ -205,7 +205,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       var range = GetSliceBounds();
       var qualities = Quality.Select(x => x.Value).ToArray();
       var indices = Enumerable.Range(0, qualities.Length).ToArray();
-      Array.Sort(qualities, indices);
+      indices.StableSort((a, b) => qualities[a].CompareTo(qualities[b]));
+
       if (!Maximization.Value) Array.Reverse(indices);
 
       var subscopes = ExecutionContext.Scope.SubScopes;
@@ -213,7 +214,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var empty = new EmptyOperator();
 
-      for (int i = 0; i < subscopes.Count; ++i) {
+      for (int i = 0; i < indices.Length; ++i) {
         IOperator @operator;
         if (range.Start <= i && i < range.End && random.NextDouble() <= PruningProbability)
           @operator = PruningOperator;
