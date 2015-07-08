@@ -196,10 +196,24 @@ namespace HeuristicLab.Analysis.Views {
 
     private void RecalculateAxesScale(ChartArea area) {
       // Reset the axes bounds so that RecalculateAxesScale() will assign new bounds
+      /*area.AxisX.Minimum = double.NaN;
+      area.AxisX.Maximum = double.NaN;
+      area.AxisY.Minimum = double.NaN;
+      area.AxisY.Maximum = double.NaN;*/
       area.AxisX.Minimum = CalculateMinBound(xMin);
       area.AxisX.Maximum = CalculateMaxBound(xMax);
+      if (area.AxisX.Minimum == area.AxisX.Maximum) {
+        area.AxisX.Minimum = xMin - 0.5;
+        area.AxisX.Maximum = xMax + 0.5;
+      }
       area.AxisY.Minimum = CalculateMinBound(yMin);
       area.AxisY.Maximum = CalculateMaxBound(yMax);
+      if (area.AxisY.Minimum == area.AxisY.Maximum) {
+        area.AxisY.Minimum = yMin - 0.5;
+        area.AxisY.Maximum = yMax + 0.5;
+      }
+      if (xMax - xMin > 0) area.CursorX.Interval = Math.Pow(10, Math.Floor(Math.Log10(area.AxisX.Maximum - area.AxisX.Minimum) - 3));
+      else area.CursorX.Interval = 1;
       area.AxisX.IsMarginVisible = false;
 
       if (!Content.VisualProperties.XAxisMinimumAuto && !double.IsNaN(Content.VisualProperties.XAxisMinimumFixedValue)) area.AxisX.Minimum = Content.VisualProperties.XAxisMinimumFixedValue;
@@ -209,39 +223,15 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     private static double CalculateMinBound(double min) {
-      double newMin;
-      if (min < 0) {
-        newMin = -Math.Pow(10, Math.Ceiling(Math.Log10(Math.Abs(min))));
-        if (newMin / 1.25 < min) newMin /= 1.25;
-        if (newMin / 1.6 < min) newMin /= 1.6;
-        if (newMin / 2.5 < min) newMin /= 2.5;
-        if (newMin / 2.0 < min) newMin /= 2.0;
-      } else {
-        newMin = Math.Pow(10, Math.Floor(Math.Log10(min)));
-        if (newMin * 1.25 < min) newMin *= 1.25;
-        if (newMin * 1.6 < min) newMin *= 1.6;
-        if (newMin * 2.5 < min) newMin *= 2.5;
-        if (newMin * 2.0 < min) newMin *= 2.0;
-      }
-      return newMin;
+      if (min == 0) return 0;
+      var scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(min))));
+      return scale * (Math.Floor(min / scale));
     }
 
     private static double CalculateMaxBound(double max) {
-      double newMax;
-      if (max < 0) {
-        newMax = -Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(max))));
-        if (newMax * 1.25 > max) newMax *= 1.25;
-        if (newMax * 1.6 > max) newMax *= 1.6;
-        if (newMax * 2.5 > max) newMax *= 2.5;
-        if (newMax * 2.0 > max) newMax *= 2.0;
-      } else {
-        newMax = Math.Pow(10, Math.Ceiling(Math.Log10(max)));
-        if (newMax / 1.25 > max) newMax /= 1.25;
-        if (newMax / 1.6 > max) newMax /= 1.6;
-        if (newMax / 2.5 > max) newMax /= 2.5;
-        if (newMax / 2.0 > max) newMax /= 2.0;
-      }
-      return newMax;
+      if (max == 0) return 0;
+      var scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(max))));
+      return scale * (Math.Ceiling(max / scale));
     }
 
     protected virtual void UpdateYCursorInterval() {
