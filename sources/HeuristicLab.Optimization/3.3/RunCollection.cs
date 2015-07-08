@@ -444,13 +444,11 @@ namespace HeuristicLab.Optimization {
     protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
       EventHandler<EventArgs<int, int>> handler = ItemChanged;
       if (handler != null) handler(this, new EventArgs<int, int>(rowIndex, columnIndex));
-      OnToStringChanged();
     }
     public event EventHandler Reset;
     protected virtual void OnReset() {
       EventHandler handler = Reset;
       if (handler != null) handler(this, EventArgs.Empty);
-      OnToStringChanged();
     }
     public event EventHandler ColumnsChanged;
     protected virtual void OnColumnsChanged() {
