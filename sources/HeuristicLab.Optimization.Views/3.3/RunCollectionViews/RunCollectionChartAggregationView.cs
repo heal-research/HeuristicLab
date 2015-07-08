@@ -241,6 +241,8 @@ namespace HeuristicLab.Optimization.Views {
 
       dataRowComboBox.Items.Clear();
       var resultName = (string)dataTableComboBox.SelectedItem;
+      if (resultName == null) return;
+
       var dataTables = from run in Content
                        where run.Results.ContainsKey(resultName)
                        select run.Results[resultName] as DataTable;

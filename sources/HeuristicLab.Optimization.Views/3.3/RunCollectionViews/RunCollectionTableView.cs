@@ -52,7 +52,6 @@ namespace HeuristicLab.Optimization.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content != null) {
-        runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
         UpdateRowAttributes();
       }
       UpdateCaption();
@@ -150,8 +149,8 @@ namespace HeuristicLab.Optimization.Views {
       else {
         suppressUpdates = Content.UpdateOfRunsInProgress;
         if (!suppressUpdates) {
-          UpdateRowAttributes();
           UpdateData();
+          UpdateRowAttributes();
         }
       }
     }
@@ -178,7 +177,6 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void ClearSorting() {
       base.ClearSorting();
-      runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
       UpdateRowAttributes();
     }
 
@@ -197,11 +195,12 @@ namespace HeuristicLab.Optimization.Views {
         runToRowMapping[runIndex] = i;
         i++;
       }
-      UpdateRowAttributes();
+      UpdateRowAttributes(rebuild: false);
       return newSortedIndex;
     }
 
-    private void UpdateRowAttributes() {
+    private void UpdateRowAttributes(bool rebuild = true) {
+      if (rebuild) runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
       int runIndex = 0;
       foreach (IRun run in Content) {
         int rowIndex = this.runToRowMapping[runIndex];
