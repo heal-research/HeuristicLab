@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\trunk\sources\bin\</OutputPath>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\trunk\sources\bin\</OutputPath>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -87,63 +87,6 @@
     <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HeuristicLab.Analysis-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Analysis-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Analysis.Views-3.3">
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Analysis.Views-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Collections-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Collections-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Common-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Common-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Common.Resources-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Common.Resources-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Core-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Core-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Core.Views-3.3">
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Core.Views-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Data-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Data-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Data.Views-3.3">
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Data.Views-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.MainForm-3.3">
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.MainForm-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.MainForm.WindowsForms-3.3">
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.MainForm.WindowsForms-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Optimization-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Optimization-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.PluginInfrastructure-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.PluginInfrastructure-3.3.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis-3.4, Version=3.4.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Problems.DataAnalysis-3.4.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Problems.DataAnalysis.Views-3.4">
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Problems.DataAnalysis.Views-3.4.dll</HintPath>
-    </Reference>
-    <Reference Include="HeuristicLab.Visualization.ChartControlsExtensions-3.3">
-      <HintPath>..\..\..\..\trunk\sources\bin\HeuristicLab.Visualization.ChartControlsExtensions-3.3.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -291,9 +234,88 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\trunk\sources\HeuristicLab.DataPreprocessing\3.4\HeuristicLab.DataPreprocessing-3.4.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Analysis.Views\3.3\HeuristicLab.Analysis.Views-3.3.csproj">
+      <Project>{76945d76-ca61-4147-9dc2-0acdcddf87f9}</Project>
+      <Name>HeuristicLab.Analysis.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425b4-4348-49ed-a457-b7d2c26ddbf9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{a9ad58b9-3ef9-4cc1-97e5-8d909039ff5c}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core.Views\3.3\HeuristicLab.Core.Views-3.3.csproj">
+      <Project>{e226881d-315f-423d-b419-a766fe0d8685}</Project>
+      <Name>HeuristicLab.Core.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{c36bd924-a541-4a00-afa8-41701378ddc5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data.Views\3.3\HeuristicLab.Data.Views-3.3.csproj">
+      <Project>{72104a0b-90e7-42f3-9abe-9bbbadd4b943}</Project>
+      <Name>HeuristicLab.Data.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.DataPreprocessing\3.4\HeuristicLab.DataPreprocessing-3.4.csproj">
       <Project>{3b90f866-70f8-43ef-a541-51819d255b7b}</Project>
       <Name>HeuristicLab.DataPreprocessing-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{bbab9df5-5ef3-4ba8-ade9-b36e82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm.WindowsForms\3.3\HeuristicLab.MainForm.WindowsForms-3.3.csproj">
+      <Project>{ab687bbe-1bfe-476b-906d-44237135431d}</Project>
+      <Name>HeuristicLab.MainForm.WindowsForms-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
+      <Project>{3bd61258-31da-4b09-89c0-4f71fef5f05a}</Project>
+      <Name>HeuristicLab.MainForm-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis.Views\3.4\HeuristicLab.Problems.DataAnalysis.Views-3.4.csproj">
+      <Project>{3e9e8944-44ff-40bb-a622-3a4a7dd0f198}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis.Views-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
+      <Project>{df87c13e-a889-46ff-8153-66dcaa8c5674}</Project>
+      <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">
+      <Project>{315bda09-3f4f-49b3-9790-b37cfc1c5750}</Project>
+      <Name>HeuristicLab.Visualization.ChartControlsExtensions-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
