@@ -62,8 +62,7 @@ namespace HeuristicLab.Clients.Hive {
               p.Id = service.AddPlugin(p, pd);
               alreadyUploadedPlugins.Add(p);
               pluginIds.Add(p.Id);
-            }
-            catch (FaultException<PluginAlreadyExistsFault> fault) {
+            } catch (FaultException<PluginAlreadyExistsFault> fault) {
               onlinePlugins.Add(service.GetPlugin(fault.Detail.Id));
             }
           } else {
@@ -94,7 +93,7 @@ namespace HeuristicLab.Clients.Hive {
     }
 
     public static List<IPluginDescription> GetPluginsForTask(IEnumerable<Type> usedTypes, object task) {
-      if (usedTypes.Any(x => x.GetInterfaces().Any(y => y == typeof(IProgrammableItem)))) {
+      if (usedTypes.Any(x => typeof(IProgrammableItem).IsAssignableFrom(x))) {
         //when a programmable item is used all plugins that are currently loaded need to be sent to Hive
         return ApplicationManager.Manager.Plugins.ToList();
       } else {
