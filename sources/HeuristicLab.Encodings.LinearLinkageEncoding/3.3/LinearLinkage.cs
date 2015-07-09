@@ -76,41 +76,30 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
 
     /// <summary>
-    /// This method parses the encoded array and gathers all items that
-    /// belong to the same group as element <paramref name="index"/>.
+    /// This method parses the encoded array and gathers all elements
+    /// that belong to the same group as element <paramref name="index"/>.
     /// </summary>
-    /// <param name="index">The element whose group should be returned.</param>
+    /// <param name="index">The element whose group should be returned.
+    /// </param>
     /// <returns>The element at <paramref name="index"/> and all other
     /// elements in the same group.</returns>
     public IEnumerable<int> GetGroup(int index) {
-      // return current element
-      yield return index;
-      var next = array[index];
-      if (next == index) yield break;
-      int prev;
-      // return succeeding elements in group
-      do {
-        yield return next;
-        prev = next;
-        next = array[next];
-      } while (next != prev);
-      next = array[index];
-      // return preceding elements in group
-      for (prev = index - 1; prev >= 0; prev--) {
-        if (array[prev] != next) continue;
-        next = prev;
-        yield return next;
-      }
+      foreach (var n in GetGroupForward(index))
+        yield return n;
+      // the element index has already been yielded
+      foreach (var n in GetGroupBackward(index).Skip(1))
+        yield return n;
     }
 
     /// <summary>
-    /// This method parses the encoded array and gathers the item itself as
-    /// well as subsequent items that belong to the same group as element
-    /// <paramref name="index"/>.
+    /// This method parses the encoded array and gathers the element
+    /// <paramref name="index"/> as well as subsequent elements that
+    /// belong to the same group.
     /// </summary>
-    /// <param name="index">The element from which items in the group should
-    /// be returned.</param>
-    /// <returns>The element at <paramref name="index"/> and all subsequent
+    /// <param name="index">The element from which subsequent (having a
+    /// larger number) elements in the group should be returned.
+    /// </param>
+    /// <returns>The element <paramref name="index"/> and all subsequent
     /// elements in the same group.</returns>
     public IEnumerable<int> GetGroupForward(int index) {
       yield return index;
@@ -122,6 +111,31 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
         prev = next;
         next = array[next];
       } while (next != prev);
+    }
+
+    /// <summary>
+    /// This method parses the encoded array and gathers the element
+    /// given <paramref name="index"/> as well as preceeding elements that
+    /// belong to the same group.
+    /// </summary>
+    /// <remarks>
+    /// Warning, this code has performance O(index) as the array has to
+    /// be fully traversed backwards from the given index.
+    /// </remarks>
+    /// <param name="index">The element from which preceeding (having a
+    /// smaller number) elements in the group should be returned.
+    /// </param>
+    /// <returns>The element <paramref name="index"/> and all preceeding
+    /// elements in the same group.</returns>
+    public IEnumerable<int> GetGroupBackward(int index) {
+      yield return index;
+      var next = array[index];
+      // return preceding elements in group
+      for (var prev = index - 1; prev >= 0; prev--) {
+        if (array[prev] != next) continue;
+        next = prev;
+        yield return next;
+      }
     }
 
     /// <summary>

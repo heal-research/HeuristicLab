@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -52,13 +53,13 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     public MultiLinearLinkageManipulator()
       : base() {
       Parameters.Add(new LookupParameter<LinearLinkage>("LLE", "The encoding vector that is to be manipulated."));
-      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ILinearLinkageManipulator))) {
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ILinearLinkageManipulator), typeof(LinearLinkageEncoding).Assembly)) {
         if (!typeof(MultiOperator<ILinearLinkageManipulator>).IsAssignableFrom(type))
           Operators.Add((ILinearLinkageManipulator)Activator.CreateInstance(type), true);
       }
       Operators.SetItemCheckedState(Operators.OfType<SwapItemManipulator>().First(), false);
       Operators.SetItemCheckedState(Operators.OfType<GraftManipulator>().First(), false);
-      SelectedOperatorParameter.ActualName = "SelectedManipulatorOperator";
+      SelectedOperatorParameter.ActualName = "SelectedManipulationOperator";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

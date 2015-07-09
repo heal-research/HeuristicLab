@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -60,7 +61,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       Parameters.Add(new LookupParameter<LinearLinkage>("Child", "The child LLE resulting from the crossover."));
       ChildParameter.ActualName = "LLE";
 
-      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ILinearLinkageCrossover))) {
+      foreach (Type type in ApplicationManager.Manager.GetTypes(typeof(ILinearLinkageCrossover), typeof(LinearLinkageEncoding).Assembly)) {
         if (!typeof(MultiOperator<ILinearLinkageCrossover>).IsAssignableFrom(type))
           Operators.Add((ILinearLinkageCrossover)Activator.CreateInstance(type), true);
       }
