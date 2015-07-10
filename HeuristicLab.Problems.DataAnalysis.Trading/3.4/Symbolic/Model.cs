@@ -46,7 +46,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
       return new Model(this, cloner);
     }
 
-    public IEnumerable<double> GetSignals(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetSignals(IDataset dataset, IEnumerable<int> rows) {
       ISymbolicDataAnalysisExpressionTreeInterpreter interpreter = Interpreter;
       ISymbolicExpressionTree tree = SymbolicExpressionTree;
       return GetSignals(interpreter.GetSymbolicExpressionTreeValues(tree, dataset, rows));

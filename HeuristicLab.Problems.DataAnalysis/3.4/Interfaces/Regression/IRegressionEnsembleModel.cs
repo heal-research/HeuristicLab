@@ -25,6 +25,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     void Add(IRegressionModel model);
     void Remove(IRegressionModel model);
     IEnumerable<IRegressionModel> Models { get; }
-    IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows);
+    IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows);
   }
 }

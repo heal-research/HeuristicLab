@@ -323,7 +323,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
-    public ClassificationProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
+    public ClassificationProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, string targetVariable, IEnumerable<ITransformation> transformations = null)
       : base(dataset, allowedInputVariables, transformations ?? Enumerable.Empty<ITransformation>()) {
       var validTargetVariableValues = CheckVariablesForPossibleTargetVariables(dataset).Select(x => new StringValue(x).AsReadOnly()).ToList();
       var target = validTargetVariableValues.Where(x => x.Value == targetVariable).DefaultIfEmpty(validTargetVariableValues.First()).First();
@@ -337,7 +337,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       ResetTargetVariableDependentMembers();
     }
 
-    public static IEnumerable<string> CheckVariablesForPossibleTargetVariables(Dataset dataset) {
+    public static IEnumerable<string> CheckVariablesForPossibleTargetVariables(IDataset dataset) {
       int maxSamples = Math.Min(InspectedRowsToDetermineTargets, dataset.Rows);
       var validTargetVariables = (from v in dataset.DoubleVariables
                                   let distinctValues = dataset.GetDoubleValues(v)

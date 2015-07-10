@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       scatterPlot.Rows.AddRange(rows.Values);
     }
 
-    private static double[,] PCAReduce(Dataset dataset, IEnumerable<int> rows, IEnumerable<string> variables) {
+    private static double[,] PCAReduce(IDataset dataset, IEnumerable<int> rows, IEnumerable<string> variables) {
       var instances = rows.ToArray();
       var attributes = variables.ToArray();
       var data = new double[instances.Length, attributes.Length + 1];

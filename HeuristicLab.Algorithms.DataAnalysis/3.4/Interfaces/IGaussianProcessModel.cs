@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     ICovarianceFunction CovarianceFunction { get; }
     double[] HyperparameterGradients { get; }
 
-    IEnumerable<double> GetEstimatedVariance(Dataset ds, IEnumerable<int> rows);
+    IEnumerable<double> GetEstimatedVariance(IDataset ds, IEnumerable<int> rows);
     void FixParameters();
   }
 }

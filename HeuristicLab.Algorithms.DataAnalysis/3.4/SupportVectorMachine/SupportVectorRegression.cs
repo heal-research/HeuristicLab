@@ -151,7 +151,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public static SupportVectorRegressionSolution CreateSupportVectorRegressionSolution(IRegressionProblemData problemData, IEnumerable<string> allowedInputVariables,
       string svmType, string kernelType, double cost, double nu, double gamma, double epsilon, int degree,
       out double trainingR2, out double testR2, out int nSv) {
-      Dataset dataset = problemData.Dataset;
+      var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<int> rows = problemData.TrainingIndices;
 

@@ -93,7 +93,7 @@ namespace HeuristicLab.DataPreprocessing {
       transformations = new List<ITransformation>();
       selection = new Dictionary<int, IList<int>>();
 
-      Dataset dataset = problemData.Dataset;
+      Dataset dataset = (Dataset)problemData.Dataset;
       variableNames = new List<string>(problemData.Dataset.VariableNames);
 
       int columnIndex = 0;

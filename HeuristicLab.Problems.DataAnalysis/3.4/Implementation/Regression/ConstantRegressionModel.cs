@@ -50,7 +50,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.constant = constant;
     }
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return rows.Select(row => Constant);
     }
 

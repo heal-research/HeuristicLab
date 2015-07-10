@@ -26,6 +26,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public interface INcaModel : IClassificationModel {
     new INcaClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
 
-    double[,] Reduce(Dataset dataset, IEnumerable<int> rows);
+    double[,] Reduce(IDataset dataset, IEnumerable<int> rows);
   }
 }

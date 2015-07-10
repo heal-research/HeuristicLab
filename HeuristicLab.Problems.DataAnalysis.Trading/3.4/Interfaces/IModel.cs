@@ -22,6 +22,6 @@
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
   public interface IModel : IDataAnalysisModel {
-    IEnumerable<double> GetSignals(Dataset dataset, IEnumerable<int> rows);
+    IEnumerable<double> GetSignals(IDataset dataset, IEnumerable<int> rows);
   }
 }

@@ -141,7 +141,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (InvokeRequired) Invoke((Action)UpdateSeries);
       else {
         string targetVariableName = Content.ProblemData.TargetVariable;
-        Dataset dataset = Content.ProblemData.Dataset;
+        var dataset = Content.ProblemData.Dataset;
         if (this.chart.Series[ALL_SERIES].Points.Count > 0)
           this.chart.Series[ALL_SERIES].Points.DataBindXY(Content.EstimatedValues.ToArray(), "",
             dataset.GetDoubleValues(targetVariableName).ToArray(), "");

@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     public override IEnumerable<double> GetEstimatedValues(IEnumerable<int> rows) {
-      var rowsToEvaluate = rows.Except(evaluationCache.Keys);
+      var rowsToEvaluate = rows.Where(row => !evaluationCache.ContainsKey(row));
       var rowsEnumerator = rowsToEvaluate.GetEnumerator();
       var valuesEnumerator = Model.GetEstimatedValues(ProblemData.Dataset, rowsToEvaluate).GetEnumerator();
 

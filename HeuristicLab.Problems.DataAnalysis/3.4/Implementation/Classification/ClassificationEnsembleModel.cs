@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       models.Remove(model);
     }
 
-    public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<IEnumerable<double>> GetEstimatedClassValueVectors(IDataset dataset, IEnumerable<int> rows) {
       var estimatedValuesEnumerators = (from model in models
                                         select model.GetEstimatedClassValues(dataset, rows).GetEnumerator())
                                        .ToList();
@@ -81,7 +81,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     #region IClassificationModel Members
 
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       foreach (var estimatedValuesVector in GetEstimatedClassValueVectors(dataset, rows)) {
         // return the class which is most often occuring
         yield return

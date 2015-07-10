@@ -68,7 +68,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static ISymbolicRegressionSolution CreateLinearRegressionSolution(IRegressionProblemData problemData, out double rmsError, out double cvRmsError) {
-      Dataset dataset = problemData.Dataset;
+      var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;

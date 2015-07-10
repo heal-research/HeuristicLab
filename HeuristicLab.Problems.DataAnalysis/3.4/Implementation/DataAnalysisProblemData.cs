@@ -62,7 +62,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public bool IsEmpty {
       get { return isEmpty; }
     }
-    public Dataset Dataset {
+    public IDataset Dataset {
       get { return DatasetParameter.Value; }
     }
     public ICheckedItemList<StringValue> InputVariables {
@@ -125,7 +125,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       RegisterEventHandlers();
     }
 
-    protected DataAnalysisProblemData(Dataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null) {
+    protected DataAnalysisProblemData(IDataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<ITransformation> transformations = null) {
       if (dataset == null) throw new ArgumentNullException("The dataset must not be null.");
       if (allowedInputVariables == null) throw new ArgumentNullException("The allowedInputVariables must not be null.");
 
@@ -143,7 +143,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
       var transformationsList = new ItemList<ITransformation>(transformations ?? Enumerable.Empty<ITransformation>());
 
-      Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", dataset));
+      Parameters.Add(new FixedValueParameter<Dataset>(DatasetParameterName, "", (Dataset)dataset));
       Parameters.Add(new FixedValueParameter<ReadOnlyCheckedItemList<StringValue>>(InputVariablesParameterName, "", inputVariables.AsReadOnly()));
       Parameters.Add(new FixedValueParameter<IntRange>(TrainingPartitionParameterName, "", new IntRange(trainingPartitionStart, trainingPartitionEnd)));
       Parameters.Add(new FixedValueParameter<IntRange>(TestPartitionParameterName, "", new IntRange(testPartitionStart, testPartitionEnd)));

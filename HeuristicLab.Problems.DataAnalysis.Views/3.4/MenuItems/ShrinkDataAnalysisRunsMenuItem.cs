@@ -81,9 +81,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       Action<IContentView> action = (view) => {
         var variableValuesMapping = new Dictionary<ValuesType, ValuesType>();
         foreach (var problemData in view.Content.GetObjectGraphObjects(excludeStaticMembers: true).OfType<IDataAnalysisProblemData>()) {
-          var originalValues = variableValuesGetter(problemData.Dataset);
+          var dataset = problemData.Dataset as Dataset;
+          if (dataset == null) continue;
+          var originalValues = variableValuesGetter(dataset);
           var matchingValues = GetEqualValues(originalValues, variableValuesMapping);
-          variableValuesSetter(problemData.Dataset, matchingValues);
+          variableValuesSetter(dataset, matchingValues);
         }
       };
 

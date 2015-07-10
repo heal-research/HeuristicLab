@@ -25,7 +25,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   public interface ISymbolicTimeSeriesPrognosisExpressionTreeInterpreter : ISymbolicDataAnalysisExpressionTreeInterpreter {
     string TargetVariable { get; set; }
-    IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows, int horizon);
-    IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, Dataset dataset, IEnumerable<int> rows, IEnumerable<int> horizon);
+    IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, int horizon);
+    IEnumerable<IEnumerable<double>> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizon);
   }
 }

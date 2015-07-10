@@ -25,7 +25,7 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public static class AlglibUtil {
-    public static double[,] PrepareInputMatrix(Dataset dataset, IEnumerable<string> variables, IEnumerable<int> rows) {
+    public static double[,] PrepareInputMatrix(IDataset dataset, IEnumerable<string> variables, IEnumerable<int> rows) {
       List<string> variablesList = variables.ToList();
       List<int> rowsList = rows.ToList();
 
@@ -44,7 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       return matrix;
     }
-    public static double[,] PrepareAndScaleInputMatrix(Dataset dataset, IEnumerable<string> variables, IEnumerable<int> rows, Scaling scaling) {
+    public static double[,] PrepareAndScaleInputMatrix(IDataset dataset, IEnumerable<string> variables, IEnumerable<int> rows, Scaling scaling) {
       List<string> variablesList = variables.ToList();
       List<int> rowsList = rows.ToList();
 

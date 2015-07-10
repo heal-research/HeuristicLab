@@ -21,14 +21,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class FeatureSelectionRegressionProblemData : RegressionProblemData {
@@ -56,7 +54,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       : base(original, cloner) {
     }
 
-    public FeatureSelectionRegressionProblemData(Dataset ds, IEnumerable<string> allowedInputVariables, string targetVariable, string[] selectedFeatures, double[] weights, double optimalRSquared)
+    public FeatureSelectionRegressionProblemData(IDataset ds, IEnumerable<string> allowedInputVariables, string targetVariable, string[] selectedFeatures, double[] weights, double optimalRSquared)
       : base(ds, allowedInputVariables, targetVariable) {
       if (selectedFeatures.Length != weights.Length) throw new ArgumentException("Length of selected features vector does not match the length of the weights vector");
       if (optimalRSquared < 0 || optimalRSquared > 1) throw new ArgumentException("Optimal R² is not in range [0..1]");

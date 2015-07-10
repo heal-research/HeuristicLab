@@ -29,7 +29,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     void RecalculateModelParameters(IClassificationProblemData problemData, IEnumerable<int> rows);
     // class values and thresholds can only be assigned simultanously
     void SetThresholdsAndClassValues(IEnumerable<double> thresholds, IEnumerable<double> classValues);
-    IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows);
+    IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows);
 
     event EventHandler ThresholdsChanged;
 

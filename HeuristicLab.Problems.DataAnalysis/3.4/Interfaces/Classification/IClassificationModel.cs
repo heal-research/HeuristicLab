@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 namespace HeuristicLab.Problems.DataAnalysis {
   public interface IClassificationModel : IDataAnalysisModel {
-    IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows);
+    IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows);
     IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData);
   }
 }

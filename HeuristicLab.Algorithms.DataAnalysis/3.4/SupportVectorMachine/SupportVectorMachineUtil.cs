@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     /// <param name="problemData">The problem data to transform</param>
     /// <param name="rowIndices">The rows of the dataset that should be contained in the resulting SVM-problem</param>
     /// <returns>A problem data type that can be used to train a support vector machine.</returns>
-    public static svm_problem CreateSvmProblem(Dataset dataset, string targetVariable, IEnumerable<string> inputVariables, IEnumerable<int> rowIndices) {
+    public static svm_problem CreateSvmProblem(IDataset dataset, string targetVariable, IEnumerable<string> inputVariables, IEnumerable<int> rowIndices) {
       double[] targetVector = dataset.GetDoubleValues(targetVariable, rowIndices).ToArray();
       svm_node[][] nodes = new svm_node[targetVector.Length][];
       int maxNodeIndex = 0;

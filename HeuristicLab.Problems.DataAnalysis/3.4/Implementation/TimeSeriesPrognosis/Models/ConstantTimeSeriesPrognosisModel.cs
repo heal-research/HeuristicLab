@@ -38,7 +38,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public ConstantTimeSeriesPrognosisModel(double constant) : base(constant) { }
 
-    public IEnumerable<IEnumerable<double>> GetPrognosedValues(Dataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
+    public IEnumerable<IEnumerable<double>> GetPrognosedValues(IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
       return horizons.Select(horizon => Enumerable.Repeat(Constant, horizon));
     }
 

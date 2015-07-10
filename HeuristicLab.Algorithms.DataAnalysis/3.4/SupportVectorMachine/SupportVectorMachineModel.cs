@@ -119,7 +119,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region IRegressionModel Members
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return GetEstimatedValuesHelper(dataset, rows);
     }
     public SupportVectorRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
@@ -131,7 +131,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     #endregion
 
     #region IClassificationModel Members
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       if (classValues == null) throw new NotSupportedException();
       // return the original class value instead of the predicted value of the model
       // svm classification only works for integer classes
@@ -158,7 +158,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return CreateClassificationSolution(problemData);
     }
     #endregion
-    private IEnumerable<double> GetEstimatedValuesHelper(Dataset dataset, IEnumerable<int> rows) {
+    private IEnumerable<double> GetEstimatedValuesHelper(IDataset dataset, IEnumerable<int> rows) {
       // calculate predictions for the currently requested rows
       svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
       svm_problem scaledProblem = rangeTransform.Scale(problem);

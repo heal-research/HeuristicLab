@@ -32,10 +32,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [Item("Dataset", "Represents a dataset containing data that should be analyzed.")]
   [StorableClass]
-  public sealed class Dataset : NamedItem, IStringConvertibleMatrix {
+  public class Dataset : NamedItem, IDataset {
     [StorableConstructor]
-    private Dataset(bool deserializing) : base(deserializing) { }
-    private Dataset(Dataset original, Cloner cloner)
+    protected Dataset(bool deserializing) : base(deserializing) { }
+    protected Dataset(Dataset original, Cloner cloner)
       : base(original, cloner) {
       variableValues = new Dictionary<string, IList>(original.variableValues);
       variableNames = new List<string>(original.variableNames);
@@ -117,6 +117,8 @@ namespace HeuristicLab.Problems.DataAnalysis {
       }
     }
 
+    protected Dataset(Dataset dataset) : this(dataset.variableNames, dataset.variableValues.Values) { }
+
     #region Backwards compatible code, remove with 3.5
     private double[,] storableData;
     //name alias used to suppport backwards compatibility
@@ -142,91 +144,60 @@ namespace HeuristicLab.Problems.DataAnalysis {
     #endregion
 
     [Storable(Name = "VariableValues")]
-    private Dictionary<string, IList> variableValues;
+    protected Dictionary<string, IList> variableValues;
 
-    private List<string> variableNames;
+    protected List<string> variableNames;
     [Storable]
     public IEnumerable<string> VariableNames {
       get { return variableNames; }
-      private set {
+      protected set {
         if (variableNames != null) throw new InvalidOperationException();
         variableNames = new List<string>(value);
       }
     }
-
     public IEnumerable<string> DoubleVariables {
       get { return variableValues.Where(p => p.Value is List<double>).Select(p => p.Key); }
     }
-
     public IEnumerable<double> GetDoubleValues(string variableName) {
-      IList list;
-      if (!variableValues.TryGetValue(variableName, out list))
-        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
-      List<double> values = list as List<double>;
-      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
-
-      //mkommend yield return used to enable lazy evaluation
-      foreach (double value in values)
-        yield return value;
+      return GetValues<double>(variableName);
     }
-
     public IEnumerable<string> GetStringValues(string variableName) {
-      IList list;
-      if (!variableValues.TryGetValue(variableName, out list))
-        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
-      List<string> values = list as List<string>;
-      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a string variable.");
-
-      //mkommend yield return used to enable lazy evaluation
-      foreach (string value in values)
-        yield return value;
+      return GetValues<string>(variableName);
     }
-
     public IEnumerable<DateTime> GetDateTimeValues(string variableName) {
-      IList list;
-      if (!variableValues.TryGetValue(variableName, out list))
-        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
-      List<DateTime> values = list as List<DateTime>;
-      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a datetime variable.");
-
-      //mkommend yield return used to enable lazy evaluation
-      foreach (DateTime value in values)
-        yield return value;
+      return GetValues<DateTime>(variableName);
     }
 
     public ReadOnlyCollection<double> GetReadOnlyDoubleValues(string variableName) {
-      IList list;
-      if (!variableValues.TryGetValue(variableName, out list))
-        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
-      List<double> values = list as List<double>;
-      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
+      var values = GetValues<double>(variableName);
       return values.AsReadOnly();
     }
     public double GetDoubleValue(string variableName, int row) {
-      IList list;
-      if (!variableValues.TryGetValue(variableName, out list))
-        throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
-      List<double> values = list as List<double>;
-      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
+      var values = GetValues<double>(variableName);
       return values[row];
     }
     public IEnumerable<double> GetDoubleValues(string variableName, IEnumerable<int> rows) {
+      return GetValues<double>(variableName, rows);
+    }
+    private IEnumerable<T> GetValues<T>(string variableName, IEnumerable<int> rows) {
+      var values = GetValues<T>(variableName);
+      return rows.Select(x => values[x]);
+    }
+    private List<T> GetValues<T>(string variableName) {
       IList list;
       if (!variableValues.TryGetValue(variableName, out list))
         throw new ArgumentException("The variable " + variableName + " does not exist in the dataset.");
-      List<double> values = list as List<double>;
-      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a double variable.");
-
-      return rows.Select(index => values[index]);
+      List<T> values = list as List<T>;
+      if (values == null) throw new ArgumentException("The variable " + variableName + " is not a " + typeof(T) + " variable.");
+      return values;
     }
-
     public bool VariableHasType<T>(string variableName) {
       return variableValues[variableName] is IList<T>;
     }
 
     #region IStringConvertibleMatrix Members
     [Storable]
-    private int rows;
+    protected int rows;
     public int Rows {
       get { return rows; }
       set { throw new NotSupportedException(); }
@@ -235,7 +206,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return variableNames.Count; }
       set { throw new NotSupportedException(); }
     }
-
     public bool SortableView {
       get { return false; }
       set { throw new NotSupportedException(); }
@@ -243,7 +213,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public bool ReadOnly {
       get { return true; }
     }
-
     IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
       get { return this.VariableNames; }
       set { throw new NotSupportedException(); }
@@ -252,24 +221,23 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return Enumerable.Empty<string>(); }
       set { throw new NotSupportedException(); }
     }
-
     public string GetValue(int rowIndex, int columnIndex) {
       return variableValues[variableNames[columnIndex]][rowIndex].ToString();
     }
-    public bool SetValue(string value, int rowIndex, int columnIndex) {
+    bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
       throw new NotSupportedException();
     }
-    public bool Validate(string value, out string errorMessage) {
+    bool IStringConvertibleMatrix.Validate(string value, out string errorMessage) {
       throw new NotSupportedException();
     }
 
-    public event EventHandler ColumnsChanged { add { } remove { } }
-    public event EventHandler RowsChanged { add { } remove { } }
-    public event EventHandler ColumnNamesChanged { add { } remove { } }
-    public event EventHandler RowNamesChanged { add { } remove { } }
-    public event EventHandler SortableViewChanged { add { } remove { } }
-    public event EventHandler<EventArgs<int, int>> ItemChanged { add { } remove { } }
-    public event EventHandler Reset { add { } remove { } }
+    public virtual event EventHandler ColumnsChanged { add { } remove { } }
+    public virtual event EventHandler RowsChanged { add { } remove { } }
+    public virtual event EventHandler ColumnNamesChanged { add { } remove { } }
+    public virtual event EventHandler RowNamesChanged { add { } remove { } }
+    public virtual event EventHandler SortableViewChanged { add { } remove { } }
+    public virtual event EventHandler<EventArgs<int, int>> ItemChanged { add { } remove { } }
+    public virtual event EventHandler Reset { add { } remove { } }
     #endregion
   }
 }

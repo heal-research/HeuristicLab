@@ -26,7 +26,7 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   public static class KMeansClusteringUtil {
-    public static IEnumerable<int> FindClosestCenters(IEnumerable<double[]> centers, Dataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows) {
+    public static IEnumerable<int> FindClosestCenters(IEnumerable<double[]> centers, IDataset dataset, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows) {
       int nRows = rows.Count();
       int nCols = allowedInputVariables.Count();
       int[] closestCenter = new int[nRows];
@@ -57,7 +57,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return closestCenter;
     }
 
-    public static double CalculateIntraClusterSumOfSquares(KMeansClusteringModel model, Dataset dataset, IEnumerable<int> rows) {
+    public static double CalculateIntraClusterSumOfSquares(KMeansClusteringModel model, IDataset dataset, IEnumerable<int> rows) {
       List<int> clusterValues = model.GetClusterValues(dataset, rows).ToList();
       List<string> allowedInputVariables = model.AllowedInputVariables.ToList();
       int nCols = allowedInputVariables.Count;

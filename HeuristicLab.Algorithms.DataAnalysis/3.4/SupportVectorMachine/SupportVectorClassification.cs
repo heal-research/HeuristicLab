@@ -148,7 +148,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static SupportVectorClassificationSolution CreateSupportVectorClassificationSolution(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
       int svmType, int kernelType, double cost, double nu, double gamma, int degree, out double trainingAccuracy, out double testAccuracy, out int nSv) {
-      Dataset dataset = problemData.Dataset;
+      var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<int> rows = problemData.TrainingIndices;
 

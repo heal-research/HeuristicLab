@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public abstract void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue, double originalQuality = double.NaN);
 
     protected static double CalculateReplacementValue(ISymbolicExpressionTreeNode node, ISymbolicExpressionTree sourceTree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
-      Dataset dataset, IEnumerable<int> rows) {
+      IDataset dataset, IEnumerable<int> rows) {
       //optimization: constant nodes return always the same value
       ConstantTreeNode constantNode = node as ConstantTreeNode;
       if (constantNode != null) return constantNode.Value;

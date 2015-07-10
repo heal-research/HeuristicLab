@@ -93,7 +93,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new NeuralNetworkModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
@@ -110,7 +110,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);

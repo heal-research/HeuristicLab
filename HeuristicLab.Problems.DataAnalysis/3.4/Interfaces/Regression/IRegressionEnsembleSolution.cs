@@ -26,6 +26,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
     new IRegressionEnsembleModel Model { get; }
     new RegressionEnsembleProblemData ProblemData { get; set; }
     IItemCollection<IRegressionSolution> RegressionSolutions { get; }
-    IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(Dataset dataset, IEnumerable<int> rows);
+    IEnumerable<IEnumerable<double>> GetEstimatedValueVectors(IDataset dataset, IEnumerable<int> rows);
   }
 }

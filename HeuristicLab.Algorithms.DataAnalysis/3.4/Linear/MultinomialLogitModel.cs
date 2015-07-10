@@ -81,7 +81,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new MultinomialLogitModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);

@@ -64,7 +64,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public static IClassificationSolution CreateLinearDiscriminantAnalysisSolution(IClassificationProblemData problemData) {
-      Dataset dataset = problemData.Dataset;
+      var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;

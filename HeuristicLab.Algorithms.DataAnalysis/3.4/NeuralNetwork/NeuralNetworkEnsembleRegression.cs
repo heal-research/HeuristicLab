@@ -163,7 +163,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public static IRegressionSolution CreateNeuralNetworkEnsembleRegressionSolution(IRegressionProblemData problemData, int ensembleSize, int nLayers, int nHiddenNodes1, int nHiddenNodes2, double decay, int restarts,
       out double rmsError, out double avgRelError) {
-      Dataset dataset = problemData.Dataset;
+      var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<string> allowedInputVariables = problemData.AllowedInputVariables;
       IEnumerable<int> rows = problemData.TrainingIndices;

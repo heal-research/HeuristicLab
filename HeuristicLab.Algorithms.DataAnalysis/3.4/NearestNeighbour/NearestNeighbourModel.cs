@@ -95,7 +95,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (original.classValues != null)
         this.classValues = (double[])original.classValues.Clone();
     }
-    public NearestNeighbourModel(Dataset dataset, IEnumerable<int> rows, int k, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null) {
+    public NearestNeighbourModel(IDataset dataset, IEnumerable<int> rows, int k, string targetVariable, IEnumerable<string> allowedInputVariables, double[] classValues = null) {
       Name = ItemName;
       Description = ItemDescription;
       this.k = k;
@@ -134,7 +134,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return new NearestNeighbourModel(this, cloner);
     }
 
-    public IEnumerable<double> GetEstimatedValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 
       int n = inputData.GetLength(0);
@@ -162,7 +162,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       if (classValues == null) throw new InvalidOperationException("No class values are defined.");
       double[,] inputData = AlglibUtil.PrepareInputMatrix(dataset, allowedInputVariables, rows);
 

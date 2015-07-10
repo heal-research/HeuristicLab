@@ -65,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       return new SymbolicNearestNeighbourClassificationModel(this, cloner);
     }
 
-    public override IEnumerable<double> GetEstimatedClassValues(Dataset dataset, IEnumerable<int> rows) {
+    public override IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
       var estimatedValues = Interpreter.GetSymbolicExpressionTreeValues(SymbolicExpressionTree, dataset, rows)
                                        .LimitToRange(LowerEstimationLimit, UpperEstimationLimit);
       foreach (var ev in estimatedValues) {

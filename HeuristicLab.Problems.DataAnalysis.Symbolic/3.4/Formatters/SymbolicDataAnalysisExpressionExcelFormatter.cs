@@ -70,7 +70,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return Format(symbolicExpressionTree, null);
     }
 
-    public string Format(ISymbolicExpressionTree symbolicExpressionTree, Dataset dataset) {
+    public string Format(ISymbolicExpressionTree symbolicExpressionTree, IDataset dataset) {
       var stringBuilder = new StringBuilder();
       if (dataset != null) CalculateVariableMapping(symbolicExpressionTree, dataset);
 
@@ -84,7 +84,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       return stringBuilder.ToString();
     }
 
-    private void CalculateVariableMapping(ISymbolicExpressionTree tree, Dataset dataset) {
+    private void CalculateVariableMapping(ISymbolicExpressionTree tree, IDataset dataset) {
       int columnIndex = 0;
       int inputIndex = 0;
       var usedVariables = tree.IterateNodesPrefix().OfType<VariableTreeNode>().Select(v => v.VariableName).Distinct();
