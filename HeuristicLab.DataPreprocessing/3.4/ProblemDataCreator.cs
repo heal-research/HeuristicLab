@@ -60,10 +60,10 @@ namespace HeuristicLab.DataPreprocessing {
 
       SetTrainingAndTestPartition(problemData);
       // set the input variables to the correct checked state
-      var inputVariables = problemData.InputVariables.ToDictionary(x => x.Value, x => x);
-      foreach (var variable in oldProblemData.InputVariables) {
-        bool @checked = oldProblemData.InputVariables.ItemChecked(variable);
-        problemData.InputVariables.SetItemCheckedState(inputVariables[variable.Value], @checked);
+      var inputVariables = oldProblemData.InputVariables.ToDictionary(x => x.Value, x => x);
+      foreach (var variable in problemData.InputVariables) {
+        bool isChecked = oldProblemData.InputVariables.ItemChecked(inputVariables[variable.Value]);
+        problemData.InputVariables.SetItemCheckedState(variable, isChecked);
       }
 
       return problemData;
@@ -76,9 +76,11 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     private IDataAnalysisProblemData CreateClassificationData(ClassificationProblemData oldProblemData) {
-      var targetVariable = oldProblemData.TargetVariable;
       // target variable must be double and must exist in the new dataset
-      return new ClassificationProblemData(ExportedDataset, GetDoubleInputVariables(targetVariable), targetVariable, Transformations);
+      var targetVariable = oldProblemData.TargetVariable;
+      var newProblemData = new ClassificationProblemData(ExportedDataset, GetDoubleInputVariables(targetVariable), targetVariable, Transformations);
+      newProblemData.PositiveClass = oldProblemData.PositiveClass;
+      return newProblemData;
     }
 
     private IDataAnalysisProblemData CreateClusteringData(ClusteringProblemData oldProblemData) {

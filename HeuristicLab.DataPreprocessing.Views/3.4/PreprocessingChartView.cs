@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.Collections;
@@ -48,6 +49,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private const int MAX_TABLE_AUTO_SIZE_ROWS = 3;
 
     public IEnumerable<double> Classification { get; set; }
+    public bool IsDetailedChartViewEnabled { get; set; }
 
     public PreprocessingChartView() {
       InitializeComponent();
@@ -58,6 +60,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     //Variable selection changed
     //Add or remove data row
     private void CheckedItemsChanged(object sender, CollectionItemsChangedEventArgs<IndexedItem<StringValue>> checkedItems) {
+
       foreach (IndexedItem<StringValue> item in checkedItems.Items) {
         string variableName = item.Value.Value;
 
@@ -120,6 +123,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void InitData() {
       if (Content.VariableItemList == null) {
         Content.VariableItemList = Content.CreateVariableItemList();
+      } else {
+        var checkedNames = Content.VariableItemList.CheckedItems.Select(x => x.Value.Value);
+        Content.VariableItemList = Content.CreateVariableItemList(checkedNames);
       }
       checkedItemList.Content = Content.VariableItemList;
 
@@ -134,12 +140,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
         PreprocessingDataTable d = new PreprocessingDataTable(variableName);
         DataRow row = GetDataRow(variableName);
 
-        //add row to data table 
-        dataTable.Rows.Add(row);
+        if (row != null) {
+          //add row to data table
+          dataTable.Rows.Add(row);
 
-        //add row to data table per variable
-        d.Rows.Add(row);
-        dataTablePerVariable.Add(d);
+          //add row to data table per variable
+          d.Rows.Add(row);
+          dataTablePerVariable.Add(d);
+        }
       }
 
       UpdateSelection();
@@ -151,7 +159,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       selectedDataRows = Content.CreateAllSelectedDataRows(chartType);
       dataTable.SelectedRows.Clear();
       foreach (var selectedRow in selectedDataRows) {
-        if(VariableIsDisplayed(selectedRow.Name))
+        if (VariableIsDisplayed(selectedRow.Name))
           dataTable.SelectedRows.Add(selectedRow);
       }
 
@@ -353,6 +361,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void AddDataTableToTableLayout(PreprocessingDataTable dataTable, int x, int y) {
       PreprocessingDataTableView dataView = new PreprocessingDataTableView();
       dataView.Classification = Classification;
+      dataView.IsDetailedChartViewEnabled = IsDetailedChartViewEnabled;
 
       if (dataTable == null) {
         // dummy panel for empty field 

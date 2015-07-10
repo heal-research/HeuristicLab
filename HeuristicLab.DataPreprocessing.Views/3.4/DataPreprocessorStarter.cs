@@ -43,8 +43,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
       while (control != null) {
         IContentView contentView = control as IContentView;
         if (contentView != null) {
-          algorithm = contentView.Content as IAlgorithm;
-          problem = contentView.Content as IDataAnalysisProblem;
+          var newAlgorithm = contentView.Content as IAlgorithm;
+          if (newAlgorithm != null)
+            algorithm = newAlgorithm;
+          var newProblem = contentView.Content as IDataAnalysisProblem;
+          if (newProblem != null)
+            problem = newProblem;
         }
         control = control.Parent;
       }

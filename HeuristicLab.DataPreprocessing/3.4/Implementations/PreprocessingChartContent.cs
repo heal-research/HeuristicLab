@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -125,10 +126,11 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
 
-    public ICheckedItemList<StringValue> CreateVariableItemList() {
+    public ICheckedItemList<StringValue> CreateVariableItemList(IEnumerable<string> checkedItems = null) {
       ICheckedItemList<StringValue> itemList = new CheckedItemList<StringValue>();
       foreach (string name in PreprocessingData.GetDoubleVariableNames()) {
-        itemList.Add(new StringValue(name), true);
+        var n = new StringValue(name);
+        itemList.Add(n, (checkedItems == null) ? true : checkedItems.Contains(name));
       }
       return new ReadOnlyCheckedItemList<StringValue>(itemList);
     }

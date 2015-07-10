@@ -46,6 +46,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     public IEnumerable<double> Classification { get; set; }
+    public bool IsDetailedChartViewEnabled { get; set; }
 
     public PreprocessingDataTableView() {
       InitializeComponent();
@@ -144,11 +145,16 @@ namespace HeuristicLab.DataPreprocessing.Views {
       foreach (var row in rows) {
         RegisterDataRowEvents(row);
         var series = new Series(row.Name);
-        if (row.VisualProperties.DisplayName.Trim() != String.Empty) series.LegendText = row.VisualProperties.DisplayName;
+        if (row.VisualProperties.DisplayName.Trim() != String.Empty)
+          series.LegendText = row.VisualProperties.DisplayName;
         else series.LegendText = row.Name;
+
         ConfigureSeries(series, row);
         FillSeriesWithRowValues(series, row);
 
+        if (IsDetailedChartViewEnabled) {
+          series.LegendText += " Values: " + row.Values.Count;
+        }
         if (Classification == null)
           chart.Series.Add(series);
       }
@@ -660,7 +666,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
                                        .ToList());
 
         chart.Titles.Add(row.Name);
-
+        int featureOverallValueCount = 0;
+        if (IsDetailedChartViewEnabled)
+          featureOverallValueCount = row.Values.Count(x => !IsInvalidValue(x));
         foreach (KeyValuePair<double, List<double>> entry in valuesPerClass) {
           var s = new Series(row.Name + entry.Key);
 
@@ -668,7 +676,13 @@ namespace HeuristicLab.DataPreprocessing.Views {
           AddPointsToHistogramSeries(s, row, entry.Value);
 
           s.LegendText = entry.Key.ToString();
-
+          if (IsDetailedChartViewEnabled) {
+            int featureValueCount = entry.Value.Count(x => !IsInvalidValue(x));
+            s.LegendText += " Values: ";
+            s.LegendText += (featureOverallValueCount > 0) ?
+              string.Format("{0} ({1:F2}%)", featureValueCount, (featureValueCount / (double)featureOverallValueCount) * 100)
+            : "0";
+          }
           chart.Series.Add(s);
         }
       } else {
@@ -751,11 +765,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
         string yAxisTitle = string.IsNullOrEmpty(Content.VisualProperties.YAxisTitle)
                               ? "Y"
                               : Content.VisualProperties.YAxisTitle;
-        series.Points.Add(new DataPoint(d - intervalCenter, sum) {
-          ToolTip =
-            xAxisTitle + ": [" + (d - intervalWidth) + "-" + d + ")" + Environment.NewLine +
-            yAxisTitle + ": " + sum
-        });
+        DataPoint newDataPoint = new DataPoint(d - intervalCenter, sum);
+        newDataPoint.ToolTip =
+          xAxisTitle + ": [" + (d - intervalWidth) + "-" + d + ")" + Environment.NewLine +
+          yAxisTitle + ": " + sum;
+        int overallValueCount = row.Values.Count();
+        if (overallValueCount > 0)
+          newDataPoint.ToolTip += string.Format(" ({0:F2}%)", (sum / overallValueCount) * 100);
+        series.Points.Add(newDataPoint);
       }
     }
 

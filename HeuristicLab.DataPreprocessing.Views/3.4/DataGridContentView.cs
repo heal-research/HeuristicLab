@@ -60,7 +60,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       dataGridView.CellMouseClick += dataGridView_CellMouseClick;
       dataGridView.KeyDown += dataGridView_KeyDown;
       dataGridView.MouseUp += dataGridView_MouseUp;
-      dataGridView.ColumnHeaderMouseClick += dataGridView_ColumnHeaderMouseClick;
       contextMenuCell.Items.Add(ShowHideColumns);
       _highlightedCellsBackground = new Dictionary<int, IList<int>>();
       currentCell = null;
@@ -126,7 +125,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       if (Content.Rows == 0 || Content.Columns == 0) return;
 
       string errorMessage;
-      if (Content != null) {
+      if (!String.IsNullOrEmpty(e.FormattedValue.ToString())) {
         if (dataGridView.IsCurrentCellInEditMode && Content.FilterLogic.IsFiltered) {
           errorMessage = "A filter is active, you cannot modify data. Press ESC to exit edit mode.";
         } else {
@@ -163,7 +162,21 @@ namespace HeuristicLab.DataPreprocessing.Views {
       base.ClearSorting();
     }
 
-    private void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+    protected override void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+      if (Content != null) {
+        if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+          dataGridView.Focus();
+          dataGridView.ClearSelection();
+          dataGridView.SelectionChanged -= dataGridView_SelectionChanged;
+          for (int i = 0; i < dataGridView.RowCount; i++) {
+            if (i + 1 == dataGridView.RowCount)
+              dataGridView.SelectionChanged += dataGridView_SelectionChanged;
+            dataGridView[e.ColumnIndex, i].Selected = true;
+          }
+        } else if (Content.SortableView) {
+          SortColumn(e.ColumnIndex);
+        }
+      }
       searchIterator = null;
     }
 
@@ -436,7 +449,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (Content == null) return;
-      if (e.Button == System.Windows.Forms.MouseButtons.Right) {
+      if (e.Button == System.Windows.Forms.MouseButtons.Right && !(e.ColumnIndex != -1 && e.RowIndex == -1)) {
         if (e.ColumnIndex == -1 || e.RowIndex == -1) {
           replaceValueOverColumnToolStripMenuItem.Visible = false;
           contextMenuCell.Show(MousePosition);
@@ -473,18 +486,25 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     private void dataGridView_KeyDown(object sender, KeyEventArgs e) {
       var selectedRows = dataGridView.SelectedRows;
-      if (e.KeyCode == Keys.Delete && selectedRows.Count > 0) {
-        List<int> rows = new List<int>();
-        for (int i = 0; i < selectedRows.Count; ++i) {
-          rows.Add(selectedRows[i].Index);
+      var selectedCells = dataGridView.SelectedCells;
+      if (!Content.FilterLogic.IsFiltered) { //data is in read only mode....
+        if (e.KeyCode == Keys.Delete && selectedCells.Count == Content.Rows && selectedCells.Count > 0) {
+          Content.DeleteColumn(selectedCells[0].ColumnIndex);
+        } else if (e.KeyCode == Keys.Delete && selectedRows.Count > 0) {
+          List<int> rows = new List<int>();
+          for (int i = 0; i < selectedRows.Count; ++i) {
+            int index = (sortedColumnIndices.Count != 0) ? (Convert.ToInt32(selectedRows[i].HeaderCell.Value) - 1) :
+              selectedRows[i].Index;
+            rows.Add(index);
+          }
+          Content.DeleteRows(rows);
+        } else if (e.Control && e.KeyCode == Keys.F) {
+          CreateFindAndReplaceDialog();
+          findAndReplaceDialog.ActivateSearch();
+        } else if (e.Control && e.KeyCode == Keys.R) {
+          CreateFindAndReplaceDialog();
+          findAndReplaceDialog.ActivateReplace();
         }
-        Content.DeleteRow(rows);
-      } else if (e.Control && e.KeyCode == Keys.F) {
-        CreateFindAndReplaceDialog();
-        findAndReplaceDialog.ActivateSearch();
-      } else if (e.Control && e.KeyCode == Keys.R) {
-        CreateFindAndReplaceDialog();
-        findAndReplaceDialog.ActivateReplace();
       }
     }
 

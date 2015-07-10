@@ -30,7 +30,8 @@ namespace HeuristicLab.DataPreprocessing {
 
     IDictionary<int, IList<int>> Selection { get; set; }
 
-    void DeleteRow(IEnumerable<int> rows);
+    void DeleteRows(IEnumerable<int> rows);
+    void DeleteColumn(int column);
     bool Validate(string value, out string errorMessage, int columnIndex);
 
     event DataPreprocessingChangedEventHandler Changed;
