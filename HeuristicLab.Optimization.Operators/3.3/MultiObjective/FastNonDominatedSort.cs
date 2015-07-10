@@ -67,8 +67,8 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
 
     public override IOperation Apply() {
       bool dominateOnEqualQualities = DominateOnEqualQualitiesParameter.ActualValue.Value;
-      BoolArray maximization = MaximizationParameter.ActualValue;
-      ItemArray<DoubleArray> qualities = QualitiesParameter.ActualValue;
+      bool[] maximization = MaximizationParameter.ActualValue.ToArray();
+      double[][] qualities = QualitiesParameter.ActualValue.Select(x => x.ToArray()).ToArray();
       if (qualities == null) throw new InvalidOperationException(Name + ": No qualities found.");
 
       IScope scope = ExecutionContext.Scope;
@@ -81,12 +81,13 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
 
       for (int pI = 0; pI < populationSize - 1; pI++) {
         IScope p = scope.SubScopes[pI];
-        if (!dominatedScopes.ContainsKey(p))
-          dominatedScopes[p] = new List<int>();
+        List<int> dominatedScopesByp;
+        if (!dominatedScopes.TryGetValue(p, out dominatedScopesByp))
+          dominatedScopes[p] = dominatedScopesByp = new List<int>();
         for (int qI = pI + 1; qI < populationSize; qI++) {
           DominationResult test = Dominates(qualities[pI], qualities[qI], maximization, dominateOnEqualQualities);
           if (test == DominationResult.Dominates) {
-            dominatedScopes[p].Add(qI);
+            dominatedScopesByp.Add(qI);
             dominationCounter[qI] += 1;
           } else if (test == DominationResult.IsDominated) {
             dominationCounter[pI] += 1;
@@ -110,9 +111,10 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       while (i < fronts.Count && fronts[i].Count > 0) {
         ScopeList nextFront = new ScopeList();
         foreach (IScope p in fronts[i]) {
-          if (dominatedScopes.ContainsKey(p)) {
-            for (int k = 0; k < dominatedScopes[p].Count; k++) {
-              int dominatedScope = dominatedScopes[p][k];
+          List<int> dominatedScopesByp;
+          if (dominatedScopes.TryGetValue(p, out dominatedScopesByp)) {
+            for (int k = 0; k < dominatedScopesByp.Count; k++) {
+              int dominatedScope = dominatedScopesByp[k];
               dominationCounter[dominatedScope] -= 1;
               if (dominationCounter[dominatedScope] == 0) {
                 rank[dominatedScope] = new IntValue(i + 1);
@@ -139,8 +141,18 @@ Genetic Algorithm: NSGA-II"", IEEE Transactions On Evolutionary Computation, Vol
       return base.Apply();
     }
 
-    private static DominationResult Dominates(DoubleArray left, DoubleArray right, BoolArray maximizations, bool dominateOnEqualQualities) {
-      if (dominateOnEqualQualities && left.SequenceEqual(right)) return DominationResult.Dominates;
+    private static DominationResult Dominates(double[] left, double[] right, bool[] maximizations, bool dominateOnEqualQualities) {
+      //mkommend Caution: do not use LINQ.SequenceEqual for comparing the two quality arrays (left and right) due to performance reasons
+      if (dominateOnEqualQualities) {
+        var equal = true;
+        for (int i = 0; i < left.Length; i++) {
+          if (left[i] != right[i]) {
+            equal = false;
+            break;
+          }
+        }
+        if (equal) return DominationResult.Dominates;
+      }
 
       bool leftIsBetter = false, rightIsBetter = false;
       for (int i = 0; i < left.Length; i++) {
