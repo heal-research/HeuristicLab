@@ -23,8 +23,6 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
@@ -35,40 +33,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public class FullTreeCreator : SymbolicExpressionTreeCreator,
                                  ISymbolicExpressionTreeSizeConstraintOperator,
                                  ISymbolicExpressionTreeGrammarBasedOperator {
-    private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
-    private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
-
-    #region Parameter Properties
-    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
-    }
-
-    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeDepthParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeDepthParameterName]; }
-    }
-    #endregion
-    #region Properties
-    public IntValue MaximumSymbolicExpressionTreeDepth {
-      get { return MaximumSymbolicExpressionTreeDepthParameter.ActualValue; }
-    }
-
-    public IntValue MaximumSymbolicExpressionTreeLength {
-      get { return MaximumSymbolicExpressionTreeLengthParameter.ActualValue; }
-    }
-
-    #endregion
 
     [StorableConstructor]
     protected FullTreeCreator(bool deserializing) : base(deserializing) { }
     protected FullTreeCreator(FullTreeCreator original, Cloner cloner) : base(original, cloner) { }
 
-    public FullTreeCreator()
-      : base() {
-      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName,
-        "The maximal length (number of nodes) of the symbolic expression tree (this parameter is ignored)."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName,
-        "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
-    }
+    public FullTreeCreator() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new FullTreeCreator(this, cloner);
@@ -76,7 +46,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
 
     protected override ISymbolicExpressionTree Create(IRandom random) {
-      return Create(random, ClonedSymbolicExpressionTreeGrammarParameter.ActualValue, MaximumSymbolicExpressionTreeLength.Value, MaximumSymbolicExpressionTreeDepth.Value);
+      return Create(random, ClonedSymbolicExpressionTreeGrammarParameter.ActualValue,
+          MaximumSymbolicExpressionTreeLengthParameter.ActualValue.Value, MaximumSymbolicExpressionTreeDepthParameter.ActualValue.Value);
     }
 
     public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
@@ -130,7 +101,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           .Where(s => seedNode.Grammar.IsAllowedChildSymbol(seedNode.Symbol, s, i))
           .ToList();
         var weights = possibleSymbols.Select(s => s.InitialFrequency).ToList();
+
+#pragma warning disable 612, 618
         var selectedSymbol = possibleSymbols.SelectRandom(weights, random);
+#pragma warning restore 612, 618
+
         var tree = selectedSymbol.CreateTreeNode();
         if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
         seedNode.AddSubtree(tree);
@@ -162,15 +137,22 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         if (!possibleSymbols.Any())
           throw new InvalidOperationException("No symbols are available for the tree.");
         var weights = possibleSymbols.Select(s => s.InitialFrequency).ToList();
+
+#pragma warning disable 612, 618
         var selectedSymbol = possibleSymbols.SelectRandom(weights, random);
+#pragma warning restore 612, 618
+        
         var tree = selectedSymbol.CreateTreeNode();
         if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
         root.AddSubtree(tree);
       }
 
-      foreach (var subTree in root.Subtrees)
-        if (subTree.Grammar.GetMaximumSubtreeCount(subTree.Symbol) > 0)
-          RecursiveCreate(random, subTree, currentDepth + 1, maxDepth);
+      //additional levels should only be added if the maximum depth is not reached yet
+      if (maxDepth > currentDepth) {
+        foreach (var subTree in root.Subtrees)
+          if (subTree.Grammar.GetMaximumSubtreeCount(subTree.Symbol) > 0)
+            RecursiveCreate(random, subTree, currentDepth + 1, maxDepth);
+      }
     }
   }
 }

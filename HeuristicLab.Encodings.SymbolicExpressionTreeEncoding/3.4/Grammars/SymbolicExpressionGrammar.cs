@@ -176,12 +176,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       else return new SymbolicExpressionTreeGrammar(this);
     }
 
-    protected override sealed void AddSymbol(ISymbol symbol) {
+    public override sealed void AddSymbol(ISymbol symbol) {
+      if (ReadOnly) throw new InvalidOperationException();
       base.AddSymbol(symbol);
       RegisterSymbolEvents(symbol);
       OnChanged();
     }
-    protected override sealed void RemoveSymbol(ISymbol symbol) {
+    public override sealed void RemoveSymbol(ISymbol symbol) {
+      if (ReadOnly) throw new InvalidOperationException();
       DeregisterSymbolEvents(symbol);
       base.RemoveSymbol(symbol);
       OnChanged();
@@ -203,52 +205,41 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     #endregion
 
-    #region ISymbolicExpressionGrammar methods
-    void ISymbolicExpressionGrammar.AddSymbol(ISymbol symbol) {
-      if (ReadOnly) throw new InvalidOperationException();
-      AddSymbol(symbol);
-    }
-    void ISymbolicExpressionGrammar.RemoveSymbol(ISymbol symbol) {
-      if (ReadOnly) throw new InvalidOperationException();
-      RemoveSymbol(symbol);
-    }
-
-    void ISymbolicExpressionGrammar.AddAllowedChildSymbol(ISymbol parent, ISymbol child) {
+    public sealed override void AddAllowedChildSymbol(ISymbol parent, ISymbol child) {
       if (ReadOnly) throw new InvalidOperationException();
       base.AddAllowedChildSymbol(parent, child);
     }
-    void ISymbolicExpressionGrammar.AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
+    public sealed override void AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
       if (ReadOnly) throw new InvalidOperationException();
       base.AddAllowedChildSymbol(parent, child, argumentIndex);
     }
-    void ISymbolicExpressionGrammar.RemoveAllowedChildSymbol(ISymbol parent, ISymbol child) {
+    public sealed override void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child) {
       if (ReadOnly) throw new InvalidOperationException();
       base.RemoveAllowedChildSymbol(parent, child);
     }
-    void ISymbolicExpressionGrammar.RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
+    public sealed override void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
       if (ReadOnly) throw new InvalidOperationException();
       base.RemoveAllowedChildSymbol(parent, child, argumentIndex);
     }
 
-    void ISymbolicExpressionGrammar.SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
+    public sealed override void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
       if (ReadOnly) throw new InvalidOperationException();
       base.SetSubtreeCount(symbol, minimumSubtreeCount, maximumSubtreeCount);
     }
 
     private bool suppressEvents = false;
-    void ISymbolicExpressionGrammar.StartGrammarManipulation() {
+    public void StartGrammarManipulation() {
       suppressEvents = true;
     }
-    void ISymbolicExpressionGrammar.FinishedGrammarManipulation() {
+    public void FinishedGrammarManipulation() {
       suppressEvents = false;
       OnChanged();
     }
 
-    protected override void OnChanged() {
+    protected sealed override void OnChanged() {
       if (suppressEvents) return;
       base.OnChanged();
     }
-    #endregion
 
     #region symbol events
     private void RegisterSymbolEvents(ISymbol symbol) {
@@ -304,7 +295,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     }
     private void Symbol_NameChanged(object sender, EventArgs e) {
       ISymbol symbol = (ISymbol)sender;
-      string oldName = symbols.Where(x => x.Value == symbol).First().Key;
+      string oldName = symbols.First(x => x.Value == symbol).Key;
       string newName = symbol.Name;
 
       symbols.Remove(oldName);

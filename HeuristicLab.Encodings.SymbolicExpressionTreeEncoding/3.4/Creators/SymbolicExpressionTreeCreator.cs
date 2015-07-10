@@ -21,6 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,15 +32,19 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("SymbolicExpressionTreeCreator", "A base class for operators creating symbolic expression trees.")]
   [StorableClass]
   public abstract class SymbolicExpressionTreeCreator : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeCreator {
-    private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
+    private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
+    private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
+
     private const string SymbolicExpressionTreeGrammarParameterName = "SymbolicExpressionTreeGrammar";
     private const string ClonedSymbolicExpressionTreeGrammarParameterName = "ClonedSymbolicExpressionTreeGrammar";
 
     #region Parameter Properties
-    public ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
-      get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
+    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
     }
-
+    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeDepthParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeDepthParameterName]; }
+    }
     public IValueLookupParameter<ISymbolicExpressionGrammar> SymbolicExpressionTreeGrammarParameter {
       get { return (IValueLookupParameter<ISymbolicExpressionGrammar>)Parameters[SymbolicExpressionTreeGrammarParameterName]; }
     }
@@ -54,11 +59,10 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeCreator(SymbolicExpressionTreeCreator original, Cloner cloner) : base(original, cloner) { }
     protected SymbolicExpressionTreeCreator()
       : base() {
-      Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree that should be created."));
-      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName,
-        "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
-      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName,
-        "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximal length (number of nodes) of the symbolic expression tree."));
+      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
+      Parameters.Add(new ValueLookupParameter<ISymbolicExpressionGrammar>(SymbolicExpressionTreeGrammarParameterName, "The tree grammar that defines the correct syntax of symbolic expression trees that should be created."));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionGrammar>(ClonedSymbolicExpressionTreeGrammarParameterName, "An immutable clone of the concrete grammar that is actually used to create and manipulate trees."));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -77,7 +81,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         globalScope.Variables.Add(new Variable(ClonedSymbolicExpressionTreeGrammarParameterName,
           (ISymbolicExpressionGrammar)SymbolicExpressionTreeGrammarParameter.ActualValue.Clone()));
       }
-      SymbolicExpressionTreeParameter.ActualValue = Create(Random);
+      SymbolicExpressionTreeParameter.ActualValue = Create(RandomParameter.ActualValue);
       return base.InstrumentedApply();
     }
 

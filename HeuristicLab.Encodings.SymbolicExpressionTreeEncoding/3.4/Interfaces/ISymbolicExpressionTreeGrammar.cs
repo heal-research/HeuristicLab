@@ -22,17 +22,7 @@
 using System.Collections.Generic;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public interface ISymbolicExpressionTreeGrammar : ISymbolicExpressionGrammarBase {
-
     IEnumerable<ISymbol> ModifyableSymbols { get; }
     bool IsModifyableSymbol(ISymbol symbol);
-    void AddSymbol(ISymbol symbol);
-    void RemoveSymbol(ISymbol symbol);
-
-    void AddAllowedChildSymbol(ISymbol parent, ISymbol child);
-    void AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
-    void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child);
-    void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
-
-    void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount);
   }
 }

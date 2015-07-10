@@ -27,6 +27,5 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// Interface for operators that manipulate symbolic expression trees.
   /// </summary>
   public interface ISymbolicExpressionTreeManipulator : ISymbolicExpressionTreeOperator, IManipulator {
-    ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter { get; }
   }
 }

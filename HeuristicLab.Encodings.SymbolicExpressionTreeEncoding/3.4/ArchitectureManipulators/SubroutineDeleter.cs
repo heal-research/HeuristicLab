@@ -25,6 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -54,12 +55,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       IRandom random,
       ISymbolicExpressionTree symbolicExpressionTree,
       int maxFunctionDefinitions, int maxFunctionArguments) {
-      var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>();
+      var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>().ToList();
 
-      if (functionDefiningBranches.Count() == 0)
+      if (!functionDefiningBranches.Any())
         // no ADF to delete => abort
         return false;
-      var selectedDefunBranch = functionDefiningBranches.SelectRandom(random);
+
+      var selectedDefunBranch = functionDefiningBranches.SampleRandom(random);
       // remove the selected defun
       int defunSubtreeIndex = symbolicExpressionTree.Root.IndexOfSubtree(selectedDefunBranch);
       symbolicExpressionTree.Root.RemoveSubtree(defunSubtreeIndex);
@@ -91,7 +93,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         ISymbolicExpressionTreeNode replacementTree = null;
         var allowedSymbolsList = invocationCutPoint.Parent.Grammar.GetAllowedChildSymbols(invocationCutPoint.Parent.Symbol, invocationCutPoint.ChildIndex).ToList();
         var weights = allowedSymbolsList.Select(s => s.InitialFrequency);
+
+#pragma warning disable 612, 618
         var selectedSymbol = allowedSymbolsList.SelectRandom(weights, random);
+#pragma warning restore 612, 618
+
 
         int minPossibleLength = invocationCutPoint.Parent.Grammar.GetMinimumExpressionLength(selectedSymbol);
         int maxLength = Math.Max(minPossibleLength, invocationCutPoint.Child.GetLength());

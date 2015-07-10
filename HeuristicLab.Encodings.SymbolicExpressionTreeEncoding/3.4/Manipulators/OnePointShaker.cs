@@ -19,13 +19,13 @@
  */
 #endregion
 
-using System.Linq;
+using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Parameters;
-using System.Collections.Generic;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
@@ -65,7 +65,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         if (n.HasLocalParameters) parametricNodes.Add(n);
       });
       if (parametricNodes.Count > 0) {
-        var selectedPoint = parametricNodes.SelectRandom(random);
+        var selectedPoint = parametricNodes.SampleRandom(random);
         selectedPoint.ShakeLocalParameters(random, shakingFactor);
       }
     }

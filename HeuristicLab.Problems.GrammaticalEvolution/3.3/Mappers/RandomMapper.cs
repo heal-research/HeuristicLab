@@ -28,6 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// <summary>
@@ -101,7 +102,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
           current.AddSubtree(GetRandomTerminalNode(current, grammar, random));
         } else {
           // similar to PIGEMapper, but here the current node is determined randomly ...
-          ISymbolicExpressionTreeNode current = nonTerminals.SelectRandom(random);
+          ISymbolicExpressionTreeNode current = nonTerminals.SampleRandom(random);
           nonTerminals.Remove(current);
 
           ISymbolicExpressionTreeNode newNode = GetNewChildNode(current, genotype, grammar, genotypeIndex, random);

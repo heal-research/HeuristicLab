@@ -124,12 +124,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       stopwatch.Start();
       for (int i = 0; i != PopulationSize; ++i) {
-        var parent0 = (ISymbolicExpressionTree)trees.SelectRandom(twister).Clone();
+        var parent0 = (ISymbolicExpressionTree)trees.SampleRandom(twister).Clone();
         var scopeParent0 = new Scope();
         scopeParent0.Variables.Add(new Core.Variable(crossover.ParentsParameter.ActualName, parent0));
         context.Scope.SubScopes.Add(scopeParent0);
 
-        var parent1 = (ISymbolicExpressionTree)trees.SelectRandom(twister).Clone();
+        var parent1 = (ISymbolicExpressionTree)trees.SampleRandom(twister).Clone();
         var scopeParent1 = new Scope();
         scopeParent1.Variables.Add(new Core.Variable(crossover.ParentsParameter.ActualName, parent1));
         context.Scope.SubScopes.Add(scopeParent1);

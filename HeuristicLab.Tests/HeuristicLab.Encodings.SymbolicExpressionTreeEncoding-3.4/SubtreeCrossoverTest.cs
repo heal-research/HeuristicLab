@@ -49,8 +49,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
       stopwatch.Start();
       for (int gCount = 0; gCount < generations; gCount++) {
         for (int i = 0; i < POPULATION_SIZE; i++) {
-          var par0 = (ISymbolicExpressionTree)trees.SelectRandom(random).Clone();
-          var par1 = (ISymbolicExpressionTree)trees.SelectRandom(random).Clone();
+          var par0 = (ISymbolicExpressionTree)trees.SampleRandom(random).Clone();
+          var par1 = (ISymbolicExpressionTree)trees.SampleRandom(random).Clone();
           SubtreeCrossover.Cross(random, par0, par1, 0.9, 100, 10);
         }
       }

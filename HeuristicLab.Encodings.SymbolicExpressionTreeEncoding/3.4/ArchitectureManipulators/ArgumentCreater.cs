@@ -27,6 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -83,13 +84,14 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       // in this case it's easiest to simply return the original tree.
       ISymbolicExpressionTree clonedTree = (ISymbolicExpressionTree)symbolicExpressionTree.Clone();
 
-      var functionDefiningBranches = clonedTree.IterateNodesPrefix().OfType<DefunTreeNode>();
-      if (functionDefiningBranches.Count() == 0)
+      var functionDefiningBranches = clonedTree.IterateNodesPrefix().OfType<DefunTreeNode>().ToList();
+      if (!functionDefiningBranches.Any())
         // no function defining branch found => abort
         return false;
 
       // select a random function defining branch
-      var selectedDefunBranch = functionDefiningBranches.SelectRandom(random);
+      var selectedDefunBranch = functionDefiningBranches.SampleRandom(random);
+
       var definedArguments = (from symbol in selectedDefunBranch.Grammar.Symbols.OfType<Argument>()
                               select symbol.ArgumentIndex).Distinct();
       if (definedArguments.Count() >= maxFunctionArguments)

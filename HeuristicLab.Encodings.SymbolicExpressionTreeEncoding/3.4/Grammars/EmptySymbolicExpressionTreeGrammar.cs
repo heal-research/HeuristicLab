@@ -36,7 +36,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     private ISymbolicExpressionGrammar grammar;
 
     [StorableConstructor]
-    private EmptySymbolicExpressionTreeGrammar(bool deserializing) : base(deserializing) {}
+    private EmptySymbolicExpressionTreeGrammar(bool deserializing) : base(deserializing) { }
     internal EmptySymbolicExpressionTreeGrammar(ISymbolicExpressionGrammar grammar)
       : base() {
       if (grammar == null) throw new ArgumentNullException();
@@ -69,11 +69,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return grammar.IsAllowedChildSymbol(parent, child, argumentIndex);
     }
 
-    IEnumerable<ISymbol> ISymbolicExpressionGrammarBase.GetAllowedChildSymbols(ISymbol parent) {
+    public IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent) {
       return grammar.GetAllowedChildSymbols(parent);
     }
 
-    IEnumerable<ISymbol> ISymbolicExpressionGrammarBase.GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
+    public IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex) {
       return grammar.GetAllowedChildSymbols(parent, argumentIndex);
     }
 
@@ -84,60 +84,40 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return grammar.GetMaximumSubtreeCount(symbol);
     }
 
-    int ISymbolicExpressionGrammarBase.GetMinimumExpressionDepth(ISymbol symbol) {
+    public int GetMinimumExpressionDepth(ISymbol symbol) {
       return grammar.GetMinimumExpressionDepth(symbol);
     }
-    int ISymbolicExpressionGrammarBase.GetMaximumExpressionDepth(ISymbol symbol) {
+    public int GetMaximumExpressionDepth(ISymbol symbol) {
       return grammar.GetMaximumExpressionDepth(symbol);
     }
-    int ISymbolicExpressionGrammarBase.GetMinimumExpressionLength(ISymbol symbol) {
+    public int GetMinimumExpressionLength(ISymbol symbol) {
       return grammar.GetMinimumExpressionLength(symbol);
     }
-    int ISymbolicExpressionGrammarBase.GetMaximumExpressionLength(ISymbol symbol, int maxDepth) {
+    public int GetMaximumExpressionLength(ISymbol symbol, int maxDepth) {
       return grammar.GetMaximumExpressionLength(symbol, maxDepth);
     }
 
+    public void AddSymbol(ISymbol symbol) { throw new NotSupportedException(); }
+    public void RemoveSymbol(ISymbol symbol) { throw new NotSupportedException(); }
+    public void AddAllowedChildSymbol(ISymbol parent, ISymbol child) { throw new NotSupportedException(); }
+    public void AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) { throw new NotSupportedException(); }
+    public void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child) { throw new NotSupportedException(); }
+    public void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) { throw new NotSupportedException(); }
+    public void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) { throw new NotSupportedException(); }
+
 
     #region ISymbolicExpressionTreeGrammar Members
-    IEnumerable<ISymbol> ISymbolicExpressionTreeGrammar.ModifyableSymbols {
+    public IEnumerable<ISymbol> ModifyableSymbols {
       get { return Enumerable.Empty<ISymbol>(); }
     }
 
-    bool ISymbolicExpressionTreeGrammar.IsModifyableSymbol(ISymbol symbol) {
+    public bool IsModifyableSymbol(ISymbol symbol) {
       return false;
     }
 
-    void ISymbolicExpressionTreeGrammar.AddSymbol(ISymbol symbol) {
-      throw new NotSupportedException();
-    }
-
-    void ISymbolicExpressionTreeGrammar.RemoveSymbol(ISymbol symbol) {
-      throw new NotSupportedException();
-    }
-
-    void ISymbolicExpressionTreeGrammar.AddAllowedChildSymbol(ISymbol parent, ISymbol child) {
-      throw new NotSupportedException();
-    }
-
-    void ISymbolicExpressionTreeGrammar.AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
-      throw new NotSupportedException();
-    }
-
-    void ISymbolicExpressionTreeGrammar.RemoveAllowedChildSymbol(ISymbol parent, ISymbol child) {
-      throw new NotSupportedException();
-    }
-
-    void ISymbolicExpressionTreeGrammar.RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex) {
-      throw new NotSupportedException();
-    }
-
-    void ISymbolicExpressionTreeGrammar.SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount) {
-      throw new NotSupportedException();
-    }
-    
-    #pragma warning disable 0067 //disable usage warning
+#pragma warning disable 0067 //disable usage warning
     public event EventHandler Changed;
-    #pragma warning restore 0067
+#pragma warning restore 0067
     #endregion
   }
 }
