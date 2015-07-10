@@ -25,12 +25,11 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.TimeSeriesPrognosis {
-  [Item("Symbolic Time-Series Prognosis Problem (single objective)", "Represents a single objective symbolic time-series prognosis problem.")]
+  [Item("Symbolic Time-Series Prognosis Problem (single-objective)", "Represents a single-objective symbolic time-series prognosis problem.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 140)]
   public class SymbolicTimeSeriesPrognosisSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<ITimeSeriesPrognosisProblemData, ISymbolicTimeSeriesPrognosisSingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, ITimeSeriesPrognosisProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeDepth = 8;

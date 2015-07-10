@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   /// </summary>
   [StorableClass]
   [Item("Regression Ensemble Solution", "A regression solution that contains an ensemble of multiple regression models")]
-  [Creatable("Data Analysis - Ensembles")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisEnsembles, Priority = 100)]
   public sealed class RegressionEnsembleSolution : RegressionSolutionBase, IRegressionEnsembleSolution {
     private readonly Dictionary<int, double> trainingEvaluationCache = new Dictionary<int, double>();
     private readonly Dictionary<int, double> testEvaluationCache = new Dictionary<int, double>();

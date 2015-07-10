@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Linear regression data analysis algorithm.
   /// </summary>
   [Item("Linear Regression", "Linear regression data analysis algorithm (wrapper for ALGLIB).")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 100)]
   [StorableClass]
   public sealed class LinearRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string LinearRegressionModelResultName = "Linear regression solution";

@@ -26,8 +26,8 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
-  [Item("Multi-Objective OKB Problem", "Represents a multi-objective problem which is stored in the OKB.")]
-  [Creatable("Optimization Knowledge Base (OKB)")]
+  [Item("OKB Problem (multi-objective)", "Represents a multi-objective problem which is stored in the OKB.")]
+  [Creatable(CreatableAttribute.Categories.TestingAndAnalysisOKB, Priority = 120)]
   [StorableClass]
   public sealed class MultiObjectiveOKBProblem : OKBProblem, IMultiObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }

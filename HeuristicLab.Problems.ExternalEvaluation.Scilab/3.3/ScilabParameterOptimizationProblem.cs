@@ -29,7 +29,7 @@ using HeuristicLab.Problems.ParameterOptimization;
 namespace HeuristicLab.Problems.ExternalEvaluation.Scilab {
   [Item("Scilab Parameter Optimization Problem", "Optimization of a parameter vector which is evaluated in Scilab.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 120)]
   public class ScilabParameterOptimizationProblem : ParameterOptimizationProblem {
     private const string QualityVariableParameterName = "QualityVariableName";
     private const string ScilabEvaluationScriptParameterName = "ScilabEvaluationScript";

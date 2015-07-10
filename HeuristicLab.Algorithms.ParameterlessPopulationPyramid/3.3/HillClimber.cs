@@ -41,7 +41,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
   [Item("Hill Climber", "Binary Hill Climber.")]
   [StorableClass]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 150)]
   public class HillClimber : BasicAlgorithm {
     [Storable]
     private IRandom random;

@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Binary {
   [Item("Deceptive Trap Problem", "Genome encodes completely separable blocks, where each block is fully deceptive.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 230)]
   public class DeceptiveTrapProblem : BinaryProblem {
     [StorableConstructor]
     protected DeceptiveTrapProblem(bool deserializing) : base(deserializing) { }

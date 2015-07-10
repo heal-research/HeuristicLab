@@ -35,7 +35,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Cross Validation", "Cross-validation wrapper for data analysis algorithms.")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysis, Priority = 100)]
   [StorableClass]
   public sealed class CrossValidation : ParameterizedNamedItem, IAlgorithm, IStorableContent {
     public CrossValidation()

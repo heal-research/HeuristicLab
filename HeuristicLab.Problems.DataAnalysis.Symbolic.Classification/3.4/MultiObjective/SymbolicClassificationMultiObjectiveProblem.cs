@@ -27,9 +27,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
-  [Item("Symbolic Classification Problem (multi objective)", "Represents a multi objective symbolic classfication problem.")]
+  [Item("Symbolic Classification Problem (multi-objective)", "Represents a multi objective symbolic classfication problem.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 130)]
   public class SymbolicClassificationMultiObjectiveProblem : SymbolicDataAnalysisMultiObjectiveProblem<IClassificationProblemData, ISymbolicClassificationMultiObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IClassificationProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeDepth = 8;

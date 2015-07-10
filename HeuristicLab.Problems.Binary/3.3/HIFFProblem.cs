@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Binary {
   [Item("Hierararchical If and only If problem", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 220)]
   public class HIFFProblem : BinaryProblem {
     [StorableConstructor]
     protected HIFFProblem(bool deserializing) : base(deserializing) { }
@@ -47,7 +47,7 @@ namespace HeuristicLab.Problems.Binary {
 
     public HIFFProblem()
       : base() {
-        Encoding.Length = 64;
+      Encoding.Length = 64;
     }
     // In the GECCO paper, Section 4.1
     public override double Evaluate(BinaryVector individual, IRandom random) {

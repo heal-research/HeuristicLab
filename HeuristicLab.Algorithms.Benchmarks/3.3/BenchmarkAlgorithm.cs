@@ -36,7 +36,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.Benchmarks {
   [Item("Benchmark Algorithm", "An algorithm to execute performance benchmarks (Linpack, Dhrystone, Whetstone, etc.).")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.TestingAndAnalysis, Priority = 130)]
   [StorableClass]
   public sealed class BenchmarkAlgorithm : IAlgorithm {
     private CancellationTokenSource cancellationTokenSource;

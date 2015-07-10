@@ -22,11 +22,8 @@
 
 using System;
 using System.Linq;
-using HeuristicLab.Algorithms.GradientDescent;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -38,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   ///Gaussian process regression data analysis algorithm.
   /// </summary>
   [Item("Gaussian Process Regression", "Gaussian process regression data analysis algorithm.")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 160)]
   [StorableClass]
   public sealed class GaussianProcessRegression : GaussianProcessBase, IStorableContent {
     public string Filename { get; set; }

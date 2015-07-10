@@ -35,7 +35,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
   [Item("Tabu Search", "A tabu search algorithm.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 120)]
   [StorableClass]
   public sealed class TabuSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

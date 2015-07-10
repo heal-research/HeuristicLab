@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// The self-adaptive segregative genetic algorithm with simulated annealing aspects (Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press).
   /// </summary>
   [Item("SASEGASA", "The self-adaptive segregative genetic algorithm with simulated annealing aspects (Affenzeller, M. et al. 2009. Genetic Algorithms and Genetic Programming - Modern Concepts and Practical Applications. CRC Press).")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 150)]
   [StorableClass]
   public sealed class SASEGASA : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

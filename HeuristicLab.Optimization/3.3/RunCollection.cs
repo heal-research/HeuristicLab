@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [Item("Run Collection", "Represents a collection of runs.")]
-  [Creatable("Testing & Analysis")]
+  [Creatable(CreatableAttribute.Categories.TestingAndAnalysis, Priority = 120)]
   [StorableClass]
   public class RunCollection : ItemCollection<IRun>, IStringConvertibleMatrix, IStorableContent {
     public string Filename { get; set; }

@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.LinearAssignment {
   [Item("Linear Assignment Problem", "In the linear assignment problem (LAP) an assignment of workers to jobs has to be found such that each worker is assigned to exactly one job, each job is assigned to exactly one worker and the sum of the resulting costs is minimal (or maximal).")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 130)]
   [StorableClass]
   public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator>, IStorableContent {
     public static readonly string CostsDescription = "The cost matrix that describes the assignment of rows to columns.";

@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Clustering Problem", "A general clustering problem.")]
-  [Creatable("Problems")]
   public class ClusteringProblem : DataAnalysisProblem<IClusteringProblemData>, IClusteringProblem {
     [StorableConstructor]
     protected ClusteringProblem(bool deserializing) : base(deserializing) { }

@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -35,7 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Random forest regression data analysis algorithm.
   /// </summary>
   [Item("Random Forest Regression", "Random forest regression data analysis algorithm (wrapper for ALGLIB).")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 120)]
   [StorableClass]
   public sealed class RandomForestRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
     private const string RandomForestRegressionModelResultName = "Random forest regression solution";

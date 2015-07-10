@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Nearest neighbour classification data analysis algorithm.
   /// </summary>
   [Item("Nearest Neighbour Classification", "Nearest neighbour classification data analysis algorithm (wrapper for ALGLIB).")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 150)]
   [StorableClass]
   public sealed class NearestNeighbourClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string KParameterName = "K";
