@@ -142,6 +142,7 @@
     <Compile Include="Formatters\SymbolicExpressionTreeGraphvizFormatter.cs" />
     <Compile Include="Formatters\SymbolicExpressionTreeHierarchicalFormatter.cs" />
     <Compile Include="Grammars\EmptySymbolicExpressionTreeGrammar.cs" />
+    <Compile Include="Grammars\SimpleSymbolicExpressionGrammar.cs" />
     <Compile Include="Interfaces\IReadOnlySymbol.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
     <Compile Include="Interfaces\ISymbolicExpressionGrammarBase.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Grammars\SymbolicExpressionGrammarBase.cs" />
     <Compile Include="Grammars\SymbolicExpressionGrammar.cs" />
     <Compile Include="Grammars\SymbolicExpressionTreeGrammar.cs" />
+    <Compile Include="SymbolicExpressionTreeEncoding.cs" />
     <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
     <Compile Include="Crossovers\SubtreeCrossover.cs">
       <SubType>Code</SubType>
@@ -190,6 +192,7 @@
     <Compile Include="Symbols\Argument.cs" />
     <Compile Include="Symbols\ArgumentTreeNode.cs" />
     <Compile Include="Symbols\GroupSymbol.cs" />
+    <Compile Include="Symbols\SimpleSymbol.cs" />
     <Compile Include="Symbols\StartSymbol.cs" />
     <Compile Include="Symbols\InvokeFunction.cs" />
     <Compile Include="Symbols\InvokeFunctionTreeNode.cs" />

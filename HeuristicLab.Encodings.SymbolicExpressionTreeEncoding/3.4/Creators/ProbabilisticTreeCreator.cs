@@ -24,8 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
@@ -36,32 +34,13 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public class ProbabilisticTreeCreator : SymbolicExpressionTreeCreator,
     ISymbolicExpressionTreeSizeConstraintOperator, ISymbolicExpressionTreeGrammarBasedOperator {
     private const int MAX_TRIES = 100;
-    private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
-    private const string MaximumSymbolicExpressionTreeDepthParameterName = "MaximumSymbolicExpressionTreeDepth";
-    #region Parameter Properties
-    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
-    }
-    public IValueLookupParameter<IntValue> MaximumSymbolicExpressionTreeDepthParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeDepthParameterName]; }
-    }
-    #endregion
-    #region Properties
-    public IntValue MaximumSymbolicExpressionTreeLength {
-      get { return MaximumSymbolicExpressionTreeLengthParameter.ActualValue; }
-    }
-    public IntValue MaximumSymbolicExpressionTreeDepth {
-      get { return MaximumSymbolicExpressionTreeDepthParameter.ActualValue; }
-    }
-    #endregion
 
     [StorableConstructor]
     protected ProbabilisticTreeCreator(bool deserializing) : base(deserializing) { }
     protected ProbabilisticTreeCreator(ProbabilisticTreeCreator original, Cloner cloner) : base(original, cloner) { }
     public ProbabilisticTreeCreator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "The maximal length (number of nodes) of the symbolic expression tree."));
-      Parameters.Add(new ValueLookupParameter<IntValue>(MaximumSymbolicExpressionTreeDepthParameterName, "The maximal depth of the symbolic expression tree (a tree with one node has depth = 0)."));
+
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -70,7 +49,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
 
     protected override ISymbolicExpressionTree Create(IRandom random) {
-      return Create(random, ClonedSymbolicExpressionTreeGrammarParameter.ActualValue, MaximumSymbolicExpressionTreeLength.Value, MaximumSymbolicExpressionTreeDepth.Value);
+      return Create(random, ClonedSymbolicExpressionTreeGrammarParameter.ActualValue,
+        MaximumSymbolicExpressionTreeLengthParameter.ActualValue.Value, MaximumSymbolicExpressionTreeDepthParameter.ActualValue.Value);
     }
 
     public override ISymbolicExpressionTree CreateTree(IRandom random, ISymbolicExpressionGrammar grammar, int maxTreeLength, int maxTreeDepth) {
@@ -185,7 +165,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
           if (allowedSymbols.Count == 0) return false;
           var weights = allowedSymbols.Select(x => x.InitialFrequency).ToList();
+
+#pragma warning disable 612, 618
           var selectedSymbol = allowedSymbols.SelectRandom(weights, random);
+#pragma warning restore 612, 618
+
           ISymbolicExpressionTreeNode newTree = selectedSymbol.CreateTreeNode();
           if (newTree.HasLocalParameters) newTree.ResetLocalParameters(random);
           parent.RemoveSubtree(argumentIndex);
@@ -231,7 +215,11 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
                              orderby g.Key
                              select g).First().ToList();
       var weights = possibleSymbols.Select(x => x.InitialFrequency).ToList();
+
+#pragma warning disable 612, 618
       var selectedSymbol = possibleSymbols.SelectRandom(weights, random);
+#pragma warning restore 612, 618
+
       var tree = selectedSymbol.CreateTreeNode();
       if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
       parent.RemoveSubtree(childIndex);

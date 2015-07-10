@@ -28,6 +28,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("DepthConstrainedCrossover", "An operator which performs subtree swapping within a specific depth range. The range parameter controls the crossover behavior:\n" +
@@ -114,8 +115,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (crossoverPoints0.Count == 0)
         throw new Exception("No crossover points available in the first parent");
 
-      var crossoverPoint0 = crossoverPoints0.SelectRandom(random);
-
+      var crossoverPoint0 = crossoverPoints0.SampleRandom(random);
       int level = parent0.Root.GetBranchLevel(crossoverPoint0.Child);
       int length = parent0.Root.GetLength() - crossoverPoint0.Child.GetLength();
 
@@ -125,7 +125,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                              where crossoverPoint0.IsMatchingPointType(s)
                              select s).ToList();
       if (allowedBranches.Count == 0) return parent0;
-      var selectedBranch = allowedBranches.SelectRandom(random);
+
+      var selectedBranch = allowedBranches.SampleRandom(random);
       Swap(crossoverPoint0, selectedBranch);
       return parent0;
     }

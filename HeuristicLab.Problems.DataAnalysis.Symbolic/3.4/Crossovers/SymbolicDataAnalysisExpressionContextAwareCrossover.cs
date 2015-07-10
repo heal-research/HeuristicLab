@@ -26,6 +26,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("ContextAwareCrossover", "An operator which deterministically choses the best insertion point for a randomly selected node:\n" +
@@ -67,7 +68,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (n.Parent != null && n.Parent != parent1.Root)
           possibleChildren.Add(n);
       });
-      var selectedChild = possibleChildren.SelectRandom(random);
+
+      var selectedChild = possibleChildren.SampleRandom(random);
       var crossoverPoints = new List<CutPoint>();
       var qualities = new List<Tuple<CutPoint, double>>();
 

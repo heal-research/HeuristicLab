@@ -60,7 +60,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public override void ResetLocalParameters(IRandom random) {
       base.ResetLocalParameters(random);
       weight = NormalDistributedRandom.NextDouble(random, Symbol.WeightMu, Symbol.WeightSigma);
+
+#pragma warning disable 612, 618
       variableName = Symbol.VariableNames.SelectRandom(random);
+#pragma warning restore 612, 618
     }
 
     public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
@@ -69,11 +72,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       if (random.NextDouble() < 0) {
         double x = NormalDistributedRandom.NextDouble(random, Symbol.WeightManipulatorMu, Symbol.WeightManipulatorSigma);
         weight = weight + x * shakingFactor;
-      } else {        
+      } else {
         double x = NormalDistributedRandom.NextDouble(random, 1.0, Symbol.MultiplicativeWeightManipulatorSigma);
         weight = weight * x;
       }
+#pragma warning disable 612, 618
       variableName = Symbol.VariableNames.SelectRandom(random);
+#pragma warning restore 612, 618
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

@@ -35,16 +35,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     bool ReadOnly { get; set; }
     event EventHandler ReadOnlyChanged;
 
-    void AddSymbol(ISymbol symbol);
-    void RemoveSymbol(ISymbol symbol);
-
-    void AddAllowedChildSymbol(ISymbol parent, ISymbol child);
-    void AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
-    void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child);
-    void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
-
-    void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount);
-
     void StartGrammarManipulation();
     void FinishedGrammarManipulation();
 

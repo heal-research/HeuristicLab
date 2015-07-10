@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
     public static double CalculateEvaluatedNodesPerSec(ISymbolicExpressionTree[] trees, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset dataset, int repetitions) {
       // warm up
-      IEnumerable<int> rows = Enumerable.Range(0, dataset.Rows);
+      IEnumerable<int> rows = Enumerable.Range(0, dataset.Rows).ToList();
       long nNodes = 0;
       double c = 0;
       for (int i = 0; i < trees.Length; i++) {

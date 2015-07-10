@@ -26,17 +26,28 @@ using HeuristicLab.Core;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   public interface ISymbolicExpressionGrammarBase : INamedItem {
     IEnumerable<ISymbol> Symbols { get; }
-    ISymbol GetSymbol(string symbolName);
     IEnumerable<ISymbol> AllowedSymbols { get; }
+
     bool ContainsSymbol(ISymbol symbol);
+    ISymbol GetSymbol(string symbolName);
+
+    void AddSymbol(ISymbol symbol);
+    void RemoveSymbol(ISymbol symbol);
 
     bool IsAllowedChildSymbol(ISymbol parent, ISymbol child);
     bool IsAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
     IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent);
     IEnumerable<ISymbol> GetAllowedChildSymbols(ISymbol parent, int argumentIndex);
 
+    void AddAllowedChildSymbol(ISymbol parent, ISymbol child);
+    void AddAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
+    void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child);
+    void RemoveAllowedChildSymbol(ISymbol parent, ISymbol child, int argumentIndex);
+
+
     int GetMinimumSubtreeCount(ISymbol symbol);
     int GetMaximumSubtreeCount(ISymbol symbol);
+    void SetSubtreeCount(ISymbol symbol, int minimumSubtreeCount, int maximumSubtreeCount);
 
     int GetMinimumExpressionDepth(ISymbol start);
     int GetMaximumExpressionDepth(ISymbol start);

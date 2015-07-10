@@ -27,6 +27,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
   [Item("SemanticSimilarityCrossover", "An operator which performs subtree swapping based on the notion semantic similarity between subtrees\n" +
@@ -80,7 +81,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (n.Parent != null && n.Parent != parent0.Root)
           crossoverPoints0.Add(new CutPoint(n.Parent, n));
       });
-      var crossoverPoint0 = crossoverPoints0.SelectRandom(random);
+
+      var crossoverPoint0 = crossoverPoints0.SampleRandom(random);
       int level = parent0.Root.GetBranchLevel(crossoverPoint0.Child);
       int length = parent0.Root.GetLength() - crossoverPoint0.Child.GetLength();
 

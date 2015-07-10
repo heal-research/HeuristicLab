@@ -27,6 +27,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   /// <summary>
@@ -58,15 +59,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       IRandom random,
       ISymbolicExpressionTree symbolicExpressionTree,
       int maxFunctionDefinitions, int maxFunctionArguments) {
-      var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>();
-      if (functionDefiningBranches.Count() == 0 || functionDefiningBranches.Count() == maxFunctionDefinitions)
+      var functionDefiningBranches = symbolicExpressionTree.IterateNodesPrefix().OfType<DefunTreeNode>().ToList();
+      if (!functionDefiningBranches.Any() || functionDefiningBranches.Count() == maxFunctionDefinitions)
         // no function defining branches to duplicate or already reached the max number of ADFs
         return false;
 
       string formatString = new StringBuilder().Append('0', (int)Math.Log10(maxFunctionDefinitions) + 1).ToString(); // >= 100 functions => ###
       var allowedFunctionNames = from index in Enumerable.Range(0, maxFunctionDefinitions)
                                  select "ADF" + index.ToString(formatString);
-      var selectedBranch = functionDefiningBranches.SelectRandom(random);
+
+      var selectedBranch = functionDefiningBranches.SampleRandom(random);
       var duplicatedDefunBranch = (DefunTreeNode)selectedBranch.Clone();
       string newFunctionName = allowedFunctionNames.Except(UsedFunctionNames(symbolicExpressionTree)).First();
       duplicatedDefunBranch.FunctionName = newFunctionName;

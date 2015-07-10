@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [Item("SymbolicRegressionPhenotypicDiversityAnalyzer", "An analyzer which calculates diversity based on the phenotypic distance between trees")]
   [StorableClass]
   public class SymbolicRegressionPhenotypicDiversityAnalyzer : PopulationSimilarityAnalyzer,
-    ISymbolicDataAnalysisBoundedOperator, ISymbolicDataAnalysisInterpreterOperator, ISymbolicExpressionTreeOperator {
+    ISymbolicDataAnalysisBoundedOperator, ISymbolicDataAnalysisInterpreterOperator, ISymbolicExpressionTreeAnalyzer {
     #region parameter names
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
     private const string EvaluatedValuesParameterName = "EstimatedValues";

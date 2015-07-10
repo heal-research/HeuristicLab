@@ -21,7 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -35,6 +34,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public abstract class SymbolicExpressionTreeOperator : InstrumentedOperator, IStochasticOperator, ISymbolicExpressionTreeOperator {
     private const string RandomParameterName = "Random";
+    private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";
 
     public override bool CanChangeName {
       get { return false; }
@@ -44,11 +44,8 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters[RandomParameterName]; }
     }
-    #endregion
-
-    #region Properties
-    public IRandom Random {
-      get { return RandomParameter.ActualValue; }
+    public ILookupParameter<ISymbolicExpressionTree> SymbolicExpressionTreeParameter {
+      get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[SymbolicExpressionTreeParameterName]; }
     }
     #endregion
 
@@ -58,6 +55,16 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeOperator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>(RandomParameterName, "The pseudo random number generator which should be used for symbolic expression tree operators."));
+      Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(SymbolicExpressionTreeParameterName))
+        Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName, "The symbolic expression tree on which the operator should be applied."));
+      #endregion
     }
   }
 }

@@ -33,22 +33,18 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
   public abstract class SymbolicExpressionTreeCrossover : SymbolicExpressionTreeOperator, ISymbolicExpressionTreeCrossover {
     private const string ParentsParameterName = "Parents";
-    private const string ChildParameterName = "Child";
     #region Parameter Properties
     public ILookupParameter<ItemArray<ISymbolicExpressionTree>> ParentsParameter {
       get { return (ScopeTreeLookupParameter<ISymbolicExpressionTree>)Parameters[ParentsParameterName]; }
     }
-    public ILookupParameter<ISymbolicExpressionTree> ChildParameter {
-      get { return (ILookupParameter<ISymbolicExpressionTree>)Parameters[ChildParameterName]; }
-    }
     #endregion
     #region Properties
-    public ItemArray<ISymbolicExpressionTree> Parents {
+    private ItemArray<ISymbolicExpressionTree> Parents {
       get { return ParentsParameter.ActualValue; }
     }
-    public ISymbolicExpressionTree Child {
-      get { return ChildParameter.ActualValue; }
-      set { ChildParameter.ActualValue = value; }
+    private ISymbolicExpressionTree Child {
+      get { return SymbolicExpressionTreeParameter.ActualValue; }
+      set { SymbolicExpressionTreeParameter.ActualValue = value; }
     }
     #endregion
     [StorableConstructor]
@@ -57,21 +53,32 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
     protected SymbolicExpressionTreeCrossover()
       : base() {
       Parameters.Add(new ScopeTreeLookupParameter<ISymbolicExpressionTree>(ParentsParameterName, "The parent symbolic expression trees which should be crossed."));
-      Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(ChildParameterName, "The child symbolic expression tree resulting from the crossover."));
       ParentsParameter.ActualName = "SymbolicExpressionTree";
-      ChildParameter.ActualName = "SymbolicExpressionTree";
     }
 
     public sealed override IOperation InstrumentedApply() {
       if (Parents.Length != 2)
         throw new ArgumentException("Number of parents must be exactly two for symbolic expression tree crossover operators.");
 
-      ISymbolicExpressionTree result = Crossover(Random, Parents[0], Parents[1]);
+      ISymbolicExpressionTree result = Crossover(RandomParameter.ActualValue, Parents[0], Parents[1]);
 
       Child = result;
       return base.InstrumentedApply();
     }
 
     public abstract ISymbolicExpressionTree Crossover(IRandom random, ISymbolicExpressionTree parent0, ISymbolicExpressionTree parent1);
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.4
+      #region Backwards compatible code, remove with 3.5
+      if (Parameters.ContainsKey("Child")) {
+        var oldChildParameter = (ILookupParameter<ISymbolicExpressionTree>)Parameters["Child"];
+        Parameters.Remove("Child");
+        SymbolicExpressionTreeParameter.ActualName = oldChildParameter.ActualName;
+      }
+      #endregion
+    }
   }
 }
