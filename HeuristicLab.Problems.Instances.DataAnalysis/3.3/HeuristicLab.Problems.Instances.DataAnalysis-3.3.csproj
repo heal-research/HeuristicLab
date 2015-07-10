@@ -192,6 +192,7 @@
     <Compile Include="Regression\Nguyen\NguyenFunctionTwo.cs" />
     <Compile Include="Regression\Nguyen\NguyenInstanceProvider.cs" />
     <Compile Include="Regression\RealWorld\ChemicalOne.cs" />
+    <Compile Include="Regression\RealWorld\Powermeter.cs" />
     <Compile Include="Regression\RealWorld\Housing.cs" />
     <Compile Include="Regression\RealWorld\RealWorldRegressionInstanceProvider.cs" />
     <Compile Include="Regression\RealWorld\Tower.cs" />

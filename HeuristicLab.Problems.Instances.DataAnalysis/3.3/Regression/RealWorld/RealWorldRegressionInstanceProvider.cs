@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       descriptorList.Add(new ChemicalOne());
       descriptorList.Add(new Housing());
       descriptorList.Add(new Tower());
+      descriptorList.Add(new Powermeter());
       var solutionsArchiveName = GetResourceName(FileName + @"\.zip");
       if (!String.IsNullOrEmpty(solutionsArchiveName)) {
         using (var solutionsZipFile = new ZipArchive(GetType().Assembly.GetManifestResourceStream(solutionsArchiveName), ZipArchiveMode.Read)) {
