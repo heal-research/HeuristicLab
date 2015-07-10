@@ -165,7 +165,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         "", //average
         "", //standard deviation
         "", //variance
-        logic.GetMostCommonValue<string>(columnIndex).ToString(),
+        logic.GetMostCommonValue<string>(columnIndex) ?? "",
         logic.GetDifferentValuesCount<string>(columnIndex).ToString()
       };
     }

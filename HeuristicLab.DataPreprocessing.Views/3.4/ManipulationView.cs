@@ -22,6 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
@@ -148,11 +151,24 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void validateDeleteColumnsInfo() {
       validateDoubleTextBox(txtDeleteColumnsInfo.Text);
       if (btnApply.Enabled) {
-        int count = Content.ManipulationLogic.ColumnsWithMissingValuesGreater(getDeleteColumnsInfo()).Count;
-        int rowCount = Content.FilterLogic.PreprocessingData.Rows;
-        lblPreviewColumnsInfo.Text = count + " column" + (count > 1 || count == 0 ? "s" : "") + " of " + rowCount + " (" + string.Format("{0:F2}%", 100d / rowCount * count) + ") were detected with more than " + txtDeleteColumnsInfo.Text + "% missing values.";
+        var filteredColumns = Content.ManipulationLogic.ColumnsWithMissingValuesGreater(getDeleteColumnsInfo());
+        int count = filteredColumns.Count;
+        int columnCount = Content.FilterLogic.PreprocessingData.Columns;
+        lblPreviewColumnsInfo.Text = count + " column" + (count > 1 || count == 0 ? "s" : "") + " of " + columnCount + " (" + string.Format("{0:F2}%", 100d / columnCount * count) + ") were detected with more than " + txtDeleteColumnsInfo.Text + "% missing values.";
         if (count > 0) {
-          lblPreviewColumnsInfo.Text += Environment.NewLine + Environment.NewLine + "Please press the button \"Apply Manipulation\" if you wish to delete those columns.";
+          StringBuilder sb = new StringBuilder();
+          sb.Append(Environment.NewLine);
+          sb.Append("Columns: ");
+          sb.Append(Content.SearchLogic.VariableNames.ElementAt(filteredColumns.ElementAt(0)));
+          for (int i = 1; i < filteredColumns.Count; i++) {
+            string columnName = Content.SearchLogic.VariableNames.ElementAt(filteredColumns.ElementAt(i));
+            sb.Append(", ");
+            sb.Append(columnName);
+          }
+          sb.Append(Environment.NewLine);
+          sb.Append("Please press the button \"Apply Manipulation\" if you wish to delete those columns.");
+
+          lblPreviewColumnsInfo.Text += sb.ToString();
         } else {
           btnApply.Enabled = false;
         }
@@ -164,11 +180,24 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private void validateDeleteColumnsVariance() {
       validateDoubleTextBox(txtDeleteColumnsVariance.Text);
       if (btnApply.Enabled) {
-        int count = Content.ManipulationLogic.ColumnsWithVarianceSmaller(getDeleteColumnsVariance()).Count;
-        int rowCount = Content.FilterLogic.PreprocessingData.Rows;
-        lblPreviewColumnsVariance.Text = count + " column" + (count > 1 || count == 0 ? "s" : "") + " of " + rowCount + " (" + string.Format("{0:F2}%", 100d / rowCount * count) + ") were detected with a variance smaller than " + txtDeleteColumnsVariance.Text + ".";
+        var filteredColumns = Content.ManipulationLogic.ColumnsWithVarianceSmaller(getDeleteColumnsVariance());
+        int count = filteredColumns.Count;
+        int columnCount = Content.FilterLogic.PreprocessingData.Columns;
+        lblPreviewColumnsVariance.Text = count + " column" + (count > 1 || count == 0 ? "s" : "") + " of " + columnCount + " (" + string.Format("{0:F2}%", 100d / columnCount * count) + ") were detected with a variance smaller than " + txtDeleteColumnsVariance.Text + ".";
         if (count > 0) {
-          lblPreviewColumnsVariance.Text += Environment.NewLine + Environment.NewLine + "Please press the button \"Apply Manipulation\" if you wish to delete those columns.";
+          StringBuilder sb = new StringBuilder();
+          sb.Append(Environment.NewLine);
+          sb.Append("Columns: ");
+          sb.Append(Content.SearchLogic.VariableNames.ElementAt(filteredColumns.ElementAt(0)));
+          for (int i = 1; i < filteredColumns.Count; i++) {
+            string columnName = Content.SearchLogic.VariableNames.ElementAt(filteredColumns.ElementAt(i));
+            sb.Append(", ");
+            sb.Append(columnName);
+          }
+          sb.Append(Environment.NewLine);
+          sb.Append("Please press the button \"Apply Manipulation\" if you wish to delete those columns.");
+
+          lblPreviewColumnsVariance.Text += sb.ToString();
         } else {
           btnApply.Enabled = false;
         }
@@ -278,7 +307,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       btnApply.Enabled = false;
       if (!string.IsNullOrEmpty(text)) {
         double percent;
-        if (Double.TryParse(text, out percent)) {
+        if (Double.TryParse(text, NumberStyles.Number ^ NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out percent)) {
           btnApply.Enabled = true;
         }
       }
