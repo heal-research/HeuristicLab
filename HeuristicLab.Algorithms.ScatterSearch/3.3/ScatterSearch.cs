@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.ScatterSearch {
   /// A scatter search algorithm.
   /// </summary>
   [Item("Scatter Search", "A scatter search algorithm.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 500)]
   [StorableClass]
   public sealed class ScatterSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

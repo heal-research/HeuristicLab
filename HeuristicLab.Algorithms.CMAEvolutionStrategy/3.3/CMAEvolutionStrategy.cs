@@ -36,7 +36,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
   [Item("CMA Evolution Strategy", "An evolution strategy based on covariance matrix adaptation.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 210)]
   [StorableClass]
   public sealed class CMAEvolutionStrategy : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }
@@ -488,7 +488,8 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
             CMAUpdaterParameter.ValidValues.Add(op);
           CMAUpdater = CMAUpdaterParameter.ValidValues.First();
         }
-      } finally { cmaesInitializerSync = false; }
+      }
+      finally { cmaesInitializerSync = false; }
     }
     private void UpdateAnalyzers() {
       Analyzer.Operators.Clear();

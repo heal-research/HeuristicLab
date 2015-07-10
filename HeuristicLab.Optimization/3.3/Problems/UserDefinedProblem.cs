@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimization {
   /// A problem which can be defined by the user.
   /// </summary>
   [Item("User-Defined Problem", "A problem which can be defined by the user.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 120)]
   [StorableClass]
   public sealed class UserDefinedProblem : ParameterizedNamedItem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }

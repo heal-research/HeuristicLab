@@ -27,9 +27,9 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Symbolic Regression Problem (single objective)", "Represents a single objective symbolic regression problem.")]
+  [Item("Symbolic Regression Problem (single-objective)", "Represents a single objective symbolic regression problem.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 100)]
   public class SymbolicRegressionSingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, ISymbolicRegressionSingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IRegressionProblem {
     private const double PunishmentFactor = 10;
     private const int InitialMaximumTreeDepth = 8;

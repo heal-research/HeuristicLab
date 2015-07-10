@@ -26,8 +26,8 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
-  [Item("Single-Objective OKB Problem", "Represents a single-objective problem which is stored in the OKB.")]
-  [Creatable("Optimization Knowledge Base (OKB)")]
+  [Item("OKB Problem (single-objective)", "Represents a single-objective problem which is stored in the OKB.")]
+  [Creatable(CreatableAttribute.Categories.TestingAndAnalysisOKB, Priority = 110)]
   [StorableClass]
   public sealed class SingleObjectiveOKBProblem : OKBProblem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent {
     public string Filename { get; set; }

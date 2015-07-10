@@ -25,9 +25,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading.Symbolic {
-  [Item("Symbolic Trading Problem (single objective)", "Represents a single objective symbolic trading problem.")]
+  [Item("Symbolic Trading Problem (single-objective)", "Represents a single-objective symbolic trading problem.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 150)]
   public class SingleObjectiveProblem : SymbolicDataAnalysisSingleObjectiveProblem<IProblemData, ISingleObjectiveEvaluator, ISymbolicDataAnalysisSolutionCreator>, IProblem {
     private const int InitialMaximumTreeDepth = 8;
     private const int InitialMaximumTreeLength = 25;

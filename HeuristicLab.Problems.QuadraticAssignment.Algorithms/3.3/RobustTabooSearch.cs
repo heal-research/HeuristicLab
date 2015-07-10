@@ -34,7 +34,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
   [Item("Robust Taboo Search", "The algorithm is described in Taillard, E. 1991. Robust Taboo Search for the Quadratic Assignment Problem. Parallel Computing 17, pp. 443-455.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 130)]
   [StorableClass]
   public sealed class RobustTabooSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

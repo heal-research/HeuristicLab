@@ -24,12 +24,11 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Binary {
   [Item("One Max Problem", "Represents a problem whose objective is to maximize the number of true values.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 210)]
   [StorableClass]
   public class OneMaxProblem : BinaryProblem {
     public override bool Maximization {

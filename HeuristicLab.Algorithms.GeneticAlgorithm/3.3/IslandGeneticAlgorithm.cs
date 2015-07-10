@@ -38,7 +38,7 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
   /// An island genetic algorithm.
   /// </summary>
   [Item("Island Genetic Algorithm", "An island genetic algorithm.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms,Priority = 110)]
   [StorableClass]
   public sealed class IslandGeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

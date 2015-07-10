@@ -36,7 +36,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
   [Item("Simulated Annealing", "A simulated annealing algorithm.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 140)]
   [StorableClass]
   public sealed class SimulatedAnnealing : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     public string Filename { get; set; }

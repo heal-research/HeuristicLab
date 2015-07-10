@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// Neural network classification data analysis algorithm.
   /// </summary>
   [Item("Neural Network Classification", "Neural network classification data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/neuralnetworks.php")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 130)]
   [StorableClass]
   public sealed class NeuralNetworkClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
     private const string DecayParameterName = "Decay";

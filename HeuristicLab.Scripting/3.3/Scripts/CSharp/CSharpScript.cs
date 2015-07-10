@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Scripting {
   [Item("C# Script", "An empty C# script.")]
-  [Creatable("Scripts")]
+  [Creatable(CreatableAttribute.Categories.Scripts, Priority = 100)]
   [StorableClass]
   public class CSharpScript : Script, IStorableContent {
     #region Constants
@@ -101,9 +101,11 @@ namespace HeuristicLab.Scripting {
         try {
           OnScriptExecutionStarted();
           compiledScript.Execute(VariableStore);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
           ex = e;
-        } finally {
+        }
+        finally {
           scriptThread = null;
           OnScriptExecutionFinished(ex);
         }

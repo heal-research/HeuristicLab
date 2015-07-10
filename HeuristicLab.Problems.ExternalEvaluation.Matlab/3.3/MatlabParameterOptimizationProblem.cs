@@ -29,7 +29,7 @@ using HeuristicLab.Problems.ParameterOptimization;
 namespace HeuristicLab.Problems.ExternalEvaluation.Matlab {
   [Item("MATLAB Parameter Optimization Problem", "Optimization of a parameter vector which is evaluated in MATLAB.")]
   [StorableClass]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 110)]
   public class MatlabParameterOptimizationProblem : ParameterOptimizationProblem {
     private const string QualityVariableParameterName = "QualityVariableName";
     private const string MatlabEvaluationScriptParameterName = "MATLABEvaluationScript";

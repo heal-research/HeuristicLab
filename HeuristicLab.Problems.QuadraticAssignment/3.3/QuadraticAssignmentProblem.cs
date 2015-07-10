@@ -35,7 +35,7 @@ using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("Quadratic Assignment Problem", "The Quadratic Assignment Problem (QAP) can be described as the problem of assigning N facilities to N fixed locations such that there is exactly one facility in each location and that the sum of the distances multiplied by the connection strength between the facilities becomes minimal.")]
-  [Creatable("Problems")]
+  [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 140)]
   [StorableClass]
   public sealed class QuadraticAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<IQAPEvaluator, IPermutationCreator>, IStorableContent,
     IProblemInstanceConsumer<QAPData>,

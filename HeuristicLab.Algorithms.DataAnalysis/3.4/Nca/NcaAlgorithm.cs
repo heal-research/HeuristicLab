@@ -42,7 +42,7 @@ based on the description of J. Goldberger, S. Roweis, G. Hinton, R. Salakhutdino
 Neighbourhood Component Analysis. Advances in Neural Information Processing Systems, 17. pp. 513-520
 with additional regularizations described in Z. Yang, J. Laaksonen. 2007.
 Regularized Neighborhood Component Analysis. Lecture Notes in Computer Science, 4522. pp. 253-262.")]
-  [Creatable("Data Analysis")]
+  [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 170)]
   [StorableClass]
   public sealed class NcaAlgorithm : EngineAlgorithm {
     #region Parameter Names

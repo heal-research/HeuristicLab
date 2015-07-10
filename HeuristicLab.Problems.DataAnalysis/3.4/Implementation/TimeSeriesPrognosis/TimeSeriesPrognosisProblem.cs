@@ -26,7 +26,6 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Time-series Prognosis Problem", "A general time-series prognosis problem.")]
-  [Creatable("Problems")]
   public class TimeSeriesPrognosisProblem : DataAnalysisProblem<ITimeSeriesPrognosisProblemData>, ITimeSeriesPrognosisProblem {
     [StorableConstructor]
     protected TimeSeriesPrognosisProblem(bool deserializing) : base(deserializing) { }

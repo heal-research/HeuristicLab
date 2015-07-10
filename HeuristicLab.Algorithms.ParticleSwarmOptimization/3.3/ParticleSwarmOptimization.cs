@@ -35,7 +35,7 @@ using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParticleSwarmOptimization {
   [Item("Particle Swarm Optimization", "A particle swarm optimization algorithm based on the description in Pedersen, M.E.H. (2010). PhD thesis. University of Southampton.")]
-  [Creatable("Algorithms")]
+  [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 300)]
   [StorableClass]
   public sealed class ParticleSwarmOptimization : HeuristicOptimizationEngineAlgorithm, IStorableContent {
     #region Parameter Properties
