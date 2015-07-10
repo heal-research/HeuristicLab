@@ -60,7 +60,7 @@ namespace HeuristicLab.Data {
       return valid;
     }
     protected virtual string GetValue(int rowIndex, int columIndex) {
-      return this[rowIndex, columIndex].ToString();
+      return this[rowIndex, columIndex].ToString("r");
     }
     protected virtual bool SetValue(string value, int rowIndex, int columnIndex) {
       double val;
