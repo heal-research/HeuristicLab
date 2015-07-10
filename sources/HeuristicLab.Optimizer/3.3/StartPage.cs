@@ -138,7 +138,7 @@ namespace HeuristicLab.Optimizer {
     private void FillGroupLookup() {
       var standardProblems = new List<string> { "ES_Griewank", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
                 "IslandGA_TSP", "LS_Knapsack", "PSO_Schwefel", "RAPGA_JSSP",
-                "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_TSP"
+                "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP" ,"VNS_TSP"
         };
       groupLookup[standardProblemsGroup] = standardProblems;
       var dataAnalysisProblems = new List<string> { "SGP_SymbClass", "SGP_SymbReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
