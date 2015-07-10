@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [TestClass()]
-  public class Test {
+  public class GradientBoostingTest {
     [TestMethod]
     [TestCategory("Algorithms.DataAnalysis")]
     [TestProperty("Time", "short")]

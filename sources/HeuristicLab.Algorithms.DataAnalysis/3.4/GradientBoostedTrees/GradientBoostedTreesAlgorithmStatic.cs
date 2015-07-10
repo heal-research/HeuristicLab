@@ -47,6 +47,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       internal double nu { get; private set; }
       internal double r { get; private set; }
       internal double m { get; private set; }
+      internal int[] trainingRows { get; private set; }
+      internal int[] testRows { get; private set; }
       internal RegressionTreeBuilder treeBuilder { get; private set; }
 
       private MersenneTwister random { get; set; }
@@ -70,11 +72,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         random = new MersenneTwister(randSeed);
         this.problemData = problemData;
+        this.trainingRows = problemData.TrainingIndices.ToArray();
+        this.testRows = problemData.TestIndices.ToArray();
         this.lossFunction = lossFunction;
 
-        int nRows = problemData.TrainingIndices.Count();
+        int nRows = trainingRows.Length;
 
-        y = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).ToArray();
+        y = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, trainingRows).ToArray();
 
         treeBuilder = new RegressionTreeBuilder(problemData, random);
 
@@ -83,7 +87,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var zeros = Enumerable.Repeat(0.0, nRows).ToArray();
         double f0 = lossFunction.LineSearch(y, zeros, activeIdx, 0, nRows - 1); // initial constant value (mean for squared errors)
         pred = Enumerable.Repeat(f0, nRows).ToArray();
-        predTest = Enumerable.Repeat(f0, problemData.TestIndices.Count()).ToArray();
+        predTest = Enumerable.Repeat(f0, testRows.Length).ToArray();
         pseudoRes = new double[nRows];
 
         models = new List<IRegressionModel>();
@@ -105,8 +109,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         return lossFunction.GetLoss(y, pred) / nRows;
       }
       public double GetTestLoss() {
-        var yTest = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TestIndices);
-        var nRows = problemData.TestIndices.Count();
+        var yTest = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, testRows);
+        var nRows = testRows.Length;
         return lossFunction.GetLoss(yTest, predTest) / nRows;
       }
 
@@ -159,6 +163,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var y = gbmState.y;
       var activeIdx = gbmState.activeIdx;
       var pseudoRes = gbmState.pseudoRes;
+      var trainingRows = gbmState.trainingRows;
+      var testRows = gbmState.testRows;
 
       // copy output of gradient function to pre-allocated rim array (pseudo-residual per row and model)
       int rimIdx = 0;
@@ -169,13 +175,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       var tree = treeBuilder.CreateRegressionTreeForGradientBoosting(pseudoRes, yPred, maxSize, activeIdx, lossFunction, r, m);
 
       int i = 0;
-      foreach (var pred in tree.GetEstimatedValues(problemData.Dataset, problemData.TrainingIndices)) {
+      foreach (var pred in tree.GetEstimatedValues(problemData.Dataset, trainingRows)) {
         yPred[i] = yPred[i] + nu * pred;
         i++;
       }
       // update predictions for validation set
       i = 0;
-      foreach (var pred in tree.GetEstimatedValues(problemData.Dataset, problemData.TestIndices)) {
+      foreach (var pred in tree.GetEstimatedValues(problemData.Dataset, testRows)) {
         yPredTest[i] = yPredTest[i] + nu * pred;
         i++;
       }
