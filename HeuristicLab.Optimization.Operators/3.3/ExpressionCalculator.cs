@@ -73,10 +73,14 @@ literals:
   numbers, true, false, null and strings in single quotes
 variables (run parameters or results):
   unquoted or in double quotes if they contain special characters or whitespace
-mathematical functions:
+mathematical functions (resulting in double values):
   +, -, *, /, ^ (power), log
 predicates:
   ==, <, >, isnull, not
+conversions:
+  toint, todouble
+array indexing:
+  []
 stack manipulation:
   drop swap dup
 string matching:
