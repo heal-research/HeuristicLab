@@ -34,10 +34,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [Item("SymbolicClassificationPruningOperator", "An operator which prunes symbolic classificaton trees.")]
   public class SymbolicClassificationPruningOperator : SymbolicDataAnalysisExpressionPruningOperator {
     private const string ModelCreatorParameterName = "ModelCreator";
+    private const string EvaluatorParameterName = "Evaluator";
 
     #region parameter properties
     public ILookupParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter {
       get { return (ILookupParameter<ISymbolicClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
+    }
+
+    public ILookupParameter<ISymbolicClassificationSingleObjectiveEvaluator> EvaluatorParameter {
+      get {
+        return (ILookupParameter<ISymbolicClassificationSingleObjectiveEvaluator>)Parameters[EvaluatorParameterName];
+      }
     }
     #endregion
 
@@ -50,6 +57,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     public SymbolicClassificationPruningOperator(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactValuesCalculator)
       : base(impactValuesCalculator) {
       Parameters.Add(new LookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName));
+      Parameters.Add(new LookupParameter<ISymbolicClassificationSingleObjectiveEvaluator>(EvaluatorParameterName));
     }
 
     protected override ISymbolicDataAnalysisModel CreateModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
@@ -61,20 +69,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     }
 
     protected override double Evaluate(IDataAnalysisModel model) {
-      var classificationModel = (IClassificationModel)model;
+      var evaluator = EvaluatorParameter.ActualValue;
+      var classificationModel = (ISymbolicClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)ProblemDataParameter.ActualValue;
       var rows = Enumerable.Range(FitnessCalculationPartitionParameter.ActualValue.Start, FitnessCalculationPartitionParameter.ActualValue.Size);
-
-      return Evaluate(classificationModel, classificationProblemData, rows);
-    }
-
-    private static double Evaluate(IClassificationModel model, IClassificationProblemData problemData, IEnumerable<int> rows) {
-      var estimatedValues = model.GetEstimatedClassValues(problemData.Dataset, rows);
-      var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      OnlineCalculatorError errorState;
-      var quality = OnlineAccuracyCalculator.Calculate(targetValues, estimatedValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return quality;
+      return evaluator.Evaluate(this.ExecutionContext, classificationModel.SymbolicExpressionTree, classificationProblemData, rows);
     }
 
     public static ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, ISymbolicClassificationModelCreator modelCreator,
@@ -85,14 +84,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       var model = modelCreator.CreateSymbolicClassificationModel(clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
 
       var nodes = clonedTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
-      double quality = Evaluate(model, problemData, rows);
+      double qualityForImpactsCalculation = double.NaN;
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
         if (node is ConstantTreeNode) continue;
 
-        double impactValue, replacementValue;
-        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, quality);
+        double impactValue, replacementValue, newQualityForImpactsCalculation;
+        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
 
         if (pruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!pruneOnlyZeroImpactNodes && impactValue > nodeImpactThreshold) continue;
@@ -103,7 +102,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
         ReplaceWithConstant(node, constantNode);
         i += node.GetLength() - 1; // skip subtrees under the node that was folded
 
-        quality -= impactValue;
+        qualityForImpactsCalculation = newQualityForImpactsCalculation;
       }
       return model.SymbolicExpressionTree;
     }

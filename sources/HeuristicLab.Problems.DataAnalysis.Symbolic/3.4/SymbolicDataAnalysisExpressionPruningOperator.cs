@@ -48,6 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string QualityParameterName = "Quality"; // the quality 
     private const string EstimationLimitsParameterName = "EstimationLimits";
     private const string InterpreterParameterName = "SymbolicExpressionTreeInterpreter";
+    private const string ApplyLinearScalingParameterName = "ApplyLinearScaling";
     #endregion
 
     #region parameter properties
@@ -87,6 +88,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter> InterpreterParameter {
       get { return (ILookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>)Parameters[InterpreterParameterName]; }
     }
+    public ILookupParameter<BoolValue> ApplyLinearScalingParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[ApplyLinearScalingParameterName]; }
+    }
     #endregion
 
     #region properties
@@ -123,6 +127,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(InterpreterParameterName));
       Parameters.Add(new LookupParameter<ISymbolicExpressionTree>(SymbolicExpressionTreeParameterName));
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName));
+      Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName));
       Parameters.Add(new ValueParameter<ISymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName, impactValuesCalculator));
       #endregion
     }
@@ -140,19 +145,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
 
       var model = CreateModel(tree, interpreter, problemData, estimationLimits);
       var nodes = tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
-      var rows = Enumerable.Range(fitnessCalculationPartition.Start, fitnessCalculationPartition.Size);
+      var rows = Enumerable.Range(fitnessCalculationPartition.Start, fitnessCalculationPartition.Size).ToList();
       var prunedSubtrees = 0;
       var prunedTrees = 0;
       var prunedNodes = 0;
 
-      double quality = Evaluate(model);
+      double qualityForImpactsCalculation = double.NaN;
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
         if (node is ConstantTreeNode) continue;
 
         double impactValue, replacementValue;
-        ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, quality);
+        double newQualityForImpacts;
+        ImpactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpacts, qualityForImpactsCalculation);
 
         if (PruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!PruneOnlyZeroImpactNodes && impactValue > NodeImpactThreshold) continue;
@@ -164,16 +170,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         ReplaceWithConstant(node, constantNode);
         i += length - 1; // skip subtrees under the node that was folded
 
-        quality -= impactValue;
         prunedSubtrees++;
         prunedNodes += length;
+
+        qualityForImpactsCalculation = newQualityForImpacts;
       }
 
       if (prunedSubtrees > 0) prunedTrees = 1;
       PrunedSubtreesParameter.ActualValue = new IntValue(prunedSubtrees);
       PrunedTreesParameter.ActualValue = new IntValue(prunedTrees);
       PrunedNodesParameter.ActualValue = new IntValue(prunedNodes);
-      QualityParameter.ActualValue.Value = quality;
+
+      if (prunedSubtrees > 0) // if nothing was pruned then there's no need to re-evaluate the tree
+        QualityParameter.ActualValue.Value = Evaluate(model);
 
       return base.Apply();
     }

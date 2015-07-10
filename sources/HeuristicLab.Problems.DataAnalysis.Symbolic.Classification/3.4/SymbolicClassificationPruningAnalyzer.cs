@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
     private SymbolicClassificationPruningAnalyzer(bool deserializing) : base(deserializing) { }
 
     public SymbolicClassificationPruningAnalyzer() {
-      Parameters.Add(new ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));
+      Parameters.Add(new ValueParameter<SymbolicClassificationPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));
     }
   }
 }

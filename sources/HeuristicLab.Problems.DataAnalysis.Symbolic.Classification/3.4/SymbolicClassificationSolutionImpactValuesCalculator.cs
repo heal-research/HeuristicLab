@@ -46,27 +46,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       return CalculateReplacementValue(node, classificationModel.SymbolicExpressionTree, classificationModel.Interpreter, classificationProblemData.Dataset, rows);
     }
 
-    public override double CalculateImpactValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, double originalQuality = double.NaN) {
+    public override double CalculateImpactValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, double qualityForImpactsCalculation = double.NaN) {
       double impactValue, replacementValue;
-      CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, originalQuality);
+      double newQualityForImpactsCalculation;
+      CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
       return impactValue;
     }
 
     public override void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node,
-      IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue,
-      double originalQuality = Double.NaN) {
+      IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation,
+      double qualityForImpactsCalculation = Double.NaN) {
       var classificationModel = (ISymbolicClassificationModel)model;
       var classificationProblemData = (IClassificationProblemData)problemData;
 
-      var dataset = classificationProblemData.Dataset;
-      var targetClassValues = dataset.GetDoubleValues(classificationProblemData.TargetVariable, rows);
-
-      OnlineCalculatorError errorState;
-      if (double.IsNaN(originalQuality)) {
-        var originalClassValues = classificationModel.GetEstimatedClassValues(dataset, rows);
-        originalQuality = OnlineAccuracyCalculator.Calculate(targetClassValues, originalClassValues, out errorState);
-        if (errorState != OnlineCalculatorError.None) originalQuality = 0.0;
-      }
+      if (double.IsNaN(qualityForImpactsCalculation))
+        qualityForImpactsCalculation = CalculateQualityForImpacts(classificationModel, classificationProblemData, rows);
 
       replacementValue = CalculateReplacementValue(classificationModel, node, classificationProblemData, rows);
       var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
@@ -80,11 +74,25 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
       tempModelParentNode.RemoveSubtree(i);
       tempModelParentNode.InsertSubtree(i, constantNode);
 
+      OnlineCalculatorError errorState;
+      var dataset = classificationProblemData.Dataset;
+      var targetClassValues = dataset.GetDoubleValues(classificationProblemData.TargetVariable, rows);
       var estimatedClassValues = tempModel.GetEstimatedClassValues(dataset, rows);
-      double newQuality = OnlineAccuracyCalculator.Calculate(targetClassValues, estimatedClassValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) newQuality = 0.0;
+      newQualityForImpactsCalculation = OnlineAccuracyCalculator.Calculate(targetClassValues, estimatedClassValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) newQualityForImpactsCalculation = 0.0;
 
-      impactValue = originalQuality - newQuality;
+      impactValue = qualityForImpactsCalculation - newQualityForImpactsCalculation;
+    }
+
+    public static double CalculateQualityForImpacts(ISymbolicClassificationModel model, IClassificationProblemData problemData, IEnumerable<int> rows) {
+      OnlineCalculatorError errorState;
+      var dataset = problemData.Dataset;
+      var targetClassValues = dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      var originalClassValues = model.GetEstimatedClassValues(dataset, rows);
+      var qualityForImpactsCalculation = OnlineAccuracyCalculator.Calculate(targetClassValues, originalClassValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) qualityForImpactsCalculation = 0.0;
+
+      return qualityForImpactsCalculation;
     }
   }
 }

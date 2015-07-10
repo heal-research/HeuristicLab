@@ -26,12 +26,21 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableClass]
   [Item("SymbolicRegressionPruningOperator", "An operator which prunes symbolic regression trees.")]
   public class SymbolicRegressionPruningOperator : SymbolicDataAnalysisExpressionPruningOperator {
+    private const string EvaluatorParameterName = "Evaluator";
+
+    #region parameter properties
+    public ILookupParameter<ISymbolicRegressionSingleObjectiveEvaluator> EvaluatorParameter {
+      get { return (ILookupParameter<ISymbolicRegressionSingleObjectiveEvaluator>)Parameters[EvaluatorParameterName]; }
+    }
+    #endregion
+
     protected SymbolicRegressionPruningOperator(SymbolicRegressionPruningOperator original, Cloner cloner)
       : base(original, cloner) {
     }
@@ -44,6 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public SymbolicRegressionPruningOperator(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactValuesCalculator)
       : base(impactValuesCalculator) {
+      Parameters.Add(new LookupParameter<ISymbolicRegressionSingleObjectiveEvaluator>(EvaluatorParameterName));
     }
 
     protected override ISymbolicDataAnalysisModel CreateModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
@@ -51,34 +61,28 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     }
 
     protected override double Evaluate(IDataAnalysisModel model) {
-      var regressionModel = (IRegressionModel)model;
+      var regressionModel = (ISymbolicRegressionModel)model;
       var regressionProblemData = (IRegressionProblemData)ProblemDataParameter.ActualValue;
-      var rows = Enumerable.Range(FitnessCalculationPartitionParameter.ActualValue.Start, FitnessCalculationPartitionParameter.ActualValue.Size);
-      return Evaluate(regressionModel, regressionProblemData, rows);
-    }
-
-    private static double Evaluate(IRegressionModel model, IRegressionProblemData problemData,
-      IEnumerable<int> rows) {
-      var estimatedValues = model.GetEstimatedValues(problemData.Dataset, rows); // also bounds the values
-      var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      OnlineCalculatorError errorState;
-      var quality = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return quality*quality;
+      var evaluator = EvaluatorParameter.ActualValue;
+      var fitnessEvaluationPartition = FitnessCalculationPartitionParameter.ActualValue;
+      var rows = Enumerable.Range(fitnessEvaluationPartition.Start, fitnessEvaluationPartition.Size);
+      return evaluator.Evaluate(this.ExecutionContext, regressionModel.SymbolicExpressionTree, regressionProblemData, rows);
     }
 
     public static ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, SymbolicRegressionSolutionImpactValuesCalculator impactValuesCalculator, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IRegressionProblemData problemData, DoubleLimit estimationLimits, IEnumerable<int> rows, double nodeImpactThreshold = 0.0, bool pruneOnlyZeroImpactNodes = false) {
       var clonedTree = (ISymbolicExpressionTree)tree.Clone();
       var model = new SymbolicRegressionModel(clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
       var nodes = clonedTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList(); // skip the nodes corresponding to the ProgramRootSymbol and the StartSymbol
-      double quality = Evaluate(model, problemData, rows);
+
+      double qualityForImpactsCalculation = double.NaN; // pass a NaN value initially so the impact calculator will calculate the quality
 
       for (int i = 0; i < nodes.Count; ++i) {
         var node = nodes[i];
         if (node is ConstantTreeNode) continue;
 
         double impactValue, replacementValue;
-        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, quality);
+        double newQualityForImpactsCalculation;
+        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
 
         if (pruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
         if (!pruneOnlyZeroImpactNodes && impactValue > nodeImpactThreshold) continue;
@@ -89,7 +93,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         ReplaceWithConstant(node, constantNode);
         i += node.GetLength() - 1; // skip subtrees under the node that was folded
 
-        quality -= impactValue;
+        qualityForImpactsCalculation = newQualityForImpactsCalculation;
       }
       return model.SymbolicExpressionTree;
     }
