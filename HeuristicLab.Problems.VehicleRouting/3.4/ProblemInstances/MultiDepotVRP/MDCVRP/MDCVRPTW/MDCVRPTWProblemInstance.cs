@@ -82,6 +82,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         else
           return TardinessPenaltyParameter.Value;
       }
+    }
+    DoubleValue ITimeWindowedProblemInstance.CurrentTardinessPenalty {
+      get { return CurrentTardinessPenaltyParameter.Value; }
       set { CurrentTardinessPenaltyParameter.Value = value; }
     }
 
@@ -112,7 +115,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
 
       Parameters.Add(new ValueParameter<DoubleValue>("EvalTimeFactor", "The time factor considered in the evaluation.", new DoubleValue(0)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalTardinessPenalty", "The tardiness penalty considered in the evaluation.", new DoubleValue(100)));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("CurrentTardinessPenalty", "The current tardiness penalty considered in the evaluation."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("CurrentTardinessPenalty", "The current tardiness penalty considered in the evaluation.") { Hidden = true });
 
       AttachEventHandlers();
     }

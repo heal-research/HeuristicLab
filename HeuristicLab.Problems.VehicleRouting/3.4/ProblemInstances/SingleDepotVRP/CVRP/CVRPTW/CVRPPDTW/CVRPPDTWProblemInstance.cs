@@ -60,6 +60,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         else
           return PickupViolationPenaltyParameter.Value;
       }
+    }
+    DoubleValue IPickupAndDeliveryProblemInstance.CurrentPickupViolationPenalty {
+      get { return CurrentOverloadPenaltyParameter.Value; }
       set { CurrentPickupViolationPenaltyParameter.Value = value; }
     }
 
@@ -93,7 +96,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
       Parameters.Add(new ValueParameter<IntArray>("PickupDeliveryLocation", "The pickup and delivery location for each customer.", new IntArray()));
 
       Parameters.Add(new ValueParameter<DoubleValue>("EvalPickupViolationPenalty", "The pickup violation penalty considered in the evaluation.", new DoubleValue(100)));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("CurrentPickupViolationPenalty", "The current pickup violation penalty considered in the evaluation."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("CurrentPickupViolationPenalty", "The current pickup violation penalty considered in the evaluation.") { Hidden = true });
 
       AttachEventHandlers();
     }

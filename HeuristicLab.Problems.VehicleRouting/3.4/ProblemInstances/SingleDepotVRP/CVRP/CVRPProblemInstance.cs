@@ -60,6 +60,9 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
         else
           return OverloadPenaltyParameter.Value;
       }
+    }
+    DoubleValue ICapacitatedProblemInstance.CurrentOverloadPenalty {
+      get { return CurrentOverloadPenaltyParameter.Value; }
       set { CurrentOverloadPenaltyParameter.Value = value; }
     }
 
@@ -86,7 +89,7 @@ namespace HeuristicLab.Problems.VehicleRouting.ProblemInstances {
     public CVRPProblemInstance() {
       Parameters.Add(new ValueParameter<DoubleValue>("Capacity", "The capacity of each vehicle.", new DoubleValue(0)));
       Parameters.Add(new ValueParameter<DoubleValue>("EvalOverloadPenalty", "The overload penalty considered in the evaluation.", new DoubleValue(100)));
-      Parameters.Add(new OptionalValueParameter<DoubleValue>("CurrentOverloadPenalty", "The current overload penalty considered in the evaluation."));
+      Parameters.Add(new OptionalValueParameter<DoubleValue>("CurrentOverloadPenalty", "The current overload penalty considered in the evaluation.") { Hidden = true });
 
       AttachEventHandlers();
     }

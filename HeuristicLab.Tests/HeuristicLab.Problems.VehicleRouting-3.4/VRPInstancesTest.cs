@@ -41,7 +41,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Tests {
 
       foreach (var provider in providers) {
         IEnumerable<IDataDescriptor> instances = ((dynamic)provider).GetDataDescriptors();
-        Assert.IsTrue(instances.Any(), "No instances could be found.");
+        Assert.IsTrue(instances.Any(), string.Format("No instances could be found in {0}.", provider.Name));
 
         foreach (var instance in instances) {
           try {
