@@ -40,11 +40,13 @@ namespace HeuristicLab.Tests {
     }
 
     public DeepCloneableCloningTest() {
-      excludedTypes = new HashSet<Type>();
-      excludedTypes.Add(typeof(HeuristicLab.Problems.DataAnalysis.Dataset));
-      excludedTypes.Add(typeof(HeuristicLab.Problems.TravelingSalesman.DistanceMatrix));
-      excludedTypes.Add(typeof(HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution));
-      excludedTypes.Add(typeof(HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution));
+      excludedTypes = new HashSet<Type> {
+        typeof (HeuristicLab.Problems.DataAnalysis.Dataset),
+        typeof (HeuristicLab.Problems.TravelingSalesman.DistanceMatrix),
+        typeof (HeuristicLab.Problems.DataAnalysis.ClassificationEnsembleSolution),
+        typeof (HeuristicLab.Problems.DataAnalysis.RegressionEnsembleSolution),
+        typeof (HeuristicLab.Problems.Orienteering.DistanceMatrix)
+      };
       excludedTypes.Add(typeof(SymbolicExpressionGrammar).Assembly.GetType("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.EmptySymbolicExpressionTreeGrammar"));
 
       foreach (var symbolType in ApplicationManager.Manager.GetTypes(typeof(HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Symbol)))
@@ -86,14 +88,12 @@ namespace HeuristicLab.Tests {
         IDeepCloneable item = null;
         try {
           item = (IDeepCloneable)Activator.CreateInstance(deepCloneableType, nonPublic: false);
-        }
-        catch { continue; } // no default constructor
+        } catch { continue; } // no default constructor
 
         IDeepCloneable clone = null;
         try {
           clone = (IDeepCloneable)item.Clone(new Cloner());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           TestContext.WriteLine(Environment.NewLine + deepCloneableType.FullName + ":");
           TestContext.WriteLine("ERROR! " + e.GetType().Name + @" was thrown during cloning.
 All IDeepCloneable items with a default constructor should be cloneable when using that constructor!");
