@@ -57,8 +57,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
         if (!typeof(MultiOperator<ILinearLinkageManipulator>).IsAssignableFrom(type))
           Operators.Add((ILinearLinkageManipulator)Activator.CreateInstance(type), true);
       }
-      Operators.SetItemCheckedState(Operators.OfType<SwapItemManipulator>().First(), false);
-      Operators.SetItemCheckedState(Operators.OfType<GraftManipulator>().First(), false);
       SelectedOperatorParameter.ActualName = "SelectedManipulationOperator";
     }
 
