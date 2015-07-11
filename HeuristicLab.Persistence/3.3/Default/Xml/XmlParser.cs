@@ -30,6 +30,13 @@ using HeuristicLab.Persistence.Core.Tokens;
 using HeuristicLab.Persistence.Interfaces;
 
 namespace HeuristicLab.Persistence.Default.Xml {
+  /// <summary>
+  /// Type of compression used for the Xml stream or file.
+  /// </summary>
+  public enum CompressionType {
+    GZip,
+    Zip
+  }
 
   /// <summary>
   /// Main entry point of persistence loading from XML. Use the static
@@ -215,36 +222,42 @@ namespace HeuristicLab.Persistence.Default.Xml {
       return (T)Deserialize(filename);
     }
 
-
-    /// <summary>
-    /// Deserializes an object from the specified stream.
-    /// </summary>
-    /// <param name="stream">The stream.</param>
-    /// <returns>A fresh object instance.</returns>
-    public static object Deserialize(Stream stream) {
-      try {
-        using (StreamReader reader = new StreamReader(new GZipStream(stream, CompressionMode.Decompress))) {
-          XmlParser parser = new XmlParser(reader);
-          Deserializer deserializer = new Deserializer(new TypeMapping[] { });
-          return deserializer.Deserialize(parser);
-        }
-      }
-      catch (PersistenceException) {
-        throw;
-      }
-      catch (Exception x) {
-        throw new PersistenceException("Unexpected exception during deserialization", x);
-      }
-    }
-
     /// <summary>
     /// Deserializes an object from the specified stream.
     /// </summary>
     /// <typeparam name="T">object type expected from the serialized stream</typeparam>
     /// <param name="stream">The stream.</param>
+    /// <param name="compressionType">Type of compression, default is GZip.</param>
     /// <returns>A fresh object instance.</returns>
-    public static T Deserialize<T>(Stream stream) {
-      return (T)Deserialize(stream);
+    public static T Deserialize<T>(Stream stream, CompressionType compressionType = CompressionType.GZip) {
+      return (T)Deserialize(stream, compressionType);
+    }
+
+    /// <summary>
+    /// Deserializes an object from the specified stream.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="compressionType">Type of compression, default is GZip.</param>
+    /// <returns>A fresh object instance.</returns>
+    public static object Deserialize(Stream stream, CompressionType compressionType = CompressionType.GZip) {
+      if (compressionType == CompressionType.Zip) {
+        ZipArchive zipFile = new ZipArchive(stream);
+        return Deserialize(zipFile);
+      } else {
+        try {
+          using (StreamReader reader = new StreamReader(new GZipStream(stream, CompressionMode.Decompress))) {
+            XmlParser parser = new XmlParser(reader);
+            Deserializer deserializer = new Deserializer(new TypeMapping[] { });
+            return deserializer.Deserialize(parser);
+          }
+        }
+        catch (PersistenceException) {
+          throw;
+        }
+        catch (Exception x) {
+          throw new PersistenceException("Unexpected exception during deserialization", x);
+        }
+      }
     }
 
     private static object Deserialize(ZipArchive zipFile) {
