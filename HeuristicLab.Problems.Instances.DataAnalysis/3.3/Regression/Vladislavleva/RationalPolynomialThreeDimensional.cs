@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class RationalPolynomialThreeDimensional : ArtificialRegressionDataDescriptor {
@@ -43,7 +44,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override int TrainingPartitionStart { get { return 0; } }
     protected override int TrainingPartitionEnd { get { return 300; } }
     protected override int TestPartitionStart { get { return 300; } }
-    protected override int TestPartitionEnd { get { return 300 + (15*12*15); } }
+    protected override int TestPartitionEnd { get { return 300 + (15 * 12 * 15); } }
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
@@ -54,9 +55,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       data.Add(ValueGenerator.GenerateUniformDistributedValues(n, 0.05, 2).ToList());
 
       List<List<double>> testData = new List<List<double>>() { 
-        ValueGenerator.GenerateSteps(-0.05m, 2.05m, 0.15m).Select(v => (double)v).ToList(), 
-        ValueGenerator.GenerateSteps( 0.95m, 2.05m, 0.1m).Select(v => (double)v).ToList(),
-        ValueGenerator.GenerateSteps(-0.05m, 2.05m, 0.15m).Select(v => (double)v).ToList()
+        SequenceGenerator.GenerateSteps(-0.05m, 2.05m, 0.15m).Select(v => (double)v).ToList(), 
+        SequenceGenerator.GenerateSteps( 0.95m, 2.05m, 0.1m).Select(v => (double)v).ToList(),
+        SequenceGenerator.GenerateSteps(-0.05m, 2.05m, 0.15m).Select(v => (double)v).ToList()
       };
 
       var combinations = ValueGenerator.GenerateAllCombinationsOfValuesInLists(testData).ToList<IEnumerable<double>>();

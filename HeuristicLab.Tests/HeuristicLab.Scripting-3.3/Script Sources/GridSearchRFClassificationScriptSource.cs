@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using HeuristicLab.Algorithms.DataAnalysis;
+using HeuristicLab.Common;
 using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Scripting;
 
 public class RFClassificationCrossValidationScript : HeuristicLab.Scripting.CSharpScriptBase {
@@ -28,9 +28,9 @@ public class RFClassificationCrossValidationScript : HeuristicLab.Scripting.CSha
      - "M" The ratio of features that will be used in the construction of individual trees (0<m<=1)
   */
   static Dictionary<string, IEnumerable<double>> randomForestParameterRanges = new Dictionary<string, IEnumerable<double>> {
-    { "N", ValueGenerator.GenerateSteps(5m, 10, 1).Select(x => Math.Pow(2,(double)x)) },
-    { "R", ValueGenerator.GenerateSteps(0.05m, 0.66m, 0.05m).Select(x => (double)x) },
-    { "M", ValueGenerator.GenerateSteps(0.1m, 1, 0.1m).Select(x => (double)x) }
+    { "N", SequenceGenerator.GenerateSteps(5m, 10, 1).Select(x => Math.Pow(2,(double)x)) },
+    { "R", SequenceGenerator.GenerateSteps(0.05m, 0.66m, 0.05m).Select(x => (double)x) },
+    { "M", SequenceGenerator.GenerateSteps(0.1m, 1, 0.1m).Select(x => (double)x) }
   };
 
   private static RandomForestClassificationSolution GridSearchWithCrossvalidation(IClassificationProblemData problemData, int numberOfCrossvalidationFolds, out RFParameter bestParameters,

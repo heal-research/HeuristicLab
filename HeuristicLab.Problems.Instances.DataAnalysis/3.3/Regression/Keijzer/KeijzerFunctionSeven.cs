@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class KeijzerFunctionSeven : ArtificialRegressionDataDescriptor {
@@ -48,8 +49,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateSteps(1m, 100, 1).Select(v => (double)v).ToList());
-      data[0].AddRange(ValueGenerator.GenerateSteps(1m, 100, 0.1m).Select(v => (double)v));
+      data.Add(SequenceGenerator.GenerateSteps(1m, 100, 1).Select(v => (double)v).ToList());
+      data[0].AddRange(SequenceGenerator.GenerateSteps(1m, 100, 0.1m).Select(v => (double)v));
 
       double x;
       List<double> results = new List<double>();

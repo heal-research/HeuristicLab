@@ -22,7 +22,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 
@@ -30,12 +29,12 @@ namespace HeuristicLab.MainForm.WindowsForms {
   public partial class DefineArithmeticProgressionDialog : Form {
     private bool allowOnlyInteger;
 
-    public double Minimum { get; private set; }
-    public double Maximum { get; private set; }
-    public double Step { get; private set; }
+    public decimal Minimum { get; private set; }
+    public decimal Maximum { get; private set; }
+    public decimal Step { get; private set; }
 
-    public IEnumerable<double> Values {
-      get { return EnumerateProgression().Reverse(); }
+    public IEnumerable<decimal> Values {
+      get { return SequenceGenerator.GenerateSteps(Minimum, Maximum, Step, includeEnd: true); }
     }
 
     public DefineArithmeticProgressionDialog() {
@@ -47,7 +46,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       : this() {
       this.allowOnlyInteger = allowOnlyInteger;
     }
-    public DefineArithmeticProgressionDialog(bool allowOnlyInteger, double minimum, double maximum, double step)
+    public DefineArithmeticProgressionDialog(bool allowOnlyInteger, decimal minimum, decimal maximum, decimal step)
       : this(allowOnlyInteger) {
       Minimum = minimum;
       Maximum = maximum;
@@ -62,7 +61,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private void textBox_Validating(object sender, CancelEventArgs e) {
       var textBox = (TextBox)sender;
-      double value = 0;
+      decimal value = 0;
       if (allowOnlyInteger) {
         int intValue;
         if (!int.TryParse(textBox.Text, out intValue)) {
@@ -74,7 +73,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
           errorProvider.SetError(textBox, null);
         }
       } else {
-        if (!double.TryParse(textBox.Text, NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out value)) {
+        if (!decimal.TryParse(textBox.Text, NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out value)) {
           errorProvider.SetError(textBox, "Please enter a valid double value.");
           e.Cancel = true;
           return;
@@ -88,29 +87,6 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     private bool IsValid() {
       return Minimum <= Maximum && Step >= 0;
-    }
-
-    private IEnumerable<double> EnumerateProgression() {
-      double value = Maximum;
-      bool minimumIncluded = false;
-      int i = 1;
-      while (value >= Minimum) {
-        if (value.IsAlmost(Minimum)) {
-          yield return Minimum;
-          minimumIncluded = true;
-        } else yield return value;
-
-        if (Step == 0) break; // a step size of 0 will only output maximum and minimum
-        if (allowOnlyInteger) {
-          value = (int)Maximum - i * (int)Step;
-        } else {
-          value = Maximum - i * Step;
-        }
-        i++;
-      }
-      if (!minimumIncluded) {
-        yield return Minimum;
-      }
     }
   }
 }
