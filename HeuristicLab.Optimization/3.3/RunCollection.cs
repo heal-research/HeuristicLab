@@ -444,13 +444,11 @@ namespace HeuristicLab.Optimization {
     protected virtual void OnItemChanged(int rowIndex, int columnIndex) {
       EventHandler<EventArgs<int, int>> handler = ItemChanged;
       if (handler != null) handler(this, new EventArgs<int, int>(rowIndex, columnIndex));
-      OnToStringChanged();
     }
     public event EventHandler Reset;
     protected virtual void OnReset() {
       EventHandler handler = Reset;
       if (handler != null) handler(this, EventArgs.Empty);
-      OnToStringChanged();
     }
     public event EventHandler ColumnsChanged;
     protected virtual void OnColumnsChanged() {
@@ -484,12 +482,13 @@ namespace HeuristicLab.Optimization {
 
     #region Filtering
     private void UpdateFiltering(bool reset) {
+      var oldUpateRuns = UpdateOfRunsInProgress;
       UpdateOfRunsInProgress = true;
       if (reset)
         list.ForEach(r => r.Visible = true);
       foreach (IRunCollectionConstraint constraint in this.constraints)
         constraint.Check();
-      UpdateOfRunsInProgress = false;
+      UpdateOfRunsInProgress = oldUpateRuns;
     }
 
     private void RegisterConstraintsEvents() {
@@ -551,6 +550,7 @@ namespace HeuristicLab.Optimization {
 
     #region Modification
     public void Modify() {
+      var oldUpateRuns = UpdateOfRunsInProgress;
       UpdateOfRunsInProgress = true;
       var runs = this.ToList();
       var selectedRuns = runs.Where(r => r.Visible).ToList();
@@ -565,7 +565,7 @@ namespace HeuristicLab.Optimization {
           OnCollectionReset(this, runs);
         }
       }
-      UpdateOfRunsInProgress = false;
+      UpdateOfRunsInProgress = oldUpateRuns;
     }
 
     private static IEnumerable<IRun> ReplaceVisibleRuns(IEnumerable<IRun> runs, IEnumerable<IRun> visibleRuns) {

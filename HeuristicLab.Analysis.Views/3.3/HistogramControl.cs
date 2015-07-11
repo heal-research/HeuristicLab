@@ -138,12 +138,13 @@ namespace HeuristicLab.Analysis.Views {
       foreach (var point in points) {
         if (!point.Value.Any()) continue;
 
-        Series histogramSeries = new Series(point.Key);
-        chart.Series.Add(histogramSeries);
         double minValue = point.Value.Min();
         double maxValue = point.Value.Max();
         double intervalWidth = (maxValue - minValue) / bins;
         if (intervalWidth <= 0) continue;
+
+        Series histogramSeries = new Series(point.Key);
+        chart.Series.Add(histogramSeries);
 
         if (!exactCheckBox.Checked) {
           intervalWidth = HumanRoundRange(intervalWidth);
@@ -166,20 +167,16 @@ namespace HeuristicLab.Analysis.Views {
 
         overallMax = Math.Max(overallMax, maxValue);
         overallMin = Math.Min(overallMin, minValue);
-      }
 
-      chart.ApplyPaletteColors();
-
-      int i = 0;
-      foreach (var point in points) {
-        if (!point.Value.Any()) continue;
-
-        var histogramSeries = chart.Series[i];
+        chart.ApplyPaletteColors();
         CalculateDensity(histogramSeries, point.Value, bandwith);
-
-        i++;
       }
 
+      if (chart.Series.Any()) {
+        noDataLabel.Visible = false;
+      } else {
+        noDataLabel.Visible = true;
+      }
 
       ChartArea chartArea = chart.ChartAreas[0];
       // don't show grid lines for second y-axis

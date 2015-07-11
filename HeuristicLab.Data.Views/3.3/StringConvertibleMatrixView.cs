@@ -123,7 +123,7 @@ namespace HeuristicLab.Data.Views {
       dataGridView.ReadOnly = ReadOnly;
     }
 
-    private void UpdateData() {
+    protected virtual void UpdateData() {
       rowsTextBox.Text = Content.Rows.ToString();
       rowsTextBox.Enabled = true;
       columnsTextBox.Text = Content.Columns.ToString();

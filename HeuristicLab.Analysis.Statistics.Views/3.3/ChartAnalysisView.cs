@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
@@ -51,6 +52,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private IProgress progress;
     private bool valuesAdded = false;
     private bool suppressUpdates = false;
+    private SemaphoreSlim sem = new SemaphoreSlim(1, 1);
 
     public ChartAnalysisView() {
       InitializeComponent();
@@ -107,26 +109,43 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     void Content_RowsChanged(object sender, EventArgs e) {
-      RebuildDataTableAsync();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_RowsChanged, sender, e);
+      else {
+        RebuildDataTableAsync();
+      }
     }
 
     void Content_ColumnsChanged(object sender, EventArgs e) {
-      RebuildDataTableAsync();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_ColumnsChanged, sender, e);
+      else {
+        UpdateDataTableComboBox();
+        RebuildDataTableAsync();
+      }
     }
 
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      UpdateComboboxes();
-      RebuildDataTableAsync();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, CollectionItemsChangedEventArgs<IRun>>)Content_CollectionReset, sender, e);
+      else {
+        UpdateComboboxes();
+        RebuildDataTableAsync();
+      }
     }
 
     private void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
-      suppressUpdates = Content.UpdateOfRunsInProgress;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_UpdateOfRunsInProgressChanged, sender, e);
+      else {
+        suppressUpdates = Content.UpdateOfRunsInProgress;
 
-      if (!suppressUpdates && !valuesAdded) {
-        RebuildDataTableAsync();
-      }
-      if (valuesAdded) {
-        valuesAdded = false;
+        if (!suppressUpdates && !valuesAdded) {
+          UpdateDataTableComboBox();
+          RebuildDataTableAsync();
+        }
+        if (valuesAdded) {
+          valuesAdded = false;
+        }
       }
     }
     #endregion
@@ -148,6 +167,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void dataRowComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+      if (suppressUpdates) return;
       RebuildDataTableAsync();
     }
 
@@ -245,20 +265,26 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void RebuildDataTableAsync() {
-      progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Calculating values...");
-
       string resultName = (string)dataTableComboBox.SelectedItem;
+      if (string.IsNullOrEmpty(resultName)) return;
+
       string rowName = (string)dataRowComboBox.SelectedItem;
 
-      var task = Task.Factory.StartNew(() => RebuildDataTable(resultName, rowName));
+      var task = Task.Factory.StartNew(() => {
+        sem.Wait();
+        progress = MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, "Calculating values...");
+        RebuildDataTable(resultName, rowName);
+      });
 
       task.ContinueWith((t) => {
         MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
         ErrorHandling.ShowErrorDialog("An error occured while calculating values. ", t.Exception);
+        sem.Release();
       }, TaskContinuationOptions.OnlyOnFaulted);
 
       task.ContinueWith((t) => {
         MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+        sem.Release();
       }, TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 
@@ -288,10 +314,10 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         double variance = values.Variance();
         double percentile25 = values.Percentile(0.25);
         double percentile75 = values.Percentile(0.75);
-        double lowerAvg = values.OrderBy(x => x).Take((int)(values.Count() * 0.25)).Average();
-        double upperAvg = values.OrderByDescending(x => x).Take((int)(values.Count() * 0.25)).Average();
-        double firstAvg = values.Take((int)(values.Count() * 0.25)).Average();
-        double lastAvg = values.Skip((int)(values.Count() * 0.75)).Average();
+        double lowerAvg = values.Count() > 4 ? values.OrderBy(x => x).Take((int)(values.Count() * 0.25)).Average() : double.NaN;
+        double upperAvg = values.Count() > 4 ? values.OrderByDescending(x => x).Take((int)(values.Count() * 0.25)).Average() : double.NaN;
+        double firstAvg = values.Count() > 4 ? values.Take((int)(values.Count() * 0.25)).Average() : double.NaN;
+        double lastAvg = values.Count() > 4 ? values.Skip((int)(values.Count() * 0.75)).Average() : double.NaN;
         double slope, intercept, r;
         llsFitting.Calculate(values, out slope, out intercept);
         r = llsFitting.CalculateError(values, slope, intercept);
