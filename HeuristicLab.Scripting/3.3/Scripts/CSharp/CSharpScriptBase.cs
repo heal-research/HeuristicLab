@@ -76,7 +76,7 @@ namespace HeuristicLab.Scripting {
       public override void Write(object value) { script.OnConsoleOutputChanged(value.ToString()); }
       public override void Write(string value) { script.OnConsoleOutputChanged(value); }
       public override void Write(string format, object arg0) { script.OnConsoleOutputChanged(string.Format(format, arg0)); }
-      public override void Write(string format, object arg0, object arg1) { script.OnConsoleOutputChanged(string.Format(format, arg0, arg0)); }
+      public override void Write(string format, object arg0, object arg1) { script.OnConsoleOutputChanged(string.Format(format, arg0, arg1)); }
       public override void Write(string format, object arg0, object arg1, object arg2) { script.OnConsoleOutputChanged(string.Format(format, arg0, arg1, arg2)); }
       public override void Write(string format, params object[] arg) { script.OnConsoleOutputChanged(string.Format(format, arg)); }
       public override void Write(uint value) { script.OnConsoleOutputChanged(value.ToString()); }
