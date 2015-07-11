@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("Multi-objective Evaluator", "Calls the Evaluate method of the problem definition and writes the return value into the scope.")]
   [StorableClass]
-  public class MultiObjectiveEvaluator : SingleSuccessorOperator, IMultiObjectiveEvaluationOperator, IStochasticOperator {
+  public class MultiObjectiveEvaluator : InstrumentedOperator, IMultiObjectiveEvaluationOperator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -59,12 +59,12 @@ namespace HeuristicLab.Optimization {
       return new MultiObjectiveEvaluator(this, cloner);
     }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
       var individual = encoding.GetIndividual(ExecutionContext.Scope);
       QualitiesParameter.ActualValue = new DoubleArray(EvaluateFunc(individual, random));
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }
