@@ -166,7 +166,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// </summary>
     /// <param name="obj">The object.</param>
     /// <param name="stream">The stream.</param>
-    public new static void Serialize(object obj, Stream stream) {
+    public static void Serialize(object obj, Stream stream) {
       Serialize(obj, stream, ConfigurationService.Instance.GetConfiguration(new XmlFormat()));
     }
 
@@ -177,7 +177,7 @@ namespace HeuristicLab.Persistence.Default.Xml {
     /// <param name="obj">The object.</param>
     /// <param name="stream">The stream.</param>
     /// <param name="config">The configuration.</param>
-    public new static void Serialize(object obj, Stream stream, Configuration config) {
+    public static void Serialize(object obj, Stream stream, Configuration config) {
       try {
         using (StreamWriter writer = new StreamWriter(stream)) {
           Serializer serializer = new Serializer(obj, config);
