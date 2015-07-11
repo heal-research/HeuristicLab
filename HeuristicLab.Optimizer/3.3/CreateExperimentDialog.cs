@@ -168,6 +168,13 @@ namespace HeuristicLab.Optimizer {
           if (e.Item.Checked) boolParameters.Add(parameter);
           else boolParameters.Remove(parameter);
         }
+
+        bool isEnumValue = parameter.Value != null && parameter.Value.GetType().IsGenericType
+                           && typeof(EnumValue<>).IsAssignableFrom(parameter.Value.GetType().GetGenericTypeDefinition());
+        if (isEnumValue) {
+          if (e.Item.Checked) multipleChoiceParameters.Add(parameter, new HashSet<IItem>(new EnumValueEqualityComparer()));
+          else multipleChoiceParameters.Remove(parameter);
+        }
       }
 
       UpdateVariationsLabel();
@@ -191,26 +198,41 @@ namespace HeuristicLab.Optimizer {
       var isConstrainedValueParameter =
         isOptionalConstrainedValueParameter
         || typeof(ConstrainedValueParameter<>).Equals(parameter.GetType().GetGenericTypeDefinition());
+      bool isEnumValue = parameter.Value != null && parameter.Value.GetType().IsGenericType
+                         && typeof(EnumValue<>).IsAssignableFrom(parameter.Value.GetType().GetGenericTypeDefinition());
 
-      if (isConstrainedValueParameter) {
+      if (isConstrainedValueParameter || isEnumValue) {
         detailsTypeLabel.Text = "Choices:";
         choicesListView.Tag = parameter;
 
-        if (isOptionalConstrainedValueParameter) {
-          choicesListView.Items.Add(new ListViewItem("-") {
-            Tag = optionalNullChoice,
-            Checked = multipleChoiceParameters.ContainsKey(parameter)
-            && multipleChoiceParameters[parameter].Contains(optionalNullChoice)
-          });
+        if (isConstrainedValueParameter) {
+          if (isOptionalConstrainedValueParameter) {
+            choicesListView.Items.Add(new ListViewItem("-") {
+              Tag = optionalNullChoice,
+              Checked = multipleChoiceParameters.ContainsKey(parameter)
+                        && multipleChoiceParameters[parameter].Contains(optionalNullChoice)
+            });
+          }
+          dynamic constrainedValuedParameter = parameter;
+          dynamic validValues = constrainedValuedParameter.ValidValues;
+          foreach (var choice in validValues) {
+            choicesListView.Items.Add(new ListViewItem(choice.ToString()) {
+              Tag = choice,
+              Checked = multipleChoiceParameters.ContainsKey(parameter)
+                        && multipleChoiceParameters[parameter].Contains(choice)
+            });
+          }
         }
-        dynamic constrainedValuedParameter = parameter;
-        dynamic validValues = constrainedValuedParameter.ValidValues;
-        foreach (var choice in validValues) {
-          choicesListView.Items.Add(new ListViewItem(choice.ToString()) {
-            Tag = choice,
-            Checked = multipleChoiceParameters.ContainsKey(parameter)
-            && multipleChoiceParameters[parameter].Contains(choice)
-          });
+        if (isEnumValue) {
+          var enumType = parameter.Value.GetType().GetGenericArguments()[0];
+          var enumValueType = typeof(EnumValue<>).MakeGenericType(enumType);
+          foreach (var enumChoice in Enum.GetValues(enumType)) {
+            choicesListView.Items.Add(new ListViewItem(enumChoice.ToString()) {
+              Tag = Activator.CreateInstance(enumValueType, enumChoice),
+              Checked = multipleChoiceParameters.ContainsKey(parameter)
+                        && multipleChoiceParameters[parameter].Any((dynamic item) => item.Value.Equals(enumChoice))
+            });
+          }
         }
         choicesListView.Enabled = multipleChoiceParameters.ContainsKey(parameter);
         detailsTypeLabel.Visible = true;
@@ -454,7 +476,9 @@ namespace HeuristicLab.Optimizer {
           var valueParam = param as IValueParameter;
           if (valueParam != null && (valueParam.Value is ValueTypeValue<bool>
               || valueParam.Value is ValueTypeValue<int>
-              || valueParam.Value is ValueTypeValue<double>)
+              || valueParam.Value is ValueTypeValue<double>
+              || (valueParam.Value != null && valueParam.Value.GetType().IsGenericType
+                    && typeof(EnumValue<>).IsAssignableFrom(valueParam.Value.GetType().GetGenericTypeDefinition())))
             || typeof(OptionalConstrainedValueParameter<>).IsAssignableFrom(param.GetType().GetGenericTypeDefinition())
             || typeof(ConstrainedValueParameter<>).IsAssignableFrom(param.GetType().GetGenericTypeDefinition()))
             parametersListView.Items.Add(new ListViewItem(param.Name) { Tag = param });
@@ -602,20 +626,23 @@ namespace HeuristicLab.Optimizer {
       var configuration = new Dictionary<IValueParameter, bool>();
       bool finished;
       do {
-        finished = true;
         foreach (var p in boolParameters) {
-          if (!configuration.ContainsKey(p)) configuration.Add(p, false);
-          else {
-            if (configuration[p]) {
-              configuration[p] = false;
-            } else {
-              configuration[p] = true;
-              finished = false;
-              break;
-            }
+          if (!configuration.ContainsKey(p))
+            configuration.Add(p, false);
+        }
+
+        yield return configuration;
+        finished = true;
+
+        foreach (var p in boolParameters) {
+          if (configuration[p]) {
+            configuration[p] = false;
+          } else {
+            configuration[p] = true;
+            finished = false;
+            break;
           }
         }
-        yield return configuration;
       } while (!finished);
     }
 
@@ -649,6 +676,27 @@ namespace HeuristicLab.Optimizer {
       } while (!finished);
     }
     #endregion
+
+    #region EnumValueEqualityComparer
+    private class EnumValueEqualityComparer : EqualityComparer<IItem> {
+      public override bool Equals(IItem x, IItem y) {
+        if (typeof(EnumValue<>).IsAssignableFrom(x.GetType().GetGenericTypeDefinition()) &&
+            typeof(EnumValue<>).IsAssignableFrom(y.GetType().GetGenericTypeDefinition())) {
+          dynamic enumValueX = x;
+          dynamic enumValueY = y;
+          return enumValueX.Value.Equals(enumValueY.Value);
+        } else return object.ReferenceEquals(x, y);
+      }
+
+      public override int GetHashCode(IItem obj) {
+        if (typeof(EnumValue<>).IsAssignableFrom(obj.GetType().GetGenericTypeDefinition())) {
+          dynamic enumValue = obj;
+          return enumValue.Value.GetHashCode();
+        } else return obj.GetHashCode();
+      }
+    }
+    #endregion
+
     #endregion
 
     #region Background workers
@@ -831,21 +879,28 @@ namespace HeuristicLab.Optimizer {
         }
         if (multipleChoiceParameters.Any()) {
           foreach (var m in mcEnumerator.Current) {
-            dynamic variantParam = variant.Parameters[m.Key.Name];
-            if (m.Value == optionalNullChoice) {
-              variantParam.Value = null;
-              variant.Name += m.Key.Name + "=null, ";
-              continue;
-            }
-            var variantEnumerator = ((IEnumerable<object>)variantParam.ValidValues).GetEnumerator();
-            var originalEnumerator = ((IEnumerable<object>)((dynamic)m.Key).ValidValues).GetEnumerator();
-            while (variantEnumerator.MoveNext() && originalEnumerator.MoveNext()) {
-              if (m.Value == (IItem)originalEnumerator.Current) {
-                variantParam.Value = (dynamic)variantEnumerator.Current;
-                if (m.Value is INamedItem)
-                  variant.Name += m.Key.Name + "=" + ((INamedItem)m.Value).Name + ", ";
-                else variant.Name += m.Key.Name + "=" + m.Value.ToString() + ", ";
-                break;
+            if (m.Key.Value != null && m.Key.Value.GetType().IsGenericType
+                && typeof(EnumValue<>).IsAssignableFrom(m.Key.Value.GetType().GetGenericTypeDefinition())) {
+              var valueParam = (IValueParameter)variant.Parameters[m.Key.Name];
+              valueParam.Value = m.Value;
+              variant.Name += m.Key.Name + "=" + m.Value + ", ";
+            } else {
+              dynamic variantParam = variant.Parameters[m.Key.Name];
+              if (m.Value == optionalNullChoice) {
+                variantParam.Value = null;
+                variant.Name += m.Key.Name + "=null, ";
+                continue;
+              }
+              var variantEnumerator = ((IEnumerable<object>)variantParam.ValidValues).GetEnumerator();
+              var originalEnumerator = ((IEnumerable<object>)((dynamic)m.Key).ValidValues).GetEnumerator();
+              while (variantEnumerator.MoveNext() && originalEnumerator.MoveNext()) {
+                if (m.Value == (IItem)originalEnumerator.Current) {
+                  variantParam.Value = (dynamic)variantEnumerator.Current;
+                  if (m.Value is INamedItem)
+                    variant.Name += m.Key.Name + "=" + ((INamedItem)m.Value).Name + ", ";
+                  else variant.Name += m.Key.Name + "=" + m.Value.ToString() + ", ";
+                  break;
+                }
               }
             }
           }
