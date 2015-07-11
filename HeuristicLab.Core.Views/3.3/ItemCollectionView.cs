@@ -28,13 +28,13 @@ using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Core.Views {
   [View("ItemCollection View")]
   [Content(typeof(ItemCollection<>), true)]
   [Content(typeof(IItemCollection<>), false)]
+  [Content(typeof(ReadOnlyItemCollection<>), true)]
   public partial class ItemCollectionView<T> : ItemView where T : class, IItem {
     protected Dictionary<T, List<ListViewItem>> itemListViewItemMapping;
     protected TypeSelectorDialog typeSelectorDialog;
