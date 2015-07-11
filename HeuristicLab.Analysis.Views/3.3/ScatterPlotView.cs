@@ -36,6 +36,7 @@ namespace HeuristicLab.Analysis.Views {
   public partial class ScatterPlotView : NamedItemView, IConfigureableView {
     protected List<Series> invisibleSeries;
     protected Dictionary<IObservableList<Point2D<double>>, ScatterPlotDataRow> pointsRowsTable;
+    private double xMin, xMax, yMin, yMax;
 
     public new ScatterPlot Content {
       get { return (ScatterPlot)base.Content; }
@@ -101,6 +102,7 @@ namespace HeuristicLab.Analysis.Views {
         chart.Titles[0].Text = Content.Name;
         AddScatterPlotDataRows(Content.Rows);
         ConfigureChartArea(chart.ChartAreas[0]);
+        RecalculateMinMaxPointValues();
         RecalculateAxesScale(chart.ChartAreas[0]);
       }
     }
@@ -129,6 +131,7 @@ namespace HeuristicLab.Analysis.Views {
         chart.Series.Add(series);
       }
       ConfigureChartArea(chart.ChartAreas[0]);
+      RecalculateMinMaxPointValues();
       RecalculateAxesScale(chart.ChartAreas[0]);
       UpdateYCursorInterval();
     }
@@ -141,6 +144,7 @@ namespace HeuristicLab.Analysis.Views {
         if (invisibleSeries.Contains(series))
           invisibleSeries.Remove(series);
       }
+      RecalculateMinMaxPointValues();
       RecalculateAxesScale(chart.ChartAreas[0]);
     }
 
@@ -191,20 +195,38 @@ namespace HeuristicLab.Analysis.Views {
     }
 
     private void RecalculateAxesScale(ChartArea area) {
-      // Reset the axes bounds so that RecalculateAxesScale() will assign new bounds
-      foreach (Axis a in area.Axes) {
-        a.Minimum = double.NaN;
-        a.Maximum = double.NaN;
+      area.AxisX.Minimum = CalculateMinBound(xMin);
+      area.AxisX.Maximum = CalculateMaxBound(xMax);
+      if (area.AxisX.Minimum == area.AxisX.Maximum) {
+        area.AxisX.Minimum = xMin - 0.5;
+        area.AxisX.Maximum = xMax + 0.5;
       }
-      area.RecalculateAxesScale();
+      area.AxisY.Minimum = CalculateMinBound(yMin);
+      area.AxisY.Maximum = CalculateMaxBound(yMax);
+      if (area.AxisY.Minimum == area.AxisY.Maximum) {
+        area.AxisY.Minimum = yMin - 0.5;
+        area.AxisY.Maximum = yMax + 0.5;
+      }
+      if (xMax - xMin > 0) area.CursorX.Interval = Math.Pow(10, Math.Floor(Math.Log10(area.AxisX.Maximum - area.AxisX.Minimum) - 3));
+      else area.CursorX.Interval = 1;
       area.AxisX.IsMarginVisible = false;
 
       if (!Content.VisualProperties.XAxisMinimumAuto && !double.IsNaN(Content.VisualProperties.XAxisMinimumFixedValue)) area.AxisX.Minimum = Content.VisualProperties.XAxisMinimumFixedValue;
       if (!Content.VisualProperties.XAxisMaximumAuto && !double.IsNaN(Content.VisualProperties.XAxisMaximumFixedValue)) area.AxisX.Maximum = Content.VisualProperties.XAxisMaximumFixedValue;
       if (!Content.VisualProperties.YAxisMinimumAuto && !double.IsNaN(Content.VisualProperties.YAxisMinimumFixedValue)) area.AxisY.Minimum = Content.VisualProperties.YAxisMinimumFixedValue;
       if (!Content.VisualProperties.YAxisMaximumAuto && !double.IsNaN(Content.VisualProperties.YAxisMaximumFixedValue)) area.AxisY.Maximum = Content.VisualProperties.YAxisMaximumFixedValue;
-      if (area.AxisX.Minimum >= area.AxisX.Maximum) area.AxisX.Maximum = area.AxisX.Minimum + 1;
-      if (area.AxisY.Minimum >= area.AxisY.Maximum) area.AxisY.Maximum = area.AxisY.Minimum + 1;
+    }
+
+    private static double CalculateMinBound(double min) {
+      if (min == 0) return 0;
+      var scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(min))));
+      return scale * (Math.Floor(min / scale));
+    }
+
+    private static double CalculateMaxBound(double max) {
+      if (max == 0) return 0;
+      var scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(max))));
+      return scale * (Math.Ceiling(max / scale));
     }
 
     protected virtual void UpdateYCursorInterval() {
@@ -285,6 +307,7 @@ namespace HeuristicLab.Analysis.Views {
         series.Points.Clear();
         ConfigureSeries(series, row);
         FillSeriesWithRowValues(series, row);
+        RecalculateMinMaxPointValues();
         RecalculateAxesScale(chart.ChartAreas[0]);
       }
     }
@@ -309,6 +332,7 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            RecalculateMinMaxPointValues();
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
@@ -326,6 +350,7 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            RecalculateMinMaxPointValues();
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
@@ -343,6 +368,7 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            RecalculateMinMaxPointValues();
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
@@ -360,6 +386,7 @@ namespace HeuristicLab.Analysis.Views {
           if (!invisibleSeries.Contains(rowSeries)) {
             rowSeries.Points.Clear();
             FillSeriesWithRowValues(rowSeries, row);
+            RecalculateMinMaxPointValues();
             RecalculateAxesScale(chart.ChartAreas[0]);
             UpdateYCursorInterval();
           }
@@ -400,6 +427,7 @@ namespace HeuristicLab.Analysis.Views {
       if (!invisibleSeries.Contains(series)) {
         series.Points.Clear();
         invisibleSeries.Add(series);
+        RecalculateMinMaxPointValues();
       } else {
         invisibleSeries.Remove(series);
         if (Content != null) {
@@ -408,9 +436,24 @@ namespace HeuristicLab.Analysis.Views {
                      where r.Name == series.Name
                      select r).Single();
           FillSeriesWithRowValues(series, row);
+          RecalculateMinMaxPointValues();
           this.chart.Legends[series.Legend].ForeColor = Color.Black;
           RecalculateAxesScale(chart.ChartAreas[0]);
           UpdateYCursorInterval();
+        }
+      }
+    }
+
+    private void RecalculateMinMaxPointValues() {
+      yMin = xMin = double.MaxValue;
+      yMax = xMax = double.MinValue;
+      foreach (var s in chart.Series.Where(x => x.Enabled)) {
+        foreach (var p in s.Points) {
+          double x = p.XValue, y = p.YValues[0];
+          if (xMin > x) xMin = x;
+          if (xMax < x) xMax = x;
+          if (yMin > y) yMin = y;
+          if (yMax < y) yMax = y;
         }
       }
     }
