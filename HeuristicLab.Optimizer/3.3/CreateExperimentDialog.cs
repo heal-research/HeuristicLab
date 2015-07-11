@@ -263,7 +263,7 @@ namespace HeuristicLab.Optimizer {
     private void generateButton_Click(object sender, EventArgs e) {
       var parameter = (IValueParameter)generateButton.Tag;
       bool integerOnly = intParameters.ContainsKey(parameter);
-      double min = 0, max = 1, step = 1;
+      decimal min = 0, max = 1, step = 1;
       #region Try to calculate some meaningful values
       if (integerOnly) {
         int len = intParameters[parameter].Length;
@@ -275,9 +275,9 @@ namespace HeuristicLab.Optimizer {
       } else {
         int len = doubleParameters[parameter].Length;
         if (len > 0) {
-          min = doubleParameters[parameter].Min();
-          max = doubleParameters[parameter].Max();
-          step = len >= 2 ? Math.Abs((doubleParameters[parameter][len - 1] - doubleParameters[parameter][len - 2])) : 1;
+          min = (decimal)doubleParameters[parameter].Min();
+          max = (decimal)doubleParameters[parameter].Max();
+          step = len >= 2 ? Math.Abs(((decimal)doubleParameters[parameter][len - 1] - (decimal)doubleParameters[parameter][len - 2])) : 1m;
         }
       }
       #endregion
@@ -291,7 +291,7 @@ namespace HeuristicLab.Optimizer {
             stringConvertibleArrayView.Content = intParameters[parameter];
           } else {
             doubleParameters[parameter].Reset -= new EventHandler(ValuesArray_Reset);
-            doubleParameters[parameter] = new DoubleArray(values.ToArray());
+            doubleParameters[parameter] = new DoubleArray(values.Select(x => (double)x).ToArray());
             doubleParameters[parameter].Reset += new EventHandler(ValuesArray_Reset);
             stringConvertibleArrayView.Content = doubleParameters[parameter];
           }

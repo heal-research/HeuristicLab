@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class SalutowiczFunctionOneDimensional : ArtificialRegressionDataDescriptor {
@@ -47,8 +48,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
-      data.Add(ValueGenerator.GenerateSteps(0.05m, 10, 0.1m).Select(v => (double)v).ToList());
-      data[0].AddRange(ValueGenerator.GenerateSteps(-0.5m, 10.5m, 0.05m).Select(v => (double)v));
+      data.Add(SequenceGenerator.GenerateSteps(0.05m, 10, 0.1m).Select(v => (double)v).ToList());
+      data[0].AddRange(SequenceGenerator.GenerateSteps(-0.5m, 10.5m, 0.05m).Select(v => (double)v));
 
       double x;
       List<double> results = new List<double>();

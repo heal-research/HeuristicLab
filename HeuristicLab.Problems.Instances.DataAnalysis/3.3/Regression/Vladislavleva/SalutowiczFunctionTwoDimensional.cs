@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class SalutowiczFunctionTwoDimensional : ArtificialRegressionDataDescriptor {
@@ -48,13 +49,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected override List<List<double>> GenerateValues() {
       List<List<double>> data = new List<List<double>>();
       List<List<double>> trainingData = new List<List<double>>() {
-        ValueGenerator.GenerateSteps(0.05m, 10, 0.1m).Select(v => (double)v).ToList(),
-        ValueGenerator.GenerateSteps(0.05m, 10.05m, 2).Select(v => (double)v).ToList()
+        SequenceGenerator.GenerateSteps(0.05m, 10, 0.1m).Select(v => (double)v).ToList(),
+        SequenceGenerator.GenerateSteps(0.05m, 10.05m, 2).Select(v => (double)v).ToList()
       };
 
       List<List<double>> testData = new List<List<double>>() {
-        ValueGenerator.GenerateSteps(-0.5m, 10.5m, 0.05m).Select(v => (double)v).ToList(),
-        ValueGenerator.GenerateSteps(-0.5m, 10.5m, 0.5m).Select(v => (double)v).ToList()
+        SequenceGenerator.GenerateSteps(-0.5m, 10.5m, 0.05m).Select(v => (double)v).ToList(),
+        SequenceGenerator.GenerateSteps(-0.5m, 10.5m, 0.5m).Select(v => (double)v).ToList()
       };
 
       var trainingComb = ValueGenerator.GenerateAllCombinationsOfValuesInLists(trainingData).ToList<IEnumerable<double>>();
