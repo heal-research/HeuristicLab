@@ -28,6 +28,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Variants {
     DoubleArray DueTime { get; }
     DoubleArray ServiceTime { get; }
     DoubleValue TimeFactor { get; }
-    DoubleValue TardinessPenalty { get; set; }
+    DoubleValue TardinessPenalty { get; }
+    DoubleValue CurrentTardinessPenalty { get; set; }
   }
 }

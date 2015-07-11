@@ -135,20 +135,20 @@ namespace HeuristicLab.Problems.VehicleRouting {
       double min = pdp.PickupViolationPenalty.Value / (1 + sigma);
       double max = pdp.PickupViolationPenalty.Value * (1 + phi);
 
-      pdp.PickupViolationPenalty = new DoubleValue(min + (max - min) * factor);
-      if (pdp.PickupViolationPenalty.Value < minPenalty)
-        pdp.PickupViolationPenalty.Value = minPenalty;
-      if (pdp.PickupViolationPenalty.Value > maxPenalty)
-        pdp.PickupViolationPenalty.Value = maxPenalty;
+      pdp.CurrentPickupViolationPenalty = new DoubleValue(min + (max - min) * factor);
+      if (pdp.CurrentPickupViolationPenalty.Value < minPenalty)
+        pdp.CurrentPickupViolationPenalty.Value = minPenalty;
+      if (pdp.CurrentPickupViolationPenalty.Value > maxPenalty)
+        pdp.CurrentPickupViolationPenalty.Value = maxPenalty;
 
       for (int j = 0; j < qualities.Length; j++) {
-        qualities[j].Value += pickupViolations[j].Value * pdp.PickupViolationPenalty.Value;
+        qualities[j].Value += pickupViolations[j].Value * pdp.CurrentPickupViolationPenalty.Value;
       }
 
       if (!results.ContainsKey("Current Pickup Violation Penalty")) {
-        results.Add(new Result("Current Pickup Violation Penalty", new DoubleValue(pdp.PickupViolationPenalty.Value)));
+        results.Add(new Result("Current Pickup Violation Penalty", new DoubleValue(pdp.CurrentPickupViolationPenalty.Value)));
       } else {
-        (results["Current Pickup Violation Penalty"].Value as DoubleValue).Value = pdp.PickupViolationPenalty.Value;
+        (results["Current Pickup Violation Penalty"].Value as DoubleValue).Value = pdp.CurrentPickupViolationPenalty.Value;
       }
 
       return base.Apply();

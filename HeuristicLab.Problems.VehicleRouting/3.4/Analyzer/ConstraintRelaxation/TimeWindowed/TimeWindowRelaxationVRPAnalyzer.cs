@@ -135,20 +135,20 @@ namespace HeuristicLab.Problems.VehicleRouting {
       double min = vrptw.TardinessPenalty.Value / (1 + sigma);
       double max = vrptw.TardinessPenalty.Value * (1 + phi);
 
-      vrptw.TardinessPenalty = new DoubleValue(min + (max - min) * factor);
-      if (vrptw.TardinessPenalty.Value < minPenalty)
-        vrptw.TardinessPenalty.Value = minPenalty;
-      if (vrptw.TardinessPenalty.Value > maxPenalty)
-        vrptw.TardinessPenalty.Value = maxPenalty;
+      vrptw.CurrentTardinessPenalty = new DoubleValue(min + (max - min) * factor);
+      if (vrptw.CurrentTardinessPenalty.Value < minPenalty)
+        vrptw.CurrentTardinessPenalty.Value = minPenalty;
+      if (vrptw.CurrentTardinessPenalty.Value > maxPenalty)
+        vrptw.CurrentTardinessPenalty.Value = maxPenalty;
 
       for (int j = 0; j < qualities.Length; j++) {
-        qualities[j].Value += tardiness[j].Value * vrptw.TardinessPenalty.Value;
+        qualities[j].Value += tardiness[j].Value * vrptw.CurrentTardinessPenalty.Value;
       }
 
       if (!results.ContainsKey("Current Tardiness Penalty")) {
-        results.Add(new Result("Current Tardiness Penalty", new DoubleValue(vrptw.TardinessPenalty.Value)));
+        results.Add(new Result("Current Tardiness Penalty", new DoubleValue(vrptw.CurrentTardinessPenalty.Value)));
       } else {
-        (results["Current Tardiness Penalty"].Value as DoubleValue).Value = vrptw.TardinessPenalty.Value;
+        (results["Current Tardiness Penalty"].Value as DoubleValue).Value = vrptw.CurrentTardinessPenalty.Value;
       }
 
       return base.Apply();
