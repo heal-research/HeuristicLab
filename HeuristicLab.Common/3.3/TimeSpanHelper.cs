@@ -50,10 +50,12 @@ namespace HeuristicLab.Common {
           case "h":
           case "hour":
           case "hours": result = result.Add(TimeSpan.FromHours(value)); break;
+          case "m":
           case "min":
           case "minute":
           case "minutes": result = result.Add(TimeSpan.FromMinutes(value)); break;
           case "s":
+          case "sec":
           case "second":
           case "seconds": result = result.Add(TimeSpan.FromSeconds(value)); break;
           default: return false;
