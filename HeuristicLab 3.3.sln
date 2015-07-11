@@ -411,6 +411,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.Exter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.ExternalEvaluation.Views-3.4", "HeuristicLab.Problems.ExternalEvaluation.Views\3.4\HeuristicLab.Problems.ExternalEvaluation.Views-3.4.csproj", "{F7E5B975-FDF2-45A4-91CB-FF6D3C33D65E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeuristicLab.Problems.NK", "HeuristicLab.Problems.NK\HeuristicLab.Problems.NK.csproj", "{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -2005,6 +2007,18 @@ Global
 		{F7E5B975-FDF2-45A4-91CB-FF6D3C33D65E}.Release|x64.Build.0 = Release|x64
 		{F7E5B975-FDF2-45A4-91CB-FF6D3C33D65E}.Release|x86.ActiveCfg = Release|x86
 		{F7E5B975-FDF2-45A4-91CB-FF6D3C33D65E}.Release|x86.Build.0 = Release|x86
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Debug|x64.ActiveCfg = Debug|x64
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Debug|x64.Build.0 = Debug|x64
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Debug|x86.ActiveCfg = Debug|x86
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Debug|x86.Build.0 = Debug|x86
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Release|x64.ActiveCfg = Release|x64
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Release|x64.Build.0 = Release|x64
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Release|x86.ActiveCfg = Release|x86
+		{C3AD50E6-E717-490E-ABC7-32EF7FB03C97}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
