@@ -40,6 +40,7 @@ namespace HeuristicLab.Optimization.Views {
   public sealed partial class RunCollectionView : ItemView {
     private Dictionary<IRun, List<ListViewItem>> itemListViewItemMapping;
     private bool validDragOperation;
+    private bool suppressUpdates;
 
     public new IItemCollection<IRun> Content {
       get { return (IItemCollection<IRun>)base.Content; }
@@ -65,6 +66,8 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved -= new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      if (RunCollection != null)
+        RunCollection.UpdateOfRunsInProgressChanged -= new EventHandler(RunCollection_UpdateOfRunsInProgressChanged);
       foreach (IRun run in itemListViewItemMapping.Keys) {
         DeregisterItemEvents(run);
       }
@@ -75,6 +78,8 @@ namespace HeuristicLab.Optimization.Views {
       Content.ItemsAdded += new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded);
       Content.ItemsRemoved += new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved);
       Content.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      if (RunCollection != null)
+        RunCollection.UpdateOfRunsInProgressChanged += new EventHandler(RunCollection_UpdateOfRunsInProgressChanged);
     }
     private void DeregisterItemEvents(IRun item) {
       item.ItemImageChanged -= new EventHandler(Item_ItemImageChanged);
@@ -393,6 +398,7 @@ namespace HeuristicLab.Optimization.Views {
 
     #region Content Events
     private void Content_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded), sender, e);
       else {
@@ -406,6 +412,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     private void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved), sender, e);
       else {
@@ -421,6 +428,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset), sender, e);
       else {
@@ -439,10 +447,32 @@ namespace HeuristicLab.Optimization.Views {
         runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
       }
     }
+    private void RunCollection_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)RunCollection_UpdateOfRunsInProgressChanged, sender, e);
+      else {
+        suppressUpdates = RunCollection.UpdateOfRunsInProgress;
+        if (!suppressUpdates) {
+          foreach (IRun item in Content) {
+            //remove only the first matching ListViewItem, because the IRun could be contained multiple times in the ItemCollection
+            ListViewItem listViewItem = GetListViewItemsForItem(item).FirstOrDefault();
+            if (listViewItem != null) RemoveListViewItem(listViewItem);
+          }
+          RebuildImageList();
+          foreach (IRun item in Content)
+            AddListViewItem(CreateListViewItem(item));
+
+          AdjustListViewColumnSizes();
+          analyzeRunsToolStripDropDownButton.Enabled = itemsListView.Items.Count > 0;
+          clearButton.Enabled = itemsListView.Items.Count > 0 && !Content.IsReadOnly && !ReadOnly;
+          runCollectionConstraintCollectionView.ReadOnly = itemsListView.Items.Count == 0;
+        }
+      }
+    }
     #endregion
 
     #region Item Events
     private void Item_ItemImageChanged(object sender, EventArgs e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
         Invoke(new EventHandler(Item_ItemImageChanged), sender, e);
       else {
@@ -452,6 +482,7 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     private void Item_ToStringChanged(object sender, EventArgs e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
         Invoke(new EventHandler(Item_ToStringChanged), sender, e);
       else {
@@ -462,8 +493,9 @@ namespace HeuristicLab.Optimization.Views {
       }
     }
     private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+      if (suppressUpdates) return;
       if (InvokeRequired)
-        this.Invoke((Action<object, PropertyChangedEventArgs>)Item_PropertyChanged, sender, e);
+        Invoke((Action<object, PropertyChangedEventArgs>)Item_PropertyChanged, sender, e);
       else {
         IRun run = (IRun)sender;
         if (e.PropertyName == "Color" || e.PropertyName == "Visible")

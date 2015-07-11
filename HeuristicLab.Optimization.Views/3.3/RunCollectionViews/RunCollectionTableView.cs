@@ -52,7 +52,6 @@ namespace HeuristicLab.Optimization.Views {
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content != null) {
-        runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
         UpdateRowAttributes();
       }
       UpdateCaption();
@@ -116,6 +115,11 @@ namespace HeuristicLab.Optimization.Views {
       Caption = Content != null ? Content.OptimizerName + " Table" : ViewAttribute.GetViewName(GetType());
     }
 
+    protected override void UpdateData() {
+      if (suppressUpdates) return;
+      base.UpdateData();
+    }
+
     protected override void UpdateColumnHeaders() {
       HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
        .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
@@ -144,7 +148,10 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new EventHandler(Content_UpdateOfRunsInProgressChanged), sender, e);
       else {
         suppressUpdates = Content.UpdateOfRunsInProgress;
-        if (!suppressUpdates) UpdateRowAttributes();
+        if (!suppressUpdates) {
+          UpdateData();
+          UpdateRowAttributes();
+        }
       }
     }
 
@@ -170,7 +177,6 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void ClearSorting() {
       base.ClearSorting();
-      runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
       UpdateRowAttributes();
     }
 
@@ -189,11 +195,12 @@ namespace HeuristicLab.Optimization.Views {
         runToRowMapping[runIndex] = i;
         i++;
       }
-      UpdateRowAttributes();
+      UpdateRowAttributes(rebuild: false);
       return newSortedIndex;
     }
 
-    private void UpdateRowAttributes() {
+    private void UpdateRowAttributes(bool rebuild = true) {
+      if (rebuild) runToRowMapping = Enumerable.Range(0, Content.Count).ToArray();
       int runIndex = 0;
       foreach (IRun run in Content) {
         int rowIndex = this.runToRowMapping[runIndex];

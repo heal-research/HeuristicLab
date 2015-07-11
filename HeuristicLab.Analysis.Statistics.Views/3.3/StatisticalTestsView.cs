@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
@@ -39,6 +40,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     private double significanceLevel = 0.05;
     private const int requiredSampleSize = 5;
     private double[][] data;
+    private bool suppressUpdates;
+    private bool initializing;
 
     public double SignificanceLevel {
       get { return significanceLevel; }
@@ -75,11 +78,22 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       base.OnContentChanged();
 
       if (Content != null) {
-        UpdateResultComboBox();
-        UpdateGroupsComboBox();
-        RebuildDataTable();
+        UpdateUI();
+      } else {
+        ResetUI();
       }
       UpdateCaption();
+    }
+
+    private void UpdateUI() {
+      initializing = true;
+      UpdateResultComboBox();
+      UpdateGroupsComboBox();
+      RebuildDataTable();
+      FillCompComboBox();
+      ResetUI();
+      CalculateValues();
+      initializing = false;
     }
 
     private void UpdateCaption() {
@@ -91,7 +105,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       base.RegisterContentEvents();
       Content.ColumnsChanged += Content_ColumnsChanged;
       Content.RowsChanged += Content_RowsChanged;
-      Content.CollectionReset += new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.CollectionReset += Content_CollectionReset;
       Content.UpdateOfRunsInProgressChanged += Content_UpdateOfRunsInProgressChanged;
     }
 
@@ -99,32 +113,77 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       base.DeregisterContentEvents();
       Content.ColumnsChanged -= Content_ColumnsChanged;
       Content.RowsChanged -= Content_RowsChanged;
-      Content.CollectionReset -= new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset);
+      Content.CollectionReset -= Content_CollectionReset;
       Content.UpdateOfRunsInProgressChanged -= Content_UpdateOfRunsInProgressChanged;
     }
 
     void Content_RowsChanged(object sender, EventArgs e) {
-      RebuildDataTable();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_RowsChanged, sender, e);
+      else {
+        UpdateUI();
+      }
     }
 
     void Content_ColumnsChanged(object sender, EventArgs e) {
-      RebuildDataTable();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_ColumnsChanged, sender, e);
+      else {
+        UpdateUI();
+      }
     }
 
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      RebuildDataTable();
+      if (suppressUpdates) return;
+      if (InvokeRequired) Invoke((Action<object, CollectionItemsChangedEventArgs<IRun>>)Content_CollectionReset, sender, e);
+      else {
+        UpdateUI();
+      }
     }
 
     void Content_UpdateOfRunsInProgressChanged(object sender, EventArgs e) {
-      if (!Content.UpdateOfRunsInProgress) {
-        RebuildDataTable();
+      if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_UpdateOfRunsInProgressChanged, sender, e);
+      else {
+        suppressUpdates = Content.UpdateOfRunsInProgress;
+        if (!suppressUpdates) UpdateUI();
       }
+    }
+
+    private void openBoxPlotToolStripMenuItem_Click(object sender, EventArgs e) {
+      RunCollectionBoxPlotView boxplotView = new RunCollectionBoxPlotView();
+      boxplotView.Content = Content;
+      boxplotView.SetXAxis(groupComboBox.SelectedItem.ToString());
+      boxplotView.SetYAxis(resultComboBox.SelectedItem.ToString());
+
+      boxplotView.Show();
+    }
+
+    private void groupCompComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (initializing || suppressUpdates) return;
+      string curItem = (string)groupCompComboBox.SelectedItem;
+      CalculatePairwise(curItem);
+    }
+
+    private void resultComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (initializing || suppressUpdates) return;
+      RebuildDataTable();
+      ResetUI();
+      CalculateValues();
+    }
+
+    private void groupComboBox_SelectedValueChanged(object sender, EventArgs e) {
+      if (initializing || suppressUpdates) return;
+      RebuildDataTable();
+      FillCompComboBox();
+      ResetUI();
+      CalculateValues();
     }
     #endregion
 
     private void UpdateGroupsComboBox() {
-      groupComboBox.Items.Clear();
+      string selectedItem = (string)groupComboBox.SelectedItem;
 
+      groupComboBox.Items.Clear();
       var parameters = (from run in Content
                         where run.Visible
                         from param in run.Parameters
@@ -153,10 +212,10 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           }
         }
 
-        if (possibleIndizes.Count > 0) {
+        if (selectedItem != null && groupComboBox.Items.Contains(selectedItem)) {
+          groupComboBox.SelectedItem = selectedItem;
+        } else if (possibleIndizes.Count > 0) {
           groupComboBox.SelectedItem = groupComboBox.Items[possibleIndizes.First()];
-        } else {
-          groupComboBox.SelectedItem = groupComboBox.Items[0];
         }
       }
     }
@@ -168,6 +227,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private void UpdateResultComboBox() {
+      string selectedItem = (string)resultComboBox.SelectedItem;
+
       resultComboBox.Items.Clear();
       var results = (from run in Content
                      where run.Visible
@@ -176,10 +237,16 @@ namespace HeuristicLab.Analysis.Statistics.Views {
                      select result.Key).Distinct().ToArray();
 
       resultComboBox.Items.AddRange(results);
-      if (resultComboBox.Items.Count > 0) resultComboBox.SelectedItem = resultComboBox.Items[0];
+
+      if (selectedItem != null && resultComboBox.Items.Contains(selectedItem)) {
+        resultComboBox.SelectedItem = selectedItem;
+      } else if (resultComboBox.Items.Count > 0) {
+        resultComboBox.SelectedItem = resultComboBox.Items[0];
+      }
     }
 
     private void FillCompComboBox() {
+      string selectedItem = (string)groupCompComboBox.SelectedItem;
       string parameterName = (string)groupComboBox.SelectedItem;
       if (parameterName != null) {
         string resultName = (string)resultComboBox.SelectedItem;
@@ -188,7 +255,11 @@ namespace HeuristicLab.Analysis.Statistics.Views {
           var columnNames = GetColumnNames(runs).ToList();
           groupCompComboBox.Items.Clear();
           columnNames.ForEach(x => groupCompComboBox.Items.Add(x));
-          if (groupCompComboBox.Items.Count > 0) groupCompComboBox.SelectedItem = groupCompComboBox.Items[0];
+          if (selectedItem != null && groupCompComboBox.Items.Contains(selectedItem)) {
+            groupCompComboBox.SelectedItem = selectedItem;
+          } else if (groupCompComboBox.Items.Count > 0) {
+            groupCompComboBox.SelectedItem = groupCompComboBox.Items[0];
+          }
         }
       }
     }
@@ -258,25 +329,12 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       equalDistsTextBox.Text = string.Empty;
     }
 
-    private void resultComboBox_SelectedValueChanged(object sender, EventArgs e) {
-      RebuildDataTable();
-      ResetUI();
-      CalculateValues();
-    }
-
-    private void groupComboBox_SelectedValueChanged(object sender, EventArgs e) {
-      RebuildDataTable();
-      FillCompComboBox();
-      ResetUI();
-      CalculateValues();
-    }
-
     private bool VerifyDataLength(bool showMessage) {
       if (data == null || data.Length == 0)
         return false;
 
       //alglib needs at least 5 samples for computation
-      if (data.Any(x => x.Length <= requiredSampleSize)) {
+      if (data.Any(x => x.Length < requiredSampleSize)) {
         if (showMessage)
           MessageBox.Show(this, "You need at least " + requiredSampleSize
             + " samples per group for computing hypothesis tests.", "HeuristicLab", MessageBoxButtons.OK,
@@ -290,8 +348,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       if (!VerifyDataLength(true))
         return;
 
-      if (data != null) {
-        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>()
+      if (data != null && data.All(x => x != null)) {
+        MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>()
           .AddOperationProgressToView(this, "Calculating...");
 
         string curItem = (string)groupCompComboBox.SelectedItem;
@@ -304,36 +362,41 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       CalculateNormalityTest();
       CalculatePairwiseTest(groupName);
 
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
     }
 
     private void CalculatePairwise(string groupName) {
+      if (groupName == null) return;
       if (!VerifyDataLength(false))
         return;
 
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(pairwiseTestGroupBox, "Calculating...");
+      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().AddOperationProgressToView(pairwiseTestGroupBox, "Calculating...");
       Task.Factory.StartNew(() => CalculatePairwiseAsync(groupName));
     }
 
     private void CalculatePairwiseAsync(string groupName) {
       CalculatePairwiseTest(groupName);
 
-      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(pairwiseTestGroupBox);
+      MainFormManager.GetMainForm<MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(pairwiseTestGroupBox);
     }
 
     private void CalculateAllGroupsTest() {
       double pval = KruskalWallisTest.Test(data);
-      pValTextBox.Text = pval.ToString();
-      if (pval < significanceLevel) {
-        this.Invoke(new Action(() => {
-          groupCompLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Default;
-          groupComTextLabel.Text = "There are groups with different distributions";
-        }));
+      DisplayAllGroupsTextResults(pval);
+    }
+
+    private void DisplayAllGroupsTextResults(double pval) {
+      if (InvokeRequired) {
+        Invoke((Action<double>)DisplayAllGroupsTextResults, pval);
       } else {
-        this.Invoke(new Action(() => {
-          groupCompLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Warning;
+        pValTextBox.Text = pval.ToString();
+        if (pval < significanceLevel) {
+          groupCompLabel.Image = VSImageLibrary.Default;
+          groupComTextLabel.Text = "There are groups with different distributions";
+        } else {
+          groupCompLabel.Image = VSImageLibrary.Warning;
           groupComTextLabel.Text = "Groups have an equal distribution";
-        }));
+        }
       }
     }
 
@@ -342,7 +405,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       List<double> res = new List<double>();
       DoubleMatrix pValsMatrix = new DoubleMatrix(1, stringConvertibleMatrixView.Content.Columns);
       pValsMatrix.ColumnNames = stringConvertibleMatrixView.Content.ColumnNames;
-      pValsMatrix.RowNames = new string[] { "p-Value" };
+      pValsMatrix.RowNames = new[] { "p-Value" };
 
       for (int i = 0; i < data.Length; i++) {
         alglib.jarqueberatest(data[i], data[i].Length, out val);
@@ -352,18 +415,18 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
       // p-value is below significance level and thus the null hypothesis (data is normally distributed) is rejected
       if (res.Any(x => x < significanceLevel)) {
-        this.Invoke(new Action(() => {
-          normalityLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Warning;
+        Invoke(new Action(() => {
+          normalityLabel.Image = VSImageLibrary.Warning;
           normalityTextLabel.Text = "Some groups may not be normally distributed";
         }));
       } else {
-        this.Invoke(new Action(() => {
-          normalityLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Default;
+        Invoke(new Action(() => {
+          normalityLabel.Image = VSImageLibrary.Default;
           normalityTextLabel.Text = "All sample data is normally distributed";
         }));
       }
 
-      this.Invoke(new Action(() => {
+      Invoke(new Action(() => {
         normalityStringConvertibleMatrixView.Content = pValsMatrix;
         normalityStringConvertibleMatrixView.DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
       }));
@@ -371,16 +434,16 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
     private void ShowPairwiseResult(int nrOfEqualDistributions) {
       double ratio = ((double)nrOfEqualDistributions) / (data.Length - 1) * 100.0;
-      equalDistsTextBox.Text = ratio.ToString() + " %";
+      equalDistsTextBox.Text = ratio + " %";
 
       if (nrOfEqualDistributions == 0) {
-        this.Invoke(new Action(() => {
-          pairwiseLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Default;
+        Invoke(new Action(() => {
+          pairwiseLabel.Image = VSImageLibrary.Default;
           pairwiseTextLabel.Text = "All groups have different distributions";
         }));
       } else {
-        this.Invoke(new Action(() => {
-          pairwiseLabel.Image = HeuristicLab.Common.Resources.VSImageLibrary.Warning;
+        Invoke(new Action(() => {
+          pairwiseLabel.Image = VSImageLibrary.Warning;
           pairwiseTextLabel.Text = "Some groups have equal distributions";
         }));
       }
@@ -393,7 +456,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
       double[][] newData = FilterDataForPairwiseTest(colIndex);
 
-      var rowNames = new string[] { "p-Value of Mann-Whitney U", "Adjusted p-Value of Mann-Whitney U", 
+      var rowNames = new[] { "p-Value of Mann-Whitney U", "Adjusted p-Value of Mann-Whitney U", 
             "p-Value of T-Test", "Adjusted p-Value of T-Test", "Cohen's d", "Hedges' g" };
 
       DoubleMatrix pValsMatrix = new DoubleMatrix(rowNames.Length, columnNames.Count());
@@ -432,7 +495,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         pValsMatrix[5, i] = SampleSizeDetermination.CalculateHedgesG(data[colIndex], newData[i]);
       }
 
-      this.Invoke(new Action(() => {
+      Invoke(new Action(() => {
         pairwiseStringConvertibleMatrixView.Content = pValsMatrix;
         pairwiseStringConvertibleMatrixView.DataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
       }));
@@ -467,20 +530,6 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         }
       }
       return newData;
-    }
-
-    private void openBoxPlotToolStripMenuItem_Click(object sender, EventArgs e) {
-      RunCollectionBoxPlotView boxplotView = new RunCollectionBoxPlotView();
-      boxplotView.Content = Content;
-      boxplotView.SetXAxis(groupComboBox.SelectedItem.ToString());
-      boxplotView.SetYAxis(resultComboBox.SelectedItem.ToString());
-
-      boxplotView.Show();
-    }
-
-    private void groupCompComboBox_SelectedValueChanged(object sender, EventArgs e) {
-      string curItem = (string)groupCompComboBox.SelectedItem;
-      CalculatePairwise(curItem);
     }
   }
 }
