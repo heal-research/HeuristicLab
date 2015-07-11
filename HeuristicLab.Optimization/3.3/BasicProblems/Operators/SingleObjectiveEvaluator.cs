@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Evaluator", "Calls the script's Evaluate method to get the quality value of the parameter vector.")]
   [StorableClass]
-  public sealed class SingleObjectiveEvaluator : SingleSuccessorOperator, ISingleObjectiveEvaluationOperator, IStochasticOperator {
+  public sealed class SingleObjectiveEvaluator : InstrumentedOperator, ISingleObjectiveEvaluationOperator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
@@ -57,12 +57,12 @@ namespace HeuristicLab.Optimization {
 
     public override IDeepCloneable Clone(Cloner cloner) { return new SingleObjectiveEvaluator(this, cloner); }
 
-    public override IOperation Apply() {
+    public override IOperation InstrumentedApply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
       var individual = encoding.GetIndividual(ExecutionContext.Scope);
       QualityParameter.ActualValue = new DoubleValue(EvaluateFunc(individual, random));
-      return base.Apply();
+      return base.InstrumentedApply();
     }
   }
 }
