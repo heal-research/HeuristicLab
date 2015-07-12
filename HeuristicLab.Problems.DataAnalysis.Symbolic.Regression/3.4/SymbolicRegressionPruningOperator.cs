@@ -21,9 +21,11 @@
 
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,7 +33,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableClass]
   [Item("SymbolicRegressionPruningOperator", "An operator which prunes symbolic regression trees.")]
   public class SymbolicRegressionPruningOperator : SymbolicDataAnalysisExpressionPruningOperator {
-    private const string ImpactValuesCalculatorParameterName = "ImpactValuesCalculator";
+    private const string EvaluatorParameterName = "Evaluator";
+
+    #region parameter properties
+    public ILookupParameter<ISymbolicRegressionSingleObjectiveEvaluator> EvaluatorParameter {
+      get { return (ILookupParameter<ISymbolicRegressionSingleObjectiveEvaluator>)Parameters[EvaluatorParameterName]; }
+    }
+    #endregion
 
     protected SymbolicRegressionPruningOperator(SymbolicRegressionPruningOperator original, Cloner cloner)
       : base(original, cloner) {
@@ -43,25 +51,62 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     [StorableConstructor]
     protected SymbolicRegressionPruningOperator(bool deserializing) : base(deserializing) { }
 
-    public SymbolicRegressionPruningOperator() {
-      var impactValuesCalculator = new SymbolicRegressionSolutionImpactValuesCalculator();
-      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName, "The impact values calculator to be used for figuring out the node impacts.", impactValuesCalculator));
+    public SymbolicRegressionPruningOperator(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactValuesCalculator)
+      : base(impactValuesCalculator) {
+      Parameters.Add(new LookupParameter<ISymbolicRegressionSingleObjectiveEvaluator>(EvaluatorParameterName));
     }
 
-    protected override ISymbolicDataAnalysisModel CreateModel() {
-      return new SymbolicRegressionModel(SymbolicExpressionTree, Interpreter, EstimationLimits.Lower, EstimationLimits.Upper);
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      base.ImpactValuesCalculator = new SymbolicRegressionSolutionImpactValuesCalculator();
+      if (!Parameters.ContainsKey(EvaluatorParameterName)) {
+        Parameters.Add(new LookupParameter<ISymbolicRegressionSingleObjectiveEvaluator>(EvaluatorParameterName));
+      }
+      #endregion
+    }
+
+    protected override ISymbolicDataAnalysisModel CreateModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
+      return new SymbolicRegressionModel(tree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
     }
 
     protected override double Evaluate(IDataAnalysisModel model) {
-      var regressionModel = (IRegressionModel)model;
-      var regressionProblemData = (IRegressionProblemData)ProblemData;
-      var trainingIndices = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
-      var estimatedValues = regressionModel.GetEstimatedValues(ProblemData.Dataset, trainingIndices); // also bounds the values
-      var targetValues = ProblemData.Dataset.GetDoubleValues(regressionProblemData.TargetVariable, trainingIndices);
-      OnlineCalculatorError errorState;
-      var quality = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return quality*quality;
+      var regressionModel = (ISymbolicRegressionModel)model;
+      var regressionProblemData = (IRegressionProblemData)ProblemDataParameter.ActualValue;
+      var evaluator = EvaluatorParameter.ActualValue;
+      var fitnessEvaluationPartition = FitnessCalculationPartitionParameter.ActualValue;
+      var rows = Enumerable.Range(fitnessEvaluationPartition.Start, fitnessEvaluationPartition.Size);
+      return evaluator.Evaluate(this.ExecutionContext, regressionModel.SymbolicExpressionTree, regressionProblemData, rows);
+    }
+
+    public static ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, SymbolicRegressionSolutionImpactValuesCalculator impactValuesCalculator, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IRegressionProblemData problemData, DoubleLimit estimationLimits, IEnumerable<int> rows, double nodeImpactThreshold = 0.0, bool pruneOnlyZeroImpactNodes = false) {
+      var clonedTree = (ISymbolicExpressionTree)tree.Clone();
+      var model = new SymbolicRegressionModel(clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
+      var nodes = clonedTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList(); // skip the nodes corresponding to the ProgramRootSymbol and the StartSymbol
+
+      double qualityForImpactsCalculation = double.NaN; // pass a NaN value initially so the impact calculator will calculate the quality
+
+      for (int i = 0; i < nodes.Count; ++i) {
+        var node = nodes[i];
+        if (node is ConstantTreeNode) continue;
+
+        double impactValue, replacementValue;
+        double newQualityForImpactsCalculation;
+        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
+
+        if (pruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
+        if (!pruneOnlyZeroImpactNodes && impactValue > nodeImpactThreshold) continue;
+
+        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
+        constantNode.Value = replacementValue;
+
+        ReplaceWithConstant(node, constantNode);
+        i += node.GetLength() - 1; // skip subtrees under the node that was folded
+
+        qualityForImpactsCalculation = newQualityForImpactsCalculation;
+      }
+      return model.SymbolicExpressionTree;
     }
   }
 }
