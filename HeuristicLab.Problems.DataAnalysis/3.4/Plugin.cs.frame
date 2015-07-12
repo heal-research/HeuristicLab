@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis {
-  [Plugin("HeuristicLab.Problems.DataAnalysis","Provides base classes for data analysis tasks.", "3.4.7.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.DataAnalysis","Provides base classes for data analysis tasks.", "3.4.8.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB","3.7.0")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
