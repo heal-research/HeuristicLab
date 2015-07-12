@@ -62,8 +62,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
     protected override Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>> CalculateImpactAndReplacementValues(ISymbolicExpressionTree tree) {
       var impactAndReplacementValues = new Dictionary<ISymbolicExpressionTreeNode, Tuple<double, double>>();
       foreach (var node in tree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix()) {
-        double impactValue, replacementValue;
-        calculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, out impactValue, out replacementValue);
+        double impactValue, replacementValue, newQualityForImpactsCalculation;
+        calculator.CalculateImpactAndReplacementValues(Content.Model, node, Content.ProblemData, Content.ProblemData.TrainingIndices, out impactValue, out replacementValue, out newQualityForImpactsCalculation);
         impactAndReplacementValues.Add(node, new Tuple<double, double>(impactValue, replacementValue));
       }
       return impactAndReplacementValues;

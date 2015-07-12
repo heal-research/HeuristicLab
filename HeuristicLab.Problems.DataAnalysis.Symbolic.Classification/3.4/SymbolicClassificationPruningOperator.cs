@@ -21,9 +21,11 @@
 
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -31,49 +33,89 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
   [StorableClass]
   [Item("SymbolicClassificationPruningOperator", "An operator which prunes symbolic classificaton trees.")]
   public class SymbolicClassificationPruningOperator : SymbolicDataAnalysisExpressionPruningOperator {
-    private const string ImpactValuesCalculatorParameterName = "ImpactValuesCalculator";
     private const string ModelCreatorParameterName = "ModelCreator";
+    private const string EvaluatorParameterName = "Evaluator";
 
     #region parameter properties
     public ILookupParameter<ISymbolicClassificationModelCreator> ModelCreatorParameter {
       get { return (ILookupParameter<ISymbolicClassificationModelCreator>)Parameters[ModelCreatorParameterName]; }
     }
+
+    public ILookupParameter<ISymbolicClassificationSingleObjectiveEvaluator> EvaluatorParameter {
+      get {
+        return (ILookupParameter<ISymbolicClassificationSingleObjectiveEvaluator>)Parameters[EvaluatorParameterName];
+      }
+    }
     #endregion
 
-    protected SymbolicClassificationPruningOperator(SymbolicClassificationPruningOperator original, Cloner cloner)
-      : base(original, cloner) {
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicClassificationPruningOperator(this, cloner);
-    }
+    protected SymbolicClassificationPruningOperator(SymbolicClassificationPruningOperator original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SymbolicClassificationPruningOperator(this, cloner); }
 
     [StorableConstructor]
     protected SymbolicClassificationPruningOperator(bool deserializing) : base(deserializing) { }
 
-    public SymbolicClassificationPruningOperator() {
-      Parameters.Add(new ValueParameter<ISymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName, new SymbolicClassificationSolutionImpactValuesCalculator()));
+    public SymbolicClassificationPruningOperator(ISymbolicDataAnalysisSolutionImpactValuesCalculator impactValuesCalculator)
+      : base(impactValuesCalculator) {
       Parameters.Add(new LookupParameter<ISymbolicClassificationModelCreator>(ModelCreatorParameterName));
+      Parameters.Add(new LookupParameter<ISymbolicClassificationSingleObjectiveEvaluator>(EvaluatorParameterName));
     }
 
-    protected override ISymbolicDataAnalysisModel CreateModel() {
-      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(SymbolicExpressionTree, Interpreter, EstimationLimits.Lower, EstimationLimits.Upper);
-      var problemData = (IClassificationProblemData)ProblemData;
-      var rows = problemData.TrainingIndices;
-      model.RecalculateModelParameters(problemData, rows);
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      base.ImpactValuesCalculator = new SymbolicClassificationSolutionImpactValuesCalculator();
+      if (!Parameters.ContainsKey(EvaluatorParameterName)) {
+        Parameters.Add(new LookupParameter<ISymbolicClassificationSingleObjectiveEvaluator>(EvaluatorParameterName));
+      }
+      #endregion
+    }
+
+    protected override ISymbolicDataAnalysisModel CreateModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits) {
+      var model = ModelCreatorParameter.ActualValue.CreateSymbolicClassificationModel(tree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
+      var classificationProblemData = (IClassificationProblemData)problemData;
+      var rows = classificationProblemData.TrainingIndices;
+      model.RecalculateModelParameters(classificationProblemData, rows);
       return model;
     }
 
     protected override double Evaluate(IDataAnalysisModel model) {
-      var classificationModel = (IClassificationModel)model;
-      var classificationProblemData = (IClassificationProblemData)ProblemData;
-      var trainingIndices = Enumerable.Range(FitnessCalculationPartition.Start, FitnessCalculationPartition.Size);
-      var estimatedValues = classificationModel.GetEstimatedClassValues(ProblemData.Dataset, trainingIndices);
-      var targetValues = ProblemData.Dataset.GetDoubleValues(classificationProblemData.TargetVariable, trainingIndices);
-      OnlineCalculatorError errorState;
-      var quality = OnlineAccuracyCalculator.Calculate(targetValues, estimatedValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return quality;
+      var evaluator = EvaluatorParameter.ActualValue;
+      var classificationModel = (ISymbolicClassificationModel)model;
+      var classificationProblemData = (IClassificationProblemData)ProblemDataParameter.ActualValue;
+      var rows = Enumerable.Range(FitnessCalculationPartitionParameter.ActualValue.Start, FitnessCalculationPartitionParameter.ActualValue.Size);
+      return evaluator.Evaluate(this.ExecutionContext, classificationModel.SymbolicExpressionTree, classificationProblemData, rows);
+    }
+
+    public static ISymbolicExpressionTree Prune(ISymbolicExpressionTree tree, ISymbolicClassificationModelCreator modelCreator,
+      SymbolicClassificationSolutionImpactValuesCalculator impactValuesCalculator, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter,
+      IClassificationProblemData problemData, DoubleLimit estimationLimits, IEnumerable<int> rows,
+      double nodeImpactThreshold = 0.0, bool pruneOnlyZeroImpactNodes = false) {
+      var clonedTree = (ISymbolicExpressionTree)tree.Clone();
+      var model = modelCreator.CreateSymbolicClassificationModel(clonedTree, interpreter, estimationLimits.Lower, estimationLimits.Upper);
+
+      var nodes = clonedTree.Root.GetSubtree(0).GetSubtree(0).IterateNodesPrefix().ToList();
+      double qualityForImpactsCalculation = double.NaN;
+
+      for (int i = 0; i < nodes.Count; ++i) {
+        var node = nodes[i];
+        if (node is ConstantTreeNode) continue;
+
+        double impactValue, replacementValue, newQualityForImpactsCalculation;
+        impactValuesCalculator.CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
+
+        if (pruneOnlyZeroImpactNodes && !impactValue.IsAlmost(0.0)) continue;
+        if (!pruneOnlyZeroImpactNodes && impactValue > nodeImpactThreshold) continue;
+
+        var constantNode = (ConstantTreeNode)node.Grammar.GetSymbol("Constant").CreateTreeNode();
+        constantNode.Value = replacementValue;
+
+        ReplaceWithConstant(node, constantNode);
+        i += node.GetLength() - 1; // skip subtrees under the node that was folded
+
+        qualityForImpactsCalculation = newQualityForImpactsCalculation;
+      }
+      return model.SymbolicExpressionTree;
     }
   }
 }

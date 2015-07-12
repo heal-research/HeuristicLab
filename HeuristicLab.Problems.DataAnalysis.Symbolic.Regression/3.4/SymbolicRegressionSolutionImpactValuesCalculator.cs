@@ -47,15 +47,15 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       return CalculateReplacementValue(node, regressionModel.SymbolicExpressionTree, regressionModel.Interpreter, regressionProblemData.Dataset, rows);
     }
 
-    public override double CalculateImpactValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, double originalQuality = double.NaN) {
-      double impactValue, replacementValue;
-      CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, originalQuality);
+    public override double CalculateImpactValue(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node, IDataAnalysisProblemData problemData, IEnumerable<int> rows, double qualityForImpactsCalculation = double.NaN) {
+      double impactValue, replacementValue, newQualityForImpactsCalculation;
+      CalculateImpactAndReplacementValues(model, node, problemData, rows, out impactValue, out replacementValue, out newQualityForImpactsCalculation, qualityForImpactsCalculation);
       return impactValue;
     }
 
     public override void CalculateImpactAndReplacementValues(ISymbolicDataAnalysisModel model, ISymbolicExpressionTreeNode node,
-      IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue,
-      double originalQuality = Double.NaN) {
+      IDataAnalysisProblemData problemData, IEnumerable<int> rows, out double impactValue, out double replacementValue, out double newQualityForImpactsCalculation,
+      double qualityForImpactsCalculation = Double.NaN) {
       var regressionModel = (ISymbolicRegressionModel)model;
       var regressionProblemData = (IRegressionProblemData)problemData;
 
@@ -63,11 +63,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var targetValues = dataset.GetDoubleValues(regressionProblemData.TargetVariable, rows);
 
       OnlineCalculatorError errorState;
-      if (double.IsNaN(originalQuality)) {
-        var originalValues = regressionModel.GetEstimatedValues(dataset, rows);
-        originalQuality = OnlinePearsonsRCalculator.Calculate(targetValues, originalValues, out errorState);
-        if (errorState != OnlineCalculatorError.None) originalQuality = 0.0;
-      }
+      if (double.IsNaN(qualityForImpactsCalculation))
+        qualityForImpactsCalculation = CalculateQualityForImpacts(regressionModel, regressionProblemData, rows);
 
       replacementValue = CalculateReplacementValue(regressionModel, node, regressionProblemData, rows);
       var constantNode = new ConstantTreeNode(new Constant()) { Value = replacementValue };
@@ -82,10 +79,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       tempModelParentNode.InsertSubtree(i, constantNode);
 
       var estimatedValues = tempModel.GetEstimatedValues(dataset, rows);
-      double newQuality = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
-      if (errorState != OnlineCalculatorError.None) newQuality = 0.0;
+      double r = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
+      if (errorState != OnlineCalculatorError.None) r = 0.0;
+      newQualityForImpactsCalculation = r * r;
 
-      impactValue = (originalQuality*originalQuality) - (newQuality*newQuality);
+      impactValue = qualityForImpactsCalculation - newQualityForImpactsCalculation;
+    }
+
+    public static double CalculateQualityForImpacts(ISymbolicRegressionModel model, IRegressionProblemData problemData, IEnumerable<int> rows) {
+      var estimatedValues = model.GetEstimatedValues(problemData.Dataset, rows); // also bounds the values
+      var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      OnlineCalculatorError errorState;
+      var r = OnlinePearsonsRCalculator.Calculate(targetValues, estimatedValues, out errorState);
+      var quality = r * r;
+      if (errorState != OnlineCalculatorError.None) return double.NaN;
+      return quality;
     }
   }
 }
