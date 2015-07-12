@@ -6,8 +6,10 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Encodings.PermutationEncoding;
+using HeuristicLab.Encodings.LinearLinkageEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.Programmable;
 
@@ -22,12 +24,16 @@ namespace HeuristicLab.Problems.Programmable {
       //Encoding = new IntegerVectorEncoding("i", length: 5, min: 2, max: 14, step: 2);
       //Encoding = new RealVectorEncoding("r", length: 5, min: -1.0, max: 1.0);
       //Encoding = new PermutationEncoding("p", length: 5, type: PermutationTypes.Absolute);
+      //Encoding = new LinearLinkageEncoding("l", length: 5);
+      //Encoding = new SymbolicExpressionTreeEncoding("s", new SimpleSymbolicExpressionGrammar(), 50, 12);
       // The encoding can also be a combination
       //Encoding = new MultiEncoding()
       //.Add(new BinaryVectorEncoding("b", length: 5))
       //.Add(new IntegerVectorEncoding("i", length: 5, min: 2, max: 14, step: 4))
       //.Add(new RealVectorEncoding("r", length: 5, min: -1.0, max: 1.0))
       //.Add(new PermutationEncoding("p", length: 5, type: PermutationTypes.Absolute))
+      //.Add(new LinearLinkageEncoding("l", length: 5))
+      //.Add(new SymbolicExpressionTreeEncoding("s", new SimpleSymbolicExpressionGrammar(), 50, 12))
       ;
       // Add additional initialization code e.g. private variables that you need for evaluating
     }
