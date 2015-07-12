@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.NSGA2 {
-  [Plugin("HeuristicLab.Algorithms.NSGA2", "Provides the non-dominated sorting genetic algorithm (NSGA-II) as described in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.", "3.3.11.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.NSGA2", "Provides the non-dominated sorting genetic algorithm (NSGA-II) as described in Deb et al. 2002. A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II. IEEE Transactions on Evolutionary Computation, 6(2), pp. 182-197.", "3.3.12.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.NSGA2-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]

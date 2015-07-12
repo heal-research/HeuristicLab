@@ -25,7 +25,7 @@ using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Binary {
-  [Plugin("HeuristicLab.Problems.Binary","Provides binary benchmark problems.", "3.3.11.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.Binary","Provides binary benchmark problems.", "3.3.12.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.Binary-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

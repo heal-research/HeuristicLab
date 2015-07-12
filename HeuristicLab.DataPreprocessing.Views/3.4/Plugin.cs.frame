@@ -25,7 +25,7 @@ namespace HeuristicLab.DataPreprocessing {
   /// <summary>
   /// Plugin class for HeuristicLab.Data plugin.
   /// </summary>
-  [Plugin("HeuristicLab.DataPreprocessing.Views", "3.4.1.$WCREV$")]
+  [Plugin("HeuristicLab.DataPreprocessing.Views", "3.4.2.$WCREV$")]
   [PluginFile("HeuristicLab.DataPreprocessing.Views-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Analysis.Views", "3.3")]

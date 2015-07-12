@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.DataAnalysis.Trading {
-  [Plugin("HeuristicLab.Problems.DataAnalysis.Trading","Provides classes to optimize trading rules.", "3.4.3.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.DataAnalysis.Trading","Provides classes to optimize trading rules.", "3.4.4.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Trading-3.4.dll", PluginFileType.Assembly)]
 
   [PluginDependency("HeuristicLab.Collections", "3.3")]
