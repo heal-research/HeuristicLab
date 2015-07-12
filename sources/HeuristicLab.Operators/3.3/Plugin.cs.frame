@@ -25,7 +25,7 @@ namespace HeuristicLab.Operators {
   /// <summary>
   /// Plugin class for HeuristicLab.Operators plugin.
   /// </summary>
-  [Plugin("HeuristicLab.Operators", "3.3.11.$WCREV$")]
+  [Plugin("HeuristicLab.Operators", "3.3.12.$WCREV$")]
   [PluginFile("HeuristicLab.Operators-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]

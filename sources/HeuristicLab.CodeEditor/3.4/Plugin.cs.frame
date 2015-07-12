@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.CodeEditor {
-  [Plugin("HeuristicLab.CodeEditor", "3.4.0.$WCREV$")]
+  [Plugin("HeuristicLab.CodeEditor", "3.4.1.$WCREV$")]
   [PluginFile("HeuristicLab.CodeEditor-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]

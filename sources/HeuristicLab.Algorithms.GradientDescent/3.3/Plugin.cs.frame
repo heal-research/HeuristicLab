@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Algorithms.GradientDescent {
-  [Plugin("HeuristicLab.Algorithms.GradientDescent", "3.3.11.$WCREV$")]
+  [Plugin("HeuristicLab.Algorithms.GradientDescent", "3.3.12.$WCREV$")]
   [PluginFile("HeuristicLab.Algorithms.GradientDescent-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.7.0")]
   [PluginDependency("HeuristicLab.Analysis", "3.3.0")]
