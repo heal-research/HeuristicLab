@@ -64,8 +64,7 @@ namespace HeuristicLab.Optimizer {
       try {
         using (Stream stream = assembly.GetManifestResourceStream(typeof(StartPage), "Documents.FirstSteps.rtf"))
           firstStepsRichTextBox.LoadFile(stream, RichTextBoxStreamType.RichText);
-      }
-      catch (Exception) { }
+      } catch (Exception) { }
 
       samplesListView.Enabled = false;
       samplesListView.Groups.Add(standardProblemsGroup);
@@ -111,8 +110,7 @@ namespace HeuristicLab.Optimizer {
         }
 
         OnAllSamplesLoaded();
-      }
-      finally {
+      } finally {
         MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(samplesListView);
       }
     }
@@ -125,10 +123,8 @@ namespace HeuristicLab.Optimizer {
           var item = XmlParser.Deserialize<INamedItem>(path);
           OnSampleLoaded(item, group, 1.0 / count);
         }
-      }
-      catch (Exception) {
-      }
-      finally {
+      } catch (Exception) {
+      } finally {
         if (File.Exists(path)) {
           File.Delete(path); // make sure we remove the temporary file
         }
@@ -136,7 +132,7 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void FillGroupLookup() {
-      var standardProblems = new List<string> { "ES_Griewank", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
+      var standardProblems = new List<string> { "ES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
                 "IslandGA_TSP", "LS_Knapsack", "PSO_Schwefel", "RAPGA_JSSP",
                 "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP" ,"VNS_TSP"
         };
@@ -184,8 +180,7 @@ namespace HeuristicLab.Optimizer {
         try {
           mainForm.SetWaitCursor();
           mainForm.ShowContent((IContent)((IItem)samplesListView.SelectedItems[0].Tag).Clone());
-        }
-        finally {
+        } finally {
           mainForm.ResetWaitCursor();
         }
 
