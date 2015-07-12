@@ -21,6 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -45,6 +46,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
 
     public SymbolicClassificationPruningAnalyzer() {
       Parameters.Add(new ValueParameter<SymbolicClassificationPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+
+      #region Backwards compatible code, remove with 3.4
+      if (Parameters.ContainsKey(PruningOperatorParameterName)) {
+        var oldParam = Parameters[PruningOperatorParameterName] as ValueParameter<SymbolicDataAnalysisExpressionPruningOperator>;
+        if (oldParam != null) {
+          Parameters.Remove(oldParam);
+          Parameters.Add(new ValueParameter<SymbolicClassificationPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));
+        }
+      } else {
+        // not yet contained
+        Parameters.Add(new ValueParameter<SymbolicClassificationPruningOperator>(PruningOperatorParameterName, "The operator used to prune trees", new SymbolicClassificationPruningOperator(new SymbolicClassificationSolutionImpactValuesCalculator())));
+      }
+
+      if (Parameters.ContainsKey("PruneOnlyZeroImpactNodes")) {
+        PruningOperator.PruneOnlyZeroImpactNodes = ((IFixedValueParameter<BoolValue>)Parameters["PruneOnlyZeroImpactNodes"]).Value.Value;
+        Parameters.Remove(Parameters["PruneOnlyZeroImpactNodes"]);
+      }
+      if (Parameters.ContainsKey("ImpactThreshold")) {
+        PruningOperator.NodeImpactThreshold = ((IFixedValueParameter<DoubleValue>)Parameters["ImpactThreshold"]).Value.Value;
+        Parameters.Remove(Parameters["ImpactThreshold"]);
+      }
+      if (Parameters.ContainsKey("ImpactValuesCalculator")) {
+        PruningOperator.ImpactValuesCalculator = ((ValueParameter<SymbolicDataAnalysisSolutionImpactValuesCalculator>)Parameters["ImpactValuesCalculator"]).Value;
+        Parameters.Remove(Parameters["ImpactValuesCalculator"]);
+      }
+      #endregion
     }
   }
 }

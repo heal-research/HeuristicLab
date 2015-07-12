@@ -132,6 +132,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       #endregion
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(PrunedNodesParameterName)) {
+        Parameters.Add(new LookupParameter<IntValue>(PrunedNodesParameterName, "A counter of how many nodes were pruned."));
+      }
+      if (!Parameters.ContainsKey(ApplyLinearScalingParameterName)) {
+        Parameters.Add(new LookupParameter<BoolValue>(ApplyLinearScalingParameterName));
+      }
+      if (!Parameters.ContainsKey(ImpactValuesCalculatorParameterName)) {
+        // value must be set by derived operators (regression/classification)
+        Parameters.Add(new ValueParameter<ISymbolicDataAnalysisSolutionImpactValuesCalculator>(ImpactValuesCalculatorParameterName));
+      }
+      #endregion
+    }
+
     protected abstract ISymbolicDataAnalysisModel CreateModel(ISymbolicExpressionTree tree, ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataAnalysisProblemData problemData, DoubleLimit estimationLimits);
 
     protected abstract double Evaluate(IDataAnalysisModel model);
