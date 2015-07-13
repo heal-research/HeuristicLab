@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\trunk\sources\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\trunk\sources\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,7 +41,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\trunk\sources\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -57,7 +57,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\..\..\trunk\sources\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\trunk\sources\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -91,7 +91,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\..\..\trunk\sources\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -147,62 +147,62 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
       <Project>{a9ad58b9-3ef9-4cc1-97e5-8d909039ff5c}</Project>
       <Name>HeuristicLab.Common-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
       <Project>{c36bd924-a541-4a00-afa8-41701378ddc5}</Project>
       <Name>HeuristicLab.Core-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
       <Project>{bbab9df5-5ef3-4ba8-ade9-b36e82114937}</Project>
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
       <Project>{66d249c3-a01d-42a8-82a2-919bc8ec3d83}</Project>
       <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
       <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
       <Project>{56f9106a-079f-4c61-92f6-86a84c2d84b7}</Project>
       <Name>HeuristicLab.Parameters-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102bc7d3-0ef9-439c-8f6d-96ff0fdb8e1b}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Problems.Binary\3.3\HeuristicLab.Problems.Binary-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Binary\3.3\HeuristicLab.Problems.Binary-3.3.csproj">
       <Project>{fc627be5-0f93-47d8-bd2e-530ea2b8aa5f}</Project>
       <Name>HeuristicLab.Problems.Binary-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
       <Project>{f4539fb6-4708-40c9-be64-0a1390aea197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
