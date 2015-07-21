@@ -199,7 +199,9 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       if (Problem != null) {
         RegisterEvents();
         solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+        solutionCreator.OperatorParameter.Hidden = true;
         evaluator.OperatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+        evaluator.OperatorParameter.Hidden = true;
         UpdateAnalyzers();
         ParameterizeOperators();
       }
@@ -219,7 +221,13 @@ namespace HeuristicLab.Algorithms.GradientDescent {
 
     protected override void Problem_OperatorsChanged(object sender, EventArgs e) {
       base.Problem_OperatorsChanged(sender, e);
+      RegisterEvents();
+      solutionCreator.OperatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+      solutionCreator.OperatorParameter.Hidden = true;
+      evaluator.OperatorParameter.ActualName = Problem.EvaluatorParameter.Name;
+      evaluator.OperatorParameter.Hidden = true;
       UpdateAnalyzers();
+      ParameterizeOperators();
     }
 
     private void RegisterSolutionCreatorEvents() {
@@ -265,13 +273,18 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       if (realVectorCreator != null) {
         var realVectorParameterName = realVectorCreator.RealVectorParameter.ActualName;
         initializer.PointParameter.ActualName = realVectorParameterName;
+        initializer.PointParameter.Hidden = true;
         makeStep.PointParameter.ActualName = realVectorParameterName;
+        makeStep.PointParameter.Hidden = true;
         analyzer.PointParameter.ActualName = realVectorParameterName;
+        analyzer.PointParameter.Hidden = true;
       }
 
       var qualityParameterName = Problem.Evaluator.QualityParameter.ActualName;
       updateResults.QualityParameter.ActualName = qualityParameterName;
+      updateResults.QualityParameter.Hidden = true;
       analyzer.QualityParameter.ActualName = qualityParameterName;
+      analyzer.QualityParameter.Hidden = true;
     }
   }
 }
