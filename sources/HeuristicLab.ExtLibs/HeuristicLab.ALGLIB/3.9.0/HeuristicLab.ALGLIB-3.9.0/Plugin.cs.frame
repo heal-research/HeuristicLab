@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -21,22 +21,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.DataAnalysis {
-  [Plugin("HeuristicLab.Problems.DataAnalysis","Provides base classes for data analysis tasks.", "3.4.8.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.DataAnalysis-3.4.dll", PluginFileType.Assembly)]
-  [PluginDependency("HeuristicLab.ALGLIB","3.9")]
-  [PluginDependency("HeuristicLab.Collections", "3.3")]
-  [PluginDependency("HeuristicLab.Common", "3.3")]
-  [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
-  [PluginDependency("HeuristicLab.Core", "3.3")]
-  [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Optimization","3.3")]
-  [PluginDependency("HeuristicLab.Parameters", "3.3")]
-  [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]  
-  public class HeuristicLabProblemsDataAnalysisPlugin : PluginBase {
+namespace HeuristicLab.ALGLIB {
+  [Plugin("HeuristicLab.ALGLIB","HeuristicLab wrapper for ALGLIB® - numerical analysis library","3.9.0.$WCREV$")]  
+  [PluginFile("HeuristicLab.ALGLIB-3.9.0.dll", PluginFileType.Assembly)]
+  [PluginFile("ALGLIB-3.9.0.dll", PluginFileType.Assembly)]
+  [PluginFile("ALGLIB License-3.9.0.txt", PluginFileType.License)]
+  public class HeuristicLabAlgLibPlugin : PluginBase {
   }
 }

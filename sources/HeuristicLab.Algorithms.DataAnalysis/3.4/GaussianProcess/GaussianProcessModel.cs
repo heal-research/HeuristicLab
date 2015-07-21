@@ -296,7 +296,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       // for stddev 
-      alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
+      alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, sWKs, 0, 0);
 
       for (int i = 0; i < newN; i++) {
         var sumV = Util.ScalarProd(Util.GetCol(sWKs, i), Util.GetCol(sWKs, i));
