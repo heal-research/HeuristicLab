@@ -73,8 +73,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Multinomial logit classification does not support NaN or infinity values in the input dataset.");
 
-      alglib.logitmodel lm = new alglib.logitmodel();
-      alglib.mnlreport rep = new alglib.mnlreport();
+      alglib.logitmodel lm;
+      alglib.mnlreport rep;
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
       double[] classValues = dataset.GetDoubleValues(targetVariable).Distinct().OrderBy(x => x).ToArray();

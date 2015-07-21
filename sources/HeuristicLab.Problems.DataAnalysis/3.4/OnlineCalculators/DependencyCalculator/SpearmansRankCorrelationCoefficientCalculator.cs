@@ -40,7 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       try {
         var original = originalValues.ToArray();
         var estimated = estimatedValues.ToArray();
-        rs = alglib.basestat.spearmancorr2(original, estimated, original.Length);
+        rs = alglib.spearmancorr2(original, estimated, original.Length);
         errorState = OnlineCalculatorError.None;
       }
       catch (alglib.alglibexception) {
