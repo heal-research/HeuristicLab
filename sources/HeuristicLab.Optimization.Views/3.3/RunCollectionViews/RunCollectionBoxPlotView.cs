@@ -344,7 +344,17 @@ namespace HeuristicLab.Optimization.Views {
       double? value = double.NaN;
       switch (axisDimension) {
         case AxisDimension.Color: {
-            value = GetCategoricalValue(-1, run.Color.ToString());
+            const int colorDimension = -1;
+            if (!categoricalMapping.ContainsKey(colorDimension)) {
+              categoricalMapping[colorDimension] = Content.Where(r => r.Visible)
+                  .Select(r => r.Color.Name)
+                  .Distinct()
+                  .OrderBy(c => c, new NaturalStringComparer())
+                  .Select((c, i) => new { Color = c, Index = i })
+                  .ToDictionary(a => (object)a.Color, a => (double)a.Index);
+
+            }
+            value = GetCategoricalValue(colorDimension, run.Color.Name);
             break;
           }
         default: {
