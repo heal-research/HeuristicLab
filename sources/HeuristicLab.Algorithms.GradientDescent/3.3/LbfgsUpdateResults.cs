@@ -61,7 +61,18 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     private RealVector QualityGradients { get { return QualityGradientsParameter.ActualValue; } }
     private DoubleValue Quality { get { return QualityParameter.ActualValue; } }
     private LbfgsState State { get { return StateParameter.ActualValue; } }
-    private BoolValue Maximization { get { return MaximizationParameter.ActualValue; } }
+
+    private BoolValue Maximization {
+      get {
+        // BackwardsCompatibility3.3
+        #region Backwards compatible code, remove with 3.4
+        // the parameter is new, previously we assumed minimization problems
+        if (MaximizationParameter.ActualValue == null) return new BoolValue(false);
+        #endregion
+        return MaximizationParameter.ActualValue;
+      }
+    }
+
     #endregion
 
     [StorableConstructor]

@@ -107,6 +107,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new ValueParameter<BoolValue>(ApproximateGradientsParameterName, "Indicates that gradients should not be approximated (necessary for LM-BFGS).", new BoolValue(false)));
       Parameters[ApproximateGradientsParameterName].Hidden = true; // should not be changed
 
+      // necessary for BFGS
+      Parameters.Add(new ValueParameter<BoolValue>("Maximization", new BoolValue(false)));
+      Parameters["Maximization"].Hidden = true;
+
       var randomCreator = new HeuristicLab.Random.RandomCreator();
       var gpInitializer = new GaussianProcessHyperparameterInitializer();
       var bfgsInitializer = new LbfgsInitializer();
@@ -180,6 +184,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.4
+      #region Backwards compatible code, remove with 3.5
+      if (!Parameters.ContainsKey("Maximization")) {
+        Parameters.Add(new ValueParameter<BoolValue>("Maximization", new BoolValue(false)));
+        Parameters["Maximization"].Hidden = true;
+      }
+      #endregion
     }
   }
 }
