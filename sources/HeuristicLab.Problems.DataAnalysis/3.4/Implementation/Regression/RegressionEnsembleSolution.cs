@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       set { base.ProblemData = value; }
     }
 
+    [Storable]
     private readonly ItemCollection<IRegressionSolution> regressionSolutions;
     public IItemCollection<IRegressionSolution> RegressionSolutions {
       get { return regressionSolutions; }
@@ -66,14 +67,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      foreach (var model in Model.Models) {
-        IRegressionProblemData problemData = (IRegressionProblemData)ProblemData.Clone();
-        problemData.TrainingPartition.Start = trainingPartitions[model].Start;
-        problemData.TrainingPartition.End = trainingPartitions[model].End;
-        problemData.TestPartition.Start = testPartitions[model].Start;
-        problemData.TestPartition.End = testPartitions[model].End;
+      if (!regressionSolutions.Any()) {
+        foreach (var model in Model.Models) {
+          IRegressionProblemData problemData = (IRegressionProblemData)ProblemData.Clone();
+          problemData.TrainingPartition.Start = trainingPartitions[model].Start;
+          problemData.TrainingPartition.End = trainingPartitions[model].End;
+          problemData.TestPartition.Start = testPartitions[model].Start;
+          problemData.TestPartition.End = testPartitions[model].End;
 
-        regressionSolutions.Add(model.CreateRegressionSolution(problemData));
+          regressionSolutions.Add(model.CreateRegressionSolution(problemData));
+        }
       }
       RegisterRegressionSolutionsEventHandler();
     }
