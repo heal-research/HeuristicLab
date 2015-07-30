@@ -90,6 +90,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
     private ILookupParameter<BoolValue> AllMovesTabuParameter {
       get { return (ILookupParameter<BoolValue>)Parameters["AllMovesTabu"]; }
     }
+
+    public ILookupParameter<IntValue> EvaluatedMovesParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["EvaluatedMoves"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -116,6 +120,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       Parameters.Add(new ValueLookupParameter<BoolValue>("UseAlternativeAspiration", "True if the alternative aspiration condition should be used that takes moves that have not been made for some time above others."));
       Parameters.Add(new ValueLookupParameter<IntValue>("AlternativeAspirationTenure", "The time t that a move will be remembered for the alternative aspiration condition."));
       Parameters.Add(new LookupParameter<BoolValue>("AllMovesTabu", "Indicates that all moves are tabu."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedMoves", "The number of move evaluations made."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -128,6 +133,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("AllMovesTabu")) {
         Parameters.Add(new LookupParameter<BoolValue>("AllMovesTabu", "Indicates that all moves are tabu."));
+      }
+      if (!Parameters.ContainsKey("EvaluatedMoves")) {
+        Parameters.Add(new LookupParameter<IntValue>("EvaluatedMoves", "The number of move evaluations made."));
       }
       #endregion
     }
@@ -162,12 +170,17 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       Swap2Move bestMove = null;
       bool already_aspired = false;
 
+      var evaluatedMoves = 0;
       foreach (Swap2Move move in ExhaustiveSwap2MoveGenerator.Generate(solution)) {
         double moveQuality;
-        if (lastMove == null)
+        if (lastMove == null) {
           moveQuality = QAPSwap2MoveEvaluator.Apply(solution, move, weights, distances);
-        else if (allMovesTabu) moveQuality = moveQualityMatrix[move.Index1, move.Index2];
-        else moveQuality = QAPSwap2MoveEvaluator.Apply(solution, move, moveQualityMatrix[move.Index1, move.Index2], weights, distances, lastMove);
+          evaluatedMoves++;
+        } else if (allMovesTabu) moveQuality = moveQualityMatrix[move.Index1, move.Index2];
+        else {
+          moveQuality = QAPSwap2MoveEvaluator.Apply(solution, move, moveQualityMatrix[move.Index1, move.Index2], weights, distances, lastMove);
+          evaluatedMoves++;
+        }
 
         moveQualityMatrix[move.Index1, move.Index2] = moveQuality;
         moveQualityMatrix[move.Index2, move.Index1] = moveQuality;
@@ -199,6 +212,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
           aspiredMoves.Value++;
         }
       }
+
+      EvaluatedMovesParameter.ActualValue.Value += evaluatedMoves;
 
       allMovesTabu = bestMove == null;
       if (!allMovesTabu)
