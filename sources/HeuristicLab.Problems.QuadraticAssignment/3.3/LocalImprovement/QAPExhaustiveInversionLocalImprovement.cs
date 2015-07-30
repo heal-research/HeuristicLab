@@ -107,7 +107,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
             bestMove = move;
           }
         }
-        evaluatedSolutions.Value = (int)Math.Ceiling(evaluations);
+        evaluatedSolutions.Value += (int)Math.Ceiling(evaluations);
         if (bestMove == null) break;
         InversionManipulator.Apply(assignment, bestMove.Index1, bestMove.Index2);
         quality.Value += bestQuality;
