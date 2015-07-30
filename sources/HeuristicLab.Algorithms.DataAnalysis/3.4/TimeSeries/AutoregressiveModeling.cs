@@ -99,8 +99,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.TimeSeries {
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
 
-      alglib.linearmodel lm;
-      alglib.lrreport ar;
+      alglib.linearmodel lm = new alglib.linearmodel();
+      alglib.lrreport ar = new alglib.lrreport();
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
       double[] coefficients = new double[nFeatures + 1]; // last coefficient is for the constant

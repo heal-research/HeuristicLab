@@ -167,7 +167,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       int info;
       alglib.densesolverreport denseSolveRep;
 
-      var res = alglib.spdmatrixcholesky(ref l, n, false);
+      var res = alglib.trfac.spdmatrixcholesky(ref l, n, false);
       if (!res) throw new ArgumentException("Matrix is not positive semidefinite");
 
       // calculate sum of diagonal elements for likelihood
@@ -296,7 +296,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       // for stddev 
-      alglib.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
+      alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
 
       for (int i = 0; i < newN; i++) {
         var sumV = Util.ScalarProd(Util.GetCol(sWKs, i), Util.GetCol(sWKs, i));

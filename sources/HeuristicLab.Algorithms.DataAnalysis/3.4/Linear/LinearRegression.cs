@@ -46,7 +46,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private LinearRegression(bool deserializing) : base(deserializing) { }
     private LinearRegression(LinearRegression original, Cloner cloner)
       : base(original, cloner) {
-
     }
     public LinearRegression()
       : base() {
@@ -77,11 +76,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (inputMatrix.Cast<double>().Any(x => double.IsNaN(x) || double.IsInfinity(x)))
         throw new NotSupportedException("Linear regression does not support NaN or infinity values in the input dataset.");
 
-      alglib.linearmodel lm;
-      alglib.lrreport ar;
+      alglib.linearmodel lm = new alglib.linearmodel();
+      alglib.lrreport ar = new alglib.lrreport();
       int nRows = inputMatrix.GetLength(0);
       int nFeatures = inputMatrix.GetLength(1) - 1;
-      double[] coefficients;
+      double[] coefficients = new double[nFeatures + 1]; // last coefficient is for the constant
 
       int retVal = 1;
       alglib.lrbuild(inputMatrix, nRows, nFeatures, out retVal, out lm, out ar);

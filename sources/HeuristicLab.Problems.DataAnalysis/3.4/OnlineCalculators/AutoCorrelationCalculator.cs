@@ -30,8 +30,8 @@ namespace HeuristicLab.Problems.DataAnalysis.OnlineCalculators {
         return new double[0];
       }
 
-      double[] correlations;
-      alglib.corrr1dcircular(values, values.Length, values, values.Length, out correlations);
+      double[] correlations = new double[values.Length];
+      alglib.corr.corrr1dcircular(values, values.Length, values, values.Length, ref correlations);
       return correlations;
     }
   }

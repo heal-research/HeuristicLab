@@ -62,7 +62,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private NeuralNetworkModel(NeuralNetworkModel original, Cloner cloner)
       : base(original, cloner) {
       multiLayerPerceptron = new alglib.multilayerperceptron();
-
+      multiLayerPerceptron.innerobj.chunks = (double[,])original.multiLayerPerceptron.innerobj.chunks.Clone();
       multiLayerPerceptron.innerobj.columnmeans = (double[])original.multiLayerPerceptron.innerobj.columnmeans.Clone();
       multiLayerPerceptron.innerobj.columnsigmas = (double[])original.multiLayerPerceptron.innerobj.columnsigmas.Clone();
       multiLayerPerceptron.innerobj.derror = (double[])original.multiLayerPerceptron.innerobj.derror.Clone();
@@ -162,11 +162,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private double[,] MultiLayerPerceptronChunks {
       get {
-        // ignore this property in alglib version >= 3.9.0
-        return null;
+        return multiLayerPerceptron.innerobj.chunks;
       }
       set {
-        // ignore this property in alglib version >= 3.9.0
+        multiLayerPerceptron.innerobj.chunks = value;
       }
     }
     [Storable]
