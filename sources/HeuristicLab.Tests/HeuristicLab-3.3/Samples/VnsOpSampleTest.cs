@@ -74,11 +74,11 @@ namespace HeuristicLab.Tests {
       opProblem.TerminalPoint = 63;
 
       opProblem.Name = "1_p64_t070";
-      opProblem.Description = "Represents a symmetric Traveling Salesman Problem.";
+      opProblem.Description = "Represents an instance of an orienteering problem.";
       #endregion
       #region Algorithm Configuration
-      vns.Name = "Variable Neighborhood Search - TSP";
-      vns.Description = "A variable neighborhood search algorithm which solves a funny TSP instance";
+      vns.Name = "Variable Neighborhood Search - OP";
+      vns.Description = "A variable neighborhood search algorithm which solves an orienteering problem instance";
       vns.Problem = opProblem;
 
       vns.LocalImprovement = vns.LocalImprovementParameter.ValidValues.OfType<OrienteeringLocalImprovementOperator>().Single();
