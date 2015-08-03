@@ -167,20 +167,15 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
 
       VariableCreator variableCreator = new VariableCreator();
       variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("Iterations", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(0)));
-      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedMoves", new IntValue(0)));
+      variableCreator.CollectedValues.Add(new ValueParameter<IntValue>("EvaluatedSolutions", new IntValue(1)));
+      variableCreator.CollectedValues.Add(new ValueParameter<DoubleValue>("EvaluatedSolutionEquivalents", new DoubleValue(1)));
 
       ResultsCollector resultsCollector = new ResultsCollector();
       resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("Iterations", "The actual iteration."));
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of full solution evaluations."));
-      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("EvaluatedMoves", "The number of move evaluations."));
+      resultsCollector.CollectedValues.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "Number of evaluated solutions."));
 
       solutionsCreator = new SolutionsCreator();
       solutionsCreator.NumberOfSolutions = new IntValue(1);
-
-      IntCounter counter = new IntCounter();
-      counter.ValueParameter.ActualName = "EvaluatedSolutions";
-      counter.Increment = new IntValue(1);
 
       Placeholder analyzer = new Placeholder();
       analyzer.Name = "(Analyzer)";
@@ -201,7 +196,8 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
       mainOperator.ResultsParameter.ActualName = "Results";
       mainOperator.ShortTermMemoryParameter.ActualName = "ShortTermMemory";
       mainOperator.UseAlternativeAspirationParameter.ActualName = UseAlternativeAspirationParameter.Name;
-      mainOperator.EvaluatedMovesParameter.ActualName = "EvaluatedMoves";
+      mainOperator.EvaluatedSolutionsParameter.ActualName = "EvaluatedSolutions";
+      mainOperator.EvaluatedSolutionEquivalentsParameter.ActualName = "EvaluatedSolutionEquivalents";
 
       ConditionalBranch qualityStopBranch = new ConditionalBranch();
       qualityStopBranch.Name = "Terminate on optimal quality?";
@@ -234,8 +230,7 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
       randomCreator.Successor = variableCreator;
       variableCreator.Successor = resultsCollector;
       resultsCollector.Successor = solutionsCreator;
-      solutionsCreator.Successor = counter;
-      counter.Successor = analyzer;
+      solutionsCreator.Successor = analyzer;
       analyzer.Successor = ussp;
       ussp.Operator = mainOperator;
       ussp.Successor = qualityStopBranch;
