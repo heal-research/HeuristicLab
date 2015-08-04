@@ -123,8 +123,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         bounds[i, 0] = min[i];
         bounds[i, 1] = max[i];
       }
-      LengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
-      BoundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds);
+      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
+      boundsParameter = new ValueParameter<DoubleMatrix>(Name + ".Bounds", bounds);
+      Parameters.Add(lengthParameter);
+      Parameters.Add(boundsParameter);
 
       SolutionCreator = new UniformRandomRealVectorCreator();
       RegisterParameterEvents();

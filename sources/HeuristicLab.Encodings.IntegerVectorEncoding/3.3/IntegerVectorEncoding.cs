@@ -129,8 +129,10 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
         if (step != null) bounds[i, 2] = step[i];
       }
 
-      LengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
-      BoundsParameter = new ValueParameter<IntMatrix>(Name + ".Bounds", bounds);
+      lengthParameter = new FixedValueParameter<IntValue>(Name + ".Length", new IntValue(length));
+      boundsParameter = new ValueParameter<IntMatrix>(Name + ".Bounds", bounds);
+      Parameters.Add(lengthParameter);
+      Parameters.Add(boundsParameter);
 
       SolutionCreator = new UniformRandomIntegerVectorCreator();
       RegisterParameterEvents();
