@@ -274,6 +274,10 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         var groups = GetGroups(columnNames, runs);
         data = new double[columnNames.Count()][];
 
+        if (!groups.Any() || !columnNames.Any()) {
+          return;
+        }
+
         DoubleMatrix dt = new DoubleMatrix(groups.Select(x => x.Count()).Max(), columnNames.Count());
         dt.ColumnNames = columnNames;
         DataTable histogramDataTable = new DataTable(resultName);
@@ -310,7 +314,9 @@ namespace HeuristicLab.Analysis.Statistics.Views {
       string parameterName = (string)groupComboBox.SelectedItem;
 
       foreach (string cn in columnNames) {
-        var tmpRuns = runs.Where(x => ((string)((dynamic)x.Parameters[parameterName]).Value.ToString()) == cn);
+        var tmpRuns = runs.Where(x =>
+        x.Parameters.ContainsKey(parameterName) &&
+        (((string)((dynamic)x.Parameters[parameterName]).Value.ToString()) == cn));
         runCols.Add(tmpRuns);
       }
 
@@ -330,7 +336,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
     }
 
     private bool VerifyDataLength(bool showMessage) {
-      if (data == null || data.Length == 0)
+      if (data == null || data.Length < 2)
         return false;
 
       //alglib needs at least 5 samples for computation
@@ -456,7 +462,7 @@ namespace HeuristicLab.Analysis.Statistics.Views {
 
       double[][] newData = FilterDataForPairwiseTest(colIndex);
 
-      var rowNames = new[] { "p-Value of Mann-Whitney U", "Adjusted p-Value of Mann-Whitney U", 
+      var rowNames = new[] { "p-Value of Mann-Whitney U", "Adjusted p-Value of Mann-Whitney U",
             "p-Value of T-Test", "Adjusted p-Value of T-Test", "Cohen's d", "Hedges' g" };
 
       DoubleMatrix pValsMatrix = new DoubleMatrix(rowNames.Length, columnNames.Count());
