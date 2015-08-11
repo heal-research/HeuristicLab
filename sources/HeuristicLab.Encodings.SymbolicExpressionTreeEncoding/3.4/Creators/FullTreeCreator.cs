@@ -76,7 +76,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
       rootNode.AddSubtree(startNode);
 
-      Create(random, startNode, maxTreeDepth - 2);
+      Create(random, startNode, maxTreeDepth-1);
       tree.Root = rootNode;
       return tree;
     }
@@ -98,7 +98,9 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
       for (var i = 0; i < arity; i++) {
         var possibleSymbols = allowedSymbols
-          .Where(s => seedNode.Grammar.IsAllowedChildSymbol(seedNode.Symbol, s, i))
+          .Where(s => seedNode.Grammar.IsAllowedChildSymbol(seedNode.Symbol, s, i)
+                   && seedNode.Grammar.GetMinimumExpressionDepth(s) <= maxDepth
+                   && seedNode.Grammar.GetMaximumExpressionDepth(s) >= maxDepth)
           .ToList();
         var weights = possibleSymbols.Select(s => s.InitialFrequency).ToList();
 
@@ -141,7 +143,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 #pragma warning disable 612, 618
         var selectedSymbol = possibleSymbols.SelectRandom(weights, random);
 #pragma warning restore 612, 618
-        
+
         var tree = selectedSymbol.CreateTreeNode();
         if (tree.HasLocalParameters) tree.ResetLocalParameters(random);
         root.AddSubtree(tree);
