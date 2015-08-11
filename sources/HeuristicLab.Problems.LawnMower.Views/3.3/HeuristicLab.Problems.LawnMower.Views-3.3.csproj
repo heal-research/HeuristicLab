@@ -173,7 +173,7 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.LawnMower\3.3\HeuristicLab.Problems.LawnMower.csproj">
+    <ProjectReference Include="..\..\HeuristicLab.Problems.LawnMower\3.3\HeuristicLab.Problems.LawnMower-3.3.csproj">
       <Project>{9A04599C-D608-4240-8DA6-D41F51C515A3}</Project>
       <Name>HeuristicLab.Problems.LawnMower</Name>
       <Private>False</Private>
