@@ -179,7 +179,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       Swap2Move bestMove = null;
       bool already_aspired = false;
 
-      double evaluations = EvaluatedSolutionsParameter.ActualValue.Value;
+      double evaluations = EvaluatedSolutionEquivalentsParameter.ActualValue.Value;
       foreach (Swap2Move move in ExhaustiveSwap2MoveGenerator.Generate(solution)) {
         double moveQuality;
         if (lastMove == null) {
