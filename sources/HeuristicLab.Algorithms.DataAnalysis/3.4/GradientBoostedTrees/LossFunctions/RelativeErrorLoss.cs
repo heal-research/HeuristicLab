@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   // relative error loss is a special case of weighted absolute error loss with weights = (1/target)
   [StorableClass]
   [Item("Relative error loss", "")]
-  public class RelativeErrorLoss : Item, ILossFunction {
+  public sealed class RelativeErrorLoss : Item, ILossFunction {
     public RelativeErrorLoss() { }
 
     public double GetLoss(IEnumerable<double> target, IEnumerable<double> pred) {
@@ -111,6 +111,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region item implementation
+    [StorableConstructor]
+    private RelativeErrorLoss(bool deserializing) : base(deserializing) { }
+
     private RelativeErrorLoss(RelativeErrorLoss original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {

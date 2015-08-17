@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("Squared error loss", "")]
-  public class SquaredErrorLoss : Item, ILossFunction {
+  public sealed class SquaredErrorLoss : Item, ILossFunction {
     public SquaredErrorLoss() { }
 
     public double GetLoss(IEnumerable<double> target, IEnumerable<double> pred) {
@@ -77,6 +77,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region item implementation
+    [StorableConstructor]
+    private SquaredErrorLoss(bool deserializing) : base(deserializing) { }
+
     private SquaredErrorLoss(SquaredErrorLoss original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {

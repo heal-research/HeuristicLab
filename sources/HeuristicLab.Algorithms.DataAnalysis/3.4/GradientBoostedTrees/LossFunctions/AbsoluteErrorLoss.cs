@@ -30,7 +30,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   // loss function for the weighted absolute error
   [StorableClass]
   [Item("Absolute error loss", "")]
-  public class AbsoluteErrorLoss : Item, ILossFunction {
+  public sealed class AbsoluteErrorLoss : Item, ILossFunction {
     public AbsoluteErrorLoss() { }
 
     public double GetLoss(IEnumerable<double> target, IEnumerable<double> pred) {
@@ -81,6 +81,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region item implementation
+    [StorableConstructor]
+    private AbsoluteErrorLoss(bool deserializing) : base(deserializing) { }
+
     private AbsoluteErrorLoss(AbsoluteErrorLoss original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {

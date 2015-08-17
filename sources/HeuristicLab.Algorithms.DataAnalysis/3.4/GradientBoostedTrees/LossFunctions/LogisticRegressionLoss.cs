@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   // Greedy Function Approximation: A Gradient Boosting Machine (page 9) 
   [StorableClass]
   [Item("Logistic regression loss", "")]
-  public class LogisticRegressionLoss : Item, ILossFunction {
+  public sealed class LogisticRegressionLoss : Item, ILossFunction {
     public LogisticRegressionLoss() { }
 
     public double GetLoss(IEnumerable<double> target, IEnumerable<double> pred) {
@@ -89,6 +89,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     #region item implementation
+    [StorableConstructor]
+    private LogisticRegressionLoss(bool deserializing) : base(deserializing) { }
+
     private LogisticRegressionLoss(LogisticRegressionLoss original, Cloner cloner) : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
