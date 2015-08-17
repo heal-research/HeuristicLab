@@ -22,13 +22,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // loss function for the weighted absolute error
-  public class AbsoluteErrorLoss : ILossFunction {
+  [StorableClass]
+  [Item("Absolute error loss", "")]
+  public class AbsoluteErrorLoss : Item, ILossFunction {
+    public AbsoluteErrorLoss() { }
+
     public double GetLoss(IEnumerable<double> target, IEnumerable<double> pred) {
       var targetEnum = target.GetEnumerator();
       var predEnum = pred.GetEnumerator();
@@ -76,8 +80,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return res.Median(); // TODO: improve efficiency
     }
 
-    public override string ToString() {
-      return "Absolute error loss";
+    #region item implementation
+    private AbsoluteErrorLoss(AbsoluteErrorLoss original, Cloner cloner) : base(original, cloner) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AbsoluteErrorLoss(this, cloner);
     }
+    #endregion
   }
 }

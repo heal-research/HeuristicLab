@@ -25,10 +25,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // relative error loss is a special case of weighted absolute error loss with weights = (1/target)
-  public class RelativeErrorLoss : ILossFunction {
+  [StorableClass]
+  [Item("Relative error loss", "")]
+  public class RelativeErrorLoss : Item, ILossFunction {
+    public RelativeErrorLoss() { }
+
     public double GetLoss(IEnumerable<double> target, IEnumerable<double> pred) {
       var targetEnum = target.GetEnumerator();
       var predEnum = pred.GetEnumerator();
@@ -104,8 +110,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    public override string ToString() {
-      return "Relative error loss";
+    #region item implementation
+    private RelativeErrorLoss(RelativeErrorLoss original, Cloner cloner) : base(original, cloner) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new RelativeErrorLoss(this, cloner);
     }
+    #endregion
   }
 }

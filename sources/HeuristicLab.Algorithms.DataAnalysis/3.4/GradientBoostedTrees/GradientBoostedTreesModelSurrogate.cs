@@ -44,7 +44,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     [Storable]
     private readonly uint seed;
     [Storable]
-    private string lossFunctionName;
+    private ILossFunction lossFunction;
     [Storable]
     private double r;
     [Storable]
@@ -65,8 +65,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (original.actualModel != null) this.actualModel = cloner.Clone(original.actualModel);
 
       this.trainingProblemData = cloner.Clone(original.trainingProblemData);
+      this.lossFunction = cloner.Clone(original.lossFunction);
       this.seed = original.seed;
-      this.lossFunctionName = original.lossFunctionName;
       this.iterations = original.iterations;
       this.maxSize = original.maxSize;
       this.r = original.r;
@@ -75,11 +75,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // create only the surrogate model without an actual model
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, string lossFunctionName, int iterations, int maxSize, double r, double m, double nu)
+    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu)
       : base("Gradient boosted tree model", string.Empty) {
       this.trainingProblemData = trainingProblemData;
       this.seed = seed;
-      this.lossFunctionName = lossFunctionName;
+      this.lossFunction = lossFunction;
       this.iterations = iterations;
       this.maxSize = maxSize;
       this.r = r;
@@ -88,8 +88,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // wrap an actual model in a surrograte
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, string lossFunctionName, int iterations, int maxSize, double r, double m, double nu, IRegressionModel model)
-      : this(trainingProblemData, seed, lossFunctionName, iterations, maxSize, r, m, nu) {
+    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu, IRegressionModel model)
+      : this(trainingProblemData, seed, lossFunction, iterations, maxSize, r, m, nu) {
       this.actualModel = model;
     }
 
@@ -109,7 +109,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     private IRegressionModel RecalculateModel() {
-      var lossFunction = ApplicationManager.Manager.GetInstances<ILossFunction>().Single(l => l.ToString() == lossFunctionName);
       return GradientBoostedTreesAlgorithmStatic.TrainGbm(trainingProblemData, lossFunction, maxSize, nu, r, m, iterations, seed).Model;
     }
   }

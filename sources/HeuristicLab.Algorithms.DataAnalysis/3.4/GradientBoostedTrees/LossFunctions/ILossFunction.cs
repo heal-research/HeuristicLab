@@ -21,12 +21,13 @@
 #endregion
 
 using System.Collections.Generic;
+using HeuristicLab.Core;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // represents an interface for loss functions used by gradient boosting
   // target represents the target vector  (original targets from the problem data, never changed)
   // pred   represents the current vector of predictions (a weighted combination of models learned so far, this vector is updated after each step)
-  public interface ILossFunction {
+  public interface ILossFunction : IItem {
     // returns the loss of the current prediction vector 
     double GetLoss(IEnumerable<double> target, IEnumerable<double> pred);
 

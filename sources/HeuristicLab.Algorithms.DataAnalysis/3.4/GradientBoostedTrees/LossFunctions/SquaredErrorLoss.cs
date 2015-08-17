@@ -23,9 +23,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  public class SquaredErrorLoss : ILossFunction {
+  [StorableClass]
+  [Item("Squared error loss", "")]
+  public class SquaredErrorLoss : Item, ILossFunction {
+    public SquaredErrorLoss() { }
+
     public double GetLoss(IEnumerable<double> target, IEnumerable<double> pred) {
       var targetEnum = target.GetEnumerator();
       var predEnum = pred.GetEnumerator();
@@ -69,8 +76,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return s / n;
     }
 
-    public override string ToString() {
-      return "Squared error loss";
+    #region item implementation
+    private SquaredErrorLoss(SquaredErrorLoss original, Cloner cloner) : base(original, cloner) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SquaredErrorLoss(this, cloner);
     }
+    #endregion
   }
 }

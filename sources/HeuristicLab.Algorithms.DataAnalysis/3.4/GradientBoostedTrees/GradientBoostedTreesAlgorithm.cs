@@ -81,8 +81,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public FixedValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (FixedValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
     }
-    public IConstrainedValueParameter<StringValue> LossFunctionParameter {
-      get { return (IConstrainedValueParameter<StringValue>)Parameters[LossFunctionParameterName]; }
+    public IConstrainedValueParameter<ILossFunction> LossFunctionParameter {
+      get { return (IConstrainedValueParameter<ILossFunction>)Parameters[LossFunctionParameterName]; }
     }
     public IFixedValueParameter<IntValue> UpdateIntervalParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[UpdateIntervalParameterName]; }
@@ -163,11 +163,34 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
       Parameters[CreateSolutionParameterName].Hidden = true;
 
-      var lossFunctionNames = ApplicationManager.Manager.GetInstances<ILossFunction>().Select(l => new StringValue(l.ToString()).AsReadOnly());
-      Parameters.Add(new ConstrainedValueParameter<StringValue>(LossFunctionParameterName, "The loss function", new ItemSet<StringValue>(lossFunctionNames)));
-      LossFunctionParameter.ActualValue = LossFunctionParameter.ValidValues.First(l => l.Value.Contains("Squared")); // squared error loss is the default
+      var lossFunctions = ApplicationManager.Manager.GetInstances<ILossFunction>();
+      Parameters.Add(new ConstrainedValueParameter<ILossFunction>(LossFunctionParameterName, "The loss function", new ItemSet<ILossFunction>(lossFunctions)));
+      LossFunctionParameter.Value = LossFunctionParameter.ValidValues.First(f => f.ToString().Contains("Squared")); // squared error loss is the default
     }
 
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.4
+      #region Backwards compatible code, remove with 3.5
+      // parameter type has been changed
+      var lossFunctionParam = Parameters[LossFunctionParameterName] as ConstrainedValueParameter<StringValue>;
+      if (lossFunctionParam != null) {
+        Parameters.Remove(LossFunctionParameterName);
+        var selectedValue = lossFunctionParam.Value; // to be restored below
+
+        var lossFunctions = ApplicationManager.Manager.GetInstances<ILossFunction>();
+        Parameters.Add(new ConstrainedValueParameter<ILossFunction>(LossFunctionParameterName, "The loss function", new ItemSet<ILossFunction>(lossFunctions)));
+        // try to restore selected value
+        var selectedLossFunction =
+          LossFunctionParameter.ValidValues.FirstOrDefault(f => f.ToString() == selectedValue.Value);
+        if (selectedLossFunction != null) {
+          LossFunctionParameter.Value = selectedLossFunction;
+        } else {
+          LossFunctionParameter.Value = LossFunctionParameter.ValidValues.First(f => f.ToString().Contains("Squared")); // default: SE
+        }
+      }
+      #endregion
+    }
 
     protected override void Run(CancellationToken cancellationToken) {
       // Set up the algorithm
@@ -186,8 +209,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       // init
       var problemData = (IRegressionProblemData)Problem.ProblemData.Clone();
-      var lossFunction = ApplicationManager.Manager.GetInstances<ILossFunction>()
-        .Single(l => l.ToString() == LossFunctionParameter.Value.Value);
+      var lossFunction = LossFunctionParameter.Value;
       var state = GradientBoostedTreesAlgorithmStatic.CreateGbmState(problemData, lossFunction, (uint)Seed, MaxSize, R, M, Nu);
 
       var updateInterval = UpdateIntervalParameter.Value.Value;
@@ -232,7 +254,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       // produce solution 
       if (CreateSolution) {
-        var surrogateModel = new GradientBoostedTreesModelSurrogate(problemData, (uint)Seed, lossFunction.ToString(),
+        var surrogateModel = new GradientBoostedTreesModelSurrogate(problemData, (uint)Seed, lossFunction,
           Iterations, MaxSize, R, M, Nu, state.GetModel());
 
         // for logistic regression we produce a classification solution
