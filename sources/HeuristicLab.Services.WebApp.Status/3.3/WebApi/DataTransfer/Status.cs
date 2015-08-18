@@ -19,13 +19,14 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 
 namespace HeuristicLab.Services.WebApp.Status.WebApi.DataTransfer {
 
   public class CoreStatus {
     public int TotalCores { get; set; }
-    public int FreeCores { get; set; } // temporary quickfix for old chart data
+    public int UsedCores { get; set; }
     public int ActiveCores { get; set; }
     public int CalculatingCores { get; set; }
   }
@@ -38,9 +39,9 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi.DataTransfer {
 
   public class MemoryStatus {
     public int TotalMemory { get; set; }
-    public int FreeMemory { get; set; } // temporary quickfix for old chart data
-    public int ActiveMemory { get; set; }
     public int UsedMemory { get; set; }
+    public int ActiveMemory { get; set; }
+    public int CalculatingMemory { get; set; }
   }
 
   public class TaskStatus {
@@ -60,10 +61,21 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi.DataTransfer {
     public string State { get; set; }
   }
 
+  public class TimeStatus {
+    public long MinCalculatingTime { get; set; }
+    public long MaxCalculatingTime { get; set; }
+    public long AvgCalculatingTime { get; set; }
+    public long StandardDeviationCalculatingTime { get; set; }
+    public long AvgWaitingTime { get; set; }
+    public long TotalCpuTime { get; set; }
+    public DateTime? BeginDate { get; set; }
+  }
+
   public class Status {
     public CoreStatus CoreStatus { get; set; }
     public CpuUtilizationStatus CpuUtilizationStatus { get; set; }
     public MemoryStatus MemoryStatus { get; set; }
+    public TimeStatus TimeStatus { get; set; }
     public IEnumerable<TaskStatus> TasksStatus { get; set; }
     public IEnumerable<SlaveStatus> SlavesStatus { get; set; }
     public long Timestamp { get; set; }

@@ -12,7 +12,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Services.WebApp</RootNamespace>
-    <AssemblyName>HeuristicLab.Services.WebApp</AssemblyName>
+    <AssemblyName>HeuristicLab.Services.WebApp-3.3</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -117,8 +117,7 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
-    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="WebGrease">
       <HintPath>..\..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -145,6 +144,8 @@
     <Content Include="Global.asax" />
     <Content Include="WebApp\libs\angularjs\angular-tablesort\angular-tablesort.js" />
     <Content Include="WebApp\libs\angularjs\angular-tablesort\tablesort.css" />
+    <Content Include="WebApp\libs\angularjs\fittext\ng-FitText.js" />
+    <Content Include="WebApp\libs\cryptojs\aes.js" />
     <Content Include="WebApp\main.js" />
     <Content Include="WebApp\helper.js" />
     <Content Include="WebApp\HeuristicLab.ico" />
@@ -171,12 +172,24 @@
     <Content Include="WebApp\app.js" />
     <Content Include="WebApp\plugins\about\about.js" />
     <Content Include="WebApp\plugins\about\aboutCtrl.js" />
-    <Content Include="WebApp\plugins\login\login.css" />
-    <Content Include="WebApp\plugins\login\login.js" />
-    <Content Include="WebApp\plugins\login\loginCtrl.js" />
-    <Content Include="WebApp\plugins\plugins\pluginsExceptionCtrl.js" />
-    <Content Include="WebApp\plugins\plugins\plugins.js" />
-    <Content Include="WebApp\plugins\plugins\pluginsCtrl.js" />
+    <Content Include="WebApp\plugins\login\login.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\login\login.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\login\loginCtrl.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\plugins\pluginsExceptionCtrl.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\plugins\plugins.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="WebApp\plugins\plugins\pluginsCtrl.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="WebApp\plugins\plugins\pluginsService.js" />
     <Content Include="WebApp\shared\directives\flot.js" />
     <Content Include="WebApp\libs\angularjs\angular-ui\ui-bootstrap-tpls-0.13.0.min.js" />
@@ -207,7 +220,9 @@
     <Content Include="WebApp\libs\jquery\jquery-2.1.4.min.js" />
     <Content Include="HeuristicLab.snk" />
     <Content Include="Properties\AssemblyInfo.cs.frame" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -218,6 +233,7 @@
     <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="WebApp\libs\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="WebApp\shared\directives\scrollToTop.js" />
     <Content Include="WebApp\shared\filter\filters.js" />
     <Content Include="WebApp\shared\images\HeuristicLab-Logo.png" />
     <Content Include="WebApp\shared\layout\layout.cshtml" />
@@ -248,6 +264,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\WebApp.pubxml" />
     <Content Include="WebApp\plugins\about\about.cshtml" />
   </ItemGroup>
   <PropertyGroup>

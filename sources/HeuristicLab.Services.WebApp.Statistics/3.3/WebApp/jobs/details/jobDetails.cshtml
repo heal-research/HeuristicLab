@@ -1,0 +1,198 @@
+﻿@using HeuristicLab.Services.Access.DataTransfer
+@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li class="active">
+            <a ng-href="#/statistics/jobs">Jobs</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/users">Users</a>
+            </li>
+        }
+        <li>
+            <a ng-href="#/statistics/clients">Clients</a>
+        </li>
+        <li>
+            <a ng-href="#/statistics/groups">Groups</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/exceptions">Exceptions</a>
+            </li>
+        }
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-9 col-md-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Job Details</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-no-border table-condensed table-auto-width table-content">
+                                <tr>
+                                    <td class="text-left">Name:</td>
+                                    <td>{{job.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Created at:</td>
+                                    <td>{{job.DateCreated | toDate}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Completed at:</td>
+                                    <td ng-show="job.DateCompleted">{{job.DateCompleted | toDate}}</td>
+                                    <td ng-hide="job.DateCompleted">Not completed yet</td>
+                                </tr>
+                                @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+                                    <tr>
+                                        <td class="text-left">User:</td>
+                                        <td>
+                                            <a ng-href="#/statistics/users/{{job.UserId}}" ng-show="job.UserName">{{job.UserName}}</a>
+                                            <span ng-hide="job.UserName">None</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" style="height: 20px"></div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <table class="table table-no-border table-condensed table-auto-width table-content">
+                                <tr>
+                                    <td class="text-left">Total Time:</td>
+                                    <td class="text-right">{{job.TotalTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Calculating Time:</td>
+                                    <td class="text-right">{{job.TotalCalculatingTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Waiting Time:</td>
+                                    <td class="text-right">{{job.TotalWaitingTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Calc. / Waiting Ratio:</td>
+                                    <td class="text-right">{{job.CalculatingWaitingRatio | number: 3}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-5">
+                            <table class="table table-no-border table-condensed table-auto-width table-content">
+                                <tr>
+                                    <td class="text-left">Min Calculating Time:</td>
+                                    <td class="text-right">{{job.MinCalculatingTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Max Calculating Time:</td>
+                                    <td class="text-right">{{job.MaxCalculatingTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Avg. Calculating Time:</td>
+                                    <td class="text-right">{{job.AvgCalculatingTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Avg. Transferring Time:</td>
+                                    <td class="text-right">{{job.AvgTransferringTime | toTimespan}}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-md-2"></div>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tasks Overview</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">Total:</td>
+                            <td class="text-right">{{totalJobTasks}}</td>
+                        </tr>
+                        <tr ng-repeat="state in states">
+                            <td class="text-left">{{state.State}}:</td>
+                            <td class="text-right">{{state.Count}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="job-filter-header" class="text-center">
+    <form class="form-inline">
+        <div class="form-group">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default" ng-class="{active: state.Selected}" ng-repeat="state in states"
+                       ng-click="filterState(state)">
+                    <input type="checkbox" autocomplete="off" checked> {{state.State}}
+                </label>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="default-view-container">
+    <div id="taskListContainer" class="row" ng-show="taskPage.Tasks.length">
+        <div class="col-lg-4 col-md-4" ng-repeat="task in taskPage.Tasks">
+            <div class="panel panel-default">
+                <div class="panel-heading cursor-pointer" ng-click="openDialog(($index + 1)+((curTaskPage-1)*(taskPageSize)), task)">
+                    <h3 class="panel-title" style="display: inline">Task {{($index + 1)+((curTaskPage-1)*(taskPageSize))}}</h3>
+                    <span ng-if="task.State == 'Finished'" class="label label-success" style="float: right;">{{task.State}}</span>
+                    <span ng-if="task.State == 'Aborted' || task.State == 'Failed'" class="label label-danger" style="float: right;">{{task.State}}</span>
+                    <span ng-if="task.State == 'Waiting'" class="label label-warning" style="float: right;">{{task.State}}</span>
+                    <span ng-if="task.State != 'Waiting' && task.State != 'Failed' && task.State != 'Aborted' && task.State != 'Finished'" class="label label-default" style="float: right;">{{task.State}}</span>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-condensed table-no-border table-auto-width">
+                        <tr>
+                            <td colspan="2"><span data-fittext="0.99">{{task.Id}}</span></td>
+                        </tr>
+                        <tr>
+                            <td>Start Time:</td>
+                            <td ng-show="task.StartTime" class="text-right">{{task.StartTime | toDate}}</td>
+                            <td ng-hide="task.StartTime" class="text-right">Not started</td>
+                        </tr>
+                        <tr>
+                            <td>End Time:</td>
+                            <td ng-show="task.EndTime" class="text-right">{{task.EndTime | toDate}}</td>
+                            <td ng-hide="task.EndTime" class="text-right">Not finished</td>
+                        </tr>
+                        <tr>
+                            <td>Calculating Time:</td>
+                            <td class="text-right">{{task.CalculatingTime | toTimespan}}</td>
+                        </tr>
+                        <tr>
+                            <td>Slave:</td>
+                            <td class="text-right">
+                                <a ng-href="#/statistics/clients/{{task.LastClientId}}" ng-show="task.LastClientName">{{task.LastClientName}}</a>
+                                <span ng-hide="task.LastClientName">None</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div ng-hide="taskPage.Tasks.length">
+        <p class="text-center">Please select at least one state!</p>
+    </div>
+    <div class="row text-center" ng-show="taskPage.TotalTasks > taskPage.Tasks.length">
+        <pagination max-size="10" total-items="taskPage.TotalTasks" ng-model="curTaskPage" ng-change="changeTaskPage()" items-per-page="taskPageSize"
+                    boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+    </div>
+</div>

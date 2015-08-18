@@ -87,7 +87,7 @@
                     </tr>
                     <tr data-toggle="tooltip" data-placement="bottom" title="All calculating slaves that are allowed to calculate">
                         <td class="text-left">Calculating:</td>
-                        <td class="text-right">{{status.MemoryStatus.UsedMemory | kbToGB}} GB</td>
+                        <td class="text-right">{{status.MemoryStatus.CalculatingMemory | kbToGB}} GB</td>
                     </tr>
                 </table>
             </div>
@@ -114,6 +114,56 @@
                         <td class="text-right">{{tasks.CalculatingTasks | number}}</td>
                     </tr>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Status Overview</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-no-border table-condensed table-auto-width table-content">
+                            <tr>
+                                <td class="text-left">Current Average Waiting Time:</td>
+                                <td class="text-right">{{status.TimeStatus.AvgWaitingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Total CPU Time:</td>
+                                <td class="text-right">{{status.TimeStatus.TotalCpuTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Since:</td>
+                                <td class="text-right">{{status.TimeStatus.BeginDate | toDate}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-no-border table-condensed table-auto-width table-content">
+                            <tr>
+                                <td class="text-left">Minimum Calculating Time:</td>
+                                <td class="text-right">{{status.TimeStatus.MinCalculatingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Maximum Calculating Time:</td>
+                                <td class="text-right">{{status.TimeStatus.MaxCalculatingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Average Calculating Time:</td>
+                                <td class="text-right">{{status.TimeStatus.AvgCalculatingTime | toTimespan}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-left">Standard Deviation Calculating Time:</td>
+                                <td class="text-right">{{status.TimeStatus.StandardDeviationCalculatingTime | toTimespan}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

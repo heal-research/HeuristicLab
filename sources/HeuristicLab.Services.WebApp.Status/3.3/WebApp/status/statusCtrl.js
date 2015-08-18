@@ -102,7 +102,7 @@
                     // knobs
                     $scope.cpu.knobData = Math.round(status.CpuUtilizationStatus.ActiveCpuUtilization);
                     $scope.core.knobData = Math.round(status.CoreStatus.CalculatingCores / status.CoreStatus.ActiveCores * 100);
-                    $scope.memory.knobData = Math.round(status.MemoryStatus.UsedMemory / status.MemoryStatus.ActiveMemory * 100);
+                    $scope.memory.knobData = Math.round(status.MemoryStatus.CalculatingMemory / status.MemoryStatus.ActiveMemory * 100);
                     // chart series
                     var cpuSeries = $scope.cpu.series[0].data.splice(0);
                     var coreSeries = [$scope.core.series[0].data, $scope.core.series[1].data];
@@ -126,15 +126,10 @@
                     }
                     
                     cpuSeries.push([$scope.status.Timestamp, Math.round(status.CpuUtilizationStatus.TotalCpuUtilization)]);
-                    // charts are currently filled with old total/used data
-                    // start temporary
-                    var usedCores = status.CoreStatus.TotalCores - status.CoreStatus.FreeCores;
-                    var usedMemory = status.MemoryStatus.TotalMemory - status.MemoryStatus.FreeMemory;
-                    // end temporary
                     coreSeries[0].push([$scope.status.Timestamp, status.CoreStatus.TotalCores]);
-                    coreSeries[1].push([$scope.status.Timestamp, usedCores]);
+                    coreSeries[1].push([$scope.status.Timestamp, status.CoreStatus.UsedCores]);
                     memorySeries[0].push([$scope.status.Timestamp, Math.round(status.MemoryStatus.TotalMemory / 1024)]);
-                    memorySeries[1].push([$scope.status.Timestamp, Math.round(usedMemory / 1024)]);
+                    memorySeries[1].push([$scope.status.Timestamp, Math.round(status.MemoryStatus.UsedMemory / 1024)]);
                     $scope.cpu.series = [{ data: cpuSeries, label: "&nbsp;CPU Utilization", color: "#f7921d" }];
                     $scope.core.series = [
                         { data: coreSeries[0], label: "&nbsp;Total Cores", color: "LightGreen" },
@@ -159,11 +154,11 @@
                     var memorySeries = [[], []];
                     for (var i = 0; i < noOfStatus; ++i) {
                         var curStatus = status[i];
-                        var cpuData = Math.round(curStatus.CpuUtilizationStatus.ActiveCpuUtilization);
+                        var cpuData = Math.round(curStatus.CpuUtilizationStatus.TotalCpuUtilization);
                         cpuSeries.push([curStatus.Timestamp, cpuData]);
-                        coreSeries[0].push([curStatus.Timestamp, curStatus.CoreStatus.ActiveCores]);
-                        coreSeries[1].push([curStatus.Timestamp, curStatus.CoreStatus.CalculatingCores]);
-                        memorySeries[0].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.ActiveMemory / 1024)]);
+                        coreSeries[0].push([curStatus.Timestamp, curStatus.CoreStatus.TotalCores]);
+                        coreSeries[1].push([curStatus.Timestamp, curStatus.CoreStatus.UsedCores]);
+                        memorySeries[0].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.TotalMemory / 1024)]);
                         memorySeries[1].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.UsedMemory / 1024)]);
                     }
                     $scope.cpu.series = [{ data: cpuSeries, label: "&nbsp;CPU Utilization", color: "#f7921d" }];

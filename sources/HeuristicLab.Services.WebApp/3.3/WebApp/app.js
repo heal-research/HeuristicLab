@@ -1,6 +1,7 @@
 ﻿// app configuration
 var appName = 'app';
 var appPath = 'WebApp';
+var defaultPageUpdateInterval = 60000;
 
 // route, plugin, menu, section and main app
 var Route = function (name, view, controller) {

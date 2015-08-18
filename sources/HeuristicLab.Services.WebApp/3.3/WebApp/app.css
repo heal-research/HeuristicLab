@@ -351,11 +351,6 @@ input[type="color"]:focus,
   margin-right: 15px;
 }
 
-[ng-click],
-[data-ng-click],
-[x-ng-click] {
-    cursor: pointer;
-}
 
 .navbar-default .navbar-brand {
   text-shadow: none !important;
@@ -418,6 +413,13 @@ input[type="color"]:focus,
 
 .default-view-container {
   padding: 30px;
+  min-height: 300px;
+}
+
+.default-view-header {
+  padding: 30px;
+  background: #F5F5F5;
+  border-bottom: 1px solid #D3D3D3;
 }
 
 .panel-heading a:after {
@@ -432,4 +434,113 @@ input[type="color"]:focus,
 
 .panel-heading a:focus, a:hover {
   text-decoration: none;
+}
+
+/*remove button gradient*/
+.btn {
+  background-image: none;
+  filter: none;
+  -webkit-box-shadow: none !important;
+     -moz-box-shadow: none !important;
+       -o-box-shadow: none !important;
+          box-shadow: none !important;
+}
+
+.btn-default {
+  background-image: none;
+  filter: none;
+  -webkit-box-shadow: none !important;
+     -moz-box-shadow: none !important;
+       -o-box-shadow: none !important;
+          box-shadow: none !important;
+}
+
+.btn .btn-default {
+  background-image: none;
+  filter: none;
+  -webkit-box-shadow: none !important;
+     -moz-box-shadow: none !important;
+       -o-box-shadow: none !important;
+          box-shadow: none !important;
+}
+
+.btn-default.active, .btn-default:active{
+  border-color: #adadad;
+}
+
+
+
+.modal-dialog-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.modal-header {
+  background: #fafafa;
+}
+
+.modal-body {
+    overflow-y: auto;
+}
+.modal-footer {
+    margin-top: 0;
+}
+
+@media (max-width: 767px) {
+  .modal-dialog-center {
+    width: 100%;
+  }
+}
+
+body.modal-open {
+    overflow: visible;
+}
+
+.table .progress {
+margin-bottom: 0px;
+}
+
+.default-filter-header {
+  padding: 30px;
+  background: #F5F5F5;
+  border-top: 1px solid #D3D3D3;
+  border-bottom: 1px solid #D3D3D3;
+}
+
+.default-tab-filter-header {
+  padding: 30px;
+  background: #F5F5F5;
+  border-bottom: 1px solid #D3D3D3;
+}
+
+.cursor-pointer:hover {
+  cursor: pointer
+}
+
+.app-modal-window .modal-dialog {
+  top: 15%;
+  z-index: 1050;
+}
+
+.pagination>li>a, 
+.pagination>li>span {
+  border-color: #ccc;
+}
+
+.pagination>.active>a, 
+.pagination>.active>a:focus, 
+.pagination>.active>span, 
+.pagination>.active>span:focus {
+  color: black;
+  background: #e0e0e0;
+  border-color: #adadad;
+}
+
+.pagination>.active>a:hover, 
+.pagination>.active>span:hover {
+  color: black;
+  border-color: #ccc;
+  background: #eeeeee;
 }

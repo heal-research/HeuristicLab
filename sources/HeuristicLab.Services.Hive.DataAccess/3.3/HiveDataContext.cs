@@ -29,5 +29,9 @@ namespace HeuristicLab.Services.Hive.DataAccess {
       // to prove not used by our C# code... 
       throw new NotImplementedException();
     }
+
+    partial void OnCreated() {
+      LogFactory.GetLogger(this.GetType().Namespace).Log("HiveDataContext created");
+    }
   }
 }

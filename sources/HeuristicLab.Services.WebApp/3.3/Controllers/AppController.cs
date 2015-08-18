@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Web;
 using System.Web.Mvc;
 
 namespace HeuristicLab.Services.WebApp.Controllers {
@@ -29,6 +30,7 @@ namespace HeuristicLab.Services.WebApp.Controllers {
       if (!Request.Path.EndsWith("/")) {
         return RedirectPermanent(Request.Url + "/");
       }
+      Response.Cache.SetCacheability(HttpCacheability.NoCache);
       return View("~/WebApp/shared/layout/layout.cshtml");
     }
 
@@ -37,12 +39,14 @@ namespace HeuristicLab.Services.WebApp.Controllers {
     }
 
     public ActionResult LoadSharedView(string directory, string view, string dateTime) {
-      // dateTime is optional to avoid browser caching
+      Response.Cache.SetCacheability(HttpCacheability.NoCache);
+      // dateTime is optional to definitly avoid browser caching
       return View(string.Format("~/WebApp/shared/{0}/{1}", directory, view));
     }
 
     public ActionResult LoadPluginView(string plugin, string view, string dateTime) {
-      // dateTime is optional to avoid browser caching
+      Response.Cache.SetCacheability(HttpCacheability.NoCache);
+      // dateTime is optional to definitly avoid browser caching
       return View(string.Format("~/WebApp/plugins/{0}/{1}", plugin, view));
     }
 

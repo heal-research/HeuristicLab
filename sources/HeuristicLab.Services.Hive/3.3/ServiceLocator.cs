@@ -20,9 +20,11 @@
 #endregion
 
 using HeuristicLab.Services.Hive.DataAccess;
+using HeuristicLab.Services.Hive.DataAccess.Interfaces;
+using HeuristicLab.Services.Hive.DataAccess.Manager;
+using HeuristicLab.Services.Hive.Manager;
 
 namespace HeuristicLab.Services.Hive {
-
   public class ServiceLocator : IServiceLocator {
     private static IServiceLocator instance;
     public static IServiceLocator Instance {
@@ -33,20 +35,12 @@ namespace HeuristicLab.Services.Hive {
       set { instance = value; }
     }
 
-    private IHiveDao hiveDao;
-    public IHiveDao HiveDao {
-      get {
-        if (hiveDao == null) hiveDao = new HiveDao();
-        return hiveDao;
-      }
-    }
-
-    public IOptimizedHiveDao OptimizedHiveDao {
+    public IPersistenceManager PersistenceManager {
       get {
         var dataContext = HiveOperationContext.Current != null
                             ? HiveOperationContext.Current.DataContext
                             : new HiveDataContext(Settings.Default.HeuristicLab_Hive_LinqConnectionString);
-        return new OptimizedHiveDao(dataContext);
+        return new PersistenceManager(dataContext);
       }
     }
 
@@ -74,12 +68,9 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
-    private ITransactionManager transactionManager;
-    public ITransactionManager TransactionManager {
-      get {
-        if (transactionManager == null) transactionManager = new TransactionManager();
-        return transactionManager;
-      }
+    private IStatisticsGenerator statisticsGenerator;
+    public IStatisticsGenerator StatisticsGenerator {
+      get { return statisticsGenerator ?? (statisticsGenerator = new HiveStatisticsGenerator()); }
     }
 
     private Access.IUserManager userManager;

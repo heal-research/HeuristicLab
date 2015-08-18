@@ -103,9 +103,36 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
+    <Compile Include="Daos\AssignedResourceDao.cs" />
+    <Compile Include="Daos\DowntimeDao.cs" />
+    <Compile Include="Daos\GenericDao.cs" />
+    <Compile Include="Daos\HiveStatistics\DimClientDao.cs" />
+    <Compile Include="Daos\HiveStatistics\DimJobDao.cs" />
+    <Compile Include="Daos\HiveStatistics\DimTimeDao.cs" />
+    <Compile Include="Daos\HiveStatistics\DimUserDao.cs" />
+    <Compile Include="Daos\HiveStatistics\FactClientInfoDao.cs" />
+    <Compile Include="Daos\HiveStatistics\FactTaskDao.cs" />
+    <Compile Include="Daos\JobDao.cs" />
+    <Compile Include="Daos\JobPermissionDao.cs" />
+    <Compile Include="Daos\LifecycleDao.cs" />
+    <Compile Include="Daos\PluginDao.cs" />
+    <Compile Include="Daos\PluginDataDao.cs" />
+    <Compile Include="Daos\RequiredPluginDao.cs" />
+    <Compile Include="Daos\ResourceDao.cs" />
+    <Compile Include="Daos\ResourcePermissionDao.cs" />
+    <Compile Include="Daos\SlaveDao.cs" />
+    <Compile Include="Daos\SlaveGroupDao.cs" />
+    <Compile Include="Daos\StateLogDao.cs" />
+    <Compile Include="Daos\TaskDao.cs" />
+    <Compile Include="Daos\TaskDataDao.cs" />
+    <Compile Include="Daos\UserPriorityDao.cs" />
+    <Compile Include="Data\TableInformation.cs" />
+    <Compile Include="Interfaces\IGenericDao.cs" />
     <Compile Include="Enums\Command.cs" />
     <Compile Include="Enums\DowntimeType.cs" />
     <Compile Include="Enums\CpuArchitecture.cs" />
+    <Compile Include="Interfaces\IPersistenceManager.cs" />
+    <Compile Include="Manager\PersistenceManager.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="HiveDataContext.cs">
       <DependentUpon>HiveDataContext.dbml</DependentUpon>
@@ -115,7 +142,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HiveDataContext.dbml</DependentUpon>
     </Compile>
-    <Compile Include="ITransactionManager.cs" />
     <Compile Include="Enums\TaskState.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Enums\Permission.cs" />
@@ -127,7 +153,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Enums\SlaveState.cs" />
-    <Compile Include="TransactionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
@@ -154,9 +179,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQL Scripts\Initialize Hive Database.sql" />
-    <Content Include="SQL Scripts\Migrate to Filestream.sql" />
     <Content Include="SQL Scripts\Prepare Hive Database.sql" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

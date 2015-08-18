@@ -22,7 +22,7 @@
         entries: [{
             name: 'History',
             route: '#/status/history',
-            icon: 'glyphicon glyphicon-stats'
+            icon: 'glyphicon glyphicon-calendar'
         }]
     });
 })();
