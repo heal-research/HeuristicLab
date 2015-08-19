@@ -3,7 +3,7 @@
     module.controller('app.status.ctrl',
         ['$scope', '$interval', 'app.status.data.service',
         function ($scope, $interval, dataService) {
-            $scope.interval = 10000; // update interval in ms
+            $scope.interval = defaultPageUpdateInterval;
             $scope.knobOptions = {
                 'fgColor': "#f7921d",
                 'angleOffset': -125,

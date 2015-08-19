@@ -56,15 +56,11 @@ namespace HeuristicLab.Services.Hive.DataAccess.Daos {
 
     #region String queries
     private const string DeleteUnusedPluginsStringQuery = @"
-      DELETE FROM [Plugin]
-      WHERE  [Plugin].[PluginId] NOT IN (
-        SELECT DISTINCT rp.[PluginId] 
-        FROM [RequiredPlugins] rp
-        WHERE EXISTS (SELECT [TaskId] 
-                      FROM [Task] t
-                      WHERE t.[TaskId] = rp.[TaskId])
-      );
-    ";
+     DELETE FROM [Plugin] WHERE [PluginId] IN (
+     SELECT [PluginId] FROM [Plugin]
+     EXCEPT
+     SELECT DISTINCT [p].[PluginId] FROM [Plugin] p, [RequiredPlugins] rp
+     WHERE [p].[PluginId] = [rp].[PluginId])";
     #endregion
   }
 }

@@ -90,7 +90,7 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
           MaxCalculatingTime = lastCalculatingTimes != null ? lastCalculatingTimes.Max : 0,
           AvgWaitingTime = count > 0 ? (long)calculatingTasks.OrderBy(x => x.StartTime).Take(count).Average(x => x.InitialWaitingTime) : 0,
           AvgCalculatingTime = lastCalculatingTimes != null ? lastCalculatingTimes.Avg : 0,
-          TotalCpuTime = factTasks.Sum(x => x.CalculatingTime),
+          TotalCpuTime = factTasks.Sum(x => Convert.ToInt64(x.CalculatingTime)),
           StandardDeviationCalculatingTime = (long)StandardDeviation(completedTasks.Select(x => (double)x.CalculatingTime)),
           BeginDate = factTasks.OrderBy(x => x.StartTime).Select(x => x.StartTime).FirstOrDefault()
         };

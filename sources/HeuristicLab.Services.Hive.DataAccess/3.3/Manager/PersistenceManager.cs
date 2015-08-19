@@ -202,7 +202,7 @@ namespace HeuristicLab.Services.Hive.DataAccess.Manager {
     #endregion
 
     public TableInformation GetTableInformation(string table) {
-      string query = string.Format("sp_spaceused '{0}', @updateusage='true'", table);
+      string query = string.Format("sp_spaceused '{0}'", table);
       var result = dataContext.ExecuteQuery<SqlServerTableInformation>(query).FirstOrDefault();
       if (result == null) return null;
       return new TableInformation {
