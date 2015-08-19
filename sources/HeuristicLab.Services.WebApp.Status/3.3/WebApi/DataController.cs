@@ -92,7 +92,7 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
           AvgCalculatingTime = lastCalculatingTimes != null ? lastCalculatingTimes.Avg : 0,
           TotalCpuTime = factTasks.Sum(x => Convert.ToInt64(x.CalculatingTime)),
           StandardDeviationCalculatingTime = (long)StandardDeviation(completedTasks.Select(x => (double)x.CalculatingTime)),
-          BeginDate = factTasks.OrderBy(x => x.StartTime).Select(x => x.StartTime).FirstOrDefault()
+          BeginDate = factTasks.Where(x => x.StartTime.HasValue).OrderBy(x => x.StartTime).Select(x => x.StartTime).FirstOrDefault()
         };
       });
     }
