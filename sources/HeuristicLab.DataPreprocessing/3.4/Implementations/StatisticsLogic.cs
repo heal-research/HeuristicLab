@@ -162,6 +162,26 @@ namespace HeuristicLab.DataPreprocessing {
       return variance;
     }
 
+    public double GetOneQuarterPercentile(int columnIndex) {
+      double percentile = double.NaN;
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
+        percentile = GetValuesWithoutNaN<double>(columnIndex).Percentile(0.25);
+      } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
+        percentile = GetDateTimeAsSeconds(columnIndex).Percentile(0.25);
+      }
+      return percentile;
+    }
+
+    public double GetThreeQuarterPercentile(int columnIndex) {
+      double percentile = double.NaN;
+      if (preprocessingData.VariableHasType<double>(columnIndex)) {
+        percentile = GetValuesWithoutNaN<double>(columnIndex).Percentile(0.75);
+      } else if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
+        percentile = GetDateTimeAsSeconds(columnIndex).Percentile(0.75);
+      }
+      return percentile;
+    }
+
     public int GetDifferentValuesCount<T>(int columnIndex) {
       return preprocessingData.GetValues<T>(columnIndex).GroupBy(x => x).Count();
     }
