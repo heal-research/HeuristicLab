@@ -32,7 +32,6 @@ using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.LawnMower {
   [StorableClass]
-  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 160)]
   [Item("Lawn Mower Problem", "The lawn mower demo problem for genetic programming.")]
   public class Problem : SingleObjectiveHeuristicOptimizationProblem<Evaluator, ISymbolicExpressionTreeCreator> {
     private const string LawnWidthParameterName = "LawnWidth";

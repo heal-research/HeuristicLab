@@ -115,6 +115,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BestSolutionAnalyzer.cs" />
+    <Compile Include="Symbols\Constant.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\ConstantTreeNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\Forward.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\Frog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\Left.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\Prog.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Symbols\Sum.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Interpreter.cs" />
@@ -125,13 +146,6 @@
     <Compile Include="Evaluator.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbols\Constant.cs" />
-    <Compile Include="Symbols\ConstantTreeNode.cs" />
-    <Compile Include="Symbols\Forward.cs" />
-    <Compile Include="Symbols\Frog.cs" />
-    <Compile Include="Symbols\Left.cs" />
-    <Compile Include="Symbols\Prog.cs" />
-    <Compile Include="Symbols\Sum.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">

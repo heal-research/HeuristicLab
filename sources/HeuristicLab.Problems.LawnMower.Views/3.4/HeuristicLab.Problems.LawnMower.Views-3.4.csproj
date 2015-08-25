@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{71CDE004-C50F-48DF-858E-AB0AAA3537BC}</ProjectGuid>
+    <ProjectGuid>{E186E7BD-E90E-4027-9965-D5E0DBEB00E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HeuristicLab.Problems.LawnMower.Views</RootNamespace>
-    <AssemblyName>HeuristicLab.Problems.LawnMower.Views-3.3</AssemblyName>
+    <AssemblyName>HeuristicLab.Problems.LawnMower.Views-3.4</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -173,9 +173,9 @@
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Problems.LawnMower\3.3\HeuristicLab.Problems.LawnMower-3.3.csproj">
-      <Project>{9A04599C-D608-4240-8DA6-D41F51C515A3}</Project>
-      <Name>HeuristicLab.Problems.LawnMower-3.3</Name>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.LawnMower\3.4\HeuristicLab.Problems.LawnMower-3.4.csproj">
+      <Project>{9b44b886-729d-49b2-b887-4bdcacb91110}</Project>
+      <Name>HeuristicLab.Problems.LawnMower-3.4</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
