@@ -21,14 +21,16 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using System.Drawing.Text;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.ArtificialAnt.Analyzers;
+
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
@@ -113,9 +115,6 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       g.AddSymbols(new string[] { "Prog3" }, 3, 3);
       g.AddTerminalSymbols(new string[] { "Left", "Right", "Move" });
       base.Encoding = new SymbolicExpressionTreeEncoding(g, 20, 10);
-
-      InitializeOperators();
-      RegisterEventHandlers();
     }
 
 
@@ -125,69 +124,34 @@ namespace HeuristicLab.Problems.ArtificialAnt {
       return interpreter.FoodEaten;
     }
 
+    public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
+      const string bestSolutionResultName = "Best Solution";
+      var bestQuality = Maximization ? qualities.Max() : qualities.Min();
+      var bestIdx = Array.IndexOf(qualities, bestQuality);
+
+      if (!results.ContainsKey(bestSolutionResultName)) {
+        results.Add(new Result(bestSolutionResultName, new AntTrail(World, trees[bestIdx], MaxTimeSteps.Value, qualities[bestIdx])));
+      } else if (((AntTrail)(results[bestSolutionResultName].Value)).Quality < qualities[bestIdx]) {
+        results[bestSolutionResultName].Value = new AntTrail(World, trees[bestIdx], MaxTimeSteps.Value, qualities[bestIdx]);
+      }
+    }
+
     // persistence
     [StorableConstructor]
     private ArtificialAntProblem(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      RegisterEventHandlers();
     }
 
     // cloning 
     private ArtificialAntProblem(ArtificialAntProblem original, Cloner cloner)
       : base(original, cloner) {
-      RegisterEventHandlers();
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ArtificialAntProblem(this, cloner);
     }
 
-    #region Events
-    protected override void OnSolutionCreatorChanged() {
-      base.OnSolutionCreatorChanged();
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
-    protected override void OnEvaluatorChanged() {
-      base.OnEvaluatorChanged();
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
-    private void SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
-    private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
-    #endregion
-
-    #region Helpers
-    private void RegisterEventHandlers() {
-      Encoding.SolutionCreator.SymbolicExpressionTreeParameter.ActualNameChanged += new EventHandler(SolutionCreator_SymbolicExpressionTreeParameter_ActualNameChanged);
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-    }
-
-    private void InitializeOperators() {
-      Operators.Add(new BestAntTrailAnalyzer());
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
-
-    private void ParameterizeAnalyzers() {
-      foreach (var analyzer in Operators.OfType<BestAntTrailAnalyzer>()) {
-        analyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        analyzer.SymbolicExpressionTreeParameter.ActualName = Encoding.SolutionCreator.SymbolicExpressionTreeParameter.ActualName;
-        analyzer.WorldParameter.ActualName = WorldParameter.Name;
-        analyzer.MaxTimeStepsParameter.ActualName = MaxTimeStepsParameter.Name;
-      }
-    }
-
-    private void ParameterizeOperators() {
-      // no problem-specific operators to parameterize
-    }
-
+    #region helpers
     private bool[,] ToBoolMatrix(char[][] ch) {
       var rows = ch.Length;
       var cols = ch[0].Length;
