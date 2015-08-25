@@ -20,24 +20,21 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.ArtificialAnt.Analyzers;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
   [StorableClass]
-  public sealed class ArtificialAntProblem : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding>, IStorableContent {
+  public sealed class ArtificialAntProblem : SymbolicExpressionTreeProblem, IStorableContent {
     public string Filename { get; set; }
 
     #region constant for default world (Santa Fe)
@@ -122,8 +119,8 @@ namespace HeuristicLab.Problems.ArtificialAnt {
     }
 
 
-    public override double Evaluate(Individual individual, IRandom random) {
-      var interpreter = new AntInterpreter(individual.SymbolicExpressionTree(), World, MaxTimeSteps.Value);
+    public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
+      var interpreter = new AntInterpreter(tree, World, MaxTimeSteps.Value);
       interpreter.Run();
       return interpreter.FoodEaten;
     }
