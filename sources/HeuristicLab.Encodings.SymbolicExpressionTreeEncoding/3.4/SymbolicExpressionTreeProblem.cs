@@ -21,6 +21,7 @@
 
 #endregion
 
+using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -49,20 +50,22 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
     }
 
-    public abstract double Evaluate(ISymbolicExpressionTree vector, IRandom random);
+    public abstract double Evaluate(ISymbolicExpressionTree tree, IRandom random);
     public sealed override double Evaluate(Individual individual, IRandom random) {
       return Evaluate(individual.SymbolicExpressionTree(), random);
     }
 
-    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      base.Analyze(individuals, qualities, results, random);
-      var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
-      var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
-
+    public virtual void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
+      var bestQuality = Maximization ? qualities.Max() : qualities.Min();
+      var bestIdx = Array.IndexOf(qualities, bestQuality);
+      var best = trees[bestIdx];
       if (!results.ContainsKey("Best Solution")) {
         results.Add(new Result("Best Solution", typeof(ISymbolicExpressionTree)));
       }
-      results["Best Solution"].Value = (IItem)best.SymbolicExpressionTree().Clone();
+      results["Best Solution"].Value = (IItem)best.Clone();
+    }
+    public sealed override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+      Analyze(individuals.Select(ind => ind.SymbolicExpressionTree()).ToArray(), qualities, results, random);
     }
   }
 }
