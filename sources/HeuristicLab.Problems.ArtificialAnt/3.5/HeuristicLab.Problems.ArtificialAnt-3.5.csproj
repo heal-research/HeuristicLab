@@ -105,6 +105,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analyzers\BestAntTrailAnalyzer.cs" />
     <Compile Include="AntInterpreter.cs" />
     <Compile Include="ArtificialAntProblem.cs" />
     <Compile Include="AntTrail.cs" />
