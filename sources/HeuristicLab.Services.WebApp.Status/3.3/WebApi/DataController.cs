@@ -163,7 +163,6 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
           .Where(s => s.Time >= start
                       && s.Time <= end
                       && s.SlaveState != SlaveState.Offline)
-          .OrderBy(s => s.Time)
           .GroupBy(s => s.Time)
           .Select(x => new {
             Timestamp = x.Key,
@@ -206,7 +205,7 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
         status.CpuUtilizationStatus.TotalCpuUtilization /= i;
         statusList.Add(status);
       } while (e.Current != null);
-      return statusList;
+      return statusList.OrderBy(x => x.Timestamp).ToList();
     }
 
     private double StandardDeviation(IEnumerable<double> source) {
