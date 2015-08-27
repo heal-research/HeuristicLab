@@ -16,27 +16,34 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Author: Sabine Winkler
  */
+
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Problems.GeneticProgramming {
-  [Plugin("HeuristicLab.Problems.GeneticProgramming","Provides implementations for genetic programming problems such as the artificial ant problem.", "3.3.0.$WCREV$")]
-  [PluginFile("HeuristicLab.Problems.GeneticProgramming-3.3.dll", PluginFileType.Assembly)]
+namespace HeuristicLab.Problems.GrammaticalEvolution {
+  [Plugin("HeuristicLab.Problems.GrammaticalEvolution","Provides classes for grammatical evolution.", "3.4.0.$WCREV$")]
+  [PluginFile("HeuristicLab.Problems.GrammaticalEvolution-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding","3.4")]
+  [PluginDependency("HeuristicLab.Encodings.IntegerVectorEncoding", "3.3")]
+  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.4")]
+  [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.GeneticProgramming", "3.3")] // for artificial ant problem
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
-  public class HeuristicLabProblemsGeneticProgrammingPlugin : PluginBase {
+  public class HeuristicLabProblemsGrammaticalEvolutionPlugin : PluginBase {
   }
 }
