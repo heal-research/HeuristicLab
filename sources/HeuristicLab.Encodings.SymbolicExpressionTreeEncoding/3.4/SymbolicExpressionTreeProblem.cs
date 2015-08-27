@@ -25,6 +25,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -55,15 +56,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return Evaluate(individual.SymbolicExpressionTree(), random);
     }
 
-    public virtual void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
-      var bestQuality = Maximization ? qualities.Max() : qualities.Min();
-      var bestIdx = Array.IndexOf(qualities, bestQuality);
-      var best = trees[bestIdx];
+    public virtual void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results,
+      IRandom random) {
+      if (!results.ContainsKey("Best Solution Quality")) {
+        results.Add(new Result("Best Solution Quality", typeof(DoubleValue)));
+      }
       if (!results.ContainsKey("Best Solution")) {
         results.Add(new Result("Best Solution", typeof(ISymbolicExpressionTree)));
       }
-      results["Best Solution"].Value = (IItem)best.Clone();
+
+      var bestQuality = Maximization ? qualities.Max() : qualities.Min();
+
+      if (results["Best Solution Quality"].Value == null ||
+          IsBetter(bestQuality, ((DoubleValue)results["Best Solution Quality"].Value).Value)) {
+        var bestIdx = Array.IndexOf(qualities, bestQuality);
+        var bestClone = (IItem)trees[bestIdx].Clone();
+        results["Best Solution"].Value = bestClone;
+        results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
+      }
     }
+
     public sealed override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       Analyze(individuals.Select(ind => ind.SymbolicExpressionTree()).ToArray(), qualities, results, random);
     }
