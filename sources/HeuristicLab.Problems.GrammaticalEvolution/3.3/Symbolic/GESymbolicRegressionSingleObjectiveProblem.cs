@@ -36,7 +36,6 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   [Item("Grammatical Evolution Symbolic Regression Problem (single objective)",
         "Represents grammatical evolution for single objective symbolic regression problems.")]
   [StorableClass]
-  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 180)]
   public class GESymbolicRegressionSingleObjectiveProblem : GESymbolicDataAnalysisSingleObjectiveProblem<IRegressionProblemData, IGESymbolicRegressionSingleObjectiveEvaluator, IIntegerVectorCreator>,
                                                             IRegressionProblem {
     private const double PunishmentFactor = 10;
