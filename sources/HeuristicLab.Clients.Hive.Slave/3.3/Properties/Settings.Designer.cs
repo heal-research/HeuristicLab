@@ -298,5 +298,29 @@ namespace HeuristicLab.Clients.Hive.SlaveCore.Properties {
                 this["HeartbeatInterval"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10:00:00")]
+        public global::System.TimeSpan CheckpointInterval {
+            get {
+                return ((global::System.TimeSpan)(this["CheckpointInterval"]));
+            }
+            set {
+                this["CheckpointInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:05:00")]
+        public global::System.TimeSpan CheckpointCheckInterval {
+            get {
+                return ((global::System.TimeSpan)(this["CheckpointCheckInterval"]));
+            }
+            set {
+                this["CheckpointCheckInterval"] = value;
+            }
+        }
     }
 }

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using HeuristicLab.Clients.Hive.SlaveCore.Properties;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 
@@ -31,12 +32,19 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
   /// <summary>
   /// Holds a list of slave tasks and manages access to this list. 
   /// Forwards events from SlaveTask and forwards commands to SlaveTask. 
+  /// Periodically sends task data to the server to avoid loss of progress when the slave crashes.
   /// </summary>
   public class TaskManager {
-    private static ReaderWriterLockSlim slaveTasksLocker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-    private Dictionary<Guid, SlaveTask> slaveTasks;
-    private ILog log;
-    private PluginManager pluginManager;
+    private static readonly ReaderWriterLockSlim slaveTasksLocker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+    private readonly Dictionary<Guid, SnapshotInfo> slaveTasks;
+    private readonly ILog log;
+    private readonly PluginManager pluginManager;
+    private readonly CancellationTokenSource cts;
+    private readonly CancellationToken ct;
+    private readonly AutoResetEvent waitHandle;
+    private readonly WcfService wcfService;
+    private readonly TimeSpan checkpointInterval;
+    private readonly TimeSpan checkpointCheckInterval;
 
     public int TaskCount {
       get {
@@ -61,8 +69,49 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public TaskManager(PluginManager pluginCache, ILog log) {
       this.pluginManager = pluginCache;
       this.log = log;
-      this.slaveTasks = new Dictionary<Guid, SlaveTask>();
+      this.slaveTasks = new Dictionary<Guid, SnapshotInfo>();
+
+      cts = new CancellationTokenSource();
+      ct = cts.Token;
+      waitHandle = new AutoResetEvent(true);
+      wcfService = WcfService.Instance;
+      checkpointInterval = Settings.Default.CheckpointInterval;
+      checkpointCheckInterval = Settings.Default.CheckpointCheckInterval;
+
+      System.Threading.Tasks.Task.Factory.StartNew(Checkpointing, ct);
     }
+
+    #region Checkpointing
+    private void Checkpointing() {
+      while (!ct.IsCancellationRequested) {
+        slaveTasksLocker.EnterWriteLock();
+        try {
+          foreach (var entry in slaveTasks) {
+            var taskId = entry.Key;
+            var snapshotInfo = entry.Value;
+
+            if (DateTime.Now - snapshotInfo.LastSnapshot <= checkpointInterval) continue;
+
+            var task = wcfService.GetTask(taskId);
+            var snapshot = snapshotInfo.Task.GetTaskDataSnapshot();
+
+            if (snapshot == null) continue;
+
+            slaveTasks[taskId].LastSnapshot = snapshot.Item2;
+            var slaveId = ConfigManager.Instance.GetClientInfo().Id;
+            wcfService.UpdateTaskData(task, snapshot.Item1, slaveId, TaskState.Calculating);
+          }
+        } finally { slaveTasksLocker.ExitWriteLock(); }
+        waitHandle.WaitOne(checkpointCheckInterval);
+      }
+    }
+
+    public void StopCheckpointing() {
+      cts.Cancel();
+      waitHandle.Set();
+      waitHandle.Close();
+    }
+    #endregion
 
     #region Task Control methods
     public void StartTaskAsync(Task task, TaskData taskData) {
@@ -96,7 +145,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         if (!slaveTasks.ContainsKey(taskId)) throw new TaskNotRunningException(taskId);
-        SlaveTask slaveTask = slaveTasks[taskId];
+        SlaveTask slaveTask = slaveTasks[taskId].Task;
         slaveTask.PauseTask();
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -106,7 +155,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         if (!slaveTasks.ContainsKey(taskId)) throw new TaskNotRunningException(taskId);
-        SlaveTask slaveTask = slaveTasks[taskId];
+        SlaveTask slaveTask = slaveTasks[taskId].Task;
         slaveTask.StopTask();
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -117,7 +166,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         if (!slaveTasks.ContainsKey(taskId)) throw new TaskNotRunningException(taskId);
-        slaveTask = slaveTasks[taskId];
+        slaveTask = slaveTasks[taskId].Task;
         if (!slaveTask.IsPrepared) throw new AppDomainNotCreatedException();
         RemoveSlaveTask(taskId, slaveTask);
       }
@@ -131,7 +180,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         foreach (var slaveTask in slaveTasks.Values) {
-          slaveTask.PauseTask();
+          slaveTask.Task.PauseTask();
         }
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -141,7 +190,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         foreach (var slaveTask in slaveTasks.Values) {
-          slaveTask.StopTask();
+          slaveTask.Task.StopTask();
         }
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -151,7 +200,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
         foreach (var slaveTask in slaveTasks.Values.ToArray()) {
-          AbortTask(slaveTask.TaskId);
+          AbortTask(slaveTask.Task.TaskId);
         }
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -162,7 +211,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     private void AddSlaveTask(Task task, SlaveTask slaveTask) {
       slaveTasksLocker.EnterWriteLock();
       try {
-        slaveTasks.Add(task.Id, slaveTask);
+        slaveTasks.Add(task.Id, new SnapshotInfo { Task = slaveTask, LastSnapshot = task.DateCreated.GetValueOrDefault() });
         RegisterSlaveTaskEvents(slaveTask);
       }
       finally { slaveTasksLocker.ExitWriteLock(); }
@@ -197,7 +246,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveTask slaveTask;
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
-        slaveTask = slaveTasks[e.Value];
+        slaveTask = slaveTasks[e.Value].Task;
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
 
@@ -209,7 +258,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveTask slaveTask;
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
-        slaveTask = slaveTasks[e.Value];
+        slaveTask = slaveTasks[e.Value].Task;
         RemoveSlaveTask(e.Value, slaveTask);
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -231,7 +280,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveTask slaveTask;
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
-        slaveTask = slaveTasks[e.Value];
+        slaveTask = slaveTasks[e.Value].Task;
         RemoveSlaveTask(e.Value, slaveTask);
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -253,7 +302,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveTask slaveTask;
       slaveTasksLocker.EnterUpgradeableReadLock();
       try {
-        slaveTask = slaveTasks[e.Value];
+        slaveTask = slaveTasks[e.Value].Task;
         RemoveSlaveTask(e.Value, slaveTask);
       }
       finally { slaveTasksLocker.ExitUpgradeableReadLock(); }
@@ -303,9 +352,14 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     public Dictionary<Guid, TimeSpan> GetExecutionTimes() {
       slaveTasksLocker.EnterReadLock();
       try {
-        return slaveTasks.ToDictionary(x => x.Key, x => x.Value.ExecutionTime);
+        return slaveTasks.ToDictionary(x => x.Key, x => x.Value.Task.ExecutionTime);
       }
       finally { slaveTasksLocker.ExitReadLock(); }
+    }
+
+    private sealed class SnapshotInfo {
+      public SlaveTask Task { get; set; }
+      public DateTime LastSnapshot { get; set; }
     }
   }
 }

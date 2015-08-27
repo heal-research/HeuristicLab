@@ -480,6 +480,9 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       SlaveClientCom.Instance.LogMessage("Shutdown signal received");
       SlaveClientCom.Instance.LogMessage("Stopping heartbeat");
       heartbeatManager.StopHeartBeat();
+      SlaveClientCom.Instance.LogMessage("Stopping checkpointing");
+      taskManager.StopCheckpointing();
+
       abortRequested = true;
 
       DoAbortAll();
