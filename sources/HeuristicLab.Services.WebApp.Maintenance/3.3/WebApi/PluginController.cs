@@ -38,12 +38,11 @@ namespace HeuristicLab.Services.WebApp.Maintenance.WebApi {
       var requiredPluginDao = pm.RequiredPluginDao;
       var taskDao = pm.TaskDao;
       return pm.UseTransaction(() => {
-        var taskIds = taskDao.GetAll().Select(x => x.TaskId);
-        var usedPluginIds = requiredPluginDao.GetAll()
-          .Where(x => taskIds.Contains(x.TaskId))
+        var usedPluginIds = requiredPluginDao.GetAll()        
           .Select(x => x.PluginId)
-          .Distinct();
-        var query = pluginDao.GetAll().Where(x => !usedPluginIds.Any(y => y == x.PluginId));
+          .Distinct().ToArray();
+        var tmpQuery = pluginDao.GetAll().Select(x=>x.PluginId).ToArray().Where(x => !usedPluginIds.Any(y => y == x)).ToArray();
+        var query = pluginDao.GetAll().Where(x => tmpQuery.Contains(x.PluginId)).ToArray();
         return new DT.PluginPage {
           TotalPlugins = query.Count(),
           Plugins = query.OrderBy(x => x.DateCreated).ThenBy(x => x.Name)
