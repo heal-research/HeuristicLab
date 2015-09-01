@@ -350,9 +350,6 @@ namespace HeuristicLab.Clients.Hive
         private bool IsParentTaskField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool IsPrivilegedField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid JobIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -414,23 +411,6 @@ namespace HeuristicLab.Clients.Hive
                 {
                     this.IsParentTaskField = value;
                     this.RaisePropertyChanged("IsParentTask");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool IsPrivileged
-        {
-            get
-            {
-                return this.IsPrivilegedField;
-            }
-            set
-            {
-                if ((this.IsPrivilegedField.Equals(value) != true))
-                {
-                    this.IsPrivilegedField = value;
-                    this.RaisePropertyChanged("IsPrivileged");
                 }
             }
         }
@@ -2552,9 +2532,6 @@ namespace HeuristicLab.Clients.Hive
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/GetJobPermissions", ReplyAction="http://tempuri.org/IHiveService/GetJobPermissionsResponse")]
         System.Collections.Generic.List<HeuristicLab.Clients.Hive.JobPermission> GetJobPermissions(System.Guid jobId);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/IsAllowedPrivileged", ReplyAction="http://tempuri.org/IHiveService/IsAllowedPrivilegedResponse")]
-        bool IsAllowedPrivileged();
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IHiveService/Hello", ReplyAction="http://tempuri.org/IHiveService/HelloResponse")]
         void Hello(HeuristicLab.Clients.Hive.Slave slave);
         
@@ -2879,11 +2856,6 @@ namespace HeuristicLab.Clients.Hive
         public System.Collections.Generic.List<HeuristicLab.Clients.Hive.JobPermission> GetJobPermissions(System.Guid jobId)
         {
             return base.Channel.GetJobPermissions(jobId);
-        }
-        
-        public bool IsAllowedPrivileged()
-        {
-            return base.Channel.IsAllowedPrivileged();
         }
         
         public void Hello(HeuristicLab.Clients.Hive.Slave slave)

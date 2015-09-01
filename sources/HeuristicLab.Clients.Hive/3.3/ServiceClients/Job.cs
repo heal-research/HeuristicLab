@@ -26,12 +26,6 @@ using HeuristicLab.Common;
 namespace HeuristicLab.Clients.Hive {
   public partial class Job : IDeepCloneable, IContent {
 
-    private bool isPrivileged;
-    public bool IsPrivileged {
-      get { return isPrivileged; }
-      set { isPrivileged = value; }
-    }
-
     #region Constructors and Cloning
     public Job() {
       ResourceNames = "HEAL";
@@ -47,7 +41,6 @@ namespace HeuristicLab.Clients.Hive {
       this.Name = original.Name;
       this.Description = original.Description;
       this.Id = original.Id;
-      this.IsPrivileged = original.IsPrivileged;
       this.Permission = original.Permission;
     }
     public override IDeepCloneable Clone(Cloner cloner) {

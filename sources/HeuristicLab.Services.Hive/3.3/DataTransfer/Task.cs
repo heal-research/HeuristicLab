@@ -43,8 +43,6 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     public bool FinishWhenChildJobsFinished { get; set; }
     [DataMember]
     public Guid JobId { get; set; }
-    [DataMember]
-    public bool IsPrivileged { get; set; }
 
     public Task() {
       this.PluginsNeededIds = new List<Guid>();

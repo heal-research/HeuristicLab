@@ -69,7 +69,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.refreshButton = new System.Windows.Forms.Button();
-      this.isPrivilegedCheckBox = new System.Windows.Forms.CheckBox();
       this.UnloadButton = new System.Windows.Forms.Button();
       this.refreshAutomaticallyCheckBox = new System.Windows.Forms.CheckBox();
       this.infoGroupBox = new System.Windows.Forms.GroupBox();
@@ -331,7 +330,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.resourceNamesTextBox.Location = new System.Drawing.Point(70, 52);
       this.resourceNamesTextBox.Name = "resourceNamesTextBox";
-      this.resourceNamesTextBox.Size = new System.Drawing.Size(385, 20);
+      this.resourceNamesTextBox.Size = new System.Drawing.Size(471, 20);
       this.resourceNamesTextBox.TabIndex = 2;
       this.resourceNamesTextBox.Validated += new System.EventHandler(this.resourceNamesTextBox_Validated);
       // 
@@ -364,19 +363,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.toolTip.SetToolTip(this.refreshButton, "Refresh Data");
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
-      // 
-      // isPrivilegedCheckBox
-      // 
-      this.isPrivilegedCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.isPrivilegedCheckBox.AutoSize = true;
-      this.isPrivilegedCheckBox.Location = new System.Drawing.Point(491, 54);
-      this.isPrivilegedCheckBox.Name = "isPrivilegedCheckBox";
-      this.isPrivilegedCheckBox.Size = new System.Drawing.Size(72, 17);
-      this.isPrivilegedCheckBox.TabIndex = 3;
-      this.isPrivilegedCheckBox.Text = "Privileged";
-      this.toolTip.SetToolTip(this.isPrivilegedCheckBox, "If checked, the task will be executed in a privileged sandbox on the slave.");
-      this.isPrivilegedCheckBox.UseVisualStyleBackColor = true;
-      this.isPrivilegedCheckBox.CheckedChanged += new System.EventHandler(this.isPrivilegedCheckBox_CheckChanged);
       // 
       // UnloadButton
       // 
@@ -474,7 +460,7 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       // 
       this.searchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.searchButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Zoom;
-      this.searchButton.Location = new System.Drawing.Point(461, 50);
+      this.searchButton.Location = new System.Drawing.Point(547, 50);
       this.searchButton.Name = "searchButton";
       this.searchButton.Size = new System.Drawing.Size(24, 24);
       this.searchButton.TabIndex = 26;
@@ -486,7 +472,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.UnloadButton);
       this.Controls.Add(this.searchButton);
-      this.Controls.Add(this.isPrivilegedCheckBox);
       this.Controls.Add(this.infoGroupBox);
       this.Controls.Add(this.refreshAutomaticallyCheckBox);
       this.Controls.Add(this.refreshButton);
@@ -541,7 +526,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     private System.Windows.Forms.Label finishedLabel;
     private System.Windows.Forms.Label calculatingLabel;
     private System.Windows.Forms.Label jobsLabel;
-    private System.Windows.Forms.CheckBox isPrivilegedCheckBox;
     private System.Windows.Forms.TabPage stateTabPage;
     private HeuristicLab.MainForm.WindowsForms.ViewHost stateLogViewHost;
     private System.Windows.Forms.TabPage permissionTabPage;

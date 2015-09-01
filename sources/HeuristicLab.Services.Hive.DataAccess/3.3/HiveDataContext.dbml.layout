@@ -26,10 +26,10 @@
         <elementListCompartment Id="8c24f5bf-2164-4d0f-832e-1730eb0066df" absoluteBounds="11.265, 1.46, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="695bfc39-59f3-4e60-8644-f847964bf62c" absoluteBounds="6.5, 1, 2, 3.3093082682291666">
+    <classShape Id="695bfc39-59f3-4e60-8644-f847964bf62c" absoluteBounds="6.5, 1, 2, 3.1170068359374996">
       <DataClassMoniker Name="/HiveDataContext/Task" />
       <nestedChildShapes>
-        <elementListCompartment Id="a6a30e11-03d1-4869-82e6-b733f4ef9974" absoluteBounds="6.5150000000000006, 1.46, 1.9700000000000002, 2.7493082682291665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="a6a30e11-03d1-4869-82e6-b733f4ef9974" absoluteBounds="6.5150000000000006, 1.46, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
     <classShape Id="8d5712f7-7a1a-4a89-bd4d-fd60200d3306" absoluteBounds="13.5, 2.5, 2, 2.3478011067708326">
@@ -140,14 +140,14 @@
         <classShapeMoniker Id="8d5712f7-7a1a-4a89-bd4d-fd60200d3306" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(8.0192961430407 : 3.90397379557292); (8.0192961430407 : 5.04807657877604); (8.875 : 5.04807657877604)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(8.5 : 4.1170068359375); (8.875 : 4.5)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HiveDataContext/Task/Task_AssignedResource" />
       <nodes>
         <classShapeMoniker Id="695bfc39-59f3-4e60-8644-f847964bf62c" />
         <classShapeMoniker Id="a929c9dc-69f4-4488-ba1c-a2342bf81d89" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(7.20145120722822 : 3.90397379557292); (7.20145120722822 : 5.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(7.4687475 : 4.1170068359375); (7.4687475 : 5.875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HiveDataContext/Task/Task_RequiredPlugin" />
       <nodes>
         <classShapeMoniker Id="695bfc39-59f3-4e60-8644-f847964bf62c" />
@@ -175,7 +175,7 @@
         <classShapeMoniker Id="00352397-340e-449a-8e23-6ddd216e8617" />
       </nodes>
     </associationConnector>
-    <associationConnector edgePoints="[(6.125 : 3.46715413411458); (6.5 : 3.46715413411458)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+    <associationConnector edgePoints="[(6.125 : 3.37100341796875); (6.5 : 3.37100341796875)]" fixedFrom="NotFixed" fixedTo="NotFixed">
       <AssociationMoniker Name="/HiveDataContext/Job/Job_Task" />
       <nodes>
         <classShapeMoniker Id="e6f840cc-2968-4be1-b234-eef624ccacbb" />

@@ -104,11 +104,7 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
     }
 
     private AppDomain CreateAppDomain(Task task, String pluginDir, string configFileName) {
-      if (task.IsPrivileged) {
-        appDomain = SandboxManager.CreateAndInitPrivilegedSandbox(task.Id.ToString(), pluginDir, Path.Combine(pluginDir, configFileName));
-      } else {
-        appDomain = SandboxManager.CreateAndInitSandbox(task.Id.ToString(), pluginDir, Path.Combine(pluginDir, configFileName));
-      }
+      appDomain = SandboxManager.CreateAndInitSandbox(task.Id.ToString(), pluginDir, Path.Combine(pluginDir, configFileName));
       appDomain.UnhandledException += new UnhandledExceptionEventHandler(AppDomain_UnhandledException);
 
       log.LogMessage("Creating AppDomain");
