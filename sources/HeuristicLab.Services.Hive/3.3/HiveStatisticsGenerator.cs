@@ -56,7 +56,7 @@ namespace HeuristicLab.Services.Hive {
           });
 
           pm.UseTransaction(() => {
-            UpdateTaskFactsTable(time, pm);
+            UpdateTaskFactsTable(pm);
             try {
               pm.SubmitChanges();
               UpdateExistingDimJobs(pm);
@@ -260,7 +260,7 @@ namespace HeuristicLab.Services.Hive {
       );
     }
 
-    private void UpdateTaskFactsTable(DimTime newTime, PersistenceManager pm) {
+    private void UpdateTaskFactsTable(PersistenceManager pm) {
       var factTaskDao = pm.FactTaskDao;
       var taskDao = pm.TaskDao;
       var dimClientDao = pm.DimClientDao;
@@ -272,29 +272,33 @@ namespace HeuristicLab.Services.Hive {
       });
 
       var newTasks =
-        from task in taskDao.GetAllChildTasks()
-        let stateLogs = task.StateLogs.OrderByDescending(x => x.DateTime)
-        let lastSlaveId = stateLogs.First(x => x.SlaveId != null).SlaveId
-        where (!factTaskIds.Contains(task.TaskId)
-               || notFinishedFactTasks.Select(x => x.TaskId).Contains(task.TaskId))
-        join lastFactTask in notFinishedFactTasks on task.TaskId equals lastFactTask.TaskId into lastFactPerTask
-        from lastFact in lastFactPerTask.DefaultIfEmpty()
-        join client in dimClientDao.GetActiveClients() on lastSlaveId equals client.ResourceId into clientsPerSlaveId
-        from client in clientsPerSlaveId.DefaultIfEmpty()
-        select new {
-          TaskId = task.TaskId,
-          JobId = task.JobId,
-          Priority = task.Priority,
-          CoresRequired = task.CoresNeeded,
-          MemoryRequired = task.MemoryNeeded,
-          State = task.State,
-          StateLogs = stateLogs.OrderBy(x => x.DateTime),
-          LastClientId = client != null
-                         ? client.Id : lastFact != null
-                         ? lastFact.LastClientId : (Guid?)null
-        };
+        (from task in taskDao.GetAllChildTasks()
+         let stateLogs = task.StateLogs.OrderByDescending(x => x.DateTime)
+         let lastSlaveId = stateLogs.First(x => x.SlaveId != null).SlaveId
+         where (!factTaskIds.Contains(task.TaskId)
+                || notFinishedFactTasks.Select(x => x.TaskId).Contains(task.TaskId))
+         join lastFactTask in notFinishedFactTasks on task.TaskId equals lastFactTask.TaskId into lastFactPerTask
+         from lastFact in lastFactPerTask.DefaultIfEmpty()
+         join client in dimClientDao.GetActiveClients() on lastSlaveId equals client.ResourceId into clientsPerSlaveId
+         from client in clientsPerSlaveId.DefaultIfEmpty()
+         select new {
+           TaskId = task.TaskId,
+           JobId = task.JobId,
+           Priority = task.Priority,
+           CoresRequired = task.CoresNeeded,
+           MemoryRequired = task.MemoryNeeded,
+           State = task.State,
+           StateLogs = stateLogs.OrderBy(x => x.DateTime),
+           LastClientId = client != null
+                          ? client.Id : lastFact != null
+                          ? lastFact.LastClientId : (Guid?)null,
+           NotFinishedTask = notFinishedFactTasks.Any(y => y.TaskId == task.TaskId)
+         }).ToList();
+
+      //insert facts for new tasks
       factTaskDao.Save(
-        from x in newTasks.ToList()
+        from x in newTasks
+        where !x.NotFinishedTask
         let taskData = CalculateFactTaskData(x.StateLogs)
         select new FactTask {
           TaskId = x.TaskId,
@@ -314,7 +318,30 @@ namespace HeuristicLab.Services.Hive {
           Exception = taskData.Exception,
           InitialWaitingTime = taskData.InitialWaitingTime
         });
-      factTaskDao.Delete(notFinishedFactTasks.Select(x => x.TaskId));
+
+      //update data of already existing facts
+      foreach (var notFinishedTask in factTaskDao.GetNotFinishedTasks()) {
+        var ntc = newTasks.Where(x => x.TaskId == notFinishedTask.TaskId);
+        if (ntc.Any()) {
+          var x = ntc.Single();
+          var taskData = CalculateFactTaskData(x.StateLogs);
+
+          notFinishedTask.StartTime = taskData.StartTime;
+          notFinishedTask.EndTime = taskData.EndTime;
+          notFinishedTask.LastClientId = x.LastClientId;
+          notFinishedTask.Priority = x.Priority;
+          notFinishedTask.CoresRequired = x.CoresRequired;
+          notFinishedTask.MemoryRequired = x.MemoryRequired;
+          notFinishedTask.NumCalculationRuns = taskData.CalculationRuns;
+          notFinishedTask.NumRetries = taskData.Retries;
+          notFinishedTask.WaitingTime = taskData.WaitingTime;
+          notFinishedTask.CalculatingTime = taskData.CalculatingTime;
+          notFinishedTask.TransferTime = taskData.TransferTime;
+          notFinishedTask.TaskState = x.State;
+          notFinishedTask.Exception = taskData.Exception;
+          notFinishedTask.InitialWaitingTime = taskData.InitialWaitingTime;
+        }
+      }
     }
 
     private string GetUserName(Guid userId) {
