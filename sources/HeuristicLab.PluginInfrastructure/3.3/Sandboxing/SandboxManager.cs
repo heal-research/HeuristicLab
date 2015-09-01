@@ -27,10 +27,8 @@ using HeuristicLab.PluginInfrastructure.Manager;
 
 namespace HeuristicLab.PluginInfrastructure.Sandboxing {
   public static class SandboxManager {
-
     /// <summary>
-    /// Creates a privileged sandbox, meaning that the executed code is fully trusted and permissions are not restricted.
-    /// This method is a fall back for trusted users in HeuristicLab Hive. 
+    /// Returns a new AppDomain with loaded assemblies/plugins from applicationBase
     /// </summary>    
     public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase, string configFilePath) {
       PermissionSet pSet;
