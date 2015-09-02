@@ -29,6 +29,7 @@ namespace HeuristicLab.Services.Access {
     Guid CurrentUserId { get; }
     MembershipUser GetUserByName(string username);
     MembershipUser GetUserById(Guid userId);
+    string GetUserNameById(Guid userId);
     bool VerifyUser(Guid userId, List<Guid> allowedUserGroups);
   }
 }

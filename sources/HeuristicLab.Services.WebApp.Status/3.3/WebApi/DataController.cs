@@ -61,7 +61,7 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
         return query.Select(uts => new DT.TaskStatus {
           User = new DT.User {
             Id = uts.UserId.ToString(),
-            Name = ServiceLocator.Instance.UserManager.GetUserById(uts.UserId).UserName
+            Name = ServiceLocator.Instance.UserManager.GetUserNameById(uts.UserId)
           },
           CalculatingTasks = uts.CalculatingTasks,
           WaitingTasks = uts.WaitingTasks

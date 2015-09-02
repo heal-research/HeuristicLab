@@ -310,7 +310,7 @@ namespace HeuristicLab.Services.Hive {
               job.CalculatingCount = statistics.CalculatingCount;
               job.FinishedCount = statistics.FinishedCount;
             }
-            job.OwnerUsername = UserManager.GetUserById(job.OwnerUserId).UserName;
+            job.OwnerUsername = UserManager.GetUserNameById(job.OwnerUserId);
             if (currentUserId == job.OwnerUserId) {
               job.Permission = Permission.Full;
             } else {
@@ -354,7 +354,7 @@ namespace HeuristicLab.Services.Hive {
               job.CalculatingCount = statistic.CalculatingCount;
               job.FinishedCount = statistic.FinishedCount;
             }
-            job.OwnerUsername = UserManager.GetUserById(job.OwnerUserId).UserName;
+            job.OwnerUsername = UserManager.GetUserNameById(job.OwnerUserId);
             if (currentUserId == job.OwnerUserId) {
               job.Permission = Permission.Full;
             } else {
