@@ -46,6 +46,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string GammaParameterName = "Gamma";
     private const string EpsilonParameterName = "Epsilon";
     private const string DegreeParameterName = "Degree";
+    private const string CreateSolutionParameterName = "CreateSolution";
 
     #region parameter properties
     public IConstrainedValueParameter<StringValue> SvmTypeParameter {
@@ -68,6 +69,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public IValueParameter<IntValue> DegreeParameter {
       get { return (IValueParameter<IntValue>)Parameters[DegreeParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> CreateSolutionParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
     }
     #endregion
     #region properties
@@ -94,6 +98,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IntValue Degree {
       get { return DegreeParameter.Value; }
     }
+    public bool CreateSolution {
+      get { return CreateSolutionParameter.Value.Value; }
+      set { CreateSolutionParameter.Value.Value = value; }
+    }
     #endregion
     [StorableConstructor]
     private SupportVectorRegression(bool deserializing) : base(deserializing) { }
@@ -119,12 +127,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new ValueParameter<DoubleValue>(GammaParameterName, "The value of the gamma parameter in the kernel function.", new DoubleValue(1.0)));
       Parameters.Add(new ValueParameter<DoubleValue>(EpsilonParameterName, "The value of the epsilon parameter for epsilon-SVR.", new DoubleValue(0.1)));
       Parameters.Add(new ValueParameter<IntValue>(DegreeParameterName, "The degree parameter for the polynomial kernel function.", new IntValue(3)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+      Parameters[CreateSolutionParameterName].Hidden = true;
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       #region backwards compatibility (change with 3.4)
-      if (!Parameters.ContainsKey(DegreeParameterName))
-        Parameters.Add(new ValueParameter<IntValue>(DegreeParameterName, "The degree parameter for the polynomial kernel function.", new IntValue(3)));
+
+      if (!Parameters.ContainsKey(DegreeParameterName)) {
+        Parameters.Add(new ValueParameter<IntValue>(DegreeParameterName,
+          "The degree parameter for the polynomial kernel function.", new IntValue(3)));
+      }
+      if (!Parameters.ContainsKey(CreateSolutionParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+        Parameters[CreateSolutionParameterName].Hidden = true;
+      }
       #endregion
     }
 
@@ -136,52 +153,104 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run() {
       IRegressionProblemData problemData = Problem.ProblemData;
       IEnumerable<string> selectedInputVariables = problemData.AllowedInputVariables;
-      double trainR2, testR2;
       int nSv;
-      var solution = CreateSupportVectorRegressionSolution(problemData, selectedInputVariables, SvmType.Value,
-        KernelType.Value, Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value, Degree.Value,
-        out trainR2, out testR2, out nSv);
+      ISupportVectorMachineModel model;
+      Run(problemData, selectedInputVariables, SvmType.Value, KernelType.Value, Cost.Value, Nu.Value, Gamma.Value, Epsilon.Value, Degree.Value, out model, out nSv);
 
-      Results.Add(new Result("Support vector regression solution", "The support vector regression solution.", solution));
-      Results.Add(new Result("Training R²", "The Pearson's R² of the SVR solution on the training partition.", new DoubleValue(trainR2)));
-      Results.Add(new Result("Test R²", "The Pearson's R² of the SVR solution on the test partition.", new DoubleValue(testR2)));
+      if (CreateSolution) {
+        var solution = new SupportVectorRegressionSolution((SupportVectorMachineModel)model, (IRegressionProblemData)problemData.Clone());
+        Results.Add(new Result("Support vector regression solution", "The support vector regression solution.", solution));
+      }
+
       Results.Add(new Result("Number of support vectors", "The number of support vectors of the SVR solution.", new IntValue(nSv)));
+
+
+      {
+        // calculate regression model metrics 
+        var ds = problemData.Dataset;
+        var trainRows = problemData.TrainingIndices;
+        var testRows = problemData.TestIndices;
+        var yTrain = ds.GetDoubleValues(problemData.TargetVariable, trainRows);
+        var yTest = ds.GetDoubleValues(problemData.TargetVariable, testRows);
+        var yPredTrain = model.GetEstimatedValues(ds, trainRows).ToArray();
+        var yPredTest = model.GetEstimatedValues(ds, testRows).ToArray();
+
+        OnlineCalculatorError error;
+        var trainMse = OnlineMeanSquaredErrorCalculator.Calculate(yPredTrain, yTrain, out error);
+        if (error != OnlineCalculatorError.None) trainMse = double.MaxValue;
+        var testMse = OnlineMeanSquaredErrorCalculator.Calculate(yPredTest, yTest, out error);
+        if (error != OnlineCalculatorError.None) testMse = double.MaxValue;
+
+        Results.Add(new Result("Mean squared error (training)", "The mean of squared errors of the SVR solution on the training partition.", new DoubleValue(trainMse)));
+        Results.Add(new Result("Mean squared error (test)", "The mean of squared errors of the SVR solution on the test partition.", new DoubleValue(testMse)));
+
+
+        var trainMae = OnlineMeanAbsoluteErrorCalculator.Calculate(yPredTrain, yTrain, out error);
+        if (error != OnlineCalculatorError.None) trainMae = double.MaxValue;
+        var testMae = OnlineMeanAbsoluteErrorCalculator.Calculate(yPredTest, yTest, out error);
+        if (error != OnlineCalculatorError.None) testMae = double.MaxValue;
+
+        Results.Add(new Result("Mean absolute error (training)", "The mean of absolute errors of the SVR solution on the training partition.", new DoubleValue(trainMae)));
+        Results.Add(new Result("Mean absolute error (test)", "The mean of absolute errors of the SVR solution on the test partition.", new DoubleValue(testMae)));
+
+
+        var trainRelErr = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(yPredTrain, yTrain, out error);
+        if (error != OnlineCalculatorError.None) trainRelErr = double.MaxValue;
+        var testRelErr = OnlineMeanAbsolutePercentageErrorCalculator.Calculate(yPredTest, yTest, out error);
+        if (error != OnlineCalculatorError.None) testRelErr = double.MaxValue;
+
+        Results.Add(new Result("Average relative error (training)", "The mean of relative errors of the SVR solution on the training partition.", new DoubleValue(trainRelErr)));
+        Results.Add(new Result("Average relative error (test)", "The mean of relative errors of the SVR solution on the test partition.", new DoubleValue(testRelErr)));
+      }
     }
 
-    public static SupportVectorRegressionSolution CreateSupportVectorRegressionSolution(IRegressionProblemData problemData, IEnumerable<string> allowedInputVariables,
+    // BackwardsCompatibility3.4
+    #region Backwards compatible code, remove with 3.5
+    // for compatibility with old API
+    public static SupportVectorRegressionSolution CreateSupportVectorRegressionSolution(
+      IRegressionProblemData problemData, IEnumerable<string> allowedInputVariables,
       string svmType, string kernelType, double cost, double nu, double gamma, double epsilon, int degree,
       out double trainingR2, out double testR2, out int nSv) {
+      ISupportVectorMachineModel model;
+      Run(problemData, allowedInputVariables, svmType, kernelType, cost, nu, gamma, epsilon, degree, out model, out nSv);
+
+      var solution = new SupportVectorRegressionSolution((SupportVectorMachineModel)model, (IRegressionProblemData)problemData.Clone());
+      trainingR2 = solution.TrainingRSquared;
+      testR2 = solution.TestRSquared;
+      return solution;
+    }
+    #endregion
+
+    public static void Run(IRegressionProblemData problemData, IEnumerable<string> allowedInputVariables,
+      string svmType, string kernelType, double cost, double nu, double gamma, double epsilon, int degree,
+      out ISupportVectorMachineModel model, out int nSv) {
       var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<int> rows = problemData.TrainingIndices;
 
       //extract SVM parameters from scope and set them
-      svm_parameter parameter = new svm_parameter();
-      parameter.svm_type = GetSvmType(svmType);
-      parameter.kernel_type = GetKernelType(kernelType);
-      parameter.C = cost;
-      parameter.nu = nu;
-      parameter.gamma = gamma;
-      parameter.p = epsilon;
-      parameter.cache_size = 500;
-      parameter.probability = 0;
-      parameter.eps = 0.001;
-      parameter.degree = degree;
-      parameter.shrinking = 1;
-      parameter.coef0 = 0;
-
-
+      svm_parameter parameter = new svm_parameter {
+        svm_type = GetSvmType(svmType),
+        kernel_type = GetKernelType(kernelType),
+        C = cost,
+        nu = nu,
+        gamma = gamma,
+        p = epsilon,
+        cache_size = 500,
+        probability = 0,
+        eps = 0.001,
+        degree = degree,
+        shrinking = 1,
+        coef0 = 0
+      };
 
       svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
       RangeTransform rangeTransform = RangeTransform.Compute(problem);
       svm_problem scaledProblem = rangeTransform.Scale(problem);
       var svmModel = svm.svm_train(scaledProblem, parameter);
       nSv = svmModel.SV.Length;
-      var model = new SupportVectorMachineModel(svmModel, rangeTransform, targetVariable, allowedInputVariables);
-      var solution = new SupportVectorRegressionSolution(model, (IRegressionProblemData)problemData.Clone());
-      trainingR2 = solution.TrainingRSquared;
-      testR2 = solution.TestRSquared;
-      return solution;
+
+      model = new SupportVectorMachineModel(svmModel, rangeTransform, targetVariable, allowedInputVariables);
     }
 
     private static int GetSvmType(string svmType) {

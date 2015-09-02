@@ -45,6 +45,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string NuParameterName = "Nu";
     private const string GammaParameterName = "Gamma";
     private const string DegreeParameterName = "Degree";
+    private const string CreateSolutionParameterName = "CreateSolution";
 
     #region parameter properties
     public IConstrainedValueParameter<StringValue> SvmTypeParameter {
@@ -64,6 +65,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public IValueParameter<IntValue> DegreeParameter {
       get { return (IValueParameter<IntValue>)Parameters[DegreeParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> CreateSolutionParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
     }
     #endregion
     #region properties
@@ -86,6 +90,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public IntValue Degree {
       get { return DegreeParameter.Value; }
+    }
+    public bool CreateSolution {
+      get { return CreateSolutionParameter.Value.Value; }
+      set { CreateSolutionParameter.Value.Value = value; }
     }
     #endregion
     [StorableConstructor]
@@ -111,12 +119,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new ValueParameter<DoubleValue>(CostParameterName, "The value of the C (cost) parameter of C-SVC.", new DoubleValue(1.0)));
       Parameters.Add(new ValueParameter<DoubleValue>(GammaParameterName, "The value of the gamma parameter in the kernel function.", new DoubleValue(1.0)));
       Parameters.Add(new ValueParameter<IntValue>(DegreeParameterName, "The degree parameter for the polynomial kernel function.", new IntValue(3)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+      Parameters[CreateSolutionParameterName].Hidden = true;
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       #region backwards compatibility (change with 3.4)
-      if (!Parameters.ContainsKey(DegreeParameterName))
-        Parameters.Add(new ValueParameter<IntValue>(DegreeParameterName, "The degree parameter for the polynomial kernel function.", new IntValue(3)));
+      if (!Parameters.ContainsKey(DegreeParameterName)) {
+        Parameters.Add(new ValueParameter<IntValue>(DegreeParameterName,
+          "The degree parameter for the polynomial kernel function.", new IntValue(3)));
+      }
+      if (!Parameters.ContainsKey(CreateSolutionParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName,
+          "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+        Parameters[CreateSolutionParameterName].Hidden = true;
+      }
       #endregion
     }
 
@@ -128,16 +145,40 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run() {
       IClassificationProblemData problemData = Problem.ProblemData;
       IEnumerable<string> selectedInputVariables = problemData.AllowedInputVariables;
-      double trainingAccuracy, testAccuracy;
       int nSv;
-      var solution = CreateSupportVectorClassificationSolution(problemData, selectedInputVariables,
-        SvmType.Value, KernelType.Value, Cost.Value, Nu.Value, Gamma.Value, Degree.Value,
-        out trainingAccuracy, out testAccuracy, out nSv);
+      ISupportVectorMachineModel model;
 
-      Results.Add(new Result("Support vector classification solution", "The support vector classification solution.", solution));
-      Results.Add(new Result("Training accuracy", "The accuracy of the SVR solution on the training partition.", new DoubleValue(trainingAccuracy)));
-      Results.Add(new Result("Test accuracy", "The accuracy of the SVR solution on the test partition.", new DoubleValue(testAccuracy)));
-      Results.Add(new Result("Number of support vectors", "The number of support vectors of the SVR solution.", new IntValue(nSv)));
+      Run(problemData, selectedInputVariables, GetSvmType(SvmType.Value), GetKernelType(KernelType.Value), Cost.Value, Nu.Value, Gamma.Value, Degree.Value, out model, out nSv);
+
+      if (CreateSolution) {
+        var solution = new SupportVectorClassificationSolution((SupportVectorMachineModel)model, (IClassificationProblemData)problemData.Clone());
+        Results.Add(new Result("Support vector classification solution", "The support vector classification solution.",
+          solution));
+      }
+
+      {
+        // calculate classification metrics
+        // calculate regression model metrics 
+        var ds = problemData.Dataset;
+        var trainRows = problemData.TrainingIndices;
+        var testRows = problemData.TestIndices;
+        var yTrain = ds.GetDoubleValues(problemData.TargetVariable, trainRows);
+        var yTest = ds.GetDoubleValues(problemData.TargetVariable, testRows);
+        var yPredTrain = model.GetEstimatedClassValues(ds, trainRows);
+        var yPredTest = model.GetEstimatedClassValues(ds, testRows);
+
+        OnlineCalculatorError error;
+        var trainAccuracy = OnlineAccuracyCalculator.Calculate(yPredTrain, yTrain, out error);
+        if (error != OnlineCalculatorError.None) trainAccuracy = double.MaxValue;
+        var testAccuracy = OnlineAccuracyCalculator.Calculate(yPredTest, yTest, out error);
+        if (error != OnlineCalculatorError.None) testAccuracy = double.MaxValue;
+
+        Results.Add(new Result("Accuracy (training)", "The mean of squared errors of the SVR solution on the training partition.", new DoubleValue(trainAccuracy)));
+        Results.Add(new Result("Accuracy (test)", "The mean of squared errors of the SVR solution on the test partition.", new DoubleValue(testAccuracy)));
+
+        Results.Add(new Result("Number of support vectors", "The number of support vectors of the SVR solution.",
+          new IntValue(nSv)));
+      }
     }
 
     public static SupportVectorClassificationSolution CreateSupportVectorClassificationSolution(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
@@ -146,25 +187,44 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         out trainingAccuracy, out testAccuracy, out nSv);
     }
 
+    // BackwardsCompatibility3.4
+    #region Backwards compatible code, remove with 3.5
     public static SupportVectorClassificationSolution CreateSupportVectorClassificationSolution(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
       int svmType, int kernelType, double cost, double nu, double gamma, int degree, out double trainingAccuracy, out double testAccuracy, out int nSv) {
+
+      ISupportVectorMachineModel model;
+      Run(problemData, allowedInputVariables, svmType, kernelType, cost, nu, gamma, degree, out model, out nSv);
+      var solution = new SupportVectorClassificationSolution((SupportVectorMachineModel)model, (IClassificationProblemData)problemData.Clone());
+
+      trainingAccuracy = solution.TrainingAccuracy;
+      testAccuracy = solution.TestAccuracy;
+
+      return solution;
+    }
+
+    #endregion
+
+    public static void Run(IClassificationProblemData problemData, IEnumerable<string> allowedInputVariables,
+      int svmType, int kernelType, double cost, double nu, double gamma, int degree,
+      out ISupportVectorMachineModel model, out int nSv) {
       var dataset = problemData.Dataset;
       string targetVariable = problemData.TargetVariable;
       IEnumerable<int> rows = problemData.TrainingIndices;
 
       //extract SVM parameters from scope and set them
-      svm_parameter parameter = new svm_parameter();
-      parameter.svm_type = svmType;
-      parameter.kernel_type = kernelType;
-      parameter.C = cost;
-      parameter.nu = nu;
-      parameter.gamma = gamma;
-      parameter.cache_size = 500;
-      parameter.probability = 0;
-      parameter.eps = 0.001;
-      parameter.degree = degree;
-      parameter.shrinking = 1;
-      parameter.coef0 = 0;
+      svm_parameter parameter = new svm_parameter {
+        svm_type = svmType,
+        kernel_type = kernelType,
+        C = cost,
+        nu = nu,
+        gamma = gamma,
+        cache_size = 500,
+        probability = 0,
+        eps = 0.001,
+        degree = degree,
+        shrinking = 1,
+        coef0 = 0
+      };
 
       var weightLabels = new List<int>();
       var weights = new List<double>();
@@ -181,19 +241,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       parameter.weight_label = weightLabels.ToArray();
       parameter.weight = weights.ToArray();
 
-
       svm_problem problem = SupportVectorMachineUtil.CreateSvmProblem(dataset, targetVariable, allowedInputVariables, rows);
       RangeTransform rangeTransform = RangeTransform.Compute(problem);
       svm_problem scaledProblem = rangeTransform.Scale(problem);
       var svmModel = svm.svm_train(scaledProblem, parameter);
-      var model = new SupportVectorMachineModel(svmModel, rangeTransform, targetVariable, allowedInputVariables, problemData.ClassValues);
-      var solution = new SupportVectorClassificationSolution(model, (IClassificationProblemData)problemData.Clone());
-
       nSv = svmModel.SV.Length;
-      trainingAccuracy = solution.TrainingAccuracy;
-      testAccuracy = solution.TestAccuracy;
 
-      return solution;
+      model = new SupportVectorMachineModel(svmModel, rangeTransform, targetVariable, allowedInputVariables, problemData.ClassValues);
     }
 
     private static int GetSvmType(string svmType) {
