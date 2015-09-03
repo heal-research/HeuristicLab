@@ -109,6 +109,8 @@
     <Compile Include="ArtificialAnt\Problem.cs" />
     <Compile Include="ArtificialAnt\Trail.cs" />
     <Compile Include="BasicSymbolicRegression\Problem.cs" />
+    <Compile Include="Boolean\MultiplexerProblem.cs" />
+    <Compile Include="Boolean\EvenParityProblem.cs" />
     <Compile Include="LawnMower\Interpreter.cs" />
     <Compile Include="LawnMower\Problem.cs" />
     <Compile Include="LawnMower\Solution.cs" />
