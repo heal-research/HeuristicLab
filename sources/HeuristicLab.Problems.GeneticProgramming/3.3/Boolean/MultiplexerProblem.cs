@@ -102,7 +102,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
 
     public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
       if (NumberOfBits <= 0) throw new NotSupportedException("Number of bits must be larger than zero.");
-      if (NumberOfBits > 40) throw new NotSupportedException("Mupltiplexer does not support problems with number of bits > 37.");
+      if (NumberOfBits > 37) throw new NotSupportedException("Mupltiplexer does not support problems with number of bits > 37.");
       var bs = Enumerable.Range(0, (int)Math.Pow(2, NumberOfBits));
       var addrBits = (int)Math.Log(NumberOfBits, 2); // largest power of two that fits into the number of bits
       var inputBits = NumberOfBits - addrBits;
