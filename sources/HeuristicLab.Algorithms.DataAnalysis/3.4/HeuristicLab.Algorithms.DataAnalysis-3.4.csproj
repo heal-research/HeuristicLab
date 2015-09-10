@@ -188,6 +188,7 @@
     <Compile Include="GaussianProcess\GaussianProcessModelCreator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GaussianProcess\GaussianProcessCovarianceOptimizationProblem.cs" />
     <Compile Include="GaussianProcess\Util.cs" />
     <Compile Include="GaussianProcess\IMeanFunction.cs" />
     <Compile Include="GaussianProcess\GaussianProcessModel.cs" />
