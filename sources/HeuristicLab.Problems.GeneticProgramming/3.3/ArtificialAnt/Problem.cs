@@ -37,7 +37,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
   [StorableClass]
   public sealed class Problem : SymbolicExpressionTreeProblem, IStorableContent {
-    public string Filename { get; set; }
 
     #region constant for default world (Santa Fe)
 
