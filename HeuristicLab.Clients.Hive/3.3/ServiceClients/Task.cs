@@ -42,7 +42,6 @@ namespace HeuristicLab.Clients.Hive {
       this.IsParentTask = original.IsParentTask;
       this.FinishWhenChildJobsFinished = original.FinishWhenChildJobsFinished;
       this.JobId = original.JobId;
-      this.IsPrivileged = original.IsPrivileged;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

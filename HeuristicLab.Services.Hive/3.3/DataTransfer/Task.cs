@@ -43,11 +43,15 @@ namespace HeuristicLab.Services.Hive.DataTransfer {
     public bool FinishWhenChildJobsFinished { get; set; }
     [DataMember]
     public Guid JobId { get; set; }
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
     [DataMember]
     public bool IsPrivileged { get; set; }
+    #endregion
 
     public Task() {
-      this.PluginsNeededIds = new List<Guid>();
+      PluginsNeededIds = new List<Guid>();
+      IsPrivileged = true;
     }
   }
 }

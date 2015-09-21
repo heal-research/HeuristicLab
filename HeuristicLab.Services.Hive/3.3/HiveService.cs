@@ -468,10 +468,12 @@ namespace HeuristicLab.Services.Hive {
       }
     }
 
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
     public bool IsAllowedPrivileged() {
-      RoleVerifier.AuthenticateForAnyRole(HiveRoles.Administrator, HiveRoles.Client);
-      return RoleVerifier.IsInRole(HiveRoles.IsAllowedPrivileged);
+      return true;
     }
+    #endregion
     #endregion
 
     #region Login Methods

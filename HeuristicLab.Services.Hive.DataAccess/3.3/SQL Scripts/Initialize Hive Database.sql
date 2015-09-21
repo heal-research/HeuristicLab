@@ -85,7 +85,6 @@ CREATE TABLE [dbo].[Task](
   [FinishWhenChildJobsFinished] Bit NOT NULL,
   [Command] VarChar(30),
   [JobId] UniqueIdentifier NOT NULL,
-  [IsPrivileged] Bit NOT NULL,
   CONSTRAINT [PK_dbo.Task] PRIMARY KEY ([TaskId])
   )
 CREATE TABLE [dbo].[Downtime](

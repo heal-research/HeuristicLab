@@ -112,13 +112,13 @@ GO
 -- speed up joins between Job and Task
 CREATE NONCLUSTERED INDEX [TaskJobIdIndex]
 ON [dbo].[Task] ([JobId])
-INCLUDE ([TaskId],[TaskState],[ExecutionTimeMs],[LastHeartbeat],[ParentTaskId],[Priority],[CoresNeeded],[MemoryNeeded],[IsParentTask],[FinishWhenChildJobsFinished],[Command],[IsPrivileged])
+INCLUDE ([TaskId],[TaskState],[ExecutionTimeMs],[LastHeartbeat],[ParentTaskId],[Priority],[CoresNeeded],[MemoryNeeded],[IsParentTask],[FinishWhenChildJobsFinished],[Command])
 GO
 
 -- this is an index to speed up the GetWaitingTasks() method 
 CREATE NONCLUSTERED INDEX [TaskGetWaitingTasksIndex]
 ON [dbo].[Task] ([TaskState],[IsParentTask],[FinishWhenChildJobsFinished],[CoresNeeded],[MemoryNeeded])
-INCLUDE ([TaskId],[ExecutionTimeMs],[LastHeartbeat],[ParentTaskId],[Priority],[Command],[JobId],[IsPrivileged])
+INCLUDE ([TaskId],[ExecutionTimeMs],[LastHeartbeat],[ParentTaskId],[Priority],[Command],[JobId])
 GO
 
 

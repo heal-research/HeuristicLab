@@ -43,10 +43,10 @@ namespace HeuristicLab.Services.Hive {
         FinishWhenChildJobsFinished = source.FinishWhenChildJobsFinished,
         Command = source.Command.ToDto(),
         JobId = source.JobId,
-        IsPrivileged = source.IsPrivileged,
         PluginsNeededIds = source.RequiredPlugins.Select(x => x.PluginId).ToList(),
         StateLog = source.StateLogs.Select(x => x.ToDto()).OrderBy(x => x.DateTime).ToList(),
-        LastTaskDataUpdate = source.JobData == null ? DateTime.MinValue : source.JobData.LastUpdate
+        LastTaskDataUpdate = source.JobData == null ? DateTime.MinValue : source.JobData.LastUpdate,
+        IsPrivileged = true
       };
     }
 
@@ -71,7 +71,6 @@ namespace HeuristicLab.Services.Hive {
       target.FinishWhenChildJobsFinished = source.FinishWhenChildJobsFinished;
       target.Command = source.Command.ToEntity();
       target.JobId = source.JobId;
-      target.IsPrivileged = source.IsPrivileged;
       var ids = target.RequiredPlugins.Select(x => x.PluginId);
       target.RequiredPlugins.AddRange(source.PluginsNeededIds
         .Where(x => !ids.Contains(x))

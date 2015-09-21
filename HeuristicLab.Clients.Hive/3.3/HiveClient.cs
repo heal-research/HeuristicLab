@@ -67,12 +67,6 @@ namespace HeuristicLab.Clients.Hive {
       get { return alreadyUploadedPlugins; }
       set { alreadyUploadedPlugins = value; }
     }
-
-    private bool isAllowedPrivileged;
-    public bool IsAllowedPrivileged {
-      get { return isAllowedPrivileged; }
-      set { isAllowedPrivileged = value; }
-    }
     #endregion
 
     private HiveClient() { }
@@ -98,8 +92,6 @@ namespace HeuristicLab.Clients.Hive {
       OnRefreshing();
 
       try {
-        IsAllowedPrivileged = HiveServiceLocator.Instance.CallHiveService((s) => s.IsAllowedPrivileged());
-
         jobs = new HiveItemCollection<RefreshableJob>();
         var jobsLoaded = HiveServiceLocator.Instance.CallHiveService<IEnumerable<Job>>(s => s.GetJobs());
 
@@ -274,9 +266,7 @@ namespace HeuristicLab.Clients.Hive {
         // upload Job
         refreshableJob.Progress.Status = "Uploading Job...";
         refreshableJob.Job.Id = HiveServiceLocator.Instance.CallHiveService((s) => s.AddJob(refreshableJob.Job));
-        bool isPrivileged = refreshableJob.Job.IsPrivileged;
         refreshableJob.Job = HiveServiceLocator.Instance.CallHiveService((s) => s.GetJob(refreshableJob.Job.Id)); // update owner and permissions
-        refreshableJob.Job.IsPrivileged = isPrivileged;
         cancellationToken.ThrowIfCancellationRequested();
 
         int totalJobCount = refreshableJob.GetAllHiveTasks().Count();
@@ -297,7 +287,7 @@ namespace HeuristicLab.Clients.Hive {
         var tasks = new List<TS.Task>();
         foreach (HiveTask hiveTask in refreshableJob.HiveTasks) {
           var task = TS.Task.Factory.StartNew((hj) => {
-            UploadTaskWithChildren(refreshableJob.Progress, (HiveTask)hj, null, resourceIds, jobCount, totalJobCount, configFilePlugin.Id, refreshableJob.Job.Id, refreshableJob.Log, refreshableJob.Job.IsPrivileged, cancellationToken);
+            UploadTaskWithChildren(refreshableJob.Progress, (HiveTask)hj, null, resourceIds, jobCount, totalJobCount, configFilePlugin.Id, refreshableJob.Job.Id, refreshableJob.Log, cancellationToken);
           }, hiveTask);
           task.ContinueWith((x) => refreshableJob.Log.LogException(x.Exception), TaskContinuationOptions.OnlyOnFaulted);
           tasks.Add(task);
@@ -342,7 +332,7 @@ namespace HeuristicLab.Clients.Hive {
     /// Uploads the given task and all its child-jobs while setting the proper parentJobId values for the childs
     /// </summary>
     /// <param name="parentHiveTask">shall be null if its the root task</param>
-    private void UploadTaskWithChildren(IProgress progress, HiveTask hiveTask, HiveTask parentHiveTask, IEnumerable<Guid> groups, int[] taskCount, int totalJobCount, Guid configPluginId, Guid jobId, ILog log, bool isPrivileged, CancellationToken cancellationToken) {
+    private void UploadTaskWithChildren(IProgress progress, HiveTask hiveTask, HiveTask parentHiveTask, IEnumerable<Guid> groups, int[] taskCount, int totalJobCount, Guid configPluginId, Guid jobId, ILog log, CancellationToken cancellationToken) {
       taskUploadSemaphore.WaitOne();
       bool semaphoreReleased = false;
       try {
@@ -374,7 +364,6 @@ namespace HeuristicLab.Clients.Hive {
         cancellationToken.ThrowIfCancellationRequested();
         hiveTask.Task.PluginsNeededIds.Add(configPluginId);
         hiveTask.Task.JobId = jobId;
-        hiveTask.Task.IsPrivileged = isPrivileged;
 
         log.LogMessage(string.Format("Uploading task ({0} kb, {1} objects)", taskData.Data.Count() / 1024, hiveTask.ItemTask.GetObjectGraphObjects().Count()));
         TryAndRepeat(() => {
@@ -397,7 +386,7 @@ namespace HeuristicLab.Clients.Hive {
         foreach (HiveTask child in hiveTask.ChildHiveTasks) {
           var task = TS.Task.Factory.StartNew((tuple) => {
             var arguments = (Tuple<HiveTask, HiveTask>)tuple;
-            UploadTaskWithChildren(progress, arguments.Item1, arguments.Item2, groups, taskCount, totalJobCount, configPluginId, jobId, log, isPrivileged, cancellationToken);
+            UploadTaskWithChildren(progress, arguments.Item1, arguments.Item2, groups, taskCount, totalJobCount, configPluginId, jobId, log, cancellationToken);
           }, new Tuple<HiveTask, HiveTask>(child, hiveTask));
           task.ContinueWith((x) => log.LogException(x.Exception), TaskContinuationOptions.OnlyOnFaulted);
           tasks.Add(task);
@@ -441,7 +430,6 @@ namespace HeuristicLab.Clients.Hive {
         }
         IDictionary<Guid, HiveTask> allHiveTasks = downloader.Results;
         var parents = allHiveTasks.Values.Where(x => !x.Task.ParentTaskId.HasValue);
-        refreshableJob.Job.IsPrivileged = allHiveTasks.Any(x => x.Value.Task.IsPrivileged);
 
         refreshableJob.Progress.Status = "Downloading/deserializing complete. Displaying tasks...";
         // build child-task tree

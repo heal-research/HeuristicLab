@@ -24,16 +24,13 @@ using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using HeuristicLab.PluginInfrastructure.Manager;
-using System.IO;
 
 namespace HeuristicLab.PluginInfrastructure.Sandboxing {
   public static class SandboxManager {
-
     /// <summary>
-    /// Creates an privileged sandbox, meaning that the executed code is fully trusted and permissions are not restricted.
-    /// This method is a fall back for trusted users in HeuristicLab Hive. 
+    /// Returns a new AppDomain with loaded assemblies/plugins from applicationBase
     /// </summary>    
-    public static AppDomain CreateAndInitPrivilegedSandbox(string appDomainName, string applicationBase, string configFilePath) {
+    public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase, string configFilePath) {
       PermissionSet pSet;
       pSet = new PermissionSet(PermissionState.Unrestricted);
 
@@ -45,47 +42,6 @@ namespace HeuristicLab.PluginInfrastructure.Sandboxing {
       Type applicationManagerType = typeof(DefaultApplicationManager);
       AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, null, setup, pSet, null);
       DefaultApplicationManager applicationManager = (DefaultApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
-
-      PluginManager pm = new PluginManager(applicationBase);
-      pm.DiscoverAndCheckPlugins();
-      applicationManager.PrepareApplicationDomain(pm.Applications, pm.Plugins);
-
-      return applicationDomain;
-    }
-
-    /// <summary>
-    /// Creates a sandbox with restricted permissions.
-    /// Code that is executed in such an AppDomain is partially-trusted and is not allowed to call or override
-    /// methods that require full trust. 
-    /// </summary>    
-    public static AppDomain CreateAndInitSandbox(string appDomainName, string applicationBase, string configFilePath) {
-      PermissionSet pSet;
-
-      pSet = new PermissionSet(PermissionState.None);
-      pSet.AddPermission(new SecurityPermission(PermissionState.None));
-      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.Execution));
-      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.Infrastructure));
-      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.UnmanagedCode));
-      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.SerializationFormatter));
-      //needed for HeuristicLab.Persistence, see DynamicMethod Constructor (String, Type, array<Type []()>[], Type, Boolean)
-      pSet.AddPermission(new SecurityPermission(SecurityPermissionFlag.ControlEvidence));
-      pSet.AddPermission(new ReflectionPermission(PermissionState.Unrestricted));
-
-      FileIOPermission ioPerm = new FileIOPermission(PermissionState.None);
-      //allow path discovery for system drive, needed by HeuristicLab.Persistence: Serializer.BuildTypeCache() -> Assembly.CodeBase
-      ioPerm.AddPathList(FileIOPermissionAccess.PathDiscovery, Path.GetPathRoot(Path.GetFullPath(Environment.SystemDirectory)));
-      //allow full access to the appdomain's base directory
-      ioPerm.AddPathList(FileIOPermissionAccess.AllAccess, applicationBase);
-      pSet.AddPermission(ioPerm);
-
-      AppDomainSetup setup = new AppDomainSetup();
-      setup.PrivateBinPath = applicationBase;
-      setup.ApplicationBase = applicationBase;
-      setup.ConfigurationFile = configFilePath;
-
-      Type applicationManagerType = typeof(SandboxApplicationManager);
-      AppDomain applicationDomain = AppDomain.CreateDomain(appDomainName, null, setup, pSet, null);
-      SandboxApplicationManager applicationManager = (SandboxApplicationManager)applicationDomain.CreateInstanceAndUnwrap(applicationManagerType.Assembly.FullName, applicationManagerType.FullName, true, BindingFlags.NonPublic | BindingFlags.Instance, null, null, null, null);
 
       PluginManager pm = new PluginManager(applicationBase);
       pm.DiscoverAndCheckPlugins();

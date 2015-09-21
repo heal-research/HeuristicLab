@@ -96,8 +96,11 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     [OperationContract]
     IEnumerable<JobPermission> GetJobPermissions(Guid jobId);
 
+    // BackwardsCompatibility3.3
+    #region Backwards compatible code, remove with 3.4
     [OperationContract]
     bool IsAllowedPrivileged(); // current user may execute privileged task
+    #endregion
     #endregion
 
     #region Login Methods

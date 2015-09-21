@@ -27,7 +27,6 @@ namespace HeuristicLab.Clients.Hive.Administrator {
     public const string Administrator = "Hive Administrator";
     public const string User = "Hive User";
     public const string Slave = "Hive Slave";
-    public const string IsAllowedPrivileged = "Hive IsAllowedPrivileged";
 
     public static bool CheckAdminUserPermissions() {
       return UserInformation.Instance.UserExists && UserInformation.Instance.User.Roles.Any(x => x.Name == HiveRoles.Administrator);

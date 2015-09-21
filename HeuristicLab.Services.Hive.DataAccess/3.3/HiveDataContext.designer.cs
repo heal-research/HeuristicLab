@@ -1619,8 +1619,6 @@ namespace HeuristicLab.Services.Hive.DataAccess
 		
 		private System.Guid _HiveExperimentId;
 		
-		private bool _IsPrivileged;
-		
 		private EntitySet<AssignedResource> _AssignedResources;
 		
 		private EntitySet<RequiredPlugin> _RequiredPlugins;
@@ -1663,8 +1661,6 @@ namespace HeuristicLab.Services.Hive.DataAccess
     partial void OnCommandChanged();
     partial void OnJobIdChanging(System.Guid value);
     partial void OnJobIdChanged();
-    partial void OnIsPrivilegedChanging(bool value);
-    partial void OnIsPrivilegedChanged();
     #endregion
 		
 		public Task()
@@ -1923,26 +1919,6 @@ namespace HeuristicLab.Services.Hive.DataAccess
 					this._HiveExperimentId = value;
 					this.SendPropertyChanged("JobId");
 					this.OnJobIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IsPrivileged", DbType="Bit")]
-		public bool IsPrivileged
-		{
-			get
-			{
-				return this._IsPrivileged;
-			}
-			set
-			{
-				if ((this._IsPrivileged != value))
-				{
-					this.OnIsPrivilegedChanging(value);
-					this.SendPropertyChanging();
-					this._IsPrivileged = value;
-					this.SendPropertyChanged("IsPrivileged");
-					this.OnIsPrivilegedChanged();
 				}
 			}
 		}

@@ -24,6 +24,5 @@ namespace HeuristicLab.Services.Hive {
     public const string Administrator = "Hive Administrator";
     public const string Slave = "Hive Slave";
     public const string Client = "Hive User";
-    public const string IsAllowedPrivileged = "Hive IsAllowedPrivileged";
   }
 }

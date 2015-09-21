@@ -118,7 +118,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           nameTextBox.Text = string.Empty;
           executionTimeTextBox.Text = string.Empty;
           resourceNamesTextBox.Text = string.Empty;
-          isPrivilegedCheckBox.Checked = false;
           refreshAutomaticallyCheckBox.Checked = false;
           lock (runCollectionViewLocker) {
             runCollectionViewHost.Content = null;
@@ -131,7 +130,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           nameTextBox.Text = Content.Job.Name;
           executionTimeTextBox.Text = Content.ExecutionTime.ToString();
           resourceNamesTextBox.Text = Content.Job.ResourceNames;
-          isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
           refreshAutomaticallyCheckBox.Checked = Content.RefreshAutomatically;
           logView.Content = Content.Log;
           lock (runCollectionViewLocker) {
@@ -162,7 +160,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
       resourceNamesTextBox.Enabled = !Locked;
       searchButton.Enabled = !Locked;
       jobsTreeView.Enabled = !Locked;
-      isPrivilegedCheckBox.Enabled = !Locked;
       refreshAutomaticallyCheckBox.Enabled = !Locked;
       refreshButton.Enabled = !Locked;
       UnloadButton.Enabled = !Locked;
@@ -190,7 +187,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
           this.searchButton.Enabled = Content.IsControllable && Content.ExecutionState == ExecutionState.Prepared && !alreadyUploaded && !Content.IsProgressing;
           this.jobsTreeView.ReadOnly = !Content.IsControllable || Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded || Content.IsProgressing;
 
-          this.isPrivilegedCheckBox.Enabled = HiveClient.Instance.IsAllowedPrivileged && Content.IsControllable && !(Content.ExecutionState != ExecutionState.Prepared || alreadyUploaded) && !Content.IsProgressing;
           this.refreshAutomaticallyCheckBox.Enabled = Content.IsControllable && alreadyUploaded && jobsLoaded && Content.ExecutionState == ExecutionState.Started && !Content.IsProgressing;
           this.refreshButton.Enabled = Content.IsDownloadable && alreadyUploaded && !Content.IsProgressing;
 
@@ -278,11 +274,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
     void Content_Loaded(object sender, EventArgs e) {
       lock (runCollectionViewLocker) {
         runCollectionViewHost.Content = GetAllRunsFromJob(Content);
-      }
-      if (InvokeRequired) {
-        Invoke(new Action(() => { isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged; }));
-      } else {
-        isPrivilegedCheckBox.Checked = Content.Job.IsPrivileged;
       }
     }
 
@@ -420,10 +411,6 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
 
     private void refreshAutomaticallyCheckBox_CheckedChanged(object sender, EventArgs e) {
       if (Content != null && !SuppressEvents) Content.RefreshAutomatically = refreshAutomaticallyCheckBox.Checked;
-    }
-
-    private void isPrivilegedCheckBox_CheckChanged(object sender, EventArgs e) {
-      if (Content != null && !SuppressEvents) Content.Job.IsPrivileged = isPrivilegedCheckBox.Checked;
     }
 
     private void refreshButton_Click(object sender, EventArgs e) {
