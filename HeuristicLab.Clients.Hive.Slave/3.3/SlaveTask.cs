@@ -164,6 +164,18 @@ namespace HeuristicLab.Clients.Hive.SlaveCore {
       OnTaskFailed(new Exception("Unhandled exception: " + e.ExceptionObject.ToString()));
     }
 
+    public Tuple<TaskData, DateTime> GetTaskDataSnapshot() {
+      Tuple<TaskData, DateTime> snapshot = null;
+      try {
+        snapshot = executor.GetTaskDataSnapshot();
+        if (snapshot == null) return Tuple.Create(originalTaskData, DateTime.Now);
+      }
+      catch (Exception ex) {
+        EventLogManager.LogException(ex);
+      }
+      return snapshot;
+    }
+
     public TaskData GetTaskData() {
       TaskData data = null;
       try {

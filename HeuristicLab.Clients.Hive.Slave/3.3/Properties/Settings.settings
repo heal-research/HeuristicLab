@@ -71,5 +71,11 @@
     <Setting Name="HeartbeatInterval" Type="System.TimeSpan" Scope="User">
       <Value Profile="(Default)">00:00:40</Value>
     </Setting>
+    <Setting Name="CheckpointInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">18:00:00</Value>
+    </Setting>
+    <Setting Name="CheckpointCheckInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:05:00</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
