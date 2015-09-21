@@ -1,5 +1,22 @@
-﻿USE [HeuristicLab.Hive-3.3]
-/* create and initialize hive database tables */
+﻿/* HeuristicLab
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+USE [HeuristicLab.Hive-3.3]
 
 EXEC sp_configure filestream_access_level, 2
 GO
@@ -131,38 +148,6 @@ CREATE TABLE [UserPriority](
   [DateEnqueued] DateTime NOT NULL,
   CONSTRAINT [PK_UserPriority] PRIMARY KEY ([UserId])
   )
-CREATE TABLE [DeletedJobStatistics](
-  [UserId] UniqueIdentifier NOT NULL,
-  [ExecutionTimeS] float NOT NULL,
-  [ExecutionTimeSFinishedJobs] float NOT NULL,
-  [StartToEndTimeS] float NOT NULL,
-  [DeletedJobStatisticsId] UniqueIdentifier NOT NULL,
-  CONSTRAINT [PK_DeletedJobStatistics] PRIMARY KEY ([DeletedJobStatisticsId])
-  )
-CREATE TABLE [UserStatistics](
-  [StatisticsId] UniqueIdentifier NOT NULL,
-  [UserId] UniqueIdentifier NOT NULL,
-  [ExecutionTimeMs] float NOT NULL,
-  [UsedCores] Int NOT NULL,
-  [ExecutionTimeMsFinishedJobs] float NOT NULL,
-  [StartToEndTimeMs] float NOT NULL,
-  CONSTRAINT [PK_UserStatistics] PRIMARY KEY ([StatisticsId], [UserId])
-  )
-CREATE TABLE [SlaveStatistics](
-  [StatisticsId] UniqueIdentifier NOT NULL,
-  [SlaveId] UniqueIdentifier NOT NULL,
-  [Cores] Int NOT NULL,
-  [FreeCores] Int NOT NULL,
-  [CpuUtilization] float NOT NULL,
-  [Memory] Int NOT NULL,
-  [FreeMemory] Int NOT NULL,
-  CONSTRAINT [PK_SlaveStatistics] PRIMARY KEY ([StatisticsId], [SlaveId])
-  )
-CREATE TABLE [Statistics](
-  [StatisticsId] UniqueIdentifier NOT NULL,
-  [Timestamp] DateTime NOT NULL,
-  CONSTRAINT [PK_Statistics] PRIMARY KEY ([StatisticsId])
-  )
 ALTER TABLE [dbo].[AssignedResources]
   ADD CONSTRAINT [Resource_AssignedResource] FOREIGN KEY ([ResourceId]) REFERENCES [dbo].[Resource]([ResourceId])
 ALTER TABLE [dbo].[AssignedResources]
@@ -191,7 +176,88 @@ ALTER TABLE [dbo].[StateLog]
   ADD CONSTRAINT [Resource_StateLog] FOREIGN KEY ([SlaveId]) REFERENCES [dbo].[Resource]([ResourceId])
 ALTER TABLE [dbo].[JobPermission]
   ADD CONSTRAINT [Job_JobPermission] FOREIGN KEY ([JobId]) REFERENCES [dbo].[Job]([JobId])
-ALTER TABLE [UserStatistics]
-  ADD CONSTRAINT [Statistics_UserStatistics] FOREIGN KEY ([StatisticsId]) REFERENCES [Statistics]([StatisticsId])
-ALTER TABLE [SlaveStatistics]
-  ADD CONSTRAINT [Statistics_SlaveStatistics] FOREIGN KEY ([StatisticsId]) REFERENCES [Statistics]([StatisticsId])
+
+GO
+CREATE SCHEMA [statistics]
+GO
+
+CREATE TABLE [statistics].[DimTime] (
+    [Time]   DATETIME NOT NULL,
+    [Minute] DATETIME NOT NULL,
+    [Hour]   DATETIME NOT NULL,
+    [Day]    DATE     NOT NULL,
+    [Month]  DATE     NOT NULL,
+    [Year]   DATE     NOT NULL,
+    CONSTRAINT [PK_DimTime] PRIMARY KEY CLUSTERED ([Time] ASC)
+);
+CREATE TABLE [statistics].[DimClient] (
+    [Id]               UNIQUEIDENTIFIER CONSTRAINT [DF_DimClient_Id] DEFAULT (newsequentialid()) NOT NULL,
+    [Name]             VARCHAR (MAX)    NOT NULL,
+    [ResourceId]       UNIQUEIDENTIFIER NOT NULL,
+    [ExpirationTime]   DATETIME         NULL,
+    [ResourceGroupId]  UNIQUEIDENTIFIER NULL,
+    [ResourceGroup2Id] UNIQUEIDENTIFIER NULL,
+    [GroupName]        VARCHAR (MAX)    NULL,
+    [GroupName2]       VARCHAR (MAX)    NULL,
+    CONSTRAINT [PK_DimClient] PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+CREATE TABLE [statistics].[DimJob] (
+    [JobId]          UNIQUEIDENTIFIER NOT NULL,
+    [UserId]         UNIQUEIDENTIFIER NOT NULL,
+    [JobName]        VARCHAR (MAX)    NOT NULL,
+    [UserName]       VARCHAR (MAX)    NOT NULL,
+    [DateCreated]    DATETIME		  NOT NULL,
+    [TotalTasks]     INT              NOT NULL,
+    [CompletedTasks] INT              NOT NULL,
+    [DateCompleted]  DATETIME		  NULL,
+    CONSTRAINT [PK_DimJob] PRIMARY KEY CLUSTERED ([JobId] ASC)
+);
+CREATE TABLE [statistics].[DimUser] (
+    [UserId] UNIQUEIDENTIFIER NOT NULL,
+    [Name]   VARCHAR (MAX)    NOT NULL,
+    CONSTRAINT [PK_DimUser] PRIMARY KEY CLUSTERED ([UserId] ASC)
+);
+CREATE TABLE [statistics].[FactClientInfo] (
+    [ClientId]             UNIQUEIDENTIFIER NOT NULL,
+    [Time]                 DATETIME         NOT NULL,
+    [UserId]               UNIQUEIDENTIFIER NOT NULL,
+    [NumUsedCores]         INT              NOT NULL,
+    [NumTotalCores]        INT              NOT NULL,
+    [UsedMemory]           INT              NOT NULL,
+    [TotalMemory]          INT              NOT NULL,
+    [CpuUtilization]       FLOAT (53)       NOT NULL,
+    [SlaveState]           VarChar(15)      NOT NULL,
+    [IdleTime]             INT              NOT NULL,
+    [OfflineTime]          INT              NOT NULL,
+    [UnavailableTime]      INT              NOT NULL,
+    [IsAllowedToCalculate] BIT              NOT NULL,
+    CONSTRAINT [PK_FactClientInfo] PRIMARY KEY CLUSTERED ([ClientId] ASC, [Time] ASC, [UserId] ASC),
+    CONSTRAINT [FK_FactClientInfo_DimTime] FOREIGN KEY ([Time]) REFERENCES [statistics].[DimTime] ([Time]),
+    CONSTRAINT [FK_FactClientInfo_DimClient] FOREIGN KEY ([ClientId]) REFERENCES [statistics].[DimClient] ([Id]),
+    CONSTRAINT [FK_FactClientInfo_DimUser] FOREIGN KEY ([UserId]) REFERENCES [statistics].[DimUser] ([UserId])
+);
+CREATE TABLE [statistics].[FactTask] (
+  [TaskId]             UNIQUEIDENTIFIER NOT NULL,
+  [CalculatingTime]    INT              NOT NULL,
+  [WaitingTime]        INT              NOT NULL,
+  [TransferTime]       INT              NOT NULL,
+  [NumCalculationRuns] INT              NOT NULL,
+  [NumRetries]         INT              NOT NULL,
+  [CoresRequired]      INT              NOT NULL,
+  [MemoryRequired]     INT              NOT NULL,
+  [Priority]           INT              NOT NULL,
+  [LastClientId]       UNIQUEIDENTIFIER NULL,
+  [JobId]		       UNIQUEIDENTIFIER NOT NULL,
+  [StartTime]          DATETIME         NULL,
+  [EndTime]            DATETIME         NULL,
+  [TaskState]          VARCHAR (30)     NOT NULL,
+  [Exception]          VARCHAR (MAX)    NULL,
+  [InitialWaitingTime] INT              NULL,
+  CONSTRAINT [PK_FactTask] PRIMARY KEY CLUSTERED ([TaskId] ASC),
+  CONSTRAINT [FK_FactTask_DimClient] FOREIGN KEY ([LastClientId]) REFERENCES [statistics].[DimClient] ([Id]),
+  CONSTRAINT [FK_FactTask_DimJob] FOREIGN KEY ([JobId]) REFERENCES [statistics].[DimJob] ([JobId])
+);
+
+/* dummy for nullable userIds in FactClientInfo */
+INSERT INTO [statistics].[DimUser] ([UserId], [Name])
+VALUES ('00000000-0000-0000-0000-000000000000', 'NULL');

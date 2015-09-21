@@ -76,6 +76,7 @@ namespace HeuristicLab.Services.WebApp {
         var assemblies = System.IO.Directory.GetFiles(Directory, searchPattern);
         if (!assemblies.Any())
           return;
+
         var assemblyPath = assemblies.First();
         AssemblyName = Path.GetFileName(assemblyPath);
         var assembly = Assembly.Load(File.ReadAllBytes(assemblyPath));

@@ -42,7 +42,9 @@ namespace HeuristicLab.Services.WebApp {
     }
 
     public static string PluginsDirectory {
-      get { return string.Format(@"{0}WebApp\plugins", HttpRuntime.AppDomainAppPath); }
+      get {
+        return Path.Combine(HttpRuntime.AppDomainAppPath, "WebApp", "plugins");
+      }
     }
 
     public PluginManager() {
@@ -59,9 +61,9 @@ namespace HeuristicLab.Services.WebApp {
 
     private void OnFilesChanged(object sender, FileSystemEventArgs args) {
       string path = args.FullPath.Remove(0, PluginsDirectory.Length + 1);
-      var pathParts = path.Split(Path.PathSeparator);
+      var pathParts = path.Split(Path.DirectorySeparatorChar);
       string pluginName = pathParts[0];
-      if (pathParts.Length == 1) {
+      if (pathParts.Length <= 2) {
         switch (args.ChangeType) {
           case WatcherChangeTypes.Created:
             GetPlugin(pluginName);
@@ -74,7 +76,7 @@ namespace HeuristicLab.Services.WebApp {
           case WatcherChangeTypes.Renamed:
             RenamedEventArgs renamedArgs = (RenamedEventArgs)args;
             string oldPath = renamedArgs.OldFullPath.Remove(0, PluginsDirectory.Length + 1);
-            var oldPathParts = oldPath.Split(Path.PathSeparator);
+            var oldPathParts = oldPath.Split(Path.DirectorySeparatorChar);
             string oldPluginName = oldPathParts[0];
             plugins.Remove(oldPluginName);
             GetPlugin(pluginName);
@@ -93,7 +95,7 @@ namespace HeuristicLab.Services.WebApp {
     public Plugin GetPlugin(string name) {
       Plugin plugin = LookupPlugin(name);
       if (plugin == null) {
-        string directory = string.Format(@"{0}\{1}", PluginsDirectory, name);
+        string directory = Path.Combine(PluginsDirectory, name);
         if (Directory.Exists(directory)) {
           plugin = new Plugin(name, directory, Configuration);
           plugins.Add(name, plugin);

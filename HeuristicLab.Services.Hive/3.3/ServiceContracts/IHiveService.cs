@@ -40,15 +40,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     Task GetTask(Guid taskId);
 
     [OperationContract]
-    IEnumerable<Task> GetTasks();
-
-    [OperationContract]
-    IEnumerable<LightweightTask> GetLightweightTasks(IEnumerable<Guid> taskIds);
-
-    [OperationContract]
-    IEnumerable<LightweightTask> GetLightweightChildTasks(Guid? parentTaskId, bool recursive, bool includeParent);
-
-    [OperationContract]
     IEnumerable<LightweightTask> GetLightweightJobTasks(Guid jobId);
 
     [OperationContract]
@@ -62,12 +53,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
     [OperationContract]
     void UpdateTaskData(Task taskDto, TaskData taskDataDto);
-
-    [OperationContract]
-    void DeleteTask(Guid taskId);
-
-    [OperationContract]
-    void DeleteChildTasks(Guid parentTaskId);
 
     [OperationContract]
     Task UpdateTaskState(Guid taskId, TaskState taskState, Guid? slaveId, Guid? userId, string exception);
@@ -88,18 +73,8 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     [OperationContract]
     Job GetJob(Guid id);
 
-    /// <summary>
-    /// Returns all task for the current user
-    /// </summary>
     [OperationContract]
     IEnumerable<Job> GetJobs();
-
-    /// <summary>
-    /// Returns all task in the hive (only for admins)
-    /// </summary>
-    /// <returns></returns>
-    [OperationContract]
-    IEnumerable<Job> GetAllJobs();
 
     [OperationContract]
     Guid AddJob(Job jobDto);
@@ -143,9 +118,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     Plugin GetPlugin(Guid pluginId);
 
     [OperationContract]
-    Plugin GetPluginByHash(byte[] hash);
-
-    [OperationContract]
     [FaultContract(typeof(PluginAlreadyExistsFault))]
     Guid AddPlugin(Plugin plugin, List<PluginData> pluginData);
 
@@ -154,9 +126,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
     [OperationContract]
     IEnumerable<PluginData> GetPluginDatas(List<Guid> pluginIds);
-
-    [OperationContract]
-    void DeletePlugin(Guid pluginId);
     #endregion
 
     #region ResourcePermission Methods
@@ -170,11 +139,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     IEnumerable<ResourcePermission> GetResourcePermissions(Guid resourceId);
     #endregion
 
-    #region Resource Methods
-    [OperationContract]
-    IEnumerable<Resource> GetChildResources(Guid resourceId);
-    #endregion
-
     #region Slave Methods
     [OperationContract]
     Guid AddSlave(Slave slave);
@@ -184,9 +148,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
 
     [OperationContract]
     Slave GetSlave(Guid slaveId);
-
-    [OperationContract]
-    SlaveGroup GetSlaveGroup(Guid slaveGroupId);
 
     [OperationContract]
     IEnumerable<Slave> GetSlaves();
@@ -216,9 +177,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     Guid GetResourceId(string resourceName);
 
     [OperationContract]
-    IEnumerable<Task> GetTasksByResourceId(Guid resourceId);
-
-    [OperationContract]
     void TriggerEventManager(bool force);
 
     [OperationContract]
@@ -233,7 +191,7 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     void DeleteDowntime(Guid downtimeId);
 
     [OperationContract]
-    void UpdateDowntime(Downtime downtime);
+    void UpdateDowntime(Downtime downtimeDto);
 
     [OperationContract]
     IEnumerable<Downtime> GetDowntimesForResource(Guid resourceId);
@@ -250,13 +208,6 @@ namespace HeuristicLab.Services.Hive.ServiceContracts {
     #region UserPriorities Methods
     [OperationContract]
     IEnumerable<UserPriority> GetUserPriorities();
-    #endregion
-
-    #region Statistics Methods
-    [OperationContract]
-    IEnumerable<Statistics> GetStatistics();
-    [OperationContract]
-    IEnumerable<Statistics> GetStatisticsForTimePeriod(DateTime from, DateTime to);
     #endregion
   }
 }

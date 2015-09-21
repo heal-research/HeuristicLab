@@ -43,6 +43,16 @@ namespace HeuristicLab.Services.Access {
       return Membership.GetUser(userId);
     }
 
+    public string GetUserNameById(Guid userId) {
+      var user = GetUserById(userId);
+      if (user != null) {
+        return user.UserName;
+      } else {
+        return userId.ToString();
+      }
+
+    }
+
     public bool VerifyUser(Guid userId, List<Guid> allowedUserGroups) {
       List<DA.UserGroupUserGroup> userGroupBases;
       List<DA.UserGroup> groups;

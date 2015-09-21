@@ -21,18 +21,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.Linq;
 using System.Linq;
 using System.Web.Http;
 using HeuristicLab.Services.Hive;
 using HeuristicLab.Services.Hive.DataAccess;
-using DAL = HeuristicLab.Services.Hive.DataAccess;
-using DTO = HeuristicLab.Services.WebApp.Status.WebApi.DataTransfer;
+using HeuristicLab.Services.Hive.DataAccess.Interfaces;
+using DT = HeuristicLab.Services.WebApp.Status.WebApi.DataTransfer;
 
 namespace HeuristicLab.Services.WebApp.Status.WebApi {
   public class DataController : ApiController {
+    private const int LAST_TASKS = 20;
 
-    // start temporary quickfix
+    private IPersistenceManager PersistenceManager {
+      get { return ServiceLocator.Instance.PersistenceManager; }
+    }
+
     private const string SQL_USER_TASK_STATUS =
       @"WITH UserTasks AS (
           SELECT Job.OwnerUserId AS UserId, TaskState, COUNT(Task.TaskId) AS Count
@@ -52,73 +55,100 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
       public int WaitingTasks { get; set; }
     }
 
-    public IEnumerable<DTO.TaskStatus> GetTaskStatus(HiveDataContext db) {
-      var query = db.ExecuteQuery<UserTaskStatus>(SQL_USER_TASK_STATUS).ToList();
-      return query.Select(uts => new DTO.TaskStatus {
-        User = new DTO.User {
-          Id = uts.UserId.ToString(),
-          Name = ServiceLocator.Instance.UserManager.GetUserById(uts.UserId).UserName
-        },
-        CalculatingTasks = uts.CalculatingTasks,
-        WaitingTasks = uts.WaitingTasks
-      }).OrderBy(x => x.User.Name);
+    private IEnumerable<DT.TaskStatus> GetTaskStatus(IPersistenceManager pm) {
+      return pm.UseTransaction(() => {
+        var query = pm.DataContext.ExecuteQuery<UserTaskStatus>(SQL_USER_TASK_STATUS).ToList();
+        return query.Select(uts => new DT.TaskStatus {
+          User = new DT.User {
+            Id = uts.UserId.ToString(),
+            Name = ServiceLocator.Instance.UserManager.GetUserNameById(uts.UserId)
+          },
+          CalculatingTasks = uts.CalculatingTasks,
+          WaitingTasks = uts.WaitingTasks
+        }).OrderBy(x => x.User.Name);
+      });
     }
-    // end temporary quickfix
 
-    public DTO.Status GetStatus() {
-      using (var db = new HiveDataContext()) {
-        var onlineSlaves = (from slave in db.Resources.OfType<DAL.Slave>()
-                            where slave.SlaveState == SlaveState.Calculating || slave.SlaveState == SlaveState.Idle
-                            select slave).ToList();
-        var activeSlaves = onlineSlaves.Where(s => s.IsAllowedToCalculate).ToList();
-        var calculatingSlaves = activeSlaves.Where(s => s.SlaveState == SlaveState.Calculating).ToList();
-        int calculatingMemory = calculatingSlaves.Any() ? (int)calculatingSlaves.Sum(s => s.Memory) : 0;
-        int freeCalculatingMemory = calculatingSlaves.Any() ? (int)calculatingSlaves.Sum(s => s.FreeMemory) : 0;
-
-        return new DTO.Status {
-          CoreStatus = new DTO.CoreStatus {
-            TotalCores = onlineSlaves.Sum(s => s.Cores ?? 0),
-            FreeCores = onlineSlaves.Sum(s => s.FreeCores ?? 0), // temporary for old chart data
-            ActiveCores = activeSlaves.Sum(s => s.Cores ?? 0),
-            CalculatingCores = calculatingSlaves.Sum(s => s.Cores ?? 0) - calculatingSlaves.Sum(s => s.FreeCores ?? 0)
-          },
-          CpuUtilizationStatus = new DTO.CpuUtilizationStatus {
-            TotalCpuUtilization = onlineSlaves.Any()
-                                  ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2)
-                                  : 0.0,
-            ActiveCpuUtilization = activeSlaves.Any()
-                                   ? Math.Round(activeSlaves.Average(s => s.CpuUtilization), 2)
-                                   : 0.0,
-            CalculatingCpuUtilization = calculatingSlaves.Any()
-                                        ? Math.Round(calculatingSlaves.Average(s => s.CpuUtilization), 2)
-                                        : 0.0
-          },
-          MemoryStatus = new DTO.MemoryStatus {
-            TotalMemory = onlineSlaves.Any() ? (int)onlineSlaves.Sum(s => s.Memory) : 0,
-            FreeMemory = onlineSlaves.Any() ? (int)onlineSlaves.Sum(s => s.FreeMemory) : 0,
-            ActiveMemory = activeSlaves.Any() ? (int)activeSlaves.Sum(s => s.Memory) : 0,
-            UsedMemory = calculatingMemory - freeCalculatingMemory
-          },
-          TasksStatus = GetTaskStatus(db),
-          SlavesStatus = onlineSlaves.Select(x => new DTO.SlaveStatus {
-            Slave = new DTO.Slave {
-              Id = x.ResourceId.ToString(),
-              Name = x.Name
-            },
-            CpuUtilization = x.CpuUtilization,
-            Cores = x.Cores ?? 0,
-            FreeCores = x.FreeCores ?? 0,
-            Memory = x.Memory ?? 0,
-            FreeMemory = x.FreeMemory ?? 0,
-            IsAllowedToCalculate = x.IsAllowedToCalculate,
-            State = x.SlaveState.ToString()
-          }).OrderBy(x => x.Slave.Name),
-          Timestamp = JavascriptUtils.ToTimestamp(DateTime.Now)
+    private DT.TimeStatus GetTimeStatus(IPersistenceManager pm) {
+      return pm.UseTransaction(() => {
+        var factTaskDao = pm.FactTaskDao;
+        var factTasks = factTaskDao.GetAll();
+        var completedTasks = factTaskDao.GetCompletedTasks()
+          .OrderByDescending(x => x.EndTime)
+          .Take(LAST_TASKS);
+        var lastCalculatingTimes = completedTasks
+          .GroupBy(x => 1)
+          .Select(x => new {
+            Min = x.Min(y => y.CalculatingTime),
+            Max = x.Max(y => y.CalculatingTime),
+            Avg = (long)x.Average(y => (long?)y.CalculatingTime)
+          }).FirstOrDefault();
+        var calculatingTasks = factTasks.Where(x => x.TaskState == TaskState.Calculating);
+        int count = calculatingTasks.Count() / 3;
+        return new DT.TimeStatus {
+          MinCalculatingTime = lastCalculatingTimes != null ? lastCalculatingTimes.Min : 0,
+          MaxCalculatingTime = lastCalculatingTimes != null ? lastCalculatingTimes.Max : 0,
+          AvgWaitingTime = count > 0 ? (long)calculatingTasks.OrderBy(x => x.StartTime).Take(count).Average(x => x.InitialWaitingTime) : 0,
+          AvgCalculatingTime = lastCalculatingTimes != null ? lastCalculatingTimes.Avg : 0,
+          TotalCpuTime = factTasks.Sum(x => Convert.ToInt64(x.CalculatingTime)),
+          StandardDeviationCalculatingTime = (long)StandardDeviation(completedTasks.Select(x => (double)x.CalculatingTime)),
+          BeginDate = factTasks.Where(x => x.StartTime.HasValue).OrderBy(x => x.StartTime).Select(x => x.StartTime).FirstOrDefault()
         };
-      }
+      });
     }
 
-    public IEnumerable<DTO.Status> GetStatusHistory(DateTime start, DateTime end) {
+    public DT.Status GetStatus() {
+      var pm = PersistenceManager;
+      var slaveDao = pm.SlaveDao;
+      var onlineSlaves = pm.UseTransaction(() => slaveDao.GetOnlineSlaves().ToList());
+      var activeSlaves = onlineSlaves.Where(s => s.IsAllowedToCalculate).ToList();
+      var calculatingSlaves = activeSlaves.Where(s => s.SlaveState == SlaveState.Calculating).ToList();
+      int totalCores = onlineSlaves.Sum(s => s.Cores ?? 0);
+      int totalMemory = onlineSlaves.Sum(s => s.Memory ?? 0);
+      return new DT.Status {
+        CoreStatus = new DT.CoreStatus {
+          TotalCores = totalCores,
+          UsedCores = totalCores - onlineSlaves.Sum(s => s.FreeCores ?? 0),
+          ActiveCores = activeSlaves.Sum(s => s.Cores ?? 0),
+          CalculatingCores = calculatingSlaves.Sum(s => s.Cores ?? 0) - calculatingSlaves.Sum(s => s.FreeCores ?? 0)
+        },
+        CpuUtilizationStatus = new DT.CpuUtilizationStatus {
+          TotalCpuUtilization = onlineSlaves.Any()
+                                ? Math.Round(onlineSlaves.Average(s => s.CpuUtilization), 2)
+                                : 0.0,
+          ActiveCpuUtilization = activeSlaves.Any()
+                                 ? Math.Round(activeSlaves.Average(s => s.CpuUtilization), 2)
+                                 : 0.0,
+          CalculatingCpuUtilization = calculatingSlaves.Any()
+                                      ? Math.Round(calculatingSlaves.Average(s => s.CpuUtilization), 2)
+                                      : 0.0
+        },
+        MemoryStatus = new DT.MemoryStatus {
+          TotalMemory = totalMemory,
+          UsedMemory = totalMemory - onlineSlaves.Sum(s => s.FreeMemory ?? 0),
+          ActiveMemory = activeSlaves.Sum(s => s.Memory ?? 0),
+          CalculatingMemory = calculatingSlaves.Sum(s => s.Memory ?? 0) - calculatingSlaves.Sum(s => s.FreeMemory ?? 0)
+        },
+        TimeStatus = GetTimeStatus(pm),
+        TasksStatus = GetTaskStatus(pm),
+        SlavesStatus = onlineSlaves.Select(x => new DT.SlaveStatus {
+          Slave = new DT.Slave {
+            Id = x.ResourceId.ToString(),
+            Name = x.Name
+          },
+          CpuUtilization = x.CpuUtilization,
+          Cores = x.Cores ?? 0,
+          FreeCores = x.FreeCores ?? 0,
+          Memory = x.Memory ?? 0,
+          FreeMemory = x.FreeMemory ?? 0,
+          IsAllowedToCalculate = x.IsAllowedToCalculate,
+          State = x.SlaveState.ToString()
+        }).OrderBy(x => x.Slave.Name),
+        Timestamp = JavascriptUtils.ToTimestamp(DateTime.Now)
+      };
+    }
+
+    public IEnumerable<DT.Status> GetStatusHistory(DateTime start, DateTime end) {
       TimeSpan ts = end - start;
       int increment = 1;
       double totalMinutes = ts.TotalMinutes;
@@ -126,57 +156,72 @@ namespace HeuristicLab.Services.WebApp.Status.WebApi {
         totalMinutes -= 5761;
         increment += 5;
       }
-      using (var db = new HiveDataContext()) {
-        DataLoadOptions loadOptions = new DataLoadOptions();
-        loadOptions.LoadWith<Statistics>(o => o.SlaveStatistics);
-        db.LoadOptions = loadOptions;
-        db.DeferredLoadingEnabled = false;
-        var statistics = db.Statistics.Where(s => s.Timestamp >= start && s.Timestamp <= end)
-                                      .OrderBy(s => s.Timestamp)
-                                      .ToList();
-        var status = new DTO.Status {
-          CoreStatus = new DTO.CoreStatus(),
-          CpuUtilizationStatus = new DTO.CpuUtilizationStatus(),
-          MemoryStatus = new DTO.MemoryStatus()
+      var pm = PersistenceManager;
+      var factClientInfoDao = pm.FactClientInfoDao;
+      var clientInfos = pm.UseTransaction(() => {
+        return factClientInfoDao.GetAll()
+          .Where(s => s.Time >= start
+                      && s.Time <= end
+                      && s.SlaveState != SlaveState.Offline)
+          .GroupBy(s => s.Time)
+          .Select(x => new {
+            Timestamp = x.Key,
+            TotalCores = x.Sum(y => y.NumTotalCores),
+            UsedCores = x.Sum(y => y.NumUsedCores),
+            TotalMemory = x.Sum(y => y.TotalMemory),
+            UsedMemory = x.Sum(y => y.UsedMemory),
+            CpuUtilization = x.Where(y => y.IsAllowedToCalculate).Average(y => y.CpuUtilization)
+          })
+          .ToList();
+      });
+      var statusList = new List<DT.Status>();
+      var e = clientInfos.GetEnumerator();
+      do {
+        var status = new DT.Status {
+          CoreStatus = new DT.CoreStatus(),
+          CpuUtilizationStatus = new DT.CpuUtilizationStatus(),
+          MemoryStatus = new DT.MemoryStatus()
         };
-        int freeCores = 0;
-        int freeMemory = 0;
-        int i = 1;
-        foreach (var statistic in statistics) {
-          status.CoreStatus.TotalCores += statistic.SlaveStatistics.Sum(x => x.Cores);
-          freeCores += statistic.SlaveStatistics.Sum(x => x.FreeCores);
-          status.CpuUtilizationStatus.TotalCpuUtilization += statistic.SlaveStatistics.Any()
-                                                             ? statistic.SlaveStatistics.Average(x => x.CpuUtilization)
-                                                             : 0.0;
-          status.MemoryStatus.TotalMemory += statistic.SlaveStatistics.Sum(x => x.Memory);
-          freeMemory += statistic.SlaveStatistics.Sum(x => x.FreeMemory);
-          if (i >= increment) {
-            status.Timestamp = JavascriptUtils.ToTimestamp(statistic.Timestamp);
-            status.CoreStatus.TotalCores /= i;
-            freeCores /= i;
-            status.CpuUtilizationStatus.TotalCpuUtilization /= i;
-            status.MemoryStatus.TotalMemory /= i;
-            freeMemory /= i;
-            status.CoreStatus.ActiveCores = status.CoreStatus.TotalCores;
-            status.MemoryStatus.ActiveMemory = status.MemoryStatus.TotalMemory;
-            status.CpuUtilizationStatus.ActiveCpuUtilization = status.CpuUtilizationStatus.TotalCpuUtilization;
-            status.CpuUtilizationStatus.CalculatingCpuUtilization = status.CpuUtilizationStatus.CalculatingCpuUtilization;
-            status.CoreStatus.CalculatingCores = status.CoreStatus.TotalCores - freeCores;
-            status.MemoryStatus.UsedMemory = status.MemoryStatus.TotalMemory - freeMemory;
-            yield return status;
-            status = new DTO.Status {
-              CoreStatus = new DTO.CoreStatus(),
-              CpuUtilizationStatus = new DTO.CpuUtilizationStatus(),
-              MemoryStatus = new DTO.MemoryStatus()
-            };
-            freeCores = 0;
-            freeMemory = 0;
-            i = 1;
-          } else {
-            i++;
-          }
+        int i = 0;
+        DateTime lastTimestamp = DateTime.Now;
+        while (e.MoveNext()) {
+          var clientInfo = e.Current;
+          status.CoreStatus.TotalCores += clientInfo.TotalCores;
+          status.CoreStatus.UsedCores += clientInfo.UsedCores;
+          status.MemoryStatus.TotalMemory += clientInfo.TotalMemory;
+          status.MemoryStatus.UsedMemory += clientInfo.UsedMemory;
+          status.CpuUtilizationStatus.TotalCpuUtilization += clientInfo.CpuUtilization;
+          lastTimestamp = clientInfo.Timestamp;
+          i++;
+          if (i >= increment)
+            break;
         }
+        if (i <= 0) continue;
+        status.Timestamp = JavascriptUtils.ToTimestamp(lastTimestamp);
+        status.CoreStatus.TotalCores /= i;
+        status.CoreStatus.UsedCores /= i;
+        status.MemoryStatus.TotalMemory /= i;
+        status.MemoryStatus.UsedMemory /= i;
+        status.CpuUtilizationStatus.TotalCpuUtilization /= i;
+        statusList.Add(status);
+      } while (e.Current != null);
+      return statusList.OrderBy(x => x.Timestamp).ToList();
+    }
+
+    private double StandardDeviation(IEnumerable<double> source) {
+      int n = 0;
+      double mean = 0;
+      double M2 = 0;
+      foreach (double x in source) {
+        n = n + 1;
+        double delta = x - mean;
+        mean = mean + delta / n;
+        M2 += delta * (x - mean);
       }
+      if (n < 2) {
+        return M2;
+      }
+      return Math.Sqrt(M2 / (n - 1));
     }
   }
 }

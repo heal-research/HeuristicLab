@@ -123,6 +123,14 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Services.Access.DataAccess\3.3\HeuristicLab.Services.Access.DataAccess-3.3.csproj">
+      <Project>{0f652437-998a-4eab-8bf1-444b5fe8ce97}</Project>
+      <Name>HeuristicLab.Services.Access.DataAccess-3.3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Services.Access\3.3\HeuristicLab.Services.Access-3.3.csproj">
+      <Project>{9fac0b23-2730-452a-9ba0-d7ca1746c541}</Project>
+      <Name>HeuristicLab.Services.Access-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Services.Hive.DataAccess\3.3\HeuristicLab.Services.Hive.DataAccess-3.3.csproj">
       <Project>{EC2C8109-6E1E-4C88-9A2B-908CFF2EF4AC}</Project>
       <Name>HeuristicLab.Services.Hive.DataAccess-3.3</Name>

@@ -22,58 +22,83 @@
 using System;
 using System.Threading;
 using HeuristicLab.Services.Hive.DataAccess;
+using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 
 namespace HeuristicLab.Services.Hive {
   public class HiveJanitor {
     private bool stop;
-    private AutoResetEvent waitHandle;
+    private AutoResetEvent cleanupWaitHandle;
+    private AutoResetEvent generateStatisticsWaitHandle;
 
-    private DataAccess.ITransactionManager trans {
-      get { return ServiceLocator.Instance.TransactionManager; }
+    private IPersistenceManager PersistenceManager {
+      get { return ServiceLocator.Instance.PersistenceManager; }
     }
-
-    private IEventManager eventManager {
+    private IEventManager EventManager {
       get { return ServiceLocator.Instance.EventManager; }
     }
 
-    private IHiveDao dao {
-      get { return ServiceLocator.Instance.HiveDao; }
+    private IStatisticsGenerator StatisticsGenerator {
+      get { return ServiceLocator.Instance.StatisticsGenerator; }
     }
 
     public HiveJanitor() {
       stop = false;
-      waitHandle = new AutoResetEvent(true);
+      cleanupWaitHandle = new AutoResetEvent(false);
+      generateStatisticsWaitHandle = new AutoResetEvent(false);
     }
 
     public void StopJanitor() {
       stop = true;
-      waitHandle.Set();
+      cleanupWaitHandle.Set();
+      generateStatisticsWaitHandle.Set();
     }
 
-    public void Run() {
+    public void RunCleanup() {
+      var pm = PersistenceManager;
       while (!stop) {
         try {
-          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: starting cleanup");
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: starting cleanup.");
           bool cleanup = false;
-          trans.UseTransaction(() => {
-            DateTime lastCleanup = dao.GetLastCleanup();
-            if (DateTime.Now - lastCleanup > HeuristicLab.Services.Hive.Properties.Settings.Default.CleanupInterval) {
-              dao.SetLastCleanup(DateTime.Now);
+
+          var lifecycleDao = pm.LifecycleDao;
+          pm.UseTransaction(() => {
+            var lifecycle = lifecycleDao.GetLastLifecycle();
+            if (lifecycle == null
+                || DateTime.Now - lifecycle.LastCleanup > Properties.Settings.Default.CleanupInterval) {
+              lifecycleDao.UpdateLifecycle();
               cleanup = true;
             }
+            pm.SubmitChanges();
           }, true);
 
           if (cleanup) {
-            eventManager.Cleanup();
+            EventManager.Cleanup();
           }
-          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: cleanup finished");
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: cleanup finished.");
         }
         catch (Exception e) {
           LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log(string.Format("HiveJanitor: The following exception occured: {0}", e.ToString()));
         }
-        waitHandle.WaitOne(HeuristicLab.Services.Hive.Properties.Settings.Default.CleanupInterval);
+        cleanupWaitHandle.WaitOne(Properties.Settings.Default.CleanupInterval);
       }
-      waitHandle.Close();
+      cleanupWaitHandle.Close();
+    }
+
+    public void RunGenerateStatistics() {
+      while (!stop) {
+        try {
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: starting generate statistics.");
+          StatisticsGenerator.GenerateStatistics();
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log("HiveJanitor: generate statistics finished.");
+        }
+        catch (Exception e) {
+          LogFactory.GetLogger(typeof(HiveJanitor).Namespace).Log(string.Format("HiveJanitor: The following exception occured: {0}", e));
+        }
+
+        generateStatisticsWaitHandle.WaitOne(Properties.Settings.Default.GenerateStatisticsInterval);
+      }
+
+      generateStatisticsWaitHandle.Close();
     }
   }
 }

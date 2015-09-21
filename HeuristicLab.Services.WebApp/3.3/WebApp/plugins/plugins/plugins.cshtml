@@ -20,9 +20,9 @@
                             <tr>
                                 <th>#</th>
                                 <th ts-criteria="Name">Name</th>
-                                <th ts-criteria ="AssemblyName">Assembly</th>
+                                <th ts-criteria="AssemblyName">Assembly</th>
                                 <th ts-criteria="LastReload">Last reload</th>
-                                <th>Status</th>
+                                <th class="text-center">Status</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -32,13 +32,13 @@
                                 <td>{{plugin.Name}}</td>
                                 <td>{{plugin.AssemblyName}}</td>
                                 <td>{{plugin.LastReload}}</td>
-                                <td>
+                                <td class="text-center">
                                     <span ng-hide="plugin.Exception" class="glyphicon glyphicon glyphicon-ok" style="color: green"></span>
                                     <span ng-show="plugin.Exception" class="glyphicon glyphicon glyphicon-remove" style="color: darkred"
                                           ng-click="open(plugin.Name, plugin.Exception)"></span>
                                 </td>
                                 <td>
-                                    <a ng-href="" data-ng-click="reloadPlugin(plugin.Name)">Reload</a>
+                                    <a ng-href="" class="cursor-pointer" data-ng-click="reloadPlugin(plugin.Name)">Reload</a>
                                 </td>
                             </tr>
                         </tbody>

@@ -58,7 +58,7 @@ namespace HeuristicLab.Services.WebApp.Configs {
         "~/WebApp/libs/jquery/jquery-flot/jquery.flot.stack.min.js",
         // bootstrap
         "~/WebApp/libs/bootstrap/js/bootstrap.min.js",
-        // crypto js
+        // cryptojs
         "~/WebApp/libs/cryptojs/aes.js",
         // angular js
         "~/WebApp/libs/angularjs/angular.min.js",
@@ -76,6 +76,7 @@ namespace HeuristicLab.Services.WebApp.Configs {
         "~/WebApp/libs/angularjs/angular-ui/ui-bootstrap-tpls-0.13.0.min.js",
         "~/WebApp/libs/angularjs/loading-bar/loading-bar.js",
         "~/WebApp/libs/angularjs/ocLazyLoad/ocLazyLoad.min.js",
+        "~/WebApp/libs/angularjs/fittext/ng-FitText.js",
         // smoothScroll
         "~/WebApp/libs/smoothScroll/smoothScroll.js"
       ));
@@ -104,7 +105,8 @@ namespace HeuristicLab.Services.WebApp.Configs {
       };
       PluginManager pluginManager = PluginManager.Instance;
       foreach (var plugin in pluginManager.Plugins) {
-        if (File.Exists(string.Format(@"{0}\{1}\{1}.js", PluginManager.PluginsDirectory, plugin.Name))) {
+        var path = Path.Combine(PluginManager.PluginsDirectory, plugin.Name, string.Concat(plugin.Name, ".js"));
+        if (File.Exists(path)) {
           jsFiles.Add(string.Format("WebApp/plugins/{0}/{0}.js", plugin.Name));
         }
       }

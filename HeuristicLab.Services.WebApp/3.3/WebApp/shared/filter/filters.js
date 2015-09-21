@@ -1,4 +1,4 @@
-﻿(function () {
+﻿(function() {
     var module = appMainPlugin.getAngularModule();
     module.filter('kbToGB', function () {
         return function (text, length, end) {

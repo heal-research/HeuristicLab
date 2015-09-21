@@ -155,46 +155,6 @@
       <Column Name="LastCleanup" Type="System.DateTime" DbType="DateTime" CanBeNull="false" />
     </Type>
   </Table>
-  <Table Name="" Member="DeletedJobStatistics">
-    <Type Name="DeletedJobStatistics">
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
-      <Column Name="ExecutionTimeS" Storage="_ExecutionTime" Type="System.Double" DbType="float NOT NULL" CanBeNull="false" />
-      <Column Name="ExecutionTimeSFinishedJobs" Storage="_ExecutionTimeFinishedJobs" Type="System.Double" DbType="float NOT NULL" CanBeNull="false" />
-      <Column Name="StartToEndTimeS" Storage="_StartToEndTime" Type="System.Double" DbType="float NOT NULL" CanBeNull="false" />
-      <Column Name="DeletedJobStatisticsId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-    </Type>
-  </Table>
-  <Table Name="" Member="UserStatistics">
-    <Type Name="UserStatistics">
-      <Column Name="StatisticsId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="ExecutionTimeMs" Storage="_ExecutionTime" Type="System.Double" DbType="float NOT NULL" CanBeNull="false" />
-      <Column Name="UsedCores" Storage="_CoresUsed" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="ExecutionTimeMsFinishedJobs" Storage="_ExecutionTimeFinishedJobs" Type="System.Double" DbType="float NOT NULL" CanBeNull="false" />
-      <Column Name="StartToEndTimeMs" Storage="_StartToEndTime" Type="System.Double" DbType="float NOT NULL" CanBeNull="false" />
-      <Association Name="Statistics_UserStatistics" Member="Statistics" ThisKey="StatisticsId" OtherKey="StatisticsId" Type="Statistics" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="" Member="SlaveStatistics">
-    <Type Name="SlaveStatistics">
-      <Column Name="StatisticsId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="SlaveId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Cores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="FreeCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="CpuUtilization" Type="System.Double" DbType="float NOT NULL" CanBeNull="false" />
-      <Column Name="Memory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="FreeMemory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="Statistics_SlaveStatistics" Member="Statistics" ThisKey="StatisticsId" OtherKey="StatisticsId" Type="Statistics" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="" Member="Statistics">
-    <Type Name="Statistics">
-      <Column Name="StatisticsId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Timestamp" Type="System.DateTime" CanBeNull="false" />
-      <Association Name="Statistics_UserStatistics" Member="UserStatistics" ThisKey="StatisticsId" OtherKey="StatisticsId" Type="UserStatistics" />
-      <Association Name="Statistics_SlaveStatistics" Member="SlaveStatistics" ThisKey="StatisticsId" OtherKey="StatisticsId" Type="SlaveStatistics" />
-    </Type>
-  </Table>
   <Table Name="dbo.ResourcePermission" Member="ResourcePermissions">
     <Type Name="ResourcePermission">
       <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
@@ -207,6 +167,93 @@
     <Type Name="UserPriority">
       <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="DateEnqueued" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimClient" Member="DimClients">
+    <Type Name="DimClient">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="ResourceId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="ExpirationTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ResourceGroupId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="ResourceGroup2Id" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="GroupName" Type="System.String" CanBeNull="true" />
+      <Column Name="GroupName2" Type="System.String" CanBeNull="true" />
+      <Association Name="DimClient_FactTask" Member="FactTasks" ThisKey="Id" OtherKey="LastClientId" Type="FactTask" />
+      <Association Name="DimClient_FactClientInfo" Member="FactClientInfos" ThisKey="Id" OtherKey="ClientId" Type="FactClientInfo" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].FactTask" Member="FactTasks">
+    <Type Name="FactTask">
+      <Column Name="TaskId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="CalculatingTime" Storage="_TotalRuntime" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="WaitingTime" Storage="_TotalWaitingTime" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="TransferTime" Storage="_TotalTransferTime" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="NumCalculationRuns" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NumRetries" Storage="_NumFails" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CoresRequired" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MemoryRequired" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Priority" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LastClientId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="true" />
+      <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="EndTime" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="true" />
+      <Column Name="TaskState" Type="global::HeuristicLab.Services.Hive.DataAccess.TaskState" DbType="varchar(30)" CanBeNull="false" />
+      <Column Name="Exception" Type="System.String" DbType="varchar(MAX)" CanBeNull="true" />
+      <Column Name="InitialWaitingTime" Storage="_InitialWaitingTimeMs" Type="System.Int64" DbType="INT" CanBeNull="false" />
+      <Column Name="StartTime" Type="System.DateTime" CanBeNull="true" />
+      <Association Name="DimClient_FactTask" Member="DimClient" ThisKey="LastClientId" OtherKey="Id" Type="DimClient" IsForeignKey="true" />
+      <Association Name="DimJob_FactTask" Member="DimJob" ThisKey="JobId" OtherKey="JobId" Type="DimJob" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimJob" Member="DimJobs">
+    <Type Name="DimJob">
+      <Column Name="JobId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="JobName" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="TotalTasks" Type="System.Int32" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="CompletedTasks" Type="System.Int32" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="DateCompleted" Type="System.DateTime" DbType="DateTime NULL" CanBeNull="true" />
+      <Association Name="DimJob_FactTask" Member="FactTasks" ThisKey="JobId" OtherKey="JobId" Type="FactTask" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimTime" Member="DimTimes">
+    <Type Name="DimTime">
+      <Column Name="Time" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Hour" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Day" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Month" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Year" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Minute" Type="System.DateTime" CanBeNull="false" />
+      <Association Name="DimTime_FactClientInfo" Member="FactClientInfos" ThisKey="Time" OtherKey="Time" Type="FactClientInfo" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].DimUser" Member="DimUsers">
+    <Type Name="DimUser">
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Association Name="DimUser_FactClientInfo" Member="FactClientInfos" ThisKey="UserId" OtherKey="UserId" Type="FactClientInfo" />
+    </Type>
+  </Table>
+  <Table Name="[statistics].FactClientInfo" Member="FactClientInfos">
+    <Type Name="FactClientInfo">
+      <Column Name="ClientId" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Time" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="UserId" Type="System.Guid" DbType="UniqueIdentifier NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="NumUsedCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NumTotalCores" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UsedMemory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TotalMemory" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CpuUtilization" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="IdleTime" Storage="_TotalTimeIdle" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="OfflineTime" Storage="_TotalTimeOffline" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="UnavailableTime" Storage="_TotalTimeUnavailable" Type="System.Int64" DbType="INT NOT NULL" CanBeNull="false" />
+      <Column Name="SlaveState" Type="global::HeuristicLab.Services.Hive.DataAccess.SlaveState" DbType="VarChar(15)" CanBeNull="false" />
+      <Column Name="IsAllowedToCalculate" Type="System.Boolean" DbType="BIT" CanBeNull="false" />
+      <Association Name="DimClient_FactClientInfo" Member="DimClient" ThisKey="ClientId" OtherKey="Id" Type="DimClient" IsForeignKey="true" />
+      <Association Name="DimTime_FactClientInfo" Member="DimTime" ThisKey="Time" OtherKey="Time" Type="DimTime" IsForeignKey="true" />
+      <Association Name="DimUser_FactClientInfo" Member="DimUser" ThisKey="UserId" OtherKey="UserId" Type="DimUser" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

@@ -22,23 +22,38 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HeuristicLab.Services.Hive.DataTransfer;
+using HeuristicLab.Services.Hive.DataAccess.Interfaces;
+using DA = HeuristicLab.Services.Hive.DataAccess;
 
 namespace HeuristicLab.Services.Hive {
   public class RoundRobinTaskScheduler : ITaskScheduler {
-    private IHiveDao dao {
-      get { return ServiceLocator.Instance.HiveDao; }
+    private IPersistenceManager PersistenceManager {
+      get { return ServiceLocator.Instance.PersistenceManager; }
     }
 
     public IEnumerable<TaskInfoForScheduler> Schedule(IEnumerable<TaskInfoForScheduler> tasks, int count = 1) {
       if (!tasks.Any()) return Enumerable.Empty<TaskInfoForScheduler>();
 
-      var userPriorities = dao.GetUserPriorities(x => true).OrderBy(x => x.DateEnqueued).ToArray();
+      var pm = PersistenceManager;
+      var userPriorityDao = pm.UserPriorityDao;
+      var jobDao = pm.JobDao;
 
-      var jobs = new List<JobInfoForScheduler>();
-      foreach (var userPriority in userPriorities) {
-        jobs.AddRange(dao.GetJobInfoForScheduler(x => x.OwnerUserId == userPriority.Id));
-      }
+      var userPriorities = pm.UseTransaction(() => userPriorityDao.GetAll()
+        .OrderBy(x => x.DateEnqueued)
+        .ToArray()
+      );
+
+      var userIds = userPriorities.Select(x => x.UserId).ToList();
+      var jobs = pm.UseTransaction(() => {
+        return jobDao.GetAll()
+          .Where(x => userIds.Contains(x.OwnerUserId))
+          .Select(x => new {
+            Id = x.JobId,
+            DateCreated = x.DateCreated,
+            OwnerUserId = x.OwnerUserId
+          })
+          .ToList();
+      });
 
       var taskJobRelations = tasks.Join(jobs,
         task => task.JobId,
@@ -54,17 +69,17 @@ namespace HeuristicLab.Services.Hive {
 
       for (int i = 0; i < count; i++) {
         var defaultEntry = taskJobRelations.First(); // search first task which is not included yet
-        var priorityEntries = taskJobRelations.Where(x => x.JobInfo.OwnerUserId == userPriorities[priorityIndex].Id).ToArray(); // search for tasks with desired user priority
+        var priorityEntries = taskJobRelations.Where(x => x.JobInfo.OwnerUserId == userPriorities[priorityIndex].UserId).ToArray(); // search for tasks with desired user priority
         while (!priorityEntries.Any() && priorityIndex < userPriorities.Length - 1) {
           priorityIndex++;
-          priorityEntries = taskJobRelations.Where(x => x.JobInfo.OwnerUserId == userPriorities[priorityIndex].Id).ToArray();
+          priorityEntries = taskJobRelations.Where(x => x.JobInfo.OwnerUserId == userPriorities[priorityIndex].UserId).ToArray();
         }
         if (priorityEntries.Any()) { // tasks with desired user priority found
           var priorityEntry = priorityEntries.OrderByDescending(x => x.Task.Priority).ThenBy(x => x.JobInfo.DateCreated).First();
           if (defaultEntry.Task.Priority <= priorityEntry.Task.Priority) {
             taskJobRelations.Remove(priorityEntry);
             scheduledTasks.Add(priorityEntry.Task);
-            UpdateUserPriority(userPriorities[priorityIndex]);
+            UpdateUserPriority(pm, userPriorities[priorityIndex]);
             priorityIndex++;
           } else { // there are other tasks with higher priorities
             taskJobRelations.Remove(defaultEntry);
@@ -74,16 +89,17 @@ namespace HeuristicLab.Services.Hive {
           taskJobRelations.Remove(defaultEntry);
           scheduledTasks.Add(defaultEntry.Task);
         }
-
         if (priorityIndex >= (userPriorities.Length - 1)) priorityIndex = 0;
       }
-
       return scheduledTasks;
+
     }
 
-    private void UpdateUserPriority(UserPriority up) {
-      up.DateEnqueued = DateTime.Now;
-      dao.EnqueueUserPriority(up);
+    private void UpdateUserPriority(IPersistenceManager pm, DA.UserPriority up) {
+      pm.UseTransaction(() => {
+        up.DateEnqueued = DateTime.Now;
+        pm.SubmitChanges();
+      });
     }
   }
 }

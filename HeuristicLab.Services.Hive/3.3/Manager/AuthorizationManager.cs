@@ -21,35 +21,83 @@
 
 using System;
 using System.Security;
+using HeuristicLab.Services.Access;
 using HeuristicLab.Services.Hive.DataAccess;
+using HeuristicLab.Services.Hive.DataAccess.Interfaces;
+using DA = HeuristicLab.Services.Hive.DataAccess;
 using DT = HeuristicLab.Services.Hive.DataTransfer;
 
 
 namespace HeuristicLab.Services.Hive {
   public class AuthorizationManager : IAuthorizationManager {
+
+    private const string NOT_AUTHORIZED = "Current user is not authorized to access the requested resource";
+    private IPersistenceManager PersistenceManager {
+      get { return ServiceLocator.Instance.PersistenceManager; }
+    }
+
+    private IUserManager UserManager {
+      get { return ServiceLocator.Instance.UserManager; }
+    }
+
+    private IRoleVerifier RoleVerifier {
+      get { return ServiceLocator.Instance.RoleVerifier; }
+    }
+
     public void Authorize(Guid userId) {
       if (userId != ServiceLocator.Instance.UserManager.CurrentUserId)
-        throw new SecurityException("Current user is not authorized to access object");
+        throw new SecurityException(NOT_AUTHORIZED);
     }
 
     public void AuthorizeForTask(Guid taskId, DT.Permission requiredPermission) {
       if (ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Slave)) return; // slave-users can access all tasks
-
-      Permission permission = ServiceLocator.Instance.HiveDao.GetPermissionForTask(taskId, ServiceLocator.Instance.UserManager.CurrentUserId);
-      if (permission == Permission.NotAllowed || (permission != DT.Convert.ToEntity(requiredPermission) && DT.Convert.ToEntity(requiredPermission) == Permission.Full))
-        throw new SecurityException("Current user is not authorized to access task");
+      var pm = PersistenceManager;
+      var taskDao = pm.TaskDao;
+      pm.UseTransaction(() => {
+        var task = taskDao.GetById(taskId);
+        if (task == null) throw new SecurityException(NOT_AUTHORIZED);
+        AuthorizeJob(pm, task.JobId, requiredPermission);
+      });
     }
 
     public void AuthorizeForJob(Guid jobId, DT.Permission requiredPermission) {
-      Permission permission = ServiceLocator.Instance.HiveDao.GetPermissionForJob(jobId, ServiceLocator.Instance.UserManager.CurrentUserId);
-      if (permission == Permission.NotAllowed || (permission != DT.Convert.ToEntity(requiredPermission) && DT.Convert.ToEntity(requiredPermission) == Permission.Full))
-        throw new SecurityException("Current user is not authorized to access task");
+      var pm = PersistenceManager;
+      pm.UseTransaction(() => {
+        AuthorizeJob(pm, jobId, requiredPermission);
+      });
     }
 
     public void AuthorizeForResourceAdministration(Guid resourceId) {
-      Resource resource = DT.Convert.ToEntity(ServiceLocator.Instance.HiveDao.GetResource(resourceId));
-      if (resource.OwnerUserId != ServiceLocator.Instance.UserManager.CurrentUserId && !ServiceLocator.Instance.RoleVerifier.IsInRole(HiveRoles.Administrator))
-        throw new SecurityException("Current user is not authorized to access resource");
+      var pm = PersistenceManager;
+      var resourceDao = pm.ResourceDao;
+      pm.UseTransaction(() => {
+        var resource = resourceDao.GetById(resourceId);
+        if (resource == null) throw new SecurityException(NOT_AUTHORIZED);
+        if (resource.OwnerUserId != UserManager.CurrentUserId
+            && !RoleVerifier.IsInRole(HiveRoles.Administrator)) {
+          throw new SecurityException(NOT_AUTHORIZED);
+        }
+      });
+    }
+
+    private DA.Permission GetPermissionForJob(IPersistenceManager pm, Guid jobId, Guid userId) {
+      var jobDao = pm.JobDao;
+      var jobPermissionDao = pm.JobPermissionDao;
+      var job = jobDao.GetById(jobId);
+      if (job == null) return DA.Permission.NotAllowed;
+      if (job.OwnerUserId == userId) return DA.Permission.Full;
+      var jobPermission = jobPermissionDao.GetByJobAndUserId(jobId, userId);
+      if (jobPermission == null) return DA.Permission.NotAllowed;
+      return jobPermission.Permission;
+    }
+
+    private void AuthorizeJob(IPersistenceManager pm, Guid jobId, DT.Permission requiredPermission) {
+      var requiredPermissionEntity = requiredPermission.ToEntity();
+      DA.Permission permission = GetPermissionForJob(pm, jobId, UserManager.CurrentUserId);
+      if (permission == Permission.NotAllowed
+          || ((permission != requiredPermissionEntity) && requiredPermissionEntity == Permission.Full)) {
+        throw new SecurityException(NOT_AUTHORIZED);
+      }
     }
   }
 }

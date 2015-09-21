@@ -20,76 +20,43 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Services.Hive.DataAccess;
-using DT = HeuristicLab.Services.Hive.DataTransfer;
+using HeuristicLab.Services.Hive.DataAccess.Interfaces;
 
-
-namespace HeuristicLab.Services.Hive {
-  /// <summary>
-  /// This class offers methods for cleaning up offline slaves and task
-  /// </summary>
+namespace HeuristicLab.Services.Hive.Manager {
   public class EventManager : IEventManager {
-    private IHiveDao dao {
-      get { return ServiceLocator.Instance.HiveDao; }
-    }
-    private IAuthorizationManager auth {
-      get { return ServiceLocator.Instance.AuthorizationManager; }
-    }
-    private ILogger log {
-      get { return LogFactory.GetLogger(this.GetType().Namespace); }
-    }
-    private DataAccess.ITransactionManager trans {
-      get { return ServiceLocator.Instance.TransactionManager; }
+    private const string SlaveTimeout = "Slave timed out.";
+    private IPersistenceManager PersistenceManager {
+      get { return ServiceLocator.Instance.PersistenceManager; }
     }
 
     public void Cleanup() {
-      trans.UseTransaction(() => {
-        SetTimeoutSlavesOffline();
-        SetTimeoutTasksWaiting();
-        DeleteObsoleteSlaves();
+      var pm = PersistenceManager;
+      pm.UseTransaction(() => {
+        SetTimeoutSlavesOffline(pm);
+        SetTimeoutTasksWaiting(pm);
+        DeleteObsoleteSlaves(pm);
+        pm.SubmitChanges();
       });
 
-      trans.UseTransaction(() => {
-        FinishParentTasks();
-        UpdateStatistics();
+      pm.UseTransaction(() => {
+        FinishParentTasks(pm);
+        pm.SubmitChanges();
       });
-    }
-
-    private void UpdateStatistics() {
-      var slaves = dao.GetSlaves(x => x.SlaveState == SlaveState.Calculating || x.SlaveState == SlaveState.Idle);
-
-      var stats = new DataTransfer.Statistics();
-      stats.TimeStamp = DateTime.Now;
-      var slaveStats = new List<DT.SlaveStatistics>();
-      foreach (var slave in slaves) {
-        slaveStats.Add(new DT.SlaveStatistics() {
-          SlaveId = slave.Id,
-          Cores = slave.Cores.HasValue ? slave.Cores.Value : 0,
-          FreeCores = slave.FreeCores.HasValue ? slave.FreeCores.Value : 0,
-          Memory = slave.Memory.HasValue ? slave.Memory.Value : 0,
-          FreeMemory = slave.FreeMemory.HasValue ? slave.FreeMemory.Value : 0,
-          CpuUtilization = slave.CpuUtilization
-        });
-      }
-      stats.SlaveStatistics = slaveStats;
-      //collecting user statistics slows down the db and results in timeouts. 
-      //we have to find another way to deal with this.  
-      //until then the next line is commented out...
-      //stats.UserStatistics = dtoDao.GetUserStatistics();
-      dao.AddStatistics(stats);
     }
 
     /// <summary>
     /// Searches for slaves which are timed out, puts them and their task offline
     /// </summary>
-    private void SetTimeoutSlavesOffline() {
-      var slaves = dao.GetSlaves(x => x.SlaveState != SlaveState.Offline);
-      foreach (DT.Slave slave in slaves) {
-        if (!slave.LastHeartbeat.HasValue || (DateTime.Now - slave.LastHeartbeat.Value) > HeuristicLab.Services.Hive.Properties.Settings.Default.SlaveHeartbeatTimeout) {
-          slave.SlaveState = DT.SlaveState.Offline;
-          dao.UpdateSlave(slave);
+    private void SetTimeoutSlavesOffline(IPersistenceManager pm) {
+      var slaveDao = pm.SlaveDao;
+      var slaves = slaveDao.GetOnlineSlaves();
+      foreach (var slave in slaves) {
+        if (!slave.LastHeartbeat.HasValue ||
+            (DateTime.Now - slave.LastHeartbeat.Value) >
+            Properties.Settings.Default.SlaveHeartbeatTimeout) {
+          slave.SlaveState = SlaveState.Offline;
         }
       }
     }
@@ -97,40 +64,59 @@ namespace HeuristicLab.Services.Hive {
     /// <summary>
     /// Looks for parent tasks which have FinishWhenChildJobsFinished and set their state to finished
     /// </summary>
-    private void FinishParentTasks() {
-      var parentTasksToFinish = dao.GetParentTasks(dao.GetResources(x => true).Select(x => x.Id), 0, true);
+    private void FinishParentTasks(IPersistenceManager pm) {
+      var resourceDao = pm.ResourceDao;
+      var taskDao = pm.TaskDao;
+      var resourceIds = resourceDao.GetAll().Select(x => x.ResourceId).ToList();
+      var parentTasksToFinish = taskDao.GetParentTasks(resourceIds, 0, true);
       foreach (var task in parentTasksToFinish) {
-        dao.UpdateTaskState(task.Id, TaskState.Finished, null, null, string.Empty);
+        task.State = TaskState.Finished;
+        task.StateLogs.Add(new StateLog {
+          State = task.State,
+          SlaveId = null,
+          UserId = null,
+          Exception = string.Empty,
+          DateTime = DateTime.Now
+        });
       }
     }
 
     /// <summary>
     /// Looks for task which have not sent heartbeats for some time and reschedules them for calculation
     /// </summary>
-    private void SetTimeoutTasksWaiting() {
-      var tasks = dao.GetTasks(x => (x.State == TaskState.Calculating && (DateTime.Now - x.LastHeartbeat) > HeuristicLab.Services.Hive.Properties.Settings.Default.CalculatingJobHeartbeatTimeout)
-                               || (x.State == TaskState.Transferring && (DateTime.Now - x.LastHeartbeat) > HeuristicLab.Services.Hive.Properties.Settings.Default.TransferringJobHeartbeatTimeout));
-      foreach (var j in tasks) {
-        DT.Task task = dao.UpdateTaskState(j.Id, TaskState.Waiting, null, null, "Slave timed out.");
+    private void SetTimeoutTasksWaiting(IPersistenceManager pm) {
+      var taskDao = pm.TaskDao;
+      var tasks = taskDao.GetAll().Where(x => (x.State == TaskState.Calculating && (DateTime.Now - x.LastHeartbeat) > Properties.Settings.Default.CalculatingJobHeartbeatTimeout)
+                                           || (x.State == TaskState.Transferring && (DateTime.Now - x.LastHeartbeat) > Properties.Settings.Default.TransferringJobHeartbeatTimeout));
+      foreach (var task in tasks) {
+        task.State = TaskState.Waiting;
+        task.StateLogs.Add(new StateLog {
+          State = task.State,
+          SlaveId = null,
+          UserId = null,
+          Exception = SlaveTimeout,
+          DateTime = DateTime.Now
+        });
         task.Command = null;
-        dao.UpdateTask(task);
       }
     }
 
     /// <summary>
     /// Searches for slaves that are disposable and deletes them if they were offline for too long
     /// </summary>
-    private void DeleteObsoleteSlaves() {
-      var slaves = dao.GetSlaves(x => x.IsDisposable.GetValueOrDefault() &&
-                                      x.SlaveState == SlaveState.Offline &&
-                                      (DateTime.Now - x.LastHeartbeat) > Hive.Properties.Settings.Default.SweepInterval)
-                                .Select(x => x.Id)
-                                .ToArray();
-
-      foreach (Guid slaveId in slaves) {
-        var downtimesAvailable = dao.GetDowntimes(x => x.ResourceId == slaveId).Any();
+    private void DeleteObsoleteSlaves(IPersistenceManager pm) {
+      var slaveDao = pm.SlaveDao;
+      var downtimeDao = pm.DowntimeDao;
+      var slaveIds = slaveDao.GetAll()
+        .Where(x => x.IsDisposable.GetValueOrDefault()
+                 && x.SlaveState == SlaveState.Offline
+                 && (DateTime.Now - x.LastHeartbeat) > Properties.Settings.Default.SweepInterval)
+        .Select(x => x.ResourceId)
+        .ToList();
+      foreach (var id in slaveIds) {
+        bool downtimesAvailable = downtimeDao.GetByResourceId(id).Any();
         if (!downtimesAvailable) {
-          dao.DeleteSlave(slaveId);
+          slaveDao.Delete(id);
         }
       }
     }

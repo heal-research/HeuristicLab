@@ -1,8 +1,8 @@
 ﻿(function () {
     var module = appStatusPlugin.getAngularModule();
     module.controller('app.status.historyCtrl',
-        ['$scope', '$interval', 'app.status.data.service',
-        function ($scope, $interval, dataService) {
+        ['$scope', '$interval', 'app.status.data.service', '$log',
+        function ($scope, $interval, dataService, $log) {
             $scope.chartOptions = {
                 grid: {
                     borderWidth: 1,
@@ -39,7 +39,6 @@
                 }
             };
 
-
             $scope.fromDate = new Date();
             $scope.toDate = new Date();
 
@@ -51,7 +50,9 @@
                 { id: 1, name: 'Today' },
                 { id: 2, name: 'Yesterday' },
                 { id: 3, name: 'Last 7 Days' },
-                { id: 4, name: 'Last 30 Days' }
+                { id: 4, name: 'Last 30 Days' },
+                { id: 5, name: 'Last 6 Months' },
+                { id: 6, name: 'Last Year' }
             ];
             $scope.changeQuickSelection = function (quickSelection) {
                 var today = new Date();
@@ -71,6 +72,20 @@
                         break;
                     case 4:
                         $scope.fromDate = new Date(today.valueOf() - (30 * oneDayInMs));
+                        $scope.toDate = new Date(today.valueOf());
+                        break;
+                    case 5:
+                        var month = today.getMonth() - 6;
+                        if (month < 0) {
+                            month += 12;
+                        }
+                        $scope.fromDate = new Date(today.valueOf());
+                        $scope.fromDate.setMonth(month);
+                        $scope.toDate = new Date(today.valueOf());
+                        break;
+                    case 6:
+                        $scope.fromDate = new Date(today.valueOf());
+                        $scope.fromDate.setFullYear(today.getFullYear()-1);
                         $scope.toDate = new Date(today.valueOf());
                         break;
                 }
@@ -112,11 +127,11 @@
                     var memorySeries = [[], []];
                     for (var i = 0; i < noOfStatus; ++i) {
                         var curStatus = status[i];
-                        var cpuData = Math.round(curStatus.CpuUtilizationStatus.ActiveCpuUtilization);
+                        var cpuData = Math.round(curStatus.CpuUtilizationStatus.TotalCpuUtilization);
                         cpuSeries.push([curStatus.Timestamp, cpuData]);
-                        coreSeries[0].push([curStatus.Timestamp, curStatus.CoreStatus.ActiveCores]);
-                        coreSeries[1].push([curStatus.Timestamp, curStatus.CoreStatus.CalculatingCores]);
-                        memorySeries[0].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.ActiveMemory / 1024)]);
+                        coreSeries[0].push([curStatus.Timestamp, curStatus.CoreStatus.TotalCores]);
+                        coreSeries[1].push([curStatus.Timestamp, curStatus.CoreStatus.UsedCores]);
+                        memorySeries[0].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.TotalMemory / 1024)]);
                         memorySeries[1].push([curStatus.Timestamp, Math.round(curStatus.MemoryStatus.UsedMemory / 1024)]);
                     }
                     $scope.cpuSeries = [{ data: cpuSeries, label: "&nbsp;CPU Utilization", color: "#f7921d" }];
@@ -128,7 +143,6 @@
                         { data: memorySeries[0], label: "&nbsp;Total Memory", color: "LightGreen" },
                         { data: memorySeries[1], label: "&nbsp;Used Memory", color: "LightPink" }
                     ];
-
                 });
             };
             $scope.updateCharts();

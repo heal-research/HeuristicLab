@@ -1,0 +1,58 @@
+﻿@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li>
+            <a ng-href="#/maintenance/spaceusage">Space Usage</a>
+        </li>
+        <li class="active">
+            <a ng-href="#/maintenance/plugin">Plugin</a>
+        </li>
+        <li>
+            <a ng-href="#/maintenance/facttask">FactTask</a>
+        </li>
+        <li>
+            <a ng-href="#/maintenance/factclientinfo">FactClientInfo</a>
+        </li>
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Unused Plugins</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th ts-criteria="Name">Plugin Name</th>
+                                <th ts-criteria="Version">Version</th>
+                                <th ts-criteria="DateCreated">Date Created</th>
+                                <th class="text-center">
+                                    <a ng-show="pluginPage.Plugins.length" class="cursor-pointer" ng-href="" ng-click="deleteUnusedPlugins()">Delete All</a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="plugin in pluginPage.Plugins" ts-repeat>
+                                <td>{{($index + 1)+((curPluginsPage-1)*(pluginsPageSize))}}</td>
+                                <td>{{plugin.Name}}</td>
+                                <td>{{plugin.Version}}</td>
+                                <td>{{plugin.DateCreated | toDate}}</td>
+                                <td class="text-center"><a class="cursor-pointer" ng-href="" ng-click="deletePlugin(plugin.Id)">Delete</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row text-center" ng-show="pluginPage.TotalPlugins > pluginPage.Plugins.length">
+                        <pagination max-size="10" total-items="pluginPage.TotalPlugins" ng-model="curPluginsPage" ng-change="changePluginsPage()" items-per-page="pluginsPageSize"
+                                    boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
