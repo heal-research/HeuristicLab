@@ -45,7 +45,8 @@ namespace HeuristicLab.Services.Hive {
         JobId = source.JobId,
         PluginsNeededIds = source.RequiredPlugins.Select(x => x.PluginId).ToList(),
         StateLog = source.StateLogs.Select(x => x.ToDto()).OrderBy(x => x.DateTime).ToList(),
-        LastTaskDataUpdate = source.JobData == null ? DateTime.MinValue : source.JobData.LastUpdate
+        LastTaskDataUpdate = source.JobData == null ? DateTime.MinValue : source.JobData.LastUpdate,
+        IsPrivileged = true
       };
     }
 
