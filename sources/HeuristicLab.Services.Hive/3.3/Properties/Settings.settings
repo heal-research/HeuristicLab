@@ -24,7 +24,7 @@
       <Value Profile="(Default)">00:00:20</Value>
     </Setting>
     <Setting Name="ProfileServicePerformance" Type="System.Boolean" Scope="Application">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="GenerateStatisticsInterval" Type="System.TimeSpan" Scope="Application">
       <Value Profile="(Default)">00:03:00</Value>

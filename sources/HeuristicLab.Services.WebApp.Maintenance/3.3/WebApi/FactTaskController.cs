@@ -38,7 +38,7 @@ namespace HeuristicLab.Services.WebApp.Maintenance.WebApi {
       var dimJobDao = pm.DimJobDao;
       var factTaskDao = pm.FactTaskDao;
       return pm.UseTransaction(() => {
-        var query = dimJobDao.GetAll().Where(x => x.DateCreated >= start && x.DateCreated <= end);
+        var query = dimJobDao.GetAll().Where(x => x.DateCreated >= start && x.DateCreated <= end && x.DateCompleted != null);
         return new DT.JobPage {
           TotalJobs = query.Count(),
           Jobs = query.OrderBy(x => x.DateCreated)
@@ -68,7 +68,7 @@ namespace HeuristicLab.Services.WebApp.Maintenance.WebApi {
       var pm = PersistenceManager;
       var dimJobDao = pm.DimJobDao;
       var jobIds = pm.UseTransaction(() => dimJobDao.GetAll()
-        .Where(x => x.DateCreated >= start && x.DateCreated <= end)
+        .Where(x => x.DateCreated >= start && x.DateCreated <= end && x.DateCompleted != null)
         .Select(x => x.JobId)
         .ToList()
       );

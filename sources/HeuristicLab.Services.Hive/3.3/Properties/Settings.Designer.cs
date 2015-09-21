@@ -88,7 +88,7 @@ namespace HeuristicLab.Services.Hive.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ProfileServicePerformance {
             get {
                 return ((bool)(this["ProfileServicePerformance"]));
