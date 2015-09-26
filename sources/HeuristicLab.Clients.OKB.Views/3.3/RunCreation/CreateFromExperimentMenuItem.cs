@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.Optimizer;
@@ -44,7 +45,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     public override void Execute() {
       IContentView activeView = MainFormManager.MainForm.ActiveView as IContentView;
-      MainFormManager.MainForm.ShowContent(activeView.Content, typeof(OKBExperimentUploadView));
+      var view = new OKBExperimentUploadView();
+      view.AddRuns((IItem)activeView.Content);
+      view.Show();
     }
   }
 }

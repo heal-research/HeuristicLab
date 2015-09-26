@@ -34,6 +34,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (disposing && (components != null)) {
         components.Dispose();
       }
+      DisposeSpecific();
       base.Dispose(disposing);
     }
 
@@ -47,6 +48,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.components = new System.ComponentModel.Container();
       this.btnUpload = new System.Windows.Forms.Button();
       this.dataGridView = new System.Windows.Forms.DataGridView();
+      this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.setColumnToThisValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.clearButton = new System.Windows.Forms.Button();
       this.RunNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.AlgorithmNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.AlgorithmTypeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -54,9 +58,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.ProblemNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.ProblemTypeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.OKBProblemColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
-      this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.setColumnToThisValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.clearButton = new System.Windows.Forms.Button();
+      this.UploadColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
       this.contextMenu.SuspendLayout();
       this.SuspendLayout();
@@ -79,9 +81,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.dataGridView.AllowUserToDeleteRows = false;
       this.dataGridView.AllowUserToOrderColumns = true;
       this.dataGridView.AllowUserToResizeRows = false;
-      this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -91,7 +93,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
             this.OKBAlgorithmColumn,
             this.ProblemNameColumn,
             this.ProblemTypeColumn,
-            this.OKBProblemColumn});
+            this.OKBProblemColumn,
+            this.UploadColumn});
       this.dataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
       this.dataGridView.Location = new System.Drawing.Point(3, 3);
       this.dataGridView.Name = "dataGridView";
@@ -100,6 +103,31 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.dataGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_CellMouseClick);
       this.dataGridView.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView_DragDrop);
       this.dataGridView.DragEnter += new System.Windows.Forms.DragEventHandler(this.dataGridView_DragEnter);
+      // 
+      // contextMenu
+      // 
+      this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setColumnToThisValueToolStripMenuItem});
+      this.contextMenu.Name = "contextMenu";
+      this.contextMenu.Size = new System.Drawing.Size(202, 26);
+      // 
+      // setColumnToThisValueToolStripMenuItem
+      // 
+      this.setColumnToThisValueToolStripMenuItem.Name = "setColumnToThisValueToolStripMenuItem";
+      this.setColumnToThisValueToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+      this.setColumnToThisValueToolStripMenuItem.Text = "Set column to this value";
+      this.setColumnToThisValueToolStripMenuItem.Click += new System.EventHandler(this.setColumnToThisValueToolStripMenuItem_Click);
+      // 
+      // clearButton
+      // 
+      this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.clearButton.Location = new System.Drawing.Point(387, 199);
+      this.clearButton.Name = "clearButton";
+      this.clearButton.Size = new System.Drawing.Size(75, 23);
+      this.clearButton.TabIndex = 3;
+      this.clearButton.Text = "Clear Runs";
+      this.clearButton.UseVisualStyleBackColor = true;
+      this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
       // 
       // RunNameColumn
       // 
@@ -145,30 +173,11 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.OKBProblemColumn.HeaderText = "OKB Problem";
       this.OKBProblemColumn.Name = "OKBProblemColumn";
       // 
-      // contextMenu
+      // UploadColumn
       // 
-      this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.setColumnToThisValueToolStripMenuItem});
-      this.contextMenu.Name = "contextMenu";
-      this.contextMenu.Size = new System.Drawing.Size(202, 26);
-      // 
-      // setColumnToThisValueToolStripMenuItem
-      // 
-      this.setColumnToThisValueToolStripMenuItem.Name = "setColumnToThisValueToolStripMenuItem";
-      this.setColumnToThisValueToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-      this.setColumnToThisValueToolStripMenuItem.Text = "Set column to this value";
-      this.setColumnToThisValueToolStripMenuItem.Click += new System.EventHandler(this.setColumnToThisValueToolStripMenuItem_Click);
-      // 
-      // clearButton
-      // 
-      this.clearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.clearButton.Location = new System.Drawing.Point(387, 199);
-      this.clearButton.Name = "clearButton";
-      this.clearButton.Size = new System.Drawing.Size(75, 23);
-      this.clearButton.TabIndex = 3;
-      this.clearButton.Text = "Clear Runs";
-      this.clearButton.UseVisualStyleBackColor = true;
-      this.clearButton.Click += new System.EventHandler(this.clearButton_Click);
+      this.UploadColumn.HeaderText = "Upload?";
+      this.UploadColumn.Name = "UploadColumn";
+      this.UploadColumn.ToolTipText = "Whether the run should be uploaded or not.";
       // 
       // OKBExperimentUploadView
       // 
@@ -190,6 +199,9 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     private System.Windows.Forms.Button btnUpload;
     private System.Windows.Forms.DataGridView dataGridView;
+    private System.Windows.Forms.ContextMenuStrip contextMenu;
+    private System.Windows.Forms.ToolStripMenuItem setColumnToThisValueToolStripMenuItem;
+    private System.Windows.Forms.Button clearButton;
     private System.Windows.Forms.DataGridViewTextBoxColumn RunNameColumn;
     private System.Windows.Forms.DataGridViewTextBoxColumn AlgorithmNameColumn;
     private System.Windows.Forms.DataGridViewTextBoxColumn AlgorithmTypeColumn;
@@ -197,8 +209,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private System.Windows.Forms.DataGridViewTextBoxColumn ProblemNameColumn;
     private System.Windows.Forms.DataGridViewTextBoxColumn ProblemTypeColumn;
     private System.Windows.Forms.DataGridViewComboBoxColumn OKBProblemColumn;
-    private System.Windows.Forms.ContextMenuStrip contextMenu;
-    private System.Windows.Forms.ToolStripMenuItem setColumnToThisValueToolStripMenuItem;
-    private System.Windows.Forms.Button clearButton;
+    private System.Windows.Forms.DataGridViewCheckBoxColumn UploadColumn;
   }
 }

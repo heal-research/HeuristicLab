@@ -27,26 +27,18 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Clients.Access;
 using HeuristicLab.Core;
-using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
-using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Optimization;
+using View = HeuristicLab.MainForm.WindowsForms.View;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [View("OKBExperimentUpload View")]
-  [Content(typeof(IOptimizer), false)]
-  public partial class OKBExperimentUploadView : ItemView {
-    public new IOptimizer Content {
-      get { return (IOptimizer)base.Content; }
-      set { base.Content = value; }
-    }
+  public partial class OKBExperimentUploadView : View {
 
-    private const string algorithmTypeParameterName = "Algorithm Type";
-    private const string problemTypeParameterName = "Problem Type";
-    private const string algorithmNameParameterName = "Algorithm Name";
-    private const string problemNameParameterName = "Problem Name";
-    private const int algorithmColumnIndex = 3;
-    private const int problemColumnIndex = 6;
+    private const string AlgorithmTypeParameterName = "Algorithm Type";
+    private const string ProblemTypeParameterName = "Problem Type";
+    private const string AlgorithmNameParameterName = "Algorithm Name";
+    private const string ProblemNameParameterName = "Problem Name";
 
     private List<IRun> runs = new List<IRun>();
     private List<Problem> problems = new List<Problem>();
@@ -56,18 +48,31 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     public OKBExperimentUploadView() {
       InitializeComponent();
+      OKBAlgorithmColumn.ValueType = typeof(Algorithm);
+      OKBAlgorithmColumn.ValueMember = "Name";
+      OKBAlgorithmColumn.DisplayMember = "Name";
+      OKBProblemColumn.ValueType = typeof(Problem);
+      OKBProblemColumn.ValueMember = "Name";
+      OKBProblemColumn.DisplayMember = "Name";
+      RunCreationClient.Instance.Refreshing += RunCreationClient_Refreshing;
+      RunCreationClient.Instance.Refreshed += RunCreationClient_Refreshed;
     }
 
-    protected override void OnContentChanged() {
-      base.OnContentChanged();
-      if (Content == null) {
-        ClearRuns();
-      } else {
-        AddRuns(Content);
-      }
+    private void DisposeSpecific() {
+      RunCreationClient.Instance.Refreshing -= RunCreationClient_Refreshing;
+      RunCreationClient.Instance.Refreshed -= RunCreationClient_Refreshed;
     }
 
-    private void AddRuns(IItem item) {
+    private bool refreshing;
+
+    protected override void SetEnabledStateOfControls() {
+      if (InvokeRequired) { Invoke((Action)SetEnabledStateOfControls); return; }
+      base.SetEnabledStateOfControls();
+      btnUpload.Enabled = runs.Count > 0 && !refreshing;
+    }
+
+    public void AddRuns(IItem item) {
+      if (InvokeRequired) { Invoke((Action<IItem>)AddRuns, item); return; }
       if (item is Experiment) {
         runs.AddRange((item as Experiment).Runs);
         DisplayRuns((item as Experiment).Runs);
@@ -83,19 +88,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         tmp.Add(item as IRun);
         DisplayRuns(tmp);
       }
-    }
-
-    protected override void RegisterContentEvents() {
-      base.RegisterContentEvents();
-      RunCreationClient.Instance.Refreshing += new EventHandler(RunCreationClient_Refreshing);
-      RunCreationClient.Instance.Refreshed += new EventHandler(RunCreationClient_Refreshed);
-    }
-
-    protected override void DeregisterContentEvents() {
-      RunCreationClient.Instance.Refreshing -= new EventHandler(RunCreationClient_Refreshing);
-      RunCreationClient.Instance.Refreshed -= new EventHandler(RunCreationClient_Refreshed);
-
-      base.DeregisterContentEvents();
+      SetEnabledStateOfControls();
     }
 
     private void DisplayError(Exception ex) {
@@ -116,88 +109,94 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
 
     private void CreateUI(RunCollection runs) {
-      if (InvokeRequired) {
-        Invoke(new Action<RunCollection>(CreateUI), runs);
-      } else {
-        if (problems.Count == 0)
-          problems.AddRange(RunCreationClient.Instance.Problems);
-        if (algorithms.Count == 0)
-          algorithms.AddRange(RunCreationClient.Instance.Algorithms);
+      if (InvokeRequired) { Invoke((Action<RunCollection>)CreateUI, runs); return; }
+      if (problems.Count == 0)
+        problems.AddRange(RunCreationClient.Instance.Problems);
+      if (algorithms.Count == 0)
+        algorithms.AddRange(RunCreationClient.Instance.Algorithms);
 
-        IItem algorithmType;
-        IItem problemType;
-        IItem algorithmName;
-        IItem problemName;
+      IItem algorithmType;
+      IItem problemType;
+      IItem algorithmName;
+      IItem problemName;
 
-        DataGridViewComboBoxColumn cmbAlgorithm = dataGridView.Columns[algorithmColumnIndex] as DataGridViewComboBoxColumn;
-        cmbAlgorithm.DataSource = algorithms;
-        cmbAlgorithm.DisplayMember = "Name";
+      OKBAlgorithmColumn.DataSource = algorithms;
+      OKBProblemColumn.DataSource = problems;
 
-        DataGridViewComboBoxColumn cmbProblem = dataGridView.Columns[problemColumnIndex] as DataGridViewComboBoxColumn;
-        cmbProblem.DataSource = problems;
-        cmbProblem.DisplayMember = "Name";
+      foreach (IRun run in runs) {
+        int idx = dataGridView.Rows.Add(run.Name);
+        DataGridViewRow curRow = dataGridView.Rows[idx];
+        curRow.Tag = run;
 
-        foreach (IRun run in runs) {
-          int idx = dataGridView.Rows.Add(run.Name);
-          DataGridViewRow curRow = dataGridView.Rows[idx];
-          curRow.Tag = run;
-
-          if (run.Parameters.TryGetValue(algorithmTypeParameterName, out algorithmType)) {
-            HeuristicLab.Data.StringValue algStr = algorithmType as HeuristicLab.Data.StringValue;
-            if (algStr != null) {
-              curRow.Cells[1].Value = algStr;
-            }
-          }
-
-          if (run.Parameters.TryGetValue(algorithmNameParameterName, out algorithmName)) {
-            HeuristicLab.Data.StringValue algStr = algorithmName as HeuristicLab.Data.StringValue;
-            if (algStr != null) {
-              curRow.Cells[2].Value = algStr;
-            }
-          }
-
-          if (run.Parameters.TryGetValue(problemTypeParameterName, out problemType)) {
-            HeuristicLab.Data.StringValue prbStr = problemType as HeuristicLab.Data.StringValue;
-            if (prbStr != null) {
-              curRow.Cells[4].Value = prbStr;
-            }
-          }
-
-          if (run.Parameters.TryGetValue(problemNameParameterName, out problemName)) {
-            HeuristicLab.Data.StringValue prbStr = problemName as HeuristicLab.Data.StringValue;
-            if (prbStr != null) {
-              curRow.Cells[5].Value = prbStr;
-            }
+        HeuristicLab.Data.StringValue algStr = null, algTypeStr = null, prbStr = null, prbTypeStr = null;
+        if (run.Parameters.TryGetValue(AlgorithmNameParameterName, out algorithmName)) {
+          algStr = algorithmName as HeuristicLab.Data.StringValue;
+          if (algStr != null) {
+            curRow.Cells[AlgorithmNameColumn.Name].Value = algStr;
           }
         }
+
+        if (run.Parameters.TryGetValue(AlgorithmTypeParameterName, out algorithmType)) {
+          algTypeStr = algorithmType as HeuristicLab.Data.StringValue;
+          if (algTypeStr != null) {
+            curRow.Cells[AlgorithmTypeColumn.Name].Value = algTypeStr;
+          }
+        }
+
+        var uploadOk = false;
+        if (algStr != null && algTypeStr != null) {
+          var alg = algorithms.FirstOrDefault(x => x.DataType.Name == algTypeStr.Value && x.Name == algStr.Value);
+          if (alg != null) {
+            curRow.Cells[OKBAlgorithmColumn.Name].Value = alg.Name;
+            uploadOk = true;
+          }
+        }
+
+        if (run.Parameters.TryGetValue(ProblemNameParameterName, out problemName)) {
+          prbStr = problemName as HeuristicLab.Data.StringValue;
+          if (prbStr != null) {
+            curRow.Cells[ProblemNameColumn.Name].Value = prbStr;
+          }
+        }
+
+        if (run.Parameters.TryGetValue(ProblemTypeParameterName, out problemType)) {
+          prbTypeStr = problemType as HeuristicLab.Data.StringValue;
+          if (prbTypeStr != null) {
+            curRow.Cells[ProblemTypeColumn.Name].Value = prbTypeStr;
+          }
+        }
+
+        if (prbStr != null && prbTypeStr != null) {
+          var prb = problems.FirstOrDefault(x => x.DataType.Name == prbTypeStr.Value && x.Name == prbStr.Value);
+          if (prb != null) {
+            curRow.Cells[OKBProblemColumn.Name].Value = prb.Name;
+          } else uploadOk = false;
+        }
+
+        curRow.Cells[UploadColumn.Name].Value = uploadOk;
       }
     }
 
-    private void ClearRuns() {
-      if (InvokeRequired) {
-        Invoke(new Action(ClearRuns));
-      } else {
-        dataGridView.Rows.Clear();
-        runs.Clear();
-      }
+    public void ClearRuns() {
+      if (InvokeRequired) { Invoke((Action)ClearRuns); return; }
+      dataGridView.Rows.Clear();
+      runs.Clear();
+      SetEnabledStateOfControls();
     }
 
     private void RunCreationClient_Refreshing(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Invoke(new EventHandler(RunCreationClient_Refreshing), sender, e);
-      } else {
-        var message = "Refreshing algorithms and problems...";
-        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, message);
-      }
+      if (InvokeRequired) { Invoke((Action<object, EventArgs>)RunCreationClient_Refreshing, sender, e); return; }
+      var message = "Refreshing algorithms and problems...";
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().AddOperationProgressToView(this, message);
+      refreshing = true;
+      SetEnabledStateOfControls();
     }
 
     private void RunCreationClient_Refreshed(object sender, EventArgs e) {
-      if (InvokeRequired) {
-        Invoke(new EventHandler(RunCreationClient_Refreshed), sender, e);
-      } else {
-        MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
-        SetEnabledStateOfControls();
-      }
+      if (InvokeRequired) { Invoke((Action<object, EventArgs>)RunCreationClient_Refreshed, sender, e); return; }
+      MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
+      refreshing = false;
+      SetEnabledStateOfControls();
     }
 
     private void btnUpload_Click(object sender, EventArgs e) {
@@ -214,15 +213,16 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       double count = dataGridView.Rows.Count;
       int i = 0;
       foreach (DataGridViewRow row in dataGridView.Rows) {
-        selectedAlgorithm = algorithms.Where(x => x.Name == row.Cells[algorithmColumnIndex].Value.ToString()).FirstOrDefault();
-        selectedProblem = problems.Where(x => x.Name == row.Cells[problemColumnIndex].Value.ToString()).FirstOrDefault();
+        i++;
+        if (!Convert.ToBoolean(row.Cells[UploadColumn.Name].Value)) continue;
+        selectedAlgorithm = algorithms.FirstOrDefault(x => x.Name == row.Cells[OKBAlgorithmColumn.Name].Value.ToString());
+        selectedProblem = problems.FirstOrDefault(x => x.Name == row.Cells[OKBProblemColumn.Name].Value.ToString());
         if (selectedAlgorithm == null || selectedProblem == null) {
           throw new ArgumentException("Can't retrieve the algorithm/problem to upload");
         }
 
         OKBRun run = new OKBRun(selectedAlgorithm.Id, selectedProblem.Id, row.Tag as IRun, UserInformation.Instance.User.Id);
         run.Store();
-        i++;
         progress.ProgressValue = ((double)i) / count;
       }
       MainFormManager.GetMainForm<HeuristicLab.MainForm.WindowsForms.MainForm>().RemoveOperationProgressFromView(this);
@@ -232,8 +232,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (e.Button == System.Windows.Forms.MouseButtons.Right && dataGridView[e.ColumnIndex, e.RowIndex].Value != null) {
         string curVal = dataGridView[e.ColumnIndex, e.RowIndex].Value.ToString();
-        selectedAlgorithm = algorithms.Where(x => x.Name == curVal).FirstOrDefault();
-        selectedProblem = problems.Where(x => x.Name == curVal).FirstOrDefault();
+        selectedAlgorithm = algorithms.FirstOrDefault(x => x.Name == curVal);
+        selectedProblem = problems.FirstOrDefault(x => x.Name == curVal);
 
         if (selectedAlgorithm != null || selectedProblem != null) {
           Point pos = this.PointToClient(Cursor.Position);
@@ -246,12 +246,12 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       if (selectedAlgorithm != null) {
         for (int i = 0; i < dataGridView.Rows.Count; i++) {
           var row = dataGridView.Rows[i];
-          row.Cells[algorithmColumnIndex].Value = selectedAlgorithm.Name;
+          row.Cells[OKBAlgorithmColumn.Name].Value = selectedAlgorithm.Name;
         }
       } else if (selectedProblem != null) {
         for (int i = 0; i < dataGridView.Rows.Count; i++) {
           var row = dataGridView.Rows[i];
-          row.Cells[problemColumnIndex].Value = selectedProblem.Name;
+          row.Cells[OKBProblemColumn.Name].Value = selectedProblem.Name;
         }
       }
       selectedAlgorithm = null;
