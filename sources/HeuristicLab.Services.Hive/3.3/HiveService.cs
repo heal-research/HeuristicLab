@@ -628,6 +628,7 @@ namespace HeuristicLab.Services.Hive {
         pm.UseTransaction(() => {
           AuthorizeForResource(pm, resourceId);
           resourcePermissionDao.DeleteByResourceAndGrantedUserId(resourceId, grantedUserIds);
+          pm.SubmitChanges();
         });
       }
     }
@@ -776,6 +777,7 @@ namespace HeuristicLab.Services.Hive {
         var slaveDao = pm.SlaveDao;
         pm.UseTransaction(() => {
           slaveDao.Delete(slaveId);
+          pm.SubmitChanges();
         });
       }
     }
@@ -788,6 +790,7 @@ namespace HeuristicLab.Services.Hive {
         var slaveGroupDao = pm.SlaveGroupDao;
         pm.UseTransaction(() => {
           slaveGroupDao.Delete(slaveGroupId);
+          pm.SubmitChanges();
         });
       }
     }
