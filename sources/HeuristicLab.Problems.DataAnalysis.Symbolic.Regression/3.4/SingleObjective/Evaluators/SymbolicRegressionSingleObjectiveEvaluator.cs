@@ -19,9 +19,6 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -29,10 +26,22 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   [StorableClass]
-  public abstract class SymbolicRegressionSingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<IRegressionProblemData>, ISymbolicRegressionSingleObjectiveEvaluator {  
+  public abstract class SymbolicRegressionSingleObjectiveEvaluator : SymbolicDataAnalysisSingleObjectiveEvaluator<IRegressionProblemData>, ISymbolicRegressionSingleObjectiveEvaluator {
+    private const string SaveEstimatedValuesToScopeParameterName = "SaveEstimatedValuesToScope";
+
+    public IFixedValueParameter<BoolValue> SaveEstimatedValuesToScopeParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[SaveEstimatedValuesToScopeParameterName]; }
+    }
+
+    public bool SaveEstimatedValuesToScope { get { return SaveEstimatedValuesToScopeParameter.Value.Value; } }
+
     [StorableConstructor]
     protected SymbolicRegressionSingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
     protected SymbolicRegressionSingleObjectiveEvaluator(SymbolicRegressionSingleObjectiveEvaluator original, Cloner cloner) : base(original, cloner) { }
-    protected SymbolicRegressionSingleObjectiveEvaluator(): base() {}    
+
+    protected SymbolicRegressionSingleObjectiveEvaluator() : base() {
+      Parameters.Add(new FixedValueParameter<BoolValue>(SaveEstimatedValuesToScopeParameterName, new BoolValue(false)));
+      SaveEstimatedValuesToScopeParameter.Hidden = true;
+    }
   }
 }

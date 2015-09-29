@@ -29,7 +29,7 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Log Residual Evaluator", "Evaluator for symbolic regression models that calculates the mean of logarithmic absolute residuals avg(log( 1 + abs(y' - y)))" + 
+  [Item("Log Residual Evaluator", "Evaluator for symbolic regression models that calculates the mean of logarithmic absolute residuals avg(log( 1 + abs(y' - y)))" +
                                   "This evaluator does not perform linear scaling!" +
                                   "This evaluator can be useful if the modeled function contains discontinuities (e.g. 1/x). " +
                                   "For some data sets (e.g. Korns benchmark instances containing inverses of near zero values) the squared error or absolute " +
@@ -56,7 +56,22 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
-      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows);
+      var problemData = ProblemDataParameter.ActualValue;
+      var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
+      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows).ToArray();
+      var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      var estimationLimits = EstimationLimitsParameter.ActualValue;
+
+      if (SaveEstimatedValuesToScope) {
+        var boundedValues = estimatedValues.LimitToRange(estimationLimits.Lower, estimationLimits.Upper).ToArray();
+        var scope = ExecutionContext.Scope;
+        if (scope.Variables.ContainsKey("EstimatedValues"))
+          scope.Variables["EstimatedValues"].Value = new DoubleArray(boundedValues);
+        else
+          scope.Variables.Add(new Core.Variable("EstimatedValues", new DoubleArray(boundedValues)));
+      }
+
+      double quality = Calculate(targetValues, estimatedValues, estimationLimits.Lower, estimationLimits.Upper);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
       return base.InstrumentedApply();
@@ -65,6 +80,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
+      return Calculate(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit);
+    }
+
+    private static double Calculate(IEnumerable<double> targetValues, IEnumerable<double> estimatedValues, double lowerEstimationLimit, double upperEstimationLimit) {
       IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
 
       var logRes = boundedEstimatedValues.Zip(targetValues, (e, t) => Math.Log(1.0 + Math.Abs(e - t)));
