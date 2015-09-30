@@ -162,6 +162,8 @@
     <Compile Include="Interfaces\IPathRelinker.cs" />
     <Compile Include="Interfaces\ISimilarityBasedOperator.cs" />
     <Compile Include="Interfaces\ISolutionSimilarityCalculator.cs" />
+    <Compile Include="Interfaces\ITerminationBasedOperator.cs" />
+    <Compile Include="Interfaces\ITerminator.cs" />
     <Compile Include="MetaOptimizers\BatchRun.cs" />
     <Compile Include="MetaOptimizers\Experiment.cs" />
     <Compile Include="MetaOptimizers\TimeLimitRun.cs" />
@@ -172,6 +174,13 @@
     <Compile Include="RunCollectionModification\RunCollectionSorter.cs" />
     <Compile Include="RunCollectionModification\RunCollectionValueRemover.cs" />
     <Compile Include="Interfaces\IRunCollectionModifier.cs" />
+    <Compile Include="Termination\ComparisonTerminator.cs" />
+    <Compile Include="Termination\ExecutionTimeTerminator.cs" />
+    <Compile Include="Termination\MultiTerminator.cs" />
+    <Compile Include="Termination\SingleObjectiveQualityTerminator.cs" />
+    <Compile Include="Termination\TerminationOperator.cs" />
+    <Compile Include="Termination\Terminator.cs" />
+    <Compile Include="Termination\ThresholdTerminator.cs" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="RunCollectionModification\Calculator.cs" />
