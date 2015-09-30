@@ -20,7 +20,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -48,22 +47,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       var solution = SymbolicExpressionTreeParameter.ActualValue;
       IEnumerable<int> rows = GenerateRowsToEvaluate();
 
-      var problemData = ProblemDataParameter.ActualValue;
-      var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
-      var estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows).ToArray();
-      var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      var estimationLimits = EstimationLimitsParameter.ActualValue;
-
-      if (SaveEstimatedValuesToScope) {
-        var boundedValues = estimatedValues.LimitToRange(estimationLimits.Lower, estimationLimits.Upper).ToArray();
-        var scope = ExecutionContext.Scope;
-        if (scope.Variables.ContainsKey("EstimatedValues"))
-          scope.Variables["EstimatedValues"].Value = new DoubleArray(boundedValues);
-        else
-          scope.Variables.Add(new Core.Variable("EstimatedValues", new DoubleArray(boundedValues)));
-      }
-
-      double quality = Calculate(targetValues, estimatedValues, estimationLimits.Lower, estimationLimits.Upper, problemData, ApplyLinearScalingParameter.ActualValue.Value);
+      double quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value);
       QualityParameter.ActualValue = new DoubleValue(quality);
 
       return base.InstrumentedApply();
@@ -72,10 +56,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public static double Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling) {
       IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
       IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      return Calculate(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit, problemData, applyLinearScaling);
-    }
-
-    private static double Calculate(IEnumerable<double> targetValues, IEnumerable<double> estimatedValues, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, bool applyLinearScaling) {
       OnlineCalculatorError errorState;
 
       double r;
@@ -89,7 +69,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
         r = OnlinePearsonsRCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
       }
       if (errorState != OnlineCalculatorError.None) return double.NaN;
-      return r * r;
+      return r*r;
     }
 
     public override double Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
