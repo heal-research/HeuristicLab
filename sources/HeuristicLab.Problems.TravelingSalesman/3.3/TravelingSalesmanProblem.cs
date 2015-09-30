@@ -253,7 +253,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
     }
     private void UpdateMoveEvaluators() {
       Operators.RemoveAll(x => x is ISingleObjectiveMoveEvaluator);
-      foreach (ITSPPathMoveEvaluator op in ApplicationManager.Manager.GetInstances<ITSPPathMoveEvaluator>())
+      foreach (var op in ApplicationManager.Manager.GetInstances<ITSPMoveEvaluator>())
         if (op.EvaluatorType == Evaluator.GetType()) {
           Operators.Add(op);
         }
@@ -431,8 +431,7 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (data.BestKnownTour != null) {
         try {
           EvaluateAndLoadTour(data.BestKnownTour);
-        }
-        catch (InvalidOperationException) {
+        } catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)
             BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
         }
