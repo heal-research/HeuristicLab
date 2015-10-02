@@ -55,6 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     private void FormatRecursively(ISymbolicExpressionTreeNode node, StringBuilder strBuilder) {
+      // TODO: adapt to interpreter semantics. The HL interpreter also allows Boolean operations on reals
       if (node.Subtrees.Any()) {
         if (node.Symbol is Addition) {
           FormatOperator(node, "+", strBuilder);
@@ -82,6 +83,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           FormatOperator(node, "!", strBuilder);
         } else if (node.Symbol is Or) {
           FormatOperator(node, "||", strBuilder);
+        } else if (node.Symbol is Xor) {
+          FormatOperator(node, "^", strBuilder);
         } else if (node.Symbol is Sine) {
           FormatFunction(node, "Math.Sin", strBuilder);
         } else if (node.Symbol is Subtraction) {
