@@ -66,6 +66,7 @@ namespace HeuristicLab.Optimization {
         SolutionCreator = (T)value;
       }
     }
+    [Storable]
     private T solutionCreator;
     public T SolutionCreator {
       get {
