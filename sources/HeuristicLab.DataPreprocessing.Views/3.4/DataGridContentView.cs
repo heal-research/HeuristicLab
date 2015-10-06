@@ -141,10 +141,30 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
 
-    //protected override void PasteValuesToDataGridView() {
-    //  base.PasteValuesToDataGridView();
-    //  dataGridView.Refresh();
-    //}
+    protected override void PasteValuesToDataGridView() {
+      string[,] values = SplitClipboardString(Clipboard.GetText());
+      int rowIndex = 0;
+      int columnIndex = 0;
+      if (dataGridView.CurrentCell != null) {
+        rowIndex = dataGridView.CurrentCell.RowIndex;
+        columnIndex = dataGridView.CurrentCell.ColumnIndex;
+      }
+      if (Content.Rows < values.GetLength(1) + rowIndex) Content.Rows = values.GetLength(1) + rowIndex;
+      if (Content.Columns < values.GetLength(0) + columnIndex) Content.Columns = values.GetLength(0) + columnIndex;
+
+      ReplaceTransaction(() => {
+        Content.PreProcessingData.InTransaction(() => {
+          for (int row = 0; row < values.GetLength(1); row++) {
+            for (int col = 0; col < values.GetLength(0); col++) {
+              Content.SetValue(values[col, row], row + rowIndex, col + columnIndex);
+            }
+          }
+        });
+      });
+
+      ClearSorting();
+      //UpdateData(); // rownames are created on DataGrid creation. Therefore, no update possible, yet.
+    }
 
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();

@@ -62,7 +62,7 @@ namespace HeuristicLab.DataPreprocessing {
       // set the input variables to the correct checked state
       var inputVariables = oldProblemData.InputVariables.ToDictionary(x => x.Value, x => x);
       foreach (var variable in problemData.InputVariables) {
-        bool isChecked = oldProblemData.InputVariables.ItemChecked(inputVariables[variable.Value]);
+        bool isChecked = oldProblemData.InputVariables.Contains(variable) && oldProblemData.InputVariables.ItemChecked(inputVariables[variable.Value]);
         problemData.InputVariables.SetItemCheckedState(variable, isChecked);
       }
 

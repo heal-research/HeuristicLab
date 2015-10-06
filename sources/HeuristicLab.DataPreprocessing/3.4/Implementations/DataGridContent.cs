@@ -74,7 +74,7 @@ namespace HeuristicLab.DataPreprocessing {
         return rowNames;
       }
       set {
-        //not supported
+        throw new NotSupportedException();
       }
     }
 
@@ -83,7 +83,7 @@ namespace HeuristicLab.DataPreprocessing {
         return true;
       }
       set {
-        //not supported
+        throw new NotSupportedException();
       }
     }
 

@@ -97,6 +97,12 @@ namespace HeuristicLab.DataPreprocessing {
 
     public override void SetCell<T>(int columnIndex, int rowIndex, T value) {
       SaveSnapshot(DataPreprocessingChangedEventType.ChangeItem, columnIndex, rowIndex);
+
+      for (int i = Rows; i <= rowIndex; i++)
+        InsertRow(i);
+      for (int i = Columns; i <= columnIndex; i++)
+        InsertColumn<T>(i.ToString(), i);
+
       variableValues[columnIndex][rowIndex] = value;
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.ChangeItem, columnIndex, rowIndex);
@@ -115,7 +121,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public override bool VariableHasType<T>(int columnIndex) {
-      return variableValues[columnIndex] is List<T>;
+      return columnIndex >= variableValues.Count || variableValues[columnIndex] is List<T>;
     }
 
     [Obsolete("use the index based variant, is faster")]
@@ -241,7 +247,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public override void InsertColumn<T>(string variableName, int columnIndex) {
       SaveSnapshot(DataPreprocessingChangedEventType.DeleteColumn, columnIndex, -1);
-      variableValues.Insert(columnIndex, new List<T>(Rows));
+      variableValues.Insert(columnIndex, new List<T>(Enumerable.Repeat(default(T), Rows)));
       variableNames.Insert(columnIndex, variableName);
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.AddColumn, columnIndex, -1);
