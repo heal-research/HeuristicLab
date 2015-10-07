@@ -224,6 +224,7 @@ namespace HeuristicLab.DataPreprocessing {
       }
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.DeleteRow, -1, -1);
+      ResetPartitions();
     }
 
     public override void InsertRow(int rowIndex) {
@@ -234,6 +235,7 @@ namespace HeuristicLab.DataPreprocessing {
       }
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.AddRow, -1, rowIndex);
+      ResetPartitions();
     }
 
     public override void DeleteRow(int rowIndex) {
@@ -243,6 +245,7 @@ namespace HeuristicLab.DataPreprocessing {
       }
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.DeleteRow, -1, rowIndex);
+      ResetPartitions();
     }
 
     public override void InsertColumn<T>(string variableName, int columnIndex) {
@@ -283,6 +286,11 @@ namespace HeuristicLab.DataPreprocessing {
       if (listeners != null) listeners(this, EventArgs.Empty);
     }
 
+
+    private void ResetPartitions() {
+      TrainingPartition = new IntRange();
+      TestPartition = new IntRange();
+    }
 
     #endregion
 

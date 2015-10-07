@@ -163,7 +163,6 @@ namespace HeuristicLab.DataPreprocessing.Views {
       });
 
       ClearSorting();
-      //UpdateData(); // rownames are created on DataGrid creation. Therefore, no update possible, yet.
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -630,6 +629,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
       });
     }
     #endregion
+
+    private void addLineButton_Click(object sender, EventArgs e) {
+      Content.PreProcessingData.InsertRow(Content.Rows);
+    }
+
+    private void addColumnButton_Click(object sender, EventArgs e) {
+      Content.PreProcessingData.InsertColumn<double>(Content.Columns.ToString(), Content.Columns);
+    }
 
   }
 }

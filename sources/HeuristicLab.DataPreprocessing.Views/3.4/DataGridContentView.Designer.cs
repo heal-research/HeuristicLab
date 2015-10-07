@@ -62,6 +62,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.btnSearch = new System.Windows.Forms.Button();
       this.btnReplace = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.addLineButton = new System.Windows.Forms.Button();
+      this.addColumnButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.contextMenuCell.SuspendLayout();
       this.SuspendLayout();
@@ -69,28 +71,20 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // rowsTextBox
       // 
       this.rowsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.rowsTextBox.Enabled = false;
       this.errorProvider.SetIconAlignment(this.rowsTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.rowsTextBox, 2);
-      this.rowsTextBox.ReadOnly = true;
       this.rowsTextBox.Size = new System.Drawing.Size(71, 20);
       // 
       // columnsTextBox
       // 
       this.columnsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.columnsTextBox.Enabled = false;
-      this.columnsTextBox.ReadOnly = true;
       this.columnsTextBox.Size = new System.Drawing.Size(71, 20);
-      // 
-      // statisticsTextBox
-      // 
-      this.statisticsTextBox.Size = new System.Drawing.Size(522, 13);
       // 
       // btnApplySort
       // 
-      this.btnApplySort.Location = new System.Drawing.Point(349, 19);
+      this.btnApplySort.Location = new System.Drawing.Point(320, -1);
       this.btnApplySort.Name = "btnApplySort";
-      this.btnApplySort.Size = new System.Drawing.Size(75, 23);
+      this.btnApplySort.Size = new System.Drawing.Size(87, 23);
       this.btnApplySort.TabIndex = 7;
       this.btnApplySort.Text = "Apply Sort";
       this.toolTip.SetToolTip(this.btnApplySort, "The current sorting is applied on the data itself.");
@@ -103,7 +97,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
             this.replaceValueOverColumnToolStripMenuItem,
             this.replaceValueOverSelectionToolStripMenuItem});
       this.contextMenuCell.Name = "contextMenuCell";
-      this.contextMenuCell.Size = new System.Drawing.Size(225, 70);
+      this.contextMenuCell.Size = new System.Drawing.Size(225, 48);
       // 
       // replaceValueOverColumnToolStripMenuItem
       // 
@@ -153,9 +147,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.interpolationToolStripMenuItem_Column.Text = "Interpolation";
       this.interpolationToolStripMenuItem_Column.Click += new System.EventHandler(this.ReplaceWithInterpolation_Column_Click);
       // 
-      // smoothingToolStripMenuItem
+      // smoothingToolStripMenuItem_Column
       // 
-      this.smoothingToolStripMenuItem_Column.Name = "smoothingToolStripMenuItem";
+      this.smoothingToolStripMenuItem_Column.Name = "smoothingToolStripMenuItem_Column";
       this.smoothingToolStripMenuItem_Column.Size = new System.Drawing.Size(155, 22);
       this.smoothingToolStripMenuItem_Column.Text = "Smoothing";
       this.smoothingToolStripMenuItem_Column.Click += new System.EventHandler(this.ReplaceWithSmoothing_Selection_Click);
@@ -201,7 +195,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // btnSearch
       // 
-      this.btnSearch.Location = new System.Drawing.Point(201, 19);
+      this.btnSearch.Location = new System.Drawing.Point(173, -1);
       this.btnSearch.Name = "btnSearch";
       this.btnSearch.Size = new System.Drawing.Size(53, 23);
       this.btnSearch.TabIndex = 8;
@@ -212,7 +206,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // btnReplace
       // 
-      this.btnReplace.Location = new System.Drawing.Point(260, 19);
+      this.btnReplace.Location = new System.Drawing.Point(232, -1);
       this.btnReplace.Name = "btnReplace";
       this.btnReplace.Size = new System.Drawing.Size(55, 23);
       this.btnReplace.TabIndex = 9;
@@ -221,15 +215,36 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.btnReplace.UseVisualStyleBackColor = true;
       this.btnReplace.Click += new System.EventHandler(this.btnReplace_Click);
       // 
+      // addLineButton
+      // 
+      this.addLineButton.Location = new System.Drawing.Point(173, 25);
+      this.addLineButton.Name = "addLineButton";
+      this.addLineButton.Size = new System.Drawing.Size(114, 23);
+      this.addLineButton.TabIndex = 10;
+      this.addLineButton.Text = "Add Line";
+      this.addLineButton.UseVisualStyleBackColor = true;
+      this.addLineButton.Click += new System.EventHandler(this.addLineButton_Click);
+      // 
+      // addColumnButton
+      // 
+      this.addColumnButton.Location = new System.Drawing.Point(293, 25);
+      this.addColumnButton.Name = "addColumnButton";
+      this.addColumnButton.Size = new System.Drawing.Size(114, 23);
+      this.addColumnButton.TabIndex = 10;
+      this.addColumnButton.Text = "Add Column";
+      this.addColumnButton.UseVisualStyleBackColor = true;
+      this.addColumnButton.Click += new System.EventHandler(this.addColumnButton_Click);
+      // 
       // DataGridContentView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.addColumnButton);
+      this.Controls.Add(this.addLineButton);
       this.Controls.Add(this.btnReplace);
       this.Controls.Add(this.btnSearch);
       this.Controls.Add(this.btnApplySort);
       this.Name = "DataGridContentView";
-      this.Size = new System.Drawing.Size(528, 404);
       this.Controls.SetChildIndex(this.statisticsTextBox, 0);
       this.Controls.SetChildIndex(this.rowsLabel, 0);
       this.Controls.SetChildIndex(this.columnsLabel, 0);
@@ -238,6 +253,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.Controls.SetChildIndex(this.btnApplySort, 0);
       this.Controls.SetChildIndex(this.btnSearch, 0);
       this.Controls.SetChildIndex(this.btnReplace, 0);
+      this.Controls.SetChildIndex(this.addLineButton, 0);
+      this.Controls.SetChildIndex(this.addColumnButton, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.contextMenuCell.ResumeLayout(false);
       this.ResumeLayout(false);
@@ -264,5 +281,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private System.Windows.Forms.Button btnReplace;
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.ToolStripMenuItem smoothingToolStripMenuItem_Column;
+    private System.Windows.Forms.Button addLineButton;
+    private System.Windows.Forms.Button addColumnButton;
   }
 }

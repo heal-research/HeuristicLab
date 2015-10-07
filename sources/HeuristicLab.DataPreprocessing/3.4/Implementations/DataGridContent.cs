@@ -40,8 +40,6 @@ namespace HeuristicLab.DataPreprocessing {
     public IManipulationLogic ManipulationLogic { get; private set; }
     public IFilterLogic FilterLogic { get; private set; }
 
-    private IEnumerable<string> rowNames;
-
     public int Rows {
       get {
         return PreProcessingData.Rows;
@@ -71,7 +69,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public IEnumerable<string> RowNames {
       get {
-        return rowNames;
+        return Enumerable.Range(1, Rows).Select(n => n.ToString());
       }
       set {
         throw new NotSupportedException();
@@ -102,7 +100,6 @@ namespace HeuristicLab.DataPreprocessing {
       ManipulationLogic = theManipulationLogic;
       FilterLogic = theFilterLogic;
       PreProcessingData = preProcessingData;
-      createRowNames();
     }
 
     public DataGridContent(DataGridContent dataGridContent, Cloner cloner)
@@ -115,7 +112,6 @@ namespace HeuristicLab.DataPreprocessing {
 
     public void DeleteRows(IEnumerable<int> rows) {
       PreProcessingData.DeleteRowsWithIndices(rows);
-      createRowNames();
     }
 
     public void DeleteColumn(int column) {
@@ -132,10 +128,6 @@ namespace HeuristicLab.DataPreprocessing {
 
     public bool SetValue(string value, int rowIndex, int columnIndex) {
       return PreProcessingData.SetValue(value, columnIndex, rowIndex);
-    }
-
-    private void createRowNames() {
-      rowNames = Enumerable.Range(1, Rows).Select(n => n.ToString());
     }
 
     public event DataPreprocessingChangedEventHandler Changed {
