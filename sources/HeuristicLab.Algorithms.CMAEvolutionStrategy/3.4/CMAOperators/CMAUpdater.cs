@@ -247,7 +247,7 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
 
         // assign D to eigenvalue square roots
         for (int i = 0; i < N; i++) {
-          if (sp.D[i] < 0) { // numerical problem?
+          if (sp.D[i] <= 0) { // numerical problem?
             DegenerateStateParameter.ActualValue.Value = true;
             sp.D[i] = 0;
           } else sp.D[i] = Math.Sqrt(sp.D[i]);
