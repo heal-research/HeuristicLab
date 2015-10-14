@@ -264,6 +264,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
+    private void chart_DragDrop(object sender, DragEventArgs e) {
+      if (e.Data.GetDataPresent("HeuristicLab")) {
+        var regressionSolution = (IRegressionSolution)e.Data.GetData("HeuristicLab");
+        AddRegressionSolution(regressionSolution);
+      }
+    }
+
+    private void chart_DragEnter(object sender, DragEventArgs e) {
+      e.Effect = DragDropEffects.Copy;
+    }
+
     private void residualComboBox_SelectedIndexChanged(object sender, EventArgs e) {
       UpdateChart();
     }
