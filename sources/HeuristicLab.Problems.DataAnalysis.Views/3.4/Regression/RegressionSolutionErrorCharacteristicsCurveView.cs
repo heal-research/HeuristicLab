@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.Common;
 using HeuristicLab.MainForm;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Error Characteristics Curve")]
@@ -61,10 +63,21 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       chart.ChartAreas[0].CursorY.Interval = 0.01;
     }
 
+    // the view holds one regression solution as content but also contains several other regression solutions for comparison
+    // the following invariants must hold
+    // (Solutions.IsEmpty && Content == null) ||
+    // (Solutions[0] == Content && Solutions.All(s => s.ProblemData.TargetVariable == Content.TargetVariable))
+
     public new IRegressionSolution Content {
       get { return (IRegressionSolution)base.Content; }
       set { base.Content = value; }
     }
+
+    private readonly IList<IRegressionSolution> solutions = new List<IRegressionSolution>();
+    public IEnumerable<IRegressionSolution> Solutions {
+      get { return solutions.AsEnumerable(); }
+    }
+
     public IRegressionProblemData ProblemData {
       get {
         if (Content == null) return null;
@@ -85,16 +98,44 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
 
     protected virtual void Content_ModelChanged(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_ModelChanged, sender, e);
-      else UpdateChart();
+      else {
+        // recalculate baseline solutions (for symbolic regression models the features used in the model might have changed)
+        solutions.Clear(); // remove all
+        solutions.Add(Content); // re-add the first solution
+        // and recalculate all other solutions
+        foreach (var sol in CreateBaselineSolutions()) {
+          solutions.Add(sol);
+        }
+        UpdateChart();
+      }
     }
     protected virtual void Content_ProblemDataChanged(object sender, EventArgs e) {
       if (InvokeRequired) Invoke((Action<object, EventArgs>)Content_ProblemDataChanged, sender, e);
       else {
+        // recalculate baseline solutions
+        solutions.Clear(); // remove all
+        solutions.Add(Content); // re-add the first solution
+        // and recalculate all other solutions
+        foreach (var sol in CreateBaselineSolutions()) {
+          solutions.Add(sol);
+        }
         UpdateChart();
       }
     }
     protected override void OnContentChanged() {
       base.OnContentChanged();
+      // the content object is always stored as the first element in solutions
+      solutions.Clear();
+      ReadOnly = Content == null;
+      if (Content != null) {
+        // recalculate all solutions
+        solutions.Add(Content);
+        if (ProblemData.TrainingIndices.Any()) {
+          foreach (var sol in CreateBaselineSolutions())
+            solutions.Add(sol);
+          // more solutions can be added by drag&drop
+        }
+      }
       UpdateChart();
     }
 
@@ -108,16 +149,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       if (cmbSamples.SelectedItem.ToString() == TrainingSamples && !ProblemData.TrainingIndices.Any()) return;
       if (cmbSamples.SelectedItem.ToString() == TestSamples && !ProblemData.TestIndices.Any()) return;
 
-      if (Content.ProblemData.TrainingIndices.Any()) {
-        AddRegressionSolution(CreateConstantSolution());
+      foreach (var sol in Solutions) {
+        AddSeries(sol);
       }
-
-      AddRegressionSolution(Content);
 
       chart.ChartAreas[0].AxisX.Title = residualComboBox.SelectedItem.ToString();
     }
 
-    protected void AddRegressionSolution(IRegressionSolution solution) {
+    protected void AddSeries(IRegressionSolution solution) {
       if (chart.Series.Any(s => s.Name == solution.Name)) return;
 
       Series solutionSeries = new Series(solution.Name);
@@ -238,7 +277,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else UpdateChart();
     }
 
-    #region Baseline
     private void Chart_MouseDoubleClick(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
       if (result.ChartElementType != ChartElementType.LegendItem) return;
@@ -246,14 +284,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       MainFormManager.MainForm.ShowContent((IRegressionSolution)result.Series.Tag);
     }
 
-    private ConstantRegressionSolution CreateConstantSolution() {
+    protected virtual IEnumerable<IRegressionSolution> CreateBaselineSolutions() {
+      yield return CreateConstantSolution();
+      yield return CreateLinearSolution();
+    }
+
+    private IRegressionSolution CreateConstantSolution() {
       double averageTrainingTarget = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average();
       var model = new ConstantRegressionModel(averageTrainingTarget);
       var solution = new ConstantRegressionSolution(model, (IRegressionProblemData)ProblemData.Clone());
-      solution.Name = "Baseline";
+      solution.Name = "Baseline (constant)";
       return solution;
     }
-    #endregion
+    private IRegressionSolution CreateLinearSolution() {
+      double rmsError, cvRmsError;
+      var solution = LinearRegression.CreateLinearRegressionSolution((IRegressionProblemData)ProblemData.Clone(), out rmsError, out cvRmsError);
+      solution.Name = "Baseline (linear)";
+      return solution;
+    }
 
     private void chart_MouseMove(object sender, MouseEventArgs e) {
       HitTestResult result = chart.HitTest(e.X, e.Y);
@@ -265,14 +313,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private void chart_DragDrop(object sender, DragEventArgs e) {
-      if (e.Data.GetDataPresent("HeuristicLab")) {
-        var regressionSolution = (IRegressionSolution)e.Data.GetData("HeuristicLab");
-        AddRegressionSolution(regressionSolution);
+      if (e.Data.GetDataPresent(HeuristicLab.Common.Constants.DragDropDataFormat)) {
+
+        var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+        var dataAsRegressionSolution = data as IRegressionSolution;
+        var dataAsResult = data as IResult;
+
+        if (dataAsRegressionSolution != null) {
+          solutions.Add((IRegressionSolution)dataAsRegressionSolution.Clone());
+        } else if (dataAsResult != null && dataAsResult.Value is IRegressionSolution) {
+          solutions.Add((IRegressionSolution)dataAsResult.Value.Clone());
+        }
+
+        UpdateChart();
       }
     }
 
     private void chart_DragEnter(object sender, DragEventArgs e) {
-      e.Effect = DragDropEffects.Copy;
+      e.Effect = DragDropEffects.None;
+      if (!e.Data.GetDataPresent(HeuristicLab.Common.Constants.DragDropDataFormat)) return;
+
+      var data = e.Data.GetData(HeuristicLab.Common.Constants.DragDropDataFormat);
+      var dataAsRegressionSolution = data as IRegressionSolution;
+      var dataAsResult = data as IResult;
+
+      if (!ReadOnly &&
+        (dataAsRegressionSolution != null || (dataAsResult != null && dataAsResult.Value is IRegressionSolution))) {
+        e.Effect = DragDropEffects.Copy;
+      }
     }
 
     private void residualComboBox_SelectedIndexChanged(object sender, EventArgs e) {

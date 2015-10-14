@@ -20,8 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using HeuristicLab.Algorithms.DataAnalysis;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.Views;
@@ -30,7 +30,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
   [View("Error Characteristics Curve")]
   [Content(typeof(ISymbolicRegressionSolution))]
   public partial class SymbolicRegressionSolutionErrorCharacteristicsCurveView : RegressionSolutionErrorCharacteristicsCurveView {
-    private IRegressionSolution linearRegressionSolution;
     public SymbolicRegressionSolutionErrorCharacteristicsCurveView() {
       InitializeComponent();
     }
@@ -40,26 +39,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       set { base.Content = value; }
     }
 
-    protected override void OnContentChanged() {
-      if (Content != null)
-        linearRegressionSolution = CreateLinearRegressionSolution();
-      else
-        linearRegressionSolution = null;
-
-      base.OnContentChanged();
-    }
-
-    protected override void UpdateChart() {
-      base.UpdateChart();
-      if (Content == null || linearRegressionSolution == null) return;
-      AddRegressionSolution(linearRegressionSolution);
-    }
-
     private IRegressionSolution CreateLinearRegressionSolution() {
       if (Content == null) throw new InvalidOperationException();
       double rmse, cvRmsError;
       var problemData = (IRegressionProblemData)ProblemData.Clone();
-      if(!problemData.TrainingIndices.Any()) return null; // don't create an LR model if the problem does not have a training set (e.g. loaded into an existing model)
+      if (!problemData.TrainingIndices.Any()) return null; // don't create an LR model if the problem does not have a training set (e.g. loaded into an existing model)
 
       //clear checked inputVariables
       foreach (var inputVariable in problemData.InputVariables.CheckedItems) {
@@ -76,18 +60,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression.Views {
       }
 
       var solution = LinearRegression.CreateLinearRegressionSolution(problemData, out rmse, out cvRmsError);
-      solution.Name = "Linear Model";
+      solution.Name = "Baseline (linear subset)";
       return solution;
     }
 
-    protected override void Content_ModelChanged(object sender, EventArgs e) {
-      linearRegressionSolution = CreateLinearRegressionSolution();
-      base.Content_ModelChanged(sender, e);
-    }
 
-    protected override void Content_ProblemDataChanged(object sender, EventArgs e) {
-      linearRegressionSolution = CreateLinearRegressionSolution();
-      base.Content_ProblemDataChanged(sender, e);
+    protected override IEnumerable<IRegressionSolution> CreateBaselineSolutions() {
+      foreach (var sol in base.CreateBaselineSolutions()) yield return sol;
+      yield return CreateLinearRegressionSolution();
     }
   }
 }
