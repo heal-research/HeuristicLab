@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -40,6 +41,10 @@ namespace HeuristicLab.Optimization.Operators {
     public string SolutionVariableName { get; set; }
     [Storable]
     public string QualityVariableName { get; set; }
+    [Storable]
+    public bool ExecuteInParallel { get; set; }
+    [Storable]
+    public int MaxDegreeOfParallelism { get; set; }
     #endregion
 
     [StorableConstructor]
@@ -47,10 +52,24 @@ namespace HeuristicLab.Optimization.Operators {
 
     protected SolutionSimilarityCalculator(SolutionSimilarityCalculator original, Cloner cloner)
       : base(original, cloner) {
-      this.SolutionVariableName = original.SolutionVariableName;
-      this.QualityVariableName = original.QualityVariableName;
+      SolutionVariableName = original.SolutionVariableName;
+      QualityVariableName = original.QualityVariableName;
+      ExecuteInParallel = original.ExecuteInParallel;
+      MaxDegreeOfParallelism = original.MaxDegreeOfParallelism;
     }
-    protected SolutionSimilarityCalculator() : base() { }
+
+    protected SolutionSimilarityCalculator() : base() {
+      ExecuteInParallel = false;
+      MaxDegreeOfParallelism = -1;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (MaxDegreeOfParallelism == 0) {
+        ExecuteInParallel = false;
+        MaxDegreeOfParallelism = -1;
+      }
+    }
 
     public double[][] CalculateSolutionCrowdSimilarity(IScope leftSolutionCrowd, IScope rightSolutionCrowd) {
       if (leftSolutionCrowd == null || rightSolutionCrowd == null)
@@ -74,29 +93,53 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     public double[][] CalculateSolutionCrowdSimilarity(IScope solutionCrowd) {
-      if (solutionCrowd == null)
+      if (solutionCrowd == null) {
         throw new ArgumentException("Cannot calculate similarity because the provided crowd is null.");
-
+      }
       var individuals = solutionCrowd.SubScopes;
 
-      if (!individuals.Any())
+      if (!individuals.Any()) {
         throw new ArgumentException("Cannot calculate similarity because the provided crowd is empty.");
+      }
 
       var similarityMatrix = new double[individuals.Count][];
-      for (int i = 0; i < individuals.Count; i++) similarityMatrix[i] = new double[individuals.Count];
+      for (int i = 0; i < individuals.Count; i++) {
+        similarityMatrix[i] = new double[individuals.Count];
+      }
 
-      if (IsCommutative) {
-        for (int i = 0; i < individuals.Count; i++) {
-          for (int j = i; j < individuals.Count; j++) {
-            similarityMatrix[i][j] = similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
-          }
+      if (ExecuteInParallel) {
+        var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism };
+        if (IsCommutative) {
+          Parallel.For(0, individuals.Count, parallelOptions, i => {
+            for (int j = i; j < individuals.Count; j++) {
+              similarityMatrix[i][j] =
+                similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+            }
+          });
+        } else {
+          Parallel.For(0, individuals.Count, parallelOptions, i => {
+            for (int j = i; j < individuals.Count; j++) {
+              similarityMatrix[i][j] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+              if (i == j) continue;
+              similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[j], individuals[i]);
+            }
+          });
         }
       } else {
-        for (int i = 0; i < individuals.Count; i++) {
-          for (int j = i; j < individuals.Count; j++) {
-            similarityMatrix[i][j] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
-            if (i == j) continue;
-            similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[j], individuals[i]);
+        if (IsCommutative) {
+          for (int i = 0; i < individuals.Count; i++) {
+            for (int j = i; j < individuals.Count; j++) {
+              similarityMatrix[i][j] =
+                similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+            }
+          }
+        } else {
+          for (int i = 0; i < individuals.Count; i++) {
+            for (int j = i; j < individuals.Count; j++) {
+              similarityMatrix[i][j] = CalculateSolutionSimilarity(individuals[i], individuals[j]);
+              if (i == j) continue;
+              similarityMatrix[j][i] = CalculateSolutionSimilarity(individuals[j], individuals[i]);
+            }
           }
         }
       }

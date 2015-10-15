@@ -38,6 +38,8 @@ namespace HeuristicLab.Analysis {
   [StorableClass]
   public class PopulationSimilarityAnalyzer : SingleSuccessorOperator, IAnalyzer, ISimilarityBasedOperator {
     private const string DiversityResultNameParameterName = "DiversityResultsName";
+    private const string ExecuteInParallelParameterName = "ExecuteInParallel";
+    private const string MaxDegreeOfParallelismParameterName = "MaxDegreeOfParallelism";
 
     #region Backwards compatible code, remove with 3.4
     private ISolutionSimilarityCalculator oldSimilarityCalculator;
@@ -70,15 +72,36 @@ namespace HeuristicLab.Analysis {
     public IFixedValueParameter<StringValue> DiversityResultNameParameter {
       get { return (FixedValueParameter<StringValue>)Parameters[DiversityResultNameParameterName]; }
     }
+    public IFixedValueParameter<BoolValue> ExecuteInParallelParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[ExecuteInParallelParameterName]; }
+    }
+    public IFixedValueParameter<IntValue> MaxDegreeOfParallelismParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[MaxDegreeOfParallelismParameterName]; }
+    }
 
     public string DiversityResultName {
       get { return DiversityResultNameParameter.Value.Value; }
       set { DiversityResultNameParameter.Value.Value = value; }
     }
 
+    public bool ExecuteInParallel {
+      get { return ExecuteInParallelParameter.Value.Value; }
+      set { ExecuteInParallelParameter.Value.Value = value; }
+    }
+
+    public int MaxDegreeOfParallelism {
+      get { return MaxDegreeOfParallelismParameter.Value.Value; }
+      set { MaxDegreeOfParallelismParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
     protected PopulationSimilarityAnalyzer(bool deserializing) : base(deserializing) { }
-    protected PopulationSimilarityAnalyzer(PopulationSimilarityAnalyzer original, Cloner cloner) : base(original, cloner) { }
+
+    protected PopulationSimilarityAnalyzer(PopulationSimilarityAnalyzer original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterParametersEventHandlers();
+    }
+
     public PopulationSimilarityAnalyzer(IEnumerable<ISolutionSimilarityCalculator> validSimilarityCalculators)
       : base() {
       Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that contains the solutions which should be analyzed."));
@@ -88,14 +111,33 @@ namespace HeuristicLab.Analysis {
       Parameters.Add(new ValueParameter<IntValue>("UpdateInterval", "The interval in which the population diversity analysis should be applied.", new IntValue(1)));
       Parameters.Add(new LookupParameter<IntValue>("UpdateCounter", "The value which counts how many times the operator was called since the last update.", "PopulationDiversityAnalyzerUpdateCounter"));
       Parameters.Add(new FixedValueParameter<StringValue>(DiversityResultNameParameterName, "Specifies how the diversity results should be named.", new StringValue("PopulationDiversity")));
+      Parameters.Add(new FixedValueParameter<BoolValue>(ExecuteInParallelParameterName, "Specifies whether similarity calculations should be parallelized.", new BoolValue(false)));
+      Parameters.Add(new FixedValueParameter<IntValue>(MaxDegreeOfParallelismParameterName, "Specifies the maximum number of threads when calculating similarities in parallel.", new IntValue(-1)));
 
       var similarityCalculators = SimilarityCalculatorParameter.ValidValues;
-      foreach (var sc in validSimilarityCalculators)
+      foreach (var sc in validSimilarityCalculators) {
         similarityCalculators.Add(sc);
-
+      }
 
       ResultsParameter.Hidden = true;
       UpdateCounterParameter.Hidden = true;
+      ExecuteInParallelParameter.Hidden = true;
+      MaxDegreeOfParallelismParameter.Hidden = true;
+
+      RegisterParametersEventHandlers();
+    }
+
+    private void RegisterParametersEventHandlers() {
+      ExecuteInParallelParameter.Value.ValueChanged += Value_ValueChanged;
+      MaxDegreeOfParallelismParameter.Value.ValueChanged += Value_ValueChanged;
+    }
+
+    private void Value_ValueChanged(object sender, EventArgs e) {
+      var similarityCalculators = SimilarityCalculatorParameter.ValidValues;
+      foreach (var similarityCalculator in similarityCalculators) {
+        similarityCalculator.ExecuteInParallel = ExecuteInParallel;
+        similarityCalculator.MaxDegreeOfParallelism = MaxDegreeOfParallelism;
+      }
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -112,7 +154,21 @@ namespace HeuristicLab.Analysis {
       if (!Parameters.ContainsKey("SimilarityCalculator"))
         Parameters.Add(new ConstrainedValueParameter<ISolutionSimilarityCalculator>("SimilarityCalculator", "The similarity calculator that should be used to calculate solution similarity."));
 
-      SimilarityCalculatorParameter.ValidValues.Add(oldSimilarityCalculator);
+      if (oldSimilarityCalculator != null)
+        SimilarityCalculatorParameter.ValidValues.Add(oldSimilarityCalculator);
+
+      if (!Parameters.ContainsKey(ExecuteInParallelParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(ExecuteInParallelParameterName,
+          "Specifies whether similarity calculations should be parallelized.", new BoolValue(false)));
+        ExecuteInParallelParameter.Hidden = true;
+      }
+      if (!Parameters.ContainsKey(MaxDegreeOfParallelismParameterName)) {
+        Parameters.Add(new FixedValueParameter<IntValue>(MaxDegreeOfParallelismParameterName,
+          "Specifies the maximum number of threads when calculating similarities in parallel.", new IntValue(-1)));
+        MaxDegreeOfParallelismParameter.Hidden = true;
+      }
+
+      RegisterParametersEventHandlers();
       #endregion
     }
 
