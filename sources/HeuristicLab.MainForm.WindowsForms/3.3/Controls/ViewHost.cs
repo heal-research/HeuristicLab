@@ -28,7 +28,7 @@ using HeuristicLab.Common;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   [Content(typeof(IContent))]
-  public sealed partial class ViewHost : AsynchronousContentView {
+  public partial class ViewHost : AsynchronousContentView {
     public ViewHost() {
       InitializeComponent();
       startDragAndDrop = false;
@@ -92,10 +92,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
             View view = activeView as View;
             if (view != null) {
               view.Visible = true;
-              if (ViewsLabelVisible) {
-                view.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
-                view.Size = new Size(Width - this.viewsLabel.Width - this.viewsLabel.Margin.Left - this.viewsLabel.Margin.Right, this.Height);
-              } else view.Dock = DockStyle.Fill;
+              ConfigureViewLayout(view);
               if (!Controls.Contains((view))) Controls.Add(view);
               view.OnShown(new ViewShownEventArgs(view, false));
             }
@@ -107,6 +104,13 @@ namespace HeuristicLab.MainForm.WindowsForms {
           helpLabel.Top = CalculateHelpLabelPosY();
         }
       }
+    }
+
+    protected virtual void ConfigureViewLayout(View view) {
+      if (ViewsLabelVisible) {
+        view.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+        view.Size = new Size(Width - viewsLabel.Width - viewsLabel.Margin.Left - viewsLabel.Margin.Right, Height);
+      } else view.Dock = DockStyle.Fill;
     }
 
     private Type viewType;

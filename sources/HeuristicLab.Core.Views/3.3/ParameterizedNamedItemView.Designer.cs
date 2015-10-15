@@ -44,7 +44,7 @@ namespace HeuristicLab.Core.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.parameterCollectionView = new HeuristicLab.Core.Views.BreadcrumbViewHost();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
@@ -71,6 +71,7 @@ namespace HeuristicLab.Core.Views {
       this.parameterCollectionView.ReadOnly = false;
       this.parameterCollectionView.Size = new System.Drawing.Size(490, 327);
       this.parameterCollectionView.TabIndex = 3;
+      this.parameterCollectionView.ViewsLabelVisible = false;
       // 
       // ParameterizedNamedItemView
       // 
@@ -91,7 +92,7 @@ namespace HeuristicLab.Core.Views {
 
     #endregion
 
-    protected ParameterCollectionView parameterCollectionView;
+    protected HeuristicLab.Core.Views.BreadcrumbViewHost parameterCollectionView;
 
   }
 }

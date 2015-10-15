@@ -87,6 +87,8 @@ namespace HeuristicLab.Optimization.Views {
         storeAlgorithmInEachRunCheckBox.Checked = true;
       } else {
         parameterCollectionView.Content = Content.Parameters;
+        var view = parameterCollectionView.ActiveView as ParameterCollectionView;
+        if (view != null) view.AllowEditingOfHiddenParameters = true;
         problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
         resultsView.Content = Content.Results.AsReadOnly();

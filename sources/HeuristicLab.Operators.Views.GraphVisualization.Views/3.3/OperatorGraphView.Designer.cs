@@ -60,7 +60,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
       this.connectButton = new System.Windows.Forms.Button();
       this.selectButton = new System.Windows.Forms.Button();
       this.detailsGroupBox = new System.Windows.Forms.GroupBox();
-      this.detailsViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.detailsViewHost = new HeuristicLab.Core.Views.BreadcrumbViewHost();
       this.buttonToolTip = new System.Windows.Forms.ToolTip(this.components);
       this.shapeContextMenu.SuspendLayout();
       this.splitContainer.Panel1.SuspendLayout();
@@ -234,6 +234,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
                   | System.Windows.Forms.AnchorStyles.Left)
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.detailsViewHost.Content = null;
+      this.detailsViewHost.EnableBreadcrumbs = true;
       this.detailsViewHost.Location = new System.Drawing.Point(3, 16);
       this.detailsViewHost.Name = "detailsViewHost";
       this.detailsViewHost.ReadOnly = false;
@@ -269,7 +270,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
     private System.Windows.Forms.ToolStripMenuItem breakPointToolStripMenuItem;
     private System.Windows.Forms.SplitContainer splitContainer;
     private System.Windows.Forms.GroupBox detailsGroupBox;
-    private HeuristicLab.MainForm.WindowsForms.ViewHost detailsViewHost;
+    private HeuristicLab.Core.Views.BreadcrumbViewHost detailsViewHost;
     private System.Windows.Forms.Button selectButton;
     private System.Windows.Forms.Button zoomOutButton;
     private System.Windows.Forms.Button zoomInButton;

@@ -49,9 +49,7 @@ namespace HeuristicLab.Optimization.Views {
       this.engineTabPage = new System.Windows.Forms.TabPage();
       this.engineViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
       this.operatorGraphTabPage = new System.Windows.Forms.TabPage();
-      this.openOperatorGraphButton = new System.Windows.Forms.Button();
-      this.newOperatorGraphButton = new System.Windows.Forms.Button();
-      this.operatorGraphViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.operatorGraphViewHost = new HeuristicLab.Core.Views.BreadcrumbViewHost();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.problemTabPage.SuspendLayout();
@@ -218,8 +216,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // operatorGraphTabPage
       // 
-      this.operatorGraphTabPage.Controls.Add(this.openOperatorGraphButton);
-      this.operatorGraphTabPage.Controls.Add(this.newOperatorGraphButton);
       this.operatorGraphTabPage.Controls.Add(this.operatorGraphViewHost);
       this.operatorGraphTabPage.Location = new System.Drawing.Point(4, 22);
       this.operatorGraphTabPage.Name = "operatorGraphTabPage";
@@ -228,28 +224,6 @@ namespace HeuristicLab.Optimization.Views {
       this.operatorGraphTabPage.Text = "Operator Graph";
       this.operatorGraphTabPage.UseVisualStyleBackColor = true;
       // 
-      // openOperatorGraphButton
-      // 
-      this.openOperatorGraphButton.Enabled = false;
-      this.openOperatorGraphButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Open;
-      this.openOperatorGraphButton.Location = new System.Drawing.Point(33, 3);
-      this.openOperatorGraphButton.Name = "openOperatorGraphButton";
-      this.openOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.openOperatorGraphButton.TabIndex = 1;
-      this.toolTip.SetToolTip(this.openOperatorGraphButton, "Open Operator Graph");
-      this.openOperatorGraphButton.UseVisualStyleBackColor = true;
-      // 
-      // newOperatorGraphButton
-      // 
-      this.newOperatorGraphButton.Enabled = false;
-      this.newOperatorGraphButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.NewDocument;
-      this.newOperatorGraphButton.Location = new System.Drawing.Point(3, 3);
-      this.newOperatorGraphButton.Name = "newOperatorGraphButton";
-      this.newOperatorGraphButton.Size = new System.Drawing.Size(24, 24);
-      this.newOperatorGraphButton.TabIndex = 1;
-      this.toolTip.SetToolTip(this.newOperatorGraphButton, "New Operator Graph");
-      this.newOperatorGraphButton.UseVisualStyleBackColor = true;
-      // 
       // operatorGraphViewHost
       // 
       this.operatorGraphViewHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -257,11 +231,13 @@ namespace HeuristicLab.Optimization.Views {
                   | System.Windows.Forms.AnchorStyles.Right)));
       this.operatorGraphViewHost.Caption = "View";
       this.operatorGraphViewHost.Content = null;
+      this.operatorGraphViewHost.EnableBreadcrumbs = true;
       this.operatorGraphViewHost.Enabled = false;
-      this.operatorGraphViewHost.Location = new System.Drawing.Point(3, 33);
+      this.operatorGraphViewHost.Location = new System.Drawing.Point(6, 6);
       this.operatorGraphViewHost.Name = "operatorGraphViewHost";
       this.operatorGraphViewHost.ReadOnly = true;
-      this.operatorGraphViewHost.Size = new System.Drawing.Size(699, 431);
+      this.operatorGraphViewHost.ShowSingle = true;
+      this.operatorGraphViewHost.Size = new System.Drawing.Size(693, 455);
       this.operatorGraphViewHost.TabIndex = 0;
       this.operatorGraphViewHost.ViewsLabelVisible = true;
       this.operatorGraphViewHost.ViewType = null;
@@ -294,9 +270,7 @@ namespace HeuristicLab.Optimization.Views {
     protected System.Windows.Forms.TabPage engineTabPage;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost engineViewHost;
     protected System.Windows.Forms.TabPage operatorGraphTabPage;
-    protected HeuristicLab.MainForm.WindowsForms.ViewHost operatorGraphViewHost;
-    protected System.Windows.Forms.Button openOperatorGraphButton;
-    protected System.Windows.Forms.Button newOperatorGraphButton;
+    protected HeuristicLab.Core.Views.BreadcrumbViewHost operatorGraphViewHost;
 
   }
 }

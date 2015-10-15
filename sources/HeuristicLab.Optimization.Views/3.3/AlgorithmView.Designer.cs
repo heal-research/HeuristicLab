@@ -40,7 +40,7 @@ namespace HeuristicLab.Optimization.Views {
       this.openProblemButton = new System.Windows.Forms.Button();
       this.newProblemButton = new System.Windows.Forms.Button();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
-      this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.parameterCollectionView = new HeuristicLab.Core.Views.BreadcrumbViewHost();
       this.resultsTabPage = new System.Windows.Forms.TabPage();
       this.resultsView = new HeuristicLab.Optimization.Views.ResultCollectionView();
       this.runsTabPage = new System.Windows.Forms.TabPage();
@@ -178,17 +178,18 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.AllowEditingOfHiddenParameters = true;
       this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.parameterCollectionView.Caption = "ParameterCollection View";
       this.parameterCollectionView.Content = null;
+      this.parameterCollectionView.EnableBreadcrumbs = true;
       this.parameterCollectionView.Location = new System.Drawing.Point(6, 6);
       this.parameterCollectionView.Name = "parameterCollectionView";
       this.parameterCollectionView.ReadOnly = false;
       this.parameterCollectionView.Size = new System.Drawing.Size(659, 388);
       this.parameterCollectionView.TabIndex = 0;
+      this.parameterCollectionView.ViewsLabelVisible = false;
       // 
       // resultsTabPage
       // 
@@ -296,7 +297,7 @@ namespace HeuristicLab.Optimization.Views {
     protected HeuristicLab.MainForm.WindowsForms.DragOverTabControl tabControl;
     protected System.Windows.Forms.TabPage parametersTabPage;
     protected System.Windows.Forms.TabPage problemTabPage;
-    protected HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
+    protected HeuristicLab.Core.Views.BreadcrumbViewHost parameterCollectionView;
     protected HeuristicLab.MainForm.WindowsForms.ViewHost problemViewHost;
     protected System.Windows.Forms.Button newProblemButton;
     protected System.Windows.Forms.Button openProblemButton;

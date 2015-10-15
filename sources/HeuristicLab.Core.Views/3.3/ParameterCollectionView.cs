@@ -26,6 +26,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Collections;
 using HeuristicLab.MainForm;
+using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Core.Views {
   [View("ParameterCollection View")]
@@ -153,10 +154,26 @@ namespace HeuristicLab.Core.Views {
       if (itemsListView.SelectedItems.Count == 1) {
         IParameter item = itemsListView.SelectedItems[0].Tag as IParameter;
         if (item != null) {
-          IContentView view = MainFormManager.MainForm.ShowContent(item);
-          if (view != null) {
-            view.ReadOnly = ReadOnly || (item.Hidden && !AllowEditingOfHiddenParameters);
-            view.Locked = Locked;
+          Control c = this;
+          BreadcrumbViewHost bcvh;
+
+          do {
+            c = c.Parent;
+            bcvh = c as BreadcrumbViewHost;
+          } while ((bcvh == null || !bcvh.EnableBreadcrumbs) && c != null);
+
+          if (bcvh != null) {
+            bcvh.AddBreadcrumbs(bcvh.Content);
+            bcvh.AddBreadcrumbs(item);
+            bcvh.Content = item;
+            bcvh.ReadOnly = ReadOnly || (item.Hidden && !AllowEditingOfHiddenParameters);
+            bcvh.Locked = Locked;
+          } else {
+            IContentView view = MainFormManager.MainForm.ShowContent(item);
+            if (view != null) {
+              view.ReadOnly = ReadOnly || (item.Hidden && !AllowEditingOfHiddenParameters);
+              view.Locked = Locked;
+            }
           }
         }
       }
