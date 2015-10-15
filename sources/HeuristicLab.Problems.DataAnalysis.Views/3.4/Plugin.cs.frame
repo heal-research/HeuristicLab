@@ -28,6 +28,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [Plugin("HeuristicLab.Problems.DataAnalysis.Views", "Provides views for base classes for data analysis tasks.", "3.4.8.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.DataAnalysis.Views-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.ALGLIB", "3.7.0")]
+  [PluginDependency("HeuristicLab.Algorithms.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
@@ -43,7 +44,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [PluginDependency("HeuristicLab.Optimizer", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
-  [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Symbolic.Regression", "3.4")]
   [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions", "3.3")]
   public class HeuristicLabProblemsDataAnalysisViewsPlugin : PluginBase {
