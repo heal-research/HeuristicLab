@@ -194,11 +194,11 @@
 		copy "$(ProjectDir)..\..\lib\protoc.exe" "$(SolutionDir)"
 	</PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
-		cp "$(TargetPath)" "$(SolutionDir)"
+		cp "$(TargetPath)*" "$(SolutionDir)"
 		cp "$(TargetDir)Google.ProtocolBuffers-2.4.1.473.dll" "$(SolutionDir)"
-		cp "$(ProjectDir)..\..\lib\protoc.exe" "$(SolutionDir)"
+		cp "$(ProjectDir)../../lib/protoc.exe" "$(SolutionDir)"
 	</PostBuildEvent>
-  </PropertyGroup>  
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
