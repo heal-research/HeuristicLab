@@ -200,6 +200,7 @@
     <Compile Include="GradientBoostedTrees\GradientBoostedTreesAlgorithmStatic.cs" />
     <Compile Include="GradientBoostedTrees\GradientBoostedTreesModel.cs" />
     <Compile Include="GradientBoostedTrees\LossFunctions\AbsoluteErrorLoss.cs" />
+    <Compile Include="GradientBoostedTrees\LossFunctions\QuantileRegressionLoss.cs" />
     <Compile Include="GradientBoostedTrees\LossFunctions\ILossFunction.cs" />
     <Compile Include="GradientBoostedTrees\LossFunctions\LogisticRegressionLoss.cs" />
     <Compile Include="GradientBoostedTrees\LossFunctions\RelativeErrorLoss.cs" />
