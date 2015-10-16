@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace HeuristicLab.Common {
@@ -43,6 +44,33 @@ namespace HeuristicLab.Common {
         return valuesArr[n / 2];
       } else {
         return (valuesArr[(n / 2) - 1] + valuesArr[n / 2]) / 2.0;
+      }
+    }
+
+    /// <summary>
+    /// Calculates the alpha-quantile element of the enumeration.
+    /// </summary>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static double Quantile(this IEnumerable<double> values, double alpha) {
+      Contract.Assert(alpha > 0 && alpha < 1);
+      // iterate only once 
+      double[] valuesArr = values.ToArray();
+      int n = valuesArr.Length;
+      if (n == 0) throw new InvalidOperationException("Enumeration contains no elements.");
+
+      Array.Sort(valuesArr);
+      //  starts at 0
+
+      // return the element at Math.Ceiling (if n*alpha is fractional) or the average of two elements if n*alpha is integer.
+      var pos = n * alpha;
+      Contract.Assert(pos >= 0);
+      Contract.Assert(pos < n);
+      bool isInteger = Math.Round(pos).IsAlmost(pos);
+      if (isInteger) {
+        return 0.5 * (valuesArr[(int)pos - 1] + valuesArr[(int)pos]);
+      } else {
+        return valuesArr[(int)Math.Ceiling(pos) - 1];
       }
     }
 
