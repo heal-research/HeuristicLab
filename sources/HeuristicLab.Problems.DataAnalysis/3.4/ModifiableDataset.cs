@@ -36,7 +36,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public sealed class ModifiableDataset : Dataset, IStringConvertibleMatrix {
     [StorableConstructor]
     private ModifiableDataset(bool deserializing) : base(deserializing) { }
-    private ModifiableDataset(ModifiableDataset original, Cloner cloner) : base(original, cloner) { }
+
+    private ModifiableDataset(ModifiableDataset original, Cloner cloner) : base(original, cloner) {
+      var variables = variableValues.Keys.ToList();
+      foreach (var v in variables) {
+        var type = GetVariableType(v);
+        if (type == typeof(DateTime)) {
+          variableValues[v] = GetDateTimeValues(v).ToList();
+        } else if (type == typeof(double)) {
+          variableValues[v] = GetDoubleValues(v).ToList();
+        }
+      }
+    }
     public override IDeepCloneable Clone(Cloner cloner) { return new ModifiableDataset(this, cloner); }
     public ModifiableDataset() : base() { }
 
