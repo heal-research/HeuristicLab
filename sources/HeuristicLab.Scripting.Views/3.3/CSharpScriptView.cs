@@ -53,12 +53,14 @@ namespace HeuristicLab.Scripting.Views {
       Content.ScriptExecutionStarted += ContentOnScriptExecutionStarted;
       Content.ScriptExecutionFinished += ContentOnScriptExecutionFinished;
       Content.ConsoleOutputChanged += ContentOnConsoleOutputChanged;
+      Content.ExecutionTimeChanged += ContentOnExecutionTimeChanged;
     }
 
     protected override void DeregisterContentEvents() {
       Content.ScriptExecutionStarted -= ContentOnScriptExecutionStarted;
       Content.ScriptExecutionFinished -= ContentOnScriptExecutionFinished;
       Content.ConsoleOutputChanged -= ContentOnConsoleOutputChanged;
+      Content.ExecutionTimeChanged -= ContentOnExecutionTimeChanged;
       base.DeregisterContentEvents();
     }
 
@@ -105,14 +107,23 @@ namespace HeuristicLab.Scripting.Views {
         outputTextBox.AppendText(e.Value);
       }
     }
+    protected virtual void ContentOnExecutionTimeChanged(object sender, EventArgs eventArgs) {
+      if (InvokeRequired)
+        Invoke((Action<object, EventArgs>)ContentOnExecutionTimeChanged, sender, eventArgs);
+      else {
+        executionTimeTextBox.Text = Content == null ? "-" : Content.ExecutionTime.ToString();
+      }
+    }
     #endregion
 
     protected override void OnContentChanged() {
       base.OnContentChanged();
       if (Content == null) {
         variableStoreView.Content = null;
+        executionTimeTextBox.Text = "-";
       } else {
         variableStoreView.Content = Content.VariableStore;
+        executionTimeTextBox.Text = Content.ExecutionTime.ToString();
       }
     }
 
@@ -126,10 +137,10 @@ namespace HeuristicLab.Scripting.Views {
         Content.Kill();
       } else
         if (Compile()) {
-          outputTextBox.Clear();
-          Running = true;
-          Content.ExecuteAsync();
-        }
+        outputTextBox.Clear();
+        Running = true;
+        Content.ExecuteAsync();
+      }
     }
 
     #region global HotKeys

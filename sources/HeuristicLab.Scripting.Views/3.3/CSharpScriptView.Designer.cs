@@ -51,12 +51,25 @@ namespace HeuristicLab.Scripting.Views {
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.variableStoreView = new HeuristicLab.Scripting.Views.VariableStoreView();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.executionTimeTextBox = new System.Windows.Forms.TextBox();
+      this.executionTimeLabel = new System.Windows.Forms.Label();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+      this.splitContainer1.Panel1.SuspendLayout();
+      this.splitContainer1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
       this.splitContainer2.Panel1.SuspendLayout();
       this.splitContainer2.Panel2.SuspendLayout();
       this.splitContainer2.SuspendLayout();
       this.SuspendLayout();
+      // 
+      // splitContainer1.Panel1
+      // 
+      this.splitContainer1.Panel1.Controls.Add(this.executionTimeTextBox);
+      this.splitContainer1.Panel1.Controls.Add(this.executionTimeLabel);
+      this.splitContainer1.Panel1.Controls.SetChildIndex(this.executionTimeTextBox, 0);
+      this.splitContainer1.Panel1.Controls.SetChildIndex(this.executionTimeLabel, 0);
+      this.splitContainer1.Size = new System.Drawing.Size(637, 543);
       // 
       // nameTextBox
       // 
@@ -131,6 +144,25 @@ namespace HeuristicLab.Scripting.Views {
       this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
       // 
+      // executionTimeTextBox
+      // 
+      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionTimeTextBox.Location = new System.Drawing.Point(483, 390);
+      this.executionTimeTextBox.Name = "executionTimeTextBox";
+      this.executionTimeTextBox.ReadOnly = true;
+      this.executionTimeTextBox.Size = new System.Drawing.Size(137, 20);
+      this.executionTimeTextBox.TabIndex = 17;
+      // 
+      // executionTimeLabel
+      // 
+      this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionTimeLabel.AutoSize = true;
+      this.executionTimeLabel.Location = new System.Drawing.Point(394, 393);
+      this.executionTimeLabel.Name = "executionTimeLabel";
+      this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
+      this.executionTimeLabel.TabIndex = 16;
+      this.executionTimeLabel.Text = "&Execution Time:";
+      // 
       // ScriptView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -143,6 +175,10 @@ namespace HeuristicLab.Scripting.Views {
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
+      this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+      this.splitContainer1.ResumeLayout(false);
       this.splitContainer2.Panel1.ResumeLayout(false);
       this.splitContainer2.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -158,5 +194,7 @@ namespace HeuristicLab.Scripting.Views {
     protected System.Windows.Forms.SplitContainer splitContainer2;
     protected MainForm.WindowsForms.ViewHost viewHost;
     protected VariableStoreView variableStoreView;
+    protected TextBox executionTimeTextBox;
+    protected Label executionTimeLabel;
   }
 }

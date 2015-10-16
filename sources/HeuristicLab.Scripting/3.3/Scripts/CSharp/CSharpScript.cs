@@ -39,6 +39,8 @@ namespace HeuristicLab.Scripting {
 
     #region Fields & Properties
     private CSharpScriptBase compiledScript;
+    private Thread scriptThread;
+    private DateTime lastUpdateTime;
 
     public string Filename { get; set; }
 
@@ -46,6 +48,16 @@ namespace HeuristicLab.Scripting {
     private VariableStore variableStore;
     public VariableStore VariableStore {
       get { return variableStore; }
+    }
+
+    [Storable]
+    private TimeSpan executionTime;
+    public TimeSpan ExecutionTime {
+      get { return executionTime; }
+      protected set {
+        executionTime = value;
+        OnExecutionTimeChanged();
+      }
     }
     #endregion
 
@@ -55,14 +67,17 @@ namespace HeuristicLab.Scripting {
     protected CSharpScript(CSharpScript original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);
+      executionTime = original.executionTime;
     }
     public CSharpScript() {
       variableStore = new VariableStore();
+      executionTime = TimeSpan.Zero;
       Code = CodeTemplate;
     }
     public CSharpScript(string code)
       : base(code) {
       variableStore = new VariableStore();
+      executionTime = TimeSpan.Zero;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -93,20 +108,25 @@ namespace HeuristicLab.Scripting {
     }
     #endregion
 
-    private Thread scriptThread;
     public virtual void ExecuteAsync() {
       if (compiledScript == null) return;
+      executionTime = TimeSpan.Zero;
       scriptThread = new Thread(() => {
         Exception ex = null;
+        var timer = new System.Timers.Timer(250) { AutoReset = true };
+        timer.Elapsed += timer_Elapsed;
         try {
           OnScriptExecutionStarted();
+          lastUpdateTime = DateTime.UtcNow;
+          timer.Start();
           compiledScript.Execute(VariableStore);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           ex = e;
-        }
-        finally {
+        } finally {
           scriptThread = null;
+          timer.Elapsed -= timer_Elapsed;
+          timer.Stop();
+          ExecutionTime += DateTime.UtcNow - lastUpdateTime;
           OnScriptExecutionFinished(ex);
         }
       });
@@ -117,6 +137,15 @@ namespace HeuristicLab.Scripting {
     public virtual void Kill() {
       if (scriptThread == null) return;
       scriptThread.Abort();
+    }
+
+    private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) {
+      var timer = (System.Timers.Timer)sender;
+      timer.Enabled = false;
+      DateTime now = DateTime.UtcNow;
+      ExecutionTime += now - lastUpdateTime;
+      lastUpdateTime = now;
+      timer.Enabled = true;
     }
 
     protected virtual void CompiledScriptOnConsoleOutputChanged(object sender, EventArgs<string> e) {
@@ -139,6 +168,12 @@ namespace HeuristicLab.Scripting {
     protected virtual void OnConsoleOutputChanged(string args) {
       var handler = ConsoleOutputChanged;
       if (handler != null) handler(this, new EventArgs<string>(args));
+    }
+
+    public event EventHandler ExecutionTimeChanged;
+    protected virtual void OnExecutionTimeChanged() {
+      var handler = ExecutionTimeChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
     }
   }
 }
