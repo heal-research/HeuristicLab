@@ -201,19 +201,8 @@ namespace HeuristicLab.Common {
     /// Calculates the pth percentile of the values.
     /// </summary>
     public static double Percentile(this IEnumerable<double> values, double p) {
-      // iterate only once 
-      double[] valuesArr = values.ToArray();
-      int n = valuesArr.Length;
-      if (n == 0) throw new InvalidOperationException("Enumeration contains no elements.");
-      if (n == 1) return values.ElementAt(0);
-
-      if (p.IsAlmost(0.0)) return valuesArr[0];
-      if (p.IsAlmost(1.0)) return valuesArr[n - 1];
-
-      double t = p * (n - 1);
-      int index = (int)Math.Floor(t);
-      double percentage = t - index;
-      return valuesArr[index] * (1 - percentage) + valuesArr[index + 1] * percentage;
+      // percentiles are actually quantiles where alpha is constrained to integer percentage values from 1% to 99%
+      return Quantile(values, p);
     }
 
     public static IEnumerable<double> LimitToRange(this IEnumerable<double> values, double min, double max) {
