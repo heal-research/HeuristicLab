@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
@@ -121,16 +122,30 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void UpdateColumnHeaders() {
-      HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
-       .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
-
       for (int i = 0; i < dataGridView.ColumnCount; i++) {
         if (i < base.Content.ColumnNames.Count())
           dataGridView.Columns[i].HeaderText = base.Content.ColumnNames.ElementAt(i);
         else
           dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
+      }
+
+      HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
+       .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText) && GetNumberOfDistinctValues(c.HeaderText) > 1).Select(c => c.HeaderText));
+
+      for (int i = 0; i < dataGridView.ColumnCount; i++) {
         dataGridView.Columns[i].Visible = visibleColumnNames.Count == 0 || visibleColumnNames.Contains(dataGridView.Columns[i].HeaderText);
       }
+    }
+
+    // returns the number of different values for the parameter or result in the RunCollection 
+    private int GetNumberOfDistinctValues(string columnName) {
+      Func<IRun, string, string> GetStringValue = (IRun r, string colName) => {
+        // also include missing values in the count
+        if (r.Parameters.ContainsKey(colName)) return r.Parameters[colName].ToString();
+        if (r.Results.ContainsKey(colName)) return r.Results[colName].ToString();
+        return string.Empty;
+      };
+      return Content.Select(r => GetStringValue(r, columnName)).Distinct().Count();
     }
 
     private void UpdateRun(IRun run) {
