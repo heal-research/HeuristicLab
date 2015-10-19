@@ -36,7 +36,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
         if (xVar.IsAlmost(0.0) || yVar.IsAlmost(0.0)) {
           return 0.0;
         } else {
-          return covCalculator.Covariance / (Math.Sqrt(xVar) * Math.Sqrt(yVar));
+          var r = covCalculator.Covariance / (Math.Sqrt(xVar) * Math.Sqrt(yVar));
+          if (r < -1.0) r = -1.0;
+          else if (r > 1.0) r = 1.0;
+          return r;
         }
       }
     }
