@@ -45,6 +45,10 @@ namespace HeuristicLab.Problems.DataAnalysis {
           variableValues[v] = GetDateTimeValues(v).ToList();
         } else if (type == typeof(double)) {
           variableValues[v] = GetDoubleValues(v).ToList();
+        } else if (type == typeof(string)) {
+          variableValues[v] = GetStringValues(v).ToList();
+        } else {
+          throw new ArgumentException("Unsupported type " + type + " for variable " + v);
         }
       }
     }
