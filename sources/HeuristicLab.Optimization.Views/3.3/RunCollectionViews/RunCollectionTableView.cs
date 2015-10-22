@@ -122,30 +122,40 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void UpdateColumnHeaders() {
+      string[] colNames = base.Content.ColumnNames.ToArray();
+      int colCount = colNames.Length;
       for (int i = 0; i < dataGridView.ColumnCount; i++) {
-        if (i < base.Content.ColumnNames.Count())
-          dataGridView.Columns[i].HeaderText = base.Content.ColumnNames.ElementAt(i);
+        if (i < colCount)
+          dataGridView.Columns[i].HeaderText = colNames[i];
         else
           dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
       }
 
-      HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
-       .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText) && GetNumberOfDistinctValues(c.HeaderText) > 1).Select(c => c.HeaderText));
+      HashSet<string> visibleColumnNames = new HashSet<string>(
+        dataGridView.Columns.OfType<DataGridViewColumn>()
+       .Where(c => c.Visible)
+       .Where(c => !string.IsNullOrEmpty(c.HeaderText))
+       .Where(c => !IsConstant(c.HeaderText))
+       .Select(c => c.HeaderText));
 
       for (int i = 0; i < dataGridView.ColumnCount; i++) {
         dataGridView.Columns[i].Visible = visibleColumnNames.Count == 0 || visibleColumnNames.Contains(dataGridView.Columns[i].HeaderText);
       }
     }
 
-    // returns the number of different values for the parameter or result in the RunCollection 
-    private int GetNumberOfDistinctValues(string columnName) {
+    // returns true when all values in the column are the same (missing values are included in the count)
+    private bool IsConstant(string columnName) {
       Func<IRun, string, string> GetStringValue = (IRun r, string colName) => {
         // also include missing values in the count
-        if (r.Parameters.ContainsKey(colName)) return r.Parameters[colName].ToString();
-        if (r.Results.ContainsKey(colName)) return r.Results[colName].ToString();
+        IItem v = null;
+        if (r.Parameters.TryGetValue(colName, out v)) return v.ToString();
+        if (r.Results.TryGetValue(colName, out v)) return v.ToString();
         return string.Empty;
       };
-      return Content.Select(r => GetStringValue(r, columnName)).Distinct().Count();
+
+      var firstRun = Content.First();
+      string firstValue = GetStringValue(firstRun, columnName);
+      return Content.Skip(1).All(run => firstValue == GetStringValue(run, columnName));
     }
 
     private void UpdateRun(IRun run) {
