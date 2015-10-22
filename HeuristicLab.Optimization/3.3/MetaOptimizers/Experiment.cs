@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -344,13 +345,21 @@ namespace HeuristicLab.Optimization {
     }
 
     private readonly object locker = new object();
+    private readonly object runsLocker = new object();
     private void optimizer_ExceptionOccurred(object sender, EventArgs<Exception> e) {
       lock (locker)
         OnExceptionOccurred(e.Value);
     }
     private void optimizer_ExecutionTimeChanged(object sender, EventArgs e) {
-      lock (locker)
+      // only wait for maximally 100ms to acquire lock, otherwise return and don't update the execution time 
+      var success = Monitor.TryEnter(locker, 100);
+      if (!success) return;
+      try {
         ExecutionTime = Optimizers.Aggregate(TimeSpan.Zero, (t, o) => t + o.ExecutionTime);
+      }
+      finally {
+        Monitor.Exit(locker);
+      }
     }
     private void optimizer_Paused(object sender, EventArgs e) {
       lock (locker)
@@ -377,17 +386,17 @@ namespace HeuristicLab.Optimization {
       }
     }
     private void optimizer_Runs_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      lock (locker) {
+      lock (runsLocker) {
         Runs.RemoveRange(e.OldItems);
         Runs.AddRange(e.Items);
       }
     }
     private void optimizer_Runs_ItemsAdded(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      lock (locker)
+      lock (runsLocker)
         Runs.AddRange(e.Items);
     }
     private void optimizer_Runs_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
-      lock (locker)
+      lock (runsLocker)
         Runs.RemoveRange(e.Items);
     }
 
