@@ -35,6 +35,10 @@ namespace HeuristicLab.Tests {
       var ga = CreateGpLawnMowerSample();
       ga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(ga);
+      Assert.AreEqual(55, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
+      Assert.AreEqual(49, 266, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(1, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
+      Assert.AreEqual(50950, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
 
     public GeneticAlgorithm CreateGpLawnMowerSample() {
@@ -42,7 +46,7 @@ namespace HeuristicLab.Tests {
 
       #region Problem Configuration
 
-      var problem = new HeuristicLab.Problems.LawnMower.Problem();
+      var problem = new Problems.GeneticProgramming.LawnMower.Problem();
 
       #endregion
       #region Algorithm Configuration
