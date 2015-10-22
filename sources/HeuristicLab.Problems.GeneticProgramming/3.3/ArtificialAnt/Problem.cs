@@ -112,7 +112,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       var g = new SimpleSymbolicExpressionGrammar();
       g.AddSymbols(new string[] { "IfFoodAhead", "Prog2" }, 2, 2);
       g.AddSymbols(new string[] { "Prog3" }, 3, 3);
-      g.AddTerminalSymbols(new string[] { "Left", "Right", "Move" });
+      g.AddTerminalSymbols(new string[] { "Move", "Left", "Right" });
       base.Encoding = new SymbolicExpressionTreeEncoding(g, 20, 10);
     }
 
