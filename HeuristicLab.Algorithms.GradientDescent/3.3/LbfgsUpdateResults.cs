@@ -36,6 +36,7 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     private const string QualityParameterName = "Quality";
     private const string StateParameterName = "State";
     private const string ApproximateGradientsParameterName = "ApproximateGradients";
+    private const string MaximizationParameterName = "Maximization";
 
     #region Parameter Properties
     public ILookupParameter<BoolValue> ApproximateGradientsParameter {
@@ -50,6 +51,9 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     public ILookupParameter<LbfgsState> StateParameter {
       get { return (ILookupParameter<LbfgsState>)Parameters[StateParameterName]; }
     }
+    public ILookupParameter<BoolValue> MaximizationParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[MaximizationParameterName]; }
+    }
     #endregion
 
     #region Properties
@@ -57,6 +61,18 @@ namespace HeuristicLab.Algorithms.GradientDescent {
     private RealVector QualityGradients { get { return QualityGradientsParameter.ActualValue; } }
     private DoubleValue Quality { get { return QualityParameter.ActualValue; } }
     private LbfgsState State { get { return StateParameter.ActualValue; } }
+
+    private BoolValue Maximization {
+      get {
+        // BackwardsCompatibility3.3
+        #region Backwards compatible code, remove with 3.4
+        // the parameter is new, previously we assumed minimization problems
+        if (MaximizationParameter.ActualValue == null) return new BoolValue(false);
+        #endregion
+        return MaximizationParameter.ActualValue;
+      }
+    }
+
     #endregion
 
     [StorableConstructor]
@@ -69,8 +85,21 @@ namespace HeuristicLab.Algorithms.GradientDescent {
       Parameters.Add(new LookupParameter<DoubleValue>(QualityParameterName, "The value at the evaluated point of the function to optimize."));
       Parameters.Add(new LookupParameter<BoolValue>(ApproximateGradientsParameterName,
                                                     "Flag that indicates if gradients should be approximated."));
+      Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "Flag that indicates if we solve a maximization problem."));
       // in & out
       Parameters.Add(new LookupParameter<LbfgsState>(StateParameterName, "The state of the LM-BFGS algorithm."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(MaximizationParameterName)) {
+        // previous behaviour defaulted to minimization
+        Parameters.Add(new LookupParameter<BoolValue>(MaximizationParameterName, "Flag that indicates if we solve a maximization problem."));
+      }
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -79,10 +108,11 @@ namespace HeuristicLab.Algorithms.GradientDescent {
 
     public override IOperation Apply() {
       var state = State;
-      var f = Quality.Value;
+      var sign = Maximization.Value ? -1.0 : 1.0;
+      var f = sign * Quality.Value;
       state.State.f = f;
       if (!ApproximateGradients.Value) {
-        var g = QualityGradients.ToArray();
+        var g = QualityGradients.Select(gi => sign * gi).ToArray();
         state.State.g = g;
       }
       return base.Apply();
