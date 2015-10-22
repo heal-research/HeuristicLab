@@ -19,20 +19,23 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Constant Regression Model", "A model that always returns the same constant value regardless of the presented input data.")]
-  public class ConstantRegressionModel : NamedItem, IRegressionModel {
+  public class ConstantRegressionModel : NamedItem, IRegressionModel, IStringConvertibleValue {
     [Storable]
-    protected double constant;
+    private double constant;
     public double Constant {
       get { return constant; }
+      // setter not implemented because manipulation of the constant is not allowed
     }
 
     [StorableConstructor]
@@ -48,6 +51,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       this.name = ItemName;
       this.description = ItemDescription;
       this.constant = constant;
+      this.ReadOnly = true; // changing a constant regression model is not supported
     }
 
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
@@ -57,5 +61,26 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
       return new ConstantRegressionSolution(this, new RegressionProblemData(problemData));
     }
+
+    public override string ToString() {
+      return string.Format("Constant: {0}", GetValue());
+    }
+
+    #region IStringConvertibleValue
+    public bool ReadOnly { get; private set; }
+    public bool Validate(string value, out string errorMessage) {
+      throw new NotSupportedException(); // changing a constant regression model is not supported
+    }
+
+    public string GetValue() {
+      return string.Format("{0:E4}", constant);
+    }
+
+    public bool SetValue(string value) {
+      throw new NotSupportedException(); // changing a constant regression model is not supported
+    }
+
+    public event EventHandler ValueChanged;
+    #endregion
   }
 }
