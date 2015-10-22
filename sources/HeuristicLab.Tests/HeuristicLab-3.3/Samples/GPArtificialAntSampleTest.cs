@@ -24,7 +24,7 @@ using System.Linq;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.Xml;
-using HeuristicLab.Problems.ArtificialAnt;
+using HeuristicLab.Problems.GeneticProgramming.ArtificialAnt;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -59,12 +59,12 @@ namespace HeuristicLab.Tests {
       GeneticAlgorithm ga = new GeneticAlgorithm();
 
       #region Problem Configuration
-      ArtificialAntProblem antProblem = new ArtificialAntProblem();
-      antProblem.BestKnownQuality.Value = 89;
-      antProblem.MaxExpressionDepth.Value = 10;
-      antProblem.MaxExpressionLength.Value = 100;
-      antProblem.MaxFunctionArguments.Value = 3;
-      antProblem.MaxFunctionDefinitions.Value = 3;
+      Problem antProblem = new Problem();
+      antProblem.BestKnownQuality = 89;
+      antProblem.Encoding.TreeDepth = 10;
+      antProblem.Encoding.TreeLength = 100;
+      antProblem.Encoding.FunctionDefinitions = 3;
+      antProblem.Encoding.FunctionArguments = 3;
       antProblem.MaxTimeSteps.Value = 600;
       #endregion
       #region Algorithm Configuration
