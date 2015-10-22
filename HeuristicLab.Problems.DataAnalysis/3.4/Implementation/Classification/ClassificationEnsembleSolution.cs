@@ -48,6 +48,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       set { base.ProblemData = value; }
     }
 
+    [Storable]
     private readonly ItemCollection<IClassificationSolution> classificationSolutions;
     public IItemCollection<IClassificationSolution> ClassificationSolutions {
       get { return classificationSolutions; }
@@ -65,14 +66,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      foreach (var model in Model.Models) {
-        IClassificationProblemData problemData = (IClassificationProblemData)ProblemData.Clone();
-        problemData.TrainingPartition.Start = trainingPartitions[model].Start;
-        problemData.TrainingPartition.End = trainingPartitions[model].End;
-        problemData.TestPartition.Start = testPartitions[model].Start;
-        problemData.TestPartition.End = testPartitions[model].End;
+      if (!classificationSolutions.Any()) {
+        foreach (var model in Model.Models) {
+          IClassificationProblemData problemData = (IClassificationProblemData)ProblemData.Clone();
+          problemData.TrainingPartition.Start = trainingPartitions[model].Start;
+          problemData.TrainingPartition.End = trainingPartitions[model].End;
+          problemData.TestPartition.Start = testPartitions[model].Start;
+          problemData.TestPartition.End = testPartitions[model].End;
 
-        classificationSolutions.Add(model.CreateClassificationSolution(problemData));
+          classificationSolutions.Add(model.CreateClassificationSolution(problemData));
+        }
       }
       RegisterClassificationSolutionsEventHandler();
     }
