@@ -388,8 +388,8 @@ namespace HeuristicLab.Analysis.Statistics.Views {
         matrix[4, i] = seriesValues.Median();
         matrix[5, i] = seriesValues.StandardDeviation();
         matrix[6, i] = seriesValues.Variance();
-        matrix[7, i] = seriesValues.Percentile(0.25);
-        matrix[8, i] = seriesValues.Percentile(0.75);
+        matrix[7, i] = seriesValues.Quantile(0.25);
+        matrix[8, i] = seriesValues.Quantile(0.75);
         matrix[9, i] = confIntervals.Item1;
         matrix[10, i] = confIntervals.Item2;
       }

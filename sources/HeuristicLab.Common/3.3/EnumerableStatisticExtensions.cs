@@ -64,10 +64,12 @@ namespace HeuristicLab.Common {
     }
 
     // Numerical Recipes in C++, §8.5 Selecting the Mth Largest, O(n)
-    // Giben k in [0..n-1] returns an array value from array arr[0..n-1] such that k array values are 
+    // Given k in [0..n-1] returns an array value from array arr[0..n-1] such that k array values are 
     // lee than or equal to the one returned. The input array will be rearranged to hav this value in 
     // location arr[k], with all smaller elements moved to arr[0..k-1] (in arbitrary order) and all 
     // larger elements in arr[k+1..n-1] (also in arbitrary order).
+    // 
+    // Could be changed to Select<T> where T is IComparable but in this case is significantly slower for double values
     private static double Select(int k, double[] arr) {
       Contract.Assert(arr.GetLowerBound(0) == 0);
       Contract.Assert(k >= 0 && k < arr.Length);
@@ -195,14 +197,6 @@ namespace HeuristicLab.Common {
         }
       }
       return ((m_n > 1) ? m_newS / (m_n - 1) : 0.0);
-    }
-
-    /// <summary>
-    /// Calculates the pth percentile of the values.
-    /// </summary>
-    public static double Percentile(this IEnumerable<double> values, double p) {
-      // percentiles are actually quantiles where alpha is constrained to integer percentage values from 1% to 99%
-      return Quantile(values, p);
     }
 
     public static IEnumerable<double> LimitToRange(this IEnumerable<double> values, double min, double max) {
