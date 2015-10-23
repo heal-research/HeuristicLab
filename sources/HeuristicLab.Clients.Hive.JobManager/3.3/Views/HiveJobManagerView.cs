@@ -106,13 +106,17 @@ namespace HeuristicLab.Clients.Hive.JobManager.Views {
         Invoke(new Action<Exception>(HandleServiceException), ex);
       } else {
         if (ex is MessageSecurityException) {
-          MessageBox.Show("A Message Security error has occured. This normally means that your user name or password is wrong.", "HeuristicLab Hive Job Manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          string message =
+            "A Message Security error has occured. This normally means that your user name or password is wrong. Detailed information: " + Environment.NewLine;
+          message += HiveServiceLocator.Instance.GetEndpointInformation();
+          ErrorHandling.ShowErrorDialog(this, message, ex);
         } else if (ex is AnonymousUserException) {
           using (HiveInformationDialog dialog = new HiveInformationDialog()) {
             dialog.ShowDialog(this);
           }
         } else {
-          ErrorHandling.ShowErrorDialog(this, "Refresh failed.", ex);
+          ErrorHandling.ShowErrorDialog(this,
+            "Refresh failed. Detailed information: " + Environment.NewLine + HiveServiceLocator.Instance.GetEndpointInformation(), ex);
         }
       }
     }
