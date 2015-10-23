@@ -36,7 +36,7 @@ namespace HeuristicLab.Tests {
       ga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(ga);
       Assert.AreEqual(55, SamplesUtils.GetDoubleResult(ga, "BestQuality"));
-      Assert.AreEqual(49, 266, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
+      Assert.AreEqual(49.266, SamplesUtils.GetDoubleResult(ga, "CurrentAverageQuality"));
       Assert.AreEqual(1, SamplesUtils.GetDoubleResult(ga, "CurrentWorstQuality"));
       Assert.AreEqual(50950, SamplesUtils.GetIntResult(ga, "EvaluatedSolutions"));
     }
