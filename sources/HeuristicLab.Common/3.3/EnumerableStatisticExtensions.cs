@@ -65,7 +65,7 @@ namespace HeuristicLab.Common {
 
     // Numerical Recipes in C++, §8.5 Selecting the Mth Largest, O(n)
     // Given k in [0..n-1] returns an array value from array arr[0..n-1] such that k array values are 
-    // lee than or equal to the one returned. The input array will be rearranged to hav this value in 
+    // less than or equal to the one returned. The input array will be rearranged to have this value in 
     // location arr[k], with all smaller elements moved to arr[0..k-1] (in arbitrary order) and all 
     // larger elements in arr[k+1..n-1] (also in arbitrary order).
     // 
@@ -114,7 +114,7 @@ namespace HeuristicLab.Common {
             arr[ir] = temp;
           }
           if (arr[l] > arr[l + 1]) {
-          //if (arr[l].CompareTo(arr[l + 1]) > 0) {
+            //if (arr[l].CompareTo(arr[l + 1]) > 0) {
             // SWAP(arr[l], arr[l + 1]);
             double temp = arr[l];
             arr[l] = arr[l + 1];
