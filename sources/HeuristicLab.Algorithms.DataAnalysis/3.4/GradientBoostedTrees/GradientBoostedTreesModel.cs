@@ -75,6 +75,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.models = new List<IRegressionModel>(original.models.Select(m => cloner.Clone(m)));
       this.isCompatibilityLoaded = original.isCompatibilityLoaded;
     }
+    [Obsolete("The constructor of GBTModel should not be used directly anymore (use GBTModelSurrogate instead)")]
     public GradientBoostedTreesModel(IEnumerable<IRegressionModel> models, IEnumerable<double> weights)
       : base("Gradient boosted tree model", string.Empty) {
       this.models = new List<IRegressionModel>(models);

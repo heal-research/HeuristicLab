@@ -254,22 +254,21 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       // produce solution 
       if (CreateSolution) {
-        var surrogateModel = new GradientBoostedTreesModelSurrogate(problemData, (uint)Seed, lossFunction,
-          Iterations, MaxSize, R, M, Nu, state.GetModel());
+        var model = state.GetModel();
 
         // for logistic regression we produce a classification solution
         if (lossFunction is LogisticRegressionLoss) {
-          var model = new DiscriminantFunctionClassificationModel(surrogateModel,
+          var classificationModel = new DiscriminantFunctionClassificationModel(model,
             new AccuracyMaximizationThresholdCalculator());
           var classificationProblemData = new ClassificationProblemData(problemData.Dataset,
             problemData.AllowedInputVariables, problemData.TargetVariable, problemData.Transformations);
-          model.RecalculateModelParameters(classificationProblemData, classificationProblemData.TrainingIndices);
+          classificationModel.RecalculateModelParameters(classificationProblemData, classificationProblemData.TrainingIndices);
 
-          var classificationSolution = new DiscriminantFunctionClassificationSolution(model, classificationProblemData);
+          var classificationSolution = new DiscriminantFunctionClassificationSolution(classificationModel, classificationProblemData);
           Results.Add(new Result("Solution", classificationSolution));
         } else {
           // otherwise we produce a regression solution
-          Results.Add(new Result("Solution", new RegressionSolution(surrogateModel, problemData)));
+          Results.Add(new Result("Solution", new RegressionSolution(model, problemData)));
         }
       }
     }
