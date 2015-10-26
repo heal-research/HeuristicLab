@@ -27,8 +27,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
   [View("Error Characteristics Curve")]
   [Content(typeof(ITimeSeriesPrognosisSolution))]
   public partial class TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView : RegressionSolutionErrorCharacteristicsCurveView {
-
-
     public TimeSeriesPrognosisSolutionErrorCharacteristicsCurveView()
       : base() {
       InitializeComponent();
@@ -45,20 +43,18 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       }
     }
 
-    protected override void UpdateChart() {
-      base.UpdateChart();
-      if (Content == null) return;
+    protected override IEnumerable<IRegressionSolution> CreateBaselineSolutions() {
+      foreach (var sol in base.CreateBaselineSolutions())
+        yield return sol;
 
       IEnumerable<double> trainingStartValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices.Select(r => r - 1).Where(r => r > 0)).ToList();
-      if (trainingStartValues.Any()) {
-        //AR1 model
-        double alpha, beta;
-        OnlineCalculatorError errorState;
-        OnlineLinearScalingParameterCalculator.Calculate(ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices.Where(x => x > 0)), trainingStartValues, out alpha, out beta, out errorState);
-        var ar1model = new TimeSeriesPrognosisAutoRegressiveModel(ProblemData.TargetVariable, new double[] { beta }, alpha).CreateTimeSeriesPrognosisSolution(ProblemData);
-        ar1model.Name = "AR(1) Model";
-        AddRegressionSolution(ar1model);
-      }
+      //AR1 model
+      double alpha, beta;
+      OnlineCalculatorError errorState;
+      OnlineLinearScalingParameterCalculator.Calculate(ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices.Where(x => x > 0)), trainingStartValues, out alpha, out beta, out errorState);
+      var ar1Solution = new TimeSeriesPrognosisAutoRegressiveModel(ProblemData.TargetVariable, new double[] { beta }, alpha).CreateTimeSeriesPrognosisSolution(ProblemData);
+      ar1Solution.Name = "AR(1)";
+      yield return ar1Solution;
     }
   }
 }
