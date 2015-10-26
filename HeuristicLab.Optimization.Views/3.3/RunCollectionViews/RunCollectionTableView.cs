@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
@@ -121,16 +122,40 @@ namespace HeuristicLab.Optimization.Views {
     }
 
     protected override void UpdateColumnHeaders() {
-      HashSet<string> visibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
-       .Where(c => c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
-
+      string[] colNames = base.Content.ColumnNames.ToArray();
+      int colCount = colNames.Length;
       for (int i = 0; i < dataGridView.ColumnCount; i++) {
-        if (i < base.Content.ColumnNames.Count())
-          dataGridView.Columns[i].HeaderText = base.Content.ColumnNames.ElementAt(i);
+        if (i < colCount)
+          dataGridView.Columns[i].HeaderText = colNames[i];
         else
           dataGridView.Columns[i].HeaderText = "Column " + (i + 1);
+      }
+
+      HashSet<string> visibleColumnNames = new HashSet<string>(
+        dataGridView.Columns.OfType<DataGridViewColumn>()
+       .Where(c => c.Visible)
+       .Where(c => !string.IsNullOrEmpty(c.HeaderText))
+       .Where(c => !IsConstant(c.HeaderText))
+       .Select(c => c.HeaderText));
+
+      for (int i = 0; i < dataGridView.ColumnCount; i++) {
         dataGridView.Columns[i].Visible = visibleColumnNames.Count == 0 || visibleColumnNames.Contains(dataGridView.Columns[i].HeaderText);
       }
+    }
+
+    // returns true when all values in the column are the same (missing values are included in the count)
+    private bool IsConstant(string columnName) {
+      Func<IRun, string, string> GetStringValue = (IRun r, string colName) => {
+        // also include missing values in the count
+        IItem v = null;
+        if (r.Parameters.TryGetValue(colName, out v)) return v.ToString();
+        if (r.Results.TryGetValue(colName, out v)) return v.ToString();
+        return string.Empty;
+      };
+
+      var firstRun = Content.First();
+      string firstValue = GetStringValue(firstRun, columnName);
+      return Content.Skip(1).All(run => firstValue == GetStringValue(run, columnName));
     }
 
     private void UpdateRun(IRun run) {
