@@ -35,6 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   public sealed class GradientBoostedTreesModelSurrogate : NamedItem, IRegressionModel {
     // don't store the actual model!
     private IRegressionModel actualModel; // the actual model is only recalculated when necessary
+    public IRegressionModel Model { get { return actualModel; } }
 
     [Storable]
     private readonly IRegressionProblemData trainingProblemData;

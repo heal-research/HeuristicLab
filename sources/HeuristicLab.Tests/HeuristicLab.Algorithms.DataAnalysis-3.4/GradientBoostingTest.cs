@@ -268,7 +268,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       problemData.TestPartition.Start = nRows;
       problemData.TestPartition.End = nRows;
       var solution = GradientBoostedTreesAlgorithmStatic.TrainGbm(problemData, new SquaredErrorLoss(), maxSize, nu: 1, r: 1, m: 1, maxIterations: 1, randSeed: 31415);
-      var model = (GradientBoostedTreesModel)solution.Model;
+      var model = (GradientBoostedTreesModel)((GradientBoostedTreesModelSurrogate)solution.Model).Model;
       var treeM = model.Models.Skip(1).First() as RegressionTreeModel;
 
       Console.WriteLine(treeM.ToString());
