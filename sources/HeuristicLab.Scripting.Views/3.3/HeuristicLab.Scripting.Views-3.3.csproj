@@ -97,6 +97,12 @@
     <Compile Include="CSharpScriptView.Designer.cs">
       <DependentUpon>CSharpScriptView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExecutableScriptView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ExecutableScriptView.Designer.cs">
+      <DependentUpon>ExecutableScriptView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScriptView.cs">
       <SubType>UserControl</SubType>
     </Compile>

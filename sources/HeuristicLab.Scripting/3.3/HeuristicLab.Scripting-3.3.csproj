@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompilationException.cs" />
+    <Compile Include="ExecutableScript.cs" />
     <Compile Include="Scripts\CSharp\CSharpScript.cs" />
     <Compile Include="Scripts\Templates\CSharpScriptTemplate.cs" />
     <Compile Include="Scripts\Templates\ScriptTemplates.Designer.cs">
