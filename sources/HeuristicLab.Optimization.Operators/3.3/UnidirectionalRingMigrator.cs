@@ -22,7 +22,9 @@
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization.Operators {
@@ -32,11 +34,29 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("UnidirectionalRingMigrator", "Migrates the selected sub scopes in each subscope in an unidirectional ring.")]
   [StorableClass]
   public class UnidirectionalRingMigrator : SingleSuccessorOperator, IMigrator {
+    public IValueLookupParameter<BoolValue> ClockwiseMigrationDirectionParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["ClockwiseMigrationDirection"]; }
+    }
+
     [StorableConstructor]
     protected UnidirectionalRingMigrator(bool deserializing) : base(deserializing) { }
     protected UnidirectionalRingMigrator(UnidirectionalRingMigrator original, Cloner cloner) : base(original, cloner) { }
-    public UnidirectionalRingMigrator() : base() { }
 
+    public UnidirectionalRingMigrator()
+      : base() {
+      Parameters.Add(new ValueLookupParameter<BoolValue>("ClockwiseMigrationDirection", "True to migrate individuals clockwise, otherwise migrate individuals counterclockwise.", new BoolValue(true)));
+    }
+
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code (remove with 3.4)
+      if (!Parameters.ContainsKey("ClockwiseMigrationDirection")) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>("ClockwiseMigrationDirection", "True to migrate individuals clockwise, otherwise migrate individuals counterclockwise.", new BoolValue(false)));
+      }
+      #endregion
+    }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new UnidirectionalRingMigrator(this, cloner);
     }
@@ -55,6 +75,7 @@ namespace HeuristicLab.Optimization.Operators {
     /// </summary>
     /// <returns>The next operation.</returns>
     public override IOperation Apply() {
+      bool clockwise = ClockwiseMigrationDirectionParameter.ActualValue.Value;
       IScope scope = ExecutionContext.Scope;
       List<IScope> emigrantsList = new List<IScope>();
 
@@ -64,9 +85,15 @@ namespace HeuristicLab.Optimization.Operators {
         emigrantsList.Add(emigrants);
       }
 
-      // shift first emigrants to end of list
-      emigrantsList.Add(emigrantsList[0]);
-      emigrantsList.RemoveAt(0);
+      if (clockwise) {
+        // shift last emigrants to start of list
+        emigrantsList.Insert(0, emigrantsList[emigrantsList.Count - 1]);
+        emigrantsList.RemoveAt(emigrantsList.Count - 1);
+      } else {
+        // shift first emigrants to end of list
+        emigrantsList.Add(emigrantsList[0]);
+        emigrantsList.RemoveAt(0);
+      }
 
       for (int i = 0; i < scope.SubScopes.Count; i++)
         scope.SubScopes[i].SubScopes.Add(emigrantsList[i]);
