@@ -38,6 +38,12 @@ namespace HeuristicLab.Optimization.Operators {
       get { return (IValueLookupParameter<BoolValue>)Parameters["ClockwiseMigrationDirection"]; }
     }
 
+    public BoolValue ClockwiseMigrationDirection
+    {
+      get { return ClockwiseMigrationDirectionParameter.Value; }
+      set { ClockwiseMigrationDirectionParameter.Value = value; }
+    }
+
     [StorableConstructor]
     protected UnidirectionalRingMigrator(bool deserializing) : base(deserializing) { }
     protected UnidirectionalRingMigrator(UnidirectionalRingMigrator original, Cloner cloner) : base(original, cloner) { }
@@ -46,7 +52,6 @@ namespace HeuristicLab.Optimization.Operators {
       : base() {
       Parameters.Add(new ValueLookupParameter<BoolValue>("ClockwiseMigrationDirection", "True to migrate individuals clockwise, otherwise migrate individuals counterclockwise.", new BoolValue(true)));
     }
-
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
