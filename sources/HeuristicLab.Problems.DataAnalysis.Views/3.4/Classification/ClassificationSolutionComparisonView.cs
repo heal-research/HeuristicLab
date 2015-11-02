@@ -28,7 +28,7 @@ using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
 namespace HeuristicLab.Problems.DataAnalysis.Views.Classification {
-  [View("Classification Solution Comparions")]
+  [View("Classification Solution Comparison")]
   [Content(typeof(IClassificationSolution))]
   public partial class ClassificationSolutionComparisonView : DataAnalysisSolutionEvaluationView {
     private List<IClassificationSolution> solutions;

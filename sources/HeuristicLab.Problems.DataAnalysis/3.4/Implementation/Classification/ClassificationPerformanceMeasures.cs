@@ -151,7 +151,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TestFalsePositiveRateResultName, "The false positive rate is the complement of the true negative rate of the model on the test partition.", new PercentValue()));
       Add(new Result(TestFalseDiscoveryRateResultName, "The false discovery rate is the complement of the positive predictive value of the model on the test partition.", new PercentValue()));
       Add(new Result(TestF1ScoreResultName, "The F1 score of the model on the test partition.", new DoubleValue()));
-      Add(new Result(TrainingMatthewsCorrelationResultName, "The Matthews correlation value of the model on the test partition.", new DoubleValue()));
+      Add(new Result(TestMatthewsCorrelationResultName, "The Matthews correlation value of the model on the test partition.", new DoubleValue()));
       TrainingTruePositiveRate = double.NaN;
       TrainingTrueNegativeRate = double.NaN;
       TrainingPositivePredictiveValue = double.NaN;
