@@ -45,7 +45,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
     }
 
     private Dictionary<double, Series> classValueSeriesMapping;
-    private Random random;
+    private System.Random random;
     private bool updateInProgress;
 
     public DiscriminantFunctionClassificationSolutionThresholdView()
@@ -53,7 +53,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       InitializeComponent();
 
       classValueSeriesMapping = new Dictionary<double, Series>();
-      random = new Random();
+      random = new System.Random();
       updateInProgress = false;
 
       this.chart.CustomizeAllChartAreas();

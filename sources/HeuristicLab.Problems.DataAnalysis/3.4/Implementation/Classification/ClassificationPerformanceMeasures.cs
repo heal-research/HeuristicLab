@@ -36,12 +36,16 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected const string TrainingNegativePredictiveValueResultName = "Negative predictive value (training)";
     protected const string TrainingFalsePositiveRateResultName = "False positive rate (training)";
     protected const string TrainingFalseDiscoveryRateResultName = "False discovery rate (training)";
+    protected const string TrainingF1ScoreResultName = "F1 score (training)";
+    protected const string TrainingMatthewsCorrelationResultName = "Matthews Correlation (training)";
     protected const string TestTruePositiveRateResultName = "True positive rate (test)";
     protected const string TestTrueNegativeRateResultName = "True negative rate (test)";
     protected const string TestPositivePredictiveValueResultName = "Positive predictive value (test)";
     protected const string TestNegativePredictiveValueResultName = "Negative predictive value (test)";
     protected const string TestFalsePositiveRateResultName = "False positive rate (test)";
     protected const string TestFalseDiscoveryRateResultName = "False discovery rate (test)";
+    protected const string TestF1ScoreResultName = "F1 score (test)";
+    protected const string TestMatthewsCorrelationResultName = "Matthews Correlation (test)";
     #endregion
 
     public ClassificationPerformanceMeasuresResultCollection()
@@ -88,6 +92,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return ((DoubleValue)this[TrainingFalseDiscoveryRateResultName].Value).Value; }
       set { ((DoubleValue)this[TrainingFalseDiscoveryRateResultName].Value).Value = value; }
     }
+    public double TrainingF1Score {
+      get { return ((DoubleValue)this[TrainingF1ScoreResultName].Value).Value; }
+      set { ((DoubleValue)this[TrainingF1ScoreResultName].Value).Value = value; }
+    }
+    public double TrainingMatthewsCorrelation {
+      get { return ((DoubleValue)this[TrainingMatthewsCorrelationResultName].Value).Value; }
+      set { ((DoubleValue)this[TrainingMatthewsCorrelationResultName].Value).Value = value; }
+    }
     public double TestTruePositiveRate {
       get { return ((DoubleValue)this[TestTruePositiveRateResultName].Value).Value; }
       set { ((DoubleValue)this[TestTruePositiveRateResultName].Value).Value = value; }
@@ -112,6 +124,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return ((DoubleValue)this[TestFalseDiscoveryRateResultName].Value).Value; }
       set { ((DoubleValue)this[TestFalseDiscoveryRateResultName].Value).Value = value; }
     }
+    public double TestF1Score {
+      get { return ((DoubleValue)this[TestF1ScoreResultName].Value).Value; }
+      set { ((DoubleValue)this[TestF1ScoreResultName].Value).Value = value; }
+    }
+    public double TestMatthewsCorrelation {
+      get { return ((DoubleValue)this[TestMatthewsCorrelationResultName].Value).Value; }
+      set { ((DoubleValue)this[TestMatthewsCorrelationResultName].Value).Value = value; }
+    }
     #endregion
 
     protected void AddMeasures() {
@@ -122,24 +142,32 @@ namespace HeuristicLab.Problems.DataAnalysis {
       Add(new Result(TrainingNegativePredictiveValueResultName, "Negative predictive value of the model on the training partition\n(TN/(TN+FN)).", new PercentValue()));
       Add(new Result(TrainingFalsePositiveRateResultName, "The false positive rate is the complement of the true negative rate of the model on the training partition.", new PercentValue()));
       Add(new Result(TrainingFalseDiscoveryRateResultName, "The false discovery rate is the complement of the positive predictive value of the model on the training partition.", new PercentValue()));
+      Add(new Result(TrainingF1ScoreResultName, "The F1 score of the model on the training partition.", new DoubleValue()));
+      Add(new Result(TrainingMatthewsCorrelationResultName, "The Matthews correlation value of the model on the training partition.", new DoubleValue()));
       Add(new Result(TestTruePositiveRateResultName, "Sensitivity/True positive rate of the model on the test partition\n(TP/(TP+FN)).", new PercentValue()));
       Add(new Result(TestTrueNegativeRateResultName, "Specificity/True negative rate of the model on the test partition\n(TN/(FP+TN)).", new PercentValue()));
       Add(new Result(TestPositivePredictiveValueResultName, "Precision/Positive predictive value of the model on the test partition\n(TP/(TP+FP)).", new PercentValue()));
       Add(new Result(TestNegativePredictiveValueResultName, "Negative predictive value of the model on the test partition\n(TN/(TN+FN)).", new PercentValue()));
       Add(new Result(TestFalsePositiveRateResultName, "The false positive rate is the complement of the true negative rate of the model on the test partition.", new PercentValue()));
       Add(new Result(TestFalseDiscoveryRateResultName, "The false discovery rate is the complement of the positive predictive value of the model on the test partition.", new PercentValue()));
+      Add(new Result(TestF1ScoreResultName, "The F1 score of the model on the test partition.", new DoubleValue()));
+      Add(new Result(TrainingMatthewsCorrelationResultName, "The Matthews correlation value of the model on the test partition.", new DoubleValue()));
       TrainingTruePositiveRate = double.NaN;
       TrainingTrueNegativeRate = double.NaN;
       TrainingPositivePredictiveValue = double.NaN;
       TrainingNegativePredictiveValue = double.NaN;
       TrainingFalsePositiveRate = double.NaN;
       TrainingFalseDiscoveryRate = double.NaN;
+      TrainingF1Score = double.NaN;
+      TrainingMatthewsCorrelation = double.NaN;
       TestTruePositiveRate = double.NaN;
       TestTrueNegativeRate = double.NaN;
       TestPositivePredictiveValue = double.NaN;
       TestNegativePredictiveValue = double.NaN;
       TestFalsePositiveRate = double.NaN;
       TestFalseDiscoveryRate = double.NaN;
+      TestF1Score = double.NaN;
+      TestMatthewsCorrelation = double.NaN;
     }
 
     public void SetTrainingResults(ClassificationPerformanceMeasuresCalculator trainingPerformanceCalculator) {

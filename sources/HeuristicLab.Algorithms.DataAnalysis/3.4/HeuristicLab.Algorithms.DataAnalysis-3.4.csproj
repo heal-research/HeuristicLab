@@ -121,6 +121,10 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaselineClassifiers\OneR.cs" />
+    <Compile Include="BaselineClassifiers\OneRClassificationModel.cs" />
+    <Compile Include="BaselineClassifiers\OneRClassificationSolution.cs" />
+    <Compile Include="BaselineClassifiers\ZeroR.cs" />
     <Compile Include="CrossValidation.cs">
       <SubType>Code</SubType>
     </Compile>

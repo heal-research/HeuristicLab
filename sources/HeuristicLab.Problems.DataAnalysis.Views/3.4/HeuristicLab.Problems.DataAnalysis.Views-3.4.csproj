@@ -137,6 +137,10 @@
     <Compile Include="Classification\ClassificationFeatureCorrelationView.Designer.cs">
       <DependentUpon>ClassificationFeatureCorrelationView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classification\ClassificationSolutionComparisonView.cs" />
+    <Compile Include="Classification\ClassificationSolutionComparisonView.Designer.cs">
+      <DependentUpon>ClassificationSolutionComparisonView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Classification\ClassificationTimeframeFeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
     </Compile>

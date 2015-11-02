@@ -29,9 +29,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
-  [Item("Constant Regression Model", "A model that always returns the same constant value regardless of the presented input data.")]
-  [Obsolete]
-  public class ConstantRegressionModel : NamedItem, IRegressionModel, IStringConvertibleValue {
+  [Item("Constant Model", "A model that always returns the same constant value regardless of the presented input data.")]
+  public class ConstantModel : NamedItem, IRegressionModel, IClassificationModel, ITimeSeriesPrognosisModel, IStringConvertibleValue {
     [Storable]
     private double constant;
     public double Constant {
@@ -40,14 +39,14 @@ namespace HeuristicLab.Problems.DataAnalysis {
     }
 
     [StorableConstructor]
-    protected ConstantRegressionModel(bool deserializing) : base(deserializing) { }
-    protected ConstantRegressionModel(ConstantRegressionModel original, Cloner cloner)
+    protected ConstantModel(bool deserializing) : base(deserializing) { }
+    protected ConstantModel(ConstantModel original, Cloner cloner)
       : base(original, cloner) {
       this.constant = original.constant;
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new ConstantRegressionModel(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) { return new ConstantModel(this, cloner); }
 
-    public ConstantRegressionModel(double constant)
+    public ConstantModel(double constant)
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
@@ -58,9 +57,21 @@ namespace HeuristicLab.Problems.DataAnalysis {
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       return rows.Select(row => Constant);
     }
+    public IEnumerable<double> GetEstimatedClassValues(IDataset dataset, IEnumerable<int> rows) {
+      return GetEstimatedValues(dataset, rows);
+    }
+    public IEnumerable<IEnumerable<double>> GetPrognosedValues(IDataset dataset, IEnumerable<int> rows, IEnumerable<int> horizons) {
+      return rows.Select(_ => horizons.Select(__ => Constant));
+    }
 
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
-      return new ConstantRegressionSolution(new ConstantModel(constant), new RegressionProblemData(problemData));
+      return new ConstantRegressionSolution(this, new RegressionProblemData(problemData));
+    }
+    public IClassificationSolution CreateClassificationSolution(IClassificationProblemData problemData) {
+      return new ConstantClassificationSolution(this, new ClassificationProblemData(problemData));
+    }
+    public ITimeSeriesPrognosisSolution CreateTimeSeriesPrognosisSolution(ITimeSeriesPrognosisProblemData problemData) {
+      return new TimeSeriesPrognosisSolution(this, new TimeSeriesPrognosisProblemData(problemData));
     }
 
     public override string ToString() {
@@ -83,5 +94,6 @@ namespace HeuristicLab.Problems.DataAnalysis {
 
     public event EventHandler ValueChanged;
     #endregion
+
   }
 }

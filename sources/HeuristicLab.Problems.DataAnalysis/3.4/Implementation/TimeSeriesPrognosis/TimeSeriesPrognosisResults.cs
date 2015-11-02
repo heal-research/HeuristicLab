@@ -372,7 +372,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       var model = Solution.Model;
       //mean model
       double trainingMean = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).Average();
-      var meanModel = new ConstantTimeSeriesPrognosisModel(trainingMean);
+      var meanModel = new ConstantModel(trainingMean);
 
       //AR1 model
       double alpha, beta;
@@ -447,7 +447,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (problemData.TrainingIndices.Any()) {
         //mean model
         double trainingMean = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, problemData.TrainingIndices).Average();
-        var meanModel = new ConstantTimeSeriesPrognosisModel(trainingMean);
+        var meanModel = new ConstantModel(trainingMean);
 
         //AR1 model
         double alpha, beta;

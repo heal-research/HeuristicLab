@@ -166,6 +166,10 @@
     <Compile Include="NcaDimensionReductionView.Designer.cs">
       <DependentUpon>NcaDimensionReductionView.cs</DependentUpon>
     </Compile>
+    <Compile Include="OneRClassificationModelView.cs" />
+    <Compile Include="OneRClassificationModelView.Designer.cs">
+      <DependentUpon>OneRClassificationModelView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="GaussianProcessRegressionSolutionLineChartView.cs">
       <SubType>UserControl</SubType>
