@@ -408,7 +408,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
         // BackwardsCompatibility3.3
         // Set the migration direction to counterclockwise
         var unidirectionalRing = migrator as UnidirectionalRingMigrator;
-        if (unidirectionalRing != null) unidirectionalRing.ClockwiseMigrationDirection = new BoolValue(false);
+        if (unidirectionalRing != null) unidirectionalRing.ClockwiseMigrationParameter.Value = new BoolValue(false);
         MigratorParameter.ValidValues.Add(migrator);
       }
 

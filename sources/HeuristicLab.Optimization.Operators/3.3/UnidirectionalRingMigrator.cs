@@ -34,14 +34,8 @@ namespace HeuristicLab.Optimization.Operators {
   [Item("UnidirectionalRingMigrator", "Migrates the selected sub scopes in each subscope in an unidirectional ring.")]
   [StorableClass]
   public class UnidirectionalRingMigrator : SingleSuccessorOperator, IMigrator {
-    public IValueLookupParameter<BoolValue> ClockwiseMigrationDirectionParameter {
-      get { return (IValueLookupParameter<BoolValue>)Parameters["ClockwiseMigrationDirection"]; }
-    }
-
-    public BoolValue ClockwiseMigrationDirection
-    {
-      get { return ClockwiseMigrationDirectionParameter.Value; }
-      set { ClockwiseMigrationDirectionParameter.Value = value; }
+    public IValueLookupParameter<BoolValue> ClockwiseMigrationParameter {
+      get { return (IValueLookupParameter<BoolValue>)Parameters["ClockwiseMigration"]; }
     }
 
     [StorableConstructor]
@@ -50,15 +44,15 @@ namespace HeuristicLab.Optimization.Operators {
 
     public UnidirectionalRingMigrator()
       : base() {
-      Parameters.Add(new ValueLookupParameter<BoolValue>("ClockwiseMigrationDirection", "True to migrate individuals clockwise, otherwise migrate individuals counterclockwise.", new BoolValue(true)));
+      Parameters.Add(new ValueLookupParameter<BoolValue>("ClockwiseMigration", "True to migrate individuals clockwise, false to migrate individuals counterclockwise.", new BoolValue(true)));
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
       // BackwardsCompatibility3.3
       #region Backwards compatible code (remove with 3.4)
-      if (!Parameters.ContainsKey("ClockwiseMigrationDirection")) {
-        Parameters.Add(new ValueLookupParameter<BoolValue>("ClockwiseMigrationDirection", "True to migrate individuals clockwise, otherwise migrate individuals counterclockwise.", new BoolValue(false)));
+      if (!Parameters.ContainsKey("ClockwiseMigration")) {
+        Parameters.Add(new ValueLookupParameter<BoolValue>("ClockwiseMigration", "True to migrate individuals clockwise, false to migrate individuals counterclockwise.", new BoolValue(false)));
       }
       #endregion
     }
@@ -67,8 +61,9 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     /// <summary>
-    /// Migrates every first sub scope of each child to its left neighbour (like a ring).
-    /// <pre>                                                               
+    /// Migrates every first sub scope of each child to its right or left neighbour (like a ring).
+    /// If clockwise migration (default) is used the selected scopes A D G becomes G A D, contrary to counterclockwise where A D G becomes D G A.
+    /// <pre>
     ///          __ scope __              __ scope __
     ///         /     |     \            /     |     \
     ///       Pop1   Pop2   Pop3  =>   Pop1   Pop2   Pop3
@@ -80,7 +75,7 @@ namespace HeuristicLab.Optimization.Operators {
     /// </summary>
     /// <returns>The next operation.</returns>
     public override IOperation Apply() {
-      bool clockwise = ClockwiseMigrationDirectionParameter.ActualValue.Value;
+      bool clockwise = ClockwiseMigrationParameter.ActualValue.Value;
       IScope scope = ExecutionContext.Scope;
       List<IScope> emigrantsList = new List<IScope>();
 
