@@ -136,11 +136,12 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (testPerformanceCalculator.ErrorState == OnlineCalculatorError.None)
         ClassificationPerformanceMeasures.SetTestResults(testPerformanceCalculator);
 
-      var f1Training = FOneScoreCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues, out errorState);
-      if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TrainingF1Score = f1Training;
-      var f1Test = FOneScoreCalculator.Calculate(originalTestClassValues, estimatedTestClassValues, out errorState);
-      if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TestF1Score = f1Test;
-
+      if (ProblemData.Classes == 2) {
+        var f1Training = FOneScoreCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues, out errorState);
+        if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TrainingF1Score = f1Training;
+        var f1Test = FOneScoreCalculator.Calculate(originalTestClassValues, estimatedTestClassValues, out errorState);
+        if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TestF1Score = f1Test;
+      }
 
       var mccTraining = MatthewsCorrelationCoefficientCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues, out errorState);
       if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TrainingMatthewsCorrelation = mccTraining;

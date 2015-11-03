@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
+using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   public class ClassificationPerformanceMeasuresCalculator {

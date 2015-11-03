@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HeuristicLab.Problems.DataAnalysis.OnlineCalculators {
+namespace HeuristicLab.Problems.DataAnalysis {
   public class FOneScoreCalculator {
     public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
       if (originalValues.Distinct().Skip(2).Any()) {
