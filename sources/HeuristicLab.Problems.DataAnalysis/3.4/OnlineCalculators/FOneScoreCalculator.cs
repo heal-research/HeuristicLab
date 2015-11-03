@@ -27,6 +27,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
   public class FOneScoreCalculator {
     public static double Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
       if (originalValues.Distinct().Skip(2).Any()) {
+        // TODO: we could use ClassificationPerformanceMeasuresCalculator instead of the ConfusionMatrixCalculator below to handle multi-class problems
         throw new ArgumentException("F1 score can only be calculated for binary classification.");
       }
 

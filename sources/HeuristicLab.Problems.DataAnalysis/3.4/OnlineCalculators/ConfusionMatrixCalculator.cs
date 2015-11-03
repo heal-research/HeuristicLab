@@ -26,27 +26,19 @@ using System.Linq;
 namespace HeuristicLab.Problems.DataAnalysis {
   public class ConfusionMatrixCalculator {
     public static double[,] Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
-      if (originalValues.Count() != estimatedValues.Count()) {
-        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
-      }
-
-      var  classValues = originalValues.Distinct().ToList();
-      var estimatedClassValues = estimatedValues.Distinct().ToList();
-
-      if (!estimatedClassValues.All(x => classValues.Contains(x))) {
-        errorState = OnlineCalculatorError.InvalidValueAdded;
-        return null;
-      }
-
-      int classes = classValues.Count;
-      double[,] confusionMatrix = new double[classes, classes];
 
       Dictionary<double, int> classValueIndexMapping = new Dictionary<double, int>();
       int index = 0;
-      foreach (double classValue in classValues.OrderBy(x => x)) {
-        classValueIndexMapping.Add(classValue, index);
-        index++;
+      foreach (double classValue in originalValues.OrderBy(x => x)) {
+        if (!classValueIndexMapping.ContainsKey(classValue)) {
+          classValueIndexMapping.Add(classValue, index);
+          index++;
+        }
       }
+
+      int classes = classValueIndexMapping.Count;
+      double[,] confusionMatrix = new double[classes, classes];
+
 
       IEnumerator<double> originalEnumerator = originalValues.GetEnumerator();
       IEnumerator<double> estimatedEnumerator = estimatedValues.GetEnumerator();
@@ -63,6 +55,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
         }
 
         confusionMatrix[estimatedIndex, originalIndex] += 1;
+      }
+
+      if (originalEnumerator.MoveNext() || estimatedEnumerator.MoveNext()) {
+        throw new ArgumentException("Number of elements in originalValues and estimatedValues enumerations doesn't match.");
+
       }
 
       errorState = OnlineCalculatorError.None;
