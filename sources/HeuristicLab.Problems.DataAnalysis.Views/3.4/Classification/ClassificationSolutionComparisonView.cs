@@ -75,7 +75,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Classification {
         if (Content == null) {
           dataGridView.Rows.Clear();
           dataGridView.Columns.Clear();
-          solutions.Clear();
+          solutions = null;
         } else {
 
           IClassificationProblemData problemData = Content.ProblemData;
@@ -137,9 +137,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Views.Classification {
         var lda = LinearDiscriminantAnalysis.CreateLinearDiscriminantAnalysisSolution(problemData);
         lda.Name = "Linear Discriminant Analysis Solution";
         newSolutions.Add(lda);
-      }
-      catch (NotSupportedException) { }
-      catch (ArgumentException) { }
+      } catch (NotSupportedException) { } catch (ArgumentException) { }
       return newSolutions;
     }
 
