@@ -177,6 +177,7 @@
     <Compile Include="GaussianProcess\GaussianProcessClassificationSolutionCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassificationModelCreator.cs" />
     <Compile Include="GaussianProcess\GaussianProcessClassification.cs" />
+    <Compile Include="GaussianProcess\MeanFunctions\MeanModel.cs" />
     <Compile Include="GaussianProcess\MeanFunctions\MeanConst.cs" />
     <Compile Include="GaussianProcess\MeanFunctions\MeanLinear.cs" />
     <Compile Include="GaussianProcess\MeanFunctions\MeanProduct.cs">
