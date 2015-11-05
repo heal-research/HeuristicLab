@@ -20,8 +20,6 @@
  */
 #endregion
 
-using System;
-using System.Linq;
 using HeuristicLab.Algorithms.GradientDescent;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +28,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {

@@ -61,21 +61,19 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public override IOperation Apply() {
       try {
-        var model = Create(ProblemData, Hyperparameter.ToArray(), MeanFunction, CovarianceFunction);
+        var model = Create(ProblemData, Hyperparameter.ToArray(), MeanFunction, CovarianceFunction, ScaleInputValues);
         ModelParameter.ActualValue = model;
         NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(model.NegativeLogLikelihood);
         HyperparameterGradientsParameter.ActualValue = new RealVector(model.HyperparameterGradients);
         return base.Apply();
-      }
-      catch (ArgumentException) { }
-      catch (alglib.alglibexception) { }
+      } catch (ArgumentException) { } catch (alglib.alglibexception) { }
       NegativeLogLikelihoodParameter.ActualValue = new DoubleValue(1E300);
       HyperparameterGradientsParameter.ActualValue = new RealVector(Hyperparameter.Count());
       return base.Apply();
     }
 
-    public static IGaussianProcessModel Create(IClassificationProblemData problemData, double[] hyperparameter, IMeanFunction meanFunction, ICovarianceFunction covarianceFunction) {
-      return new GaussianProcessModel(problemData.Dataset, problemData.TargetVariable, problemData.AllowedInputVariables, problemData.TrainingIndices, hyperparameter, meanFunction, covarianceFunction);
+    public static IGaussianProcessModel Create(IClassificationProblemData problemData, double[] hyperparameter, IMeanFunction meanFunction, ICovarianceFunction covarianceFunction, bool scaleInputs = true) {
+      return new GaussianProcessModel(problemData.Dataset, problemData.TargetVariable, problemData.AllowedInputVariables, problemData.TrainingIndices, hyperparameter, meanFunction, covarianceFunction, scaleInputs);
     }
   }
 }
