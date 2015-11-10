@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 100)]
   [StorableClass]
-  public sealed class ExternalEvaluationProblem : SingleObjectiveBasicProblem<IEncoding> {
+  public class ExternalEvaluationProblem : SingleObjectiveBasicProblem<IEncoding> {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -77,8 +77,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     [StorableConstructor]
-    private ExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
-    private ExternalEvaluationProblem(ExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    protected ExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
+    protected ExternalEvaluationProblem(ExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new ExternalEvaluationProblem(this, cloner);
     }
@@ -138,7 +138,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    private ExtensionRegistry GetQualityMessageExtensions() {
+    protected virtual ExtensionRegistry GetQualityMessageExtensions() {
       return ExtensionRegistry.CreateInstance();
     }
 
