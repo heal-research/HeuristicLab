@@ -338,8 +338,13 @@ namespace HeuristicLab.Algorithms.GeneticAlgorithm {
 
       ParameterizeSelectors();
 
-      foreach (IMigrator migrator in ApplicationManager.Manager.GetInstances<IMigrator>().OrderBy(x => x.Name))
+      foreach (IMigrator migrator in ApplicationManager.Manager.GetInstances<IMigrator>().OrderBy(x => x.Name)) {
+        // BackwardsCompatibility3.3
+        // Set the migration direction to counterclockwise
+        var unidirectionalRing = migrator as UnidirectionalRingMigrator;
+        if (unidirectionalRing != null) unidirectionalRing.ClockwiseMigrationParameter.Value = new BoolValue(false);
         MigratorParameter.ValidValues.Add(migrator);
+      }
 
       qualityAnalyzer = new BestAverageWorstQualityAnalyzer();
       islandQualityAnalyzer = new BestAverageWorstQualityAnalyzer();

@@ -404,8 +404,13 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
 
       ParameterizeSelectors();
 
-      foreach (IMigrator migrator in ApplicationManager.Manager.GetInstances<IMigrator>().OrderBy(x => x.Name))
+      foreach (IMigrator migrator in ApplicationManager.Manager.GetInstances<IMigrator>().OrderBy(x => x.Name)) {
+        // BackwardsCompatibility3.3
+        // Set the migration direction to counterclockwise
+        var unidirectionalRing = migrator as UnidirectionalRingMigrator;
+        if (unidirectionalRing != null) unidirectionalRing.ClockwiseMigrationParameter.Value = new BoolValue(false);
         MigratorParameter.ValidValues.Add(migrator);
+      }
 
       foreach (IDiscreteDoubleValueModifier modifier in ApplicationManager.Manager.GetInstances<IDiscreteDoubleValueModifier>().OrderBy(x => x.Name))
         ComparisonFactorModifierParameter.ValidValues.Add(modifier);
