@@ -30,7 +30,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item(Name = "MeanModel", Description = "A mean function for Gaussian processes that uses a regression solution created with a different algorithm to calculate the mean.")]
-  // essentially an adaptor which maps form IMeanFunction to IRegressionSolution
+  // essentially an adaptor which maps from IMeanFunction to IRegressionSolution
   public sealed class MeanModel : ParameterizedNamedItem, IMeanFunction {
     public IValueParameter<IRegressionSolution> RegressionSolutionParameter {
       get { return (IValueParameter<IRegressionSolution>)Parameters["RegressionSolution"]; }
