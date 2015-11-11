@@ -64,11 +64,15 @@ namespace HeuristicLab.Scripting.Views {
       // 
       // executionTimeLabel
       // 
-      this.executionTimeLabel.Location = new System.Drawing.Point(394, 393);
+      this.executionTimeLabel.Location = new System.Drawing.Point(409, 3);
       // 
       // executionTimeTextBox
       // 
-      this.executionTimeTextBox.Location = new System.Drawing.Point(483, 390);
+      this.executionTimeTextBox.Location = new System.Drawing.Point(498, 0);
+      // 
+      // infoTabControl
+      // 
+      this.infoTabControl.Size = new System.Drawing.Size(637, 110);
       // 
       // splitContainer1
       // 
@@ -140,8 +144,8 @@ namespace HeuristicLab.Scripting.Views {
       this.outputTabPage.PerformLayout();
       this.errorListTabPage.ResumeLayout(false);
       this.splitContainer1.Panel1.ResumeLayout(false);
-      this.splitContainer1.Panel1.PerformLayout();
       this.splitContainer1.Panel2.ResumeLayout(false);
+      this.splitContainer1.Panel2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();

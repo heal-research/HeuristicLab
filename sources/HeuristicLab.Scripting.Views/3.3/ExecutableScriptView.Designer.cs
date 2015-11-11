@@ -36,12 +36,15 @@
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.SuspendLayout();
       // 
-      // splitContainer1.Panel1
+      // splitContainer1
       // 
-      this.splitContainer1.Panel1.Controls.Add(this.executionTimeTextBox);
-      this.splitContainer1.Panel1.Controls.Add(this.executionTimeLabel);
-      this.splitContainer1.Panel1.Controls.SetChildIndex(this.executionTimeTextBox, 0);
-      this.splitContainer1.Panel1.Controls.SetChildIndex(this.executionTimeLabel, 0);
+      // 
+      // splitContainer1.Panel2
+      // 
+      this.splitContainer1.Panel2.Controls.Add(this.executionTimeLabel);
+      this.splitContainer1.Panel2.Controls.Add(this.executionTimeTextBox);
+      this.splitContainer1.Panel2.Controls.SetChildIndex(this.executionTimeTextBox, 0);
+      this.splitContainer1.Panel2.Controls.SetChildIndex(this.executionTimeLabel, 0);
       // 
       // nameTextBox
       // 
@@ -62,9 +65,9 @@
       // 
       // executionTimeLabel
       // 
-      this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.executionTimeLabel.AutoSize = true;
-      this.executionTimeLabel.Location = new System.Drawing.Point(589, 396);
+      this.executionTimeLabel.Location = new System.Drawing.Point(604, 3);
       this.executionTimeLabel.Name = "executionTimeLabel";
       this.executionTimeLabel.Size = new System.Drawing.Size(83, 13);
       this.executionTimeLabel.TabIndex = 18;
@@ -72,8 +75,8 @@
       // 
       // executionTimeTextBox
       // 
-      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.executionTimeTextBox.Location = new System.Drawing.Point(678, 393);
+      this.executionTimeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.executionTimeTextBox.Location = new System.Drawing.Point(693, 0);
       this.executionTimeTextBox.Name = "executionTimeTextBox";
       this.executionTimeTextBox.ReadOnly = true;
       this.executionTimeTextBox.Size = new System.Drawing.Size(137, 20);
@@ -97,8 +100,8 @@
       this.outputTabPage.PerformLayout();
       this.errorListTabPage.ResumeLayout(false);
       this.splitContainer1.Panel1.ResumeLayout(false);
-      this.splitContainer1.Panel1.PerformLayout();
       this.splitContainer1.Panel2.ResumeLayout(false);
+      this.splitContainer1.Panel2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
