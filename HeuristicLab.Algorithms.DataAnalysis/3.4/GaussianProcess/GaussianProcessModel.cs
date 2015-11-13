@@ -354,6 +354,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       for (int i = 0; i < newN; i++) {
         var sumV = Util.ScalarProd(Util.GetCol(sWKs, i), Util.GetCol(sWKs, i));
+        kss[i] += sqrSigmaNoise; // kss is V(f), add noise variance of predictive distibution to get V(y)
         kss[i] -= sumV;
         if (kss[i] < 0) kss[i] = 0;
       }

@@ -69,8 +69,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].EmptyPointStyle.Color = this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Color;
         var mean = Content.EstimatedTrainingValues.ToArray();
         var s2 = Content.EstimatedTrainingVariance.ToArray();
-        var lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
-        var upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
+        var lower = mean.Zip(s2, GetLowerConfBound).ToArray();
+        var upper = mean.Zip(s2, GetUpperConfBound).ToArray();
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TrainingIndices.ToArray(), lower, upper);
         this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_TRAINING_SERIES_NAME].Tag = Content;
@@ -82,8 +82,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
 
         mean = Content.EstimatedTestValues.ToArray();
         s2 = Content.EstimatedTestVariance.ToArray();
-        lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
-        upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
+        lower = mean.Zip(s2, GetLowerConfBound).ToArray();
+        upper = mean.Zip(s2, GetUpperConfBound).ToArray();
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Points.DataBindXY(Content.ProblemData.TestIndices.ToArray(), lower, upper);
         this.InsertEmptyPoints(this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME]);
         this.chart.Series[ESTIMATEDVALUES_TEST_SERIES_NAME].Tag = Content;
@@ -92,8 +92,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
         int[] allIndices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
         mean = Content.EstimatedValues.ToArray();
         s2 = Content.EstimatedVariance.ToArray();
-        lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
-        upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
+        lower = mean.Zip(s2, GetLowerConfBound).ToArray();
+        upper = mean.Zip(s2, GetUpperConfBound).ToArray();
         List<double> allLower = allIndices.Select(index => lower[index]).ToList();
         List<double> allUpper = allIndices.Select(index => upper[index]).ToList();
         this.chart.Series.Add(ESTIMATEDVALUES_ALL_SERIES_NAME);
@@ -264,8 +264,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             indices = Enumerable.Range(0, Content.ProblemData.Dataset.Rows).Except(Content.ProblemData.TrainingIndices).Except(Content.ProblemData.TestIndices).ToArray();
             mean = Content.EstimatedValues.ToArray();
             s2 = Content.EstimatedVariance.ToArray();
-            lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
-            upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
+            lower = mean.Zip(s2, GetLowerConfBound).ToArray();
+            upper = mean.Zip(s2, GetUpperConfBound).ToArray();
             lower = indices.Select(index => lower[index]).ToArray();
             upper = indices.Select(index => upper[index]).ToArray();
             break;
@@ -273,15 +273,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
             indices = Content.ProblemData.TrainingIndices.ToArray();
             mean = Content.EstimatedTrainingValues.ToArray();
             s2 = Content.EstimatedTrainingVariance.ToArray();
-            lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
-            upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
+            lower = mean.Zip(s2, GetLowerConfBound).ToArray();
+            upper = mean.Zip(s2, GetUpperConfBound).ToArray();
             break;
           case ESTIMATEDVALUES_TEST_SERIES_NAME:
             indices = Content.ProblemData.TestIndices.ToArray();
             mean = Content.EstimatedTestValues.ToArray();
             s2 = Content.EstimatedTestVariance.ToArray();
-            lower = mean.Zip(s2, (m, s) => m - 1.96 * Math.Sqrt(s)).ToArray();
-            upper = mean.Zip(s2, (m, s) => m + 1.96 * Math.Sqrt(s)).ToArray();
+            lower = mean.Zip(s2, GetLowerConfBound).ToArray();
+            upper = mean.Zip(s2, GetUpperConfBound).ToArray();
             break;
         }
         if (indices.Count() > 0) {
@@ -292,6 +292,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis.Views {
           chart.Refresh();
         }
       }
+    }
+
+    private double GetLowerConfBound(double m, double s) {
+      return m - 1.96 * Math.Sqrt(s);
+    }
+
+
+    private double GetUpperConfBound(double m, double s) {
+      return m + 1.96 * Math.Sqrt(s);
     }
 
     // workaround as per http://stackoverflow.com/questions/5744930/datapointcollection-clear-performance
