@@ -22,26 +22,27 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis;
 
-namespace HeuristicLab.Problems.DataAnalysis {
+namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  [Item(Name = "Constant Regression Solution", Description = "Represents a constant regression solution (model + data).")]
-  public class ConstantRegressionSolution : RegressionSolution {
-    public new ConstantModel Model {
-      get { return (ConstantModel)base.Model; }
+  [Item(Name = "OneR Classification Solution", Description = "Represents a OneR classification solution which uses only a single feature with potentially multiple thresholds for class prediction.")]
+  public class OneRClassificationSolution : ClassificationSolution {
+    public new OneRClassificationModel Model {
+      get { return (OneRClassificationModel)base.Model; }
       set { base.Model = value; }
     }
 
     [StorableConstructor]
-    protected ConstantRegressionSolution(bool deserializing) : base(deserializing) { }
-    protected ConstantRegressionSolution(ConstantRegressionSolution original, Cloner cloner) : base(original, cloner) { }
-    public ConstantRegressionSolution(ConstantModel model, IRegressionProblemData problemData)
+    protected OneRClassificationSolution(bool deserializing) : base(deserializing) { }
+    protected OneRClassificationSolution(OneRClassificationSolution original, Cloner cloner) : base(original, cloner) { }
+    public OneRClassificationSolution(OneRClassificationModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
       RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ConstantRegressionSolution(this, cloner);
+      return new OneRClassificationSolution(this, cloner);
     }
   }
 }

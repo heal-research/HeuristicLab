@@ -93,7 +93,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         models = new List<IRegressionModel>();
         weights = new List<double>();
         // add constant model
-        models.Add(new ConstantRegressionModel(f0));
+        models.Add(new ConstantModel(f0));
         weights.Add(1.0);
       }
 

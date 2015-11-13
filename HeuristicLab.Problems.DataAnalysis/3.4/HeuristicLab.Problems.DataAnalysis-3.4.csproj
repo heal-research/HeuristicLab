@@ -129,10 +129,12 @@
     <Compile Include="Implementation\Classification\ClassificationSolution.cs" />
     <Compile Include="Implementation\Classification\ClassificationEnsembleProblemData.cs" />
     <Compile Include="Implementation\Classification\ClassificationSolutionBase.cs" />
+    <Compile Include="Implementation\Classification\ConstantClassificationSolution.cs" />
     <Compile Include="Implementation\Classification\DiscriminantFunctionClassificationSolutionBase.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblem.cs" />
     <Compile Include="Implementation\Clustering\ClusteringProblemData.cs" />
     <Compile Include="Implementation\Clustering\ClusteringSolution.cs" />
+    <Compile Include="Implementation\ConstantModel.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionModel.cs" />
     <Compile Include="Implementation\Regression\ConstantRegressionSolution.cs" />
     <Compile Include="Implementation\Regression\RegressionEnsembleProblemData.cs" />
@@ -181,10 +183,13 @@
     <Compile Include="ModifiableDataset.cs" />
     <Compile Include="OnlineCalculators\AutoCorrelationCalculator.cs" />
     <Compile Include="OnlineCalculators\ClassificationPerformanceMeasuresCalculator.cs" />
+    <Compile Include="OnlineCalculators\ConfusionMatrixCalculator.cs" />
     <Compile Include="OnlineCalculators\DependencyCalculator\HoeffdingsDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\DependencyCalculator\PearsonsRDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\DependencyCalculator\PearsonsRSquaredDependenceCalculator.cs" />
     <Compile Include="OnlineCalculators\DependencyCalculator\SpearmansRankCorrelationCoefficientCalculator.cs" />
+    <Compile Include="OnlineCalculators\FOneScoreCalculator.cs" />
+    <Compile Include="OnlineCalculators\MatthewsCorrelationCoefficientCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineBoundedMeanSquaredErrorCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineCovarianceCalculator.cs" />
     <Compile Include="OnlineCalculators\OnlineDirectionalSymmetryCalculator.cs" />

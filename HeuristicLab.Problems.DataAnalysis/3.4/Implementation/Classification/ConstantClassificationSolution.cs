@@ -1,6 +1,6 @@
 ﻿#region License Information
 /* HeuristicLab
- * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ * Copyright (C) 2002-2012 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
  * This file is part of HeuristicLab.
  *
@@ -25,23 +25,23 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
-  [Item(Name = "Constant Regression Solution", Description = "Represents a constant regression solution (model + data).")]
-  public class ConstantRegressionSolution : RegressionSolution {
+  [Item(Name = "Constant Classification Solution", Description = "Represents a constant classification solution (model + data).")]
+  public class ConstantClassificationSolution : ClassificationSolution {
     public new ConstantModel Model {
       get { return (ConstantModel)base.Model; }
       set { base.Model = value; }
     }
 
     [StorableConstructor]
-    protected ConstantRegressionSolution(bool deserializing) : base(deserializing) { }
-    protected ConstantRegressionSolution(ConstantRegressionSolution original, Cloner cloner) : base(original, cloner) { }
-    public ConstantRegressionSolution(ConstantModel model, IRegressionProblemData problemData)
+    protected ConstantClassificationSolution(bool deserializing) : base(deserializing) { }
+    protected ConstantClassificationSolution(ConstantClassificationSolution original, Cloner cloner) : base(original, cloner) { }
+    public ConstantClassificationSolution(ConstantModel model, IClassificationProblemData problemData)
       : base(model, problemData) {
       RecalculateResults();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ConstantRegressionSolution(this, cloner);
+      return new ConstantClassificationSolution(this, cloner);
     }
   }
 }

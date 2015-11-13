@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -28,6 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
   [Item("Constant TimeSeries Model", "A time series model that returns for all prediciton the same constant value.")]
+  [Obsolete]
   public class ConstantTimeSeriesPrognosisModel : ConstantRegressionModel, ITimeSeriesPrognosisModel {
     [StorableConstructor]
     protected ConstantTimeSeriesPrognosisModel(bool deserializing) : base(deserializing) { }

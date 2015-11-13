@@ -149,7 +149,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected void CalculateTimeSeriesResults() {
       OnlineCalculatorError errorState;
       double trainingMean = ProblemData.TrainingIndices.Any() ? ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices).Average() : double.NaN;
-      var meanModel = new ConstantTimeSeriesPrognosisModel(trainingMean);
+      var meanModel = new ConstantModel(trainingMean);
 
       double alpha, beta;
       IEnumerable<double> trainingStartValues = ProblemData.Dataset.GetDoubleValues(ProblemData.TargetVariable, ProblemData.TrainingIndices.Select(r => r - 1).Where(r => r > 0)).ToList();

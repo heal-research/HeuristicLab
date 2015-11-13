@@ -25,6 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis.OnlineCalculators;
 
 namespace HeuristicLab.Problems.DataAnalysis {
   [StorableClass]
@@ -134,6 +135,18 @@ namespace HeuristicLab.Problems.DataAnalysis {
       testPerformanceCalculator.Calculate(originalTestClassValues, estimatedTestClassValues);
       if (testPerformanceCalculator.ErrorState == OnlineCalculatorError.None)
         ClassificationPerformanceMeasures.SetTestResults(testPerformanceCalculator);
+
+      if (ProblemData.Classes == 2) {
+        var f1Training = FOneScoreCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues, out errorState);
+        if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TrainingF1Score = f1Training;
+        var f1Test = FOneScoreCalculator.Calculate(originalTestClassValues, estimatedTestClassValues, out errorState);
+        if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TestF1Score = f1Test;
+      }
+
+      var mccTraining = MatthewsCorrelationCoefficientCalculator.Calculate(originalTrainingClassValues, estimatedTrainingClassValues, out errorState);
+      if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TrainingMatthewsCorrelation = mccTraining;
+      var mccTest = MatthewsCorrelationCoefficientCalculator.Calculate(originalTestClassValues, estimatedTestClassValues, out errorState);
+      if (errorState == OnlineCalculatorError.None) ClassificationPerformanceMeasures.TestMatthewsCorrelation = mccTest;
     }
 
     public abstract IEnumerable<double> EstimatedClassValues { get; }
