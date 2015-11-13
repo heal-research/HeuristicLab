@@ -40,6 +40,8 @@ namespace HeuristicLab.DataPreprocessing {
     DateTime GetMedianDateTime(int columnIndex, bool considerSelection = false);
     DateTime GetAverageDateTime(int columnIndex, bool considerSelection = false);
 
+    double GetOneQuarterPercentile(int columnIndex);
+    double GetThreeQuarterPercentile(int columnIndex);
     double GetStandardDeviation(int columnIndex);
     double GetVariance(int columnIndex);
     T GetMostCommonValue<T>(int columnIndex, bool considerSelection = false);

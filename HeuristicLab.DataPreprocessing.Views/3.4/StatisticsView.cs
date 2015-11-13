@@ -32,7 +32,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
   public partial class StatisticsView : ItemView {
 
     private List<List<string>> columnsRowsMatrix;
-    private readonly int COLUMNS = 10;
+    private readonly int COLUMNS = 12;
 
     public new StatisticsContent Content {
       get { return (StatisticsContent)base.Content; }
@@ -82,7 +82,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       txtMissingValuesTotal.Text = logic.GetMissingValueCount().ToString();
 
       columnsRowsMatrix = new List<List<string>>();
-      DataGridViewColumn[] columns = new DataGridViewColumn[10];
+      DataGridViewColumn[] columns = new DataGridViewColumn[COLUMNS];
       for (int i = 0; i < COLUMNS; ++i) {
         var column = new DataGridViewTextBoxColumn();
         column.SortMode = DataGridViewColumnSortMode.Automatic;
@@ -98,8 +98,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
       columns[5].HeaderCell.Value = "Average";
       columns[6].HeaderCell.Value = "std. Deviation";
       columns[7].HeaderCell.Value = "Variance";
-      columns[8].HeaderCell.Value = "Most Common Value";
-      columns[9].HeaderCell.Value = "Num. diff. Values";
+      columns[8].HeaderCell.Value = "25th Percentile";
+      columns[9].HeaderCell.Value = "75th Percentile";
+      columns[10].HeaderCell.Value = "Most Common Value";
+      columns[11].HeaderCell.Value = "Num. diff. Values";
 
       if (rowCount > 0) {
         for (int i = 0; i < logic.GetColumnCount(); ++i) {
@@ -149,6 +151,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
         logic.GetAverage(columnIndex).ToString(),
         logic.GetStandardDeviation(columnIndex).ToString(),
         logic.GetVariance(columnIndex).ToString(),
+        logic.GetOneQuarterPercentile(columnIndex).ToString(),
+        logic.GetThreeQuarterPercentile(columnIndex).ToString(),
         logic.GetMostCommonValue<double>(columnIndex).ToString(),
         logic.GetDifferentValuesCount<double>(columnIndex).ToString()
       };
@@ -165,6 +169,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
         "", //average
         "", //standard deviation
         "", //variance
+        "", //quarter percentile
+        "", //three quarter percentile
         logic.GetMostCommonValue<string>(columnIndex) ?? "",
         logic.GetDifferentValuesCount<string>(columnIndex).ToString()
       };
@@ -177,10 +183,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
         logic.GetMissingValueCount(columnIndex).ToString(),
         logic.GetMin<DateTime>(columnIndex).ToString(),
         logic.GetMax<DateTime>(columnIndex).ToString(),
-        logic.GetMedianDateTime(columnIndex).ToString(), 
+        logic.GetMedianDateTime(columnIndex).ToString(),
         logic.GetAverageDateTime(columnIndex).ToString(),
         logic.GetStandardDeviation(columnIndex).ToString(),
         logic.GetVariance(columnIndex).ToString(), //variance
+        logic.GetOneQuarterPercentile(columnIndex).ToString(),
+        logic.GetThreeQuarterPercentile(columnIndex).ToString(),
         logic.GetMostCommonValue<DateTime>(columnIndex).ToString(),
         logic.GetDifferentValuesCount<DateTime>(columnIndex).ToString()
       };
