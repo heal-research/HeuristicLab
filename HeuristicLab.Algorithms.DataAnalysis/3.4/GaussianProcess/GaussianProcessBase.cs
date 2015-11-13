@@ -20,8 +20,6 @@
  */
 #endregion
 
-using System;
-using System.Linq;
 using HeuristicLab.Algorithms.GradientDescent;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -30,7 +28,6 @@ using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
@@ -50,6 +47,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected const string HyperparameterParameterName = "Hyperparameter";
     protected const string HyperparameterGradientsParameterName = "HyperparameterGradients";
     protected const string SolutionCreatorParameterName = "GaussianProcessSolutionCreator";
+    protected const string ScaleInputValuesParameterName = "ScaleInputValues";
 
     public new IDataAnalysisProblem Problem {
       get { return (IDataAnalysisProblem)base.Problem; }
@@ -72,6 +70,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (IValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
     }
+    public IFixedValueParameter<BoolValue> ScaleInputValuesParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[ScaleInputValuesParameterName]; }
+    }
     #endregion
     #region properties
     public IMeanFunction MeanFunction {
@@ -88,6 +89,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public int Seed { get { return SeedParameter.Value.Value; } set { SeedParameter.Value.Value = value; } }
     public bool SetSeedRandomly { get { return SetSeedRandomlyParameter.Value.Value; } set { SetSeedRandomlyParameter.Value.Value = value; } }
+
+    public bool ScaleInputValues {
+      get { return ScaleInputValuesParameter.Value.Value; }
+      set { ScaleInputValuesParameter.Value.Value = value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -106,6 +112,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
       Parameters.Add(new ValueParameter<BoolValue>(ApproximateGradientsParameterName, "Indicates that gradients should not be approximated (necessary for LM-BFGS).", new BoolValue(false)));
       Parameters[ApproximateGradientsParameterName].Hidden = true; // should not be changed
+
+      Parameters.Add(new FixedValueParameter<BoolValue>(ScaleInputValuesParameterName,
+        "Determines if the input variable values are scaled to the range [0..1] for training.", new BoolValue(true)));
+      Parameters[ScaleInputValuesParameterName].Hidden = true;
 
       // necessary for BFGS
       Parameters.Add(new ValueParameter<BoolValue>("Maximization", new BoolValue(false)));
@@ -189,6 +199,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       if (!Parameters.ContainsKey("Maximization")) {
         Parameters.Add(new ValueParameter<BoolValue>("Maximization", new BoolValue(false)));
         Parameters["Maximization"].Hidden = true;
+      }
+
+      if (!Parameters.ContainsKey(ScaleInputValuesParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(ScaleInputValuesParameterName,
+          "Determines if the input variable values are scaled to the range [0..1] for training.", new BoolValue(true)));
+        Parameters[ScaleInputValuesParameterName].Hidden = true;
       }
       #endregion
     }

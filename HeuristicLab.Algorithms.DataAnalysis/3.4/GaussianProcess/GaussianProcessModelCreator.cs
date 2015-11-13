@@ -37,6 +37,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string ModelParameterName = "Model";
     private const string NegativeLogLikelihoodParameterName = "NegativeLogLikelihood";
     private const string HyperparameterGradientsParameterName = "HyperparameterGradients";
+    protected const string ScaleInputValuesParameterName = "ScaleInputValues";
 
     #region Parameter Properties
     // in
@@ -59,13 +60,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ILookupParameter<DoubleValue> NegativeLogLikelihoodParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters[NegativeLogLikelihoodParameterName]; }
     }
-
+    public ILookupParameter<BoolValue> ScaleInputValuesParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[ScaleInputValuesParameterName]; }
+    }
     #endregion
 
     #region Properties
     protected RealVector Hyperparameter { get { return HyperparameterParameter.ActualValue; } }
     protected IMeanFunction MeanFunction { get { return MeanFunctionParameter.ActualValue; } }
     protected ICovarianceFunction CovarianceFunction { get { return CovarianceFunctionParameter.ActualValue; } }
+    public bool ScaleInputValues { get { return ScaleInputValuesParameter.ActualValue.Value; } }
     #endregion
 
     [StorableConstructor]
@@ -81,6 +85,20 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new LookupParameter<IGaussianProcessModel>(ModelParameterName, "The resulting Gaussian process model"));
       Parameters.Add(new LookupParameter<RealVector>(HyperparameterGradientsParameterName, "The gradients of the hyperparameters for the produced Gaussian process model (necessary for hyperparameter optimization)"));
       Parameters.Add(new LookupParameter<DoubleValue>(NegativeLogLikelihoodParameterName, "The negative log-likelihood of the produced Gaussian process model given the data."));
+
+
+      Parameters.Add(new LookupParameter<BoolValue>(ScaleInputValuesParameterName,
+        "Determines if the input variable values are scaled to the range [0..1] for training."));
+      Parameters[ScaleInputValuesParameterName].Hidden = true;
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(ScaleInputValuesParameterName)) {
+        Parameters.Add(new LookupParameter<BoolValue>(ScaleInputValuesParameterName,
+          "Determines if the input variable values are scaled to the range [0..1] for training."));
+        Parameters[ScaleInputValuesParameterName].Hidden = true;
+      }
     }
   }
 }

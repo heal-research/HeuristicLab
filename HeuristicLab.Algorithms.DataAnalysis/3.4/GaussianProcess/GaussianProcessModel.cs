@@ -123,7 +123,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       : base(original, cloner) {
       this.meanFunction = cloner.Clone(original.meanFunction);
       this.covarianceFunction = cloner.Clone(original.covarianceFunction);
-      this.inputScaling = cloner.Clone(original.inputScaling);
+      if (original.inputScaling != null)
+        this.inputScaling = cloner.Clone(original.inputScaling);
       this.trainingDataset = cloner.Clone(original.trainingDataset);
       this.negativeLogLikelihood = original.negativeLogLikelihood;
       this.targetVariable = original.targetVariable;
@@ -143,7 +144,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.x = original.x;
     }
     public GaussianProcessModel(IDataset ds, string targetVariable, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows,
-      IEnumerable<double> hyp, IMeanFunction meanFunction, ICovarianceFunction covarianceFunction)
+      IEnumerable<double> hyp, IMeanFunction meanFunction, ICovarianceFunction covarianceFunction,
+      bool scaleInputs = true)
       : base() {
       this.name = ItemName;
       this.description = ItemDescription;
@@ -162,15 +164,18 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                                              .Take(this.covarianceFunction.GetNumberOfParameters(nVariables))
                                              .ToArray();
       sqrSigmaNoise = Math.Exp(2.0 * hyp.Last());
-      CalculateModel(ds, rows);
+      CalculateModel(ds, rows, scaleInputs);
     }
 
-    private void CalculateModel(IDataset ds, IEnumerable<int> rows) {
+    private void CalculateModel(IDataset ds, IEnumerable<int> rows, bool scaleInputs = true) {
       this.trainingDataset = (IDataset)ds.Clone();
       this.trainingRows = rows.ToArray();
-      this.inputScaling = new Scaling(trainingDataset, allowedInputVariables, rows);
-      this.x = CalculateX(trainingDataset, allowedInputVariables, rows, inputScaling);
-      var y = ds.GetDoubleValues(targetVariable, rows);
+      this.inputScaling = scaleInputs ? new Scaling(ds, allowedInputVariables, rows) : null;
+
+      x = GetData(ds, this.allowedInputVariables, this.trainingRows, this.inputScaling);
+
+      IEnumerable<double> y;
+      y = ds.GetDoubleValues(targetVariable, rows);
 
       int n = x.GetLength(0);
 
@@ -183,8 +188,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       double[] m = Enumerable.Range(0, x.GetLength(0))
         .Select(r => mean.Mean(x, r))
         .ToArray();
-
-
 
       // calculate sum of diagonal elements for likelihood
       double diagSum = Enumerable.Range(0, n).Select(i => Math.Log(l[i, i])).Sum();
@@ -248,8 +251,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     }
 
-    private static double[,] CalculateX(IDataset ds, IEnumerable<string> allowedInputVariables, IEnumerable<int> rows, Scaling inputScaling) {
-      return AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputVariables, rows, inputScaling);
+    private static double[,] GetData(IDataset ds, IEnumerable<string> allowedInputs, IEnumerable<int> rows, Scaling scaling) {
+      if (scaling != null) {
+        return AlglibUtil.PrepareAndScaleInputMatrix(ds, allowedInputs, rows, scaling);
+      } else {
+        return AlglibUtil.PrepareInputMatrix(ds, allowedInputs, rows);
+      }
     }
 
     private static double[,] CalculateL(double[,] x, ParameterizedCovarianceFunction cov, double sqrSigmaNoise) {
@@ -299,11 +306,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     private IEnumerable<double> GetEstimatedValuesHelper(IDataset dataset, IEnumerable<int> rows) {
       if (x == null) {
-        this.x = CalculateX(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
+        x = GetData(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
       }
       int n = x.GetLength(0);
 
-      var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, inputScaling);
+      double[,] newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
       int newN = newX.GetLength(0);
 
       var Ks = new double[newN, n];
@@ -324,11 +331,11 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public IEnumerable<double> GetEstimatedVariance(IDataset dataset, IEnumerable<int> rows) {
       if (x == null) {
-        this.x = CalculateX(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
+        x = GetData(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
       }
       int n = x.GetLength(0);
 
-      var newX = AlglibUtil.PrepareAndScaleInputMatrix(dataset, allowedInputVariables, rows, inputScaling);
+      var newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
       int newN = newX.GetLength(0);
 
       var kss = new double[newN];
