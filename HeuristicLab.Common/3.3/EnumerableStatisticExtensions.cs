@@ -64,10 +64,12 @@ namespace HeuristicLab.Common {
     }
 
     // Numerical Recipes in C++, §8.5 Selecting the Mth Largest, O(n)
-    // Giben k in [0..n-1] returns an array value from array arr[0..n-1] such that k array values are 
+    // Given k in [0..n-1] returns an array value from array arr[0..n-1] such that k array values are 
     // less than or equal to the one returned. The input array will be rearranged to have this value in 
     // location arr[k], with all smaller elements moved to arr[0..k-1] (in arbitrary order) and all 
     // larger elements in arr[k+1..n-1] (also in arbitrary order).
+    // 
+    // Could be changed to Select<T> where T is IComparable but in this case is significantly slower for double values
     private static double Select(int k, double[] arr) {
       Contract.Assert(arr.GetLowerBound(0) == 0);
       Contract.Assert(k >= 0 && k < arr.Length);
@@ -195,25 +197,6 @@ namespace HeuristicLab.Common {
         }
       }
       return ((m_n > 1) ? m_newS / (m_n - 1) : 0.0);
-    }
-
-    /// <summary>
-    /// Calculates the pth percentile of the values.
-    /// </summary>
-    public static double Percentile(this IEnumerable<double> values, double p) {
-      // iterate only once 
-      double[] valuesArr = values.ToArray();
-      int n = valuesArr.Length;
-      if (n == 0) throw new InvalidOperationException("Enumeration contains no elements.");
-      if (n == 1) return values.ElementAt(0);
-
-      if (p.IsAlmost(0.0)) return valuesArr[0];
-      if (p.IsAlmost(1.0)) return valuesArr[n - 1];
-
-      double t = p * (n - 1);
-      int index = (int)Math.Floor(t);
-      double percentage = t - index;
-      return valuesArr[index] * (1 - percentage) + valuesArr[index + 1] * percentage;
     }
 
     public static IEnumerable<double> LimitToRange(this IEnumerable<double> values, double min, double max) {
