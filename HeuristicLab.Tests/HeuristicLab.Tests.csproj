@@ -467,6 +467,7 @@
     <Compile Include="HeuristicLab.Collections-3.3\BidirectionalDictionaryTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\BidirectionalLookupTest.cs" />
     <Compile Include="HeuristicLab.Collections-3.3\ObservableKeyedListTest.cs" />
+    <Compile Include="HeuristicLab.Common-3.3\EnumerableStatisticExtensions.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\Auxiliary.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\NPointCrossoverTest.cs" />
     <Compile Include="HeuristicLab.Encodings.BinaryVectorEncoding-3.3\SinglePointCrossoverTest.cs" />
@@ -615,6 +616,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="HeuristicLab.snk" />
+    <None Include="Test References\HeuristicLab.PluginInfrastructure-3.3.accessor" />
     <None Include="Test Resources\GA_SymbReg.hl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -628,7 +630,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Shadow Include="Test References\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.accessor" />
-    <Shadow Include="Test References\HeuristicLab.PluginInfrastructure-3.3.accessor" />
     <Shadow Include="Test References\HeuristicLab.MainForm.WindowsForms-3.3.accessor" />
     <Shadow Include="Test References\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.accessor" />
     <Shadow Include="Test References\HeuristicLab.Encodings.RealVectorEncoding-3.3.accessor" />
