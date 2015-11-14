@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("Gradient boosted tree model", "")]
   // this is essentially a collection of weighted regression models
-  public sealed class GradientBoostedTreesModel : NamedItem, IRegressionModel {
+  public sealed class GradientBoostedTreesModel : NamedItem, IGradientBoostedTreesModel {
     // BackwardsCompatibility3.4 for allowing deserialization & serialization of old models
     #region Backwards compatible code, remove with 3.5
     private bool isCompatibilityLoaded = false; // only set to true if the model is deserialized from the old format, needed to make sure that information is serialized again if it was loaded from the old format

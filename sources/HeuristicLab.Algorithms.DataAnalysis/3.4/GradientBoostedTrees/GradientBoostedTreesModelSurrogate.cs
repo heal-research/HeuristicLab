@@ -32,10 +32,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   // since the actual GBT model would be very large when persisted we only store all necessary information to
   // recalculate the actual GBT model on demand
   [Item("Gradient boosted tree model", "")]
-  public sealed class GradientBoostedTreesModelSurrogate : NamedItem, IRegressionModel {
+  public sealed class GradientBoostedTreesModelSurrogate : NamedItem, IGradientBoostedTreesModel {
     // don't store the actual model!
-    private IRegressionModel actualModel; // the actual model is only recalculated when necessary
-    public IRegressionModel Model { get { return actualModel; } }
+    private IGradientBoostedTreesModel actualModel; // the actual model is only recalculated when necessary
 
     [Storable]
     private readonly IRegressionProblemData trainingProblemData;
@@ -86,7 +85,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // wrap an actual model in a surrograte
-    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu, IRegressionModel model)
+    public GradientBoostedTreesModelSurrogate(IRegressionProblemData trainingProblemData, uint seed, ILossFunction lossFunction, int iterations, int maxSize, double r, double m, double nu, IGradientBoostedTreesModel model)
       : this(trainingProblemData, seed, lossFunction, iterations, maxSize, r, m, nu) {
       this.actualModel = model;
     }
@@ -106,8 +105,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
 
-    private IRegressionModel RecalculateModel() {
+    private IGradientBoostedTreesModel RecalculateModel() {
       return GradientBoostedTreesAlgorithmStatic.TrainGbm(trainingProblemData, lossFunction, maxSize, nu, r, m, iterations, seed).Model;
+    }
+
+    public IEnumerable<IRegressionModel> Models {
+      get {
+        if (actualModel == null) actualModel = RecalculateModel();
+        return actualModel.Models;
+      }
+    }
+
+    public IEnumerable<double> Weights {
+      get {
+        if (actualModel == null) actualModel = RecalculateModel();
+        return actualModel.Weights;
+      }
     }
   }
 }

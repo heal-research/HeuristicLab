@@ -129,7 +129,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // simple interface
-    public static IRegressionSolution TrainGbm(IRegressionProblemData problemData, ILossFunction lossFunction, int maxSize, double nu, double r, double m, int maxIterations, uint randSeed = 31415) {
+    public static GradientBoostedTreesSolution TrainGbm(IRegressionProblemData problemData, ILossFunction lossFunction, int maxSize, double nu, double r, double m, int maxIterations, uint randSeed = 31415) {
       Contract.Assert(r > 0);
       Contract.Assert(r <= 1.0);
       Contract.Assert(nu > 0);
@@ -142,7 +142,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       var model = state.GetModel();
-      return new RegressionSolution(model, (IRegressionProblemData)problemData.Clone());
+      return new GradientBoostedTreesSolution(model, (IRegressionProblemData)problemData.Clone());
     }
 
     // for custom stepping & termination
