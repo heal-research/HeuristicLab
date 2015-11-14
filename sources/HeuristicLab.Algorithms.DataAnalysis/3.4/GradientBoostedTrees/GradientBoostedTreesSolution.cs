@@ -27,17 +27,17 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
-  public class GradientBoostedTreesSolution : RegressionSolution {
+  public sealed class GradientBoostedTreesSolution : RegressionSolution {
     public new IGradientBoostedTreesModel Model {
       get { return (IGradientBoostedTreesModel)base.Model; }
     }
 
 
     [StorableConstructor]
-    protected GradientBoostedTreesSolution(bool deserializing)
+    private GradientBoostedTreesSolution(bool deserializing)
       : base(deserializing) {
     }
-    protected GradientBoostedTreesSolution(RegressionSolution original, Cloner cloner)
+    private GradientBoostedTreesSolution(GradientBoostedTreesSolution original, Cloner cloner)
       : base(original, cloner) {
     }
     public GradientBoostedTreesSolution(IRegressionModel model, IRegressionProblemData problemData)
