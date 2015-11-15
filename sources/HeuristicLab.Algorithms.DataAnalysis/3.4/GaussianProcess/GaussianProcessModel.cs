@@ -164,7 +164,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
                                              .Take(this.covarianceFunction.GetNumberOfParameters(nVariables))
                                              .ToArray();
       sqrSigmaNoise = Math.Exp(2.0 * hyp.Last());
-      CalculateModel(ds, rows, scaleInputs);
+      try {
+        CalculateModel(ds, rows, scaleInputs);
+      } catch (alglib.alglibexception ae) {
+        // wrap exception so that calling code doesn't have to know about alglib implementation
+        throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
+      }
     }
 
     private void CalculateModel(IDataset ds, IEnumerable<int> rows, bool scaleInputs = true) {
@@ -305,67 +310,77 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
 
     private IEnumerable<double> GetEstimatedValuesHelper(IDataset dataset, IEnumerable<int> rows) {
-      if (x == null) {
-        x = GetData(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
-      }
-      int n = x.GetLength(0);
-
-      double[,] newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
-      int newN = newX.GetLength(0);
-
-      var Ks = new double[newN, n];
-      var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, Enumerable.Range(0, newX.GetLength(1)));
-      var ms = Enumerable.Range(0, newX.GetLength(0))
-      .Select(r => mean.Mean(newX, r))
-      .ToArray();
-      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
-      for (int i = 0; i < newN; i++) {
-        for (int j = 0; j < n; j++) {
-          Ks[i, j] = cov.CrossCovariance(x, newX, j, i);
+      try {
+        if (x == null) {
+          x = GetData(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
         }
-      }
+        int n = x.GetLength(0);
 
-      return Enumerable.Range(0, newN)
-        .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha));
+        double[,] newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
+        int newN = newX.GetLength(0);
+
+        var Ks = new double[newN, n];
+        var mean = meanFunction.GetParameterizedMeanFunction(meanParameter, Enumerable.Range(0, newX.GetLength(1)));
+        var ms = Enumerable.Range(0, newX.GetLength(0))
+        .Select(r => mean.Mean(newX, r))
+        .ToArray();
+        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, newX.GetLength(1)));
+        for (int i = 0; i < newN; i++) {
+          for (int j = 0; j < n; j++) {
+            Ks[i, j] = cov.CrossCovariance(x, newX, j, i);
+          }
+        }
+
+        return Enumerable.Range(0, newN)
+          .Select(i => ms[i] + Util.ScalarProd(Util.GetRow(Ks, i), alpha));
+      } catch (alglib.alglibexception ae) {
+        // wrap exception so that calling code doesn't have to know about alglib implementation
+        throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
+      }
     }
 
     public IEnumerable<double> GetEstimatedVariance(IDataset dataset, IEnumerable<int> rows) {
-      if (x == null) {
-        x = GetData(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
-      }
-      int n = x.GetLength(0);
-
-      var newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
-      int newN = newX.GetLength(0);
-
-      var kss = new double[newN];
-      double[,] sWKs = new double[n, newN];
-      var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)));
-
-      if (l == null) {
-        l = CalculateL(x, cov, sqrSigmaNoise);
-      }
-
-      // for stddev 
-      for (int i = 0; i < newN; i++)
-        kss[i] = cov.Covariance(newX, i, i);
-
-      for (int i = 0; i < newN; i++) {
-        for (int j = 0; j < n; j++) {
-          sWKs[j, i] = cov.CrossCovariance(x, newX, j, i) / Math.Sqrt(sqrSigmaNoise);
+      try {
+        if (x == null) {
+          x = GetData(trainingDataset, allowedInputVariables, trainingRows, inputScaling);
         }
-      }
+        int n = x.GetLength(0);
 
-      // for stddev 
-      alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
+        var newX = GetData(dataset, allowedInputVariables, rows, inputScaling);
+        int newN = newX.GetLength(0);
 
-      for (int i = 0; i < newN; i++) {
-        var sumV = Util.ScalarProd(Util.GetCol(sWKs, i), Util.GetCol(sWKs, i));
-        kss[i] += sqrSigmaNoise; // kss is V(f), add noise variance of predictive distibution to get V(y)
-        kss[i] -= sumV;
-        if (kss[i] < 0) kss[i] = 0;
+        var kss = new double[newN];
+        double[,] sWKs = new double[n, newN];
+        var cov = covarianceFunction.GetParameterizedCovarianceFunction(covarianceParameter, Enumerable.Range(0, x.GetLength(1)));
+
+        if (l == null) {
+          l = CalculateL(x, cov, sqrSigmaNoise);
+        }
+
+        // for stddev 
+        for (int i = 0; i < newN; i++)
+          kss[i] = cov.Covariance(newX, i, i);
+
+        for (int i = 0; i < newN; i++) {
+          for (int j = 0; j < n; j++) {
+            sWKs[j, i] = cov.CrossCovariance(x, newX, j, i) / Math.Sqrt(sqrSigmaNoise);
+          }
+        }
+
+        // for stddev 
+        alglib.ablas.rmatrixlefttrsm(n, newN, l, 0, 0, false, false, 0, ref sWKs, 0, 0);
+
+        for (int i = 0; i < newN; i++) {
+          var sumV = Util.ScalarProd(Util.GetCol(sWKs, i), Util.GetCol(sWKs, i));
+          kss[i] += sqrSigmaNoise; // kss is V(f), add noise variance of predictive distibution to get V(y)
+          kss[i] -= sumV;
+          if (kss[i] < 0) kss[i] = 0;
+        }
+        return kss;
+      } catch (alglib.alglibexception ae) {
+        // wrap exception so that calling code doesn't have to know about alglib implementation
+        throw new ArgumentException("There was a problem in the calculation of the Gaussian process model", ae);
       }
-      return kss;
     }
   }
 }

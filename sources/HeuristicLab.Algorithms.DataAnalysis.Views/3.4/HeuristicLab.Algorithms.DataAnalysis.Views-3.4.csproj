@@ -166,7 +166,9 @@
     <Compile Include="NcaDimensionReductionView.Designer.cs">
       <DependentUpon>NcaDimensionReductionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="OneRClassificationModelView.cs" />
+    <Compile Include="OneRClassificationModelView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="OneRClassificationModelView.Designer.cs">
       <DependentUpon>OneRClassificationModelView.cs</DependentUpon>
     </Compile>
