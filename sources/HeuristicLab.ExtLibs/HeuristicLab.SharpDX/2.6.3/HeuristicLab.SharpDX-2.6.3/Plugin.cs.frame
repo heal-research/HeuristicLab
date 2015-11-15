@@ -56,9 +56,6 @@ namespace HeuristicLab.SharpDX {
   [PluginFile("sharpdx_direct3d11_1_effects_x86.dll", PluginFileType.NativeDll)]
   [PluginFile("sharpdx_direct3d11_effects_x64.dll", PluginFileType.NativeDll)]
   [PluginFile("sharpdx_direct3d11_effects_x86.dll", PluginFileType.NativeDll)]
-  [PluginFile("tkfont.exe", PluginFileType.Data)]
-  [PluginFile("tkfxc.exe", PluginFileType.Data)]
-  [PluginFile("tkmodel.exe", PluginFileType.Data)]
   public class HeuristicLabSharpDxPlugin : PluginBase {
   }
 }
