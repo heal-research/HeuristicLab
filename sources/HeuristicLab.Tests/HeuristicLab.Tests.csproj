@@ -628,9 +628,6 @@
     <None Include="Test Resources\GA_TSP.hl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Test Resources\Multiplexer11.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Test Resources\SamplesExperimentFinished.hl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

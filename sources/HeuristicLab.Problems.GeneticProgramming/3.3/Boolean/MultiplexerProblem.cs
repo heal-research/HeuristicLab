@@ -97,6 +97,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
         g.AddTerminalSymbol(string.Format("d{0}", i));
 
       Encoding.Grammar = g;
+
+      BestKnownQuality = Math.Pow(2, NumberOfBits); // this is a benchmark problem (the best achievable quality is known for a given number of bits)
     }
 
 
