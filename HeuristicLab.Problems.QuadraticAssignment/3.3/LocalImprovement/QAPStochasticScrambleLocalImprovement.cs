@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
             bestMove = move;
           }
         }
-        evaluatedSolutions.Value = (int)Math.Ceiling(evaluations);
+        evaluatedSolutions.Value += (int)Math.Ceiling(evaluations);
         if (bestMove == null) break;
         ScrambleManipulator.Apply(assignment, bestMove.StartIndex, bestMove.ScrambledIndices);
         quality.Value += bestQuality;
