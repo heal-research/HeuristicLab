@@ -34,7 +34,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.TabuSearch {
-  [Item("Tabu Search", "A tabu search algorithm.")]
+  [Item("Tabu Search (TS)", "A tabu search algorithm.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 120)]
   [StorableClass]
   public sealed class TabuSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {

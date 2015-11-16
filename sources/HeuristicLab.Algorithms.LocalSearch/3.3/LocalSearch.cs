@@ -34,7 +34,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.LocalSearch {
-  [Item("Local Search", "A local search algorithm.")]
+  [Item("Local Search (LS)", "A local search algorithm.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 100)]
   [StorableClass]
   public sealed class LocalSearch : HeuristicOptimizationEngineAlgorithm, IStorableContent {

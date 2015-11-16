@@ -33,7 +33,7 @@ using HeuristicLab.Problems.Instances;
 using HeuristicLab.Problems.Instances.Types;
 
 namespace HeuristicLab.Problems.Orienteering {
-  [Item("Orienteering Problem", "Represents a single-objective Orienteering Problem.")]
+  [Item("Orienteering Problem (OP)", "Represents a single-objective Orienteering Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 115)]
   [StorableClass]
   public sealed class OrienteeringProblem

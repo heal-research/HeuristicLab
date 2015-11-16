@@ -35,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
-  [Item("CMA Evolution Strategy", "An evolution strategy based on covariance matrix adaptation.")]
+  [Item("CMA Evolution Strategy (CMAES)", "An evolution strategy based on covariance matrix adaptation.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 210)]
   [StorableClass]
   public sealed class CMAEvolutionStrategy : HeuristicOptimizationEngineAlgorithm, IStorableContent {

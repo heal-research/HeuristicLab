@@ -34,7 +34,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.Knapsack {
-  [Item("Knapsack Problem", "Represents a Knapsack problem.")]
+  [Item("Knapsack Problem (KSP)", "Represents a Knapsack problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 200)]
   [StorableClass]
   public sealed class KnapsackProblem : SingleObjectiveHeuristicOptimizationProblem<IKnapsackEvaluator, IBinaryVectorCreator>, IStorableContent {
