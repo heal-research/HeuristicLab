@@ -695,7 +695,7 @@ namespace HeuristicLab.Services.Hive {
         var currentUserId = UserManager.CurrentUserId;
         return pm.UseTransaction(() => {
           var resourcePermissions = resourcePermissionDao.GetAll();
-          return slaveDao.GetAll()
+          return slaveDao.GetAll().ToList()
             .Where(x => isAdministrator
               || x.OwnerUserId == null
               || x.OwnerUserId == currentUserId
@@ -720,7 +720,7 @@ namespace HeuristicLab.Services.Hive {
         var currentUserId = UserManager.CurrentUserId;
         return pm.UseTransaction(() => {
           var resourcePermissions = resourcePermissionDao.GetAll();
-          return slaveGroupDao.GetAll()
+          return slaveGroupDao.GetAll().ToList()
             .Where(x => isAdministrator
               || x.OwnerUserId == null
               || x.OwnerUserId == currentUserId
