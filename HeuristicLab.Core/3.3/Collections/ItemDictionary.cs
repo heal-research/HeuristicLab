@@ -58,7 +58,10 @@ namespace HeuristicLab.Core {
     }
     public ItemDictionary() : base() { }
     public ItemDictionary(int capacity) : base(capacity) { }
+    public ItemDictionary(IEqualityComparer<TKey> comparer) : base(comparer) { }
     public ItemDictionary(IDictionary<TKey, TValue> dictionary) : base(dictionary) { }
+    public ItemDictionary(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer) { }
+    public ItemDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer) { }
 
     public object Clone() {
       return Clone(new Cloner());
