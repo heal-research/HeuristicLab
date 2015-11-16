@@ -536,21 +536,21 @@ namespace HeuristicLab.Optimization {
     protected virtual void Constraint_ConstraintOperationChanged(object sender, EventArgs e) {
       IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
       if (constraint.Active) {
-        var oldUpateRuns = UpdateOfRunsInProgress;
+        var oldUpdateRuns = UpdateOfRunsInProgress;
         try {
           UpdateOfRunsInProgress = true;
           UpdateFiltering(true);
-        } finally { UpdateOfRunsInProgress = oldUpateRuns; }
+        } finally { UpdateOfRunsInProgress = oldUpdateRuns; }
       }
     }
     protected virtual void Constraint_ConstraintDataChanged(object sender, EventArgs e) {
       IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
       if (constraint.Active) {
-        var oldUpateRuns = UpdateOfRunsInProgress;
+        var oldUpdateRuns = UpdateOfRunsInProgress;
         try {
           UpdateOfRunsInProgress = true;
           UpdateFiltering(true);
-        } finally { UpdateOfRunsInProgress = oldUpateRuns; }
+        } finally { UpdateOfRunsInProgress = oldUpdateRuns; }
       }
     }
     #endregion
