@@ -258,7 +258,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       lock (problemStateLocker) {
         if (bestQ > this.bestQ) {
           this.bestQ = bestQ;
-          this.bestHyperParameters = bestHyperParameters;
+          this.bestHyperParameters = new double[bestHyperParameters.Length];
+          Array.Copy(bestHyperParameters, this.bestHyperParameters, this.bestHyperParameters.Length);
           this.meanFunc = meanFunc;
           this.covFunc = covFunc;
         }
