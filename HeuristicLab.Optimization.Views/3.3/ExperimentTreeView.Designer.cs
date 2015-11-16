@@ -50,7 +50,6 @@ namespace HeuristicLab.Optimization.Views {
       this.ExpandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.CollapseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.CollapseAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.EditNodeLabelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
       this.optimizersGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -164,7 +163,7 @@ namespace HeuristicLab.Optimization.Views {
       this.treeView.HideSelection = false;
       this.treeView.ImageIndex = 0;
       this.treeView.ImageList = this.imageList;
-      this.treeView.LabelEdit = true;
+      this.treeView.LabelEdit = false;
       this.treeView.Location = new System.Drawing.Point(4, 34);
       this.treeView.Name = "optimizerTreeView";
       this.treeView.SelectedImageIndex = 0;
@@ -219,7 +218,6 @@ namespace HeuristicLab.Optimization.Views {
       // contextMenuStrip
       // 
       this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.EditNodeLabelToolStripMenuItem,
             this.ExpandToolStripMenuItem,
             this.ExpandAllToolStripMenuItem,
             this.CollapseToolStripMenuItem,
@@ -254,13 +252,6 @@ namespace HeuristicLab.Optimization.Views {
       this.CollapseAllToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
       this.CollapseAllToolStripMenuItem.Text = "Collapse All";
       this.CollapseAllToolStripMenuItem.Click += new System.EventHandler(this.CollapseAllToolStripMenuItem_Click);
-      //
-      // EditNodeLabelToolStripMenuItem
-      //
-      this.EditNodeLabelToolStripMenuItem.Name = "EditNodeLabelToolStripMenuItem";
-      this.EditNodeLabelToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
-      this.EditNodeLabelToolStripMenuItem.Text = "Edit Name";
-      this.EditNodeLabelToolStripMenuItem.Click += new System.EventHandler(this.EditNodeLabelToolStripMenuItem_Click);
 
       // 
       // ExperimentTreeView
@@ -299,7 +290,6 @@ namespace HeuristicLab.Optimization.Views {
     private System.Windows.Forms.ToolStripMenuItem ExpandAllToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem CollapseToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem CollapseAllToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem EditNodeLabelToolStripMenuItem;
 
   }
 }

@@ -663,11 +663,9 @@ namespace HeuristicLab.Optimization.Views {
 
         ExpandToolStripMenuItem.Enabled = ExpandToolStripMenuItem.Visible = !toolStripMenuNode.IsExpanded && toolStripMenuNode.Nodes.Count > 0;
         CollapseToolStripMenuItem.Enabled = CollapseToolStripMenuItem.Visible = toolStripMenuNode.IsExpanded;
-        EditNodeLabelToolStripMenuItem.Enabled = EditNodeLabelToolStripMenuItem.Visible = !Locked && !ReadOnly && toolStripMenuNode.Tag != null && toolStripMenuNode.Tag is INamedItem && ((INamedItem)toolStripMenuNode.Tag).CanChangeName;
       } else {
         ExpandToolStripMenuItem.Enabled = ExpandToolStripMenuItem.Visible = false;
         CollapseToolStripMenuItem.Enabled = CollapseToolStripMenuItem.Visible = false;
-        EditNodeLabelToolStripMenuItem.Enabled = EditNodeLabelToolStripMenuItem.Visible = false;
       }
       ExpandAllToolStripMenuItem.Enabled = ExpandAllToolStripMenuItem.Visible = !treeView.Nodes.OfType<TreeNode>().All(x => TreeNodeIsFullyExpanded(x));
       CollapseAllToolStripMenuItem.Enabled = CollapseAllToolStripMenuItem.Visible = treeView.Nodes.OfType<TreeNode>().Any(x => x.IsExpanded);
@@ -686,11 +684,6 @@ namespace HeuristicLab.Optimization.Views {
     }
     private void CollapseAllToolStripMenuItem_Click(object sender, EventArgs e) {
       treeView.CollapseAll();
-    }
-    private void EditNodeLabelToolStripMenuItem_Click(object sender, EventArgs e) {
-      if (toolStripMenuNode != null) {
-        if (!toolStripMenuNode.IsEditing) toolStripMenuNode.BeginEdit();
-      }
     }
 
     private void addButton_Click(object sender, System.EventArgs e) {
