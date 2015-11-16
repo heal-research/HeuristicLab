@@ -29,6 +29,8 @@ namespace HeuristicLab.Optimization {
   public interface ISolutionSimilarityCalculator : IItem, IEqualityComparer<IScope> {
     string SolutionVariableName { get; set; }
     string QualityVariableName { get; set; }
+    bool ExecuteInParallel { get; set; }
+    int MaxDegreeOfParallelism { get; set; }
 
     /// <summary>
     /// Calculates the similarity of two solutions.
