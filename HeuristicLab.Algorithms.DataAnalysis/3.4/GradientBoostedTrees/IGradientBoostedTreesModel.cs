@@ -20,23 +20,17 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  // represents an interface for loss functions used by gradient boosting
-  // target represents the target vector  (original targets from the problem data, never changed)
-  // pred   represents the current vector of predictions (a weighted combination of models learned so far, this vector is updated after each step)
-  public interface ILossFunction : IItem {
-    // returns the loss of the current prediction vector 
-    double GetLoss(IEnumerable<double> target, IEnumerable<double> pred);
-
-    // returns an enumerable of the loss gradient for each row
-    IEnumerable<double> GetLossGradient(IEnumerable<double> target, IEnumerable<double> pred);
-
-    // returns the optimal value for the partition of rows stored in idx[startIdx] .. idx[endIdx] inclusive
-    double LineSearch(double[] targetArr, double[] predArr, int[] idx, int startIdx, int endIdx);
+  public interface IGradientBoostedTreesModel : IRegressionModel {
+    IEnumerable<IRegressionModel> Models { get; }
+    IEnumerable<double> Weights { get; }
   }
 }
-
-

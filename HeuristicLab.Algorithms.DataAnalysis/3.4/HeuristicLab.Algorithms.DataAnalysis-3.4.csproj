@@ -199,6 +199,8 @@
     <Compile Include="GaussianProcess\GaussianProcessRegression.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolution.cs" />
     <Compile Include="GaussianProcess\ICovarianceFunction.cs" />
+    <Compile Include="GradientBoostedTrees\IGradientBoostedTreesModel.cs" />
+    <Compile Include="GradientBoostedTrees\GradientBoostedTreesModelSurrogate.cs" />
     <Compile Include="GradientBoostedTrees\GradientBoostedTreesAlgorithm.cs" />
     <Compile Include="GradientBoostedTrees\GradientBoostedTreesAlgorithmStatic.cs" />
     <Compile Include="GradientBoostedTrees\GradientBoostedTreesModel.cs" />
@@ -208,6 +210,7 @@
     <Compile Include="GradientBoostedTrees\LossFunctions\LogisticRegressionLoss.cs" />
     <Compile Include="GradientBoostedTrees\LossFunctions\RelativeErrorLoss.cs" />
     <Compile Include="GradientBoostedTrees\LossFunctions\SquaredErrorLoss.cs" />
+    <Compile Include="GradientBoostedTrees\GradientBoostedTreesSolution.cs" />
     <Compile Include="GradientBoostedTrees\RegressionTreeBuilder.cs" />
     <Compile Include="GradientBoostedTrees\RegressionTreeModel.cs" />
     <Compile Include="Interfaces\IGaussianProcessClassificationModelCreator.cs" />

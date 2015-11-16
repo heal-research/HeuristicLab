@@ -118,25 +118,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
     }
 
-    // simple API produces a single regression tree optimizing sum of squared errors
-    // this can be used if only a simple regression tree should be produced
-    // for a set of trees use the method CreateRegressionTreeForGradientBoosting below
-    //
-    // r and m work in the same way as for alglib random forest
-    // r is fraction of rows to use for training
-    // m is fraction of variables to use for training
-    public IRegressionModel CreateRegressionTree(int maxSize, double r = 0.5, double m = 0.5) {
-      // subtract mean of y first
-      var yAvg = y.Average();
-      for (int i = 0; i < y.Length; i++) y[i] -= yAvg;
-
-      var seLoss = new SquaredErrorLoss();
-
-      var model = CreateRegressionTreeForGradientBoosting(y, curPred, maxSize, problemData.TrainingIndices.ToArray(), seLoss, r, m);
-
-      return new GradientBoostedTreesModel(new[] { new ConstantRegressionModel(yAvg), model }, new[] { 1.0, 1.0 });
-    }
-
     // specific interface that allows to specify the target labels and the training rows which is necessary when for gradient boosted trees
     public IRegressionModel CreateRegressionTreeForGradientBoosting(double[] y, double[] curPred, int maxSize, int[] idx, ILossFunction lossFunction, double r = 0.5, double m = 0.5) {
       Debug.Assert(maxSize > 0);

@@ -32,22 +32,50 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [StorableClass]
   [Item("Gradient boosted tree model", "")]
   // this is essentially a collection of weighted regression models
-  public sealed class GradientBoostedTreesModel : NamedItem, IRegressionModel {
-    [Storable]
+  public sealed class GradientBoostedTreesModel : NamedItem, IGradientBoostedTreesModel {
+    // BackwardsCompatibility3.4 for allowing deserialization & serialization of old models
+    #region Backwards compatible code, remove with 3.5
+    private bool isCompatibilityLoaded = false; // only set to true if the model is deserialized from the old format, needed to make sure that information is serialized again if it was loaded from the old format
+
+    [Storable(Name = "models")]
+    private IList<IRegressionModel> __persistedModels {
+      set {
+        this.isCompatibilityLoaded = true;
+        this.models.Clear();
+        foreach (var m in value) this.models.Add(m);
+      }
+      get { if (this.isCompatibilityLoaded) return models; else return null; }
+    }
+    [Storable(Name = "weights")]
+    private IList<double> __persistedWeights {
+      set {
+        this.isCompatibilityLoaded = true;
+        this.weights.Clear();
+        foreach (var w in value) this.weights.Add(w);
+      }
+      get { if (this.isCompatibilityLoaded) return weights; else return null; }
+    }
+    #endregion
+
     private readonly IList<IRegressionModel> models;
     public IEnumerable<IRegressionModel> Models { get { return models; } }
 
-    [Storable]
     private readonly IList<double> weights;
     public IEnumerable<double> Weights { get { return weights; } }
 
     [StorableConstructor]
-    private GradientBoostedTreesModel(bool deserializing) : base(deserializing) { }
+    private GradientBoostedTreesModel(bool deserializing)
+      : base(deserializing) {
+      models = new List<IRegressionModel>();
+      weights = new List<double>();
+    }
     private GradientBoostedTreesModel(GradientBoostedTreesModel original, Cloner cloner)
       : base(original, cloner) {
       this.weights = new List<double>(original.weights);
       this.models = new List<IRegressionModel>(original.models.Select(m => cloner.Clone(m)));
+      this.isCompatibilityLoaded = original.isCompatibilityLoaded;
     }
+    [Obsolete("The constructor of GBTModel should not be used directly anymore (use GBTModelSurrogate instead)")]
     public GradientBoostedTreesModel(IEnumerable<IRegressionModel> models, IEnumerable<double> weights)
       : base("Gradient boosted tree model", string.Empty) {
       this.models = new List<IRegressionModel>(models);
@@ -63,7 +91,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public IEnumerable<double> GetEstimatedValues(IDataset dataset, IEnumerable<int> rows) {
       // allocate target array go over all models and add up weighted estimation for each row
       if (!rows.Any()) return Enumerable.Empty<double>(); // return immediately if rows is empty. This prevents multiple iteration over lazy rows enumerable.
-                                                          // (which essentially looks up indexes in a dictionary)
+      // (which essentially looks up indexes in a dictionary)
       var res = new double[rows.Count()];
       for (int i = 0; i < models.Count; i++) {
         var w = weights[i];

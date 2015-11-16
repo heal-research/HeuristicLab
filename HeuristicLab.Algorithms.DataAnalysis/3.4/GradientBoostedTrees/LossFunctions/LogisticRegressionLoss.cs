@@ -25,10 +25,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
   // Greedy Function Approximation: A Gradient Boosting Machine (page 9) 
-  public class LogisticRegressionLoss : ILossFunction {
+  [StorableClass]
+  [Item("Logistic regression loss", "")]
+  public sealed class LogisticRegressionLoss : Item, ILossFunction {
+    public LogisticRegressionLoss() { }
+
     public double GetLoss(IEnumerable<double> target, IEnumerable<double> pred) {
       var targetEnum = target.GetEnumerator();
       var predEnum = pred.GetEnumerator();
@@ -82,8 +88,16 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return sumY / sumDiff;
     }
 
-    public override string ToString() {
-      return "Logistic regression loss";
+    #region item implementation
+    [StorableConstructor]
+    private LogisticRegressionLoss(bool deserializing) : base(deserializing) { }
+
+    private LogisticRegressionLoss(LogisticRegressionLoss original, Cloner cloner) : base(original, cloner) { }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new LogisticRegressionLoss(this, cloner);
     }
+    #endregion
+
   }
 }

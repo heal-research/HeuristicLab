@@ -51,6 +51,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       internal int[] testRows { get; private set; }
       internal RegressionTreeBuilder treeBuilder { get; private set; }
 
+      private readonly uint randSeed;
       private MersenneTwister random { get; set; }
 
       // array members (allocate only once)
@@ -70,6 +71,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         this.r = r;
         this.m = m;
 
+        this.randSeed = randSeed;
         random = new MersenneTwister(randSeed);
         this.problemData = problemData;
         this.trainingRows = problemData.TrainingIndices.ToArray();
@@ -98,7 +100,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       public IRegressionModel GetModel() {
-        return new GradientBoostedTreesModel(models, weights);
+#pragma warning disable 618
+        var model = new GradientBoostedTreesModel(models, weights);
+#pragma warning restore 618
+        // we don't know the number of iterations here but the number of weights is equal 
+        // to the number of iterations + 1 (for the constant model)
+        // wrap the actual model in a surrogate that enables persistence and lazy recalculation of the model if necessary
+        return new GradientBoostedTreesModelSurrogate(problemData, randSeed, lossFunction, weights.Count - 1, maxSize, r, m, nu, model);
       }
       public IEnumerable<KeyValuePair<string, double>> GetVariableRelevance() {
         return treeBuilder.GetVariableRelevance();
@@ -121,7 +129,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // simple interface
-    public static IRegressionSolution TrainGbm(IRegressionProblemData problemData, ILossFunction lossFunction, int maxSize, double nu, double r, double m, int maxIterations, uint randSeed = 31415) {
+    public static GradientBoostedTreesSolution TrainGbm(IRegressionProblemData problemData, ILossFunction lossFunction, int maxSize, double nu, double r, double m, int maxIterations, uint randSeed = 31415) {
       Contract.Assert(r > 0);
       Contract.Assert(r <= 1.0);
       Contract.Assert(nu > 0);
@@ -134,7 +142,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       }
 
       var model = state.GetModel();
-      return new RegressionSolution(model, (IRegressionProblemData)problemData.Clone());
+      return new GradientBoostedTreesSolution(model, (IRegressionProblemData)problemData.Clone());
     }
 
     // for custom stepping & termination

@@ -81,6 +81,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [Storable]
     // to prevent storing the references to data caches in nodes
+    // seemingly it is bad (performance-wise) to persist tuples (tuples are used as keys in a dictionary) TODO
     private Tuple<string, double, int, int>[] SerializedTree {
       get { return tree.Select(t => Tuple.Create(t.VarName, t.Val, t.LeftIdx, t.RightIdx)).ToArray(); }
       set { this.tree = value.Select(t => new TreeNode(t.Item1, t.Item2, t.Item3, t.Item4)).ToArray(); }
