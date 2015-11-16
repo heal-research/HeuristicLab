@@ -79,9 +79,7 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsAdded), sender, e);
         return;
       }
-      UpdateDataTableComboBox();
-      UpdateDataRowComboBox();
-      AddRuns(e.Items);
+      UpdateDataTableComboBox(); // will trigger AddRuns
     }
     private void Content_ItemsRemoved(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       if (suppressUpdates) return;
@@ -89,9 +87,10 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_ItemsRemoved), sender, e);
         return;
       }
+      RemoveRuns(e.Items);
       UpdateDataTableComboBox();
       UpdateDataRowComboBox();
-      RemoveRuns(e.Items);
+      RebuildCombinedDataTable();
     }
     private void Content_CollectionReset(object sender, CollectionItemsChangedEventArgs<IRun> e) {
       if (suppressUpdates) return;
@@ -99,10 +98,10 @@ namespace HeuristicLab.Optimization.Views {
         Invoke(new CollectionItemsChangedEventHandler<IRun>(Content_CollectionReset), sender, e);
         return;
       }
+      RemoveRuns(e.OldItems);
       UpdateDataTableComboBox();
       UpdateDataRowComboBox();
-      RemoveRuns(e.OldItems);
-      AddRuns(e.Items);
+      RebuildCombinedDataTable();
     }
     private void Content_AlgorithmNameChanged(object sender, EventArgs e) {
       if (InvokeRequired)
@@ -116,9 +115,11 @@ namespace HeuristicLab.Optimization.Views {
       }
       suppressUpdates = Content.UpdateOfRunsInProgress;
       if (!suppressUpdates) {
+        foreach (var run in runMapping)
+          DeregisterRunEvents(run.Key);
+        runMapping.Clear();
+        combinedDataTable.Rows.Clear();
         UpdateDataTableComboBox();
-        UpdateDataRowComboBox();
-        UpdateRuns(Content);
       }
     }
 

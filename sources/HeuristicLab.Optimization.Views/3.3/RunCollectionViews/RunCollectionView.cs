@@ -388,10 +388,13 @@ namespace HeuristicLab.Optimization.Views {
       if (RunCollection == null)
         return;
       ReadOnly = true;
+
       try {
+        RunCollection.UpdateOfRunsInProgress = true;
         RunCollection.Modify();
       } finally {
         ReadOnly = false;
+        RunCollection.UpdateOfRunsInProgress = false;
       }
     }
     #endregion
