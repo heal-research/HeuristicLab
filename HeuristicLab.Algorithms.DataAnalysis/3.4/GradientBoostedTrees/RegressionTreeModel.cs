@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using HeuristicLab.Common;
@@ -51,8 +52,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       public int LeftIdx { get; private set; }
       public int RightIdx { get; private set; }
 
-      internal IList<double> Data { get; set; } // only necessary to improve efficiency of evaluation
-
       // necessary because the default implementation of GetHashCode for structs in .NET would only return the hashcode of val here
       public override int GetHashCode() {
         return LeftIdx ^ RightIdx ^ Val.GetHashCode();
@@ -81,7 +80,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [Storable]
     // to prevent storing the references to data caches in nodes
-    // seemingly it is bad (performance-wise) to persist tuples (tuples are used as keys in a dictionary) TODO
+    // TODO seemingly it is bad (performance-wise) to persist tuples (tuples are used as keys in a dictionary)
     private Tuple<string, double, int, int>[] SerializedTree {
       get { return tree.Select(t => Tuple.Create(t.VarName, t.Val, t.LeftIdx, t.RightIdx)).ToArray(); }
       set { this.tree = value.Select(t => new TreeNode(t.Item1, t.Item2, t.Item3, t.Item4)).ToArray(); }
@@ -103,13 +102,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       this.tree = tree;
     }
 
-    private static double GetPredictionForRow(TreeNode[] t, int nodeIdx, int row) {
+    private static double GetPredictionForRow(TreeNode[] t, ReadOnlyCollection<double>[] columnCache, int nodeIdx, int row) {
       while (nodeIdx != -1) {
         var node = t[nodeIdx];
         if (node.VarName == TreeNode.NO_VARIABLE)
           return node.Val;
 
-        if (node.Data[row] <= node.Val)
+        if (columnCache[nodeIdx][row] <= node.Val)
           nodeIdx = node.LeftIdx;
         else
           nodeIdx = node.RightIdx;
@@ -123,12 +122,14 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     public IEnumerable<double> GetEstimatedValues(IDataset ds, IEnumerable<int> rows) {
       // lookup columns for variableNames in one pass over the tree to speed up evaluation later on
+      ReadOnlyCollection<double>[] columnCache = new ReadOnlyCollection<double>[tree.Length];
+
       for (int i = 0; i < tree.Length; i++) {
         if (tree[i].VarName != TreeNode.NO_VARIABLE) {
-          tree[i].Data = ds.GetReadOnlyDoubleValues(tree[i].VarName);
+          columnCache[i] = ds.GetReadOnlyDoubleValues(tree[i].VarName);
         }
       }
-      return rows.Select(r => GetPredictionForRow(tree, 0, r));
+      return rows.Select(r => GetPredictionForRow(tree, columnCache, 0, r));
     }
 
     public IRegressionSolution CreateRegressionSolution(IRegressionProblemData problemData) {
