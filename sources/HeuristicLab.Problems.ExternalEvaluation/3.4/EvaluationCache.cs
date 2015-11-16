@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Google.ProtocolBuffers;
 using HeuristicLab.Common;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
@@ -46,15 +47,30 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     private sealed class CacheEntry {
 
       public readonly string Key;
-      public double Value;
 
-      public CacheEntry(string key, double value) {
-        Key = key;
-        Value = value;
+      private QualityMessage message;
+      private byte[] rawMessage;
+
+      public byte[] RawMessage {
+        get { return rawMessage; }
+        set {
+          rawMessage = value;
+          message = null;
+        }
       }
 
       public CacheEntry(string key) {
         Key = key;
+      }
+
+      public QualityMessage GetMessage(ExtensionRegistry extensions) {
+        if (message == null && rawMessage != null)
+          message = QualityMessage.ParseFrom(ByteString.CopyFrom(rawMessage), extensions);
+        return message;
+      }
+      public void SetMessage(QualityMessage value) {
+        message = value;
+        rawMessage = value.ToByteArray();
       }
 
       public override bool Equals(object obj) {
@@ -68,12 +84,32 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         return Key.GetHashCode();
       }
 
+      public string QualityString(IFormatProvider formatProvider = null) {
+        if (formatProvider == null) formatProvider = CultureInfo.CurrentCulture;
+        if (RawMessage == null) return "-";
+        var msg = message ?? CreateBasicQualityMessage();
+        switch (msg.Type) {
+          case QualityMessage.Types.Type.SingleObjectiveQualityMessage:
+            return msg.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality.ToString(formatProvider);
+          case QualityMessage.Types.Type.MultiObjectiveQualityMessage:
+            var qualities = msg.GetExtension(MultiObjectiveQualityMessage.QualityMessage_).QualitiesList;
+            return string.Format("[{0}]", string.Join(",", qualities.Select(q => q.ToString(formatProvider))));
+          default:
+            return "-";
+        }
+      }
+      private QualityMessage CreateBasicQualityMessage() {
+        var extensions = ExtensionRegistry.CreateInstance();
+        ExternalEvaluationMessages.RegisterAllExtensions(extensions);
+        return QualityMessage.ParseFrom(ByteString.CopyFrom(rawMessage), extensions);
+      }
+
       public override string ToString() {
-        return string.Format("{{{0} : {1}}}", Key, Value);
+        return string.Format("{{{0} : {1}}}", Key, QualityString());
       }
     }
 
-    public delegate double Evaluator(SolutionMessage message);
+    public delegate QualityMessage Evaluator(SolutionMessage message);
     #endregion
 
     #region Fields
@@ -125,18 +161,26 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Persistence
+    #region BackwardsCompatibility3.4
     [Storable(Name = "Cache")]
     private IEnumerable<KeyValuePair<string, double>> Cache_Persistence {
-      get {
-        if (IsPersistent) {
-          return GetCacheValues();
-        } else {
-          return Enumerable.Empty<KeyValuePair<string, double>>();
-        }
-      }
+      get { return Enumerable.Empty<KeyValuePair<string, double>>(); }
       set {
-        SetCacheValues(value);
+        var rawMessages = value.ToDictionary(kvp => kvp.Key,
+          kvp => QualityMessage.CreateBuilder()
+            .SetSolutionId(0)
+            .SetExtension(
+              SingleObjectiveQualityMessage.QualityMessage_,
+              SingleObjectiveQualityMessage.CreateBuilder().SetQuality(kvp.Value).Build())
+            .Build().ToByteArray());
+        SetCacheValues(rawMessages);
       }
+    }
+    #endregion
+    [Storable(Name = "CacheNew")]
+    private IEnumerable<KeyValuePair<string, byte[]>> CacheNew_Persistence {
+      get { return IsPersistent ? GetCacheValues() : Enumerable.Empty<KeyValuePair<string, byte[]>>(); }
+      set { SetCacheValues(value); }
     }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
@@ -148,7 +192,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     [StorableConstructor]
     protected EvaluationCache(bool deserializing) : base(deserializing) { }
     protected EvaluationCache(EvaluationCache original, Cloner cloner)
-      : base(original, cloner) {
+        : base(original, cloner) {
       SetCacheValues(original.GetCacheValues());
       Hits = original.Hits;
       RegisterEvents();
@@ -189,7 +233,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       OnChanged();
     }
 
-    public double GetValue(SolutionMessage message, Evaluator evaluate) {
+    public QualityMessage GetValue(SolutionMessage message, Evaluator evaluate, ExtensionRegistry extensions) {
       var entry = new CacheEntry(message.ToString());
       bool lockTaken = false;
       bool waited = false;
@@ -204,7 +248,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
             lockTaken = false;
             Monitor.Exit(cacheLock);
             OnChanged();
-            return node.Value.Value;
+            return node.Value.GetMessage(extensions);
           } else {
             if (!waited && activeEvaluations.Contains(entry.Key)) {
               while (activeEvaluations.Contains(entry.Key))
@@ -216,12 +260,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
               Monitor.Exit(cacheLock);
               OnChanged();
               try {
-                entry.Value = evaluate(message);
+                entry.SetMessage(evaluate(message));
                 Monitor.Enter(cacheLock, ref lockTaken);
                 index[entry] = list.AddLast(entry);
                 Trim();
-              }
-              finally {
+              } finally {
                 if (!lockTaken)
                   Monitor.Enter(cacheLock, ref lockTaken);
                 activeEvaluations.Remove(entry.Key);
@@ -230,12 +273,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
                 Monitor.Exit(cacheLock);
               }
               OnChanged();
-              return entry.Value;
+              return entry.GetMessage(extensions);
             }
           }
         }
-      }
-      finally {
+      } finally {
         if (lockTaken)
           Monitor.Exit(cacheLock);
       }
@@ -249,18 +291,18 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    private IEnumerable<KeyValuePair<string, double>> GetCacheValues() {
+    private IEnumerable<KeyValuePair<string, byte[]>> GetCacheValues() {
       lock (cacheLock) {
-        return index.ToDictionary(kvp => kvp.Key.Key, kvp => kvp.Key.Value);
+        return index.ToDictionary(kvp => kvp.Key.Key, kvp => kvp.Key.RawMessage);
       }
     }
 
-    private void SetCacheValues(IEnumerable<KeyValuePair<string, double>> value) {
+    private void SetCacheValues(IEnumerable<KeyValuePair<string, byte[]>> value) {
       lock (cacheLock) {
-        list = new LinkedList<CacheEntry>();
-        index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
+        if (list == null) list = new LinkedList<CacheEntry>();
+        if (index == null) index = new Dictionary<CacheEntry, LinkedListNode<CacheEntry>>();
         foreach (var kvp in value) {
-          var entry = new CacheEntry(kvp.Key) { Value = kvp.Value };
+          var entry = new CacheEntry(kvp.Key) { RawMessage = kvp.Value };
           index[entry] = list.AddLast(entry);
         }
       }
@@ -273,7 +315,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
             writer.WriteLine(string.Format(CultureInfo.InvariantCulture,
               "\"{0}\", {1}",
               Regex.Replace(entry.Key, "\\s", "").Replace("\"", "\"\""),
-              entry.Value));
+              entry.QualityString(CultureInfo.InvariantCulture)));
           }
         }
         writer.Close();

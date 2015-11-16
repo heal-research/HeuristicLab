@@ -25,7 +25,6 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using Google.ProtocolBuffers;
-using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -34,10 +33,10 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]
-  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 100)]
+  [Item("Multi Objective External Evaluation Problem", "A multi-objective problem that is evaluated in a different process.")]
+  [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 200)]
   [StorableClass]
-  public class ExternalEvaluationProblem : SingleObjectiveBasicProblem<IEncoding>, IExternalEvaluationProblem {
+  public class MultiObjectiveExternalEvaluationProblem : MultiObjectiveBasicProblem<IEncoding>, IExternalEvaluationProblem {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -53,9 +52,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IValueParameter<SolutionMessageBuilder> MessageBuilderParameter {
       get { return (IValueParameter<SolutionMessageBuilder>)Parameters["MessageBuilder"]; }
     }
-    public IFixedValueParameter<SingleObjectiveOptimizationSupportScript> SupportScriptParameter {
-      get { return (IFixedValueParameter<SingleObjectiveOptimizationSupportScript>)Parameters["SupportScript"]; }
-    }
+    //public IFixedValueParameter<MultiObjectiveOptimizationSupportScript> SupportScriptParameter {
+    //  get { return (IFixedValueParameter<MultiObjectiveOptimizationSupportScript>)Parameters["SupportScript"]; }
+    //}
     #endregion
 
     #region Properties
@@ -68,42 +67,44 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public SolutionMessageBuilder MessageBuilder {
       get { return MessageBuilderParameter.Value; }
     }
-    public SingleObjectiveOptimizationSupportScript OptimizationSupportScript {
-      get { return SupportScriptParameter.Value; }
-    }
-    private ISingleObjectiveOptimizationSupport OptimizationSupport {
-      get { return SupportScriptParameter.Value; }
-    }
+    //public MultiObjectiveOptimizationSupportScript OptimizationSupportScript {
+    //  get { return SupportScriptParameter.Value; }
+    //}
+    //private IMultiObjectiveOptimizationSupport OptimizationSupport {
+    //  get { return SupportScriptParameter.Value; }
+    //}
     #endregion
 
     [StorableConstructor]
-    protected ExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
-    protected ExternalEvaluationProblem(ExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
+    protected MultiObjectiveExternalEvaluationProblem(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveExternalEvaluationProblem(MultiObjectiveExternalEvaluationProblem original, Cloner cloner) : base(original, cloner) { }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new ExternalEvaluationProblem(this, cloner);
+      return new MultiObjectiveExternalEvaluationProblem(this, cloner);
     }
-    public ExternalEvaluationProblem()
+    public MultiObjectiveExternalEvaluationProblem()
       : base() {
       Parameters.Remove("Maximization"); // readonly in base class
-      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", new BoolValue()));
+      Parameters.Add(new FixedValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", new BoolArray()));
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
       Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<SolutionMessageBuilder>("MessageBuilder", "The message builder that converts from HeuristicLab objects to SolutionMessage representation.", new SolutionMessageBuilder()) { Hidden = true });
-      Parameters.Add(new FixedValueParameter<SingleObjectiveOptimizationSupportScript>("SupportScript", "A script that can provide neighborhood and analyze the results of the optimization.", new SingleObjectiveOptimizationSupportScript()));
+      //Parameters.Add(new FixedValueParameter<MultiObjectiveOptimizationSupportScript>("SupportScript", "A script that can analyze the results of the optimization.", new MultiObjectiveOptimizationSupportScript()));
 
-      Operators.Add(new BestScopeSolutionAnalyzer());
+      //Operators.Add(new BestScopeSolutionAnalyzer()); pareto front
     }
 
-    #region Single Objective Problem Overrides
-    public override bool Maximization {
-      get { return Parameters.ContainsKey("Maximization") && ((IValueParameter<BoolValue>)Parameters["Maximization"]).Value.Value; }
+    #region Multi Objective Problem Overrides
+    public override bool[] Maximization {
+      get {
+        return Parameters.ContainsKey("Maximization") ? ((IValueParameter<BoolArray>)Parameters["Maximization"]).Value.ToArray() : new bool[0];
+      }
     }
 
-    public override double Evaluate(Individual individual, IRandom random) {
+    public override double[] Evaluate(Individual individual, IRandom random) {
       var qualityMessage = Evaluate(BuildSolutionMessage(individual));
-      if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))
-        throw new InvalidOperationException("The received message is not a SingleObjectiveQualityMessage.");
-      return qualityMessage.GetExtension(SingleObjectiveQualityMessage.QualityMessage_).Quality;
+      if (!qualityMessage.HasExtension(MultiObjectiveQualityMessage.QualityMessage_))
+        throw new InvalidOperationException("The received message is not a MultiObjectiveQualityMessage.");
+      return qualityMessage.GetExtension(MultiObjectiveQualityMessage.QualityMessage_).QualitiesList.ToArray();
     }
     public virtual QualityMessage Evaluate(SolutionMessage solutionMessage) {
       return Cache == null
@@ -111,18 +112,15 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions());
     }
 
-    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      OptimizationSupport.Analyze(individuals, qualities, results, random);
+    public override void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+      //OptimizationSupport.Analyze(individuals, qualities, results, random);
     }
 
-    public override IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
-      return OptimizationSupport.GetNeighbors(individual, random);
-    }
     #endregion
 
     public virtual ExtensionRegistry GetQualityMessageExtensions() {
       var extensions = ExtensionRegistry.CreateInstance();
-      extensions.Add(SingleObjectiveQualityMessage.QualityMessage_);
+      extensions.Add(MultiObjectiveQualityMessage.QualityMessage_);
       return extensions;
     }
 

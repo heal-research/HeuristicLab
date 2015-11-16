@@ -133,6 +133,8 @@
     <Compile Include="Drivers\EvaluationProcessChannel.cs" />
     <Compile Include="Drivers\EvaluationStreamChannel.cs" />
     <Compile Include="Drivers\EvaluationTCPChannel.cs" />
+    <Compile Include="Interfaces\IExternalEvaluationProblem.cs" />
+    <Compile Include="MultiObjectiveExternalEvaluationProblem.cs" />
     <Compile Include="ExternalEvaluationProblem.cs" />
     <Compile Include="Interfaces\IEvaluationServiceClient.cs" />
     <Compile Include="Interfaces\IEvaluationChannel.cs" />
