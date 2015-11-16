@@ -27,5 +27,7 @@ namespace HeuristicLab.Clients.Hive {
     string Password { get; set; }
     void CallHiveService(Action<IHiveService> call);
     T CallHiveService<T>(Func<IHiveService, T> call);
+
+    string GetEndpointInformation();
   }
 }

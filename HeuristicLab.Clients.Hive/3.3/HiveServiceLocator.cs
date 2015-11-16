@@ -35,8 +35,7 @@ namespace HeuristicLab.Clients.Hive {
       }
     }
 
-    private HiveServiceLocator() {
-    }
+    private HiveServiceLocator() { }
 
     private string username;
     public string Username {
@@ -53,6 +52,25 @@ namespace HeuristicLab.Clients.Hive {
     public int EndpointRetries { get; private set; }
 
     public string WorkingEndpoint { get; private set; }
+
+
+    public string GetEndpointInformation() {
+      string message = "Configured endpoints: " + Environment.NewLine;
+
+      var configurations = Settings.Default.EndpointConfigurationPriorities;
+      foreach (var endpointConfigurationName in configurations) {
+        var cl = ClientFactory.CreateClient<HiveServiceClient, IHiveService>(endpointConfigurationName);
+        message += endpointConfigurationName + ": " + cl.Endpoint.Address + Environment.NewLine;
+      }
+
+      if (string.IsNullOrEmpty(WorkingEndpoint)) {
+        message += "No working endpoint found, check you configuration.";
+      } else {
+        message += "Used endpoint: " + WorkingEndpoint;
+      }
+
+      return message;
+    }
 
     private HiveServiceClient NewServiceClient() {
       if (EndpointRetries >= Settings.Default.MaxEndpointRetries) {
