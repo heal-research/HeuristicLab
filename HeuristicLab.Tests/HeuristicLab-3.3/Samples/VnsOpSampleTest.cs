@@ -36,16 +36,16 @@ namespace HeuristicLab.Tests {
     [TestMethod]
     [TestCategory("Samples.Create")]
     [TestProperty("Time", "medium")]
-    public void CreateVnsTspSampleTest() {
-      var vns = CreateVnsTspSample();
+    public void CreateVnsOpSampleTest() {
+      var vns = CreateVnsOpSample();
       string path = Path.Combine(SamplesUtils.SamplesDirectory, SampleFileName + SamplesUtils.SampleFileExtension);
       XmlGenerator.Serialize(vns, path);
     }
     [TestMethod]
     [TestCategory("Samples.Execute")]
     [TestProperty("Time", "long")]
-    public void RunVnsTspSampleTest() {
-      var vns = CreateVnsTspSample();
+    public void RunVnsOpSampleTest() {
+      var vns = CreateVnsOpSample();
       vns.SetSeedRandomly = false;
       SamplesUtils.RunAlgorithm(vns);
       Assert.AreEqual(1182, SamplesUtils.GetDoubleResult(vns, "BestQuality"));
@@ -54,7 +54,7 @@ namespace HeuristicLab.Tests {
       Assert.AreEqual(42651753, SamplesUtils.GetIntResult(vns, "EvaluatedSolutions"));
     }
 
-    private VariableNeighborhoodSearch CreateVnsTspSample() {
+    private VariableNeighborhoodSearch CreateVnsOpSample() {
       VariableNeighborhoodSearch vns = new VariableNeighborhoodSearch();
       #region Problem Configuration
       OrienteeringProblem opProblem = new OrienteeringProblem();
@@ -74,11 +74,11 @@ namespace HeuristicLab.Tests {
       opProblem.TerminalPoint = 63;
 
       opProblem.Name = "1_p64_t070";
-      opProblem.Description = "Represents a symmetric Traveling Salesman Problem.";
+      opProblem.Description = "Represents an instance of an orienteering problem.";
       #endregion
       #region Algorithm Configuration
-      vns.Name = "Variable Neighborhood Search - TSP";
-      vns.Description = "A variable neighborhood search algorithm which solves a funny TSP instance";
+      vns.Name = "Variable Neighborhood Search - OP";
+      vns.Description = "A variable neighborhood search algorithm which solves an orienteering problem instance";
       vns.Problem = opProblem;
 
       vns.LocalImprovement = vns.LocalImprovementParameter.ValidValues.OfType<OrienteeringLocalImprovementOperator>().Single();
