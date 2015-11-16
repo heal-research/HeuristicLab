@@ -24,12 +24,12 @@ using System.Runtime.Serialization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Serializable]
-  public class SingleObjectiveOptimizationSupportException : Exception {
-    public SingleObjectiveOptimizationSupportException() { }
-    public SingleObjectiveOptimizationSupportException(string message) : base(message) { }
-    public SingleObjectiveOptimizationSupportException(string message, Exception inner) : base(message, inner) { }
+  public class OptimizationSupportException : Exception {
+    public OptimizationSupportException() { }
+    public OptimizationSupportException(string message) : base(message) { }
+    public OptimizationSupportException(string message, Exception inner) : base(message, inner) { }
 
-    protected SingleObjectiveOptimizationSupportException(SerializationInfo info, StreamingContext context)
+    protected OptimizationSupportException(SerializationInfo info, StreamingContext context)
       : base(info, context) { }
   }
 }

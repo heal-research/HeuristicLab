@@ -134,6 +134,7 @@
     <Compile Include="Drivers\EvaluationStreamChannel.cs" />
     <Compile Include="Drivers\EvaluationTCPChannel.cs" />
     <Compile Include="Interfaces\IExternalEvaluationProblem.cs" />
+    <Compile Include="Interfaces\IMultiObjectiveOptimizationSupport.cs" />
     <Compile Include="MultiObjectiveExternalEvaluationProblem.cs" />
     <Compile Include="ExternalEvaluationProblem.cs" />
     <Compile Include="Interfaces\IEvaluationServiceClient.cs" />
@@ -142,9 +143,12 @@
     <Compile Include="Interfaces\ISingleObjectiveOptimizationSupport.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Programmable\CompiledOptimizationSupport.cs" />
+    <Compile Include="Programmable\CompiledMultiObjectiveOptimizationSupport.cs" />
     <Compile Include="Programmable\CompiledSingleObjectiveOptimizationSupport.cs" />
+    <Compile Include="Programmable\MultiObjectiveOptimizationSupportScript.cs" />
+    <Compile Include="Programmable\OptimizationSupportScript.cs" />
     <Compile Include="Programmable\SingleObjectiveOptimizationSupportScript.cs" />
-    <Compile Include="Programmable\SingleObjectiveOptimizationSupportScriptException.cs" />
+    <Compile Include="Programmable\OptimizationSupportScriptException.cs" />
     <Compile Include="Programmable\Templates.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

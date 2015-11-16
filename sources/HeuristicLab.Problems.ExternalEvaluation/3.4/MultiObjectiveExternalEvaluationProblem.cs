@@ -52,9 +52,9 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IValueParameter<SolutionMessageBuilder> MessageBuilderParameter {
       get { return (IValueParameter<SolutionMessageBuilder>)Parameters["MessageBuilder"]; }
     }
-    //public IFixedValueParameter<MultiObjectiveOptimizationSupportScript> SupportScriptParameter {
-    //  get { return (IFixedValueParameter<MultiObjectiveOptimizationSupportScript>)Parameters["SupportScript"]; }
-    //}
+    public IFixedValueParameter<MultiObjectiveOptimizationSupportScript> SupportScriptParameter {
+      get { return (IFixedValueParameter<MultiObjectiveOptimizationSupportScript>)Parameters["SupportScript"]; }
+    }
     #endregion
 
     #region Properties
@@ -67,12 +67,12 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public SolutionMessageBuilder MessageBuilder {
       get { return MessageBuilderParameter.Value; }
     }
-    //public MultiObjectiveOptimizationSupportScript OptimizationSupportScript {
-    //  get { return SupportScriptParameter.Value; }
-    //}
-    //private IMultiObjectiveOptimizationSupport OptimizationSupport {
-    //  get { return SupportScriptParameter.Value; }
-    //}
+    public MultiObjectiveOptimizationSupportScript OptimizationSupportScript {
+      get { return SupportScriptParameter.Value; }
+    }
+    private IMultiObjectiveOptimizationSupport OptimizationSupport {
+      get { return SupportScriptParameter.Value; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -88,7 +88,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       Parameters.Add(new OptionalValueParameter<EvaluationCache>("Cache", "Cache of previously evaluated solutions."));
       Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<SolutionMessageBuilder>("MessageBuilder", "The message builder that converts from HeuristicLab objects to SolutionMessage representation.", new SolutionMessageBuilder()) { Hidden = true });
-      //Parameters.Add(new FixedValueParameter<MultiObjectiveOptimizationSupportScript>("SupportScript", "A script that can analyze the results of the optimization.", new MultiObjectiveOptimizationSupportScript()));
+      Parameters.Add(new FixedValueParameter<MultiObjectiveOptimizationSupportScript>("SupportScript", "A script that can analyze the results of the optimization.", new MultiObjectiveOptimizationSupportScript()));
 
       //Operators.Add(new BestScopeSolutionAnalyzer()); pareto front
     }
@@ -113,7 +113,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
 
     public override void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
-      //OptimizationSupport.Analyze(individuals, qualities, results, random);
+      OptimizationSupport.Analyze(individuals, qualities, results, random);
     }
 
     #endregion
