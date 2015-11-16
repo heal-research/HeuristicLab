@@ -482,13 +482,10 @@ namespace HeuristicLab.Optimization {
 
     #region Filtering
     private void UpdateFiltering(bool reset) {
-      var oldUpateRuns = UpdateOfRunsInProgress;
-      UpdateOfRunsInProgress = true;
       if (reset)
         list.ForEach(r => r.Visible = true);
       foreach (IRunCollectionConstraint constraint in this.constraints)
         constraint.Check();
-      UpdateOfRunsInProgress = oldUpateRuns;
     }
 
     private void RegisterConstraintsEvents() {
@@ -538,20 +535,28 @@ namespace HeuristicLab.Optimization {
     }
     protected virtual void Constraint_ConstraintOperationChanged(object sender, EventArgs e) {
       IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
-      if (constraint.Active)
-        this.UpdateFiltering(true);
+      if (constraint.Active) {
+        var oldUpdateRuns = UpdateOfRunsInProgress;
+        try {
+          UpdateOfRunsInProgress = true;
+          UpdateFiltering(true);
+        } finally { UpdateOfRunsInProgress = oldUpdateRuns; }
+      }
     }
     protected virtual void Constraint_ConstraintDataChanged(object sender, EventArgs e) {
       IRunCollectionConstraint constraint = (IRunCollectionConstraint)sender;
-      if (constraint.Active)
-        this.UpdateFiltering(true);
+      if (constraint.Active) {
+        var oldUpdateRuns = UpdateOfRunsInProgress;
+        try {
+          UpdateOfRunsInProgress = true;
+          UpdateFiltering(true);
+        } finally { UpdateOfRunsInProgress = oldUpdateRuns; }
+      }
     }
     #endregion
 
     #region Modification
     public void Modify() {
-      var oldUpateRuns = UpdateOfRunsInProgress;
-      UpdateOfRunsInProgress = true;
       var runs = this.ToList();
       var selectedRuns = runs.Where(r => r.Visible).ToList();
       int nSelected = selectedRuns.Count;
@@ -565,7 +570,6 @@ namespace HeuristicLab.Optimization {
           OnCollectionReset(this, runs);
         }
       }
-      UpdateOfRunsInProgress = oldUpateRuns;
     }
 
     private static IEnumerable<IRun> ReplaceVisibleRuns(IEnumerable<IRun> runs, IEnumerable<IRun> visibleRuns) {
