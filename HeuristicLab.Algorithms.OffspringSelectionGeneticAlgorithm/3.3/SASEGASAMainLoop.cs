@@ -265,10 +265,10 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
       villageResultsCollector2.CollectedValues.Add(new LookupParameter<DoubleValue>("Current Selection Pressure", "Displays the rising selection pressure during a generation.", "SelectionPressure"));
       villageResultsCollector2.ResultsParameter.ActualName = "Results";
 
-      villageSelectionPressureComparator.Name = "SelectionPressure >= MaximumSelectionPressure ?";
+      villageSelectionPressureComparator.Name = "SelectionPressure >= CurrentMaximumSelectionPressure ?";
       villageSelectionPressureComparator.LeftSideParameter.ActualName = "SelectionPressure";
       villageSelectionPressureComparator.Comparison = new Comparison(ComparisonType.GreaterOrEqual);
-      villageSelectionPressureComparator.RightSideParameter.ActualName = MaximumSelectionPressureParameter.Name;
+      villageSelectionPressureComparator.RightSideParameter.ActualName = "CurrentMaximumSelectionPressure";
       villageSelectionPressureComparator.ResultParameter.ActualName = "TerminateSelectionPressure";
 
       villageTerminatedBySelectionPressure2.Name = "Village Terminated ?";
