@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -90,6 +91,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
     private ILookupParameter<BoolValue> AllMovesTabuParameter {
       get { return (ILookupParameter<BoolValue>)Parameters["AllMovesTabu"]; }
     }
+
+    public ILookupParameter<IntValue> EvaluatedSolutionsParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["EvaluatedSolutions"]; }
+    }
+
+    public ILookupParameter<DoubleValue> EvaluatedSolutionEquivalentsParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["EvaluatedSolutionEquivalents"]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -116,6 +125,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       Parameters.Add(new ValueLookupParameter<BoolValue>("UseAlternativeAspiration", "True if the alternative aspiration condition should be used that takes moves that have not been made for some time above others."));
       Parameters.Add(new ValueLookupParameter<IntValue>("AlternativeAspirationTenure", "The time t that a move will be remembered for the alternative aspiration condition."));
       Parameters.Add(new LookupParameter<BoolValue>("AllMovesTabu", "Indicates that all moves are tabu."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated solutions."));
+      Parameters.Add(new LookupParameter<DoubleValue>("EvaluatedSolutionEquivalents", "The number of evaluated solution equivalents."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -128,6 +139,12 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey("AllMovesTabu")) {
         Parameters.Add(new LookupParameter<BoolValue>("AllMovesTabu", "Indicates that all moves are tabu."));
+      }
+      if (!Parameters.ContainsKey("EvaluatedSolutions")) {
+        Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of evaluated solutions."));
+      }
+      if (!Parameters.ContainsKey("EvaluatedSolutionEquivalents")) {
+        Parameters.Add(new LookupParameter<DoubleValue>("EvaluatedSolutionEquivalents", "The number of evaluated solution equivalents."));
       }
       #endregion
     }
@@ -162,12 +179,19 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
       Swap2Move bestMove = null;
       bool already_aspired = false;
 
+      double evaluations = EvaluatedSolutionEquivalentsParameter.ActualValue.Value;
       foreach (Swap2Move move in ExhaustiveSwap2MoveGenerator.Generate(solution)) {
         double moveQuality;
-        if (lastMove == null)
+        if (lastMove == null) {
           moveQuality = QAPSwap2MoveEvaluator.Apply(solution, move, weights, distances);
-        else if (allMovesTabu) moveQuality = moveQualityMatrix[move.Index1, move.Index2];
-        else moveQuality = QAPSwap2MoveEvaluator.Apply(solution, move, moveQualityMatrix[move.Index1, move.Index2], weights, distances, lastMove);
+          evaluations += 4.0 / solution.Length;
+        } else if (allMovesTabu) moveQuality = moveQualityMatrix[move.Index1, move.Index2];
+        else {
+          moveQuality = QAPSwap2MoveEvaluator.Apply(solution, move, moveQualityMatrix[move.Index1, move.Index2], weights, distances, lastMove);
+          if (move.Index1 == lastMove.Index1 || move.Index2 == lastMove.Index1 || move.Index1 == lastMove.Index2 || move.Index2 == lastMove.Index2)
+            evaluations += 4.0 / solution.Length;
+          else evaluations += 2.0 / (solution.Length * solution.Length);
+        }
 
         moveQualityMatrix[move.Index1, move.Index2] = moveQuality;
         moveQualityMatrix[move.Index2, move.Index1] = moveQuality;
@@ -199,6 +223,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Algorithms {
           aspiredMoves.Value++;
         }
       }
+
+      EvaluatedSolutionEquivalentsParameter.ActualValue.Value = evaluations;
+      EvaluatedSolutionsParameter.ActualValue.Value = (int)Math.Ceiling(evaluations);
 
       allMovesTabu = bestMove == null;
       if (!allMovesTabu)
