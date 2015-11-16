@@ -52,7 +52,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
       int maxLength = 0;
       foreach (var tree in randomTrees) {
         Util.IsValid(tree);
-        Assert.IsTrue(tree.Depth == MAX_TREE_DEPTH);
+        Assert.IsTrue(tree.Depth-1 == MAX_TREE_DEPTH);
         if (maxLength < tree.Length)
           maxLength = tree.Length;
         count += tree.Length;
