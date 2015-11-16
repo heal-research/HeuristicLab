@@ -127,12 +127,14 @@
     <Compile Include="Evaluators\TSPUpperEuclideanPathEvaluator.cs" />
     <Compile Include="Improvers\TSPImprovementOperator.cs" />
     <Compile Include="Interfaces\ITSPDistanceMatrixEvaluator.cs" />
+    <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveDistanceMatrixEvaluator.cs" />
     <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveEuclideanPathEvaluator.cs" />
     <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveGeoPathEvaluator.cs" />
     <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMovePathEvaluator.cs" />
     <Compile Include="MoveEvaluators\ThreeOpt\TSPTranslocationMoveRoundedEuclideanPathEvaluator.cs" />
     <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveEuclideanPathEvaluator.cs" />
     <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveGeoPathEvaluator.cs" />
+    <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveDistanceMatrixEvaluator.cs" />
     <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMovePathEvaluator.cs" />
     <Compile Include="MoveEvaluators\TwoOpt\TSPInversionMoveRoundedEuclideanPathEvaluator.cs" />
     <Compile Include="PathRelinkers\TSPMultipleGuidesPathRelinker.cs" />
