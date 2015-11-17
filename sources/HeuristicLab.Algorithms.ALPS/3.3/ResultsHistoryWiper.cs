@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Algorithms.ALPS {
   [Item("ResultsHistoryWiper", "An operator that removes the history of a ResultsCollection by setting all values in all DataTables to NaN.")]
   [StorableClass]
-  public class ResultsHistoryWiper : SingleSuccessorOperator {
+  public sealed class ResultsHistoryWiper : SingleSuccessorOperator {
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters["Results"]; }
     }
