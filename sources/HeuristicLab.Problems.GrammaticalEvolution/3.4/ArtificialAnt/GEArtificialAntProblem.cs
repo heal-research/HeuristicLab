@@ -32,6 +32,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.GeneticProgramming.ArtificialAnt;
 using HeuristicLab.Problems.GrammaticalEvolution.Mappers;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
   [Item("Grammatical Evolution Artificial Ant Problem", "Represents the Artificial Ant problem, implemented in Grammatical Evolution.")]
@@ -105,7 +106,13 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       var grammar = wrappedAntProblem.Encoding.Grammar;
       var mapper = GenotypeToPhenotypeMapperParameter.Value;
 
-      var tree = mapper.Map(random, bounds, len, grammar, vector);
+      // Evaluate might be called concurrently therefore access to random has to be synchronized.
+      // However, results depend on the order of execution. Therefore, results might be different for the same seed when using the parallel engine.
+      IRandom fastRand;
+      lock (random) {
+        fastRand = new FastRandom(random.Next());
+      }
+      var tree = mapper.Map(fastRand, bounds, len, grammar, vector);
 
       Interpreter interpreter = new Interpreter(tree, World, MaxTimeSteps);
       interpreter.Run();
