@@ -51,12 +51,11 @@ namespace HeuristicLab.Scripting {
       : base(original, cloner) {
       executionTime = original.executionTime;
     }
-    public ExecutableScript()
+    protected ExecutableScript()
       : base() {
       executionTime = TimeSpan.Zero;
-      Code = CodeTemplate;
     }
-    public ExecutableScript(string code)
+    protected ExecutableScript(string code)
       : base(code) {
       executionTime = TimeSpan.Zero;
     }
@@ -84,6 +83,7 @@ namespace HeuristicLab.Scripting {
       } finally {
         timer.Elapsed -= timer_Elapsed;
         timer.Stop();
+        timer.Dispose();
         ExecutionTime += DateTime.UtcNow - lastUpdateTime;
         Running = false;
         OnScriptExecutionFinished(ex);

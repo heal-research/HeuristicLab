@@ -48,6 +48,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation.Programmable {
       variableStore = new VariableStore();
     }
 
+    protected OptimizationSupportScript(string code)
+      : base(code) {
+      variableStore = new VariableStore();
+    }
+
     private readonly object compileLock = new object();
     private T compiledInstance;
     protected T CompiledInstance {

@@ -31,10 +31,6 @@ namespace HeuristicLab.Scripting {
   [Creatable(CreatableAttribute.Categories.Scripts, Priority = 100)]
   [StorableClass]
   public class CSharpScript : ExecutableScript, IStorableContent {
-    #region Constants
-    protected override string CodeTemplate { get { return ScriptTemplates.CSharpScriptTemplate; } }
-    #endregion
-
     #region Fields & Properties
     private CSharpScriptBase compiledScript;
 
@@ -55,7 +51,7 @@ namespace HeuristicLab.Scripting {
       variableStore = cloner.Clone(original.variableStore);
     }
     public CSharpScript()
-      : base() {
+      : base(ScriptTemplates.CSharpScriptTemplate) {
       variableStore = new VariableStore();
     }
     public CSharpScript(string code)

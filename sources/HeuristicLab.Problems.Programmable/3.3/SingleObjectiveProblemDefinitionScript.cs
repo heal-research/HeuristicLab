@@ -31,10 +31,6 @@ namespace HeuristicLab.Problems.Programmable {
   public sealed class SingleObjectiveProblemDefinitionScript : ProblemDefinitionScript, ISingleObjectiveProblemDefinition, IStorableContent {
     public string Filename { get; set; }
 
-    protected override string CodeTemplate {
-      get { return ScriptTemplates.CompiledSingleObjectiveProblemDefinition; }
-    }
-
     private new ISingleObjectiveProblemDefinition CompiledProblemDefinition {
       get { return (ISingleObjectiveProblemDefinition)base.CompiledProblemDefinition; }
     }
@@ -42,10 +38,7 @@ namespace HeuristicLab.Problems.Programmable {
     [StorableConstructor]
     private SingleObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
     private SingleObjectiveProblemDefinitionScript(SingleObjectiveProblemDefinitionScript original, Cloner cloner) : base(original, cloner) { }
-    public SingleObjectiveProblemDefinitionScript()
-      : base() {
-      Code = CodeTemplate;
-    }
+    public SingleObjectiveProblemDefinitionScript() : base(ScriptTemplates.CompiledSingleObjectiveProblemDefinition) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SingleObjectiveProblemDefinitionScript(this, cloner);

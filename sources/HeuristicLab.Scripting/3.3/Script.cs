@@ -36,11 +36,7 @@ using Microsoft.CSharp;
 
 namespace HeuristicLab.Scripting {
   [StorableClass]
-  public class Script : NamedItem, IProgrammableItem {
-    protected virtual string CodeTemplate {
-      get { return string.Empty; }
-    }
-
+  public abstract class Script : NamedItem, IProgrammableItem {
     #region Fields & Properties
     public static new Image StaticItemImage {
       get { return VSImageLibrary.Script; }
@@ -76,30 +72,16 @@ namespace HeuristicLab.Scripting {
       if (original.compileErrors != null)
         compileErrors = new CompilerErrorCollection(original.compileErrors);
     }
-    public Script()
+    protected Script()
       : base("Script", "An empty script.") {
-      code = CodeTemplate;
     }
-    public Script(string code)
+    protected Script(string code)
       : this() {
       this.code = code;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Script(this, cloner);
     }
     #endregion
 
     #region Compilation
-    protected virtual CSharpCodeProvider CodeProvider {
-      get {
-        return new CSharpCodeProvider(
-          new Dictionary<string, string> {
-                {"CompilerVersion", "v4.0"}, // support C# 4.0 syntax
-              });
-      }
-    }
-
     protected virtual CompilerResults DoCompile() {
       var parameters = new CompilerParameters {
         GenerateExecutable = false,
@@ -113,7 +95,12 @@ namespace HeuristicLab.Scripting {
         .Select(a => a.Location)
         .ToArray());
 
-      return CodeProvider.CompileAssemblyFromSource(parameters, code);
+      var codeProvider = new CSharpCodeProvider(
+        new Dictionary<string, string> {
+          { "CompilerVersion", "v4.0"} // support C# 4.0 syntax
+        });
+
+      return codeProvider.CompileAssemblyFromSource(parameters, code);
     }
 
     public virtual Assembly Compile() {

@@ -30,15 +30,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
   public sealed class SingleObjectiveOptimizationSupportScript : OptimizationSupportScript<ISingleObjectiveOptimizationSupport>, ISingleObjectiveOptimizationSupport {
-
-    protected override string CodeTemplate {
-      get { return Templates.CompiledSingleObjectiveOptimizationSupport; }
-    }
-
     [StorableConstructor]
     private SingleObjectiveOptimizationSupportScript(bool deserializing) : base(deserializing) { }
     private SingleObjectiveOptimizationSupportScript(SingleObjectiveOptimizationSupportScript original, Cloner cloner) : base(original, cloner) { }
-    public SingleObjectiveOptimizationSupportScript() : base() { }
+    public SingleObjectiveOptimizationSupportScript() : base(Templates.CompiledSingleObjectiveOptimizationSupport) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SingleObjectiveOptimizationSupportScript(this, cloner);

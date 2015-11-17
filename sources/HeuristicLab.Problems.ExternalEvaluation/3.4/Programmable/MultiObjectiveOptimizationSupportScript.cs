@@ -29,15 +29,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
   public sealed class MultiObjectiveOptimizationSupportScript : OptimizationSupportScript<IMultiObjectiveOptimizationSupport>, IMultiObjectiveOptimizationSupport {
-
-    protected override string CodeTemplate {
-      get { return Templates.CompiledMultiObjectiveOptimizationSupport; }
-    }
-
     [StorableConstructor]
     private MultiObjectiveOptimizationSupportScript(bool deserializing) : base(deserializing) { }
     private MultiObjectiveOptimizationSupportScript(MultiObjectiveOptimizationSupportScript original, Cloner cloner) : base(original, cloner) { }
-    public MultiObjectiveOptimizationSupportScript() : base() { }
+    public MultiObjectiveOptimizationSupportScript() : base(Templates.CompiledMultiObjectiveOptimizationSupport) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiObjectiveOptimizationSupportScript(this, cloner);
