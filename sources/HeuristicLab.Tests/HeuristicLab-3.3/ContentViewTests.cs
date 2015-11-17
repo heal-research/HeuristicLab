@@ -44,9 +44,9 @@ namespace HeuristicLab.Tests {
         }
         //check if view can handle null as content by calling OnContentChanged
         IContentView view = (IContentView)Activator.CreateInstance(viewType);
-        ContentView_Accessor accessor = new ContentView_Accessor(new PrivateObject(view));
+        var accessor = new PrivateObject(view);
         try {
-          accessor.OnContentChanged();
+          accessor.Invoke("OnContentChanged");
         }
         catch (Exception ex) {
           Assert.Fail(viewType.ToString() + Environment.NewLine + ex.Message);

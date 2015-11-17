@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void GriewankEvaluateFunctionTest() {
-      GriewankEvaluator_Accessor target = new GriewankEvaluator_Accessor();
+      GriewankEvaluator target = new GriewankEvaluator();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;

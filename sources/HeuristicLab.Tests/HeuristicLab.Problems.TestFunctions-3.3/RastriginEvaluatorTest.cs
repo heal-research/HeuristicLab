@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void RastriginEvaluateFunctionTest() {
-      RastriginEvaluator_Accessor target = new RastriginEvaluator_Accessor();
+      RastriginEvaluator target = new RastriginEvaluator();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;

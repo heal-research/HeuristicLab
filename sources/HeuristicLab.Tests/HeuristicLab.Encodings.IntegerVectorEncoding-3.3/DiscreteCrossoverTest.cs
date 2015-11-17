@@ -31,30 +31,6 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
   [TestClass()]
   public class DiscreteCrossoverTest {
     /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod]
-    [TestCategory("Encodings.IntegerVector")]
-    [TestProperty("Time", "short")]
-    public void DiscreteCrossoverCrossTest() {
-      DiscreteCrossover_Accessor target = new DiscreteCrossover_Accessor(new PrivateObject(typeof(DiscreteCrossover)));
-      ItemArray<IntegerVector> parents;
-      TestRandom random = new TestRandom();
-      bool exceptionFired;
-      // The following test checks if there is an exception when there are less than 2 parents
-      random.Reset();
-      parents = new ItemArray<IntegerVector>(new IntegerVector[] { new IntegerVector(4) });
-      exceptionFired = false;
-      try {
-        IntegerVector actual;
-        actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
-    /// <summary>
     ///A test for Apply
     ///</summary>
     [TestMethod]
@@ -81,7 +57,8 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding.Tests {
       exceptionFired = false;
       try {
         actual = DiscreteCrossover.Apply(random, new ItemArray<IntegerVector>(new IntegerVector[] { parent1, parent2 }));
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

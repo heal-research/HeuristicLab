@@ -53,25 +53,5 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
       Assert.IsTrue(actual.Validate());
       Assert.IsTrue(Auxiliary.PermutationIsEqualByPosition(expected, actual));
     }
-
-    /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod]
-    [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
-    public void UniformLikeCrossoverCrossTest() {
-      UniformLikeCrossover_Accessor target = new UniformLikeCrossover_Accessor();
-      IRandom random = new TestRandom(new int[] { }, new double[] { 0.1, 0.2, 0.3, 0.4 });
-      random.Reset();
-      bool exceptionFired = false;
-      try {
-        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
-          new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4)}));
-      } catch (System.InvalidOperationException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
   }
 }

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -30,28 +29,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class MaximalPreservativeCrossoverTest {
-    /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod]
-    [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
-    public void MaximalPreservativeCrossoverCrossTest() {
-      TestRandom random = new TestRandom();
-      MaximalPreservativeCrossover_Accessor target =
-        new MaximalPreservativeCrossover_Accessor(new PrivateObject(typeof(MaximalPreservativeCrossover)));
-      // perform a test with more than two parents
-      random.Reset();
-      bool exceptionFired = false;
-      try {
-        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
-          new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4)}));
-      } catch (System.InvalidOperationException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
     /// <summary>
     ///A test for Apply
     ///</summary>
@@ -79,7 +56,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
       bool exceptionFired = false;
       try {
         MaximalPreservativeCrossover.Apply(random, new Permutation(PermutationTypes.RelativeUndirected, 8), new Permutation(PermutationTypes.RelativeUndirected, 6));
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

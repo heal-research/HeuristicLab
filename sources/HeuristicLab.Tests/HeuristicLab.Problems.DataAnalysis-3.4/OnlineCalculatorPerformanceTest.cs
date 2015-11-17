@@ -78,7 +78,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Tests {
     [TestCategory("Problems.DataAnalysis")]
     [TestProperty("Time", "medium")]
     public void OnlinePearsonsRSquaredCalculatorPerformanceTest() {
-      TestCalculatorPerfomance(OnlinePearsonsRSquaredCalculator.Calculate);
+      TestCalculatorPerfomance(OnlinePearsonsRCalculator.Calculate);
     }
 
     private delegate double CalcateFunc(IEnumerable<double> estimated, IEnumerable<double> original, out OnlineCalculatorError errorState);

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,41 +30,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class SimulatedBinaryCrossoverTest {
-    /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod()]
-    [TestCategory("Encodings.RealVector")]
-    [TestProperty("Time", "short")]
-    public void SimulatedBinaryCrossoverCrossTest() {
-      SimulatedBinaryCrossover_Accessor target = new SimulatedBinaryCrossover_Accessor(new PrivateObject(typeof(SimulatedBinaryCrossover)));
-      ItemArray<RealVector> parents;
-      TestRandom random = new TestRandom();
-      bool exceptionFired;
-      // The following test checks if there is an exception when there are more than 2 parents
-      random.Reset();
-      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(5), new RealVector(6), new RealVector(4) });
-      exceptionFired = false;
-      try {
-        RealVector actual;
-        actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-      // The following test checks if there is an exception when there are less than 2 parents
-      random.Reset();
-      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(4) });
-      exceptionFired = false;
-      try {
-        RealVector actual;
-        actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
     /// <summary>
     ///A test for Apply
     ///</summary>
@@ -95,7 +59,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
       exceptionFired = false;
       try {
         actual = SimulatedBinaryCrossover.Apply(random, parent1, parent2, contiguity);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -108,7 +73,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
       exceptionFired = false;
       try {
         actual = SimulatedBinaryCrossover.Apply(random, parent1, parent2, contiguity);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

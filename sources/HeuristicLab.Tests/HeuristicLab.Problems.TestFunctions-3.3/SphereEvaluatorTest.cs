@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void SphereEvaluateFunctionTest() {
-      SphereEvaluator_Accessor target = new SphereEvaluator_Accessor();
+      SphereEvaluator target = new SphereEvaluator();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;

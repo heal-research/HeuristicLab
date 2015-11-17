@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,41 +30,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class BlendAlphaBetaCrossoverTest {
-    /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod()]
-    [TestCategory("Encodings.RealVector")]
-    [TestProperty("Time", "short")]
-    public void BlendAlphaBetaCrossoverCrossTest() {
-      BlendAlphaBetaCrossover_Accessor target = new BlendAlphaBetaCrossover_Accessor(new PrivateObject(typeof(BlendAlphaBetaCrossover)));
-      ItemArray<RealVector> parents;
-      TestRandom random = new TestRandom();
-      bool exceptionFired;
-      // The following test checks if there is an exception when there are more than 2 parents
-      random.Reset();
-      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(5), new RealVector(6), new RealVector(4) });
-      exceptionFired = false;
-      try {
-        RealVector actual;
-        actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-      // The following test checks if there is an exception when there are less than 2 parents
-      random.Reset();
-      parents = new ItemArray<RealVector>(new RealVector[] { new RealVector(4) });
-      exceptionFired = false;
-      try {
-        RealVector actual;
-        actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
     /// <summary>
     ///A test for Apply
     ///</summary>
@@ -97,7 +61,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
       exceptionFired = false;
       try {
         actual = BlendAlphaBetaCrossover.Apply(random, parent1, parent2, alpha, beta);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
@@ -110,7 +75,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding.Tests {
       exceptionFired = false;
       try {
         actual = BlendAlphaBetaCrossover.Apply(random, parent1, parent2, alpha, beta);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

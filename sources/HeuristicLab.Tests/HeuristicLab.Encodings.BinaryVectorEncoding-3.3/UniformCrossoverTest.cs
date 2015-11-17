@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -30,41 +29,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class UniformCrossoverTest {
-    /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod]
-    [TestCategory("Encodings.BinaryVector")]
-    [TestProperty("Time", "short")]
-    public void SinglePointCrossoverCrossTest() {
-      UniformCrossover_Accessor target = new UniformCrossover_Accessor(new PrivateObject(typeof(UniformCrossover)));
-      ItemArray<BinaryVector> parents;
-      TestRandom random = new TestRandom();
-      bool exceptionFired;
-      // The following test checks if there is an exception when there are more than 2 parents
-      random.Reset();
-      parents = new ItemArray<BinaryVector>(new BinaryVector[] { new BinaryVector(5), new BinaryVector(6), new BinaryVector(4) });
-      exceptionFired = false;
-      try {
-        BinaryVector actual;
-        actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-      // The following test checks if there is an exception when there are less than 2 parents
-      random.Reset();
-      parents = new ItemArray<BinaryVector>(new BinaryVector[] { new BinaryVector(4) });
-      exceptionFired = false;
-      try {
-        BinaryVector actual;
-        actual = target.Cross(random, parents);
-      } catch (System.ArgumentException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
     /// <summary>
     ///A test for Apply
     ///</summary>
@@ -101,7 +65,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding.Tests {
       exceptionFired = false;
       try {
         actual = UniformCrossover.Apply(random, parent1, parent2);
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);
