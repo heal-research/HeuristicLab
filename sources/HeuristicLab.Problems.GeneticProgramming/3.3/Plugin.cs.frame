@@ -20,13 +20,17 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Problems.GeneticProgramming {
   [Plugin("HeuristicLab.Problems.GeneticProgramming","Provides implementations for genetic programming problems such as the artificial ant problem.", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.GeneticProgramming-3.3.dll", PluginFileType.Assembly)]
+  [PluginFile("Robocode/robocode.zip", PluginFileType.Data)]
+  [PluginFile("Robocode/BattleRunner.class", PluginFileType.Data)]
+  [PluginFile("Robocode/BattleObserver.class", PluginFileType.Data)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Common", "3.3")]
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
@@ -40,5 +44,11 @@ namespace HeuristicLab.Problems.GeneticProgramming {
   [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
   public class HeuristicLabProblemsGeneticProgrammingPlugin : PluginBase {
+    public override void OnLoad() {
+        base.OnLoad();
+        if (!Directory.EnumerateDirectories(AppDomain.CurrentDomain.BaseDirectory, Path.Combine("Robocode", "libs"), SearchOption.TopDirectoryOnly).Any()) {
+          ZipFile.ExtractToDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Path.Combine("Robocode", "robocode.zip")), AppDomain.CurrentDomain.BaseDirectory);
+        }
+      }
   }
 }

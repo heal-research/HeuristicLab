@@ -27,6 +27,8 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Problems.GeneticProgramming.Views {
   [Plugin("HeuristicLab.Problems.GeneticProgramming.Views","Provides views for for genetic programming problems such as the artificial ant problem.", "3.3.0.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.GeneticProgramming.Views-3.3.dll", PluginFileType.Assembly)]
+  [PluginDependency("HeuristicLab.Common.Resources","3.3")]
+  [PluginDependency("HeuristicLab.Collections","3.3")]
   [PluginDependency("HeuristicLab.Core","3.3")]
   [PluginDependency("HeuristicLab.Core.Views","3.3")]
   [PluginDependency("HeuristicLab.Data","3.3")]
