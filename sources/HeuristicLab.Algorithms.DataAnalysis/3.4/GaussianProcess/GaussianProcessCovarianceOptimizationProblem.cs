@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gaussian Process Covariance Optimization Problem", "")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 300)]
   [StorableClass]
-  public sealed class GaussianProcessCovarianceOptimizationProblem : SymbolicExpressionTreeProblem, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData>, IProblemInstanceExporter<IRegressionProblemData> {
+  public sealed class GaussianProcessCovarianceOptimizationProblem : SymbolicExpressionTreeProblem, IStatefulItem, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData>, IProblemInstanceExporter<IRegressionProblemData> {
     #region static variables and ctor
     private static readonly CovarianceMaternIso maternIso1;
     private static readonly CovarianceMaternIso maternIso3;
@@ -139,7 +139,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     // problem stores a few variables for information exchange from Evaluate() to Analyze()
-    private object problemStateLocker = new object();
+    private readonly object problemStateLocker = new object();
     [Storable]
     private double bestQ;
     [Storable]
@@ -183,8 +183,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       base.Encoding = new SymbolicExpressionTreeEncoding(g, 10, 5);
     }
 
-    protected override void OnReset() {
-      base.OnReset();
+    public void InitializeState() { ClearState(); }
+    public void ClearState() {
       meanFunc = null;
       covFunc = null;
       bestQ = double.NegativeInfinity;
@@ -192,7 +192,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
-
       var meanFunction = new MeanConst();
       var problemData = ProblemData;
       var ds = problemData.Dataset;
@@ -321,7 +320,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         bestObjValue[0] = Math.Max(bestObjValue[0], -func); // problem itself is a maximization problem
         var gradients = model.HyperparameterGradients;
         Array.Copy(gradients, grad, gradients.Length);
-      } catch (ArgumentException) {
+      }
+      catch (ArgumentException) {
         // building the GaussianProcessModel might fail, in this case we return the worst possible objective value
         func = 1.0E+300;
         Array.Clear(grad, 0, grad.Length);
