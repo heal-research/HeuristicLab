@@ -51,11 +51,15 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       private QualityMessage message;
       private byte[] rawMessage;
 
+      private object lockObject = new object();
+
       public byte[] RawMessage {
         get { return rawMessage; }
         set {
-          rawMessage = value;
-          message = null;
+          lock (lockObject) {
+            rawMessage = value;
+            message = null;
+          }
         }
       }
 
@@ -64,13 +68,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
 
       public QualityMessage GetMessage(ExtensionRegistry extensions) {
-        if (message == null && rawMessage != null)
-          message = QualityMessage.ParseFrom(ByteString.CopyFrom(rawMessage), extensions);
+        lock (lockObject) {
+          if (message == null && rawMessage != null)
+            message = QualityMessage.ParseFrom(ByteString.CopyFrom(rawMessage), extensions);
+        }
         return message;
       }
       public void SetMessage(QualityMessage value) {
-        message = value;
-        rawMessage = value.ToByteArray();
+        lock (lockObject) {
+          message = value;
+          rawMessage = value.ToByteArray();
+        }
       }
 
       public override bool Equals(object obj) {
@@ -163,7 +171,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Persistence
     #region BackwardsCompatibility3.4
     [Storable(Name = "Cache")]
-    private IEnumerable<KeyValuePair<string, double>> Cache_Persistence {
+    private IEnumerable<KeyValuePair<string, double>> Cache_Persistence_backwardscompatability {
       get { return Enumerable.Empty<KeyValuePair<string, double>>(); }
       set {
         var rawMessages = value.ToDictionary(kvp => kvp.Key,
@@ -178,7 +186,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     }
     #endregion
     [Storable(Name = "CacheNew")]
-    private IEnumerable<KeyValuePair<string, byte[]>> CacheNew_Persistence {
+    private IEnumerable<KeyValuePair<string, byte[]>> Cache_Persistence {
       get { return IsPersistent ? GetCacheValues() : Enumerable.Empty<KeyValuePair<string, byte[]>>(); }
       set { SetCacheValues(value); }
     }
