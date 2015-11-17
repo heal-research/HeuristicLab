@@ -27,7 +27,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
   [TestClass]
-  public class ProbabilisticTreeCreaterTest {
+  public class ProbabilisticTreeCreatorTest {
     private const int POPULATION_SIZE = 10000;
     private const int MAX_TREE_LENGTH = 100;
     private const int MAX_TREE_DEPTH = 10;
