@@ -24,6 +24,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -47,6 +48,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private const string ModelParameterName = "Model";
+    private const string CreateSolutionParameterName = "CreateSolution";
 
     #region parameter properties
     public IConstrainedValueParameter<IGaussianProcessClassificationModelCreator> GaussianProcessModelCreatorParameter {
@@ -54,6 +56,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public IFixedValueParameter<GaussianProcessClassificationSolutionCreator> GaussianProcessSolutionCreatorParameter {
       get { return (IFixedValueParameter<GaussianProcessClassificationSolutionCreator>)Parameters[SolutionCreatorParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> CreateSolutionParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
+    }
+    #endregion
+    #region properties
+    public bool CreateSolution {
+      get { return CreateSolutionParameter.Value.Value; }
+      set { CreateSolutionParameter.Value.Value = value; }
     }
     #endregion
 
@@ -81,6 +92,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<GaussianProcessClassificationSolutionCreator>(SolutionCreatorParameterName, "The solution creator for the algorithm",
         new GaussianProcessClassificationSolutionCreator()));
       Parameters[SolutionCreatorParameterName].Hidden = true;
+      // TODO: it would be better to deactivate the solution creator when this parameter is changed
+      Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+      Parameters[CreateSolutionParameterName].Hidden = true;
 
       ParameterizedModelCreators();
       ParameterizeSolutionCreator(GaussianProcessSolutionCreatorParameter.Value);
@@ -90,6 +104,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(CreateSolutionParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+        Parameters[CreateSolutionParameterName].Hidden = true;
+      }
+      #endregion
       RegisterEventHandlers();
     }
 
