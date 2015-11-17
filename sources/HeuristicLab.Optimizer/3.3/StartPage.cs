@@ -132,14 +132,14 @@ namespace HeuristicLab.Optimizer {
     }
 
     private void FillGroupLookup() {
-      var standardProblems = new List<string> { "ES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
+      var standardProblems = new List<string> { "ALPSGA_TSP", "ES_Griewank", "GA_Grouping", "GA_TSP", "GA_VRP", "GE_ArtificialAnt",
                 "IslandGA_TSP", "LS_Knapsack", "PSO_Schwefel", "RAPGA_JSSP",
-                "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP" ,"VNS_TSP"
+                "SA_Rastrigin", "SGP_SantaFe","GP_Multiplexer", "SS_VRP", "TS_TSP", "TS_VRP", "VNS_OP", "VNS_TSP"
         };
       groupLookup[standardProblemsGroup] = standardProblems;
-      var dataAnalysisProblems = new List<string> { "SGP_SymbClass", "SGP_SymbReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
+      var dataAnalysisProblems = new List<string> { "ALPSGP_SymReg", "SGP_SymbClass", "SGP_SymbReg", "OSGP_TimeSeries", "GE_SymbReg", "GPR" };
       groupLookup[dataAnalysisGroup] = dataAnalysisProblems;
-      var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script", 
+      var scripts = new List<string> { "GA_QAP_Script", "GUI_Automation_Script", "OSGA_Rastrigin_Script",
                                        "GridSearch_RF_Classification_Script", "GridSearch_RF_Regression_Script",
                                        "GridSearch_SVM_Classification_Script", "GridSearch_SVM_Regression_Script" };
       groupLookup[scriptsGroup] = scripts;
