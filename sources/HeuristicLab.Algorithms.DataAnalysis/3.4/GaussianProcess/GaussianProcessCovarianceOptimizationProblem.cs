@@ -191,6 +191,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       bestHyperParameters = null;
     }
 
+    // Does not produce the same result for the same seed when using parallel engine (see below)!
     public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
       var meanFunction = new MeanConst();
       var problemData = ProblemData;
@@ -219,8 +220,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // initialize hyperparameters
         hyperParameters[0] = ds.GetDoubleValues(targetVariable).Average(); // mean const
 
-        for (int i = 0; i < covarianceFunction.GetNumberOfParameters(nVars); i++) {
-          hyperParameters[1 + i] = random.NextDouble() * 2.0 - 1.0;
+        // Evaluate might be called concurrently therefore access to random has to be synchronized.
+        // However, results of multiple runs with the same seed will be different when using the parallel engine.
+        lock (random) {
+          for (int i = 0; i < covarianceFunction.GetNumberOfParameters(nVars); i++) {
+            hyperParameters[1 + i] = random.NextDouble() * 2.0 - 1.0;
+          }
         }
         hyperParameters[hyperParameters.Length - 1] = 1.0; // s² = exp(2), TODO: other inits better?
 
