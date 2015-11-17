@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Random;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -74,26 +73,12 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding.Tests {
     [TestCategory("Encodings.SymbolicExpressionTree")]
     [TestProperty("Time", "short")]
     public void ProbabilisticTreeCreatorSpecificTreeSizesTest() {
-      var trees = new List<ISymbolicExpressionTree>();
       var grammar = Grammars.CreateSimpleArithmeticGrammar();
       var random = new MersenneTwister(31415);
-      var treeGrammarType = SymbolicExpressionTreeGrammar_Accessor.ShadowedType.ReferencedType;
 
-
-      for (int targetTreeSize = 1; targetTreeSize <= 100; targetTreeSize++) {
-        var tree = new SymbolicExpressionTree();
-        var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.ProgramRootSymbol.CreateTreeNode();
-        rootNode.SetGrammar((ISymbolicExpressionTreeGrammar)Activator.CreateInstance(treeGrammarType, grammar));
-        if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);
-        var startNode = (SymbolicExpressionTreeTopLevelNode)grammar.StartSymbol.CreateTreeNode();
-        startNode.SetGrammar((ISymbolicExpressionTreeGrammar)Activator.CreateInstance(treeGrammarType, grammar));
-        if (startNode.HasLocalParameters) startNode.ResetLocalParameters(random);
-        rootNode.AddSubtree(startNode);
-
-        ProbabilisticTreeCreator_Accessor.TryCreateFullTreeFromSeed(random, startNode, targetTreeSize, ((int)Math.Log(targetTreeSize, 2)) + 1);
-        tree.Root = rootNode;
-        //mkommend: commented due to performance issues on the builder
-        // Assert.AreEqual(targetTreeSize + 2, tree.Length);  //the root and start node must be additionally added
+      for (int targetTreeSize = 3; targetTreeSize <= 100; targetTreeSize++) {
+        var tree = ProbabilisticTreeCreator.CreateExpressionTree(random, grammar, targetTreeSize, ((int)Math.Log(targetTreeSize, 2)) + 2);
+        Assert.AreEqual(targetTreeSize, tree.Length);
       }
     }
   }

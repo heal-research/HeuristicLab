@@ -73,6 +73,26 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       return tree;
     }
 
+    public static ISymbolicExpressionTree CreateExpressionTree(IRandom random, ISymbolicExpressionGrammar grammar, int targetLength,
+      int maxTreeDepth) {
+      SymbolicExpressionTree tree = new SymbolicExpressionTree();
+      var rootNode = (SymbolicExpressionTreeTopLevelNode)grammar.ProgramRootSymbol.CreateTreeNode();
+      if (rootNode.HasLocalParameters) rootNode.ResetLocalParameters(random);
+      rootNode.SetGrammar(grammar.CreateExpressionTreeGrammar());
+
+      var startNode = (SymbolicExpressionTreeTopLevelNode)grammar.StartSymbol.CreateTreeNode();
+      if (startNode.HasLocalParameters) startNode.ResetLocalParameters(random);
+      startNode.SetGrammar(grammar.CreateExpressionTreeGrammar());
+
+      rootNode.AddSubtree(startNode);
+      bool success = TryCreateFullTreeFromSeed(random, startNode, targetLength - 2, maxTreeDepth - 1);
+      if (!success) throw new InvalidOperationException(string.Format("Could not create a tree with target length {0} and max depth {1}", targetLength, maxTreeDepth));
+
+      tree.Root = rootNode;
+      return tree;
+
+    }
+
     private class TreeExtensionPoint {
       public ISymbolicExpressionTreeNode Parent { get; set; }
       public int ChildIndex { get; set; }
@@ -106,7 +126,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
           return;
         } else {
           // clean seedNode
-          while (seedNode.Subtrees.Count() > 0) seedNode.RemoveSubtree(0);
+          while (seedNode.Subtrees.Any()) seedNode.RemoveSubtree(0);
         }
         // try a different length MAX_TRIES times
       }
