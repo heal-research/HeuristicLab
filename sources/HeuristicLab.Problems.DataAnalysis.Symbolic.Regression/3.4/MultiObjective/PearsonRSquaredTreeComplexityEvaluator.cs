@@ -28,19 +28,19 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Pearson R² & Tree size Evaluator", "Calculates the Pearson R² and the tree size of a symbolic regression solution.")]
+  [Item("Pearson R² & Tree Complexity Evaluator", "Calculates the Pearson R² and the tree complexity of a symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
+  public class PearsonRSquaredTreeComplexityEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator original, Cloner cloner)
+    protected PearsonRSquaredTreeComplexityEvaluator(bool deserializing) : base(deserializing) { }
+    protected PearsonRSquaredTreeComplexityEvaluator(PearsonRSquaredTreeComplexityEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(this, cloner);
+      return new PearsonRSquaredTreeComplexityEvaluator(this, cloner);
     }
 
-    public SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator() : base() { }
+    public PearsonRSquaredTreeComplexityEvaluator() : base() { }
 
     public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } }
 
@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (UseConstantOptimization) {
         SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, solution, problemData, rows, applyLinearScaling, ConstantOptimizationIterations, estimationLimits.Upper, estimationLimits.Lower);
       }
-      double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
+      double[] qualities = Calculate(interpreter, solution, estimationLimits.Lower, estimationLimits.Upper, problemData, rows, applyLinearScaling, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
       return base.InstrumentedApply();
     }
@@ -64,7 +64,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
       if (decimalPlaces >= 0)
         r2 = Math.Round(r2, decimalPlaces);
-      return new double[2] { r2, solution.Length };
+      return new double[2] { r2, SymbolicDataAnalysisModelComplexityCalculator.CalculateComplexity(solution) };
     }
 
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {

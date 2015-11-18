@@ -21,15 +21,67 @@
 
 
 using HeuristicLab.Common;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
+  [StorableClass]
   public abstract class SymbolicRegressionMultiObjectiveEvaluator : SymbolicDataAnalysisMultiObjectiveEvaluator<IRegressionProblemData>, ISymbolicRegressionMultiObjectiveEvaluator {
+    private const string DecimalPlacesParameterName = "Decimal Places";
+    private const string UseConstantOptimizationParameterName = "Use constant optimization";
+    private const string ConstantOptimizationIterationsParameterName = "Constant optimization iterations";
+
+    public IFixedValueParameter<IntValue> DecimalPlacesParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[DecimalPlacesParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> UseConstantOptimizationParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[UseConstantOptimizationParameterName]; }
+    }
+
+    public IFixedValueParameter<IntValue> ConstantOptimizationIterationsParameter {
+      get { return (IFixedValueParameter<IntValue>)Parameters[ConstantOptimizationIterationsParameterName]; }
+    }
+
+
+    public int DecimalPlaces {
+      get { return DecimalPlacesParameter.Value.Value; }
+      set { DecimalPlacesParameter.Value.Value = value; }
+    }
+    public bool UseConstantOptimization {
+      get { return UseConstantOptimizationParameter.Value.Value; }
+      set { UseConstantOptimizationParameter.Value.Value = value; }
+    }
+    public int ConstantOptimizationIterations {
+      get { return ConstantOptimizationIterationsParameter.Value.Value; }
+      set { ConstantOptimizationIterationsParameter.Value.Value = value; }
+    }
+
     [StorableConstructor]
     protected SymbolicRegressionMultiObjectiveEvaluator(bool deserializing) : base(deserializing) { }
     protected SymbolicRegressionMultiObjectiveEvaluator(SymbolicRegressionMultiObjectiveEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }
 
-    protected SymbolicRegressionMultiObjectiveEvaluator() : base() { }
+    protected SymbolicRegressionMultiObjectiveEvaluator()
+      : base() {
+      Parameters.Add(new FixedValueParameter<IntValue>(DecimalPlacesParameterName, "The number of decimal places used for rounding the quality values.", new IntValue(5)) { Hidden = true });
+      Parameters.Add(new FixedValueParameter<BoolValue>(UseConstantOptimizationParameterName, "", new BoolValue(false)));
+      Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "The number of iterations constant optimization should be applied.", new IntValue(5)));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(UseConstantOptimizationParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(UseConstantOptimizationParameterName, "", new BoolValue(false)));
+      }
+      if (!Parameters.ContainsKey(DecimalPlacesParameterName)) {
+        Parameters.Add(new FixedValueParameter<IntValue>(DecimalPlacesParameterName, "The number of decimal places used for rounding the quality values.", new IntValue(-1)) { Hidden = true });
+      }
+      if (!Parameters.ContainsKey(ConstantOptimizationIterationsParameterName)) {
+        Parameters.Add(new FixedValueParameter<IntValue>(ConstantOptimizationIterationsParameterName, "The number of iterations constant optimization should be applied.", new IntValue(5)));
+      }
+    }
   }
 }

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,19 +29,19 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Pearson R² & Tree size Evaluator", "Calculates the Pearson R² and the tree size of a symbolic regression solution.")]
+  [Item("Pearson R² & Number of Variables Evaluator", "Calculates the Pearson R² and the number of used variables of a symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
+  public class PearsonRSquaredNumberOfVariablesEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator original, Cloner cloner)
+    protected PearsonRSquaredNumberOfVariablesEvaluator(bool deserializing) : base(deserializing) { }
+    protected PearsonRSquaredNumberOfVariablesEvaluator(PearsonRSquaredNumberOfVariablesEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(this, cloner);
+      return new PearsonRSquaredNumberOfVariablesEvaluator(this, cloner);
     }
 
-    public SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator() : base() { }
+    public PearsonRSquaredNumberOfVariablesEvaluator() : base() { }
 
     public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } }
 
@@ -64,7 +65,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
       if (decimalPlaces >= 0)
         r2 = Math.Round(r2, decimalPlaces);
-      return new double[2] { r2, solution.Length };
+      return new double[2] { r2, solution.IterateNodesPostfix().OfType<VariableTreeNode>().Count() };
     }
 
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {

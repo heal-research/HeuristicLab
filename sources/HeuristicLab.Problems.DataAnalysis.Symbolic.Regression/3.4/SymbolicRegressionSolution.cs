@@ -117,7 +117,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       estimationLimitResults.Add(new Result(TrainingNaNEvaluationsResultName, "", new IntValue()));
       estimationLimitResults.Add(new Result(TestNaNEvaluationsResultName, "", new IntValue()));
       Add(new Result(EstimationLimitsResultsResultName, "Results concerning the estimation limits of symbolic regression solution", estimationLimitResults));
-
       RecalculateResults();
     }
 
