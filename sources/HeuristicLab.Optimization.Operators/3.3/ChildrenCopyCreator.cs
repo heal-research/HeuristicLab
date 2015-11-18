@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
@@ -47,7 +48,7 @@ namespace HeuristicLab.Optimization.Operators {
     private ChildrenCopyCreator(ChildrenCopyCreator original, Cloner cloner) : base(original, cloner) { }
     public ChildrenCopyCreator()
       : base() {
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose sub-scopes represent the parents."));
+      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope whose sub-scopes should be copied."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -55,18 +56,18 @@ namespace HeuristicLab.Optimization.Operators {
     }
 
     public override IOperation Apply() {
-      int parents = CurrentScope.SubScopes.Count;
+      int nChildren = CurrentScope.SubScopes.Count;
 
-      for (int i = 0; i < parents; i++) {
-        IScope parent = CurrentScope.SubScopes[i];
-        parent.SubScopes.Clear();
+      for (int i = 0; i < nChildren; i++) {
+        IScope child = CurrentScope.SubScopes[i];
+        if (child.SubScopes.Count > 0) throw new ArgumentException("The sub-scope that should be cloned has further sub-scopes.");
 
-        //copy parent
-        IScope child = new Scope(i.ToString());
-        foreach (IVariable var in parent.Variables)
-          child.Variables.Add((IVariable)var.Clone());
+        IScope childCopy = new Scope(i.ToString());
+        var cloner = new Cloner();
+        foreach (IVariable var in child.Variables)
+          childCopy.Variables.Add(cloner.Clone(var));
 
-        parent.SubScopes.Add(child);
+        child.SubScopes.Add(childCopy);
       }
       return base.Apply();
     }
