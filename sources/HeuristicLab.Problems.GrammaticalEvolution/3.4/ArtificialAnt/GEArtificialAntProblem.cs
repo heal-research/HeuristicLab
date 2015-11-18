@@ -21,7 +21,6 @@
  */
 #endregion
 
-using System.Diagnostics.Contracts;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -98,6 +97,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       BestKnownQuality = wrappedAntProblem.BestKnownQuality;
     }
 
+    private readonly object syncRoot = new object();
     public override double Evaluate(Individual individual, IRandom random) {
       var vector = individual.IntegerVector();
 
@@ -109,7 +109,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       // Evaluate might be called concurrently therefore access to random has to be synchronized.
       // However, results depend on the order of execution. Therefore, results might be different for the same seed when using the parallel engine.
       IRandom fastRand;
-      lock (random) {
+      lock (syncRoot) {
         fastRand = new FastRandom(random.Next());
       }
       var tree = mapper.Map(fastRand, bounds, len, grammar, vector);
