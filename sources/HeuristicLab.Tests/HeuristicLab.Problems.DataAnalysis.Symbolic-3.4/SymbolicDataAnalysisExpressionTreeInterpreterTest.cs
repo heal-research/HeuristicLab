@@ -69,6 +69,24 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeInterpreter(), 12.5e6);
     }
 
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void CompiledInterpreterTestTypeCoherentGrammarPerformance() {
+      TestTypeCoherentGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
+    }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void CompiledInterpreterTestFullGrammarPerformance() {
+      TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
+    }
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void CompiledInterpreterTestArithmeticGrammarPerformance() {
+      TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(), 12.5e6);
+    }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
@@ -112,12 +130,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     private void TestTypeCoherentGrammarPerformance(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
+
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();
-      grammar.MaximumFunctionArguments = 0;
-      grammar.MaximumFunctionDefinitions = 0;
-      grammar.MinimumFunctionArguments = 0;
-      grammar.MinimumFunctionDefinitions = 0;
+
       var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
@@ -130,11 +146,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     private void TestFullGrammarPerformance(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
+
       var grammar = new FullFunctionalExpressionGrammar();
-      grammar.MaximumFunctionArguments = 0;
-      grammar.MaximumFunctionDefinitions = 0;
-      grammar.MinimumFunctionArguments = 0;
-      grammar.MinimumFunctionDefinitions = 0;
       var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
@@ -147,12 +160,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     private void TestArithmeticGrammarPerformance(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, double nodesPerSecThreshold) {
       var twister = new MersenneTwister(31415);
       var dataset = Util.CreateRandomDataset(twister, Rows, Columns);
+
       var grammar = new ArithmeticExpressionGrammar();
-      //grammar.Symbols.OfType<Variable>().First().Enabled = false;
-      grammar.MaximumFunctionArguments = 0;
-      grammar.MaximumFunctionDefinitions = 0;
-      grammar.MinimumFunctionArguments = 0;
-      grammar.MinimumFunctionDefinitions = 0;
       var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 100, 0, 0);
       foreach (SymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
@@ -189,12 +198,64 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "short")]
+    public void CompiledInterpreterTestEvaluation() {
+      var interpreter = new SymbolicDataAnalysisExpressionCompiledTreeInterpreter();
+      // ADFs are not supported by the compiled tree interpreter
+      EvaluateTerminals(interpreter, ds);
+      EvaluateOperations(interpreter, ds);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "short")]
     public void LinearInterpreterTestEvaluation() {
       var interpreter = new SymbolicDataAnalysisExpressionTreeLinearInterpreter();
-
       //ADFs are not supported by the linear interpreter
       EvaluateTerminals(interpreter, ds);
       EvaluateOperations(interpreter, ds);
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.DataAnalysis.Symbolic")]
+    [TestProperty("Time", "long")]
+    public void TestInterpreterEvaluationResults() {
+
+      var twister = new MersenneTwister();
+      int seed = twister.Next(0, int.MaxValue);
+      twister.Seed((uint)seed);
+
+      const int numRows = 100;
+      var dataset = Util.CreateRandomDataset(twister, numRows, Columns);
+
+      var grammar = new TypeCoherentExpressionGrammar();
+      var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 10, 0, 0);
+      foreach (ISymbolicExpressionTree tree in randomTrees) {
+        Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
+      }
+
+      var interpreters = new ISymbolicDataAnalysisExpressionTreeInterpreter[] {
+        //new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(),
+        //new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(),
+        new SymbolicDataAnalysisExpressionTreeLinearInterpreter(),
+        new SymbolicDataAnalysisExpressionTreeInterpreter(),
+      };
+
+      var rows = Enumerable.Range(0, numRows).ToList();
+      for (int i = 0; i < randomTrees.Length; ++i) {
+        var tree = randomTrees[i];
+        var valuesMatrix = interpreters.Select(x => x.GetSymbolicExpressionTreeValues(tree, dataset, rows)).ToList();
+        for (int m = 0; m < interpreters.Length - 1; ++m) {
+          var sum = valuesMatrix[m].Sum();
+          for (int n = m + 1; n < interpreters.Length; ++n) {
+            var s = valuesMatrix[n].Sum();
+            if (double.IsNaN(sum) && double.IsNaN(s)) continue;
+
+            string errorMessage = string.Format("Interpreters {0} and {1} do not agree on tree {2} (seed = {3}).",
+              interpreters[m].Name, interpreters[n].Name, i, seed);
+            Assert.AreEqual(sum, valuesMatrix[n].Sum(), 1.0E-12, errorMessage);
+          }
+        }
+      }
     }
 
     private void EvaluateTerminals(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds) {
