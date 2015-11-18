@@ -191,6 +191,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       bestHyperParameters = null;
     }
 
+    private readonly object syncRoot = new object();
     // Does not produce the same result for the same seed when using parallel engine (see below)!
     public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
       var meanFunction = new MeanConst();
@@ -222,7 +223,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
         // Evaluate might be called concurrently therefore access to random has to be synchronized.
         // However, results of multiple runs with the same seed will be different when using the parallel engine.
-        lock (random) {
+        lock (syncRoot) {
           for (int i = 0; i < covarianceFunction.GetNumberOfParameters(nVars); i++) {
             hyperParameters[1 + i] = random.NextDouble() * 2.0 - 1.0;
           }
