@@ -57,7 +57,6 @@ namespace HeuristicLab.Optimization.Views {
       // 
       // parameterCollectionView
       // 
-      this.parameterCollectionView.EnableBreadcrumbs = true;
       this.parameterCollectionView.Location = new System.Drawing.Point(6, 27);
       this.parameterCollectionView.Size = new System.Drawing.Size(501, 303);
       // 

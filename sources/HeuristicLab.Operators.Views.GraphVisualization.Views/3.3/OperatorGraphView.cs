@@ -140,7 +140,7 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
           IOperatorShapeInfo shapeInfo = shape.Tag as IOperatorShapeInfo;
           if (shapeInfo != null) {
             IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
-            AlgorithmOperator algOp = op as AlgorithmOperator;
+            IOperatorGraphOperator graphOp = op as IOperatorGraphOperator;
 
             Control c = this;
             BreadcrumbViewHost vh;
@@ -150,10 +150,10 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
               vh = c as BreadcrumbViewHost;
             } while ((vh == null || !vh.EnableBreadcrumbs) && c != null);
 
-            if (algOp != null && vh != null) {
+            if (graphOp != null && vh != null) {
               vh.AddBreadcrumbs(vh.Content);
-              vh.AddBreadcrumb(algOp.Name, algOp.OperatorGraph);
-              vh.Content = algOp.OperatorGraph;
+              vh.AddBreadcrumb(graphOp.Name, graphOp.OperatorGraph);
+              vh.Content = graphOp.OperatorGraph;
               vh.ReadOnly = ReadOnly;
               vh.Locked = Locked;
             } else {
