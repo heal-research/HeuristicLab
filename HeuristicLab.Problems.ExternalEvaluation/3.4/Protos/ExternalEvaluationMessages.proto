@@ -63,13 +63,32 @@ message SolutionMessage {
   repeated RawVariable rawVars = 10;
 }
 
+// Nested Extensions http://www.indelible.org/ink/protobuf-polymorphism/
 message QualityMessage {
   required int32 solutionId = 1;
-  required double quality = 2;
-
+  enum Type {
+    SingleObjectiveQualityMessage = 1;
+    MultiObjectiveQualityMessage = 2;
+  }
+  required Type type = 2;
   extensions 1000 to max;
 }
+
+message SingleObjectiveQualityMessage {
+  extend QualityMessage {
+    required SingleObjectiveQualityMessage qualityMessage = 1000;  // unique QualityMessage extension number
+  }
+  required double quality = 1;
+}
+message MultiObjectiveQualityMessage {
+  extend QualityMessage {
+    required MultiObjectiveQualityMessage qualityMessage = 1001;  // unique QualityMessage extension number
+  }
+  repeated double qualities = 1;
+}
+
   
 service EvaluationService {
-  rpc Evaluate (SolutionMessage) returns (QualityMessage);
+  rpc EvaluateSingleObjective (SolutionMessage) returns (SingleObjectiveQualityMessage);
+  rpc EvaluateMultiObjectives (SolutionMessage) returns (MultiObjectiveQualityMessage);
 }

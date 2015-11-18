@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -29,27 +28,23 @@ using HeuristicLab.Problems.ExternalEvaluation.Programmable;
 namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
-  public sealed class SingleObjectiveOptimizationSupportScript : OptimizationSupportScript<ISingleObjectiveOptimizationSupport>, ISingleObjectiveOptimizationSupport {
+  public sealed class MultiObjectiveOptimizationSupportScript : OptimizationSupportScript<IMultiObjectiveOptimizationSupport>, IMultiObjectiveOptimizationSupport {
 
     protected override string CodeTemplate {
-      get { return Templates.CompiledSingleObjectiveOptimizationSupport; }
+      get { return Templates.CompiledMultiObjectiveOptimizationSupport; }
     }
 
     [StorableConstructor]
-    private SingleObjectiveOptimizationSupportScript(bool deserializing) : base(deserializing) { }
-    private SingleObjectiveOptimizationSupportScript(SingleObjectiveOptimizationSupportScript original, Cloner cloner) : base(original, cloner) { }
-    public SingleObjectiveOptimizationSupportScript() : base() { }
+    private MultiObjectiveOptimizationSupportScript(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveOptimizationSupportScript(MultiObjectiveOptimizationSupportScript original, Cloner cloner) : base(original, cloner) { }
+    public MultiObjectiveOptimizationSupportScript() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveOptimizationSupportScript(this, cloner);
+      return new MultiObjectiveOptimizationSupportScript(this, cloner);
     }
 
-    void ISingleObjectiveOptimizationSupport.Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    void IMultiObjectiveOptimizationSupport.Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       CompiledInstance.Analyze(individuals, qualities, results, random);
-    }
-
-    IEnumerable<Individual> ISingleObjectiveOptimizationSupport.GetNeighbors(Individual individual, IRandom random) {
-      return CompiledInstance.GetNeighbors(individual, random);
     }
   }
 }
