@@ -211,7 +211,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           instr.value = Math.Sqrt(code[instr.childIndex].value);
         } else if (instr.opCode == OpCodes.Root) {
           double x = code[instr.childIndex].value;
-          double y = code[instr.childIndex + 1].value;
+          double y = Math.Round(code[instr.childIndex + 1].value);
           instr.value = Math.Pow(x, 1 / y);
         } else if (instr.opCode == OpCodes.Exp) {
           instr.value = Math.Exp(code[instr.childIndex].value);
