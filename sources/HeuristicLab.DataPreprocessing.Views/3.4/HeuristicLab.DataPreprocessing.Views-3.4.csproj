@@ -120,6 +120,12 @@
     <Compile Include="ComparisonFilterView.Designer.cs">
       <DependentUpon>ComparisonFilterView.cs</DependentUpon>
     </Compile>
+    <Compile Include="RenameColumnsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenameColumnsDialog.Designer.cs">
+      <DependentUpon>RenameColumnsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScatterPlotSingleView.cs">
       <SubType>UserControl</SubType>
     </Compile>

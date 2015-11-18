@@ -58,6 +58,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     public DataGridContentView() {
       InitializeComponent();
       dataGridView.CellMouseClick += dataGridView_CellMouseClick;
+      dataGridView.RowHeaderMouseClick += dataGridView_RowHeaderMouseClick;
       dataGridView.KeyDown += dataGridView_KeyDown;
       dataGridView.MouseUp += dataGridView_MouseUp;
       contextMenuCell.Items.Add(ShowHideColumns);
@@ -183,7 +184,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     protected override void dataGridView_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (Content != null) {
-        if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+        if (e.Button == MouseButtons.Left) {
           dataGridView.Focus();
           dataGridView.ClearSelection();
           dataGridView.SelectionChanged -= dataGridView_SelectionChanged;
@@ -192,11 +193,22 @@ namespace HeuristicLab.DataPreprocessing.Views {
               dataGridView.SelectionChanged += dataGridView_SelectionChanged;
             dataGridView[e.ColumnIndex, i].Selected = true;
           }
-        } else if (Content.SortableView) {
+        } else if (e.Button == MouseButtons.Middle) {
+          int newIndex = e.ColumnIndex >= 0 ? e.ColumnIndex : 0;
+          Content.PreProcessingData.InsertColumn<double>(newIndex.ToString(), newIndex);
+        } else if (e.Button == MouseButtons.Right && Content.SortableView) {
           SortColumn(e.ColumnIndex);
         }
       }
       searchIterator = null;
+    }
+    private void dataGridView_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+      if (Content != null) {
+        if (e.Button == MouseButtons.Middle) {
+          int newIndex = e.RowIndex >= 0 ? e.RowIndex : 0;
+          Content.PreProcessingData.InsertRow(newIndex);
+        }
+      }
     }
 
     private void dataGridView_MouseUp(object sender, MouseEventArgs e) {
@@ -468,7 +480,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
       if (Content == null) return;
-      if (e.Button == System.Windows.Forms.MouseButtons.Right && !(e.ColumnIndex != -1 && e.RowIndex == -1)) {
+      if (e.Button == MouseButtons.Right && !(e.ColumnIndex != -1 && e.RowIndex == -1)) {
         if (e.ColumnIndex == -1 || e.RowIndex == -1) {
           replaceValueOverColumnToolStripMenuItem.Visible = false;
           contextMenuCell.Show(MousePosition);
@@ -630,7 +642,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
     #endregion
 
-    private void addLineButton_Click(object sender, EventArgs e) {
+    private void addRowButton_Click(object sender, EventArgs e) {
       Content.PreProcessingData.InsertRow(Content.Rows);
     }
 
@@ -638,5 +650,12 @@ namespace HeuristicLab.DataPreprocessing.Views {
       Content.PreProcessingData.InsertColumn<double>(Content.Columns.ToString(), Content.Columns);
     }
 
+    private void renameColumnsButton_Click(object sender, EventArgs e) {
+      var renameDialog = new RenameColumnsDialog(Content.ColumnNames);
+
+      if (renameDialog.ShowDialog(this) == DialogResult.OK) {
+        Content.PreProcessingData.RenameColumns(renameDialog.ColumnNames);
+      }
+    }
   }
 }

@@ -264,6 +264,28 @@ namespace HeuristicLab.DataPreprocessing {
         OnChanged(DataPreprocessingChangedEventType.DeleteColumn, columnIndex, -1);
     }
 
+    public override void RenameColumn(int columnIndex, string name) {
+      SaveSnapshot(DataPreprocessingChangedEventType.ChangeColumn, columnIndex, -1);
+      if (columnIndex < 0 || columnIndex > variableNames.Count)
+        throw new ArgumentOutOfRangeException("columnIndex");
+      variableNames[columnIndex] = name;
+
+      if (!IsInTransaction)
+        OnChanged(DataPreprocessingChangedEventType.ChangeColumn, -1, -1);
+    }
+
+    public override void RenameColumns(IList<string> names) {
+      if (names == null) throw new ArgumentNullException("names");
+      if (names.Count != variableNames.Count) throw new ArgumentException("number of names must match the number of columns.", "names");
+
+      SaveSnapshot(DataPreprocessingChangedEventType.ChangeColumn, -1, -1);
+      for (int i = 0; i < names.Count; i++)
+        variableNames[i] = names[i];
+
+      if (!IsInTransaction)
+        OnChanged(DataPreprocessingChangedEventType.ChangeColumn, -1, -1);
+    }
+
     public override Dataset ExportToDataset() {
       IList<IList> values = new List<IList>();
 

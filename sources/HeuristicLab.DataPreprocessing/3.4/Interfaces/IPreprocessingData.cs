@@ -46,6 +46,9 @@ namespace HeuristicLab.DataPreprocessing {
 
     void DeleteColumn(int columnIndex);
 
+    void RenameColumn(int columnIndex, string name);
+    void RenameColumns(IList<string> names);
+
     bool AreAllStringColumns(IEnumerable<int> columnIndices);
     bool Validate(string value, out string errorMessage, int columnIndex);
 

@@ -120,6 +120,18 @@ namespace HeuristicLab.DataPreprocessing.Implementations {
       originalData.DeleteColumn(columnIndex);
     }
 
+    public void RenameColumn(int columnIndex, string name) {
+      if (IsFiltered)
+        throw new InvalidOperationException("RenameColumn not possible while data is filtered");
+      originalData.RenameColumn(columnIndex, name);
+    }
+
+    public void RenameColumns(IList<string> names) {
+      if (IsFiltered)
+        throw new InvalidOperationException("RenameColumns not possible while data is filtered");
+      originalData.RenameColumns(names);
+    }
+
     public string GetVariableName(int columnIndex) {
       return ActiveData.GetVariableName(columnIndex);
     }
