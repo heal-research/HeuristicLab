@@ -21,8 +21,8 @@ IF "%BUILDBEFORETEST%" NEQ "" (
 
 ECHO Test starting for category %TESTCATEGORY%...
 
-FOR /F "tokens=1,2,* delims=	 " %%A IN ('REG QUERY "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\SxS\VS7"') DO (
-  IF "%%A"=="12.0" SET VSPATH=%%C)
+FOR /F "tokens=1,2,* delims=	 " %%A IN ('REG QUERY "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VisualStudio\SxS\VS7"') DO (
+  IF "%%A"=="14.0" SET VSPATH=%%C)
 
 "%VSPATH%Common7\IDE\CommonExtensions\Microsoft\TestWindow\VSTest.Console.exe" bin\HeuristicLab.Tests.dll /Framework:framework40 /Platform:%TESTPLATFORM% /TestCaseFilter:"TestCategory=%TESTCATEGORY%"
 
