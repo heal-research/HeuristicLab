@@ -32,7 +32,6 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")]
   [PluginDependency("HeuristicLab.Netron", "3.0")]
-  [PluginDependency("HeuristicLab.Operators", "3.3")]
   [PluginDependency("HeuristicLab.Operators.Views.GraphVisualization", "3.3")]
   public class HeuristicLabOperatorsViewsGraphVisualizationViewsPlugin : PluginBase {
   }
