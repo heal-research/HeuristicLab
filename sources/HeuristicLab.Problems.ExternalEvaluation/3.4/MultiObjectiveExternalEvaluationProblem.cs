@@ -33,7 +33,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Item("Multi Objective External Evaluation Problem", "A multi-objective problem that is evaluated in a different process.")]
+  [Item("External Evaluation Problem (multi-objective)", "A multi-objective problem that is evaluated in a different process.")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 200)]
   [StorableClass]
   public class MultiObjectiveExternalEvaluationProblem : MultiObjectiveBasicProblem<IEncoding>, IExternalEvaluationProblem {
@@ -89,8 +89,6 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       Parameters.Add(new ValueParameter<CheckedItemCollection<IEvaluationServiceClient>>("Clients", "The clients that are used to communicate with the external application.", new CheckedItemCollection<IEvaluationServiceClient>() { new EvaluationServiceClient() }));
       Parameters.Add(new ValueParameter<SolutionMessageBuilder>("MessageBuilder", "The message builder that converts from HeuristicLab objects to SolutionMessage representation.", new SolutionMessageBuilder()) { Hidden = true });
       Parameters.Add(new FixedValueParameter<MultiObjectiveOptimizationSupportScript>("SupportScript", "A script that can analyze the results of the optimization.", new MultiObjectiveOptimizationSupportScript()));
-
-      //Operators.Add(new BestScopeSolutionAnalyzer()); pareto front
     }
 
     #region Multi Objective Problem Overrides

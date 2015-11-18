@@ -34,9 +34,11 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
-  [Item("External Evaluation Problem", "A problem that is evaluated in a different process.")]
+  [Item("External Evaluation Problem (single-objective)", "A problem that is evaluated in a different process.")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 100)]
   [StorableClass]
+  // BackwardsCompatibility3.3
+  // Rename class to SingleObjectiveExternalEvaluationProblem
   public class ExternalEvaluationProblem : SingleObjectiveBasicProblem<IEncoding>, IExternalEvaluationProblem {
 
     public static new Image StaticItemImage {
