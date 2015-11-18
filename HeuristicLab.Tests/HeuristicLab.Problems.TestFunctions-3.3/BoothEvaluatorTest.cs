@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void BoothEvaluateFunctionTest() {
-      BoothEvaluator_Accessor target = new BoothEvaluator_Accessor();
+      BoothEvaluator target = new BoothEvaluator();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;

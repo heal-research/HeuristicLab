@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -30,27 +29,6 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
   ///</summary>
   [TestClass()]
   public class CyclicCrossover2Test {
-    /// <summary>
-    ///A test for Cross
-    ///</summary>
-    [TestMethod]
-    [TestCategory("Encodings.Permutation")]
-    [TestProperty("Time", "short")]
-    public void CyclicCrossover2CrossTest() {
-      TestRandom random = new TestRandom();
-      CyclicCrossover2_Accessor target = new CyclicCrossover2_Accessor(new PrivateObject(typeof(CyclicCrossover2)));
-      // perform a test with more than two parents
-      random.Reset();
-      bool exceptionFired = false;
-      try {
-        target.Cross(random, new ItemArray<Permutation>(new Permutation[] { 
-          new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4), new Permutation(PermutationTypes.RelativeUndirected, 4)}));
-      } catch (System.InvalidOperationException) {
-        exceptionFired = true;
-      }
-      Assert.IsTrue(exceptionFired);
-    }
-
     /// <summary>
     ///A test for Apply
     ///</summary>
@@ -78,7 +56,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding.Tests {
       bool exceptionFired = false;
       try {
         CyclicCrossover.Apply(random, new Permutation(PermutationTypes.RelativeUndirected, 8), new Permutation(PermutationTypes.RelativeUndirected, 6));
-      } catch (System.ArgumentException) {
+      }
+      catch (System.ArgumentException) {
         exceptionFired = true;
       }
       Assert.IsTrue(exceptionFired);

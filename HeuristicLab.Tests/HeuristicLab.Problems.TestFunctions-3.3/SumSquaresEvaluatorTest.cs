@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void SumSquaresEvaluateFunctionTest() {
-      SumSquaresEvaluator_Accessor target = new SumSquaresEvaluator_Accessor();
+      SumSquaresEvaluator target = new SumSquaresEvaluator();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;
