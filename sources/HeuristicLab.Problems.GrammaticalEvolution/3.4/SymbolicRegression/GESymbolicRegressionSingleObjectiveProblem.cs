@@ -33,7 +33,7 @@ using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 
 namespace HeuristicLab.Problems.GrammaticalEvolution {
-  [Item("Grammatical Evolution Symbolic Regression Problem (single objective)",
+  [Item("Grammatical Evolution Symbolic Regression Problem (single objective) (GE)",
         "Represents grammatical evolution for single objective symbolic regression problems.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 180)]

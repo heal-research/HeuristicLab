@@ -35,7 +35,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Support vector machine classification data analysis algorithm.
   /// </summary>
-  [Item("Support Vector Classification", "Support vector machine classification data analysis algorithm (wrapper for libSVM).")]
+  [Item("Support Vector Classification (SVM)", "Support vector machine classification data analysis algorithm (wrapper for libSVM).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 110)]
   [StorableClass]
   public sealed class SupportVectorClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {

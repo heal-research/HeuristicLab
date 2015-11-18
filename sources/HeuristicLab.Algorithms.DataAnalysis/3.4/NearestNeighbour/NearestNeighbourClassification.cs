@@ -33,7 +33,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Nearest neighbour classification data analysis algorithm.
   /// </summary>
-  [Item("Nearest Neighbour Classification", "Nearest neighbour classification data analysis algorithm (wrapper for ALGLIB).")]
+  [Item("Nearest Neighbour Classification (kNN)", "Nearest neighbour classification data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 150)]
   [StorableClass]
   public sealed class NearestNeighbourClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {

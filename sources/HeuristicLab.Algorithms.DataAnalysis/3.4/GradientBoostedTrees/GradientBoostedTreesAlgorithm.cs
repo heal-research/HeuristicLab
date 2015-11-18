@@ -34,7 +34,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Algorithms.DataAnalysis {
-  [Item("Gradient Boosted Trees", "Gradient boosted trees algorithm. Friedman, J. \"Greedy Function Approximation: A Gradient Boosting Machine\", IMS 1999 Reitz Lecture.")]
+  [Item("Gradient Boosted Trees (GBT)", "Gradient boosted trees algorithm. Friedman, J. \"Greedy Function Approximation: A Gradient Boosting Machine\", IMS 1999 Reitz Lecture.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 125)]
   public class GradientBoostedTreesAlgorithm : BasicAlgorithm {

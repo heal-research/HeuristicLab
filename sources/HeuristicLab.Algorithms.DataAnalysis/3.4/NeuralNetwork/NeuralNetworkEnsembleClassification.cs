@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Neural network ensemble classification data analysis algorithm.
   /// </summary>
-  [Item("Neural Network Ensemble Classification", "Neural network ensemble classification data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/mlpensembles.php")]
+  [Item("Neural Network Ensemble Classification (NN)", "Neural network ensemble classification data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/mlpensembles.php")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 140)]
   [StorableClass]
   public sealed class NeuralNetworkEnsembleClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {

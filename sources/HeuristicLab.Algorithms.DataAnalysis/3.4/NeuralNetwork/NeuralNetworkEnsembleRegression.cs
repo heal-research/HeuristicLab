@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Neural network ensemble regression data analysis algorithm.
   /// </summary>
-  [Item("Neural Network Ensemble Regression", "Neural network ensemble regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/mlpensembles.php")]
+  [Item("Neural Network Ensemble Regression (NN)", "Neural network ensemble regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/mlpensembles.php")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 140)]
   [StorableClass]
   public sealed class NeuralNetworkEnsembleRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {
