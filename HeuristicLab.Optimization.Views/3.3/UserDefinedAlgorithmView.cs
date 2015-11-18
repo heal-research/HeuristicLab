@@ -56,40 +56,7 @@ namespace HeuristicLab.Optimization.Views {
     protected override void SetEnabledStateOfControls() {
       base.SetEnabledStateOfControls();
       globalScopeView.Enabled = Content != null;
-      newOperatorGraphButton.Enabled = Content != null && !ReadOnly;
-      openOperatorGraphButton.Enabled = Content != null && !ReadOnly;
       operatorGraphViewHost.ReadOnly = Content == null || ReadOnly;
-    }
-
-    private void newOperatorGraphButton_Click(object sender, EventArgs e) {
-      Content.OperatorGraph = new OperatorGraph();
-    }
-    private void openOperatorGraphButton_Click(object sender, EventArgs e) {
-      openFileDialog.Title = "Open Operator Graph";
-      if (openFileDialog.ShowDialog(this) == DialogResult.OK) {
-        newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = false;
-        operatorGraphViewHost.Enabled = false;
-
-        ContentManager.LoadAsync(openFileDialog.FileName, delegate(IStorableContent content, Exception error) {
-          try {
-            if (error != null) throw error;
-            OperatorGraph operatorGraph = content as OperatorGraph;
-            if (operatorGraph == null)
-              MessageBox.Show(this, "The selected file does not contain an operator graph.", "Invalid File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            else
-              Content.OperatorGraph = operatorGraph;
-          }
-          catch (Exception ex) {
-            ErrorHandling.ShowErrorDialog(this, ex);
-          }
-          finally {
-            Invoke(new Action(delegate() {
-              operatorGraphViewHost.Enabled = true;
-              newOperatorGraphButton.Enabled = openOperatorGraphButton.Enabled = true;
-            }));
-          }
-        });
-      }
     }
   }
 }

@@ -122,6 +122,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin.cs.frame" />
+    <Compile Include="BreadcrumbViewHost.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BreadcrumbViewHost.Designer.cs">
+      <DependentUpon>BreadcrumbViewHost.cs</DependentUpon>
+    </Compile>
     <Compile Include="CheckedItemCollectionView.cs">
       <SubType>UserControl</SubType>
     </Compile>

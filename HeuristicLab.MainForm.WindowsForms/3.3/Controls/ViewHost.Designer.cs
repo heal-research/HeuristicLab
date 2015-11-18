@@ -128,7 +128,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
     #endregion
 
-    private System.Windows.Forms.Label viewsLabel;
+    protected System.Windows.Forms.Label viewsLabel;
     private System.Windows.Forms.Label messageLabel;
     private System.Windows.Forms.ToolTip toolTip;
     private HeuristicLab.MainForm.WindowsForms.ViewContextMenuStrip viewContextMenuStrip;

@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Core;
+using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 using HeuristicLab.MainForm.WindowsForms;
 using HeuristicLab.Netron.CustomTools;
@@ -139,11 +140,30 @@ namespace HeuristicLab.Operators.Views.GraphVisualization.Views {
           IOperatorShapeInfo shapeInfo = shape.Tag as IOperatorShapeInfo;
           if (shapeInfo != null) {
             IOperator op = this.VisualizationInfo.GetOperatorForShapeInfo(shapeInfo);
-            IContentView view = MainFormManager.MainForm.ShowContent(op);
-            if (view != null) {
-              view.ReadOnly = this.ReadOnly;
-              view.Locked = this.Locked;
+            IOperatorGraphOperator graphOp = op as IOperatorGraphOperator;
+
+            Control c = this;
+            BreadcrumbViewHost vh;
+
+            do {
+              c = c.Parent;
+              vh = c as BreadcrumbViewHost;
+            } while ((vh == null || !vh.EnableBreadcrumbs) && c != null);
+
+            if (graphOp != null && vh != null) {
+              vh.AddBreadcrumbs(vh.Content);
+              vh.AddBreadcrumb(graphOp.Name, graphOp.OperatorGraph);
+              vh.Content = graphOp.OperatorGraph;
+              vh.ReadOnly = ReadOnly;
+              vh.Locked = Locked;
+            } else {
+              IContentView view = MainFormManager.MainForm.ShowContent(op);
+              if (view != null) {
+                view.ReadOnly = ReadOnly;
+                view.Locked = Locked;
+              }
             }
+
             HandledMouseEventArgs eventArgs = e as HandledMouseEventArgs;
             if (eventArgs != null)
               eventArgs.Handled = true;
