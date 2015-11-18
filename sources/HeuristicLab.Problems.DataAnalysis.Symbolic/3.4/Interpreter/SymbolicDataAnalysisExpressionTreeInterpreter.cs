@@ -71,7 +71,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     protected SymbolicDataAnalysisExpressionTreeInterpreter(bool deserializing) : base(deserializing) { }
 
     protected SymbolicDataAnalysisExpressionTreeInterpreter(SymbolicDataAnalysisExpressionTreeInterpreter original,
-      Cloner cloner) : base(original, cloner) { }
+      Cloner cloner)
+      : base(original, cloner) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SymbolicDataAnalysisExpressionTreeInterpreter(this, cloner);
@@ -115,13 +116,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     public void ClearState() { }
     #endregion
 
+    private readonly object syncRoot = new object();
     public IEnumerable<double> GetSymbolicExpressionTreeValues(ISymbolicExpressionTree tree, IDataset dataset,
       IEnumerable<int> rows) {
       if (CheckExpressionsWithIntervalArithmetic) {
         throw new NotSupportedException("Interval arithmetic is not yet supported in the symbolic data analysis interpreter.");
       }
 
-      lock (EvaluatedSolutionsParameter.Value) {
+      lock (syncRoot) {
         EvaluatedSolutions++; // increment the evaluated solutions counter
       }
       var state = PrepareInterpreterState(tree, dataset);
