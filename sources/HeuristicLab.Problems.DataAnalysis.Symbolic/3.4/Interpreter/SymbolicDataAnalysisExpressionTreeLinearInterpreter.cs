@@ -143,8 +143,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         var instr = code[i];
         if (instr.opCode == OpCodes.Variable) {
           if (row < 0 || row >= dataset.Rows) instr.value = double.NaN;
-          var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
-          instr.value = ((IList<double>)instr.data)[row] * variableTreeNode.Weight;
+          else {
+            var variableTreeNode = (VariableTreeNode)instr.dynamicNode;
+            instr.value = ((IList<double>)instr.data)[row] * variableTreeNode.Weight;
+          }
         } else if (instr.opCode == OpCodes.LagVariable) {
           var laggedVariableTreeNode = (LaggedVariableTreeNode)instr.dynamicNode;
           int actualRow = row + laggedVariableTreeNode.Lag;
