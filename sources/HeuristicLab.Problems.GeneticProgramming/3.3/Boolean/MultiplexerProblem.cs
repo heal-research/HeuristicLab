@@ -39,27 +39,20 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
   public sealed class MultiplexerProblem : SymbolicExpressionTreeProblem {
 
     #region parameter names
-
     private const string NumberOfBitsParameterName = "NumberOfBits";
-
     #endregion
 
     #region Parameter Properties
-
     public IFixedValueParameter<IntValue> NumberOfBitsParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[NumberOfBitsParameterName]; }
     }
-
     #endregion
 
     #region Properties
-
     public int NumberOfBits {
       get { return NumberOfBitsParameter.Value.Value; }
       set { NumberOfBitsParameter.Value.Value = value; }
     }
-
-
     #endregion
 
     public override bool Maximization {
@@ -104,7 +97,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
 
     public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
       if (NumberOfBits <= 0) throw new NotSupportedException("Number of bits must be larger than zero.");
-      if (NumberOfBits > 37) throw new NotSupportedException("Mupltiplexer does not support problems with number of bits > 37.");
+      if (NumberOfBits > 37) throw new NotSupportedException("Multiplexer does not support problems with number of bits > 37.");
       var bs = Enumerable.Range(0, (int)Math.Pow(2, NumberOfBits));
       var addrBits = (int)Math.Log(NumberOfBits, 2); // largest power of two that fits into the number of bits
       var inputBits = NumberOfBits - addrBits;
@@ -133,16 +126,16 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
 
 
     private static IEnumerable<bool> InterpretRec(ISymbolicExpressionTreeNode node, IEnumerable<int> bs, byte addrBits) {
-      Func<ISymbolicExpressionTreeNode, Func<bool, bool>, IEnumerable<bool>> eval1 =
+      Func<ISymbolicExpressionTreeNode, Func<bool, bool>, IEnumerable<bool>> unaryEval =
         (child, f) => InterpretRec(child, bs, addrBits).Select(f);
-      Func<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode, Func<bool, bool, bool>, IEnumerable<bool>> eval2 =
+      Func<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode, Func<bool, bool, bool>, IEnumerable<bool>> binaryEval =
         (left, right, f) => InterpretRec(left, bs, addrBits).Zip(InterpretRec(right, bs, addrBits), f);
 
       switch (node.Symbol.Name) {
-        case "AND": return eval2(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x & y);
-        case "OR": return eval2(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x | y);
-        case "NOT": return eval1(node.GetSubtree(0), (x) => !x);
-        case "IF": return EvalIf(node.GetSubtree(0), node.GetSubtree(1), node.GetSubtree(2), bs, addrBits);
+        case "AND": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x & y);
+        case "OR":  return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x | y);
+        case "NOT": return unaryEval(node.GetSubtree(0), (x) => !x);
+        case "IF":  return EvalIf(node.GetSubtree(0), node.GetSubtree(1), node.GetSubtree(2), bs, addrBits);
         default: {
             if (node.Symbol.Name[0] == 'a') {
               byte bitPos;
@@ -198,7 +191,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     #endregion
 
     #region events
-
     private void RegisterEventHandlers() {
       NumberOfBitsParameter.Value.ValueChanged += (sender, args) => UpdateGrammar();
     }

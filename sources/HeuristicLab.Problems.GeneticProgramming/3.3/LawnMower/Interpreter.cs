@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
-  public class Interpreter {
+  public static class Interpreter {
     private enum Heading {
       South,
       East,
@@ -44,9 +44,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       }
     }
 
-
     public static bool[,] EvaluateLawnMowerProgram(int length, int width, ISymbolicExpressionTree tree) {
-
       bool[,] lawn = new bool[length, width];
       var mowerState = new MowerState();
       mowerState.Heading = Heading.South;
@@ -55,7 +53,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       EvaluateLawnMowerProgram(tree.Root, mowerState, lawn, tree.Root.Subtrees.Skip(1).ToArray());
       return lawn;
     }
-
 
     private static Tuple<int, int> EvaluateLawnMowerProgram(ISymbolicExpressionTreeNode node, MowerState mowerState, bool[,] lawn, IEnumerable<ISymbolicExpressionTreeNode> adfs) {
       if (mowerState.Energy <= 0) return Tuple.Create(0, 0);

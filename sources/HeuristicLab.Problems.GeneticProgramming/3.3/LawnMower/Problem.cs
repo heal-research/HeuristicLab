@@ -50,12 +50,15 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
     }
 
     [StorableConstructor]
-    protected Problem(bool deserializing)
-      : base(deserializing) {
+    protected Problem(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() { }
+
+    protected Problem(Problem original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Problem(this, cloner);
     }
-    protected Problem(Problem original, Cloner cloner)
-      : base(original, cloner) {
-    }
+
     public Problem()
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(LawnWidthParameterName, "Width of the lawn.", new IntValue(8)));
@@ -86,10 +89,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       }
     }
 
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() { }
-
     public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
       var length = LawnLengthParameter.Value.Value;
       var width = LawnWidthParameter.Value.Value;
@@ -103,10 +102,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
             numberOfMowedCells++;
           }
       return numberOfMowedCells;
-    }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Problem(this, cloner);
     }
   }
 }

@@ -101,16 +101,16 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
       // skip programRoot and startSymbol
       return InterpretRec(tree.Root.GetSubtree(0).GetSubtree(0), dataset, rows);
     }
-
-
+                                                                                                       
     private IEnumerable<double> InterpretRec(ISymbolicExpressionTreeNode node, IDataset dataset, IEnumerable<int> rows) {
-      var eval = CreateEvalClosure(dataset, rows);
+      Func<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode, Func<double, double, double>, IEnumerable<double>> binaryEval =
+        (left, right, f) => InterpretRec(left, dataset,rows).Zip(InterpretRec(right, dataset, rows), f);
 
       switch (node.Symbol.Name) {
-        case "+": return eval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x + y);
-        case "*": return eval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x * y);
-        case "-": return eval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x - y);
-        case "%": return eval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => y.IsAlmost(0.0) ? 0.0 : x / y); // protected division
+        case "+": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x + y);
+        case "*": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x * y);
+        case "-": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x - y);
+        case "%": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => y.IsAlmost(0.0) ? 0.0 : x / y); // protected division
         default: {
             double erc;
             if (double.TryParse(node.Symbol.Name, out erc)) {
@@ -121,15 +121,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
             }
           }
       }
-    }
-
-    private Func<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode, Func<double, double, double>, IEnumerable<double>> CreateEvalClosure(IDataset dataset, IEnumerable<int> rows) {
-      // capture dataset and rows in scope
-      return (a, b, f) => {
-        var leftResult = InterpretRec(a, dataset, rows);
-        var rightResult = InterpretRec(b, dataset, rows);
-        return leftResult.Zip(rightResult, f);
-      };
     }
 
     #region item cloning and persistence

@@ -37,26 +37,20 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
   public sealed class EvenParityProblem : SymbolicExpressionTreeProblem {
 
     #region parameter names
-
     private const string NumberOfBitsParameterName = "NumberOfBits";
-
     #endregion
 
     #region Parameter Properties
     public IFixedValueParameter<IntValue> NumberOfBitsParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters[NumberOfBitsParameterName]; }
     }
-
     #endregion
 
     #region Properties
-
     public int NumberOfBits {
       get { return NumberOfBitsParameter.Value.Value; }
       set { NumberOfBitsParameter.Value.Value = value; }
     }
-
-
     #endregion
 
     public override bool Maximization {
@@ -109,16 +103,15 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
       return InterpretRec(tree.Root.GetSubtree(0).GetSubtree(0), bs);
     }
 
-
     private static IEnumerable<bool> InterpretRec(ISymbolicExpressionTreeNode node, IEnumerable<int> bs) {
-      Func<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode, Func<bool, bool, bool>, IEnumerable<bool>> eval2 =
+      Func<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode, Func<bool, bool, bool>, IEnumerable<bool>> binaryEval =
         (left, right, f) => InterpretRec(left, bs).Zip(InterpretRec(right, bs), f);
 
       switch (node.Symbol.Name) {
-        case "AND": return eval2(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x & y);
-        case "OR": return eval2(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x | y);
-        case "NAND": return eval2(node.GetSubtree(0), node.GetSubtree(1), (x, y) => !(x & y));
-        case "NOR": return eval2(node.GetSubtree(0), node.GetSubtree(1), (x, y) => !(x | y));
+        case "AND":  return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x & y);
+        case "OR":   return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x | y);
+        case "NAND": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => !(x & y));
+        case "NOR":  return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => !(x | y));
         default: {
             byte bitPos;
             if (byte.TryParse(node.Symbol.Name, out bitPos)) {
@@ -153,7 +146,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     #endregion
 
     #region events
-
     private void RegisterEventHandlers() {
       NumberOfBitsParameter.Value.ValueChanged += (sender, args) => UpdateGrammar();
     }
