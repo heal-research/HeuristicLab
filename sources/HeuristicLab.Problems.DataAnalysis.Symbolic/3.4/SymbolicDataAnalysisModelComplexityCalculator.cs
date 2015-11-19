@@ -41,13 +41,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Variable: {
             return 2;
           }
-        case OpCodes.Add: {
-            double complexity = 0;
-            for (int i = 0; i < node.SubtreeCount; i++) {
-              complexity += CalculateComplexity(node.GetSubtree(i));
-            }
-            return complexity;
-          }
+        case OpCodes.Add: 
         case OpCodes.Sub: {
             double complexity = 0;
             for (int i = 0; i < node.SubtreeCount; i++) {
@@ -55,14 +49,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return complexity;
           }
-        case OpCodes.Mul: {
-            double complexity = 1;
-            for (int i = 0; i < node.SubtreeCount; i++) {
-              var nodeComplexity = CalculateComplexity(node.GetSubtree(i));
-              complexity *= nodeComplexity + 1;
-            }
-            return complexity;
-          }
+        case OpCodes.Mul: 
         case OpCodes.Div: {
             double complexity = 1;
             for (int i = 0; i < node.SubtreeCount; i++) {
@@ -71,22 +58,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             }
             return complexity;
           }
-        case OpCodes.Sin: {
-            double complexity = CalculateComplexity(node.GetSubtree(0));
-            return Math.Pow(2.0, complexity);
-          }
-        case OpCodes.Cos: {
-            double complexity = CalculateComplexity(node.GetSubtree(0));
-            return Math.Pow(2.0, complexity);
-          }
-        case OpCodes.Tan: {
-            double complexity = CalculateComplexity(node.GetSubtree(0));
-            return Math.Pow(2.0, complexity);
-          }
-        case OpCodes.Exp: {
-            double complexity = CalculateComplexity(node.GetSubtree(0));
-            return Math.Pow(2.0, complexity);
-          }
+        case OpCodes.Sin:
+        case OpCodes.Cos: 
+        case OpCodes.Tan:
+        case OpCodes.Exp: 
         case OpCodes.Log: {
             double complexity = CalculateComplexity(node.GetSubtree(0));
             return Math.Pow(2.0, complexity);
@@ -99,31 +74,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             double complexity = CalculateComplexity(node.GetSubtree(0));
             return complexity * complexity * complexity;
           }
-        case OpCodes.Power: {
-            double complexity = CalculateComplexity(node.GetSubtree(0));
-            var exponentNode = node.GetSubtree(1) as ConstantTreeNode;
-            if (exponentNode != null) {
-              double exponent = exponentNode.Value;
-              if (exponent < 0) exponent = Math.Abs(exponent);
-              if (exponent < 1) exponent = 1 / exponent;
-              return Math.Pow(complexity, Math.Round(exponent));
-            }
-
-            double exponentComplexity = CalculateComplexity(node.GetSubtree(1));
-            return Math.Pow(complexity, 2 * exponentComplexity);
-          }
+        case OpCodes.Power:          
         case OpCodes.Root: {
             double complexity = CalculateComplexity(node.GetSubtree(0));
-            var rootNode = node.GetSubtree(1) as ConstantTreeNode;
-            if (rootNode != null) {
-              double root = rootNode.Value;
-              if (root < 0) root = Math.Abs(root);
-              if (root < 1) root = 1 / root;
-              return Math.Pow(complexity, Math.Round(root));
+            var exponent = node.GetSubtree(1) as ConstantTreeNode;
+            if (exponent != null) {
+              double expVal = exponent.Value;
+              if (expVal < 0) expVal = Math.Abs(expVal);
+              if (expVal < 1) expVal = 1 / expVal;
+              return Math.Pow(complexity, Math.Round(expVal));
             }
 
-            double rootComplexity = CalculateComplexity(node.GetSubtree(1));
-            return Math.Pow(complexity, 2 * rootComplexity);
+            double expComplexity = CalculateComplexity(node.GetSubtree(1));
+            return Math.Pow(complexity, 2 * expComplexity);
           }
 
         default:

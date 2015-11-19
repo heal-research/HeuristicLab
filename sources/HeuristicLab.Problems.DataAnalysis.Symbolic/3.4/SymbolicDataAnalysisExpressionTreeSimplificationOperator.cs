@@ -27,7 +27,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
-  [Item("SymbolicExpressionTreeSimplificationOperator", "Simplfies symbolic expression trees encoding a mathematical formula.")]
+  [Item("SymbolicExpressionTreeSimplificationOperator", "Simplifies symbolic expression trees encoding a mathematical formula.")]
   [StorableClass]
   public class SymbolicDataAnalysisExpressionTreeSimplificationOperator : SingleSuccessorOperator, ISymbolicExpressionTreeOperator {
     private const string SymbolicExpressionTreeParameterName = "SymbolicExpressionTree";

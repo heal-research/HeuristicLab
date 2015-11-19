@@ -43,7 +43,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public PearsonRSquaredNestedTreeSizeEvaluator() : base() { }
 
-    public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } }
+    public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } } // maximize R² & minimize nested tree size
 
     public override IOperation InstrumentedApply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
@@ -66,15 +66,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
       if (decimalPlaces >= 0)
         r2 = Math.Round(r2, decimalPlaces);
-      return new double[2] { r2, solution.IterateNodesPostfix().Sum(n => n.GetLength()) };
+      return new double[2] { r2, solution.IterateNodesPostfix().Sum(n => n.GetLength()) }; // sum of the length of the whole sub-tree for each node 
     }
 
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
+      // DecimalPlaces parameter is a FixedValueParameter and doesn't need the context.
 
-      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
+      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces); 
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;

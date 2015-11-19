@@ -42,7 +42,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public PearsonRSquaredTreeComplexityEvaluator() : base() { }
 
-    public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } }
+    public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } } // maximize R² and minimize model complexity 
 
     public override IOperation InstrumentedApply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
@@ -71,6 +71,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
+      // DecimalPlaces parameter is a FixedValueParameter and doesn't need the context.
 
       double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
 
