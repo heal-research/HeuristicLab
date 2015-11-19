@@ -1,0 +1,369 @@
+﻿@using HeuristicLab.Services.Access.DataTransfer
+@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li>
+            <a ng-href="#/statistics/jobs">Jobs</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/users">Users</a>
+            </li>
+        }
+        <li class="active">
+            <a ng-href="#/statistics/clients">Clients</a>
+        </li>
+        <li>
+            <a ng-href="#/statistics/groups">Groups</a>
+        </li>
+        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+            <li>
+                <a ng-href="#/statistics/exceptions">Exceptions</a>
+            </li>
+        }
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-9 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Client Details</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-no-border table-condensed table-auto-width table-content">
+                                <tr>
+                                    <td class="text-left">Name:</td>
+                                    <td>{{client.Name}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Group:</td>
+                                    <td ng-show="client.GroupName"><a ng-href="#/statistics/groups/{{client.GroupId}}">{{client.GroupName}}</a></td>
+                                    <td ng-hide="client.GroupName">None</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">State:</td>
+                                    <td>{{client.State}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Up Time:</td>
+                                    <td>{{client.UpTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Last Update:</td>
+                                    <td>{{client.LastUpdate | toDate}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-no-border table-condensed table-auto-width table-content">
+                                <tr>
+                                    <td class="text-left">Total Unavailable Time:</td>
+                                    <td class="text-right">{{client.TotalUnavailableTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Calculating Time:</td>
+                                    <td class="text-right">{{client.TotalCalculatingTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Idle Time:</td>
+                                    <td class="text-right">{{client.TotalIdleTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Transferring Time:</td>
+                                    <td class="text-right">{{client.TotalTransferringTime | toTimespan}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left">Total Offline Time:</td>
+                                    <td class="text-right">{{client.TotalOfflineTime | toTimespan}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Tasks Overview</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">Total:</td>
+                            <td class="text-right">{{totalClientTasks}}</td>
+                        </tr>
+                        <tr ng-repeat="state in states">
+                            <td class="text-left">{{state.State}}:</td>
+                            <td class="text-right">{{state.Count}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Cores</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center">
+                        <knob knob-data="knobData.cores" knob-options="knobOptions"></knob>
+                    </div>
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">Total:</td>
+                            <td class="text-right">{{client.TotalCores | number}}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">Used:</td>
+                            <td class="text-right">{{client.UsedCores | number}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">CPU Utilization</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center">
+                        <knob knob-data="knobData.cpu" knob-options="knobOptions"></knob>
+                    </div>
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">&nbsp;</td>
+                            <td class="text-right">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">&nbsp;</td>
+                            <td class="text-right">&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Memory</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center">
+                        <knob knob-data="knobData.memory" knob-options="knobOptions"></knob>
+                    </div>
+                    <table class="table table-no-border table-condensed table-auto-width table-content">
+                        <tr>
+                            <td class="text-left">Total:</td>
+                            <td class="text-right">{{client.TotalMemory | kbToGB}} GB</td>
+                        </tr>
+                        <tr>
+                            <td class="text-left">Used:</td>
+                            <td class="text-right">{{client.UsedMemory | kbToGB}} GB</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="default-filter-header text-center">
+    <form class="form-inline">
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <label for="fromDate">From:&nbsp;</label>
+            <div class="input-group">
+                <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="fromDate" is-open="fromIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openFromDateSelection($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <label for="fromDate">To:&nbsp;</label>
+            <div class="input-group">
+                <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="toDate" is-open="toIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close"/>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openToDateSelection($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <div class="btn-group" dropdown dropdown-append-to-body>
+                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle style="width: 145px; text-align: left;">
+                    <span class="text-left" style="display: inline-block; width: 100px;">{{curQuickSelection.name}}</span>
+                    <span class="glyphicon glyphicon-chevron-down" style="margin-top: 3px;"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="quickSelection in quickSelectionList">
+                        <a class="cursor-pointer" ng-click="changeQuickSelection(quickSelection)">{{quickSelection.name}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <button type="button" class="btn btn-default" ng-click="updateCharts()">
+                Apply
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">CPU Utilization Chart</h3>
+                </div>
+                <div class="panel-body">
+                    <flot dataset="cpuSeries" options="chartOptions"></flot>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Core Chart</h3>
+                </div>
+                <div class="panel-body">
+                    <flot dataset="coreSeries" options="fillChartOptions"></flot>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Memory Chart</h3>
+                </div>
+                <div class="panel-body">
+                    <flot dataset="memorySeries" options="fillChartOptions"></flot>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tasks-filter" class="default-filter-header text-center">
+    <form class="form-inline">
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default" ng-class="{active: state.Selected}" ng-repeat="state in states"
+                       ng-click="filterTaskState(state)">
+                    <input type="checkbox" autocomplete="off" checked> {{state.State}}
+                </label>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <div class="btn-group" dropdown dropdown-append-to-body>
+                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+                    {{curUserName}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <a ng-href="#/statistics/clients/{{client.Id}}"
+                           ng-click="userChanged('00000000-0000-0000-0000-000000000000', 'All Users')">All Users</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li ng-repeat="user in client.Users">
+                        <a ng-href="#/statistics/clients/{{client.Id}}"
+                           ng-click="userChanged(user.Id, user.Name)">{{user.Name}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="default-view-container">
+    <div id="taskListContainer" class="row" ng-show="taskPage.Tasks.length">
+        <div class="col-lg-4 col-md-4" ng-repeat="task in taskPage.Tasks">
+            <div class="panel panel-default">
+                @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+                   <div class="panel-heading cursor-pointer" ng-click="openDialog(($index + 1)+((curTaskPage-1)*(taskPageSize)), task)">
+                       <h3 class="panel-title" style="display: inline">Task {{($index + 1)+((curTaskPage-1)*(taskPageSize))}}</h3>
+                       <span ng-if="task.State == 'Finished'" class="label label-success" style="float: right;">{{task.State}}</span>
+                       <span ng-if="task.State == 'Aborted' || task.State == 'Failed'" class="label label-danger" style="float: right;">{{task.State}}</span>
+                       <span ng-if="task.State == 'Waiting'" class="label label-warning" style="float: right;">{{task.State}}</span>
+                       <span ng-if="task.State != 'Waiting' && task.State != 'Failed' && task.State != 'Aborted' && task.State != 'Finished'" class="label label-default" style="float: right;">{{task.State}}</span>
+                   </div>
+                } else {
+                   <div class="panel-heading">
+                       <h3 class="panel-title" style="display: inline">Task {{($index + 1)+((curTaskPage-1)*(taskPageSize))}}</h3>
+                       <span ng-if="task.State == 'Finished'" class="label label-success" style="float: right;">{{task.State}}</span>
+                       <span ng-if="task.State == 'Aborted' || task.State == 'Failed'" class="label label-danger" style="float: right;">{{task.State}}</span>
+                       <span ng-if="task.State == 'Waiting'" class="label label-warning" style="float: right;">{{task.State}}</span>
+                       <span ng-if="task.State != 'Waiting' && task.State != 'Failed' && task.State != 'Aborted' && task.State != 'Finished'" class="label label-default" style="float: right;">{{task.State}}</span>
+                   </div>
+                }
+                
+                <div class="panel-body">
+                    <table class="table table-condensed table-no-border table-auto-width">
+                        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+                            <tr>
+                                <td colspan="2"><span data-fittext="0.99">{{task.Id}}</span></td>
+                            </tr>
+                        }
+                       <tr>
+                           <td>Start Time:</td>
+                           <td ng-show="task.StartTime" class="text-right">{{task.StartTime | toDate}}</td>
+                           <td ng-hide="task.StartTime" class="text-right">Not started</td>
+                       </tr>
+                       <tr>
+                           <td>End Time:</td>
+                           <td ng-show="task.EndTime" class="text-right">{{task.EndTime | toDate}}</td>
+                           <td ng-hide="task.EndTime" class="text-right">Not finished</td>
+                       </tr>
+                        <tr>
+                            <td>Calculating Time:</td>
+                            <td class="text-right">{{task.CalculatingTime | toTimespan}}</td>
+                        </tr>
+                        @if (Request.IsAuthenticated && User.IsInRole(HiveRoles.Administrator)) {
+                            <tr>
+                                <td>User:</td>
+                                <td class="text-right">
+                                    <a ng-href="#/statistics/users/{{task.UserId}}" ng-show="task.UserName">{{task.UserName}}</a>
+                                    <span ng-hide="task.UserName">Unknown</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Job:</td>
+                                <td class="text-right">
+                                    <a ng-href="#/statistics/jobs/{{task.JobId}}" ng-show="task.JobName">{{task.JobName}}</a>
+                                    <span ng-hide="task.JobName">Unknown</span>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div ng-hide="taskPage.Tasks.length">
+        <p class="text-center">Please select at least one state!</p>
+    </div>
+    <div class="row text-center" ng-show="taskPage.TotalTasks > taskPage.Tasks.length">
+        <pagination max-size="10" total-items="taskPage.TotalTasks" ng-model="curTaskPage" ng-change="changeTaskPage()" items-per-page="taskPageSize"
+                    boundary-links="true" rotate="false" num-pages="numPages"></pagination>
+    </div>
+</div>
+

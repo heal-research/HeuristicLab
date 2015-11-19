@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Clients.Common.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="UserName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">anonymous</Value>
+    </Setting>
+    <Setting Name="SavePassword" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA36TvN4MDBkWUU6yPrzj49gAAAAACAAAAAAADZgAAwAAAABAAAABr3+B3SidbFwV5hCTHGoESAAAAAASAAACgAAAAEAAAAGSI+4CIIV5GmEl09qLBIxIYAAAAkpj3t9H1LBYhpUjjoM6qEc83XlY0xbnuFAAAADY3OscJ1F9ThR3SHB0sLax4TAN8</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

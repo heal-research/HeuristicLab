@@ -1,0 +1,10 @@
+﻿<li ng-repeat="section in entries" ng-class="{'category':section.isCategory === true, 'active': isActive(section.route)}">
+    <a ng-href="{{section.route}}" ng-if="!section.isCategory">
+        <span ng-if="section.icon != ''" ng-class="section.icon" style="padding-right: 10px;"></span>
+        <span>{{section.name}}</span>
+    </a>
+    <span ng-if="section.isCategory">{{section.name}}</span>
+    <ul ng-init="entries = section.entries;"
+        ng-include="'App/LoadSharedView?directory=menu&view=menu.cshtml&dateTime=@DateTime.Now'"
+        class="nav nav-sub-sidebar"></ul>
+</li>
