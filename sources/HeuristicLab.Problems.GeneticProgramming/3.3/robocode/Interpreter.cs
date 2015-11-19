@@ -30,6 +30,11 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
   public static class Interpreter {
+
+    // necessary for synchronization to guarantee that only one robocode program is executed at the same time
+    // NOTE: this does not guarantee OS-wide mutual exclusion, but we ignore that for now
+    private static readonly object syncRoot = new object();
+
     // TODO performance: it would probably be useful to implement the BattleRunner in such a way that we don't have to restart the java process each time, e.g. using console IO to load & run robots 
     public static double EvaluateTankProgram(ISymbolicExpressionTree tree, string path, EnemyCollection enemies, string robotName = null, bool showUI = false, int nrOfRounds = 3) {
       if (robotName == null)
@@ -55,6 +60,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       javaCompileInfo.UseShellExecute = false;
       javaCompileInfo.CreateNoWindow = true;
 
+      // it's ok to compile multiple robocode programs concurrently
       using (Process javaCompile = new Process()) {
         javaCompile.StartInfo = javaCompileInfo;
         javaCompile.Start();
@@ -68,11 +74,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
           throw new Exception("Compile Error: " + cmdOutput);
         }
       }
-
-      //parallel execution of multiple robocode instances can sometimes lead to a damaged robot.database
-      var robotsDbFileName = Path.Combine(path, "robots", "robot.database");
-      if (File.Exists(robotsDbFileName))
-        File.Delete(robotsDbFileName);
 
       ProcessStartInfo evaluateCodeInfo = new ProcessStartInfo();
 
@@ -88,30 +89,34 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       evaluateCodeInfo.UseShellExecute = false;
       evaluateCodeInfo.CreateNoWindow = true;
 
+      // the robocode framework writes state to a file therefore parallel evaluation of multiple robocode programs is not possible yet.
       double evaluation;
-      using (Process evaluateCode = new Process()) {
-        evaluateCode.StartInfo = evaluateCodeInfo;
-        evaluateCode.Start();
-        evaluateCode.WaitForExit();
+      lock (syncRoot) {
+        using (Process evaluateCode = new Process()) {
+          evaluateCode.StartInfo = evaluateCodeInfo;
+          evaluateCode.Start();
+          evaluateCode.WaitForExit();
 
-        if (evaluateCode.ExitCode != 0) {
-          DeleteRobotFiles(path, robotName);
-          throw new Exception("Error running Robocode: " + evaluateCode.StandardError.ReadToEnd() + Environment.NewLine +
-                              evaluateCode.StandardOutput.ReadToEnd());
-        }
+          if (evaluateCode.ExitCode != 0) {
+            DeleteRobotFiles(path, robotName);
+            throw new Exception("Error running Robocode: " + evaluateCode.StandardError.ReadToEnd() +
+                                Environment.NewLine +
+                                evaluateCode.StandardOutput.ReadToEnd());
+          }
 
-        try {
-          string scoreString =
-            evaluateCode.StandardOutput.ReadToEnd()
-              .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-              .Last();
-          evaluation = Double.Parse(scoreString, CultureInfo.InvariantCulture);
-        }
-        catch (Exception ex) {
-          throw new Exception("Error parsing score string: " + ex);
-        }
-        finally {
-          DeleteRobotFiles(path, robotName);
+          try {
+            string scoreString =
+              evaluateCode.StandardOutput.ReadToEnd()
+                .Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                .Last();
+            evaluation = Double.Parse(scoreString, CultureInfo.InvariantCulture);
+          }
+          catch (Exception ex) {
+            throw new Exception("Error parsing score string: " + ex);
+          }
+          finally {
+            DeleteRobotFiles(path, robotName);
+          }
         }
       }
 
