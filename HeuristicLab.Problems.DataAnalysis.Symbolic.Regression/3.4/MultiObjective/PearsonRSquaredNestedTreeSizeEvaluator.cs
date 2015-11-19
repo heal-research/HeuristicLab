@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,21 +29,21 @@ using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
-  [Item("Pearson R² & Tree size Evaluator", "Calculates the Pearson R² and the tree size of a symbolic regression solution.")]
+  [Item("Pearson R² & Nested Tree size Evaluator", "Calculates the Pearson R² and the nested tree size of a symbolic regression solution.")]
   [StorableClass]
-  public class SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
+  public class PearsonRSquaredNestedTreeSizeEvaluator : SymbolicRegressionMultiObjectiveEvaluator {
     [StorableConstructor]
-    protected SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(bool deserializing) : base(deserializing) { }
-    protected SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator original, Cloner cloner)
+    protected PearsonRSquaredNestedTreeSizeEvaluator(bool deserializing) : base(deserializing) { }
+    protected PearsonRSquaredNestedTreeSizeEvaluator(PearsonRSquaredNestedTreeSizeEvaluator original, Cloner cloner)
       : base(original, cloner) {
     }
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator(this, cloner);
+      return new PearsonRSquaredNestedTreeSizeEvaluator(this, cloner);
     }
 
-    public SymbolicRegressionMultiObjectivePearsonRSquaredTreeSizeEvaluator() : base() { }
+    public PearsonRSquaredNestedTreeSizeEvaluator() : base() { }
 
-    public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } }
+    public override IEnumerable<bool> Maximization { get { return new bool[2] { true, false }; } } // maximize R² & minimize nested tree size
 
     public override IOperation InstrumentedApply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
@@ -55,6 +56,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (UseConstantOptimization) {
         SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, solution, problemData, rows, applyLinearScaling, ConstantOptimizationIterations, estimationLimits.Upper, estimationLimits.Lower);
       }
+
       double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
       return base.InstrumentedApply();
@@ -64,15 +66,16 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       double r2 = SymbolicRegressionSingleObjectivePearsonRSquaredEvaluator.Calculate(interpreter, solution, lowerEstimationLimit, upperEstimationLimit, problemData, rows, applyLinearScaling);
       if (decimalPlaces >= 0)
         r2 = Math.Round(r2, decimalPlaces);
-      return new double[2] { r2, solution.Length };
+      return new double[2] { r2, solution.IterateNodesPostfix().Sum(n => n.GetLength()) }; // sum of the length of the whole sub-tree for each node 
     }
 
     public override double[] Evaluate(IExecutionContext context, ISymbolicExpressionTree tree, IRegressionProblemData problemData, IEnumerable<int> rows) {
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = context;
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
+      // DecimalPlaces parameter is a FixedValueParameter and doesn't need the context.
 
-      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
+      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces); 
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -46,27 +47,27 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public override IOperation InstrumentedApply() {
       IEnumerable<int> rows = GenerateRowsToEvaluate();
       var solution = SymbolicExpressionTreeParameter.ActualValue;
-      double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value);
+      var problemData = ProblemDataParameter.ActualValue;
+      var interpreter = SymbolicDataAnalysisTreeInterpreterParameter.ActualValue;
+      var estimationLimits = EstimationLimitsParameter.ActualValue;
+      var applyLinearScaling = ApplyLinearScalingParameter.ActualValue.Value;
+
+      if (UseConstantOptimization) {
+        SymbolicRegressionConstantOptimizationEvaluator.OptimizeConstants(interpreter, solution, problemData, rows, applyLinearScaling, ConstantOptimizationIterations, estimationLimits.Upper, estimationLimits.Lower);
+      }
+
+      double[] qualities = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, solution, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, ProblemDataParameter.ActualValue, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
       QualitiesParameter.ActualValue = new DoubleArray(qualities);
       return base.InstrumentedApply();
     }
 
-    public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling) {
-      IEnumerable<double> estimatedValues = interpreter.GetSymbolicExpressionTreeValues(solution, problemData.Dataset, rows);
-      IEnumerable<double> targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, rows);
-      OnlineCalculatorError errorState;
+    public static double[] Calculate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, ISymbolicExpressionTree solution, double lowerEstimationLimit, double upperEstimationLimit, IRegressionProblemData problemData, IEnumerable<int> rows, bool applyLinearScaling, int decimalPlaces) {
+      var mse = SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator.Calculate(interpreter, solution, lowerEstimationLimit,
+        upperEstimationLimit, problemData, rows, applyLinearScaling);
 
-      double mse;
-      if (applyLinearScaling) {
-        var mseCalculator = new OnlineMeanSquaredErrorCalculator();
-        CalculateWithScaling(targetValues, estimatedValues, lowerEstimationLimit, upperEstimationLimit, mseCalculator, problemData.Dataset.Rows);
-        errorState = mseCalculator.ErrorState;
-        mse = mseCalculator.MeanSquaredError;
-      } else {
-        IEnumerable<double> boundedEstimatedValues = estimatedValues.LimitToRange(lowerEstimationLimit, upperEstimationLimit);
-        mse = OnlineMeanSquaredErrorCalculator.Calculate(targetValues, boundedEstimatedValues, out errorState);
-      }
-      if (errorState != OnlineCalculatorError.None) mse = double.NaN;
+      if (decimalPlaces >= 0)
+        mse = Math.Round(mse, decimalPlaces);
+
       return new double[2] { mse, solution.Length };
     }
 
@@ -75,7 +76,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       EstimationLimitsParameter.ExecutionContext = context;
       ApplyLinearScalingParameter.ExecutionContext = context;
 
-      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value);
+      double[] quality = Calculate(SymbolicDataAnalysisTreeInterpreterParameter.ActualValue, tree, EstimationLimitsParameter.ActualValue.Lower, EstimationLimitsParameter.ActualValue.Upper, problemData, rows, ApplyLinearScalingParameter.ActualValue.Value, DecimalPlaces);
 
       SymbolicDataAnalysisTreeInterpreterParameter.ExecutionContext = null;
       EstimationLimitsParameter.ExecutionContext = null;

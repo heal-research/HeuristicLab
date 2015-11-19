@@ -122,6 +122,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultiObjective\PearsonRSquaredNestedTreeSizeEvaluator.cs" />
+    <Compile Include="MultiObjective\PearsonRSquaredNumberOfVariablesEvaluator.cs" />
+    <Compile Include="MultiObjective\PearsonRSquaredTreeComplexityEvaluator.cs" />
     <Compile Include="MultiObjective\SymbolicRegressionMultiObjectiveValidationBestSolutionAnalyzer.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="SingleObjective\ConstantOptimizationAnalyzer.cs" />

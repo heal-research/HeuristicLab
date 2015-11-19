@@ -19,9 +19,14 @@
  */
 #endregion
 
+using System.Collections.Generic;
+using System.Linq;
+using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -36,6 +41,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private const string ProblemDataParameterName = "ProblemData";
     private const string SymbolicDataAnalysisTreeInterpreterParameterName = "SymbolicDataAnalysisTreeInterpreter";
     private const string EstimationLimitsParameterName = "EstimationLimits";
+    private const string MaximumSymbolicExpressionTreeLengthParameterName = "MaximumSymbolicExpressionTreeLength";
+    private const string ValidationPartitionParameterName = "ValidationPartition";
+
     #region parameter properties
     public ILookupParameter<IRegressionProblemData> ProblemDataParameter {
       get { return (ILookupParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName]; }
@@ -46,6 +54,13 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     public IValueLookupParameter<DoubleLimit> EstimationLimitsParameter {
       get { return (IValueLookupParameter<DoubleLimit>)Parameters[EstimationLimitsParameterName]; }
     }
+    public ILookupParameter<IntValue> MaximumSymbolicExpressionTreeLengthParameter {
+      get { return (ILookupParameter<IntValue>)Parameters[MaximumSymbolicExpressionTreeLengthParameterName]; }
+    }
+
+    public IValueLookupParameter<IntRange> ValidationPartitionParameter {
+      get { return (IValueLookupParameter<IntRange>)Parameters[ValidationPartitionParameterName]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -53,9 +68,19 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
     private SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer(SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer original, Cloner cloner) : base(original, cloner) { }
     public SymbolicRegressionMultiObjectiveTrainingBestSolutionAnalyzer()
       : base() {
-      Parameters.Add(new LookupParameter<IRegressionProblemData>(ProblemDataParameterName, "The problem data for the symbolic regression solution."));
-      Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The symbolic data analysis tree interpreter for the symbolic expression tree."));
-      Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic regression model."));
+      Parameters.Add(new LookupParameter<IRegressionProblemData>(ProblemDataParameterName, "The problem data for the symbolic regression solution.") { Hidden = true });
+      Parameters.Add(new LookupParameter<ISymbolicDataAnalysisExpressionTreeInterpreter>(SymbolicDataAnalysisTreeInterpreterParameterName, "The symbolic data analysis tree interpreter for the symbolic expression tree.") { Hidden = true });
+      Parameters.Add(new ValueLookupParameter<DoubleLimit>(EstimationLimitsParameterName, "The lower and upper limit for the estimated values produced by the symbolic regression model.") { Hidden = true });
+      Parameters.Add(new LookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "Maximal length of the symbolic expression.") { Hidden = true });
+      Parameters.Add(new ValueLookupParameter<IntRange>(ValidationPartitionParameterName, "The validation partition."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      if (!Parameters.ContainsKey(MaximumSymbolicExpressionTreeLengthParameterName))
+        Parameters.Add(new LookupParameter<IntValue>(MaximumSymbolicExpressionTreeLengthParameterName, "Maximal length of the symbolic expression.") { Hidden = true });
+      if (!Parameters.ContainsKey(ValidationPartitionParameterName))
+        Parameters.Add(new ValueLookupParameter<IntRange>(ValidationPartitionParameterName, "The validation partition."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -67,5 +92,63 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       if (ApplyLinearScalingParameter.ActualValue.Value) model.Scale(ProblemDataParameter.ActualValue);
       return new SymbolicRegressionSolution(model, (IRegressionProblemData)ProblemDataParameter.ActualValue.Clone());
     }
+
+    public override IOperation Apply() {
+      var operation = base.Apply();
+      var paretoFront = TrainingBestSolutionsParameter.ActualValue;
+
+      IResult result;
+      ScatterPlot qualityToTreeSize;
+      if (!ResultCollection.TryGetValue("Pareto Front Analysis", out result)) {
+        qualityToTreeSize = new ScatterPlot("Quality vs Tree Size", "");
+        qualityToTreeSize.VisualProperties.XAxisMinimumAuto = false;
+        qualityToTreeSize.VisualProperties.XAxisMaximumAuto = false;
+        qualityToTreeSize.VisualProperties.YAxisMinimumAuto = false;
+        qualityToTreeSize.VisualProperties.YAxisMaximumAuto = false;
+
+        qualityToTreeSize.VisualProperties.XAxisMinimumFixedValue = 0;
+        qualityToTreeSize.VisualProperties.XAxisMaximumFixedValue = MaximumSymbolicExpressionTreeLengthParameter.ActualValue.Value;
+        qualityToTreeSize.VisualProperties.YAxisMinimumFixedValue = 0;
+        qualityToTreeSize.VisualProperties.YAxisMaximumFixedValue = 2;
+        ResultCollection.Add(new Result("Pareto Front Analysis", qualityToTreeSize));
+      } else {
+        qualityToTreeSize = (ScatterPlot)result.Value;
+      }
+
+
+      int previousTreeLength = -1;
+      var sizeParetoFront = new LinkedList<ISymbolicRegressionSolution>();
+      foreach (var solution in paretoFront.OrderBy(s => s.Model.SymbolicExpressionTree.Length)) {
+        int treeLength = solution.Model.SymbolicExpressionTree.Length;
+        if (!sizeParetoFront.Any()) sizeParetoFront.AddLast(solution);
+        if (solution.TrainingNormalizedMeanSquaredError < sizeParetoFront.Last.Value.TrainingNormalizedMeanSquaredError) {
+          if (treeLength == previousTreeLength)
+            sizeParetoFront.RemoveLast();
+          sizeParetoFront.AddLast(solution);
+        }
+        previousTreeLength = treeLength;
+      }
+
+      qualityToTreeSize.Rows.Clear();
+      var trainingRow = new ScatterPlotDataRow("Training NMSE", "", sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length, x.TrainingNormalizedMeanSquaredError)));
+      trainingRow.VisualProperties.PointSize = 8;
+      qualityToTreeSize.Rows.Add(trainingRow);
+
+      var validationPartition = ValidationPartitionParameter.ActualValue;
+      if (validationPartition.Size != 0) {
+        var problemData = ProblemDataParameter.ActualValue;
+        var validationIndizes = Enumerable.Range(validationPartition.Start, validationPartition.Size).ToList();
+        var targetValues = problemData.Dataset.GetDoubleValues(problemData.TargetVariable, validationIndizes).ToList();
+        OnlineCalculatorError error;
+        var validationRow = new ScatterPlotDataRow("Validation NMSE", "",
+          sizeParetoFront.Select(x => new Point2D<double>(x.Model.SymbolicExpressionTree.Length,
+          OnlineNormalizedMeanSquaredErrorCalculator.Calculate(targetValues, x.GetEstimatedValues(validationIndizes), out error))));
+        validationRow.VisualProperties.PointSize = 7;
+        qualityToTreeSize.Rows.Add(validationRow);
+      }
+
+      return operation;
+    }
+
   }
 }
