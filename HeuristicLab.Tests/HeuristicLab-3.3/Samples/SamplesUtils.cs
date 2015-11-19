@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using HeuristicLab.Algorithms.ALPS;
 using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
 using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
@@ -167,6 +168,32 @@ namespace HeuristicLab.Tests {
       ga.ImmigrationReplacer = ga.ImmigrationReplacerParameter.ValidValues
         .OfType<MiR>()
         .Single();
+      ga.Engine = new ParallelEngine.ParallelEngine();
+    }
+
+    public static void ConfigureAlpsGeneticAlgorithmParameters<S, C, M>(AlpsGeneticAlgorithm ga, int numberOfLayers, int popSize, double mutationRate, int elites, bool plusSelection, AgingScheme agingScheme, int ageGap, double ageInheritance, int maxGens)
+      where S : ISelector
+      where C : ICrossover
+      where M : IManipulator {
+      ga.Seed.Value = 0;
+      ga.SetSeedRandomly.Value = true;
+
+      ga.NumberOfLayers.Value = numberOfLayers;
+      ga.PopulationSize.Value = popSize;
+
+      ga.Selector = ga.SelectorParameter.ValidValues.OfType<S>().Single();
+      ga.Crossover = ga.CrossoverParameter.ValidValues.OfType<C>().Single();
+      ga.Mutator = ga.MutatorParameter.ValidValues.OfType<M>().Single();
+      ga.MutationProbability.Value = mutationRate;
+      ga.Elites.Value = elites;
+      ga.PlusSelection = plusSelection;
+
+      ga.AgingScheme = new EnumValue<AgingScheme>(agingScheme);
+      ga.AgeGap.Value = ageGap;
+      ga.AgeInheritance.Value = ageInheritance;
+
+      ga.MaximumGenerations = maxGens;
+      
       ga.Engine = new ParallelEngine.ParallelEngine();
     }
   }
