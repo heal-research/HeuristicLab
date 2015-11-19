@@ -226,26 +226,23 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     }
 
     private static string InterpretCodeSymbol(ISymbolicExpressionTreeNode node) {
-      var sy = node.Symbol as CodeSymbol;
+      var sy = (CodeSymbol)node.Symbol;
       string code = string.Join(Environment.NewLine, node.Subtrees.Select(Interpret));
-      return string.Format(
-@"{0}
-{1}
-{2}", sy.Prefix, code, sy.Suffix);
+      return sy.Prefix + Environment.NewLine + code + Environment.NewLine + sy.Suffix;
     }
 
     private static string InterpretBoolValue(ISymbolicExpressionTreeNode node) {
-      var boolNode = node as BooleanTreeNode;
+      var boolNode = (BooleanTreeNode)node;
       return string.Format(NumberFormatInfo.InvariantInfo, "{0}", boolNode.Value).ToLower();
     }
 
     private static string InterpretNumber(ISymbolicExpressionTreeNode node) {
-      var numberNode = node as NumberTreeNode;
+      var numberNode = (NumberTreeNode)node;
       return string.Format(NumberFormatInfo.InvariantInfo, "{0}", numberNode.Value);
     }
 
     private static string InterpetShotPower(ISymbolicExpressionTreeNode node) {
-      var shotPowerNode = node as ShotPowerTreeNode;
+      var shotPowerNode = (ShotPowerTreeNode)node;
       return string.Format(NumberFormatInfo.InvariantInfo, "{0:E}", shotPowerNode.Value);
     }
 
@@ -310,7 +307,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
       lhs = node.GetSubtree(0);
       rhs = node.GetSubtree(1);
 
-      return Interpret(lhs) + " == " + Interpret(rhs);
+      return Interpret(lhs) + compSy + Interpret(rhs);
     }
 
     public static string InterpretFunc1(string functionId, ISymbolicExpressionTreeNode node) {

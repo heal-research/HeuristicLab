@@ -60,7 +60,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.Robocode {
     public override void ShakeLocalParameters(IRandom random, double shakingFactor) {
       // mutation
       var d = random.NextDouble() * 2.0 - 1.0;
-      value = Math.Max(0.1, value + shakingFactor * d);
+      value += shakingFactor * d;
+      if (value < 0.1) value = 0.1;
+      if (value > 3) value = 3;
     }
   }
 }
