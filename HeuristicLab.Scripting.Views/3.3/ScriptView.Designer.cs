@@ -117,13 +117,15 @@ namespace HeuristicLab.Scripting.Views {
       // 
       // infoTabControl
       // 
+      this.infoTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.infoTabControl.Controls.Add(this.outputTabPage);
       this.infoTabControl.Controls.Add(this.errorListTabPage);
-      this.infoTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.infoTabControl.Location = new System.Drawing.Point(0, 0);
+      this.infoTabControl.Location = new System.Drawing.Point(0, 2);
       this.infoTabControl.Name = "infoTabControl";
       this.infoTabControl.SelectedIndex = 0;
-      this.infoTabControl.Size = new System.Drawing.Size(832, 112);
+      this.infoTabControl.Size = new System.Drawing.Size(832, 110);
       this.infoTabControl.TabIndex = 1;
       // 
       // outputTabPage
@@ -132,7 +134,7 @@ namespace HeuristicLab.Scripting.Views {
       this.outputTabPage.Location = new System.Drawing.Point(4, 22);
       this.outputTabPage.Name = "outputTabPage";
       this.outputTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.outputTabPage.Size = new System.Drawing.Size(824, 86);
+      this.outputTabPage.Size = new System.Drawing.Size(824, 84);
       this.outputTabPage.TabIndex = 1;
       this.outputTabPage.Text = "Output";
       this.outputTabPage.UseVisualStyleBackColor = true;
@@ -146,7 +148,7 @@ namespace HeuristicLab.Scripting.Views {
       this.outputTextBox.Name = "outputTextBox";
       this.outputTextBox.ReadOnly = true;
       this.outputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.outputTextBox.Size = new System.Drawing.Size(818, 80);
+      this.outputTextBox.Size = new System.Drawing.Size(818, 78);
       this.outputTextBox.TabIndex = 0;
       this.outputTextBox.WordWrap = false;
       // 

@@ -22,7 +22,6 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -31,12 +30,7 @@ namespace HeuristicLab.Scripting {
   [Item("C# Script", "An empty C# script.")]
   [Creatable(CreatableAttribute.Categories.Scripts, Priority = 100)]
   [StorableClass]
-  public class CSharpScript : Script, IStorableContent {
-    #region Constants
-    protected const string ExecuteMethodName = "Execute";
-    protected override string CodeTemplate { get { return ScriptTemplates.CSharpScriptTemplate; } }
-    #endregion
-
+  public class CSharpScript : ExecutableScript, IStorableContent {
     #region Fields & Properties
     private CSharpScriptBase compiledScript;
 
@@ -49,16 +43,16 @@ namespace HeuristicLab.Scripting {
     }
     #endregion
 
-    #region Construction & Initialization
+    #region Construction & Cloning
     [StorableConstructor]
     protected CSharpScript(bool deserializing) : base(deserializing) { }
     protected CSharpScript(CSharpScript original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);
     }
-    public CSharpScript() {
+    public CSharpScript()
+      : base(ScriptTemplates.CSharpScriptTemplate) {
       variableStore = new VariableStore();
-      Code = CodeTemplate;
     }
     public CSharpScript(string code)
       : base(code) {
@@ -81,7 +75,6 @@ namespace HeuristicLab.Scripting {
     }
 
     #region Compilation
-
     public override Assembly Compile() {
       DeregisterScriptEvents();
       compiledScript = null;
@@ -93,46 +86,14 @@ namespace HeuristicLab.Scripting {
     }
     #endregion
 
-    private Thread scriptThread;
-    public virtual void ExecuteAsync() {
+    protected override void ExecuteCode() {
       if (compiledScript == null) return;
-      scriptThread = new Thread(() => {
-        Exception ex = null;
-        try {
-          OnScriptExecutionStarted();
-          compiledScript.Execute(VariableStore);
-        }
-        catch (Exception e) {
-          ex = e;
-        }
-        finally {
-          scriptThread = null;
-          OnScriptExecutionFinished(ex);
-        }
-      });
-      scriptThread.SetApartmentState(ApartmentState.STA);
-      scriptThread.Start();
-    }
 
-    public virtual void Kill() {
-      if (scriptThread == null) return;
-      scriptThread.Abort();
+      compiledScript.Execute(VariableStore);
     }
 
     protected virtual void CompiledScriptOnConsoleOutputChanged(object sender, EventArgs<string> e) {
       OnConsoleOutputChanged(e.Value);
-    }
-
-    public event EventHandler ScriptExecutionStarted;
-    protected virtual void OnScriptExecutionStarted() {
-      var handler = ScriptExecutionStarted;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
-
-    public event EventHandler<EventArgs<Exception>> ScriptExecutionFinished;
-    protected virtual void OnScriptExecutionFinished(Exception e) {
-      var handler = ScriptExecutionFinished;
-      if (handler != null) handler(this, new EventArgs<Exception>(e));
     }
 
     public event EventHandler<EventArgs<string>> ConsoleOutputChanged;

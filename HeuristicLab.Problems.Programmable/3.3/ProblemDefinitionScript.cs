@@ -54,6 +54,10 @@ namespace HeuristicLab.Problems.Programmable {
       : base() {
       variableStore = new VariableStore();
     }
+    protected ProblemDefinitionScript(string code)
+      : base(code) {
+      variableStore = new VariableStore();
+    }
 
     IEncoding IProblemDefinition.Encoding {
       get { return CompiledProblemDefinition.Encoding; }

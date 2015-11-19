@@ -30,22 +30,14 @@ namespace HeuristicLab.Problems.Programmable {
   public sealed class MultiObjectiveProblemDefinitionScript : ProblemDefinitionScript, IMultiObjectiveProblemDefinition, IStorableContent {
     public string Filename { get; set; }
 
-    protected override string CodeTemplate {
-      get { return ScriptTemplates.CompiledMultiObjectiveProblemDefinition; }
-    }
-
     private new IMultiObjectiveProblemDefinition CompiledProblemDefinition {
       get { return (IMultiObjectiveProblemDefinition)base.CompiledProblemDefinition; }
     }
 
     [StorableConstructor]
     private MultiObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
-    private MultiObjectiveProblemDefinitionScript(MultiObjectiveProblemDefinitionScript original, Cloner cloner)
-      : base(original, cloner) { }
-
-    public MultiObjectiveProblemDefinitionScript() {
-      Code = CodeTemplate;
-    }
+    private MultiObjectiveProblemDefinitionScript(MultiObjectiveProblemDefinitionScript original, Cloner cloner) : base(original, cloner) { }
+    public MultiObjectiveProblemDefinitionScript() : base(ScriptTemplates.CompiledMultiObjectiveProblemDefinition) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiObjectiveProblemDefinitionScript(this, cloner);

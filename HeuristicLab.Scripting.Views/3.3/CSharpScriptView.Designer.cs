@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System.Windows.Forms;
 
 namespace HeuristicLab.Scripting.Views {
   partial class CSharpScriptView {
@@ -46,11 +45,16 @@ namespace HeuristicLab.Scripting.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
-      this.components = new System.ComponentModel.Container();
-      this.startStopButton = new System.Windows.Forms.Button();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.variableStoreView = new HeuristicLab.Scripting.Views.VariableStoreView();
       this.viewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.infoTabControl.SuspendLayout();
+      this.outputTabPage.SuspendLayout();
+      this.errorListTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+      this.splitContainer1.Panel1.SuspendLayout();
+      this.splitContainer1.Panel2.SuspendLayout();
+      this.splitContainer1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
       this.splitContainer2.Panel1.SuspendLayout();
@@ -58,28 +62,25 @@ namespace HeuristicLab.Scripting.Views {
       this.splitContainer2.SuspendLayout();
       this.SuspendLayout();
       // 
-      // nameTextBox
+      // executionTimeLabel
       // 
-      this.errorProvider.SetIconAlignment(this.nameTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
-      this.errorProvider.SetIconPadding(this.nameTextBox, 2);
-      this.nameTextBox.Location = new System.Drawing.Point(60, 0);
-      this.nameTextBox.Size = new System.Drawing.Size(750, 20);
+      this.executionTimeLabel.Location = new System.Drawing.Point(409, 3);
       // 
-      // infoLabel
+      // executionTimeTextBox
       // 
-      this.infoLabel.Location = new System.Drawing.Point(816, 4);
+      this.executionTimeTextBox.Location = new System.Drawing.Point(498, 0);
       // 
-      // startStopButton
+      // infoTabControl
       // 
-      this.startStopButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Play;
-      this.startStopButton.Location = new System.Drawing.Point(36, 26);
-      this.startStopButton.Name = "startStopButton";
-      this.startStopButton.Size = new System.Drawing.Size(24, 24);
-      this.startStopButton.TabIndex = 1;
-      this.startStopButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-      this.toolTip.SetToolTip(this.startStopButton, "Run (F5)");
-      this.startStopButton.UseVisualStyleBackColor = true;
-      this.startStopButton.Click += new System.EventHandler(this.StartStopButtonOnClick);
+      this.infoTabControl.Size = new System.Drawing.Size(637, 110);
+      // 
+      // splitContainer1
+      // 
+      this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+      this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+      this.splitContainer1.Size = new System.Drawing.Size(637, 543);
+      this.splitContainer1.SplitterDistance = 427;
       // 
       // splitContainer2
       // 
@@ -100,11 +101,6 @@ namespace HeuristicLab.Scripting.Views {
       this.splitContainer2.Size = new System.Drawing.Size(829, 543);
       this.splitContainer2.SplitterDistance = 637;
       this.splitContainer2.TabIndex = 7;
-      //
-      // splitContainer1
-      //
-      this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-      this.splitContainer1.Dock = DockStyle.Fill;
       // 
       // variableStoreView
       // 
@@ -131,18 +127,28 @@ namespace HeuristicLab.Scripting.Views {
       this.viewHost.ViewsLabelVisible = true;
       this.viewHost.ViewType = null;
       // 
-      // ScriptView
+      // CSharpScriptView
       // 
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.Controls.Add(this.splitContainer2);
-      this.Controls.Add(this.startStopButton);
-      this.Name = "ScriptView";
-      this.Size = new System.Drawing.Size(835, 602);
+      this.Name = "CSharpScriptView";
+      this.Controls.SetChildIndex(this.infoTextLabel, 0);
+      this.Controls.SetChildIndex(this.compileButton, 0);
       this.Controls.SetChildIndex(this.startStopButton, 0);
       this.Controls.SetChildIndex(this.splitContainer2, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
+      this.infoTabControl.ResumeLayout(false);
+      this.outputTabPage.ResumeLayout(false);
+      this.outputTabPage.PerformLayout();
+      this.errorListTabPage.ResumeLayout(false);
+      this.splitContainer1.Panel1.ResumeLayout(false);
+      this.splitContainer1.Panel2.ResumeLayout(false);
+      this.splitContainer1.Panel2.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+      this.splitContainer1.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.splitContainer2.Panel1.ResumeLayout(false);
       this.splitContainer2.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -154,7 +160,6 @@ namespace HeuristicLab.Scripting.Views {
 
     #endregion
 
-    protected System.Windows.Forms.Button startStopButton;
     protected System.Windows.Forms.SplitContainer splitContainer2;
     protected MainForm.WindowsForms.ViewHost viewHost;
     protected VariableStoreView variableStoreView;
