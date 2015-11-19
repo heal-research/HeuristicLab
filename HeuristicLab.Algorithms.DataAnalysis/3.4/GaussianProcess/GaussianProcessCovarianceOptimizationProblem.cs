@@ -36,7 +36,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   [Item("Gaussian Process Covariance Optimization Problem", "")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 300)]
   [StorableClass]
-  public sealed class GaussianProcessCovarianceOptimizationProblem : SymbolicExpressionTreeProblem, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData>, IProblemInstanceExporter<IRegressionProblemData> {
+  public sealed class GaussianProcessCovarianceOptimizationProblem : SymbolicExpressionTreeProblem, IStatefulItem, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData>, IProblemInstanceExporter<IRegressionProblemData> {
     #region static variables and ctor
     private static readonly CovarianceMaternIso maternIso1;
     private static readonly CovarianceMaternIso maternIso3;
@@ -138,6 +138,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return true; } // return log likelihood (instead of negative log likelihood as in GPR
     }
 
+    // problem stores a few variables for information exchange from Evaluate() to Analyze()
+    private readonly object problemStateLocker = new object();
+    [Storable]
+    private double bestQ;
+    [Storable]
+    private double[] bestHyperParameters;
+    [Storable]
+    private IMeanFunction meanFunc;
+    [Storable]
+    private ICovarianceFunction covFunc;
+
     public GaussianProcessCovarianceOptimizationProblem()
       : base() {
       Parameters.Add(new ValueParameter<IRegressionProblemData>(ProblemDataParameterName, "The data for the regression problem", new RegressionProblemData()));
@@ -172,9 +183,17 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       base.Encoding = new SymbolicExpressionTreeEncoding(g, 10, 5);
     }
 
+    public void InitializeState() { ClearState(); }
+    public void ClearState() {
+      meanFunc = null;
+      covFunc = null;
+      bestQ = double.NegativeInfinity;
+      bestHyperParameters = null;
+    }
 
+    private readonly object syncRoot = new object();
+    // Does not produce the same result for the same seed when using parallel engine (see below)!
     public override double Evaluate(ISymbolicExpressionTree tree, IRandom random) {
-
       var meanFunction = new MeanConst();
       var problemData = ProblemData;
       var ds = problemData.Dataset;
@@ -202,8 +221,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         // initialize hyperparameters
         hyperParameters[0] = ds.GetDoubleValues(targetVariable).Average(); // mean const
 
-        for (int i = 0; i < covarianceFunction.GetNumberOfParameters(nVars); i++) {
-          hyperParameters[1 + i] = random.NextDouble() * 2.0 - 1.0;
+        // Evaluate might be called concurrently therefore access to random has to be synchronized.
+        // However, results of multiple runs with the same seed will be different when using the parallel engine.
+        lock (syncRoot) {
+          for (int i = 0; i < covarianceFunction.GetNumberOfParameters(nVars); i++) {
+            hyperParameters[1 + i] = random.NextDouble() * 2.0 - 1.0;
+          }
         }
         hyperParameters[hyperParameters.Length - 1] = 1.0; // s² = exp(2), TODO: other inits better?
 
@@ -230,7 +253,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         }
       }
 
+      UpdateBestSoFar(bestObjValue[0], bestHyperParameters, meanFunction, covarianceFunction);
+
       return bestObjValue[0];
+    }
+
+    // updates the overall best quality and overall best model for Analyze()
+    private void UpdateBestSoFar(double bestQ, double[] bestHyperParameters, IMeanFunction meanFunc, ICovarianceFunction covFunc) {
+      lock (problemStateLocker) {
+        if (bestQ > this.bestQ) {
+          this.bestQ = bestQ;
+          this.bestHyperParameters = new double[bestHyperParameters.Length];
+          Array.Copy(bestHyperParameters, this.bestHyperParameters, this.bestHyperParameters.Length);
+          this.meanFunc = meanFunc;
+          this.covFunc = covFunc;
+        }
+      }
     }
 
     public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
@@ -251,59 +289,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         var bestClone = (ISymbolicExpressionTree)trees[bestIdx].Clone();
         results["Best Tree"].Value = bestClone;
         results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
-        results["Best Solution"].Value = CreateSolution(bestClone, random);
+        results["Best Solution"].Value = CreateSolution();
       }
     }
 
-    private IItem CreateSolution(ISymbolicExpressionTree tree, IRandom random) {
-      // again tune the hyper-parameters.
-      // this is suboptimal because 1) more effort and 2) we cannot be sure to find the same local optimum
-      var meanFunction = new MeanConst();
+    private IItem CreateSolution() {
       var problemData = ProblemData;
       var ds = problemData.Dataset;
       var targetVariable = problemData.TargetVariable;
       var allowedInputVariables = problemData.AllowedInputVariables.ToArray();
-      var nVars = allowedInputVariables.Length;
       var trainingRows = problemData.TrainingIndices.ToArray();
-      var bestObjValue = new double[1] { double.MinValue };
 
-      // use the same covariance function for each restart
-      var covarianceFunction = TreeToCovarianceFunction(tree);
-      // data that is necessary for the objective function
-      var data = Tuple.Create(ds, targetVariable, allowedInputVariables, trainingRows, (IMeanFunction)meanFunction, covarianceFunction, bestObjValue);
-
-      // allocate hyperparameters
-      var hyperParameters = new double[meanFunction.GetNumberOfParameters(nVars) + covarianceFunction.GetNumberOfParameters(nVars) + 1]; // mean + cov + noise
-
-      // initialize hyperparameters
-      hyperParameters[0] = ds.GetDoubleValues(targetVariable).Average(); // mean const
-
-      for (int i = 0; i < covarianceFunction.GetNumberOfParameters(nVars); i++) {
-        hyperParameters[1 + i] = random.NextDouble() * 2.0 - 1.0;
+      lock (problemStateLocker) {
+        var model = new GaussianProcessModel(ds, targetVariable, allowedInputVariables, trainingRows, bestHyperParameters, (IMeanFunction)meanFunc.Clone(), (ICovarianceFunction)covFunc.Clone());
+        model.FixParameters();
+        return model.CreateRegressionSolution((IRegressionProblemData)ProblemData.Clone());
       }
-      hyperParameters[hyperParameters.Length - 1] = 1.0; // s² = exp(2), TODO: other inits better?
-
-      // use alglib.bfgs for hyper-parameter optimization ...
-      double epsg = 0;
-      double epsf = 0.00001;
-      double epsx = 0;
-      double stpmax = 1;
-      int maxits = ConstantOptIterations;
-      alglib.mincgstate state;
-      alglib.mincgreport rep;
-
-      alglib.mincgcreate(hyperParameters, out state);
-      alglib.mincgsetcond(state, epsg, epsf, epsx, maxits);
-      alglib.mincgsetstpmax(state, stpmax);
-      alglib.mincgoptimize(state, ObjectiveFunction, null, data);
-
-      alglib.mincgresults(state, out hyperParameters, out rep);
-
-      if (rep.terminationtype >= 0) {
-
-        var model = new GaussianProcessModel(ds, targetVariable, allowedInputVariables, trainingRows, hyperParameters, meanFunction, covarianceFunction);
-        return model.CreateRegressionSolution(ProblemData);
-      } else return null;
     }
 
     private void ObjectiveFunction(double[] x, ref double func, double[] grad, object obj) {
@@ -325,7 +326,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         bestObjValue[0] = Math.Max(bestObjValue[0], -func); // problem itself is a maximization problem
         var gradients = model.HyperparameterGradients;
         Array.Copy(gradients, grad, gradients.Length);
-      } catch (ArgumentException) {
+      }
+      catch (ArgumentException) {
         // building the GaussianProcessModel might fail, in this case we return the worst possible objective value
         func = 1.0E+300;
         Array.Clear(grad, 0, grad.Length);
@@ -386,6 +388,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     // cloning 
     private GaussianProcessCovarianceOptimizationProblem(GaussianProcessCovarianceOptimizationProblem original, Cloner cloner)
       : base(original, cloner) {
+      bestQ = original.bestQ;
+      meanFunc = cloner.Clone(original.meanFunc);
+      covFunc = cloner.Clone(original.covFunc);
+      if (bestHyperParameters != null) {
+        bestHyperParameters = new double[original.bestHyperParameters.Length];
+        Array.Copy(original.bestHyperParameters, bestHyperParameters, bestHyperParameters.Length);
+      }
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new GaussianProcessCovarianceOptimizationProblem(this, cloner);
