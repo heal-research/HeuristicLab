@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -33,27 +34,33 @@ namespace HeuristicLab.Selection {
   [StorableClass]
   public class EvolutionStrategyOffspringSelector : SingleSuccessorOperator {
 
-    private class QualityComparer : IComparer<IScope> {
+    private class FitnessComparer : IComparer<IScope> {
 
       #region IComparer<IScope> Member
 
       private String qualityParameterName;
+      private bool maximization;
 
-      public QualityComparer(String qualityParamName) {
+      public FitnessComparer(String qualityParamName, bool maximization) {
         this.qualityParameterName = qualityParamName;
+        this.maximization = maximization;
       }
 
+      // less than zero if x is-better-than y 
+      // larger than zero if y is-better-than x
+      // zero if both are the same
       public int Compare(IScope x, IScope y) {
-          IVariable quality1, quality2;
+        IVariable quality1, quality2;
 
-          if (x.Variables.TryGetValue(qualityParameterName, out quality1)
-            && y.Variables.TryGetValue(qualityParameterName, out quality2)) {
-            DoubleValue dblVal = quality1.Value as DoubleValue;
-            DoubleValue dblVal2 = quality2.Value as DoubleValue;
-            return dblVal.CompareTo(dblVal2);
-          }
-          else
-            throw new Exception("ERROR!!! Quality Param: "+qualityParameterName);
+        if (x.Variables.TryGetValue(qualityParameterName, out quality1)
+          && y.Variables.TryGetValue(qualityParameterName, out quality2)) {
+          DoubleValue left = quality1.Value as DoubleValue;
+          DoubleValue right = quality2.Value as DoubleValue;
+          var res = left.CompareTo(right);
+          if (maximization) return -res; // in the maximization case the largest value should preceed all others in the sort order
+          else return res;
+        } else
+          throw new ArgumentException("Quality variable " + qualityParameterName + " not found.");
       }
 
       #endregion
@@ -95,6 +102,9 @@ namespace HeuristicLab.Selection {
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
+    public ILookupParameter<BoolValue> MaximizationParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters["Maximization"]; }
+    }
 
     public IOperator OffspringCreator {
       get { return OffspringCreatorParameter.Value; }
@@ -118,9 +128,10 @@ namespace HeuristicLab.Selection {
       Parameters.Add(new LookupParameter<IntValue>("OffspringPopulationWinners", "Temporary store the number of successful offspring in the offspring population."));
       Parameters.Add(new ScopeTreeLookupParameter<BoolValue>("SuccessfulOffspring", "True if the offspring was more successful than its parents.", 2));
       Parameters.Add(new OperatorParameter("OffspringCreator", "The operator used to create new offspring."));
-      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of times solutions have been evaluated."));
+      Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The number of solution evaluations."));
       Parameters.Add(new LookupParameter<IntValue>("MaximumEvaluatedSolutions", "The maximum number of evaluated solutions (approximately)."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a child"));
+      Parameters.Add(new LookupParameter<BoolValue>("Maximization", "Flag that indicates if the problem is a maximization problem"));
     }
 
     public override IOperation Apply() {
@@ -164,7 +175,8 @@ namespace HeuristicLab.Selection {
 
       // implement the ActualValue fetch here - otherwise the parent scope would also be included, given that there may be 1000 or more parents, this is quite unnecessary
       string tname = SuccessfulOffspringParameter.TranslatedName;
-      double tmpSelPress = selectionPressure.Value, tmpSelPressInc = 1.0 / populationSize;
+      double tmpSelPress = selectionPressure.Value;
+      double tmpSelPressInc = 1.0 / populationSize;
       for (int i = 0; i < offspring.SubScopes.Count; i++) {
         // fetch value
         IVariable tmpVar;
@@ -175,20 +187,19 @@ namespace HeuristicLab.Selection {
         // add to population
         if (tmp.Value) {
           IScope currentOffspring = offspring.SubScopes[i];
-          offspring.SubScopes.Remove(currentOffspring);
-          i--;
+          offspring.SubScopes.RemoveAt(i);
+          i--; // next loop should continue with the subscope at index i which replaced currentOffspring
           population.Add(currentOffspring);
           successfulOffspringAdded++;
-        }
-        else {
+        } else {
           IScope currentOffspring = offspring.SubScopes[i];
-          offspring.SubScopes.Remove(currentOffspring);
+          offspring.SubScopes.RemoveAt(i);
           i--;
-          virtual_population.Add(currentOffspring);
+          virtual_population.Add(currentOffspring); // add to losers pool
         }
         tmpSelPress += tmpSelPressInc;
 
-        double tmpSuccessRatio = (successfulOffspring.Value+successfulOffspringAdded) / ((double)populationSize);
+        double tmpSuccessRatio = (successfulOffspring.Value + successfulOffspringAdded) / ((double)populationSize);
         if (tmpSuccessRatio >= successRatio && (population.Count + virtual_population.Count) >= populationSize)
           break;
       }
@@ -199,43 +210,43 @@ namespace HeuristicLab.Selection {
       currentSuccessRatio.Value = successfulOffspring.Value / ((double)populationSize);
 
       // check if enough children have been generated (or limit of selection pressure or evaluted solutions is reached)
-      if (((EvaluatedSolutionsParameter.ActualValue.Value < MaximumEvaluatedSolutionsParameter.ActualValue.Value) 
-          && (selectionPressure.Value < maxSelPress) 
-          && (currentSuccessRatio.Value < successRatio)) 
+      if (((EvaluatedSolutionsParameter.ActualValue.Value < MaximumEvaluatedSolutionsParameter.ActualValue.Value)
+          && (selectionPressure.Value < maxSelPress)
+          && (currentSuccessRatio.Value < successRatio))
         || ((population.Count + virtual_population.Count) < populationSize)) {
         // more children required -> reduce left and start children generation again
         scope.SubScopes.Remove(parents);
         scope.SubScopes.Remove(offspring);
         while (parents.SubScopes.Count > 0) {
           IScope parent = parents.SubScopes[0];
-          parents.SubScopes.RemoveAt(0);
-          scope.SubScopes.Add(parent);
+          parents.SubScopes.RemoveAt(0); // TODO: repeated call of RemoveAt(0) is inefficient?
+          scope.SubScopes.Add(parent); // order of subscopes is reversed
         }
 
-        IOperator moreOffspring = OffspringCreatorParameter.ActualValue as IOperator;
-        if (moreOffspring == null) throw new InvalidOperationException(Name + ": More offspring are required, but no operator specified for creating them.");
-        return ExecutionContext.CreateOperation(moreOffspring);
+        IOperator offspringCreator = OffspringCreatorParameter.ActualValue as IOperator;
+        if (offspringCreator == null) throw new InvalidOperationException(Name + ": More offspring are required, but no operator specified for creating them.");
+        return ExecutionContext.CreateOperation(offspringCreator); // this assumes that this operator will be called again indirectly or directly
       } else {
         // enough children generated
-        QualityComparer qualityComparer = new QualityComparer(QualityParameter.TranslatedName);
-        population.Sort(qualityComparer);
+        var fitnessComparer = new FitnessComparer(QualityParameter.TranslatedName, MaximizationParameter.ActualValue.Value);
+        population.Sort(fitnessComparer); // sort individuals by descending fitness
 
-        //only keep minimum best successful children in population
+        // keeps only the best successRatio * populationSize solutions in the population (the remaining ones are added to the virtual population)
         int removed = 0;
         for (int i = 0; i < population.Count; i++) {
           double tmpSuccessRatio = i / (double)populationSize;
           if (tmpSuccessRatio > successRatio) {
-              virtual_population.Add(population[i]);
-              removed++;
+            virtual_population.Add(population[i]);
+            removed++;
           }
         }
         population.RemoveRange(population.Count - removed, removed);
 
         //fill up population with best remaining children (successful or unsuccessful)
-        virtual_population.Sort(qualityComparer);
+        virtual_population.Sort(fitnessComparer);
         int offspringNeeded = populationSize - population.Count;
         for (int i = 0; i < offspringNeeded && i < virtual_population.Count; i++) {
-          population.Add(virtual_population[i]);
+          population.Add(virtual_population[i]); // children are sorted by descending fitness
         }
 
         offspring.SubScopes.Clear();
