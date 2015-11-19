@@ -1,0 +1,94 @@
+package HeuristicLab.Problems.ExternalEvaluation;
+option java_package = "com.heuristiclab.problems.externalevaluation";
+
+message SolutionMessage {
+  required int32 solutionId = 1;
+  
+  message IntegerVariable {
+    required string name = 1;
+    optional int32 data = 2;
+  }
+  repeated IntegerVariable integerVars = 2;
+  
+  message IntegerArrayVariable {
+    required string name = 1;
+    repeated int32 data = 2;
+    optional int32 length = 3;
+  }
+  repeated IntegerArrayVariable integerArrayVars = 3;
+  
+  message DoubleVariable {
+    required string name = 1;
+    optional double data = 2;
+  }
+  repeated DoubleVariable doubleVars = 4;
+  
+  message DoubleArrayVariable {
+    required string name = 1;
+    repeated double data = 2;
+    optional int32 length = 3;
+  }
+  repeated DoubleArrayVariable doubleArrayVars = 5;
+  
+  message BoolVariable {
+    required string name = 1;
+    optional bool data = 2;
+  }
+  repeated BoolVariable boolVars = 6;
+  
+  message BoolArrayVariable {
+    required string name = 1;
+    repeated bool data = 2;
+    optional int32 length = 3;
+  }
+  repeated BoolArrayVariable boolArrayVars = 7;
+  
+  message StringVariable {
+    required string name = 1;
+    optional string data = 2;
+  }
+  repeated StringVariable stringVars = 8;
+  
+  message StringArrayVariable {
+    required string name = 1;
+    repeated string data = 2;
+    optional int32 length = 3;
+  }
+  repeated StringArrayVariable stringArrayVars = 9;
+  
+  message RawVariable {
+    required string name = 1;
+    optional bytes data = 2;
+  }
+  repeated RawVariable rawVars = 10;
+}
+
+// Nested Extensions http://www.indelible.org/ink/protobuf-polymorphism/
+message QualityMessage {
+  required int32 solutionId = 1;
+  enum Type {
+    SingleObjectiveQualityMessage = 1;
+    MultiObjectiveQualityMessage = 2;
+  }
+  required Type type = 2;
+  extensions 1000 to max;
+}
+
+message SingleObjectiveQualityMessage {
+  extend QualityMessage {
+    required SingleObjectiveQualityMessage qualityMessage = 1000;  // unique QualityMessage extension number
+  }
+  required double quality = 1;
+}
+message MultiObjectiveQualityMessage {
+  extend QualityMessage {
+    required MultiObjectiveQualityMessage qualityMessage = 1001;  // unique QualityMessage extension number
+  }
+  repeated double qualities = 1;
+}
+
+  
+service EvaluationService {
+  rpc EvaluateSingleObjective (SolutionMessage) returns (SingleObjectiveQualityMessage);
+  rpc EvaluateMultiObjectives (SolutionMessage) returns (MultiObjectiveQualityMessage);
+}

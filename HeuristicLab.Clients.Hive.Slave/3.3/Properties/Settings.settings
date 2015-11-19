@@ -1,0 +1,81 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="HeuristicLab.Clients.Hive.SlaveCore.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LastUsedFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">lastUsed.dat</Value>
+    </Setting>
+    <Setting Name="PluginCacheDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">PluginCache</Value>
+    </Setting>
+    <Setting Name="PluginTempBaseDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">PluginTemp</Value>
+    </Setting>
+    <Setting Name="ConfigurationName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Configuration</Value>
+    </Setting>
+    <Setting Name="PluginInfrastructureDll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HeuristicLab.PluginInfrastructure-3.3.dll</Value>
+    </Setting>
+    <Setting Name="ClientsHiveSlaveCoreDll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HeuristicLab.Clients.Hive.SlaveCore-3.3.dll</Value>
+    </Setting>
+    <Setting Name="ClientsHiveDll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HeuristicLab.Clients.Hive-3.3.dll</Value>
+    </Setting>
+    <Setting Name="HiveDll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HeuristicLab.Hive-3.3.dll</Value>
+    </Setting>
+    <Setting Name="ClientsCommonDll" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HeuristicLab.Clients.Common-3.3.dll</Value>
+    </Setting>
+    <Setting Name="PluginLifetime" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="DirOpSleepTime" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:01</Value>
+    </Setting>
+    <Setting Name="PluginDeletionRetries" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="PluginDeletionTimeout" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:01</Value>
+    </Setting>
+    <Setting Name="ExecutorSemTimeouts" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:46</Value>
+    </Setting>
+    <Setting Name="QueuesMaxThreads" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5000</Value>
+    </Setting>
+    <Setting Name="SlaveCommunicationServiceEndpoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SlaveCommunicationServiceEndpoint</Value>
+    </Setting>
+    <Setting Name="SlaveUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)">hiveslave</Value>
+    </Setting>
+    <Setting Name="SlavePwd" Type="System.String" Scope="User">
+      <Value Profile="(Default)">hiveslave</Value>
+    </Setting>
+    <Setting Name="MaxLogCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="ExecutorQueueTimeout" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:20</Value>
+    </Setting>
+    <Setting Name="NrOfCoresToScavenge" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="ShutdownCommand" Type="System.String" Scope="User">
+      <Value Profile="(Default)">shutdown.exe</Value>
+    </Setting>
+    <Setting Name="HeartbeatInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:40</Value>
+    </Setting>
+    <Setting Name="CheckpointInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">18:00:00</Value>
+    </Setting>
+    <Setting Name="CheckpointCheckInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:05:00</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

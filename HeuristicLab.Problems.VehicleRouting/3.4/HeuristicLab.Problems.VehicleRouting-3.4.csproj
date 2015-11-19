@@ -1,0 +1,504 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B94FFB82-43D4-40AB-9980-B03470ADF221}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Problems.VehicleRouting</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.VehicleRouting-3.4</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\x64\Release\HeuristicLab.Routing.TSP-3.3.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Analyzer\BestAverageWorstTours\BestAverageWorstVRPToursAnalyzer.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\BestAverageWorstVRPToursCalculator.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\BestVRPToursMemorizer.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\Capacitated\BestAverageWorstCapacitatedVRPToursAnalyzer.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\Capacitated\BestAverageWorstCapacitatedVRPToursCalculator.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\Capacitated\BestCapacitatedVRPToursMemorizer.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\PickupAndDelivery\BestAverageWorstPickupAndDeliveryVRPToursAnalyzer.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\PickupAndDelivery\BestAverageWorstPickupAndDeliveryVRPToursCalculator.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\PickupAndDelivery\BestPickupAndDeliveryVRPToursMemorizer.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\TimeWindowed\BestAverageWorstTimeWindowedVRPToursAnalyzer.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\TimeWindowed\BestAverageWorstTimeWindowedVRPToursCalculator.cs" />
+    <Compile Include="Analyzer\BestAverageWorstTours\TimeWindowed\BestTimeWindowedVRPToursMemorizer.cs" />
+    <Compile Include="Analyzer\BestSolution\BestVRPSolutionAnalyzer.cs" />
+    <Compile Include="Analyzer\BestSolution\Capacitated\BestCapacitatedVRPSolutionAnalyzer.cs" />
+    <Compile Include="Analyzer\BestSolution\PickupAndDelivery\BestPickupAndDeliveryVRPSolutionAnalyzer.cs" />
+    <Compile Include="Analyzer\BestSolution\TimeWindowed\BestTimeWindowedVRPSolutionAnalyzer.cs" />
+    <Compile Include="Analyzer\ConstraintRelaxation\Capacitated\CapacityRelaxationVRPAnalyzer.cs" />
+    <Compile Include="Analyzer\ConstraintRelaxation\PickupAndDelivery\PickupViolationsRelaxationVRPAnalyzer.cs" />
+    <Compile Include="Analyzer\ConstraintRelaxation\TimeWindowed\TimeWindowRelaxationVRPAnalyzer.cs" />
+    <Compile Include="Analyzer\VRPSolution.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\IPotvinTwoOptStarMoveOperator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarExhaustiveMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMove.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveAttribute.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveEvaluator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveTabuCriterion.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarMultiMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\TwoOptStar\PotvinTwoOptStarSingleMoveGenerator.cs" />
+    <Compile Include="Improver\VRPImprovementOperator.cs" />
+    <Compile Include="Improver\VRPIntraRouteImprovementOperator.cs" />
+    <Compile Include="Interfaces\IVRPLocalSearchManipulator.cs" />
+    <Compile Include="Interpreters\MDCVRPInterpreter.cs" />
+    <Compile Include="Interpreters\VRPInterpreter.cs" />
+    <Compile Include="Interpreters\MDCVRPTWInterpreter.cs" />
+    <Compile Include="Interpreters\PDPTWInterpreter.cs" />
+    <Compile Include="Interpreters\CVRPTWInterpreter.cs" />
+    <Compile Include="Interpreters\CVRPInterpreter.cs" />
+    <Compile Include="Interpreters\IVRPDataInterpreter.cs" />
+    <Compile Include="PathRelinkers\VRPPathRelinker.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Encodings\Alba\AlbaEncoding.cs" />
+    <Compile Include="Encodings\Alba\Creators\RandomCreator.cs" />
+    <Compile Include="Encodings\Alba\Creators\AlbaCreator.cs" />
+    <Compile Include="Encodings\Alba\IAlbaOperator.cs" />
+    <Compile Include="Encodings\Alba\Crossovers\AlbaCrossover.cs" />
+    <Compile Include="Encodings\Alba\Crossovers\AlbaPermutationCrossover.cs" />
+    <Compile Include="Encodings\Alba\LocalImprovement\AlbaLambdaInterchangeLocalImprovementOperator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaCustomerInsertionManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaCustomerInversionManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaCustomerSwapManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaIntraRouteInversionManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaLambdaInterchangeManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaManipulator.cs" />
+    <Compile Include="Encodings\Alba\Manipulators\AlbaPermutationManipulator.cs" />
+    <Compile Include="Encodings\Alba\Moves\AlbaMoveEvaluator.cs" />
+    <Compile Include="Encodings\Alba\Moves\AlbaMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\AlbaMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\IntraRouteInversion\AlbaExhaustiveIntraRouteInversionMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\IntraRouteInversion\AlbaIntraRouteInversionEvaluator.cs" />
+    <Compile Include="Encodings\Alba\Moves\IntraRouteInversion\AlbaIntraRouteInversionMove.cs" />
+    <Compile Include="Encodings\Alba\Moves\IntraRouteInversion\AlbaIntraRouteInversionMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\IntraRouteInversion\AlbaIntraRouteInversionMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\IntraRouteInversion\AlbaStochasticIntraRouteInversionMutliMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\IntraRouteInversion\AlbaStochasticIntraRouteInversionSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\IntraRouteInversion\IAlbaIntraRouteInversionMoveOperator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\AlbaExhaustiveLambdaInterchangeMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\AlbaLambdaInterchangeMove.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\AlbaLambdaInterchangeMoveEvaluator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\AlbaLambdaInterchangeMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\AlbaLambdaInterchangeMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\AlbaStochasticLambdaInterchangeMutliMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\AlbaStochasticLambdaInterchangeSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\LambdaInterchange\IAlbaLambdaInterchangeMoveOperator.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMove.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveEvaluator.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveHardTabuCriterion.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveSoftTabuCriterion.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaTranslocationMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\AlbaStochasticTranslocationSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Alba\Moves\ThreeOpt\IAlbaTranslocationMoveOperator.cs" />
+    <Compile Include="Encodings\Potvin\Creators\IterativeInsertionCreator.cs" />
+    <Compile Include="Encodings\Potvin\Creators\PushForwardInsertionCreator.cs" />
+    <Compile Include="Encodings\General\Creators\MultiVRPSolutionCreator.cs" />
+    <Compile Include="Encodings\General\Creators\VRPCreator.cs" />
+    <Compile Include="Encodings\General\Crossovers\BiasedMultiVRPSolutionCrossover.cs" />
+    <Compile Include="Encodings\General\Crossovers\MultiVRPSolutionCrossover.cs" />
+    <Compile Include="Encodings\General\Crossovers\RandomParentCloneCrossover.cs" />
+    <Compile Include="Encodings\General\Crossovers\VRPCrossover.cs" />
+    <Compile Include="Encodings\General\Manipulators\BiasedMultiVRPSolutionManipulator.cs" />
+    <Compile Include="Encodings\General\Manipulators\MultiVRPSolutionManipulator.cs" />
+    <Compile Include="Encodings\General\Manipulators\VRPManipulator.cs" />
+    <Compile Include="Encodings\General\Moves\Interfaces\IMultiVRPMoveGenerator.cs" />
+    <Compile Include="Encodings\General\Moves\Interfaces\IMultiVRPMoveOperator.cs" />
+    <Compile Include="Encodings\General\Moves\Interfaces\IVRPMove.cs" />
+    <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveTabuMaker.cs" />
+    <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveTabuChecker.cs" />
+    <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveEvaluator.cs" />
+    <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveGenerator.cs" />
+    <Compile Include="Encodings\General\Moves\MultiVRPMoveOperator\MultiVRPMoveMaker.cs" />
+    <Compile Include="Encodings\General\Moves\VRPMoveGenerator.cs" />
+    <Compile Include="Encodings\General\Moves\VRPMoveOperator.cs" />
+    <Compile Include="Encodings\General\Moves\VRPMoveMaker.cs" />
+    <Compile Include="Encodings\General\Moves\VRPMoveEvaluator.cs" />
+    <Compile Include="Encodings\General\PermutationEncoding.cs" />
+    <Compile Include="Encodings\General\ShakingOperators\VehicleRoutingShakingOperator.cs" />
+    <Compile Include="Encodings\General\TourEncoding.cs" />
+    <Compile Include="Encodings\GVR\Crossovers\GVRCrossover.cs" />
+    <Compile Include="Encodings\GVR\GVREncoding.cs" />
+    <Compile Include="Encodings\GVR\IGVROperator.cs" />
+    <Compile Include="Encodings\GVR\Manipulators\GVRDisplacementManipulator.cs" />
+    <Compile Include="Encodings\GVR\Manipulators\GVRInsertionManipulator.cs" />
+    <Compile Include="Encodings\GVR\Manipulators\GVRInversionManipulator.cs" />
+    <Compile Include="Encodings\GVR\Manipulators\GVRManipulator.cs" />
+    <Compile Include="Encodings\GVR\Manipulators\GVRSwapManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Creators\PotvinCreator.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\PotvinCrossover.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\PotvinInsertionBasedCrossover.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\PotvinRouteBasedCrossover.cs" />
+    <Compile Include="Encodings\Potvin\Crossovers\PotvinSequenceBasedCrossover.cs" />
+    <Compile Include="Encodings\Potvin\IPotvinOperator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinPairwiseTwoLevelExchangeManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinPairwiseOneLevelExchangeManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinVehicleAssignmentManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinLocalSearchManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinOneLevelExchangeManipulator.cs" />
+    <Compile Include="Encodings\Potvin\Manipulators\PotvinTwoLevelExchangeManipulator.cs" />
+    <Compile Include="Encodings\General\Moves\VRPMoveAttribute.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationMultiMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationExhaustiveMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationMoveEvaluator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationMoveMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\IPotvinCustomerRelocationMoveOperator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationMoveAttribute.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationMoveTabuCriterion.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PotvinPDRelocateMoveAttribute.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\IPotvinPDExchangeMoveOperator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeExhaustiveMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeMove.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeMoveEvaluator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeMoveMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeMoveTabuCriterion.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeMultiMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDExchange\PotvinPDExchangeSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\IPotvinPDRearrangeMoveOperator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeExhaustiveMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeMove.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeMoveEvaluator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeMoveMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeMoveTabuCriterion.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeMultiMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDRearrange\PotvinPDRearrangeSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\IPotvinPDShiftMoveOperator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftMoveTabuCriterion.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftMultiMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftExhaustiveMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftMoveMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftMoveEvaluator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PickupDelivery\PDShift\PotvinPDShiftMove.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PotvinMoveEvaluator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PotvinMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\PotvinMoveMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\CustomerRelocation\PotvinCustomerRelocationMove.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\IPotvinVehicleAssignmentMoveOperator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMoveTabuCriterion.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMoveTabuMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentExhaustiveMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMove.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMoveAttribute.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMoveEvaluator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMoveMaker.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentMultiMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\Moves\VehicleAssignment\PotvinVehicleAssignmentSingleMoveGenerator.cs" />
+    <Compile Include="Encodings\Potvin\PotvinEncoding.cs" />
+    <Compile Include="Encodings\Prins\Crossovers\PrinsCrossover.cs" />
+    <Compile Include="Encodings\Prins\Crossovers\PrinsPermutationCrossover.cs" />
+    <Compile Include="Encodings\Prins\IPrinsOperator.cs" />
+    <Compile Include="Encodings\Prins\Manipulators\PrinsExhaustiveLSManipulator.cs" />
+    <Compile Include="Encodings\Prins\Manipulators\PrinsLSManipulator.cs" />
+    <Compile Include="Encodings\Prins\Manipulators\PrinsManipulator.cs" />
+    <Compile Include="Encodings\Prins\Manipulators\PrinsPermutationManipulator.cs" />
+    <Compile Include="Encodings\Prins\Manipulators\PrinsStochasticLSManipulator.cs" />
+    <Compile Include="Encodings\Prins\PrinsEncoding.cs" />
+    <Compile Include="Encodings\VRPOperator.cs" />
+    <Compile Include="Encodings\Zhu\Crossovers\ZhuCrossover.cs" />
+    <Compile Include="Encodings\Zhu\Crossovers\ZhuHeuristicCrossover1.cs" />
+    <Compile Include="Encodings\Zhu\Crossovers\ZhuHeuristicCrossover2.cs" />
+    <Compile Include="Encodings\Zhu\Crossovers\ZhuMergeCrossover1.cs" />
+    <Compile Include="Encodings\Zhu\Crossovers\ZhuMergeCrossover2.cs" />
+    <Compile Include="Encodings\Zhu\Crossovers\ZhuPermutationCrossover.cs" />
+    <Compile Include="Encodings\Zhu\IZhuOperator.cs" />
+    <Compile Include="Encodings\Zhu\Manipulators\ZhuManipulator.cs" />
+    <Compile Include="Encodings\Zhu\Manipulators\ZhuPermutationManipulator.cs" />
+    <Compile Include="Encodings\Zhu\ZhuEncoding.cs" />
+    <Compile Include="Interfaces\IMultiVRPOperator.cs" />
+    <Compile Include="Interfaces\IVRPManipulator.cs" />
+    <Compile Include="Interfaces\IVRPCrossover.cs" />
+    <Compile Include="Interfaces\IVRPEvaluator.cs" />
+    <Compile Include="Interfaces\IVRPCreator.cs" />
+    <Compile Include="Interfaces\IVRPMoveOperator.cs" />
+    <Compile Include="Interfaces\IVRPMultiNeighborhoodShakingOperator.cs" />
+    <Compile Include="Interfaces\IVRPOperator.cs" />
+    <Compile Include="Interfaces\IVRPEncoding.cs" />
+    <Compile Include="Interfaces\IVRPProblemInstance.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPEvaluator.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPProblemInstance.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPTW\MDCVRPPDTW\MDCVRPPDTWEvaluator.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPTW\MDCVRPPDTW\MDCVRPPDTWProblemInstance.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPTW\MDCVRPTWEvaluator.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MDCVRP\MDCVRPTW\MDCVRPTWProblemInstance.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MultiDepotVRPProblemInstance.cs" />
+    <Compile Include="ProblemInstances\MultiDepotVRP\MultiDepotVRPEvaluator.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPPDTW\CVRPPDTWProblemInstance.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPPDTW\CVRPPDTWEvaluation.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPPDTW\CVRPPDTWEvaluator.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\SingleDepotVRPEvaluator.cs" />
+    <Compile Include="SimilarityCalculators\VRPSimilarityCalculator.cs" />
+    <Compile Include="SolutionParser.cs" />
+    <Compile Include="Variants\Capacitated\Heterogenous\IHeterogenousCapacitatedProblemInstance.cs" />
+    <Compile Include="Variants\Capacitated\Heterogenous\IHeterogenousCapacitatedOperator.cs" />
+    <Compile Include="Variants\Capacitated\Homogenous\IHomogenousCapacitatedOperator.cs" />
+    <Compile Include="Variants\Capacitated\Homogenous\IHomogenousCapacitatedProblemInstance.cs" />
+    <Compile Include="Variants\Capacitated\ICapacitatedProblemInstance.cs" />
+    <Compile Include="Variants\Capacitated\ICapacitatedOperator.cs" />
+    <Compile Include="Variants\General\IGeneralVRPOperator.cs" />
+    <Compile Include="Variants\MultiDepot\IMultiDepotOperator.cs" />
+    <Compile Include="Variants\MultiDepot\IMultiDepotProblemInstance.cs" />
+    <Compile Include="Variants\PickupAndDelivery\IPickupAndDeliveryOperator.cs" />
+    <Compile Include="Variants\PickupAndDelivery\IPickupAndDeliveryProblemInstance.cs" />
+    <Compile Include="Variants\SingleDepot\ISingleDepotOperator.cs" />
+    <Compile Include="Variants\SingleDepot\ISingleDepotProblemInstance.cs" />
+    <Compile Include="Variants\TimeWindowed\ITimeWindowedProblemInstance.cs" />
+    <Compile Include="Variants\TimeWindowed\ITimeWindowedOperator.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPTWProblemInstance.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPProblemInstance.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPTWEvaluation.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPEvaluation.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPTW\CVRPTWEvaluator.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\CVRP\CVRPEvaluator.cs" />
+    <Compile Include="ProblemInstances\VRPEvaluator.cs" />
+    <Compile Include="ProblemInstances\VRPEvaluation.cs" />
+    <Compile Include="ProblemInstances\SingleDepotVRP\SingleDepotVRPProblemInstance.cs" />
+    <Compile Include="ProblemInstances\VRPProblemInstance.cs" />
+    <Compile Include="Encodings\Tour.cs" />
+    <Compile Include="VehicleRoutingProblem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="Plugin.cs.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
+      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
+      <Name>HeuristicLab.Analysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0E27A536-1C4A-4624-A65E-DC4F4F23E3E1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
+      <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
+      <Name>HeuristicLab.Common-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Core\3.3\HeuristicLab.Core-3.3.csproj">
+      <Project>{C36BD924-A541-4A00-AFA8-41701378DDC5}</Project>
+      <Name>HeuristicLab.Core-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Data\3.3\HeuristicLab.Data-3.3.csproj">
+      <Project>{BBAB9DF5-5EF3-4BA8-ADE9-B36E82114937}</Project>
+      <Name>HeuristicLab.Data-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
+      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
+      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14AB8D24-25BC-400C-A846-4627AA945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Parameters\3.3\HeuristicLab.Parameters-3.3.csproj">
+      <Project>{56F9106A-079F-4C61-92F6-86A84C2D84B7}</Project>
+      <Name>HeuristicLab.Parameters-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

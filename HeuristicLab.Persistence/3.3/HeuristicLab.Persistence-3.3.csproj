@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeuristicLab.Persistence</RootNamespace>
+    <AssemblyName>HeuristicLab.Persistence-3.3</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <StartupObject>
+    </StartupObject>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>HeuristicLab.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>$(SolutionDir)\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <DocumentationFile>
+    </DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Auxiliary\ObjectEqualityComparer.cs" />
+    <Compile Include="Auxiliary\StringExtensions.cs" />
+    <Compile Include="Auxiliary\TypeLoader.cs" />
+    <Compile Include="Auxiliary\TypeNameParser.cs" />
+    <Compile Include="Auxiliary\ReflectionTools.cs" />
+    <None Include="Plugin.cs.frame" />
+    <Compile Include="Core\Configuration.cs" />
+    <Compile Include="Core\PersistenceException.cs" />
+    <Compile Include="Core\PrimitiveSerializerBase.cs" />
+    <Compile Include="Core\FormatBase.cs" />
+    <Compile Include="Auxiliary\TypeExtensions.cs" />
+    <Compile Include="Core\Tokens\TypeToken.cs" />
+    <Compile Include="Core\TypeMapping.cs" />
+    <Compile Include="Auxiliary\TypeName.cs" />
+    <Compile Include="Core\GeneratorBase.cs" />
+    <Compile Include="Default\CompositeSerializers\ArraySerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\CompactNumberArray2StringSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\ConcreteDictionarySerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\QueueSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\TupleSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\HashSetSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\DictionarySerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\EnumerableSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\EnumSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\KeyValuePairSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\Number2StringSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\NumberEnumerable2StringSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\StackSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableReflection.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableMemberInfo.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableClassType.cs" />
+    <Compile Include="Core\DataMemberAccessor.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableClassAttribute.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableAttribute.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableConstructorAttribute.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableHookAttribute.cs" />
+    <Compile Include="Default\CompositeSerializers\Storable\StorableSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\StructSerializer.cs" />
+    <Compile Include="Default\CompositeSerializers\TypeSerializer.cs" />
+    <Compile Include="Default\DebugString\DebugString.cs" />
+    <Compile Include="Default\DebugString\DebugStringFormat.cs" />
+    <Compile Include="Default\DebugString\DebugStringGenerator.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Bool2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Byte2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Char2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\DateTime2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Double2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Float2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Int2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Long2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\SByte2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Short2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\String2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\Type2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\UInt2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\ULong2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\UShort2DebugStringSerializer.cs" />
+    <Compile Include="Default\DebugString\PrimitiveSerializers\ValueType2DebugStringSerializerBase.cs" />
+    <Compile Include="Default\Xml\Compact\ByteArray2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Compact\CompactXmlSerializerBase.cs" />
+    <Compile Include="Default\Xml\Compact\DoubleArray2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Compact\DoubleList2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Compact\IntArray2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Compact\IntList2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Compact\NumberArray2XmlSerializerBase.cs" />
+    <Compile Include="Default\Xml\Compact\NumberEnumeration2XmlSerializerBase.cs" />
+    <Compile Include="Default\Xml\EasyXmlGenerator.cs" />
+    <Compile Include="Default\Xml\Primitive\System.Drawing\Bitmap2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Bool2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Byte2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Char2XmlFormatter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Default\Xml\Primitive\DateTime2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Decimal2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Double2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Float2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Guid2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Int2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Long2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\PrimitiveXmlSerializerBase.cs" />
+    <Compile Include="Default\Xml\Primitive\SByte2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\Short2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\SimpleNumber2XmlSerializerBase.cs" />
+    <Compile Include="Default\Xml\Primitive\String2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\System.Drawing\Font2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\TimeSpan2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\UInt2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\ULong2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\Primitive\UShort2XmlSerializer.cs" />
+    <Compile Include="Default\Xml\XmlSerializerBase.cs" />
+    <Compile Include="Default\Xml\XmlStringConstants.cs" />
+    <Compile Include="Default\Xml\XmlString.cs" />
+    <Compile Include="Default\Xml\XmlFormat.cs" />
+    <Compile Include="Core\Deserializer.cs" />
+    <Compile Include="Core\Tag.cs" />
+    <Compile Include="Interfaces\ICompositeSerializer.cs" />
+    <Compile Include="Interfaces\IPrimitiveSerializer.cs" />
+    <Compile Include="Interfaces\ISerialData.cs" />
+    <Compile Include="Interfaces\IFormat.cs" />
+    <Compile Include="Core\ConfigurationService.cs" />
+    <Compile Include="Core\Tokens\MetaInfoBeginToken.cs" />
+    <Compile Include="Core\Tokens\MetaInfoEndToken.cs" />
+    <Compile Include="Interfaces\ISerializationToken.cs" />
+    <Compile Include="Core\Tokens\SerializationTokenBase.cs" />
+    <Compile Include="Core\Tokens\CompositeTokenBase.cs" />
+    <Compile Include="Core\Tokens\BeginToken.cs" />
+    <Compile Include="Core\Tokens\EndToken.cs" />
+    <Compile Include="Core\Tokens\PrimitiveToken.cs" />
+    <Compile Include="Core\Tokens\ReferenceToken.cs" />
+    <Compile Include="Core\Tokens\NullReferenceToken.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Serializer.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Default\Xml\XmlGenerator.cs" />
+    <Compile Include="Default\Xml\XmlParser.cs" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+set ProjectDir=$(ProjectDir)
+set SolutionDir=$(SolutionDir)
+set Outdir=$(Outdir)
+
+call PreBuildEvent.cmd
+</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
+export ProjectDir=$(ProjectDir)
+export SolutionDir=$(SolutionDir)
+
+$SolutionDir/PreBuildEvent.sh
+</PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="HeuristicLab.snk" />
+    <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
+      <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
+      <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Tracing\3.3\HeuristicLab.Tracing-3.3.csproj">
+      <Project>{EE2034D9-6E27-48A1-B855-42D45F69A4FC}</Project>
+      <Name>HeuristicLab.Tracing-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+</Project>

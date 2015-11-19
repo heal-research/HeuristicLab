@@ -1,0 +1,91 @@
+﻿@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li class="active">
+            <a ng-href="#/maintenance/spaceusage">Space Usage</a>
+        </li>
+        <li>
+            <a ng-href="#/maintenance/plugin">Plugin</a>
+        </li>
+        <li>
+            <a ng-href="#/maintenance/facttask">FactTask</a>
+        </li>
+        <li>
+            <a ng-href="#/maintenance/factclientinfo">FactClientInfo</a>
+        </li>
+    </ul>
+</header>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Statistics Tables Space Usage</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th ts-criteria="Name">Table Name</th>
+                                <th ts-criteria="Rows" class="text-right">Rows</th>
+                                <th ts-criteria="Reserved" class="text-right">Reserved</th>
+                                <th ts-criteria="Data" class="text-right">Data</th>
+                                <th ts-criteria="IndexSize" class="text-right">Index Size</th>
+                                <th ts-criteria="Unused" class="text-right">Unused</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="tableInformation in statisticsTableInformation" ts-repeat>
+                                <td>{{$index + 1}}</td>
+                                <td>{{tableInformation.Name}}</td>
+                                <td class="text-right">{{tableInformation.Rows}}</td>
+                                <td class="text-right">{{tableInformation.Reserved}} KB</td>
+                                <td class="text-right">{{tableInformation.Data}} KB</td>
+                                <td class="text-right">{{tableInformation.IndexSize}} KB</td>
+                                <td class="text-right">{{tableInformation.Unused}} KB</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Hive Tables Space Usage</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-hover table-condensed" ts-wrapper>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th ts-criteria="Name">Table Name</th>
+                                <th ts-criteria="Rows" class="text-right">Rows</th>
+                                <th ts-criteria="Reserved" class="text-right">Reserved</th>
+                                <th ts-criteria="Data" class="text-right">Data</th>
+                                <th ts-criteria="IndexSize" class="text-right">Index Size</th>
+                                <th ts-criteria="Unused" class="text-right">Unused</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="tableInformation in hiveTableInformation" ts-repeat>
+                                <td>{{$index + 1}}</td>
+                                <td>{{tableInformation.Name}}</td>
+                                <td class="text-right">{{tableInformation.Rows}}</td>
+                                <td class="text-right">{{tableInformation.Reserved}} KB</td>
+                                <td class="text-right">{{tableInformation.Data}} KB</td>
+                                <td class="text-right">{{tableInformation.IndexSize}} KB</td>
+                                <td class="text-right">{{tableInformation.Unused}} KB</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

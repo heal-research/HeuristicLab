@@ -1,0 +1,77 @@
+﻿@using HeuristicLab.Services.Hive
+<header class="view-header">
+    <ul class="nav nav-list nav-list-topbar pull-left">
+        <li>
+            <a ng-href="#/maintenance/spaceusage">Space Usage</a>
+        </li>
+        <li>
+            <a ng-href="#/maintenance/plugin">Plugin</a>
+        </li>
+        <li>
+            <a ng-href="#/maintenance/facttask">FactTask</a>
+        </li>
+        <li class="active">
+            <a ng-href="#/maintenance/factclientinfo">FactClientInfo</a>
+        </li>
+    </ul>
+</header>
+
+<div class="default-view-header">
+    <form class="form-inline">
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <label for="fromDate">From:&nbsp;</label>
+            <div class="input-group">
+                <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="fromDate" is-open="fromIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openFromDateSelection($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <label for="fromDate">To:&nbsp;</label>
+            <div class="input-group">
+                <input id="fromDate" type="text" class="form-control" datepicker-popup="dd.MM.yyyy" ng-model="toDate" is-open="toIsOpen" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-click="openToDateSelection($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                </span>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+            <button type="button" class="btn btn-default" ng-click="getFactClientInfo()">
+                Apply
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="default-view-container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">FactClientInfo</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-inline">
+                        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+                            <label>Rows:&nbsp;{{factClientInfo.Rows}}</label>
+                        </div>
+                        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+                            <label>Clients:&nbsp;{{factClientInfo.Clients}}</label>
+                        </div>
+                        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+                            <label for="entries">Entries:&nbsp;</label>
+                            <input id="entries" type="number" class="form-control"
+                                   ng-model="entries" min="2"/>
+                        </div>
+                        <div class="form-group" style="margin-left: 5px; margin-right: 5px;">
+                            <button type="button" class="btn btn-default" ng-click="aggregate()">
+                                Aggregate
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
