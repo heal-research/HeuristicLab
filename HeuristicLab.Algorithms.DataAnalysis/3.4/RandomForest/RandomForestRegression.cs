@@ -31,7 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Random forest regression data analysis algorithm.
   /// </summary>
-  [Item("Random Forest Regression", "Random forest regression data analysis algorithm (wrapper for ALGLIB).")]
+  [Item("Random Forest Regression (RF)", "Random forest regression data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 120)]
   [StorableClass]
   public sealed class RandomForestRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {

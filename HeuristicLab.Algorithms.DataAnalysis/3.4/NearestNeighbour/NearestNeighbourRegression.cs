@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Nearest neighbour regression data analysis algorithm.
   /// </summary>
-  [Item("Nearest Neighbour Regression", "Nearest neighbour regression data analysis algorithm (wrapper for ALGLIB).")]
+  [Item("Nearest Neighbour Regression (kNN)", "Nearest neighbour regression data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 150)]
   [StorableClass]
   public sealed class NearestNeighbourRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {

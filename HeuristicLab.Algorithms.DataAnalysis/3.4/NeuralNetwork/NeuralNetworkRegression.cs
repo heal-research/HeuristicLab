@@ -34,7 +34,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Neural network regression data analysis algorithm.
   /// </summary>
-  [Item("Neural Network Regression", "Neural network regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/neuralnetworks.php")]
+  [Item("Neural Network Regression (NN)", "Neural network regression data analysis algorithm (wrapper for ALGLIB). Further documentation: http://www.alglib.net/dataanalysis/neuralnetworks.php")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisRegression, Priority = 130)]
   [StorableClass]
   public sealed class NeuralNetworkRegression : FixedDataAnalysisAlgorithm<IRegressionProblem> {

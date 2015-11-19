@@ -32,7 +32,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 
 namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
-  [Item("Multiplexer Problem",
+  [Item("Multiplexer Problem (MUX)",
     "The Boolean multiplexer genetic programming problem. See Koza 1992, page 171, section 7.4.1 11-multiplexer.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 900)]
   [StorableClass]

@@ -31,7 +31,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
   /// <summary>
   /// Random forest classification data analysis algorithm.
   /// </summary>
-  [Item("Random Forest Classification", "Random forest classification data analysis algorithm (wrapper for ALGLIB).")]
+  [Item("Random Forest Classification (RF)", "Random forest classification data analysis algorithm (wrapper for ALGLIB).")]
   [Creatable(CreatableAttribute.Categories.DataAnalysisClassification, Priority = 120)]
   [StorableClass]
   public sealed class RandomForestClassification : FixedDataAnalysisAlgorithm<IClassificationProblem> {
