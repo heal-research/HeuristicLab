@@ -286,6 +286,12 @@
     <Compile Include="TimeLimitRunView.Designer.cs">
       <DependentUpon>TimeLimitRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ThresholdTerminatorView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ThresholdTerminatorView.Designer.cs">
+      <DependentUpon>ThresholdTerminatorView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserDefinedAlgorithmView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -382,6 +388,11 @@
     <ProjectReference Include="..\..\HeuristicLab.MainForm\3.3\HeuristicLab.MainForm-3.3.csproj">
       <Project>{3BD61258-31DA-4B09-89C0-4F71FEF5F05A}</Project>
       <Name>HeuristicLab.MainForm-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
+      <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
+      <Name>HeuristicLab.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
