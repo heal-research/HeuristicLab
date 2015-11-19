@@ -31,11 +31,10 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     public int MaxTimeSteps { get; private set; }
     public int FoodEaten { get; private set; }
     public BoolMatrix World { get; private set; }
-
     public ISymbolicExpressionTree Expression { get; private set; }
 
-
     public int ElapsedTime { get; set; }
+
     private int currentDirection;
     private int currentAntLocationRow;
     private int currentAntLocationColumn;

@@ -36,8 +36,12 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
     [Storable]
     public double Quality { get; private set; }
 
+    #region item cloning and persistence
     [StorableConstructor]
     private Solution(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() { }
+
     private Solution(Solution original, Cloner cloner)
       : base(original, cloner) {
       this.Length = original.Length;
@@ -45,6 +49,10 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       this.Tree = cloner.Clone(original.Tree);
       this.Quality = original.Quality;
     }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Solution(this, cloner);
+    }
+    #endregion
 
     public Solution(ISymbolicExpressionTree tree, int length, int width, double quality)
       : base("Solution", "A lawn mower solution.") {
@@ -52,12 +60,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       this.Length = length;
       this.Width = width;
       this.Quality = quality;
-    }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Solution(this, cloner);
     }
   }
 }

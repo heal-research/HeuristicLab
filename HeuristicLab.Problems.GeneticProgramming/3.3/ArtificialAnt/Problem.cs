@@ -21,7 +21,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using System.Drawing.Text;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -37,7 +36,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
   [StorableClass]
   public sealed class Problem : SymbolicExpressionTreeProblem, IStorableContent {
-    public string Filename { get; set; }
 
     #region constant for default world (Santa Fe)
 
@@ -103,6 +101,20 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       get { return true; }
     }
 
+    #region item cloning and persistence
+    // persistence
+    [StorableConstructor]
+    private Problem(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() { }
+
+    // cloning 
+    private Problem(Problem original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Problem(this, cloner);
+    }
+    #endregion
+
     public Problem()
       : base() {
       BoolMatrix world = new BoolMatrix(ToBoolMatrix(santaFeAntTrail));
@@ -113,7 +125,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       var g = new SimpleSymbolicExpressionGrammar();
       g.AddSymbols(new string[] { "IfFoodAhead", "Prog2" }, 2, 2);
       g.AddSymbols(new string[] { "Prog3" }, 3, 3);
-      g.AddTerminalSymbols(new string[] { "Left", "Right", "Move" });
+      g.AddTerminalSymbols(new string[] { "Move", "Left", "Right" });
       base.Encoding = new SymbolicExpressionTreeEncoding(g, 20, 10);
     }
 
@@ -134,21 +146,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       } else if (((Solution)(results[bestSolutionResultName].Value)).Quality < qualities[bestIdx]) {
         results[bestSolutionResultName].Value = new Solution(World, trees[bestIdx], MaxTimeSteps.Value, qualities[bestIdx]);
       }
-    }
-
-    // persistence
-    [StorableConstructor]
-    private Problem(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-    }
-
-    // cloning 
-    private Problem(Problem original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Problem(this, cloner);
     }
 
     #region helpers

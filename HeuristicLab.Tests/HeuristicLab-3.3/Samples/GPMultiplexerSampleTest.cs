@@ -23,9 +23,6 @@ using System.IO;
 using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Persistence.Default.Xml;
-using HeuristicLab.Problems.DataAnalysis.Symbolic;
-using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
-using HeuristicLab.Problems.Instances.DataAnalysis;
 using HeuristicLab.Selection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -50,51 +47,17 @@ namespace HeuristicLab.Tests {
       osga.SetSeedRandomly.Value = false;
       SamplesUtils.RunAlgorithm(osga);
 
-      Assert.AreEqual(0.125, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8);
-      Assert.AreEqual(0.237275390625, SamplesUtils.GetDoubleResult(osga, "CurrentAverageQuality"), 1E-8);
-      Assert.AreEqual(1.181640625, SamplesUtils.GetDoubleResult(osga, "CurrentWorstQuality"), 1E-8);
-      Assert.AreEqual(105500, SamplesUtils.GetIntResult(osga, "EvaluatedSolutions"));
+      Assert.AreEqual(1856, SamplesUtils.GetDoubleResult(osga, "BestQuality"), 1E-8);
+      Assert.AreEqual(1784.76, SamplesUtils.GetDoubleResult(osga, "CurrentAverageQuality"), 1E-8);
+      Assert.AreEqual(1536, SamplesUtils.GetDoubleResult(osga, "CurrentWorstQuality"), 1E-8);
+      Assert.AreEqual(66900, SamplesUtils.GetIntResult(osga, "EvaluatedSolutions"));
     }
 
     public static OffspringSelectionGeneticAlgorithm CreateGpMultiplexerSample() {
-      var instanceProvider = new RegressionCSVInstanceProvider();
-      var regressionImportType = new RegressionImportType();
-      regressionImportType.TargetVariable = "output";
-      regressionImportType.TrainingPercentage = 100;
-      var dataAnalysisCSVFormat = new DataAnalysisCSVFormat();
-      dataAnalysisCSVFormat.Separator = ',';
-      dataAnalysisCSVFormat.VariableNamesAvailable = true;
-
-      var problemData = instanceProvider.ImportData(@"Test Resources\Multiplexer11.csv", regressionImportType, dataAnalysisCSVFormat);
-      problemData.Name = "11-Multiplexer";
-
-      var problem = new SymbolicRegressionSingleObjectiveProblem();
+      var problem = new HeuristicLab.Problems.GeneticProgramming.Boolean.MultiplexerProblem();
       problem.Name = "11-Multiplexer Problem";
-      problem.ProblemData = problemData;
-      problem.MaximumSymbolicExpressionTreeLength.Value = 50;
-      problem.MaximumSymbolicExpressionTreeDepth.Value = 50;
-      problem.EvaluatorParameter.Value = new SymbolicRegressionSingleObjectiveMeanSquaredErrorEvaluator();
-      problem.ApplyLinearScaling.Value = false;
-
-
-      var grammar = new FullFunctionalExpressionGrammar();
-      problem.SymbolicExpressionTreeGrammar = grammar;
-      foreach (var symbol in grammar.Symbols) {
-        if (symbol is ProgramRootSymbol) symbol.Enabled = true;
-        else if (symbol is StartSymbol) symbol.Enabled = true;
-        else if (symbol is IfThenElse) symbol.Enabled = true;
-        else if (symbol is And) symbol.Enabled = true;
-        else if (symbol is Or) symbol.Enabled = true;
-        else if (symbol is Xor) symbol.Enabled = true;
-        else if (symbol.GetType() == typeof(Variable)) {
-          //necessary as there are multiple classes derived from Variable (e.g., VariableCondition)
-          symbol.Enabled = true;
-          var variableSymbol = (Variable)symbol;
-          variableSymbol.MultiplicativeWeightManipulatorSigma = 0.0;
-          variableSymbol.WeightManipulatorSigma = 0.0;
-          variableSymbol.WeightSigma = 0.0;
-        } else symbol.Enabled = false;
-      }
+      problem.Encoding.TreeLength = 50;
+      problem.Encoding.TreeDepth = 50;
 
       var osga = new OffspringSelectionGeneticAlgorithm();
       osga.Name = "Genetic Programming - Multiplexer 11 problem";
