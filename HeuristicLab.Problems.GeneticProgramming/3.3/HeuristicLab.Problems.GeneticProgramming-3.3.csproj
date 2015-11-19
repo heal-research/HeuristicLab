@@ -103,6 +103,8 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArtificialAnt\Interpreter.cs" />
@@ -116,11 +118,32 @@
     <Compile Include="LawnMower\Solution.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="robocode\EnemyCollection.cs" />
+    <Compile Include="robocode\Grammar.cs" />
+    <Compile Include="robocode\Interpreter.cs" />
+    <Compile Include="robocode\Problem.cs" />
+    <Compile Include="robocode\Solution.cs" />
+    <Compile Include="robocode\Symbols\BooleanTreeNode.cs" />
+    <Compile Include="robocode\Symbols\BooleanValue.cs" />
+    <Compile Include="robocode\Symbols\CodeSymbol.cs" />
+    <Compile Include="robocode\Symbols\Number.cs" />
+    <Compile Include="robocode\Symbols\NumberTreeNode.cs" />
+    <Compile Include="robocode\Symbols\ShotPower.cs" />
+    <Compile Include="robocode\Symbols\ShotPowerTreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
+    <None Include="robocode\BattleObserver.class">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="robocode\BattleRunner.class">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="robocode\robocode.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
@@ -210,6 +233,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="robocode\BattleRunner.java" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

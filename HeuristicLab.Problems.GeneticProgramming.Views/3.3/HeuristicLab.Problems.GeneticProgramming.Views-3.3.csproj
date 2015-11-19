@@ -132,6 +132,36 @@
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Robocode\BattleRunnerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Robocode\BattleRunnerDialog.Designer.cs">
+      <DependentUpon>BattleRunnerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Robocode\CodeSymbolView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Robocode\CodeSymbolView.Designer.cs">
+      <DependentUpon>CodeSymbolView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Robocode\EnemyCollectionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Robocode\EnemyCollectionView.Designer.cs">
+      <DependentUpon>EnemyCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Robocode\SolutionCodeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Robocode\SolutionCodeView.Designer.cs">
+      <DependentUpon>SolutionCodeView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Robocode\SolutionProgramView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Robocode\SolutionProgramView.Designer.cs">
+      <DependentUpon>SolutionProgramView.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -139,6 +169,16 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
+      <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
+      <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
+      <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
+      <Name>HeuristicLab.Common.Resources-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common\3.3\HeuristicLab.Common-3.3.csproj">
       <Project>{A9AD58B9-3EF9-4CC1-97E5-8D909039FF5C}</Project>
       <Name>HeuristicLab.Common-3.3</Name>
