@@ -132,10 +132,6 @@
       <HintPath>..\bin\HeuristicLab.Algorithms.LocalSearch-3.3.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy-3.3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=ba48961d6f65dcec, processorArchitecture=MSIL">
-      <HintPath>..\bin\HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy-3.3.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3">
       <HintPath>..\bin\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.dll</HintPath>
       <Private>False</Private>
@@ -439,7 +435,6 @@
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\AlpsSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsOpSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs" />

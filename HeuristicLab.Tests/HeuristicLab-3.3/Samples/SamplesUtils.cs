@@ -4,7 +4,6 @@ using System.Threading;
 using HeuristicLab.Algorithms.ALPS;
 using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Algorithms.GeneticAlgorithm;
-using HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy;
 using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
 using HeuristicLab.Data;
 using HeuristicLab.Optimization;
@@ -45,45 +44,6 @@ namespace HeuristicLab.Tests {
       es.PopulationSize.Value = popSize;
       es.Children.Value = children;
       es.ParentsPerChild.Value = parentsPerChild;
-      es.MaximumGenerations.Value = maxGens;
-      es.PlusSelection.Value = false;
-
-      es.Seed.Value = 0;
-      es.SetSeedRandomly.Value = true;
-
-      es.Recombinator = es.RecombinatorParameter.ValidValues
-        .OfType<R>()
-        .Single();
-
-      es.Mutator = es.MutatorParameter.ValidValues
-        .OfType<M>()
-        .Single();
-
-      es.StrategyParameterCreator = es.StrategyParameterCreatorParameter.ValidValues
-        .OfType<SC>()
-        .Single();
-      es.StrategyParameterCrossover = es.StrategyParameterCrossoverParameter.ValidValues
-        .OfType<SR>()
-        .Single();
-      es.StrategyParameterManipulator = es.StrategyParameterManipulatorParameter.ValidValues
-        .OfType<SM>()
-        .Single();
-      es.Engine = new ParallelEngine.ParallelEngine();
-    }
-
-    public static void ConfigureOffspringSelectionEvolutionStrategyParameters<R, M, SC, SR, SM>(OffspringSelectionEvolutionStrategy es, int popSize,
-      double successRatio, double comparisonFactor, double maxSelPres, int parentsPerChild, int maxGens, bool plusSelection)
-      where R : ICrossover
-      where M : IManipulator
-      where SC : IStrategyParameterCreator
-      where SR : IStrategyParameterCrossover
-      where SM : IStrategyParameterManipulator {
-      es.PopulationSize.Value = popSize;
-      es.ComparisonFactor.Value = comparisonFactor;
-      es.SuccessRatio.Value = successRatio;
-      es.MaximumSelectionPressure.Value = maxSelPres;
-      es.ParentsPerChild.Value = parentsPerChild;
-      es.SelectedParents.Value = popSize * parentsPerChild;
       es.MaximumGenerations.Value = maxGens;
       es.PlusSelection.Value = false;
 
@@ -233,7 +193,7 @@ namespace HeuristicLab.Tests {
       ga.AgeInheritance.Value = ageInheritance;
 
       ga.MaximumGenerations = maxGens;
-
+      
       ga.Engine = new ParallelEngine.ParallelEngine();
     }
   }

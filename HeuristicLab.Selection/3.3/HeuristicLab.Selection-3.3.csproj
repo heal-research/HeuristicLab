@@ -118,7 +118,6 @@
     <Compile Include="BestSelector.cs" />
     <Compile Include="ConditionalSelector.cs" />
     <Compile Include="CrowdedTournamentSelector.cs" />
-    <Compile Include="EvolutionStrategyOffspringSelector.cs" />
     <Compile Include="GeneralizedRankSelector.cs" />
     <Compile Include="LeftSelector.cs" />
     <Compile Include="NoSameMatesSelector.cs" />
