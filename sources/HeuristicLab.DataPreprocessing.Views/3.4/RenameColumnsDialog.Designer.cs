@@ -55,7 +55,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.okButton.Location = new System.Drawing.Point(83, 283);
+      this.okButton.Location = new System.Drawing.Point(48, 302);
       this.okButton.Name = "okButton";
       this.okButton.Size = new System.Drawing.Size(75, 23);
       this.okButton.TabIndex = 0;
@@ -66,7 +66,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cancelButton.Location = new System.Drawing.Point(164, 283);
+      this.cancelButton.Location = new System.Drawing.Point(129, 302);
       this.cancelButton.Name = "cancelButton";
       this.cancelButton.Size = new System.Drawing.Size(75, 23);
       this.cancelButton.TabIndex = 1;
@@ -81,15 +81,18 @@ namespace HeuristicLab.DataPreprocessing.Views {
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.dataGridView.ColumnHeadersVisible = false;
       this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColumName});
-      this.dataGridView.Location = new System.Drawing.Point(12, 12);
+      this.dataGridView.Location = new System.Drawing.Point(0, 0);
       this.dataGridView.Name = "dataGridView";
-      this.dataGridView.Size = new System.Drawing.Size(227, 265);
+      this.dataGridView.RowHeadersVisible = false;
+      this.dataGridView.Size = new System.Drawing.Size(207, 296);
       this.dataGridView.TabIndex = 2;
       // 
       // ColumName
       // 
+      this.ColumName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
       this.ColumName.HeaderText = "Column Name";
       this.ColumName.Name = "ColumName";
       this.ColumName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -98,11 +101,14 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(251, 318);
+      this.ClientSize = new System.Drawing.Size(207, 330);
       this.Controls.Add(this.dataGridView);
       this.Controls.Add(this.cancelButton);
       this.Controls.Add(this.okButton);
+      this.MaximizeBox = false;
+      this.MinimizeBox = false;
       this.Name = "RenameColumnsDialog";
+      this.ShowIcon = false;
       this.Text = "Rename Columns";
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
       this.ResumeLayout(false);
