@@ -39,7 +39,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  [Item("Hill Climber", "Binary Hill Climber.")]
+  [Item("Hill Climber (HC)", "Binary Hill Climber.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 150)]
   public class HillClimber : BasicAlgorithm {

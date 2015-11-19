@@ -35,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.SimulatedAnnealing {
-  [Item("Simulated Annealing", "A simulated annealing algorithm.")]
+  [Item("Simulated Annealing (SA)", "A simulated annealing algorithm.")]
   [Creatable(CreatableAttribute.Categories.SingleSolutionAlgorithms, Priority = 140)]
   [StorableClass]
   public sealed class SimulatedAnnealing : HeuristicOptimizationEngineAlgorithm, IStorableContent {

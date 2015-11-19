@@ -28,7 +28,7 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Binary {
-  [Item("Hierararchical If and only If problem", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
+  [Item("Hierararchical If and only If problem (HIFF)", "Genome evaluated in nested subsets to see if each subset contains either all 0s or all 1s.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 220)]
   public class HIFFProblem : BinaryProblem {

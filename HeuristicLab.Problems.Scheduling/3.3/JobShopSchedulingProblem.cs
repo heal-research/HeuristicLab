@@ -36,7 +36,7 @@ using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.Scheduling {
-  [Item("Job Shop Scheduling Problem", "Represents a standard Job Shop Scheduling Problem")]
+  [Item("Job Shop Scheduling Problem (JSSP)", "Represents a standard Job Shop Scheduling Problem")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 120)]
   [StorableClass]
   public sealed class JobShopSchedulingProblem : SchedulingProblem, IProblemInstanceConsumer<JSSPData>, IProblemInstanceExporter<JSSPData>, IStorableContent {

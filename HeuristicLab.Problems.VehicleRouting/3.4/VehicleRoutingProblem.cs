@@ -40,7 +40,7 @@ using HeuristicLab.Problems.VehicleRouting.ProblemInstances;
 using HeuristicLab.Problems.VehicleRouting.Variants;
 
 namespace HeuristicLab.Problems.VehicleRouting {
-  [Item("Vehicle Routing Problem", "Represents a Vehicle Routing Problem.")]
+  [Item("Vehicle Routing Problem (VRP)", "Represents a Vehicle Routing Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 110)]
   [StorableClass]
   public sealed class VehicleRoutingProblem : Problem, ISingleObjectiveHeuristicOptimizationProblem, IStorableContent, IProblemInstanceConsumer<IVRPData> {

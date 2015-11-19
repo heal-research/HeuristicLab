@@ -37,7 +37,7 @@ namespace HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm {
   /// <summary>
   /// An offspring selection island genetic algorithm.
   /// </summary>
-  [Item("Island Offspring Selection Genetic Algorithm", "An island offspring selection genetic algorithm.")]
+  [Item("Island Offspring Selection Genetic Algorithm (Island-OSGA)", "An island offspring selection genetic algorithm.")]
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 130)]
   [StorableClass]
   public sealed class IslandOffspringSelectionGeneticAlgorithm : HeuristicOptimizationEngineAlgorithm, IStorableContent {
