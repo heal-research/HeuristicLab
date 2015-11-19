@@ -114,6 +114,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChildrenCopyCreator.cs" />
     <Compile Include="ExpressionCalculator.cs" />
     <Compile Include="NoSimilarityCalculator.cs" />
     <Compile Include="QualitySimilarityCalculator.cs" />
