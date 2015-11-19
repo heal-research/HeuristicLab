@@ -25,6 +25,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
@@ -232,7 +233,80 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       return bestObjValue[0];
     }
 
-    public void ObjectiveFunction(double[] x, ref double func, double[] grad, object obj) {
+    public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results, IRandom random) {
+      if (!results.ContainsKey("Best Solution Quality")) {
+        results.Add(new Result("Best Solution Quality", typeof(DoubleValue)));
+      }
+      if (!results.ContainsKey("Best Tree")) {
+        results.Add(new Result("Best Tree", typeof(ISymbolicExpressionTree)));
+      }
+      if (!results.ContainsKey("Best Solution")) {
+        results.Add(new Result("Best Solution", typeof(GaussianProcessRegressionSolution)));
+      }
+
+      var bestQuality = qualities.Max();
+
+      if (results["Best Solution Quality"].Value == null || bestQuality > ((DoubleValue)results["Best Solution Quality"].Value).Value) {
+        var bestIdx = Array.IndexOf(qualities, bestQuality);
+        var bestClone = (ISymbolicExpressionTree)trees[bestIdx].Clone();
+        results["Best Tree"].Value = bestClone;
+        results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
+        results["Best Solution"].Value = CreateSolution(bestClone, random);
+      }
+    }
+
+    private IItem CreateSolution(ISymbolicExpressionTree tree, IRandom random) {
+      // again tune the hyper-parameters.
+      // this is suboptimal because 1) more effort and 2) we cannot be sure to find the same local optimum
+      var meanFunction = new MeanConst();
+      var problemData = ProblemData;
+      var ds = problemData.Dataset;
+      var targetVariable = problemData.TargetVariable;
+      var allowedInputVariables = problemData.AllowedInputVariables.ToArray();
+      var nVars = allowedInputVariables.Length;
+      var trainingRows = problemData.TrainingIndices.ToArray();
+      var bestObjValue = new double[1] { double.MinValue };
+
+      // use the same covariance function for each restart
+      var covarianceFunction = TreeToCovarianceFunction(tree);
+      // data that is necessary for the objective function
+      var data = Tuple.Create(ds, targetVariable, allowedInputVariables, trainingRows, (IMeanFunction)meanFunction, covarianceFunction, bestObjValue);
+
+      // allocate hyperparameters
+      var hyperParameters = new double[meanFunction.GetNumberOfParameters(nVars) + covarianceFunction.GetNumberOfParameters(nVars) + 1]; // mean + cov + noise
+
+      // initialize hyperparameters
+      hyperParameters[0] = ds.GetDoubleValues(targetVariable).Average(); // mean const
+
+      for (int i = 0; i < covarianceFunction.GetNumberOfParameters(nVars); i++) {
+        hyperParameters[1 + i] = random.NextDouble() * 2.0 - 1.0;
+      }
+      hyperParameters[hyperParameters.Length - 1] = 1.0; // s² = exp(2), TODO: other inits better?
+
+      // use alglib.bfgs for hyper-parameter optimization ...
+      double epsg = 0;
+      double epsf = 0.00001;
+      double epsx = 0;
+      double stpmax = 1;
+      int maxits = ConstantOptIterations;
+      alglib.mincgstate state;
+      alglib.mincgreport rep;
+
+      alglib.mincgcreate(hyperParameters, out state);
+      alglib.mincgsetcond(state, epsg, epsf, epsx, maxits);
+      alglib.mincgsetstpmax(state, stpmax);
+      alglib.mincgoptimize(state, ObjectiveFunction, null, data);
+
+      alglib.mincgresults(state, out hyperParameters, out rep);
+
+      if (rep.terminationtype >= 0) {
+
+        var model = new GaussianProcessModel(ds, targetVariable, allowedInputVariables, trainingRows, hyperParameters, meanFunction, covarianceFunction);
+        return model.CreateRegressionSolution(ProblemData);
+      } else return null;
+    }
+
+    private void ObjectiveFunction(double[] x, ref double func, double[] grad, object obj) {
       // we want to optimize the model likelihood by changing the hyperparameters and also return the gradient for each hyperparameter
       var data = (Tuple<IDataset, string, string[], int[], IMeanFunction, ICovarianceFunction, double[]>)obj;
       var ds = data.Item1;
@@ -251,7 +325,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
         bestObjValue[0] = Math.Max(bestObjValue[0], -func); // problem itself is a maximization problem
         var gradients = model.HyperparameterGradients;
         Array.Copy(gradients, grad, gradients.Length);
-      } catch (Exception) {
+      } catch (ArgumentException) {
         // building the GaussianProcessModel might fail, in this case we return the worst possible objective value
         func = 1.0E+300;
         Array.Clear(grad, 0, grad.Length);
