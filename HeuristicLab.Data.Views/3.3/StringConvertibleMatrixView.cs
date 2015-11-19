@@ -382,7 +382,7 @@ namespace HeuristicLab.Data.Views {
       }
       ClearSorting();
     }
-    private string[,] SplitClipboardString(string clipboardText) {
+    protected string[,] SplitClipboardString(string clipboardText) {
       if (clipboardText.EndsWith(Environment.NewLine))
         clipboardText = clipboardText.Remove(clipboardText.Length - Environment.NewLine.Length);  //remove last newline constant
       string[,] values = null;

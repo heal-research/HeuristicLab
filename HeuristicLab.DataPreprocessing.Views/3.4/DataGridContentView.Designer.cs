@@ -62,6 +62,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.btnSearch = new System.Windows.Forms.Button();
       this.btnReplace = new System.Windows.Forms.Button();
       this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+      this.addRowButton = new System.Windows.Forms.Button();
+      this.addColumnButton = new System.Windows.Forms.Button();
+      this.renameColumnsButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.contextMenuCell.SuspendLayout();
       this.SuspendLayout();
@@ -69,28 +72,25 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // rowsTextBox
       // 
       this.rowsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.rowsTextBox.Enabled = false;
       this.errorProvider.SetIconAlignment(this.rowsTextBox, System.Windows.Forms.ErrorIconAlignment.MiddleLeft);
       this.errorProvider.SetIconPadding(this.rowsTextBox, 2);
-      this.rowsTextBox.ReadOnly = true;
       this.rowsTextBox.Size = new System.Drawing.Size(71, 20);
       // 
       // columnsTextBox
       // 
       this.columnsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
-      this.columnsTextBox.Enabled = false;
-      this.columnsTextBox.ReadOnly = true;
       this.columnsTextBox.Size = new System.Drawing.Size(71, 20);
       // 
       // statisticsTextBox
       // 
-      this.statisticsTextBox.Size = new System.Drawing.Size(522, 13);
+      this.statisticsTextBox.Location = new System.Drawing.Point(3, 387);
+      this.statisticsTextBox.Size = new System.Drawing.Size(421, 13);
       // 
       // btnApplySort
       // 
-      this.btnApplySort.Location = new System.Drawing.Point(349, 19);
+      this.btnApplySort.Location = new System.Drawing.Point(234, 0);
       this.btnApplySort.Name = "btnApplySort";
-      this.btnApplySort.Size = new System.Drawing.Size(75, 23);
+      this.btnApplySort.Size = new System.Drawing.Size(104, 23);
       this.btnApplySort.TabIndex = 7;
       this.btnApplySort.Text = "Apply Sort";
       this.toolTip.SetToolTip(this.btnApplySort, "The current sorting is applied on the data itself.");
@@ -103,7 +103,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
             this.replaceValueOverColumnToolStripMenuItem,
             this.replaceValueOverSelectionToolStripMenuItem});
       this.contextMenuCell.Name = "contextMenuCell";
-      this.contextMenuCell.Size = new System.Drawing.Size(225, 70);
+      this.contextMenuCell.Size = new System.Drawing.Size(225, 48);
       // 
       // replaceValueOverColumnToolStripMenuItem
       // 
@@ -153,9 +153,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.interpolationToolStripMenuItem_Column.Text = "Interpolation";
       this.interpolationToolStripMenuItem_Column.Click += new System.EventHandler(this.ReplaceWithInterpolation_Column_Click);
       // 
-      // smoothingToolStripMenuItem
+      // smoothingToolStripMenuItem_Column
       // 
-      this.smoothingToolStripMenuItem_Column.Name = "smoothingToolStripMenuItem";
+      this.smoothingToolStripMenuItem_Column.Name = "smoothingToolStripMenuItem_Column";
       this.smoothingToolStripMenuItem_Column.Size = new System.Drawing.Size(155, 22);
       this.smoothingToolStripMenuItem_Column.Text = "Smoothing";
       this.smoothingToolStripMenuItem_Column.Click += new System.EventHandler(this.ReplaceWithSmoothing_Selection_Click);
@@ -201,9 +201,9 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // btnSearch
       // 
-      this.btnSearch.Location = new System.Drawing.Point(201, 19);
+      this.btnSearch.Location = new System.Drawing.Point(173, 0);
       this.btnSearch.Name = "btnSearch";
-      this.btnSearch.Size = new System.Drawing.Size(53, 23);
+      this.btnSearch.Size = new System.Drawing.Size(55, 23);
       this.btnSearch.TabIndex = 8;
       this.btnSearch.Text = "Search";
       this.toolTip.SetToolTip(this.btnSearch, "Opens the Search dialog");
@@ -212,7 +212,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       // 
       // btnReplace
       // 
-      this.btnReplace.Location = new System.Drawing.Point(260, 19);
+      this.btnReplace.Location = new System.Drawing.Point(173, 26);
       this.btnReplace.Name = "btnReplace";
       this.btnReplace.Size = new System.Drawing.Size(55, 23);
       this.btnReplace.TabIndex = 9;
@@ -221,23 +221,59 @@ namespace HeuristicLab.DataPreprocessing.Views {
       this.btnReplace.UseVisualStyleBackColor = true;
       this.btnReplace.Click += new System.EventHandler(this.btnReplace_Click);
       // 
+      // addRowButton
+      // 
+      this.addRowButton.Location = new System.Drawing.Point(344, 26);
+      this.addRowButton.Name = "addRowButton";
+      this.addRowButton.Size = new System.Drawing.Size(76, 23);
+      this.addRowButton.TabIndex = 10;
+      this.addRowButton.Text = "Add Row";
+      this.addRowButton.UseVisualStyleBackColor = true;
+      this.addRowButton.Click += new System.EventHandler(this.addRowButton_Click);
+      // 
+      // addColumnButton
+      // 
+      this.addColumnButton.Location = new System.Drawing.Point(344, 0);
+      this.addColumnButton.Name = "addColumnButton";
+      this.addColumnButton.Size = new System.Drawing.Size(76, 23);
+      this.addColumnButton.TabIndex = 10;
+      this.addColumnButton.Text = "Add Column";
+      this.addColumnButton.UseVisualStyleBackColor = true;
+      this.addColumnButton.Click += new System.EventHandler(this.addColumnButton_Click);
+      // 
+      // renameColumnsButton
+      // 
+      this.renameColumnsButton.Location = new System.Drawing.Point(234, 26);
+      this.renameColumnsButton.Name = "renameColumnsButton";
+      this.renameColumnsButton.Size = new System.Drawing.Size(104, 23);
+      this.renameColumnsButton.TabIndex = 11;
+      this.renameColumnsButton.Text = "Rename Columns";
+      this.renameColumnsButton.UseVisualStyleBackColor = true;
+      this.renameColumnsButton.Click += new System.EventHandler(this.renameColumnsButton_Click);
+      // 
       // DataGridContentView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.renameColumnsButton);
+      this.Controls.Add(this.addColumnButton);
+      this.Controls.Add(this.addRowButton);
       this.Controls.Add(this.btnReplace);
       this.Controls.Add(this.btnSearch);
       this.Controls.Add(this.btnApplySort);
       this.Name = "DataGridContentView";
-      this.Size = new System.Drawing.Size(528, 404);
+      this.Size = new System.Drawing.Size(430, 403);
+      this.Controls.SetChildIndex(this.btnApplySort, 0);
+      this.Controls.SetChildIndex(this.btnSearch, 0);
+      this.Controls.SetChildIndex(this.btnReplace, 0);
+      this.Controls.SetChildIndex(this.addRowButton, 0);
+      this.Controls.SetChildIndex(this.addColumnButton, 0);
+      this.Controls.SetChildIndex(this.renameColumnsButton, 0);
       this.Controls.SetChildIndex(this.statisticsTextBox, 0);
       this.Controls.SetChildIndex(this.rowsLabel, 0);
       this.Controls.SetChildIndex(this.columnsLabel, 0);
       this.Controls.SetChildIndex(this.rowsTextBox, 0);
       this.Controls.SetChildIndex(this.columnsTextBox, 0);
-      this.Controls.SetChildIndex(this.btnApplySort, 0);
-      this.Controls.SetChildIndex(this.btnSearch, 0);
-      this.Controls.SetChildIndex(this.btnReplace, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
       this.contextMenuCell.ResumeLayout(false);
       this.ResumeLayout(false);
@@ -264,5 +300,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private System.Windows.Forms.Button btnReplace;
     private System.Windows.Forms.ToolTip toolTip;
     private System.Windows.Forms.ToolStripMenuItem smoothingToolStripMenuItem_Column;
+    private System.Windows.Forms.Button addRowButton;
+    private System.Windows.Forms.Button addColumnButton;
+    private System.Windows.Forms.Button renameColumnsButton;
   }
 }

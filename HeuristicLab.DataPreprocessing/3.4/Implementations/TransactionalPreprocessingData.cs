@@ -97,6 +97,12 @@ namespace HeuristicLab.DataPreprocessing {
 
     public override void SetCell<T>(int columnIndex, int rowIndex, T value) {
       SaveSnapshot(DataPreprocessingChangedEventType.ChangeItem, columnIndex, rowIndex);
+
+      for (int i = Rows; i <= rowIndex; i++)
+        InsertRow(i);
+      for (int i = Columns; i <= columnIndex; i++)
+        InsertColumn<T>(i.ToString(), i);
+
       variableValues[columnIndex][rowIndex] = value;
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.ChangeItem, columnIndex, rowIndex);
@@ -115,7 +121,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
     public override bool VariableHasType<T>(int columnIndex) {
-      return variableValues[columnIndex] is List<T>;
+      return columnIndex >= variableValues.Count || variableValues[columnIndex] is List<T>;
     }
 
     [Obsolete("use the index based variant, is faster")]
@@ -218,6 +224,7 @@ namespace HeuristicLab.DataPreprocessing {
       }
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.DeleteRow, -1, -1);
+      ResetPartitions();
     }
 
     public override void InsertRow(int rowIndex) {
@@ -228,6 +235,7 @@ namespace HeuristicLab.DataPreprocessing {
       }
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.AddRow, -1, rowIndex);
+      ResetPartitions();
     }
 
     public override void DeleteRow(int rowIndex) {
@@ -237,11 +245,12 @@ namespace HeuristicLab.DataPreprocessing {
       }
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.DeleteRow, -1, rowIndex);
+      ResetPartitions();
     }
 
     public override void InsertColumn<T>(string variableName, int columnIndex) {
       SaveSnapshot(DataPreprocessingChangedEventType.DeleteColumn, columnIndex, -1);
-      variableValues.Insert(columnIndex, new List<T>(Rows));
+      variableValues.Insert(columnIndex, new List<T>(Enumerable.Repeat(default(T), Rows)));
       variableNames.Insert(columnIndex, variableName);
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.AddColumn, columnIndex, -1);
@@ -253,6 +262,28 @@ namespace HeuristicLab.DataPreprocessing {
       variableNames.RemoveAt(columnIndex);
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.DeleteColumn, columnIndex, -1);
+    }
+
+    public override void RenameColumn(int columnIndex, string name) {
+      SaveSnapshot(DataPreprocessingChangedEventType.ChangeColumn, columnIndex, -1);
+      if (columnIndex < 0 || columnIndex > variableNames.Count)
+        throw new ArgumentOutOfRangeException("columnIndex");
+      variableNames[columnIndex] = name;
+
+      if (!IsInTransaction)
+        OnChanged(DataPreprocessingChangedEventType.ChangeColumn, -1, -1);
+    }
+
+    public override void RenameColumns(IList<string> names) {
+      if (names == null) throw new ArgumentNullException("names");
+      if (names.Count != variableNames.Count) throw new ArgumentException("number of names must match the number of columns.", "names");
+
+      SaveSnapshot(DataPreprocessingChangedEventType.ChangeColumn, -1, -1);
+      for (int i = 0; i < names.Count; i++)
+        variableNames[i] = names[i];
+
+      if (!IsInTransaction)
+        OnChanged(DataPreprocessingChangedEventType.ChangeColumn, -1, -1);
     }
 
     public override Dataset ExportToDataset() {
@@ -277,6 +308,11 @@ namespace HeuristicLab.DataPreprocessing {
       if (listeners != null) listeners(this, EventArgs.Empty);
     }
 
+
+    private void ResetPartitions() {
+      TrainingPartition = new IntRange();
+      TestPartition = new IntRange();
+    }
 
     #endregion
 

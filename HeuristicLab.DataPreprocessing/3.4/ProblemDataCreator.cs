@@ -62,7 +62,7 @@ namespace HeuristicLab.DataPreprocessing {
       // set the input variables to the correct checked state
       var inputVariables = oldProblemData.InputVariables.ToDictionary(x => x.Value, x => x);
       foreach (var variable in problemData.InputVariables) {
-        bool isChecked = oldProblemData.InputVariables.ItemChecked(inputVariables[variable.Value]);
+        bool isChecked = inputVariables.ContainsKey(variable.Value) && oldProblemData.InputVariables.ItemChecked(inputVariables[variable.Value]);
         problemData.InputVariables.SetItemCheckedState(variable, isChecked);
       }
 
@@ -71,14 +71,19 @@ namespace HeuristicLab.DataPreprocessing {
 
     private IDataAnalysisProblemData CreateRegressionData(RegressionProblemData oldProblemData) {
       var targetVariable = oldProblemData.TargetVariable;
-      // target variable must be double and must exist in the new dataset
-      return new RegressionProblemData(ExportedDataset, GetDoubleInputVariables(targetVariable), targetVariable, Transformations);
+      if (!context.Data.VariableNames.Contains(targetVariable))
+        targetVariable = context.Data.VariableNames.First();
+      var inputVariables = GetDoubleInputVariables(targetVariable);
+      var newProblemData = new RegressionProblemData(ExportedDataset, inputVariables, targetVariable, Transformations);
+      return newProblemData;
     }
 
     private IDataAnalysisProblemData CreateClassificationData(ClassificationProblemData oldProblemData) {
-      // target variable must be double and must exist in the new dataset
       var targetVariable = oldProblemData.TargetVariable;
-      var newProblemData = new ClassificationProblemData(ExportedDataset, GetDoubleInputVariables(targetVariable), targetVariable, Transformations);
+      if (!context.Data.VariableNames.Contains(targetVariable))
+        targetVariable = context.Data.VariableNames.First();
+      var inputVariables = GetDoubleInputVariables(targetVariable);
+      var newProblemData = new ClassificationProblemData(ExportedDataset, inputVariables, targetVariable, Transformations);
       newProblemData.PositiveClass = oldProblemData.PositiveClass;
       return newProblemData;
     }

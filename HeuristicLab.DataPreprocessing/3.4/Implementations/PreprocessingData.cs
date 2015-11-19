@@ -195,6 +195,9 @@ namespace HeuristicLab.DataPreprocessing {
 
     public abstract void DeleteColumn(int columnIndex);
 
+    public abstract void RenameColumn(int columnIndex, string name);
+    public abstract void RenameColumns(IList<string> list);
+
     public abstract Dataset ExportToDataset();
 
     public abstract void ClearSelection();
