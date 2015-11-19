@@ -178,9 +178,7 @@ namespace HeuristicLab.Problems.Instances.Orienteering {
 
           // Remove the 'm,'
           inputString = inputString.Remove(0, inputString.IndexOf(',') + 1);
-          // Extract the number of points
-          bool matrixGiven = true;
-
+                    
           pointCount = Coordinates.GetLength(1);
           Distances = new double[pointCount, pointCount];
           break;
