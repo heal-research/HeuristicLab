@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
@@ -41,6 +40,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private const string TrainingBestSolutionsParameterName = "Best training solutions";
     private const string TrainingBestSolutionQualitiesParameterName = "Best training solution qualities";
     private const string UpdateAlwaysParameterName = "Always update best solutions";
+    private const string TrainingBestSolutionParameterName = "Best training solution";
 
     #region parameter properties
     public ILookupParameter<ItemList<T>> TrainingBestSolutionsParameter {
@@ -54,16 +54,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
     #endregion
     #region properties
-    public ItemList<T> TrainingBestSolutions {
+    private ItemList<T> TrainingBestSolutions {
       get { return TrainingBestSolutionsParameter.ActualValue; }
       set { TrainingBestSolutionsParameter.ActualValue = value; }
     }
-    public ItemList<DoubleArray> TrainingBestSolutionQualities {
+    private ItemList<DoubleArray> TrainingBestSolutionQualities {
       get { return TrainingBestSolutionQualitiesParameter.ActualValue; }
       set { TrainingBestSolutionQualitiesParameter.ActualValue = value; }
     }
-    public BoolValue UpdateAlways {
-      get { return UpdateAlwaysParameter.Value; }
+    public bool UpdateAlways {
+      get { return UpdateAlwaysParameter.Value.Value; }
+      set { UpdateAlwaysParameter.Value.Value = value; }
     }
     #endregion
 
@@ -96,89 +97,86 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         results.Add(new Result(TrainingBestSolutionsParameter.Name, TrainingBestSolutionsParameter.Description, TrainingBestSolutions));
       }
 
+      if (!results.ContainsKey(TrainingBestSolutionParameterName)) {
+        results.Add(new Result(TrainingBestSolutionParameterName, "", typeof(ISymbolicDataAnalysisSolution)));
+      }
+
       //if the pareto front of best solutions shall be updated regardless of the quality, the list initialized empty to discard old solutions
-      IList<double[]> trainingBestQualities;
-      if (UpdateAlways.Value) {
+      List<double[]> trainingBestQualities;
+      if (UpdateAlways) {
         trainingBestQualities = new List<double[]>();
       } else {
         trainingBestQualities = TrainingBestSolutionQualities.Select(x => x.ToArray()).ToList();
       }
 
-      #region find best trees
-      IList<int> nonDominatedIndexes = new List<int>();
-      ISymbolicExpressionTree[] tree = SymbolicExpressionTree.ToArray();
+      ISymbolicExpressionTree[] trees = SymbolicExpressionTree.ToArray();
       List<double[]> qualities = Qualities.Select(x => x.ToArray()).ToList();
       bool[] maximization = Maximization.ToArray();
-      List<double[]> newNonDominatedQualities = new List<double[]>();
-      for (int i = 0; i < tree.Length; i++) {
-        if (IsNonDominated(qualities[i], trainingBestQualities, maximization) &&
-          IsNonDominated(qualities[i], qualities, maximization)) {
-          if (!newNonDominatedQualities.Contains(qualities[i], new DoubleArrayComparer())) {
-            newNonDominatedQualities.Add(qualities[i]);
-            nonDominatedIndexes.Add(i);
+
+      var nonDominatedIndividuals = new[] { new { Tree = default(ISymbolicExpressionTree), Qualities = default(double[]) } }.ToList();
+      nonDominatedIndividuals.Clear();
+
+      // build list of new non-dominated solutions
+      for (int i = 0; i < trees.Length; i++) {
+        if (IsNonDominated(qualities[i], nonDominatedIndividuals.Select(ind => ind.Qualities), maximization) &&
+            IsNonDominated(qualities[i], trainingBestQualities, maximization)) {
+          for (int j = nonDominatedIndividuals.Count - 1; j >= 0; j--) {
+            if (IsBetterOrEqual(qualities[i], nonDominatedIndividuals[j].Qualities, maximization)) {
+              nonDominatedIndividuals.RemoveAt(j);
+            }
           }
+          nonDominatedIndividuals.Add(new { Tree = trees[i], Qualities = qualities[i] });
         }
       }
-      #endregion
+
+      var nonDominatedSolutions = nonDominatedIndividuals.Select(x => new { Solution = CreateSolution(x.Tree, x.Qualities), Qualities = x.Qualities }).ToList();
+      nonDominatedSolutions.ForEach(s => s.Solution.Name = string.Join(",", s.Qualities.Select(q => q.ToString())));
+
       #region update Pareto-optimal solution archive
-      if (nonDominatedIndexes.Count > 0) {
-        ItemList<DoubleArray> nonDominatedQualities = new ItemList<DoubleArray>();
-        ItemList<T> nonDominatedSolutions = new ItemList<T>();
-        // add all new non-dominated solutions to the archive
-        foreach (var index in nonDominatedIndexes) {
-          T solution = CreateSolution(tree[index], qualities[index]);
-          nonDominatedSolutions.Add(solution);
-          nonDominatedQualities.Add(new DoubleArray(qualities[index]));
-        }
-        // add old non-dominated solutions only if they are not dominated by one of the new solutions
+      if (nonDominatedSolutions.Count > 0) {
+        //add old non-dominated solutions only if they are not dominated by one of the new solutions
         for (int i = 0; i < trainingBestQualities.Count; i++) {
-          if (IsNonDominated(trainingBestQualities[i], newNonDominatedQualities, maximization)) {
-            if (!newNonDominatedQualities.Contains(trainingBestQualities[i], new DoubleArrayComparer())) {
-              nonDominatedSolutions.Add(TrainingBestSolutions[i]);
-              nonDominatedQualities.Add(TrainingBestSolutionQualities[i]);
-            }
+          if (IsNonDominated(trainingBestQualities[i], nonDominatedSolutions.Select(x => x.Qualities), maximization)) {
+            nonDominatedSolutions.Add(new { Solution = TrainingBestSolutions[i], Qualities = TrainingBestSolutionQualities[i].ToArray() });
           }
         }
 
-        results[TrainingBestSolutionsParameter.Name].Value = nonDominatedSolutions;
-        results[TrainingBestSolutionQualitiesParameter.Name].Value = nonDominatedQualities;
+        //assumes the the first objective is always the accuracy
+        var sortedNonDominatedSolutions = maximization[0]
+          ? nonDominatedSolutions.OrderByDescending(x => x.Qualities[0])
+          : nonDominatedSolutions.OrderBy(x => x.Qualities[0]);
+        var trainingBestSolution = sortedNonDominatedSolutions.Select(s => s.Solution).First();
+        results[TrainingBestSolutionParameterName].Value = trainingBestSolution;
+        TrainingBestSolutions = new ItemList<T>(sortedNonDominatedSolutions.Select(x => x.Solution));
+        results[TrainingBestSolutionsParameter.Name].Value = TrainingBestSolutions;
+        TrainingBestSolutionQualities = new ItemList<DoubleArray>(sortedNonDominatedSolutions.Select(x => new DoubleArray(x.Qualities)));
+        results[TrainingBestSolutionQualitiesParameter.Name].Value = TrainingBestSolutionQualities;
       }
       #endregion
       return base.Apply();
     }
 
-    private class DoubleArrayComparer : IEqualityComparer<double[]> {
-      public bool Equals(double[] x, double[] y) {
-        if (y.Length != x.Length) throw new ArgumentException();
-        for (int i = 0; i < x.Length; i++) {
-          if (!x[i].IsAlmost(y[i])) return false;
-        }
-        return true;
-      }
-
-      public int GetHashCode(double[] obj) {
-        int c = obj.Length;
-        for (int i = 0; i < obj.Length; i++)
-          c ^= obj[i].GetHashCode();
-        return c;
-      }
-    }
-
     protected abstract T CreateSolution(ISymbolicExpressionTree bestTree, double[] bestQuality);
 
-    private bool IsNonDominated(double[] point, IList<double[]> points, bool[] maximization) {
+    private bool IsNonDominated(double[] point, IEnumerable<double[]> points, bool[] maximization) {
       foreach (var refPoint in points) {
-        bool refPointDominatesPoint = true;
-        for (int i = 0; i < point.Length; i++) {
-          refPointDominatesPoint &= IsBetterOrEqual(refPoint[i], point[i], maximization[i]);
-        }
+        bool refPointDominatesPoint = IsBetterOrEqual(refPoint, point, maximization);
         if (refPointDominatesPoint) return false;
       }
       return true;
     }
+
+    private bool IsBetterOrEqual(double[] lhs, double[] rhs, bool[] maximization) {
+      for (int i = 0; i < lhs.Length; i++) {
+        var result = IsBetterOrEqual(lhs[i], rhs[i], maximization[i]);
+        if (!result) return false;
+      }
+      return true;
+    }
+
     private bool IsBetterOrEqual(double lhs, double rhs, bool maximization) {
-      if (maximization) return lhs > rhs;
-      else return lhs < rhs;
+      if (maximization) return lhs >= rhs;
+      else return lhs <= rhs;
     }
   }
 }
