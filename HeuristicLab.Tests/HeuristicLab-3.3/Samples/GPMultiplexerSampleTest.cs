@@ -60,7 +60,7 @@ namespace HeuristicLab.Tests {
       problem.Encoding.TreeDepth = 50;
 
       var osga = new OffspringSelectionGeneticAlgorithm();
-      osga.Name = "Genetic Programming - Multiplexer 11 problem";
+      osga.Name = "Genetic Programming - Multiplexer 11 Problem";
       osga.Description = "A genetic programming algorithm that solves the 11-bit multiplexer problem.";
       osga.Problem = problem;
       SamplesUtils.ConfigureOsGeneticAlgorithmParameters<GenderSpecificSelector, SubtreeCrossover, MultiSymbolicExpressionTreeManipulator>
