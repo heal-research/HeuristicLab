@@ -228,7 +228,6 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       string targetVariable = problemData.TargetVariable;
       IEnumerable<int> rows = problemData.TrainingIndices;
 
-      //extract SVM parameters from scope and set them
       svm_parameter parameter = new svm_parameter {
         svm_type = GetSvmType(svmType),
         kernel_type = GetKernelType(kernelType),
