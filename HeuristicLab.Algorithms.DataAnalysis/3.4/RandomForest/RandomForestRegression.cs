@@ -41,6 +41,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string MParameterName = "M";
     private const string SeedParameterName = "Seed";
     private const string SetSeedRandomlyParameterName = "SetSeedRandomly";
+    private const string CreateSolutionParameterName = "CreateSolution";
 
     #region parameter properties
     public IFixedValueParameter<IntValue> NumberOfTreesParameter {
@@ -57,6 +58,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public IFixedValueParameter<BoolValue> SetSeedRandomlyParameter {
       get { return (IFixedValueParameter<BoolValue>)Parameters[SetSeedRandomlyParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> CreateSolutionParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
     }
     #endregion
     #region properties
@@ -80,6 +84,10 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       get { return SetSeedRandomlyParameter.Value.Value; }
       set { SetSeedRandomlyParameter.Value.Value = value; }
     }
+    public bool CreateSolution {
+      get { return CreateSolutionParameter.Value.Value; }
+      set { CreateSolutionParameter.Value.Value = value; }
+    }
     #endregion
     [StorableConstructor]
     private RandomForestRegression(bool deserializing) : base(deserializing) { }
@@ -94,17 +102,27 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       Parameters.Add(new FixedValueParameter<DoubleValue>(MParameterName, "The ratio of features that will be used in the construction of individual trees (0<m<=1)", new DoubleValue(0.5)));
       Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
+      Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+      Parameters[CreateSolutionParameterName].Hidden = true;
+
       Problem = new RegressionProblem();
     }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
       if (!Parameters.ContainsKey(MParameterName))
         Parameters.Add(new FixedValueParameter<DoubleValue>(MParameterName, "The ratio of features that will be used in the construction of individual trees (0<m<=1)", new DoubleValue(0.5)));
       if (!Parameters.ContainsKey(SeedParameterName))
         Parameters.Add(new FixedValueParameter<IntValue>(SeedParameterName, "The random seed used to initialize the new pseudo random number generator.", new IntValue(0)));
       if (!Parameters.ContainsKey((SetSeedRandomlyParameterName)))
         Parameters.Add(new FixedValueParameter<BoolValue>(SetSeedRandomlyParameterName, "True if the random seed should be set to a random value, otherwise false.", new BoolValue(true)));
+      if (!Parameters.ContainsKey(CreateSolutionParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+        Parameters[CreateSolutionParameterName].Hidden = true;
+      }
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -115,20 +133,34 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     protected override void Run() {
       double rmsError, avgRelError, outOfBagRmsError, outOfBagAvgRelError;
       if (SetSeedRandomly) Seed = new System.Random().Next();
+      var model = CreateRandomForestRegressionModel(Problem.ProblemData, NumberOfTrees, R, M, Seed,
+        out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
 
-      var solution = CreateRandomForestRegressionSolution(Problem.ProblemData, NumberOfTrees, R, M, Seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
-      Results.Add(new Result(RandomForestRegressionModelResultName, "The random forest regression solution.", solution));
       Results.Add(new Result("Root mean square error", "The root of the mean of squared errors of the random forest regression solution on the training set.", new DoubleValue(rmsError)));
       Results.Add(new Result("Average relative error", "The average of relative errors of the random forest regression solution on the training set.", new PercentValue(avgRelError)));
       Results.Add(new Result("Root mean square error (out-of-bag)", "The out-of-bag root of the mean of squared errors of the random forest regression solution.", new DoubleValue(outOfBagRmsError)));
       Results.Add(new Result("Average relative error (out-of-bag)", "The out-of-bag average of relative errors of the random forest regression solution.", new PercentValue(outOfBagAvgRelError)));
+
+      if (CreateSolution) {
+        var solution = new RandomForestRegressionSolution((IRegressionProblemData)Problem.ProblemData.Clone(), model);
+        Results.Add(new Result(RandomForestRegressionModelResultName, "The random forest regression solution.", solution));
+      }
     }
 
-    public static IRegressionSolution CreateRandomForestRegressionSolution(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
+    // keep for compatibility with old API
+    public static RandomForestRegressionSolution CreateRandomForestRegressionSolution(IRegressionProblemData problemData, int nTrees, double r, double m, int seed,
       out double rmsError, out double avgRelError, out double outOfBagRmsError, out double outOfBagAvgRelError) {
-      var model = RandomForestModel.CreateRegressionModel(problemData, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+      var model = CreateRandomForestRegressionModel(problemData, nTrees, r, m, seed,
+        out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
       return new RandomForestRegressionSolution((IRegressionProblemData)problemData.Clone(), model);
     }
+
+    public static RandomForestModel CreateRandomForestRegressionModel(IRegressionProblemData problemData, int nTrees,
+      double r, double m, int seed,
+      out double rmsError, out double avgRelError, out double outOfBagRmsError, out double outOfBagAvgRelError) {
+      return RandomForestModel.CreateRegressionModel(problemData, nTrees, r, m, seed, out rmsError, out avgRelError, out outOfBagRmsError, out outOfBagAvgRelError);
+    }
+
     #endregion
   }
 }

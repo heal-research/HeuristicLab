@@ -24,6 +24,7 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -47,6 +48,8 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     private const string ModelParameterName = "Model";
+    private const string CreateSolutionParameterName = "CreateSolution";
+
 
     #region parameter properties
     public IConstrainedValueParameter<IGaussianProcessRegressionModelCreator> GaussianProcessModelCreatorParameter {
@@ -54,6 +57,15 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
     public IFixedValueParameter<GaussianProcessRegressionSolutionCreator> GaussianProcessSolutionCreatorParameter {
       get { return (IFixedValueParameter<GaussianProcessRegressionSolutionCreator>)Parameters[SolutionCreatorParameterName]; }
+    }
+    public IFixedValueParameter<BoolValue> CreateSolutionParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
+    }
+    #endregion
+    #region properties
+    public bool CreateSolution {
+      get { return CreateSolutionParameter.Value.Value; }
+      set { CreateSolutionParameter.Value.Value = value; }
     }
     #endregion
 
@@ -77,10 +89,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // but the solution creator is implemented in a generic fashion already and we don't allow derived solution creators
       Parameters.Add(new ConstrainedValueParameter<IGaussianProcessRegressionModelCreator>(ModelCreatorParameterName, "The operator to create the Gaussian process model.",
         new ItemSet<IGaussianProcessRegressionModelCreator>(modelCreators), defaultModelCreator));
-      // this parameter is not intended to be changed, 
+      // the solution creator cannot be changed
       Parameters.Add(new FixedValueParameter<GaussianProcessRegressionSolutionCreator>(SolutionCreatorParameterName, "The solution creator for the algorithm",
         new GaussianProcessRegressionSolutionCreator()));
       Parameters[SolutionCreatorParameterName].Hidden = true;
+      // TODO: it would be better to deactivate the solution creator when this parameter is changed
+      Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+      Parameters[CreateSolutionParameterName].Hidden = true;
 
       ParameterizedModelCreators();
       ParameterizeSolutionCreator(GaussianProcessSolutionCreatorParameter.Value);
@@ -90,6 +105,13 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(CreateSolutionParameterName)) {
+        Parameters.Add(new FixedValueParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run", new BoolValue(true)));
+        Parameters[CreateSolutionParameterName].Hidden = true;
+      }
+      #endregion
       RegisterEventHandlers();
     }
 

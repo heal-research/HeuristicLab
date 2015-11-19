@@ -39,6 +39,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     private const string ResultsParameterName = "Results";
     private const string TrainingAccuracyResultName = "Accuracy (training)";
     private const string TestAccuracyResultName = "Accuracy (test)";
+    private const string CreateSolutionParameterName = "CreateSolution";
 
     #region Parameter Properties
     public ILookupParameter<IClassificationProblemData> ProblemDataParameter {
@@ -53,6 +54,9 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     public ILookupParameter<ResultCollection> ResultsParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultsParameterName]; }
     }
+    public ILookupParameter<BoolValue> CreateSolutionParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters[CreateSolutionParameterName]; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -63,10 +67,22 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       // in
       Parameters.Add(new LookupParameter<IClassificationProblemData>(ProblemDataParameterName, "The classification problem data for the Gaussian process solution."));
       Parameters.Add(new LookupParameter<IGaussianProcessModel>(ModelParameterName, "The Gaussian process classification model to use for the solution."));
+      Parameters.Add(new LookupParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run"));
+
       // in & out
       Parameters.Add(new LookupParameter<ResultCollection>(ResultsParameterName, "The result collection of the algorithm."));
       // out
       Parameters.Add(new LookupParameter<IDiscriminantFunctionClassificationSolution>(SolutionParameterName, "The produced Gaussian process solution."));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(CreateSolutionParameterName)) {
+        Parameters.Add(new LookupParameter<BoolValue>(CreateSolutionParameterName, "Flag that indicates if a solution should be produced at the end of the run"));
+      }
+      #endregion
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -74,7 +90,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
     }
 
     public override IOperation Apply() {
-      if (ModelParameter.ActualValue != null) {
+      if (ModelParameter.ActualValue != null && CreateSolutionParameter.ActualValue.Value == true) {
         var m = (IGaussianProcessModel)ModelParameter.ActualValue.Clone();
         m.FixParameters();
         var data = (IClassificationProblemData)ProblemDataParameter.ActualValue.Clone();
