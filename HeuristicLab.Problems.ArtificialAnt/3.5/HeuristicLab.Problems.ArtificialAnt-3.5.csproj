@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{06D4A186-9319-48A0-BADE-A2058D462EEA}</ProjectGuid>
+    <ProjectGuid>{FCB5E075-4B97-4CB9-BB36-848E4FF9EA18}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding</RootNamespace>
-    <AssemblyName>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</AssemblyName>
+    <RootNamespace>HeuristicLab.Problems.ArtificialAnt</RootNamespace>
+    <AssemblyName>HeuristicLab.Problems.ArtificialAnt-3.5</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -44,7 +44,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -104,103 +103,13 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analyzers\BestSymbolicExpressionTreeAnalyzer.cs" />
-    <Compile Include="Analyzers\MinAverageMaxSymbolicExpressionTreeLengthAnalyzer.cs" />
-    <Compile Include="Analyzers\SymbolicExpressionSymbolFrequencyAnalyzer.cs" />
-    <Compile Include="Analyzers\SymbolicExpressionTreeLengthAnalyzer.cs" />
-    <Compile Include="Analyzers\SymbolicExpressionTreeLengthCalculator.cs" />
-    <Compile Include="ArchitectureManipulators\ArgumentCreater.cs" />
-    <Compile Include="ArchitectureManipulators\ArgumentDeleter.cs" />
-    <Compile Include="ArchitectureManipulators\ArgumentDuplicater.cs" />
-    <Compile Include="ArchitectureManipulators\GrammarModifier.cs" />
-    <Compile Include="ArchitectureManipulators\MultiSymbolicExpressionTreeArchitectureManipulator.cs" />
-    <Compile Include="ArchitectureManipulators\SubroutineCreater.cs" />
-    <Compile Include="ArchitectureManipulators\SubroutineDeleter.cs" />
-    <Compile Include="ArchitectureManipulators\SubroutineDuplicater.cs" />
-    <Compile Include="ArchitectureManipulators\SymbolicExpressionTreeArchitectureManipulator.cs" />
-    <Compile Include="SymbolicExpressionTreeProblem.cs" />
-    <Compile Include="Compiler\Instruction.cs" />
-    <Compile Include="Compiler\LinearInstruction.cs" />
-    <Compile Include="Compiler\SymbolicExpressionTreeCompiler.cs" />
-    <Compile Include="Compiler\SymbolicExpressionTreeLinearCompiler.cs" />
-    <Compile Include="Creators\FullTreeCreator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Creators\GrowTreeCreator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Creators\RampedHalfAndHalfTreeCreator.cs" />
-    <Compile Include="Formatters\SymbolicExpressionTreeGraphvizFormatter.cs" />
-    <Compile Include="Formatters\SymbolicExpressionTreeHierarchicalFormatter.cs" />
-    <Compile Include="Grammars\EmptySymbolicExpressionTreeGrammar.cs" />
-    <Compile Include="Grammars\SimpleSymbolicExpressionGrammar.cs" />
-    <Compile Include="Interfaces\IReadOnlySymbol.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionGrammar.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionGrammarBase.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionTreeGrammar.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionTreeNodeComparer.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionTreeNodeSimilarityComparer.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeArchitectureAlteringOperator.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeGrammarBasedOperator.cs" />
-    <Compile Include="Creators\SymbolicExpressionTreeCreator.cs" />
-    <Compile Include="CutPoint.cs" />
-    <Compile Include="Crossovers\SymbolicExpressionTreeCrossover.cs" />
-    <Compile Include="Formatters\SymbolicExpressionTreeStringFormatter.cs" />
-    <Compile Include="Interfaces\ISymbol.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionTree.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeAnalyzer.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeArchitectureManipulator.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeCreator.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeCrossover.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionTreeNode.cs" />
-    <Compile Include="Interfaces\ISymbolicExpressionTreeStringFormatter.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeSizeConstraintOperator.cs" />
-    <Compile Include="Manipulators\ChangeNodeTypeManipulation.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeManipulator.cs" />
-    <Compile Include="Manipulators\RemoveBranchManipulation.cs" />
-    <Compile Include="Manipulators\ReplaceBranchManipulation.cs" />
-    <Compile Include="Manipulators\FullTreeShaker.cs" />
-    <Compile Include="Manipulators\MultiSymbolicExpressionTreeManipulator.cs" />
-    <Compile Include="Manipulators\OnePointShaker.cs" />
-    <Compile Include="Manipulators\SymbolicExpressionTreeManipulator.cs" />
+    <Compile Include="AntInterpreter.cs" />
+    <Compile Include="ArtificialAntProblem.cs" />
+    <Compile Include="AntTrail.cs" />
     <Compile Include="Plugin.cs" />
-    <Compile Include="Grammars\SymbolicExpressionGrammarBase.cs" />
-    <Compile Include="Grammars\SymbolicExpressionGrammar.cs" />
-    <Compile Include="Grammars\SymbolicExpressionTreeGrammar.cs" />
-    <Compile Include="SymbolicExpressionTreeEncoding.cs" />
-    <Compile Include="SymbolicExpressionTreeTopLevelNode.cs" />
-    <Compile Include="Crossovers\SubtreeCrossover.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="SymbolicExpressionTreeOperator.cs" />
-    <Compile Include="SymbolicExpressionTreeTerminalNode.cs" />
-    <Compile Include="Creators\ProbabilisticTreeCreator.cs" />
-    <Compile Include="Interfaces\Operators\ISymbolicExpressionTreeOperator.cs" />
-    <Compile Include="SymbolicExpressionTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SymbolicExpressionTreeNode.cs" />
-    <Compile Include="Symbols\Argument.cs" />
-    <Compile Include="Symbols\ArgumentTreeNode.cs" />
-    <Compile Include="Symbols\GroupSymbol.cs" />
-    <Compile Include="Symbols\SimpleSymbol.cs" />
-    <Compile Include="Symbols\StartSymbol.cs" />
-    <Compile Include="Symbols\InvokeFunction.cs" />
-    <Compile Include="Symbols\InvokeFunctionTreeNode.cs" />
-    <Compile Include="Symbols\DefunTreeNode.cs" />
-    <Compile Include="Symbols\Defun.cs" />
-    <Compile Include="Symbols\ProgramRootSymbol.cs" />
-    <Compile Include="Symbols\Symbol.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />
@@ -208,11 +117,6 @@
     <None Include="Properties\AssemblyInfo.cs.frame" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
-      <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
-      <Name>HeuristicLab.Analysis-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958B43BC-CC5C-4FA2-8628-2B3B01D890B6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
@@ -238,14 +142,14 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
+      <Project>{06D4A186-9319-48A0-BADE-A2058D462EEA}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23DA7FF4-D5B8-41B6-AA96-F0561D24F3EE}</Project>
       <Name>HeuristicLab.Operators-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Optimization.Operators\3.3\HeuristicLab.Optimization.Operators-3.3.csproj">
-      <Project>{25087811-F74C-4128-BC86-8324271DA13E}</Project>
-      <Name>HeuristicLab.Optimization.Operators-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
@@ -266,11 +170,6 @@
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186A6A-5176-4402-AE83-886557B53CCA}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
-      <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

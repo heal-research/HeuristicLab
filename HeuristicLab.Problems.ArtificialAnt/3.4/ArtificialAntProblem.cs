@@ -34,7 +34,6 @@ using HeuristicLab.Problems.ArtificialAnt.Analyzers;
 
 namespace HeuristicLab.Problems.ArtificialAnt {
   [Item("Artificial Ant Problem", "Represents the Artificial Ant problem.")]
-  [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
   [StorableClass]
   public sealed class ArtificialAntProblem : SingleObjectiveHeuristicOptimizationProblem<Evaluator, ISymbolicExpressionTreeCreator>, IStorableContent {
     public string Filename { get; set; }
