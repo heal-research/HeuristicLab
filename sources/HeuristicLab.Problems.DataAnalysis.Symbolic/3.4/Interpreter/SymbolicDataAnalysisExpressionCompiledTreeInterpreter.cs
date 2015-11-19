@@ -45,9 +45,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     private static readonly MethodInfo Tan = typeof(Math).GetMethod("Tan", new[] { typeof(double) });
     private static readonly MethodInfo Sqrt = typeof(Math).GetMethod("Sqrt", new[] { typeof(double) });
     private static readonly MethodInfo Floor = typeof(Math).GetMethod("Floor", new[] { typeof(double) });
+    private static readonly MethodInfo Round = typeof(Math).GetMethod("Round", new[] { typeof(double) });
     private static readonly MethodInfo Exp = typeof(Math).GetMethod("Exp", new[] { typeof(double) });
     private static readonly MethodInfo Log = typeof(Math).GetMethod("Log", new[] { typeof(double) });
     private static readonly MethodInfo IsNaN = typeof(double).GetMethod("IsNaN");
+    private static readonly MethodInfo IsAlmost = typeof(DoubleExtensions).GetMethod("IsAlmost");
     private static readonly MethodInfo Gamma = typeof(alglib).GetMethod("gammafunction", new[] { typeof(double) });
     private static readonly MethodInfo Psi = typeof(alglib).GetMethod("psi", new[] { typeof(double) });
     private static readonly MethodInfo DawsonIntegral = typeof(alglib).GetMethod("dawsonintegral", new[] { typeof(double) });
@@ -158,8 +160,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var variableName = variableTreeNode.VariableName;
             var indexExpr = Expression.Constant(variableIndices[variableName]);
             var valuesExpr = Expression.ArrayIndex(columns, indexExpr);
-            var variableValue = Expression.Property(valuesExpr, Indexer, row);
-            return Expression.Multiply(variableWeight, variableValue);
+            return Expression.Multiply(variableWeight, Expression.Property(valuesExpr, Indexer, row));
           }
         case OpCodes.Add: {
             Expression result = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
@@ -214,12 +215,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.Square: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
-            return Expression.Power(arg, Expression.Constant(2));
+            return Expression.Power(arg, Expression.Constant(2.0));
           }
         case OpCodes.Power: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var power = MakeExpr(node.GetSubtree(1), variableIndices, row, columns);
-            return Expression.Power(arg, Expression.Call(Floor, power));
+            return Expression.Power(arg, Expression.Call(Round, power));
           }
         case OpCodes.SquareRoot: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
@@ -228,7 +229,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Root: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var power = MakeExpr(node.GetSubtree(1), variableIndices, row, columns);
-            return Expression.Power(arg, Expression.Divide(Expression.Constant(1.0), power));
+            return Expression.Power(arg, Expression.Divide(Expression.Constant(1.0), Expression.Call(Round, power)));
           }
         case OpCodes.Exp: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
@@ -268,8 +269,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                 isNaN,
                 Expression.Assign(result, Expression.Constant(double.NaN)),
                 Expression.IfThenElse(
-                  Expression.AndAlso(Expression.LessThanOrEqual(arg, Expression.Constant(0.0)),
-                    Expression.Equal(Expression.Subtract(floor, arg), Expression.Constant(0.0))),
+                  Expression.AndAlso(
+                    Expression.LessThanOrEqual(arg, Expression.Constant(0.0)),
+                    Expression.Call(IsAlmost, Expression.Subtract(floor, arg), Expression.Constant(0.0))),
                   Expression.Assign(result, Expression.Constant(double.NaN)),
                   Expression.Assign(result, psi))
                 ),
@@ -296,8 +298,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.ExponentialIntegralEi: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var isNaN = Expression.Call(IsNaN, arg);
-            var expIntegrapEi =
-              Expression.Call(ExponentialIntegralEi, arg);
+            var expIntegrapEi = Expression.Call(ExponentialIntegralEi, arg);
             var result = Expression.Variable(typeof(double));
             var expr = Expression.Block(
               new[] { result },
@@ -356,10 +357,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var isNaN = Expression.Call(IsNaN, arg);
             var shi = Expression.Variable(typeof(double));
             var chi = Expression.Variable(typeof(double));
-            var hypSinCosIntegrals = Expression.Call(HyperbolicSineCosineIntegrals, arg, shi, chi);
             var block = Expression.Block(
               new[] { shi, chi },
-              hypSinCosIntegrals,
+              Expression.Call(HyperbolicSineCosineIntegrals, arg, shi, chi),
               shi
               );
             var result = Expression.Variable(typeof(double));
@@ -377,10 +377,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var isNaN = Expression.Call(IsNaN, arg);
             var shi = Expression.Variable(typeof(double));
             var chi = Expression.Variable(typeof(double));
-            var hypSinCosIntegrals = Expression.Call(HyperbolicSineCosineIntegrals, arg, shi, chi);
             var block = Expression.Block(
               new[] { shi, chi },
-              hypSinCosIntegrals,
+              Expression.Call(HyperbolicSineCosineIntegrals, arg, shi, chi),
               chi
               );
             var result = Expression.Variable(typeof(double));
@@ -469,40 +468,37 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var isNaN = Expression.Call(IsNaN, arg);
             var result = Expression.Variable(typeof(double));
-            var norm = Expression.Call(NormalDistribution, arg);
-
-            var expr = Expression.Block(new[] { result },
-              Expression.IfThenElse(isNaN, Expression.Assign(result, Expression.Constant(double.NaN)),
-                Expression.Assign(result, norm)), result);
-
-            return expr;
+            return Expression.Block(
+              new[] { result },
+              Expression.IfThenElse(
+                isNaN,
+                Expression.Assign(result, Expression.Constant(double.NaN)),
+                Expression.Assign(result, Expression.Call(NormalDistribution, arg))),
+              result);
           }
         case OpCodes.Erf: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var isNaN = Expression.Call(IsNaN, arg);
             var result = Expression.Variable(typeof(double));
-            var erf = Expression.Call(ErrorFunction, arg);
-
-            var expr = Expression.Block(new[] { result },
-              Expression.IfThenElse(isNaN, Expression.Assign(result, Expression.Constant(double.NaN)),
-                Expression.Assign(result, erf)), result);
-
-            return expr;
+            return Expression.Block(
+              new[] { result },
+              Expression.IfThenElse(
+                isNaN,
+                Expression.Assign(result, Expression.Constant(double.NaN)),
+                Expression.Assign(result, Expression.Call(ErrorFunction, arg))),
+              result);
           }
         case OpCodes.Bessel: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var isNaN = Expression.Call(IsNaN, arg);
             var result = Expression.Variable(typeof(double));
-            var bessel = Expression.Call(Bessel, arg);
-            var expr = Expression.Block(
+            return Expression.Block(
               new[] { result },
               Expression.IfThenElse(
                 isNaN,
                 Expression.Assign(result, Expression.Constant(double.NaN)),
-                Expression.Assign(result, bessel)),
+                Expression.Assign(result, Expression.Call(Bessel, arg))),
               result);
-
-            return expr;
           }
         case OpCodes.IfThenElse: {
             var test = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
@@ -627,7 +623,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var variableName = variableConditionTreeNode.VariableName;
             var indexExpr = Expression.Constant(variableIndices[variableName]);
             var valuesExpr = Expression.ArrayIndex(columns, indexExpr);
-            var variableValue = Expression.ArrayIndex(valuesExpr, row);
+            var variableValue = Expression.Property(valuesExpr, Indexer, row);
             var variableThreshold = Expression.Constant(variableConditionTreeNode.Threshold);
             var variableSlope = Expression.Constant(variableConditionTreeNode.Slope);
 
@@ -642,58 +638,10 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Expression.Multiply(falseBranch, Expression.Subtract(Expression.Constant(1), p))
               );
           }
-        case OpCodes.LagVariable: {
-            var laggedVariableTreeNode = (LaggedVariableTreeNode)node;
-            var lag = Expression.Constant(laggedVariableTreeNode.Lag);
-            var variableWeight = Expression.Constant(laggedVariableTreeNode.Weight);
-            var variableName = laggedVariableTreeNode.VariableName;
-            var indexExpr = Expression.Constant(variableIndices[variableName]);
-            var valuesExpr = Expression.ArrayIndex(columns, indexExpr);
-            var variableValue = Expression.Property(valuesExpr, Indexer, Expression.Add(row, lag));
-            return Expression.Multiply(variableWeight, variableValue);
-          }
-        case OpCodes.TimeLag: {
-            var timeLagTreeNode = (LaggedTreeNode)node;
-            var lag = Expression.Constant(timeLagTreeNode.Lag);
-            return MakeExpr(timeLagTreeNode.GetSubtree(0), variableIndices, Expression.Add(row, lag), columns);
-          }
-        case OpCodes.Integral: {
-            var timeLagTreeNode = (LaggedTreeNode)node;
-            var subtree = node.GetSubtree(0);
-            var sum = MakeExpr(subtree, variableIndices, row, columns);
-            var sign = Expression.Constant(Math.Sign(timeLagTreeNode.Lag));
-            var lag = Expression.Add(row, sign);
-            for (int i = 0; i < Math.Abs(timeLagTreeNode.Lag); ++i) {
-              sum = Expression.Add(sum, MakeExpr(subtree, variableIndices, lag, columns));
-              lag = Expression.Add(lag, sign);
-            }
-            return sum;
-          }
-        case OpCodes.Derivative: {
-            var subtree = node.GetSubtree(0);
-            var f0 = MakeExpr(subtree, variableIndices, row, columns);
-            var f1 = MakeExpr(subtree, variableIndices, Expression.Subtract(row, Expression.Constant(1)), columns);
-            var f3 = MakeExpr(subtree, variableIndices, Expression.Subtract(row, Expression.Constant(3)), columns);
-            var f4 = MakeExpr(subtree, variableIndices, Expression.Subtract(row, Expression.Constant(4)), columns);
-
-            var result = f0;
-            result = Expression.Add(result, Expression.Multiply(Expression.Constant(2.0), f1));
-            result = Expression.Subtract(result, Expression.Multiply(Expression.Constant(2.0), f3));
-            result = Expression.Subtract(result, f4);
-            return Expression.Divide(result, Expression.Constant(8.0));
-          }
         default:
           throw new NotSupportedException("Unsupported symbol: " + node.Symbol);
       }
       #endregion
-    }
-    // util stuff
-    private static Func<T, R> GetField<T, R>(string fieldName) {
-      ParameterExpression param = Expression.Parameter(typeof(T), "arg");
-      MemberExpression member = Expression.Field(param, fieldName);
-      LambdaExpression lambda = Expression.Lambda(typeof(Func<T, R>), member, param);
-      Func<T, R> compiled = (Func<T, R>)lambda.Compile();
-      return compiled;
     }
   }
 }
