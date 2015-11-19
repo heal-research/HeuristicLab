@@ -132,12 +132,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     }
 
     public static Func<int, IList<double>[], double> CompileTree(ISymbolicExpressionTree tree, IDataset dataset) {
+      var lambda = CreateDelegate(tree, dataset);
+      return lambda.Compile();
+    }
+
+    public static Expression<Func<int, IList<double>[], double>> CreateDelegate(ISymbolicExpressionTree tree, IDataset dataset) {
       var row = Expression.Parameter(typeof(int));
       var columns = Expression.Parameter(typeof(IList<double>[]));
       var variableIndices = dataset.DoubleVariables.Select((x, i) => new { x, i }).ToDictionary(e => e.x, e => e.i);
       var expr = MakeExpr(tree, variableIndices, row, columns);
       var lambda = Expression.Lambda<Func<int, IList<double>[], double>>(expr, row, columns);
-      return lambda.Compile();
+      return lambda;
     }
 
     private static Expression MakeExpr(ISymbolicExpressionTree tree, Dictionary<string, int> variableIndices, Expression row, Expression columns) {
@@ -242,7 +247,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Gamma: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var isNaN = Expression.Call(IsNaN, arg);
-            var gamma = Expression.Call(Gamma, arg);
 
             var result = Expression.Variable(typeof(double));
             var expr = Expression.Block(
@@ -250,7 +254,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
               Expression.IfThenElse(
                 isNaN,
                 Expression.Assign(result, Expression.Constant(double.NaN)),
-                Expression.Assign(result, gamma)
+                Expression.Assign(result, Expression.Call(Gamma, arg))
                 ),
               result
               );
@@ -259,7 +263,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Psi: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var isNaN = Expression.Call(IsNaN, arg);
-            var psi = Expression.Call(Psi, arg);
 
             var result = Expression.Variable(typeof(double));
             var floor = Expression.Call(Floor, arg);
@@ -273,7 +276,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                     Expression.LessThanOrEqual(arg, Expression.Constant(0.0)),
                     Expression.Call(IsAlmost, Expression.Subtract(floor, arg), Expression.Constant(0.0))),
                   Expression.Assign(result, Expression.Constant(double.NaN)),
-                  Expression.Assign(result, psi))
+                  Expression.Assign(result, Expression.Call(Psi, arg)))
                 ),
               result);
 
@@ -282,14 +285,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.Dawson: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var isNaN = Expression.Call(IsNaN, arg);
-            var exprDawsonIntegral = Expression.Call(DawsonIntegral, arg);
             var result = Expression.Variable(typeof(double));
-
             var expr = Expression.Block(
               new[] { result },
               Expression.IfThenElse(isNaN,
                 Expression.Assign(result, Expression.Constant(double.NaN)),
-                Expression.Assign(result, exprDawsonIntegral)),
+                Expression.Assign(result, Expression.Call(DawsonIntegral, arg))),
               result
               );
 
@@ -298,13 +299,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         case OpCodes.ExponentialIntegralEi: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
             var isNaN = Expression.Call(IsNaN, arg);
-            var expIntegrapEi = Expression.Call(ExponentialIntegralEi, arg);
             var result = Expression.Variable(typeof(double));
             var expr = Expression.Block(
               new[] { result },
               Expression.IfThenElse(isNaN,
                 Expression.Assign(result, Expression.Constant(double.NaN)),
-                Expression.Assign(result, expIntegrapEi)),
+                Expression.Assign(result, Expression.Call(ExponentialIntegralEi, arg))),
               result
               );
 
@@ -315,10 +315,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var isNaN = Expression.Call(IsNaN, arg);
             var si = Expression.Variable(typeof(double));
             var ci = Expression.Variable(typeof(double));
-            var sinCosIntegrals = Expression.Call(SineCosineIntegrals, arg, si, ci);
             var block = Expression.Block(
               new[] { si, ci },
-              sinCosIntegrals,
+              Expression.Call(SineCosineIntegrals, arg, si, ci),
               si
               );
             var result = Expression.Variable(typeof(double));
@@ -336,10 +335,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var isNaN = Expression.Call(IsNaN, arg);
             var si = Expression.Variable(typeof(double));
             var ci = Expression.Variable(typeof(double));
-            var sinCosIntegrals = Expression.Call(SineCosineIntegrals, arg, si, ci);
             var block = Expression.Block(
               new[] { si, ci },
-              sinCosIntegrals,
+              Expression.Call(SineCosineIntegrals, arg, si, ci),
               ci
               );
             var result = Expression.Variable(typeof(double));
@@ -397,8 +395,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var isNaN = Expression.Call(IsNaN, arg);
             var s = Expression.Variable(typeof(double));
             var c = Expression.Variable(typeof(double));
-            var fresnel = Expression.Call(FresnelIntegral, arg, c, s);
-            var block = Expression.Block(new[] { s, c }, fresnel, s);
+            var block = Expression.Block(new[] { s, c }, Expression.Call(FresnelIntegral, arg, c, s), s);
             var result = Expression.Variable(typeof(double));
             var expr = Expression.Block(new[] { result },
               Expression.IfThenElse(isNaN,
@@ -414,8 +411,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var isNaN = Expression.Call(IsNaN, arg);
             var s = Expression.Variable(typeof(double));
             var c = Expression.Variable(typeof(double));
-            var fresnel = Expression.Call(FresnelIntegral, arg, c, s);
-            var block = Expression.Block(new[] { s, c }, fresnel, c);
+            var block = Expression.Block(new[] { s, c }, Expression.Call(FresnelIntegral, arg, c, s), c);
             var result = Expression.Variable(typeof(double));
             var expr = Expression.Block(new[] { result },
               Expression.IfThenElse(isNaN,
@@ -433,8 +429,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var aip = Expression.Variable(typeof(double));
             var bi = Expression.Variable(typeof(double));
             var bip = Expression.Variable(typeof(double));
-            var airy = Expression.Call(Airy, arg, ai, aip, bi, bip);
-            var block = Expression.Block(new[] { ai, aip, bi, bip }, airy, ai);
+            var block = Expression.Block(new[] { ai, aip, bi, bip }, Expression.Call(Airy, arg, ai, aip, bi, bip), ai);
             var result = Expression.Variable(typeof(double));
             var expr = Expression.Block(new[] { result },
               Expression.IfThenElse(isNaN,
@@ -452,8 +447,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
             var aip = Expression.Variable(typeof(double));
             var bi = Expression.Variable(typeof(double));
             var bip = Expression.Variable(typeof(double));
-            var airy = Expression.Call(Airy, arg, ai, aip, bi, bip);
-            var block = Expression.Block(new[] { ai, aip, bi, bip }, airy, bi);
+            var block = Expression.Block(new[] { ai, aip, bi, bip }, Expression.Call(Airy, arg, ai, aip, bi, bip), bi);
             var result = Expression.Variable(typeof(double));
             var expr = Expression.Block(new[] { result },
               Expression.IfThenElse(isNaN,
@@ -466,13 +460,12 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
           }
         case OpCodes.Norm: {
             var arg = MakeExpr(node.GetSubtree(0), variableIndices, row, columns);
-            var isNaN = Expression.Call(IsNaN, arg);
             var result = Expression.Variable(typeof(double));
             return Expression.Block(
               new[] { result },
               Expression.IfThenElse(
-                isNaN,
-                Expression.Assign(result, Expression.Constant(double.NaN)),
+                Expression.Call(IsNaN, arg),
+                Expression.Assign(result, arg),
                 Expression.Assign(result, Expression.Call(NormalDistribution, arg))),
               result);
           }
