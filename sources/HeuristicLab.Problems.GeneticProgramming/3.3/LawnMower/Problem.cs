@@ -49,6 +49,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
       get { return true; }
     }
 
+    #region item cloning and persistence
     [StorableConstructor]
     protected Problem(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
@@ -58,6 +59,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.LawnMower {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Problem(this, cloner);
     }
+    #endregion
 
     public Problem()
       : base() {

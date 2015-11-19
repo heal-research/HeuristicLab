@@ -38,12 +38,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
   public sealed class Problem : SymbolicExpressionTreeProblem, IRegressionProblem, IProblemInstanceConsumer<IRegressionProblemData>, IProblemInstanceExporter<IRegressionProblemData> {
 
     #region parameter names
-
     private const string ProblemDataParameterName = "ProblemData";
-
     #endregion
-
-    public event EventHandler ProblemDataChanged;
 
     #region Parameter Properties
     IParameter IDataAnalysisProblem.ProblemDataParameter { get { return ProblemDataParameter; } }
@@ -51,23 +47,38 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
     public IValueParameter<IRegressionProblemData> ProblemDataParameter {
       get { return (IValueParameter<IRegressionProblemData>)Parameters[ProblemDataParameterName]; }
     }
-
     #endregion
 
     #region Properties
-
     public IRegressionProblemData ProblemData {
       get { return ProblemDataParameter.Value; }
       set { ProblemDataParameter.Value = value; }
     }
     IDataAnalysisProblemData IDataAnalysisProblem.ProblemData { get { return ProblemData; } }
-
-
     #endregion
+
+    public event EventHandler ProblemDataChanged;
 
     public override bool Maximization {
       get { return true; }
     }
+
+    #region item cloning and persistence
+    // persistence
+    [StorableConstructor]
+    private Problem(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    // cloning 
+    private Problem(Problem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) { return new Problem(this, cloner); }
+    #endregion
 
     public Problem()
       : base() {
@@ -101,10 +112,10 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
       // skip programRoot and startSymbol
       return InterpretRec(tree.Root.GetSubtree(0).GetSubtree(0), dataset, rows);
     }
-                                                                                                       
+
     private IEnumerable<double> InterpretRec(ISymbolicExpressionTreeNode node, IDataset dataset, IEnumerable<int> rows) {
       Func<ISymbolicExpressionTreeNode, ISymbolicExpressionTreeNode, Func<double, double, double>, IEnumerable<double>> binaryEval =
-        (left, right, f) => InterpretRec(left, dataset,rows).Zip(InterpretRec(right, dataset, rows), f);
+        (left, right, f) => InterpretRec(left, dataset, rows).Zip(InterpretRec(right, dataset, rows), f);
 
       switch (node.Symbol.Name) {
         case "+": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x + y);
@@ -123,28 +134,8 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
       }
     }
 
-    #region item cloning and persistence
-    // persistence
-    [StorableConstructor]
-    private Problem(bool deserializing) : base(deserializing) { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEventHandlers();
-    }
-
-    // cloning 
-    private Problem(Problem original, Cloner cloner)
-      : base(original, cloner) {
-      RegisterEventHandlers();
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Problem(this, cloner);
-    }
-    #endregion
 
     #region events
-
     private void RegisterEventHandlers() {
       ProblemDataParameter.ValueChanged += new EventHandler(ProblemDataParameter_ValueChanged);
       if (ProblemDataParameter.Value != null) ProblemDataParameter.Value.Changed += new EventHandler(ProblemData_Changed);
@@ -187,7 +178,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.BasicSymbolicRegression {
 
       Encoding.Grammar = g;
     }
-
     #endregion
 
     #region Import & Export

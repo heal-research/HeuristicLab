@@ -57,6 +57,25 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
       get { return true; }
     }
 
+    #region item cloning and persistence
+    // persistence
+    [StorableConstructor]
+    private EvenParityProblem(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    // cloning 
+    private EvenParityProblem(EvenParityProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new EvenParityProblem(this, cloner);
+    }
+    #endregion
+
     public EvenParityProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(NumberOfBitsParameterName, "The number of bits for the input parameter for the even parity function", new IntValue(4)));
@@ -108,10 +127,10 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
         (left, right, f) => InterpretRec(left, bs).Zip(InterpretRec(right, bs), f);
 
       switch (node.Symbol.Name) {
-        case "AND":  return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x & y);
-        case "OR":   return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x | y);
+        case "AND": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x & y);
+        case "OR": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x | y);
         case "NAND": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => !(x & y));
-        case "NOR":  return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => !(x | y));
+        case "NOR": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => !(x | y));
         default: {
             byte bitPos;
             if (byte.TryParse(node.Symbol.Name, out bitPos)) {
@@ -124,26 +143,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     private static bool GetBits(int b, byte bitPos) {
       return (b & (1 << bitPos)) != 0;
     }
-
-    #region item cloning and persistence
-    // persistence
-    [StorableConstructor]
-    private EvenParityProblem(bool deserializing) : base(deserializing) { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEventHandlers();
-    }
-
-    // cloning 
-    private EvenParityProblem(EvenParityProblem original, Cloner cloner)
-      : base(original, cloner) {
-      RegisterEventHandlers();
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new EvenParityProblem(this, cloner);
-    }
-    #endregion
 
     #region events
     private void RegisterEventHandlers() {

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -53,6 +52,7 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       this.Quality = quality;
     }
 
+    #region item cloning and persistence
     [StorableConstructor]
     private Solution(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
@@ -69,5 +69,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new Solution(this, cloner);
     }
+    #endregion
   }
 }

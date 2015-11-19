@@ -21,7 +21,6 @@
 
 using System;
 using System.Diagnostics.Contracts;
-using System.Drawing.Text;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -102,6 +101,20 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       get { return true; }
     }
 
+    #region item cloning and persistence
+    // persistence
+    [StorableConstructor]
+    private Problem(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() { }
+
+    // cloning 
+    private Problem(Problem original, Cloner cloner) : base(original, cloner) { }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new Problem(this, cloner);
+    }
+    #endregion
+
     public Problem()
       : base() {
       BoolMatrix world = new BoolMatrix(ToBoolMatrix(santaFeAntTrail));
@@ -133,21 +146,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.ArtificialAnt {
       } else if (((Solution)(results[bestSolutionResultName].Value)).Quality < qualities[bestIdx]) {
         results[bestSolutionResultName].Value = new Solution(World, trees[bestIdx], MaxTimeSteps.Value, qualities[bestIdx]);
       }
-    }
-
-    // persistence
-    [StorableConstructor]
-    private Problem(bool deserializing) : base(deserializing) { }
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-    }
-
-    // cloning 
-    private Problem(Problem original, Cloner cloner)
-      : base(original, cloner) {
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new Problem(this, cloner);
     }
 
     #region helpers

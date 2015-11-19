@@ -59,6 +59,26 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
       get { return true; }
     }
 
+    #region item cloning and persistence
+    // persistence
+    [StorableConstructor]
+    private MultiplexerProblem(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
+    // cloning 
+    private MultiplexerProblem(MultiplexerProblem original, Cloner cloner)
+      : base(original, cloner) {
+      RegisterEventHandlers();
+    }
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiplexerProblem(this, cloner);
+    }
+    #endregion
+
+
     public MultiplexerProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<IntValue>(NumberOfBitsParameterName,
@@ -133,9 +153,9 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
 
       switch (node.Symbol.Name) {
         case "AND": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x & y);
-        case "OR":  return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x | y);
+        case "OR": return binaryEval(node.GetSubtree(0), node.GetSubtree(1), (x, y) => x | y);
         case "NOT": return unaryEval(node.GetSubtree(0), (x) => !x);
-        case "IF":  return EvalIf(node.GetSubtree(0), node.GetSubtree(1), node.GetSubtree(2), bs, addrBits);
+        case "IF": return EvalIf(node.GetSubtree(0), node.GetSubtree(1), node.GetSubtree(2), bs, addrBits);
         default: {
             if (node.Symbol.Name[0] == 'a') {
               byte bitPos;
@@ -169,26 +189,6 @@ namespace HeuristicLab.Problems.GeneticProgramming.Boolean {
     private static bool GetBits(int b, byte bitPos) {
       return (b & (1 << bitPos)) != 0;
     }
-
-    #region item cloning and persistence
-    // persistence
-    [StorableConstructor]
-    private MultiplexerProblem(bool deserializing) : base(deserializing) { }
-
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      RegisterEventHandlers();
-    }
-
-    // cloning 
-    private MultiplexerProblem(MultiplexerProblem original, Cloner cloner)
-      : base(original, cloner) {
-      RegisterEventHandlers();
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiplexerProblem(this, cloner);
-    }
-    #endregion
 
     #region events
     private void RegisterEventHandlers() {
