@@ -113,23 +113,23 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
       List<double[]> qualities = Qualities.Select(x => x.ToArray()).ToList();
       bool[] maximization = Maximization.ToArray();
 
-      var nonDominatedInvididuals = new[] { new { Tree = default(ISymbolicExpressionTree), Qualities = default(double[]) } }.ToList();
-      nonDominatedInvididuals.Clear();
+      var nonDominatedIndividuals = new[] { new { Tree = default(ISymbolicExpressionTree), Qualities = default(double[]) } }.ToList();
+      nonDominatedIndividuals.Clear();
 
       // build list of new non-dominated solutions
       for (int i = 0; i < trees.Length; i++) {
-        if (IsNonDominated(qualities[i], nonDominatedInvididuals.Select(ind => ind.Qualities), maximization) &&
+        if (IsNonDominated(qualities[i], nonDominatedIndividuals.Select(ind => ind.Qualities), maximization) &&
             IsNonDominated(qualities[i], trainingBestQualities, maximization)) {
-          for (int j = nonDominatedInvididuals.Count - 1; j >= 0; j--) {
-            if (IsBetterOrEqual(qualities[i], nonDominatedInvididuals[j].Qualities, maximization)) {
-              nonDominatedInvididuals.RemoveAt(j);
+          for (int j = nonDominatedIndividuals.Count - 1; j >= 0; j--) {
+            if (IsBetterOrEqual(qualities[i], nonDominatedIndividuals[j].Qualities, maximization)) {
+              nonDominatedIndividuals.RemoveAt(j);
             }
           }
-          nonDominatedInvididuals.Add(new { Tree = trees[i], Qualities = qualities[i] });
+          nonDominatedIndividuals.Add(new { Tree = trees[i], Qualities = qualities[i] });
         }
       }
 
-      var nonDominatedSolutions = nonDominatedInvididuals.Select(x => new { Solution = CreateSolution(x.Tree, x.Qualities), Qualities = x.Qualities }).ToList();
+      var nonDominatedSolutions = nonDominatedIndividuals.Select(x => new { Solution = CreateSolution(x.Tree, x.Qualities), Qualities = x.Qualities }).ToList();
       nonDominatedSolutions.ForEach(s => s.Solution.Name = string.Join(",", s.Qualities.Select(q => q.ToString())));
 
       #region update Pareto-optimal solution archive
