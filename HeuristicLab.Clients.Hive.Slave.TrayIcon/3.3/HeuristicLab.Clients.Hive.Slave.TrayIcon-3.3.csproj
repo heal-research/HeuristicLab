@@ -126,12 +126,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
-    <Compile Include="TrayIconInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="TrayIconInstaller.Designer.cs">
-      <DependentUpon>TrayIconInstaller.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
