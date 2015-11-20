@@ -22,7 +22,7 @@
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
-  [Plugin("HeuristicLab.Encodings.ScheduleEncoding.Views", "3.3.12.$WCREV$")]
+  [Plugin("HeuristicLab.Encodings.ScheduleEncoding.Views", "3.3.13.$WCREV$")]
   [PluginFile("HeuristicLab.Encodings.ScheduleEncoding.Views-3.3.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
