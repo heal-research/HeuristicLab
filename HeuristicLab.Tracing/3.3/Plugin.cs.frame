@@ -26,7 +26,7 @@ namespace HeuristicLab.Tracing {
   /// <summary>
   /// HeuristicLab Tracing Plugin
   /// </summary>  
-  [Plugin("HeuristicLab.Tracing", "3.3.12.$WCREV$")]
+  [Plugin("HeuristicLab.Tracing", "3.3.13.$WCREV$")]
   [PluginFile("HeuristicLab.Tracing-3.3.dll", PluginFileType.Assembly)]
   public class HeuristicLabPersistencePlugin : PluginBase {}
 

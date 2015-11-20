@@ -25,7 +25,7 @@ namespace HeuristicLab.Problems.VehicleRouting {
   /// <summary>
   /// Plugin class for HeuristicLab.Problems.VehicleRouting plugin
   /// </summary>
-  [Plugin("HeuristicLab.Problems.VehicleRouting", "3.4.5.$WCREV$")]
+  [Plugin("HeuristicLab.Problems.VehicleRouting", "3.4.6.$WCREV$")]
   [PluginFile("HeuristicLab.Problems.VehicleRouting-3.4.dll", PluginFileType.Assembly)]
   [PluginDependency("HeuristicLab.Analysis", "3.3")]
   [PluginDependency("HeuristicLab.Collections", "3.3")]
