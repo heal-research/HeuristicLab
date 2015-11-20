@@ -97,16 +97,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void ILEmittingInterpreterTestFullGrammarPerformance() {
-      TestFullGrammarPerformance(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
-    }
-    [TestMethod]
-    [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "long")]
     public void ILEmittingInterpreterTestArithmeticGrammarPerformance() {
       TestArithmeticGrammarPerformance(new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter(), 7.5e6);
     }
-
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
@@ -183,16 +176,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var interpreter = new SymbolicDataAnalysisExpressionTreeInterpreter();
       EvaluateTerminals(interpreter, ds);
       EvaluateOperations(interpreter, ds);
+      EvaluateLaggedOperations(interpreter, ds);
+      EvaluateSpecialFunctions(interpreter, ds);
       EvaluateAdf(interpreter, ds);
-    }
-
-    [TestMethod]
-    [TestCategory("Problems.DataAnalysis.Symbolic")]
-    [TestProperty("Time", "short")]
-    public void ILEmittingInterpreterTestEvaluation() {
-      var interpreter = new SymbolicDataAnalysisExpressionTreeILEmittingInterpreter();
-      EvaluateTerminals(interpreter, ds);
-      EvaluateOperations(interpreter, ds);
     }
 
     [TestMethod]
@@ -203,6 +189,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       // ADFs are not supported by the compiled tree interpreter
       EvaluateTerminals(interpreter, ds);
       EvaluateOperations(interpreter, ds);
+      EvaluateSpecialFunctions(interpreter, ds);
     }
 
     [TestMethod]
@@ -213,12 +200,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       //ADFs are not supported by the linear interpreter
       EvaluateTerminals(interpreter, ds);
       EvaluateOperations(interpreter, ds);
+      EvaluateLaggedOperations(interpreter, ds);
+      EvaluateSpecialFunctions(interpreter, ds);
     }
 
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void TestInterpreterEvaluationResults() {
+    public void TestInterpretersEstimatedValuesConsistency() {
       var twister = new MersenneTwister();
       int seed = twister.Next(0, int.MaxValue);
       twister.Seed((uint)seed);
@@ -257,8 +246,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
     [TestMethod]
     [TestCategory("Problems.DataAnalysis.Symbolic")]
     [TestProperty("Time", "long")]
-    public void TestCompiledInterpreterEvaluationResults() {
-      const double delta = 1e-10;
+    public void TestCompiledInterpreterEstimatedValuesConsistency() {
+      const double delta = 1e-12;
 
       var twister = new MersenneTwister();
       int seed = twister.Next(0, int.MaxValue);
@@ -270,8 +259,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var dataset = Util.CreateRandomDataset(twister, numRows, Columns);
 
       var grammar = new TypeCoherentExpressionGrammar();
-      var hash = new HashSet<Type>(new[] { typeof(LaggedSymbol), typeof(LaggedVariable), typeof(TimeLag), typeof(Derivative), typeof(Integral), typeof(AutoregressiveTargetVariable) });
-      foreach (var symbol in grammar.Symbols.Where(x => hash.Contains(x.GetType()))) symbol.Enabled = false;
+      grammar.ConfigureAsDefaultRegressionGrammar();
       var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 10, 0, 0);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
@@ -280,22 +268,14 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       var interpreters = new ISymbolicDataAnalysisExpressionTreeInterpreter[] {
         new SymbolicDataAnalysisExpressionCompiledTreeInterpreter(),
         new SymbolicDataAnalysisExpressionTreeInterpreter(),
+        new SymbolicDataAnalysisExpressionTreeLinearInterpreter(),
       };
       var rows = Enumerable.Range(0, numRows).ToList();
       var formatter = new SymbolicExpressionTreeHierarchicalFormatter();
 
       for (int i = 0; i < randomTrees.Length; ++i) {
         var tree = randomTrees[i];
-        List<List<double>> valuesMatrix = new List<List<double>>();
-        // the try-catch block below is useful for debugging lambda expressions
-        try {
-          valuesMatrix = interpreters.Select(x => x.GetSymbolicExpressionTreeValues(tree, dataset, rows).ToList()).ToList();
-        }
-        catch (Exception e) {
-          var lambda = SymbolicDataAnalysisExpressionCompiledTreeInterpreter.CreateDelegate(tree, dataset);
-          Console.WriteLine(e.Message);
-          Console.WriteLine(lambda.ToString());
-        }
+        var valuesMatrix = interpreters.Select(x => x.GetSymbolicExpressionTreeValues(tree, dataset, rows).ToList()).ToList();
         for (int m = 0; m < interpreters.Length - 1; ++m) {
           for (int n = m + 1; n < interpreters.Length; ++n) {
             for (int row = 0; row < numRows; ++row) {
@@ -337,7 +317,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       }
     }
 
-    private void EvaluateTerminals(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds) {
+    private void EvaluateTerminals(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataset ds) {
       // constants
       Evaluate(interpreter, ds, "(+ 1.5 3.5)", 0, 5.0);
 
@@ -346,7 +326,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(variable 2.0 a)", 1, 4.0);
     }
 
-    private void EvaluateAdf(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds) {
+    private void EvaluateAdf(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataset ds) {
 
       // ADF      
       Evaluate(interpreter, ds, @"(PROG 
@@ -385,7 +365,106 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
                                          (CALL ADF0 (ARG 0) (ARG 1)))))", 1, 0.0);
     }
 
-    private void EvaluateOperations(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds) {
+    private void EvaluateSpecialFunctions(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataset ds) {
+      // special functions
+      Action<double> checkAiry = (x) => {
+        double ai, aip, bi, bip;
+        alglib.airy(x, out ai, out aip, out bi, out bip);
+        Evaluate(interpreter, ds, "(airya " + x + ")", 0, ai);
+        Evaluate(interpreter, ds, "(airyb " + x + ")", 0, bi);
+      };
+
+      Action<double> checkBessel = (x) => {
+        Evaluate(interpreter, ds, "(bessel " + x + ")", 0, alglib.besseli0(x));
+      };
+
+      Action<double> checkSinCosIntegrals = (x) => {
+        double si, ci;
+        alglib.sinecosineintegrals(x, out si, out ci);
+        Evaluate(interpreter, ds, "(cosint " + x + ")", 0, ci);
+        Evaluate(interpreter, ds, "(sinint " + x + ")", 0, si);
+      };
+      Action<double> checkHypSinCosIntegrals = (x) => {
+        double shi, chi;
+        alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
+        Evaluate(interpreter, ds, "(hypcosint " + x + ")", 0, chi);
+        Evaluate(interpreter, ds, "(hypsinint " + x + ")", 0, shi);
+      };
+      Action<double> checkFresnelSinCosIntegrals = (x) => {
+        double c = 0, s = 0;
+        alglib.fresnelintegral(x, ref c, ref s);
+        Evaluate(interpreter, ds, "(fresnelcosint " + x + ")", 0, c);
+        Evaluate(interpreter, ds, "(fresnelsinint " + x + ")", 0, s);
+      };
+      Action<double> checkNormErf = (x) => {
+        Evaluate(interpreter, ds, "(norm " + x + ")", 0, alglib.normaldistribution(x));
+        Evaluate(interpreter, ds, "(erf " + x + ")", 0, alglib.errorfunction(x));
+      };
+
+      Action<double> checkGamma = (x) => {
+        Evaluate(interpreter, ds, "(gamma " + x + ")", 0, alglib.gammafunction(x));
+      };
+      Action<double> checkPsi = (x) => {
+        try {
+          Evaluate(interpreter, ds, "(psi " + x + ")", 0, alglib.psi(x));
+        }
+        catch (alglib.alglibexception) { // ignore cases where alglib throws an exception
+        }
+      };
+      Action<double> checkDawson = (x) => {
+        Evaluate(interpreter, ds, "(dawson " + x + ")", 0, alglib.dawsonintegral(x));
+      };
+      Action<double> checkExpInt = (x) => {
+        Evaluate(interpreter, ds, "(expint " + x + ")", 0, alglib.exponentialintegralei(x));
+      };
+
+      foreach (var e in new[] { -2.0, -1.0, 0.0, 1.0, 2.0 }) {
+        checkAiry(e);
+        checkBessel(e);
+        checkSinCosIntegrals(e);
+        checkGamma(e);
+        checkExpInt(e);
+        checkDawson(e);
+        checkPsi(e);
+        checkNormErf(e);
+        checkFresnelSinCosIntegrals(e);
+        checkHypSinCosIntegrals(e);
+      }
+    }
+
+    private void EvaluateLaggedOperations(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataset ds) {
+      // lag
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 1, ds.GetDoubleValue("A", 0));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 2, ds.GetDoubleValue("A", 1));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a 0) ", 2, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a 1) ", 0, ds.GetDoubleValue("A", 1));
+
+      // integral
+      Evaluate(interpreter, ds, "(integral -1.0 (variable 1.0 a)) ", 1, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1));
+      Evaluate(interpreter, ds, "(integral -1.0 (lagVariable 1.0 a 1)) ", 1, ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(integral -2.0 (variable 1.0 a)) ", 2, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(integral -1.0 (* (variable 1.0 a) (variable 1.0 b)))", 1, ds.GetDoubleValue("A", 0) * ds.GetDoubleValue("B", 0) + ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1));
+      Evaluate(interpreter, ds, "(integral -2.0 3.0)", 1, 9.0);
+
+      // derivative
+      // (f_0 + 2 * f_1 - 2 * f_3 - f_4) / 8; // h = 1
+      Evaluate(interpreter, ds, "(diff (variable 1.0 a)) ", 5, (ds.GetDoubleValue("A", 5) + 2 * ds.GetDoubleValue("A", 4) - 2 * ds.GetDoubleValue("A", 2) - ds.GetDoubleValue("A", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff (variable 1.0 b)) ", 5, (ds.GetDoubleValue("B", 5) + 2 * ds.GetDoubleValue("B", 4) - 2 * ds.GetDoubleValue("B", 2) - ds.GetDoubleValue("B", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff (* (variable 1.0 a) (variable 1.0 b)))", 5, +
+        (ds.GetDoubleValue("A", 5) * ds.GetDoubleValue("B", 5) +
+        2 * ds.GetDoubleValue("A", 4) * ds.GetDoubleValue("B", 4) -
+        2 * ds.GetDoubleValue("A", 2) * ds.GetDoubleValue("B", 2) -
+        ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff -2.0 3.0)", 5, 0.0);
+
+      // timelag
+      Evaluate(interpreter, ds, "(lag -1.0 (lagVariable 1.0 a 2)) ", 1, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lag -2.0 (lagVariable 1.0 a 2)) ", 2, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lag -1.0 (* (lagVariable 1.0 a 1) (lagVariable 1.0 b 2)))", 1, ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 2));
+      Evaluate(interpreter, ds, "(lag -2.0 3.0)", 1, 3.0);
+    }
+
+    private void EvaluateOperations(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataset ds) {
       // addition
       Evaluate(interpreter, ds, "(+ (variable 2.0 a ))", 1, 4.0);
       Evaluate(interpreter, ds, "(+ (variable 2.0 a ) (variable 3.0 b ))", 0, 5.0);
@@ -508,108 +587,9 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       // mean
       Evaluate(interpreter, ds, "(mean -1.0 1.0 -1.0)", 0, -1.0 / 3.0);
-
-      // lag
-      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 1, ds.GetDoubleValue("A", 0));
-      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 2, ds.GetDoubleValue("A", 1));
-      Evaluate(interpreter, ds, "(lagVariable 1.0 a 0) ", 2, ds.GetDoubleValue("A", 2));
-      Evaluate(interpreter, ds, "(lagVariable 1.0 a 1) ", 0, ds.GetDoubleValue("A", 1));
-
-      // integral
-      Evaluate(interpreter, ds, "(integral -1.0 (variable 1.0 a)) ", 1, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1));
-      Evaluate(interpreter, ds, "(integral -1.0 (lagVariable 1.0 a 1)) ", 1, ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
-      Evaluate(interpreter, ds, "(integral -2.0 (variable 1.0 a)) ", 2, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
-      Evaluate(interpreter, ds, "(integral -1.0 (* (variable 1.0 a) (variable 1.0 b)))", 1, ds.GetDoubleValue("A", 0) * ds.GetDoubleValue("B", 0) + ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1));
-      Evaluate(interpreter, ds, "(integral -2.0 3.0)", 1, 9.0);
-
-      // derivative
-      // (f_0 + 2 * f_1 - 2 * f_3 - f_4) / 8; // h = 1
-      Evaluate(interpreter, ds, "(diff (variable 1.0 a)) ", 5, (ds.GetDoubleValue("A", 5) + 2 * ds.GetDoubleValue("A", 4) - 2 * ds.GetDoubleValue("A", 2) - ds.GetDoubleValue("A", 1)) / 8.0);
-      Evaluate(interpreter, ds, "(diff (variable 1.0 b)) ", 5, (ds.GetDoubleValue("B", 5) + 2 * ds.GetDoubleValue("B", 4) - 2 * ds.GetDoubleValue("B", 2) - ds.GetDoubleValue("B", 1)) / 8.0);
-      Evaluate(interpreter, ds, "(diff (* (variable 1.0 a) (variable 1.0 b)))", 5, +
-        (ds.GetDoubleValue("A", 5) * ds.GetDoubleValue("B", 5) +
-        2 * ds.GetDoubleValue("A", 4) * ds.GetDoubleValue("B", 4) -
-        2 * ds.GetDoubleValue("A", 2) * ds.GetDoubleValue("B", 2) -
-        ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1)) / 8.0);
-      Evaluate(interpreter, ds, "(diff -2.0 3.0)", 5, 0.0);
-
-      // timelag
-      Evaluate(interpreter, ds, "(lag -1.0 (lagVariable 1.0 a 2)) ", 1, ds.GetDoubleValue("A", 2));
-      Evaluate(interpreter, ds, "(lag -2.0 (lagVariable 1.0 a 2)) ", 2, ds.GetDoubleValue("A", 2));
-      Evaluate(interpreter, ds, "(lag -1.0 (* (lagVariable 1.0 a 1) (lagVariable 1.0 b 2)))", 1, ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 2));
-      Evaluate(interpreter, ds, "(lag -2.0 3.0)", 1, 3.0);
-
-      {
-        // special functions
-        Action<double> checkAiry = (x) => {
-          double ai, aip, bi, bip;
-          alglib.airy(x, out ai, out aip, out bi, out bip);
-          Evaluate(interpreter, ds, "(airya " + x + ")", 0, ai);
-          Evaluate(interpreter, ds, "(airyb " + x + ")", 0, bi);
-        };
-
-        Action<double> checkBessel = (x) => {
-          Evaluate(interpreter, ds, "(bessel " + x + ")", 0, alglib.besseli0(x));
-        };
-
-        Action<double> checkSinCosIntegrals = (x) => {
-          double si, ci;
-          alglib.sinecosineintegrals(x, out si, out ci);
-          Evaluate(interpreter, ds, "(cosint " + x + ")", 0, ci);
-          Evaluate(interpreter, ds, "(sinint " + x + ")", 0, si);
-        };
-        Action<double> checkHypSinCosIntegrals = (x) => {
-          double shi, chi;
-          alglib.hyperbolicsinecosineintegrals(x, out shi, out chi);
-          Evaluate(interpreter, ds, "(hypcosint " + x + ")", 0, chi);
-          Evaluate(interpreter, ds, "(hypsinint " + x + ")", 0, shi);
-        };
-        Action<double> checkFresnelSinCosIntegrals = (x) => {
-          double c = 0, s = 0;
-          alglib.fresnelintegral(x, ref c, ref s);
-          Evaluate(interpreter, ds, "(fresnelcosint " + x + ")", 0, c);
-          Evaluate(interpreter, ds, "(fresnelsinint " + x + ")", 0, s);
-        };
-        Action<double> checkNormErf = (x) => {
-          Evaluate(interpreter, ds, "(norm " + x + ")", 0, alglib.normaldistribution(x));
-          Evaluate(interpreter, ds, "(erf " + x + ")", 0, alglib.errorfunction(x));
-        };
-
-        Action<double> checkGamma = (x) => {
-          Evaluate(interpreter, ds, "(gamma " + x + ")", 0, alglib.gammafunction(x));
-        };
-        Action<double> checkPsi = (x) => {
-          try {
-            Evaluate(interpreter, ds, "(psi " + x + ")", 0, alglib.psi(x));
-          }
-          catch (alglib.alglibexception) { // ignore cases where alglib throws an exception
-          }
-        };
-        Action<double> checkDawson = (x) => {
-          Evaluate(interpreter, ds, "(dawson " + x + ")", 0, alglib.dawsonintegral(x));
-        };
-        Action<double> checkExpInt = (x) => {
-          Evaluate(interpreter, ds, "(expint " + x + ")", 0, alglib.exponentialintegralei(x));
-        };
-
-
-
-        foreach (var e in new[] { -2.0, -1.0, 0.0, 1.0, 2.0 }) {
-          checkAiry(e);
-          checkBessel(e);
-          checkSinCosIntegrals(e);
-          checkGamma(e);
-          checkExpInt(e);
-          checkDawson(e);
-          checkPsi(e);
-          checkNormErf(e);
-          checkFresnelSinCosIntegrals(e);
-          checkHypSinCosIntegrals(e);
-        }
-      }
     }
 
-    private void Evaluate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, Dataset ds, string expr, int index, double expected) {
+    private void Evaluate(ISymbolicDataAnalysisExpressionTreeInterpreter interpreter, IDataset ds, string expr, int index, double expected) {
       var importer = new SymbolicExpressionImporter();
       ISymbolicExpressionTree tree = importer.Import(expr);
 
