@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
@@ -296,7 +295,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
           var lambda = SymbolicDataAnalysisExpressionCompiledTreeInterpreter.CreateDelegate(tree, dataset);
           Console.WriteLine(e.Message);
           Console.WriteLine(lambda.ToString());
-          Debugger.Launch();
         }
         for (int m = 0; m < interpreters.Length - 1; ++m) {
           for (int n = m + 1; n < interpreters.Length; ++n) {
@@ -327,7 +325,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
                   if (double.IsNaN(y1) && double.IsNaN(y2)) continue;
                   string prefix = Math.Abs(y1 - y2) > delta ? "++" : "==";
-                  Console.WriteLine("\t{0} Row {1}: {2:N20} {3:N20}, Deviation = {4}", prefix, row, y1, y2, Math.Abs(y1 - y2));
+                  Console.WriteLine("\t{0} Row {1}: {2} {3}, Deviation = {4}", prefix, row, y1, y2, Math.Abs(y1 - y2));
                   node.Parent = p;
                 }
               }
@@ -512,34 +510,34 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
       Evaluate(interpreter, ds, "(mean -1.0 1.0 -1.0)", 0, -1.0 / 3.0);
 
       // lag
-      //      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 1, ds.GetDoubleValue("A", 0));
-      //      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 2, ds.GetDoubleValue("A", 1));
-      //      Evaluate(interpreter, ds, "(lagVariable 1.0 a 0) ", 2, ds.GetDoubleValue("A", 2));
-      //      Evaluate(interpreter, ds, "(lagVariable 1.0 a 1) ", 0, ds.GetDoubleValue("A", 1));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 1, ds.GetDoubleValue("A", 0));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a -1) ", 2, ds.GetDoubleValue("A", 1));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a 0) ", 2, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lagVariable 1.0 a 1) ", 0, ds.GetDoubleValue("A", 1));
 
       // integral
-      //      Evaluate(interpreter, ds, "(integral -1.0 (variable 1.0 a)) ", 1, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1));
-      //      Evaluate(interpreter, ds, "(integral -1.0 (lagVariable 1.0 a 1)) ", 1, ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
-      //      Evaluate(interpreter, ds, "(integral -2.0 (variable 1.0 a)) ", 2, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
-      //      Evaluate(interpreter, ds, "(integral -1.0 (* (variable 1.0 a) (variable 1.0 b)))", 1, ds.GetDoubleValue("A", 0) * ds.GetDoubleValue("B", 0) + ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1));
-      //      Evaluate(interpreter, ds, "(integral -2.0 3.0)", 1, 9.0);
+      Evaluate(interpreter, ds, "(integral -1.0 (variable 1.0 a)) ", 1, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1));
+      Evaluate(interpreter, ds, "(integral -1.0 (lagVariable 1.0 a 1)) ", 1, ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(integral -2.0 (variable 1.0 a)) ", 2, ds.GetDoubleValue("A", 0) + ds.GetDoubleValue("A", 1) + ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(integral -1.0 (* (variable 1.0 a) (variable 1.0 b)))", 1, ds.GetDoubleValue("A", 0) * ds.GetDoubleValue("B", 0) + ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1));
+      Evaluate(interpreter, ds, "(integral -2.0 3.0)", 1, 9.0);
 
       // derivative
       // (f_0 + 2 * f_1 - 2 * f_3 - f_4) / 8; // h = 1
-      //      Evaluate(interpreter, ds, "(diff (variable 1.0 a)) ", 5, (ds.GetDoubleValue("A", 5) + 2 * ds.GetDoubleValue("A", 4) - 2 * ds.GetDoubleValue("A", 2) - ds.GetDoubleValue("A", 1)) / 8.0);
-      //      Evaluate(interpreter, ds, "(diff (variable 1.0 b)) ", 5, (ds.GetDoubleValue("B", 5) + 2 * ds.GetDoubleValue("B", 4) - 2 * ds.GetDoubleValue("B", 2) - ds.GetDoubleValue("B", 1)) / 8.0);
-      //      Evaluate(interpreter, ds, "(diff (* (variable 1.0 a) (variable 1.0 b)))", 5, +
-      //        (ds.GetDoubleValue("A", 5) * ds.GetDoubleValue("B", 5) +
-      //        2 * ds.GetDoubleValue("A", 4) * ds.GetDoubleValue("B", 4) -
-      //        2 * ds.GetDoubleValue("A", 2) * ds.GetDoubleValue("B", 2) -
-      //        ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1)) / 8.0);
-      //      Evaluate(interpreter, ds, "(diff -2.0 3.0)", 5, 0.0);
+      Evaluate(interpreter, ds, "(diff (variable 1.0 a)) ", 5, (ds.GetDoubleValue("A", 5) + 2 * ds.GetDoubleValue("A", 4) - 2 * ds.GetDoubleValue("A", 2) - ds.GetDoubleValue("A", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff (variable 1.0 b)) ", 5, (ds.GetDoubleValue("B", 5) + 2 * ds.GetDoubleValue("B", 4) - 2 * ds.GetDoubleValue("B", 2) - ds.GetDoubleValue("B", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff (* (variable 1.0 a) (variable 1.0 b)))", 5, +
+        (ds.GetDoubleValue("A", 5) * ds.GetDoubleValue("B", 5) +
+        2 * ds.GetDoubleValue("A", 4) * ds.GetDoubleValue("B", 4) -
+        2 * ds.GetDoubleValue("A", 2) * ds.GetDoubleValue("B", 2) -
+        ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 1)) / 8.0);
+      Evaluate(interpreter, ds, "(diff -2.0 3.0)", 5, 0.0);
 
       // timelag
-      //      Evaluate(interpreter, ds, "(lag -1.0 (lagVariable 1.0 a 2)) ", 1, ds.GetDoubleValue("A", 2));
-      //      Evaluate(interpreter, ds, "(lag -2.0 (lagVariable 1.0 a 2)) ", 2, ds.GetDoubleValue("A", 2));
-      //      Evaluate(interpreter, ds, "(lag -1.0 (* (lagVariable 1.0 a 1) (lagVariable 1.0 b 2)))", 1, ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 2));
-      //      Evaluate(interpreter, ds, "(lag -2.0 3.0)", 1, 3.0);
+      Evaluate(interpreter, ds, "(lag -1.0 (lagVariable 1.0 a 2)) ", 1, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lag -2.0 (lagVariable 1.0 a 2)) ", 2, ds.GetDoubleValue("A", 2));
+      Evaluate(interpreter, ds, "(lag -1.0 (* (lagVariable 1.0 a 1) (lagVariable 1.0 b 2)))", 1, ds.GetDoubleValue("A", 1) * ds.GetDoubleValue("B", 2));
+      Evaluate(interpreter, ds, "(lag -2.0 3.0)", 1, 3.0);
 
       {
         // special functions
