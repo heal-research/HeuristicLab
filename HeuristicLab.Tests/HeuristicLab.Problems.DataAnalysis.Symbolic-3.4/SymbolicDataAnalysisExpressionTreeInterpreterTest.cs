@@ -260,6 +260,8 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Tests {
 
       var grammar = new TypeCoherentExpressionGrammar();
       grammar.ConfigureAsDefaultRegressionGrammar();
+      grammar.Symbols.First(x => x.Name == "Power Functions").Enabled = true;
+
       var randomTrees = Util.CreateRandomTrees(twister, dataset, grammar, N, 1, 10, 0, 0);
       foreach (ISymbolicExpressionTree tree in randomTrees) {
         Util.InitTree(tree, twister, new List<string>(dataset.VariableNames));
