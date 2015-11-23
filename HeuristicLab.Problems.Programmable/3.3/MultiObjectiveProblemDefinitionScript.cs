@@ -27,31 +27,33 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Programmable {
   [Item("Multi-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
-  public sealed class MultiObjectiveProblemDefinitionScript : ProblemDefinitionScript, IMultiObjectiveProblemDefinition, IStorableContent {
+  public sealed class MultiObjectiveProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript<TEncoding, TSolution>, IMultiObjectiveProblemDefinition<TEncoding, TSolution>, IStorableContent
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
     public string Filename { get; set; }
 
-    private new IMultiObjectiveProblemDefinition CompiledProblemDefinition {
-      get { return (IMultiObjectiveProblemDefinition)base.CompiledProblemDefinition; }
+    private new IMultiObjectiveProblemDefinition<TEncoding, TSolution> CompiledProblemDefinition {
+      get { return (IMultiObjectiveProblemDefinition<TEncoding, TSolution>)base.CompiledProblemDefinition; }
     }
 
     [StorableConstructor]
     private MultiObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
-    private MultiObjectiveProblemDefinitionScript(MultiObjectiveProblemDefinitionScript original, Cloner cloner) : base(original, cloner) { }
-    public MultiObjectiveProblemDefinitionScript() : base(ScriptTemplates.CompiledMultiObjectiveProblemDefinition) { }
+    private MultiObjectiveProblemDefinitionScript(MultiObjectiveProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner) : base(original, cloner) { }
+    public MultiObjectiveProblemDefinitionScript() : base(ScriptTemplates.CompiledMultiObjectiveProblemDefinition_Template) { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiObjectiveProblemDefinitionScript(this, cloner);
+      return new MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>(this, cloner);
     }
 
-    bool[] IMultiObjectiveProblemDefinition.Maximization {
+    bool[] IMultiObjectiveProblemDefinition<TEncoding, TSolution>.Maximization {
       get { return CompiledProblemDefinition.Maximization; }
     }
 
-    double[] IMultiObjectiveProblemDefinition.Evaluate(Individual individual, IRandom random) {
+    double[] IMultiObjectiveProblemDefinition<TEncoding, TSolution>.Evaluate(TSolution individual, IRandom random) {
       return CompiledProblemDefinition.Evaluate(individual, random);
     }
 
-    void IMultiObjectiveProblemDefinition.Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+    void IMultiObjectiveProblemDefinition<TEncoding, TSolution>.Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       CompiledProblemDefinition.Analyze(individuals, qualities, results, random);
     }
   }

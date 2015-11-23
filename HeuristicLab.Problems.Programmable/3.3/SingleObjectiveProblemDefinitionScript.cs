@@ -28,18 +28,18 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Programmable {
   [Item("Single-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
-  public class SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript<TEncoding, TSolution>, ISingleObjectiveProblemDefinition<TEncoding, TSolution>, IStorableContent
+  public sealed class SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript<TEncoding, TSolution>, ISingleObjectiveProblemDefinition<TEncoding, TSolution>, IStorableContent
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
     public string Filename { get; set; }
 
-    protected new ISingleObjectiveProblemDefinition<TEncoding, TSolution> CompiledProblemDefinition {
+    private new ISingleObjectiveProblemDefinition<TEncoding, TSolution> CompiledProblemDefinition {
       get { return (ISingleObjectiveProblemDefinition<TEncoding, TSolution>)base.CompiledProblemDefinition; }
     }
 
     [StorableConstructor]
-    protected SingleObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
-    protected SingleObjectiveProblemDefinitionScript(SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveProblemDefinitionScript(SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveProblemDefinitionScript(string codeTemplate) : base(codeTemplate) { }
     public SingleObjectiveProblemDefinitionScript() { }
 

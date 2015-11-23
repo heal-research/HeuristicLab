@@ -50,6 +50,7 @@ namespace HeuristicLab.Problems.Programmable {
       return new SingleObjectiveBinaryVectorProgrammableProblem(this, cloner);
     }
   }
+  //TODO
   /*
   [Item("Integer Vector Programmable Problem (single-objective)", "Represents an integer vector single-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]

@@ -27,39 +27,50 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (multi-objective)", "Represents a multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 120)]
   [StorableClass]
-  public sealed class MultiObjectiveProgrammableProblem : MultiObjectiveProblem<IEncoding>, IProgrammableItem {
+  public class MultiObjectiveProgrammableProblem<TEncoding, TSolution> : MultiObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
+    protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
+    protected static readonly string ENCODING_CLASS = "ENCODING_CLASS";
+    protected static readonly string SOLUTION_CLASS = "SOLUTION_CLASS";
+
     public static new Image StaticItemImage {
       get { return VSImageLibrary.Script; }
     }
 
-    private FixedValueParameter<MultiObjectiveProblemDefinitionScript> MultiObjectiveProblemScriptParameter {
-      get { return (FixedValueParameter<MultiObjectiveProblemDefinitionScript>)Parameters["ProblemScript"]; }
+    private FixedValueParameter<MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>> MultiObjectiveProblemScriptParameter {
+      get { return (FixedValueParameter<MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>>)Parameters["ProblemScript"]; }
     }
 
-    public MultiObjectiveProblemDefinitionScript ProblemScript {
+    Script IProgrammableProblem.ProblemScript {
+      get { return ProblemScript; }
+    }
+    public MultiObjectiveProblemDefinitionScript<TEncoding, TSolution> ProblemScript {
       get { return MultiObjectiveProblemScriptParameter.Value; }
     }
 
-    public IMultiObjectiveProblemDefinition ProblemDefinition {
+    public IMultiObjectiveProblemDefinition<TEncoding, TSolution> ProblemDefinition {
       get { return MultiObjectiveProblemScriptParameter.Value; }
     }
 
-    private MultiObjectiveProgrammableProblem(MultiObjectiveProgrammableProblem original, Cloner cloner)
+    protected MultiObjectiveProgrammableProblem(MultiObjectiveProgrammableProblem<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new MultiObjectiveProgrammableProblem(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) { return new MultiObjectiveProgrammableProblem<TEncoding, TSolution>(this, cloner); }
 
     [StorableConstructor]
-    private MultiObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
     public MultiObjectiveProgrammableProblem()
       : base() {
-      Parameters.Add(new FixedValueParameter<MultiObjectiveProblemDefinitionScript>("ProblemScript", "Defines the problem.", new MultiObjectiveProblemDefinitionScript() { Name = Name }));
+      Parameters.Add(new FixedValueParameter<MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
+        new MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name, Encoding = Encoding }));
       RegisterEvents();
     }
 
@@ -76,7 +87,7 @@ namespace HeuristicLab.Problems.Programmable {
       Parameters.Remove("Maximization");
       Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()) { Hidden = true });
 
-      Encoding = ProblemDefinition.Encoding;
+      ProblemScript.Initialize();
       OnOperatorsChanged();
       OnReset();
     }
@@ -85,11 +96,11 @@ namespace HeuristicLab.Problems.Programmable {
       get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : new[] { false }; }
     }
 
-    public override double[] Evaluate(Individual individual, IRandom random) {
+    public override double[] Evaluate(TSolution individual, IRandom random) {
       return ProblemDefinition.Evaluate(individual, random);
     }
 
-    public override void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) {
       ProblemDefinition.Analyze(individuals, qualities, results, random);
     }
   }

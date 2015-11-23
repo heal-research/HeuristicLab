@@ -89,12 +89,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\IProgrammableProblem.cs" />
+    <Compile Include="MultiObjectiveProblemDefinitionScript.cs" />
+    <Compile Include="MultiObjectiveProgrammableProblem.cs" />
     <Compile Include="ProblemDefinitionScript.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ProblemDefinitionScriptException.cs" />
+    <Compile Include="MultiObjectiveProgrammableProblems.cs" />
     <Compile Include="SingleObjectiveProgrammableProblems.cs" />
     <Content Include="Templates\CompiledSingleObjectiveProblemDefinition_Template.cs" />
+    <Content Include="Templates\CompiledMultiObjectiveProblemDefinition_Template.cs">
+      <SubType>Code</SubType>
+    </Content>
     <Compile Include="Templates\ScriptTemplates.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -29,6 +29,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (single-objective)", "Represents a single-objective problem that can be programmed with a script.")]
@@ -48,6 +49,10 @@ namespace HeuristicLab.Problems.Programmable {
       get { return (FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>)Parameters["ProblemScript"]; }
     }
 
+
+    Script IProgrammableProblem.ProblemScript {
+      get { return ProblemScript; }
+    }
     public SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> ProblemScript {
       get { return SingleObjectiveProblemScriptParameter.Value; }
     }
@@ -66,7 +71,8 @@ namespace HeuristicLab.Problems.Programmable {
     protected SingleObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
     public SingleObjectiveProgrammableProblem()
       : base() {
-      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name, Encoding = Encoding }));
+      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
+        new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name, Encoding = Encoding }));
       Operators.Add(new BestScopeSolutionAnalyzer());
       RegisterEvents();
     }
@@ -103,11 +109,5 @@ namespace HeuristicLab.Problems.Programmable {
     public override IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random) {
       return ProblemDefinition.GetNeighbors(individual, random);
     }
-
-    #region IProgrammableProblem Members
-    Scripting.Script IProgrammableProblem.ProblemScript {
-      get { return ProblemScript; }
-    }
-    #endregion
   }
 }
