@@ -24,6 +24,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -48,6 +49,30 @@ namespace HeuristicLab.Problems.Programmable {
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SingleObjectiveBinaryVectorProgrammableProblem(this, cloner);
+    }
+  }
+
+  [Item("Multi Solution Programmable Problem (single-objective)", "Represents a multi solution single-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [StorableClass]
+  public sealed class SingleObjectiveMultiSolutionProgrammableProblem : SingleObjectiveProgrammableProblem<MultiEncoding, MultiSolution> {
+
+    [StorableConstructor]
+    private SingleObjectiveMultiSolutionProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveMultiSolutionProgrammableProblem(SingleObjectiveMultiSolutionProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+
+    public SingleObjectiveMultiSolutionProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "MultiEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "MultiSolution");
+      ProblemScript.Code = codeTemplate;
+    }
+
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SingleObjectiveMultiSolutionProgrammableProblem(this, cloner);
     }
   }
   //TODO

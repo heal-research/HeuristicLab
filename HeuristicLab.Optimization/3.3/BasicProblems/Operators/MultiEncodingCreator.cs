@@ -28,10 +28,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("MultiEncodingCreator", "Contains solution creators that together create a multi-encoding.")]
   [StorableClass]
-  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator {
+  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator<MultiSolution> {
     [StorableConstructor]
     private MultiEncodingCreator(bool deserializing) : base(deserializing) { }
-
     private MultiEncodingCreator(MultiEncodingCreator original, Cloner cloner) : base(original, cloner) { }
     public MultiEncodingCreator() { }
 

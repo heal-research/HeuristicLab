@@ -30,7 +30,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding", "Describes a combined encoding consisting of multiple simpler encodings.")]
   [StorableClass]
-  public sealed class MultiEncoding : Encoding<MultiEncodingCreator> {
+  public sealed class MultiEncoding : Encoding<MultiSolution> {
 
     private readonly List<IEncoding> encodings;
     [Storable]
@@ -56,10 +56,6 @@ namespace HeuristicLab.Optimization {
 
       foreach (var @operator in ApplicationManager.Manager.GetInstances<IMultiEncodingOperator>())
         AddOperator(@operator);
-    }
-
-    public override Individual GetIndividual(IScope scope) {
-      return new MultiEncodingIndividual(this, scope);
     }
 
     public MultiEncoding Add(IEncoding encoding) {

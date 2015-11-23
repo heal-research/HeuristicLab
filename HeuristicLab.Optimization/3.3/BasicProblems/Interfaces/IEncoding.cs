@@ -24,9 +24,8 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  public interface IEncoding<TSolution> : IParameterizedNamedItem
-    where TSolution : class, ISolution {
-    ISolutionCreator<TSolution> SolutionCreator { get; set; }
+  public interface IEncoding : IParameterizedNamedItem {
+    ISolutionCreator SolutionCreator { get; }
     IEnumerable<IOperator> Operators { get; set; }
 
     void ConfigureOperator(IOperator @operator);
@@ -36,5 +35,8 @@ namespace HeuristicLab.Optimization {
     event EventHandler OperatorsChanged;
   }
 
-
+  public interface IEncoding<TSolution> : IEncoding
+    where TSolution : class, ISolution {
+    new ISolutionCreator<TSolution> SolutionCreator { get; set; }
+  }
 }

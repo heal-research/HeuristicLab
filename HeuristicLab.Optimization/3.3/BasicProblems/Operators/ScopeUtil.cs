@@ -45,5 +45,13 @@ namespace HeuristicLab.Optimization {
       return value;
     }
 
+    public static ISolution GetSolution(IScope scope, IEncoding encoding) {
+      var name = encoding.Name;
+      if (!scope.Variables.ContainsKey(name)) throw new ArgumentException(string.Format(" {0} cannot be found in the provided scope.", name));
+      var value = scope.Variables[name].Value as ISolution;
+      if (value == null) throw new InvalidOperationException(string.Format("Value of {0} is null.", name));
+      return value;
+    }
+
   }
 }

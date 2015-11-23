@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class MultiEncodingOperator<T> : Operator, IMultiEncodingOperator where T : class,IOperator {
+  public abstract class MultiEncodingOperator<T> : Operator, IMultiEncodingOperator where T : class, IOperator {
     private List<IEncoding> encodings = new List<IEncoding>();
     [Storable(Name = "Encodings")]
     private IEnumerable<IEncoding> StorableEncodings {

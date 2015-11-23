@@ -59,6 +59,10 @@ namespace HeuristicLab.Optimization {
       }
     }
 
+    ISolutionCreator IEncoding.SolutionCreator {
+      get { return solutionCreator; }
+    }
+
     [Storable]
     private ISolutionCreator<TSolution> solutionCreator;
     public ISolutionCreator<TSolution> SolutionCreator {

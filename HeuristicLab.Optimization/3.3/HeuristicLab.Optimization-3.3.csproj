@@ -120,7 +120,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\BasicAlgorithm.cs" />
+    <Compile Include="BasicProblems\Individuals\MultiSolution.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblem.cs" />
+    <Compile Include="BasicProblems\MultiEncoding.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingCreator.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingCrossover.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingManipulator.cs" />
+    <Compile Include="BasicProblems\Operators\MultiEncodingOperator.cs" />
     <Compile Include="BasicProblems\Problem.cs" />
     <Compile Include="BasicProblems\Encoding.cs" />
     <Compile Include="BasicProblems\Interfaces\IEncoding.cs" />
@@ -322,9 +328,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BasicProblems\Individuals\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
