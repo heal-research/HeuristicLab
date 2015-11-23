@@ -29,26 +29,19 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
-  [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
-  public abstract class ProblemDefinitionScript : Script, IProblemDefinition {
-    protected bool SuppressEvents { get; set; }
-
+  public abstract class ProblemDefinitionScript : Script {
     [Storable]
     private VariableStore variableStore;
     public VariableStore VariableStore {
       get { return variableStore; }
     }
 
-    [Storable]
-    private bool codeChanged;
-
     [StorableConstructor]
     protected ProblemDefinitionScript(bool deserializing) : base(deserializing) { }
     protected ProblemDefinitionScript(ProblemDefinitionScript original, Cloner cloner)
       : base(original, cloner) {
       variableStore = cloner.Clone(original.variableStore);
-      codeChanged = original.codeChanged;
     }
     protected ProblemDefinitionScript()
       : base() {
@@ -58,14 +51,48 @@ namespace HeuristicLab.Problems.Programmable {
       : base(code) {
       variableStore = new VariableStore();
     }
+  }
 
-    IEncoding IProblemDefinition.Encoding {
-      get { return CompiledProblemDefinition.Encoding; }
+  [Item("ProblemDefinitionScript", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
+  [StorableClass]
+  public abstract class ProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript, IProblemDefinition<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
+
+    [Storable]
+    private bool codeChanged;
+
+    [Storable]
+    private TEncoding encoding;
+    internal TEncoding Encoding {
+      get { return encoding; }
+      set { encoding = value; }
+    }
+
+    TEncoding IProblemDefinition<TEncoding, TSolution>.Encoding {
+      get { return Encoding; }
+    }
+
+    internal void Initialize() {
+      CompiledProblemDefinition.Initialize();
+    }
+
+    [StorableConstructor]
+    protected ProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    protected ProblemDefinitionScript(ProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner)
+      : base(original, cloner) {
+      codeChanged = original.codeChanged;
+    }
+    protected ProblemDefinitionScript()
+      : base() {
+    }
+    protected ProblemDefinitionScript(string code)
+      : base(code) {
     }
 
     private readonly object compileLock = new object();
-    private volatile IProblemDefinition compiledProblemDefinition;
-    protected IProblemDefinition CompiledProblemDefinition {
+    private volatile CompiledProblemDefinition<TEncoding, TSolution> compiledProblemDefinition;
+    protected CompiledProblemDefinition<TEncoding, TSolution> CompiledProblemDefinition {
       get {
         // double checked locking pattern
         if (compiledProblemDefinition == null) {
@@ -87,23 +114,25 @@ namespace HeuristicLab.Problems.Programmable {
     private Assembly Compile(bool fireChanged) {
       var assembly = base.Compile();
       var types = assembly.GetTypes();
-      if (!types.Any(x => typeof(CompiledProblemDefinition).IsAssignableFrom(x)))
+      if (!types.Any(x => typeof(CompiledProblemDefinition<TEncoding, TSolution>).IsAssignableFrom(x)))
         throw new ProblemDefinitionScriptException("The compiled code doesn't contain a problem definition." + Environment.NewLine + "The problem definition must be a subclass of CompiledProblemDefinition.");
-      if (types.Count(x => typeof(CompiledProblemDefinition).IsAssignableFrom(x)) > 1)
+      if (types.Count(x => typeof(CompiledProblemDefinition<TEncoding, TSolution>).IsAssignableFrom(x)) > 1)
         throw new ProblemDefinitionScriptException("The compiled code contains multiple problem definitions." + Environment.NewLine + "Only one subclass of CompiledProblemDefinition is allowed.");
 
-      CompiledProblemDefinition inst;
+      CompiledProblemDefinition<TEncoding, TSolution> inst;
       try {
-        inst = (CompiledProblemDefinition)Activator.CreateInstance(types.Single(x => typeof(CompiledProblemDefinition).IsAssignableFrom(x)));
-      } catch (Exception e) {
+        inst = (CompiledProblemDefinition<TEncoding, TSolution>)Activator.CreateInstance(types.Single(x => typeof(CompiledProblemDefinition<TEncoding, TSolution>).IsAssignableFrom(x)));
+      }
+      catch (Exception e) {
         compiledProblemDefinition = null;
         throw new ProblemDefinitionScriptException("Instantiating the problem definition failed." + Environment.NewLine + "Check your default constructor.", e);
       }
 
       try {
         inst.vars = new Variables(VariableStore);
-        inst.Initialize();
-      } catch (Exception e) {
+        inst.Encoding = encoding;
+      }
+      catch (Exception e) {
         compiledProblemDefinition = null;
         throw new ProblemDefinitionScriptException("Initializing the problem definition failed." + Environment.NewLine + "Check your Initialize() method.", e);
       }
@@ -111,7 +140,8 @@ namespace HeuristicLab.Problems.Programmable {
       try {
         compiledProblemDefinition = inst;
         if (fireChanged) OnProblemDefinitionChanged();
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
         compiledProblemDefinition = null;
         throw new ProblemDefinitionScriptException("Using the problem definition in the problem failed." + Environment.NewLine + "Examine this error message carefully (often there is an issue with the defined encoding).", e);
       }

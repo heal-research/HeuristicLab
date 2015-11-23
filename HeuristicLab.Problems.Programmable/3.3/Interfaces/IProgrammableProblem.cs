@@ -1,4 +1,5 @@
 ﻿#region License Information
+
 /* HeuristicLab
  * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -17,31 +18,14 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #endregion
 
-using System;
-using HeuristicLab.Optimization;
+using HeuristicLab.Core;
+using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
-  public abstract class CompiledProblemDefinition<TEncoding, TSolution> : IProblemDefinition<TEncoding, TSolution>
-    where TEncoding : class, IEncoding<TSolution>
-    where TSolution : class, ISolution {
-    private TEncoding encoding;
-    public TEncoding Encoding {
-      get { return encoding; }
-      internal set {
-        if (value == null) throw new ArgumentNullException("The encoding must not be null.");
-        encoding = value;
-      }
-    }
-
-    public dynamic vars { get; set; }
-    public abstract void Initialize();
-
-    protected CompiledProblemDefinition() { }
-    protected CompiledProblemDefinition(TEncoding encoding)
-      : base() {
-      Encoding = encoding;
-    }
+  public interface IProgrammableProblem : INamedItem {
+    Script ProblemScript { get; }
   }
 }

@@ -22,6 +22,7 @@
 using System;
 using System.Drawing;
 using HeuristicLab.MainForm;
+using HeuristicLab.Optimization;
 using HeuristicLab.Scripting.Views;
 
 namespace HeuristicLab.Problems.Programmable.Views {
@@ -51,7 +52,8 @@ namespace HeuristicLab.Problems.Programmable.Views {
     public override bool Compile() {
       try {
         base.Compile();
-      } catch (ProblemDefinitionScriptException e) {
+      }
+      catch (ProblemDefinitionScriptException e) {
         PluginInfrastructure.ErrorHandling.ShowErrorDialog(e);
         return false;
       }

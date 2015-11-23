@@ -32,36 +32,37 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (single-objective)", "Represents a single-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
-  public sealed class SingleObjectiveProgrammableProblem : SingleObjectiveProblem<IEncoding>, IProgrammableItem {
+  public class SingleObjectiveProgrammableProblem<TEncoding, TSolution> : SingleObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
     public static new Image StaticItemImage {
       get { return VSImageLibrary.Script; }
     }
 
-    private FixedValueParameter<SingleObjectiveProblemDefinitionScript> SingleObjectiveProblemScriptParameter {
-      get { return (FixedValueParameter<SingleObjectiveProblemDefinitionScript>)Parameters["ProblemScript"]; }
+    private FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>> SingleObjectiveProblemScriptParameter {
+      get { return (FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>)Parameters["ProblemScript"]; }
     }
 
-    public SingleObjectiveProblemDefinitionScript ProblemScript {
+    public SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> ProblemScript {
       get { return SingleObjectiveProblemScriptParameter.Value; }
     }
 
-    public ISingleObjectiveProblemDefinition ProblemDefinition {
+    public ISingleObjectiveProblemDefinition<TEncoding, TSolution> ProblemDefinition {
       get { return SingleObjectiveProblemScriptParameter.Value; }
     }
 
-    private SingleObjectiveProgrammableProblem(SingleObjectiveProgrammableProblem original, Cloner cloner)
+    protected SingleObjectiveProgrammableProblem(SingleObjectiveProgrammableProblem<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new SingleObjectiveProgrammableProblem(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SingleObjectiveProgrammableProblem<TEncoding, TSolution>(this, cloner); }
 
     [StorableConstructor]
-    private SingleObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
-    public SingleObjectiveProgrammableProblem()
+    protected SingleObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
+    public SingleObjectiveProgrammableProblem(string codeTemplate)
       : base() {
-      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript() { Name = Name }));
+      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>(codeTemplate) { Name = Name, Encoding = Encoding }));
       Operators.Add(new BestScopeSolutionAnalyzer());
       RegisterEvents();
     }
@@ -78,25 +79,31 @@ namespace HeuristicLab.Problems.Programmable {
     private void OnProblemDefinitionChanged() {
       Parameters.Remove("Maximization");
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
+      ProblemScript.Initialize();
 
-      Encoding = ProblemDefinition.Encoding;
       OnOperatorsChanged();
       OnReset();
     }
 
     public override bool Maximization {
-      get { return Parameters.ContainsKey("ProblemScript") ? ProblemDefinition.Maximization : false; }
+      get { return Parameters.ContainsKey("ProblemScript") && ProblemDefinition.Maximization; }
     }
 
-    public override double Evaluate(Individual individual, IRandom random) {
+    public override double Evaluate(TSolution individual, IRandom random) {
       return ProblemDefinition.Evaluate(individual, random);
     }
 
-    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       ProblemDefinition.Analyze(individuals, qualities, results, random);
     }
-    public override IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
+    public override IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random) {
       return ProblemDefinition.GetNeighbors(individual, random);
     }
+
+    #region IProgrammableProblem Members
+    Scripting.Script IProgrammableProblem.ProblemScript {
+      get { return ProblemScript; }
+    }
+    #endregion
   }
 }

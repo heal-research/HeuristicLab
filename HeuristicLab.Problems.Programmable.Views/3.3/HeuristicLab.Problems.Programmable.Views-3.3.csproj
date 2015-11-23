@@ -93,12 +93,6 @@
     <Compile Include="ProblemDefinitionScriptView.Designer.cs">
       <DependentUpon>ProblemDefinitionScriptView.cs</DependentUpon>
     </Compile>
-    <Compile Include="MultiObjectiveProgrammableProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MultiObjectiveProgrammableProblemView.Designer.cs">
-      <DependentUpon>MultiObjectiveProgrammableProblemView.cs</DependentUpon>
-    </Compile>
     <Compile Include="SingleObjectiveProgrammableProblemView.cs">
       <SubType>UserControl</SubType>
     </Compile>

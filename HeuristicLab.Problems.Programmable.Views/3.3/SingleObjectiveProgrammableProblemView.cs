@@ -27,12 +27,12 @@ using HeuristicLab.MainForm.WindowsForms;
 
 namespace HeuristicLab.Problems.Programmable.Views {
   [View("Single-Objective Scriptable Problem View")]
-  [Content(typeof(SingleObjectiveProgrammableProblem), true)]
+  [Content(typeof(IProgrammableProblem), true)]
   public partial class SingleObjectiveProgrammableProblemView : ItemView {
     protected ViewHost ScriptView;
 
-    public new SingleObjectiveProgrammableProblem Content {
-      get { return (SingleObjectiveProgrammableProblem)base.Content; }
+    public new IProgrammableProblem Content {
+      get { return (IProgrammableProblem)base.Content; }
       set { base.Content = value; }
     }
 

@@ -28,34 +28,37 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.Programmable {
   [Item("Single-objective Problem Definition Script", "Script that defines the parameter vector and evaluates the solution for a programmable problem.")]
   [StorableClass]
-  public sealed class SingleObjectiveProblemDefinitionScript : ProblemDefinitionScript, ISingleObjectiveProblemDefinition, IStorableContent {
+  public class SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> : ProblemDefinitionScript<TEncoding, TSolution>, ISingleObjectiveProblemDefinition<TEncoding, TSolution>, IStorableContent
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
     public string Filename { get; set; }
 
-    private new ISingleObjectiveProblemDefinition CompiledProblemDefinition {
-      get { return (ISingleObjectiveProblemDefinition)base.CompiledProblemDefinition; }
+    protected new ISingleObjectiveProblemDefinition<TEncoding, TSolution> CompiledProblemDefinition {
+      get { return (ISingleObjectiveProblemDefinition<TEncoding, TSolution>)base.CompiledProblemDefinition; }
     }
 
     [StorableConstructor]
-    private SingleObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
-    private SingleObjectiveProblemDefinitionScript(SingleObjectiveProblemDefinitionScript original, Cloner cloner) : base(original, cloner) { }
-    public SingleObjectiveProblemDefinitionScript() : base(ScriptTemplates.CompiledSingleObjectiveProblemDefinition) { }
+    protected SingleObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveProblemDefinitionScript(SingleObjectiveProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner) : base(original, cloner) { }
+    public SingleObjectiveProblemDefinitionScript(string codeTemplate) : base(codeTemplate) { }
+    public SingleObjectiveProblemDefinitionScript() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveProblemDefinitionScript(this, cloner);
+      return new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>(this, cloner);
     }
 
-    bool ISingleObjectiveProblemDefinition.Maximization {
+    bool ISingleObjectiveProblemDefinition<TEncoding, TSolution>.Maximization {
       get { return CompiledProblemDefinition.Maximization; }
     }
 
-    double ISingleObjectiveProblemDefinition.Evaluate(Individual individual, IRandom random) {
+    double ISingleObjectiveProblemDefinition<TEncoding, TSolution>.Evaluate(TSolution individual, IRandom random) {
       return CompiledProblemDefinition.Evaluate(individual, random);
     }
 
-    void ISingleObjectiveProblemDefinition.Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    void ISingleObjectiveProblemDefinition<TEncoding, TSolution>.Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       CompiledProblemDefinition.Analyze(individuals, qualities, results, random);
     }
-    IEnumerable<Individual> ISingleObjectiveProblemDefinition.GetNeighbors(Individual individual, IRandom random) {
+    IEnumerable<TSolution> ISingleObjectiveProblemDefinition<TEncoding, TSolution>.GetNeighbors(TSolution individual, IRandom random) {
       return CompiledProblemDefinition.GetNeighbors(individual, random);
     }
   }
