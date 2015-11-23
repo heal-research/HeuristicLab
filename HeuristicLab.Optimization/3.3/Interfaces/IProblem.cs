@@ -35,7 +35,8 @@ namespace HeuristicLab.Optimization {
     event EventHandler Reset;
   }
 
-  public interface IProblem<TSolution> : IHeuristicOptimizationProblem where TSolution : class, ISolution {
-    IEncoding<TSolution> Encoding { get; }
+  public interface IProblem<TEncoding, TSolution> : IHeuristicOptimizationProblem, IProblemDefinition<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
   }
 }

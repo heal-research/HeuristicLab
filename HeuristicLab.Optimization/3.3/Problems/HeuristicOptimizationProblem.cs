@@ -98,7 +98,7 @@ namespace HeuristicLab.Optimization {
         handler(this, EventArgs.Empty);
     }
 
-    protected virtual void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
+    private void SolutionCreatorParameter_ValueChanged(object sender, EventArgs e) {
       OnSolutionCreatorChanged();
     }
     public event EventHandler SolutionCreatorChanged;

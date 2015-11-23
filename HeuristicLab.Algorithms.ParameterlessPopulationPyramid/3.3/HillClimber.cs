@@ -31,7 +31,6 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
 
 
@@ -49,10 +48,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private const string IterationsParameterName = "Iterations";
 
     public override Type ProblemType {
-      get { return typeof(BinaryProblem); }
+      get { return typeof(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>); }
     }
-    public new BinaryProblem Problem {
-      get { return (BinaryProblem)base.Problem; }
+    public new ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> Problem {
+      get { return (ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>)base.Problem; }
       set { base.Problem = value; }
     }
 
@@ -83,7 +82,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       var BestQuality = new DoubleValue(double.NaN);
       Results.Add(new Result("Best quality", BestQuality));
       for (int iteration = 0; iteration < Iterations; iteration++) {
-        var solution = new BinaryVector(Problem.Length);
+        var solution = new BinaryVector(Problem.Encoding.Length);
         for (int i = 0; i < solution.Length; i++) {
           solution[i] = random.Next(2) == 1;
         }
@@ -97,7 +96,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       }
     }
     // In the GECCO paper, Section 2.1
-    public static double ImproveToLocalOptimum(BinaryProblem problem, BinaryVector solution, double fitness, IRandom rand) {
+    public static double ImproveToLocalOptimum(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem, BinaryVector solution, double fitness, IRandom rand) {
       var tried = new HashSet<int>();
       do {
         var options = Enumerable.Range(0, solution.Length).Shuffle(rand);

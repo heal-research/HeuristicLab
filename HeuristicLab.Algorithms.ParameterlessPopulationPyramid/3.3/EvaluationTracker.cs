@@ -25,16 +25,16 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.Binary;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  internal sealed class EvaluationTracker : BinaryProblem {
-    private readonly BinaryProblem problem;
+  internal sealed class EvaluationTracker : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
+    private readonly ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem;
 
     private int maxEvaluations;
 
@@ -58,6 +58,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       get;
       private set;
     }
+
+    public new BinaryVectorEncoding Encoding {
+      get { return problem.Encoding; }
+    }
     #endregion
 
     [StorableConstructor]
@@ -74,10 +78,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     public override IDeepCloneable Clone(Cloner cloner) {
       return new EvaluationTracker(this, cloner);
     }
-    public EvaluationTracker(BinaryProblem problem, int maxEvaluations) {
+    public EvaluationTracker(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem, int maxEvaluations) {
       this.problem = problem;
       this.maxEvaluations = maxEvaluations;
-      BestSolution = new BinaryVector(Length);
+      BestSolution = new BinaryVector(problem.Encoding.Length);
       BestQuality = double.NaN;
       Evaluations = 0;
       BestFoundOnEvaluation = 0;
@@ -96,11 +100,6 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         BestFoundOnEvaluation = Evaluations;
       }
       return fitness;
-    }
-
-    public override int Length {
-      get { return problem.Length; }
-      set { problem.Length = value; }
     }
 
     public override bool Maximization {

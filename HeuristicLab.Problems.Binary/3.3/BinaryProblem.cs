@@ -33,15 +33,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Binary {
   [StorableClass]
-  public abstract class BinaryProblem : SingleObjectiveProblem<BinaryVector> {
+  public abstract class BinaryProblem : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
     public virtual int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
-    }
-
-    public new BinaryVectorEncoding Encoding {
-      get { return (BinaryVectorEncoding)base.Encoding; }
-      set { base.Encoding = value; }
     }
 
     private IFixedValueParameter<IntValue> LengthParameter {
@@ -64,7 +59,6 @@ namespace HeuristicLab.Problems.Binary {
       : base() {
       var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(10));
       Parameters.Add(lengthParameter);
-      Encoding = new BinaryVectorEncoding();
       Encoding.LengthParameter = lengthParameter;
       RegisterEventHandlers();
     }

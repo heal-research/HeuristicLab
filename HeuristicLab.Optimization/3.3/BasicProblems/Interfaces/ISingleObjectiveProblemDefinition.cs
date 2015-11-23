@@ -23,8 +23,9 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  public interface ISingleObjectiveProblemDefinition<TSolution> : IProblemDefinition
-  where TSolution : class, ISolution {
+  public interface ISingleObjectiveProblemDefinition<TEncoding, TSolution> : IProblemDefinition<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
     bool Maximization { get; }
     double Evaluate(TSolution individual, IRandom random);
     void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);

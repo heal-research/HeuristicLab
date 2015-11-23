@@ -23,7 +23,8 @@
 
 
 namespace HeuristicLab.Optimization {
-  public interface ISingleObjectiveProblem<TSolution> : IProblem<TSolution>, ISingleObjectiveProblemDefinition<TSolution>, ISingleObjectiveHeuristicOptimizationProblem
+  public interface ISingleObjectiveProblem<TEncoding, TSolution> : IProblem<TEncoding, TSolution>, ISingleObjectiveProblemDefinition<TEncoding, TSolution>, ISingleObjectiveHeuristicOptimizationProblem
+    where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
     bool IsBetter(double quality, double bestQuality);
   }

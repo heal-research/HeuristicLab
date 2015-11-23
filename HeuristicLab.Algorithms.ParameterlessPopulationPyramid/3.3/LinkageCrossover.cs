@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
-using HeuristicLab.Problems.Binary;
+using HeuristicLab.Optimization;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
@@ -32,7 +32,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
   public static class LinkageCrossover {
     // In the GECCO paper, Figure 3
-    public static double ImproveUsingTree(LinkageTree tree, IList<BinaryVector> donors, BinaryVector solution, double fitness, BinaryProblem problem, IRandom rand) {
+    public static double ImproveUsingTree(LinkageTree tree, IList<BinaryVector> donors, BinaryVector solution, double fitness, ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem, IRandom rand) {
       var options = Enumerable.Range(0, donors.Count).ToArray();
       foreach (var cluster in tree.Clusters) {
         // Find a donor which has at least one gene value different
@@ -47,7 +47,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       return fitness;
     }
 
-    private static double Donate(BinaryVector solution, double fitness, BinaryVector source, IEnumerable<int> cluster, BinaryProblem problem, IRandom rand, out bool changed) {
+    private static double Donate(BinaryVector solution, double fitness, BinaryVector source, IEnumerable<int> cluster, ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem, IRandom rand, out bool changed) {
       // keep track of which bits flipped to make the donation
       List<int> flipped = new List<int>();
       foreach (var index in cluster) {

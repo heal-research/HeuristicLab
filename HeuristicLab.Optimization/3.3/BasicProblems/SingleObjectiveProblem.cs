@@ -29,9 +29,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class SingleObjectiveProblem<TSolution> : Problem<TSolution, SingleObjectiveEvaluator<TSolution>>,
-    ISingleObjectiveProblemDefinition<TSolution>, ISingleObjectiveHeuristicOptimizationProblem
-  where TSolution : class, ISolution {
+  public abstract class SingleObjectiveProblem<TEncoding, TSolution> : Problem<TEncoding, TSolution, SingleObjectiveEvaluator<TSolution>>, ISingleObjectiveProblem<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
 
     protected IValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
@@ -51,7 +51,7 @@ namespace HeuristicLab.Optimization {
     [StorableConstructor]
     protected SingleObjectiveProblem(bool deserializing) : base(deserializing) { }
 
-    protected SingleObjectiveProblem(SingleObjectiveProblem<TSolution> original, Cloner cloner)
+    protected SingleObjectiveProblem(SingleObjectiveProblem<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
       ParameterizeOperators();
     }

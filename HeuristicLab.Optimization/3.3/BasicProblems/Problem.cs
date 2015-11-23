@@ -29,17 +29,18 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class Problem<TSolution, TEvaluator> : HeuristicOptimizationProblem<TEvaluator, ISolutionCreator<TSolution>>, IProblemDefinition, IStorableContent
+  public abstract class Problem<TEncoding, TSolution, TEvaluator> : HeuristicOptimizationProblem<TEvaluator, ISolutionCreator<TSolution>>, IProblemDefinition<TEncoding, TSolution>, IStorableContent
+    where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution
     where TEvaluator : class, IEvaluator {
 
     public string Filename { get; set; }
 
-    protected IValueParameter<IEncoding<TSolution>> EncodingParameter {
-      get { return (IValueParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
+    protected IValueParameter<TEncoding> EncodingParameter {
+      get { return (IValueParameter<TEncoding>)Parameters["Encoding"]; }
     }
 
-    public IEncoding<TSolution> Encoding {
+    public TEncoding Encoding {
       get { return EncodingParameter.Value; }
       protected set {
         if (value == null) throw new ArgumentNullException("Encoding must not be null.");
@@ -60,12 +61,15 @@ namespace HeuristicLab.Optimization {
 
     protected Problem()
       : base() {
-      Parameters.Add(new ValueParameter<IEncoding<TSolution>>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any."));
-      if (Encoding != null) Parameterize();
+      Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any."));
+      if (Encoding != null) {
+        SolutionCreator = Encoding.SolutionCreator;
+        Parameterize();
+      }
       RegisterEvents();
     }
 
-    protected Problem(Problem<TSolution, TEvaluator> original, Cloner cloner)
+    protected Problem(Problem<TEncoding, TSolution, TEvaluator> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }

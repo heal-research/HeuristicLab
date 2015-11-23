@@ -20,7 +20,9 @@
 #endregion
 
 namespace HeuristicLab.Optimization {
-  public interface IProblemDefinition {
-    //IEncoding Encoding { get; }
+  public interface IProblemDefinition<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
+    TEncoding Encoding { get; }
   }
 }

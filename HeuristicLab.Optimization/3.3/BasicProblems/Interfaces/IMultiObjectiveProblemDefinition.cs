@@ -22,8 +22,9 @@
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  public interface IMultiObjectiveProblemDefinition<TSolution> : IProblemDefinition
-  where TSolution : class, ISolution {
+  public interface IMultiObjectiveProblemDefinition<TEncoding, TSolution> : IProblemDefinition<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
     bool[] Maximization { get; }
     double[] Evaluate(TSolution individual, IRandom random);
     void Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);

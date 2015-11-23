@@ -31,7 +31,6 @@ using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.Problems.Binary;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
@@ -43,10 +42,10 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 400)]
   public class ParameterlessPopulationPyramid : BasicAlgorithm {
     public override Type ProblemType {
-      get { return typeof(BinaryProblem); }
+      get { return typeof(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>); }
     }
-    public new BinaryProblem Problem {
-      get { return (BinaryProblem)base.Problem; }
+    public new ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> Problem {
+      get { return (ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>)base.Problem; }
       set { base.Problem = value; }
     }
 
@@ -182,7 +181,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       // Don't add things you have seen
       if (seen.Contains(solution)) return;
       if (level == pyramid.Count) {
-        pyramid.Add(new Population(tracker.Length, random));
+        pyramid.Add(new Population(tracker.Encoding.Length, random));
       }
       var copied = (BinaryVector)solution.Clone();
       pyramid[level].Add(copied);
@@ -192,7 +191,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     // In the GECCO paper, Figure 1
     private double iterate() {
       // Create a random solution
-      BinaryVector solution = new BinaryVector(tracker.Length);
+      BinaryVector solution = new BinaryVector(tracker.Encoding.Length);
       for (int i = 0; i < solution.Length; i++) {
         solution[i] = random.Next(2) == 1;
       }
@@ -248,7 +247,8 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
         try {
           fitness = iterate();
           cancellationToken.ThrowIfCancellationRequested();
-        } finally {
+        }
+        finally {
           ResultsEvaluations = tracker.Evaluations;
           ResultsBestSolution = new BinaryVector(tracker.BestSolution);
           ResultsBestQuality = tracker.BestQuality;

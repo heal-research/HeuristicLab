@@ -28,12 +28,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class MultiObjectiveProblem<TSolution> : Problem<TSolution, MultiObjectiveEvaluator<TSolution>>, IMultiObjectiveHeuristicOptimizationProblem, IMultiObjectiveProblemDefinition<TSolution>
-  where TSolution : class, ISolution {
+  public abstract class MultiObjectiveProblem<TEncoding, TSolution> : Problem<TEncoding, TSolution, MultiObjectiveEvaluator<TSolution>>, IMultiObjectiveHeuristicOptimizationProblem, IMultiObjectiveProblemDefinition<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
     [StorableConstructor]
     protected MultiObjectiveProblem(bool deserializing) : base(deserializing) { }
 
-    protected MultiObjectiveProblem(MultiObjectiveProblem<TSolution> original, Cloner cloner)
+    protected MultiObjectiveProblem(MultiObjectiveProblem<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
       ParameterizeOperators();
     }
