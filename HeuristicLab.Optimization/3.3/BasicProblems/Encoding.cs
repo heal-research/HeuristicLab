@@ -30,8 +30,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("Encoding", "Base class for describing different encodings.")]
   [StorableClass]
-  public abstract class Encoding<T> : ParameterizedNamedItem, IEncoding
-    where T : class,ISolutionCreator {
+  public abstract class Encoding<TSolution> : ParameterizedNamedItem, IEncoding<TSolution>
+    where TSolution : class,ISolution {
     public override sealed bool CanChangeName {
       get { return false; }
     }
@@ -47,28 +47,21 @@ namespace HeuristicLab.Optimization {
     public IEnumerable<IOperator> Operators {
       get { return encodingOperators; }
       set {
-        if (!value.OfType<T>().Any())
+        if (!value.OfType<ISolutionCreator<TSolution>>().Any())
           throw new ArgumentException("The provided operators contain no suitable solution creator");
         encodingOperators.Clear();
         foreach (var op in value) encodingOperators.Add(op);
 
-        T newSolutionCreator = (T)encodingOperators.FirstOrDefault(o => o.GetType() == solutionCreator.GetType()) ??
-                               encodingOperators.OfType<T>().First();
+        ISolutionCreator<TSolution> newSolutionCreator = (ISolutionCreator<TSolution>)encodingOperators.FirstOrDefault(o => o.GetType() == solutionCreator.GetType()) ??
+                               encodingOperators.OfType<ISolutionCreator<TSolution>>().First();
         SolutionCreator = newSolutionCreator;
         OnOperatorsChanged();
       }
     }
 
-    ISolutionCreator IEncoding.SolutionCreator {
-      get { return SolutionCreator; }
-      set {
-        if (!(value is T)) throw new ArgumentException(string.Format("Cannot assign the solution creator {0} to the encoding {1}.", value.GetType().GetPrettyName(), GetType().GetPrettyName()));
-        SolutionCreator = (T)value;
-      }
-    }
     [Storable]
-    private T solutionCreator;
-    public T SolutionCreator {
+    private ISolutionCreator<TSolution> solutionCreator;
+    public ISolutionCreator<TSolution> SolutionCreator {
       get {
         return solutionCreator;
       }
@@ -84,7 +77,7 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     protected Encoding(bool deserializing) : base(deserializing) { }
-    protected Encoding(Encoding<T> original, Cloner cloner)
+    protected Encoding(Encoding<TSolution> original, Cloner cloner)
       : base(original, cloner) {
       encodingOperators = cloner.Clone(original.encodingOperators);
       solutionCreator = cloner.Clone(original.solutionCreator);
@@ -92,10 +85,6 @@ namespace HeuristicLab.Optimization {
     protected Encoding(string name)
       : base(name) {
       Parameters.Add(new FixedValueParameter<ReadOnlyItemSet<IOperator>>(name + ".Operators", "The operators that the encoding specifies.", encodingOperators.AsReadOnly()));
-    }
-
-    public virtual Individual GetIndividual(IScope scope) {
-      return new SingleEncodingIndividual(this, scope);
     }
 
     protected bool AddOperator(IOperator @operator) {

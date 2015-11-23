@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
-  public abstract class SymbolicExpressionTreeProblem : SingleObjectiveBasicProblem<SymbolicExpressionTreeEncoding> {
+  public abstract class SymbolicExpressionTreeProblem : SingleObjectiveProblem<SymbolicExpressionTreeEncoding> {
 
     // persistence
     [StorableConstructor]

@@ -33,10 +33,15 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Binary {
   [StorableClass]
-  public abstract class BinaryProblem : SingleObjectiveBasicProblem<BinaryVectorEncoding> {
+  public abstract class BinaryProblem : SingleObjectiveProblem<BinaryVector> {
     public virtual int Length {
       get { return Encoding.Length; }
       set { Encoding.Length = value; }
+    }
+
+    public new BinaryVectorEncoding Encoding {
+      get { return (BinaryVectorEncoding)base.Encoding; }
+      set { base.Encoding = value; }
     }
 
     private IFixedValueParameter<IntValue> LengthParameter {
@@ -59,20 +64,12 @@ namespace HeuristicLab.Problems.Binary {
       : base() {
       var lengthParameter = new FixedValueParameter<IntValue>("Length", "The length of the BinaryVector.", new IntValue(10));
       Parameters.Add(lengthParameter);
+      Encoding = new BinaryVectorEncoding();
       Encoding.LengthParameter = lengthParameter;
       RegisterEventHandlers();
     }
 
-    public virtual bool IsBetter(double quality, double bestQuality) {
-      return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
-    }
-
-    public abstract double Evaluate(BinaryVector vector, IRandom random);
-    public sealed override double Evaluate(Individual individual, IRandom random) {
-      return Evaluate(individual.BinaryVector(), random);
-    }
-
-    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(BinaryVector[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       base.Analyze(individuals, qualities, results, random);
       var orderedIndividuals = individuals.Zip(qualities, (i, q) => new { Individual = i, Quality = q }).OrderBy(z => z.Quality);
       var best = Maximization ? orderedIndividuals.Last().Individual : orderedIndividuals.First().Individual;
@@ -80,7 +77,7 @@ namespace HeuristicLab.Problems.Binary {
       if (!results.ContainsKey("Best Solution")) {
         results.Add(new Result("Best Solution", typeof(BinaryVector)));
       }
-      results["Best Solution"].Value = (IItem)best.BinaryVector().Clone();
+      results["Best Solution"].Value = (IItem)best.Clone();
     }
 
     protected override void OnEncodingChanged() {

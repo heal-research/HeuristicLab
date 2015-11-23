@@ -27,7 +27,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for creating vectors of bool-valued data.
   /// </summary>
-  public interface IBinaryVectorCreator : IBinaryVectorOperator, ISolutionCreator {
+  public interface IBinaryVectorCreator : IBinaryVectorOperator, ISolutionCreator<BinaryVector> {
     IValueLookupParameter<IntValue> LengthParameter { get; }
     ILookupParameter<BinaryVector> BinaryVectorParameter { get; }
   }

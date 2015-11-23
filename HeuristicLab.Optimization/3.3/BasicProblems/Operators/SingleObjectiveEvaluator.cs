@@ -30,38 +30,39 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective Evaluator", "Calls the script's Evaluate method to get the quality value of the parameter vector.")]
   [StorableClass]
-  public sealed class SingleObjectiveEvaluator : InstrumentedOperator, ISingleObjectiveEvaluationOperator, IStochasticOperator {
+  public sealed class SingleObjectiveEvaluator<TSolution> : InstrumentedOperator, ISingleObjectiveEvaluationOperator<TSolution>, IStochasticOperator
+  where TSolution : class, ISolution {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public ILookupParameter<IEncoding> EncodingParameter {
-      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
+      get { return (ILookupParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
       get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
 
-    public Func<Individual, IRandom, double> EvaluateFunc { get; set; }
+    public Func<TSolution, IRandom, double> EvaluateFunc { get; set; }
 
     [StorableConstructor]
     private SingleObjectiveEvaluator(bool deserializing) : base(deserializing) { }
-    private SingleObjectiveEvaluator(SingleObjectiveEvaluator original, Cloner cloner) : base(original, cloner) { }
+    private SingleObjectiveEvaluator(SingleObjectiveEvaluator<TSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
     }
 
-    public override IDeepCloneable Clone(Cloner cloner) { return new SingleObjectiveEvaluator(this, cloner); }
+    public override IDeepCloneable Clone(Cloner cloner) { return new SingleObjectiveEvaluator<TSolution>(this, cloner); }
 
     public override IOperation InstrumentedApply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
-      var individual = encoding.GetIndividual(ExecutionContext.Scope);
-      QualityParameter.ActualValue = new DoubleValue(EvaluateFunc(individual, random));
+      var solution = ScopeUtil.GetSolution(ExecutionContext.Scope, encoding);
+      QualityParameter.ActualValue = new DoubleValue(EvaluateFunc(solution, random));
       return base.InstrumentedApply();
     }
   }

@@ -28,22 +28,22 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class MultiObjectiveBasicProblem<TEncoding> : BasicProblem<TEncoding, MultiObjectiveEvaluator>, IMultiObjectiveHeuristicOptimizationProblem, IMultiObjectiveProblemDefinition
-  where TEncoding : class, IEncoding {
+  public abstract class MultiObjectiveProblem<TSolution> : Problem<TSolution, MultiObjectiveEvaluator<TSolution>>, IMultiObjectiveHeuristicOptimizationProblem, IMultiObjectiveProblemDefinition<TSolution>
+  where TSolution : class, ISolution {
     [StorableConstructor]
-    protected MultiObjectiveBasicProblem(bool deserializing) : base(deserializing) { }
+    protected MultiObjectiveProblem(bool deserializing) : base(deserializing) { }
 
-    protected MultiObjectiveBasicProblem(MultiObjectiveBasicProblem<TEncoding> original, Cloner cloner)
+    protected MultiObjectiveProblem(MultiObjectiveProblem<TSolution> original, Cloner cloner)
       : base(original, cloner) {
       ParameterizeOperators();
     }
 
-    protected MultiObjectiveBasicProblem()
+    protected MultiObjectiveProblem()
       : base() {
       Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()));
 
       Operators.Add(Evaluator);
-      Operators.Add(new MultiObjectiveAnalyzer());
+      Operators.Add(new MultiObjectiveAnalyzer<TSolution>());
 
       ParameterizeOperators();
     }
@@ -54,26 +54,27 @@ namespace HeuristicLab.Optimization {
     }
 
     public abstract bool[] Maximization { get; }
-    public abstract double[] Evaluate(Individual individual, IRandom random);
-    public virtual void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
+    public abstract double[] Evaluate(TSolution individual, IRandom random);
+    public virtual void Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
 
-    protected override void OnOperatorsChanged() {
-      base.OnOperatorsChanged();
-      if (Encoding != null) {
-        PruneSingleObjectiveOperators(Encoding);
-        var multiEncoding = Encoding as MultiEncoding;
-        if (multiEncoding != null) {
-          foreach (var encoding in multiEncoding.Encodings.ToList()) {
-            PruneSingleObjectiveOperators(encoding);
-          }
-        }
-      }
-    }
+    //TODO
+    //protected override void OnOperatorsChanged() {
+    //  base.OnOperatorsChanged();
+    //  if (Encoding != null) {
+    //    PruneSingleObjectiveOperators(Encoding);
+    //    var multiEncoding = Encoding as MultiEncoding;
+    //    if (multiEncoding != null) {
+    //      foreach (var encoding in multiEncoding.Encodings.ToList()) {
+    //        PruneSingleObjectiveOperators(encoding);
+    //      }
+    //    }
+    //  }
+    //}
 
-    private void PruneSingleObjectiveOperators(IEncoding encoding) {
-      if (encoding != null && encoding.Operators.Any(x => x is ISingleObjectiveOperator && !(x is IMultiObjectiveOperator)))
-        encoding.Operators = encoding.Operators.Where(x => !(x is ISingleObjectiveOperator) || x is IMultiObjectiveOperator).ToList();
-    }
+    //private void PruneSingleObjectiveOperators(IEncoding encoding) {
+    //  if (encoding != null && encoding.Operators.Any(x => x is ISingleObjectiveOperator && !(x is IMultiObjectiveOperator)))
+    //    encoding.Operators = encoding.Operators.Where(x => !(x is ISingleObjectiveOperator) || x is IMultiObjectiveOperator).ToList();
+    //}
 
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
@@ -81,9 +82,9 @@ namespace HeuristicLab.Optimization {
     }
 
     private void ParameterizeOperators() {
-      foreach (var op in Operators.OfType<IMultiObjectiveEvaluationOperator>())
+      foreach (var op in Operators.OfType<IMultiObjectiveEvaluationOperator<TSolution>>())
         op.EvaluateFunc = Evaluate;
-      foreach (var op in Operators.OfType<IMultiObjectiveAnalysisOperator>())
+      foreach (var op in Operators.OfType<IMultiObjectiveAnalysisOperator<TSolution>>())
         op.AnalyzeAction = Analyze;
     }
 

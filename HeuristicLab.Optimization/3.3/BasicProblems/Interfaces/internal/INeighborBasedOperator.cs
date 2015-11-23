@@ -24,7 +24,8 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  internal interface INeighborBasedOperator : IEncodingOperator {
-    Func<Individual, IRandom, IEnumerable<Individual>> GetNeighborsFunc { get; set; }
+  internal interface INeighborBasedOperator<TSolution> : IEncodingOperator<TSolution>
+  where TSolution : class, ISolution {
+    Func<TSolution, IRandom, IEnumerable<TSolution>> GetNeighborsFunc { get; set; }
   }
 }

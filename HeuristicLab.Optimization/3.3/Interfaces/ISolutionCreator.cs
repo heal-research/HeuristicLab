@@ -26,4 +26,6 @@ namespace HeuristicLab.Optimization {
   /// An interface which represents an operator for creating new solutions.
   /// </summary>
   public interface ISolutionCreator : IOperator { }
+
+  public interface ISolutionCreator<TSolution> : ISolutionCreator where TSolution : class, ISolution { }
 }

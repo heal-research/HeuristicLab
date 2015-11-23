@@ -29,9 +29,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class SingleObjectiveBasicProblem<TEncoding> : BasicProblem<TEncoding, SingleObjectiveEvaluator>,
-    ISingleObjectiveProblemDefinition, ISingleObjectiveHeuristicOptimizationProblem
-  where TEncoding : class, IEncoding {
+  public abstract class SingleObjectiveProblem<TSolution> : Problem<TSolution, SingleObjectiveEvaluator<TSolution>>,
+    ISingleObjectiveProblemDefinition<TSolution>, ISingleObjectiveHeuristicOptimizationProblem
+  where TSolution : class, ISolution {
 
     protected IValueParameter<DoubleValue> BestKnownQualityParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
@@ -49,24 +49,24 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    protected SingleObjectiveBasicProblem(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveProblem(bool deserializing) : base(deserializing) { }
 
-    protected SingleObjectiveBasicProblem(SingleObjectiveBasicProblem<TEncoding> original, Cloner cloner)
+    protected SingleObjectiveProblem(SingleObjectiveProblem<TSolution> original, Cloner cloner)
       : base(original, cloner) {
       ParameterizeOperators();
     }
 
-    protected SingleObjectiveBasicProblem()
+    protected SingleObjectiveProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
       Parameters.Add(new OptionalValueParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution of this problem."));
 
       Operators.Add(Evaluator);
-      Operators.Add(new SingleObjectiveAnalyzer());
-      Operators.Add(new SingleObjectiveImprover());
-      Operators.Add(new SingleObjectiveMoveEvaluator());
-      Operators.Add(new SingleObjectiveMoveGenerator());
-      Operators.Add(new SingleObjectiveMoveMaker());
+      Operators.Add(new SingleObjectiveAnalyzer<TSolution>());
+      Operators.Add(new SingleObjectiveImprover<TSolution>());
+      Operators.Add(new SingleObjectiveMoveEvaluator<TSolution>());
+      Operators.Add(new SingleObjectiveMoveGenerator<TSolution>());
+      Operators.Add(new SingleObjectiveMoveMaker<TSolution>());
 
       ParameterizeOperators();
     }
@@ -77,29 +77,34 @@ namespace HeuristicLab.Optimization {
     }
 
     public abstract bool Maximization { get; }
-    public abstract double Evaluate(Individual individual, IRandom random);
-    public virtual void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) { }
-    public virtual IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
-      return Enumerable.Empty<Individual>();
+    public abstract double Evaluate(TSolution individual, IRandom random);
+    public virtual void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) { }
+    public virtual IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random) {
+      return Enumerable.Empty<TSolution>();
     }
 
-    protected override void OnOperatorsChanged() {
-      base.OnOperatorsChanged();
-      if (Encoding != null) {
-        PruneMultiObjectiveOperators(Encoding);
-        var multiEncoding = Encoding as MultiEncoding;
-        if (multiEncoding != null) {
-          foreach (var encoding in multiEncoding.Encodings.ToList()) {
-            PruneMultiObjectiveOperators(encoding);
-          }
-        }
-      }
+    public virtual bool IsBetter(double quality, double bestQuality) {
+      return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
     }
 
-    private void PruneMultiObjectiveOperators(IEncoding encoding) {
-      if (encoding.Operators.Any(x => x is IMultiObjectiveOperator && !(x is ISingleObjectiveOperator)))
-        encoding.Operators = encoding.Operators.Where(x => !(x is IMultiObjectiveOperator) || x is ISingleObjectiveOperator).ToList();
-    }
+    //TODO
+    //protected override void OnOperatorsChanged() {
+    //  base.OnOperatorsChanged();
+    //  if (Encoding != null) {
+    //    PruneMultiObjectiveOperators(Encoding);
+    //    var multiEncoding = Encoding as MultiEncoding;
+    //    if (multiEncoding != null) {
+    //      foreach (var encoding in multiEncoding.Encodings.ToList()) {
+    //        PruneMultiObjectiveOperators(encoding);
+    //      }
+    //    }
+    //  }
+    //}
+
+    //private void PruneMultiObjectiveOperators(IEncoding<TSolution> encoding) {
+    //  if (encoding.Operators.Any(x => x is IMultiObjectiveOperator && !(x is ISingleObjectiveOperator)))
+    //    encoding.Operators = encoding.Operators.Where(x => !(x is IMultiObjectiveOperator) || x is ISingleObjectiveOperator).ToList();
+    //}
 
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
@@ -107,11 +112,11 @@ namespace HeuristicLab.Optimization {
     }
 
     private void ParameterizeOperators() {
-      foreach (var op in Operators.OfType<ISingleObjectiveEvaluationOperator>())
+      foreach (var op in Operators.OfType<ISingleObjectiveEvaluationOperator<TSolution>>())
         op.EvaluateFunc = Evaluate;
-      foreach (var op in Operators.OfType<ISingleObjectiveAnalysisOperator>())
+      foreach (var op in Operators.OfType<ISingleObjectiveAnalysisOperator<TSolution>>())
         op.AnalyzeAction = Analyze;
-      foreach (var op in Operators.OfType<INeighborBasedOperator>())
+      foreach (var op in Operators.OfType<INeighborBasedOperator<TSolution>>())
         op.GetNeighborsFunc = GetNeighbors;
     }
 

@@ -33,7 +33,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveGenerator", "Calls the GetNeighbors method of the problem definition to obtain the moves.")]
   [StorableClass]
-  public class SingleObjectiveMoveGenerator : SingleSuccessorOperator, INeighborBasedOperator, IMultiMoveGenerator, IStochasticOperator, ISingleObjectiveMoveOperator {
+  public class SingleObjectiveMoveGenerator<TSolution> : SingleSuccessorOperator, INeighborBasedOperator<TSolution>, IMultiMoveGenerator, IStochasticOperator, ISingleObjectiveMoveOperator
+  where TSolution : class, ISolution {
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
@@ -42,37 +43,37 @@ namespace HeuristicLab.Optimization {
       get { return (IValueLookupParameter<IntValue>)Parameters["SampleSize"]; }
     }
 
-    public ILookupParameter<IEncoding> EncodingParameter {
-      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
+      get { return (ILookupParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
     }
 
-    public Func<Individual, IRandom, IEnumerable<Individual>> GetNeighborsFunc { get; set; }
+    public Func<TSolution, IRandom, IEnumerable<TSolution>> GetNeighborsFunc { get; set; }
 
     [StorableConstructor]
     protected SingleObjectiveMoveGenerator(bool deserializing) : base(deserializing) { }
-    protected SingleObjectiveMoveGenerator(SingleObjectiveMoveGenerator original, Cloner cloner)
+    protected SingleObjectiveMoveGenerator(SingleObjectiveMoveGenerator<TSolution> original, Cloner cloner)
       : base(original, cloner) { }
     public SingleObjectiveMoveGenerator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
       Parameters.Add(new ValueLookupParameter<IntValue>("SampleSize", "The number of moves to sample."));
-      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveMoveGenerator(this, cloner);
+      return new SingleObjectiveMoveGenerator<TSolution>(this, cloner);
     }
 
     public override IOperation Apply() {
       var random = RandomParameter.ActualValue;
       var sampleSize = SampleSizeParameter.ActualValue.Value;
       var encoding = EncodingParameter.ActualValue;
-      var individual = encoding.GetIndividual(ExecutionContext.Scope);
-      var nbhood = GetNeighborsFunc(individual, random).Take(sampleSize).ToList();
+      var solution = ScopeUtil.GetSolution(ExecutionContext.Scope, encoding);
+      var nbhood = GetNeighborsFunc(solution, random).Take(sampleSize).ToList();
 
       var moveScopes = new Scope[nbhood.Count];
       for (int i = 0; i < moveScopes.Length; i++) {
         moveScopes[i] = new Scope(i.ToString(CultureInfo.InvariantCulture.NumberFormat));
-        nbhood[i].CopyToScope(moveScopes[i]);
+        ScopeUtil.CopySolutionToScope(moveScopes[i], encoding, nbhood[i]);
       }
       ExecutionContext.Scope.SubScopes.AddRange(moveScopes);
 

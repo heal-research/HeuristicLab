@@ -37,7 +37,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   [Item("Grammatical Evolution Artificial Ant Problem (GE)", "Represents the Artificial Ant problem, implemented in Grammatical Evolution.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
   [StorableClass]
-  public sealed class GEArtificialAntProblem : SingleObjectiveBasicProblem<IntegerVectorEncoding>, IStorableContent {
+  public sealed class GEArtificialAntProblem : SingleObjectiveProblem<IntegerVectorEncoding>, IStorableContent {
     public string Filename { get; set; }
 
     #region Parameter Properties

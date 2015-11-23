@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [Item("External Evaluation Problem (multi-objective)", "A multi-objective problem that is evaluated in a different process.")]
   [Creatable(CreatableAttribute.Categories.ExternalEvaluationProblems, Priority = 200)]
   [StorableClass]
-  public class MultiObjectiveExternalEvaluationProblem : MultiObjectiveBasicProblem<IEncoding>, IExternalEvaluationProblem {
+  public class MultiObjectiveExternalEvaluationProblem : MultiObjectiveProblem<IEncoding>, IExternalEvaluationProblem {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }

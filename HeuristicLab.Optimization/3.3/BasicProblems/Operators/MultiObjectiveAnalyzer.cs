@@ -32,11 +32,12 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("Multi-objective Analyzer", "Calls the Analyze method of the problem definition.")]
   [StorableClass]
-  public class MultiObjectiveAnalyzer : SingleSuccessorOperator, IMultiObjectiveAnalysisOperator, IStochasticOperator {
+  public class MultiObjectiveAnalyzer<TSolution> : SingleSuccessorOperator, IMultiObjectiveAnalysisOperator<TSolution>, IStochasticOperator
+  where TSolution : class, ISolution {
     public bool EnabledByDefault { get { return true; } }
 
-    public ILookupParameter<IEncoding> EncodingParameter {
-      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
+      get { return (ILookupParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
     }
 
     public IScopeTreeLookupParameter<DoubleArray> QualitiesParameter {
@@ -51,20 +52,20 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public Action<Individual[], double[][], ResultCollection, IRandom> AnalyzeAction { get; set; }
+    public Action<TSolution[], double[][], ResultCollection, IRandom> AnalyzeAction { get; set; }
 
     [StorableConstructor]
     protected MultiObjectiveAnalyzer(bool deserializing) : base(deserializing) { }
-    protected MultiObjectiveAnalyzer(MultiObjectiveAnalyzer original, Cloner cloner) : base(original, cloner) { }
+    protected MultiObjectiveAnalyzer(MultiObjectiveAnalyzer<TSolution> original, Cloner cloner) : base(original, cloner) { }
     public MultiObjectiveAnalyzer() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleArray>("Qualities", "The qualities of the parameter vector."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The results collection to write to."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiObjectiveAnalyzer(this, cloner);
+      return new MultiObjectiveAnalyzer<TSolution>(this, cloner);
     }
 
     public override IOperation Apply() {
@@ -76,7 +77,7 @@ namespace HeuristicLab.Optimization {
       for (var i = 0; i < QualitiesParameter.Depth; i++)
         scopes = scopes.Select(x => (IEnumerable<IScope>)x.SubScopes).Aggregate((a, b) => a.Concat(b));
 
-      var individuals = scopes.Select(encoding.GetIndividual).ToArray();
+      var individuals = scopes.Select(s => ScopeUtil.GetSolution(s, encoding)).ToArray();
       AnalyzeAction(individuals, QualitiesParameter.ActualValue.Select(x => x.ToArray()).ToArray(), results, random);
       return base.Apply();
     }

@@ -30,14 +30,15 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveEvaluator", "Evaluates a parameter vector that results from a move.")]
   [StorableClass]
-  public class SingleObjectiveMoveEvaluator : SingleSuccessorOperator, ISingleObjectiveEvaluationOperator, ISingleObjectiveMoveEvaluator, IStochasticOperator, ISingleObjectiveMoveOperator {
+  public class SingleObjectiveMoveEvaluator<TSolution> : SingleSuccessorOperator, ISingleObjectiveEvaluationOperator<TSolution>, ISingleObjectiveMoveEvaluator, IStochasticOperator, ISingleObjectiveMoveOperator
+  where TSolution : class, ISolution {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
     }
 
-    public ILookupParameter<IEncoding> EncodingParameter {
-      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
+    public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
+      get { return (ILookupParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -48,26 +49,26 @@ namespace HeuristicLab.Optimization {
       get { return (ILookupParameter<DoubleValue>)Parameters["MoveQuality"]; }
     }
 
-    public Func<Individual, IRandom, double> EvaluateFunc { get; set; }
+    public Func<TSolution, IRandom, double> EvaluateFunc { get; set; }
 
     [StorableConstructor]
     protected SingleObjectiveMoveEvaluator(bool deserializing) : base(deserializing) { }
-    protected SingleObjectiveMoveEvaluator(SingleObjectiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
+    protected SingleObjectiveMoveEvaluator(SingleObjectiveMoveEvaluator<TSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveEvaluator() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
-      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveMoveEvaluator(this, cloner);
+      return new SingleObjectiveMoveEvaluator<TSolution>(this, cloner);
     }
 
     public override IOperation Apply() {
       var random = RandomParameter.ActualValue;
       var encoding = EncodingParameter.ActualValue;
-      var individual = encoding.GetIndividual(ExecutionContext.Scope);
+      var individual = ScopeUtil.GetSolution(ExecutionContext.Scope, encoding);
       MoveQualityParameter.ActualValue = new DoubleValue(EvaluateFunc(individual, random));
       return base.Apply();
     }

@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("BinaryVectorEncoding", "Describes a binary vector encoding.")]
   [StorableClass]
-  public sealed class BinaryVectorEncoding : Encoding<IBinaryVectorCreator> {
+  public sealed class BinaryVectorEncoding : Encoding<BinaryVector> {
     #region Encoding Parameters
     [Storable]
     private IFixedValueParameter<IntValue> lengthParameter;
@@ -164,16 +164,5 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       }
     }
     #endregion
-  }
-
-  public static class IndividualExtensionMethods {
-    public static BinaryVector BinaryVector(this Individual individual) {
-      var encoding = individual.GetEncoding<BinaryVectorEncoding>();
-      return individual.BinaryVector(encoding.Name);
-    }
-
-    public static BinaryVector BinaryVector(this Individual individual, string name) {
-      return (BinaryVector)individual[name];
-    }
   }
 }

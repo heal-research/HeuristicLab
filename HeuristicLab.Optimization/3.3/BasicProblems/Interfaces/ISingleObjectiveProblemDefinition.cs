@@ -23,10 +23,11 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  public interface ISingleObjectiveProblemDefinition : IProblemDefinition {
+  public interface ISingleObjectiveProblemDefinition<TSolution> : IProblemDefinition
+  where TSolution : class, ISolution {
     bool Maximization { get; }
-    double Evaluate(Individual individual, IRandom random);
-    void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random);
-    IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random);
+    double Evaluate(TSolution individual, IRandom random);
+    void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
+    IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random);
   }
 }

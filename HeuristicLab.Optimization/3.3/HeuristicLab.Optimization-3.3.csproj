@@ -120,11 +120,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\BasicAlgorithm.cs" />
-    <Compile Include="BasicProblems\BasicProblem.cs" />
+    <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblem.cs" />
+    <Compile Include="BasicProblems\Problem.cs" />
     <Compile Include="BasicProblems\Encoding.cs" />
-    <Compile Include="BasicProblems\Individuals\Individual.cs" />
-    <Compile Include="BasicProblems\Individuals\MultiEncodingIndividual.cs" />
-    <Compile Include="BasicProblems\Individuals\SingleEncodingIndividual.cs" />
     <Compile Include="BasicProblems\Interfaces\IEncoding.cs" />
     <Compile Include="BasicProblems\Interfaces\IEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiEncodingOperator.cs" />
@@ -137,21 +135,18 @@
     <Compile Include="BasicProblems\Interfaces\IProblemDefinition.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveMoveOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblemDefinition.cs" />
-    <Compile Include="BasicProblems\MultiEncoding.cs" />
-    <Compile Include="BasicProblems\MultiObjectiveBasicProblem.cs" />
-    <Compile Include="BasicProblems\Operators\MultiEncodingCreator.cs" />
-    <Compile Include="BasicProblems\Operators\MultiEncodingCrossover.cs" />
-    <Compile Include="BasicProblems\Operators\MultiEncodingManipulator.cs" />
-    <Compile Include="BasicProblems\Operators\MultiEncodingOperator.cs" />
+    <Compile Include="BasicProblems\Interfaces\ISolution.cs" />
+    <Compile Include="BasicProblems\MultiObjectiveProblem.cs" />
     <Compile Include="BasicProblems\Operators\MultiObjectiveAnalyzer.cs" />
     <Compile Include="BasicProblems\Operators\MultiObjectiveEvaluator.cs" />
+    <Compile Include="BasicProblems\Operators\ScopeUtil.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveAnalyzer.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveEvaluator.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveImprover.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveEvaluator.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveGenerator.cs" />
     <Compile Include="BasicProblems\Operators\SingleObjectiveMoveMaker.cs" />
-    <Compile Include="BasicProblems\SingleObjectiveBasicProblem.cs" />
+    <Compile Include="BasicProblems\SingleObjectiveProblem.cs" />
     <Compile Include="Interfaces\ILocalImprovementAlgorithmOperator.cs" />
     <Compile Include="Interfaces\IMultiObjectiveOperator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveOperator.cs" />
@@ -327,7 +322,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="BasicProblems\Individuals\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

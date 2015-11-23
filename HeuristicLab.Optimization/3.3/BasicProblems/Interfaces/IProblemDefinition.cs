@@ -21,6 +21,6 @@
 
 namespace HeuristicLab.Optimization {
   public interface IProblemDefinition {
-    IEncoding Encoding { get; }
+    //IEncoding Encoding { get; }
   }
 }

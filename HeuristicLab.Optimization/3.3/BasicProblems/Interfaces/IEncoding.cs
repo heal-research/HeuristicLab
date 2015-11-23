@@ -24,15 +24,17 @@ using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  public interface IEncoding : IParameterizedNamedItem {
-    ISolutionCreator SolutionCreator { get; set; }
+  public interface IEncoding<TSolution> : IParameterizedNamedItem
+    where TSolution : class, ISolution {
+    ISolutionCreator<TSolution> SolutionCreator { get; set; }
     IEnumerable<IOperator> Operators { get; set; }
 
-    Individual GetIndividual(IScope scope);
     void ConfigureOperator(IOperator @operator);
     void ConfigureOperators(IEnumerable<IOperator> operators);
 
     event EventHandler SolutionCreatorChanged;
     event EventHandler OperatorsChanged;
   }
+
+
 }

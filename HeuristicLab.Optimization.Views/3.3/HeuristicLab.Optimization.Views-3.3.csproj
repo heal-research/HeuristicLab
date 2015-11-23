@@ -141,12 +141,6 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
-    <Compile Include="CreateNewSingleEncodingDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CreateNewSingleEncodingDialog.Designer.cs">
-      <DependentUpon>CreateNewSingleEncodingDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="ISolutionSimilarityCalculatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -158,12 +152,6 @@
     </Compile>
     <Compile Include="ExperimentListView.Designer.cs">
       <DependentUpon>ExperimentListView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MultiEncodingView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MultiEncodingView.Designer.cs">
-      <DependentUpon>MultiEncodingView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="ProblemView.cs">
@@ -425,11 +413,6 @@
       <Name>HeuristicLab.Analysis-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="CreateNewSingleEncodingDialog.resx">
-      <DependentUpon>CreateNewSingleEncodingDialog.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

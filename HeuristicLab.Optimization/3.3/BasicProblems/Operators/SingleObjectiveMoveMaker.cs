@@ -30,9 +30,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Optimization {
   [Item("Single-objective MoveMaker", "Applies a move.")]
   [StorableClass]
-  public class SingleObjectiveMoveMaker : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator {
-    public ILookupParameter<IEncoding> EncodingParameter {
-      get { return (ILookupParameter<IEncoding>)Parameters["Encoding"]; }
+  public class SingleObjectiveMoveMaker<TSolution> : InstrumentedOperator, IMoveMaker, ISingleObjectiveMoveOperator
+  where TSolution : class, ISolution {
+    public ILookupParameter<IEncoding<TSolution>> EncodingParameter {
+      get { return (ILookupParameter<IEncoding<TSolution>>)Parameters["Encoding"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -45,23 +46,23 @@ namespace HeuristicLab.Optimization {
 
     [StorableConstructor]
     protected SingleObjectiveMoveMaker(bool deserializing) : base(deserializing) { }
-    protected SingleObjectiveMoveMaker(SingleObjectiveMoveMaker original, Cloner cloner) : base(original, cloner) { }
+    protected SingleObjectiveMoveMaker(SingleObjectiveMoveMaker<TSolution> original, Cloner cloner) : base(original, cloner) { }
     public SingleObjectiveMoveMaker() {
-      Parameters.Add(new LookupParameter<IEncoding>("Encoding", "An item that holds the problem's encoding."));
+      Parameters.Add(new LookupParameter<IEncoding<TSolution>>("Encoding", "An item that holds the problem's encoding."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of the parameter vector."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The quality of the move."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveMoveMaker(this, cloner);
+      return new SingleObjectiveMoveMaker<TSolution>(this, cloner);
     }
 
     public override IOperation InstrumentedApply() {
       if (MoveQualityParameter.ActualValue == null) throw new InvalidOperationException("Move has not been evaluated!");
 
       var encoding = EncodingParameter.ActualValue;
-      var individual = encoding.GetIndividual(ExecutionContext.Scope);
-      individual.CopyToScope(ExecutionContext.Scope.Parent.Parent);
+      var solution = ScopeUtil.GetSolution(ExecutionContext.Scope, encoding);
+      ScopeUtil.CopySolutionToScope(ExecutionContext.Scope.Parent.Parent, encoding, solution);
 
       if (QualityParameter.ActualValue == null) QualityParameter.ActualValue = new DoubleValue(MoveQualityParameter.ActualValue.Value);
       else QualityParameter.ActualValue.Value = MoveQualityParameter.ActualValue.Value;

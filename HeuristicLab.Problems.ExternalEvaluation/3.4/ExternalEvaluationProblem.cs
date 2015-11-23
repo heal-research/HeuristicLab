@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableClass]
   // BackwardsCompatibility3.3
   // Rename class to SingleObjectiveExternalEvaluationProblem
-  public class ExternalEvaluationProblem : SingleObjectiveBasicProblem<IEncoding>, IExternalEvaluationProblem {
+  public class ExternalEvaluationProblem : SingleObjectiveProblem<IEncoding>, IExternalEvaluationProblem {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
