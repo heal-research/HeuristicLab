@@ -36,6 +36,10 @@ namespace HeuristicLab.Problems.Programmable {
   public class SingleObjectiveProgrammableProblem<TEncoding, TSolution> : SingleObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
+    protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
+    protected static readonly string ENCODING_CLASS = "ENCODING_CLASS";
+    protected static readonly string SOLUTION_CLASS = "SOLUTION_CLASS";
+
     public static new Image StaticItemImage {
       get { return VSImageLibrary.Script; }
     }
@@ -60,9 +64,9 @@ namespace HeuristicLab.Problems.Programmable {
 
     [StorableConstructor]
     protected SingleObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
-    public SingleObjectiveProgrammableProblem(string codeTemplate)
+    public SingleObjectiveProgrammableProblem()
       : base() {
-      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>(codeTemplate) { Name = Name, Encoding = Encoding }));
+      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name, Encoding = Encoding }));
       Operators.Add(new BestScopeSolutionAnalyzer());
       RegisterEvents();
     }

@@ -81,6 +81,7 @@ namespace HeuristicLab.Problems.Programmable {
     protected ProblemDefinitionScript(bool deserializing) : base(deserializing) { }
     protected ProblemDefinitionScript(ProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
+      encoding = cloner.Clone(original.encoding);
       codeChanged = original.codeChanged;
     }
     protected ProblemDefinitionScript()

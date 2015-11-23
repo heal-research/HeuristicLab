@@ -35,8 +35,16 @@ namespace HeuristicLab.Problems.Programmable {
     [StorableConstructor]
     private SingleObjectiveBinaryVectorProgrammableProblem(bool deserializing) : base(deserializing) { }
     private SingleObjectiveBinaryVectorProgrammableProblem(SingleObjectiveBinaryVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+
     public SingleObjectiveBinaryVectorProgrammableProblem()
-      : base(string.Format(ScriptTemplates.CompiledSingleObjectiveProblemDefinition, "HeuristicLab.Encodings.BinaryVectorEncoding", "BinaryVectorEncoding", "BinaryVector")) { }
+      : base() {
+      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "BinaryVectorEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "BinaryVector");
+      ProblemScript.Code = codeTemplate;
+    }
+
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new SingleObjectiveBinaryVectorProgrammableProblem(this, cloner);

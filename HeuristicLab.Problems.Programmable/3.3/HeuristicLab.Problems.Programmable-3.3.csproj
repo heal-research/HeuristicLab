@@ -94,7 +94,7 @@
     </Compile>
     <Compile Include="ProblemDefinitionScriptException.cs" />
     <Compile Include="SingleObjectiveProgrammableProblems.cs" />
-    <Content Include="Templates\CompiledSingleObjectiveProblemDefinition.cs" />
+    <Content Include="Templates\CompiledSingleObjectiveProblemDefinition_Template.cs" />
     <Compile Include="Templates\ScriptTemplates.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -103,8 +103,9 @@
     <Compile Include="SingleObjectiveProgrammableProblem.cs" />
     <Compile Include="SingleObjectiveProblemDefinitionScript.cs" />
     <EmbeddedResource Include="Templates\ScriptTemplates.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ScriptTemplates.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="HeuristicLab.snk" />
     <None Include="Plugin.cs.frame" />

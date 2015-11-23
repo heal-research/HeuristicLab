@@ -20,6 +20,9 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.Programmable {
@@ -43,5 +46,39 @@ namespace HeuristicLab.Problems.Programmable {
       : base() {
       Encoding = encoding;
     }
+  }
+
+  public abstract class CompiledSingleObjectiveProblemDefinition<TEncoding, TSolution> : CompiledProblemDefinition<TEncoding, TSolution>, ISingleObjectiveProblemDefinition<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
+
+    protected CompiledSingleObjectiveProblemDefinition() : base() { }
+
+    protected CompiledSingleObjectiveProblemDefinition(TEncoding encoding)
+      : base(encoding) { }
+
+    #region ISingleObjectiveProblemDefinition<TEncoding,TSolution> Members
+    public abstract bool Maximization { get; }
+    public abstract double Evaluate(TSolution individual, IRandom random);
+    public abstract void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
+    public abstract IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random);
+    #endregion
+  }
+
+  public abstract class CompiledMultiObjectiveProblemDefinition<TEncoding, TSolution> : CompiledProblemDefinition<TEncoding, TSolution>, IMultiObjectiveProblemDefinition<TEncoding, TSolution>
+    where TEncoding : class, IEncoding<TSolution>
+    where TSolution : class, ISolution {
+
+    protected CompiledMultiObjectiveProblemDefinition() : base() { }
+
+    protected CompiledMultiObjectiveProblemDefinition(TEncoding encoding)
+      : base(encoding) { }
+
+    #region ISingleObjectiveProblemDefinition<TEncoding,TSolution> Members
+    public abstract bool[] Maximization { get; }
+    public abstract double[] Evaluate(TSolution individual, IRandom random);
+    public abstract void Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
+    public abstract IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random);
+    #endregion
   }
 }
