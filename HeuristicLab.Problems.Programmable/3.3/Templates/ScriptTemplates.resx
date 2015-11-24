@@ -118,10 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="CompiledMultiObjectiveProblemDefinition_Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>CompiledMultiObjectiveProblemDefinition_Template.cs;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="MultiObjectiveCombinedEncodingProblem_Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>MultiObjectiveCombinedEncodingProblem_Template.cs;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="CompiledSingleObjectiveProblemDefinition_Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>CompiledSingleObjectiveProblemDefinition_Template.cs;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="MultiObjectiveProblem_Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>MultiObjectiveProblem_Template.cs;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SingleObjectiveCombinedEncodingProblem_Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>SingleObjectiveCombinedEncodingProblem_Template.cs;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SingleObjectiveProblem_Template" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>SingleObjectiveProblem_Template.cs;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

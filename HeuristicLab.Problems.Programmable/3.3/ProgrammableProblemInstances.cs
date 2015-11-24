@@ -25,13 +25,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
+using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Programmable {
   #region single-objective
-  [Item("Binary Vector Programmable Problem (single-objective)", "Represents a binary vector single-objective problem that can be programmed with a script.")]
+  [Item("Binary Vector Problem (single-objective)", "Represents a binary vector single-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
   public sealed class SingleObjectiveBinaryVectorProgrammableProblem : SingleObjectiveProgrammableProblem<BinaryVectorEncoding, BinaryVector> {
@@ -42,7 +43,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     public SingleObjectiveBinaryVectorProgrammableProblem()
       : base() {
-      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "BinaryVectorEncoding");
       codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "BinaryVector");
@@ -55,7 +56,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  [Item("Multi Solution Programmable Problem (single-objective)", "Represents a multi solution single-objective problem that can be programmed with a script.")]
+  [Item("Combined Encoding Problem (single-objective)", "Represents a combined encoding single-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
   public sealed class SingleObjectiveMultiSolutionProgrammableProblem : SingleObjectiveProgrammableProblem<MultiEncoding, CombinedSolution> {
@@ -66,11 +67,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     public SingleObjectiveMultiSolutionProgrammableProblem()
       : base() {
-      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
-      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
-      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "MultiEncoding");
-      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "CombinedSolution");
-      ProblemScript.Code = codeTemplate;
+      ProblemScript.Code = ScriptTemplates.SingleObjectiveCombinedEncodingProblem_Template;
     }
 
 
@@ -79,7 +76,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  [Item("Integer Vector Programmable Problem (single-objective)", "Represents an integer vector single-objective problem that can be programmed with a script.")]
+  [Item("Integer Vector Problem (single-objective)", "Represents an integer vector single-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
   public sealed class SingleObjectiveIntegerVectorProgrammableProblem : SingleObjectiveProgrammableProblem<IntegerVectorEncoding, IntegerVector> {
@@ -90,7 +87,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     public SingleObjectiveIntegerVectorProgrammableProblem()
       : base() {
-      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.IntegerVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "IntegerVectorEncoding");
       codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "IntegerVector");
@@ -102,7 +99,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  [Item("Real Vector Programmable Problem (single-objective)", "Represents a real vector single-objective problem that can be programmed with a script.")]
+  [Item("Real Vector Problem (single-objective)", "Represents a real vector single-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
   public sealed class SingleObjectiveRealVectorProgrammableProblem : SingleObjectiveProgrammableProblem<RealVectorEncoding, RealVector> {
@@ -113,7 +110,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     public SingleObjectiveRealVectorProgrammableProblem()
       : base() {
-      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.RealVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "RealVectorEncoding");
       codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "RealVector");
@@ -125,21 +122,28 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  //[Item("Permutation Programmable Problem (single-objective)", "Represents a permutation single-objective problem that can be programmed with a script.")]
-  //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  //[StorableClass]
-  //public sealed class SingleObjectivePermutationProgrammableProblem : SingleObjectiveProgrammableProblem<PermutationEncoding, Permutation> {
+  [Item("Permutation Problem (single-objective)", "Represents a permutation single-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [StorableClass]
+  public sealed class SingleObjectivePermutationProgrammableProblem : SingleObjectiveProgrammableProblem<PermutationEncoding, Permutation> {
 
-  //  [StorableConstructor]
-  //  private SingleObjectivePermutationProgrammableProblem(bool deserializing) : base(deserializing) { }
-  //  private SingleObjectivePermutationProgrammableProblem(SingleObjectivePermutationProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-  //  public SingleObjectivePermutationProgrammableProblem()
-  //    : base(string.Format(ScriptTemplates.CompiledSingleObjectiveProblemDefinition, "HeuristicLab.Encodings.PermutationEncoding", "PermutationEncoding", "Permutation")) { }
+    [StorableConstructor]
+    private SingleObjectivePermutationProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectivePermutationProgrammableProblem(SingleObjectivePermutationProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
-  //  public override IDeepCloneable Clone(Cloner cloner) {
-  //    return new SingleObjectivePermutationProgrammableProblem(this, cloner);
-  //  }
-  //}
+    public SingleObjectivePermutationProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.PermutationEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "PermutationEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "Permutation");
+      ProblemScript.Code = codeTemplate;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SingleObjectivePermutationProgrammableProblem(this, cloner);
+    }
+  }
 
   //[Item("Symbolic Expression Tree Programmable Problem (single-objective)", "Represents a symbolic expression tree single-objective problem that can be programmed with a script.")]
   //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
@@ -175,7 +179,7 @@ namespace HeuristicLab.Problems.Programmable {
   #endregion
 
   #region multi-objective
-  [Item("Binary Vector Programmable Problem (multi-objective)", "Represents a binary vector multi-objective problem that can be programmed with a script.")]
+  [Item("Binary Vector Problem (multi-objective)", "Represents a binary vector multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
   public sealed class MultiObjectiveBinaryVectorProgrammableProblem : MultiObjectiveProgrammableProblem<BinaryVectorEncoding, BinaryVector> {
@@ -186,7 +190,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     public MultiObjectiveBinaryVectorProgrammableProblem()
       : base() {
-      var codeTemplate = ScriptTemplates.CompiledMultiObjectiveProblemDefinition_Template;
+      var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "BinaryVectorEncoding");
       codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "BinaryVector");
@@ -199,7 +203,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  [Item("Multi Solution Programmable Problem (multi-objective)", "Represents a multi solution multi-objective problem that can be programmed with a script.")]
+  [Item("Combined Encoding Problem (multi-objective)", "Represents a combined encoding multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
   public sealed class MultiObjectiveMultiSolutionProgrammableProblem : MultiObjectiveProgrammableProblem<MultiEncoding, CombinedSolution> {
@@ -210,11 +214,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     public MultiObjectiveMultiSolutionProgrammableProblem()
       : base() {
-      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
-      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
-      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "MultiEncoding");
-      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "CombinedSolution");
-      ProblemScript.Code = codeTemplate;
+      ProblemScript.Code = ScriptTemplates.MultiObjectiveCombinedEncodingProblem_Template;
     }
 
 
@@ -223,7 +223,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  [Item("Integer Vector Programmable Problem (multi-objective)", "Represents an integer vector multi-objective problem that can be programmed with a script.")]
+  [Item("Integer Vector Problem (multi-objective)", "Represents an integer vector multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
   public sealed class MultiObjectiveIntegerVectorProgrammableProblem : MultiObjectiveProgrammableProblem<IntegerVectorEncoding, IntegerVector> {
@@ -234,7 +234,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     public MultiObjectiveIntegerVectorProgrammableProblem()
       : base() {
-      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.IntegerVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "IntegerVectorEncoding");
       codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "IntegerVector");
@@ -246,7 +246,7 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  [Item("Real Vector Programmable Problem (multi-objective)", "Represents a real vector multi-objective problem that can be programmed with a script.")]
+  [Item("Real Vector Problem (multi-objective)", "Represents a real vector multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
   public sealed class MultiObjectiveRealVectorProgrammableProblem : MultiObjectiveProgrammableProblem<RealVectorEncoding, RealVector> {
@@ -257,7 +257,7 @@ namespace HeuristicLab.Problems.Programmable {
 
     public MultiObjectiveRealVectorProgrammableProblem()
       : base() {
-      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.RealVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "RealVectorEncoding");
       codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "RealVector");
@@ -269,21 +269,27 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  //[Item("Permutation Programmable Problem (multi-objective)", "Represents a permutation multi-objective problem that can be programmed with a script.")]
-  //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  //[StorableClass]
-  //public sealed class MultiObjectivePermutationProgrammableProblem : MultiObjectiveProgrammableProblem<PermutationEncoding, Permutation> {
+  [Item("Permutation Problem (multi-objective)", "Represents a permutation multi-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [StorableClass]
+  public sealed class MultiObjectivePermutationProgrammableProblem : MultiObjectiveProgrammableProblem<PermutationEncoding, Permutation> {
 
-  //  [StorableConstructor]
-  //  private MultiObjectivePermutationProgrammableProblem(bool deserializing) : base(deserializing) { }
-  //  private MultiObjectivePermutationProgrammableProblem(MultiObjectivePermutationProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-  //  public MultiObjectivePermutationProgrammableProblem()
-  //    : base(string.Format(ScriptTemplates.CompiledMultiObjectiveProblemDefinition, "HeuristicLab.Encodings.PermutationEncoding", "PermutationEncoding", "Permutation")) { }
+    [StorableConstructor]
+    private MultiObjectivePermutationProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private MultiObjectivePermutationProgrammableProblem(MultiObjectivePermutationProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+    public MultiObjectivePermutationProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.PermutationEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "PermutationEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "Permutation");
+      ProblemScript.Code = codeTemplate;
+    }
 
-  //  public override IDeepCloneable Clone(Cloner cloner) {
-  //    return new MultiObjectivePermutationProgrammableProblem(this, cloner);
-  //  }
-  //}
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiObjectivePermutationProgrammableProblem(this, cloner);
+    }
+  }
 
   //[Item("Symbolic Expression Tree Programmable Problem (multi-objective)", "Represents a symbolic expression tree multi-objective problem that can be programmed with a script.")]
   //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]

@@ -96,10 +96,8 @@
     </Compile>
     <Compile Include="ProblemDefinitionScriptException.cs" />
     <Compile Include="ProgrammableProblemInstances.cs" />
-    <Content Include="Templates\CompiledSingleObjectiveProblemDefinition_Template.cs" />
-    <Content Include="Templates\CompiledMultiObjectiveProblemDefinition_Template.cs">
-      <SubType>Code</SubType>
-    </Content>
+    <Content Include="Templates\MultiObjectiveCombinedEncodingProblem_Template.cs" />
+    <Content Include="Templates\MultiObjectiveProblem_Template.cs" />
     <Compile Include="Templates\ScriptTemplates.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -107,6 +105,8 @@
     </Compile>
     <Compile Include="SingleObjectiveProgrammableProblem.cs" />
     <Compile Include="SingleObjectiveProblemDefinitionScript.cs" />
+    <Content Include="Templates\SingleObjectiveCombinedEncodingProblem_Template.cs" />
+    <Content Include="Templates\SingleObjectiveProblem_Template.cs" />
     <EmbeddedResource Include="Templates\ScriptTemplates.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ScriptTemplates.Designer.cs</LastGenOutput>
@@ -157,6 +157,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.IntegerVectorEncoding\3.3\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.csproj">
       <Project>{ddfb14dd-2a85-493c-a52d-e69729bbaeb0}</Project>
       <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
+      <Project>{dbecb8b0-b166-4133-baf1-ed67c3fd7fca}</Project>
+      <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">

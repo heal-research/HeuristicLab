@@ -39,7 +39,8 @@ namespace HeuristicLab.Problems.Programmable {
     [StorableConstructor]
     private MultiObjectiveProblemDefinitionScript(bool deserializing) : base(deserializing) { }
     private MultiObjectiveProblemDefinitionScript(MultiObjectiveProblemDefinitionScript<TEncoding, TSolution> original, Cloner cloner) : base(original, cloner) { }
-    public MultiObjectiveProblemDefinitionScript() : base(ScriptTemplates.CompiledMultiObjectiveProblemDefinition_Template) { }
+    public MultiObjectiveProblemDefinitionScript(string codeTemplate) : base(codeTemplate) { }
+    public MultiObjectiveProblemDefinitionScript() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>(this, cloner);

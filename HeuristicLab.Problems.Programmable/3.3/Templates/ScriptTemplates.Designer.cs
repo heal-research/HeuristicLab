@@ -9,7 +9,6 @@
 //------------------------------------------------------------------------------
 
 namespace HeuristicLab.Problems.Programmable {
-  using System;
 
 
   /// <summary>
@@ -67,18 +66,38 @@ namespace HeuristicLab.Problems.Programmable {
     ///using HeuristicLab.Common;
     ///using HeuristicLab.Core;
     ///using HeuristicLab.Data;
-    ///using HeuristicLab.Encodings.BinaryVectorEncoding;
-    ///using HeuristicLab.Encodings.IntegerVectorEncoding;
-    ///using HeuristicLab.Encodings.RealVectorEncoding;
-    ///using HeuristicLab.Encodings.PermutationEncoding;
-    ///using HeuristicLab.Encodings.LinearLinkageEncoding;
-    ///using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
+    ///using ENCODING_NAMESPACE;
     ///using HeuristicLab.Optimization;
-    ///using H [rest of string was truncated]&quot;;.
+    ///using HeuristicLab.Problems.Programmable;
+    ///
+    ///namespace HeuristicLab.Problems.Programmable {
+    ///  public class CompiledSingleObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition&lt;ENCODING_CLASS, SOLUTION_CLASS&gt; {
+    ///    public override bool[] Maximization { get { return new[] { false, false [rest of string was truncated]&quot;;.
     /// </summary>
-    public static string CompiledMultiObjectiveProblemDefinition_Template {
+    public static string MultiObjectiveCombinedEncodingProblem_Template {
       get {
-        return ResourceManager.GetString("CompiledMultiObjectiveProblemDefinition_Template", resourceCulture);
+        return ResourceManager.GetString("MultiObjectiveCombinedEncodingProblem_Template", resourceCulture);
+      }
+    }
+
+    /// <summary>
+    ///   Looks up a localized string similar to using System;
+    ///using System.Linq;
+    ///using System.Collections.Generic;
+    ///using HeuristicLab.Common;
+    ///using HeuristicLab.Core;
+    ///using HeuristicLab.Data;
+    ///using ENCODING_NAMESPACE;
+    ///using HeuristicLab.Optimization;
+    ///using HeuristicLab.Problems.Programmable;
+    ///
+    ///namespace HeuristicLab.Problems.Programmable {
+    ///  public class CompiledSingleObjectiveProblemDefinition : CompiledMultiObjectiveProblemDefinition&lt;ENCODING_CLASS, SOLUTION_CLASS&gt; {
+    ///    public override bool[] Maximization { get { return new[] { false, false [rest of string was truncated]&quot;;.
+    /// </summary>
+    public static string MultiObjectiveProblem_Template {
+      get {
+        return ResourceManager.GetString("MultiObjectiveProblem_Template", resourceCulture);
       }
     }
 
@@ -99,9 +118,32 @@ namespace HeuristicLab.Problems.Programmable {
     ///
     ///    pub [rest of string was truncated]&quot;;.
     /// </summary>
-    public static string CompiledSingleObjectiveProblemDefinition_Template {
+    public static string SingleObjectiveCombinedEncodingProblem_Template {
       get {
-        return ResourceManager.GetString("CompiledSingleObjectiveProblemDefinition_Template", resourceCulture);
+        return ResourceManager.GetString("SingleObjectiveCombinedEncodingProblem_Template", resourceCulture);
+      }
+    }
+
+    /// <summary>
+    ///   Looks up a localized string similar to using System;
+    ///using System.Linq;
+    ///using System.Collections.Generic;
+    ///using HeuristicLab.Common;
+    ///using HeuristicLab.Core;
+    ///using HeuristicLab.Data;
+    ///using ENCODING_NAMESPACE;
+    ///using HeuristicLab.Optimization;
+    ///using HeuristicLab.Problems.Programmable;
+    ///
+    ///namespace HeuristicLab.Problems.Programmable {
+    ///  public class CompiledSingleObjectiveProblemDefinition : CompiledSingleObjectiveProblemDefinition&lt;ENCODING_CLASS, SOLUTION_CLASS&gt; {
+    ///    public override bool Maximization { get { return false; } }
+    ///
+    ///    pub [rest of string was truncated]&quot;;.
+    /// </summary>
+    public static string SingleObjectiveProblem_Template {
+      get {
+        return ResourceManager.GetString("SingleObjectiveProblem_Template", resourceCulture);
       }
     }
   }
