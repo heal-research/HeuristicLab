@@ -73,7 +73,7 @@ namespace HeuristicLab.Problems.Programmable {
       : base() {
       Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
         new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name }));
-      ProblemScript.Encoding = Encoding = (TEncoding)Encoding.Clone();
+      ProblemScript.Encoding = (TEncoding)Encoding.Clone();
       Operators.Add(new BestScopeSolutionAnalyzer());
       RegisterEvents();
     }
