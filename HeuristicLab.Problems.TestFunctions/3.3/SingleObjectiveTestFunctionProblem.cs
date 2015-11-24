@@ -38,7 +38,9 @@ namespace HeuristicLab.Problems.TestFunctions {
   [Item("Test Function (single-objective)", "Test function with real valued inputs and a single objective.")]
   [StorableClass]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 90)]
-  public sealed class SingleObjectiveTestFunctionProblem : SingleObjectiveHeuristicOptimizationProblem<ISingleObjectiveTestFunctionProblemEvaluator, IRealVectorCreator>, IStorableContent, IProblemInstanceConsumer<SOTFData> {
+  public sealed class SingleObjectiveTestFunctionProblem :
+    SingleObjectiveHeuristicOptimizationProblem<ISingleObjectiveTestFunctionProblemEvaluator, IRealVectorCreator>,
+    ISingleObjectiveProblem<RealVectorEncoding, RealVector>, IStorableContent, IProblemInstanceConsumer<SOTFData> {
     public string Filename { get; set; }
 
     [Storable]

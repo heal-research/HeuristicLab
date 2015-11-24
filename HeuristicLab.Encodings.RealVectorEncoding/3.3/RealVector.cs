@@ -22,12 +22,13 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [StorableClass]
   [Item("RealVector", "Represents a vector of real values.")]
-  public class RealVector : DoubleArray {
+  public class RealVector : DoubleArray, ISolution {
     [StorableConstructor]
     protected RealVector(bool deserializing) : base(deserializing) { }
     protected RealVector(RealVector original, Cloner cloner) : base(original, cloner) { }

@@ -48,11 +48,11 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     private const string IterationsParameterName = "Iterations";
 
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>); }
+      get { return typeof(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>); }
     }
-    public new ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> Problem {
-      get { return (ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>)base.Problem; }
-      set { base.Problem = value; }
+    public new ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> Problem {
+      get { return (ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>)base.Problem; }
+      set { base.Problem = (IProblem)value; }
     }
 
     public IFixedValueParameter<IntValue> IterationsParameter {
@@ -96,7 +96,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       }
     }
     // In the GECCO paper, Section 2.1
-    public static double ImproveToLocalOptimum(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem, BinaryVector solution, double fitness, IRandom rand) {
+    public static double ImproveToLocalOptimum(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> problem, BinaryVector solution, double fitness, IRandom rand) {
       var tried = new HashSet<int>();
       do {
         var options = Enumerable.Range(0, solution.Length).Shuffle(rand);

@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("RealVectorEncoding", "Describes a real vector encoding.")]
   [StorableClass]
-  public sealed class RealVectorEncoding : Encoding<IRealVectorCreator> {
+  public sealed class RealVectorEncoding : Encoding<RealVector> {
     #region Encoding Parameters
     [Storable]
     private IFixedValueParameter<IntValue> lengthParameter;
@@ -94,7 +94,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public RealVectorEncoding() : this("RealVector", 10) { }
     public RealVectorEncoding(string name) : this(name, 10) { }
     public RealVectorEncoding(int length) : this("RealVector", length) { }
-    public RealVectorEncoding(string name, int length, double min = double.MinValue, double max = double.MaxValue)
+    public RealVectorEncoding(string name, int length, double min = -1000, double max = 1000)
       : base(name) {
       if (min >= max) throw new ArgumentException("min must be less than max", "min");
 
@@ -316,15 +316,5 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       }
     }
     #endregion
-  }
-
-  public static class IndividualExtensionMethods {
-    public static RealVector RealVector(this Individual individual) {
-      var encoding = individual.GetEncoding<RealVectorEncoding>();
-      return individual.RealVector(encoding.Name);
-    }
-    public static RealVector RealVector(this Individual individual, string name) {
-      return (RealVector)individual[name];
-    }
   }
 }

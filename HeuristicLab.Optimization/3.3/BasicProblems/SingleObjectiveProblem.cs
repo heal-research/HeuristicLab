@@ -29,7 +29,10 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class SingleObjectiveProblem<TEncoding, TSolution> : Problem<TEncoding, TSolution, SingleObjectiveEvaluator<TSolution>>, ISingleObjectiveProblem<TEncoding, TSolution>
+  public abstract class SingleObjectiveProblem<TEncoding, TSolution> :
+    Problem<TEncoding, TSolution, SingleObjectiveEvaluator<TSolution>>,
+    ISingleObjectiveProblem<TEncoding, TSolution>,
+    ISingleObjectiveProblemDefinition<TEncoding, TSolution>
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
 

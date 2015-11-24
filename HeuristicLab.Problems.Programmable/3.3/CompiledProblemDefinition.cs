@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
@@ -62,6 +61,10 @@ namespace HeuristicLab.Problems.Programmable {
     public abstract double Evaluate(TSolution individual, IRandom random);
     public abstract void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
     public abstract IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random);
+
+    public bool IsBetter(double quality, double bestQuality) {
+      return Maximization ? quality > bestQuality : quality < bestQuality;
+    }
     #endregion
   }
 

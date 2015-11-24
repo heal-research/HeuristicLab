@@ -62,11 +62,12 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
     #endregion
 
     #region Problem Properties
+
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveHeuristicOptimizationProblem); }
+      get { return typeof(ISingleObjectiveProblem<RealVectorEncoding, RealVector>); }
     }
-    public new ISingleObjectiveHeuristicOptimizationProblem Problem {
-      get { return (ISingleObjectiveHeuristicOptimizationProblem)base.Problem; }
+    public new ISingleObjectiveProblem<RealVectorEncoding, RealVector> Problem {
+      get { return (ISingleObjectiveProblem<RealVectorEncoding, RealVector>)base.Problem; }
       set { base.Problem = value; }
     }
     #endregion
@@ -375,12 +376,6 @@ namespace HeuristicLab.Algorithms.CMAEvolutionStrategy {
 
     public override void Prepare() {
       if (Problem != null) base.Prepare();
-    }
-
-    protected override void OnStarted() {
-      if (!(Problem.SolutionCreator is IRealVectorCreator))
-        throw new InvalidOperationException("Problems that do not use RealVectorEncoding cannot be solved by CMA-ES.");
-      base.OnStarted();
     }
 
     #region Events

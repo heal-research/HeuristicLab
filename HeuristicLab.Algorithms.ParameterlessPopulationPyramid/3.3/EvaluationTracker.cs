@@ -21,20 +21,17 @@
 #endregion
 
 using System;
-using HeuristicLab.Common;
+using System.Collections.Generic;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   // This code is based off the publication
   // B. W. Goldman and W. F. Punch, "Parameter-less Population Pyramid," GECCO, pp. 785–792, 2014
   // and the original source code in C++11 available from: https://github.com/brianwgoldman/Parameter-less_Population_Pyramid
-  internal sealed class EvaluationTracker : SingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> {
-    private readonly ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem;
+  internal sealed class EvaluationTracker : ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> {
+    private readonly ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> problem;
 
     private int maxEvaluations;
 
@@ -59,38 +56,23 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       private set;
     }
 
-    public new BinaryVectorEncoding Encoding {
+    public BinaryVectorEncoding Encoding {
       get { return problem.Encoding; }
     }
     #endregion
 
-    [StorableConstructor]
-    private EvaluationTracker(bool deserializing) : base(deserializing) { }
-    private EvaluationTracker(EvaluationTracker original, Cloner cloner)
-      : base(original, cloner) {
-      problem = cloner.Clone(original.problem);
-      maxEvaluations = original.maxEvaluations;
-      BestQuality = original.BestQuality;
-      Evaluations = original.Evaluations;
-      BestFoundOnEvaluation = original.BestFoundOnEvaluation;
-      BestSolution = cloner.Clone(BestSolution);
-    }
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new EvaluationTracker(this, cloner);
-    }
-    public EvaluationTracker(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> problem, int maxEvaluations) {
+    public EvaluationTracker(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> problem, int maxEvaluations) {
       this.problem = problem;
       this.maxEvaluations = maxEvaluations;
       BestSolution = new BinaryVector(problem.Encoding.Length);
       BestQuality = double.NaN;
       Evaluations = 0;
       BestFoundOnEvaluation = 0;
-
-      if (Parameters.ContainsKey("Maximization")) Parameters.Remove("Maximization");
-      Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
     }
 
-    public override double Evaluate(BinaryVector vector, IRandom random) {
+
+
+    public double Evaluate(BinaryVector vector, IRandom random) {
       if (Evaluations >= maxEvaluations) throw new OperationCanceledException("Maximum Evaluation Limit Reached");
       Evaluations++;
       double fitness = problem.Evaluate(vector, random);
@@ -102,16 +84,23 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       return fitness;
     }
 
-    public override bool Maximization {
+    public bool Maximization {
       get {
         if (problem == null) return false;
         return problem.Maximization;
       }
     }
 
-    public override bool IsBetter(double quality, double bestQuality) {
+    public bool IsBetter(double quality, double bestQuality) {
       return problem.IsBetter(quality, bestQuality);
     }
 
+    public void Analyze(BinaryVector[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+      problem.Analyze(individuals, qualities, results, random);
+    }
+
+    public IEnumerable<BinaryVector> GetNeighbors(BinaryVector individual, IRandom random) {
+      return problem.GetNeighbors(individual, random);
+    }
   }
 }

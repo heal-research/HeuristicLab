@@ -30,5 +30,6 @@ namespace HeuristicLab.Optimization {
     double Evaluate(TSolution individual, IRandom random);
     void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
     IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random);
+    bool IsBetter(double quality, double bestQuality);
   }
 }

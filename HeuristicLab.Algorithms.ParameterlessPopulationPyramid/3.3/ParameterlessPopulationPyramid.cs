@@ -44,9 +44,9 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     public override Type ProblemType {
       get { return typeof(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>); }
     }
-    public new ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector> Problem {
-      get { return (ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>)base.Problem; }
-      set { base.Problem = value; }
+    public new ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> Problem {
+      get { return (ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>)base.Problem; }
+      set { base.Problem = (IProblem)value; }
     }
 
     private readonly IRandom random = new MersenneTwister();
@@ -181,7 +181,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
       // Don't add things you have seen
       if (seen.Contains(solution)) return;
       if (level == pyramid.Count) {
-        pyramid.Add(new Population(tracker.Encoding.Length, random));
+        pyramid.Add(new Population(Problem.Encoding.Length, random));
       }
       var copied = (BinaryVector)solution.Clone();
       pyramid[level].Add(copied);
@@ -191,7 +191,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     // In the GECCO paper, Figure 1
     private double iterate() {
       // Create a random solution
-      BinaryVector solution = new BinaryVector(tracker.Encoding.Length);
+      BinaryVector solution = new BinaryVector(Problem.Encoding.Length);
       for (int i = 0; i < solution.Length; i++) {
         solution[i] = random.Next(2) == 1;
       }

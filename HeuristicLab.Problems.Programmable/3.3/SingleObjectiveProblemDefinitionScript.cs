@@ -61,5 +61,9 @@ namespace HeuristicLab.Problems.Programmable {
     IEnumerable<TSolution> ISingleObjectiveProblemDefinition<TEncoding, TSolution>.GetNeighbors(TSolution individual, IRandom random) {
       return CompiledProblemDefinition.GetNeighbors(individual, random);
     }
+
+    bool ISingleObjectiveProblemDefinition<TEncoding, TSolution>.IsBetter(double quality, double bestQuality) {
+      return CompiledProblemDefinition.IsBetter(quality, bestQuality);
+    }
   }
 }

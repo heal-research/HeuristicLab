@@ -19,6 +19,7 @@
  */
 #endregion
 
+
 namespace HeuristicLab.Optimization {
   public interface IProblemDefinition<TEncoding, TSolution>
     where TEncoding : class, IEncoding<TSolution>
