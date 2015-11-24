@@ -21,6 +21,7 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
@@ -46,6 +47,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
     IntRange ValidationPartition { get; }
   }
 
-  public interface ISymbolicDataAnalysisSingleObjectiveProblem : ISymbolicDataAnalysisProblem, ISingleObjectiveHeuristicOptimizationProblem { }
-  public interface ISymbolicDataAnalysisMultiObjectiveProblem : ISymbolicDataAnalysisProblem, IMultiObjectiveHeuristicOptimizationProblem { }
+  public interface ISymbolicDataAnalysisSingleObjectiveProblem : ISymbolicDataAnalysisProblem, ISingleObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> { }
+  public interface ISymbolicDataAnalysisMultiObjectiveProblem : ISymbolicDataAnalysisProblem, IMultiObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> { }
 }

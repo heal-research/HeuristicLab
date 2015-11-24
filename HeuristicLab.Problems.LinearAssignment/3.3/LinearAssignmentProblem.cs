@@ -35,7 +35,8 @@ namespace HeuristicLab.Problems.LinearAssignment {
   [Item("Linear Assignment Problem (LAP)", "In the linear assignment problem (LAP) an assignment of workers to jobs has to be found such that each worker is assigned to exactly one job, each job is assigned to exactly one worker and the sum of the resulting costs is minimal (or maximal).")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 130)]
   [StorableClass]
-  public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator>, IStorableContent {
+  public sealed class LinearAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<ILAPEvaluator, IPermutationCreator>,
+    ISingleObjectiveProblem<PermutationEncoding,Permutation>, IStorableContent {
     public static readonly string CostsDescription = "The cost matrix that describes the assignment of rows to columns.";
     public static readonly string RowNamesDescription = "The elements represented by the rows of the costs matrix.";
     public static readonly string ColumnNamesDescription = "The elements represented by the columns of the costs matrix.";
