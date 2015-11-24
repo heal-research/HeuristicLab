@@ -66,7 +66,7 @@ namespace HeuristicLab.Problems.Programmable {
       var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
       codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.BinaryVectorEncoding");
       codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "MultiEncoding");
-      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "MultiSolution");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "CombinedSolution");
       ProblemScript.Code = codeTemplate;
     }
 
