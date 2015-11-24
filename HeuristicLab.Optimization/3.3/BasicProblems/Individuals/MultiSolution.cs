@@ -27,9 +27,9 @@ using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
-  [Item("MultiSolution", "A solution that consists of other solutions.")]
+  [Item("CombinedSolution", "A solution that consists of other solutions.")]
   [StorableClass]
-  public sealed class MultiSolution : Item, ISolution {
+  public sealed class CombinedSolution : Item, ISolution {
 
     private MultiEncoding Encoding { get; set; }
     protected IScope Scope { get; private set; }
@@ -37,15 +37,15 @@ namespace HeuristicLab.Optimization {
     private readonly Dictionary<string, ISolution> solutions;
 
     [StorableConstructor]
-    private MultiSolution(bool deserializing) : base(deserializing) { }
+    private CombinedSolution(bool deserializing) : base(deserializing) { }
 
-    private MultiSolution(MultiSolution original, Cloner cloner)
+    private CombinedSolution(CombinedSolution original, Cloner cloner)
       : base(original, cloner) {
       Encoding = cloner.Clone(original.Encoding);
       Scope = cloner.Clone(original.Scope);
       solutions = original.solutions.ToDictionary(x => x.Key, x => cloner.Clone(x.Value));
     }
-    public MultiSolution(MultiEncoding encoding, IScope scope) {
+    public CombinedSolution(IScope scope, MultiEncoding encoding) {
       Encoding = encoding;
       Scope = scope;
       solutions = encoding.Encodings.Select(e => new { Name = e.Name, Solution = ScopeUtil.GetSolution(scope, e) })
@@ -53,7 +53,7 @@ namespace HeuristicLab.Optimization {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiSolution(this, cloner);
+      return new CombinedSolution(this, cloner);
     }
 
     public ISolution this[string name] {

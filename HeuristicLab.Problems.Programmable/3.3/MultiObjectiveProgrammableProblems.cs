@@ -55,7 +55,7 @@ namespace HeuristicLab.Problems.Programmable {
   [Item("Multi Solution Programmable Problem (multi-objective)", "Represents a multi solution multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
   [StorableClass]
-  public sealed class MultiObjectiveMultiSolutionProgrammableProblem : MultiObjectiveProgrammableProblem<MultiEncoding, MultiSolution> {
+  public sealed class MultiObjectiveMultiSolutionProgrammableProblem : MultiObjectiveProgrammableProblem<MultiEncoding, CombinedSolution> {
 
     [StorableConstructor]
     private MultiObjectiveMultiSolutionProgrammableProblem(bool deserializing) : base(deserializing) { }

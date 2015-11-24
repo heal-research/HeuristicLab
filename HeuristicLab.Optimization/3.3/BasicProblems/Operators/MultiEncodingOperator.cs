@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HeuristicLab.Collections;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
@@ -30,44 +31,78 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class MultiEncodingOperator<T> : Operator, IMultiEncodingOperator where T : class, IOperator {
-    private List<IEncoding> encodings = new List<IEncoding>();
-    [Storable(Name = "Encodings")]
-    private IEnumerable<IEncoding> StorableEncodings {
-      get { return encodings; }
-      set { encodings = new List<IEncoding>(value); }
+  public abstract class MultiEncodingOperator<T> : InstrumentedOperator, IMultiEncodingOperator where T : class, IOperator {
+    [Storable]
+    private MultiEncoding encoding;
+    public MultiEncoding Encoding {
+      get { return encoding; }
+      set {
+        if (value == null) throw new ArgumentNullException("Encoding must not be null.");
+        if (value == encoding) return;
+        if (encoding != null) DeregisterEventHandlers();
+        encoding = value;
+        CombinedSolutionParameter.ActualName = encoding.Name;
+        RegisterEventHandlers();
+      }
+    }
+
+    public ILookupParameter<CombinedSolution> CombinedSolutionParameter {
+      get { return (ILookupParameter<CombinedSolution>)Parameters["CombinedSolution"]; }
     }
 
     [StorableConstructor]
-    protected MultiEncodingOperator(bool deserializing)
-      : base(deserializing) {
-    }
-
+    protected MultiEncodingOperator(bool deserializing) : base(deserializing) { }
     protected MultiEncodingOperator(MultiEncodingOperator<T> original, Cloner cloner)
       : base(original, cloner) {
-      encodings = new List<IEncoding>(original.encodings.Select(cloner.Clone));
-      foreach (var encoding in encodings)
-        encoding.OperatorsChanged += Encoding_OperatorsChanged;
+      encoding = cloner.Clone(original.encoding);
+      RegisterEventHandlers();
     }
-
-    protected MultiEncodingOperator() : base() { }
+    protected MultiEncodingOperator()
+      : base() {
+      Parameters.Add(new LookupParameter<CombinedSolution>("CombinedSolution", "The combined solution that gets created."));
+    }
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      foreach (var encoding in encodings)
-        encoding.OperatorsChanged += Encoding_OperatorsChanged;
+      RegisterEventHandlers();
     }
 
+    private void RegisterEventHandlers() {
+      encoding.Encodings.ItemsAdded += EncodingsOnItemsChanged;
+      encoding.Encodings.CollectionReset += EncodingsOnItemsChanged;
+      encoding.Encodings.ItemsRemoved += EncodingsOnItemsRemoved;
+      foreach (var enc in encoding.Encodings)
+        enc.OperatorsChanged += Encoding_OperatorsChanged;
+    }
 
-    public override IOperation Apply() {
+    private void DeregisterEventHandlers() {
+      encoding.Encodings.ItemsAdded -= EncodingsOnItemsChanged;
+      encoding.Encodings.CollectionReset -= EncodingsOnItemsChanged;
+      encoding.Encodings.ItemsRemoved -= EncodingsOnItemsRemoved;
+      foreach (var enc in encoding.Encodings)
+        enc.OperatorsChanged -= Encoding_OperatorsChanged;
+    }
+
+    private void EncodingsOnItemsChanged(object sender, CollectionItemsChangedEventArgs<IEncoding> e) {
+      foreach (var enc in e.Items)
+        AddEncoding(enc);
+      foreach (var enc in e.OldItems)
+        RemoveEncoding(enc);
+    }
+
+    private void EncodingsOnItemsRemoved(object sender, CollectionItemsChangedEventArgs<IEncoding> e) {
+      foreach (var enc in e.Items)
+        RemoveEncoding(enc);
+    }
+
+    public override IOperation InstrumentedApply() {
       var operations = Parameters.Select(p => p.ActualValue).OfType<IOperator>().Select(op => ExecutionContext.CreateOperation(op));
       return new OperationCollection(operations);
     }
 
-    public virtual void AddEncoding(IEncoding encoding) {
+    protected virtual void AddEncoding(IEncoding encoding) {
       if (Parameters.ContainsKey(encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was already added.", encoding.Name));
 
-      encodings.Add(encoding);
       encoding.OperatorsChanged += Encoding_OperatorsChanged;
 
       var param = new ConstrainedValueParameter<T>(encoding.Name, new ItemSet<T>(encoding.Operators.OfType<T>()));
@@ -75,8 +110,8 @@ namespace HeuristicLab.Optimization {
       Parameters.Add(param);
     }
 
-    public virtual bool RemoveEncoding(IEncoding encoding) {
-      if (!encodings.Remove(encoding)) throw new ArgumentException(string.Format("Encoding {0} was not added to the MultiEncoding.", encoding.Name));
+    protected virtual bool RemoveEncoding(IEncoding encoding) {
+      if (!Parameters.ContainsKey(encoding.Name)) throw new ArgumentException(string.Format("Encoding {0} was not added to the MultiEncoding.", encoding.Name));
       encoding.OperatorsChanged -= Encoding_OperatorsChanged;
       return Parameters.Remove(encoding.Name);
     }
@@ -88,12 +123,12 @@ namespace HeuristicLab.Optimization {
     }
 
     private void Encoding_OperatorsChanged(object sender, EventArgs e) {
-      var encoding = (IEncoding)sender;
-      var param = GetParameter(encoding);
+      var enc = (IEncoding)sender;
+      var param = GetParameter(enc);
 
       var oldParameterValue = param.Value;
       param.ValidValues.Clear();
-      foreach (var op in encoding.Operators.OfType<T>())
+      foreach (var op in enc.Operators.OfType<T>())
         param.ValidValues.Add(op);
 
       var newValue = param.ValidValues.FirstOrDefault(op => op.GetType() == oldParameterValue.GetType());

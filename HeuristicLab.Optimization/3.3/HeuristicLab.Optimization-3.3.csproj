@@ -121,6 +121,7 @@
   <ItemGroup>
     <Compile Include="Algorithms\BasicAlgorithm.cs" />
     <Compile Include="BasicProblems\Individuals\MultiSolution.cs" />
+    <Compile Include="BasicProblems\Interfaces\IMultiEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblem.cs" />
     <Compile Include="BasicProblems\MultiEncoding.cs" />
     <Compile Include="BasicProblems\Operators\MultiEncodingCreator.cs" />
@@ -131,7 +132,6 @@
     <Compile Include="BasicProblems\Encoding.cs" />
     <Compile Include="BasicProblems\Interfaces\IEncoding.cs" />
     <Compile Include="BasicProblems\Interfaces\IEncodingOperator.cs" />
-    <Compile Include="BasicProblems\Interfaces\IMultiEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiObjectiveProblemDefinition.cs" />
     <Compile Include="BasicProblems\Interfaces\internal\IMultiObjectiveAnalysisOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\internal\IMultiObjectiveEvaluationOperator.cs" />

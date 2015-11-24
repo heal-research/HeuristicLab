@@ -29,9 +29,8 @@ namespace HeuristicLab.Optimization {
   public sealed class MultiEncodingManipulator : MultiEncodingOperator<IManipulator>, IManipulator {
     [StorableConstructor]
     private MultiEncodingManipulator(bool deserializing) : base(deserializing) { }
-    private MultiEncodingManipulator(MultiEncodingManipulator original, Cloner cloner)
-      : base(original, cloner) { }
-    public MultiEncodingManipulator() { }
+    private MultiEncodingManipulator(MultiEncodingManipulator original, Cloner cloner) : base(original, cloner) { }
+    public MultiEncodingManipulator() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiEncodingManipulator(this, cloner); }
 

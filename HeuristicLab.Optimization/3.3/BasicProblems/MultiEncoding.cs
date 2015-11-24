@@ -30,65 +30,54 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Optimization {
   [Item("MultiEncoding", "Describes a combined encoding consisting of multiple simpler encodings.")]
   [StorableClass]
-  public sealed class MultiEncoding : Encoding<MultiSolution> {
+  public sealed class MultiEncoding : Encoding<CombinedSolution> {
 
-    private readonly List<IEncoding> encodings;
+    private readonly ItemCollection<IEncoding> encodings;
+
     [Storable]
-    public IEnumerable<IEncoding> Encodings {
+    private IEnumerable<IEncoding> StorableEncodings {
       get { return encodings; }
-      private set { encodings.AddRange(value); }
+      set { encodings.AddRange(value); }
+    }
+
+    public ReadOnlyItemCollection<IEncoding> Encodings {
+      get { return encodings.AsReadOnly(); }
     }
 
     [StorableConstructor]
     private MultiEncoding(bool deserializing)
       : base(deserializing) {
-      encodings = new List<IEncoding>();
+      encodings = new ItemCollection<IEncoding>();
     }
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiEncoding(this, cloner); }
     private MultiEncoding(MultiEncoding original, Cloner cloner)
       : base(original, cloner) {
-      encodings = new List<IEncoding>(original.Encodings.Select(cloner.Clone));
+      encodings = new ItemCollection<IEncoding>(original.Encodings.Select(cloner.Clone));
     }
     public MultiEncoding()
       : base("MultiEncoding") {
-      encodings = new List<IEncoding>();
-      SolutionCreator = new MultiEncodingCreator();
-
-      foreach (var @operator in ApplicationManager.Manager.GetInstances<IMultiEncodingOperator>())
+      encodings = new ItemCollection<IEncoding>();
+      SolutionCreator = new MultiEncodingCreator() { Encoding = this };
+      foreach (var @operator in ApplicationManager.Manager.GetInstances<IMultiEncodingOperator>()) {
+        @operator.Encoding = this;
         AddOperator(@operator);
+      }
     }
 
     public MultiEncoding Add(IEncoding encoding) {
       if (encoding is MultiEncoding) throw new InvalidOperationException("Nesting of MultiEncodings is not supported.");
       if (Encodings.Any(e => e.Name == encoding.Name)) throw new ArgumentException("Encoding name must be unique", "encoding.Name");
       encodings.Add(encoding);
-
       Parameters.AddRange(encoding.Parameters);
-
-      foreach (var @operator in Operators.OfType<IMultiEncodingOperator>()) {
-        @operator.AddEncoding(encoding);
-      }
-      OnEncodingsChanged();
       return this;
     }
 
     public bool Remove(IEncoding encoding) {
       var success = encodings.Remove(encoding);
       Parameters.RemoveRange(encoding.Parameters);
-      foreach (var @operator in Operators.OfType<IMultiEncodingOperator>()) {
-        @operator.RemoveEncoding(encoding);
-      }
-      OnEncodingsChanged();
       return success;
     }
 
-    public override void ConfigureOperators(IEnumerable<IOperator> operators) {
-    }
-
-    public event EventHandler EncodingsChanged;
-    private void OnEncodingsChanged() {
-      var handler = EncodingsChanged;
-      if (handler != null) handler(this, EventArgs.Empty);
-    }
+    public override void ConfigureOperators(IEnumerable<IOperator> operators) { }
   }
 }

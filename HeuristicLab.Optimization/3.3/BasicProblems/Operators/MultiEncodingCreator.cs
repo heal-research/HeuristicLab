@@ -23,29 +23,31 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [Item("MultiEncodingCreator", "Contains solution creators that together create a multi-encoding.")]
   [StorableClass]
-  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator<MultiSolution> {
+  public sealed class MultiEncodingCreator : MultiEncodingOperator<ISolutionCreator>, ISolutionCreator<CombinedSolution> {
+
     [StorableConstructor]
     private MultiEncodingCreator(bool deserializing) : base(deserializing) { }
     private MultiEncodingCreator(MultiEncodingCreator original, Cloner cloner) : base(original, cloner) { }
-    public MultiEncodingCreator() { }
+    public MultiEncodingCreator() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new MultiEncodingCreator(this, cloner);
     }
 
-    public override void AddEncoding(IEncoding encoding) {
+    protected override void AddEncoding(IEncoding encoding) {
       base.AddEncoding(encoding);
       var parameter = GetParameter(encoding);
       parameter.Value = encoding.SolutionCreator;
       encoding.SolutionCreatorChanged += Encoding_SolutionCreatorChanged;
     }
 
-    public override bool RemoveEncoding(IEncoding encoding) {
+    protected override bool RemoveEncoding(IEncoding encoding) {
       var success = base.RemoveEncoding(encoding);
       encoding.SolutionCreatorChanged -= Encoding_SolutionCreatorChanged;
       return success;
@@ -59,6 +61,12 @@ namespace HeuristicLab.Optimization {
       parameter.ValidValues.Remove(oldCreator);
       parameter.ValidValues.Add(encoding.SolutionCreator);
       parameter.Value = encoding.SolutionCreator;
+    }
+
+
+    public override IOperation InstrumentedApply() {
+      CombinedSolutionParameter.ActualValue = new CombinedSolution(ExecutionContext.Scope, Encoding);
+      return base.Apply();
     }
   }
 }
