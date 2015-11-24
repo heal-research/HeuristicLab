@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
-  public interface IEncodingOperator<TSolution> : IOperator where TSolution : class, ISolution{
+  public interface IEncodingOperator<TSolution> : IOperator where TSolution : class, ISolution {
     ILookupParameter<IEncoding<TSolution>> EncodingParameter { get; }
   }
 }

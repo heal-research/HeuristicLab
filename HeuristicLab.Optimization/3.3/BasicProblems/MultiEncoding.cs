@@ -32,12 +32,12 @@ namespace HeuristicLab.Optimization {
   [StorableClass]
   public sealed class MultiEncoding : Encoding<CombinedSolution> {
 
-    private readonly ItemCollection<IEncoding> encodings;
+    private ItemCollection<IEncoding> encodings;
 
     [Storable]
     private IEnumerable<IEncoding> StorableEncodings {
       get { return encodings; }
-      set { encodings.AddRange(value); }
+      set { encodings = new ItemCollection<IEncoding>(value); }
     }
 
     public ReadOnlyItemCollection<IEncoding> Encodings {
@@ -45,10 +45,7 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    private MultiEncoding(bool deserializing)
-      : base(deserializing) {
-      encodings = new ItemCollection<IEncoding>();
-    }
+    private MultiEncoding(bool deserializing) : base(deserializing) { }
     public override IDeepCloneable Clone(Cloner cloner) { return new MultiEncoding(this, cloner); }
     private MultiEncoding(MultiEncoding original, Cloner cloner)
       : base(original, cloner) {
@@ -57,9 +54,9 @@ namespace HeuristicLab.Optimization {
     public MultiEncoding()
       : base("MultiEncoding") {
       encodings = new ItemCollection<IEncoding>();
-      SolutionCreator = new MultiEncodingCreator() { Encoding = this };
+      SolutionCreator = new MultiEncodingCreator() { SolutionParameter = { ActualName = Name } };
       foreach (var @operator in ApplicationManager.Manager.GetInstances<IMultiEncodingOperator>()) {
-        @operator.Encoding = this;
+        @operator.SolutionParameter.ActualName = Name;
         AddOperator(@operator);
       }
     }
@@ -69,15 +66,26 @@ namespace HeuristicLab.Optimization {
       if (Encodings.Any(e => e.Name == encoding.Name)) throw new ArgumentException("Encoding name must be unique", "encoding.Name");
       encodings.Add(encoding);
       Parameters.AddRange(encoding.Parameters);
+
+      foreach (var @operator in Operators.OfType<IMultiEncodingOperator>())
+        @operator.AddEncoding(encoding);
+
       return this;
     }
 
     public bool Remove(IEncoding encoding) {
       var success = encodings.Remove(encoding);
       Parameters.RemoveRange(encoding.Parameters);
+
+      foreach (var @operator in Operators.OfType<IMultiEncodingOperator>())
+        @operator.RemoveEncoding(encoding);
+
       return success;
     }
 
-    public override void ConfigureOperators(IEnumerable<IOperator> operators) { }
+    public override void ConfigureOperators(IEnumerable<IOperator> operators) {
+      foreach (var encOp in operators.OfType<IMultiEncodingOperator>())
+        encOp.SolutionParameter.ActualName = Name;
+    }
   }
 }

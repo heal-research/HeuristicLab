@@ -34,8 +34,6 @@ namespace HeuristicLab.Optimization {
     private MultiEncoding Encoding { get; set; }
     protected IScope Scope { get; private set; }
 
-    private readonly Dictionary<string, ISolution> solutions;
-
     [StorableConstructor]
     private CombinedSolution(bool deserializing) : base(deserializing) { }
 
@@ -43,13 +41,10 @@ namespace HeuristicLab.Optimization {
       : base(original, cloner) {
       Encoding = cloner.Clone(original.Encoding);
       Scope = cloner.Clone(original.Scope);
-      solutions = original.solutions.ToDictionary(x => x.Key, x => cloner.Clone(x.Value));
     }
     public CombinedSolution(IScope scope, MultiEncoding encoding) {
       Encoding = encoding;
       Scope = scope;
-      solutions = encoding.Encodings.Select(e => new { Name = e.Name, Solution = ScopeUtil.GetSolution(scope, e) })
-                                    .ToDictionary(x => x.Name, x => x.Solution);
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -57,15 +52,8 @@ namespace HeuristicLab.Optimization {
     }
 
     public ISolution this[string name] {
-      get {
-        ISolution result;
-        if (!solutions.TryGetValue(name, out result)) throw new ArgumentException(string.Format("{0} is not part of the specified encoding.", name));
-        return result;
-      }
-      set {
-        if (!solutions.ContainsKey(name)) throw new ArgumentException(string.Format("{0} is not part of the specified encoding.", name));
-        solutions[name] = value;
-      }
+      get { return ScopeUtil.GetSolution(Scope, name); }
+      set { ScopeUtil.CopySolutionToScope(Scope, name, value); }
     }
 
     public TEncoding GetEncoding<TEncoding>() where TEncoding : IEncoding {
@@ -79,15 +67,8 @@ namespace HeuristicLab.Optimization {
       return encoding;
     }
 
-    public TSolution GetSolution<TSolution>() where TSolution : class, ISolution {
-      TSolution solution;
-      try {
-        solution = (TSolution)solutions.SingleOrDefault(s => s.Value is TSolution).Value;
-      } catch (InvalidOperationException) {
-        throw new InvalidOperationException(string.Format("The solution uses multiple {0} .", typeof(TSolution).GetPrettyName()));
-      }
-      if (solution == null) throw new InvalidOperationException(string.Format("The solution does not use a {0}.", typeof(TSolution).GetPrettyName()));
-      return solution;
+    public TSolution GetSolution<TSolution>(string name) where TSolution : class, ISolution {
+      return (TSolution)ScopeUtil.GetSolution(Scope, name);
     }
   }
 }

@@ -21,7 +21,6 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
@@ -38,8 +37,8 @@ namespace HeuristicLab.Optimization {
 
 
     public override IOperation InstrumentedApply() {
-      CombinedSolutionParameter.ActualValue = new CombinedSolution(ExecutionContext.Scope, Encoding);
-      return base.Apply();
+      SolutionParameter.ActualValue = new CombinedSolution(ExecutionContext.Scope, (MultiEncoding)EncodingParameter.ActualValue);
+      return base.InstrumentedApply();
     }
   }
 }

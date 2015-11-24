@@ -22,6 +22,7 @@
 #endregion
 
 using System;
+using HeuristicLab.Common;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
@@ -29,7 +30,11 @@ namespace HeuristicLab.Optimization {
 
     public static TSolution CopySolutionToScope<TSolution>(IScope scope, IEncoding<TSolution> encoding, TSolution solution)
       where TSolution : class,ISolution {
-      var name = encoding.Name;
+      return CopySolutionToScope(scope, encoding.Name, solution);
+    }
+
+    public static TSolution CopySolutionToScope<TSolution>(IScope scope, string name, TSolution solution)
+      where TSolution : class,ISolution {
       var copy = (TSolution)solution.Clone();
       if (!scope.Variables.ContainsKey(name)) scope.Variables.Add(new Variable(name, copy));
       else scope.Variables[name].Value = copy;
@@ -41,16 +46,20 @@ namespace HeuristicLab.Optimization {
       var name = encoding.Name;
       if (!scope.Variables.ContainsKey(name)) throw new ArgumentException(string.Format(" {0} cannot be found in the provided scope.", name));
       var value = scope.Variables[name].Value as TSolution;
-      if (value == null) throw new InvalidOperationException(string.Format("Value of {0} is null.", name));
+      if (value == null) throw new InvalidOperationException(string.Format("Value of {0} is null or not of type {1}.", name, typeof(TSolution).GetPrettyName()));
       return value;
     }
 
     public static ISolution GetSolution(IScope scope, IEncoding encoding) {
-      var name = encoding.Name;
-      if (!scope.Variables.ContainsKey(name)) throw new ArgumentException(string.Format(" {0} cannot be found in the provided scope.", name));
-      var value = scope.Variables[name].Value as ISolution;
-      if (value == null) throw new InvalidOperationException(string.Format("Value of {0} is null.", name));
-      return value;
+      return GetSolution(scope, encoding.Name);
+    }
+
+    public static ISolution GetSolution(IScope scope, string name) {
+      IVariable variable;
+      if (!scope.Variables.TryGetValue(name, out variable)) throw new ArgumentException(string.Format("{0} cannot be found in the provided scope.", name));
+      var solution = variable.Value as ISolution;
+      if (solution == null) throw new InvalidOperationException(string.Format("{0} is null or not of type ISolution.", name));
+      return solution;
     }
 
   }

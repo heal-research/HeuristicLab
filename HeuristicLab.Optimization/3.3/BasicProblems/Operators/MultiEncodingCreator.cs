@@ -23,7 +23,6 @@ using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
@@ -40,14 +39,14 @@ namespace HeuristicLab.Optimization {
       return new MultiEncodingCreator(this, cloner);
     }
 
-    protected override void AddEncoding(IEncoding encoding) {
+    public override void AddEncoding(IEncoding encoding) {
       base.AddEncoding(encoding);
       var parameter = GetParameter(encoding);
       parameter.Value = encoding.SolutionCreator;
       encoding.SolutionCreatorChanged += Encoding_SolutionCreatorChanged;
     }
 
-    protected override bool RemoveEncoding(IEncoding encoding) {
+    public override bool RemoveEncoding(IEncoding encoding) {
       var success = base.RemoveEncoding(encoding);
       encoding.SolutionCreatorChanged -= Encoding_SolutionCreatorChanged;
       return success;
@@ -65,8 +64,8 @@ namespace HeuristicLab.Optimization {
 
 
     public override IOperation InstrumentedApply() {
-      CombinedSolutionParameter.ActualValue = new CombinedSolution(ExecutionContext.Scope, Encoding);
-      return base.Apply();
+      SolutionParameter.ActualValue = new CombinedSolution(ExecutionContext.Scope, (MultiEncoding)EncodingParameter.ActualValue);
+      return base.InstrumentedApply();
     }
   }
 }

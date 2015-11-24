@@ -23,6 +23,9 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   public interface IMultiEncodingOperator : IOperator {
-    MultiEncoding Encoding { get; set; }
+    ILookupParameter<CombinedSolution> SolutionParameter { get; }
+
+    void AddEncoding(IEncoding encoding);
+    bool RemoveEncoding(IEncoding encoding);
   }
 }
