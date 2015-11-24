@@ -23,12 +23,13 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Permutation", "Represents a permutation of integer values.")]
   [StorableClass]
-  public class Permutation : IntArray {
+  public class Permutation : IntArray, ISolution {
     [Storable]
     private PermutationTypes permutationType;
     /// <summary>

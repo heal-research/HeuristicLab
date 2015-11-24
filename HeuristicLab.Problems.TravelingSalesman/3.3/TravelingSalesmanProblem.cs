@@ -39,8 +39,9 @@ namespace HeuristicLab.Problems.TravelingSalesman {
   [Item("Traveling Salesman Problem (TSP)", "Represents a symmetric Traveling Salesman Problem.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 100)]
   [StorableClass]
-  public sealed class TravelingSalesmanProblem : SingleObjectiveHeuristicOptimizationProblem<ITSPEvaluator, IPermutationCreator>, IStorableContent,
-    IProblemInstanceConsumer<TSPData> {
+  public sealed class TravelingSalesmanProblem : SingleObjectiveHeuristicOptimizationProblem<ITSPEvaluator, IPermutationCreator>,
+    ISingleObjectiveProblem<PermutationEncoding, Permutation>, IStorableContent, IProblemInstanceConsumer<TSPData> {
+
     private static readonly int DistanceMatrixSizeLimit = 1000;
     public string Filename { get; set; }
 
@@ -431,7 +432,8 @@ namespace HeuristicLab.Problems.TravelingSalesman {
       if (data.BestKnownTour != null) {
         try {
           EvaluateAndLoadTour(data.BestKnownTour);
-        } catch (InvalidOperationException) {
+        }
+        catch (InvalidOperationException) {
           if (data.BestKnownQuality.HasValue)
             BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
         }

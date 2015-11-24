@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("PermutationEncoding", "Describes a permutation encoding.")]
   [StorableClass]
-  public sealed class PermutationEncoding : Encoding<IPermutationCreator> {
+  public sealed class PermutationEncoding : Encoding<Permutation> {
     #region encoding parameters
     [Storable]
     private IFixedValueParameter<IntValue> lengthParameter;
@@ -222,15 +222,5 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
 
     #endregion
-  }
-
-  public static class IndividualExtensionMethods {
-    public static Permutation Permutation(this Individual individual) {
-      var encoding = individual.GetEncoding<PermutationEncoding>();
-      return individual.Permutation(encoding.Name);
-    }
-    public static Permutation Permutation(this Individual individual, string name) {
-      return (Permutation)individual[name];
-    }
   }
 }
