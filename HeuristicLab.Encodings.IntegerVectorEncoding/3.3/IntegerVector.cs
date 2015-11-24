@@ -23,12 +23,13 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [StorableClass]
   [Item("IntegerVector", "Represents a vector of integer values.")]
-  public class IntegerVector : IntArray {
+  public class IntegerVector : IntArray, ISolution {
     [StorableConstructor]
     protected IntegerVector(bool deserializing) : base(deserializing) { }
     protected IntegerVector(IntegerVector original, Cloner cloner) : base(original, cloner) { }

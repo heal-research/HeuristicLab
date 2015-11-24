@@ -24,6 +24,7 @@
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
+using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -78,21 +79,28 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  //[Item("Integer Vector Programmable Problem (single-objective)", "Represents an integer vector single-objective problem that can be programmed with a script.")]
-  //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  //[StorableClass]
-  //public sealed class SingleObjectiveIntegerVectorProgrammableProblem : SingleObjectiveProgrammableProblem<IntegerVectorEncoding, IntegerVector> {
+  [Item("Integer Vector Programmable Problem (single-objective)", "Represents an integer vector single-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [StorableClass]
+  public sealed class SingleObjectiveIntegerVectorProgrammableProblem : SingleObjectiveProgrammableProblem<IntegerVectorEncoding, IntegerVector> {
 
-  //  [StorableConstructor]
-  //  private SingleObjectiveIntegerVectorProgrammableProblem(bool deserializing) : base(deserializing) { }
-  //  private SingleObjectiveIntegerVectorProgrammableProblem(SingleObjectiveIntegerVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-  //  public SingleObjectiveIntegerVectorProgrammableProblem()
-  //    : base(string.Format(ScriptTemplates.CompiledSingleObjectiveProblemDefinition, "HeuristicLab.Encodings.IntegerVectorEncoding", "IntegerVectorEncoding", "IntegerVector")) { }
+    [StorableConstructor]
+    private SingleObjectiveIntegerVectorProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveIntegerVectorProgrammableProblem(SingleObjectiveIntegerVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
-  //  public override IDeepCloneable Clone(Cloner cloner) {
-  //    return new SingleObjectiveIntegerVectorProgrammableProblem(this, cloner);
-  //  }
-  //}
+    public SingleObjectiveIntegerVectorProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.IntegerVectorEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "IntegerVectorEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "IntegerVector");
+      ProblemScript.Code = codeTemplate;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SingleObjectiveIntegerVectorProgrammableProblem(this, cloner);
+    }
+  }
 
   [Item("Real Vector Programmable Problem (single-objective)", "Represents a real vector single-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
@@ -215,21 +223,28 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  //[Item("Integer Vector Programmable Problem (multi-objective)", "Represents an integer vector multi-objective problem that can be programmed with a script.")]
-  //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  //[StorableClass]
-  //public sealed class MultiObjectiveIntegerVectorProgrammableProblem : MultiObjectiveProgrammableProblem<IntegerVectorEncoding, IntegerVector> {
+  [Item("Integer Vector Programmable Problem (multi-objective)", "Represents an integer vector multi-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [StorableClass]
+  public sealed class MultiObjectiveIntegerVectorProgrammableProblem : MultiObjectiveProgrammableProblem<IntegerVectorEncoding, IntegerVector> {
 
-  //  [StorableConstructor]
-  //  private MultiObjectiveIntegerVectorProgrammableProblem(bool deserializing) : base(deserializing) { }
-  //  private MultiObjectiveIntegerVectorProgrammableProblem(MultiObjectiveIntegerVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-  //  public MultiObjectiveIntegerVectorProgrammableProblem()
-  //    : base(string.Format(ScriptTemplates.CompiledMultiObjectiveProblemDefinition, "HeuristicLab.Encodings.IntegerVectorEncoding", "IntegerVectorEncoding", "IntegerVector")) { }
+    [StorableConstructor]
+    private MultiObjectiveIntegerVectorProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveIntegerVectorProgrammableProblem(MultiObjectiveIntegerVectorProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
 
-  //  public override IDeepCloneable Clone(Cloner cloner) {
-  //    return new MultiObjectiveIntegerVectorProgrammableProblem(this, cloner);
-  //  }
-  //}
+    public MultiObjectiveIntegerVectorProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.CompiledSingleObjectiveProblemDefinition_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.IntegerVectorEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "IntegerVectorEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "IntegerVector");
+      ProblemScript.Code = codeTemplate;
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiObjectiveIntegerVectorProgrammableProblem(this, cloner);
+    }
+  }
 
   [Item("Real Vector Programmable Problem (multi-objective)", "Represents a real vector multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]

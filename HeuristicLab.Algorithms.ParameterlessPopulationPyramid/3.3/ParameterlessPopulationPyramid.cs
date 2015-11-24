@@ -42,7 +42,7 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   [Creatable(CreatableAttribute.Categories.PopulationBasedAlgorithms, Priority = 400)]
   public class ParameterlessPopulationPyramid : BasicAlgorithm {
     public override Type ProblemType {
-      get { return typeof(ISingleObjectiveProblem<BinaryVectorEncoding, BinaryVector>); }
+      get { return typeof(ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>); }
     }
     public new ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector> Problem {
       get { return (ISingleObjectiveProblemDefinition<BinaryVectorEncoding, BinaryVector>)base.Problem; }

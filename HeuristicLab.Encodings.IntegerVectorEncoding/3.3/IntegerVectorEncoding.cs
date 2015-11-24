@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.IntegerVectorEncoding {
   [Item("IntegerVectorEncoding", "Describes an integer vector encoding.")]
   [StorableClass]
-  public sealed class IntegerVectorEncoding : Encoding<IIntegerVectorCreator> {
+  public sealed class IntegerVectorEncoding : Encoding<IntegerVector> {
     #region Encoding Parameters
     [Storable]
     private IFixedValueParameter<IntValue> lengthParameter;
@@ -269,15 +269,5 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
       }
     }
     #endregion
-  }
-
-  public static class IndividualExtensionMethods {
-    public static IntegerVector IntegerVector(this Individual individual) {
-      var encoding = individual.GetEncoding<IntegerVectorEncoding>();
-      return individual.IntegerVector(encoding.Name);
-    }
-    public static IntegerVector IntegerVector(this Individual individual, string name) {
-      return (IntegerVector)individual[name];
-    }
   }
 }

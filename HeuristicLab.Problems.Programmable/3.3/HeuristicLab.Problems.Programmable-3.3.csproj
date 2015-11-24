@@ -152,10 +152,17 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.BinaryVectorEncoding\3.3\HeuristicLab.Encodings.BinaryVectorEncoding-3.3.csproj">
       <Project>{66d249c3-a01d-42a8-82a2-919bc8ec3d83}</Project>
       <Name>HeuristicLab.Encodings.BinaryVectorEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.IntegerVectorEncoding\3.3\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.csproj">
+      <Project>{ddfb14dd-2a85-493c-a52d-e69729bbaeb0}</Project>
+      <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
       <Project>{bb6d334a-4bb6-4674-9883-31a6ebb32cab}</Project>
       <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">
       <Project>{23da7ff4-d5b8-41b6-aa96-f0561d24f3ee}</Project>
