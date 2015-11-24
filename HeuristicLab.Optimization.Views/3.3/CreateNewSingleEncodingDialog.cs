@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization.Views {
@@ -45,7 +44,7 @@ namespace HeuristicLab.Optimization.Views {
       encodingTypeComboBox.Items.Clear();
       var encodings = ApplicationManager.Manager.GetTypes(typeof(IEncoding));
       foreach (var enc in encodings) {
-        if (enc != typeof(MultiEncoding))
+        if (enc != typeof(CombinedEncoding))
           encodingTypeComboBox.Items.Add(enc);
       }
       if (encodingTypeComboBox.Items.Count > 0)

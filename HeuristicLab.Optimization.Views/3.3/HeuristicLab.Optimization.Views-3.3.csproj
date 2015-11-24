@@ -141,6 +141,12 @@
     <Compile Include="BatchRunView.Designer.cs">
       <DependentUpon>BatchRunView.cs</DependentUpon>
     </Compile>
+    <Compile Include="CreateNewSingleEncodingDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateNewSingleEncodingDialog.Designer.cs">
+      <DependentUpon>CreateNewSingleEncodingDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="ISolutionSimilarityCalculatorView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -152,6 +158,12 @@
     </Compile>
     <Compile Include="ExperimentListView.Designer.cs">
       <DependentUpon>ExperimentListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MultiEncodingView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MultiEncodingView.Designer.cs">
+      <DependentUpon>MultiEncodingView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="ProblemView.cs">

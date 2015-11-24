@@ -62,25 +62,6 @@ namespace HeuristicLab.Optimization {
     public abstract double[] Evaluate(TSolution individual, IRandom random);
     public virtual void Analyze(TSolution[] individuals, double[][] qualities, ResultCollection results, IRandom random) { }
 
-    //TODO
-    //protected override void OnOperatorsChanged() {
-    //  base.OnOperatorsChanged();
-    //  if (Encoding != null) {
-    //    PruneSingleObjectiveOperators(Encoding);
-    //    var multiEncoding = Encoding as MultiEncoding;
-    //    if (multiEncoding != null) {
-    //      foreach (var encoding in multiEncoding.Encodings.ToList()) {
-    //        PruneSingleObjectiveOperators(encoding);
-    //      }
-    //    }
-    //  }
-    //}
-
-    //private void PruneSingleObjectiveOperators(IEncoding encoding) {
-    //  if (encoding != null && encoding.Operators.Any(x => x is ISingleObjectiveOperator && !(x is IMultiObjectiveOperator)))
-    //    encoding.Operators = encoding.Operators.Where(x => !(x is ISingleObjectiveOperator) || x is IMultiObjectiveOperator).ToList();
-    //}
-
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
       ParameterizeOperators();

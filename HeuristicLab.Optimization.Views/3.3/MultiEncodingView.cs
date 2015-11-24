@@ -29,12 +29,12 @@ using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Optimization.Views {
-  [View("MultiEncoding View")]
-  [Content(typeof(MultiEncoding), IsDefaultView = true)]
+  [View("CombinedEncoding View")]
+  [Content(typeof(CombinedEncoding), IsDefaultView = true)]
   public sealed partial class MultiEncodingView : ParameterizedNamedItemView {
 
-    public new MultiEncoding Content {
-      get { return (MultiEncoding)base.Content; }
+    public new CombinedEncoding Content {
+      get { return (CombinedEncoding)base.Content; }
       set { base.Content = value; }
     }
 
@@ -48,11 +48,13 @@ namespace HeuristicLab.Optimization.Views {
 
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
-      Content.EncodingsChanged -= ContentOnEncodingsChanged;
+      Content.Encodings.ItemsAdded -= ContentOnEncodingsChanged;
+      Content.Encodings.ItemsRemoved -= ContentOnEncodingsChanged;
     }
 
     protected override void RegisterContentEvents() {
-      Content.EncodingsChanged += ContentOnEncodingsChanged;
+      Content.Encodings.ItemsAdded += ContentOnEncodingsChanged;
+      Content.Encodings.ItemsRemoved += ContentOnEncodingsChanged;
       base.RegisterContentEvents();
     }
 

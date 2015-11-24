@@ -90,25 +90,6 @@ namespace HeuristicLab.Optimization {
       return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
     }
 
-    //TODO
-    //protected override void OnOperatorsChanged() {
-    //  base.OnOperatorsChanged();
-    //  if (Encoding != null) {
-    //    PruneMultiObjectiveOperators(Encoding);
-    //    var multiEncoding = Encoding as MultiEncoding;
-    //    if (multiEncoding != null) {
-    //      foreach (var encoding in multiEncoding.Encodings.ToList()) {
-    //        PruneMultiObjectiveOperators(encoding);
-    //      }
-    //    }
-    //  }
-    //}
-
-    //private void PruneMultiObjectiveOperators(IEncoding<TSolution> encoding) {
-    //  if (encoding.Operators.Any(x => x is IMultiObjectiveOperator && !(x is ISingleObjectiveOperator)))
-    //    encoding.Operators = encoding.Operators.Where(x => !(x is IMultiObjectiveOperator) || x is ISingleObjectiveOperator).ToList();
-    //}
-
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
       ParameterizeOperators();

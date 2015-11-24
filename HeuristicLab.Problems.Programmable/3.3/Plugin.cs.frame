@@ -34,7 +34,7 @@ namespace HeuristicLab.Problems.Programmable {
   [PluginDependency("HeuristicLab.Encodings.IntegerVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.RealVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.PermutationEncoding", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.3")]
+  [PluginDependency("HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "3.4")]
   [PluginDependency("HeuristicLab.Encodings.LinearLinkageEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
