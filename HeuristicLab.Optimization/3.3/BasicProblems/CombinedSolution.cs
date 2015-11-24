@@ -20,7 +20,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -31,18 +30,17 @@ namespace HeuristicLab.Optimization {
   [StorableClass]
   public sealed class CombinedSolution : Item, ISolution {
 
-    private MultiEncoding Encoding { get; set; }
-    protected IScope Scope { get; private set; }
+    private CombinedEncoding Encoding { get; set; }
+    private IScope Scope { get; set; }
 
     [StorableConstructor]
     private CombinedSolution(bool deserializing) : base(deserializing) { }
-
     private CombinedSolution(CombinedSolution original, Cloner cloner)
       : base(original, cloner) {
       Encoding = cloner.Clone(original.Encoding);
       Scope = cloner.Clone(original.Scope);
     }
-    public CombinedSolution(IScope scope, MultiEncoding encoding) {
+    public CombinedSolution(IScope scope, CombinedEncoding encoding) {
       Encoding = encoding;
       Scope = scope;
     }

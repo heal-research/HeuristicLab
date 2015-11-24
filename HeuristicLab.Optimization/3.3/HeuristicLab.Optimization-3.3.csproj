@@ -120,11 +120,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\BasicAlgorithm.cs" />
-    <Compile Include="BasicProblems\Individuals\MultiSolution.cs" />
+    <Compile Include="BasicProblems\CombinedSolution.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiEncodingOperator.cs" />
     <Compile Include="BasicProblems\Interfaces\IMultiObjectiveProblem.cs" />
     <Compile Include="BasicProblems\Interfaces\ISingleObjectiveProblem.cs" />
-    <Compile Include="BasicProblems\MultiEncoding.cs" />
+    <Compile Include="BasicProblems\CombinedEncoding.cs" />
     <Compile Include="BasicProblems\Operators\MultiEncodingCreator.cs" />
     <Compile Include="BasicProblems\Operators\MultiEncodingCrossover.cs" />
     <Compile Include="BasicProblems\Operators\MultiEncodingManipulator.cs" />

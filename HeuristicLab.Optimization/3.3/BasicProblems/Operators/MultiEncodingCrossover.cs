@@ -37,7 +37,7 @@ namespace HeuristicLab.Optimization {
 
 
     public override IOperation InstrumentedApply() {
-      SolutionParameter.ActualValue = new CombinedSolution(ExecutionContext.Scope, (MultiEncoding)EncodingParameter.ActualValue);
+      SolutionParameter.ActualValue = new CombinedSolution(ExecutionContext.Scope, (CombinedEncoding)EncodingParameter.ActualValue);
       return base.InstrumentedApply();
     }
   }

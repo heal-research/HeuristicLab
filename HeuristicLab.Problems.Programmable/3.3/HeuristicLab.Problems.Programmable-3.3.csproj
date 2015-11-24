@@ -159,6 +159,11 @@
       <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.LinearLinkageEncoding\3.3\HeuristicLab.Encodings.LinearLinkageEncoding-3.3.csproj">
+      <Project>{be698769-975a-429e-828c-72bb2b6182c8}</Project>
+      <Name>HeuristicLab.Encodings.LinearLinkageEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
       <Project>{dbecb8b0-b166-4133-baf1-ed67c3fd7fca}</Project>
       <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
@@ -167,6 +172,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Encodings.RealVectorEncoding\3.3\HeuristicLab.Encodings.RealVectorEncoding-3.3.csproj">
       <Project>{bb6d334a-4bb6-4674-9883-31a6ebb32cab}</Project>
       <Name>HeuristicLab.Encodings.RealVectorEncoding-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding\3.4\HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4.csproj">
+      <Project>{06d4a186-9319-48a0-bade-a2058d462eea}</Project>
+      <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Operators\3.3\HeuristicLab.Operators-3.3.csproj">

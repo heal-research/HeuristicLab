@@ -28,9 +28,9 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Optimization {
-  [Item("MultiEncoding", "Describes a combined encoding consisting of multiple simpler encodings.")]
+  [Item("CombinedEncoding", "Describes a combined encoding consisting of multiple simpler encodings.")]
   [StorableClass]
-  public sealed class MultiEncoding : Encoding<CombinedSolution> {
+  public sealed class CombinedEncoding : Encoding<CombinedSolution> {
 
     private ItemCollection<IEncoding> encodings;
 
@@ -45,14 +45,14 @@ namespace HeuristicLab.Optimization {
     }
 
     [StorableConstructor]
-    private MultiEncoding(bool deserializing) : base(deserializing) { }
-    public override IDeepCloneable Clone(Cloner cloner) { return new MultiEncoding(this, cloner); }
-    private MultiEncoding(MultiEncoding original, Cloner cloner)
+    private CombinedEncoding(bool deserializing) : base(deserializing) { }
+    public override IDeepCloneable Clone(Cloner cloner) { return new CombinedEncoding(this, cloner); }
+    private CombinedEncoding(CombinedEncoding original, Cloner cloner)
       : base(original, cloner) {
       encodings = new ItemCollection<IEncoding>(original.Encodings.Select(cloner.Clone));
     }
-    public MultiEncoding()
-      : base("MultiEncoding") {
+    public CombinedEncoding()
+      : base("CombinedEncoding") {
       encodings = new ItemCollection<IEncoding>();
       SolutionCreator = new MultiEncodingCreator() { SolutionParameter = { ActualName = Name } };
       foreach (var @operator in ApplicationManager.Manager.GetInstances<IMultiEncodingOperator>()) {
@@ -61,8 +61,8 @@ namespace HeuristicLab.Optimization {
       }
     }
 
-    public MultiEncoding Add(IEncoding encoding) {
-      if (encoding is MultiEncoding) throw new InvalidOperationException("Nesting of MultiEncodings is not supported.");
+    public CombinedEncoding Add(IEncoding encoding) {
+      if (encoding is CombinedEncoding) throw new InvalidOperationException("Nesting of CombinedEncodings is not supported.");
       if (Encodings.Any(e => e.Name == encoding.Name)) throw new ArgumentException("Encoding name must be unique", "encoding.Name");
       encodings.Add(encoding);
       Parameters.AddRange(encoding.Parameters);

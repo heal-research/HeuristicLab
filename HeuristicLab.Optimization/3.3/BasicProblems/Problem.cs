@@ -126,9 +126,9 @@ namespace HeuristicLab.Optimization {
     private static void AdaptEncodingOperators(IEncoding oldEncoding, IEncoding newEncoding) {
       if (oldEncoding.GetType() != newEncoding.GetType()) return;
 
-      if (oldEncoding.GetType() == typeof(MultiEncoding)) {
-        var oldMultiEncoding = (MultiEncoding)oldEncoding;
-        var newMultiEncoding = (MultiEncoding)newEncoding;
+      if (oldEncoding.GetType() == typeof(CombinedEncoding)) {
+        var oldMultiEncoding = (CombinedEncoding)oldEncoding;
+        var newMultiEncoding = (CombinedEncoding)newEncoding;
         if (!oldMultiEncoding.Encodings.SequenceEqual(newMultiEncoding.Encodings, new TypeEqualityComparer<IEncoding>())) return;
 
         var nestedEncodings = oldMultiEncoding.Encodings.Zip(newMultiEncoding.Encodings, (o, n) => new { oldEnc = o, newEnc = n });

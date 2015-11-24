@@ -25,15 +25,17 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
+using HeuristicLab.Encodings.LinearLinkageEncoding;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.RealVectorEncoding;
+using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Programmable {
   #region single-objective
   [Item("Binary Vector Problem (single-objective)", "Represents a binary vector single-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsSingleObjective, Priority = 100)]
   [StorableClass]
   public sealed class SingleObjectiveBinaryVectorProgrammableProblem : SingleObjectiveProgrammableProblem<BinaryVectorEncoding, BinaryVector> {
 
@@ -56,28 +58,8 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  [Item("Combined Encoding Problem (single-objective)", "Represents a combined encoding single-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  [StorableClass]
-  public sealed class SingleObjectiveMultiSolutionProgrammableProblem : SingleObjectiveProgrammableProblem<MultiEncoding, CombinedSolution> {
-
-    [StorableConstructor]
-    private SingleObjectiveMultiSolutionProgrammableProblem(bool deserializing) : base(deserializing) { }
-    private SingleObjectiveMultiSolutionProgrammableProblem(SingleObjectiveMultiSolutionProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-
-    public SingleObjectiveMultiSolutionProgrammableProblem()
-      : base() {
-      ProblemScript.Code = ScriptTemplates.SingleObjectiveCombinedEncodingProblem_Template;
-    }
-
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new SingleObjectiveMultiSolutionProgrammableProblem(this, cloner);
-    }
-  }
-
   [Item("Integer Vector Problem (single-objective)", "Represents an integer vector single-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsSingleObjective, Priority = 101)]
   [StorableClass]
   public sealed class SingleObjectiveIntegerVectorProgrammableProblem : SingleObjectiveProgrammableProblem<IntegerVectorEncoding, IntegerVector> {
 
@@ -100,7 +82,7 @@ namespace HeuristicLab.Problems.Programmable {
   }
 
   [Item("Real Vector Problem (single-objective)", "Represents a real vector single-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsSingleObjective, Priority = 102)]
   [StorableClass]
   public sealed class SingleObjectiveRealVectorProgrammableProblem : SingleObjectiveProgrammableProblem<RealVectorEncoding, RealVector> {
 
@@ -123,7 +105,7 @@ namespace HeuristicLab.Problems.Programmable {
   }
 
   [Item("Permutation Problem (single-objective)", "Represents a permutation single-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsSingleObjective, Priority = 103)]
   [StorableClass]
   public sealed class SingleObjectivePermutationProgrammableProblem : SingleObjectiveProgrammableProblem<PermutationEncoding, Permutation> {
 
@@ -145,42 +127,74 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  //[Item("Symbolic Expression Tree Programmable Problem (single-objective)", "Represents a symbolic expression tree single-objective problem that can be programmed with a script.")]
-  //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  //[StorableClass]
-  //public sealed class SingleObjectiveSymbolicExpressionTreeProgrammableProblem : SingleObjectiveProgrammableProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree> {
+  [Item("Symbolic Expression Tree Problem (single-objective)", "Represents a symbolic expression tree single-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsSingleObjective, Priority = 104)]
+  [StorableClass]
+  public sealed class SingleObjectiveSymbolicExpressionTreeProgrammableProblem : SingleObjectiveProgrammableProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
 
-  //  [StorableConstructor]
-  //  private SingleObjectiveSymbolicExpressionTreeProgrammableProblem(bool deserializing) : base(deserializing) { }
-  //  private SingleObjectiveSymbolicExpressionTreeProgrammableProblem(SingleObjectiveSymbolicExpressionTreeProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-  //  public SingleObjectiveSymbolicExpressionTreeProgrammableProblem()
-  //    : base(string.Format(ScriptTemplates.CompiledSingleObjectiveProblemDefinition, "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "SymbolicExpressionTreeEncoding", "SymbolicExpressionTree")) { }
+    [StorableConstructor]
+    private SingleObjectiveSymbolicExpressionTreeProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveSymbolicExpressionTreeProgrammableProblem(SingleObjectiveSymbolicExpressionTreeProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+    public SingleObjectiveSymbolicExpressionTreeProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "SymbolicExpressionTreeEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "ISymbolicExpressionTree");
+      ProblemScript.Code = codeTemplate;
+    }
 
-  //  public override IDeepCloneable Clone(Cloner cloner) {
-  //    return new SingleObjectiveSymbolicExpressionTreeProgrammableProblem(this, cloner);
-  //  }
-  //}
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SingleObjectiveSymbolicExpressionTreeProgrammableProblem(this, cloner);
+    }
+  }
 
-  //[Item("Linear Linkage Programmable Problem (single-objective)", "Represents a linear linkage single-objective problem that can be programmed with a script.")]
-  //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  //[StorableClass]
-  //public sealed class SingleObjectiveLinearLinkageProgrammableProblem : SingleObjectiveProgrammableProblem<LinearLinkageEncoding, LinearLinkage> {
+  [Item("Linear Linkage Problem (single-objective)", "Represents a linear linkage single-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsSingleObjective, Priority = 105)]
+  [StorableClass]
+  public sealed class SingleObjectiveLinearLinkageProgrammableProblem : SingleObjectiveProgrammableProblem<LinearLinkageEncoding, LinearLinkage> {
 
-  //  [StorableConstructor]
-  //  private SingleObjectiveLinearLinkageProgrammableProblem(bool deserializing) : base(deserializing) { }
-  //  private SingleObjectiveLinearLinkageProgrammableProblem(SingleObjectiveLinearLinkageProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-  //  public SingleObjectiveLinearLinkageProgrammableProblem()
-  //    : base(string.Format(ScriptTemplates.CompiledSingleObjectiveProblemDefinition, "HeuristicLab.Encodings.LinearLinkageEncoding", "LinearLinkageEncoding", "LinearLinkage")) { }
+    [StorableConstructor]
+    private SingleObjectiveLinearLinkageProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveLinearLinkageProgrammableProblem(SingleObjectiveLinearLinkageProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+    public SingleObjectiveLinearLinkageProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.LinearLinkageEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "LinearLinkageEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "LinearLinkage");
+      ProblemScript.Code = codeTemplate;
+    }
 
-  //  public override IDeepCloneable Clone(Cloner cloner) {
-  //    return new SingleObjectiveLinearLinkageProgrammableProblem(this, cloner);
-  //  }
-  //}
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SingleObjectiveLinearLinkageProgrammableProblem(this, cloner);
+    }
+  }
+
+  [Item("Combined Encoding Problem (single-objective)", "Represents a combined encoding single-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsSingleObjective, Priority = 1000)]
+  [StorableClass]
+  public sealed class SingleObjectiveCombinedEncodingProgrammableProblem : SingleObjectiveProgrammableProblem<CombinedEncoding, CombinedSolution> {
+
+    [StorableConstructor]
+    private SingleObjectiveCombinedEncodingProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private SingleObjectiveCombinedEncodingProgrammableProblem(SingleObjectiveCombinedEncodingProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+
+    public SingleObjectiveCombinedEncodingProgrammableProblem()
+      : base() {
+      ProblemScript.Code = ScriptTemplates.SingleObjectiveCombinedEncodingProblem_Template;
+    }
+
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SingleObjectiveCombinedEncodingProgrammableProblem(this, cloner);
+    }
+  }
   #endregion
 
   #region multi-objective
   [Item("Binary Vector Problem (multi-objective)", "Represents a binary vector multi-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsMultiObjective, Priority = 100)]
   [StorableClass]
   public sealed class MultiObjectiveBinaryVectorProgrammableProblem : MultiObjectiveProgrammableProblem<BinaryVectorEncoding, BinaryVector> {
 
@@ -203,28 +217,8 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  [Item("Combined Encoding Problem (multi-objective)", "Represents a combined encoding multi-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  [StorableClass]
-  public sealed class MultiObjectiveMultiSolutionProgrammableProblem : MultiObjectiveProgrammableProblem<MultiEncoding, CombinedSolution> {
-
-    [StorableConstructor]
-    private MultiObjectiveMultiSolutionProgrammableProblem(bool deserializing) : base(deserializing) { }
-    private MultiObjectiveMultiSolutionProgrammableProblem(MultiObjectiveMultiSolutionProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-
-    public MultiObjectiveMultiSolutionProgrammableProblem()
-      : base() {
-      ProblemScript.Code = ScriptTemplates.MultiObjectiveCombinedEncodingProblem_Template;
-    }
-
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultiObjectiveMultiSolutionProgrammableProblem(this, cloner);
-    }
-  }
-
   [Item("Integer Vector Problem (multi-objective)", "Represents an integer vector multi-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsMultiObjective, Priority = 101)]
   [StorableClass]
   public sealed class MultiObjectiveIntegerVectorProgrammableProblem : MultiObjectiveProgrammableProblem<IntegerVectorEncoding, IntegerVector> {
 
@@ -247,7 +241,7 @@ namespace HeuristicLab.Problems.Programmable {
   }
 
   [Item("Real Vector Problem (multi-objective)", "Represents a real vector multi-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsMultiObjective, Priority = 102)]
   [StorableClass]
   public sealed class MultiObjectiveRealVectorProgrammableProblem : MultiObjectiveProgrammableProblem<RealVectorEncoding, RealVector> {
 
@@ -270,7 +264,7 @@ namespace HeuristicLab.Problems.Programmable {
   }
 
   [Item("Permutation Problem (multi-objective)", "Represents a permutation multi-objective problem that can be programmed with a script.")]
-  [Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsMultiObjective, Priority = 103)]
   [StorableClass]
   public sealed class MultiObjectivePermutationProgrammableProblem : MultiObjectiveProgrammableProblem<PermutationEncoding, Permutation> {
 
@@ -291,36 +285,68 @@ namespace HeuristicLab.Problems.Programmable {
     }
   }
 
-  //[Item("Symbolic Expression Tree Programmable Problem (multi-objective)", "Represents a symbolic expression tree multi-objective problem that can be programmed with a script.")]
-  //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  //[StorableClass]
-  //public sealed class MultiObjectiveSymbolicExpressionTreeProgrammableProblem : MultiObjectiveProgrammableProblem<SymbolicExpressionTreeEncoding, SymbolicExpressionTree> {
+  [Item("Symbolic Expression Tree Programmable Problem (multi-objective)", "Represents a symbolic expression tree multi-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsMultiObjective, Priority = 104)]
+  [StorableClass]
+  public sealed class MultiObjectiveSymbolicExpressionTreeProgrammableProblem : MultiObjectiveProgrammableProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
 
-  //  [StorableConstructor]
-  //  private MultiObjectiveSymbolicExpressionTreeProgrammableProblem(bool deserializing) : base(deserializing) { }
-  //  private MultiObjectiveSymbolicExpressionTreeProgrammableProblem(MultiObjectiveSymbolicExpressionTreeProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-  //  public MultiObjectiveSymbolicExpressionTreeProgrammableProblem()
-  //    : base(string.Format(ScriptTemplates.CompiledMultiObjectiveProblemDefinition, "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding", "SymbolicExpressionTreeEncoding", "SymbolicExpressionTree")) { }
+    [StorableConstructor]
+    private MultiObjectiveSymbolicExpressionTreeProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveSymbolicExpressionTreeProgrammableProblem(MultiObjectiveSymbolicExpressionTreeProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+    public MultiObjectiveSymbolicExpressionTreeProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.SymbolicExpressionTreeEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "SymbolicExpressionTreeEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "ISymbolicExpressionTree");
+      ProblemScript.Code = codeTemplate;
+    }
 
-  //  public override IDeepCloneable Clone(Cloner cloner) {
-  //    return new MultiObjectiveSymbolicExpressionTreeProgrammableProblem(this, cloner);
-  //  }
-  //}
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiObjectiveSymbolicExpressionTreeProgrammableProblem(this, cloner);
+    }
+  }
 
-  //[Item("Linear Linkage Programmable Problem (multi-objective)", "Represents a linear linkage multi-objective problem that can be programmed with a script.")]
-  //[Creatable(CreatableAttribute.Categories.Problems, Priority = 100)]
-  //[StorableClass]
-  //public sealed class MultiObjectiveLinearLinkageProgrammableProblem : MultiObjectiveProgrammableProblem<LinearLinkageEncoding, LinearLinkage> {
+  [Item("Linear Linkage Programmable Problem (multi-objective)", "Represents a linear linkage multi-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsMultiObjective, Priority = 105)]
+  [StorableClass]
+  public sealed class MultiObjectiveLinearLinkageProgrammableProblem : MultiObjectiveProgrammableProblem<LinearLinkageEncoding, LinearLinkage> {
 
-  //  [StorableConstructor]
-  //  private MultiObjectiveLinearLinkageProgrammableProblem(bool deserializing) : base(deserializing) { }
-  //  private MultiObjectiveLinearLinkageProgrammableProblem(MultiObjectiveLinearLinkageProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
-  //  public MultiObjectiveLinearLinkageProgrammableProblem()
-  //    : base(string.Format(ScriptTemplates.CompiledMultiObjectiveProblemDefinition, "HeuristicLab.Encodings.LinearLinkageEncoding", "LinearLinkageEncoding", "LinearLinkage")) { }
+    [StorableConstructor]
+    private MultiObjectiveLinearLinkageProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveLinearLinkageProgrammableProblem(MultiObjectiveLinearLinkageProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+    public MultiObjectiveLinearLinkageProgrammableProblem()
+      : base() {
+      var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, "HeuristicLab.Encodings.LinearLinkageEncoding");
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, "LinearLinkageEncoding");
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, "LinearLinkage");
+      ProblemScript.Code = codeTemplate;
+    }
 
-  //  public override IDeepCloneable Clone(Cloner cloner) {
-  //    return new MultiObjectiveLinearLinkageProgrammableProblem(this, cloner);
-  //  }
-  //}
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiObjectiveLinearLinkageProgrammableProblem(this, cloner);
+    }
+  }
+
+  [Item("Combined Encoding Problem (multi-objective)", "Represents a combined encoding multi-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.ProgrammableProblemsMultiObjective, Priority = 1000)]
+  [StorableClass]
+  public sealed class MultiObjectiveCombinedEncodingProgrammableProblem : MultiObjectiveProgrammableProblem<CombinedEncoding, CombinedSolution> {
+
+    [StorableConstructor]
+    private MultiObjectiveCombinedEncodingProgrammableProblem(bool deserializing) : base(deserializing) { }
+    private MultiObjectiveCombinedEncodingProgrammableProblem(MultiObjectiveCombinedEncodingProgrammableProblem original, Cloner cloner) : base(original, cloner) { }
+
+    public MultiObjectiveCombinedEncodingProgrammableProblem()
+      : base() {
+      ProblemScript.Code = ScriptTemplates.MultiObjectiveCombinedEncodingProblem_Template;
+    }
+
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiObjectiveCombinedEncodingProgrammableProblem(this, cloner);
+    }
+  }
   #endregion
 }
