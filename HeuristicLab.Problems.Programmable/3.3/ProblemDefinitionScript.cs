@@ -123,8 +123,7 @@ namespace HeuristicLab.Problems.Programmable {
       CompiledProblemDefinition<TEncoding, TSolution> inst;
       try {
         inst = (CompiledProblemDefinition<TEncoding, TSolution>)Activator.CreateInstance(types.Single(x => typeof(CompiledProblemDefinition<TEncoding, TSolution>).IsAssignableFrom(x)));
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         compiledProblemDefinition = null;
         throw new ProblemDefinitionScriptException("Instantiating the problem definition failed." + Environment.NewLine + "Check your default constructor.", e);
       }
@@ -132,8 +131,8 @@ namespace HeuristicLab.Problems.Programmable {
       try {
         inst.vars = new Variables(VariableStore);
         inst.Encoding = encoding;
-      }
-      catch (Exception e) {
+        inst.Initialize();
+      } catch (Exception e) {
         compiledProblemDefinition = null;
         throw new ProblemDefinitionScriptException("Initializing the problem definition failed." + Environment.NewLine + "Check your Initialize() method.", e);
       }
@@ -141,8 +140,7 @@ namespace HeuristicLab.Problems.Programmable {
       try {
         compiledProblemDefinition = inst;
         if (fireChanged) OnProblemDefinitionChanged();
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         compiledProblemDefinition = null;
         throw new ProblemDefinitionScriptException("Using the problem definition in the problem failed." + Environment.NewLine + "Examine this error message carefully (often there is an issue with the defined encoding).", e);
       }

@@ -44,26 +44,24 @@ using HeuristicLab.Optimization;
 using HeuristicLab.Problems.Programmable;
 
 namespace HeuristicLab.Problems.Programmable {
-  public class CompiledSingleObjectiveProblemDefinition : CompiledProblemDefinition, ISingleObjectiveProblemDefinition {
+  public class CompiledSingleObjectiveProblemDefinition : CompiledSingleObjectiveProblemDefinition<LinearLinkageEncoding, LinearLinkage> {
     private const int ProblemSize = 100;
-    public bool Maximization { get { return false; } }
+    public override bool Maximization { get { return false; } }
 
     private bool[,] allowedTogether;
-      
+    
     public override void Initialize() {
-      var encoding = new LinearLinkageEncoding(""lle"", length: ProblemSize);
-      allowedTogether = new bool[encoding.Length, encoding.Length];
+      Encoding.Length = ProblemSize;
+      allowedTogether = new bool[ProblemSize, ProblemSize];
       var random = new System.Random(13);
-      for (var i = 0; i < encoding.Length - 1; i++)
-        for (var j = i + 1; j < encoding.Length; j++)
+      for (var i = 0; i < ProblemSize - 1; i++)
+        for (var j = i + 1; j < ProblemSize; j++)
           allowedTogether[i, j] = allowedTogether[j, i] = random.Next(2) == 0;
-      
-      Encoding = encoding;
     }
 
-    public double Evaluate(Individual individual, IRandom random) {
+    public override double Evaluate(LinearLinkage solution, IRandom random) {
       var penalty = 0;
-      var groups = individual.LinearLinkage(""lle"").GetGroups().ToList();
+      var groups = solution.GetGroups().ToList();
       for (var i = 0; i < groups.Count; i++) {
         for (var j = 0; j < groups[i].Count; j++)
           for (var k = j + 1; k < groups[i].Count; k++)
@@ -73,13 +71,12 @@ namespace HeuristicLab.Problems.Programmable {
       else return groups.Count;
     }
 
-    public void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) { }
+    public override void Analyze(LinearLinkage[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
 
-    public IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
-      foreach (var move in ExhaustiveSwap2MoveGenerator.Generate(individual.LinearLinkage(""lle""))) {
-        var neighbor = individual.Copy();
-        var lle = neighbor.LinearLinkage(""lle"");
-        Swap2MoveMaker.Apply(lle, move);
+    public override IEnumerable<LinearLinkage> GetNeighbors(LinearLinkage solution, IRandom random) {
+      foreach (var move in ExhaustiveSwap2MoveGenerator.Generate(solution)) {
+        var neighbor = (LinearLinkage)solution.Clone();
+        Swap2MoveMaker.Apply(neighbor, move);
         yield return neighbor;
       }
     }
@@ -114,7 +111,7 @@ namespace HeuristicLab.Problems.Programmable {
       GeneticAlgorithm ga = new GeneticAlgorithm();
 
       #region Problem Configuration
-      var problem = new SingleObjectiveProgrammableProblem() {
+      var problem = new SingleObjectiveLinearLinkageProgrammableProblem() {
         ProblemScript = { Code = ProblemCode }
       };
       problem.ProblemScript.Compile();

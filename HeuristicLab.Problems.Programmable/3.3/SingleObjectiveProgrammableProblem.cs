@@ -92,7 +92,6 @@ namespace HeuristicLab.Problems.Programmable {
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
       var multiEnc = ProblemScript.Encoding as CombinedEncoding;
       if (multiEnc != null) multiEnc.Clear();
-      ProblemScript.Initialize();
       Encoding = (TEncoding)ProblemScript.Encoding.Clone();
 
       OnOperatorsChanged();

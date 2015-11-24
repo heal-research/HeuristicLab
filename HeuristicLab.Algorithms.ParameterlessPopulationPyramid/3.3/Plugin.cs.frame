@@ -39,7 +39,6 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
   [PluginDependency("HeuristicLab.Parameters", "3.3")]
   [PluginDependency("HeuristicLab.Persistence", "3.3")]
-  [PluginDependency("HeuristicLab.Problems.Binary", "3.3")]
   [PluginDependency("HeuristicLab.Random", "3.3")]
   public class Plugin : PluginBase {
   }
