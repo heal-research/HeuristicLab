@@ -24,6 +24,6 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public interface IMultiObjectiveOptimizationSupport {
-    void Analyze(Individual[] individuals, double[][] qualities, ResultCollection results, IRandom random);
+    void Analyze(ISolution[] individuals, double[][] qualities, ResultCollection results, IRandom random);
   }
 }

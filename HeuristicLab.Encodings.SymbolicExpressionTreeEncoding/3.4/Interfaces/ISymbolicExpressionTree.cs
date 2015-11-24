@@ -22,8 +22,10 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Optimization;
+
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
-  public interface ISymbolicExpressionTree : IItem {
+  public interface ISymbolicExpressionTree : IItem, ISolution {
     ISymbolicExpressionTreeNode Root { get; set; }
     int Length { get; }
     int Depth { get; }

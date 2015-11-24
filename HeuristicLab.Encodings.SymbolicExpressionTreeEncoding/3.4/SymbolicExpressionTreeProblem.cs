@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [StorableClass]
-  public abstract class SymbolicExpressionTreeProblem : SingleObjectiveProblem<SymbolicExpressionTreeEncoding> {
+  public abstract class SymbolicExpressionTreeProblem : SingleObjectiveProblem<SymbolicExpressionTreeEncoding, ISymbolicExpressionTree> {
 
     // persistence
     [StorableConstructor]
@@ -47,16 +47,7 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
 
     protected SymbolicExpressionTreeProblem() : base() { }
 
-    public virtual bool IsBetter(double quality, double bestQuality) {
-      return (Maximization && quality > bestQuality || !Maximization && quality < bestQuality);
-    }
-
-    public abstract double Evaluate(ISymbolicExpressionTree tree, IRandom random);
-    public sealed override double Evaluate(Individual individual, IRandom random) {
-      return Evaluate(individual.SymbolicExpressionTree(), random);
-    }
-
-    public virtual void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results,
+    public override void Analyze(ISymbolicExpressionTree[] trees, double[] qualities, ResultCollection results,
       IRandom random) {
       if (!results.ContainsKey("Best Solution Quality")) {
         results.Add(new Result("Best Solution Quality", typeof(DoubleValue)));
@@ -74,10 +65,6 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
         results["Best Solution"].Value = bestClone;
         results["Best Solution Quality"].Value = new DoubleValue(bestQuality);
       }
-    }
-
-    public sealed override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
-      Analyze(individuals.Select(ind => ind.SymbolicExpressionTree()).ToArray(), qualities, results, random);
     }
   }
 }

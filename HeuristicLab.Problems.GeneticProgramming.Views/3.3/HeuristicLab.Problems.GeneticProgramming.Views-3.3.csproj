@@ -219,6 +219,11 @@
       <Name>HeuristicLab.MainForm-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
       <Name>HeuristicLab.PluginInfrastructure-3.3</Name>

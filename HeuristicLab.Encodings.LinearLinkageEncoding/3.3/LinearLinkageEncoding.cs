@@ -33,7 +33,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("Linear Linkage Encoding", "Describes a linear linkage (LLE) encoding.")]
   [StorableClass]
-  public sealed class LinearLinkageEncoding : Encoding<ILinearLinkageCreator> {
+  public sealed class LinearLinkageEncoding : Encoding<LinearLinkage> {
     #region encoding parameters
     [Storable]
     private IFixedValueParameter<IntValue> lengthParameter;
@@ -165,15 +165,6 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
       }
     }
     #endregion
-  }
 
-  public static class IndividualExtensionMethods {
-    public static LinearLinkage LinearLinkage(this Individual individual) {
-      var encoding = individual.GetEncoding<LinearLinkageEncoding>();
-      return individual.LinearLinkage(encoding.Name);
-    }
-    public static LinearLinkage LinearLinkage(this Individual individual, string name) {
-      return (LinearLinkage)individual[name];
-    }
   }
 }

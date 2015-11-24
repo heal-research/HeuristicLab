@@ -39,7 +39,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
   [StorableClass]
   // BackwardsCompatibility3.3
   // Rename class to SingleObjectiveExternalEvaluationProblem
-  public class ExternalEvaluationProblem : SingleObjectiveProblem<IEncoding>, IExternalEvaluationProblem {
+  public class ExternalEvaluationProblem : SingleObjectiveProblem<IEncoding<ISolution>, ISolution>, IExternalEvaluationProblem {
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
@@ -101,7 +101,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get { return Parameters.ContainsKey("Maximization") && ((IValueParameter<BoolValue>)Parameters["Maximization"]).Value.Value; }
     }
 
-    public override double Evaluate(Individual individual, IRandom random) {
+    public override double Evaluate(ISolution individual, IRandom random) {
       var qualityMessage = Evaluate(BuildSolutionMessage(individual));
       if (!qualityMessage.HasExtension(SingleObjectiveQualityMessage.QualityMessage_))
         throw new InvalidOperationException("The received message is not a SingleObjectiveQualityMessage.");
@@ -113,11 +113,11 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
         : Cache.GetValue(solutionMessage, EvaluateOnNextAvailableClient, GetQualityMessageExtensions());
     }
 
-    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(ISolution[] individuals, double[] qualities, ResultCollection results, IRandom random) {
       OptimizationSupport.Analyze(individuals, qualities, results, random);
     }
 
-    public override IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random) {
+    public override IEnumerable<ISolution> GetNeighbors(ISolution individual, IRandom random) {
       return OptimizationSupport.GetNeighbors(individual, random);
     }
     #endregion
@@ -145,7 +145,8 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
       try {
         return client.Evaluate(message, GetQualityMessageExtensions());
-      } finally {
+      }
+      finally {
         lock (clientLock) {
           activeClients.Remove(client);
           Monitor.PulseAll(clientLock);
@@ -153,16 +154,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       }
     }
 
-    private SolutionMessage BuildSolutionMessage(Individual individual, int solutionId = 0) {
+    private SolutionMessage BuildSolutionMessage(ISolution solution, int solutionId = 0) {
       lock (clientLock) {
         SolutionMessage.Builder protobufBuilder = SolutionMessage.CreateBuilder();
         protobufBuilder.SolutionId = solutionId;
         var scope = new Scope();
-        individual.CopyToScope(scope);
+        ScopeUtil.CopySolutionToScope(scope, Encoding, solution);
         foreach (var variable in scope.Variables) {
           try {
             MessageBuilder.AddToMessage(variable.Value, variable.Name, protobufBuilder);
-          } catch (ArgumentException ex) {
+          }
+          catch (ArgumentException ex) {
             throw new InvalidOperationException(string.Format("ERROR while building solution message: Parameter {0} cannot be added to the message", Name), ex);
           }
         }

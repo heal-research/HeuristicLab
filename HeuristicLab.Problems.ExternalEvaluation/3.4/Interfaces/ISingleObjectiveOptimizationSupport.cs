@@ -25,7 +25,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.ExternalEvaluation {
   public interface ISingleObjectiveOptimizationSupport {
-    void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random);
-    IEnumerable<Individual> GetNeighbors(Individual individual, IRandom random);
+    void Analyze(ISolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
+    IEnumerable<ISolution> GetNeighbors(ISolution individual, IRandom random);
   }
 }

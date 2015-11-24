@@ -168,6 +168,11 @@
       <Name>HeuristicLab.Encodings.SymbolicExpressionTreeEncoding-3.4</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimization\3.3\HeuristicLab.Optimization-3.3.csproj">
+      <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
+      <Name>HeuristicLab.Optimization-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102bc7d3-0ef9-439c-8f6d-96ff0fdb8e1b}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>

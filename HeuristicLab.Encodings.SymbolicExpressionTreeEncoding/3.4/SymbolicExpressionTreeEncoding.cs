@@ -35,7 +35,7 @@ using HeuristicLab.PluginInfrastructure;
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
   [Item("SymbolicExpressionTreeEncoding", "Describes a symbolic expression tree encoding.")]
   [StorableClass]
-  public sealed class SymbolicExpressionTreeEncoding : Encoding<ISymbolicExpressionTreeCreator> {
+  public sealed class SymbolicExpressionTreeEncoding : Encoding<ISymbolicExpressionTree> {
     #region Encoding Parameters
     [Storable]
     private IFixedValueParameter<IntValue> treeLengthParameter;
@@ -353,16 +353,5 @@ namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
       foreach (var manipulator in manipulators) { }
     }
     #endregion
-  }
-
-  public static class IndividualExtensionMethods {
-    public static ISymbolicExpressionTree SymbolicExpressionTree(this Individual individual) {
-      var encoding = individual.GetEncoding<SymbolicExpressionTreeEncoding>();
-      return individual.SymbolicExpressionTree(encoding.Name);
-    }
-
-    public static ISymbolicExpressionTree SymbolicExpressionTree(this Individual individual, string name) {
-      return (ISymbolicExpressionTree)individual[name];
-    }
   }
 }

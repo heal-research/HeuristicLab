@@ -25,12 +25,13 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
   [Item("LinearLinkage", "Represents an LLE grouping of items.")]
   [StorableClass]
-  public sealed class LinearLinkage : IntArray {
+  public sealed class LinearLinkage : IntArray, ISolution {
 
     [StorableConstructor]
     private LinearLinkage(bool deserializing) : base(deserializing) { }

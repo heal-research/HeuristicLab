@@ -24,7 +24,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.LinearLinkageEncoding {
-  public interface ILinearLinkageCreator : ISolutionCreator, ILinearLinkageOperator {
+  public interface ILinearLinkageCreator : ISolutionCreator<LinearLinkage>, ILinearLinkageOperator {
     IValueLookupParameter<IntValue> LengthParameter { get; }
     ILookupParameter<LinearLinkage> LLEParameter { get; }
   }

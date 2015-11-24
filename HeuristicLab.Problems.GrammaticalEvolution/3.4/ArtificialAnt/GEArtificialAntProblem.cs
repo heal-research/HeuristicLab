@@ -37,8 +37,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   [Item("Grammatical Evolution Artificial Ant Problem (GE)", "Represents the Artificial Ant problem, implemented in Grammatical Evolution.")]
   [Creatable(CreatableAttribute.Categories.GeneticProgrammingProblems, Priority = 170)]
   [StorableClass]
-  public sealed class GEArtificialAntProblem : SingleObjectiveProblem<IntegerVectorEncoding>, IStorableContent {
-    public string Filename { get; set; }
+  public sealed class GEArtificialAntProblem : SingleObjectiveProblem<IntegerVectorEncoding, IntegerVector> {
 
     #region Parameter Properties
     public IValueParameter<BoolMatrix> WorldParameter {
@@ -98,9 +97,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
     }
 
     private readonly object syncRoot = new object();
-    public override double Evaluate(Individual individual, IRandom random) {
-      var vector = individual.IntegerVector();
-
+    public override double Evaluate(IntegerVector solution, IRandom random) {
       var bounds = Encoding.Bounds;
       var len = Encoding.Length;
       var grammar = wrappedAntProblem.Encoding.Grammar;
@@ -112,7 +109,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       lock (syncRoot) {
         fastRand = new FastRandom(random.Next());
       }
-      var tree = mapper.Map(fastRand, bounds, len, grammar, vector);
+      var tree = mapper.Map(fastRand, bounds, len, grammar, solution);
 
       Interpreter interpreter = new Interpreter(tree, World, MaxTimeSteps);
       interpreter.Run();
@@ -120,14 +117,14 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
       return interpreter.FoodEaten;
     }
 
-    public override void Analyze(Individual[] individuals, double[] qualities, ResultCollection results, IRandom random) {
+    public override void Analyze(IntegerVector[] solutions, double[] qualities, ResultCollection results, IRandom random) {
       var bounds = Encoding.Bounds;
       var len = Encoding.Length;
       var grammar = wrappedAntProblem.Encoding.Grammar;
       var mapper = GenotypeToPhenotypeMapperParameter.Value;
 
-      var trees = individuals
-        .Select(ind => mapper.Map(random, bounds, len, grammar, ind.IntegerVector()))
+      var trees = solutions
+        .Select(ind => mapper.Map(random, bounds, len, grammar, ind))
         .ToArray();
 
       wrappedAntProblem.Analyze(trees, qualities, results, random);
