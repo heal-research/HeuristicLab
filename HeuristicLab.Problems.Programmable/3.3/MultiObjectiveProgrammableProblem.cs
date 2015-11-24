@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (multi-objective)", "Represents a multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 120)]
   [StorableClass]
-  public class MultiObjectiveProgrammableProblem<TEncoding, TSolution> : MultiObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
+  public abstract class MultiObjectiveProgrammableProblem<TEncoding, TSolution> : MultiObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
     protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
@@ -59,14 +59,12 @@ namespace HeuristicLab.Problems.Programmable {
       get { return MultiObjectiveProblemScriptParameter.Value; }
     }
 
+    [StorableConstructor]
+    protected MultiObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
     protected MultiObjectiveProgrammableProblem(MultiObjectiveProgrammableProblem<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new MultiObjectiveProgrammableProblem<TEncoding, TSolution>(this, cloner); }
-
-    [StorableConstructor]
-    protected MultiObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
     public MultiObjectiveProgrammableProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
@@ -87,8 +85,6 @@ namespace HeuristicLab.Problems.Programmable {
     private void OnProblemDefinitionChanged() {
       Parameters.Remove("Maximization");
       Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()) { Hidden = true });
-      var multiEnc = ProblemScript.Encoding as CombinedEncoding;
-      if (multiEnc != null) multiEnc.Clear();
       Encoding = (TEncoding)ProblemScript.Encoding.Clone();
 
       OnOperatorsChanged();

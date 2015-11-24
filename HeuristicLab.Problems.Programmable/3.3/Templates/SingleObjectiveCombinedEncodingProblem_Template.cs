@@ -21,19 +21,19 @@ namespace HeuristicLab.Problems.Programmable {
       // Define e.g. the length of the solution encoding or the solution creator by modifying the Encoding property
       // Add additional initialization code e.g. private variables that you need for evaluating
       //Encoding.Add(new BinaryVectorEncoding("b") { Length = 10 });
-      //Encoding.Add(new IntegerVectorEncoding("i") { Length = 10, Bounds = new int[,] { { -100, 100 } } });
-      //Encoding.Add(new RealVectorEncoding("r") { Length = 10, Bounds = new double[,] { { -100, 100 } } });
-      //Encoding.Add(new PermutationEncoding("p") { Length = 20, PermutationType = PermutationTypes.Absolute });
+      //Encoding.Add(new IntegerVectorEncoding("i") { Length = 10, Bounds = new IntMatrix(new int[,] { { -100, 100 } }) });
+      //Encoding.Add(new RealVectorEncoding("r") { Length = 10, Bounds = new DoubleMatrix(new double[,] { { -100, 100 } }) });
+      //Encoding.Add(new PermutationEncoding("p") { Length = 20, Type = PermutationTypes.Absolute });
       //Encoding.Add(new LinearLinkageEncoding("lle") { Length = 30 });
     }
 
     public override double Evaluate(CombinedSolution solution, IRandom random) {
       // Use vars.yourVariable to access variables in the variable store i.e. yourVariable
       var quality = 0.0;
-      // var b = solution.GetSolution<BinaryVector>("b");
-      // quality = b.Count(x => x); // one max!
-      // var r = solution.GetSolution<RealVector>("r");
-      // quality += r.Sum(x => -x * x); // sphere
+      //var b = solution.GetSolution<BinaryVector>("b");
+      //quality = b.Count(x => x); // one max!
+      //var r = solution.GetSolution<RealVector>("r");
+      //quality += r.Sum(x => -x * x); // sphere
 
       // NOTE: Check the Maximization property above (true or false)!
       return quality;

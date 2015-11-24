@@ -34,7 +34,7 @@ using HeuristicLab.Scripting;
 namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (single-objective)", "Represents a single-objective problem that can be programmed with a script.")]
   [StorableClass]
-  public class SingleObjectiveProgrammableProblem<TEncoding, TSolution> : SingleObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
+  public abstract class SingleObjectiveProgrammableProblem<TEncoding, TSolution> : SingleObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
     protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
@@ -49,7 +49,6 @@ namespace HeuristicLab.Problems.Programmable {
       get { return (FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>)Parameters["ProblemScript"]; }
     }
 
-
     Script IProgrammableProblem.ProblemScript {
       get { return ProblemScript; }
     }
@@ -61,14 +60,12 @@ namespace HeuristicLab.Problems.Programmable {
       get { return SingleObjectiveProblemScriptParameter.Value; }
     }
 
+    [StorableConstructor]
+    protected SingleObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
     protected SingleObjectiveProgrammableProblem(SingleObjectiveProgrammableProblem<TEncoding, TSolution> original, Cloner cloner)
       : base(original, cloner) {
       RegisterEvents();
     }
-    public override IDeepCloneable Clone(Cloner cloner) { return new SingleObjectiveProgrammableProblem<TEncoding, TSolution>(this, cloner); }
-
-    [StorableConstructor]
-    protected SingleObjectiveProgrammableProblem(bool deserializing) : base(deserializing) { }
     public SingleObjectiveProgrammableProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
@@ -90,8 +87,6 @@ namespace HeuristicLab.Problems.Programmable {
     private void OnProblemDefinitionChanged() {
       Parameters.Remove("Maximization");
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
-      var multiEnc = ProblemScript.Encoding as CombinedEncoding;
-      if (multiEnc != null) multiEnc.Clear();
       Encoding = (TEncoding)ProblemScript.Encoding.Clone();
 
       OnOperatorsChanged();
