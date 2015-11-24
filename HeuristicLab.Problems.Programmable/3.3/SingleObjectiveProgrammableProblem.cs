@@ -72,7 +72,8 @@ namespace HeuristicLab.Problems.Programmable {
     public SingleObjectiveProgrammableProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
-        new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name, Encoding = Encoding }));
+        new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name }));
+      ProblemScript.Encoding = Encoding = (TEncoding)Encoding.Clone();
       Operators.Add(new BestScopeSolutionAnalyzer());
       RegisterEvents();
     }
@@ -89,7 +90,10 @@ namespace HeuristicLab.Problems.Programmable {
     private void OnProblemDefinitionChanged() {
       Parameters.Remove("Maximization");
       Parameters.Add(new FixedValueParameter<BoolValue>("Maximization", "Set to false if the problem should be minimized.", (BoolValue)new BoolValue(Maximization).AsReadOnly()) { Hidden = true });
+      var multiEnc = ProblemScript.Encoding as MultiEncoding;
+      if (multiEnc != null) multiEnc.Clear();
       ProblemScript.Initialize();
+      Encoding = (TEncoding)ProblemScript.Encoding.Clone();
 
       OnOperatorsChanged();
       OnReset();

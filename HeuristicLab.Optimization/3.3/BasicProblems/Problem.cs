@@ -40,6 +40,9 @@ namespace HeuristicLab.Optimization {
       get { return (IValueParameter<TEncoding>)Parameters["Encoding"]; }
     }
 
+    //mkommend necessary for reuse of operators if the encoding changes
+    private TEncoding oldEncoding;
+
     public TEncoding Encoding {
       get { return EncodingParameter.Value; }
       protected set {
@@ -63,6 +66,7 @@ namespace HeuristicLab.Optimization {
       : base() {
       Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any."));
       if (Encoding != null) {
+        oldEncoding = Encoding;
         SolutionCreator = Encoding.SolutionCreator;
         Parameterize();
       }
@@ -71,6 +75,7 @@ namespace HeuristicLab.Optimization {
 
     protected Problem(Problem<TEncoding, TSolution, TEvaluator> original, Cloner cloner)
       : base(original, cloner) {
+      oldEncoding = cloner.Clone(original.oldEncoding);
       RegisterEvents();
     }
 
@@ -78,6 +83,7 @@ namespace HeuristicLab.Optimization {
     protected Problem(bool deserializing) : base(deserializing) { }
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
+      oldEncoding = Encoding;
       RegisterEvents();
     }
 
@@ -95,8 +101,18 @@ namespace HeuristicLab.Optimization {
     }
 
     private void Parameterize() {
+      if (oldEncoding != null) {
+        AdaptEncodingOperators(oldEncoding, Encoding);
+        //var oldMultiEncoding = oldEncoding as MultiEncoding;
+        //if (oldMultiEncoding != null)
+        //  oldMultiEncoding.EncodingsChanged -= MultiEncodingOnEncodingsChanged;
+      }
+      oldEncoding = Encoding;
+
       foreach (var op in Operators.OfType<IEncodingOperator<TSolution>>())
         op.EncodingParameter.ActualName = EncodingParameter.Name;
+
+      SolutionCreator = Encoding.SolutionCreator;
 
       //var multiEncoding = Encoding as MultiEncoding;
       //if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
@@ -107,8 +123,31 @@ namespace HeuristicLab.Optimization {
       Encoding.SolutionCreator = SolutionCreator;
     }
 
-    protected virtual void MultiEncodingOnEncodingsChanged(object sender, EventArgs e) {
-      OnOperatorsChanged();
+    private static void AdaptEncodingOperators(IEncoding oldEncoding, IEncoding newEncoding) {
+      if (oldEncoding.GetType() != newEncoding.GetType()) return;
+
+      if (oldEncoding.GetType() == typeof(MultiEncoding)) {
+        var oldMultiEncoding = (MultiEncoding)oldEncoding;
+        var newMultiEncoding = (MultiEncoding)newEncoding;
+        if (!oldMultiEncoding.Encodings.SequenceEqual(newMultiEncoding.Encodings, new TypeEqualityComparer<IEncoding>())) return;
+
+        var nestedEncodings = oldMultiEncoding.Encodings.Zip(newMultiEncoding.Encodings, (o, n) => new { oldEnc = o, newEnc = n });
+        foreach (var multi in nestedEncodings)
+          AdaptEncodingOperators(multi.oldEnc, multi.newEnc);
+      }
+
+      var comparer = new TypeEqualityComparer<IOperator>();
+      var cloner = new Cloner();
+      var oldOperators = oldEncoding.Operators;
+      var newOperators = newEncoding.Operators;
+
+      cloner.RegisterClonedObject(oldEncoding, newEncoding);
+      var operators = oldOperators.Intersect(newOperators, comparer)
+                                  .Select(cloner.Clone)
+                                  .Union(newOperators, comparer).ToList();
+
+      newEncoding.ConfigureOperators(operators);
+      newEncoding.Operators = operators;
     }
   }
 }

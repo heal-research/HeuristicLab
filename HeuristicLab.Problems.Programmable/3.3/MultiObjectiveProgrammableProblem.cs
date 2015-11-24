@@ -70,7 +70,8 @@ namespace HeuristicLab.Problems.Programmable {
     public MultiObjectiveProgrammableProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
-        new MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name, Encoding = Encoding }));
+        new MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name }));
+      ProblemScript.Encoding = Encoding = (TEncoding)Encoding.Clone();
       RegisterEvents();
     }
 
@@ -86,8 +87,11 @@ namespace HeuristicLab.Problems.Programmable {
     private void OnProblemDefinitionChanged() {
       Parameters.Remove("Maximization");
       Parameters.Add(new ValueParameter<BoolArray>("Maximization", "Set to false if the problem should be minimized.", (BoolArray)new BoolArray(Maximization).AsReadOnly()) { Hidden = true });
-
+      var multiEnc = ProblemScript.Encoding as MultiEncoding;
+      if (multiEnc != null) multiEnc.Clear();
       ProblemScript.Initialize();
+      Encoding = (TEncoding)ProblemScript.Encoding.Clone();
+
       OnOperatorsChanged();
       OnReset();
     }
