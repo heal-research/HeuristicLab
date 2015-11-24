@@ -40,8 +40,8 @@ namespace HeuristicLab.Core {
       public const string GeneticProgrammingProblems = Problems + SplitToken + "2" + OrderToken + "Genetic Programming";
       public const string ExternalEvaluationProblems = Problems + SplitToken + "3" + OrderToken + "External Evaluation";
       public const string ProgrammableProblems = Problems + SplitToken + "4" + OrderToken + "Programmable";
-      public const string ProgrammableProblemsSingleObjective = ProgrammableProblems + "1" + OrderToken + "Single Objective";
-      public const string ProgrammableProblemsMultiObjective = ProgrammableProblems + "2" + OrderToken + "Multi Objective";
+      public const string ProgrammableProblemsSingleObjective = ProgrammableProblems + SplitToken + "1" + OrderToken + "Single Objective";
+      public const string ProgrammableProblemsMultiObjective = ProgrammableProblems + SplitToken + "2" + OrderToken + "Multi Objective";
 
       public const string DataAnalysis = "3" + OrderToken + "Data Analysis";
       public const string DataAnalysisRegression = DataAnalysis + SplitToken + "1" + OrderToken + "Regression";

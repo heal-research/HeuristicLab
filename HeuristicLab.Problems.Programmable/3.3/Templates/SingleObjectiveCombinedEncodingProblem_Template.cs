@@ -11,7 +11,6 @@ using HeuristicLab.Problems.Programmable;
 //using HeuristicLab.Encodings.RealVectorEncoding;
 //using HeuristicLab.Encodings.PermutationEncoding;
 //using HeuristicLab.Encodings.LinearLinkageEncoding;
-//using HeuristicLab.Encodings.SymbolicExpressionTreeEncoding;
 
 namespace HeuristicLab.Problems.Programmable {
   public class CompiledSingleObjectiveProblemDefinition : CompiledSingleObjectiveProblemDefinition<CombinedEncoding, CombinedSolution> {
@@ -26,7 +25,6 @@ namespace HeuristicLab.Problems.Programmable {
       //Encoding.Add(new RealVectorEncoding("r") { Length = 10, Bounds = new double[,] { { -100, 100 } } });
       //Encoding.Add(new PermutationEncoding("p") { Length = 20, PermutationType = PermutationTypes.Absolute });
       //Encoding.Add(new LinearLinkageEncoding("lle") { Length = 30 });
-      //Encoding.Add(new SymbolicExpressionTreeEncoding("tree") { ... });
     }
 
     public override double Evaluate(CombinedSolution solution, IRandom random) {
