@@ -84,7 +84,11 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlpsOffspringSelectionGeneticAlgorithmMainLoop.cs" />
+    <Compile Include="AlpsOffspringSelectionGeneticAlgorithm.cs" />
     <Compile Include="AlpsGeneticAlgorithmMainOperator.cs" />
+    <Compile Include="AlpsOffspringSelectionGeneticAlgorithmMainOperator.cs" />
+    <Compile Include="AlpsOffspringSelector.cs" />
     <Compile Include="ReseedingController.cs" />
     <Compile Include="ResultsHistoryWiper.cs" />
     <Compile Include="WeightingReducer.cs" />
