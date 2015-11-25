@@ -29,6 +29,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   // BackwardsCompatibility3.3
   #region Backwards compatible code (remove with 3.4)
   [Obsolete("This operator should not be used anymore.")]
+  [StorableClass]
   internal class RealVectorToRealVectorEncoder : SingleSuccessorOperator {
 
     [StorableConstructor]

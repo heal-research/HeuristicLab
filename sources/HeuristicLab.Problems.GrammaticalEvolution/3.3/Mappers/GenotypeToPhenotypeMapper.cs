@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.GrammaticalEvolution {
   /// <summary>
   /// Abstract base class for GenotypeToPhenotypeMappers
   /// </summary>
+  [StorableClass]
   public abstract class GenotypeToPhenotypeMapper : IntegerVectorOperator, IGenotypeToPhenotypeMapper {
 
     [StorableConstructor]

@@ -29,6 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
+  [StorableClass]
   public class FeatureSelectionRegressionProblemData : RegressionProblemData {
     private const string SelectedFeaturesParameterName = "SelectedFeatures";
     private const string WeightsParameterName = "Weights";

@@ -23,6 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Classification {
+  [StorableClass]
   public abstract class SymbolicClassificationMultiObjectiveEvaluator : SymbolicDataAnalysisMultiObjectiveEvaluator<IClassificationProblemData>, ISymbolicClassificationMultiObjectiveEvaluator {
     [StorableConstructor]
     protected SymbolicClassificationMultiObjectiveEvaluator(bool deserializing) : base(deserializing) { }

@@ -464,8 +464,7 @@
     <Compile Include="HeuristicLab-3.3\Samples\TabuSearchTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\TabuSearchVRPSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsTspSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\StorableClassTest.cs" />
-    <Compile Include="HeuristicLab-3.3\StorableConstructorTest.cs" />
+    <Compile Include="HeuristicLab-3.3\StorableTest.cs" />
     <Compile Include="HeuristicLab-3.3\ThreadSafeLogTest.cs" />
     <Compile Include="HeuristicLab-3.3\ToStringTest.cs" />
     <Compile Include="HeuristicLab.Algorithms.DataAnalysis-3.4\GradientBoostingTest.cs" />

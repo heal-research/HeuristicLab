@@ -32,6 +32,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
+  [StorableClass]
   public class SymbolicRegressionSolutionsAnalyzer : SingleSuccessorOperator, IAnalyzer {
     private const string ResultCollectionParameterName = "Results";
     private const string RegressionSolutionQualitiesResultName = "Regression Solution Qualities";

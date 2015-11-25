@@ -28,6 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Selection;
 
 namespace HeuristicLab.Optimization.Operators {
+  [StorableClass]
   public class RankAndCrowdingSorter : AlgorithmOperator, IMultiObjectiveOperator {
     #region Parameter properties
     public ValueLookupParameter<BoolArray> MaximizationParameter {
