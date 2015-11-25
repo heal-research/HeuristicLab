@@ -26,7 +26,8 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Scripting;
 
-namespace HeuristicLab.Problems.ExternalEvaluation.Programmable {
+namespace HeuristicLab.Problems.ExternalEvaluation {
+  [StorableClass]
   public abstract class OptimizationSupportScript<T> : Script
     where T : class {
 
