@@ -122,7 +122,7 @@ namespace HeuristicLab.Encodings.LinearLinkageEncoding {
     }
     #endregion
 
-    public override void ConfigureOperators(IEnumerable<IOperator> operators) {
+    public override void ConfigureOperators(IEnumerable<IItem> operators) {
       ConfigureCreators(operators.OfType<ILinearLinkageCreator>());
       ConfigureCrossovers(operators.OfType<ILinearLinkageCrossover>());
       ConfigureManipulators(operators.OfType<ILinearLinkageManipulator>());

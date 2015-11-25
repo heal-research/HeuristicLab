@@ -19,24 +19,15 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.PermutationEncoding;
 
-namespace HeuristicLab.Optimization {
-  public interface IEncoding : IParameterizedNamedItem {
-    ISolutionCreator SolutionCreator { get; }
-    IEnumerable<IOperator> Operators { get; set; }
-
-    void ConfigureOperator(IItem @operator);
-    void ConfigureOperators(IEnumerable<IItem> operators);
-
-    event EventHandler SolutionCreatorChanged;
-    event EventHandler OperatorsChanged;
-  }
-
-  public interface IEncoding<TSolution> : IEncoding
-    where TSolution : class, ISolution {
-    new ISolutionCreator<TSolution> SolutionCreator { get; set; }
+namespace HeuristicLab.Problems.QuadraticAssignment {
+  public interface IQAPLocalImprovementOperator : IPermutationLocalImprovementOperator {
+    ILookupParameter<DoubleMatrix> DistancesParameter { get; }
+    ILookupParameter<BoolValue> MaximizationParameter { get; }
+    ILookupParameter<DoubleValue> QualityParameter { get; }
+    ILookupParameter<DoubleMatrix> WeightsParameter { get; }
   }
 }

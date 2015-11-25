@@ -123,13 +123,12 @@
     <Compile Include="BoundsCalculators\GilmoreLawlerBoundCalculator.cs" />
     <Compile Include="Evaluators\QAPScrambleMoveEvaluator.cs" />
     <Compile Include="Evaluators\QAPSwap2MoveEvaluator.cs" />
-    <Compile Include="Evaluators\QAPEvaluator.cs" />
     <Compile Include="Evaluators\QAPInversionMoveEvaluator.cs" />
     <Compile Include="Evaluators\QAPMoveEvaluator.cs" />
     <Compile Include="Evaluators\QAPTranslocationMoveEvaluator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\IQAPEvaluator.cs" />
+    <Compile Include="Interfaces\IQAPLocalImprovementOperator.cs" />
     <Compile Include="Interfaces\IQAPMoveEvaluator.cs" />
     <Compile Include="LocalImprovement\QAPExhaustiveInsertionLocalImprovement.cs" />
     <Compile Include="LocalImprovement\QAPStochasticScrambleLocalImprovement.cs" />
@@ -222,6 +221,9 @@
       <Project>{7250653F-DE83-4069-8D34-8050E8E45EA1}</Project>
       <Name>HeuristicLab.Problems.LinearAssignment-3.3</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SimilarityCalculators\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

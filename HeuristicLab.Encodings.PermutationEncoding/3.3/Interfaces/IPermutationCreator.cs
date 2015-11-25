@@ -27,9 +27,8 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// An interface which represents an operator for creating permutations.
   /// </summary>
-  public interface IPermutationCreator : IPermutationOperator, ISolutionCreator<Permutation> {
+  public interface IPermutationCreator : IPermutationSolutionOperator, ISolutionCreator<Permutation> {
     IValueLookupParameter<IntValue> LengthParameter { get; }
-    ILookupParameter<Permutation> PermutationParameter { get; }
     IValueParameter<PermutationType> PermutationTypeParameter { get; }
   }
 }

@@ -33,7 +33,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPExhaustiveInversionLocalImprovement", "Takes a solution and finds the local optimum with respect to the inversion neighborhood by decending along the steepest gradient.")]
   [StorableClass]
-  public class QAPExhaustiveInversionLocalImprovement : SingleSuccessorOperator, ILocalImprovementOperator, ISingleObjectiveOperator {
+  public class QAPExhaustiveInversionLocalImprovement : SingleSuccessorOperator, IQAPLocalImprovementOperator, ISingleObjectiveOperator {
 
     public ILookupParameter<IntValue> LocalIterationsParameter {
       get { return (ILookupParameter<IntValue>)Parameters["LocalIterations"]; }
@@ -51,8 +51,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       get { return (ILookupParameter<ResultCollection>)Parameters["Results"]; }
     }
 
-    public ILookupParameter<Permutation> AssignmentParameter {
-      get { return (ILookupParameter<Permutation>)Parameters["Assignment"]; }
+    public ILookupParameter<Permutation> PermutationParameter {
+      get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }
 
     public ILookupParameter<DoubleValue> QualityParameter {
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Parameters.Add(new ValueLookupParameter<IntValue>("MaximumIterations", "The maximum amount of iterations that should be performed (note that this operator will abort earlier when a local optimum is reached).", new IntValue(10000)));
       Parameters.Add(new LookupParameter<IntValue>("EvaluatedSolutions", "The amount of evaluated solutions (here a move is counted only as 4/n evaluated solutions with n being the length of the permutation)."));
       Parameters.Add(new LookupParameter<ResultCollection>("Results", "The collection where to store results."));
-      Parameters.Add(new LookupParameter<Permutation>("Assignment", "The permutation that is to be locally optimized."));
+      Parameters.Add(new LookupParameter<Permutation>("Permutation", "The permutation that is to be locally optimized."));
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality value of the assignment."));
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem should be maximized or minimized."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Weights", "The weights matrix."));
@@ -118,7 +118,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
 
     public override IOperation Apply() {
       var maxIterations = MaximumIterationsParameter.ActualValue.Value;
-      var assignment = AssignmentParameter.ActualValue;
+      var assignment = PermutationParameter.ActualValue;
       var maximization = MaximizationParameter.ActualValue.Value;
       var weights = WeightsParameter.ActualValue;
       var distances = DistancesParameter.ActualValue;

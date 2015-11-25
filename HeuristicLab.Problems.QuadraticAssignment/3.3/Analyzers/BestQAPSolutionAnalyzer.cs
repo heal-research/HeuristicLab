@@ -35,40 +35,40 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   /// </summary>
   [Item("BestQAPSolutionAnalyzer", "An operator for analyzing the best solution of Quadratic Assignment Problems.")]
   [StorableClass]
-  public sealed class BestQAPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator {
+  public sealed class BestQAPSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer, ISingleObjectiveOperator, IPermutationSolutionsOperator {
     public bool EnabledByDefault {
       get { return true; }
     }
 
-    public LookupParameter<BoolValue> MaximizationParameter {
-      get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
+    public ILookupParameter<BoolValue> MaximizationParameter {
+      get { return (ILookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public LookupParameter<DoubleMatrix> DistancesParameter {
-      get { return (LookupParameter<DoubleMatrix>)Parameters["Distances"]; }
+    public ILookupParameter<DoubleMatrix> DistancesParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Distances"]; }
     }
-    public LookupParameter<DoubleMatrix> WeightsParameter {
-      get { return (LookupParameter<DoubleMatrix>)Parameters["Weights"]; }
+    public ILookupParameter<DoubleMatrix> WeightsParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Weights"]; }
     }
-    public ScopeTreeLookupParameter<Permutation> PermutationParameter {
-      get { return (ScopeTreeLookupParameter<Permutation>)Parameters["Permutation"]; }
+    public IScopeTreeLookupParameter<Permutation> PermutationsParameter {
+      get { return (IScopeTreeLookupParameter<Permutation>)Parameters["Permutations"]; }
     }
-    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
+    public IScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
-    public LookupParameter<QAPAssignment> BestSolutionParameter {
-      get { return (LookupParameter<QAPAssignment>)Parameters["BestSolution"]; }
+    public ILookupParameter<QAPAssignment> BestSolutionParameter {
+      get { return (ILookupParameter<QAPAssignment>)Parameters["BestSolution"]; }
     }
-    public ValueLookupParameter<ResultCollection> ResultsParameter {
-      get { return (ValueLookupParameter<ResultCollection>)Parameters["Results"]; }
+    public IValueLookupParameter<ResultCollection> ResultsParameter {
+      get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
-    public LookupParameter<DoubleValue> BestKnownQualityParameter {
-      get { return (LookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
+    public ILookupParameter<DoubleValue> BestKnownQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters["BestKnownQuality"]; }
     }
-    public LookupParameter<ItemSet<Permutation>> BestKnownSolutionsParameter {
-      get { return (LookupParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"]; }
+    public ILookupParameter<ItemSet<Permutation>> BestKnownSolutionsParameter {
+      get { return (ILookupParameter<ItemSet<Permutation>>)Parameters["BestKnownSolutions"]; }
     }
-    public LookupParameter<Permutation> BestKnownSolutionParameter {
-      get { return (LookupParameter<Permutation>)Parameters["BestKnownSolution"]; }
+    public ILookupParameter<Permutation> BestKnownSolutionParameter {
+      get { return (ILookupParameter<Permutation>)Parameters["BestKnownSolution"]; }
     }
 
     [StorableConstructor]
@@ -82,7 +82,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Distances", "The distances between the locations."));
       Parameters.Add(new LookupParameter<DoubleMatrix>("Weights", "The weights between the facilities."));
-      Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Permutation", "The QAP solutions from which the best solution should be analyzed."));
+      Parameters.Add(new ScopeTreeLookupParameter<Permutation>("Permutations", "The QAP solutions from which the best solution should be analyzed."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the QAP solutions which should be analyzed."));
       Parameters.Add(new LookupParameter<QAPAssignment>("BestSolution", "The best QAP solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the best QAP solution should be stored."));
@@ -108,7 +108,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public override IOperation Apply() {
       DoubleMatrix distances = DistancesParameter.ActualValue;
       DoubleMatrix weights = WeightsParameter.ActualValue;
-      ItemArray<Permutation> permutations = PermutationParameter.ActualValue;
+      ItemArray<Permutation> permutations = PermutationsParameter.ActualValue;
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       ResultCollection results = ResultsParameter.ActualValue;
       bool max = MaximizationParameter.ActualValue.Value;

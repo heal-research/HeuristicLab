@@ -34,7 +34,7 @@ namespace HeuristicLab.Optimization {
     where TSolution : class, ISolution
     where TEvaluator : class, IEvaluator {
 
-    public string Filename { get; set; }
+    public string Filename { get; set; } // TODO: Really okay here?
 
     protected IValueParameter<TEncoding> EncodingParameter {
       get { return (IValueParameter<TEncoding>)Parameters["Encoding"]; }
@@ -70,6 +70,15 @@ namespace HeuristicLab.Optimization {
         SolutionCreator = Encoding.SolutionCreator;
         Parameterize();
       }
+      RegisterEvents();
+    }
+    protected Problem(TEncoding encoding) {
+      if (encoding == null) throw new ArgumentNullException("encoding");
+      Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.", encoding));
+      oldEncoding = Encoding;
+      SolutionCreator = Encoding.SolutionCreator;
+      Parameterize();
+
       RegisterEvents();
     }
 

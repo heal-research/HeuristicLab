@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("InversionMoveMaker", "Peforms an inversion move (2-opt) on a given permutation and updates the quality.")]
   [StorableClass]
-  public class InversionMoveMaker : SingleSuccessorOperator, IPermutationInversionMoveOperator, IMoveMaker, ISingleObjectiveOperator {
+  public class InversionMoveMaker : SingleSuccessorOperator, IPermutationInversionMoveQualityOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
     }

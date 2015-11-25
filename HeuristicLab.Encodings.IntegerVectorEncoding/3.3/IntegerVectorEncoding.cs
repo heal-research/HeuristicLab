@@ -186,7 +186,7 @@ namespace HeuristicLab.Encodings.IntegerVectorEncoding {
     }
     #endregion
 
-    public override void ConfigureOperators(IEnumerable<IOperator> operators) {
+    public override void ConfigureOperators(IEnumerable<IItem> operators) {
       ConfigureBoundedOperators(operators.OfType<IBoundedIntegerVectorOperator>());
       ConfigureCreators(operators.OfType<IIntegerVectorCreator>());
       ConfigureCrossovers(operators.OfType<IIntegerVectorCrossover>());

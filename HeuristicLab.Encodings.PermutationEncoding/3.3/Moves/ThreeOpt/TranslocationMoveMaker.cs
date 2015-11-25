@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("TranslocationMoveMaker", "Peforms a translocation or insertion move (3-opt) on a given permutation and updates the quality.")]
   [StorableClass]
-  public class TranslocationMoveMaker : SingleSuccessorOperator, IPermutationTranslocationMoveOperator, IMoveMaker, ISingleObjectiveOperator {
+  public class TranslocationMoveMaker : SingleSuccessorOperator, IPermutationTranslocationMoveQualityOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
     }

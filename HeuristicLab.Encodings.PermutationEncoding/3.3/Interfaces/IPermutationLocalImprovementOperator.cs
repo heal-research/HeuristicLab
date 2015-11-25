@@ -19,15 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.QuadraticAssignment {
-  public interface IQAPEvaluator : ISingleObjectiveEvaluator {
-    ILookupParameter<Permutation> PermutationParameter { get; }
-    ILookupParameter<DoubleMatrix> DistancesParameter { get; }
-    ILookupParameter<DoubleMatrix> WeightsParameter { get; }
-  }
+namespace HeuristicLab.Encodings.PermutationEncoding {
+  public interface IPermutationLocalImprovementOperator : IPermutationSolutionOperator, ILocalImprovementOperator { }
 }

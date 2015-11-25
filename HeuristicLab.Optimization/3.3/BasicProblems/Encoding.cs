@@ -99,8 +99,8 @@ namespace HeuristicLab.Optimization {
       return encodingOperators.Remove(@operator);
     }
 
-    public void ConfigureOperator(IOperator @operator) { ConfigureOperators(new[] { @operator }); }
-    public abstract void ConfigureOperators(IEnumerable<IOperator> operators);
+    public void ConfigureOperator(IItem @operator) { ConfigureOperators(new[] { @operator }); }
+    public abstract void ConfigureOperators(IEnumerable<IItem> operators);
 
     public event EventHandler SolutionCreatorChanged;
     protected virtual void OnSolutionCreatorChanged() {

@@ -34,7 +34,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
 
 If the aspiration condition is activated, a move will not be considered tabu against a move in the tabu list if it leads to a better solution than the quality recorded with the move in the tabu list.")]
   [StorableClass]
-  public class Swap2MoveHardTabuCriterion : SingleSuccessorOperator, IPermutationSwap2MoveOperator, ITabuChecker {
+  public class Swap2MoveHardTabuCriterion : SingleSuccessorOperator, IPermutationSwap2MoveQualityOperator, ITabuChecker {
     public override bool CanChangeName {
       get { return false; }
     }

@@ -196,7 +196,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         strategyVectorManipulator.BoundsParameter.Value = (DoubleMatrix)boundsParameter.Value.Clone();
     }
 
-    public override void ConfigureOperators(IEnumerable<IOperator> operators) {
+    public override void ConfigureOperators(IEnumerable<IItem> operators) {
       ConfigureCreators(operators.OfType<IRealVectorCreator>());
       ConfigureCrossovers(operators.OfType<IRealVectorCrossover>());
       ConfigureManipulators(operators.OfType<IRealVectorManipulator>());

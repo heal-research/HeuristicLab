@@ -87,7 +87,7 @@ namespace HeuristicLab.Optimization {
       foreach (var enc in encodings.ToList()) Remove(enc);
     }
 
-    public override void ConfigureOperators(IEnumerable<IOperator> operators) {
+    public override void ConfigureOperators(IEnumerable<IItem> operators) {
       foreach (var encOp in operators.OfType<IMultiEncodingOperator>())
         encOp.SolutionParameter.ActualName = Name;
     }

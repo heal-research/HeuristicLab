@@ -19,14 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.PermutationEncoding {
   /// <summary>
   /// An interface which represents an operator for manipulating solutions.
   /// </summary>
-  public interface IPermutationManipulator : IPermutationOperator, IManipulator {
-    ILookupParameter<Permutation> PermutationParameter { get; }
-  }
+  public interface IPermutationManipulator : IPermutationSolutionOperator, IManipulator { }
 }

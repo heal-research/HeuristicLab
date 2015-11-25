@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.PermutationEncoding {
   [Item("Swap2MoveTabuMaker", "Declares a given swap-2 move as tabu, by adding its attributes to the tabu list and also store the solution quality or the move quality (whichever is better).")]
   [StorableClass]
-  public class Swap2MoveTabuMaker : TabuMaker, IPermutationSwap2MoveOperator {
+  public class Swap2MoveTabuMaker : TabuMaker, IPermutationSwap2MoveQualityOperator {
     public ILookupParameter<Permutation> PermutationParameter {
       get { return (ILookupParameter<Permutation>)Parameters["Permutation"]; }
     }

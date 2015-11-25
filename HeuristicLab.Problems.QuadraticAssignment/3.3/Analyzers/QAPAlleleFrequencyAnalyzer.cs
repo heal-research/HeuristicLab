@@ -35,11 +35,11 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("QAPAlleleFrequencyAnalyzer", "An operator for analyzing the frequency of alleles in solutions of Quadratic Assignment Problems.")]
   [StorableClass]
   public sealed class QAPAlleleFrequencyAnalyzer : AlleleFrequencyAnalyzer<Permutation> {
-    public LookupParameter<DoubleMatrix> WeightsParameter {
-      get { return (LookupParameter<DoubleMatrix>)Parameters["Weights"]; }
+    public ILookupParameter<DoubleMatrix> WeightsParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Weights"]; }
     }
-    public LookupParameter<DoubleMatrix> DistancesParameter {
-      get { return (LookupParameter<DoubleMatrix>)Parameters["Distances"]; }
+    public ILookupParameter<DoubleMatrix> DistancesParameter {
+      get { return (ILookupParameter<DoubleMatrix>)Parameters["Distances"]; }
     }
 
     [StorableConstructor]

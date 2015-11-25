@@ -27,5 +27,7 @@ namespace HeuristicLab.Optimization {
   /// </summary>
   public interface ISolutionCreator : IOperator { }
 
-  public interface ISolutionCreator<TSolution> : ISolutionCreator where TSolution : class, ISolution { }
+  public interface ISolutionCreator<TSolution> : ISolutionCreator where TSolution : class, ISolution {
+    //ILookupParameter<TSolution> SolutionParameter { get; } // TODO: unify encoding specific parameters by defining ISolutionOperator and ISolutionsOperator
+  }
 }

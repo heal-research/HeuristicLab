@@ -400,9 +400,10 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.Name;
 
         mainOperator.DistancesParameter.ActualName = Problem.DistancesParameter.Name;
-        mainOperator.PermutationParameter.ActualName = Problem.SolutionCreator.PermutationParameter.ActualName;
         mainOperator.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.ActualName;
         mainOperator.WeightsParameter.ActualName = Problem.WeightsParameter.Name;
+
+        Problem.Encoding.ConfigureOperators(new IOperator[] { mainOperator });
       }
     }
 

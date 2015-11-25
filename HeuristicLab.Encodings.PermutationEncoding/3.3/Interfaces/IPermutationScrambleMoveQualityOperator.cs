@@ -19,24 +19,11 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
-namespace HeuristicLab.Optimization {
-  public interface IEncoding : IParameterizedNamedItem {
-    ISolutionCreator SolutionCreator { get; }
-    IEnumerable<IOperator> Operators { get; set; }
-
-    void ConfigureOperator(IItem @operator);
-    void ConfigureOperators(IEnumerable<IItem> operators);
-
-    event EventHandler SolutionCreatorChanged;
-    event EventHandler OperatorsChanged;
-  }
-
-  public interface IEncoding<TSolution> : IEncoding
-    where TSolution : class, ISolution {
-    new ISolutionCreator<TSolution> SolutionCreator { get; set; }
+namespace HeuristicLab.Encodings.PermutationEncoding {
+  public interface IPermutationScrambleMoveQualityOperator : IPermutationScrambleMoveOperator {
+    ILookupParameter<DoubleValue> MoveQualityParameter { get; }
   }
 }

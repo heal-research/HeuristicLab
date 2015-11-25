@@ -121,7 +121,7 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
     #endregion
 
-    public override void ConfigureOperators(IEnumerable<IOperator> operators) {
+    public override void ConfigureOperators(IEnumerable<IItem> operators) {
       ConfigureCreators(operators.OfType<IBinaryVectorCreator>());
       ConfigureCrossovers(operators.OfType<IBinaryVectorCrossover>());
       ConfigureManipulators(operators.OfType<IBinaryVectorManipulator>());

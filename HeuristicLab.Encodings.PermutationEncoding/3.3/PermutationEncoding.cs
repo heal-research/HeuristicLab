@@ -144,7 +144,10 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
           typeof (IPermutationInversionMoveOperator),
           typeof (IPermutationScrambleMoveOperator),
           typeof (IPermutationSwap2MoveOperator),                    
-          typeof (IPermutationTranslocationMoveOperator)
+          typeof (IPermutationTranslocationMoveOperator),
+          typeof (IPermutationLocalImprovementOperator),
+          typeof (IPermutationSolutionOperator),
+          typeof (IPermutationSolutionsOperator),
       };
     }
     private void DiscoverOperators() {
@@ -159,7 +162,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
     }
     #endregion
 
-    public override void ConfigureOperators(IEnumerable<IOperator> operators) {
+    public override void ConfigureOperators(IEnumerable<IItem> operators) {
       ConfigureCreators(operators.OfType<IPermutationCreator>());
       ConfigureCrossovers(operators.OfType<IPermutationCrossover>());
       ConfigureManipulators(operators.OfType<IPermutationManipulator>());
@@ -169,13 +172,15 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       ConfigureScrambleMoveOperators(operators.OfType<IPermutationScrambleMoveOperator>());
       ConfigureSwap2MoveOperators(operators.OfType<IPermutationSwap2MoveOperator>());
       ConfigureTranslocationMoveOperators(operators.OfType<IPermutationTranslocationMoveOperator>());
+      ConfigureLocalImprovementOperators(operators.OfType<IPermutationLocalImprovementOperator>());
+      ConfigureSolutionOperators(operators.OfType<IPermutationSolutionOperator>());
+      ConfigureSolutionsOperators(operators.OfType<IPermutationSolutionsOperator>());
     }
 
     #region specific operator wiring
     private void ConfigureCreators(IEnumerable<IPermutationCreator> creators) {
       foreach (var creator in creators) {
         creator.LengthParameter.ActualName = LengthParameter.Name;
-        creator.PermutationParameter.ActualName = Name;
         creator.PermutationTypeParameter.Value.Value = Type;
       }
     }
@@ -186,9 +191,7 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
       }
     }
     private void ConfigureManipulators(IEnumerable<IPermutationManipulator> manipulators) {
-      foreach (var manipulator in manipulators) {
-        manipulator.PermutationParameter.ActualName = Name;
-      }
+      // IPermutationManipulator does not contain additional parameters (already contained in IPermutationSolutionOperator)
     }
     private void ConfigureShakingOperators(IEnumerable<IPermutationMultiNeighborhoodShakingOperator> shakingOperators) {
       foreach (var shakingOperator in shakingOperators) {
@@ -220,7 +223,19 @@ namespace HeuristicLab.Encodings.PermutationEncoding {
         translocationMoveOperator.TranslocationMoveParameter.ActualName = Name + ".TranslocationMove";
       }
     }
-
+    private void ConfigureLocalImprovementOperators(IEnumerable<IPermutationLocalImprovementOperator> localImprovementOperators) {
+      // IPermutationLocalImprovementOperator does not contain additional parameters (already contained in IPermutationSolutionOperator)
+    }
+    private void ConfigureSolutionOperators(IEnumerable<IPermutationSolutionOperator> solutionOperators) {
+      foreach (var solutionOperator in solutionOperators) {
+        solutionOperator.PermutationParameter.ActualName = Name;
+      }
+    }
+    private void ConfigureSolutionsOperators(IEnumerable<IPermutationSolutionsOperator> solutionsOperators) {
+      foreach (var solutionsOperator in solutionsOperators) {
+        solutionsOperator.PermutationsParameter.ActualName = Name;
+      }
+    }
     #endregion
   }
 }

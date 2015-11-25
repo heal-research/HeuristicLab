@@ -37,15 +37,15 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
   [Item("Quadratic Assignment Problem (QAP)", "The Quadratic Assignment Problem (QAP) can be described as the problem of assigning N facilities to N fixed locations such that there is exactly one facility in each location and that the sum of the distances multiplied by the connection strength between the facilities becomes minimal.")]
   [Creatable(CreatableAttribute.Categories.CombinatorialProblems, Priority = 140)]
   [StorableClass]
-  public sealed class QuadraticAssignmentProblem : SingleObjectiveHeuristicOptimizationProblem<IQAPEvaluator, IPermutationCreator>,
-    ISingleObjectiveProblem<PermutationEncoding, Permutation>, IStorableContent,
+  public sealed class QuadraticAssignmentProblem : SingleObjectiveProblem<PermutationEncoding, Permutation>,
     IProblemInstanceConsumer<QAPData>,
     IProblemInstanceConsumer<TSPData> {
-    public string Filename { get; set; }
 
     public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Type; }
+      get { return Common.Resources.VSImageLibrary.Type; }
     }
+
+    public override bool Maximization { get { return false; } }
 
     #region Parameter Properties
     public IValueParameter<ItemSet<Permutation>> BestKnownSolutionsParameter {
@@ -114,16 +114,13 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       RegisterEventHandlers();
     }
     public QuadraticAssignmentProblem()
-      : base(new QAPEvaluator(), new RandomPermutationCreator()) {
+      : base(new PermutationEncoding("Assignment") { Length = 5 }) {
       Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(new OptionalValueParameter<Permutation>("BestKnownSolution", "The best known solution which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Weights", "The strength of the connection between the facilities.", new DoubleMatrix(5, 5)));
       Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", new DoubleMatrix(5, 5)));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("LowerBound", "The Gilmore-Lawler lower bound to the solution quality."));
       Parameters.Add(new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
-
-      Maximization.Value = false;
-      MaximizationParameter.Hidden = true;
 
       WeightsParameter.GetsCollected = false;
       Weights = new DoubleMatrix(new double[,] {
@@ -143,12 +140,22 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         { 360, 582, 582, 360,   0 }
       });
 
-      SolutionCreator.PermutationParameter.ActualName = "Assignment";
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-
       InitializeOperators();
       RegisterEventHandlers();
+    }
+
+    public override double Evaluate(Permutation assignment, IRandom random) {
+      return Evaluate(assignment);
+    }
+
+    public double Evaluate(Permutation assignment) {
+      double quality = 0;
+      for (int i = 0; i < assignment.Length; i++) {
+        for (int j = 0; j < assignment.Length; j++) {
+          quality += Weights[i, j] * Distances[assignment[i], assignment[j]];
+        }
+      }
+      return quality;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -157,74 +164,32 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
 
     [StorableHook(HookType.AfterDeserialization)]
     private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      #region Backwards compatible code, remove with 3.4
-      if (!Parameters.ContainsKey("BestKnownSolutions")) {
-        Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", null));
-      } else if (Parameters["BestKnownSolutions"].GetType().Equals(typeof(OptionalValueParameter<ItemList<Permutation>>))) {
-        ItemList<Permutation> list = ((OptionalValueParameter<ItemList<Permutation>>)Parameters["BestKnownSolutions"]).Value;
-        Parameters.Remove("BestKnownSolutions");
-        Parameters.Add(new OptionalValueParameter<ItemSet<Permutation>>("BestKnownSolutions", "The list of best known solutions which is updated whenever a new better solution is found or may be the optimal solution if it is known beforehand.", (list != null ? new ItemSet<Permutation>(list) : null)));
-      }
-      if (Parameters.ContainsKey("DistanceMatrix")) {
-        DoubleMatrix d = ((ValueParameter<DoubleMatrix>)Parameters["DistanceMatrix"]).Value;
-        Parameters.Remove("DistanceMatrix");
-        Parameters.Add(new ValueParameter<DoubleMatrix>("Distances", "The distance matrix which can either be specified directly without the coordinates, or can be calculated automatically from the coordinates.", d));
-      }
-      if (!Parameters.ContainsKey("LowerBound")) {
-        Parameters.Add(new OptionalValueParameter<DoubleValue>("LowerBound", "The Gilmore-Lawler lower bound to the solution quality."));
-        LowerBound = new DoubleValue(GilmoreLawlerBoundCalculator.CalculateLowerBound(Weights, Distances));
-      }
-      if (!Parameters.ContainsKey("AverageQuality")) {
-        Parameters.Add(new OptionalValueParameter<DoubleValue>("AverageQuality", "The expected quality of a random solution."));
-        AverageQuality = new DoubleValue(ComputeAverageQuality());
-      }
-      #endregion
       RegisterEventHandlers();
     }
 
     #region Events
     protected override void OnSolutionCreatorChanged() {
-      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
+      Parameterize();
       base.OnSolutionCreatorChanged();
     }
     protected override void OnEvaluatorChanged() {
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      ParameterizeEvaluator();
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
+      Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
+      Parameterize();
       base.OnEvaluatorChanged();
     }
-
-    private void SolutionCreator_PermutationParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeEvaluator();
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
-    }
     private void Evaluator_QualityParameter_ActualNameChanged(object sender, EventArgs e) {
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
+      Parameterize();
     }
     private void WeightsParameter_ValueChanged(object sender, EventArgs e) {
-      Weights.RowsChanged += new EventHandler(Weights_RowsChanged);
-      Weights.ColumnsChanged += new EventHandler(Weights_ColumnsChanged);
-      Weights.ToStringChanged += new EventHandler(Weights_ToStringChanged);
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      ParameterizeOperators();
+      Weights.RowsChanged += Weights_RowsChanged;
+      Weights.ColumnsChanged += Weights_ColumnsChanged;
+      Weights.ToStringChanged += Weights_ToStringChanged;
       AdjustDistanceMatrix();
     }
     private void Weights_RowsChanged(object sender, EventArgs e) {
       if (Weights.Rows != Weights.Columns)
         ((IStringConvertibleMatrix)Weights).Columns = Weights.Rows;
       else {
-        ParameterizeSolutionCreator();
-        ParameterizeEvaluator();
-        ParameterizeOperators();
         AdjustDistanceMatrix();
       }
     }
@@ -232,9 +197,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       if (Weights.Rows != Weights.Columns)
         ((IStringConvertibleMatrix)Weights).Rows = Weights.Columns;
       else {
-        ParameterizeSolutionCreator();
-        ParameterizeEvaluator();
-        ParameterizeOperators();
         AdjustDistanceMatrix();
       }
     }
@@ -242,21 +204,15 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       UpdateParameterValues();
     }
     private void DistancesParameter_ValueChanged(object sender, EventArgs e) {
-      Distances.RowsChanged += new EventHandler(Distances_RowsChanged);
-      Distances.ColumnsChanged += new EventHandler(Distances_ColumnsChanged);
-      Distances.ToStringChanged += new EventHandler(Distances_ToStringChanged);
-      ParameterizeSolutionCreator();
-      ParameterizeEvaluator();
-      ParameterizeOperators();
+      Distances.RowsChanged += Distances_RowsChanged;
+      Distances.ColumnsChanged += Distances_ColumnsChanged;
+      Distances.ToStringChanged += Distances_ToStringChanged;
       AdjustWeightsMatrix();
     }
     private void Distances_RowsChanged(object sender, EventArgs e) {
       if (Distances.Rows != Distances.Columns)
         ((IStringConvertibleMatrix)Distances).Columns = Distances.Rows;
       else {
-        ParameterizeSolutionCreator();
-        ParameterizeEvaluator();
-        ParameterizeOperators();
         AdjustWeightsMatrix();
       }
     }
@@ -264,9 +220,6 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       if (Distances.Rows != Distances.Columns)
         ((IStringConvertibleMatrix)Distances).Rows = Distances.Columns;
       else {
-        ParameterizeSolutionCreator();
-        ParameterizeEvaluator();
-        ParameterizeOperators();
         AdjustWeightsMatrix();
       }
     }
@@ -276,16 +229,14 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     #endregion
 
     private void RegisterEventHandlers() {
-      SolutionCreator.PermutationParameter.ActualNameChanged += new EventHandler(SolutionCreator_PermutationParameter_ActualNameChanged);
-      Evaluator.QualityParameter.ActualNameChanged += new EventHandler(Evaluator_QualityParameter_ActualNameChanged);
-      WeightsParameter.ValueChanged += new EventHandler(WeightsParameter_ValueChanged);
-      Weights.RowsChanged += new EventHandler(Weights_RowsChanged);
-      Weights.ColumnsChanged += new EventHandler(Weights_ColumnsChanged);
-      Weights.ToStringChanged += new EventHandler(Weights_ToStringChanged);
-      DistancesParameter.ValueChanged += new EventHandler(DistancesParameter_ValueChanged);
-      Distances.RowsChanged += new EventHandler(Distances_RowsChanged);
-      Distances.ColumnsChanged += new EventHandler(Distances_ColumnsChanged);
-      Distances.ToStringChanged += new EventHandler(Distances_ToStringChanged);
+      WeightsParameter.ValueChanged += WeightsParameter_ValueChanged;
+      Weights.RowsChanged += Weights_RowsChanged;
+      Weights.ColumnsChanged += Weights_ColumnsChanged;
+      Weights.ToStringChanged += Weights_ToStringChanged;
+      DistancesParameter.ValueChanged += DistancesParameter_ValueChanged;
+      Distances.RowsChanged += Distances_RowsChanged;
+      Distances.ColumnsChanged += Distances_ColumnsChanged;
+      Distances.ToStringChanged += Distances_ToStringChanged;
     }
 
     #region Helpers
@@ -296,119 +247,98 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
         new ExhaustiveSwap2MoveGenerator()
       });
       Operators.AddRange(defaultOperators);
-      Operators.AddRange(ApplicationManager.Manager.GetInstances<IPermutationOperator>().Except(defaultOperators, new TypeEqualityComparer<IPermutationOperator>()));
-      Operators.RemoveAll(x => x is ISingleObjectiveMoveEvaluator);
       Operators.AddRange(ApplicationManager.Manager.GetInstances<IQAPMoveEvaluator>());
+      Operators.AddRange(ApplicationManager.Manager.GetInstances<IQAPLocalImprovementOperator>());
       Operators.Add(new BestQAPSolutionAnalyzer());
       Operators.Add(new QAPAlleleFrequencyAnalyzer());
       Operators.Add(new QAPPopulationDiversityAnalyzer());
 
-      Operators.Add(new QAPExhaustiveInsertionLocalImprovement());
-      Operators.Add(new QAPExhaustiveInversionLocalImprovement());
-      Operators.Add(new QAPStochasticScrambleLocalImprovement());
-      Operators.Add(new QAPExhaustiveSwap2LocalImprovement());
-
       Operators.Add(new QAPSimilarityCalculator());
-      ParameterizeAnalyzers();
-      ParameterizeOperators();
+      Parameterize();
     }
-    private void ParameterizeSolutionCreator() {
-      if (SolutionCreator != null) {
-        SolutionCreator.PermutationTypeParameter.Value = new PermutationType(PermutationTypes.Absolute);
-        SolutionCreator.LengthParameter.Value = new IntValue(Weights.Rows);
-      }
-    }
-    private void ParameterizeEvaluator() {
-      if (Evaluator != null) {
-        Evaluator.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        Evaluator.DistancesParameter.ActualName = DistancesParameter.Name;
-        Evaluator.WeightsParameter.ActualName = WeightsParameter.Name;
-      }
-    }
-    private void ParameterizeAnalyzers() {
+    private void Parameterize() {
+      var operators = new List<IItem>();
       if (BestQAPSolutionAnalyzer != null) {
+        operators.Add(BestQAPSolutionAnalyzer);
         BestQAPSolutionAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         BestQAPSolutionAnalyzer.DistancesParameter.ActualName = DistancesParameter.Name;
         BestQAPSolutionAnalyzer.WeightsParameter.ActualName = WeightsParameter.Name;
-        BestQAPSolutionAnalyzer.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        BestQAPSolutionAnalyzer.ResultsParameter.ActualName = "Results";
         BestQAPSolutionAnalyzer.BestKnownQualityParameter.ActualName = BestKnownQualityParameter.Name;
         BestQAPSolutionAnalyzer.BestKnownSolutionsParameter.ActualName = BestKnownSolutionsParameter.Name;
         BestQAPSolutionAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
       }
       if (QAPAlleleFrequencyAnalyzer != null) {
+        operators.Add(QAPAlleleFrequencyAnalyzer);
         QAPAlleleFrequencyAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         QAPAlleleFrequencyAnalyzer.BestKnownSolutionParameter.ActualName = BestKnownSolutionParameter.Name;
         QAPAlleleFrequencyAnalyzer.DistancesParameter.ActualName = DistancesParameter.Name;
         QAPAlleleFrequencyAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
-        QAPAlleleFrequencyAnalyzer.ResultsParameter.ActualName = "Results";
-        QAPAlleleFrequencyAnalyzer.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
         QAPAlleleFrequencyAnalyzer.WeightsParameter.ActualName = WeightsParameter.Name;
       }
       if (QAPPopulationDiversityAnalyzer != null) {
+        operators.Add(QAPPopulationDiversityAnalyzer);
         QAPPopulationDiversityAnalyzer.MaximizationParameter.ActualName = MaximizationParameter.Name;
         QAPPopulationDiversityAnalyzer.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
-        QAPPopulationDiversityAnalyzer.ResultsParameter.ActualName = "Results";
-        QAPPopulationDiversityAnalyzer.SolutionParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
       }
-    }
-    private void ParameterizeOperators() {
-      foreach (IPermutationCrossover op in Operators.OfType<IPermutationCrossover>()) {
-        op.ParentsParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-        op.ChildParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-      }
-      foreach (IPermutationManipulator op in Operators.OfType<IPermutationManipulator>()) {
-        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-      }
-      foreach (IPermutationMoveOperator op in Operators.OfType<IPermutationMoveOperator>()) {
-        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-      }
-      if (Operators.OfType<IMoveGenerator>().Any()) {
-        if (Operators.OfType<IMoveGenerator>().OfType<IPermutationInversionMoveOperator>().Any()) {
-          string inversionMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationInversionMoveOperator>().First().InversionMoveParameter.ActualName;
-          foreach (IPermutationInversionMoveOperator op in Operators.OfType<IPermutationInversionMoveOperator>())
-            op.InversionMoveParameter.ActualName = inversionMove;
-        }
-        if (Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().Any()) {
-          string translocationMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationTranslocationMoveOperator>().First().TranslocationMoveParameter.ActualName;
-          foreach (IPermutationTranslocationMoveOperator op in Operators.OfType<IPermutationTranslocationMoveOperator>())
-            op.TranslocationMoveParameter.ActualName = translocationMove;
-        }
-        if (Operators.OfType<IMoveGenerator>().OfType<IPermutationSwap2MoveOperator>().Any()) {
-          string swapMove = Operators.OfType<IMoveGenerator>().OfType<IPermutationSwap2MoveOperator>().First().Swap2MoveParameter.ActualName;
-          foreach (IPermutationSwap2MoveOperator op in Operators.OfType<IPermutationSwap2MoveOperator>()) {
-            op.Swap2MoveParameter.ActualName = swapMove;
-          }
-        }
-      }
-      foreach (var op in Operators.OfType<IPermutationMultiNeighborhoodShakingOperator>())
-        op.PermutationParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
-
-      QAPExhaustiveSwap2LocalImprovement localOpt = Operators.OfType<QAPExhaustiveSwap2LocalImprovement>().SingleOrDefault();
-      if (localOpt != null) {
-        localOpt.AssignmentParameter.ActualName = SolutionCreator.PermutationParameter.ActualName;
+      foreach (var localOpt in Operators.OfType<IQAPLocalImprovementOperator>()) {
+        operators.Add(localOpt);
         localOpt.DistancesParameter.ActualName = DistancesParameter.Name;
         localOpt.MaximizationParameter.ActualName = MaximizationParameter.Name;
         localOpt.QualityParameter.ActualName = Evaluator.QualityParameter.ActualName;
         localOpt.WeightsParameter.ActualName = WeightsParameter.Name;
       }
 
-      QAPSimilarityCalculator similarityCalculator = Operators.OfType<QAPSimilarityCalculator>().SingleOrDefault();
+      foreach (var moveOp in Operators.OfType<IQAPMoveEvaluator>()) {
+        operators.Add(moveOp);
+        moveOp.DistancesParameter.ActualName = DistancesParameter.Name;
+        moveOp.WeightsParameter.ActualName = WeightsParameter.Name;
+        moveOp.QualityParameter.ActualName = Evaluator.QualityParameter.Name;
+
+        var swaMoveOp = moveOp as QAPSwap2MoveEvaluator;
+        if (swaMoveOp != null) {
+          var moveQualityName = swaMoveOp.MoveQualityParameter.ActualName;
+          foreach (var o in Encoding.Operators.OfType<IPermutationSwap2MoveQualityOperator>())
+            o.MoveQualityParameter.ActualName = moveQualityName;
+        }
+        var invMoveOp = moveOp as QAPInversionMoveEvaluator;
+        if (invMoveOp != null) {
+          var moveQualityName = invMoveOp.MoveQualityParameter.ActualName;
+          foreach (var o in Encoding.Operators.OfType<IPermutationInversionMoveQualityOperator>())
+            o.MoveQualityParameter.ActualName = moveQualityName;
+        }
+        var traMoveOp = moveOp as QAPTranslocationMoveEvaluator;
+        if (traMoveOp != null) {
+          var moveQualityName = traMoveOp.MoveQualityParameter.ActualName;
+          foreach (var o in Encoding.Operators.OfType<IPermutationTranslocationMoveQualityOperator>())
+            o.MoveQualityParameter.ActualName = moveQualityName;
+        }
+        var scrMoveOp = moveOp as QAPScrambleMoveEvaluator;
+        if (scrMoveOp != null) {
+          var moveQualityName = scrMoveOp.MoveQualityParameter.ActualName;
+          foreach (var o in Encoding.Operators.OfType<IPermutationScrambleMoveQualityOperator>())
+            o.MoveQualityParameter.ActualName = moveQualityName;
+        }
+      }
+      var similarityCalculator = Operators.OfType<QAPSimilarityCalculator>().SingleOrDefault();
       if (similarityCalculator != null) {
-        similarityCalculator.SolutionVariableName = SolutionCreator.PermutationParameter.ActualName;
+        similarityCalculator.SolutionVariableName = Encoding.Name;
         similarityCalculator.QualityVariableName = Evaluator.QualityParameter.ActualName;
       }
+
+      if (operators.Count > 0) Encoding.ConfigureOperators(operators);
     }
 
     private void AdjustDistanceMatrix() {
       if (Distances.Rows != Weights.Rows || Distances.Columns != Weights.Columns) {
         ((IStringConvertibleMatrix)Distances).Rows = Weights.Rows;
+        Encoding.Length = Weights.Rows;
       }
     }
 
     private void AdjustWeightsMatrix() {
       if (Weights.Rows != Distances.Rows || Weights.Columns != Distances.Columns) {
         ((IStringConvertibleMatrix)Weights).Rows = Distances.Rows;
+        Encoding.Length = Distances.Rows;
       }
     }
 
@@ -417,11 +347,11 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       // calculate the optimum of a LAP relaxation and use it as lower bound of our QAP
       LowerBound = new DoubleValue(GilmoreLawlerBoundCalculator.CalculateLowerBound(Weights, Distances, out lbSolution));
       // evalute the LAP optimal solution as if it was a QAP solution
-      var lbSolutionQuality = QAPEvaluator.Apply(lbSolution, Weights, Distances);
+      var lbSolutionQuality = Evaluate(lbSolution);
       // in case both qualities are the same it means that the LAP optimum is also a QAP optimum
       if (LowerBound.Value.IsAlmost(lbSolutionQuality)) {
         BestKnownSolution = lbSolution;
-        BestKnownQuality = new DoubleValue(LowerBound.Value);
+        BestKnownQuality = LowerBound.Value;
       }
       AverageQuality = new DoubleValue(ComputeAverageQuality());
     }
@@ -450,7 +380,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Name = data.Name;
       Description = data.Description;
       Load(weights, distances);
-      if (data.BestKnownQuality.HasValue) BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
+      if (data.BestKnownQuality.HasValue) BestKnownQuality = data.BestKnownQuality.Value;
       EvaluateAndLoadAssignment(data.BestKnownAssignment);
       OnReset();
     }
@@ -465,7 +395,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
       Name = data.Name;
       Description = data.Description;
       Load(weights, distances);
-      if (data.BestKnownQuality.HasValue) BestKnownQuality = new DoubleValue(data.BestKnownQuality.Value);
+      if (data.BestKnownQuality.HasValue) BestKnownQuality = data.BestKnownQuality.Value;
       EvaluateAndLoadAssignment(data.BestKnownTour);
       OnReset();
     }
@@ -484,8 +414,9 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
 
       Weights = weights;
       Distances = distances;
+      Encoding.Length = weights.Rows;
 
-      BestKnownQuality = null;
+      BestKnownQualityParameter.Value = null;
       BestKnownSolution = null;
       BestKnownSolutions = null;
       UpdateParameterValues();
@@ -494,11 +425,10 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     public void EvaluateAndLoadAssignment(int[] assignment) {
       if (assignment == null || assignment.Length == 0) return;
       var vector = new Permutation(PermutationTypes.Absolute, assignment);
-      var result = QAPEvaluator.Apply(vector, Weights, Distances);
-      BestKnownQuality = new DoubleValue(result);
+      var result = Evaluate(vector);
+      BestKnownQuality = result;
       BestKnownSolution = vector;
-      BestKnownSolutions = new ItemSet<Permutation>();
-      BestKnownSolutions.Add((Permutation)vector.Clone());
+      BestKnownSolutions = new ItemSet<Permutation> { (Permutation)vector.Clone() };
     }
   }
 }
