@@ -19,16 +19,14 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorParticleCreator : IParticleCreator, IRealVectorOperator {
+  public interface IRealVectorParticleCreator : IParticleCreator, IRealVectorSolutionOperator, IRealVectorBoundedOperator {
     ILookupParameter<IntValue> ProblemSizeParameter { get; }
-    ILookupParameter<RealVector> RealVectorParameter { get; }
     ILookupParameter<RealVector> PersonalBestParameter { get; }
-    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
     ILookupParameter<RealVector> VelocityParameter { get; }
   }
 }

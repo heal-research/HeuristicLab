@@ -43,17 +43,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     public LookupParameter<BoolValue> MaximizationParameter {
       get { return (LookupParameter<BoolValue>)Parameters["Maximization"]; }
     }
-    public ScopeTreeLookupParameter<RealVector> RealVectorParameter {
-      get { return (ScopeTreeLookupParameter<RealVector>)Parameters["RealVector"]; }
+    public IScopeTreeLookupParameter<RealVector> RealVectorsParameter {
+      get { return (IScopeTreeLookupParameter<RealVector>)Parameters["RealVectors"]; }
     }
-    ILookupParameter IBestSingleObjectiveTestFunctionSolutionAnalyzer.RealVectorParameter {
-      get { return RealVectorParameter; }
-    }
-    public ScopeTreeLookupParameter<DoubleValue> QualityParameter {
-      get { return (ScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
-    }
-    ILookupParameter IBestSingleObjectiveTestFunctionSolutionAnalyzer.QualityParameter {
-      get { return QualityParameter; }
+    public IScopeTreeLookupParameter<DoubleValue> QualityParameter {
+      get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["Quality"]; }
     }
     public ILookupParameter<SingleObjectiveTestFunctionSolution> BestSolutionParameter {
       get { return (ILookupParameter<SingleObjectiveTestFunctionSolution>)Parameters["BestSolution"]; }
@@ -67,11 +61,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     public IValueLookupParameter<ResultCollection> ResultsParameter {
       get { return (IValueLookupParameter<ResultCollection>)Parameters["Results"]; }
     }
-    public IValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator> EvaluatorParameter {
-      get { return (IValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>)Parameters["Evaluator"]; }
+    public IValueLookupParameter<ISingleObjectiveTestFunction> TestFunctionParameter {
+      get { return (IValueLookupParameter<ISingleObjectiveTestFunction>)Parameters["TestFunction"]; }
     }
-    public ILookupParameter<DoubleMatrix> BoundsParameter {
-      get { return (ILookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
+    public IValueLookupParameter<DoubleMatrix> BoundsParameter {
+      get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
 
     [StorableConstructor]
@@ -80,35 +74,24 @@ namespace HeuristicLab.Problems.TestFunctions {
     public BestSingleObjectiveTestFunctionSolutionAnalyzer()
       : base() {
       Parameters.Add(new LookupParameter<BoolValue>("Maximization", "True if the problem is a maximization problem."));
-      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVector", "The SingleObjectiveTestFunction solutions from which the best solution should be visualized."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVectors", "The SingleObjectiveTestFunction solutions from which the best solution should be visualized."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "The qualities of the SingleObjectiveTestFunction solutions which should be visualized."));
       Parameters.Add(new LookupParameter<SingleObjectiveTestFunctionSolution>("BestSolution", "The best SingleObjectiveTestFunction solution."));
       Parameters.Add(new LookupParameter<RealVector>("BestKnownSolution", "The best known solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("BestKnownQuality", "The quality of the best known solution."));
       Parameters.Add(new ValueLookupParameter<ResultCollection>("Results", "The result collection where the SingleObjectiveTestFunction solution should be stored."));
-      Parameters.Add(new ValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The evaluator with which the solution is evaluated."));
-      Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));
+      Parameters.Add(new ValueLookupParameter<ISingleObjectiveTestFunction>("TestFunction", "The evaluator with which the solution is evaluated."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));
 
       MaximizationParameter.Hidden = true;
-      RealVectorParameter.Hidden = true;
+      RealVectorsParameter.Hidden = true;
       QualityParameter.Hidden = true;
       BestSolutionParameter.Hidden = true;
       BestKnownSolutionParameter.Hidden = true;
       BestKnownQualityParameter.Hidden = true;
       ResultsParameter.Hidden = true;
-      EvaluatorParameter.Hidden = true;
+      TestFunctionParameter.Hidden = true;
       BoundsParameter.Hidden = true;
-    }
-
-    /// <summary>
-    /// This method can simply be removed when the plugin version is > 3.3
-    /// </summary>
-    [StorableHook(HookType.AfterDeserialization)]
-    private void AfterDeserialization() {
-      // BackwardsCompatibility3.3
-      // Bounds are introduced in 3.3.0.3894
-      if (!Parameters.ContainsKey("Bounds"))
-        Parameters.Add(new LookupParameter<DoubleMatrix>("Bounds", "The bounds of the function."));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -116,7 +99,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override IOperation Apply() {
-      ItemArray<RealVector> realVectors = RealVectorParameter.ActualValue;
+      ItemArray<RealVector> realVectors = RealVectorsParameter.ActualValue;
       ItemArray<DoubleValue> qualities = QualityParameter.ActualValue;
       bool max = MaximizationParameter.ActualValue.Value;
       DoubleValue bestKnownQuality = BestKnownQualityParameter.ActualValue;
@@ -139,7 +122,7 @@ namespace HeuristicLab.Problems.TestFunctions {
         ResultCollection results = ResultsParameter.ActualValue;
         solution = new SingleObjectiveTestFunctionSolution((RealVector)realVectors[i].Clone(),
                                                            (DoubleValue)qualities[i].Clone(),
-                                                           EvaluatorParameter.ActualValue);
+                                                           TestFunctionParameter.ActualValue);
         solution.Population = realVectors[i].Length == 2
           ? new ItemArray<RealVector>(realVectors.Select(x => x.Clone()).Cast<RealVector>())
           : null;

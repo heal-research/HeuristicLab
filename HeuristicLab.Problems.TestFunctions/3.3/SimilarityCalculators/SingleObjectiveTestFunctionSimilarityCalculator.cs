@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// </remarks>
   [Item("SingleObjectiveTestFunctionSimilarityCalculator", "An operator that performs similarity calculation between two test functions solutions. The operator calculates the similarity based on the euclidean distance of the two solutions in n-dimensional space.")]
   [StorableClass]
-  public sealed class SingleObjectiveTestFunctionSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator {
+  public sealed class SingleObjectiveTestFunctionSimilarityCalculator : SingleObjectiveSolutionSimilarityCalculator, ITestFunctionSolutionSimilarityCalculator {
     protected override bool IsCommutative { get { return true; } }
 
     [Storable]

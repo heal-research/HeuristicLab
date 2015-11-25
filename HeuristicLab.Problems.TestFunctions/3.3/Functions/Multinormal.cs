@@ -29,12 +29,12 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.TestFunctions.Evaluators {
-  [Item("MultinormalFunction", "Evaluates a random multinormal function on a given point.")]
+  [Item("Multinormal", "Evaluates a random multinormal function on a given point.")]
   [StorableClass]
-  public class MultinormalEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
-    public override string FunctionName { get { return "Multinormal"; } }
+  public class Multinormal : SingleObjectiveTestFunction {
 
     private ItemList<RealVector> centers {
       get { return (ItemList<RealVector>)Parameters["Centers"].ActualValue; }
@@ -44,7 +44,11 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
       get { return (RealVector)Parameters["s^2s"].ActualValue; }
       set { Parameters["s^2s"].ActualValue = value; }
     }
-    private static System.Random Random = new System.Random();
+
+    public IRandom Random {
+      get { return ((ValueParameter<IRandom>)Parameters["Random"]).Value; }
+      set { ((ValueParameter<IRandom>)Parameters["Random"]).Value = value; }
+    }
 
     private Dictionary<int, List<RealVector>> stdCenters;
     public IEnumerable<RealVector> Centers(int nDim) {
@@ -86,18 +90,18 @@ namespace HeuristicLab.Problems.TestFunctions.Evaluators {
     }
 
     [StorableConstructor]
-    protected MultinormalEvaluator(bool deserializing) : base(deserializing) { }
-    protected MultinormalEvaluator(MultinormalEvaluator original, Cloner cloner) : base(original, cloner) { }
-    public MultinormalEvaluator() {
+    protected Multinormal(bool deserializing) : base(deserializing) { }
+    protected Multinormal(Multinormal original, Cloner cloner) : base(original, cloner) { }
+    public Multinormal() {
       Parameters.Add(new ValueParameter<ItemList<RealVector>>("Centers", "Centers of normal distributions"));
       Parameters.Add(new ValueParameter<RealVector>("s^2s", "sigma^2 of normal distributions"));
-      Parameters.Add(new LookupParameter<IRandom>("Random", "Random number generator"));
+      Parameters.Add(new ValueParameter<IRandom>("Random", "The random number generator that will make random instances", new MersenneTwister(0)));
       centers = new ItemList<RealVector>();
       s_2s = new RealVector();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new MultinormalEvaluator(this, cloner);
+      return new Multinormal(this, cloner);
     }
 
     private double FastFindOptimum(out RealVector bestSolution) {

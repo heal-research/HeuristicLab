@@ -19,16 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for manipulating vectors of real-valued data.
   /// </summary>
-  public interface IRealVectorManipulator : IRealVectorOperator, IManipulator {
-    ILookupParameter<RealVector> RealVectorParameter { get; }
-    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
+  public interface IRealVectorManipulator : IRealVectorSolutionOperator, IRealVectorBoundedOperator, IManipulator {
   }
 }

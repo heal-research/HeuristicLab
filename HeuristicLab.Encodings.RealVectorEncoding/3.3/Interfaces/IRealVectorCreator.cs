@@ -27,9 +27,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for creating vectors of real-valued data.
   /// </summary>
-  public interface IRealVectorCreator : IRealVectorOperator, ISolutionCreator<RealVector> {
+  public interface IRealVectorCreator : IRealVectorSolutionOperator, IRealVectorBoundedOperator, ISolutionCreator<RealVector> {
     IValueLookupParameter<IntValue> LengthParameter { get; }
-    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
-    ILookupParameter<RealVector> RealVectorParameter { get; }
   }
 }

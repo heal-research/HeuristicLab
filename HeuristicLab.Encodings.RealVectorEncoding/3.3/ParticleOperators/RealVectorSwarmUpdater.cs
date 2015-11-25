@@ -53,8 +53,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     public IScopeTreeLookupParameter<DoubleValue> NeighborBestQualityParameter {
       get { return (IScopeTreeLookupParameter<DoubleValue>)Parameters["NeighborBestQuality"]; }
     }
-    public IScopeTreeLookupParameter<RealVector> RealVectorParameter {
-      get { return (IScopeTreeLookupParameter<RealVector>)Parameters["RealVector"]; }
+    public IScopeTreeLookupParameter<RealVector> RealVectorsParameter {
+      get { return (IScopeTreeLookupParameter<RealVector>)Parameters["RealVectors"]; }
     }
     public IScopeTreeLookupParameter<RealVector> PersonalBestParameter {
       get { return (IScopeTreeLookupParameter<RealVector>)Parameters["PersonalBest"]; }
@@ -130,8 +130,8 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       get { return NeighborBestQualityParameter.ActualValue; }
       set { NeighborBestQualityParameter.ActualValue = value; }
     }
-    private ItemArray<RealVector> RealVector {
-      get { return RealVectorParameter.ActualValue; }
+    private ItemArray<RealVector> RealVectors {
+      get { return RealVectorsParameter.ActualValue; }
     }
     private ItemArray<RealVector> PersonalBest {
       get { return PersonalBestParameter.ActualValue; }
@@ -185,7 +185,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("Quality", "Particles' qualities."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("PersonalBestQuality", "Particles' personal best qualities."));
       Parameters.Add(new ScopeTreeLookupParameter<DoubleValue>("NeighborBestQuality", "Best neighbor particles' qualities."));
-      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVector", "Particles' positions."));
+      Parameters.Add(new ScopeTreeLookupParameter<RealVector>("RealVectors", "Particles' positions."));
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("PersonalBest", "Particles' personal best positions."));
       Parameters.Add(new ScopeTreeLookupParameter<RealVector>("NeighborBest", "Neighborhood (or global in case of totally connected neighborhood) best particle positions."));
       Parameters.Add(new ScopeTreeLookupParameter<IntArray>("Neighbors", "The list of neighbors for each particle."));
@@ -287,7 +287,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       if (SwarmBestQuality == null)
         SwarmBestQuality = new DoubleValue();
       SwarmBestQuality.Value = Maximization ? Quality.Max(v => v.Value) : Quality.Min(v => v.Value);
-      BestRealVector = (RealVector)RealVector[Quality.FindIndex(v => v.Value == SwarmBestQuality.Value)].Clone();
+      BestRealVector = (RealVector)RealVectors[Quality.FindIndex(v => v.Value == SwarmBestQuality.Value)].Clone();
     }
 
     private void UpdateNeighborBest() {
@@ -295,7 +295,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         var neighborBest = new ItemArray<RealVector>(Neighbors.Length);
         var neighborBestQuality = new ItemArray<DoubleValue>(Neighbors.Length);
         for (int n = 0; n < Neighbors.Length; n++) {
-          var pairs = Quality.Zip(RealVector, (q, p) => new { Quality = q, Point = p })
+          var pairs = Quality.Zip(RealVectors, (q, p) => new { Quality = q, Point = p })
             .Where((p, i) => i == n || Neighbors[n].Contains(i));
           var bestNeighbor = Maximization ?
             pairs.OrderByDescending(p => p.Quality.Value).First() :
@@ -311,11 +311,11 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     private void UpdatePersonalBest() {
       if (PersonalBestQuality.Length == 0)
         PersonalBestQuality = (ItemArray<DoubleValue>)Quality.Clone();
-      for (int i = 0; i < RealVector.Length; i++) {
+      for (int i = 0; i < RealVectors.Length; i++) {
         if (Maximization && Quality[i].Value > PersonalBestQuality[i].Value ||
           !Maximization && Quality[i].Value < PersonalBestQuality[i].Value) {
           PersonalBestQuality[i].Value = Quality[i].Value;
-          PersonalBest[i] = RealVector[i];
+          PersonalBest[i] = RealVectors[i];
         }
       }
     }

@@ -19,12 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorMoveGenerator : IRealVectorMoveOperator, IMoveGenerator {
-    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
+  public interface IRealVectorMoveGenerator : IRealVectorMoveOperator, IRealVectorBoundedOperator, IMoveGenerator {
   }
 }

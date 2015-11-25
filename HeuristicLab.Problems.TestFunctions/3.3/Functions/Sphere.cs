@@ -32,10 +32,9 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// The sphere function is a unimodal function that has its optimum at the origin.
   /// It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.
   /// </summary>
-  [Item("SphereEvaluator", "Evaluates the Sphere function y = C * ||X||^Alpha on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
+  [Item("Sphere", "Evaluates the Sphere function y = C * ||X||^Alpha on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Beyer, H.-G. and Schwefel, H.-P. 2002. Evolution Strategies - A Comprehensive Introduction Natural Computing, 1, pp. 3-52.")]
   [StorableClass]
-  public class SphereEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
-    public override string FunctionName { get { return "Sphere"; } }
+  public class Sphere : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Sphere function is a minimization problem.
     /// </summary>
@@ -68,7 +67,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SphereEvaluator(this, cloner);
+      return new Sphere(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {
@@ -103,12 +102,12 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SphereEvaluator(bool deserializing) : base(deserializing) { }
-    protected SphereEvaluator(SphereEvaluator original, Cloner cloner) : base(original, cloner) { }
+    protected Sphere(bool deserializing) : base(deserializing) { }
+    protected Sphere(Sphere original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of the SphereEvaluator with two parameters (<c>C</c> and <c>Alpha</c>).
     /// </summary>
-    public SphereEvaluator()
+    public Sphere()
       : base() {
       Parameters.Add(new ValueParameter<DoubleValue>("C", "The parameter C modifies the steepness of the objective function y = C * ||X||^Alpha. Default is C = 1.", new DoubleValue(1)));
       Parameters.Add(new ValueParameter<DoubleValue>("Alpha", "The parameter Alpha modifies the steepness of the objective function y = C * ||X||^Alpha. Default is Alpha = 2.", new DoubleValue(2)));

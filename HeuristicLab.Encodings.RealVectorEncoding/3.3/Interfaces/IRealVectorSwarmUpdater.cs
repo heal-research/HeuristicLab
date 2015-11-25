@@ -20,12 +20,11 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Optimization; 
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorSwarmUpdater : ISwarmUpdater, IRealVectorOperator {
+  public interface IRealVectorSwarmUpdater : ISwarmUpdater, IRealVectorSolutionsOperator {
     IScopeTreeLookupParameter<RealVector> NeighborBestParameter { get; }
     IScopeTreeLookupParameter<RealVector> PersonalBestParameter { get; }
-    IScopeTreeLookupParameter<RealVector> RealVectorParameter { get; }
   }
 }

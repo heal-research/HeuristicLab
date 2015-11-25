@@ -19,9 +19,10 @@
  */
 #endregion
 
+using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorMoveOperator : IRealVectorSolutionOperator, IMoveOperator {
+namespace HeuristicLab.Problems.TestFunctions {
+  public interface ISingleObjectiveTestFunctionImprovementOperator : ISingleObjectiveImprovementOperator, IRealVectorBoundedOperator {
   }
 }

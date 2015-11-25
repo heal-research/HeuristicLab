@@ -38,6 +38,6 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// <summary>
     /// The operator used for evaluations
     /// </summary>
-    public ISingleObjectiveTestFunctionProblemEvaluator Evaluator { get; set; }
+    public ISingleObjectiveTestFunction TestFunction { get; set; }
   }
 }

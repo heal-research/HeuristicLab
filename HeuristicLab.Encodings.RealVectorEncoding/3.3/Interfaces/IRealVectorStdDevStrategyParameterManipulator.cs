@@ -20,12 +20,10 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorStdDevStrategyParameterManipulator : IRealVectorStdDevStrategyParameterOperator, IStrategyParameterManipulator {
+  public interface IRealVectorStdDevStrategyParameterManipulator : IRealVectorStdDevStrategyParameterOperator, IStrategyParameterManipulator, IRealVectorBoundedOperator {
     ILookupParameter<RealVector> StrategyParameterParameter { get; }
-    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }
 }

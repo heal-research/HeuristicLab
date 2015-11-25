@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveMaker", "Peforms an additive move on a given real vector and updates the quality.")]
   [StorableClass]
-  public class AdditiveMoveMaker : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, IMoveMaker, ISingleObjectiveOperator {
+  public class AdditiveMoveMaker : SingleSuccessorOperator, IRealVectorAdditiveMoveQualityOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -62,13 +62,15 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       return new AdditiveMoveMaker(this, cloner);
     }
 
-    public override IOperation Apply() {
-      AdditiveMove move = AdditiveMoveParameter.ActualValue;
-      RealVector realVector = RealVectorParameter.ActualValue;
-      DoubleValue moveQuality = MoveQualityParameter.ActualValue;
-      DoubleValue quality = QualityParameter.ActualValue;
-
+    public static void Apply(RealVector realVector, AdditiveMove move) {
       realVector[move.Dimension] += move.MoveDistance;
+    }
+
+    public override IOperation Apply() {
+      Apply(RealVectorParameter.ActualValue, AdditiveMoveParameter.ActualValue);
+      var moveQuality = MoveQualityParameter.ActualValue;
+      var quality = QualityParameter.ActualValue;
+
       quality.Value = moveQuality.Value;
 
       return base.Apply();

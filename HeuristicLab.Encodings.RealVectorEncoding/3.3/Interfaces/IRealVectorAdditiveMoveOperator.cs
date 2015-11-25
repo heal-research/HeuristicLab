@@ -20,26 +20,9 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Problems.TestFunctions {
-  /// <summary>
-  /// An interface which represents an evaluation operator for single objective test functions.
-  /// </summary>
-  public interface ISingleObjectiveTestFunctionProblemEvaluator : ISingleObjectiveEvaluator {
-    bool Maximization { get; }
-    DoubleMatrix Bounds { get; }
-    double BestKnownQuality { get; }
-    int MinimumProblemSize { get; }
-    int MaximumProblemSize { get; }
-    string FunctionName { get; }
-
-    ILookupParameter<RealVector> PointParameter { get; }
-
-    double Evaluate2D(double x, double y);
-    double Evaluate(RealVector point);
-    RealVector GetBestKnownSolution(int dimension);
+namespace HeuristicLab.Encodings.RealVectorEncoding {
+  public interface IRealVectorAdditiveMoveOperator : IRealVectorMoveOperator {
+    ILookupParameter<AdditiveMove> AdditiveMoveParameter { get; }
   }
 }

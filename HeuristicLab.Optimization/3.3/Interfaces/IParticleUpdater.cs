@@ -26,10 +26,9 @@ namespace HeuristicLab.Optimization {
   /// <summary>
   /// Interface to represent an operator that updates a particle 
   /// </summary>
-  public interface IParticleUpdater : IOperator {
+  public interface IParticleUpdater : IStochasticOperator {
     ILookupParameter<DoubleValue> InertiaParameter { get; }
     ILookupParameter<DoubleValue> NeighborBestAttractionParameter { get; }
     ILookupParameter<DoubleValue> PersonalBestAttractionParameter { get; }
-    ILookupParameter<IRandom> RandomParameter { get; }
   }
 }

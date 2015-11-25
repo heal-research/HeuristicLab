@@ -1,4 +1,4 @@
-﻿#region License Information
+#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -27,14 +28,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n
+  /// The Schwefel function (sine root) is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.
   /// </summary>
-  [Item("SumSquaresEvaluator", "Evaluates the sum squares function on a given point. The optimum of this function is 0 at the origin. The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n.")]
+  [Item("Schwefel", "Evaluates the Schwefel function (sine root) on a given point. In the given bounds [-500;500] the optimum of this function is close to 0 at (420.968746453712,420.968746453712,...,420.968746453712). It is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.")]
   [StorableClass]
-  public class SumSquaresEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
-    public override string FunctionName { get { return "SumSquares"; } }
+  public class Schwefel : SingleObjectiveTestFunction {
     /// <summary>
-    /// Returns false as the Sum Squares function is a minimization problem.
+    /// Returns false as the Schwefel (sine root) function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -49,7 +49,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// Gets the lower and upper bound of the function.
     /// </summary>
     public override DoubleMatrix Bounds {
-      get { return new DoubleMatrix(new double[,] { { -10, 10 } }); }
+      get { return new DoubleMatrix(new double[,] { { -500, 500 } }); }
     }
     /// <summary>
     /// Gets the minimum problem size (1).
@@ -65,29 +65,28 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected SumSquaresEvaluator(bool deserializing) : base(deserializing) { }
-    protected SumSquaresEvaluator(SumSquaresEvaluator original, Cloner cloner) : base(original, cloner) { }
-    public SumSquaresEvaluator() : base() { }
+    protected Schwefel(bool deserializing) : base(deserializing) { }
+    protected Schwefel(Schwefel original, Cloner cloner) : base(original, cloner) { }
+    public Schwefel() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SumSquaresEvaluator(this, cloner);
+      return new Schwefel(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {
-      return new RealVector(dimension);
+      return null;
     }
 
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Sum Squares function at the given point.</returns>
+    /// <returns>The result value of the Schwefel function at the given point.</returns>
     public static double Apply(RealVector point) {
-      double result = 0;
-      for (int i = 0; i < point.Length; i++) {
-        result += (i + 1) * point[i] * point[i];
-      }
-      return result;
+      double result = 418.982887272433 * point.Length;
+      for (int i = 0; i < point.Length; i++)
+        result -= point[i] * Math.Sin(Math.Sqrt(Math.Abs(point[i])));
+      return (result);
     }
 
     /// <summary>
@@ -95,7 +94,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Sum Squares function at the given point.</returns>
+    /// <returns>The result value of the Schwefel function at the given point.</returns>
     public override double Evaluate(RealVector point) {
       return Apply(point);
     }

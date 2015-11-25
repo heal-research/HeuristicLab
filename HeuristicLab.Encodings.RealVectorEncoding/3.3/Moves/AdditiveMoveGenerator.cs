@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveGenerator", "Base class for all additive move generators.")]
   [StorableClass]
-  public abstract class AdditiveMoveGenerator : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, IMoveGenerator, IStochasticOperator {
+  public abstract class AdditiveMoveGenerator : SingleSuccessorOperator, IRealVectorAdditiveMoveOperator, IMoveGenerator, IStochasticOperator {
     public override bool CanChangeName {
       get { return false; }
     }
@@ -42,9 +42,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
     }
     public ILookupParameter<AdditiveMove> AdditiveMoveParameter {
       get { return (LookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
-    }
-    protected ScopeParameter CurrentScopeParameter {
-      get { return (ScopeParameter)Parameters["CurrentScope"]; }
     }
     public IValueLookupParameter<DoubleMatrix> BoundsParameter {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
@@ -58,7 +55,6 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator."));
       Parameters.Add(new LookupParameter<RealVector>("RealVector", "The real vector for which moves should be generated."));
       Parameters.Add(new LookupParameter<AdditiveMove>("AdditiveMove", "The moves that should be generated in subscopes."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope where the moves should be added as subscopes."));
       Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "A 2 column matrix specifying the lower and upper bound for each dimension. If there are less rows than dimension the bounds vector is cycled."));
     }
 
@@ -71,7 +67,7 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
         moveScopes[i] = new Scope(i.ToString());
         moveScopes[i].Variables.Add(new Variable(AdditiveMoveParameter.ActualName, moves[i]));
       }
-      CurrentScopeParameter.ActualValue.SubScopes.AddRange(moveScopes);
+      ExecutionContext.Scope.SubScopes.AddRange(moveScopes);
       return base.Apply();
     }
 

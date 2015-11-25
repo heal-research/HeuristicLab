@@ -23,18 +23,17 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// A function that returns a random variable in [0;1) independent of the inputs.
   /// </summary
-  [Item("RandomEvaluator", "Returns a random value in [0;1) that is independent of the inputs.")]
+  [Item("Random", "Returns a random value in [0;1) that is independent of the inputs.")]
   [StorableClass]
-  public class RandomEvaluator : SingleObjectiveTestFunctionProblemEvaluator, IStochasticOperator {
-    public override string FunctionName { get { return "Random"; } }
+  public class Random : SingleObjectiveTestFunction {
     /// <summary>
     /// It does not really matter.
     /// </summary>
@@ -66,28 +65,28 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return int.MaxValue; }
     }
 
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (ILookupParameter<IRandom>)Parameters["Random"]; }
+    public IValueParameter<IRandom> RandomParameter {
+      get { return (IValueParameter<IRandom>)Parameters["Random"]; }
     }
 
     [StorableConstructor]
-    protected RandomEvaluator(bool deserializing) : base(deserializing) { }
-    protected RandomEvaluator(RandomEvaluator original, Cloner cloner) : base(original, cloner) { }
-    public RandomEvaluator()
+    protected Random(bool deserializing) : base(deserializing) { }
+    protected Random(Random original, Cloner cloner) : base(original, cloner) { }
+    public Random()
       : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The random number generator to use."));
+      Parameters.Add(new ValueParameter<IRandom>("Random", "The random number generator to use.", new MersenneTwister(0)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RandomEvaluator(this, cloner);
+      return new Random(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {
-      return new RealVector(dimension);
+      return null;
     }
 
     public override double Evaluate(RealVector point) {
-      return ExecutionContext == null ? new System.Random().NextDouble() : RandomParameter.ActualValue.NextDouble();
+      return RandomParameter.Value.NextDouble();
     }
   }
 }

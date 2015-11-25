@@ -22,6 +22,6 @@
 using HeuristicLab.Encodings.RealVectorEncoding;
 
 namespace HeuristicLab.Problems.TestFunctions {
-  public interface ISingleObjectiveTestFunctionAdditiveMoveEvaluator : ISingleObjectiveTestFunctionMoveEvaluator, IAdditiveRealVectorMoveOperator {
+  public interface ISingleObjectiveTestFunctionAdditiveMoveEvaluator : ISingleObjectiveTestFunctionMoveEvaluator, IRealVectorAdditiveMoveOperator {
   }
 }

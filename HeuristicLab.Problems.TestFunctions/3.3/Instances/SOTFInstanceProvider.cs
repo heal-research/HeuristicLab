@@ -44,7 +44,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
-      var evaluators = ApplicationManager.Manager.GetInstances<ISingleObjectiveTestFunctionProblemEvaluator>()
+      var evaluators = ApplicationManager.Manager.GetInstances<ISingleObjectiveTestFunction>()
                                                  .OrderBy(x => x.Name);
       return evaluators.Select(x => new SOTFDataDescriptor(x));
     }
@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.TestFunctions {
       return new SOTFData {
         Name = descriptor.Name,
         Description = descriptor.Description,
-        Evaluator = descriptor.Evaluator
+        TestFunction = descriptor.TestFunction
       };
     }
   }

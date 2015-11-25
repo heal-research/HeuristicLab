@@ -19,11 +19,9 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Problems.TestFunctions {
   public interface ISingleObjectiveTestFunctionMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
-    Type EvaluatorType { get; }
   }
 }

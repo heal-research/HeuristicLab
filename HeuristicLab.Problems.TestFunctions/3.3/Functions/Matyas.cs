@@ -1,4 +1,4 @@
-#region License Information
+﻿#region License Information
 /* HeuristicLab
  * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -28,14 +28,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// The Schwefel function (sine root) is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.
+  /// The Matyas function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.
   /// </summary>
-  [Item("SchwefelEvaluator", "Evaluates the Schwefel function (sine root) on a given point. In the given bounds [-500;500] the optimum of this function is close to 0 at (420.968746453712,420.968746453712,...,420.968746453712). It is implemented as described in Affenzeller, M. and Wagner, S. 2005. Offspring Selection: A New Self-Adaptive Selection Scheme for Genetic Algorithms.  Ribeiro, B., Albrecht, R. F., Dobnikar, A., Pearson, D. W., and Steele, N. C. (eds.). Adaptive and Natural Computing Algorithms, pp. 218-221, Springer.")]
+  [Item("Matyas", "Evaluates the Matyas function on a given point. The optimum of this function is 0 at the origin. It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page2213.htm, last accessed April 12th, 2010.")]
   [StorableClass]
-  public class SchwefelEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
-    public override string FunctionName { get { return "Schwefel"; } }
+  public class Matyas : SingleObjectiveTestFunction {
     /// <summary>
-    /// Returns false as the Schwefel (sine root) function is a minimization problem.
+    /// Returns false as the Matyas function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -50,44 +49,41 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// Gets the lower and upper bound of the function.
     /// </summary>
     public override DoubleMatrix Bounds {
-      get { return new DoubleMatrix(new double[,] { { -500, 500 } }); }
+      get { return new DoubleMatrix(new double[,] { { -10, 10 } }); }
     }
     /// <summary>
-    /// Gets the minimum problem size (1).
+    /// Gets the minimum problem size (2).
     /// </summary>
     public override int MinimumProblemSize {
-      get { return 1; }
+      get { return 2; }
     }
     /// <summary>
-    /// Gets the (theoretical) maximum problem size (2^31 - 1).
+    /// Gets the maximum problem size (2).
     /// </summary>
     public override int MaximumProblemSize {
-      get { return int.MaxValue; }
+      get { return 2; }
     }
 
     [StorableConstructor]
-    protected SchwefelEvaluator(bool deserializing) : base(deserializing) { }
-    protected SchwefelEvaluator(SchwefelEvaluator original, Cloner cloner) : base(original, cloner) { }
-    public SchwefelEvaluator() : base() { }
+    protected Matyas(bool deserializing) : base(deserializing) { }
+    protected Matyas(Matyas original, Cloner cloner) : base(original, cloner) { }
+    public Matyas() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new SchwefelEvaluator(this, cloner);
+      return new Matyas(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {
-      return null;
+      if (dimension != 2) throw new ArgumentException(Name + ": This function is only defined for 2 dimensions.", "dimension");
+      return new RealVector(dimension);
     }
-
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Schwefel function at the given point.</returns>
+    /// <returns>The result value of the Matyas function at the given point.</returns>
     public static double Apply(RealVector point) {
-      double result = 418.982887272433 * point.Length;
-      for (int i = 0; i < point.Length; i++)
-        result -= point[i] * Math.Sin(Math.Sqrt(Math.Abs(point[i])));
-      return (result);
+      return 0.26 * (point[0] * point[0] + point[1] * point[1]) - 0.48 * point[0] * point[1];
     }
 
     /// <summary>
@@ -95,7 +91,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Schwefel function at the given point.</returns>
+    /// <returns>The result value of the Matyas function at the given point.</returns>
     public override double Evaluate(RealVector point) {
       return Apply(point);
     }

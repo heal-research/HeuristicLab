@@ -19,9 +19,23 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Encodings.RealVectorEncoding;
 
-namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorMoveOperator : IRealVectorSolutionOperator, IMoveOperator {
+namespace HeuristicLab.Problems.TestFunctions {
+  /// <summary>
+  /// An interface which represents an evaluation operator for single objective test functions.
+  /// </summary>
+  public interface ISingleObjectiveTestFunction : INamedItem {
+    bool Maximization { get; }
+    DoubleMatrix Bounds { get; }
+    double BestKnownQuality { get; }
+    int MinimumProblemSize { get; }
+    int MaximumProblemSize { get; }
+
+    double Evaluate2D(double x, double y);
+    double Evaluate(RealVector point);
+    RealVector GetBestKnownSolution(int dimension);
   }
 }

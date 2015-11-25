@@ -19,11 +19,10 @@
  */
 #endregion
 
-using HeuristicLab.Data;
+using HeuristicLab.Core;
 
-namespace HeuristicLab.Problems.TestFunctions {
-  public interface ISphereMoveEvaluator : ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
-    DoubleValue C { get; set; }
-    DoubleValue Alpha { get; set; }
+namespace HeuristicLab.Encodings.RealVectorEncoding {
+  public interface IRealVectorSolutionsOperator : IRealVectorOperator {
+    IScopeTreeLookupParameter<RealVector> RealVectorsParameter { get; }
   }
 }

@@ -20,16 +20,14 @@
 #endregion
 
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for crossing vectors of real-valued data.
   /// </summary>
-  public interface IRealVectorCrossover : IRealVectorOperator, ICrossover {
+  public interface IRealVectorCrossover : IRealVectorBoundedOperator, ICrossover {
     ILookupParameter<ItemArray<RealVector>> ParentsParameter { get; }
     ILookupParameter<RealVector> ChildParameter { get; }
-    IValueLookupParameter<DoubleMatrix> BoundsParameter { get; }
   }
 }

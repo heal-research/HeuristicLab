@@ -113,12 +113,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Evaluators\RandomEvaluator.cs" />
+    <Compile Include="Functions\Random.cs" />
     <Compile Include="Improvers\SingleObjectiveTestFunctionImprovementOperator.cs" />
     <Compile Include="Instances\SOTFData.cs" />
     <Compile Include="Instances\SOTFDataDescriptor.cs" />
     <Compile Include="Instances\SOTFInstanceProvider.cs" />
-    <Compile Include="MoveEvaluators\RandomAdditiveMoveEvaluator.cs" />
+    <Compile Include="Interfaces\ITestFunctionSolutionSimilarityCalculator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveTestFuntionImprovementOperator.cs" />
     <Compile Include="PathRelinkers\SingleObjectiveTestFunctionPathRelinker.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -127,43 +128,26 @@
     <Compile Include="Analyzers\BestSingleObjectiveTestFunctionSolutionAnalyzer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Evaluators\AckleyEvaluator.cs" />
-    <Compile Include="Evaluators\BealeEvaluator.cs" />
-    <Compile Include="Evaluators\BoothEvaluator.cs" />
-    <Compile Include="Evaluators\GriewankEvaluator.cs" />
-    <Compile Include="Evaluators\LevyEvaluator.cs" />
-    <Compile Include="Evaluators\MatyasEvaluator.cs" />
-    <Compile Include="Evaluators\MultinormalEvaluator.cs" />
-    <Compile Include="Evaluators\RastriginEvaluator.cs" />
-    <Compile Include="Evaluators\RosenbrockEvaluator.cs" />
-    <Compile Include="Evaluators\SchwefelEvaluator.cs" />
-    <Compile Include="Evaluators\SingleObjectiveTestFunctionProblemEvaluator.cs" />
-    <Compile Include="Evaluators\SphereEvaluator.cs" />
-    <Compile Include="Evaluators\SumSquaresEvaluator.cs" />
-    <Compile Include="Evaluators\ZakharovEvaluator.cs" />
+    <Compile Include="Functions\Ackley.cs" />
+    <Compile Include="Functions\Beale.cs" />
+    <Compile Include="Functions\Booth.cs" />
+    <Compile Include="Functions\Griewank.cs" />
+    <Compile Include="Functions\Levy.cs" />
+    <Compile Include="Functions\Matyas.cs" />
+    <Compile Include="Functions\Multinormal.cs" />
+    <Compile Include="Functions\Rastrigin.cs" />
+    <Compile Include="Functions\Rosenbrock.cs" />
+    <Compile Include="Functions\Schwefel.cs" />
+    <Compile Include="Functions\SingleObjectiveTestFunction.cs" />
+    <Compile Include="Functions\Sphere.cs" />
+    <Compile Include="Functions\SumSquares.cs" />
+    <Compile Include="Functions\Zakharov.cs" />
     <Compile Include="Interfaces\IBestSingleObjectiveTestFunctionSolutionAnalyzer.cs" />
-    <Compile Include="Interfaces\IRastriginMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionAdditiveMoveEvaluator.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionMoveEvaluator.cs" />
-    <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemEvaluator.cs" />
+    <Compile Include="Interfaces\ISingleObjectiveTestFunction.cs" />
     <Compile Include="Interfaces\ISingleObjectiveTestFunctionProblemSolutionsVisualizer.cs" />
-    <Compile Include="Interfaces\ISphereMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\AckleyAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\BealeAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\BoothAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\MultinormalAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\GriewankAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\ZakharovAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\SumSquaresAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\SphereAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\SchwefelAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\MatyasAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\RosenbrockAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\RastriginAdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\LevyAdditiveMoveEvaluator.cs" />
     <Compile Include="MoveEvaluators\AdditiveMoveEvaluator.cs" />
-    <Compile Include="MoveEvaluators\RealVectorAdditiveMoveWrapper.cs" />
-    <Compile Include="RealVectorToRealVectorEncoder.cs" />
     <Compile Include="SimilarityCalculators\SingleObjectiveTestFunctionSimilarityCalculator.cs" />
     <Compile Include="SingleObjectiveTestFunctionSolution.cs" />
     <Compile Include="SingleObjectiveTestFunctionProblem.cs" />
@@ -238,6 +222,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540e29e-4793-49e7-8ee2-fea7f61c3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{f4539fb6-4708-40c9-be64-0a1390aea197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

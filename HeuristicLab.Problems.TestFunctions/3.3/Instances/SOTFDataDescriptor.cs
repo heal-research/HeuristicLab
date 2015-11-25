@@ -23,16 +23,16 @@ using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.TestFunctions {
   internal class SOTFDataDescriptor : IDataDescriptor {
-    public string Name { get { return Evaluator.FunctionName + " Function"; } }
+    public string Name { get { return TestFunction.ItemName + " Function"; } }
 
     public string Description {
-      get { return Evaluator.Description; }
+      get { return TestFunction.Description; }
     }
 
-    internal ISingleObjectiveTestFunctionProblemEvaluator Evaluator { get; set; }
+    internal ISingleObjectiveTestFunction TestFunction { get; set; }
 
-    public SOTFDataDescriptor(ISingleObjectiveTestFunctionProblemEvaluator evaluator) {
-      Evaluator = evaluator;
+    public SOTFDataDescriptor(ISingleObjectiveTestFunction testFunction) {
+      TestFunction = testFunction;
     }
   }
 }

@@ -114,7 +114,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Creators\NormalDistributedRealVectorCreator.cs" />
+    <Compile Include="Interfaces\IRealVectorAdditiveMoveQualityOperator.cs" />
+    <Compile Include="Interfaces\IRealVectorBoundedOperator.cs" />
     <Compile Include="Interfaces\IRealVectorMultiNeighborhoodShakingOperator.cs" />
+    <Compile Include="Interfaces\IRealVectorSolutionsOperator.cs" />
+    <Compile Include="Interfaces\IRealVectorSolutionOperator.cs" />
     <Compile Include="ParticleOperators\RealVectorParticleCreator.cs" />
     <Compile Include="Crossovers\BlendAlphaBetaCrossover.cs" />
     <Compile Include="Interfaces\IRealVectorManipulator.cs" />
@@ -156,7 +160,7 @@
     <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterCrossover.cs" />
     <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterManipulator.cs" />
     <Compile Include="Interfaces\IRealVectorStdDevStrategyParameterOperator.cs" />
-    <Compile Include="Interfaces\IAdditiveRealVectorMoveOperator.cs" />
+    <Compile Include="Interfaces\IRealVectorAdditiveMoveOperator.cs" />
     <Compile Include="Interfaces\IRealVectorBoundsChecker.cs" />
     <Compile Include="Interfaces\IRealVectorMoveGenerator.cs" />
     <Compile Include="Interfaces\IRealVectorMoveOperator.cs" />

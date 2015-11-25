@@ -32,10 +32,9 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// The generalized Rastrigin function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))) is a highly multimodal function that has its optimal value 0 at the origin.
   /// It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.
   /// </summary
-  [Item("RastriginEvaluator", "Evaluates the generalized Rastrigin function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))) on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
+  [Item("Rastrigin", "Evaluates the generalized Rastrigin function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))) on a given point. The optimum of this function is 0 at the origin. It is implemented as described in Eiben, A.E. and Smith, J.E. 2003. Introduction to Evolutionary Computation. Natural Computing Series, Springer-Verlag Berlin Heidelberg.")]
   [StorableClass]
-  public class RastriginEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
-    public override string FunctionName { get { return "Rastrigin"; } }
+  public class Rastrigin : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Rastrigin function is a minimization problem.
     /// </summary>
@@ -85,18 +84,18 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [StorableConstructor]
-    protected RastriginEvaluator(bool deserializing) : base(deserializing) { }
-    protected RastriginEvaluator(RastriginEvaluator original, Cloner cloner) : base(original, cloner) { }
+    protected Rastrigin(bool deserializing) : base(deserializing) { }
+    protected Rastrigin(Rastrigin original, Cloner cloner) : base(original, cloner) { }
     /// <summary>
     /// Initializes a new instance of the RastriginEvaluator with one parameter (<c>A</c>).
     /// </summary>
-    public RastriginEvaluator()
+    public Rastrigin()
       : base() {
       Parameters.Add(new ValueParameter<DoubleValue>("A", "The parameter A is a parameter of the objective function y = Sum((x_i)^2 + A * (1 - Cos(2pi*x_i))). Default is A = 10.", new DoubleValue(10)));
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RastriginEvaluator(this, cloner);
+      return new Rastrigin(this, cloner);
     }
 
     /// <summary>

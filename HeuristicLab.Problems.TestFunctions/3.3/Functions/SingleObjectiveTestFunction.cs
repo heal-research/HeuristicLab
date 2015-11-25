@@ -23,21 +23,15 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
-using HeuristicLab.Operators;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
   /// Base class for a test function evaluator.
   /// </summary>
-  [Item("Evaluator", "Base calls for single objective test function evaluators.")]
+  [Item("Single-Objective Function", "Base class for single objective functions.")]
   [StorableClass]
-  public abstract class SingleObjectiveTestFunctionProblemEvaluator : InstrumentedOperator, ISingleObjectiveTestFunctionProblemEvaluator {
-    /// <summary>
-    /// The name of the function
-    /// </summary>
-    public abstract string FunctionName { get; }
+  public abstract class SingleObjectiveTestFunction : ParameterizedNamedItem, ISingleObjectiveTestFunction {
     /// <summary>
     /// These operators should not change their name through the GUI
     /// </summary>
@@ -65,32 +59,10 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     public abstract int MaximumProblemSize { get; }
 
-    public ILookupParameter<DoubleValue> QualityParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Quality"]; }
-    }
-    public ILookupParameter<RealVector> PointParameter {
-      get { return (ILookupParameter<RealVector>)Parameters["Point"]; }
-    }
-
     [StorableConstructor]
-    protected SingleObjectiveTestFunctionProblemEvaluator(bool deserializing) : base(deserializing) { }
-    protected SingleObjectiveTestFunctionProblemEvaluator(SingleObjectiveTestFunctionProblemEvaluator original, Cloner cloner) : base(original, cloner) { }
-    /// <summary>
-    /// Initializes a new instance of <see cref="SingleObjectiveTestFunctionEvaluator"/> with two parameters
-    /// (<c>Quality</c> and <c>Point</c>).
-    /// </summary>
-    public SingleObjectiveTestFunctionProblemEvaluator()
-      : base() {
-      Parameters.Add(new LookupParameter<DoubleValue>("Quality", "Result of the evaluation of a solution."));
-      Parameters.Add(new LookupParameter<RealVector>("Point", "The point at which the function should be evaluated."));
-    }
-
-    public override IOperation InstrumentedApply() {
-      RealVector point = PointParameter.ActualValue;
-      double quality = Evaluate(point);
-      QualityParameter.ActualValue = new DoubleValue(quality);
-      return base.InstrumentedApply();
-    }
+    protected SingleObjectiveTestFunction(bool deserializing) : base(deserializing) { }
+    protected SingleObjectiveTestFunction(SingleObjectiveTestFunction original, Cloner cloner) : base(original, cloner) { }
+    protected SingleObjectiveTestFunction() : base() { }
 
     public virtual double Evaluate2D(double x, double y) {
       return Evaluate(new RealVector(new double[] { x, y }));

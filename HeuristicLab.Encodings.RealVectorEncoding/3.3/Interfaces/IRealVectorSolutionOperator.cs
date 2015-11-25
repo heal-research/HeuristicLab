@@ -22,7 +22,7 @@
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IAdditiveRealVectorMoveOperator : IRealVectorMoveOperator {
-    ILookupParameter<AdditiveMove> AdditiveMoveParameter { get; }
+  public interface IRealVectorSolutionOperator : IRealVectorOperator {
+    ILookupParameter<RealVector> RealVectorParameter { get; }
   }
 }

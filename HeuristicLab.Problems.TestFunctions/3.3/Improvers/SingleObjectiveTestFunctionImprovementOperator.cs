@@ -25,7 +25,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
 using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -39,7 +38,7 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// </remarks>
   [Item("SingleObjectiveTestFunctionImprovementOperator", "An operator that improves test functions solutions. It is implemented as described in Laguna, M. and Martí, R. (2003). Scatter Search: Methodology and Implementations in C. Operations Research/Computer Science Interfaces Series, Vol. 24. Springer.")]
   [StorableClass]
-  public sealed class SingleObjectiveTestFunctionImprovementOperator : SingleSuccessorOperator, ISingleObjectiveImprovementOperator {
+  public sealed class SingleObjectiveTestFunctionImprovementOperator : SingleSuccessorOperator, ISingleObjectiveTestFunctionImprovementOperator {
     #region Parameter properties
     public IValueParameter<DoubleValue> AlphaParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Alpha"]; }
@@ -50,14 +49,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     public IValueLookupParameter<DoubleMatrix> BoundsParameter {
       get { return (IValueLookupParameter<DoubleMatrix>)Parameters["Bounds"]; }
     }
-    public ScopeParameter CurrentScopeParameter {
-      get { return (ScopeParameter)Parameters["CurrentScope"]; }
-    }
     public IValueParameter<DoubleValue> DeltaParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Delta"]; }
     }
-    public IValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator> EvaluatorParameter {
-      get { return (IValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>)Parameters["Evaluator"]; }
+    public IValueLookupParameter<ISingleObjectiveTestFunction> TestFunctionParameter {
+      get { return (IValueLookupParameter<ISingleObjectiveTestFunction>)Parameters["TestFunction"]; }
     }
     public IValueParameter<DoubleValue> GammaParameter {
       get { return (IValueParameter<DoubleValue>)Parameters["Gamma"]; }
@@ -77,23 +73,11 @@ namespace HeuristicLab.Problems.TestFunctions {
     private DoubleValue Beta {
       get { return BetaParameter.Value; }
     }
-    private DoubleMatrix Bounds {
-      get { return BoundsParameter.ActualValue; }
-    }
-    public IScope CurrentScope {
-      get { return CurrentScopeParameter.ActualValue; }
-    }
     private DoubleValue Delta {
       get { return DeltaParameter.Value; }
     }
-    public ISingleObjectiveTestFunctionProblemEvaluator Evaluator {
-      get { return EvaluatorParameter.ActualValue; }
-    }
     private DoubleValue Gamma {
       get { return GammaParameter.Value; }
-    }
-    public IntValue ImprovementAttempts {
-      get { return ImprovementAttemptsParameter.ActualValue; }
     }
     #endregion
 
@@ -105,13 +89,12 @@ namespace HeuristicLab.Problems.TestFunctions {
       #region Create parameters
       Parameters.Add(new ValueParameter<DoubleValue>("Alpha", new DoubleValue(1.0)));
       Parameters.Add(new ValueParameter<DoubleValue>("Beta", new DoubleValue(2.0)));
-      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension."));
-      Parameters.Add(new ScopeParameter("CurrentScope", "The current scope that contains the solution to be improved."));
       Parameters.Add(new ValueParameter<DoubleValue>("Delta", new DoubleValue(0.5)));
-      Parameters.Add(new ValueLookupParameter<ISingleObjectiveTestFunctionProblemEvaluator>("Evaluator", "The operator used to evaluate solutions."));
       Parameters.Add(new ValueParameter<DoubleValue>("Gamma", new DoubleValue(0.5)));
+      Parameters.Add(new ValueLookupParameter<ISingleObjectiveTestFunction>("TestFunction", "The operator used to evaluate solutions."));
+      Parameters.Add(new ValueLookupParameter<DoubleMatrix>("Bounds", "The lower and upper bounds in each dimension."));
       Parameters.Add(new ValueLookupParameter<IntValue>("ImprovementAttempts", "The number of improvement attempts the operator should perform.", new IntValue(100)));
-      Parameters.Add(new ValueLookupParameter<IItem>("Solution", "The solution to be improved. This parameter is used for name translation only."));
+      Parameters.Add(new ValueLookupParameter<IItem>("Solution", "The solution to be improved. This parameter is used for name translation only.")); // TODO: Problematic, this cannot be wired! IImprovementOperators need to be generic
       #endregion
     }
 
@@ -120,27 +103,29 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     public override IOperation Apply() {
-      RealVector bestSol = CurrentScope.Variables[SolutionParameter.ActualName].Value as RealVector;
+      RealVector bestSol = ExecutionContext.Scope.Variables[SolutionParameter.ActualName].Value as RealVector;
       if (bestSol == null)
         throw new ArgumentException("Cannot improve solution because it has the wrong type.");
 
-      var evaluator = Evaluator;
+      var bounds = BoundsParameter.ActualValue;
+      var function = TestFunctionParameter.ActualValue;
+      var maxIterations = ImprovementAttemptsParameter.ActualValue.Value;
 
-      double bestSolQuality = evaluator.Evaluate(bestSol);
+      double bestSolQuality = function.Evaluate(bestSol);
 
       // create perturbed solutions
       RealVector[] simplex = new RealVector[bestSol.Length];
       for (int i = 0; i < simplex.Length; i++) {
         simplex[i] = bestSol.Clone() as RealVector;
-        simplex[i][i] += 0.1 * (Bounds[0, 1] - Bounds[0, 0]);
-        if (simplex[i][i] > Bounds[0, 1]) simplex[i][i] = Bounds[0, 1];
-        if (simplex[i][i] < Bounds[0, 0]) simplex[i][i] = Bounds[0, 0];
+        simplex[i][i] += 0.1 * (bounds[0, 1] - bounds[0, 0]);
+        if (simplex[i][i] > bounds[0, 1]) simplex[i][i] = bounds[0, 1];
+        if (simplex[i][i] < bounds[0, 0]) simplex[i][i] = bounds[0, 0];
       }
 
       // improve solutions
-      for (int i = 0; i < ImprovementAttempts.Value; i++) {
+      for (int i = 0; i < maxIterations; i++) {
         // order according to their objective function value
-        Array.Sort(simplex, (x, y) => evaluator.Evaluate(x).CompareTo(evaluator.Evaluate(y)));
+        Array.Sort(simplex, (x, y) => function.Evaluate(x).CompareTo(function.Evaluate(y)));
 
         // calculate centroid
         RealVector centroid = new RealVector(bestSol.Length);
@@ -154,32 +139,32 @@ namespace HeuristicLab.Problems.TestFunctions {
         RealVector reflectionPoint = new RealVector(bestSol.Length);
         for (int j = 0; j < reflectionPoint.Length; j++)
           reflectionPoint[j] = centroid[j] + Alpha.Value * (centroid[j] - simplex[simplex.Length - 1][j]);
-        double reflectionPointQuality = evaluator.Evaluate(reflectionPoint);
-        if (evaluator.Evaluate(simplex[0]) <= reflectionPointQuality
-            && reflectionPointQuality < evaluator.Evaluate(simplex[simplex.Length - 2]))
+        double reflectionPointQuality = function.Evaluate(reflectionPoint);
+        if (function.Evaluate(simplex[0]) <= reflectionPointQuality
+            && reflectionPointQuality < function.Evaluate(simplex[simplex.Length - 2]))
           simplex[simplex.Length - 1] = reflectionPoint;
 
         // expansion
-        if (reflectionPointQuality < evaluator.Evaluate(simplex[0])) {
+        if (reflectionPointQuality < function.Evaluate(simplex[0])) {
           RealVector expansionPoint = new RealVector(bestSol.Length);
           for (int j = 0; j < expansionPoint.Length; j++)
             expansionPoint[j] = centroid[j] + Beta.Value * (reflectionPoint[j] - centroid[j]);
-          simplex[simplex.Length - 1] = evaluator.Evaluate(expansionPoint) < reflectionPointQuality ? expansionPoint : reflectionPoint;
+          simplex[simplex.Length - 1] = function.Evaluate(expansionPoint) < reflectionPointQuality ? expansionPoint : reflectionPoint;
         }
 
         // contraction
-        if (evaluator.Evaluate(simplex[simplex.Length - 2]) <= reflectionPointQuality
-            && reflectionPointQuality < evaluator.Evaluate(simplex[simplex.Length - 1])) {
+        if (function.Evaluate(simplex[simplex.Length - 2]) <= reflectionPointQuality
+            && reflectionPointQuality < function.Evaluate(simplex[simplex.Length - 1])) {
           RealVector outsideContractionPoint = new RealVector(bestSol.Length);
           for (int j = 0; j < outsideContractionPoint.Length; j++)
             outsideContractionPoint[j] = centroid[j] + Gamma.Value * (reflectionPoint[j] - centroid[j]);
-          if (evaluator.Evaluate(outsideContractionPoint) <= reflectionPointQuality) {
+          if (function.Evaluate(outsideContractionPoint) <= reflectionPointQuality) {
             simplex[simplex.Length - 1] = outsideContractionPoint;
-            if (evaluator.Evaluate(reflectionPoint) >= evaluator.Evaluate(simplex[simplex.Length - 1])) {
+            if (function.Evaluate(reflectionPoint) >= function.Evaluate(simplex[simplex.Length - 1])) {
               RealVector insideContractionPoint = new RealVector(bestSol.Length);
               for (int j = 0; j < insideContractionPoint.Length; j++)
                 insideContractionPoint[j] = centroid[j] - Gamma.Value * (reflectionPoint[j] - centroid[j]);
-              if (evaluator.Evaluate(insideContractionPoint) < evaluator.Evaluate(simplex[simplex.Length - 1])) simplex[simplex.Length - 1] = insideContractionPoint;
+              if (function.Evaluate(insideContractionPoint) < function.Evaluate(simplex[simplex.Length - 1])) simplex[simplex.Length - 1] = insideContractionPoint;
             }
           }
         }
@@ -191,12 +176,12 @@ namespace HeuristicLab.Problems.TestFunctions {
       }
 
       for (int i = 0; i < simplex[0].Length; i++) {
-        if (simplex[0][i] > Bounds[0, 1]) simplex[0][i] = Bounds[0, 1];
-        if (simplex[0][i] < Bounds[0, 0]) simplex[0][i] = Bounds[0, 0];
+        if (simplex[0][i] > bounds[0, 1]) simplex[0][i] = bounds[0, 1];
+        if (simplex[0][i] < bounds[0, 0]) simplex[0][i] = bounds[0, 0];
       }
 
-      CurrentScope.Variables[SolutionParameter.ActualName].Value = simplex[0];
-      CurrentScope.Variables.Add(new Variable("LocalEvaluatedSolutions", ImprovementAttempts));
+      ExecutionContext.Scope.Variables[SolutionParameter.ActualName].Value = simplex[0];
+      ExecutionContext.Scope.Variables.Add(new Variable("LocalEvaluatedSolutions", new IntValue(maxIterations)));
 
       return base.Apply();
     }

@@ -19,9 +19,11 @@
  */
 #endregion
 
+using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
-namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorMoveOperator : IRealVectorSolutionOperator, IMoveOperator {
+namespace HeuristicLab.Problems.TestFunctions {
+  public interface ITestFunctionSolutionSimilarityCalculator : ISolutionSimilarityCalculator {
+    DoubleMatrix Bounds { get; set; }
   }
 }

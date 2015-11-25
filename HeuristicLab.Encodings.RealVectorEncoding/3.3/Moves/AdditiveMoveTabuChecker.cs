@@ -31,7 +31,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveTabuChecker", "Prevents falling back into ranges that have been moved over before.")]
   [StorableClass]
-  public class AdditiveMoveTabuChecker : SingleSuccessorOperator, IAdditiveRealVectorMoveOperator, ITabuChecker {
+  public class AdditiveMoveTabuChecker : SingleSuccessorOperator, IRealVectorAdditiveMoveQualityOperator, ITabuChecker {
     public override bool CanChangeName {
       get { return false; }
     }

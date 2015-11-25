@@ -24,11 +24,9 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorParticleUpdater : IParticleUpdater, IRealVectorOperator {
+  public interface IRealVectorParticleUpdater : IParticleUpdater, IRealVectorSolutionOperator, IRealVectorBoundedOperator {
     ILookupParameter<RealVector> VelocityParameter { get; }
     ILookupParameter<DoubleMatrix> CurrentVelocityBoundsParameter { get; }
-    ILookupParameter<RealVector> RealVectorParameter { get; }
-    ILookupParameter<DoubleMatrix> BoundsParameter { get; }
     ILookupParameter<RealVector> PersonalBestParameter { get; }
     ILookupParameter<RealVector> NeighborBestParameter { get; }
   }

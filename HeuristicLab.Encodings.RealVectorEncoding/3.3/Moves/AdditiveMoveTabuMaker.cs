@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.RealVectorEncoding {
   [Item("AdditiveMoveTabuMaker", "Sets the move tabu.")]
   [StorableClass]
-  public class AdditiveMoveTabuMaker : TabuMaker, IAdditiveRealVectorMoveOperator {
+  public class AdditiveMoveTabuMaker : TabuMaker, IRealVectorAdditiveMoveQualityOperator {
     public ILookupParameter<AdditiveMove> AdditiveMoveParameter {
       get { return (ILookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
     }

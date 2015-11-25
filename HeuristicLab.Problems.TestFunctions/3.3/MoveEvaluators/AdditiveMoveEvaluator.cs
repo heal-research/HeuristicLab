@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -31,9 +30,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Problems.TestFunctions {
   [Item("AdditiveMoveEvaluator", "Base class for evaluating an additive move.")]
   [StorableClass]
-  public abstract class AdditiveMoveEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
+  public class AdditiveMoveEvaluator : SingleSuccessorOperator, ISingleObjectiveTestFunctionAdditiveMoveEvaluator {
 
-    public abstract Type EvaluatorType { get; }
     public override bool CanChangeName {
       get { return false; }
     }
@@ -50,27 +48,40 @@ namespace HeuristicLab.Problems.TestFunctions {
     public ILookupParameter<AdditiveMove> AdditiveMoveParameter {
       get { return (ILookupParameter<AdditiveMove>)Parameters["AdditiveMove"]; }
     }
+    public ILookupParameter<ISingleObjectiveTestFunction> TestFunctionParameter {
+      get { return (ILookupParameter<ISingleObjectiveTestFunction>)Parameters["TestFunction"]; }
+    }
 
     [StorableConstructor]
     protected AdditiveMoveEvaluator(bool deserializing) : base(deserializing) { }
     protected AdditiveMoveEvaluator(AdditiveMoveEvaluator original, Cloner cloner) : base(original, cloner) { }
-    protected AdditiveMoveEvaluator()
+    public AdditiveMoveEvaluator()
       : base() {
       Parameters.Add(new LookupParameter<DoubleValue>("Quality", "The quality of a test function solution."));
       Parameters.Add(new LookupParameter<DoubleValue>("MoveQuality", "The evaluated quality of a move on a test function solution."));
       Parameters.Add(new LookupParameter<RealVector>("Point", "The point to evaluate the move on."));
       Parameters.Add(new LookupParameter<AdditiveMove>("AdditiveMove", "The move to evaluate."));
+      Parameters.Add(new LookupParameter<ISingleObjectiveTestFunction>("TestFunction", "The test function that is used."));
+    }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new AdditiveMoveEvaluator(this, cloner);
     }
 
     public override IOperation Apply() {
-      double mq = Evaluate(QualityParameter.ActualValue.Value, RealVectorParameter.ActualValue, AdditiveMoveParameter.ActualValue);
-      DoubleValue moveQuality = MoveQualityParameter.ActualValue;
+      var function = TestFunctionParameter.ActualValue;
+      var move = AdditiveMoveParameter.ActualValue;
+      var vector = RealVectorParameter.ActualValue;
+      var clone = (RealVector)vector.Clone();
+
+      AdditiveMoveMaker.Apply(clone, move);
+      var mq = function.Evaluate(clone);
+
+      var moveQuality = MoveQualityParameter.ActualValue;
       if (moveQuality == null) {
         MoveQualityParameter.ActualValue = new DoubleValue(mq);
       } else moveQuality.Value = mq;
       return base.Apply();
     }
-
-    protected abstract double Evaluate(double quality, RealVector point, AdditiveMove move);
   }
 }

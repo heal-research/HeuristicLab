@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -28,14 +27,13 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.TestFunctions {
   /// <summary>
-  /// The Booth function is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page816.htm, last accessed April 12th, 2010.
+  /// The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n
   /// </summary>
-  [Item("BoothEvaluator", "Evaluates the Booth function on a given point. The optimum of this function is 0 at (1,3). It is implemented as described on http://www-optima.amp.i.kyoto-u.ac.jp/member/student/hedar/Hedar_files/TestGO_files/Page816.htm, last accessed April 12th, 2010.")]
+  [Item("SumSquares", "Evaluates the sum squares function on a given point. The optimum of this function is 0 at the origin. The Sum Squares function is defined as sum(i * x_i * x_i) for i = 1..n.")]
   [StorableClass]
-  public class BoothEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
-    public override string FunctionName { get { return "Booth"; } }
+  public class SumSquares : SingleObjectiveTestFunction {
     /// <summary>
-    /// Returns false as the Booth function is a minimization problem.
+    /// Returns false as the Sum Squares function is a minimization problem.
     /// </summary>
     public override bool Maximization {
       get { return false; }
@@ -53,39 +51,42 @@ namespace HeuristicLab.Problems.TestFunctions {
       get { return new DoubleMatrix(new double[,] { { -10, 10 } }); }
     }
     /// <summary>
-    /// Gets the minimum problem size (2).
+    /// Gets the minimum problem size (1).
     /// </summary>
     public override int MinimumProblemSize {
-      get { return 2; }
+      get { return 1; }
     }
     /// <summary>
-    /// Gets the maximum problem size (2).
+    /// Gets the (theoretical) maximum problem size (2^31 - 1).
     /// </summary>
     public override int MaximumProblemSize {
-      get { return 2; }
+      get { return int.MaxValue; }
     }
 
     [StorableConstructor]
-    protected BoothEvaluator(bool deserializing) : base(deserializing) { }
-    protected BoothEvaluator(BoothEvaluator original, Cloner cloner) : base(original, cloner) { }
-    public BoothEvaluator() : base() { }
+    protected SumSquares(bool deserializing) : base(deserializing) { }
+    protected SumSquares(SumSquares original, Cloner cloner) : base(original, cloner) { }
+    public SumSquares() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new BoothEvaluator(this, cloner);
+      return new SumSquares(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {
-      if (dimension != 2) throw new ArgumentException(Name + ": This function is only defined for 2 dimensions.", "dimension");
-      return new RealVector(new double[] { 1, 3 });
+      return new RealVector(dimension);
     }
+
     /// <summary>
     /// Evaluates the test function for a specific <paramref name="point"/>.
     /// </summary>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Booth function at the given point.</returns>
+    /// <returns>The result value of the Sum Squares function at the given point.</returns>
     public static double Apply(RealVector point) {
-      return (point[0] + 2 * point[1] - 7) * (point[0] + 2 * point[1] - 7)
-        + (2 * point[0] + point[1] - 5) * (2 * point[0] + point[1] - 5);
+      double result = 0;
+      for (int i = 0; i < point.Length; i++) {
+        result += (i + 1) * point[i] * point[i];
+      }
+      return result;
     }
 
     /// <summary>
@@ -93,7 +94,7 @@ namespace HeuristicLab.Problems.TestFunctions {
     /// </summary>
     /// <remarks>Calls <see cref="Apply"/>.</remarks>
     /// <param name="point">N-dimensional point for which the test function should be evaluated.</param>
-    /// <returns>The result value of the Booth function at the given point.</returns>
+    /// <returns>The result value of the Sum Squares function at the given point.</returns>
     public override double Evaluate(RealVector point) {
       return Apply(point);
     }

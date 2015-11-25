@@ -31,13 +31,12 @@ namespace HeuristicLab.Problems.TestFunctions {
   /// The Rosenbrock function features a flat valley in which the global optimum is located.
   /// It is implemented as generalized Rosenbrock function as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.
   /// </summary>
-  [Item("RosenbrockEvaluator", @"The Rosenbrock function features a flat valley in which the global optimum is located.
+  [Item("Rosenbrock", @"The Rosenbrock function features a flat valley in which the global optimum is located.
 For 2 and 3 dimensions the single minimum of this function is 0 at (1,1,...,1), for 4 to 30 dimensions there is an additional local minimum close to (-1,1,...,1).
 It is unknown how many local minima there are for dimensions greater than 30.
 It is implemented as generalized Rosenbrock function for which the 2 dimensional function is a special case, as for example given in Shang, Y.-W. and Qiu, Y.-H. 2006. A Note on the Extended Rosenbrock Function. Evolutionary Computation 14, pp. 119-126, MIT Press.")]
   [StorableClass]
-  public class RosenbrockEvaluator : SingleObjectiveTestFunctionProblemEvaluator {
-    public override string FunctionName { get { return "Rosenbrock"; } }
+  public class Rosenbrock : SingleObjectiveTestFunction {
     /// <summary>
     /// Returns false as the Rosenbrock function is a minimization problem.
     /// </summary>
@@ -70,12 +69,12 @@ It is implemented as generalized Rosenbrock function for which the 2 dimensional
     }
 
     [StorableConstructor]
-    protected RosenbrockEvaluator(bool deserializing) : base(deserializing) { }
-    protected RosenbrockEvaluator(RosenbrockEvaluator original, Cloner cloner) : base(original, cloner) { }
-    public RosenbrockEvaluator() : base() { }
+    protected Rosenbrock(bool deserializing) : base(deserializing) { }
+    protected Rosenbrock(Rosenbrock original, Cloner cloner) : base(original, cloner) { }
+    public Rosenbrock() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new RosenbrockEvaluator(this, cloner);
+      return new Rosenbrock(this, cloner);
     }
 
     public override RealVector GetBestKnownSolution(int dimension) {

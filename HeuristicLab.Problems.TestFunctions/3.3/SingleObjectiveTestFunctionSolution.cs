@@ -96,12 +96,12 @@ namespace HeuristicLab.Problems.TestFunctions {
     }
 
     [Storable]
-    private ISingleObjectiveTestFunctionProblemEvaluator evaluator;
-    public ISingleObjectiveTestFunctionProblemEvaluator Evaluator {
-      get { return evaluator; }
+    private ISingleObjectiveTestFunction testFunction;
+    public ISingleObjectiveTestFunction TestFunction {
+      get { return testFunction; }
       set {
-        if (evaluator != value) {
-          evaluator = value;
+        if (testFunction != value) {
+          testFunction = value;
           OnEvaluatorChanged();
         }
       }
@@ -129,16 +129,16 @@ namespace HeuristicLab.Problems.TestFunctions {
       bestRealVector = cloner.Clone(original.bestRealVector);
       bestQuality = cloner.Clone(original.bestQuality);
       population = cloner.Clone(original.population);
-      evaluator = cloner.Clone(original.evaluator);
+      testFunction = cloner.Clone(original.testFunction);
       bounds = cloner.Clone(original.bounds);
       Initialize();
     }
     public SingleObjectiveTestFunctionSolution() : base() { }
-    public SingleObjectiveTestFunctionSolution(RealVector realVector, DoubleValue quality, ISingleObjectiveTestFunctionProblemEvaluator evaluator)
+    public SingleObjectiveTestFunctionSolution(RealVector realVector, DoubleValue quality, ISingleObjectiveTestFunction testFunction)
       : base() {
       this.bestRealVector = realVector;
       this.bestQuality = quality;
-      this.evaluator = evaluator;
+      this.testFunction = testFunction;
       Initialize();
     }
 

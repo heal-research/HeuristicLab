@@ -170,7 +170,10 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
           typeof (IRealVectorMultiNeighborhoodShakingOperator),
           typeof (IRealVectorBoundsChecker),
           typeof (IRealVectorMoveOperator),
-          typeof (IRealVectorMoveGenerator)
+          typeof (IRealVectorMoveGenerator),
+          typeof (IRealVectorSolutionOperator),
+          typeof (IRealVectorSolutionsOperator),
+          typeof (IRealVectorBoundedOperator)
       };
     }
     private void DiscoverOperators() {
@@ -208,29 +211,26 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       ConfigureBoundsCheckers(operators.OfType<IRealVectorBoundsChecker>());
       ConfigureMoveGenerators(operators.OfType<IRealVectorMoveGenerator>());
       ConfigureMoveOperators(operators.OfType<IRealVectorMoveOperator>());
-      ConfigureAdditiveMoveOperator(operators.OfType<IAdditiveRealVectorMoveOperator>());
+      ConfigureAdditiveMoveOperator(operators.OfType<IRealVectorAdditiveMoveOperator>());
+      ConfigureRealVectorSolutionOperators(operators.OfType<IRealVectorSolutionOperator>());
+      ConfigureRealVectorSolutionsOperators(operators.OfType<IRealVectorSolutionsOperator>());
+      ConfigureRealVectorBoundedOperators(operators.OfType<IRealVectorBoundedOperator>());
     }
 
     #region Specific Operator Wiring
     private void ConfigureCreators(IEnumerable<IRealVectorCreator> creators) {
       foreach (var creator in creators) {
-        creator.RealVectorParameter.ActualName = Name;
         creator.LengthParameter.ActualName = LengthParameter.Name;
-        creator.BoundsParameter.ActualName = BoundsParameter.Name;
       }
     }
     private void ConfigureCrossovers(IEnumerable<IRealVectorCrossover> crossovers) {
       foreach (var crossover in crossovers) {
         crossover.ChildParameter.ActualName = Name;
         crossover.ParentsParameter.ActualName = Name;
-        crossover.BoundsParameter.ActualName = BoundsParameter.Name;
       }
     }
     private void ConfigureManipulators(IEnumerable<IRealVectorManipulator> manipulators) {
       foreach (var manipulator in manipulators) {
-        manipulator.RealVectorParameter.ActualName = Name;
-        manipulator.BoundsParameter.ActualName = BoundsParameter.Name;
-        manipulator.BoundsParameter.Hidden = true;
         var sm = manipulator as ISelfAdaptiveManipulator;
         if (sm != null) {
           var p = sm.StrategyParameterParameter as ILookupParameter;
@@ -271,28 +271,18 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       }
     }
     private void ConfigureSwarmUpdaters(IEnumerable<IRealVectorSwarmUpdater> swarmUpdaters) {
-      foreach (var su in swarmUpdaters) {
-        su.RealVectorParameter.ActualName = Name;
-      }
+      // swarm updaters don't have additional parameters besides the solution parameter
     }
     private void ConfigureParticleCreators(IEnumerable<IRealVectorParticleCreator> particleCreators) {
       foreach (var particleCreator in particleCreators) {
-        particleCreator.RealVectorParameter.ActualName = Name;
-        particleCreator.BoundsParameter.ActualName = BoundsParameter.Name;
         particleCreator.ProblemSizeParameter.ActualName = LengthParameter.Name;
       }
     }
     private void ConfigureParticleUpdaters(IEnumerable<IRealVectorParticleUpdater> particleUpdaters) {
-      foreach (var particleUpdater in particleUpdaters) {
-        particleUpdater.RealVectorParameter.ActualName = Name;
-        particleUpdater.BoundsParameter.ActualName = BoundsParameter.Name;
-      }
+      // particle updaters don't have additional parameters besides solution and bounds parameter
     }
     private void ConfigureShakingOperators(IEnumerable<IRealVectorMultiNeighborhoodShakingOperator> shakingOperators) {
-      foreach (var shakingOperator in shakingOperators) {
-        shakingOperator.RealVectorParameter.ActualName = Name;
-        shakingOperator.BoundsParameter.ActualName = BoundsParameter.Name;
-      }
+      // shaking operators don't have additional parameters besides solution and bounds parameter
     }
     private void ConfigureBoundsCheckers(IEnumerable<IRealVectorBoundsChecker> boundsCheckers) {
       foreach (var boundsChecker in boundsCheckers) {
@@ -301,18 +291,27 @@ namespace HeuristicLab.Encodings.RealVectorEncoding {
       }
     }
     private void ConfigureMoveOperators(IEnumerable<IRealVectorMoveOperator> moveOperators) {
-      foreach (var moveOperator in moveOperators)
-        moveOperator.RealVectorParameter.ActualName = Name;
+      // move operators don't have additional parameters besides the solution parameter
     }
-
     private void ConfigureMoveGenerators(IEnumerable<IRealVectorMoveGenerator> moveGenerators) {
-      foreach (var moveGenerator in moveGenerators)
-        moveGenerator.BoundsParameter.ActualName = BoundsParameter.Name;
+      // move generators don't have additional parameters besides solution and bounds parameter
     }
-
-    private void ConfigureAdditiveMoveOperator(IEnumerable<IAdditiveRealVectorMoveOperator> additiveMoveOperators) {
+    private void ConfigureAdditiveMoveOperator(IEnumerable<IRealVectorAdditiveMoveOperator> additiveMoveOperators) {
       foreach (var additiveMoveOperator in additiveMoveOperators) {
         additiveMoveOperator.AdditiveMoveParameter.ActualName = Name + ".AdditiveMove";
+      }
+    }
+    private void ConfigureRealVectorSolutionOperators(IEnumerable<IRealVectorSolutionOperator> solutionOperators) {
+      foreach (var solutionOperator in solutionOperators)
+        solutionOperator.RealVectorParameter.ActualName = Name;
+    }
+    private void ConfigureRealVectorSolutionsOperators(IEnumerable<IRealVectorSolutionsOperator> solutionsOperators) {
+      foreach (var solutionsOperator in solutionsOperators)
+        solutionsOperator.RealVectorsParameter.ActualName = Name;
+    }
+    private void ConfigureRealVectorBoundedOperators(IEnumerable<IRealVectorBoundedOperator> boundedOperators) {
+      foreach (var boundedOperator in boundedOperators) {
+        boundedOperator.BoundsParameter.ActualName = BoundsParameter.Name;
       }
     }
     #endregion

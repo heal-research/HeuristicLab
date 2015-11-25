@@ -19,9 +19,11 @@
  */
 #endregion
 
-using HeuristicLab.Optimization;
+using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.RealVectorEncoding {
-  public interface IRealVectorMoveOperator : IRealVectorSolutionOperator, IMoveOperator {
+  public interface IRealVectorAdditiveMoveQualityOperator : IRealVectorAdditiveMoveOperator {
+    ILookupParameter<DoubleValue> MoveQualityParameter { get; }
   }
 }

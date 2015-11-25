@@ -145,7 +145,7 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
           }
           pictureBox.Refresh();
           DoubleMatrix bounds = Content.Bounds;
-          if (bounds == null) bounds = Content.Evaluator.Bounds;
+          if (bounds == null) bounds = Content.TestFunction.Bounds;
           double xMin = bounds[0, 0], xMax = bounds[0, 1], yMin = bounds[1 % bounds.Rows, 0], yMax = bounds[1 % bounds.Rows, 1];
           double xStep = backgroundImage.Width / (xMax - xMin), yStep = backgroundImage.Height / (yMax - yMin);
           using (Graphics graphics = pictureBox.CreateGraphics()) {
@@ -173,14 +173,14 @@ namespace HeuristicLab.Problems.TestFunctions.Views {
         backgroundImage.Dispose();
       backgroundImage = new Bitmap(pictureBox.Width, pictureBox.Height);
       DoubleMatrix bounds = Content.Bounds;
-      if (bounds == null) bounds = Content.Evaluator.Bounds;
+      if (bounds == null) bounds = Content.TestFunction.Bounds;
       double xMin = bounds[0, 0], xMax = bounds[0, 1], yMin = bounds[1 % bounds.Rows, 0], yMax = bounds[1 % bounds.Rows, 1];
       double xStep = (xMax - xMin) / backgroundImage.Width, yStep = (yMax - yMin) / backgroundImage.Height;
       double minPoint = Double.MaxValue, maxPoint = Double.MinValue;
       DoubleMatrix points = new DoubleMatrix(backgroundImage.Height, backgroundImage.Width);
       for (int i = 0; i < backgroundImage.Width; i++)
         for (int j = 0; j < backgroundImage.Height; j++) {
-          points[j, i] = Content.Evaluator.Evaluate2D(xMin + i * xStep, yMin + j * yStep);
+          points[j, i] = Content.TestFunction.Evaluate2D(xMin + i * xStep, yMin + j * yStep);
           if (points[j, i] < minPoint) minPoint = points[j, i];
           if (points[j, i] > maxPoint) maxPoint = points[j, i];
         }
