@@ -113,9 +113,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Evaluators\KnapsackEvaluator.cs" />
     <Compile Include="Improvers\KnapsackImprovementOperator.cs" />
     <Compile Include="Interfaces\IKnapsackEvaluator.cs" />
+    <Compile Include="Interfaces\IKnapsackBitflipMoveEvaluator.cs" />
     <Compile Include="Interfaces\IKnapsackMoveEvaluator.cs" />
     <Compile Include="KnapsackProblem.cs" />
     <Compile Include="KnapsackSolution.cs" />

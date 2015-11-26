@@ -126,6 +126,9 @@
     <Compile Include="Crossovers\NPointCrossover.cs" />
     <Compile Include="BinaryVector.cs" />
     <Compile Include="Interfaces\IBinaryVectorMultiNeighborhoodShakingOperator.cs" />
+    <Compile Include="Interfaces\IBinaryVectorSolutionsOperator.cs" />
+    <Compile Include="Interfaces\IBinaryVectorSolutionOperator.cs" />
+    <Compile Include="Interfaces\IOneBitflipMoveQualityOperator.cs" />
     <Compile Include="Interfaces\IOneBitflipMoveOperator.cs" />
     <Compile Include="Interfaces\IBinaryVectorCreator.cs" />
     <Compile Include="Interfaces\IBinaryVectorCrossover.cs" />

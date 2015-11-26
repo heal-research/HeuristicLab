@@ -24,7 +24,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Operators;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
@@ -46,9 +45,6 @@ namespace HeuristicLab.Problems.Knapsack {
     }
     public ILookupParameter<IntValue> KnapsackCapacityParameter {
       get { return (ILookupParameter<IntValue>)Parameters["KnapsackCapacity"]; }
-    }
-    public ILookupParameter<DoubleValue> PenaltyParameter {
-      get { return (ILookupParameter<DoubleValue>)Parameters["Penalty"]; }
     }
     public ILookupParameter<IntArray> WeightsParameter {
       get { return (ILookupParameter<IntArray>)Parameters["Weights"]; }

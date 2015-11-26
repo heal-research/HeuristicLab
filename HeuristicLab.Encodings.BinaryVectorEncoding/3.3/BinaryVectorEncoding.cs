@@ -52,7 +52,6 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
     }
     #endregion
 
-
     public int Length {
       get { return LengthParameter.Value.Value; }
       set { LengthParameter.Value.Value = value; }
@@ -107,6 +106,8 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
         typeof (IBinaryVectorManipulator),
         typeof (IBinaryVectorMoveOperator),
         typeof (IBinaryVectorMultiNeighborhoodShakingOperator),
+        typeof (IBinaryVectorSolutionOperator),
+        typeof (IBinaryVectorSolutionsOperator)
       };
     }
     private void DiscoverOperators() {
@@ -128,12 +129,13 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       ConfigureMoveOperators(operators.OfType<IBinaryVectorMoveOperator>());
       ConfigureBitFlipMoveOperators(operators.OfType<IOneBitflipMoveOperator>());
       ConfigureShakingOperators(operators.OfType<IBinaryVectorMultiNeighborhoodShakingOperator>());
+      ConfigureSolutionOperators(operators.OfType<IBinaryVectorSolutionOperator>());
+      ConfigureSolutionsOperators(operators.OfType<IBinaryVectorSolutionsOperator>());
     }
 
     #region Specific Operator Wiring
     private void ConfigureCreators(IEnumerable<IBinaryVectorCreator> creators) {
       foreach (var creator in creators) {
-        creator.BinaryVectorParameter.ActualName = Name;
         creator.LengthParameter.ActualName = LengthParameter.Name;
       }
     }
@@ -144,14 +146,10 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       }
     }
     private void ConfigureManipulators(IEnumerable<IBinaryVectorManipulator> manipulators) {
-      foreach (var manipulator in manipulators) {
-        manipulator.BinaryVectorParameter.ActualName = Name;
-      }
+      // binary vector manipulators don't contain additional parameters besides the solution parameter
     }
     private void ConfigureMoveOperators(IEnumerable<IBinaryVectorMoveOperator> moveOperators) {
-      foreach (var moveOperator in moveOperators) {
-        moveOperator.BinaryVectorParameter.ActualName = Name;
-      }
+      // binary vector move operators don't contain additional parameters besides the solution parameter
     }
     private void ConfigureBitFlipMoveOperators(IEnumerable<IOneBitflipMoveOperator> oneBitflipMoveOperators) {
       foreach (var oneBitFlipMoveOperator in oneBitflipMoveOperators) {
@@ -159,9 +157,15 @@ namespace HeuristicLab.Encodings.BinaryVectorEncoding {
       }
     }
     private void ConfigureShakingOperators(IEnumerable<IBinaryVectorMultiNeighborhoodShakingOperator> shakingOperators) {
-      foreach (var shakingOperator in shakingOperators) {
-        shakingOperator.BinaryVectorParameter.ActualName = Name;
-      }
+      // binary vector shaking operators don't contain additional parameters besides the solution parameter
+    }
+    private void ConfigureSolutionOperators(IEnumerable<IBinaryVectorSolutionOperator> solutionOperators) {
+      foreach (var solutionOperator in solutionOperators)
+        solutionOperator.BinaryVectorParameter.ActualName = Name;
+    }
+    private void ConfigureSolutionsOperators(IEnumerable<IBinaryVectorSolutionsOperator> solutionsOperators) {
+      foreach (var solutionsOperator in solutionsOperators)
+        solutionsOperator.BinaryVectorsParameter.ActualName = Name;
     }
     #endregion
   }

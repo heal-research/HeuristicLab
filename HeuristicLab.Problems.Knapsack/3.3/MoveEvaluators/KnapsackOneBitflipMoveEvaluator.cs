@@ -50,19 +50,21 @@ namespace HeuristicLab.Problems.Knapsack {
     }
 
     public override IOperation Apply() {
-      BinaryVector binaryVector = BinaryVectorParameter.ActualValue;
-      OneBitflipMove move = OneBitflipMoveParameter.ActualValue;
+      var move = OneBitflipMoveParameter.ActualValue;
+      var solution = BinaryVectorParameter.ActualValue;
+      var weights = WeightsParameter.ActualValue;
+      var values = ValuesParameter.ActualValue;
+      var capacity = KnapsackCapacityParameter.ActualValue.Value;
 
-      BinaryVector newSolution = new BinaryVector(binaryVector);
-      newSolution[move.Index] = !newSolution[move.Index];
+      var totalWeight = !solution[move.Index] ? weights[move.Index] : 0.0;
+      var totalValue = !solution[move.Index] ? values[move.Index] : 0.0; ;
+      for (var i = 0; i < solution.Length; i++) {
+        if (i == move.Index || !solution[i]) continue;
+        totalWeight += weights[i];
+        totalValue += values[i];
+      }
 
-      DoubleValue quality = KnapsackEvaluator.Apply(newSolution,
-        KnapsackCapacityParameter.ActualValue,
-        PenaltyParameter.ActualValue,
-        WeightsParameter.ActualValue,
-        ValuesParameter.ActualValue).Quality;
-
-      double moveQuality = quality.Value;
+      var moveQuality = totalWeight > capacity ? capacity - totalWeight : totalValue;
 
       if (MoveQualityParameter.ActualValue == null) MoveQualityParameter.ActualValue = new DoubleValue(moveQuality);
       else MoveQualityParameter.ActualValue.Value = moveQuality;

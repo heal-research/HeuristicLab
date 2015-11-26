@@ -99,9 +99,9 @@ namespace HeuristicLab.Optimization {
     }
 
     public abstract bool Maximization { get; }
-    public abstract double Evaluate(TSolution individual, IRandom random);
-    public virtual void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random) { }
-    public virtual IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random) {
+    public abstract double Evaluate(TSolution solution, IRandom random);
+    public virtual void Analyze(TSolution[] solutions, double[] qualities, ResultCollection results, IRandom random) { }
+    public virtual IEnumerable<TSolution> GetNeighbors(TSolution solution, IRandom random) {
       return Enumerable.Empty<TSolution>();
     }
 

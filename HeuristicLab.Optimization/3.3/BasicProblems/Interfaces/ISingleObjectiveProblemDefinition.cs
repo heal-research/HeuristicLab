@@ -27,9 +27,9 @@ namespace HeuristicLab.Optimization {
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
     bool Maximization { get; }
-    double Evaluate(TSolution individual, IRandom random);
-    void Analyze(TSolution[] individuals, double[] qualities, ResultCollection results, IRandom random);
-    IEnumerable<TSolution> GetNeighbors(TSolution individual, IRandom random);
+    double Evaluate(TSolution solution, IRandom random);
+    void Analyze(TSolution[] solutions, double[] qualities, ResultCollection results, IRandom random);
+    IEnumerable<TSolution> GetNeighbors(TSolution solution, IRandom random);
     bool IsBetter(double quality, double bestQuality);
   }
 }

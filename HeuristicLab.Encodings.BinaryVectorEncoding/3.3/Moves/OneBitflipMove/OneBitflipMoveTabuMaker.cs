@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveTabuMaker", "Declares a given one bitflip move as tabu, by adding its attributes to the tabu list. It also removes the oldest entry in the tabu list when its size is greater than tenure.")]
   [StorableClass]
-  public class OneBitflipMoveTabuMaker : TabuMaker, IOneBitflipMoveOperator {
+  public class OneBitflipMoveTabuMaker : TabuMaker, IOneBitflipMoveQualityOperator {
     public ILookupParameter<BinaryVector> BinaryVectorParameter {
       get { return (ILookupParameter<BinaryVector>)Parameters["BinaryVector"]; }
     }

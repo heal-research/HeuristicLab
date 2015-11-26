@@ -26,7 +26,6 @@ using HeuristicLab.Optimization;
 namespace HeuristicLab.Problems.Knapsack {
   public interface IKnapsackMoveEvaluator : ISingleObjectiveMoveEvaluator, IMoveOperator {
     ILookupParameter<IntValue> KnapsackCapacityParameter { get; }
-    ILookupParameter<DoubleValue> PenaltyParameter { get; }
     ILookupParameter<IntArray> WeightsParameter { get; }
     ILookupParameter<IntArray> ValuesParameter { get; }
   }

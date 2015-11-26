@@ -19,10 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
-  public interface IBinaryVectorMultiNeighborhoodShakingOperator : IBinaryVectorOperator {
-    ILookupParameter<BinaryVector> BinaryVectorParameter { get; }
+  public interface IBinaryVectorMultiNeighborhoodShakingOperator : IBinaryVectorSolutionOperator {
   }
 }

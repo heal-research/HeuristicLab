@@ -124,10 +124,15 @@ namespace HeuristicLab.Problems.Knapsack {
 
       int evaluatedSolutions = 0;
       int j = sol.Length - 1;
-      while (KnapsackEvaluator.Apply(sol, KnapsackCapacity, Penalty, Weights, Values)
-                              .SumWeights.Value > KnapsackCapacity.Value && j >= 0) {
+      var totalWeight = 0.0;
+      for (var i = 0; i < sol.Length; i++) {
+        if (sol[i]) totalWeight += Weights[i];
+      }
+      evaluatedSolutions++;
+
+      while (totalWeight > KnapsackCapacity.Value && j >= 0) {
+        totalWeight -= Weights[order[j]];
         sol[order[j--]] = false;
-        evaluatedSolutions++;
       }
 
       // calculate weight

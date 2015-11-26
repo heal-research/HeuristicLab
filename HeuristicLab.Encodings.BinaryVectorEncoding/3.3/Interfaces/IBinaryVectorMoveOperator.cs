@@ -19,11 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
-  public interface IBinaryVectorMoveOperator : IBinaryVectorOperator, IMoveOperator {
-    ILookupParameter<BinaryVector> BinaryVectorParameter { get; }
+  public interface IBinaryVectorMoveOperator : IBinaryVectorSolutionOperator, IMoveOperator {
   }
 }

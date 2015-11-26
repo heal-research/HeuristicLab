@@ -19,14 +19,12 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   /// <summary>
   /// An interface which represents an operator for manipulating vectors of bool-valued data.
   /// </summary>
-  public interface IBinaryVectorManipulator : IBinaryVectorOperator, IManipulator {
-    ILookupParameter<BinaryVector> BinaryVectorParameter { get; }
+  public interface IBinaryVectorManipulator : IBinaryVectorSolutionOperator, IManipulator {
   }
 }

@@ -30,7 +30,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.BinaryVectorEncoding {
   [Item("OneBitflipMoveMaker", "Peforms a one bitflip move on a given BitVector and updates the quality.")]
   [StorableClass]
-  public class OneBitflipMoveMaker : SingleSuccessorOperator, IOneBitflipMoveOperator, IMoveMaker, ISingleObjectiveOperator {
+  public class OneBitflipMoveMaker : SingleSuccessorOperator, IOneBitflipMoveQualityOperator, IMoveMaker, ISingleObjectiveOperator {
     public override bool CanChangeName {
       get { return false; }
     }

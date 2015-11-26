@@ -84,34 +84,35 @@ namespace HeuristicLab.Parameters {
     protected LookupParameter(LookupParameter<T> original, Cloner cloner)
       : base(original, cloner) {
       actualName = original.actualName;
+      this.Hidden = original.Hidden;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     public LookupParameter()
       : base("Anonymous", typeof(T)) {
       this.actualName = Name;
-      this.Hidden = true;
+      this.Hidden = false;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     public LookupParameter(string name)
       : base(name, typeof(T)) {
       this.actualName = Name;
-      this.Hidden = true;
+      this.Hidden = false;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     public LookupParameter(string name, string description)
       : base(name, description, typeof(T)) {
       this.actualName = Name;
-      this.Hidden = true;
+      this.Hidden = false;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }
     public LookupParameter(string name, string description, string actualName)
       : base(name, description, typeof(T)) {
       this.actualName = string.IsNullOrWhiteSpace(actualName) ? Name : actualName;
-      this.Hidden = true;
+      this.Hidden = false;
       cachedActualValues = new Lazy<ThreadLocal<IItem>>(() => { return new ThreadLocal<IItem>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
       executionContexts = new Lazy<ThreadLocal<IExecutionContext>>(() => { return new ThreadLocal<IExecutionContext>(); }, LazyThreadSafetyMode.ExecutionAndPublication);
     }

@@ -19,15 +19,8 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Optimization;
+using HeuristicLab.Encodings.BinaryVectorEncoding;
 
-namespace HeuristicLab.Encodings.BinaryVectorEncoding {
-  /// <summary>
-  /// An interface which represents an operator for creating vectors of bool-valued data.
-  /// </summary>
-  public interface IBinaryVectorCreator : IBinaryVectorSolutionOperator, ISolutionCreator<BinaryVector> {
-    IValueLookupParameter<IntValue> LengthParameter { get; }
-  }
+namespace HeuristicLab.Problems.Knapsack {
+  public interface IKnapsackOneBitflipMoveEvaluator : IKnapsackMoveEvaluator, IOneBitflipMoveOperator { }
 }
