@@ -20,7 +20,6 @@
 #endregion
 
 using System.IO;
-using HeuristicLab.Algorithms.EvolutionStrategy;
 using HeuristicLab.Algorithms.OffspringSelectionEvolutionStrategy;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.RealVectorEncoding;
@@ -62,12 +61,11 @@ namespace HeuristicLab.Tests {
 
       SingleObjectiveTestFunctionProblem problem = new SingleObjectiveTestFunctionProblem();
 
-      problem.ProblemSize.Value = 10;
-      problem.EvaluatorParameter.Value = new GriewankEvaluator();
+      problem.ProblemSize = 10;
+      problem.TestFunction = new Griewank();
       problem.SolutionCreatorParameter.Value = new UniformRandomRealVectorCreator();
-      problem.Maximization.Value = false;
       problem.Bounds = new DoubleMatrix(new double[,] { { -600, 600 } });
-      problem.BestKnownQuality.Value = 0;
+      problem.BestKnownQuality = 0;
       problem.BestKnownSolutionParameter.Value = new RealVector(10);
       problem.Name = "Single Objective Test Function";
       problem.Description = "Test function with real valued inputs and a single objective.";

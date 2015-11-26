@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void ZakharovEvaluateFunctionTest() {
-      ZakharovEvaluator target = new ZakharovEvaluator();
+      var target = new Zakharov();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;

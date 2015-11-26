@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void RosenbrockEvaluateFunctionTest() {
-      RosenbrockEvaluator target = new RosenbrockEvaluator();
+      var target = new Rosenbrock();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;

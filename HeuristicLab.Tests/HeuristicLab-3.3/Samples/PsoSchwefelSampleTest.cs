@@ -67,12 +67,11 @@ namespace HeuristicLab.Tests {
       ParticleSwarmOptimization pso = new ParticleSwarmOptimization();
       #region Problem Configuration
       var problem = new SingleObjectiveTestFunctionProblem();
-      problem.BestKnownQuality.Value = 0.0;
+      problem.BestKnownQuality = 0.0;
       problem.BestKnownSolutionParameter.Value = new RealVector(new double[] { 420.968746, 420.968746 });
       problem.Bounds = new DoubleMatrix(new double[,] { { -500, 500 } });
-      problem.EvaluatorParameter.Value = new SchwefelEvaluator();
-      problem.Maximization.Value = false;
-      problem.ProblemSize.Value = 2;
+      problem.TestFunction = new Schwefel();
+      problem.ProblemSize = 2;
       problem.SolutionCreatorParameter.Value = new UniformRandomRealVectorCreator();
       #endregion
       #region Algorithm Configuration

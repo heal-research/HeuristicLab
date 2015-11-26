@@ -56,12 +56,11 @@ namespace HeuristicLab.Tests {
       SimulatedAnnealing sa = new SimulatedAnnealing();
       #region Problem Configuration
       var problem = new SingleObjectiveTestFunctionProblem();
-      problem.BestKnownQuality.Value = 0.0;
+      problem.BestKnownQuality = 0.0;
       problem.BestKnownSolutionParameter.Value = new RealVector(new double[] { 0, 0 });
       problem.Bounds = new DoubleMatrix(new double[,] { { -5.12, 5.12 } });
-      problem.EvaluatorParameter.Value = new RastriginEvaluator();
-      problem.Maximization.Value = false;
-      problem.ProblemSize.Value = 2;
+      problem.TestFunction= new Rastrigin();
+      problem.ProblemSize = 2;
       problem.SolutionCreatorParameter.Value = new UniformRandomRealVectorCreator();
       #endregion
       #region Algorithm Configuration
@@ -78,9 +77,8 @@ namespace HeuristicLab.Tests {
       sa.InnerIterations.Value = 50;
       sa.MaximumIterations.Value = 100;
       var moveEvaluator = sa.MoveEvaluatorParameter.ValidValues
-        .OfType<RastriginAdditiveMoveEvaluator>()
+        .OfType<AdditiveMoveEvaluator>()
         .Single();
-      moveEvaluator.A.Value = 10;
       sa.MoveEvaluator = moveEvaluator;
 
       var moveGenerator = sa.MoveGeneratorParameter.ValidValues

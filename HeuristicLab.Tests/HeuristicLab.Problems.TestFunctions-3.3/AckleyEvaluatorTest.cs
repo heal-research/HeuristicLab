@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void AckleyEvaluateFunctionTest() {
-      AckleyEvaluator target = new AckleyEvaluator();
+      var target = new Ackley();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;

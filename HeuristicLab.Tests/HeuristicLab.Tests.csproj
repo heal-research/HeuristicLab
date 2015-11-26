@@ -439,11 +439,24 @@
     <Compile Include="HeuristicLab-3.3\PluginDependenciesTest.cs" />
     <Compile Include="HeuristicLab-3.3\PluginLoader.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\AlpsSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="HeuristicLab-3.3\Samples\GPRobocodeSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAGroupingProblemSampleTest.cs" />
+    <Compile Include="HeuristicLab-3.3\Samples\LocalSearchKnapsackSampleTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab-3.3\Samples\OSESGriewankSampleTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab-3.3\Samples\PsoSchwefelSampleTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab-3.3\Samples\SimulatedAnnealingRastriginSampleTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="HeuristicLab-3.3\Samples\VnsOpSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\EsGriewankSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GaussianProcessRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GAVrpSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GeSymbolicRegressionSampleTest.cs" />
@@ -453,14 +466,11 @@
     <Compile Include="HeuristicLab-3.3\Samples\GPSymbolicRegressionSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPTimeSeriesSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GPMultiplexerSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\LocalSearchKnapsackSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\PsoSchwefelSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\RAPGASchedulingSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\SamplesUtils.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\GATspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\IslandGaTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\ScatterSearchVRPSampleTest.cs" />
-    <Compile Include="HeuristicLab-3.3\Samples\SimulatedAnnealingRastriginSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\TabuSearchTspSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\TabuSearchVRPSampleTest.cs" />
     <Compile Include="HeuristicLab-3.3\Samples\VnsTspSampleTest.cs" />
@@ -571,19 +581,45 @@
     <Compile Include="HeuristicLab.Problems.Instances-3.3\QAPLIBInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Instances-3.3\TSPLIBInstanceProviderTest.cs" />
     <Compile Include="HeuristicLab.Problems.Instances.DataAnalysis-3.3\ClassificationInstanceProviderTest.cs" />
-    <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIBInstancesTest.cs" />
-    <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPMoveEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\AckleyEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\BealeEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\BoothEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\GriewankEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\LevyEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\MatyasEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\RastriginEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\RosenbrockEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SphereEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SumSquaresEvaluatorTest.cs" />
-    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\ZakharovEvaluatorTest.cs" />
+    <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPLIBInstancesTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.QuadraticAssignment-3.3\QAPMoveEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\AckleyEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\BealeEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\BoothEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\GriewankEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\LevyEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\MatyasEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\RastriginEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\RosenbrockEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SphereEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\SumSquaresEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HeuristicLab.Problems.TestFunctions-3.3\ZakharovEvaluatorTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="HeuristicLab.Problems.TravelingSalesman-3.3\TSPMoveEvaluatorTest.cs" />
     <Compile Include="HeuristicLab.Problems.LinearAssignment-3.3\LinearAssignmentProblemSolverTest.cs" />
     <Compile Include="HeuristicLab.Problems.VehicleRouting-3.4\VRPInstancesTest.cs" />
@@ -659,6 +695,7 @@
       <CustomToolNamespace>HeuristicLab.Tests</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

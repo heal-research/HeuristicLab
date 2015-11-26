@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.TestFunctions.Tests {
     [TestCategory("Problems.TestFunctions")]
     [TestProperty("Time", "short")]
     public void BealeEvaluateFunctionTest() {
-      BealeEvaluator target = new BealeEvaluator();
+      var target = new Beale();
       RealVector point = null;
       double expected = target.BestKnownQuality;
       double actual;
