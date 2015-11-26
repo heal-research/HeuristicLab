@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Functions\Random.cs" />
+    <Compile Include="Functions\SchafferF6.cs" />
     <Compile Include="Improvers\SingleObjectiveTestFunctionImprovementOperator.cs" />
     <Compile Include="Instances\SOTFData.cs" />
     <Compile Include="Instances\SOTFDataDescriptor.cs" />
