@@ -882,7 +882,9 @@ namespace HeuristicLab.Optimizer {
             if (m.Key.Value != null && m.Key.Value.GetType().IsGenericType
                 && typeof(EnumValue<>).IsAssignableFrom(m.Key.Value.GetType().GetGenericTypeDefinition())) {
               var valueParam = (IValueParameter)variant.Parameters[m.Key.Name];
-              valueParam.Value = m.Value;
+              dynamic targetEnumValue = valueParam.Value;
+              dynamic sourceEnumValue = m.Value;
+              targetEnumValue.Value = sourceEnumValue.Value;
               variant.Name += m.Key.Name + "=" + m.Value + ", ";
             } else {
               dynamic variantParam = variant.Parameters[m.Key.Name];
