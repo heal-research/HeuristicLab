@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.Policy;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class TableFileParser {
@@ -103,7 +104,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
                                           DateTimeFormatInfo dateTimeFormatInfo, char separator) {
       using (StreamReader reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
-        return tokenizer.Peek().type != TokenTypeEnum.Double;
+        return tokenizer.PeekType() != TokenTypeEnum.Double;
       }
     }
 
@@ -285,28 +286,47 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       NewLine, Separator, String, Double, DateTime
     }
 
-    internal class Token {
-      public TokenTypeEnum type;
-      public string stringValue;
-      public double doubleValue;
-      public DateTime dateTimeValue;
 
-      public Token(TokenTypeEnum type, string value) {
-        this.type = type;
-        stringValue = value;
-        dateTimeValue = DateTime.MinValue;
-        doubleValue = 0.0;
-      }
-
-      public override string ToString() {
-        return stringValue;
-      }
-    }
+    //internal class Token {
+    //  public TokenTypeEnum type;
+    //  public string stringValue;
+    //  public double doubleValue;
+    //  public DateTime dateTimeValue;
+    //
+    //  public Token(TokenTypeEnum type, string value) {
+    //    this.type = type;
+    //    stringValue = value;
+    //    dateTimeValue = DateTime.MinValue;
+    //    doubleValue = 0.0;
+    //  }
+    //
+    //  public bool Equals(Token other) {
+    //    throw new NotImplementedException();
+    //  }
+    //
+    //  public override string ToString() {
+    //    return stringValue;
+    //  }
+    //
+    //  public override bool Equals(object obj) {
+    //    return Equals(obj as Token);
+    //  }
+    //
+    //  public override int GetHashCode() {
+    //    throw new NotSupportedException();
+    //  }
+    //}
 
 
     internal class Tokenizer {
       private StreamReader reader;
-      private List<Token> tokens;
+      // we assume that a buffer of 1024 tokens for a line is sufficient most of the time (the buffer is increased below if necessary)
+      private TokenTypeEnum[] tokenTypes = new TokenTypeEnum[1024];
+      private string[] stringVals = new string[1024];
+      private double[] doubleVals = new double[1024];
+      private DateTime[] dateTimeVals = new DateTime[1024];
+      private int tokenPos;
+      private int numTokens;
       private NumberFormatInfo numberFormatInfo;
       private DateTimeFormatInfo dateTimeFormatInfo;
       private char separator;
@@ -323,92 +343,115 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         private set { currentLine = value; }
       }
 
-      private Token newlineToken;
-      public Token NewlineToken {
-        get { return newlineToken; }
-        private set { newlineToken = value; }
-      }
-      private Token separatorToken;
-      public Token SeparatorToken {
-        get { return separatorToken; }
-        private set { separatorToken = value; }
-      }
+      // private Token newlineToken;
+      // public Token NewlineToken {
+      //   get { return newlineToken; }
+      //   private set { newlineToken = value; }
+      // }
+      // private Token separatorToken;
+      // public Token SeparatorToken {
+      //   get { return separatorToken; }
+      //   private set { separatorToken = value; }
+      // }
 
       public Tokenizer(StreamReader reader, NumberFormatInfo numberFormatInfo, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
         this.reader = reader;
         this.numberFormatInfo = numberFormatInfo;
         this.dateTimeFormatInfo = dateTimeFormatInfo;
         this.separator = separator;
-        separatorToken = new Token(TokenTypeEnum.Separator, INTERNAL_SEPARATOR);
-        newlineToken = new Token(TokenTypeEnum.NewLine, Environment.NewLine);
-        tokens = new List<Token>();
+        //separatorToken = new Token(TokenTypeEnum.Separator, INTERNAL_SEPARATOR);
+        //newlineToken = new Token(TokenTypeEnum.NewLine, Environment.NewLine);
         ReadNextTokens();
       }
 
       private void ReadNextTokens() {
         if (!reader.EndOfStream) {
           CurrentLine = reader.ReadLine();
-          var newTokens = from str in Split(CurrentLine)
-                          let trimmedStr = str.Trim()
-                          where !string.IsNullOrEmpty(trimmedStr)
-                          select MakeToken(trimmedStr);
+          int i = 0;
+          foreach (var tok in Split(CurrentLine)) {
+            var trimmedStr = tok.Trim();
+            if (!string.IsNullOrEmpty(trimmedStr)) {
+              TokenTypeEnum type = TokenTypeEnum.String; // default
+              stringVals[i] = trimmedStr;
+              double doubleVal;
+              DateTime dateTimeValue;
+              if (trimmedStr.Equals(INTERNAL_SEPARATOR)) {
+                type = TokenTypeEnum.Separator;
+              } else if (double.TryParse(trimmedStr, NumberStyles.Float, numberFormatInfo, out doubleVal)) {
+                type = TokenTypeEnum.Double;
+                doubleVals[i] = doubleVal;
+              } else if (DateTime.TryParse(trimmedStr, dateTimeFormatInfo, DateTimeStyles.None, out dateTimeValue)) {
+                type = TokenTypeEnum.DateTime;
+                dateTimeVals[i] = dateTimeValue;
+              }
 
-          tokens.AddRange(newTokens);
-          tokens.Add(NewlineToken);
-          CurrentLineNumber++;
+              // couldn't parse the token as an int or float number  or datetime value so return a string token
+
+              tokenTypes[i] = type;
+              i++;
+
+              if (i >= tokenTypes.Length) {
+                // increase buffer size if necessary
+                IncreaseCapacity(ref tokenTypes);
+                IncreaseCapacity(ref doubleVals);
+                IncreaseCapacity(ref stringVals);
+                IncreaseCapacity(ref dateTimeVals);
+              }
+            }
+          }
+          tokenTypes[i] = TokenTypeEnum.NewLine;
+          numTokens = i + 1;
+          tokenPos = 0;
         }
       }
 
+      private static void IncreaseCapacity<T>(ref T[] arr) {
+        int n = (int)Math.Floor(arr.Length * 1.7); // guess
+        T[] arr2 = new T[n];
+        Array.Copy(arr, arr2, arr.Length);
+        arr = arr2;
+      }
+
       private IEnumerable<string> Split(string line) {
-        IEnumerable<string> splitString;
+        string[] splitString;
         if (separator == WHITESPACECHAR) {
           //separate whitespaces
           splitString = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
         } else {
           splitString = line.Split(separator);
         }
-        int cur = splitString.Count();
-        foreach (var str in splitString) {
-          yield return str;
-          cur--;
-          // do not return the INTERNAL_SEPARATOR after the last string
-          if (cur != 0) {
-            yield return INTERNAL_SEPARATOR;
-          }
+
+        for (int i = 0; i < splitString.Length - 1; i++) {
+          yield return splitString[i];
+          yield return INTERNAL_SEPARATOR;
         }
+        // do not return the INTERNAL_SEPARATOR after the last string
+        yield return splitString[splitString.Length - 1];
       }
 
-      private Token MakeToken(string strToken) {
-        Token token = new Token(TokenTypeEnum.String, strToken);
-        if (strToken.Equals(INTERNAL_SEPARATOR)) {
-          return SeparatorToken;
-        } else if (double.TryParse(strToken, NumberStyles.Float, numberFormatInfo, out token.doubleValue)) {
-          token.type = TokenTypeEnum.Double;
-          return token;
-        } else if (DateTime.TryParse(strToken, dateTimeFormatInfo, DateTimeStyles.None, out token.dateTimeValue)) {
-          token.type = TokenTypeEnum.DateTime;
-          return token;
-        }
-
-        // couldn't parse the token as an int or float number  or datetime value so return a string token
-        return token;
+      public TokenTypeEnum PeekType() {
+        return tokenTypes[tokenPos];
       }
 
-      public Token Peek() {
-        return tokens[0];
-      }
-
-      public Token Next() {
-        Token next = tokens[0];
-        tokens.RemoveAt(0);
-        if (tokens.Count == 0) {
+      public void Skip() {
+        // simply skips one token without returning the result values
+        tokenPos++;
+        if (numTokens == tokenPos) {
           ReadNextTokens();
         }
-        return next;
+      }
+
+      public void Next(out TokenTypeEnum type, out string strVal, out double dblVal, out DateTime dateTimeVal) {
+        type = tokenTypes[tokenPos];
+        strVal = stringVals[tokenPos];
+        dblVal = doubleVals[tokenPos];
+        dateTimeVal = dateTimeVals[tokenPos];
+
+        Skip();
       }
 
       public bool HasNext() {
-        return tokens.Count > 0 || !reader.EndOfStream;
+        return numTokens > tokenPos || !reader.EndOfStream;
       }
     }
     #endregion
@@ -428,17 +471,17 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     private void ParseValues() {
       while (tokenizer.HasNext()) {
-        if (tokenizer.Peek() == tokenizer.NewlineToken) {
-          tokenizer.Next();
+        if (tokenizer.PeekType() == TokenTypeEnum.NewLine) {
+          tokenizer.Skip();
         } else {
           List<object> row = new List<object>();
           object value = NextValue(tokenizer);
           row.Add(value);
-          while (tokenizer.HasNext() && tokenizer.Peek() == tokenizer.SeparatorToken) {
-            Expect(tokenizer.SeparatorToken);
+          while (tokenizer.HasNext() && tokenizer.PeekType() == TokenTypeEnum.Separator) {
+            ExpectType(TokenTypeEnum.Separator);
             row.Add(NextValue(tokenizer));
           }
-          Expect(tokenizer.NewlineToken);
+          ExpectType(TokenTypeEnum.NewLine);
           // all rows have to have the same number of values            
           // the first row defines how many samples are needed
           if (rowValues.Count > 0 && rowValues[0].Count != row.Count) {
@@ -452,47 +495,55 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     private object NextValue(Tokenizer tokenizer) {
-      if (tokenizer.Peek() == tokenizer.SeparatorToken || tokenizer.Peek() == tokenizer.NewlineToken) return string.Empty;
-      Token current = tokenizer.Next();
-      if (current.type == TokenTypeEnum.Separator) {
-        return double.NaN;
-      } else if (current.type == TokenTypeEnum.String) {
-        return current.stringValue;
-      } else if (current.type == TokenTypeEnum.Double) {
-        return current.doubleValue;
-      } else if (current.type == TokenTypeEnum.DateTime) {
-        return current.dateTimeValue;
+      if (tokenizer.PeekType() == TokenTypeEnum.Separator || tokenizer.PeekType() == TokenTypeEnum.NewLine) return string.Empty;
+      TokenTypeEnum type;
+      string strVal;
+      double dblVal;
+      DateTime dateTimeVal;
+
+      tokenizer.Next(out type, out strVal, out dblVal, out dateTimeVal);
+      switch (type) {
+        case TokenTypeEnum.Separator: return double.NaN;
+        case TokenTypeEnum.String: return strVal;
+        case TokenTypeEnum.Double: return dblVal;
+        case TokenTypeEnum.DateTime: return dateTimeVal;
       }
       // found an unexpected token => throw error 
-      Error("Unexpected token.", current.stringValue, tokenizer.CurrentLineNumber);
+      Error("Unexpected token.", strVal, tokenizer.CurrentLineNumber);
       // this line is never executed because Error() throws an exception
       throw new InvalidOperationException();
     }
 
     private void ParseVariableNames() {
       // the first line must contain variable names
-      List<Token> tokens = new List<Token>();
-      Token valueToken;
-      valueToken = tokenizer.Next();
-      tokens.Add(valueToken);
-      while (tokenizer.HasNext() && tokenizer.Peek() == tokenizer.SeparatorToken) {
-        Expect(tokenizer.SeparatorToken);
-        valueToken = tokenizer.Next();
-        if (valueToken != tokenizer.NewlineToken) {
-          tokens.Add(valueToken);
-        }
+      List<string> varNames = new List<string>();
+
+      TokenTypeEnum type;
+      string strVal;
+      double dblVal;
+      DateTime dateTimeVal;
+
+      tokenizer.Next(out type, out strVal, out dblVal, out dateTimeVal);
+
+      // the first token must be a variable name
+      if (type != TokenTypeEnum.String)
+        throw new ArgumentException("Error: Expected " + TokenTypeEnum.String + " got " + type);
+      varNames.Add(strVal);
+
+      while (tokenizer.HasNext() && tokenizer.PeekType() == TokenTypeEnum.Separator) {
+        ExpectType(TokenTypeEnum.Separator);
+        tokenizer.Next(out type, out strVal, out dblVal, out dateTimeVal);
+        varNames.Add(strVal);
       }
-      if (valueToken != tokenizer.NewlineToken) {
-        Expect(tokenizer.NewlineToken);
-      }
-      variableNames = tokens.Select(x => x.stringValue.Trim()).ToList();
+      ExpectType(TokenTypeEnum.NewLine);
+
+      variableNames = varNames;
     }
 
-    private void Expect(Token expectedToken) {
-      Token actualToken = tokenizer.Next();
-      if (actualToken != expectedToken) {
-        Error("Expected: " + expectedToken, actualToken.stringValue, tokenizer.CurrentLineNumber);
-      }
+    private void ExpectType(TokenTypeEnum expectedToken) {
+      if (tokenizer.PeekType() != expectedToken)
+        throw new ArgumentException("Error: Expected " + expectedToken + " got " + tokenizer.PeekType());
+      tokenizer.Skip();
     }
 
     private void Error(string message, string token, int lineNumber) {
