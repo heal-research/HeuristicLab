@@ -21,6 +21,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Problems.DataAnalysis;
@@ -43,18 +44,32 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       var importTypeDialog = new RegressionImportTypeDialog();
       if (importTypeDialog.ShowDialog() == DialogResult.OK) {
         IRegressionProblemData instance = null;
-        try {
-          instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
-        } catch (IOException ex) {
-          ErrorWhileParsing(ex);
-          return;
-        }
-        try {
-          GenericConsumer.Load(instance);
-          instancesComboBox.SelectedIndex = -1;
-        } catch (IOException ex) {
-          ErrorWhileLoading(ex, importTypeDialog.Path);
-        }
+
+        Task.Factory.StartNew(() => {
+          var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+          // lock active view and show progress bar
+          IContentView activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+
+          try {
+            var progress = mainForm.AddOperationProgressToContent(activeView.Content, "Loading problem instance.");
+
+            Content.ProgressChanged += (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
+
+            instance = Content.ImportData(importTypeDialog.Path, importTypeDialog.ImportType, importTypeDialog.CSVFormat);
+          } catch (IOException ex) {
+            ErrorWhileParsing(ex);
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            return;
+          }
+          try {
+            GenericConsumer.Load(instance);
+            instancesComboBox.SelectedIndex = -1;
+          } catch (IOException ex) {
+            ErrorWhileLoading(ex, importTypeDialog.Path);
+          } finally {
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+          }
+        });
       }
     }
   }

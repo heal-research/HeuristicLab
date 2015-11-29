@@ -29,7 +29,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
-  public class TableFileParser {
+  public class TableFileParser : Progress<long> { // reports the number of bytes read
     private const int BUFFER_SIZE = 65536;
     // char used to symbolize whitespaces (no missing values can be handled with whitespaces)
     private const char WHITESPACECHAR = (char)0;
@@ -309,6 +309,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         get { return currentLine; }
         private set { currentLine = value; }
       }
+      public long BytesRead {
+        get;
+        private set;
+      }
+
 
       public Tokenizer(StreamReader reader, NumberFormatInfo numberFormatInfo, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
         this.reader = reader;
@@ -321,6 +326,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       private void ReadNextTokens() {
         if (!reader.EndOfStream) {
           CurrentLine = reader.ReadLine();
+          try {
+            BytesRead = reader.BaseStream.Position;
+          } catch (IOException) {
+            BytesRead += CurrentLine.Length + 2; // guess
+          } catch (NotSupportedException) {
+            BytesRead += CurrentLine.Length + 2;
+          }
           int i = 0;
           foreach (var tok in Split(CurrentLine)) {
             var trimmedStr = tok.Trim();
@@ -448,6 +460,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           }
           rowValues.Add(row);
         }
+
+        OnReport(tokenizer.BytesRead);
       }
     }
 
