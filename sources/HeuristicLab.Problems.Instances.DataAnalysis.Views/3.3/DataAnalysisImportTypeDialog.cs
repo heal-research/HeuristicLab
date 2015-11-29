@@ -128,7 +128,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
                         (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
                         (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,
                         (char)SeparatorComboBox.SelectedValue,
-                        CheckboxColumnNames.Checked);
+                        CheckboxColumnNames.Checked, lineLimit: 500);
         IEnumerable<string> variableNamesWithType = GetVariableNamesWithType(csvParser);
         PreviewDatasetMatrix.Content = new Dataset(variableNamesWithType, csvParser.Values);
 

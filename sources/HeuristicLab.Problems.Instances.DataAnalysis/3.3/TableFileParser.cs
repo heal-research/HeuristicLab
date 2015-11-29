@@ -27,7 +27,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Security.Policy;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class TableFileParser {
@@ -113,12 +112,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// </summary>
     /// <param name="fileName">file which is parsed</param>
     /// <param name="columnNamesInFirstLine"></param>
-    public void Parse(string fileName, bool columnNamesInFirstLine) {
+    public void Parse(string fileName, bool columnNamesInFirstLine, int lineLimit = -1) {
       NumberFormatInfo numberFormat;
       DateTimeFormatInfo dateTimeFormatInfo;
       char separator;
       DetermineFileFormat(fileName, out numberFormat, out dateTimeFormatInfo, out separator);
-      Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine);
+      Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine, lineLimit);
     }
 
     /// <summary>
@@ -129,9 +128,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="dateTimeFormatInfo">Format of datetime</param>
     /// <param name="separator">defines the separator</param>
     /// <param name="columnNamesInFirstLine"></param>
-    public void Parse(string fileName, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine) {
+    public void Parse(string fileName, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine, int lineLimit = -1) {
       using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-        Parse(stream, numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine);
+        Parse(stream, numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine, lineLimit);
       }
     }
 
@@ -140,11 +139,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// </summary>
     /// <param name="stream">stream which is parsed</param>
     /// <param name="columnNamesInFirstLine"></param>
-    public void Parse(Stream stream, bool columnNamesInFirstLine) {
+    public void Parse(Stream stream, bool columnNamesInFirstLine, int lineLimit = -1) {
       NumberFormatInfo numberFormat = NumberFormatInfo.InvariantInfo;
       DateTimeFormatInfo dateTimeFormatInfo = DateTimeFormatInfo.InvariantInfo;
       char separator = ',';
-      Parse(stream, numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine);
+      Parse(stream, numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine, lineLimit);
     }
 
     /// <summary>
@@ -155,11 +154,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="dateTimeFormatInfo">Format of datetime</param>
     /// <param name="separator">defines the separator</param>
     /// <param name="columnNamesInFirstLine"></param>
-    public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine) {
+    public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine, int lineLimit = -1) {
       using (StreamReader reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
         // parse the file
-        Parse(columnNamesInFirstLine);
+        Parse(columnNamesInFirstLine, lineLimit);
       }
 
       // translate the list of samples into a DoubleMatrixData item
@@ -286,38 +285,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       NewLine, Separator, String, Double, DateTime
     }
 
-
-    //internal class Token {
-    //  public TokenTypeEnum type;
-    //  public string stringValue;
-    //  public double doubleValue;
-    //  public DateTime dateTimeValue;
-    //
-    //  public Token(TokenTypeEnum type, string value) {
-    //    this.type = type;
-    //    stringValue = value;
-    //    dateTimeValue = DateTime.MinValue;
-    //    doubleValue = 0.0;
-    //  }
-    //
-    //  public bool Equals(Token other) {
-    //    throw new NotImplementedException();
-    //  }
-    //
-    //  public override string ToString() {
-    //    return stringValue;
-    //  }
-    //
-    //  public override bool Equals(object obj) {
-    //    return Equals(obj as Token);
-    //  }
-    //
-    //  public override int GetHashCode() {
-    //    throw new NotSupportedException();
-    //  }
-    //}
-
-
     internal class Tokenizer {
       private StreamReader reader;
       // we assume that a buffer of 1024 tokens for a line is sufficient most of the time (the buffer is increased below if necessary)
@@ -343,24 +310,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         private set { currentLine = value; }
       }
 
-      // private Token newlineToken;
-      // public Token NewlineToken {
-      //   get { return newlineToken; }
-      //   private set { newlineToken = value; }
-      // }
-      // private Token separatorToken;
-      // public Token SeparatorToken {
-      //   get { return separatorToken; }
-      //   private set { separatorToken = value; }
-      // }
-
       public Tokenizer(StreamReader reader, NumberFormatInfo numberFormatInfo, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
         this.reader = reader;
         this.numberFormatInfo = numberFormatInfo;
         this.dateTimeFormatInfo = dateTimeFormatInfo;
         this.separator = separator;
-        //separatorToken = new Token(TokenTypeEnum.Separator, INTERNAL_SEPARATOR);
-        //newlineToken = new Token(TokenTypeEnum.NewLine, Environment.NewLine);
         ReadNextTokens();
       }
 
@@ -457,7 +411,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     #endregion
 
     #region parsing
-    private void Parse(bool columnNamesInFirstLine) {
+    private void Parse(bool columnNamesInFirstLine, int lineLimit = -1) { // lineLimit = -1 means no limit
       if (columnNamesInFirstLine) {
         ParseVariableNames();
         if (!tokenizer.HasNext())
@@ -465,14 +419,16 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
             "Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).",
             "", tokenizer.CurrentLineNumber);
       }
-      ParseValues();
+      ParseValues(lineLimit);
       if (rowValues.Count == 0) Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
     }
 
-    private void ParseValues() {
-      while (tokenizer.HasNext()) {
+    private void ParseValues(int lineLimit = -1) {
+      int nLinesParsed = 0;
+      while (tokenizer.HasNext() && (lineLimit < 0 || nLinesParsed < lineLimit)) {
         if (tokenizer.PeekType() == TokenTypeEnum.NewLine) {
           tokenizer.Skip();
+          nLinesParsed++;
         } else {
           List<object> row = new List<object>();
           object value = NextValue(tokenizer);
@@ -482,6 +438,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
             row.Add(NextValue(tokenizer));
           }
           ExpectType(TokenTypeEnum.NewLine);
+          nLinesParsed++;
           // all rows have to have the same number of values            
           // the first row defines how many samples are needed
           if (rowValues.Count > 0 && rowValues[0].Count != row.Count) {
