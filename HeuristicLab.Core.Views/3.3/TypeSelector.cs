@@ -256,17 +256,22 @@ namespace HeuristicLab.Core.Views {
         return Activator.CreateInstance(SelectedType, args);
     }
 
+    private Type[] genericTypeArguments = null;
     protected virtual void UpdateTypeParameters() {
       typeParametersListView.Items.Clear();
       if ((SelectedType == null) || !SelectedType.ContainsGenericParameters) {
         typeParametersGroupBox.Enabled = false;
         typeParametersSplitContainer.Panel2Collapsed = true;
+        genericTypeArguments = null;
       } else {
         typeParametersGroupBox.Enabled = true;
         typeParametersSplitContainer.Panel2Collapsed = false;
         setTypeParameterButton.Enabled = false;
 
-        foreach (Type param in SelectedType.GetGenericArguments()) {
+
+        genericTypeArguments = SelectedType.GetGenericArguments();
+
+        foreach (Type param in genericTypeArguments) {
           if (param.IsGenericParameter) {
             ListViewItem item = new ListViewItem();
             item.Text = param.Name;
@@ -300,9 +305,9 @@ namespace HeuristicLab.Core.Views {
 
       if (typeSelectorDialog.ShowDialog(this) == DialogResult.OK) {
         Type selected = typeSelectorDialog.TypeSelector.SelectedType;
-        Type[] parameters = SelectedType.GetGenericArguments();
-        parameters[param.GenericParameterPosition] = selected;
-        SelectedType = SelectedType.GetGenericTypeDefinition().MakeGenericType(parameters);
+        genericTypeArguments[param.GenericParameterPosition] = selected;
+        if (genericTypeArguments.All(p => !p.IsGenericParameter))
+          SelectedType = SelectedType.GetGenericTypeDefinition().MakeGenericType(genericTypeArguments);
 
         typeParametersListView.SelectedItems[0].Text = param.Name + ": " + selected.GetPrettyName();
         typeParametersListView.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);

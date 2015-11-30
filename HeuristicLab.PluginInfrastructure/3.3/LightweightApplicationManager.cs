@@ -130,7 +130,7 @@ namespace HeuristicLab.PluginInfrastructure {
         var matchingTypes = from assemblyType in assembly.GetTypes()
                             let t = assemblyType.BuildType(type)
                             where t != null
-                            where t.IsSubTypeOf(type)
+                            where t.IsAssignableTo(type)
                             where !t.IsNonDiscoverableType()
                             where onlyInstantiable == false || (!t.IsAbstract && !t.IsInterface && !t.HasElementType)
                             where includeGenericTypeDefinitions || !t.IsGenericTypeDefinition

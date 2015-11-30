@@ -75,23 +75,21 @@ namespace HeuristicLab.PluginInfrastructure {
       }
     }
 
-    internal static bool IsSubTypeOf(this Type subType, Type baseType) {
+    internal static bool IsAssignableTo(this Type subType, Type baseType) {
       if (baseType.IsAssignableFrom(subType)) return true;
+
+      //check generics
       if (!baseType.IsGenericType) return false;
-
       if (RecursiveCheckGenericTypes(baseType, subType)) return true;
-      IEnumerable<Type> implementedInterfaces = subType.GetInterfaces().Where(t => t.IsGenericType);
-      foreach (var implementedInterface in implementedInterfaces.Where(i => i.IsGenericType)) {
-        if (baseType.CheckGenericTypes(implementedInterface)) return true;
-      }
 
-      return false;
+      //check generic interfaces
+      IEnumerable<Type> implementedInterfaces = subType.GetInterfaces().Where(t => t.IsGenericType);
+      return implementedInterfaces.Any(implementedInterface => baseType.CheckGenericTypes(implementedInterface));
     }
 
     private static bool RecursiveCheckGenericTypes(Type baseType, Type subType) {
       if (!baseType.IsGenericType) return false;
-      if (!subType.IsGenericType) return false;
-      if (baseType.CheckGenericTypes(subType)) return true;
+      if (subType.IsGenericType && baseType.CheckGenericTypes(subType)) return true;
       if (subType.BaseType == null) return false;
 
       return RecursiveCheckGenericTypes(baseType, subType.BaseType);
@@ -101,6 +99,7 @@ namespace HeuristicLab.PluginInfrastructure {
       var baseTypeGenericTypeDefinition = baseType.GetGenericTypeDefinition();
       var subTypeGenericTypeDefinition = subType.GetGenericTypeDefinition();
       if (baseTypeGenericTypeDefinition != subTypeGenericTypeDefinition) return false;
+
       var baseTypeGenericArguments = baseType.GetGenericArguments();
       var subTypeGenericArguments = subType.GetGenericArguments();
 
@@ -108,19 +107,50 @@ namespace HeuristicLab.PluginInfrastructure {
         var baseTypeGenericArgument = baseTypeGenericArguments[i];
         var subTypeGenericArgument = subTypeGenericArguments[i];
 
-        if (baseTypeGenericArgument.IsGenericParameter ^ subTypeGenericArgument.IsGenericParameter) return false;
-        if (baseTypeGenericArgument == subTypeGenericArgument) continue;
-        if (!baseTypeGenericArgument.IsGenericParameter && !subTypeGenericArgument.IsGenericParameter) return false;
+        //no generic parameters => concrete types => check for type equality (ignore co- and contravariance)
+        //for example List<int> is only a List<int>, IParameter<IItem> is not a base type of IParameter<DoubleValue>
+        if (!baseTypeGenericArgument.IsGenericParameter && !subTypeGenericArgument.IsGenericParameter) {
+          if (baseTypeGenericArgument == subTypeGenericArgument) continue;
+          return false;
+        }
 
-        if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint) &&
-            !subTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint)) return false;
-        if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint) &&
-            !subTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint)) return false;
-        if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint) &&
-            !subTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint)) return false;
+        //baseTypeGenericArgument is a concrete type and the subTypeGenericArgument is a generic parameter
+        //for example List<int> is not a base type of List<T>
+        if (!baseTypeGenericArgument.IsGenericParameter && subTypeGenericArgument.IsGenericParameter) return false;
 
-        foreach (var baseTypeGenericParameterConstraint in baseTypeGenericArgument.GetGenericParameterConstraints()) {
-          if (!subTypeGenericArgument.GetGenericParameterConstraints().Any(t => baseTypeGenericParameterConstraint.IsAssignableFrom(t))) return false;
+        //baseTypeGenericArugment is a generic parameter and the subTypeGenericArgument is a concrete type => check type constraints
+        //for example IParameter<T> is a base type of IParameter<IItem> if all generic contraints on T are fulfilled
+        if (baseTypeGenericArgument.IsGenericParameter && !subTypeGenericArgument.IsGenericParameter) {
+          if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint) &&
+            subTypeGenericArgument.IsValueType) return false;
+          if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint) &&
+            subTypeGenericArgument.GetConstructor(Type.EmptyTypes) == null) return false;
+          if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint)) {
+            if (!subTypeGenericArgument.IsValueType) return false;
+            if (subTypeGenericArgument.IsGenericType && subTypeGenericArgument.GetGenericTypeDefinition() == typeof(Nullable<>))
+              return false;
+          }
+
+          //not assignable if the subTypeGenericArgument is not assignable to all of the constraints of the base type
+          if (baseTypeGenericArgument.GetGenericParameterConstraints().Any(baseTypeGenericParameterConstraint =>
+            !baseTypeGenericParameterConstraint.IsAssignableFrom(subTypeGenericArgument)))
+            return false;
+        }
+
+        //both generic arguments are generic parameters => check type constraints
+        //for example IParameter<T> is a base type of IParameter<T>
+        if (baseTypeGenericArgument.IsGenericParameter && subTypeGenericArgument.IsGenericParameter) {
+          if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint) &&
+              !subTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.ReferenceTypeConstraint)) return false;
+          if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint) &&
+              !subTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.DefaultConstructorConstraint)) return false;
+          if (baseTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint) &&
+              !subTypeGenericArgument.GenericParameterAttributes.HasFlag(GenericParameterAttributes.NotNullableValueTypeConstraint)) return false;
+
+          //not assignable if any of the constraints is not assignable to the constraints of the base type
+          if (baseTypeGenericArgument.GetGenericParameterConstraints().Any(baseTypeGenericParameterConstraint => !subTypeGenericArgument.GetGenericParameterConstraints().Any(t => baseTypeGenericParameterConstraint.IsAssignableFrom(t)))) {
+            return false;
+          }
         }
       }
       return true;

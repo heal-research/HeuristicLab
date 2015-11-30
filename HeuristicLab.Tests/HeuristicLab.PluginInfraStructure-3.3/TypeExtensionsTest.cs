@@ -35,27 +35,29 @@ namespace HeuristicLab.PluginInfrastructure.Tests {
     [TestCategory("Essential")]
     [TestProperty("Time", "short")]
     public void IsSubTypeOfTest() {
-      Assert.IsTrue(typeof(int).IsSubTypeOf(typeof(object)));
-      Assert.IsTrue(typeof(IntValue).IsSubTypeOf(typeof(IItem)));
-      Assert.IsTrue(typeof(List<int>).IsSubTypeOf(typeof(object)));
+      Assert.IsTrue(typeof(int).IsAssignableTo(typeof(object)));
+      Assert.IsTrue(typeof(IntValue).IsAssignableTo(typeof(IItem)));
+      Assert.IsTrue(typeof(List<int>).IsAssignableTo(typeof(object)));
 
-      Assert.IsTrue(typeof(List<int>).IsSubTypeOf(typeof(IList)));
-      Assert.IsTrue(typeof(List<>).IsSubTypeOf(typeof(IList)));
-      Assert.IsFalse(typeof(NamedItemCollection<>).IsSubTypeOf(typeof(ICollection<IItem>)));
-      Assert.IsFalse(typeof(NamedItemCollection<>).IsSubTypeOf(typeof(ICollection<NamedItem>)));
+      Assert.IsTrue(typeof(List<int>).IsAssignableTo(typeof(IList)));
+      Assert.IsTrue(typeof(List<>).IsAssignableTo(typeof(IList)));
+      Assert.IsFalse(typeof(NamedItemCollection<>).IsAssignableTo(typeof(ICollection<IItem>)));
+      Assert.IsFalse(typeof(NamedItemCollection<>).IsAssignableTo(typeof(ICollection<NamedItem>)));
+
+      //new tests      
 
 
-      Assert.IsTrue(typeof(List<IItem>).IsSubTypeOf(typeof(IList<IItem>)));
-      Assert.IsFalse(typeof(IList<IntValue>).IsSubTypeOf(typeof(IList<IItem>)));
-      Assert.IsTrue(typeof(List<IItem>).IsSubTypeOf(typeof(IList<IItem>)));
-      Assert.IsFalse(typeof(ItemList<>).IsSubTypeOf(typeof(IList<IItem>)));
-      Assert.IsFalse(typeof(ItemList<>).IsSubTypeOf(typeof(List<IItem>)));
+      Assert.IsTrue(typeof(List<IItem>).IsAssignableTo(typeof(IList<IItem>)));
+      Assert.IsFalse(typeof(IList<IntValue>).IsAssignableTo(typeof(IList<IItem>)));
+      Assert.IsTrue(typeof(List<IItem>).IsAssignableTo(typeof(IList<IItem>)));
+      Assert.IsFalse(typeof(ItemList<>).IsAssignableTo(typeof(IList<IItem>)));
+      Assert.IsFalse(typeof(ItemList<>).IsAssignableTo(typeof(List<IItem>)));
 
-      Assert.IsFalse(typeof(List<int>).IsSubTypeOf(typeof(List<>)));
-      Assert.IsTrue(typeof(List<>).IsSubTypeOf(typeof(IList<>)));
-      Assert.IsTrue(typeof(ItemList<>).IsSubTypeOf(typeof(IList<>)));
-      Assert.IsTrue(typeof(NamedItemCollection<>).IsSubTypeOf(typeof(IItemCollection<>)));
-      Assert.IsFalse(typeof(List<IntValue>).IsSubTypeOf(typeof(IList<>)));
+      Assert.IsTrue(typeof(List<int>).IsAssignableTo(typeof(List<>)));
+      Assert.IsTrue(typeof(List<>).IsAssignableTo(typeof(IList<>)));
+      Assert.IsTrue(typeof(ItemList<>).IsAssignableTo(typeof(IList<>)));
+      Assert.IsTrue(typeof(NamedItemCollection<>).IsAssignableTo(typeof(IItemCollection<>)));
+      Assert.IsTrue(typeof(List<IntValue>).IsAssignableTo(typeof(IList<>)));
     }
 
     [TestMethod]

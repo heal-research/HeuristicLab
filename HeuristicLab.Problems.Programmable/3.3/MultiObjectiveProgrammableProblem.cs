@@ -33,7 +33,7 @@ namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (multi-objective)", "Represents a multi-objective problem that can be programmed with a script.")]
   [Creatable(CreatableAttribute.Categories.Problems, Priority = 120)]
   [StorableClass]
-  public abstract class MultiObjectiveProgrammableProblem<TEncoding, TSolution> : MultiObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
+  public class MultiObjectiveProgrammableProblem<TEncoding, TSolution> : MultiObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
     protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
@@ -65,11 +65,23 @@ namespace HeuristicLab.Problems.Programmable {
       : base(original, cloner) {
       RegisterEvents();
     }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new MultiObjectiveProgrammableProblem<TEncoding, TSolution>(this, cloner);
+    }
+
     public MultiObjectiveProgrammableProblem()
       : base() {
       Parameters.Add(new FixedValueParameter<MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
         new MultiObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name }));
       ProblemScript.Encoding = (TEncoding)Encoding.Clone();
+
+      var codeTemplate = ScriptTemplates.MultiObjectiveProblem_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, typeof(TEncoding).Namespace);
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, typeof(TEncoding).Name);
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, typeof(TSolution).Name);
+      ProblemScript.Code = codeTemplate;
+
       RegisterEvents();
     }
 

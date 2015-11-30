@@ -33,8 +33,9 @@ using HeuristicLab.Scripting;
 
 namespace HeuristicLab.Problems.Programmable {
   [Item("Programmable Problem (single-objective)", "Represents a single-objective problem that can be programmed with a script.")]
+  [Creatable(CreatableAttribute.Categories.Problems, Priority = 110)]
   [StorableClass]
-  public abstract class SingleObjectiveProgrammableProblem<TEncoding, TSolution> : SingleObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
+  public class SingleObjectiveProgrammableProblem<TEncoding, TSolution> : SingleObjectiveProblem<TEncoding, TSolution>, IProgrammableItem, IProgrammableProblem
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution {
     protected static readonly string ENCODING_NAMESPACE = "ENCODING_NAMESPACE";
@@ -66,11 +67,22 @@ namespace HeuristicLab.Problems.Programmable {
       : base(original, cloner) {
       RegisterEvents();
     }
+
+    public override IDeepCloneable Clone(Cloner cloner) {
+      return new SingleObjectiveProgrammableProblem<TEncoding, TSolution>(this, cloner);
+    }
+
     public SingleObjectiveProgrammableProblem()
       : base() {
-      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.",
-        new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name }));
+      Parameters.Add(new FixedValueParameter<SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>>("ProblemScript", "Defines the problem.", new SingleObjectiveProblemDefinitionScript<TEncoding, TSolution>() { Name = Name }));
       ProblemScript.Encoding = (TEncoding)Encoding.Clone();
+
+      var codeTemplate = ScriptTemplates.SingleObjectiveProblem_Template;
+      codeTemplate = codeTemplate.Replace(ENCODING_NAMESPACE, typeof(TEncoding).Namespace);
+      codeTemplate = codeTemplate.Replace(ENCODING_CLASS, typeof(TEncoding).Name);
+      codeTemplate = codeTemplate.Replace(SOLUTION_CLASS, typeof(TSolution).Name);
+      ProblemScript.Code = codeTemplate;
+
       Operators.Add(new BestScopeSolutionAnalyzer());
       RegisterEvents();
     }

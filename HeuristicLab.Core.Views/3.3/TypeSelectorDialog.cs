@@ -57,7 +57,8 @@ namespace HeuristicLab.Core.Views {
       this.typeSelector.TypesTreeView.DoubleClick += new System.EventHandler(TypesTreeView_DoubleClick);
     }
     protected virtual void typeSelector_SelectedTypeChanged(object sender, EventArgs e) {
-      okButton.Enabled = typeSelector.SelectedType != null;
+      var selectedType = typeSelector.SelectedType;
+      okButton.Enabled = selectedType != null && !selectedType.IsGenericTypeDefinition;
     }
     protected virtual void TypesTreeView_DoubleClick(object sender, System.EventArgs e) {
       if (typeSelector.SelectedType != null) {
