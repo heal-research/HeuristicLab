@@ -205,15 +205,17 @@ export SolutionDir=$(SolutionDir)
 
 $SolutionDir/PreBuildEvent.sh
 </PreBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-set Platform=$(PlatformName)
-set Configuration=$(ConfigurationName)
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">
+      set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
+      set ProjectDir=$(ProjectDir)
+      set SolutionDir=$(SolutionDir)
+      set OutDir=$(OutDir)
+      set TargetDir=$(TargetDir)
+      set Platform=$(PlatformName)
+      set Configuration=$(ConfigurationName)
 
-call "$(SolutionDir)MergeConfigs.cmd"
-if exist "%25ProjectDir%25CustomPostBuild.cmd" call CustomPostBuild.cmd</PostBuildEvent>
+      call "$(SolutionDir)MergeConfigs.cmd"
+    </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">
 export OutDir=$(OutDir)
 export ProjectDir=$(ProjectDir)
@@ -222,16 +224,5 @@ export TargetDir=$(TargetDir)
 
 $SolutionDir/MergeConfigs.sh
 </PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set OutDir=$(OutDir)
-set TargetDir=$(TargetDir)
-set Platform=$(PlatformName)
-set Configuration=$(ConfigurationName)
-
-call "$(SolutionDir)MergeConfigs.cmd"</PostBuildEvent>
-  </PropertyGroup>
+  </PropertyGroup> 
 </Project>
