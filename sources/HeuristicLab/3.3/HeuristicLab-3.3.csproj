@@ -140,8 +140,6 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="CustomPostBuild.cmd" />
-    <None Include="CustomPostBuildTemplate_UpdateLocalInstallation.cmd" />
     <None Include="HeuristicLab.snk" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
     <None Include="Properties\Settings.settings">
@@ -165,12 +163,6 @@
     <None Include="GNU General Public License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="Files.txt">
-    </Content>
-    <Content Include="Files.x64.txt">
-    </Content>
-    <Content Include="Files.x86.txt">
-    </Content>
     <None Include="HeuristicLab 3.3 License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
