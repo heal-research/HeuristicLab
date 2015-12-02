@@ -133,14 +133,6 @@ namespace HeuristicLab.DataPreprocessing {
       };
     }
 
-    private static IList CreateColumn<T>(Dataset ds, int column, Func<string, T> selector) {
-      var list = new List<T>(ds.Rows);
-      for (int row = 0; row < ds.Rows; ++row) {
-        list.Add(selector(ds.GetValue(row, column)));
-      }
-      return list;
-    }
-
     private void CheckPartitionRanges() {
       int maxRowIndex = Math.Max(0, Rows - 1);
       TrainingPartition.Start = Math.Min(TrainingPartition.Start, maxRowIndex);

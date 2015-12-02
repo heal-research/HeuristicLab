@@ -199,11 +199,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return variableNames.Count; }
       set { throw new NotSupportedException(); }
     }
-    public bool SortableView {
+    bool IStringConvertibleMatrix.SortableView {
       get { return false; }
       set { throw new NotSupportedException(); }
     }
-    public bool ReadOnly {
+    bool IStringConvertibleMatrix.ReadOnly {
       get { return true; }
     }
     IEnumerable<string> IStringConvertibleMatrix.ColumnNames {
@@ -214,7 +214,7 @@ namespace HeuristicLab.Problems.DataAnalysis {
       get { return Enumerable.Empty<string>(); }
       set { throw new NotSupportedException(); }
     }
-    public string GetValue(int rowIndex, int columnIndex) {
+    string IStringConvertibleMatrix.GetValue(int rowIndex, int columnIndex) {
       return variableValues[variableNames[columnIndex]][rowIndex].ToString();
     }
     bool IStringConvertibleMatrix.SetValue(string value, int rowIndex, int columnIndex) {
