@@ -431,7 +431,6 @@ namespace HeuristicLab.Optimizer {
       // 
       // CreateExperimentDialog
       // 
-      this.AcceptButton = this.okButton;
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
       this.CancelButton = this.cancelButton;
       this.ClientSize = new System.Drawing.Size(414, 412);
