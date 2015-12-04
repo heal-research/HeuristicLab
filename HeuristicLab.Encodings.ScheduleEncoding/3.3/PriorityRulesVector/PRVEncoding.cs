@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
   [Item("PriorityRulesVectorEncoding", "Represents an encoding for a Scheduling Problem.")]
   [StorableClass]
-  public class PRVEncoding : Item, IScheduleEncoding {
+  public class PRVEncoding : Item, ISchedule {
     [Storable]
     public IntegerVector PriorityRulesVector { get; set; }
 

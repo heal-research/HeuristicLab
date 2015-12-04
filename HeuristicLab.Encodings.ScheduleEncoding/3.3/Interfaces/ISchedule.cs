@@ -22,6 +22,6 @@
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  public interface IScheduleEncoding : IItem {
+  public interface ISchedule : IItem {
   }
 }

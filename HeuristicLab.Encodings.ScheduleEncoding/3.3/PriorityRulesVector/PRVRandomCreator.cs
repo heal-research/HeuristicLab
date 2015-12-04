@@ -56,7 +56,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Jobs", "The number of jobs handled in this problem instance."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Resources", "The number of resources used in this problem instance."));
-      ScheduleEncodingParameter.ActualName = "PriorityRulesVector";
+      ScheduleParameter.ActualName = "PriorityRulesVector";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -67,7 +67,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
       return new PRVEncoding(jobs * resources, random, 0, nrOfRules.Value, nrOfRules);
     }
 
-    protected override IScheduleEncoding CreateSolution() {
+    protected override ISchedule CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue, NrOfRules);
     }
 

@@ -33,13 +33,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
     protected JSMManipulator(JSMManipulator original, Cloner cloner) : base(original, cloner) { }
     public JSMManipulator()
       : base() {
-      ScheduleEncodingParameter.ActualName = "JobSequenceMatrix";
+      ScheduleParameter.ActualName = "JobSequenceMatrix";
     }
 
-    protected abstract void Manipulate(IRandom random, IScheduleEncoding individual);
+    protected abstract void Manipulate(IRandom random, ISchedule individual);
 
     public override IOperation InstrumentedApply() {
-      var solution = ScheduleEncodingParameter.ActualValue as JSMEncoding;
+      var solution = ScheduleParameter.ActualValue as JSMEncoding;
       if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type JSMEncoding.");
       Manipulate(RandomParameter.ActualValue, solution);
       return base.InstrumentedApply();

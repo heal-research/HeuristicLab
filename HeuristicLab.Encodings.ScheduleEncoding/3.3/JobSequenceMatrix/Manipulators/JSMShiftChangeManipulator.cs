@@ -62,7 +62,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
       }
     }
 
-    protected override void Manipulate(IRandom random, IScheduleEncoding encoding) {
+    protected override void Manipulate(IRandom random, ISchedule encoding) {
       var solution = encoding as JSMEncoding;
       if (solution == null) throw new InvalidOperationException("Encoding is not of type JSMEncoding");
       Apply(random, solution);

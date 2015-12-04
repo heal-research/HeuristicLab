@@ -30,8 +30,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
   public abstract class ScheduleCreator : InstrumentedOperator, IScheduleCreator {
 
-    public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
-      get { return (ILookupParameter<IScheduleEncoding>)Parameters["ScheduleEncoding"]; }
+    public ILookupParameter<ISchedule> ScheduleParameter {
+      get { return (ILookupParameter<ISchedule>)Parameters["Schedule"]; }
     }
 
     [StorableConstructor]
@@ -39,14 +39,14 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected ScheduleCreator(ScheduleCreator original, Cloner cloner) : base(original, cloner) { }
     public ScheduleCreator()
       : base() {
-      Parameters.Add(new LookupParameter<IScheduleEncoding>("ScheduleEncoding", "The new scheduling solutioncandidate."));
+      Parameters.Add(new LookupParameter<ISchedule>("Schedule", "The new scheduling solutioncandidate."));
     }
 
     public override IOperation InstrumentedApply() {
-      ScheduleEncodingParameter.ActualValue = CreateSolution();
+      ScheduleParameter.ActualValue = CreateSolution();
       return base.InstrumentedApply();
     }
 
-    protected abstract IScheduleEncoding CreateSolution();
+    protected abstract ISchedule CreateSolution();
   }
 }

@@ -201,9 +201,9 @@ namespace HeuristicLab.Problems.Scheduling {
       }
     }
 
-    public override Schedule CreateScheduleFromEncoding(IScheduleEncoding encoding) {
+    public override Schedule CreateScheduleFromEncoding(ISchedule encoding) {
       var solution = encoding as PRVEncoding;
-      if (solution == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
+      if (solution == null) throw new InvalidOperationException("Encoding is not of type PRVEncoding");
 
       var jobs = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);

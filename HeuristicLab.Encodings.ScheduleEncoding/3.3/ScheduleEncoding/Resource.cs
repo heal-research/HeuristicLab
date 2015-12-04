@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -27,22 +28,24 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ResourceClass", "Represents a resource used in scheduling problems.")]
   [StorableClass]
-  public class Resource : Item {
+  public sealed class Resource : Item {
 
     [Storable]
-    public int Index {
-      get;
-      set;
-    }
+    public int Index { get; private set; }
     [Storable]
-    public ItemList<ScheduledTask> Tasks {
-      get;
-      set;
+    public ItemList<ScheduledTask> Tasks { get; private set; }
+
+    //TODO why does a Ressource has a duration?
+    public double TotalDuration {
+      get {
+        if (Tasks.Count == 0) return 0.0;
+        return Tasks.Max(t => t.EndTime);
+      }
     }
 
     [StorableConstructor]
-    protected Resource(bool deserializing) : base(deserializing) { }
-    protected Resource(Resource original, Cloner cloner)
+    private Resource(bool deserializing) : base(deserializing) { }
+    private Resource(Resource original, Cloner cloner)
       : base(original, cloner) {
       this.Index = original.Index;
       this.Tasks = cloner.Clone(original.Tasks);
@@ -57,22 +60,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new Resource(this, cloner);
     }
 
-    public double TotalDuration {
-      get {
-        double result = 0;
-        foreach (ScheduledTask t in Tasks) {
-          if (t.EndTime > result)
-            result = t.EndTime;
-        }
-        return result;
-      }
-    }
-
     public override string ToString() {
       StringBuilder sb = new StringBuilder();
       sb.Append("Resource#" + Index + " [ ");
       foreach (ScheduledTask t in Tasks) {
-        sb.Append(t+ " ");
+        sb.Append(t + " ");
       }
       sb.Append("]");
       return sb.ToString();

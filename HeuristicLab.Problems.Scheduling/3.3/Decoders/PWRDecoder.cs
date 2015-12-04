@@ -54,7 +54,7 @@ namespace HeuristicLab.Problems.Scheduling {
       return new PWRDecoder(this, cloner);
     }
 
-    public override Schedule CreateScheduleFromEncoding(IScheduleEncoding encoding) {
+    public override Schedule CreateScheduleFromEncoding(ISchedule encoding) {
       var solution = encoding as PWREncoding;
       if (solution == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
 

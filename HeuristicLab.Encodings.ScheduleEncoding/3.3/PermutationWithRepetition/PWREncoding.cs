@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
   [Item("PermutationWithRepetitionEncoding", "Represents a encoding for a standard JobShop Scheduling Problem.")]
   [StorableClass]
-  public class PWREncoding : Item, IScheduleEncoding {
+  public class PWREncoding : Item, ISchedule {
 
     [Storable]
     public IntegerVector PermutationWithRepetition { get; set; }

@@ -24,37 +24,27 @@ using System.Collections.Generic;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Schedule", "Represents the general solution for scheduling problems.")]
   [StorableClass]
-  public class Schedule : NamedItem, IScheduleEncoding {
+  public class Schedule : NamedItem, ISchedule {
 
     #region Properties
     [Storable]
     private ItemList<Resource> resources;
     public ItemList<Resource> Resources {
       get { return resources; }
-      set {
-        if (resources != null) DeregisterResourcesEvents();
-        resources = value;
-        if (resources != null) RegisterResourcesEvents();
-        OnResourcesChanged();
-      }
     }
     [Storable]
-    private DoubleValue quality;
-    public DoubleValue Quality {
+    private double quality;
+    public double Quality {
       get { return quality; }
       set {
-        if (quality != value) {
-          if (quality != null) DeregisterQualityEvents();
-          quality = value;
-          if (quality != null) RegisterQualityEvents();
-          OnQualityChanged();
-        }
+        if (quality == value) return;
+        quality = value;
+        OnQualityChanged();
       }
     }
     [Storable]
@@ -65,16 +55,21 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected Schedule(bool deserializing) : base(deserializing) { }
     protected Schedule(Schedule original, Cloner cloner)
       : base(original, cloner) {
-      this.Resources = cloner.Clone(original.Resources);
-      this.Quality = cloner.Clone(original.Quality);
+      this.resources = cloner.Clone(original.Resources);
+      this.quality = original.Quality;
+      //TODO clone
       this.lastScheduledTaskOfJob = new Dictionary<int, ScheduledTask>(original.lastScheduledTaskOfJob);
+
+      RegisterResourcesEvents();
     }
     public Schedule(int nrOfResources) {
-      Resources = new ItemList<Resource>();
+      resources = new ItemList<Resource>();
       for (int i = 0; i < nrOfResources; i++) {
         Resources.Add(new Resource(i));
       }
       lastScheduledTaskOfJob = new Dictionary<int, ScheduledTask>();
+
+      RegisterResourcesEvents();
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -88,15 +83,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       if (changed != null)
         changed(this, EventArgs.Empty);
     }
-    private void RegisterQualityEvents() {
-      Quality.ValueChanged += new EventHandler(Quality_ValueChanged);
-    }
-    private void DeregisterQualityEvents() {
-      Quality.ValueChanged -= new EventHandler(Quality_ValueChanged);
-    }
-    private void Quality_ValueChanged(object sender, EventArgs e) {
-      OnQualityChanged();
-    }
 
     public event EventHandler ResourcesChanged;
     private void OnResourcesChanged() {
@@ -106,9 +92,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
     private void RegisterResourcesEvents() {
       Resources.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Resources_PropertyChanged);
-    }
-    private void DeregisterResourcesEvents() {
-      Resources.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(Resources_PropertyChanged);
     }
     private void Resources_PropertyChanged(object sender, EventArgs e) {
       OnResourcesChanged();
@@ -152,16 +135,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
       sb.Append("]");
       return sb.ToString();
-    }
-
-    public double CalculateMakespan() {
-      double quality = 0;
-      foreach (Resource r in Resources) {
-        if (r.TotalDuration > quality) {
-          quality = r.TotalDuration;
-        }
-      }
-      return quality;
     }
   }
 }

@@ -121,7 +121,7 @@
     <Compile Include="Interfaces\IPWROperator.cs" />
     <Compile Include="Interfaces\IScheduleCreator.cs" />
     <Compile Include="Interfaces\IScheduleCrossover.cs" />
-    <Compile Include="Interfaces\IScheduleEncoding.cs" />
+    <Compile Include="Interfaces\ISchedule.cs" />
     <Compile Include="Interfaces\IScheduleManipulator.cs" />
     <Compile Include="Interfaces\IScheduleOperator.cs" />
     <Compile Include="JobSequenceMatrix\Crossovers\JSMCrossover.cs" />

@@ -31,11 +31,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
   public abstract class ScheduleCrossover : InstrumentedOperator, IScheduleCrossover, IStochasticOperator {
 
-    public ILookupParameter<IScheduleEncoding> ChildParameter {
-      get { return (ILookupParameter<IScheduleEncoding>)Parameters["Child"]; }
+    public ILookupParameter<ISchedule> ChildParameter {
+      get { return (ILookupParameter<ISchedule>)Parameters["Child"]; }
     }
-    public IScopeTreeLookupParameter<IScheduleEncoding> ParentsParameter {
-      get { return (IScopeTreeLookupParameter<IScheduleEncoding>)Parameters["Parents"]; }
+    public IScopeTreeLookupParameter<ISchedule> ParentsParameter {
+      get { return (IScopeTreeLookupParameter<ISchedule>)Parameters["Parents"]; }
     }
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -47,10 +47,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     public ScheduleCrossover()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<IScheduleEncoding>("Child", "The child solution resulting from the crossover."));
-      ChildParameter.ActualName = "SchedulingSolution";
-      Parameters.Add(new ScopeTreeLookupParameter<IScheduleEncoding>("Parents", "The parent solution which should be crossed."));
-      ParentsParameter.ActualName = "SchedulingSolution";
+      Parameters.Add(new LookupParameter<ISchedule>("Child", "The child solution resulting from the crossover."));
+      ChildParameter.ActualName = "Schedule";
+      Parameters.Add(new ScopeTreeLookupParameter<ISchedule>("Parents", "The parent solution which should be crossed."));
+      ParentsParameter.ActualName = "Schedule";
     }
   }
 }

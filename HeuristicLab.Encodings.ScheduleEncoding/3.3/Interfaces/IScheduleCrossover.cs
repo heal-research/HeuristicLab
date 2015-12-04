@@ -24,7 +24,7 @@ using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   public interface IScheduleCrossover : ICrossover, IScheduleOperator {
-    ILookupParameter<IScheduleEncoding> ChildParameter { get; }
-    IScopeTreeLookupParameter<IScheduleEncoding> ParentsParameter { get; }
+    ILookupParameter<ISchedule> ChildParameter { get; }
+    IScopeTreeLookupParameter<ISchedule> ParentsParameter { get; }
   }
 }

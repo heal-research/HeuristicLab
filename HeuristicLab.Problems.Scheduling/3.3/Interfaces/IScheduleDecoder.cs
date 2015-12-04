@@ -23,7 +23,7 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   public interface IScheduleDecoder : IOperator {
-    ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter { get; }
+    ILookupParameter<ISchedule> ScheduleEncodingParameter { get; }
     ILookupParameter<Schedule> ScheduleParameter { get; }
   }
 }

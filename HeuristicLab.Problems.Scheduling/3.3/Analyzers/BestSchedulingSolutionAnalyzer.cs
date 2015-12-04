@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -76,14 +77,15 @@ namespace HeuristicLab.Problems.Scheduling {
       Schedule bestSolution = BestSolutionParameter.ActualValue;
       if (bestSolution == null) {
         bestSolution = (Schedule)solutions[i].Clone();
-        bestSolution.Quality = (DoubleValue)qualities[i].Clone();
+        bestSolution.Quality = qualities[i].Value;
         BestSolutionParameter.ActualValue = bestSolution;
         results.Add(new Result("Best Scheduling Solution", bestSolution));
       } else {
-        if (max && bestSolution.Quality.Value < qualities[i].Value ||
-          !max && bestSolution.Quality.Value > qualities[i].Value) {
-          bestSolution.Quality.Value = qualities[i].Value;
-          bestSolution.Resources = (ItemList<Resource>)solutions[i].Resources.Clone();
+        if (max && bestSolution.Quality < qualities[i].Value ||
+          !max && bestSolution.Quality > qualities[i].Value) {
+          bestSolution.Quality = qualities[i].Value;
+          bestSolution.Resources.Clear();
+          bestSolution.Resources.AddRange((IEnumerable<Resource>)solutions[i].Resources.Clone());
         }
       }
 

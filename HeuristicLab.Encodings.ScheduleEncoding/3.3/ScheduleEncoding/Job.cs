@@ -30,19 +30,17 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("Job", "Represents a composition of tasks that require processing in a scheduling problem.")]
   [StorableClass]
-  public class Job : Item, INotifyPropertyChanged {
+  public sealed class Job : Item, INotifyPropertyChanged {
 
     [Storable(Name = "DueDate")]
     private double dueDate;
     public double DueDate {
       get { return dueDate; }
       set {
-        bool changed = dueDate != value;
+        if (dueDate == value) return;
         dueDate = value;
-        if (changed) {
-          OnPropertyChanged("DueDate");
-          OnToStringChanged();
-        }
+        OnPropertyChanged("DueDate");
+        OnToStringChanged();
       }
     }
 
@@ -51,12 +49,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     public int Index {
       get { return index; }
       set {
-        bool changed = index != value;
+        if (index == value) return;
         index = value;
-        if (changed) {
-          OnPropertyChanged("Index");
-          OnToStringChanged();
-        }
+        OnPropertyChanged("Index");
+        OnToStringChanged();
       }
     }
 
@@ -64,16 +60,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     private ItemList<Task> tasks;
     public ItemList<Task> Tasks {
       get { return tasks; }
-      set {
-        bool changed = tasks != value;
+      private set {
         tasks = value;
-        if (changed) OnPropertyChanged("Tasks");
+        OnPropertyChanged("Tasks");
       }
     }
 
     [StorableConstructor]
-    protected Job(bool deserializing) : base(deserializing) { }
-    protected Job(Job original, Cloner cloner)
+    private Job(bool deserializing) : base(deserializing) { }
+    private Job(Job original, Cloner cloner)
       : base(original, cloner) {
       this.dueDate = original.DueDate;
       this.index = original.Index;
@@ -150,19 +145,14 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return sb.ToString();
     }
 
-    internal Task GetPreviousTask(Task t) {
-      if (t.TaskNr == 0) return null;
-      return Tasks[t.TaskNr - 1];
-    }
-
     public event EventHandler TasksChanged;
-    protected virtual void OnTasksChanged() {
+    private void OnTasksChanged() {
       var handler = TasksChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
-    protected virtual void OnPropertyChanged(string propertyName) {
+    private void OnPropertyChanged(string propertyName) {
       var handler = PropertyChanged;
       if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
     }

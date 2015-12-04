@@ -62,7 +62,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       Parameters.Add(new ValueLookupParameter<IntValue>("Jobs", "The number of jobs handled in this problem instance."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Resources", "The number of resources used in this problem instance."));
       Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
-      ScheduleEncodingParameter.ActualName = "Schedule";
+      ScheduleParameter.ActualName = "Schedule";
     }
 
 
@@ -81,7 +81,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
 
-    protected override IScheduleEncoding CreateSolution() {
+    protected override ISchedule CreateSolution() {
       try {
         var jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
         return Apply(JobsParameter.ActualValue.Value,

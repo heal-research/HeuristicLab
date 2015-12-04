@@ -34,13 +34,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
     protected DirectScheduleManipulator(DirectScheduleManipulator original, Cloner cloner) : base(original, cloner) { }
     public DirectScheduleManipulator()
       : base() {
-      ScheduleEncodingParameter.ActualName = "Schedule";
+      ScheduleParameter.ActualName = "Schedule";
     }
 
     protected abstract void Manipulate(IRandom random, Schedule individual);
 
     public override IOperation InstrumentedApply() {
-      var schedule = ScheduleEncodingParameter.ActualValue as Schedule;
+      var schedule = ScheduleParameter.ActualValue as Schedule;
       if (schedule == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type Schedule.");
       Manipulate(RandomParameter.ActualValue, schedule);
       return base.InstrumentedApply();

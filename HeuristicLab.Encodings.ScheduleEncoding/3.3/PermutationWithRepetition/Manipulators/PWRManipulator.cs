@@ -34,13 +34,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
     protected PWRManipulator(PWRManipulator original, Cloner cloner) : base(original, cloner) { }
     public PWRManipulator()
       : base() {
-      ScheduleEncodingParameter.ActualName = "PermutationWithRepetition";
+      ScheduleParameter.ActualName = "PermutationWithRepetition";
     }
 
     protected abstract void Manipulate(IRandom random, PWREncoding individual);
 
     public override IOperation InstrumentedApply() {
-      var solution = ScheduleEncodingParameter.ActualValue as PWREncoding;
+      var solution = ScheduleParameter.ActualValue as PWREncoding;
       if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type PWREncoding.");
       Manipulate(RandomParameter.ActualValue, solution);
       return base.InstrumentedApply();

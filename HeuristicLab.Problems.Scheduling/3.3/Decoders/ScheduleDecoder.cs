@@ -31,8 +31,8 @@ namespace HeuristicLab.Problems.Scheduling {
   [StorableClass]
   public abstract class ScheduleDecoder : SingleSuccessorOperator, IScheduleDecoder {
 
-    public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
-      get { return (ILookupParameter<IScheduleEncoding>)Parameters["ScheduleEncoding"]; }
+    public ILookupParameter<ISchedule> ScheduleEncodingParameter {
+      get { return (ILookupParameter<ISchedule>)Parameters["ScheduleEncoding"]; }
     }
     public ILookupParameter<Schedule> ScheduleParameter {
       get { return (ILookupParameter<Schedule>)Parameters["Schedule"]; }
@@ -43,11 +43,11 @@ namespace HeuristicLab.Problems.Scheduling {
     protected ScheduleDecoder(ScheduleDecoder original, Cloner cloner) : base(original, cloner) { }
     public ScheduleDecoder()
       : base() {
-      Parameters.Add(new LookupParameter<IScheduleEncoding>("ScheduleEncoding", "The new scheduling solution represented as encoding."));
+      Parameters.Add(new LookupParameter<ISchedule>("ScheduleEncoding", "The new scheduling solution represented as encoding."));
       Parameters.Add(new LookupParameter<Schedule>("Schedule", "The decoded scheduling solution represented as generalized schedule."));
     }
 
-    public abstract Schedule CreateScheduleFromEncoding(IScheduleEncoding solution);
+    public abstract Schedule CreateScheduleFromEncoding(ISchedule solution);
 
     public override IOperation Apply() {
       Schedule result = CreateScheduleFromEncoding(ScheduleEncodingParameter.ActualValue);

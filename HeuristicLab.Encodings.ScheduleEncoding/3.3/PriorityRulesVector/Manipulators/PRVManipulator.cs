@@ -33,13 +33,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
     protected PRVManipulator(PRVManipulator original, Cloner cloner) : base(original, cloner) { }
     public PRVManipulator()
       : base() {
-      ScheduleEncodingParameter.ActualName = "PriorityRulesVector";
+      ScheduleParameter.ActualName = "PriorityRulesVector";
     }
 
     protected abstract void Manipulate(IRandom random, PRVEncoding individual);
 
     public override IOperation InstrumentedApply() {
-      var solution = ScheduleEncodingParameter.ActualValue as PRVEncoding;
+      var solution = ScheduleParameter.ActualValue as PRVEncoding;
       if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type PRVEncoding.");
       Manipulate(RandomParameter.ActualValue, solution);
       return base.InstrumentedApply();

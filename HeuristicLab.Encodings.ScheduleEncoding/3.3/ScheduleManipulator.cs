@@ -31,8 +31,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
   public abstract class ScheduleManipulator : InstrumentedOperator, IScheduleManipulator, IStochasticOperator {
 
-    public ILookupParameter<IScheduleEncoding> ScheduleEncodingParameter {
-      get { return (ILookupParameter<IScheduleEncoding>)Parameters["ScheduleEncoding"]; }
+    public ILookupParameter<ISchedule> ScheduleParameter {
+      get { return (ILookupParameter<ISchedule>)Parameters["Schedule"]; }
     }
 
     public ILookupParameter<IRandom> RandomParameter {
@@ -44,7 +44,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     protected ScheduleManipulator(ScheduleManipulator original, Cloner cloner) : base(original, cloner) { }
     public ScheduleManipulator()
       : base() {
-      Parameters.Add(new LookupParameter<IScheduleEncoding>("ScheduleEncoding", "The scheduling solution to be manipulated."));
+      Parameters.Add(new LookupParameter<ISchedule>("Schedule", "The scheduling solution to be manipulated."));
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
     }
 

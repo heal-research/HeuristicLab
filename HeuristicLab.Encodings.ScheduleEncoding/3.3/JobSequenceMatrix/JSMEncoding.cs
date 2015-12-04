@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
   [Item("JobSequenceMatrixEncoding", "Represents an encoding for a scheduling Problem using a list of job sequences to deliver scheduleinformation.")]
   [StorableClass]
-  public class JSMEncoding : Item, IScheduleEncoding {
+  public class JSMEncoding : Item, ISchedule {
 
     [Storable]
     public ItemList<Permutation> JobSequenceMatrix { get; set; }

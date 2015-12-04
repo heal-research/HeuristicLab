@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
       Parameters.Add(new ValueLookupParameter<IntValue>("Jobs", "The number of jobs handled in this problem instance."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Resources", "The number of resources used in this problem instance."));
 
-      ScheduleEncodingParameter.ActualName = "PermutationWithRepetition";
+      ScheduleParameter.ActualName = "PermutationWithRepetition";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
@@ -61,7 +61,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
       return new PWREncoding(jobs, resources, random);
     }
 
-    protected override IScheduleEncoding CreateSolution() {
+    protected override ISchedule CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue);
     }
   }

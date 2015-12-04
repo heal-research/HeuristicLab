@@ -163,14 +163,14 @@ namespace HeuristicLab.Problems.Scheduling {
     private void RegisterEventHandlers() {
       ScheduleEvaluatorParameter.ValueChanged += ScheduleEvaluatorParameter_ValueChanged;
       ScheduleEvaluator.QualityParameter.ActualNameChanged += ScheduleEvaluator_QualityParameter_ActualNameChanged;
-      SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
+      SolutionCreator.ScheduleParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
       ScheduleDecoderParameter.ValueChanged += ScheduleDecoderParameter_ValueChanged;
       if (ScheduleDecoder != null) ScheduleDecoder.ScheduleParameter.ActualNameChanged += ScheduleDecoder_ScheduleParameter_ActualNameChanged;
     }
 
     #region Events
     protected override void OnSolutionCreatorChanged() {
-      SolutionCreator.ScheduleEncodingParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
+      SolutionCreator.ScheduleParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
       InitializeOperators();
     }
     protected override void OnEvaluatorChanged() {
@@ -287,14 +287,14 @@ namespace HeuristicLab.Problems.Scheduling {
       Evaluator.QualityParameter.Hidden = true;
 
       if (ScheduleDecoder != null)
-        ScheduleDecoder.ScheduleEncodingParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
+        ScheduleDecoder.ScheduleEncodingParameter.ActualName = SolutionCreator.ScheduleParameter.ActualName;
 
       if (ScheduleDecoder != null) {
         ScheduleEvaluator.ScheduleParameter.ActualName = ScheduleDecoder.ScheduleParameter.ActualName;
         ScheduleEvaluator.ScheduleParameter.Hidden = true;
       } else if (SolutionCreator is DirectScheduleRandomCreator) {
         var directEvaluator = (DirectScheduleRandomCreator)SolutionCreator;
-        ScheduleEvaluator.ScheduleParameter.ActualName = directEvaluator.ScheduleEncodingParameter.ActualName;
+        ScheduleEvaluator.ScheduleParameter.ActualName = directEvaluator.ScheduleParameter.ActualName;
         ScheduleEvaluator.ScheduleParameter.Hidden = true;
       } else {
         ScheduleEvaluator.ScheduleParameter.ActualName = ScheduleEvaluator.ScheduleParameter.Name;
@@ -302,14 +302,14 @@ namespace HeuristicLab.Problems.Scheduling {
       }
 
       foreach (var op in Operators.OfType<IScheduleManipulator>()) {
-        op.ScheduleEncodingParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
-        op.ScheduleEncodingParameter.Hidden = true;
+        op.ScheduleParameter.ActualName = SolutionCreator.ScheduleParameter.ActualName;
+        op.ScheduleParameter.Hidden = true;
       }
 
       foreach (var op in Operators.OfType<IScheduleCrossover>()) {
-        op.ChildParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
+        op.ChildParameter.ActualName = SolutionCreator.ScheduleParameter.ActualName;
         op.ChildParameter.Hidden = true;
-        op.ParentsParameter.ActualName = SolutionCreator.ScheduleEncodingParameter.ActualName;
+        op.ParentsParameter.ActualName = SolutionCreator.ScheduleParameter.ActualName;
         op.ParentsParameter.Hidden = true;
       }
 
@@ -319,7 +319,7 @@ namespace HeuristicLab.Problems.Scheduling {
           op.ScheduleParameter.ActualName = ScheduleDecoder.ScheduleParameter.ActualName;
           op.ScheduleParameter.Hidden = true;
         } else if (SolutionCreator is DirectScheduleRandomCreator) {
-          op.ScheduleParameter.ActualName = ((DirectScheduleRandomCreator)SolutionCreator).ScheduleEncodingParameter.ActualName;
+          op.ScheduleParameter.ActualName = ((DirectScheduleRandomCreator)SolutionCreator).ScheduleParameter.ActualName;
           op.ScheduleParameter.Hidden = true;
         } else {
           op.ScheduleParameter.ActualName = op.ScheduleParameter.Name;

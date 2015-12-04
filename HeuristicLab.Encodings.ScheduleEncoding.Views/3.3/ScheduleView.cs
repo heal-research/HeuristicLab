@@ -66,31 +66,20 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Views {
 
     private void RedrawGanttChart(Schedule content) {
       ResetGanttChart();
-      int resCount = 0;
-      Random random = new Random(1);
-      foreach (Resource r in content.Resources) {
-        foreach (ScheduledTask t in content.Resources[resCount].Tasks) {
-          int categoryNr = 0;
-          string toolTip = "Task#" + t.TaskNr;
-          string categoryName = "ScheduleTasks";
-          if (t is ScheduledTask) {
-            categoryNr = ((ScheduledTask)t).JobNr;
-            categoryName = "Job" + categoryNr;
-            toolTip = categoryName + " - " + toolTip;
-          }
-          ganttChart.AddData("Resource" + r.Index,
+      foreach (Resource resource in content.Resources) {
+        foreach (ScheduledTask task in resource.Tasks) {
+          int categoryNr = task.JobNr;
+          string categoryName = "Job" + categoryNr;
+          string toolTip = categoryName + " - " + "Task#" + task.TaskNr;
+
+          ganttChart.AddData("Resource" + resource.Index,
             categoryNr,
-            t.TaskNr,
-            t.StartTime,
-            t.EndTime,
+            task.TaskNr,
+            task.StartTime,
+            task.EndTime,
             toolTip);
         }
-        resCount++;
       }
-    }
-
-    private void RefreshChartInformations(Schedule content) {
-
     }
 
     protected override void SetEnabledStateOfControls() {

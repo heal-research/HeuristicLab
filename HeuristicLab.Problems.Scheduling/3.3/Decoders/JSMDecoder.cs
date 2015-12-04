@@ -176,7 +176,7 @@ namespace HeuristicLab.Problems.Scheduling {
       return resultingSchedule;
     }
 
-    public override Schedule CreateScheduleFromEncoding(IScheduleEncoding encoding) {
+    public override Schedule CreateScheduleFromEncoding(ISchedule encoding) {
       var solution = encoding as JSMEncoding;
       if (solution == null) throw new InvalidOperationException("Encoding is not of type JSMEncoding");
       return CreateScheduleFromEncoding(solution, JobDataParameter.ActualValue);
