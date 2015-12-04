@@ -35,7 +35,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     [Storable]
     public ItemList<ScheduledTask> Tasks { get; private set; }
 
-    //TODO why does a Ressource has a duration?
     public double TotalDuration {
       get {
         if (Tasks.Count == 0) return 0.0;

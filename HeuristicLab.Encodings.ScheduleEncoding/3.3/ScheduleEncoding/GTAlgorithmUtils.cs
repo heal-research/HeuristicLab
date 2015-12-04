@@ -72,7 +72,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
       return Math.Max(previousJobTaskEndTime, lastMachineEndTime);
     }
-    public static double ComputeEarliestCompletionTime(Task t, Schedule schedule) {
+    private static double ComputeEarliestCompletionTime(Task t, Schedule schedule) {
       return ComputeEarliestStartTime(t, schedule) + t.Duration;
     }
   }

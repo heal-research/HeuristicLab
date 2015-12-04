@@ -57,6 +57,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
     }
 
+    //this has to be exactly the number of the job which the task belongs to
+    //otherwise everything breaks and wrong results are calculated
     [Storable(Name = "JobNr")]
     private int jobNr;
     public int JobNr {

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -57,8 +58,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       : base(original, cloner) {
       this.resources = cloner.Clone(original.Resources);
       this.quality = original.Quality;
-      //TODO clone
-      this.lastScheduledTaskOfJob = new Dictionary<int, ScheduledTask>(original.lastScheduledTaskOfJob);
+      this.lastScheduledTaskOfJob = original.lastScheduledTaskOfJob.ToDictionary(kvp => kvp.Key, kvp => cloner.Clone(kvp.Value));
 
       RegisterResourcesEvents();
     }
