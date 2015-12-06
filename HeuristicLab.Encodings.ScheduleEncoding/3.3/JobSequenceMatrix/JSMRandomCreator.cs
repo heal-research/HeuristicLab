@@ -21,25 +21,18 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixCreator", "Creator class used to create Job Sequence Matrix solutions for standard JobShop scheduling problems.")]
   [StorableClass]
   public class JSMRandomCreator : ScheduleCreator, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
-    }
-    public IValueLookupParameter<IntValue> JobsParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Jobs"]; }
-    }
-    public IValueLookupParameter<IntValue> ResourcesParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Resources"]; }
     }
 
     [StorableConstructor]
@@ -48,10 +41,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
     public JSMRandomCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Jobs", "The number of jobs handled in this problem instance."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Resources", "The number of resources used in this problem instance."));
-
-      ScheduleParameter.ActualName = "JobSequenceMatrix";
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

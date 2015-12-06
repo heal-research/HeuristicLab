@@ -23,7 +23,6 @@ using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.ScheduleEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -224,11 +223,11 @@ namespace HeuristicLab.Problems.Scheduling {
         Task minimal = GTAlgorithmUtils.GetTaskWithMinimalEC(earliestTasksList, resultingSchedule);
 
         //STEP 2 - Compute a conflict set of all operations that can be scheduled on the machine the previously selected operation runs on
-        ItemList<Task> conflictSet = GTAlgorithmUtils.GetConflictSetForTask(minimal, earliestTasksList, jobs, resultingSchedule);
+        ItemList<Task> conflictSet = GTAlgorithmUtils.GetConflictSetForTask(minimal, earliestTasksList, resultingSchedule);
 
         //STEP 3 - Select an operation from the conflict set (various methods depending on how the algorithm should work..)
         //Task selectedTask = SelectTaskFromConflictSet(conflictSet, solution.PriorityRulesVector [currentDecisionIndex++], solution.NrOfRules.Value);
-        Task selectedTask = SelectTaskFromConflictSet(conflictSet, solution.PriorityRulesVector[minimal.JobNr], solution.NrOfRules.Value, resultingSchedule, jobs);
+        Task selectedTask = SelectTaskFromConflictSet(conflictSet, solution.PriorityRulesVector[minimal.JobNr], solution.NrOfRules, resultingSchedule, jobs);
 
         //STEP 4 - Adding the selected operation to the current schedule
         selectedTask.IsScheduled = true;

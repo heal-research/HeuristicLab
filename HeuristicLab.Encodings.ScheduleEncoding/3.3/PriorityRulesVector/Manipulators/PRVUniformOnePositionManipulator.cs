@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PRVUniformOnePositionManipulator", "Represents a manipulation operation inserting parts of the individual at another position.")]
   [StorableClass]
   public class PRVUniformOnePositionManipulator : PRVManipulator {
@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
     }
 
     public static void Apply(IRandom random, PRVEncoding individual) {
-      UniformOnePositionManipulator.Apply(random, individual.PriorityRulesVector, new IntMatrix(new int[,] { { 0, individual.NrOfRules.Value } }));
+      UniformOnePositionManipulator.Apply(random, individual.PriorityRulesVector, new IntMatrix(new int[,] { { 0, individual.NrOfRules } }));
     }
 
     protected override void Manipulate(IRandom random, PRVEncoding individual) {

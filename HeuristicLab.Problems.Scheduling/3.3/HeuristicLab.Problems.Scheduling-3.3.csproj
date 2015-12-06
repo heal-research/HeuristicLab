@@ -126,13 +126,14 @@
     <Compile Include="Evaluators\ScheduleEvaluator.cs" />
     <Compile Include="Interfaces\IJSSPOperator.cs" />
     <Compile Include="Interfaces\IScheduleDecoder.cs" />
-    <Compile Include="Interfaces\ISchedulingEvaluator.cs" />
     <Compile Include="Interfaces\IScheduleEvaluator.cs" />
+    <Compile Include="Interfaces\ISchedulingEvaluator.cs" />
+    <Compile Include="JobShopSchedulingProblem new.cs" />
     <Compile Include="JobShopSchedulingProblem.cs" />
     <Compile Include="Evaluators\SchedulingEvaluator.cs" />
-    <Compile Include="SchedulingProblem.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SchedulingProblem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="HeuristicLab.snk" />

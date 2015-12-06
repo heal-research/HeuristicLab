@@ -26,7 +26,6 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Encodings.ScheduleEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -158,7 +157,7 @@ namespace HeuristicLab.Problems.Scheduling {
         Resource conflictedResource = resultingSchedule.Resources[conflictedResourceNr];
 
         //STEP 2 - Compute a conflict set of all operations that can be scheduled on the conflicted resource
-        ItemList<Task> conflictSet = GTAlgorithmUtils.GetConflictSetForTask(minimal, earliestTasksList, jobs, resultingSchedule);
+        ItemList<Task> conflictSet = GTAlgorithmUtils.GetConflictSetForTask(minimal, earliestTasksList, resultingSchedule);
 
         //STEP 3 - Select a task from the conflict set
         int progressOnResource = conflictedResource.Tasks.Count;

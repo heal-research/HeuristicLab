@@ -122,12 +122,14 @@
     <Compile Include="Interfaces\IScheduleCreator.cs" />
     <Compile Include="Interfaces\IScheduleCrossover.cs" />
     <Compile Include="Interfaces\ISchedule.cs" />
+    <Compile Include="Interfaces\IScheduleEncoding.cs" />
     <Compile Include="Interfaces\IScheduleManipulator.cs" />
     <Compile Include="Interfaces\IScheduleOperator.cs" />
     <Compile Include="JobSequenceMatrix\Crossovers\JSMCrossover.cs" />
     <Compile Include="JobSequenceMatrix\Crossovers\JSMJOXCrossover.cs" />
     <Compile Include="JobSequenceMatrix\Crossovers\JSMOXCrossover.cs" />
     <Compile Include="JobSequenceMatrix\Crossovers\JSMSXXCrossover.cs" />
+    <Compile Include="JobSequenceMatrix\JobSequenceMatrixEncoding.cs" />
     <Compile Include="JobSequenceMatrix\JSMEncoding.cs" />
     <Compile Include="JobSequenceMatrix\JSMRandomCreator.cs" />
     <Compile Include="JobSequenceMatrix\Manipulators\JSMManipulator.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="PermutationWithRepetition\Crossovers\PWRPPXCrossover.cs" />
     <Compile Include="PermutationWithRepetition\Manipulators\PWRManipulator.cs" />
     <Compile Include="PermutationWithRepetition\Manipulators\PWRInsertionManipulator.cs" />
+    <Compile Include="PermutationWithRepetition\PermutationWithRepetitionEncoding.cs" />
     <Compile Include="PermutationWithRepetition\PWREncoding.cs" />
     <Compile Include="PermutationWithRepetition\PWRRandomCreator.cs" />
     <Compile Include="Plugin.cs" />
@@ -146,13 +149,16 @@
     <Compile Include="PriorityRulesVector\Crossovers\PRVSinglePointCrossover.cs" />
     <Compile Include="PriorityRulesVector\Manipulators\PRVManipulator.cs" />
     <Compile Include="PriorityRulesVector\Manipulators\PRVUniformOnePositionManipulator.cs" />
+    <Compile Include="PriorityRulesVector\PriorityRulesVectorEncoding.cs" />
     <Compile Include="PriorityRulesVector\PRVEncoding.cs" />
     <Compile Include="PriorityRulesVector\PRVRandomCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScheduleEncoding.cs" />
     <Compile Include="ScheduleEncoding\Crossovers\DirectScheduleCrossover.cs" />
     <Compile Include="ScheduleEncoding\Crossovers\DirectScheduleGTCrossover.cs" />
-    <Compile Include="ScheduleEncoding\GTAlgorithmUtils.cs" />
-    <Compile Include="ScheduleEncoding\Job.cs" />
+    <Compile Include="GTAlgorithmUtils.cs" />
+    <Compile Include="Job.cs" />
+    <Compile Include="ScheduleEncoding\DirectScheduleEncoding.cs" />
     <Compile Include="ScheduleEncoding\Manipulators\DirectScheduleManipulator.cs" />
     <Compile Include="ScheduleEncoding\DirectScheduleRandomCreator.cs" />
     <Compile Include="ScheduleEncoding\Resource.cs" />
@@ -160,7 +166,7 @@
     <Compile Include="ScheduleEncoding\ScheduledTask.cs" />
     <Compile Include="ScheduleCreator.cs" />
     <Compile Include="ScheduleCrossover.cs" />
-    <Compile Include="ScheduleEncoding\Task.cs" />
+    <Compile Include="Task.cs" />
     <Compile Include="ScheduleManipulator.cs" />
   </ItemGroup>
   <ItemGroup>

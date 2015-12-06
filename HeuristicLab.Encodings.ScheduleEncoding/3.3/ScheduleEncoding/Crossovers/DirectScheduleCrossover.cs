@@ -28,18 +28,16 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
   [Item("DirectScheduleCrossover", "An operator which crosses two schedule representations.")]
   [StorableClass]
   public abstract class DirectScheduleCrossover : ScheduleCrossover, IDirectScheduleOperator {
+    public ILookupParameter<ItemList<Job>> JobDataParameter {
+      get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
+    }
+
     [StorableConstructor]
     protected DirectScheduleCrossover(bool deserializing) : base(deserializing) { }
     protected DirectScheduleCrossover(DirectScheduleCrossover original, Cloner cloner) : base(original, cloner) { }
     public DirectScheduleCrossover()
       : base() {
-      ParentsParameter.ActualName = "Schedule";
-      ChildParameter.ActualName = "Schedule";
       Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
-    }
-
-    public ILookupParameter<ItemList<Job>> JobDataParameter {
-      get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
 
     public abstract Schedule Cross(IRandom random, Schedule parent1, Schedule parent2);

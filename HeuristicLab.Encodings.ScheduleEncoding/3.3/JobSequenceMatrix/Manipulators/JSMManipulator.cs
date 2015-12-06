@@ -24,17 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JSMManipulator", "An operator which manipulates a JSM representation.")]
   [StorableClass]
   public abstract class JSMManipulator : ScheduleManipulator, IJSMOperator {
     [StorableConstructor]
     protected JSMManipulator(bool deserializing) : base(deserializing) { }
     protected JSMManipulator(JSMManipulator original, Cloner cloner) : base(original, cloner) { }
-    public JSMManipulator()
-      : base() {
-      ScheduleParameter.ActualName = "JobSequenceMatrix";
-    }
+    public JSMManipulator() : base() { }
 
     protected abstract void Manipulate(IRandom random, ISchedule individual);
 

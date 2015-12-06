@@ -19,14 +19,13 @@
  */
 #endregion
 
-using System;
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixEncoding", "Represents an encoding for a scheduling Problem using a list of job sequences to deliver scheduleinformation.")]
   [StorableClass]
   public class JSMEncoding : Item, ISchedule {

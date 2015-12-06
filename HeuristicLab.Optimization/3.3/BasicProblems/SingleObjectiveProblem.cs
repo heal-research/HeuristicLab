@@ -50,6 +50,10 @@ namespace HeuristicLab.Optimization {
         return BestKnownQualityParameter.Value.Value;
       }
       set {
+        if (double.IsNaN(value)) {
+          BestKnownQualityParameter.Value = null;
+          return;
+        }
         if (BestKnownQualityParameter.Value == null) BestKnownQualityParameter.Value = new DoubleValue(value);
         else BestKnownQualityParameter.Value.Value = value;
       }

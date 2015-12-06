@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRInsertionManipulator", "Represents a manipulation operation inserting parts of the individual at another position.")]
   [StorableClass]
   public class PWRInsertionManipulator : PWRManipulator {
@@ -42,7 +42,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
     public static void Apply(IRandom random, PWREncoding individual) {
       int cutIndex = random.Next(individual.PermutationWithRepetition.Length);
       int insertIndex = random.Next(individual.PermutationWithRepetition.Length);
-      List<int> perm = ((IntegerVector)(individual.PermutationWithRepetition.Clone())).ToList<int>();
+      List<int> perm = ((IntegerVector)(individual.PermutationWithRepetition.Clone())).ToList();
       int aux = perm[cutIndex];
       if (cutIndex > insertIndex) {
         perm.RemoveAt(cutIndex);

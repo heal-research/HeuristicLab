@@ -21,6 +21,7 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -33,13 +34,21 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     public ILookupParameter<ISchedule> ScheduleParameter {
       get { return (ILookupParameter<ISchedule>)Parameters["Schedule"]; }
     }
+    public IValueLookupParameter<IntValue> JobsParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["Jobs"]; }
+    }
+    public IValueLookupParameter<IntValue> ResourcesParameter {
+      get { return (IValueLookupParameter<IntValue>)Parameters["Resources"]; }
+    }
 
     [StorableConstructor]
     protected ScheduleCreator(bool deserializing) : base(deserializing) { }
     protected ScheduleCreator(ScheduleCreator original, Cloner cloner) : base(original, cloner) { }
     public ScheduleCreator()
       : base() {
-      Parameters.Add(new LookupParameter<ISchedule>("Schedule", "The new scheduling solutioncandidate."));
+      Parameters.Add(new LookupParameter<ISchedule>("Schedule", "The new scheduling solution candidate."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Jobs", "The number of jobs handled in this problem instance."));
+      Parameters.Add(new ValueLookupParameter<IntValue>("Resources", "The number of resources used in this problem instance."));
     }
 
     public override IOperation InstrumentedApply() {

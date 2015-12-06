@@ -22,11 +22,10 @@
 using System.Text;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PriorityRulesVectorEncoding", "Represents an encoding for a Scheduling Problem.")]
   [StorableClass]
   public class PRVEncoding : Item, ISchedule {
@@ -34,33 +33,28 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
     public IntegerVector PriorityRulesVector { get; set; }
 
     [Storable]
-    private IntValue nrOfRules;
-    public IntValue NrOfRules {
-      get {
-        return nrOfRules;
-      }
-    }
+    public int NrOfRules { get; private set; }
 
     [StorableConstructor]
     protected PRVEncoding(bool deserializing) : base(deserializing) { }
     protected PRVEncoding(PRVEncoding original, Cloner cloner)
       : base(original, cloner) {
-      this.nrOfRules = cloner.Clone(original.NrOfRules);
+      this.NrOfRules = original.NrOfRules;
       this.PriorityRulesVector = cloner.Clone(original.PriorityRulesVector);
     }
     public PRVEncoding(int nrOfRules)
       : base() {
-      this.nrOfRules = new IntValue(nrOfRules);
+      this.NrOfRules = nrOfRules;
       this.PriorityRulesVector = new IntegerVector();
     }
-    public PRVEncoding(IntegerVector iv, IntValue nrOfRules)
+    public PRVEncoding(IntegerVector iv, int nrOfRules)
       : base() {
-      this.nrOfRules = (IntValue)nrOfRules.Clone();
+      this.NrOfRules = nrOfRules;
       this.PriorityRulesVector = (IntegerVector)iv.Clone();
     }
-    public PRVEncoding(int length, IRandom random, int min, int max, IntValue nrOfRules)
+    public PRVEncoding(int length, IRandom random, int min, int max, int nrOfRules)
       : base() {
-      this.nrOfRules = (IntValue)nrOfRules.Clone();
+      this.NrOfRules = nrOfRules;
       this.PriorityRulesVector = new IntegerVector(length, random, min, max);
     }
 

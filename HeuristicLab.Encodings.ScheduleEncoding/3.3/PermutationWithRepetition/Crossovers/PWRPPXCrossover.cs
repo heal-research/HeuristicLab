@@ -26,7 +26,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRPPXCrossover", "Represents a crossover operation swapping sequences of the parents to generate offspring.")]
   [StorableClass]
   public class PWRPPXCrossover : PWRCrossover {

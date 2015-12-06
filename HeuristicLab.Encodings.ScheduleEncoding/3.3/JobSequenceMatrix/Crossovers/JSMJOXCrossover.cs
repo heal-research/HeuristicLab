@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JSMJobbasedOrderCrossover", "Represents a crossover operation swapping subsequences of the parents to generate offspring.")]
   [StorableClass]
   public class JSMJOXCrossover : JSMCrossover {

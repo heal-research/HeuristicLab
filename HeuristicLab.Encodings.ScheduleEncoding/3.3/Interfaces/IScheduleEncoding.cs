@@ -1,4 +1,5 @@
 ﻿#region License Information
+
 /* HeuristicLab
  * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
  *
@@ -17,6 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
+
 #endregion
 
 using HeuristicLab.Core;
@@ -24,9 +26,14 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  public interface IScheduleCreator : ISolutionCreator<ISchedule>, IScheduleOperator {
-    ILookupParameter<ISchedule> ScheduleParameter { get; }
-    IValueLookupParameter<IntValue> JobsParameter { get; }
-    IValueLookupParameter<IntValue> ResourcesParameter { get; }
+  public interface IScheduleEncoding : IEncoding<ISchedule> {
+    IFixedValueParameter<ItemList<Job>> JobDataParameter { get; set; }
+    IFixedValueParameter<IntValue> JobsParameter { get; set; }
+    IFixedValueParameter<IntValue> ResourcesParameter { get; set; }
+
+    ItemList<Job> JobData { get; }
+    int Jobs { get; set; }
+    int Resources { get; set; }
+
   }
 }

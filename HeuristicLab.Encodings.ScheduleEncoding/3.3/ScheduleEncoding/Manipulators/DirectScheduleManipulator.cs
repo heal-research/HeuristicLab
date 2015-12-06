@@ -22,26 +22,31 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
   [Item("DirectScheduleManipulator", "An operator which manipulates a direct schedule representation.")]
   [StorableClass]
   public abstract class DirectScheduleManipulator : ScheduleManipulator, IDirectScheduleOperator {
+    public ILookupParameter<ItemList<Job>> JobDataParameter {
+      get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
+    }
 
     [StorableConstructor]
     protected DirectScheduleManipulator(bool deserializing) : base(deserializing) { }
     protected DirectScheduleManipulator(DirectScheduleManipulator original, Cloner cloner) : base(original, cloner) { }
+
     public DirectScheduleManipulator()
       : base() {
-      ScheduleParameter.ActualName = "Schedule";
+      Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
     }
 
     protected abstract void Manipulate(IRandom random, Schedule individual);
 
     public override IOperation InstrumentedApply() {
       var schedule = ScheduleParameter.ActualValue as Schedule;
-      if (schedule == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type Schedule.");
+      if (schedule == null) throw new InvalidOperationException("Schedule was not found or is not of type Schedule.");
       Manipulate(RandomParameter.ActualValue, schedule);
       return base.InstrumentedApply();
     }

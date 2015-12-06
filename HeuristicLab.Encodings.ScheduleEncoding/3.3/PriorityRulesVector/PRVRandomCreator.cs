@@ -21,56 +21,44 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PriorityRulesRandomCreator", "Creator class used to create PRV encoding objects for scheduling problems.")]
   [StorableClass]
   public class PRVRandomCreator : ScheduleCreator, IStochasticOperator {
 
     [Storable]
-    public IntValue NrOfRules { get; set; }
+    public int NrOfRules { get; set; }
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
-    }
-    public IValueLookupParameter<IntValue> JobsParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Jobs"]; }
-    }
-    public IValueLookupParameter<IntValue> ResourcesParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Resources"]; }
     }
 
     [StorableConstructor]
     protected PRVRandomCreator(bool deserializing) : base(deserializing) { }
     protected PRVRandomCreator(PRVRandomCreator original, Cloner cloner)
       : base(original, cloner) {
-      this.NrOfRules = cloner.Clone(original.NrOfRules);
+      this.NrOfRules = original.NrOfRules;
     }
-    public PRVRandomCreator()
-      : base() {
-      NrOfRules = new IntValue(10);
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Jobs", "The number of jobs handled in this problem instance."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Resources", "The number of resources used in this problem instance."));
-      ScheduleParameter.ActualName = "PriorityRulesVector";
-    }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PRVRandomCreator(this, cloner);
     }
 
-    public static PRVEncoding Apply(int jobs, int resources, IRandom random, IntValue nrOfRules) {
-      return new PRVEncoding(jobs * resources, random, 0, nrOfRules.Value, nrOfRules);
+    public PRVRandomCreator()
+      : base() {
+      NrOfRules = 10;
+      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
+    }
+
+    public static PRVEncoding Apply(int jobs, int resources, IRandom random, int nrOfRules) {
+      return new PRVEncoding(jobs * resources, random, 0, nrOfRules, nrOfRules);
     }
 
     protected override ISchedule CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue, NrOfRules);
     }
-
-
   }
 }

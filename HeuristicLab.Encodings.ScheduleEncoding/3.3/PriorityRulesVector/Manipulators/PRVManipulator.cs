@@ -24,17 +24,14 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PriorityRulesVector {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PRVManipulator", "An operator which manipulates a PRV representation.")]
   [StorableClass]
   public abstract class PRVManipulator : ScheduleManipulator, IPRVOperator {
     [StorableConstructor]
     protected PRVManipulator(bool deserializing) : base(deserializing) { }
     protected PRVManipulator(PRVManipulator original, Cloner cloner) : base(original, cloner) { }
-    public PRVManipulator()
-      : base() {
-      ScheduleParameter.ActualName = "PriorityRulesVector";
-    }
+    public PRVManipulator() : base() { }
 
     protected abstract void Manipulate(IRandom random, PRVEncoding individual);
 

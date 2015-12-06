@@ -23,5 +23,6 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   public interface IDirectScheduleOperator : IOperator {
+    ILookupParameter<ItemList<Job>> JobDataParameter { get; }
   }
 }

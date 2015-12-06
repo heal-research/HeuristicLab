@@ -27,7 +27,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JSMShiftChangeManipulator", "Represents a manipulation operation where the operations of a randomly determined job are shifted in one direction for all resources.")]
   [StorableClass]
   public class JSMShiftChangeManipulator : JSMManipulator {

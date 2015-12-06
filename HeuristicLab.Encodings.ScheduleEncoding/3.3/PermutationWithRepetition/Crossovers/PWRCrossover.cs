@@ -23,7 +23,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRCrossover", "An operator which crosses two JSM representations.")]
   [StorableClass]
   public abstract class PWRCrossover : ScheduleCrossover, IPWROperator {

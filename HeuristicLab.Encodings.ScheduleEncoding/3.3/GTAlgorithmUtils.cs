@@ -20,12 +20,13 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using HeuristicLab.Core;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   public static class GTAlgorithmUtils {
 
-    public static ItemList<Task> GetEarliestNotScheduledTasks(ItemList<Job> jobData) {
+    public static ItemList<Task> GetEarliestNotScheduledTasks(IEnumerable<Job> jobData) {
       ItemList<Task> result = new ItemList<Task>();
       foreach (Job j in jobData) {
         foreach (Task t in j.Tasks) {
@@ -37,7 +38,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
       return result;
     }
-    public static Task GetTaskWithMinimalEC(ItemList<Task> earliestTasksList, Schedule schedule) {
+    public static Task GetTaskWithMinimalEC(IEnumerable<Task> earliestTasksList, Schedule schedule) {
       double minEct = double.MaxValue;
       Task result = null;
       foreach (Task t in earliestTasksList) {
@@ -49,7 +50,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
       return result;
     }
-    public static ItemList<Task> GetConflictSetForTask(Task conflictedTask, ItemList<Task> earliestTasksList, ItemList<Job> jobData, Schedule schedule) {
+    public static ItemList<Task> GetConflictSetForTask(Task conflictedTask, IEnumerable<Task> earliestTasksList, Schedule schedule) {
       ItemList<Task> result = new ItemList<Task>();
       double conflictedCompletionTime = ComputeEarliestCompletionTime(conflictedTask, schedule);
       result.Add(conflictedTask);

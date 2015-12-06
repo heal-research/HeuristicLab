@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JSMSubsequenceExchangeCrossover", "Represents a crossover operation identifiying and exchanging equal subsequences of the parents to generate offspring.")]
   [StorableClass]
   public class JSMSXXCrossover : JSMCrossover {

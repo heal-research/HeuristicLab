@@ -19,9 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
+using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  public interface ISchedule : IItem {
+  public interface ISchedule : ISolution {
   }
 }

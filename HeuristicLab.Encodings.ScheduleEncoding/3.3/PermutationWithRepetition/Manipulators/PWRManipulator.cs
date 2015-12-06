@@ -24,7 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRManipulator", "An operator which manipulates a PWR representation.")]
   [StorableClass]
   public abstract class PWRManipulator : ScheduleManipulator, IPWROperator {
@@ -32,10 +32,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition {
     [StorableConstructor]
     protected PWRManipulator(bool deserializing) : base(deserializing) { }
     protected PWRManipulator(PWRManipulator original, Cloner cloner) : base(original, cloner) { }
-    public PWRManipulator()
-      : base() {
-      ScheduleParameter.ActualName = "PermutationWithRepetition";
-    }
+    public PWRManipulator() : base() { }
 
     protected abstract void Manipulate(IRandom random, PWREncoding individual);
 

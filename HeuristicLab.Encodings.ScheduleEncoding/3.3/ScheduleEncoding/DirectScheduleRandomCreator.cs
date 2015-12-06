@@ -22,8 +22,6 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -32,21 +30,14 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleRandomCreator", "Creator class used to create schedule encoding objects.")]
   [StorableClass]
-  public class DirectScheduleRandomCreator : ScheduleCreator, IStochasticOperator {
+  public class DirectScheduleRandomCreator : ScheduleCreator, IStochasticOperator, IDirectScheduleOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
     }
-    public IValueLookupParameter<IntValue> JobsParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Jobs"]; }
-    }
-    public IValueLookupParameter<IntValue> ResourcesParameter {
-      get { return (IValueLookupParameter<IntValue>)Parameters["Resources"]; }
-    }
     public ILookupParameter<ItemList<Job>> JobDataParameter {
       get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
-
 
     [StorableConstructor]
     protected DirectScheduleRandomCreator(bool deserializing) : base(deserializing) { }
@@ -59,10 +50,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     public DirectScheduleRandomCreator()
       : base() {
       Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Jobs", "The number of jobs handled in this problem instance."));
-      Parameters.Add(new ValueLookupParameter<IntValue>("Resources", "The number of resources used in this problem instance."));
       Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
-      ScheduleParameter.ActualName = "Schedule";
     }
 
 
@@ -88,7 +76,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
           ResourcesParameter.ActualValue.Value,
           new PWREncoding(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue),
           jobData);
-      } catch {
+      }
+      catch {
         throw new Exception("ScheduleRandomCreator needs JobData parameter from a JSSP-Instance to create Schedule-Instances!");
       }
     }

@@ -63,20 +63,18 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
         //STEP 1 - Get earliest not scheduled operation with minimal earliest completing time
         Task minimal = GTAlgorithmUtils.GetTaskWithMinimalEC(earliestTasksList, child);
         int conflictedResourceNr = minimal.ResourceNr;
-        Resource conflictedResource = child.Resources[conflictedResourceNr];
 
         //STEP 2 - Compute a conflict set of all operations that can be scheduled on the conflicted resource
-        ItemList<Task> conflictSet = GTAlgorithmUtils.GetConflictSetForTask(minimal, earliestTasksList, jobData, child);
+        ItemList<Task> conflictSet = GTAlgorithmUtils.GetConflictSetForTask(minimal, earliestTasksList, child);
 
         //STEP 3 - Select a task from the conflict set
-        int progressOnResource = conflictedResource.Tasks.Count;
         Task selectedTask = null;
         if (random.NextDouble() < mutProp) {
           //Mutation
           selectedTask = conflictSet[random.Next(conflictSet.Count)];
         } else {
           //Crossover
-          selectedTask = SelectTaskFromConflictSet(conflictSet, ((random.Next(2) == 0) ? parent1 : parent2), conflictedResourceNr, progressOnResource);
+          selectedTask = SelectTaskFromConflictSet(conflictSet, ((random.Next(2) == 0) ? parent1 : parent2), conflictedResourceNr);
         }
 
         //STEP 4 - Add the selected task to the current schedule 
@@ -91,7 +89,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
       return child;
     }
 
-    private static Task SelectTaskFromConflictSet(ItemList<Task> conflictSet, Schedule usedParent, int conflictedResourceNr, int progressOnResource) {
+    private static Task SelectTaskFromConflictSet(ItemList<Task> conflictSet, Schedule usedParent, int conflictedResourceNr) {
       //Apply Crossover
       foreach (ScheduledTask st in usedParent.Resources[conflictedResourceNr].Tasks) {
         foreach (Task t in conflictSet) {

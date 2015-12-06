@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JSMSwapManipulator", "Represents a manipulation operation swapping parts of the individual.")]
   [StorableClass]
   public class JSMSwapManipulator : JSMManipulator {
