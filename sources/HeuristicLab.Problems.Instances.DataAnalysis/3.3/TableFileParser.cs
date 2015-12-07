@@ -226,6 +226,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
       }
 
+      this.rows = values.First().Count;
+
       // after everything has been parsed make sure the lists are as compact as possible
       foreach (var l in values) {
         var dblList = l as List<double>;
@@ -368,11 +370,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           CurrentLine = reader.ReadLine();
           try {
             BytesRead = reader.BaseStream.Position;
-          }
-          catch (IOException) {
+          } catch (IOException) {
             BytesRead += CurrentLine.Length + 2; // guess
-          }
-          catch (NotSupportedException) {
+          } catch (NotSupportedException) {
             BytesRead += CurrentLine.Length + 2;
           }
           int i = 0;

@@ -63,10 +63,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
           }
           try {
             GenericConsumer.Load(instance);
-            instancesComboBox.SelectedIndex = -1;
           } catch (IOException ex) {
             ErrorWhileLoading(ex, importTypeDialog.Path);
           } finally {
+            Invoke((Action)(() => instancesComboBox.SelectedIndex = -1));
             mainForm.RemoveOperationProgressFromContent(activeView.Content);
           }
         });
