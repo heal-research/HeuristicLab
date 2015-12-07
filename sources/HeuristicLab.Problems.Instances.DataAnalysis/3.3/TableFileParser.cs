@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace HeuristicLab.Problems.Instances.DataAnalysis {
   public class TableFileParser : Progress<long> { // reports the number of bytes read
@@ -35,7 +36,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     private const char WHITESPACECHAR = (char)0;
     private static readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t', WHITESPACECHAR };
     private Tokenizer tokenizer;
-    private List<List<object>> rowValues;
+    private int estimatedNumberOfLines = 200; // initial capacity for columns, will be set automatically when data is read from a file
 
     private int rows;
     public int Rows {
@@ -71,7 +72,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     public TableFileParser() {
-      rowValues = new List<List<object>>();
       variableNames = new List<string>();
     }
 
@@ -103,7 +103,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
                                           DateTimeFormatInfo dateTimeFormatInfo, char separator) {
       using (StreamReader reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
-        return tokenizer.PeekType() != TokenTypeEnum.Double;
+        return (tokenizer.PeekType() != TokenTypeEnum.Double);
       }
     }
 
@@ -117,6 +117,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       DateTimeFormatInfo dateTimeFormatInfo;
       char separator;
       DetermineFileFormat(fileName, out numberFormat, out dateTimeFormatInfo, out separator);
+      EstimateNumberOfLines(fileName);
       Parse(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine, lineLimit);
     }
 
@@ -129,8 +130,27 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="separator">defines the separator</param>
     /// <param name="columnNamesInFirstLine"></param>
     public void Parse(string fileName, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine, int lineLimit = -1) {
+      EstimateNumberOfLines(fileName);
       using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
         Parse(stream, numberFormat, dateTimeFormatInfo, separator, columnNamesInFirstLine, lineLimit);
+      }
+    }
+
+    // determines the number of newline characters in the first 64KB to guess the number of rows for a file
+    private void EstimateNumberOfLines(string fileName) {
+      var len = new System.IO.FileInfo(fileName).Length;
+      var buf = new char[64 * 1024];
+      var reader = new StreamReader(File.OpenRead(fileName));
+      reader.ReadBlock(buf, 0, buf.Length);
+      int numNewLine = 0;
+      foreach (var ch in buf) if (ch == '\n') numNewLine++;
+      if (numNewLine == 0) {
+        // fail -> keep the default setting
+        return;
+      } else {
+        double charsPerLineFactor = buf.Length / (double)numNewLine;
+        double estimatedLines = len / charsPerLineFactor;
+        estimatedNumberOfLines = (int)Math.Round(estimatedLines * 1.1); // pessimistic allocation of 110% to make sure that the list is very likely large enough
       }
     }
 
@@ -157,46 +177,67 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine, int lineLimit = -1) {
       using (StreamReader reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
-        // parse the file
-        Parse(columnNamesInFirstLine, lineLimit);
-      }
-
-      // translate the list of samples into a DoubleMatrixData item
-      rows = rowValues.Count;
-      columns = rowValues[0].Count;
-      values = new List<IList>();
-
-      //create columns
-      for (int col = 0; col < columns; col++) {
-        var types = rowValues.Select(r => r[col]).Where(v => v != null && v as string != string.Empty).Take(100).Select(v => v.GetType());
-        if (!types.Any()) {
-          values.Add(new List<string>());
-          continue;
+        // parse the file line by line
+        values = new List<IList>();
+        if (lineLimit > 0) estimatedNumberOfLines = lineLimit;
+        foreach (var row in Parse(columnNamesInFirstLine, lineLimit)) {
+          columns = row.Count;
+          // on the first row we create our lists for column-oriented storage
+          if (!values.Any()) {
+            foreach (var obj in row) {
+              // create a list type matching the object type and add first element
+              if (obj == null) {
+                var l = new List<object>(estimatedNumberOfLines);
+                values.Add(l);
+                l.Add(obj);
+              } else if (obj is double) {
+                var l = new List<double>(estimatedNumberOfLines);
+                values.Add(l);
+                l.Add((double)obj);
+              } else if (obj is DateTime) {
+                var l = new List<DateTime>(estimatedNumberOfLines);
+                values.Add(l);
+                l.Add((DateTime)obj);
+              } else if (obj is string) {
+                var l = new List<string>(estimatedNumberOfLines);
+                values.Add(l);
+                l.Add((string)obj);
+              } else throw new InvalidOperationException();
+            }
+            // fill with initial value
+          } else {
+            // the columns are already there -> try to add values 
+            int columnIndex = 0;
+            foreach (object element in row) {
+              if (values[columnIndex] is List<double> && !(element is double))
+                values[columnIndex].Add(double.NaN);
+              else if (values[columnIndex] is List<DateTime> && !(element is DateTime))
+                values[columnIndex].Add(DateTime.MinValue);
+              else if (values[columnIndex] is List<string> && !(element is string))
+                values[columnIndex].Add(element.ToString());
+              else
+                values[columnIndex].Add(element);
+              columnIndex++;
+            }
+          }
         }
 
-        var columnType = types.GroupBy(v => v).OrderBy(v => v.Count()).Last().Key;
-        if (columnType == typeof(double)) values.Add(new List<double>());
-        else if (columnType == typeof(DateTime)) values.Add(new List<DateTime>());
-        else if (columnType == typeof(string)) values.Add(new List<string>());
-        else throw new InvalidOperationException();
+        if (!values.Any() || values.First().Count == 0)
+          Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
       }
 
-
-
-      //fill with values
-      foreach (List<object> row in rowValues) {
-        int columnIndex = 0;
-        foreach (object element in row) {
-          if (values[columnIndex] is List<double> && !(element is double))
-            values[columnIndex].Add(double.NaN);
-          else if (values[columnIndex] is List<DateTime> && !(element is DateTime))
-            values[columnIndex].Add(DateTime.MinValue);
-          else if (values[columnIndex] is List<string> && !(element is string))
-            values[columnIndex].Add(element.ToString());
-          else
-            values[columnIndex].Add(element);
-          columnIndex++;
-        }
+      // after everything has been parsed make sure the lists are as compact as possible
+      foreach (var l in values) {
+        var dblList = l as List<double>;
+        var byteList = l as List<byte>;
+        var dateList = l as List<DateTime>;
+        var stringList = l as List<string>;
+        var objList = l as List<object>;
+        if (dblList != null) dblList.TrimExcess();
+        if (byteList != null) byteList.TrimExcess();
+        if (dateList != null) dateList.TrimExcess();
+        if (stringList != null) stringList.TrimExcess();
+        if (objList != null) objList.TrimExcess();
       }
     }
 
@@ -314,7 +355,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         private set;
       }
 
-
       public Tokenizer(StreamReader reader, NumberFormatInfo numberFormatInfo, DateTimeFormatInfo dateTimeFormatInfo, char separator) {
         this.reader = reader;
         this.numberFormatInfo = numberFormatInfo;
@@ -328,9 +368,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           CurrentLine = reader.ReadLine();
           try {
             BytesRead = reader.BaseStream.Position;
-          } catch (IOException) {
+          }
+          catch (IOException) {
             BytesRead += CurrentLine.Length + 2; // guess
-          } catch (NotSupportedException) {
+          }
+          catch (NotSupportedException) {
             BytesRead += CurrentLine.Length + 2;
           }
           int i = 0;
@@ -412,7 +454,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         strVal = stringVals[tokenPos];
         dblVal = doubleVals[tokenPos];
         dateTimeVal = dateTimeVals[tokenPos];
-
         Skip();
       }
 
@@ -423,7 +464,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     #endregion
 
     #region parsing
-    private void Parse(bool columnNamesInFirstLine, int lineLimit = -1) { // lineLimit = -1 means no limit
+    private IEnumerable<List<object>> Parse(bool columnNamesInFirstLine, int lineLimit = -1) { // lineLimit = -1 means no limit
       if (columnNamesInFirstLine) {
         ParseVariableNames();
         if (!tokenizer.HasNext())
@@ -431,12 +472,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
             "Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).",
             "", tokenizer.CurrentLineNumber);
       }
-      ParseValues(lineLimit);
-      if (rowValues.Count == 0) Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
+      return ParseValues(lineLimit);
     }
 
-    private void ParseValues(int lineLimit = -1) {
+    private IEnumerable<List<object>> ParseValues(int lineLimit = -1) {
       int nLinesParsed = 0;
+      int numValuesInFirstRow = -1;
       while (tokenizer.HasNext() && (lineLimit < 0 || nLinesParsed < lineLimit)) {
         if (tokenizer.PeekType() == TokenTypeEnum.NewLine) {
           tokenizer.Skip();
@@ -453,12 +494,13 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           nLinesParsed++;
           // all rows have to have the same number of values            
           // the first row defines how many samples are needed
-          if (rowValues.Count > 0 && rowValues[0].Count != row.Count) {
-            Error("The first row of the dataset has " + rowValues[0].Count + " columns." +
+          if (numValuesInFirstRow < 0) numValuesInFirstRow = row.Count;
+          else if (numValuesInFirstRow != row.Count) {
+            Error("The first row of the dataset has " + numValuesInFirstRow + " columns." +
                   "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.", "",
                   tokenizer.CurrentLineNumber);
           }
-          rowValues.Add(row);
+          yield return row;
         }
 
         OnReport(tokenizer.BytesRead);
