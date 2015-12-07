@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -143,12 +144,20 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       var reader = new StreamReader(File.OpenRead(fileName));
       reader.ReadBlock(buf, 0, buf.Length);
       int numNewLine = 0;
-      foreach (var ch in buf) if (ch == '\n') numNewLine++;
-      if (numNewLine == 0) {
+      int charsInCurrentLine = 0, charsInFirstLine = 0; // the first line (names) and the last line (incomplete) are not representative
+      foreach (var ch in buf) {
+        charsInCurrentLine++;
+        if (ch == '\n') {
+          if (numNewLine == 0) charsInFirstLine = charsInCurrentLine; // store the number of chars in the first line
+          charsInCurrentLine = 0;
+          numNewLine++;
+        }
+      }
+      if (numNewLine <= 1) {
         // fail -> keep the default setting
         return;
       } else {
-        double charsPerLineFactor = buf.Length / (double)numNewLine;
+        double charsPerLineFactor = (buf.Length - charsInFirstLine - charsInCurrentLine) / ((double)numNewLine - 1);
         double estimatedLines = len / charsPerLineFactor;
         estimatedNumberOfLines = (int)Math.Round(estimatedLines * 1.1); // pessimistic allocation of 110% to make sure that the list is very likely large enough
       }
@@ -241,6 +250,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         if (stringList != null) stringList.TrimExcess();
         if (objList != null) objList.TrimExcess();
       }
+
+      // for large files we created a lot of memory pressure, cannot hurt to run GC.Collect here (TableFileParser is called seldomly on user interaction)
+      GC.Collect(2, GCCollectionMode.Forced);
     }
 
     public static void DetermineFileFormat(string path, out NumberFormatInfo numberFormat, out DateTimeFormatInfo dateTimeFormatInfo, out char separator) {
