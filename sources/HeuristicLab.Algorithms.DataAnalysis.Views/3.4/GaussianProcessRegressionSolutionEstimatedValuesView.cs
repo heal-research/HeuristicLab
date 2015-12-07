@@ -24,33 +24,29 @@ using System.Windows.Forms;
 using HeuristicLab.Data;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Problems.DataAnalysis.Views;
 
-namespace HeuristicLab.Problems.DataAnalysis.Views {
+namespace HeuristicLab.Algorithms.DataAnalysis.Views {
   [View("Estimated Values")]
-  [Content(typeof(IRegressionSolution))]
-  public partial class RegressionSolutionEstimatedValuesView : DataAnalysisSolutionEvaluationView {
+  [Content(typeof(GaussianProcessRegressionSolution), false)]
+  public partial class GaussianProcessRegressionSolutionEstimatedValuesView : RegressionSolutionEstimatedValuesView {
     private const string TARGETVARIABLE_SERIES_NAME = "Target Variable";
     private const string ESTIMATEDVALUES_SERIES_NAME = "Estimated Values (all)";
     private const string ESTIMATEDVALUES_TRAINING_SERIES_NAME = "Estimated Values (training)";
     private const string ESTIMATEDVALUES_TEST_SERIES_NAME = "Estimated Values (test)";
+    private const string ESTIMATEDVARIANCE_TRAINING_SERIES_NAME = "Estimated Variance (training)";
+    private const string ESTIMATEDVARIANCE_TEST_SERIES_NAME = "Estimated Variance (test)";
 
-    public new IRegressionSolution Content {
-      get { return (IRegressionSolution)base.Content; }
+    public new GaussianProcessRegressionSolution Content {
+      get { return (GaussianProcessRegressionSolution)base.Content; }
       set {
         base.Content = value;
       }
     }
 
-    protected StringConvertibleMatrixView matrixView;
-
-    public RegressionSolutionEstimatedValuesView()
+    public GaussianProcessRegressionSolutionEstimatedValuesView()
       : base() {
       InitializeComponent();
-      matrixView = new StringConvertibleMatrixView();
-      matrixView.ShowRowsAndColumnsTextBox = false;
-      matrixView.ShowStatisticalInformation = false;
-      matrixView.Dock = DockStyle.Fill;
-      this.Controls.Add(matrixView);
     }
 
     #region events
@@ -84,21 +80,30 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
       else {
         StringMatrix matrix = null;
         if (Content != null) {
-          string[,] values = new string[Content.ProblemData.Dataset.Rows, 7];
+          string[,] values = new string[Content.ProblemData.Dataset.Rows, 9];
+
+          var trainingRows = Content.ProblemData.TrainingIndices;
+          var testRows = Content.ProblemData.TestIndices;
 
           double[] target = Content.ProblemData.Dataset.GetDoubleValues(Content.ProblemData.TargetVariable).ToArray();
           var estimated = Content.EstimatedValues.GetEnumerator();
           var estimated_training = Content.EstimatedTrainingValues.GetEnumerator();
           var estimated_test = Content.EstimatedTestValues.GetEnumerator();
+          var estimated_var_training = Content.GetEstimatedVariance(trainingRows).GetEnumerator();
+          var estimated_var_test = Content.GetEstimatedVariance(testRows).GetEnumerator();
 
           foreach (var row in Content.ProblemData.TrainingIndices) {
             estimated_training.MoveNext();
+            estimated_var_training.MoveNext();
             values[row, 3] = estimated_training.Current.ToString();
+            values[row, 7] = estimated_var_training.Current.ToString();
           }
 
           foreach (var row in Content.ProblemData.TestIndices) {
             estimated_test.MoveNext();
+            estimated_var_test.MoveNext();
             values[row, 4] = estimated_test.Current.ToString();
+            values[row, 8] = estimated_var_test.Current.ToString();
           }
 
           foreach (var row in Enumerable.Range(0, Content.ProblemData.Dataset.Rows)) {
@@ -109,11 +114,11 @@ namespace HeuristicLab.Problems.DataAnalysis.Views {
             values[row, 1] = target[row].ToString();
             values[row, 2] = est.ToString();
             values[row, 5] = Math.Abs(res).ToString();
-            values[row, 6] = Math.Abs(res / target[row]).ToString();
+            values[row, 6] = Math.Abs(res / est).ToString();
           }
 
           matrix = new StringMatrix(values);
-          matrix.ColumnNames = new string[] { "Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME, "Absolute Error (all)", "Relative Error (all)" };
+          matrix.ColumnNames = new string[] { "Id", TARGETVARIABLE_SERIES_NAME, ESTIMATEDVALUES_SERIES_NAME, ESTIMATEDVALUES_TRAINING_SERIES_NAME, ESTIMATEDVALUES_TEST_SERIES_NAME, "Absolute Error (all)", "Relative Error (all)", ESTIMATEDVARIANCE_TRAINING_SERIES_NAME, ESTIMATEDVARIANCE_TEST_SERIES_NAME };
           matrix.SortableView = true;
         }
         matrixView.Content = matrix;
