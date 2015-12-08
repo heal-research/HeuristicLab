@@ -24,7 +24,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleCrossover", "An operator which crosses two schedule representations.")]
   [StorableClass]
   public abstract class DirectScheduleCrossover : ScheduleCrossover, IDirectScheduleOperator {

@@ -19,32 +19,32 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Encodings.IntegerVectorEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [Item("PRVUniformOnePositionManipulator", "Represents a manipulation operation inserting parts of the individual at another position.")]
+  [Item("DirectScheduleDecoder", "An item used to convert a direct schedule into a generalized schedule.")]
   [StorableClass]
-  public class PRVUniformOnePositionManipulator : PRVManipulator {
-
+  public class DirectScheduleDecoder : ScheduleDecoder {
     [StorableConstructor]
-    protected PRVUniformOnePositionManipulator(bool deserializing) : base(deserializing) { }
-    protected PRVUniformOnePositionManipulator(PRVUniformOnePositionManipulator original, Cloner cloner) : base(original, cloner) { }
-    public PRVUniformOnePositionManipulator() : base() { }
+    protected DirectScheduleDecoder(bool deserializing) : base(deserializing) { }
+    protected DirectScheduleDecoder(DirectScheduleDecoder original, Cloner cloner) : base(original, cloner) { }
+    public DirectScheduleDecoder() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new PRVUniformOnePositionManipulator(this, cloner);
+      return new DirectScheduleDecoder(this, cloner);
     }
 
-    public static void Apply(IRandom random, PRVEncoding individual, int numberOfRules) {
-      UniformOnePositionManipulator.Apply(random, individual.PriorityRulesVector, new IntMatrix(new int[,] { { 0, numberOfRules } }));
+    public override Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData) {
+      var schedule = solution as Schedule;
+      if (schedule == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
+      return DecodeSchedule(schedule, jobData);
     }
 
-    protected override void Manipulate(IRandom random, PRVEncoding individual, int numberOfRules) {
-      Apply(random, individual, numberOfRules);
+    public static Schedule DecodeSchedule(Schedule solution, ItemList<Job> jobData) {
+      return solution;
     }
   }
 }

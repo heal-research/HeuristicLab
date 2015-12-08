@@ -54,7 +54,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public static PRVEncoding Apply(int jobs, int resources, IRandom random, int nrOfRules) {
-      return new PRVEncoding(jobs * resources, random, 0, nrOfRules, nrOfRules);
+      return new PRVEncoding(jobs * resources, random, 0, nrOfRules);
     }
 
     protected override ISchedule CreateSolution() {

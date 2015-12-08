@@ -26,13 +26,12 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Encodings.Schedule {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
-  public sealed class JobSequenceMatrixEncoding : ScheduleEncoding {
+  public sealed class JobSequenceMatrixEncoding : ScheduleEncoding<JSMEncoding> {
     [StorableConstructor]
     private JobSequenceMatrixEncoding(bool deserializing) : base(deserializing) { }
     private JobSequenceMatrixEncoding(JobSequenceMatrixEncoding original, Cloner cloner) : base(original, cloner) { }
@@ -43,6 +42,7 @@ namespace HeuristicLab.Encodings.Schedule {
     public JobSequenceMatrixEncoding()
       : base() {
       SolutionCreator = new JSMRandomCreator();
+      Decoder = new JSMDecoder();
       DiscoverOperators();
     }
 

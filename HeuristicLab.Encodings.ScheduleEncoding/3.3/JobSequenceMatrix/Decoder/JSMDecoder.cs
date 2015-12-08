@@ -25,22 +25,15 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding;
-using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
+using HeuristicLab.Random;
 
-namespace HeuristicLab.Problems.Scheduling {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequence Matrix.")]
   [StorableClass]
-  public class JSMDecoder : ScheduleDecoder, IStochasticOperator, IJSSPOperator {
+  public class JSMDecoder : ScheduleDecoder {
 
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
-    }
-    public ILookupParameter<ItemList<Job>> JobDataParameter {
-      get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
-    }
     public IValueParameter<JSMDecodingErrorPolicy> DecodingErrorPolicyParameter {
       get { return (IValueParameter<JSMDecodingErrorPolicy>)Parameters["DecodingErrorPolicy"]; }
     }
@@ -65,17 +58,15 @@ namespace HeuristicLab.Problems.Scheduling {
 
     public JSMDecoder()
       : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the Schedulingproblem - Instance."));
       Parameters.Add(new ValueParameter<JSMDecodingErrorPolicy>("DecodingErrorPolicy", "Specify the policy that should be used to handle decoding errors.", new JSMDecodingErrorPolicy(JSMDecodingErrorPolicyTypes.RandomPolicy)));
       Parameters.Add(new ValueParameter<JSMForcingStrategy>("ForcingStrategy", "Specifies a forcing strategy.", new JSMForcingStrategy(JSMForcingStrategyTypes.SwapForcing)));
-
-      ScheduleEncodingParameter.ActualName = "JobSequenceMatrix";
     }
 
-    private Task SelectTaskFromConflictSet(int conflictedResourceNr, int progressOnConflictedResource, ItemList<Task> conflictSet, ItemList<Permutation> jsm) {
+    private static Task SelectTaskFromConflictSet(JSMEncoding solution, JSMDecodingErrorPolicyTypes decodingErrorPolicy, JSMForcingStrategyTypes forcingStrategy, int conflictedResourceNr, int progressOnConflictedResource, ItemList<Task> conflictSet, IRandom random) {
       if (conflictSet.Count == 1)
         return conflictSet[0];
+
+      var jsm = solution.JobSequenceMatrix;
 
       //get solutionCandidate from jobSequencingMatrix
       int solutionCandidateJobNr = jsm[conflictedResourceNr][progressOnConflictedResource];
@@ -87,20 +78,20 @@ namespace HeuristicLab.Problems.Scheduling {
       }
 
       //if solutionCandidate wasn't found in conflictSet apply DecodingErrorPolicy and ForcingPolicy
-      Task result = ApplyDecodingErrorPolicy(conflictSet, jsm[conflictedResourceNr], progressOnConflictedResource);
+      Task result = ApplyDecodingErrorPolicy(decodingErrorPolicy, conflictSet, jsm[conflictedResourceNr], progressOnConflictedResource, random);
       int newResolutionIndex = 0;
 
       while (newResolutionIndex < jsm[conflictedResourceNr].Length && jsm[conflictedResourceNr][newResolutionIndex] != result.JobNr)
         newResolutionIndex++;
-      ApplyForcingStrategy(jsm, conflictedResourceNr, newResolutionIndex, progressOnConflictedResource, result.JobNr);
+      ApplyForcingStrategy(forcingStrategy, solution, conflictedResourceNr, newResolutionIndex, progressOnConflictedResource, result.JobNr);
 
       return result;
     }
 
-    private Task ApplyDecodingErrorPolicy(ItemList<Task> conflictSet, Permutation resource, int progress) {
-      if (DecodingErrorPolicy == JSMDecodingErrorPolicyTypes.RandomPolicy) {
+    private static Task ApplyDecodingErrorPolicy(JSMDecodingErrorPolicyTypes decodingErrorPolicy, ItemList<Task> conflictSet, Permutation resource, int progress, IRandom random) {
+      if (decodingErrorPolicy == JSMDecodingErrorPolicyTypes.RandomPolicy) {
         //Random
-        return conflictSet[RandomParameter.ActualValue.Next(conflictSet.Count - 1)];
+        return conflictSet[random.Next(conflictSet.Count - 1)];
       } else {
         //Guided
         for (int i = progress; i < resource.Length; i++) {
@@ -111,16 +102,17 @@ namespace HeuristicLab.Problems.Scheduling {
           if (j < conflictSet.Count)
             return (conflictSet[j]);
         }
-        return conflictSet[RandomParameter.ActualValue.Next(conflictSet.Count - 1)];
+        return conflictSet[random.Next(conflictSet.Count - 1)];
       }
     }
 
-    private void ApplyForcingStrategy(ItemList<Permutation> jsm, int conflictedResource, int newResolutionIndex, int progressOnResource, int newResolution) {
-      if (ForcingStrategy == JSMForcingStrategyTypes.SwapForcing) {
+    private static void ApplyForcingStrategy(JSMForcingStrategyTypes forcingStrategy, JSMEncoding solution, int conflictedResource, int newResolutionIndex, int progressOnResource, int newResolution) {
+      var jsm = solution.JobSequenceMatrix;
+      if (forcingStrategy == JSMForcingStrategyTypes.SwapForcing) {
         //SwapForcing
         jsm[conflictedResource][newResolutionIndex] = jsm[conflictedResource][progressOnResource];
         jsm[conflictedResource][progressOnResource] = newResolution;
-      } else {
+      } else if (forcingStrategy == JSMForcingStrategyTypes.ShiftForcing) {
         //ShiftForcing
         List<int> asList = jsm[conflictedResource].ToList<int>();
         if (newResolutionIndex > progressOnResource) {
@@ -131,12 +123,19 @@ namespace HeuristicLab.Problems.Scheduling {
           asList.RemoveAt(newResolutionIndex);
         }
         jsm[conflictedResource] = new Permutation(PermutationTypes.Absolute, asList.ToArray<int>());
+      } else {
+        throw new InvalidOperationException(string.Format("JSMDecoder encountered unknown forcing strategy {0}", forcingStrategy));
       }
     }
 
-    public Schedule CreateScheduleFromEncoding(JSMEncoding solution, ItemList<Job> jobData) {
-      ItemList<Permutation> jobSequenceMatrix = solution.JobSequenceMatrix;
+    public override Schedule DecodeSchedule(ISchedule encoding, ItemList<Job> jobData) {
+      var solution = encoding as JSMEncoding;
+      if (solution == null) throw new InvalidOperationException("Encoding is not of type JSMEncoding");
+      return DecodeSchedule(solution, jobData, DecodingErrorPolicy, ForcingStrategy);
+    }
 
+    public static Schedule DecodeSchedule(JSMEncoding solution, ItemList<Job> jobData, JSMDecodingErrorPolicyTypes decodingErrorPolicy, JSMForcingStrategyTypes forcingStrategy) {
+      var random = new FastRandom(solution.RandomSeed);
       var jobs = (ItemList<Job>)jobData.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);
 
@@ -161,7 +160,7 @@ namespace HeuristicLab.Problems.Scheduling {
 
         //STEP 3 - Select a task from the conflict set
         int progressOnResource = conflictedResource.Tasks.Count;
-        Task selectedTask = SelectTaskFromConflictSet(conflictedResourceNr, progressOnResource, conflictSet, jobSequenceMatrix);
+        Task selectedTask = SelectTaskFromConflictSet(solution, decodingErrorPolicy, forcingStrategy, conflictedResourceNr, progressOnResource, conflictSet, random);
 
         //STEP 4 - Add the selected task to the current schedule 
         selectedTask.IsScheduled = true;
@@ -173,12 +172,6 @@ namespace HeuristicLab.Problems.Scheduling {
       }
 
       return resultingSchedule;
-    }
-
-    public override Schedule CreateScheduleFromEncoding(ISchedule encoding) {
-      var solution = encoding as JSMEncoding;
-      if (solution == null) throw new InvalidOperationException("Encoding is not of type JSMEncoding");
-      return CreateScheduleFromEncoding(solution, JobDataParameter.ActualValue);
     }
   }
 }

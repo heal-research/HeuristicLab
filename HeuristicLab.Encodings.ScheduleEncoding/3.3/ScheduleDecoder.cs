@@ -21,21 +21,23 @@
 
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Operators;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.Scheduling {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleDecoder", "A schedule decoder translates a respresentation into an actual schedule.")]
   [StorableClass]
   public abstract class ScheduleDecoder : SingleSuccessorOperator, IScheduleDecoder {
 
     public ILookupParameter<ISchedule> ScheduleEncodingParameter {
-      get { return (ILookupParameter<ISchedule>)Parameters["ScheduleEncoding"]; }
+      get { return (ILookupParameter<ISchedule>)Parameters["EncodedSchedule"]; }
     }
     public ILookupParameter<Schedule> ScheduleParameter {
       get { return (ILookupParameter<Schedule>)Parameters["Schedule"]; }
+    }
+    public ILookupParameter<ItemList<Job>> JobDataParameter {
+      get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
     }
 
     [StorableConstructor]
@@ -43,14 +45,15 @@ namespace HeuristicLab.Problems.Scheduling {
     protected ScheduleDecoder(ScheduleDecoder original, Cloner cloner) : base(original, cloner) { }
     public ScheduleDecoder()
       : base() {
-      Parameters.Add(new LookupParameter<ISchedule>("ScheduleEncoding", "The new scheduling solution represented as encoding."));
+      Parameters.Add(new LookupParameter<ISchedule>("EncodedSchedule", "The new scheduling solution represented as encoding."));
       Parameters.Add(new LookupParameter<Schedule>("Schedule", "The decoded scheduling solution represented as generalized schedule."));
+      Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
     }
 
-    public abstract Schedule CreateScheduleFromEncoding(ISchedule solution);
+    public abstract Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData);
 
     public override IOperation Apply() {
-      Schedule result = CreateScheduleFromEncoding(ScheduleEncodingParameter.ActualValue);
+      Schedule result = DecodeSchedule(ScheduleEncodingParameter.ActualValue, JobDataParameter.ActualValue);
       ScheduleParameter.ActualValue = result;
       return base.Apply();
     }

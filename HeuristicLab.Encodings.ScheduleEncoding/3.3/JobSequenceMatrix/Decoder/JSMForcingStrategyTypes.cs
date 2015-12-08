@@ -19,9 +19,9 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.Scheduling {
-  public enum JSMDecodingErrorPolicyTypes {
-    RandomPolicy,
-    GuidedPolicy
+namespace HeuristicLab.Encodings.ScheduleEncoding {
+  public enum JSMForcingStrategyTypes {
+    ShiftForcing,
+    SwapForcing
   }
 }

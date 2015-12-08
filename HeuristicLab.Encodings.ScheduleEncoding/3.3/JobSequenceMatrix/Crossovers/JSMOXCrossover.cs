@@ -38,7 +38,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public static JSMEncoding Apply(IRandom random, JSMEncoding parent1, JSMEncoding parent2) {
-      var result = new JSMEncoding();
+      var result = new JSMEncoding(random.Next());
 
       for (int i = 0; i < parent1.JobSequenceMatrix.Count; i++) {
         result.JobSequenceMatrix.Add(

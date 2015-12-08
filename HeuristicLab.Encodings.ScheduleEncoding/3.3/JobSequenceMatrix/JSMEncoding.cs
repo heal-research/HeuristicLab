@@ -31,19 +31,23 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   public class JSMEncoding : Item, ISchedule {
 
     [Storable]
-    public ItemList<Permutation> JobSequenceMatrix { get; set; }
+    public ItemList<Permutation> JobSequenceMatrix { get; private set; }
+    [Storable]
+    public int RandomSeed { get; private set; }
 
     [StorableConstructor]
     protected JSMEncoding(bool deserializing) : base(deserializing) { }
     protected JSMEncoding(JSMEncoding original, Cloner cloner)
       : base(original, cloner) {
       this.JobSequenceMatrix = cloner.Clone(original.JobSequenceMatrix);
+      this.RandomSeed = original.RandomSeed;
     }
     public override IDeepCloneable Clone(Cloner cloner) {
       return new JSMEncoding(this, cloner);
     }
-    public JSMEncoding()
+    public JSMEncoding(int randomSeed)
       : base() {
+      RandomSeed = randomSeed;
       JobSequenceMatrix = new ItemList<Permutation>();
     }
 

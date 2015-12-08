@@ -20,8 +20,13 @@
 #endregion
 
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   public interface IPRVOperator : IOperator {
+  }
+
+  public interface IPRVRulesOperator : IPRVOperator {
+    ILookupParameter<IntValue> NumberOfRulesParameter { get; }
   }
 }

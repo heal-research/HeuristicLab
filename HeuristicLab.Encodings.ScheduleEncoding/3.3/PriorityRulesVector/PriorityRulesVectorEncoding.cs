@@ -26,13 +26,31 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.ScheduleEncoding;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Encodings.Schedule {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
-  public sealed class PriorityRulesVectorEncoding : ScheduleEncoding {
+  public sealed class PriorityRulesVectorEncoding : ScheduleEncoding<PRVEncoding> {
+
+    private IFixedValueParameter<IntValue> numberOfRulesParameter;
+    public IFixedValueParameter<IntValue> NumberOfRulesParameter {
+      get { return numberOfRulesParameter; }
+      set {
+        if (value == null) throw new ArgumentNullException("Number of Rules parameter must not be null.");
+        if (value.Value == null) throw new ArgumentNullException("Number of Rules parameter value must not be null.");
+        if (numberOfRulesParameter == value) return;
+
+        if (numberOfRulesParameter != null) Parameters.Remove(numberOfRulesParameter);
+        numberOfRulesParameter = value;
+        Parameters.Add(numberOfRulesParameter);
+        OnNumberOfRulesParameterChanged();
+      }
+    }
+
+
     [StorableConstructor]
     private PriorityRulesVectorEncoding(bool deserializing) : base(deserializing) { }
     private PriorityRulesVectorEncoding(PriorityRulesVectorEncoding original, Cloner cloner) : base(original, cloner) { }
@@ -42,8 +60,17 @@ namespace HeuristicLab.Encodings.Schedule {
 
     public PriorityRulesVectorEncoding()
       : base() {
+      //TODO change to meaningful value
+      numberOfRulesParameter = new FixedValueParameter<IntValue>(Name + ".NumberOfRules", new IntValue(10));
+      Parameters.Add(numberOfRulesParameter);
+
       SolutionCreator = new PRVRandomCreator();
+      Decoder = new PRVDecoder();
       DiscoverOperators();
+    }
+
+    private void OnNumberOfRulesParameterChanged() {
+      ConfigureOperators(Operators);
     }
 
     #region Operator Discovery
@@ -63,6 +90,17 @@ namespace HeuristicLab.Encodings.Schedule {
       foreach (var @operator in newOperators)
         AddOperator(@operator);
     }
+
+    public override void ConfigureOperators(IEnumerable<IItem> operators) {
+      base.ConfigureOperators(operators);
+      ConfigureRulesParameter(operators.OfType<IPRVRulesOperator>());
+    }
+
+    private void ConfigureRulesParameter(IEnumerable<IPRVRulesOperator> rulesOperators) {
+      foreach (var rulesOperator in rulesOperators)
+        rulesOperator.NumberOfRulesParameter.ActualName = numberOfRulesParameter.Name;
+    }
+
     #endregion
   }
 }

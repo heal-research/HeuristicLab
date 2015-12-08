@@ -25,7 +25,7 @@ using HeuristicLab.Data;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleGTCrossover", "Represents a crossover using the GT-Algorithm to cross two direct schedule representations.")]
   [StorableClass]
   public class DirectScheduleGTCrossover : DirectScheduleCrossover {

@@ -25,12 +25,10 @@ using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Encodings.Schedule;
 using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-using HeuristicLab.PluginInfrastructure;
 using HeuristicLab.Problems.Instances;
 
 namespace HeuristicLab.Problems.Scheduling {
@@ -94,12 +92,6 @@ namespace HeuristicLab.Problems.Scheduling {
     public IFixedValueParameter<IntValue> ResourcesParameter {
       get { return (IFixedValueParameter<IntValue>)Parameters["Resources"]; }
     }
-    public IValueParameter<IScheduleEvaluator> ScheduleEvaluatorParameter {
-      get { return (IValueParameter<IScheduleEvaluator>)Parameters["ScheduleEvaluator"]; }
-    }
-    public OptionalValueParameter<IScheduleDecoder> ScheduleDecoderParameter {
-      get { return (OptionalValueParameter<IScheduleDecoder>)Parameters["ScheduleDecoder"]; }
-    }
     #endregion
 
     #region Properties
@@ -117,14 +109,6 @@ namespace HeuristicLab.Problems.Scheduling {
     public int Resources {
       get { return ResourcesParameter.Value.Value; }
       set { ResourcesParameter.Value.Value = value; }
-    }
-    public IScheduleEvaluator ScheduleEvaluator {
-      get { return ScheduleEvaluatorParameter.Value; }
-      set { ScheduleEvaluatorParameter.Value = value; }
-    }
-    public IScheduleDecoder ScheduleDecoder {
-      get { return ScheduleDecoderParameter.Value; }
-      set { ScheduleDecoderParameter.Value = value; }
     }
     #endregion
 
@@ -150,8 +134,6 @@ namespace HeuristicLab.Problems.Scheduling {
 
       Parameters.Add(new FixedValueParameter<IntValue>("Jobs", "The number of jobs used in this JSSP instance.", new IntValue()));
       Parameters.Add(new FixedValueParameter<IntValue>("Resources", "The number of resources used in this JSSP instance.", new IntValue()));
-      Parameters.Add(new ValueParameter<IScheduleEvaluator>("ScheduleEvaluator", "The evaluator used to determine the quality of a solution.", new MakespanEvaluator()));
-      Parameters.Add(new OptionalValueParameter<IScheduleDecoder>("ScheduleDecoder", "The operator that decodes the representation and creates a schedule.", new JSMDecoder()));
 
       Encoding = new DirectScheduleEncoding();
 
@@ -161,8 +143,7 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     public override double Evaluate(ISchedule solution, IRandom random) {
-      //TODO change to decoder
-      var schedule = (Schedule)solution;
+      var schedule = Encoding.Decode(solution, JobData);
       return MakespanEvaluator.GetMakespan(schedule);
     }
 
@@ -193,7 +174,7 @@ namespace HeuristicLab.Problems.Scheduling {
       ParameterizeOperators();
     }
     private void ScheduleEvaluatorParameter_ValueChanged(object sender, EventArgs eventArgs) {
-      ScheduleEvaluator.QualityParameter.ActualNameChanged += ScheduleEvaluator_QualityParameter_ActualNameChanged;
+      //ScheduleEvaluator.QualityParameter.ActualNameChanged += ScheduleEvaluator_QualityParameter_ActualNameChanged;
       ParameterizeOperators();
     }
     private void ScheduleEvaluator_QualityParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
@@ -204,7 +185,7 @@ namespace HeuristicLab.Problems.Scheduling {
       ParameterizeOperators();
     }
     private void ScheduleDecoderParameter_ValueChanged(object sender, EventArgs eventArgs) {
-      if (ScheduleDecoder != null) ScheduleDecoder.ScheduleParameter.ActualNameChanged += ScheduleDecoder_ScheduleParameter_ActualNameChanged;
+      //if (ScheduleDecoder != null) ScheduleDecoder.ScheduleParameter.ActualNameChanged += ScheduleDecoder_ScheduleParameter_ActualNameChanged;
       ParameterizeOperators();
     }
     private void ScheduleDecoder_ScheduleParameter_ActualNameChanged(object sender, EventArgs eventArgs) {
@@ -221,19 +202,19 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     private void ApplyEncoding() {
-      if (SolutionCreator.GetType() == typeof(JSMRandomCreator)) {
-        Operators.AddRange(ApplicationManager.Manager.GetInstances<IJSMOperator>());
-        ScheduleDecoder = new JSMDecoder();
-      } else if (SolutionCreator.GetType() == typeof(PRVRandomCreator)) {
-        Operators.AddRange(ApplicationManager.Manager.GetInstances<IPRVOperator>());
-        ScheduleDecoder = new PRVDecoder();
-      } else if (SolutionCreator.GetType() == typeof(PWRRandomCreator)) {
-        Operators.AddRange(ApplicationManager.Manager.GetInstances<IPWROperator>());
-        ScheduleDecoder = new PWRDecoder();
-      } else if (SolutionCreator.GetType() == typeof(DirectScheduleRandomCreator)) {
-        Operators.AddRange(ApplicationManager.Manager.GetInstances<IDirectScheduleOperator>());
-        ScheduleDecoder = null;
-      }
+      //if (SolutionCreator.GetType() == typeof(JSMRandomCreator)) {
+      //  Operators.AddRange(ApplicationManager.Manager.GetInstances<IJSMOperator>());
+      //  ScheduleDecoder = new JSMDecoder();
+      //} else if (SolutionCreator.GetType() == typeof(PRVRandomCreator)) {
+      //  Operators.AddRange(ApplicationManager.Manager.GetInstances<IPRVOperator>());
+      //  ScheduleDecoder = new PRVDecoder();
+      //} else if (SolutionCreator.GetType() == typeof(PWRRandomCreator)) {
+      //  Operators.AddRange(ApplicationManager.Manager.GetInstances<IPWROperator>());
+      //  ScheduleDecoder = new PWRDecoder();
+      //} else if (SolutionCreator.GetType() == typeof(DirectScheduleRandomCreator)) {
+      //  Operators.AddRange(ApplicationManager.Manager.GetInstances<IDirectScheduleOperator>());
+      //  ScheduleDecoder = null;
+      //}
     }
 
     private void ParameterizeOperators() {
@@ -300,19 +281,18 @@ namespace HeuristicLab.Problems.Scheduling {
 
       BestKnownQuality = data.BestKnownQuality ?? double.NaN;
       if (data.BestKnownSchedule != null) {
-        var enc = new JSMEncoding();
-        enc.JobSequenceMatrix = new ItemList<Permutation>(data.Resources);
+        var enc = new JSMEncoding(0);
         for (int i = 0; i < data.Resources; i++) {
-          enc.JobSequenceMatrix[i] = new Permutation(PermutationTypes.Absolute, new int[data.Jobs]);
+          enc.JobSequenceMatrix.Add(new Permutation(PermutationTypes.Absolute, new int[data.Jobs]));
           for (int j = 0; j < data.Jobs; j++) {
             enc.JobSequenceMatrix[i][j] = data.BestKnownSchedule[i, j];
           }
         }
-        BestKnownSolution = new JSMDecoder().CreateScheduleFromEncoding(enc, jobData);
-        if (ScheduleEvaluator is MeanTardinessEvaluator)
-          BestKnownQuality = MeanTardinessEvaluator.GetMeanTardiness(BestKnownSolution, jobData);
-        else if (ScheduleEvaluator is MakespanEvaluator)
-          BestKnownQuality = MakespanEvaluator.GetMakespan(BestKnownSolution);
+        BestKnownSolution = JSMDecoder.DecodeSchedule(enc, jobData, JSMDecodingErrorPolicyTypes.RandomPolicy, JSMForcingStrategyTypes.SwapForcing);
+        //if (ScheduleEvaluator is MeanTardinessEvaluator)
+        //  BestKnownQuality = MeanTardinessEvaluator.GetMeanTardiness(BestKnownSolution, jobData);
+        //else if (ScheduleEvaluator is MakespanEvaluator)
+        //  BestKnownQuality = MakespanEvaluator.GetMakespan(BestKnownSolution);
       }
 
       JobData.Clear();

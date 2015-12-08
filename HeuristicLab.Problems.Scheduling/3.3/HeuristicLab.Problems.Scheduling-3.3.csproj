@@ -113,19 +113,10 @@
   <ItemGroup>
     <Compile Include="Analyzers\BestSchedulingSolutionAnalyzer.cs" />
     <Compile Include="Analyzers\SchedulingAnalyzer.cs" />
-    <Compile Include="Decoders\JSMForcingStrategy.cs" />
-    <Compile Include="Decoders\JSMDecoder.cs" />
-    <Compile Include="Decoders\JSMDecodingErrorPolicy.cs" />
-    <Compile Include="Decoders\JSMDecodingErrorPolicyTypes.cs" />
-    <Compile Include="Decoders\JSMForcingStrategyTypes.cs" />
-    <Compile Include="Decoders\PRVDecoder.cs" />
-    <Compile Include="Decoders\PWRDecoder.cs" />
-    <Compile Include="Decoders\ScheduleDecoder.cs" />
     <Compile Include="Evaluators\MeanTardinessEvaluator.cs" />
     <Compile Include="Evaluators\MakespanEvaluator.cs" />
     <Compile Include="Evaluators\ScheduleEvaluator.cs" />
     <Compile Include="Interfaces\IJSSPOperator.cs" />
-    <Compile Include="Interfaces\IScheduleDecoder.cs" />
     <Compile Include="Interfaces\IScheduleEvaluator.cs" />
     <Compile Include="Interfaces\ISchedulingEvaluator.cs" />
     <Compile Include="JobShopSchedulingProblem new.cs" />
@@ -209,6 +200,11 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
+      <Project>{f4539fb6-4708-40c9-be64-0a1390aea197}</Project>
+      <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

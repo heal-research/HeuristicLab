@@ -40,7 +40,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public static JSMEncoding Apply(IRandom random, JSMEncoding p1, JSMEncoding p2) {
-      var result = new JSMEncoding();
+      var result = new JSMEncoding(random.Next());
 
       int nrOfResources = p1.JobSequenceMatrix.Count;
       int nrOfJobs = p1.JobSequenceMatrix[0].Length;

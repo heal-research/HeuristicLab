@@ -39,7 +39,9 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public static PRVEncoding Apply(IRandom random, PRVEncoding parent1, PRVEncoding parent2) {
-      return new PRVEncoding(DiscreteCrossover.Apply(random, new ItemArray<IntegerVector>(new IntegerVector[] { parent1.PriorityRulesVector, parent2.PriorityRulesVector })), parent1.NrOfRules);
+      var randomSeed = random.Next();
+      var integerVector = DiscreteCrossover.Apply(random, new ItemArray<IntegerVector>(new[] { parent1.PriorityRulesVector, parent2.PriorityRulesVector }));
+      return new PRVEncoding(integerVector, randomSeed);
     }
 
     public override PRVEncoding Cross(IRandom random, PRVEncoding parent1, PRVEncoding parent2) {

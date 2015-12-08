@@ -26,13 +26,12 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Encodings.Schedule {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
-  public sealed class DirectScheduleEncoding : ScheduleEncoding {
+  public sealed class DirectScheduleEncoding : ScheduleEncoding<Schedule> {
     [StorableConstructor]
     private DirectScheduleEncoding(bool deserializing) : base(deserializing) { }
     private DirectScheduleEncoding(DirectScheduleEncoding original, Cloner cloner) : base(original, cloner) { }
@@ -43,8 +42,10 @@ namespace HeuristicLab.Encodings.Schedule {
     public DirectScheduleEncoding()
       : base() {
       SolutionCreator = new DirectScheduleRandomCreator();
+      Decoder = new DirectScheduleDecoder();
       DiscoverOperators();
     }
+
 
     #region Operator Discovery
     private static readonly IEnumerable<Type> encodingSpecificOperatorTypes;

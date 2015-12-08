@@ -27,14 +27,14 @@ using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.Schedule {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
-  public abstract class ScheduleEncoding : Encoding<ISchedule>, IScheduleEncoding {
+  public abstract class ScheduleEncoding<TSchedule> : Encoding<ISchedule>, IScheduleEncoding
+  where TSchedule : class, ISchedule {
     #region Encoding Parameters
     [Storable]
     private IFixedValueParameter<ItemList<Job>> jobDataParameter;
@@ -82,6 +82,23 @@ namespace HeuristicLab.Encodings.Schedule {
         OnBoundsParameterChanged();
       }
     }
+
+    [Storable]
+    private IValueParameter<IScheduleDecoder> decoderParameter;
+
+    public IValueParameter<IScheduleDecoder> DecoderParameter {
+      get { return decoderParameter; }
+      set {
+        if (value == null) throw new ArgumentNullException("Decoder parameter must not be null.");
+        if (value.Value == null) throw new ArgumentNullException("Decoder parameter value must not be null.");
+        if (decoderParameter == value) return;
+
+        if (decoderParameter != null) Parameters.Remove(decoderParameter);
+        decoderParameter = value;
+        Parameters.Add(decoderParameter);
+        OnDecoderParameterChanged();
+      }
+    }
     #endregion
 
     public ItemList<Job> JobData {
@@ -96,10 +113,14 @@ namespace HeuristicLab.Encodings.Schedule {
       set { ResourcesParameter.Value.Value = value; }
     }
 
+    public IScheduleDecoder Decoder {
+      get { return DecoderParameter.Value; }
+      set { DecoderParameter.Value = value; }
+    }
 
     [StorableConstructor]
     protected ScheduleEncoding(bool deserializing) : base(deserializing) { }
-    protected ScheduleEncoding(ScheduleEncoding original, Cloner cloner)
+    protected ScheduleEncoding(ScheduleEncoding<TSchedule> original, Cloner cloner)
       : base(original, cloner) {
     }
 
@@ -113,10 +134,16 @@ namespace HeuristicLab.Encodings.Schedule {
       jobDataParameter = new FixedValueParameter<ItemList<Job>>(Name + ".JobData", new ItemList<Job>(jobData));
       jobsParameter = new FixedValueParameter<IntValue>(Name + ".Jobs", new IntValue(jobs));
       resourcesParameter = new FixedValueParameter<IntValue>(Name + ".Resources", new IntValue(resources));
+      decoderParameter = new ValueParameter<IScheduleDecoder>(Name + ".Decoder");
 
       Parameters.Add(jobDataParameter);
       Parameters.Add(jobsParameter);
       Parameters.Add(resourcesParameter);
+      Parameters.Add(decoderParameter);
+    }
+
+    public Schedule Decode(ISchedule schedule, ItemList<Job> jobData) {
+      return Decoder.DecodeSchedule(schedule, jobData);
     }
 
     private void OnJobDataParameterChanged() {
@@ -126,6 +153,10 @@ namespace HeuristicLab.Encodings.Schedule {
       ConfigureOperators(Operators);
     }
     private void OnBoundsParameterChanged() {
+      ConfigureOperators(Operators);
+    }
+
+    private void OnDecoderParameterChanged() {
       ConfigureOperators(Operators);
     }
 

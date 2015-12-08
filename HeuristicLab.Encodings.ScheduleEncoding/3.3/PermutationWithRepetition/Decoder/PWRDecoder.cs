@@ -22,42 +22,29 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.ScheduleEncoding;
-using HeuristicLab.Optimization;
-using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.Scheduling {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRDecoder", "An item used to convert a PWR-individual into a generalized schedule.")]
   [StorableClass]
-  public class PWRDecoder : ScheduleDecoder, IStochasticOperator, IJSSPOperator {
-
-    public ILookupParameter<IRandom> RandomParameter {
-      get { return (LookupParameter<IRandom>)Parameters["Random"]; }
-    }
-    public ILookupParameter<ItemList<Job>> JobDataParameter {
-      get { return (LookupParameter<ItemList<Job>>)Parameters["JobData"]; }
-    }
-
+  public class PWRDecoder : ScheduleDecoder {
     [StorableConstructor]
     protected PWRDecoder(bool deserializing) : base(deserializing) { }
     protected PWRDecoder(PWRDecoder original, Cloner cloner) : base(original, cloner) { }
-    public PWRDecoder()
-      : base() {
-      Parameters.Add(new LookupParameter<IRandom>("Random", "The pseudo random number generator which should be used for stochastic manipulation operators."));
-      Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
-      ScheduleEncodingParameter.ActualName = "PermutationWithRepetition";
-    }
+    public PWRDecoder() : base() { }
 
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PWRDecoder(this, cloner);
     }
 
-    public override Schedule CreateScheduleFromEncoding(ISchedule encoding) {
-      var solution = encoding as PWREncoding;
-      if (solution == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
+    public override Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData) {
+      var pwr = solution as PWREncoding;
+      if (pwr == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
+      return DecodeSchedule(pwr, jobData);
+    }
 
-      var jobs = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
+    public static Schedule DecodeSchedule(PWREncoding solution, ItemList<Job> jobData) {
+      var jobs = (ItemList<Job>)jobData.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);
       foreach (int jobNr in solution.PermutationWithRepetition) {
         int i = 0;

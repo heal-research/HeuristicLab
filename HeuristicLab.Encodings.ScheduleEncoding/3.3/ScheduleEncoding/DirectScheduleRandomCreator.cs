@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Optimization;
@@ -54,7 +53,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
 
-    public static Schedule Apply(int jobs, int resources, PWREncoding pwr, ItemList<Job> jobData) {
+    public static Schedule Apply(PWREncoding pwr, ItemList<Job> jobData) {
       var resultingSchedule = new Schedule(jobData[0].Tasks.Count);
       foreach (int jobNr in pwr.PermutationWithRepetition) {
         int i = 0;
@@ -70,16 +69,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
 
     protected override ISchedule CreateSolution() {
-      try {
-        var jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
-        return Apply(JobsParameter.ActualValue.Value,
-          ResourcesParameter.ActualValue.Value,
-          new PWREncoding(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue),
-          jobData);
-      }
-      catch {
-        throw new Exception("ScheduleRandomCreator needs JobData parameter from a JSSP-Instance to create Schedule-Instances!");
-      }
+      var jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
+      var pwrEncoding = new PWREncoding(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value,
+        RandomParameter.ActualValue);
+      return Apply(pwrEncoding, jobData);
     }
   }
 }

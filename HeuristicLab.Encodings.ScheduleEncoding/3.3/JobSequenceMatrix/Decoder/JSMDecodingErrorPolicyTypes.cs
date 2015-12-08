@@ -19,11 +19,9 @@
  */
 #endregion
 
-using HeuristicLab.Core;
-
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  public interface IScheduleDecoder : IOperator {
-    ILookupParameter<ISchedule> ScheduleEncodingParameter { get; }
-    ILookupParameter<Schedule> ScheduleParameter { get; }
+  public enum JSMDecodingErrorPolicyTypes {
+    RandomPolicy,
+    GuidedPolicy
   }
 }

@@ -26,13 +26,12 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.PluginInfrastructure;
 
-namespace HeuristicLab.Encodings.Schedule {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
-  public sealed class PermutationWithRepetitionEncoding : ScheduleEncoding {
+  public sealed class PermutationWithRepetitionEncoding : ScheduleEncoding<PWREncoding> {
     [StorableConstructor]
     private PermutationWithRepetitionEncoding(bool deserializing) : base(deserializing) { }
     private PermutationWithRepetitionEncoding(PermutationWithRepetitionEncoding original, Cloner cloner) : base(original, cloner) { }
@@ -43,8 +42,10 @@ namespace HeuristicLab.Encodings.Schedule {
     public PermutationWithRepetitionEncoding()
       : base() {
       SolutionCreator = new PWRRandomCreator();
+      Decoder = new PWRDecoder();
       DiscoverOperators();
     }
+
 
     #region Operator Discovery
     private static readonly IEnumerable<Type> encodingSpecificOperatorTypes;

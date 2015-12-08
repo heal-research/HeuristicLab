@@ -21,17 +21,18 @@
 
 using System.Drawing;
 using HeuristicLab.Common;
+using HeuristicLab.Common.Resources;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Problems.Scheduling {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JSMDecodingErrorPolicy", "Represents a policy for handling decoding errors.")]
   [StorableClass]
   public sealed class JSMDecodingErrorPolicy : ValueTypeValue<JSMDecodingErrorPolicyTypes> {
 
     public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Enum; }
+      get { return VSImageLibrary.Enum; }
     }
 
     [StorableConstructor]

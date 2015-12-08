@@ -22,23 +22,35 @@
 using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PRVManipulator", "An operator which manipulates a PRV representation.")]
   [StorableClass]
-  public abstract class PRVManipulator : ScheduleManipulator, IPRVOperator {
+  public abstract class PRVManipulator : ScheduleManipulator, IPRVRulesOperator {
+
+    public ILookupParameter<IntValue> NumberOfRulesParameter {
+      get { return (ILookupParameter<IntValue>)Parameters["NumberOfRulesParameter"]; }
+    }
+
+
     [StorableConstructor]
     protected PRVManipulator(bool deserializing) : base(deserializing) { }
     protected PRVManipulator(PRVManipulator original, Cloner cloner) : base(original, cloner) { }
-    public PRVManipulator() : base() { }
 
-    protected abstract void Manipulate(IRandom random, PRVEncoding individual);
+    public PRVManipulator()
+      : base() {
+      Parameters.Add(new LookupParameter<IntValue>("NumberOfRulesParameter"));
+    }
+
+    protected abstract void Manipulate(IRandom random, PRVEncoding individual, int numberOfRules);
 
     public override IOperation InstrumentedApply() {
       var solution = ScheduleParameter.ActualValue as PRVEncoding;
       if (solution == null) throw new InvalidOperationException("ScheduleEncoding was not found or is not of type PRVEncoding.");
-      Manipulate(RandomParameter.ActualValue, solution);
+      Manipulate(RandomParameter.ActualValue, solution, NumberOfRulesParameter.ActualValue.Value);
       return base.InstrumentedApply();
     }
 

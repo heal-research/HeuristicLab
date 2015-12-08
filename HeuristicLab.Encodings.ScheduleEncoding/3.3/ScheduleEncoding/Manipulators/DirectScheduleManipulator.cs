@@ -25,7 +25,7 @@ using HeuristicLab.Core;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
-namespace HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding {
+namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleManipulator", "An operator which manipulates a direct schedule representation.")]
   [StorableClass]
   public abstract class DirectScheduleManipulator : ScheduleManipulator, IDirectScheduleOperator {

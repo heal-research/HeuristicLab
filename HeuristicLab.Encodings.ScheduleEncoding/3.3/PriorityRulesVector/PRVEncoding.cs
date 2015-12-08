@@ -30,31 +30,26 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
   public class PRVEncoding : Item, ISchedule {
     [Storable]
-    public IntegerVector PriorityRulesVector { get; set; }
-
+    public IntegerVector PriorityRulesVector { get; private set; }
     [Storable]
-    public int NrOfRules { get; private set; }
+    public int RandomSeed { get; private set; }
 
     [StorableConstructor]
     protected PRVEncoding(bool deserializing) : base(deserializing) { }
     protected PRVEncoding(PRVEncoding original, Cloner cloner)
       : base(original, cloner) {
-      this.NrOfRules = original.NrOfRules;
       this.PriorityRulesVector = cloner.Clone(original.PriorityRulesVector);
+      this.RandomSeed = original.RandomSeed;
     }
-    public PRVEncoding(int nrOfRules)
+
+    public PRVEncoding(IntegerVector iv, int randomSeed)
       : base() {
-      this.NrOfRules = nrOfRules;
-      this.PriorityRulesVector = new IntegerVector();
-    }
-    public PRVEncoding(IntegerVector iv, int nrOfRules)
-      : base() {
-      this.NrOfRules = nrOfRules;
+      this.RandomSeed = randomSeed;
       this.PriorityRulesVector = (IntegerVector)iv.Clone();
     }
-    public PRVEncoding(int length, IRandom random, int min, int max, int nrOfRules)
+    public PRVEncoding(int length, IRandom random, int min, int max)
       : base() {
-      this.NrOfRules = nrOfRules;
+      this.RandomSeed = random.Next();
       this.PriorityRulesVector = new IntegerVector(length, random, min, max);
     }
 

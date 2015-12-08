@@ -22,6 +22,7 @@
 using System;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
+using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.Problems.Scheduling.Views {

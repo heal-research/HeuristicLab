@@ -19,9 +19,14 @@
  */
 #endregion
 
-namespace HeuristicLab.Problems.Scheduling {
-  public enum JSMForcingStrategyTypes {
-    ShiftForcing,
-    SwapForcing
+using HeuristicLab.Core;
+
+namespace HeuristicLab.Encodings.ScheduleEncoding {
+  public interface IScheduleDecoder : IScheduleOperator {
+    ILookupParameter<ISchedule> ScheduleEncodingParameter { get; }
+    ILookupParameter<Schedule> ScheduleParameter { get; }
+    ILookupParameter<ItemList<Job>> JobDataParameter { get; }
+
+    Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData);
   }
 }

@@ -48,7 +48,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
     public static JSMEncoding Apply(int jobs, int resources, IRandom random) {
-      var solution = new JSMEncoding();
+      var solution = new JSMEncoding(random.Next());
       for (int i = 0; i < resources; i++) {
         solution.JobSequenceMatrix.Add(new Permutation(PermutationTypes.Absolute, jobs, random));
       }
