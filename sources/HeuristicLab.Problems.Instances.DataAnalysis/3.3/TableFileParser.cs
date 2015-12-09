@@ -141,8 +141,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     private void EstimateNumberOfLines(string fileName) {
       var len = new System.IO.FileInfo(fileName).Length;
       var buf = new char[64 * 1024];
-      var reader = new StreamReader(File.OpenRead(fileName));
-      reader.ReadBlock(buf, 0, buf.Length);
+      using(var reader = new StreamReader(fileName)) {
+        reader.ReadBlock(buf, 0, buf.Length);
+      }
       int numNewLine = 0;
       int charsInCurrentLine = 0, charsInFirstLine = 0; // the first line (names) and the last line (incomplete) are not representative
       foreach (var ch in buf) {
