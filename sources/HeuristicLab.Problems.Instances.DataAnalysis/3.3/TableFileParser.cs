@@ -141,7 +141,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     private void EstimateNumberOfLines(string fileName) {
       var len = new System.IO.FileInfo(fileName).Length;
       var buf = new char[64 * 1024];
-      using(var reader = new StreamReader(fileName)) {
+      using (var reader = new StreamReader(fileName)) {
         reader.ReadBlock(buf, 0, buf.Length);
       }
       int numNewLine = 0;
@@ -187,56 +187,63 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine, int lineLimit = -1) {
       using (StreamReader reader = new StreamReader(stream)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
-        // parse the file line by line
         values = new List<IList>();
         if (lineLimit > 0) estimatedNumberOfLines = lineLimit;
-        foreach (var row in Parse(columnNamesInFirstLine, lineLimit)) {
-          columns = row.Count;
-          // on the first row we create our lists for column-oriented storage
-          if (!values.Any()) {
-            foreach (var obj in row) {
-              // create a list type matching the object type and add first element
-              if (obj == null) {
-                var l = new List<object>(estimatedNumberOfLines);
-                values.Add(l);
-                l.Add(obj);
-              } else if (obj is double) {
-                var l = new List<double>(estimatedNumberOfLines);
-                values.Add(l);
-                l.Add((double)obj);
-              } else if (obj is DateTime) {
-                var l = new List<DateTime>(estimatedNumberOfLines);
-                values.Add(l);
-                l.Add((DateTime)obj);
-              } else if (obj is string) {
-                var l = new List<string>(estimatedNumberOfLines);
-                values.Add(l);
-                l.Add((string)obj);
-              } else throw new InvalidOperationException();
+
+        if (columnNamesInFirstLine) {
+          ParseVariableNames();
+          if (!tokenizer.HasNext())
+            Error(
+              "Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).",
+              "", tokenizer.CurrentLineNumber);
+        }
+
+
+        // read values... start in first row 
+        int nLinesParsed = 0;
+        int colIdx = 0;
+        int numValuesInFirstRow = columnNamesInFirstLine ? variableNames.Count : -1; // number of variables or inizialize based on first row of values (-1)
+        while (tokenizer.HasNext() && (lineLimit < 0 || nLinesParsed < lineLimit)) {
+          if (tokenizer.PeekType() == TokenTypeEnum.NewLine) {
+            tokenizer.Skip();
+
+            // all rows have to have the same number of values
+            // the first row defines how many samples are needed
+            if (numValuesInFirstRow < 0) numValuesInFirstRow = values.Count; // set to number of colums in the first row
+            else if (colIdx > 0 && numValuesInFirstRow != colIdx) { // read at least one value in the row (support for skipping empty lines)
+              Error("The first row of the dataset has " + numValuesInFirstRow + " columns." + Environment.NewLine +
+                    "Line " + tokenizer.CurrentLineNumber + " has " + colIdx + " columns.", "",
+                    tokenizer.CurrentLineNumber);
             }
-            // fill with initial value
+            OnReport(tokenizer.BytesRead);
+
+            nLinesParsed++;
+            colIdx = 0;
           } else {
-            // the columns are already there -> try to add values 
-            int columnIndex = 0;
-            foreach (object element in row) {
-              if (values[columnIndex] is List<double> && !(element is double))
-                values[columnIndex].Add(double.NaN);
-              else if (values[columnIndex] is List<DateTime> && !(element is DateTime))
-                values[columnIndex].Add(DateTime.MinValue);
-              else if (values[columnIndex] is List<string> && !(element is string))
-                values[columnIndex].Add(element.ToString());
-              else
-                values[columnIndex].Add(element);
-              columnIndex++;
+            // read one value
+            TokenTypeEnum type; string strVal; double dblVal; DateTime dateTimeVal;
+            tokenizer.Next(out type, out strVal, out dblVal, out dateTimeVal);
+
+            // initialize columns on the first row (fixing data types as presented in the first row...)
+            if (nLinesParsed == 0) {
+              values.Add(CreateList(type, estimatedNumberOfLines));
+            } else if (colIdx == values.Count) {
+              Error("The first row of the dataset has " + numValuesInFirstRow + " columns." + Environment.NewLine +
+                    "Line " + tokenizer.CurrentLineNumber + " has more columns.", "",
+                tokenizer.CurrentLineNumber);
             }
+            // add the value to the column
+            AddValue(type, values[colIdx++], strVal, dblVal, dateTimeVal);
           }
         }
 
         if (!values.Any() || values.First().Count == 0)
-          Error("Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
+          Error("Couldn't parse data values. Probably because of incorrect number format " +
+                "(the parser expects english number format with a '.' as decimal separator).", "", tokenizer.CurrentLineNumber);
       }
 
       this.rows = values.First().Count;
+      this.columns = values.Count;
 
       // after everything has been parsed make sure the lists are as compact as possible
       foreach (var l in values) {
@@ -255,6 +262,71 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       // for large files we created a lot of memory pressure, cannot hurt to run GC.Collect here (TableFileParser is called seldomly on user interaction)
       GC.Collect(2, GCCollectionMode.Forced);
     }
+
+    #region type-dependent dispatch
+    private void AddValue(TokenTypeEnum type, IList list, string strVal, double dblVal, DateTime dateTimeVal) {
+      switch (type) {
+        case TokenTypeEnum.Double:
+          AddDoubleToList(list, dblVal);
+          break;
+        case TokenTypeEnum.String:
+          AddStringToList(list, strVal);
+          break;
+        case TokenTypeEnum.DateTime:
+          AddDateTimeToList(list, dateTimeVal);
+          break;
+        default:
+          throw new InvalidOperationException();
+      }
+    }
+
+    private void AddDoubleToList(IList list, double dblVal) {
+      var dblList = list as List<double>;
+      if (dblList != null) dblList.Add(dblVal);
+      else {
+        var strList = list as List<string>;
+        if (strList != null) strList.Add(dblVal.ToString());
+        else list.Add(null);
+      }
+    }
+
+    private void AddStringToList(IList list, string strVal) {
+      var strList = list as List<string>;
+      if (strList != null) strList.Add(strVal);
+      else {
+        var dblList = list as List<double>;
+        if (dblList != null) dblList.Add(double.NaN);
+        else list.Add(null);
+      }
+    }
+
+    private void AddDateTimeToList(IList list, DateTime dateTimeVal) {
+      var dateTimeList = list as List<DateTime>;
+      if (dateTimeList != null) dateTimeList.Add(dateTimeVal);
+      else {
+        var dblList = list as List<double>;
+        if (dblList != null) dblList.Add(double.NaN);
+        else {
+          var strList = list as List<string>;
+          if (strList != null) strList.Add(dateTimeVal.ToString());
+          else list.Add(null);
+        }
+      }
+    }
+
+    private IList CreateList(TokenTypeEnum type, int estimatedNumberOfLines) {
+      switch (type) {
+        case TokenTypeEnum.String:
+          return new List<string>(estimatedNumberOfLines);
+        case TokenTypeEnum.Double:
+          return new List<double>(estimatedNumberOfLines);
+        case TokenTypeEnum.DateTime:
+          return new List<DateTime>(estimatedNumberOfLines);
+        default:
+          throw new InvalidOperationException();
+      }
+    }
+    #endregion
 
     public static void DetermineFileFormat(string path, out NumberFormatInfo numberFormat, out DateTimeFormatInfo dateTimeFormatInfo, out char separator) {
       DetermineFileFormat(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), out numberFormat, out dateTimeFormatInfo, out separator);
@@ -337,8 +409,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     #region tokenizer
+    // the tokenizer reads full lines and returns separated tokens in the line as well as a terminating end-of-line character
     internal enum TokenTypeEnum {
-      NewLine, Separator, String, Double, DateTime
+      NewLine, String, Double, DateTime
     }
 
     internal class Tokenizer {
@@ -353,7 +426,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
       private NumberFormatInfo numberFormatInfo;
       private DateTimeFormatInfo dateTimeFormatInfo;
       private char separator;
-      private const string INTERNAL_SEPARATOR = "#";
+
+      // arrays for string.Split()
+      private readonly char[] whiteSpaceSeparators = new char[0]; // string split uses separators as default
+      private readonly char[] separators;
 
       private int currentLineNumber = 0;
       public int CurrentLineNumber {
@@ -375,79 +451,12 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         this.numberFormatInfo = numberFormatInfo;
         this.dateTimeFormatInfo = dateTimeFormatInfo;
         this.separator = separator;
+        this.separators = new char[] { separator };
         ReadNextTokens();
       }
 
-      private void ReadNextTokens() {
-        if (!reader.EndOfStream) {
-          CurrentLine = reader.ReadLine();
-          try {
-            BytesRead = reader.BaseStream.Position;
-          } catch (IOException) {
-            BytesRead += CurrentLine.Length + 2; // guess
-          } catch (NotSupportedException) {
-            BytesRead += CurrentLine.Length + 2;
-          }
-          int i = 0;
-          foreach (var tok in Split(CurrentLine)) {
-            var trimmedStr = tok.Trim();
-            if (!string.IsNullOrEmpty(trimmedStr)) {
-              TokenTypeEnum type = TokenTypeEnum.String; // default
-              stringVals[i] = trimmedStr;
-              double doubleVal;
-              DateTime dateTimeValue;
-              if (trimmedStr.Equals(INTERNAL_SEPARATOR)) {
-                type = TokenTypeEnum.Separator;
-              } else if (double.TryParse(trimmedStr, NumberStyles.Float, numberFormatInfo, out doubleVal)) {
-                type = TokenTypeEnum.Double;
-                doubleVals[i] = doubleVal;
-              } else if (DateTime.TryParse(trimmedStr, dateTimeFormatInfo, DateTimeStyles.None, out dateTimeValue)) {
-                type = TokenTypeEnum.DateTime;
-                dateTimeVals[i] = dateTimeValue;
-              }
-
-              // couldn't parse the token as an int or float number  or datetime value so return a string token
-
-              tokenTypes[i] = type;
-              i++;
-
-              if (i >= tokenTypes.Length) {
-                // increase buffer size if necessary
-                IncreaseCapacity(ref tokenTypes);
-                IncreaseCapacity(ref doubleVals);
-                IncreaseCapacity(ref stringVals);
-                IncreaseCapacity(ref dateTimeVals);
-              }
-            }
-          }
-          tokenTypes[i] = TokenTypeEnum.NewLine;
-          numTokens = i + 1;
-          tokenPos = 0;
-        }
-      }
-
-      private static void IncreaseCapacity<T>(ref T[] arr) {
-        int n = (int)Math.Floor(arr.Length * 1.7); // guess
-        T[] arr2 = new T[n];
-        Array.Copy(arr, arr2, arr.Length);
-        arr = arr2;
-      }
-
-      private IEnumerable<string> Split(string line) {
-        string[] splitString;
-        if (separator == WHITESPACECHAR) {
-          //separate whitespaces
-          splitString = line.Split(new char[0], StringSplitOptions.RemoveEmptyEntries);
-        } else {
-          splitString = line.Split(separator);
-        }
-
-        for (int i = 0; i < splitString.Length - 1; i++) {
-          yield return splitString[i];
-          yield return INTERNAL_SEPARATOR;
-        }
-        // do not return the INTERNAL_SEPARATOR after the last string
-        yield return splitString[splitString.Length - 1];
+      public bool HasNext() {
+        return numTokens > tokenPos || !reader.EndOfStream;
       }
 
       public TokenTypeEnum PeekType() {
@@ -470,75 +479,69 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         Skip();
       }
 
-      public bool HasNext() {
-        return numTokens > tokenPos || !reader.EndOfStream;
+      private void ReadNextTokens() {
+        if (!reader.EndOfStream) {
+          CurrentLine = reader.ReadLine();
+          CurrentLineNumber++;
+          try {
+            BytesRead = reader.BaseStream.Position;
+          } catch (IOException) {
+            BytesRead += CurrentLine.Length + 2; // guess
+          } catch (NotSupportedException) {
+            BytesRead += CurrentLine.Length + 2;
+          }
+          int i = 0;
+          if (!string.IsNullOrWhiteSpace(CurrentLine)) {
+            foreach (var tok in Split(CurrentLine)) {
+              TokenTypeEnum type;
+              double doubleVal;
+              DateTime dateTimeValue;
+              type = TokenTypeEnum.String; // default
+              stringVals[i] = tok.Trim();
+              if (double.TryParse(tok, NumberStyles.Float, numberFormatInfo, out doubleVal)) {
+                type = TokenTypeEnum.Double;
+                doubleVals[i] = doubleVal;
+              } else if (DateTime.TryParse(tok, dateTimeFormatInfo, DateTimeStyles.None, out dateTimeValue)) {
+                type = TokenTypeEnum.DateTime;
+                dateTimeVals[i] = dateTimeValue;
+              }
+
+              // couldn't parse the token as an int or float number or datetime value so return a string token
+
+              tokenTypes[i] = type;
+              i++;
+
+              if (i >= tokenTypes.Length) {
+                // increase buffer size if necessary
+                IncreaseCapacity(ref tokenTypes);
+                IncreaseCapacity(ref doubleVals);
+                IncreaseCapacity(ref stringVals);
+                IncreaseCapacity(ref dateTimeVals);
+              }
+            }
+          }
+          tokenTypes[i] = TokenTypeEnum.NewLine;
+          numTokens = i + 1;
+          tokenPos = 0;
+        }
+      }
+
+      private IEnumerable<string> Split(string line) {
+        return separator == WHITESPACECHAR ?
+          line.Split(whiteSpaceSeparators, StringSplitOptions.RemoveEmptyEntries) :
+          line.Split(separators);
+      }
+
+      private static void IncreaseCapacity<T>(ref T[] arr) {
+        int n = (int)Math.Floor(arr.Length * 1.7); // guess
+        T[] arr2 = new T[n];
+        Array.Copy(arr, arr2, arr.Length);
+        arr = arr2;
       }
     }
     #endregion
 
     #region parsing
-    private IEnumerable<List<object>> Parse(bool columnNamesInFirstLine, int lineLimit = -1) { // lineLimit = -1 means no limit
-      if (columnNamesInFirstLine) {
-        ParseVariableNames();
-        if (!tokenizer.HasNext())
-          Error(
-            "Couldn't parse data values. Probably because of incorrect number format (the parser expects english number format with a '.' as decimal separator).",
-            "", tokenizer.CurrentLineNumber);
-      }
-      return ParseValues(lineLimit);
-    }
-
-    private IEnumerable<List<object>> ParseValues(int lineLimit = -1) {
-      int nLinesParsed = 0;
-      int numValuesInFirstRow = -1;
-      while (tokenizer.HasNext() && (lineLimit < 0 || nLinesParsed < lineLimit)) {
-        if (tokenizer.PeekType() == TokenTypeEnum.NewLine) {
-          tokenizer.Skip();
-          nLinesParsed++;
-        } else {
-          List<object> row = new List<object>();
-          object value = NextValue(tokenizer);
-          row.Add(value);
-          while (tokenizer.HasNext() && tokenizer.PeekType() == TokenTypeEnum.Separator) {
-            ExpectType(TokenTypeEnum.Separator);
-            row.Add(NextValue(tokenizer));
-          }
-          ExpectType(TokenTypeEnum.NewLine);
-          nLinesParsed++;
-          // all rows have to have the same number of values            
-          // the first row defines how many samples are needed
-          if (numValuesInFirstRow < 0) numValuesInFirstRow = row.Count;
-          else if (numValuesInFirstRow != row.Count) {
-            Error("The first row of the dataset has " + numValuesInFirstRow + " columns." +
-                  "\nLine " + tokenizer.CurrentLineNumber + " has " + row.Count + " columns.", "",
-                  tokenizer.CurrentLineNumber);
-          }
-          yield return row;
-        }
-
-        OnReport(tokenizer.BytesRead);
-      }
-    }
-
-    private object NextValue(Tokenizer tokenizer) {
-      if (tokenizer.PeekType() == TokenTypeEnum.Separator || tokenizer.PeekType() == TokenTypeEnum.NewLine) return string.Empty;
-      TokenTypeEnum type;
-      string strVal;
-      double dblVal;
-      DateTime dateTimeVal;
-
-      tokenizer.Next(out type, out strVal, out dblVal, out dateTimeVal);
-      switch (type) {
-        case TokenTypeEnum.Separator: return double.NaN;
-        case TokenTypeEnum.String: return strVal;
-        case TokenTypeEnum.Double: return dblVal;
-        case TokenTypeEnum.DateTime: return dateTimeVal;
-      }
-      // found an unexpected token => throw error 
-      Error("Unexpected token.", strVal, tokenizer.CurrentLineNumber);
-      // this line is never executed because Error() throws an exception
-      throw new InvalidOperationException();
-    }
 
     private void ParseVariableNames() {
       // the first line must contain variable names
@@ -556,8 +559,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         throw new ArgumentException("Error: Expected " + TokenTypeEnum.String + " got " + type);
       varNames.Add(strVal);
 
-      while (tokenizer.HasNext() && tokenizer.PeekType() == TokenTypeEnum.Separator) {
-        ExpectType(TokenTypeEnum.Separator);
+      while (tokenizer.HasNext() && tokenizer.PeekType() != TokenTypeEnum.NewLine) {
         tokenizer.Next(out type, out strVal, out dblVal, out dateTimeVal);
         varNames.Add(strVal);
       }
