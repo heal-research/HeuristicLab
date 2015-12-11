@@ -19,30 +19,9 @@
  */
 #endregion
 
-using System.Drawing;
-using HeuristicLab.Common;
-using HeuristicLab.Common.Resources;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [Item("JSMForcingStrategy", "Represents a forcing strategy.")]
-  [StorableClass]
-  public sealed class JSMForcingStrategy : ValueTypeValue<JSMForcingStrategyTypes> {
-
-    public static new Image StaticItemImage {
-      get { return VSImageLibrary.Enum; }
-    }
-
-    [StorableConstructor]
-    private JSMForcingStrategy(bool deserializing) : base(deserializing) { }
-    private JSMForcingStrategy(JSMForcingStrategy original, Cloner cloner) : base(original, cloner) { }
-    public JSMForcingStrategy() { }
-    public JSMForcingStrategy(JSMForcingStrategyTypes types) : base(types) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new JSMForcingStrategy(this, cloner);
-    }
+  public enum JSMForcingStrategy {
+    ShiftForcing,
+    SwapForcing
   }
 }

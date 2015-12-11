@@ -19,30 +19,9 @@
  */
 #endregion
 
-using System.Drawing;
-using HeuristicLab.Common;
-using HeuristicLab.Common.Resources;
-using HeuristicLab.Core;
-using HeuristicLab.Data;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
-
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  [Item("JSMDecodingErrorPolicy", "Represents a policy for handling decoding errors.")]
-  [StorableClass]
-  public sealed class JSMDecodingErrorPolicy : ValueTypeValue<JSMDecodingErrorPolicyTypes> {
-
-    public static new Image StaticItemImage {
-      get { return VSImageLibrary.Enum; }
-    }
-
-    [StorableConstructor]
-    private JSMDecodingErrorPolicy(bool deserializing) : base(deserializing) { }
-    private JSMDecodingErrorPolicy(JSMDecodingErrorPolicy original, Cloner cloner) : base(original, cloner) { }
-    public JSMDecodingErrorPolicy() : base() { }
-    public JSMDecodingErrorPolicy(JSMDecodingErrorPolicyTypes types) : base(types) { }
-
-    public override IDeepCloneable Clone(Cloner cloner) {
-      return new JSMDecodingErrorPolicy(this, cloner);
-    }
+  public enum JSMDecodingErrorPolicy {
+    RandomPolicy,
+    GuidedPolicy
   }
 }

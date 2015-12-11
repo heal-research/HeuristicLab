@@ -115,23 +115,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JSMForcingStrategyView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="JSMForcingStrategyView.Designer.cs">
-      <DependentUpon>JSMForcingStrategyView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="JobShopSchedulingProblemView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="JobShopSchedulingProblemView.cs" />
     <Compile Include="JobShopSchedulingProblemView.Designer.cs">
       <DependentUpon>JobShopSchedulingProblemView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="JSMDecodingErrorPolicyView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="JSMDecodingErrorPolicyView.Designer.cs">
-      <DependentUpon>JSMDecodingErrorPolicyView.cs</DependentUpon>
     </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -117,9 +117,7 @@
   <ItemGroup>
     <Compile Include="JobSequenceMatrix\Decoder\JSMDecoder.cs" />
     <Compile Include="JobSequenceMatrix\Decoder\JSMDecodingErrorPolicy.cs" />
-    <Compile Include="JobSequenceMatrix\Decoder\JSMDecodingErrorPolicyTypes.cs" />
     <Compile Include="JobSequenceMatrix\Decoder\JSMForcingStrategy.cs" />
-    <Compile Include="JobSequenceMatrix\Decoder\JSMForcingStrategyTypes.cs" />
     <Compile Include="PriorityRulesVector\Decoder\PRVDecoder.cs" />
     <Compile Include="PermutationWithRepetition\Decoder\PWRDecoder.cs" />
     <Compile Include="ScheduleDecoder.cs" />

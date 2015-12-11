@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Encodings.PermutationEncoding;
 using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -34,18 +35,18 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
   [StorableClass]
   public class JSMDecoder : ScheduleDecoder {
 
-    public IValueParameter<JSMDecodingErrorPolicy> DecodingErrorPolicyParameter {
-      get { return (IValueParameter<JSMDecodingErrorPolicy>)Parameters["DecodingErrorPolicy"]; }
+    public IFixedValueParameter<EnumValue<JSMDecodingErrorPolicy>> DecodingErrorPolicyParameter {
+      get { return (IFixedValueParameter<EnumValue<JSMDecodingErrorPolicy>>)Parameters["DecodingErrorPolicy"]; }
     }
-    public IValueParameter<JSMForcingStrategy> ForcingStrategyParameter {
-      get { return (IValueParameter<JSMForcingStrategy>)Parameters["ForcingStrategy"]; }
+    public IFixedValueParameter<EnumValue<JSMForcingStrategy>> ForcingStrategyParameter {
+      get { return (IFixedValueParameter<EnumValue<JSMForcingStrategy>>)Parameters["ForcingStrategy"]; }
     }
 
-    private JSMDecodingErrorPolicyTypes DecodingErrorPolicy {
+    private JSMDecodingErrorPolicy DecodingErrorPolicy {
       get { return DecodingErrorPolicyParameter.Value.Value; }
     }
 
-    private JSMForcingStrategyTypes ForcingStrategy {
+    private JSMForcingStrategy ForcingStrategy {
       get { return ForcingStrategyParameter.Value.Value; }
     }
 
@@ -58,11 +59,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     public JSMDecoder()
       : base() {
-      Parameters.Add(new ValueParameter<JSMDecodingErrorPolicy>("DecodingErrorPolicy", "Specify the policy that should be used to handle decoding errors.", new JSMDecodingErrorPolicy(JSMDecodingErrorPolicyTypes.RandomPolicy)));
-      Parameters.Add(new ValueParameter<JSMForcingStrategy>("ForcingStrategy", "Specifies a forcing strategy.", new JSMForcingStrategy(JSMForcingStrategyTypes.SwapForcing)));
+      Parameters.Add(new FixedValueParameter<EnumValue<JSMDecodingErrorPolicy>>("DecodingErrorPolicy", "Specify the policy that should be used to handle decoding errors.", new EnumValue<JSMDecodingErrorPolicy>(JSMDecodingErrorPolicy.RandomPolicy)));
+      Parameters.Add(new FixedValueParameter<EnumValue<JSMForcingStrategy>>("ForcingStrategy", "Specifies a forcing strategy.", new EnumValue<JSMForcingStrategy>(JSMForcingStrategy.SwapForcing)));
     }
 
-    private static Task SelectTaskFromConflictSet(JSMEncoding solution, JSMDecodingErrorPolicyTypes decodingErrorPolicy, JSMForcingStrategyTypes forcingStrategy, int conflictedResourceNr, int progressOnConflictedResource, ItemList<Task> conflictSet, IRandom random) {
+    private static Task SelectTaskFromConflictSet(JSMEncoding solution, JSMDecodingErrorPolicy decodingErrorPolicy, JSMForcingStrategy forcingStrategy, int conflictedResourceNr, int progressOnConflictedResource, ItemList<Task> conflictSet, IRandom random) {
       if (conflictSet.Count == 1)
         return conflictSet[0];
 
@@ -88,8 +89,8 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return result;
     }
 
-    private static Task ApplyDecodingErrorPolicy(JSMDecodingErrorPolicyTypes decodingErrorPolicy, ItemList<Task> conflictSet, Permutation resource, int progress, IRandom random) {
-      if (decodingErrorPolicy == JSMDecodingErrorPolicyTypes.RandomPolicy) {
+    private static Task ApplyDecodingErrorPolicy(JSMDecodingErrorPolicy decodingErrorPolicy, ItemList<Task> conflictSet, Permutation resource, int progress, IRandom random) {
+      if (decodingErrorPolicy == JSMDecodingErrorPolicy.RandomPolicy) {
         //Random
         return conflictSet[random.Next(conflictSet.Count - 1)];
       } else {
@@ -106,13 +107,13 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
     }
 
-    private static void ApplyForcingStrategy(JSMForcingStrategyTypes forcingStrategy, JSMEncoding solution, int conflictedResource, int newResolutionIndex, int progressOnResource, int newResolution) {
+    private static void ApplyForcingStrategy(JSMForcingStrategy forcingStrategy, JSMEncoding solution, int conflictedResource, int newResolutionIndex, int progressOnResource, int newResolution) {
       var jsm = solution.JobSequenceMatrix;
-      if (forcingStrategy == JSMForcingStrategyTypes.SwapForcing) {
+      if (forcingStrategy == JSMForcingStrategy.SwapForcing) {
         //SwapForcing
         jsm[conflictedResource][newResolutionIndex] = jsm[conflictedResource][progressOnResource];
         jsm[conflictedResource][progressOnResource] = newResolution;
-      } else if (forcingStrategy == JSMForcingStrategyTypes.ShiftForcing) {
+      } else if (forcingStrategy == JSMForcingStrategy.ShiftForcing) {
         //ShiftForcing
         List<int> asList = jsm[conflictedResource].ToList<int>();
         if (newResolutionIndex > progressOnResource) {
@@ -134,7 +135,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return DecodeSchedule(solution, jobData, DecodingErrorPolicy, ForcingStrategy);
     }
 
-    public static Schedule DecodeSchedule(JSMEncoding solution, ItemList<Job> jobData, JSMDecodingErrorPolicyTypes decodingErrorPolicy, JSMForcingStrategyTypes forcingStrategy) {
+    public static Schedule DecodeSchedule(JSMEncoding solution, ItemList<Job> jobData, JSMDecodingErrorPolicy decodingErrorPolicy, JSMForcingStrategy forcingStrategy) {
       var random = new FastRandom(solution.RandomSeed);
       var jobs = (ItemList<Job>)jobData.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);

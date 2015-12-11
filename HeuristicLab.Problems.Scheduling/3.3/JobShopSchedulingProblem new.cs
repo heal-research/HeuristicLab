@@ -288,7 +288,7 @@ namespace HeuristicLab.Problems.Scheduling {
             enc.JobSequenceMatrix[i][j] = data.BestKnownSchedule[i, j];
           }
         }
-        BestKnownSolution = JSMDecoder.DecodeSchedule(enc, jobData, JSMDecodingErrorPolicyTypes.RandomPolicy, JSMForcingStrategyTypes.SwapForcing);
+        BestKnownSolution = JSMDecoder.DecodeSchedule(enc, jobData, JSMDecodingErrorPolicy.RandomPolicy, JSMForcingStrategy.SwapForcing);
         //if (ScheduleEvaluator is MeanTardinessEvaluator)
         //  BestKnownQuality = MeanTardinessEvaluator.GetMeanTardiness(BestKnownSolution, jobData);
         //else if (ScheduleEvaluator is MakespanEvaluator)
