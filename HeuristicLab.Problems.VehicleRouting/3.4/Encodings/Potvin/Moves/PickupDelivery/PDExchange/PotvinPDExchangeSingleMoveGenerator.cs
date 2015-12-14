@@ -69,9 +69,7 @@ namespace HeuristicLab.Problems.VehicleRouting.Encodings.Potvin {
           Tour oldTour = individual.Tours.Find(t => t.Stops.Contains(city));
           int oldTourIndex = individual.Tours.IndexOf(oldTour);
 
-          int max = individual.Tours.Count;
-          if (individual.Tours.Count < problemInstance.Vehicles.Value)
-            max = max - 1;
+          int max = individual.Tours.Count - 1;
 
           int newTourIndex = rand.Next(max);
           if (newTourIndex >= oldTourIndex)
