@@ -20,7 +20,10 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+using HeuristicLab.Common;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace HeuristicLab.MainForm.WindowsForms {
@@ -108,6 +111,41 @@ namespace HeuristicLab.MainForm.WindowsForms {
     #region View Events
     private void View_CaptionChanged(object sender, EventArgs e) {
       UpdateText();
+    }
+    #endregion
+
+    #region Context Menu Events
+    private void closeToolStripMenuItem_Click(object sender, EventArgs e) {
+      Close();
+    }
+    private void closeAllToolStripMenuItem_Click(object sender, EventArgs e) {
+      foreach (var dockForm in CurrentDockForms.ToList()) {
+        dockForm.Close();
+      }
+    }
+    private void closeAllButThisToolStripMenuItem_Click(object sender, EventArgs e) {
+      foreach (var dockForm in CurrentDockForms.Except(this.ToEnumerable()).ToList()) {
+        dockForm.Close();
+      }
+    }
+    private IEnumerable<DockForm> CurrentDockForms {
+      get {
+        return DockPanel.ActivePane.IsActiveDocumentPane
+            ? DockPanel.Documents.OfType<DockForm>()
+            : DockPanel.ActivePane.Contents.OfType<DockForm>();
+        // ActivePane.Contents contains all dockforms if ActivePane is the main DocumentPane
+      }
+    }
+
+    private void cloneToolStripMenuItem_Click(object sender, EventArgs e) {
+      var contentView = View as IContentView;
+      if (contentView == null) return;
+
+      var cloneable = contentView.Content as IDeepCloneable;
+      if (cloneable == null) return;
+
+      var clone = (IContent)cloneable.Clone();
+      MainFormManager.MainForm.ShowContent(clone);
     }
     #endregion
   }
