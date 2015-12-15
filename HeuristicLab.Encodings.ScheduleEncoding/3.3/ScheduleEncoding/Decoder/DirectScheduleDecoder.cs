@@ -19,7 +19,6 @@
  */
 #endregion
 
-using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
@@ -27,7 +26,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleDecoder", "An item used to convert a direct schedule into a generalized schedule.")]
   [StorableClass]
-  public class DirectScheduleDecoder : ScheduleDecoder {
+  public class DirectScheduleDecoder : ScheduleDecoder<Schedule> {
     [StorableConstructor]
     protected DirectScheduleDecoder(bool deserializing) : base(deserializing) { }
     protected DirectScheduleDecoder(DirectScheduleDecoder original, Cloner cloner) : base(original, cloner) { }
@@ -37,13 +36,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new DirectScheduleDecoder(this, cloner);
     }
 
-    public override Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData) {
-      var schedule = solution as Schedule;
-      if (schedule == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
-      return DecodeSchedule(schedule, jobData);
+    public override Schedule DecodeSchedule(Schedule solution, ItemList<Job> jobData) {
+      return Decode(solution, jobData);
     }
 
-    public static Schedule DecodeSchedule(Schedule solution, ItemList<Job> jobData) {
+    public static Schedule Decode(Schedule solution, ItemList<Job> jobData) {
       return solution;
     }
   }

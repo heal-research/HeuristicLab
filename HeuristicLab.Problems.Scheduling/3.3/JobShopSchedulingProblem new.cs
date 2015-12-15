@@ -95,6 +95,7 @@ namespace HeuristicLab.Problems.Scheduling {
     #endregion
 
     #region Properties
+
     public ItemList<Job> JobData {
       get { return JobDataParameter.Value; }
     }
@@ -165,10 +166,10 @@ namespace HeuristicLab.Problems.Scheduling {
     }
 
     #region Events
-    protected override void OnSolutionCreatorChanged() {
-      //SolutionCreator.ScheduleParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
-      //InitializeOperators();
-    }
+    //protected override void OnSolutionCreatorChanged() {
+    //SolutionCreator.ScheduleParameter.ActualNameChanged += SolutionCreator_SchedulingEncodingParameter_ActualNameChanged;
+    //InitializeOperators();
+    //}
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
       ParameterizeOperators();
@@ -195,8 +196,7 @@ namespace HeuristicLab.Problems.Scheduling {
 
     #region Helpers
     private void InitializeOperators() {
-      Operators.Clear();
-      ApplyEncoding();
+      //ApplyEncoding();
       Operators.Add(new BestSchedulingSolutionAnalyzer());
       ParameterizeOperators();
     }
@@ -288,7 +288,7 @@ namespace HeuristicLab.Problems.Scheduling {
             enc.JobSequenceMatrix[i][j] = data.BestKnownSchedule[i, j];
           }
         }
-        BestKnownSolution = JSMDecoder.DecodeSchedule(enc, jobData, JSMDecodingErrorPolicy.RandomPolicy, JSMForcingStrategy.SwapForcing);
+        BestKnownSolution = JSMDecoder.Decode(enc, jobData, JSMDecodingErrorPolicy.RandomPolicy, JSMForcingStrategy.SwapForcing);
         //if (ScheduleEvaluator is MeanTardinessEvaluator)
         //  BestKnownQuality = MeanTardinessEvaluator.GetMeanTardiness(BestKnownSolution, jobData);
         //else if (ScheduleEvaluator is MakespanEvaluator)

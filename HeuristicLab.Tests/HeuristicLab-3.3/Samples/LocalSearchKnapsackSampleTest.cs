@@ -61,7 +61,7 @@ namespace HeuristicLab.Tests {
       problem.BestKnownQuality = 362;
       problem.BestKnownSolution = new HeuristicLab.Encodings.BinaryVectorEncoding.BinaryVector(new bool[] { 
        true , false, false, true , true , true , true , true , false, true , true , true , true , true , true , false, true , false, true , true , false, true , true , false, true , false, true , true , true , false, true , true , false, true , true , false, true , false, true , true , true , true , true , true , true , true , true , true , true , true , true , false, true , false, false, true , true , false, true , true , true , true , true , true , true , true , false, true , false, true , true , true , true , false, true , true , true , true , true , true , true , true});
-      problem.SolutionCreatorParameter.Value = new RandomBinaryVectorCreator();
+      problem.Encoding.SolutionCreator = new RandomBinaryVectorCreator();
       problem.KnapsackCapacity = 297;
       problem.Values = new IntArray(new int[] { 
   6, 1, 1, 6, 7, 8, 7, 4, 2, 5, 2, 6, 7, 8, 7, 1, 7, 1, 9, 4, 2, 6, 5,  3, 5, 3, 3, 6, 5, 2, 4, 9, 4, 5, 7, 1, 4, 3, 5, 5, 8, 3, 6, 7, 3, 9, 7, 7, 5, 5, 7, 1, 4, 4, 3, 9, 5, 1, 6, 2, 2, 6, 1, 6, 5, 4, 4, 7, 1,  8, 9, 9, 7, 4, 3, 8, 7, 5, 7, 4, 4, 5});

@@ -29,4 +29,9 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData);
   }
+
+  public interface IScheduleDecoder<TSchedule> : IScheduleDecoder
+    where TSchedule : class, ISchedule {
+    Schedule DecodeSchedule(TSchedule solution, ItemList<Job> jobData);
+  }
 }

@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -42,13 +41,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
       IRandom random = new TestRandom(new int[] { 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 }, null);
       JSMEncoding individual = TestUtils.CreateTestJSM1();
       JSMShiftChangeManipulator.Apply(random, individual);
-      JSMEncoding expected = new JSMEncoding();
-      ItemList<Permutation> jsm = new ItemList<Permutation>();
+      JSMEncoding expected = new JSMEncoding(0);
+      ItemList<Permutation> jsm = expected.JobSequenceMatrix;
       for (int i = 0; i < 3; i++) {
         jsm.Add(new Permutation(PermutationTypes.Absolute, new int[] { 0, 1, 3, 2, 4, 5 }));
         jsm.Add(new Permutation(PermutationTypes.Absolute, new int[] { 0, 1, 3, 4, 2, 5 }));
       }
-      expected.JobSequenceMatrix = jsm;
 
       Assert.IsTrue(TestUtils.JSMEncodingEquals(expected, individual));
     }

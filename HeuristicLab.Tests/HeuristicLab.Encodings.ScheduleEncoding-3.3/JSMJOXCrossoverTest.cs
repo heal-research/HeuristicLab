@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -39,15 +38,15 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     [TestCategory("Encodings.Schedule")]
     [TestProperty("Time", "short")]
     public void ApplyTest() {
-      IRandom random = new TestRandom(new int[] { 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1 }, null);
+      IRandom random = new TestRandom(new int[] { 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1 }, null);
       JSMEncoding p1 = TestUtils.CreateTestJSM1();
       JSMEncoding p2 = TestUtils.CreateTestJSM2();
-      JSMEncoding expected = new JSMEncoding();
-      ItemList<Permutation> jsm = new ItemList<Permutation>();
+      JSMEncoding expected = new JSMEncoding(0);
+      ItemList<Permutation> jsm = expected.JobSequenceMatrix;
       for (int i = 0; i < 6; i++) {
         jsm.Add(new Permutation(PermutationTypes.Absolute, new int[] { 5, 4, 3, 0, 1, 2 }));
       }
-      expected.JobSequenceMatrix = jsm;
+
 
       JSMEncoding actual;
       actual = JSMJOXCrossover.Apply(random, p1, p2);

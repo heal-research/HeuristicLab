@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PriorityRulesRandomCreator", "Creator class used to create PRV encoding objects for scheduling problems.")]
   [StorableClass]
-  public class PRVRandomCreator : ScheduleCreator, IStochasticOperator {
+  public class PRVRandomCreator : ScheduleCreator<PRVEncoding>, IStochasticOperator {
 
     [Storable]
     public int NrOfRules { get; set; }
@@ -57,7 +57,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new PRVEncoding(jobs * resources, random, 0, nrOfRules);
     }
 
-    protected override ISchedule CreateSolution() {
+    protected override PRVEncoding CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue, NrOfRules);
     }
   }

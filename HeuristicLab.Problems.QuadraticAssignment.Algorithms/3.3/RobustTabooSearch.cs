@@ -394,7 +394,7 @@ Please note that the MinimumTabuTenure parameter has no effect in the new versio
 
     private void ParameterizeOperators() {
       if (Problem != null) {
-        solutionsCreator.SolutionCreatorParameter.ActualName = Problem.SolutionCreatorParameter.Name;
+        solutionsCreator.SolutionCreatorParameter.ActualName = base.Problem.SolutionCreatorParameter.Name;
         solutionsCreator.EvaluatorParameter.ActualName = Problem.EvaluatorParameter.Name;
 
         qualityAnalyzer.QualityParameter.ActualName = Problem.Evaluator.QualityParameter.Name;

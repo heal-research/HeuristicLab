@@ -157,11 +157,6 @@
       <Name>HeuristicLab.Data-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Encodings.IntegerVectorEncoding\3.3\HeuristicLab.Encodings.IntegerVectorEncoding-3.3.csproj">
-      <Project>{DDFB14DD-2A85-493C-A52D-E69729BBAEB0}</Project>
-      <Name>HeuristicLab.Encodings.IntegerVectorEncoding-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Encodings.PermutationEncoding\3.3\HeuristicLab.Encodings.PermutationEncoding-3.3.csproj">
       <Project>{DBECB8B0-B166-4133-BAF1-ED67C3FD7FCA}</Project>
       <Name>HeuristicLab.Encodings.PermutationEncoding-3.3</Name>
@@ -200,11 +195,6 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
       <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
       <Name>HeuristicLab.Problems.Instances-3.3</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\HeuristicLab.Random\3.3\HeuristicLab.Random-3.3.csproj">
-      <Project>{f4539fb6-4708-40c9-be64-0a1390aea197}</Project>
-      <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

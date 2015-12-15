@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("DirectScheduleRandomCreator", "Creator class used to create schedule encoding objects.")]
   [StorableClass]
-  public class DirectScheduleRandomCreator : ScheduleCreator, IStochasticOperator, IDirectScheduleOperator {
+  public class DirectScheduleRandomCreator : ScheduleCreator<Schedule>, IStochasticOperator, IDirectScheduleOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -67,8 +67,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
     }
 
 
-
-    protected override ISchedule CreateSolution() {
+    protected override Schedule CreateSolution() {
       var jobData = (ItemList<Job>)JobDataParameter.ActualValue.Clone();
       var pwrEncoding = new PWREncoding(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value,
         RandomParameter.ActualValue);

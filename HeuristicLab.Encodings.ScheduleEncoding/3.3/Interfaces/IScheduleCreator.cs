@@ -24,8 +24,9 @@ using HeuristicLab.Data;
 using HeuristicLab.Optimization;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
-  public interface IScheduleCreator : ISolutionCreator<ISchedule>, IScheduleOperator {
-    ILookupParameter<ISchedule> ScheduleParameter { get; }
+  public interface IScheduleCreator<TSchedule> : ISolutionCreator<TSchedule>, IScheduleOperator
+  where TSchedule : class,ISchedule {
+    ILookupParameter<TSchedule> ScheduleParameter { get; }
     IValueLookupParameter<IntValue> JobsParameter { get; }
     IValueLookupParameter<IntValue> ResourcesParameter { get; }
   }

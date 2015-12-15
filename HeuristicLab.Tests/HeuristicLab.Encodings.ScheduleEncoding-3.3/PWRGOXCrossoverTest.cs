@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.IntegerVectorEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

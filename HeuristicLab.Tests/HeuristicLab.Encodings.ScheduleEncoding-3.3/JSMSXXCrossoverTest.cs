@@ -21,7 +21,6 @@
 
 using HeuristicLab.Core;
 using HeuristicLab.Encodings.PermutationEncoding;
-using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -39,15 +38,14 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
     [TestCategory("Encodings.Schedule")]
     [TestProperty("Time", "short")]
     public void ApplyTest() {
-      IRandom random = new TestRandom(new int[] { 3 }, null);
+      IRandom random = new TestRandom(new int[] { 0, 3 }, null);
       JSMEncoding p1 = TestUtils.CreateTestJSM1();
       JSMEncoding p2 = TestUtils.CreateTestJSM2();
-      JSMEncoding expected = new JSMEncoding();
-      ItemList<Permutation> jsm = new ItemList<Permutation>();
+      JSMEncoding expected = new JSMEncoding(0);
+      ItemList<Permutation> jsm = expected.JobSequenceMatrix;
       for (int i = 0; i < 6; i++) {
         jsm.Add(new Permutation(PermutationTypes.Absolute, new int[] { 2, 1, 0, 3, 4, 5 }));
       }
-      expected.JobSequenceMatrix = jsm;
 
       JSMEncoding actual;
       actual = JSMSXXCrossover.Apply(random, p1, p2);

@@ -22,7 +22,7 @@
 using System.IO;
 using System.Linq;
 using HeuristicLab.Algorithms.RAPGA;
-using HeuristicLab.Encodings.ScheduleEncoding.JobSequenceMatrix;
+using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Persistence.Default.Xml;
 using HeuristicLab.Problems.Scheduling;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -56,7 +56,7 @@ namespace HeuristicLab.Tests {
 
     private RAPGA CreateRAPGASchedulingSample() {
       #region Problem Configuration
-      JobShopSchedulingProblem problem = new JobShopSchedulingProblem();
+      var problem = new JobShopSchedulingProblemNew();
       #endregion
 
       #region Algorithm Configuration

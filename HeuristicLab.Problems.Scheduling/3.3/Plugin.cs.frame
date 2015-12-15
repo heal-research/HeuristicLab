@@ -29,7 +29,6 @@ namespace HeuristicLab.Problems.Scheduling {
   [PluginDependency("HeuristicLab.Common.Resources", "3.3")]
   [PluginDependency("HeuristicLab.Core", "3.3")]
   [PluginDependency("HeuristicLab.Data", "3.3")]
-  [PluginDependency("HeuristicLab.Encodings.IntegerVectorEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.PermutationEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Encodings.ScheduleEncoding", "3.3")]
   [PluginDependency("HeuristicLab.Operators", "3.3")]

@@ -61,7 +61,7 @@ namespace HeuristicLab.Tests {
       problem.Bounds = new DoubleMatrix(new double[,] { { -5.12, 5.12 } });
       problem.TestFunction= new Rastrigin();
       problem.ProblemSize = 2;
-      problem.SolutionCreatorParameter.Value = new UniformRandomRealVectorCreator();
+      problem.Encoding.SolutionCreator = new UniformRandomRealVectorCreator();
       #endregion
       #region Algorithm Configuration
       sa.Name = "Simulated Annealing - Rastrigin";

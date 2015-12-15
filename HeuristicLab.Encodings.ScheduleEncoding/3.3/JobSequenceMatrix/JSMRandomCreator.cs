@@ -29,7 +29,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixCreator", "Creator class used to create Job Sequence Matrix solutions for standard JobShop scheduling problems.")]
   [StorableClass]
-  public class JSMRandomCreator : ScheduleCreator, IStochasticOperator {
+  public class JSMRandomCreator : ScheduleCreator<JSMEncoding>, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -55,7 +55,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return solution;
     }
 
-    protected override ISchedule CreateSolution() {
+    protected override JSMEncoding CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue);
     }
   }

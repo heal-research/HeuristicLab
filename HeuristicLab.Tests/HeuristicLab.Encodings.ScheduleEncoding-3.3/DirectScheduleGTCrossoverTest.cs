@@ -21,8 +21,7 @@
 
 using System.Linq;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.ScheduleEncoding.PermutationWithRepetition;
-using HeuristicLab.Encodings.ScheduleEncoding.ScheduleEncoding;
+using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -47,7 +46,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding.Tests {
       double mutProp = 0.05;
       Schedule actual;
       actual = DirectScheduleGTCrossover.Apply(random, parent1, parent2, jobData, mutProp);
-      Schedule expected = DirectScheduleRandomCreator.Apply(3, 3, new PWREncoding(3, 3, new TestRandom(new int[] { 0, 2, 1, 1, 0, 2, 1, 2, 0 }, null)), TestUtils.CreateJobData());
+      Schedule expected = DirectScheduleRandomCreator.Apply(new PWREncoding(3, 3, new TestRandom(new int[] { 0, 2, 1, 1, 0, 2, 1, 2, 0 }, null)), TestUtils.CreateJobData());
       Assert.IsTrue(TestUtils.ScheduleEquals(actual, expected));
     }
 

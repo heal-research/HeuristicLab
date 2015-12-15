@@ -29,10 +29,11 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleCreator", "Represents the generalized form of creators for Scheduling Problems.")]
   [StorableClass]
-  public abstract class ScheduleCreator : InstrumentedOperator, IScheduleCreator {
+  public abstract class ScheduleCreator<TSchedule> : InstrumentedOperator, IScheduleCreator<TSchedule>
+  where TSchedule : class,ISchedule {
 
-    public ILookupParameter<ISchedule> ScheduleParameter {
-      get { return (ILookupParameter<ISchedule>)Parameters["Schedule"]; }
+    public ILookupParameter<TSchedule> ScheduleParameter {
+      get { return (ILookupParameter<TSchedule>)Parameters["Schedule"]; }
     }
     public IValueLookupParameter<IntValue> JobsParameter {
       get { return (IValueLookupParameter<IntValue>)Parameters["Jobs"]; }
@@ -43,10 +44,10 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     [StorableConstructor]
     protected ScheduleCreator(bool deserializing) : base(deserializing) { }
-    protected ScheduleCreator(ScheduleCreator original, Cloner cloner) : base(original, cloner) { }
+    protected ScheduleCreator(ScheduleCreator<TSchedule> original, Cloner cloner) : base(original, cloner) { }
     public ScheduleCreator()
       : base() {
-      Parameters.Add(new LookupParameter<ISchedule>("Schedule", "The new scheduling solution candidate."));
+      Parameters.Add(new LookupParameter<TSchedule>("Schedule", "The new scheduling solution candidate."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Jobs", "The number of jobs handled in this problem instance."));
       Parameters.Add(new ValueLookupParameter<IntValue>("Resources", "The number of resources used in this problem instance."));
     }
@@ -56,6 +57,6 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return base.InstrumentedApply();
     }
 
-    protected abstract ISchedule CreateSolution();
+    protected abstract TSchedule CreateSolution();
   }
 }

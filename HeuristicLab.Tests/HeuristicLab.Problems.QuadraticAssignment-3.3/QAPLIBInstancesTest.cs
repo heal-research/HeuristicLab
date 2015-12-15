@@ -201,7 +201,8 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
       foreach (var instance in instances) {
         try {
           qap.Load(provider.LoadData(instance));
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
           failedInstances.AppendLine(instance + ": " + ex.Message);
         }
       }
@@ -222,7 +223,7 @@ namespace HeuristicLab.Problems.QuadraticAssignment.Tests {
       foreach (var instance in instances) {
         qap.Load(provider.LoadData(instance));
         if (qaplibInstances.ContainsKey(instance.Name)
-          && qap.BestKnownQuality != null && qap.BestKnownQuality != qaplibInstances[instance.Name])
+          && qap.BestKnownQuality != qaplibInstances[instance.Name])
           failedInstances.AppendLine(instance.Name + ": " + qap.BestKnownQuality.ToString() + " vs " + qaplibInstances[instance.Name]);
       }
       Assert.IsTrue(failedInstances.Length == 0, "Following instances/solutions have suspicious best quality: " + Environment.NewLine + failedInstances.ToString());

@@ -19,6 +19,7 @@
  */
 #endregion
 
+using System;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Operators;
@@ -28,7 +29,8 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("ScheduleDecoder", "A schedule decoder translates a respresentation into an actual schedule.")]
   [StorableClass]
-  public abstract class ScheduleDecoder : SingleSuccessorOperator, IScheduleDecoder {
+  public abstract class ScheduleDecoder<TSchedule> : SingleSuccessorOperator, IScheduleDecoder<TSchedule>
+  where TSchedule : class, ISchedule {
 
     public ILookupParameter<ISchedule> ScheduleEncodingParameter {
       get { return (ILookupParameter<ISchedule>)Parameters["EncodedSchedule"]; }
@@ -42,7 +44,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
 
     [StorableConstructor]
     protected ScheduleDecoder(bool deserializing) : base(deserializing) { }
-    protected ScheduleDecoder(ScheduleDecoder original, Cloner cloner) : base(original, cloner) { }
+    protected ScheduleDecoder(ScheduleDecoder<TSchedule> original, Cloner cloner) : base(original, cloner) { }
     public ScheduleDecoder()
       : base() {
       Parameters.Add(new LookupParameter<ISchedule>("EncodedSchedule", "The new scheduling solution represented as encoding."));
@@ -50,7 +52,12 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       Parameters.Add(new LookupParameter<ItemList<Job>>("JobData", "Job data taken from the JSSP - Instance."));
     }
 
-    public abstract Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData);
+    public Schedule DecodeSchedule(ISchedule schedule, ItemList<Job> jobData) {
+      TSchedule solution = schedule as TSchedule;
+      if (solution == null) throw new InvalidOperationException("Encoding is not of type " + typeof(TSchedule).GetPrettyName());
+      return DecodeSchedule(solution, jobData);
+    }
+    public abstract Schedule DecodeSchedule(TSchedule schedule, ItemList<Job> jobData);
 
     public override IOperation Apply() {
       Schedule result = DecodeSchedule(ScheduleEncodingParameter.ActualValue, JobDataParameter.ActualValue);

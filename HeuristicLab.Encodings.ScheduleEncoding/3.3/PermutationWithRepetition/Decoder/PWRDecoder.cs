@@ -27,7 +27,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PWRDecoder", "An item used to convert a PWR-individual into a generalized schedule.")]
   [StorableClass]
-  public class PWRDecoder : ScheduleDecoder {
+  public class PWRDecoder : ScheduleDecoder<PWREncoding> {
     [StorableConstructor]
     protected PWRDecoder(bool deserializing) : base(deserializing) { }
     protected PWRDecoder(PWRDecoder original, Cloner cloner) : base(original, cloner) { }
@@ -37,13 +37,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new PWRDecoder(this, cloner);
     }
 
-    public override Schedule DecodeSchedule(ISchedule solution, ItemList<Job> jobData) {
-      var pwr = solution as PWREncoding;
-      if (pwr == null) throw new InvalidOperationException("Encoding is not of type PWREncoding");
-      return DecodeSchedule(pwr, jobData);
+    public override Schedule DecodeSchedule(PWREncoding solution, ItemList<Job> jobData) {
+      return Decode(solution, jobData);
     }
 
-    public static Schedule DecodeSchedule(PWREncoding solution, ItemList<Job> jobData) {
+    public static Schedule Decode(PWREncoding solution, ItemList<Job> jobData) {
       var jobs = (ItemList<Job>)jobData.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);
       foreach (int jobNr in solution.PermutationWithRepetition) {

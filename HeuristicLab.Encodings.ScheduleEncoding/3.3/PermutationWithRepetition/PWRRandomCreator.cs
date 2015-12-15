@@ -28,7 +28,7 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("PermutationWithRepetitionRandomCreator", "Creates PWR-individuals at random.")]
   [StorableClass]
-  public class PWRRandomCreator : ScheduleCreator, IStochasticOperator {
+  public class PWRRandomCreator : ScheduleCreator<PWREncoding>, IStochasticOperator {
 
     public ILookupParameter<IRandom> RandomParameter {
       get { return (LookupParameter<IRandom>)Parameters["Random"]; }
@@ -50,7 +50,7 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       return new PWREncoding(jobs, resources, random);
     }
 
-    protected override ISchedule CreateSolution() {
+    protected override PWREncoding CreateSolution() {
       return Apply(JobsParameter.ActualValue.Value, ResourcesParameter.ActualValue.Value, RandomParameter.ActualValue);
     }
   }

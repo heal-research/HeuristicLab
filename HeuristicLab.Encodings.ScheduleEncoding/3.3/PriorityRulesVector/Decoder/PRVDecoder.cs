@@ -19,18 +19,16 @@
  */
 #endregion
 
-using System;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Encodings.ScheduleEncoding;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Random;
 
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequencingMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequencing Matrix.")]
   [StorableClass]
-  public class PRVDecoder : ScheduleDecoder {
+  public class PRVDecoder : ScheduleDecoder<PRVEncoding> {
     #region Priority Rules
     //smallest number of remaining tasks
     private static Task FILORule(ItemList<Task> tasks) {
@@ -188,13 +186,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
     }
 
-    public override Schedule DecodeSchedule(ISchedule encoding, ItemList<Job> jobData) {
-      var solution = encoding as PRVEncoding;
-      if (solution == null) throw new InvalidOperationException("Encoding is not of type PRVEncoding");
-      return DecodeSchedule(solution, jobData);
+    public override Schedule DecodeSchedule(PRVEncoding encoding, ItemList<Job> jobData) {
+      return Decode(encoding, jobData);
     }
 
-    public static Schedule DecodeSchedule(PRVEncoding solution, ItemList<Job> jobData) {
+    public static Schedule Decode(PRVEncoding solution, ItemList<Job> jobData) {
       var random = new FastRandom(solution.RandomSeed);
       var jobs = (ItemList<Job>)jobData.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);

@@ -52,43 +52,56 @@ namespace HeuristicLab.Optimization {
         encodingOperators.Clear();
         foreach (var op in value) encodingOperators.Add(op);
 
-        ISolutionCreator<TSolution> newSolutionCreator = (ISolutionCreator<TSolution>)encodingOperators.FirstOrDefault(o => o.GetType() == solutionCreator.GetType()) ??
+        ISolutionCreator<TSolution> newSolutionCreator = (ISolutionCreator<TSolution>)encodingOperators.FirstOrDefault(o => o.GetType() == SolutionCreator.GetType()) ??
                                encodingOperators.OfType<ISolutionCreator<TSolution>>().First();
         SolutionCreator = newSolutionCreator;
         OnOperatorsChanged();
       }
     }
 
-    ISolutionCreator IEncoding.SolutionCreator {
-      get { return solutionCreator; }
+    public IValueParameter SolutionCreatorParameter {
+      get { return (IValueParameter)Parameters[Name + ".SolutionCreator"]; }
     }
 
-    [Storable]
-    private ISolutionCreator<TSolution> solutionCreator;
+    ISolutionCreator IEncoding.SolutionCreator {
+      get { return SolutionCreator; }
+    }
     public ISolutionCreator<TSolution> SolutionCreator {
-      get {
-        return solutionCreator;
-      }
+      get { return (ISolutionCreator<TSolution>)SolutionCreatorParameter.Value; }
       set {
         if (value == null) throw new ArgumentNullException("SolutionCreator must not be null.");
-        if (solutionCreator == value) return;
-        encodingOperators.Remove(solutionCreator);
+        encodingOperators.Remove(SolutionCreator);
         encodingOperators.Add(value);
-        solutionCreator = value;
+        SolutionCreatorParameter.Value = value;
         OnSolutionCreatorChanged();
       }
     }
 
+
     [StorableConstructor]
     protected Encoding(bool deserializing) : base(deserializing) { }
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      RegisterEventHandlers();
+    }
+
     protected Encoding(Encoding<TSolution> original, Cloner cloner)
       : base(original, cloner) {
       encodingOperators = cloner.Clone(original.encodingOperators);
-      solutionCreator = cloner.Clone(original.solutionCreator);
+
+      RegisterEventHandlers();
     }
+
     protected Encoding(string name)
       : base(name) {
+      Parameters.Add(new ValueParameter<ISolutionCreator<TSolution>>(name + ".SolutionCreator", "The operator to create a solution."));
       Parameters.Add(new FixedValueParameter<ReadOnlyItemSet<IOperator>>(name + ".Operators", "The operators that the encoding specifies.", encodingOperators.AsReadOnly()));
+
+      RegisterEventHandlers();
+    }
+
+    private void RegisterEventHandlers() {
+      SolutionCreatorParameter.ValueChanged += (o, e) => OnSolutionCreatorChanged();
     }
 
     protected bool AddOperator(IOperator @operator) {

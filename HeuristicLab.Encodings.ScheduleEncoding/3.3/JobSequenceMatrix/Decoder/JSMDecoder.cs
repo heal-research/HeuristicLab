@@ -33,7 +33,7 @@ using HeuristicLab.Random;
 namespace HeuristicLab.Encodings.ScheduleEncoding {
   [Item("JobSequenceMatrixDecoder", "Applies the GifflerThompson algorithm to create an active schedule from a JobSequence Matrix.")]
   [StorableClass]
-  public class JSMDecoder : ScheduleDecoder {
+  public class JSMDecoder : ScheduleDecoder<JSMEncoding> {
 
     public IFixedValueParameter<EnumValue<JSMDecodingErrorPolicy>> DecodingErrorPolicyParameter {
       get { return (IFixedValueParameter<EnumValue<JSMDecodingErrorPolicy>>)Parameters["DecodingErrorPolicy"]; }
@@ -129,13 +129,11 @@ namespace HeuristicLab.Encodings.ScheduleEncoding {
       }
     }
 
-    public override Schedule DecodeSchedule(ISchedule encoding, ItemList<Job> jobData) {
-      var solution = encoding as JSMEncoding;
-      if (solution == null) throw new InvalidOperationException("Encoding is not of type JSMEncoding");
-      return DecodeSchedule(solution, jobData, DecodingErrorPolicy, ForcingStrategy);
+    public override Schedule DecodeSchedule(JSMEncoding encoding, ItemList<Job> jobData) {
+      return Decode(encoding, jobData, DecodingErrorPolicy, ForcingStrategy);
     }
 
-    public static Schedule DecodeSchedule(JSMEncoding solution, ItemList<Job> jobData, JSMDecodingErrorPolicy decodingErrorPolicy, JSMForcingStrategy forcingStrategy) {
+    public static Schedule Decode(JSMEncoding solution, ItemList<Job> jobData, JSMDecodingErrorPolicy decodingErrorPolicy, JSMForcingStrategy forcingStrategy) {
       var random = new FastRandom(solution.RandomSeed);
       var jobs = (ItemList<Job>)jobData.Clone();
       var resultingSchedule = new Schedule(jobs[0].Tasks.Count);

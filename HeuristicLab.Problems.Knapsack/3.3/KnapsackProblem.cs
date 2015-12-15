@@ -131,10 +131,11 @@ namespace HeuristicLab.Problems.Knapsack {
       base.OnEncodingChanged();
       Parameterize();
     }
-    protected override void OnSolutionCreatorChanged() {
-      base.OnSolutionCreatorChanged();
-      Parameterize();
-    }
+    //TODO check with abeham if this is really necessary
+    //protected override void OnSolutionCreatorChanged() {
+    //  base.OnSolutionCreatorChanged();
+    //  Parameterize();
+    //}
     protected override void OnEvaluatorChanged() {
       base.OnEvaluatorChanged();
       Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;

@@ -72,7 +72,7 @@ namespace HeuristicLab.Tests {
       problem.Bounds = new DoubleMatrix(new double[,] { { -500, 500 } });
       problem.TestFunction = new Schwefel();
       problem.ProblemSize = 2;
-      problem.SolutionCreatorParameter.Value = new UniformRandomRealVectorCreator();
+      problem.Encoding.SolutionCreator = new UniformRandomRealVectorCreator();
       #endregion
       #region Algorithm Configuration
       pso.Name = "Particle Swarm Optimization - Schwefel";

@@ -29,20 +29,20 @@ using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Optimization {
   [StorableClass]
-  public abstract class Problem<TEncoding, TSolution, TEvaluator> : HeuristicOptimizationProblem<TEvaluator, ISolutionCreator<TSolution>>, IProblemDefinition<TEncoding, TSolution>, IStorableContent
+  public abstract class Problem<TEncoding, TSolution, TEvaluator> : Problem,
+    IHeuristicOptimizationProblem, IProblemDefinition<TEncoding, TSolution>, IStorableContent
     where TEncoding : class, IEncoding<TSolution>
     where TSolution : class, ISolution
     where TEvaluator : class, IEvaluator {
 
-    public string Filename { get; set; } // TODO: Really okay here?
+    public string Filename { get; set; } // TODO: Really okay here? should be in Problem (non-generic)
 
+    //TODO remove parametr for encoding?
     protected IValueParameter<TEncoding> EncodingParameter {
       get { return (IValueParameter<TEncoding>)Parameters["Encoding"]; }
     }
-
     //mkommend necessary for reuse of operators if the encoding changes
     private TEncoding oldEncoding;
-
     public TEncoding Encoding {
       get { return EncodingParameter.Value; }
       protected set {
@@ -50,6 +50,36 @@ namespace HeuristicLab.Optimization {
         EncodingParameter.Value = value;
       }
     }
+
+    ISolutionCreator IHeuristicOptimizationProblem.SolutionCreator {
+      get { return Encoding.SolutionCreator; }
+    }
+    IParameter IHeuristicOptimizationProblem.SolutionCreatorParameter {
+      get { return Encoding.SolutionCreatorParameter; }
+    }
+    event EventHandler IHeuristicOptimizationProblem.SolutionCreatorChanged {
+      add { Encoding.SolutionCreatorChanged += value; }
+      remove { Encoding.SolutionCreatorChanged -= value; }
+    }
+
+    //TODO is a parameter for the evaluator really necessary, only single-objective or multi-objective evulators calling the func are possible
+    public ValueParameter<TEvaluator> EvaluatorParameter {
+      get { return (ValueParameter<TEvaluator>)Parameters["Evaluator"]; }
+    }
+    public TEvaluator Evaluator {
+      get { return EvaluatorParameter.Value; }
+      protected set { EvaluatorParameter.Value = value; }
+    }
+    IEvaluator IHeuristicOptimizationProblem.Evaluator { get { return Evaluator; } }
+    IParameter IHeuristicOptimizationProblem.EvaluatorParameter { get { return EvaluatorParameter; } }
+
+    public event EventHandler EvaluatorChanged;
+    protected virtual void OnEvaluatorChanged() {
+      EventHandler handler = EvaluatorChanged;
+      if (handler != null)
+        handler(this, EventArgs.Empty);
+    }
+
 
     protected override IEnumerable<IItem> GetOperators() {
       if (Encoding == null) return base.GetOperators();
@@ -65,9 +95,10 @@ namespace HeuristicLab.Optimization {
     protected Problem()
       : base() {
       Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any."));
+      Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution."));
+
       if (Encoding != null) {
         oldEncoding = Encoding;
-        SolutionCreator = Encoding.SolutionCreator;
         Parameterize();
       }
       RegisterEvents();
@@ -75,8 +106,9 @@ namespace HeuristicLab.Optimization {
     protected Problem(TEncoding encoding) {
       if (encoding == null) throw new ArgumentNullException("encoding");
       Parameters.Add(new ValueParameter<TEncoding>("Encoding", "Describes the configuration of the encoding, what the variables are called, what type they are and their bounds if any.", encoding));
+      Parameters.Add(new ValueParameter<TEvaluator>("Evaluator", "The operator used to evaluate a solution."));
+
       oldEncoding = Encoding;
-      SolutionCreator = Encoding.SolutionCreator;
       Parameterize();
 
       RegisterEvents();
@@ -98,6 +130,7 @@ namespace HeuristicLab.Optimization {
 
     private void RegisterEvents() {
       EncodingParameter.ValueChanged += (o, e) => OnEncodingChanged();
+      EvaluatorParameter.ValueChanged += (o, e) => OnEvaluatorChanged();
       //var multiEncoding = Encoding as MultiEncoding;
       //if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
     }
@@ -121,21 +154,19 @@ namespace HeuristicLab.Optimization {
       foreach (var op in Operators.OfType<IEncodingOperator<TSolution>>())
         op.EncodingParameter.ActualName = EncodingParameter.Name;
 
-      SolutionCreator = Encoding.SolutionCreator;
-
       //var multiEncoding = Encoding as MultiEncoding;
       //if (multiEncoding != null) multiEncoding.EncodingsChanged += MultiEncodingOnEncodingsChanged;
     }
 
-    protected override void OnSolutionCreatorChanged() {
-      base.OnSolutionCreatorChanged();
-      Encoding.SolutionCreator = SolutionCreator;
-    }
+    //protected override void OnSolutionCreatorChanged() {
+    //  base.OnSolutionCreatorChanged();
+    //  Encoding.SolutionCreator = SolutionCreator;
+    //}
 
     private static void AdaptEncodingOperators(IEncoding oldEncoding, IEncoding newEncoding) {
       if (oldEncoding.GetType() != newEncoding.GetType()) return;
 
-      if (oldEncoding.GetType() == typeof(CombinedEncoding)) {
+      if (oldEncoding is CombinedEncoding) {
         var oldMultiEncoding = (CombinedEncoding)oldEncoding;
         var newMultiEncoding = (CombinedEncoding)newEncoding;
         if (!oldMultiEncoding.Encodings.SequenceEqual(newMultiEncoding.Encodings, new TypeEqualityComparer<IEncoding>())) return;

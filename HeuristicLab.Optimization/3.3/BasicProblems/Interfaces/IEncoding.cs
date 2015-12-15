@@ -25,18 +25,20 @@ using HeuristicLab.Core;
 
 namespace HeuristicLab.Optimization {
   public interface IEncoding : IParameterizedNamedItem {
+    IValueParameter SolutionCreatorParameter { get; }
     ISolutionCreator SolutionCreator { get; }
+
     IEnumerable<IOperator> Operators { get; set; }
 
     void ConfigureOperator(IItem @operator);
     void ConfigureOperators(IEnumerable<IItem> operators);
 
-    event EventHandler SolutionCreatorChanged;
     event EventHandler OperatorsChanged;
+    event EventHandler SolutionCreatorChanged;
   }
 
   public interface IEncoding<TSolution> : IEncoding
     where TSolution : class, ISolution {
-    new ISolutionCreator<TSolution> SolutionCreator { get; set; }
+    //new ISolutionCreator<TSolution> SolutionCreator { get; }
   }
 }

@@ -168,10 +168,11 @@ namespace HeuristicLab.Problems.QuadraticAssignment {
     }
 
     #region Events
-    protected override void OnSolutionCreatorChanged() {
-      Parameterize();
-      base.OnSolutionCreatorChanged();
-    }
+    //TODO check with abhem if this is necessary
+    //protected override void OnSolutionCreatorChanged() {
+    //  Parameterize();
+    //  base.OnSolutionCreatorChanged();
+    //}
     protected override void OnEvaluatorChanged() {
       Evaluator.QualityParameter.ActualNameChanged += Evaluator_QualityParameter_ActualNameChanged;
       Parameterize();
