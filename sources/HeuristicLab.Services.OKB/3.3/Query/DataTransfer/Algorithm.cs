@@ -25,6 +25,8 @@ namespace HeuristicLab.Services.OKB.Query.DataTransfer {
   [DataContract]
   public class Algorithm {
     [DataMember]
+    public long Id { get; set; }
+    [DataMember]
     public string Name { get; set; }
     [DataMember]
     public string Description { get; set; }
