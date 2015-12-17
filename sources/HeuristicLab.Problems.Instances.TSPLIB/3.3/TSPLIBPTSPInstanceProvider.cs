@@ -21,46 +21,45 @@
 
 using System;
 using System.IO;
+using System.Linq;
 
 namespace HeuristicLab.Problems.Instances.TSPLIB {
-  public class TSPLIBCVRPInstanceProvider : TSPLIBInstanceProvider<CVRPData> {
-
-    public override string Name {
-      get { return "TSPLIB (CVRP)"; }
-    }
+  public abstract class TSPLIBPTSPInstanceProvider : TSPLIBInstanceProvider<PTSPData> {
 
     public override string Description {
-      get { return "Traveling Salesman Problem Library"; }
+      get { return "Traveling Salesman Problem Library (adapted for generating PTSP instances)"; }
     }
 
-    protected override string FileExtension { get { return "vrp"; } }
+    protected override string FileExtension { get { return "tsp"; } }
 
-    protected override CVRPData LoadInstance(TSPLIBParser parser, IDataDescriptor descriptor = null) {
+    protected override PTSPData LoadInstance(TSPLIBParser parser, IDataDescriptor descriptor = null) {
       parser.Parse();
-      var instance = new CVRPData();
+      if (parser.FixedEdges != null) throw new InvalidDataException("TSP instance " + parser.Name + " contains fixed edges which are not supported by HeuristicLab.");
+      var instance = new PTSPData();
       instance.Dimension = parser.Dimension;
       instance.Coordinates = parser.Vertices != null ? parser.Vertices : parser.DisplayVertices;
       instance.Distances = parser.Distances;
-      instance.Capacity = parser.Capacity.Value;
-      instance.Demands = parser.Demands;
       switch (parser.EdgeWeightType) {
         case TSPLIBEdgeWeightTypes.ATT:
           instance.DistanceMeasure = DistanceMeasure.Att; break;
         case TSPLIBEdgeWeightTypes.CEIL_2D:
           instance.DistanceMeasure = DistanceMeasure.UpperEuclidean; break;
         case TSPLIBEdgeWeightTypes.EUC_2D:
-        case TSPLIBEdgeWeightTypes.EUC_3D:
           instance.DistanceMeasure = DistanceMeasure.RoundedEuclidean; break;
+        case TSPLIBEdgeWeightTypes.EUC_3D:
+          throw new InvalidDataException("3D coordinates are not supported.");
         case TSPLIBEdgeWeightTypes.EXPLICIT:
           instance.DistanceMeasure = DistanceMeasure.Direct; break;
         case TSPLIBEdgeWeightTypes.GEO:
           instance.DistanceMeasure = DistanceMeasure.Geo; break;
         case TSPLIBEdgeWeightTypes.MAN_2D:
-        case TSPLIBEdgeWeightTypes.MAN_3D:
           instance.DistanceMeasure = DistanceMeasure.Manhattan; break;
+        case TSPLIBEdgeWeightTypes.MAN_3D:
+          throw new InvalidDataException("3D coordinates are not supported.");
         case TSPLIBEdgeWeightTypes.MAX_2D:
-        case TSPLIBEdgeWeightTypes.MAX_3D:
           instance.DistanceMeasure = DistanceMeasure.Maximum; break;
+        case TSPLIBEdgeWeightTypes.MAX_3D:
+          throw new InvalidDataException("3D coordinates are not supported.");
         default:
           throw new InvalidDataException("The given edge weight is not supported by HeuristicLab.");
       }
@@ -70,12 +69,27 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
         + Environment.NewLine + Environment.NewLine
         + GetInstanceDescription();
 
+      instance.Probabilities = GetProbabilities(descriptor, instance);
       return instance;
     }
 
-    protected override void LoadSolution(TSPLIBParser parser, CVRPData instance) {
+    protected abstract double[] GetProbabilities(IDataDescriptor descriptor, PTSPData instance);
+
+    protected override void LoadSolution(TSPLIBParser parser, PTSPData instance) {
       parser.Parse();
-      instance.BestKnownTour = parser.Tour;
+      instance.BestKnownTour = parser.Tour.FirstOrDefault();
     }
+
+    public PTSPData LoadData(string tspFile, string tourFile, double? bestQuality) {
+      var data = LoadInstance(new TSPLIBParser(tspFile));
+      if (!String.IsNullOrEmpty(tourFile)) {
+        var tourParser = new TSPLIBParser(tourFile);
+        LoadSolution(tourParser, data);
+      }
+      if (bestQuality.HasValue)
+        data.BestKnownQuality = bestQuality.Value;
+      return data;
+    }
+
   }
 }

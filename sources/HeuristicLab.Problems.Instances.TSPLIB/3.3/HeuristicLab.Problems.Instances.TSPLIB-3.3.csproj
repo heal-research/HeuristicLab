@@ -114,10 +114,15 @@
     <Reference Include="System.IO.Compression" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TSPLIBHeterogeneousPTSPDataDescriptor.cs" />
+    <Compile Include="TSPLIBHomogeneousPTSPDataDescriptor.cs" />
+    <Compile Include="TSPLIBHeterogeneousPTSPInstanceProvider.cs" />
+    <Compile Include="TSPLIBPTSPInstanceProvider.cs" />
     <Compile Include="TSPLIBInstanceProvider.cs" />
     <Compile Include="TSPLIBATSPInstanceProvider.cs" />
     <Compile Include="TSPLIBCVRPInstanceProvider.cs" />
     <Compile Include="TSPLIBDataDescriptor.cs" />
+    <Compile Include="TSPLIBHomogeneousPTSPInstanceProvider.cs" />
     <Compile Include="TSPLIBTSPInstanceProvider.cs" />
     <Compile Include="TSPLIBParser.cs" />
     <EmbeddedResource Include="Data\atsp.zip" />
@@ -149,7 +154,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">set Path=%25Path%25;$(ProjectDir);$(SolutionDir)

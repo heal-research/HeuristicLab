@@ -36,7 +36,7 @@ namespace HeuristicLab.Problems.Instances.TSPLIB {
 
     protected override string FileExtension { get { return "tsp"; } }
 
-    protected override TSPData LoadInstance(TSPLIBParser parser) {
+    protected override TSPData LoadInstance(TSPLIBParser parser, IDataDescriptor descriptor = null) {
       parser.Parse();
       if (parser.FixedEdges != null) throw new InvalidDataException("TSP instance " + parser.Name + " contains fixed edges which are not supported by HeuristicLab.");
       var instance = new TSPData();
