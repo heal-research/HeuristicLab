@@ -45,7 +45,7 @@ namespace HeuristicLab.Services.OKB.Query {
 
     private static DT.Algorithm ToDto(DA.Algorithm source) {
       if (source == null) return null;
-      return new DT.Algorithm { Name = source.Name, Description = source.Description, AlgorithmClass = source.AlgorithmClass.Name, Platform = source.Platform.Name, DataType = Convert.ToDto(source.DataType) };
+      return new DT.Algorithm { Id = source.Id, Name = source.Name, Description = source.Description, AlgorithmClass = source.AlgorithmClass.Name, Platform = source.Platform.Name, DataType = Convert.ToDto(source.DataType) };
     }
 
     private static DT.Problem ToDto(DA.Problem source) {
