@@ -44,7 +44,7 @@ ORSA Journal on Computing, 3, pp. 376-384.";
 
     protected abstract string FileExtension { get; }
 
-    protected abstract T LoadInstance(TSPLIBParser parser);
+    protected abstract T LoadInstance(TSPLIBParser parser, IDataDescriptor descriptor = null);
     protected abstract void LoadSolution(TSPLIBParser parser, T instance);
 
     public override IEnumerable<IDataDescriptor> GetDataDescriptors() {
@@ -73,7 +73,7 @@ ORSA Journal on Computing, 3, pp. 376-384.";
         var entry = instancesZipFile.GetEntry(descriptor.InstanceIdentifier);
         var stream = entry.Open();
         var parser = new TSPLIBParser(stream);
-        var instance = LoadInstance(parser);
+        var instance = LoadInstance(parser, id);
 
         if (!String.IsNullOrEmpty(descriptor.SolutionIdentifier)) {
           var solutionsArchiveName = GetResourceName(FileExtension + @"\.opt\.tour\.zip");
