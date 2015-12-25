@@ -61,6 +61,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #endregion
 
     #region Properties
+    public new IEncoding Encoding {
+      get { return base.Encoding; }
+      set { base.Encoding = value; }
+    }
     public EvaluationCache Cache {
       get { return CacheParameter.Value; }
     }
