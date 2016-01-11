@@ -65,6 +65,7 @@ namespace HeuristicLab.Common {
     ///   * Primitives (Boolean, Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, IntPtr, UIntPtr, Char, Double, Single)
     ///   * string, decimal, DateTime
     ///   * Arrays of types not collected
+    ///   * All types from System.Reflection.Emit
     /// </summary>
     private static bool ExcludeType(Type type) {
       return type.IsPrimitive ||
@@ -76,7 +77,7 @@ namespace HeuristicLab.Common {
              type == typeof(DateTime[]) ||
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
-             type == typeof(System.Reflection.Emit.SignatureHelper) ||
+             type.Namespace != "System.Reflection.Emit" ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 
