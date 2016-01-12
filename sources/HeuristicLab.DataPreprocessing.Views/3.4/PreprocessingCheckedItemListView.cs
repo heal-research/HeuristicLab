@@ -21,7 +21,6 @@
 
 #endregion
 
-using System.Windows.Forms;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;

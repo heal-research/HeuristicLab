@@ -93,6 +93,12 @@ namespace HeuristicLab.DataPreprocessing {
       transformations = new List<ITransformation>();
       selection = new Dictionary<int, IList<int>>();
 
+      Import(problemData);
+
+      RegisterEventHandler();
+    }
+
+    public void Import(IDataAnalysisProblemData problemData) {
       Dataset dataset = (Dataset)problemData.Dataset;
       variableNames = new List<string>(problemData.Dataset.VariableNames);
 
@@ -113,8 +119,6 @@ namespace HeuristicLab.DataPreprocessing {
 
       TrainingPartition = new IntRange(problemData.TrainingPartition.Start, problemData.TrainingPartition.End);
       TestPartition = new IntRange(problemData.TestPartition.Start, problemData.TestPartition.End);
-
-      RegisterEventHandler();
     }
 
     private void RegisterEventHandler() {

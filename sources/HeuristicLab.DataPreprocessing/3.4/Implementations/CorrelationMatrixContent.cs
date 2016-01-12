@@ -20,6 +20,7 @@
 #endregion
 
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Problems.DataAnalysis;
@@ -31,25 +32,27 @@ namespace HeuristicLab.DataPreprocessing {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Gradient; }
     }
 
-    private IPreprocessingContext Context { get; set; }
+    private PreprocessingContext Context { get; set; }
     private ITransactionalPreprocessingData PreprocessingData {
       get { return Context.Data; }
     }
 
     public DataAnalysisProblemData ProblemData {
       get {
-        var creator = new ProblemDataCreator(Context);
-        return (DataAnalysisProblemData)creator.CreateProblemData();
+        // ToDo: avoid iterating
+        return Context.ExportPossibilities.Select(p => p.Value()).OfType<DataAnalysisProblemData>().Single();
+        //var creator = new ProblemDataCreator(Context);
+        //return (DataAnalysisProblemData)creator.CreateProblemData();
       }
     }
 
-    public CorrelationMatrixContent(IPreprocessingContext context) {
+    public CorrelationMatrixContent(PreprocessingContext context) {
       Context = context;
     }
 
     public CorrelationMatrixContent(CorrelationMatrixContent original, Cloner cloner)
       : base(original, cloner) {
-        Context = original.Context;
+      Context = original.Context;
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {

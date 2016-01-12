@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 using HeuristicLab.DataPreprocessing.Filter;
-using HeuristicLab.DataPreprocessing.Interfaces;
+
 namespace HeuristicLab.DataPreprocessing {
   public interface IFilterLogic {
     bool[] GetFilterResult(IList<IFilter> filters, bool isAndCombination);

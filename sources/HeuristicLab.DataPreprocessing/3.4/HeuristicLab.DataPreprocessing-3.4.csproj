@@ -107,12 +107,11 @@
     <Compile Include="ProblemDataCreator.cs" />
     <None Include="Plugin.cs.frame" />
     <Compile Include="Implementations\DataGridContent.cs" />
-    <Compile Include="Implementations\PreprocessingContext.cs" />
+    <Compile Include="PreprocessingContext.cs" />
     <Compile Include="Implementations\TransactionalPreprocessingData.cs" />
     <Compile Include="Implementations\SearchLogic.cs" />
     <Compile Include="Implementations\StatisticsLogic.cs" />
     <Compile Include="Interfaces\IDataGridContent.cs" />
-    <Compile Include="Interfaces\IPreprocessingContext.cs" />
     <Compile Include="Interfaces\ISearchLogic.cs" />
     <Compile Include="Interfaces\IStatisticsLogic.cs" />
     <Compile Include="Interfaces\ITransactionalPreprocessingData.cs" />
@@ -158,6 +157,10 @@
       <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
+      <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
+      <Name>HeuristicLab.Persistence-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>

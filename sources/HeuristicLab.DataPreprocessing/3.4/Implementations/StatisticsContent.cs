@@ -18,6 +18,7 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;

@@ -1,4 +1,25 @@
-﻿namespace HeuristicLab.DataPreprocessing.Views {
+﻿#region License Information
+/* HeuristicLab
+ * Copyright (C) 2002-2015 Heuristic and Evolutionary Algorithms Laboratory (HEAL)
+ *
+ * This file is part of HeuristicLab.
+ *
+ * HeuristicLab is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * HeuristicLab is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
+ */
+#endregion
+
+namespace HeuristicLab.DataPreprocessing.Views {
   partial class ScatterPlotSingleView {
     /// <summary> 
     /// Required designer variable.
@@ -29,13 +50,15 @@
       this.label1 = new System.Windows.Forms.Label();
       this.comboBoxYVariable = new System.Windows.Forms.ComboBox();
       this.comboBoxXVariable = new System.Windows.Forms.ComboBox();
+      this.label3 = new System.Windows.Forms.Label();
+      this.comboBoxColor = new System.Windows.Forms.ComboBox();
       this.groupBox1.SuspendLayout();
       this.SuspendLayout();
       // 
       // scatterPlotView
       // 
-      this.scatterPlotView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+      this.scatterPlotView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
       this.scatterPlotView.Caption = "ScatterPlot View";
       this.scatterPlotView.Content = null;
@@ -47,13 +70,15 @@
       // 
       // groupBox1
       // 
+      this.groupBox1.Controls.Add(this.label3);
       this.groupBox1.Controls.Add(this.label2);
       this.groupBox1.Controls.Add(this.label1);
+      this.groupBox1.Controls.Add(this.comboBoxColor);
       this.groupBox1.Controls.Add(this.comboBoxYVariable);
       this.groupBox1.Controls.Add(this.comboBoxXVariable);
       this.groupBox1.Location = new System.Drawing.Point(3, 3);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(160, 140);
+      this.groupBox1.Size = new System.Drawing.Size(160, 215);
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Options";
@@ -98,6 +123,26 @@
       this.comboBoxXVariable.TabIndex = 0;
       this.comboBoxXVariable.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
       // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Location = new System.Drawing.Point(17, 141);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(31, 13);
+      this.label3.TabIndex = 3;
+      this.label3.Text = "Color";
+      // 
+      // comboBoxColor
+      // 
+      this.comboBoxColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.comboBoxColor.FormattingEnabled = true;
+      this.comboBoxColor.Location = new System.Drawing.Point(20, 164);
+      this.comboBoxColor.Margin = new System.Windows.Forms.Padding(3, 10, 3, 3);
+      this.comboBoxColor.Name = "comboBoxColor";
+      this.comboBoxColor.Size = new System.Drawing.Size(121, 21);
+      this.comboBoxColor.TabIndex = 1;
+      this.comboBoxColor.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
+      // 
       // ScatterPlotSingleView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -120,5 +165,7 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.ComboBox comboBoxYVariable;
     private System.Windows.Forms.ComboBox comboBoxXVariable;
+    private System.Windows.Forms.ComboBox comboBoxColor;
+    private System.Windows.Forms.Label label3;
   }
 }

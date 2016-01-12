@@ -19,10 +19,9 @@
  */
 #endregion
 
-
 using System;
-namespace HeuristicLab.DataPreprocessing {
 
+namespace HeuristicLab.DataPreprocessing {
   public interface ITransactionalPreprocessingData : IPreprocessingData {
 
     event DataPreprocessingChangedEventHandler Changed;

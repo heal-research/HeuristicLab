@@ -29,15 +29,14 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("DataPreprocessing View")]
   [Content(typeof(PreprocessingContext), true)]
-  [Content(typeof(IPreprocessingContext), false)]
   public partial class DataPreprocessingView : ItemView {
 
     public DataPreprocessingView() {
       InitializeComponent();
     }
 
-    public new IPreprocessingContext Content {
-      get { return (IPreprocessingContext)base.Content; }
+    public new PreprocessingContext Content {
+      get { return (PreprocessingContext)base.Content; }
       set { base.Content = value; }
     }
 
@@ -59,7 +58,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
           new ScatterPlotContent(data),
           new CorrelationMatrixContent(Content),
           new DataCompletenessChartContent(searchLogic),
-          
+
           new FilterContent(filterLogic),
           new ManipulationContent(manipulationLogic, searchLogic, filterLogic),
           new TransformationContent(data, filterLogic)
@@ -93,12 +92,13 @@ namespace HeuristicLab.DataPreprocessing.Views {
       base.SetEnabledStateOfControls();
       viewShortcutListView.Enabled = Content != null;
       applyInNewTabButton.Enabled = Content != null;
-      exportProblemButton.Enabled = Content != null && Content.Problem != null;
+      exportProblemButton.Enabled = Content != null && Content.CanExport;
       undoButton.Enabled = Content != null;
     }
 
     private void exportProblemButton_Click(object sender, EventArgs e) {
-      var problem = Content.ExportProblem();
+      // ToDo: select one export probability
+      var problem = Content.Export();
 
       var saveFileDialog = new SaveFileDialog {
         Title = "Save Item",

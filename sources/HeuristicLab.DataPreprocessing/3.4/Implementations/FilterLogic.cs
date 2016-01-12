@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HeuristicLab.DataPreprocessing.Filter;
-using HeuristicLab.DataPreprocessing.Interfaces;
+
 namespace HeuristicLab.DataPreprocessing {
   public class FilterLogic : IFilterLogic {
 

@@ -19,23 +19,29 @@
  */
 #endregion
 
-using System;
-using HeuristicLab.Core;
-using HeuristicLab.Optimization;
-using HeuristicLab.Problems.DataAnalysis;
-using HeuristicLab.DataPreprocessing.Interfaces;
+using System.Collections.Generic;
+using HeuristicLab.MainForm;
+using HeuristicLab.Optimizer;
 
-namespace HeuristicLab.DataPreprocessing {
-  public interface IPreprocessingContext : IItem {
-    IFilteredPreprocessingData Data { get; }
+namespace HeuristicLab.DataPreprocessing.Views {
+  public class DataPreprocessingMenuItem {
+    internal class CreateExperimentMenuItem : HeuristicLab.MainForm.WindowsForms.MenuItem, IOptimizerUserInterfaceItemProvider {
+      public override string Name {
+        get { return "Data &Preprocessing"; }
+      }
+      public override IEnumerable<string> Structure {
+        get { return new string[] { "&Edit" }; }
+      }
+      public override int Position {
+        get { return 6000; }
+      }
+      public override string ToolTipText {
+        get { return "Create a new data preprocessing"; }
+      }
 
-    IAlgorithm Algorithm { get; }
-    IDataAnalysisProblem Problem { get; }
-    IDataAnalysisProblemData ProblemData { get; }
-
-    IItem Export();
-    IAlgorithm ExportAlgorithm();
-    IDataAnalysisProblem ExportProblem();
-    IDataAnalysisProblemData ExportProblemData();
+      public override void Execute() {
+        MainFormManager.MainForm.ShowContent(new PreprocessingContext());
+      }
+    }
   }
 }

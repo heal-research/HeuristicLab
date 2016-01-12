@@ -6,11 +6,9 @@ using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core.Views;
-using HeuristicLab.DataPreprocessing.Implementations;
 using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
-
   [View("Scatter Plot Multi View")]
   [Content(typeof(ScatterPlotContent), false)]
   public partial class ScatterPlotMultiView : ItemView {
@@ -80,7 +78,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
           tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, (tableLayoutPanel.Width - HEADER_WIDTH) / variables.Count));
           tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, (tableLayoutPanel.Height - HEADER_HEIGHT) / variables.Count));
         }
-          // fixed size
+        // fixed size
         else {
           tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, FIXED_CHART_WIDTH));
           tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, FIXED_CHART_HEIGHT));
@@ -110,7 +108,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
             pcv.Content = dataTable;
             tableLayoutPanel.Controls.Add(pcv, y, x);
           }
-            //scatter plot
+          //scatter plot
           else {
             ScatterPlot scatterPlot = Content.CreateScatterPlot(variables[x - 1], variables[y - 1]);
             PreprocessingScatterPlotView pspv = new PreprocessingScatterPlotView();

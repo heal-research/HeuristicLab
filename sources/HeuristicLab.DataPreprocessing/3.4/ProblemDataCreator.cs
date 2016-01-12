@@ -28,7 +28,7 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.DataPreprocessing {
   public class ProblemDataCreator {
 
-    private readonly IPreprocessingContext context;
+    private readonly PreprocessingContext context;
 
     private Dataset ExportedDataset {
       get {
@@ -38,14 +38,13 @@ namespace HeuristicLab.DataPreprocessing {
 
     private IList<ITransformation> Transformations { get { return context.Data.Transformations; } }
 
-    public ProblemDataCreator(IPreprocessingContext context) {
+    public ProblemDataCreator(PreprocessingContext context) {
       this.context = context;
     }
 
-    public IDataAnalysisProblemData CreateProblemData() {
+    public IDataAnalysisProblemData CreateProblemData(IDataAnalysisProblemData oldProblemData) {
       if (context.Data.Rows == 0 || context.Data.Columns == 0) return null;
 
-      var oldProblemData = context.ProblemData;
       IDataAnalysisProblemData problemData;
 
       if (oldProblemData is RegressionProblemData) {

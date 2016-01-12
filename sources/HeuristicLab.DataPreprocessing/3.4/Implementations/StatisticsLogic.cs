@@ -25,7 +25,6 @@ using System.Linq;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.DataPreprocessing {
-
   public class StatisticsLogic : IStatisticsLogic {
 
     private readonly ITransactionalPreprocessingData preprocessingData;

@@ -19,7 +19,6 @@
  */
 #endregion
 
-using HeuristicLab.Core;
 
 namespace HeuristicLab.DataPreprocessing {
   public interface IViewChartShortcut : IViewShortcut {

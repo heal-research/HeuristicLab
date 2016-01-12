@@ -96,6 +96,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataPreprocessingMenuItem.cs" />
     <Compile Include="PreprocessingFeatureCorrelationView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -303,6 +304,10 @@
       <Project>{14ab8d24-25bc-400c-a846-4627aa945192}</Project>
       <Name>HeuristicLab.Optimization-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Optimizer\3.3\HeuristicLab.Optimizer-3.3.csproj">
+      <Project>{C664305E-497C-4533-A140-967DEDB05C19}</Project>
+      <Name>HeuristicLab.Optimizer-3.3</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>

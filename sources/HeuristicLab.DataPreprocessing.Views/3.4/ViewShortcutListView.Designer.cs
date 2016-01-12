@@ -19,7 +19,6 @@
  */
 #endregion
 
-
 namespace HeuristicLab.DataPreprocessing.Views {
   partial class ViewShortcutListView {
     /// <summary> 

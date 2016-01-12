@@ -27,7 +27,6 @@ using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
-using HeuristicLab.DataPreprocessing.Interfaces;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingChart", "Represents a preprocessing chart.")]

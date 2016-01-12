@@ -20,6 +20,7 @@
 #endregion
 
 using System.Windows.Forms;
+using HeuristicLab.Core;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.Problems.DataAnalysis;
@@ -32,7 +33,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       IAlgorithm algorithm;
       IDataAnalysisProblem problem;
       GetMostOuterContent(currentView as Control, out algorithm, out problem);
-      var context = new PreprocessingContext(problemData, algorithm, problem);
+      var context = new PreprocessingContext(algorithm ?? problem ?? problemData as IItem);
       MainFormManager.MainForm.ShowContent(context);
     }
 
@@ -41,7 +42,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       problem = null;
 
       while (control != null) {
-        IContentView contentView = control as IContentView;
+        var contentView = control as IContentView;
         if (contentView != null) {
           var newAlgorithm = contentView.Content as IAlgorithm;
           if (newAlgorithm != null)

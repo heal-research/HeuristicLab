@@ -18,8 +18,8 @@
  * along with HeuristicLab. If not, see <http://www.gnu.org/licenses/>.
  */
 #endregion
+
 using System;
-using System.Windows.Forms;
 using HeuristicLab.Analysis;
 using HeuristicLab.MainForm;
 

@@ -24,7 +24,6 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.DataPreprocessing.Interfaces;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("Histogram", "Represents the histogram grid.")]

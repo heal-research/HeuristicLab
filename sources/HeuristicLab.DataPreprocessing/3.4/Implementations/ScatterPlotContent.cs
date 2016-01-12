@@ -21,10 +21,10 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.DataPreprocessing.Interfaces;
 
 namespace HeuristicLab.DataPreprocessing {
 
@@ -33,6 +33,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public string SelectedXVariable { get; set; }
     public string SelectedYVariable { get; set; }
+    public string SelectedColorVariable { get; set; }
 
     public ScatterPlotContent(IFilteredPreprocessingData preprocessingData)
       : base(preprocessingData) {
@@ -42,10 +43,10 @@ namespace HeuristicLab.DataPreprocessing {
       : base(content, cloner) {
       this.SelectedXVariable = content.SelectedXVariable;
       this.SelectedYVariable = content.SelectedYVariable;
+      this.SelectedColorVariable = content.SelectedColorVariable;
     }
 
-    public static new Image StaticItemImage
-    {
+    public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Performance; }
     }
 
@@ -53,21 +54,39 @@ namespace HeuristicLab.DataPreprocessing {
       return new ScatterPlotContent(this, cloner);
     }
 
-    public ScatterPlot CreateScatterPlot(string variableNameX, string variableNameY) {
+    public ScatterPlot CreateScatterPlot(string variableNameX, string variableNameY, string variableNameColor = "-") {
       ScatterPlot scatterPlot = new ScatterPlot();
 
       IList<double> xValues = PreprocessingData.GetValues<double>(PreprocessingData.GetColumnIndex(variableNameX));
       IList<double> yValues = PreprocessingData.GetValues<double>(PreprocessingData.GetColumnIndex(variableNameY));
+      if (variableNameColor == null || variableNameColor == "-") {
+        List<Point2D<double>> points = new List<Point2D<double>>();
 
-      List<Point2D<double>> points = new List<Point2D<double>>();
+        for (int i = 0; i < xValues.Count; i++) {
+          Point2D<double> point = new Point2D<double>(xValues[i], yValues[i]);
+          points.Add(point);
+        }
 
-      for (int i = 0; i < xValues.Count; i++) {
-        Point2D<double> point = new Point2D<double>(xValues[i], yValues[i]);
-        points.Add(point);
+        ScatterPlotDataRow scdr = new ScatterPlotDataRow(variableNameX + " - " + variableNameY, "", points);
+        scatterPlot.Rows.Add(scdr);
+
+      } else {
+        var colorValues = PreprocessingData.GetValues<double>(PreprocessingData.GetColumnIndex(variableNameColor));
+        var data = xValues.Zip(yValues, (x, y) => new { x, y }).Zip(colorValues, (v, c) => new { v.x, v.y, c }).ToList();
+        var gradients = ColorGradient.Colors;
+        int curGradient = 0;
+        int numColors = colorValues.Distinct().Count();
+        foreach (var colorValue in colorValues.Distinct()) {
+          var values = data.Where(x => x.c == colorValue);
+          var row = new ScatterPlotDataRow(
+            variableNameX + " - " + variableNameY + " (" + colorValue + ")",
+            "",
+            values.Select(v => new Point2D<double>(v.x, v.y)),
+            new ScatterPlotDataRowVisualProperties() { Color = gradients[curGradient] });
+          curGradient += gradients.Count / numColors;
+          scatterPlot.Rows.Add(row);
+        }
       }
-
-      ScatterPlotDataRow scdr = new ScatterPlotDataRow(variableNameX + " - " + variableNameY, "", points);
-      scatterPlot.Rows.Add(scdr);
       return scatterPlot;
     }
   }
