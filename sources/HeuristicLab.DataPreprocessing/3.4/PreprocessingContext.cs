@@ -29,6 +29,7 @@ using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing {
   [Item("PreprocessingContext", "PreprocessingContext")]
+  [StorableClass]
   public class PreprocessingContext : NamedItem, IStorableContent {
 
     public string Filename { get; set; }
@@ -62,13 +63,13 @@ namespace HeuristicLab.DataPreprocessing {
 
 
     public PreprocessingContext() : this(new RegressionProblemData()) { }
-    public PreprocessingContext(IItem source) {
+    public PreprocessingContext(IItem source)
+      : base("PreprocessingContext") {
       Import(source);
-
     }
 
     [StorableConstructor]
-    private PreprocessingContext(bool deserializing)
+    protected PreprocessingContext(bool deserializing)
       : base(deserializing) { }
     protected PreprocessingContext(PreprocessingContext original, Cloner cloner)
       : base(original, cloner) {

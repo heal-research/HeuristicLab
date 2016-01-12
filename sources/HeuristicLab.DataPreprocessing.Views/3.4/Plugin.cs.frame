@@ -40,6 +40,7 @@ namespace HeuristicLab.DataPreprocessing {
   [PluginDependency("HeuristicLab.MainForm", "3.3")]
   [PluginDependency("HeuristicLab.MainForm.WindowsForms", "3.3")] 
   [PluginDependency("HeuristicLab.Optimization", "3.3")]
+  [PluginDependency("HeuristicLab.Optimizer", "3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Views", "3.4")]
   [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions", "3.3")]
