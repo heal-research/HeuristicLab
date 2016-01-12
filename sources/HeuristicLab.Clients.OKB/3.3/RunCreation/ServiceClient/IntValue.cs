@@ -19,16 +19,13 @@
  */
 #endregion
 
-using System.Runtime.Serialization;
-
-namespace HeuristicLab.Services.OKB.RunCreation {
-  [DataContract]
-  public class UnknownCharacteristicType {
-    [DataMember]
-    public string Message { get; set; }
-
-    public UnknownCharacteristicType(string message, params object[] c) {
-      Message = string.Format(message, c);
+namespace HeuristicLab.Clients.OKB.RunCreation {
+  public partial class IntValue {
+    public IntValue() {
+      DataType = new DataType() {
+        Name = typeof(int).Name,
+        TypeName = typeof(int).AssemblyQualifiedName
+      };
     }
   }
 }

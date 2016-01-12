@@ -60,8 +60,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       try {
         algorithms.AddRange(CallRunCreationService<List<Algorithm>>(s => s.GetAlgorithms("HeuristicLab 3.3")));
         problems.AddRange(CallRunCreationService<List<Problem>>(s => s.GetProblems("HeuristicLab 3.3")));
-      }
-      finally {
+      } finally {
         OnRefreshed();
       }
     }
@@ -69,8 +68,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       var call = new Func<Exception>(delegate() {
         try {
           Refresh();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
           return ex;
         }
         return null;
@@ -100,6 +98,12 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     }
     #endregion
 
+    #region Characteristic Methods
+    public static void SetCharacteristicValue(long problemId, string characteristicName, Value v) {
+      CallRunCreationService(s => s.SetCharacteristicValue(problemId, characteristicName, v));
+    }
+    #endregion
+
     #region Events
     public event EventHandler Refreshing;
     private void OnRefreshing() {
@@ -118,12 +122,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       RunCreationServiceClient client = ClientFactory.CreateClient<RunCreationServiceClient, IRunCreationService>();
       try {
         call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }
@@ -132,12 +134,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       RunCreationServiceClient client = ClientFactory.CreateClient<RunCreationServiceClient, IRunCreationService>();
       try {
         return call(client);
-      }
-      finally {
+      } finally {
         try {
           client.Close();
-        }
-        catch (Exception) {
+        } catch (Exception) {
           client.Abort();
         }
       }

@@ -18,21 +18,21 @@ namespace HeuristicLab.Clients.OKB.Query
     [System.Runtime.Serialization.DataContractAttribute(Name="Filter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.StringComparisonFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameStringComparisonFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.StringComparisonAvailableValuesFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameStringComparisonAvailableValuesFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameStringComparisonFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonDoubleFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonDoubleFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonPercentFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonPercentFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonFloatFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonFloatFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonDateTimeFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonIntFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonIntFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonLongFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonLongFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonFloatFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonFloatFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonDoubleFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonDoubleFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonPercentFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonPercentFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonTimeSpanFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonTimeSpanFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.CombinedFilter))]
@@ -112,9 +112,9 @@ namespace HeuristicLab.Clients.OKB.Query
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="StringComparisonFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameStringComparisonFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.StringComparisonAvailableValuesFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameStringComparisonAvailableValuesFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameStringComparisonFilter))]
     public partial class StringComparisonFilter : HeuristicLab.Clients.OKB.Query.Filter
     {
         
@@ -152,33 +152,6 @@ namespace HeuristicLab.Clients.OKB.Query
                 {
                     this.ValueField = value;
                     this.RaisePropertyChanged("Value");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="NameStringComparisonFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
-        "fer")]
-    public partial class NameStringComparisonFilter : HeuristicLab.Clients.OKB.Query.StringComparisonFilter
-    {
-        
-        private string NameField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name
-        {
-            get
-            {
-                return this.NameField;
-            }
-            set
-            {
-                if ((object.ReferenceEquals(this.NameField, value) != true))
-                {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
                 }
             }
         }
@@ -241,19 +214,46 @@ namespace HeuristicLab.Clients.OKB.Query
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="NameStringComparisonFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+        "fer")]
+    public partial class NameStringComparisonFilter : HeuristicLab.Clients.OKB.Query.StringComparisonFilter
+    {
+        
+        private string NameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name
+        {
+            get
+            {
+                return this.NameField;
+            }
+            set
+            {
+                if ((object.ReferenceEquals(this.NameField, value) != true))
+                {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="OrdinalComparisonFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonDoubleFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonDoubleFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonPercentFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonPercentFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonFloatFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonFloatFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonDateTimeFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonIntFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonIntFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonLongFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonLongFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonFloatFilter))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonFloatFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonDoubleFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonDoubleFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonPercentFilter))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonPercentFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.OrdinalComparisonTimeSpanFilter))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonTimeSpanFilter))]
     public partial class OrdinalComparisonFilter : HeuristicLab.Clients.OKB.Query.Filter
@@ -281,16 +281,16 @@ namespace HeuristicLab.Clients.OKB.Query
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="OrdinalComparisonDoubleFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="OrdinalComparisonFloatFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonDoubleFilter))]
-    public partial class OrdinalComparisonDoubleFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonFilter
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonFloatFilter))]
+    public partial class OrdinalComparisonFloatFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonFilter
     {
         
-        private double ValueField;
+        private float ValueField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Value
+        public float Value
         {
             get
             {
@@ -309,64 +309,9 @@ namespace HeuristicLab.Clients.OKB.Query
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="NameOrdinalComparisonDoubleFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="NameOrdinalComparisonFloatFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    public partial class NameOrdinalComparisonDoubleFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonDoubleFilter
-    {
-        
-        private string NameField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name
-        {
-            get
-            {
-                return this.NameField;
-            }
-            set
-            {
-                if ((object.ReferenceEquals(this.NameField, value) != true))
-                {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="OrdinalComparisonPercentFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
-        "fer")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonPercentFilter))]
-    public partial class OrdinalComparisonPercentFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonFilter
-    {
-        
-        private double ValueField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Value
-        {
-            get
-            {
-                return this.ValueField;
-            }
-            set
-            {
-                if ((this.ValueField.Equals(value) != true))
-                {
-                    this.ValueField = value;
-                    this.RaisePropertyChanged("Value");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="NameOrdinalComparisonPercentFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
-        "fer")]
-    public partial class NameOrdinalComparisonPercentFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonPercentFilter
+    public partial class NameOrdinalComparisonFloatFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonFloatFilter
     {
         
         private string NameField;
@@ -528,16 +473,16 @@ namespace HeuristicLab.Clients.OKB.Query
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="OrdinalComparisonFloatFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="OrdinalComparisonDoubleFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonFloatFilter))]
-    public partial class OrdinalComparisonFloatFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonFilter
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonDoubleFilter))]
+    public partial class OrdinalComparisonDoubleFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonFilter
     {
         
-        private float ValueField;
+        private double ValueField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public float Value
+        public double Value
         {
             get
             {
@@ -556,9 +501,64 @@ namespace HeuristicLab.Clients.OKB.Query
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="NameOrdinalComparisonFloatFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="NameOrdinalComparisonDoubleFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    public partial class NameOrdinalComparisonFloatFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonFloatFilter
+    public partial class NameOrdinalComparisonDoubleFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonDoubleFilter
+    {
+        
+        private string NameField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name
+        {
+            get
+            {
+                return this.NameField;
+            }
+            set
+            {
+                if ((object.ReferenceEquals(this.NameField, value) != true))
+                {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="OrdinalComparisonPercentFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+        "fer")]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.NameOrdinalComparisonPercentFilter))]
+    public partial class OrdinalComparisonPercentFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonFilter
+    {
+        
+        private double ValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public double Value
+        {
+            get
+            {
+                return this.ValueField;
+            }
+            set
+            {
+                if ((this.ValueField.Equals(value) != true))
+                {
+                    this.ValueField = value;
+                    this.RaisePropertyChanged("Value");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="NameOrdinalComparisonPercentFilter", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+        "fer")]
+    public partial class NameOrdinalComparisonPercentFilter : HeuristicLab.Clients.OKB.Query.OrdinalComparisonPercentFilter
     {
         
         private string NameField;
@@ -1363,15 +1363,15 @@ namespace HeuristicLab.Clients.OKB.Query
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Value", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.BinaryValue))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.StringValue))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.DoubleValue))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.PercentValue))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.LongValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.FloatValue))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.BoolValue))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.DoubleValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.TimeSpanValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.IntValue))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.LongValue))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.PercentValue))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.BoolValue))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.StringValue))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(HeuristicLab.Clients.OKB.Query.BinaryValue))]
     public partial class Value : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged
     {
         
@@ -1512,96 +1512,15 @@ namespace HeuristicLab.Clients.OKB.Query
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="BinaryValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="LongValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    public partial class BinaryValue : HeuristicLab.Clients.OKB.Query.Value
+    public partial class LongValue : HeuristicLab.Clients.OKB.Query.Value
     {
         
-        private byte[] ValueField;
+        private long ValueField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] Value
-        {
-            get
-            {
-                return this.ValueField;
-            }
-            set
-            {
-                if ((object.ReferenceEquals(this.ValueField, value) != true))
-                {
-                    this.ValueField = value;
-                    this.RaisePropertyChanged("Value");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="StringValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
-        "fer")]
-    public partial class StringValue : HeuristicLab.Clients.OKB.Query.Value
-    {
-        
-        private string ValueField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Value
-        {
-            get
-            {
-                return this.ValueField;
-            }
-            set
-            {
-                if ((object.ReferenceEquals(this.ValueField, value) != true))
-                {
-                    this.ValueField = value;
-                    this.RaisePropertyChanged("Value");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="DoubleValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
-        "fer")]
-    public partial class DoubleValue : HeuristicLab.Clients.OKB.Query.Value
-    {
-        
-        private double ValueField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Value
-        {
-            get
-            {
-                return this.ValueField;
-            }
-            set
-            {
-                if ((this.ValueField.Equals(value) != true))
-                {
-                    this.ValueField = value;
-                    this.RaisePropertyChanged("Value");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PercentValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
-        "fer")]
-    public partial class PercentValue : HeuristicLab.Clients.OKB.Query.Value
-    {
-        
-        private double ValueField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public double Value
+        public long Value
         {
             get
             {
@@ -1647,15 +1566,15 @@ namespace HeuristicLab.Clients.OKB.Query
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="BoolValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="DoubleValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    public partial class BoolValue : HeuristicLab.Clients.OKB.Query.Value
+    public partial class DoubleValue : HeuristicLab.Clients.OKB.Query.Value
     {
         
-        private bool ValueField;
+        private double ValueField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Value
+        public double Value
         {
             get
             {
@@ -1728,15 +1647,15 @@ namespace HeuristicLab.Clients.OKB.Query
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="LongValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+    [System.Runtime.Serialization.DataContractAttribute(Name="PercentValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
         "fer")]
-    public partial class LongValue : HeuristicLab.Clients.OKB.Query.Value
+    public partial class PercentValue : HeuristicLab.Clients.OKB.Query.Value
     {
         
-        private long ValueField;
+        private double ValueField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public long Value
+        public double Value
         {
             get
             {
@@ -1745,6 +1664,87 @@ namespace HeuristicLab.Clients.OKB.Query
             set
             {
                 if ((this.ValueField.Equals(value) != true))
+                {
+                    this.ValueField = value;
+                    this.RaisePropertyChanged("Value");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="BoolValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+        "fer")]
+    public partial class BoolValue : HeuristicLab.Clients.OKB.Query.Value
+    {
+        
+        private bool ValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Value
+        {
+            get
+            {
+                return this.ValueField;
+            }
+            set
+            {
+                if ((this.ValueField.Equals(value) != true))
+                {
+                    this.ValueField = value;
+                    this.RaisePropertyChanged("Value");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="StringValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+        "fer")]
+    public partial class StringValue : HeuristicLab.Clients.OKB.Query.Value
+    {
+        
+        private string ValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Value
+        {
+            get
+            {
+                return this.ValueField;
+            }
+            set
+            {
+                if ((object.ReferenceEquals(this.ValueField, value) != true))
+                {
+                    this.ValueField = value;
+                    this.RaisePropertyChanged("Value");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="BinaryValue", Namespace="http://schemas.datacontract.org/2004/07/HeuristicLab.Services.OKB.Query.DataTrans" +
+        "fer")]
+    public partial class BinaryValue : HeuristicLab.Clients.OKB.Query.Value
+    {
+        
+        private byte[] ValueField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] Value
+        {
+            get
+            {
+                return this.ValueField;
+            }
+            set
+            {
+                if ((object.ReferenceEquals(this.ValueField, value) != true))
                 {
                     this.ValueField = value;
                     this.RaisePropertyChanged("Value");
@@ -1895,6 +1895,12 @@ namespace HeuristicLab.Clients.OKB.Query
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQueryService/GetValueNames", ReplyAction="http://tempuri.org/IQueryService/GetValueNamesResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.ValueName>> GetValueNamesAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQueryService/GetCharacteristics", ReplyAction="http://tempuri.org/IQueryService/GetCharacteristicsResponse")]
+        System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.Value> GetCharacteristics(long problemId);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQueryService/GetCharacteristics", ReplyAction="http://tempuri.org/IQueryService/GetCharacteristicsResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.Value>> GetCharacteristicsAsync(long problemId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1989,6 +1995,16 @@ namespace HeuristicLab.Clients.OKB.Query
         public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.ValueName>> GetValueNamesAsync()
         {
             return base.Channel.GetValueNamesAsync();
+        }
+        
+        public System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.Value> GetCharacteristics(long problemId)
+        {
+            return base.Channel.GetCharacteristics(problemId);
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.Value>> GetCharacteristicsAsync(long problemId)
+        {
+            return base.Channel.GetCharacteristicsAsync(problemId);
         }
     }
 }
