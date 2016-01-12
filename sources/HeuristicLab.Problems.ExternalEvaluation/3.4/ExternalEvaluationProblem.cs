@@ -58,6 +58,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IFixedValueParameter<SingleObjectiveOptimizationSupportScript> SupportScriptParameter {
       get { return (IFixedValueParameter<SingleObjectiveOptimizationSupportScript>)Parameters["SupportScript"]; }
     }
+
+    private IFixedValueParameter<BoolValue> MaximizationParameter {
+      get { return (IFixedValueParameter<BoolValue>)Parameters["Maximization"]; }
+    }
     #endregion
 
     #region Properties
@@ -103,6 +107,7 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Single Objective Problem Overrides
     public override bool Maximization {
       get { return Parameters.ContainsKey("Maximization") && ((IValueParameter<BoolValue>)Parameters["Maximization"]).Value.Value; }
+      set { MaximizationParameter.Value.Value = value; }
     }
 
     public override double Evaluate(Individual individual, IRandom random) {
