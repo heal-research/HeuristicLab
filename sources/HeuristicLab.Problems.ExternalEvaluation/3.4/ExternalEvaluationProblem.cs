@@ -107,7 +107,10 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     #region Single Objective Problem Overrides
     public override bool Maximization {
       get { return Parameters.ContainsKey("Maximization") && ((IValueParameter<BoolValue>)Parameters["Maximization"]).Value.Value; }
-      set { MaximizationParameter.Value.Value = value; }
+    }
+
+    public virtual void SetMaximization(bool maximization) {
+      MaximizationParameter.Value.Value = maximization;
     }
 
     public override double Evaluate(Individual individual, IRandom random) {
