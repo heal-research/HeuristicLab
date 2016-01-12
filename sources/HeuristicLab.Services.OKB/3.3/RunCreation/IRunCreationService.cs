@@ -44,5 +44,10 @@ namespace HeuristicLab.Services.OKB.RunCreation {
 
     [OperationContract]
     void AddRun(Run run);
+
+    [OperationContract]
+    [FaultContract(typeof(MissingProblem))]
+    [FaultContract(typeof(UnknownCharacteristicType))]
+    void SetCharacteristicValue(long problemId, string characteristicName, Value value);
   }
 }

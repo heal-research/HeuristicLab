@@ -47,5 +47,8 @@ namespace HeuristicLab.Services.OKB.Query {
 
     [OperationContract]
     IEnumerable<ValueName> GetValueNames();
+
+    [OperationContract]
+    IEnumerable<Value> GetCharacteristics(long problemId);
   }
 }

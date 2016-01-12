@@ -69,6 +69,40 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       return entity;
     }
 
+    public static DA.CharacteristicValue ToEntity(DT.Value source, DA.OKBDataContext okb, DA.Problem problem, string characteristicName, DA.CharacteristicType type) {
+      if (okb == null || problem == null || string.IsNullOrEmpty(characteristicName) || source == null) throw new ArgumentNullException();
+      var entity = new DA.CharacteristicValue();
+      entity.Problem = problem;
+      entity.DataType = Convert.ToEntity(source.DataType, okb);
+      entity.Characteristic = Convert.ToEntity(characteristicName, type, okb);
+      if (source is DT.BoolValue) {
+        entity.BoolValue = ((DT.BoolValue)source).Value;
+      } else if (source is DT.IntValue) {
+        entity.IntValue = ((DT.IntValue)source).Value;
+      } else if (source is DT.TimeSpanValue) {
+        entity.LongValue = ((DT.TimeSpanValue)source).Value;
+      } else if (source is DT.LongValue) {
+        entity.LongValue = ((DT.LongValue)source).Value;
+      } else if (source is DT.FloatValue) {
+        entity.FloatValue = ((DT.FloatValue)source).Value;
+      } else if (source is DT.DoubleValue) {
+        entity.DoubleValue = ((DT.DoubleValue)source).Value;
+      } else if (source is DT.PercentValue) {
+        entity.DoubleValue = ((DT.PercentValue)source).Value;
+      } else if (source is DT.StringValue) {
+        entity.StringValue = ((DT.StringValue)source).Value;
+      } else {
+        throw new ArgumentException("Unknown characteristic type.", "source");
+      }
+      return entity;
+    }
+
+    private static DA.Characteristic ToEntity(string name, DA.CharacteristicType type, DA.OKBDataContext okb) {
+      if (string.IsNullOrEmpty(name)) return null;
+      var entity = okb.Characteristics.FirstOrDefault(x => (x.Name == name) && (x.Type == type));
+      return entity ?? new DA.Characteristic() { Id = 0, Name = name, Type = type };
+    }
+
     private static DA.Value ToEntity(DT.Value source, DA.Run run, DA.ValueNameCategory category, DA.OKBDataContext okb, List<DA.BinaryData> binCache) {
       if (source == null) return null;
       var entity = new DA.Value();

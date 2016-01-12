@@ -277,6 +277,15 @@ namespace HeuristicLab.Services.OKB.Query {
       }
     }
 
+
+    public IEnumerable<DataTransfer.Value> GetCharacteristics(long problemId) {
+      using (OKBDataContext okb = new OKBDataContext()) {
+        var prob = okb.Problems.SingleOrDefault(x => x.Id == problemId);
+        if (prob == null) return Enumerable.Empty<DataTransfer.Value>();
+        return prob.CharacteristicValues.Select(Convert.ToDto).ToArray();
+      }
+    }
+
     private List<DataAccess.Run> FilterRuns(IQueryable<DataAccess.Run> runs, Filter filter, OKBDataContext okb) {
       IFilter f = (IFilter)Activator.CreateInstance(Type.GetType(filter.FilterTypeName), filter);
 
