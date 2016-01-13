@@ -44,14 +44,76 @@ namespace HeuristicLab.DataPreprocessing.Views {
     /// the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent() {
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+      this.splitContainer.Panel1.SuspendLayout();
+      this.splitContainer.Panel2.SuspendLayout();
+      this.splitContainer.SuspendLayout();
+      this.itemsGroupBox.SuspendLayout();
+      this.detailsGroupBox.SuspendLayout();
       this.SuspendLayout();
+      // 
+      // splitContainer
+      // 
+      this.splitContainer.Size = new System.Drawing.Size(526, 364);
+      // 
+      // itemsGroupBox
+      // 
+      this.itemsGroupBox.Size = new System.Drawing.Size(532, 383);
+      // 
+      // itemsListView
+      // 
+      this.itemsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+      this.itemsListView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.itemsListView.Location = new System.Drawing.Point(0, 0);
+      this.itemsListView.Size = new System.Drawing.Size(200, 364);
+      // 
+      // detailsGroupBox
+      // 
+      this.detailsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+      this.detailsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.detailsGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.detailsGroupBox.Size = new System.Drawing.Size(322, 364);
+      // 
+      // addButton
+      // 
+      this.toolTip.SetToolTip(this.addButton, "Add");
+      this.addButton.Visible = false;
+      // 
+      // removeButton
+      // 
+      this.toolTip.SetToolTip(this.removeButton, "Remove");
+      this.removeButton.Visible = false;
+      // 
+      // moveUpButton
+      // 
+      this.toolTip.SetToolTip(this.moveUpButton, "Move Up");
+      this.moveUpButton.Visible = false;
+      // 
+      // moveDownButton
+      // 
+      this.toolTip.SetToolTip(this.moveDownButton, "Move Down");
+      this.moveDownButton.Visible = false;
+      // 
+      // viewHost
+      // 
+      this.viewHost.Size = new System.Drawing.Size(310, 339);
+      // 
+      // showDetailsCheckBox
+      // 
+      this.showDetailsCheckBox.Visible = false;
       // 
       // ViewShortcutListView
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.Name = "ViewShortcutListView";
       this.Size = new System.Drawing.Size(532, 383);
+      this.splitContainer.Panel1.ResumeLayout(false);
+      this.splitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+      this.splitContainer.ResumeLayout(false);
+      this.itemsGroupBox.ResumeLayout(false);
+      this.detailsGroupBox.ResumeLayout(false);
       this.ResumeLayout(false);
+
     }
 
     #endregion

@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -29,7 +31,7 @@ using HeuristicLab.MainForm;
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("DataPreprocessing View")]
   [Content(typeof(PreprocessingContext), true)]
-  public partial class DataPreprocessingView : ItemView {
+  public partial class DataPreprocessingView : NamedItemView {
 
     public DataPreprocessingView() {
       InitializeComponent();
@@ -69,6 +71,11 @@ namespace HeuristicLab.DataPreprocessing.Views {
         viewShortcutListView.ItemsListView.Items[0].Selected = true;
         viewShortcutListView.Select();
 
+        applyComboBox.Items.Clear();
+        applyComboBox.DataSource = Content.ExportPossibilities.ToList();
+        applyComboBox.DisplayMember = "Key";
+        if (applyComboBox.Items.Count > 0)
+          applyComboBox.SelectedIndex = 0;
       } else {
         viewShortcutListView.Content = null;
       }
@@ -97,8 +104,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void exportProblemButton_Click(object sender, EventArgs e) {
-      // ToDo: select one export probability
-      var problem = Content.Export();
+      var exportOption = (KeyValuePair<string, Func<IItem>>)applyComboBox.SelectedItem;
+      var exportItem = exportOption.Value();
 
       var saveFileDialog = new SaveFileDialog {
         Title = "Save Item",
@@ -107,7 +114,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
         FilterIndex = 2
       };
 
-      var content = problem as IStorableContent;
+      var content = exportItem as IStorableContent;
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
         bool compressed = saveFileDialog.FilterIndex != 1;
         ContentManager.Save(content, saveFileDialog.FileName, compressed);
@@ -115,9 +122,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
     }
 
     private void applyInNewTabButton_Click(object sender, EventArgs e) {
-      var item = Content.Export();
+      var exportOption = (KeyValuePair<string, Func<IItem>>)applyComboBox.SelectedItem;
+      var exportItem = exportOption.Value();
 
-      MainFormManager.MainForm.ShowContent(item);
+      MainFormManager.MainForm.ShowContent(exportItem);
     }
 
     private void undoButton_Click(object sender, EventArgs e) {

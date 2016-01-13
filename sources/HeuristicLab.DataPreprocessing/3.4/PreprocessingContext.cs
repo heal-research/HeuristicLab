@@ -38,15 +38,15 @@ namespace HeuristicLab.DataPreprocessing {
       get {
         var algorithm = Source as IAlgorithm;
         if (algorithm != null)
-          yield return new KeyValuePair<string, Func<IItem>>(algorithm.Name, () => ExportAlgorithm(algorithm));
+          yield return new KeyValuePair<string, Func<IItem>>(algorithm.GetType().GetPrettyName(), () => ExportAlgorithm(algorithm));
 
         var problem = algorithm != null ? algorithm.Problem as IDataAnalysisProblem : Source as IDataAnalysisProblem;
         if (problem != null)
-          yield return new KeyValuePair<string, Func<IItem>>(problem.Name, () => ExportProblem(problem));
+          yield return new KeyValuePair<string, Func<IItem>>(problem.GetType().GetPrettyName(), () => ExportProblem(problem));
 
         var problemData = problem != null ? problem.ProblemData : Source as IDataAnalysisProblemData;
         if (problemData != null)
-          yield return new KeyValuePair<string, Func<IItem>>(problemData.Name, () => ExportProblemData(problemData));
+          yield return new KeyValuePair<string, Func<IItem>>(problemData.GetType().GetPrettyName(), () => ExportProblemData(problemData));
 
         // ToDo: Export CSV
       }
@@ -62,9 +62,11 @@ namespace HeuristicLab.DataPreprocessing {
     private IItem Source { get; set; }
 
 
-    public PreprocessingContext() : this(new RegressionProblemData()) { }
+    public PreprocessingContext() : this(new RegressionProblemData()) {
+      Name = "Data Preprocessing";
+    }
     public PreprocessingContext(IItem source)
-      : base("PreprocessingContext") {
+      : base("Data Preprocessing") {
       Import(source);
     }
 
@@ -84,6 +86,8 @@ namespace HeuristicLab.DataPreprocessing {
     #region Import
     public void Import(IItem source) {
       Source = source;
+      var namedSource = source as INamedItem;
+      if (namedSource != null) Name = "Preprocessing: " + namedSource.Name;
 
       var dataSource = ExtractProblemData(source);
       Data = new FilteredPreprocessingData(new TransactionalPreprocessingData(dataSource));
@@ -99,7 +103,6 @@ namespace HeuristicLab.DataPreprocessing {
 
     #region Export
     public IItem Export() {
-      var creator = new ProblemDataCreator(this);
       if (Source is IAlgorithm)
         return ExportAlgorithm((IAlgorithm)Source);
       if (Source is IDataAnalysisProblem)
@@ -123,7 +126,9 @@ namespace HeuristicLab.DataPreprocessing {
     }
     private IDataAnalysisProblemData ExportProblemData(IDataAnalysisProblemData source) {
       var creator = new ProblemDataCreator(this);
-      return creator.CreateProblemData(source);
+      var preprocessedProblemData = creator.CreateProblemData(source);
+      preprocessedProblemData.Name = "Preprocessed " + source.Name;
+      return preprocessedProblemData;
     }
     private void SetNewProblemData(IDataAnalysisProblem problem) {
       var data = ExtractProblemData(problem.ProblemData);

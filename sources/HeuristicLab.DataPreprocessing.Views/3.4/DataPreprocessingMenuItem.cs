@@ -20,6 +20,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimizer;
 
@@ -30,10 +31,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
         get { return "Data &Preprocessing"; }
       }
       public override IEnumerable<string> Structure {
-        get { return new string[] { "&Edit" }; }
+        get { return new string[] { "&Edit", "&Data Analysis" }; }
       }
       public override int Position {
-        get { return 6000; }
+        get { return 5500; }
       }
       public override string ToolTipText {
         get { return "Create a new data preprocessing"; }
@@ -41,6 +42,10 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
       public override void Execute() {
         MainFormManager.MainForm.ShowContent(new PreprocessingContext());
+      }
+
+      public override Keys ShortCutKeys {
+        get { return Keys.Control | Keys.D; }
       }
     }
   }
