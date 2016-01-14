@@ -24,9 +24,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace HeuristicLab.DataPreprocessing {
-  public class SearchLogic : ISearchLogic {
+  public class SearchLogic {
     private readonly ITransactionalPreprocessingData preprocessingData;
-    private readonly IFilterLogic filterLogic;
+    private readonly FilterLogic filterLogic;
 
     private Dictionary<int, IList<int>> MissingValueIndicies { get; set; }
     private Dictionary<int, IList> ValuesWithoutNaN { get; set; }
@@ -43,7 +43,7 @@ namespace HeuristicLab.DataPreprocessing {
       get { return preprocessingData.Rows; }
     }
 
-    public SearchLogic(ITransactionalPreprocessingData thePreprocessingData, IFilterLogic theFilterLogic) {
+    public SearchLogic(ITransactionalPreprocessingData thePreprocessingData, FilterLogic theFilterLogic) {
       preprocessingData = thePreprocessingData;
       filterLogic = theFilterLogic;
 

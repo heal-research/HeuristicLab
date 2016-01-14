@@ -34,40 +34,22 @@ namespace HeuristicLab.DataPreprocessing {
 
     public string Filename { get; set; }
 
-    public IEnumerable<KeyValuePair<string, Func<IItem>>> ExportPossibilities {
-      get {
-        var algorithm = Source as IAlgorithm;
-        if (algorithm != null)
-          yield return new KeyValuePair<string, Func<IItem>>(algorithm.GetType().GetPrettyName(), () => ExportAlgorithm(algorithm));
-
-        var problem = algorithm != null ? algorithm.Problem as IDataAnalysisProblem : Source as IDataAnalysisProblem;
-        if (problem != null)
-          yield return new KeyValuePair<string, Func<IItem>>(problem.GetType().GetPrettyName(), () => ExportProblem(problem));
-
-        var problemData = problem != null ? problem.ProblemData : Source as IDataAnalysisProblemData;
-        if (problemData != null)
-          yield return new KeyValuePair<string, Func<IItem>>(problemData.GetType().GetPrettyName(), () => ExportProblemData(problemData));
-
-        // ToDo: Export CSV
-      }
-    }
-    public bool CanExport {
-      get { return Source is IAlgorithm || Source is IDataAnalysisProblem || Source is IDataAnalysisProblemData; }
-    }
-
     [Storable]
     public IFilteredPreprocessingData Data { get; private set; }
 
     [Storable]
     private IItem Source { get; set; }
 
+    public event EventHandler Reset;
 
-    public PreprocessingContext() : this(new RegressionProblemData()) {
-      Name = "Data Preprocessing";
+    #region Constructors
+    public PreprocessingContext()
+      : this(new RegressionProblemData()) {
     }
-    public PreprocessingContext(IItem source)
+    public PreprocessingContext(IDataAnalysisProblemData problemData, IItem source = null)
       : base("Data Preprocessing") {
-      Import(source);
+      if (problemData == null) throw new ArgumentNullException("problemData");
+      Import(problemData, source);
     }
 
     [StorableConstructor]
@@ -78,21 +60,26 @@ namespace HeuristicLab.DataPreprocessing {
       Source = cloner.Clone(original.Source);
       Data = cloner.Clone(original.Data);
     }
-
     public override IDeepCloneable Clone(Cloner cloner) {
       return new PreprocessingContext(this, cloner);
     }
+    #endregion
 
     #region Import
-    public void Import(IItem source) {
-      Source = source;
-      var namedSource = source as INamedItem;
-      if (namedSource != null) Name = "Preprocessing: " + namedSource.Name;
-
-      var dataSource = ExtractProblemData(source);
-      Data = new FilteredPreprocessingData(new TransactionalPreprocessingData(dataSource));
+    public void Import(IDataAnalysisProblemData problemData, IItem source = null) {
+      if (problemData == null) throw new ArgumentNullException("problemData");
+      if (source != null && ExtractProblemData(source) != problemData)
+        throw new ArgumentException("The ProblemData extracted from the Source is different than the given ProblemData.");
+      Source = source ?? problemData;
+      var namedSource = Source as INamedItem;
+      if (namedSource != null)
+        Name = "Preprocessing " + namedSource.Name;
+      Data = new FilteredPreprocessingData(new TransactionalPreprocessingData(problemData));
+      OnReset();
+      // Reset GUI:
+      // - OnContentChanged for PreprocessingView!
+      // event? task(async import)?
     }
-
     private IDataAnalysisProblemData ExtractProblemData(IItem source) {
       var algorithm = source as Algorithm;
       var problem = algorithm != null ? algorithm.Problem as IDataAnalysisProblem : source as IDataAnalysisProblem;
@@ -102,39 +89,58 @@ namespace HeuristicLab.DataPreprocessing {
     #endregion
 
     #region Export
-    public IItem Export() {
-      if (Source is IAlgorithm)
-        return ExportAlgorithm((IAlgorithm)Source);
-      if (Source is IDataAnalysisProblem)
-        return ExportProblem((IDataAnalysisProblem)Source);
-      if (Source is IDataAnalysisProblemData)
-        return ExportProblemData((IDataAnalysisProblemData)Source);
-      return null;
+    public bool CanExport {
+      get { return Source is IAlgorithm || Source is IDataAnalysisProblem || Source is IDataAnalysisProblemData; }
     }
+    public IEnumerable<KeyValuePair<string, Func<IItem>>> GetSourceExportOptions() {
+      var algorithm = Source as IAlgorithm;
+      if (algorithm != null)
+        yield return new KeyValuePair<string, Func<IItem>>(
+          algorithm.GetType().GetPrettyName(),
+          () => ExportAlgorithm(algorithm));
+
+      var problem = algorithm != null ? algorithm.Problem as IDataAnalysisProblem : Source as IDataAnalysisProblem;
+      if (problem != null)
+        yield return new KeyValuePair<string, Func<IItem>>(
+          problem.GetType().GetPrettyName(),
+          () => ExportProblem(problem));
+
+      var problemData = problem != null ? problem.ProblemData : Source as IDataAnalysisProblemData;
+      if (problemData != null)
+        yield return new KeyValuePair<string, Func<IItem>>(
+          problemData.GetType().GetPrettyName(),
+          () => ExportProblemData(problemData));
+    }
+
     private IAlgorithm ExportAlgorithm(IAlgorithm source) {
       var preprocessedAlgorithm = (IAlgorithm)source.Clone();
       preprocessedAlgorithm.Name = preprocessedAlgorithm.Name + "(Preprocessed)";
       preprocessedAlgorithm.Runs.Clear();
       var problem = (IDataAnalysisProblem)preprocessedAlgorithm.Problem;
-      SetNewProblemData(problem);
+      problem.ProblemDataParameter.ActualValue = CreateNewProblemData();
       return preprocessedAlgorithm;
     }
     private IDataAnalysisProblem ExportProblem(IDataAnalysisProblem source) {
       var preprocessedProblem = (IDataAnalysisProblem)source.Clone();
-      SetNewProblemData(preprocessedProblem);
+      preprocessedProblem.ProblemDataParameter.ActualValue = CreateNewProblemData();
       return preprocessedProblem;
     }
     private IDataAnalysisProblemData ExportProblemData(IDataAnalysisProblemData source) {
-      var creator = new ProblemDataCreator(this);
-      var preprocessedProblemData = creator.CreateProblemData(source);
-      preprocessedProblemData.Name = "Preprocessed " + source.Name;
-      return preprocessedProblemData;
+      return CreateNewProblemData();
     }
-    private void SetNewProblemData(IDataAnalysisProblem problem) {
-      var data = ExtractProblemData(problem.ProblemData);
-      problem.ProblemDataParameter.ActualValue = data;
-      problem.Name = "Preprocessed " + problem.Name;
+
+    public IDataAnalysisProblemData CreateNewProblemData() {
+      var creator = new ProblemDataCreator(this);
+      var oldProblemData = ExtractProblemData(Source);
+      var newProblemData = creator.CreateProblemData(oldProblemData);
+      newProblemData.Name = "Preprocessed " + oldProblemData.Name;
+      return newProblemData;
     }
     #endregion
+
+    protected virtual void OnReset() {
+      if (Reset != null)
+        Reset(this, EventArgs.Empty);
+    }
   }
 }

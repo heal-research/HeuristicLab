@@ -25,12 +25,12 @@ using System.Linq;
 using HeuristicLab.Common;
 
 namespace HeuristicLab.DataPreprocessing {
-  public class StatisticsLogic : IStatisticsLogic {
+  public class StatisticsLogic {
 
     private readonly ITransactionalPreprocessingData preprocessingData;
-    private readonly ISearchLogic searchLogic;
+    private readonly SearchLogic searchLogic;
 
-    public StatisticsLogic(ITransactionalPreprocessingData thePreprocessingData, ISearchLogic theSearchLogic) {
+    public StatisticsLogic(ITransactionalPreprocessingData thePreprocessingData, SearchLogic theSearchLogic) {
       preprocessingData = thePreprocessingData;
       searchLogic = theSearchLogic;
     }
@@ -70,7 +70,7 @@ namespace HeuristicLab.DataPreprocessing {
       return searchLogic.GetMissingValueIndices(columnIndex).Count();
     }
 
-    public T GetMin<T>(int columnIndex, bool considerSelection) where T : IComparable<T> {
+    public T GetMin<T>(int columnIndex, bool considerSelection = false) where T : IComparable<T> {
       var min = default(T);
       if (preprocessingData.VariableHasType<T>(columnIndex)) {
         var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
@@ -81,7 +81,7 @@ namespace HeuristicLab.DataPreprocessing {
       return min;
     }
 
-    public T GetMax<T>(int columnIndex, bool considerSelection) where T : IComparable<T> {
+    public T GetMax<T>(int columnIndex, bool considerSelection = false) where T : IComparable<T> {
       var max = default(T);
       if (preprocessingData.VariableHasType<T>(columnIndex)) {
         var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
@@ -92,7 +92,7 @@ namespace HeuristicLab.DataPreprocessing {
       return max;
     }
 
-    public double GetMedian(int columnIndex, bool considerSelection) {
+    public double GetMedian(int columnIndex, bool considerSelection = false) {
       double median = double.NaN;
       if (preprocessingData.VariableHasType<double>(columnIndex)) {
         var values = GetValuesWithoutNaN<double>(columnIndex, considerSelection);
@@ -103,7 +103,7 @@ namespace HeuristicLab.DataPreprocessing {
       return median;
     }
 
-    public double GetAverage(int columnIndex, bool considerSelection) {
+    public double GetAverage(int columnIndex, bool considerSelection = false) {
       double avg = double.NaN;
       if (preprocessingData.VariableHasType<double>(columnIndex)) {
         var values = GetValuesWithoutNaN<double>(columnIndex, considerSelection);
@@ -114,7 +114,7 @@ namespace HeuristicLab.DataPreprocessing {
       return avg;
     }
 
-    public DateTime GetMedianDateTime(int columnIndex, bool considerSelection) {
+    public DateTime GetMedianDateTime(int columnIndex, bool considerSelection = false) {
       DateTime median = new DateTime();
       if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         median = GetSecondsAsDateTime(GetDateTimeAsSeconds(columnIndex, considerSelection).Median());
@@ -122,7 +122,7 @@ namespace HeuristicLab.DataPreprocessing {
       return median;
     }
 
-    public DateTime GetAverageDateTime(int columnIndex, bool considerSelection) {
+    public DateTime GetAverageDateTime(int columnIndex, bool considerSelection = false) {
       DateTime avg = new DateTime();
       if (preprocessingData.VariableHasType<DateTime>(columnIndex)) {
         avg = GetSecondsAsDateTime(GetDateTimeAsSeconds(columnIndex, considerSelection).Average());
@@ -130,7 +130,7 @@ namespace HeuristicLab.DataPreprocessing {
       return avg;
     }
 
-    public T GetMostCommonValue<T>(int columnIndex, bool considerSelection) {
+    public T GetMostCommonValue<T>(int columnIndex, bool considerSelection = false) {
       var values = GetValuesWithoutNaN<T>(columnIndex, considerSelection);
       if (!values.Any())
         return default(T);

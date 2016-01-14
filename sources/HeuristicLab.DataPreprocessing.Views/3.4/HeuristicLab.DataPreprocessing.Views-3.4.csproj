@@ -254,6 +254,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Collections\3.3\HeuristicLab.Collections-3.3.csproj">
       <Project>{958b43bc-cc5c-4fa2-8628-2b3b01d890b6}</Project>
       <Name>HeuristicLab.Collections-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Common.Resources\3.3\HeuristicLab.Common.Resources-3.3.csproj">
       <Project>{0e27a536-1c4a-4624-a65e-dc4f4f23e3e1}</Project>
@@ -308,6 +309,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Optimizer\3.3\HeuristicLab.Optimizer-3.3.csproj">
       <Project>{C664305E-497C-4533-A140-967DEDB05C19}</Project>
       <Name>HeuristicLab.Optimizer-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>
@@ -322,6 +324,21 @@
     <ProjectReference Include="..\..\HeuristicLab.Problems.DataAnalysis\3.4\HeuristicLab.Problems.DataAnalysis-3.4.csproj">
       <Project>{df87c13e-a889-46ff-8153-66dcaa8c5674}</Project>
       <Name>HeuristicLab.Problems.DataAnalysis-3.4</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances.DataAnalysis.Views\3.3\HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3.csproj">
+      <Project>{72232235-B6CF-4E6C-B086-9E9E11AA0717}</Project>
+      <Name>HeuristicLab.Problems.Instances.DataAnalysis.Views-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances.DataAnalysis\3.3\HeuristicLab.Problems.Instances.DataAnalysis-3.3.csproj">
+      <Project>{94C7714E-29D4-4D6D-B213-2C18D627AB75}</Project>
+      <Name>HeuristicLab.Problems.Instances.DataAnalysis-3.3</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Problems.Instances\3.3\HeuristicLab.Problems.Instances-3.3.csproj">
+      <Project>{3540E29E-4793-49E7-8EE2-FEA7F61C3994}</Project>
+      <Name>HeuristicLab.Problems.Instances-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Visualization.ChartControlsExtensions\3.3\HeuristicLab.Visualization.ChartControlsExtensions-3.3.csproj">

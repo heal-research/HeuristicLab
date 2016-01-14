@@ -33,7 +33,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       IAlgorithm algorithm;
       IDataAnalysisProblem problem;
       GetMostOuterContent(currentView as Control, out algorithm, out problem);
-      var context = new PreprocessingContext(algorithm ?? problem ?? problemData as IItem);
+      var context = new PreprocessingContext(problemData, algorithm ?? problem ?? problemData as IItem);
       MainFormManager.MainForm.ShowContent(context);
     }
 

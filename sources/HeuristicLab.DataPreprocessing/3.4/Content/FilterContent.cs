@@ -22,35 +22,49 @@
 using System.Drawing;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
-using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.DataPreprocessing.Filter;
 
 namespace HeuristicLab.DataPreprocessing {
-  [Item("Transformation", "Represents the transformation grid.")]
-  public class TransformationContent : Item, IViewShortcut {
-
-    public IPreprocessingData Data { get; private set; }
-    public IFilterLogic FilterLogic { get; private set; }
-
-    public ICheckedItemList<ITransformation> CheckedTransformationList { get; private set; }
+  [Item("Filter", "Represents the filter grid.")]
+  public class FilterContent : Item, IViewShortcut {
 
     public static new Image StaticItemImage {
-      get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
+      get { return HeuristicLab.Common.Resources.VSImageLibrary.Filter; }
     }
 
-    public TransformationContent(IPreprocessingData data, IFilterLogic filterLogic) {
-      Data = data;
-      CheckedTransformationList = new CheckedItemList<ITransformation>();
+    private ICheckedItemCollection<IFilter> filters = new CheckedItemCollection<IFilter>();
+
+    public FilterLogic FilterLogic { get; private set; }
+
+    public ICheckedItemCollection<IFilter> Filters {
+      get {
+        return this.filters;
+      }
+      set {
+        this.filters = value;
+      }
+    }
+
+    private bool isAndCombination = true;
+    public bool IsAndCombination {
+      get {
+        return this.isAndCombination;
+      }
+      set {
+        this.isAndCombination = value;
+      }
+    }
+
+    public FilterContent(FilterLogic filterLogic) {
       FilterLogic = filterLogic;
     }
 
-    public TransformationContent(TransformationContent original, Cloner cloner)
-      : base(original, cloner) {
-      Data = original.Data;
-      CheckedTransformationList = new CheckedItemList<ITransformation>(original.CheckedTransformationList);
+    protected FilterContent(FilterContent content, Cloner cloner)
+      : base(content, cloner) {
     }
 
     public override IDeepCloneable Clone(Cloner cloner) {
-      return new TransformationContent(this, cloner);
+      return new FilterContent(this, cloner);
     }
   }
 }

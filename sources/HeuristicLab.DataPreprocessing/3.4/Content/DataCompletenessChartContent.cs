@@ -10,8 +10,8 @@ namespace HeuristicLab.DataPreprocessing {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.EditBrightnessContrast; }
     }
 
-    public IDataGridLogic DataGridLogic { get; private set; }
-    public ISearchLogic SearchLogic { get; private set; }
+    //public DataGridLogic DataGridLogic { get; private set; }
+    public SearchLogic SearchLogic { get; private set; }
 
     public DataCompletenessChartContent(SearchLogic searchLogic) {
       SearchLogic = searchLogic;

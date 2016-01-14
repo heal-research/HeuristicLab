@@ -25,7 +25,7 @@ using System.Linq;
 using HeuristicLab.DataPreprocessing.Filter;
 
 namespace HeuristicLab.DataPreprocessing {
-  public class FilterLogic : IFilterLogic {
+  public class FilterLogic {
 
     public IFilteredPreprocessingData PreprocessingData { get; private set; }
 

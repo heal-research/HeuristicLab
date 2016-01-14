@@ -20,13 +20,16 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Core.Views;
 using HeuristicLab.MainForm;
+using HeuristicLab.Problems.DataAnalysis;
+using HeuristicLab.Problems.Instances.DataAnalysis;
+using HeuristicLab.Problems.Instances.DataAnalysis.Views;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("DataPreprocessing View")]
@@ -67,28 +70,41 @@ namespace HeuristicLab.DataPreprocessing.Views {
         };
 
         viewShortcutListView.Content = viewShortcuts.AsReadOnly();
-
         viewShortcutListView.ItemsListView.Items[0].Selected = true;
         viewShortcutListView.Select();
 
-        applyComboBox.Items.Clear();
-        applyComboBox.DataSource = Content.ExportPossibilities.ToList();
-        applyComboBox.DisplayMember = "Key";
-        if (applyComboBox.Items.Count > 0)
-          applyComboBox.SelectedIndex = 0;
+        applyTypeContextMenuStrip.Items.Clear();
+        exportTypeContextMenuStrip.Items.Clear();
+        foreach (var exportOption in Content.GetSourceExportOptions()) {
+          var applyMenuItem = new ToolStripMenuItem(exportOption.Key) { Tag = exportOption.Value };
+          applyMenuItem.Click += applyToolStripMenuItem_Click;
+          applyTypeContextMenuStrip.Items.Add(applyMenuItem);
+
+          var exportMenuItem = new ToolStripMenuItem(exportOption.Key) { Tag = exportOption.Value };
+          exportMenuItem.Click += exportToolStripMenuItem_Click;
+          exportTypeContextMenuStrip.Items.Add(exportMenuItem);
+        }
+        var exportCsvMenuItem = new ToolStripMenuItem(".csv");
+        exportCsvMenuItem.Click += exportCsvMenuItem_Click;
+        exportTypeContextMenuStrip.Items.Add(exportCsvMenuItem);
       } else {
         viewShortcutListView.Content = null;
       }
     }
-
     protected override void RegisterContentEvents() {
       base.RegisterContentEvents();
+      Content.Reset += Content_Reset;
       Content.Data.FilterChanged += Data_FilterChanged;
     }
 
     protected override void DeregisterContentEvents() {
       base.DeregisterContentEvents();
+      Content.Reset -= Content_Reset;
       Content.Data.FilterChanged -= Data_FilterChanged;
+    }
+
+    void Content_Reset(object sender, EventArgs e) {
+      OnContentChanged(); // Reset by setting new content
     }
 
     void Data_FilterChanged(object sender, EventArgs e) {
@@ -103,10 +119,89 @@ namespace HeuristicLab.DataPreprocessing.Views {
       undoButton.Enabled = Content != null;
     }
 
-    private void exportProblemButton_Click(object sender, EventArgs e) {
-      var exportOption = (KeyValuePair<string, Func<IItem>>)applyComboBox.SelectedItem;
-      var exportItem = exportOption.Value();
+    #region New
+    private void newButton_Click(object sender, EventArgs e) {
+      newProblemDataTypeContextMenuStrip.Show(Cursor.Position);
+    }
+    private void newRegressionToolStripMenuItem_Click(object sender, EventArgs e) {
+      Content.Import(new RegressionProblemData());
+    }
+    private void newClassificationToolStripMenuItem_Click(object sender, EventArgs e) {
+      Content.Import(new ClassificationProblemData());
+    }
+    private void newTimeSeriesToolStripMenuItem_Click(object sender, EventArgs e) {
+      Content.Import(new TimeSeriesPrognosisProblemData());
+    }
+    #endregion
 
+    #region Import
+    private void importButton_Click(object sender, EventArgs e) {
+      importProblemDataTypeContextMenuStrip.Show(Cursor.Position);
+    }
+    private void importRegressionToolStripMenuItem_Click(object sender, EventArgs e) {
+      Import(new RegressionCSVInstanceProvider(), new RegressionImportTypeDialog(),
+        (dialog => ((RegressionImportTypeDialog)dialog).ImportType));
+    }
+    private void importClassificationToolStripMenuItem_Click(object sender, EventArgs e) {
+      Import(new ClassificationCSVInstanceProvider(), new ClassificationImportTypeDialog(),
+        (dialog => ((ClassificationImportTypeDialog)dialog).ImportType));
+    }
+    private void importTimeSeriesToolStripMenuItem_Click(object sender, EventArgs e) {
+      Import(new TimeSeriesPrognosisCSVInstanceProvider(), new TimeSeriesPrognosisImportTypeDialog(),
+        (dialog => ((TimeSeriesPrognosisImportTypeDialog)dialog).ImportType));
+    }
+    private void Import<TProblemData, TImportType>(DataAnalysisInstanceProvider<TProblemData, TImportType> instanceProvider, DataAnalysisImportTypeDialog importTypeDialog,
+      Func<DataAnalysisImportTypeDialog, TImportType> getImportType)
+      where TProblemData : class, IDataAnalysisProblemData
+      where TImportType : DataAnalysisImportType {
+      if (importTypeDialog.ShowDialog() == DialogResult.OK) {
+        Task.Run(() => {
+          TProblemData instance;
+          var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+          // lock active view and show progress bar
+          var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+
+          try {
+            var progress = mainForm.AddOperationProgressToContent(activeView.Content, "Loading problem instance.");
+
+            instanceProvider.ProgressChanged += (o, args) => { progress.ProgressValue = args.ProgressPercentage / 100.0; };
+
+            instance = instanceProvider.ImportData(importTypeDialog.Path, getImportType(importTypeDialog), importTypeDialog.CSVFormat);
+          } catch (IOException ex) {
+            MessageBox.Show(string.Format("There was an error parsing the file: {0}", Environment.NewLine + ex.Message), "Error while parsing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            return;
+          }
+          try {
+            Content.Import(instance);
+          } catch (IOException ex) {
+            MessageBox.Show(string.Format("This problem does not support loading the instance {0}: {1}", Path.GetFileName(importTypeDialog.Path), Environment.NewLine + ex.Message), "Cannot load instance");
+          } finally {
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+          }
+        });
+      }
+    }
+    #endregion
+
+    #region Apply
+    private void applyInNewTabButton_Click(object sender, EventArgs e) {
+      applyTypeContextMenuStrip.Show(Cursor.Position);
+    }
+    private void applyToolStripMenuItem_Click(object sender, EventArgs e) {
+      var menuItem = (ToolStripMenuItem)sender;
+      var itemCreator = (Func<IItem>)menuItem.Tag;
+      MainFormManager.MainForm.ShowContent(itemCreator());
+    }
+    #endregion
+
+    #region Export
+    private void exportProblemButton_Click(object sender, EventArgs e) {
+      exportTypeContextMenuStrip.Show(Cursor.Position);
+    }
+    private void exportToolStripMenuItem_Click(object sender, EventArgs e) {
+      var menuItem = (ToolStripMenuItem)sender;
+      var itemCreator = (Func<IItem>)menuItem.Tag;
       var saveFileDialog = new SaveFileDialog {
         Title = "Save Item",
         DefaultExt = "hl",
@@ -114,22 +209,61 @@ namespace HeuristicLab.DataPreprocessing.Views {
         FilterIndex = 2
       };
 
-      var content = exportItem as IStorableContent;
       if (saveFileDialog.ShowDialog() == DialogResult.OK) {
-        bool compressed = saveFileDialog.FilterIndex != 1;
-        ContentManager.Save(content, saveFileDialog.FileName, compressed);
+        Task.Run(() => {
+          bool compressed = saveFileDialog.FilterIndex != 1;
+          var storable = itemCreator() as IStorableContent;
+          if (storable != null) {
+            var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+            var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+            try {
+              mainForm.AddOperationProgressToContent(activeView.Content, "Exporting data.");
+              ContentManager.Save(storable, saveFileDialog.FileName, compressed);
+            } finally {
+              mainForm.RemoveOperationProgressFromContent(activeView.Content);
+            }
+          }
+        });
       }
     }
+    private void exportCsvMenuItem_Click(object sender, EventArgs e) {
+      var saveFileDialog = new SaveFileDialog {
+        Title = "Save Data",
+        DefaultExt = "csv",
+        Filter = "CSV files|*.csv|All files|*.*",
+        FilterIndex = 1
+      };
 
-    private void applyInNewTabButton_Click(object sender, EventArgs e) {
-      var exportOption = (KeyValuePair<string, Func<IItem>>)applyComboBox.SelectedItem;
-      var exportItem = exportOption.Value();
-
-      MainFormManager.MainForm.ShowContent(exportItem);
+      if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+        Task.Run(() => {
+          var mainForm = (MainForm.WindowsForms.MainForm)MainFormManager.MainForm;
+          var activeView = (IContentView)MainFormManager.MainForm.ActiveView;
+          try {
+            var problemData = Content.CreateNewProblemData();
+            mainForm.AddOperationProgressToContent(activeView.Content, "Exporting data.");
+            if (problemData is TimeSeriesPrognosisProblemData)
+              Export(new TimeSeriesPrognosisCSVInstanceProvider(), problemData, saveFileDialog.FileName);
+            else if (problemData is RegressionProblemData)
+              Export(new RegressionCSVInstanceProvider(), problemData, saveFileDialog.FileName);
+            else if (problemData is ClassificationProblemData)
+              Export(new ClassificationCSVInstanceProvider(), problemData, saveFileDialog.FileName);
+          } finally {
+            mainForm.RemoveOperationProgressFromContent(activeView.Content);
+          }
+        });
+      }
     }
+    private void Export<TProblemData, TImportType>(DataAnalysisInstanceProvider<TProblemData, TImportType> instanceProvider,
+      IDataAnalysisProblemData problemData, string path)
+      where TProblemData : class, IDataAnalysisProblemData where TImportType : DataAnalysisImportType {
+      instanceProvider.ExportData((TProblemData)problemData, path);
+    }
+    #endregion
 
+    #region Undo / Redo
     private void undoButton_Click(object sender, EventArgs e) {
       Content.Data.Undo();
     }
+    #endregion
   }
 }

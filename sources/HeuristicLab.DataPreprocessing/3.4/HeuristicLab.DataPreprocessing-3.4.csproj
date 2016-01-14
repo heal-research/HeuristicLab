@@ -77,44 +77,38 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implementations\ScatterPlotContent.cs" />
-    <Compile Include="Implementations\DataCompletenessChartContent.cs" />
-    <Compile Include="Implementations\FilteredPreprocessingData.cs" />
-    <Compile Include="Implementations\ManipulationContent.cs" />
-    <Compile Include="Implementations\PreprocessingChartContent.cs" />
-    <Compile Include="Implementations\PreprocessingData.cs" />
-    <Compile Include="Implementations\PreprocessingDataTable.cs" />
-    <Compile Include="Interfaces\IViewChartShortcut.cs" />
-    <Compile Include="Interfaces\IFilteredPreprocessingData.cs" />
-    <Compile Include="Implementations\CorrelationMatrixContent.cs" />
+    <Compile Include="Content\ScatterPlotContent.cs" />
+    <Compile Include="Content\DataCompletenessChartContent.cs" />
+    <Compile Include="Data\FilteredPreprocessingData.cs" />
+    <Compile Include="Content\ManipulationContent.cs" />
+    <Compile Include="Content\PreprocessingChartContent.cs" />
+    <Compile Include="Data\PreprocessingData.cs" />
+    <Compile Include="Content\PreprocessingDataTable.cs" />
+    <Compile Include="Content\IViewChartShortcut.cs" />
+    <Compile Include="Data\IFilteredPreprocessingData.cs" />
+    <Compile Include="Content\CorrelationMatrixContent.cs" />
     <Compile Include="PreprocessingTransformator.cs" />
-    <Compile Include="Utils\DataPreprocessingChangedEvent.cs" />
-    <Compile Include="Implementations\Filter\ComparisonFilter.cs" />
-    <Compile Include="Implementations\Filter\IFilter.cs" />
-    <Compile Include="Implementations\ManipulationLogic.cs" />
-    <Compile Include="Interfaces\IPreprocessingData.cs" />
-    <Compile Include="Interfaces\IDataGridLogic.cs" />
-    <Compile Include="Implementations\FilterContent.cs" />
-    <Compile Include="Implementations\FilterLogic.cs" />
-    <Compile Include="Implementations\HistogramContent.cs" />
-    <Compile Include="Implementations\LineChartContent.cs" />
-    <Compile Include="Implementations\StatisticsContent.cs" />
-    <Compile Include="Implementations\TransformationContent.cs" />
-    <Compile Include="Interfaces\IFilterLogic.cs" />
-    <Compile Include="Interfaces\IManipulationLogic.cs" />
-    <Compile Include="Interfaces\ITransformationLogic.cs" />
-    <Compile Include="Interfaces\IViewShortcut.cs" />
+    <Compile Include="Data\DataPreprocessingChangedEvent.cs" />
+    <Compile Include="Logic\Filter\ComparisonFilter.cs" />
+    <Compile Include="Logic\Filter\IFilter.cs" />
+    <Compile Include="Logic\ManipulationLogic.cs" />
+    <Compile Include="Data\IPreprocessingData.cs" />
+    <Compile Include="Content\FilterContent.cs" />
+    <Compile Include="Logic\FilterLogic.cs" />
+    <Compile Include="Content\HistogramContent.cs" />
+    <Compile Include="Content\LineChartContent.cs" />
+    <Compile Include="Content\StatisticsContent.cs" />
+    <Compile Include="Content\TransformationContent.cs" />
+    <Compile Include="Content\IViewShortcut.cs" />
     <Compile Include="ProblemDataCreator.cs" />
     <None Include="Plugin.cs.frame" />
-    <Compile Include="Implementations\DataGridContent.cs" />
+    <Compile Include="Content\DataGridContent.cs" />
     <Compile Include="PreprocessingContext.cs" />
-    <Compile Include="Implementations\TransactionalPreprocessingData.cs" />
-    <Compile Include="Implementations\SearchLogic.cs" />
-    <Compile Include="Implementations\StatisticsLogic.cs" />
-    <Compile Include="Interfaces\IDataGridContent.cs" />
-    <Compile Include="Interfaces\ISearchLogic.cs" />
-    <Compile Include="Interfaces\IStatisticsLogic.cs" />
-    <Compile Include="Interfaces\ITransactionalPreprocessingData.cs" />
+    <Compile Include="Data\TransactionalPreprocessingData.cs" />
+    <Compile Include="Logic\SearchLogic.cs" />
+    <Compile Include="Logic\StatisticsLogic.cs" />
+    <Compile Include="Content\IDataGridContent.cs" />
+    <Compile Include="Data\ITransactionalPreprocessingData.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\AssemblyInfo.cs.frame" />
@@ -161,6 +155,7 @@
     <ProjectReference Include="..\..\HeuristicLab.Persistence\3.3\HeuristicLab.Persistence-3.3.csproj">
       <Project>{102BC7D3-0EF9-439C-8F6D-96FF0FDB8E1B}</Project>
       <Name>HeuristicLab.Persistence-3.3</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.PluginInfrastructure\3.3\HeuristicLab.PluginInfrastructure-3.3.csproj">
       <Project>{94186a6a-5176-4402-ae83-886557b53cca}</Project>

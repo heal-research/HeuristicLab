@@ -37,8 +37,8 @@ namespace HeuristicLab.DataPreprocessing {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Table; }
     }
 
-    public IManipulationLogic ManipulationLogic { get; private set; }
-    public IFilterLogic FilterLogic { get; private set; }
+    public ManipulationLogic ManipulationLogic { get; private set; }
+    public FilterLogic FilterLogic { get; private set; }
 
     public int Rows {
       get {
@@ -96,7 +96,7 @@ namespace HeuristicLab.DataPreprocessing {
     }
 
 
-    public DataGridContent(ITransactionalPreprocessingData preProcessingData, IManipulationLogic theManipulationLogic, IFilterLogic theFilterLogic) {
+    public DataGridContent(ITransactionalPreprocessingData preProcessingData, ManipulationLogic theManipulationLogic, FilterLogic theFilterLogic) {
       ManipulationLogic = theManipulationLogic;
       FilterLogic = theFilterLogic;
       PreProcessingData = preProcessingData;

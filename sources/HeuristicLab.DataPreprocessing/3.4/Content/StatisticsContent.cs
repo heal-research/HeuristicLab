@@ -27,8 +27,8 @@ namespace HeuristicLab.DataPreprocessing {
   [Item("Statistics", "Represents the statistics grid.")]
   public class StatisticsContent : Item, IViewShortcut {
 
-    private readonly IStatisticsLogic statisticsLogic;
-    public StatisticsContent(IStatisticsLogic theStatisticsLogic) {
+    private readonly StatisticsLogic statisticsLogic;
+    public StatisticsContent(StatisticsLogic theStatisticsLogic) {
       statisticsLogic = theStatisticsLogic;
     }
 
@@ -37,7 +37,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     }
 
-    public IStatisticsLogic StatisticsLogic {
+    public StatisticsLogic StatisticsLogic {
       get { return statisticsLogic; }
     }
 

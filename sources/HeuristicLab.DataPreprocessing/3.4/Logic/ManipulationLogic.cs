@@ -25,10 +25,10 @@ using System.Linq;
 using HeuristicLab.Data;
 
 namespace HeuristicLab.DataPreprocessing {
-  public class ManipulationLogic : IManipulationLogic {
+  public class ManipulationLogic {
     private readonly ITransactionalPreprocessingData preprocessingData;
-    private readonly IStatisticsLogic statisticsLogic;
-    private readonly ISearchLogic searchLogic;
+    private readonly StatisticsLogic statisticsLogic;
+    private readonly SearchLogic searchLogic;
 
     public IEnumerable<string> VariableNames {
       get { return preprocessingData.VariableNames; }
@@ -38,7 +38,7 @@ namespace HeuristicLab.DataPreprocessing {
       get { return preprocessingData; }
     }
 
-    public ManipulationLogic(ITransactionalPreprocessingData _prepocessingData, ISearchLogic theSearchLogic, IStatisticsLogic theStatisticsLogic) {
+    public ManipulationLogic(ITransactionalPreprocessingData _prepocessingData, SearchLogic theSearchLogic, StatisticsLogic theStatisticsLogic) {
       preprocessingData = _prepocessingData;
       searchLogic = theSearchLogic;
       statisticsLogic = theStatisticsLogic;
@@ -50,7 +50,7 @@ namespace HeuristicLab.DataPreprocessing {
       }
     }
 
-    public void ReplaceIndicesByAverageValue(IDictionary<int, IList<int>> cells, bool considerSelection) {
+    public void ReplaceIndicesByAverageValue(IDictionary<int, IList<int>> cells, bool considerSelection = false) {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
           if (preprocessingData.VariableHasType<double>(column.Key)) {
@@ -64,7 +64,7 @@ namespace HeuristicLab.DataPreprocessing {
       });
     }
 
-    public void ReplaceIndicesByMedianValue(IDictionary<int, IList<int>> cells, bool considerSelection) {
+    public void ReplaceIndicesByMedianValue(IDictionary<int, IList<int>> cells, bool considerSelection = false) {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
           if (preprocessingData.VariableHasType<double>(column.Key)) {
@@ -78,7 +78,7 @@ namespace HeuristicLab.DataPreprocessing {
       });
     }
 
-    public void ReplaceIndicesByRandomValue(IDictionary<int, IList<int>> cells, bool considerSelection) {
+    public void ReplaceIndicesByRandomValue(IDictionary<int, IList<int>> cells, bool considerSelection = false) {
       preprocessingData.InTransaction(() => {
         Random r = new Random();
 
@@ -208,7 +208,7 @@ namespace HeuristicLab.DataPreprocessing {
       return offset;
     }
 
-    public void ReplaceIndicesByMostCommonValue(IDictionary<int, IList<int>> cells, bool considerSelection) {
+    public void ReplaceIndicesByMostCommonValue(IDictionary<int, IList<int>> cells, bool considerSelection = false) {
       preprocessingData.InTransaction(() => {
         foreach (var column in cells) {
           if (preprocessingData.VariableHasType<double>(column.Key)) {

@@ -19,8 +19,21 @@
  */
 #endregion
 
-namespace HeuristicLab.DataPreprocessing {
-  public interface ITransformationLogic {
+using System.Collections.Generic;
+using HeuristicLab.Data;
 
+namespace HeuristicLab.DataPreprocessing {
+  public interface IDataGridContent : IStringConvertibleMatrix {
+    ITransactionalPreprocessingData PreProcessingData { get; }
+    ManipulationLogic ManipulationLogic { get; }
+    FilterLogic FilterLogic { get; }
+
+    IDictionary<int, IList<int>> Selection { get; set; }
+
+    void DeleteRows(IEnumerable<int> rows);
+    void DeleteColumn(int column);
+    bool Validate(string value, out string errorMessage, int columnIndex);
+
+    event DataPreprocessingChangedEventHandler Changed;
   }
 }

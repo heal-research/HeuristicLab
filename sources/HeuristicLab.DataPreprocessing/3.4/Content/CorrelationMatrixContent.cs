@@ -20,7 +20,6 @@
 #endregion
 
 using System.Drawing;
-using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Problems.DataAnalysis;
@@ -39,8 +38,7 @@ namespace HeuristicLab.DataPreprocessing {
 
     public DataAnalysisProblemData ProblemData {
       get {
-        // ToDo: avoid iterating
-        return Context.ExportPossibilities.Select(p => p.Value()).OfType<DataAnalysisProblemData>().Single();
+        return (DataAnalysisProblemData)Context.CreateNewProblemData();
         //var creator = new ProblemDataCreator(Context);
         //return (DataAnalysisProblemData)creator.CreateProblemData();
       }

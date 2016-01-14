@@ -28,19 +28,19 @@ namespace HeuristicLab.DataPreprocessing {
   [Item("Manipulation", "Represents the available manipulations on a data set.")]
   public class ManipulationContent : Item, IViewShortcut {
 
-    private IManipulationLogic manipulationLogic;
-    private ISearchLogic searchLogic;
-    private IFilterLogic filterLogic;
+    private ManipulationLogic manipulationLogic;
+    private SearchLogic searchLogic;
+    private FilterLogic filterLogic;
 
-    public IManipulationLogic ManipulationLogic { get { return manipulationLogic; } }
-    public ISearchLogic SearchLogic { get { return searchLogic; } }
-    public IFilterLogic FilterLogic { get { return filterLogic; } }
+    public ManipulationLogic ManipulationLogic { get { return manipulationLogic; } }
+    public SearchLogic SearchLogic { get { return searchLogic; } }
+    public FilterLogic FilterLogic { get { return filterLogic; } }
 
     public static new Image StaticItemImage {
       get { return HeuristicLab.Common.Resources.VSImageLibrary.Method; }
     }
 
-    public ManipulationContent(IManipulationLogic theManipulationLogic, ISearchLogic theSearchLogic, IFilterLogic theFilterLogic) {
+    public ManipulationContent(ManipulationLogic theManipulationLogic, SearchLogic theSearchLogic, FilterLogic theFilterLogic) {
       manipulationLogic = theManipulationLogic;
       searchLogic = theSearchLogic;
       filterLogic = theFilterLogic;

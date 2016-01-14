@@ -43,6 +43,9 @@ namespace HeuristicLab.DataPreprocessing {
   [PluginDependency("HeuristicLab.Optimizer", "3.3")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis", "3.4")]
   [PluginDependency("HeuristicLab.Problems.DataAnalysis.Views", "3.4")]
+  [PluginDependency("HeuristicLab.Problems.Instances", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Instances.DataAnalysis", "3.3")]
+  [PluginDependency("HeuristicLab.Problems.Instances.DataAnalysis.Views", "3.3")]
   [PluginDependency("HeuristicLab.Visualization.ChartControlsExtensions", "3.3")]
   public class HeuristicLabDataPreprocessingViewPlugin : PluginBase {
   }
