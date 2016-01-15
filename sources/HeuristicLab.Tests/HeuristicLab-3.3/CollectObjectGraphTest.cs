@@ -46,6 +46,18 @@ namespace HeuristicLab.Tests {
     [TestCategory("General")]
     [TestCategory("Essential")]
     [TestProperty("Time", "medium")]
+    public void TestCount() {
+      GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize(@"Test Resources\GA_SymbReg.hl");
+      var objects = ga.GetObjectGraphObjects().ToList();
+
+      // Should be 3982, but count may change slightly as members are added or removed
+      Assert.IsTrue(objects.Count > 1, "Number of objects in the object graph seems to small.");
+    }
+
+    [TestMethod]
+    [TestCategory("General")]
+    [TestCategory("Essential")]
+    [TestProperty("Time", "medium")]
     public void CollectGASample() {
       GeneticAlgorithm ga = (GeneticAlgorithm)XmlParser.Deserialize(@"Test Resources\GA_SymbReg.hl");
 

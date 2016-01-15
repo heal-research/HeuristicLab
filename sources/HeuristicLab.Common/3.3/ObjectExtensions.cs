@@ -77,7 +77,7 @@ namespace HeuristicLab.Common {
              type == typeof(DateTime[]) ||
              typeof(Delegate).IsAssignableFrom(type) ||
              typeof(Pointer).IsAssignableFrom(type) ||
-             type.Namespace != "System.Reflection.Emit" ||
+             type.Namespace == "System.Reflection.Emit" ||
              (type.HasElementType && ExcludeType(type.GetElementType()));
     }
 
