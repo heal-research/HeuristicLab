@@ -178,7 +178,7 @@ namespace HeuristicLab.Services.OKB.RunCreation {
         throw new FaultException<UnknownCharacteristicType>(new UnknownCharacteristicType(ex.Message));
       }
 
-      var entity = okb.CharacteristicValues.SingleOrDefault(x => x.Characteristic.Name == value.Name && x.Characteristic.Type == characteristicType);
+      var entity = problem.CharacteristicValues.SingleOrDefault(x => x.Characteristic.Name == value.Name && x.Characteristic.Type == characteristicType);
       if (entity != null) {
         // Update
         switch (characteristicType) {
