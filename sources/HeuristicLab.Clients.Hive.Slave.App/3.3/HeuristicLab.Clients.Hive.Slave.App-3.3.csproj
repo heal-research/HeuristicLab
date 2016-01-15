@@ -172,14 +172,8 @@ $SolutionDir/PreBuildEvent.sh
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>set Path=%25Path%25;$(ProjectDir);$(SolutionDir)
-set ProjectDir=$(ProjectDir)
-set SolutionDir=$(SolutionDir)
-set Outdir=$(Outdir)
-set Platform=$(PlatformName)
-set Configuration=$(ConfigurationName)
-
-call "$(SolutionDir)MergeConfigs.cmd"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
