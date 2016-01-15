@@ -38,9 +38,11 @@ namespace HeuristicLab.DataPreprocessing {
 
     public DataAnalysisProblemData ProblemData {
       get {
-        return (DataAnalysisProblemData)Context.CreateNewProblemData();
-        //var creator = new ProblemDataCreator(Context);
-        //return (DataAnalysisProblemData)creator.CreateProblemData();
+        var problemData = (DataAnalysisProblemData)Context.CreateNewProblemData();
+        foreach (var input in problemData.InputVariables)
+          problemData.InputVariables.SetItemCheckedState(input, true);
+        // CorrelationView hides non-input columns per default
+        return problemData;
       }
     }
 

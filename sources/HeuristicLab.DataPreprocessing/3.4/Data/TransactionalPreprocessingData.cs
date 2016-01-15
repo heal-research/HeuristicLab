@@ -215,17 +215,6 @@ namespace HeuristicLab.DataPreprocessing {
       return columnIndices.All(x => VariableHasType<string>(x));
     }
 
-    public override void DeleteRowsWithIndices(IEnumerable<int> rows) {
-      SaveSnapshot(DataPreprocessingChangedEventType.AddRow, -1, -1);
-      foreach (int rowIndex in rows.OrderByDescending(x => x)) {
-        foreach (IList column in variableValues) {
-          column.RemoveAt(rowIndex);
-        }
-      }
-      if (!IsInTransaction)
-        OnChanged(DataPreprocessingChangedEventType.DeleteRow, -1, -1);
-      ResetPartitions();
-    }
 
     public override void InsertRow(int rowIndex) {
       SaveSnapshot(DataPreprocessingChangedEventType.DeleteRow, -1, rowIndex);
@@ -233,19 +222,65 @@ namespace HeuristicLab.DataPreprocessing {
         Type type = column.GetType().GetGenericArguments()[0];
         column.Insert(rowIndex, type.IsValueType ? Activator.CreateInstance(type) : null);
       }
+      if (TrainingPartition.Start <= rowIndex && rowIndex <= TrainingPartition.End) {
+        TrainingPartition.End++;
+        if (TrainingPartition.End <= TestPartition.Start) {
+          TestPartition.Start++;
+          TestPartition.End++;
+        }
+      } else if (TestPartition.Start <= rowIndex && rowIndex <= TestPartition.End) {
+        TestPartition.End++;
+        if (TestPartition.End <= TrainingPartition.Start) {
+          TestPartition.Start++;
+          TestPartition.End++;
+        }
+      }
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.AddRow, -1, rowIndex);
-      ResetPartitions();
     }
-
     public override void DeleteRow(int rowIndex) {
       SaveSnapshot(DataPreprocessingChangedEventType.AddRow, -1, rowIndex);
       foreach (IList column in variableValues) {
         column.RemoveAt(rowIndex);
       }
+      if (TrainingPartition.Start <= rowIndex && rowIndex <= TrainingPartition.End) {
+        TrainingPartition.End--;
+        if (TrainingPartition.End <= TestPartition.Start) {
+          TestPartition.Start--;
+          TestPartition.End--;
+        }
+      } else if (TestPartition.Start <= rowIndex && rowIndex <= TestPartition.End) {
+        TestPartition.End--;
+        if (TestPartition.End <= TrainingPartition.Start) {
+          TestPartition.Start--;
+          TestPartition.End--;
+        }
+      }
       if (!IsInTransaction)
         OnChanged(DataPreprocessingChangedEventType.DeleteRow, -1, rowIndex);
-      ResetPartitions();
+    }
+    public override void DeleteRowsWithIndices(IEnumerable<int> rows) {
+      SaveSnapshot(DataPreprocessingChangedEventType.AddRow, -1, -1);
+      foreach (int rowIndex in rows.OrderByDescending(x => x)) {
+        foreach (IList column in variableValues) {
+          column.RemoveAt(rowIndex);
+        }
+        if (TrainingPartition.Start <= rowIndex && rowIndex <= TrainingPartition.End) {
+          TrainingPartition.End--;
+          if (TrainingPartition.End <= TestPartition.Start) {
+            TestPartition.Start--;
+            TestPartition.End--;
+          }
+        } else if (TestPartition.Start <= rowIndex && rowIndex <= TestPartition.End) {
+          TestPartition.End--;
+          if (TestPartition.End <= TrainingPartition.Start) {
+            TestPartition.Start--;
+            TestPartition.End--;
+          }
+        }
+      }
+      if (!IsInTransaction)
+        OnChanged(DataPreprocessingChangedEventType.DeleteRow, -1, -1);
     }
 
     public override void InsertColumn<T>(string variableName, int columnIndex) {
@@ -307,13 +342,6 @@ namespace HeuristicLab.DataPreprocessing {
       var listeners = SelectionChanged;
       if (listeners != null) listeners(this, EventArgs.Empty);
     }
-
-
-    private void ResetPartitions() {
-      TrainingPartition = new IntRange();
-      TestPartition = new IntRange();
-    }
-
     #endregion
 
     #region TransactionalPreprocessingData members

@@ -744,7 +744,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
                               select new Tuple<double, double>(g.First(), g.Count())).ToList();
 
       //  shift the chart to the left so the bars are placed on the intervals
-      if (Classification != null || valueFrequencies.First().Item1 < doubleRange.First()) {
+      if (Classification != null || (valueFrequencies.Any() && valueFrequencies.First().Item1 < doubleRange.First())) {
         series.Points.Add(new DataPoint(min - intervalWidth, 0));
         series.Points.Add(new DataPoint(max + intervalWidth, 0));
       }
