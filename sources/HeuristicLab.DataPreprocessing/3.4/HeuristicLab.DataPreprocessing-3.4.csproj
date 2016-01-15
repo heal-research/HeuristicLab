@@ -107,7 +107,6 @@
     <Compile Include="Data\TransactionalPreprocessingData.cs" />
     <Compile Include="Logic\SearchLogic.cs" />
     <Compile Include="Logic\StatisticsLogic.cs" />
-    <Compile Include="Content\IDataGridContent.cs" />
     <Compile Include="Data\ITransactionalPreprocessingData.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

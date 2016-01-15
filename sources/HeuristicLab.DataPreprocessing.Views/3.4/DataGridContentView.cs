@@ -30,7 +30,7 @@ using HeuristicLab.MainForm;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   [View("Data Grid Content View")]
-  [Content(typeof(IDataGridContent), true)]
+  [Content(typeof(DataGridContent), true)]
   public partial class DataGridContentView : StringConvertibleMatrixView {
 
     private bool isSearching = false;
@@ -41,8 +41,8 @@ namespace HeuristicLab.DataPreprocessing.Views {
     private ComparisonOperation currentComparisonOperation;
     private Tuple<int, int> currentCell;
 
-    public new IDataGridContent Content {
-      get { return (IDataGridContent)base.Content; }
+    public new DataGridContent Content {
+      get { return (DataGridContent)base.Content; }
       set { base.Content = value; }
     }
 
@@ -144,21 +144,42 @@ namespace HeuristicLab.DataPreprocessing.Views {
 
     protected override void PasteValuesToDataGridView() {
       string[,] values = SplitClipboardString(Clipboard.GetText());
+      if (values.Length == 0) return;
       int rowIndex = 0;
       int columnIndex = 0;
       if (dataGridView.CurrentCell != null) {
         rowIndex = dataGridView.CurrentCell.RowIndex;
         columnIndex = dataGridView.CurrentCell.ColumnIndex;
       }
-      if (Content.Rows < values.GetLength(1) + rowIndex) Content.Rows = values.GetLength(1) + rowIndex;
-      if (Content.Columns < values.GetLength(0) + columnIndex) Content.Columns = values.GetLength(0) + columnIndex;
+
+      bool containsHeader = false;
+      var firstRow = Enumerable.Range(0, values.GetLength(0)).Select(col => values[col, 0]).ToList();
+      if ((Content.Selection.Values.Sum(s => s.Count) == Content.Rows * Content.Columns)
+          || (rowIndex == 0 && columnIndex == 0 && Content.Rows <= values.GetLength(1) && Content.Columns <= values.GetLength(0))) {
+        // All is selected -or- top left selected and everything will be replaced
+        double temp;
+        containsHeader = !firstRow.All(string.IsNullOrEmpty) && firstRow.Any(r => !double.TryParse(r, out temp));
+        if (containsHeader)
+          rowIndex = columnIndex = 0;
+      }
+
+      int newRows = values.GetLength(1) + rowIndex - (containsHeader ? 1 : 0);
+      int newColumns = values.GetLength(0) + columnIndex;
+      if (Content.Rows < newRows) Content.Rows = newRows;
+      if (Content.Columns < newColumns) Content.Columns = newColumns;
 
       ReplaceTransaction(() => {
         Content.PreProcessingData.InTransaction(() => {
-          for (int row = 0; row < values.GetLength(1); row++) {
+          for (int row = containsHeader ? 1 : 0; row < values.GetLength(1); row++) {
             for (int col = 0; col < values.GetLength(0); col++) {
-              Content.SetValue(values[col, row], row + rowIndex, col + columnIndex);
+              Content.SetValue(values[col, row], row + rowIndex - (containsHeader ? 1 : 0), col + columnIndex);
             }
+          }
+          if (containsHeader) {
+            for (int i = 0; i < firstRow.Count; i++)
+              if (string.IsNullOrWhiteSpace(firstRow[i]))
+                firstRow[i] = string.Format("<{0}>", i);
+            Content.PreProcessingData.RenameColumns(firstRow);
           }
         });
       });

@@ -25,11 +25,12 @@ using System.Drawing;
 using System.Linq;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.DataPreprocessing {
 
   [Item("DataGrid", "Represents a data grid.")]
-  public class DataGridContent : Item, IViewShortcut, IDataGridContent {
+  public class DataGridContent : Item, IStringConvertibleMatrix, IViewShortcut {
 
     public ITransactionalPreprocessingData PreProcessingData { get; private set; }
 
