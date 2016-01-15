@@ -87,28 +87,5 @@ namespace HeuristicLab.Services.OKB.Query {
       if (source == null) return null;
       return new DT.ValueName() { Id = source.Id, Category = source.Category, Name = source.Name };
     }
-
-    public static DT.Value ToDto(DA.CharacteristicValue source) {
-      if (source == null) return null;
-      if (source.Characteristic.Type == DA.CharacteristicType.Bool) {
-        return new DT.BoolValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.BoolValue.GetValueOrDefault() };
-      } else if (source.Characteristic.Type == DA.CharacteristicType.Int) {
-        return new DT.IntValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.IntValue.GetValueOrDefault() };
-      } else if (source.Characteristic.Type == DA.CharacteristicType.TimeSpan) {
-        return new DT.TimeSpanValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.LongValue.GetValueOrDefault() };
-      } else if (source.Characteristic.Type == DA.CharacteristicType.Long) {
-        return new DT.LongValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.LongValue.GetValueOrDefault() };
-      } else if (source.Characteristic.Type == DA.CharacteristicType.Float) {
-        return new DT.FloatValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.FloatValue.GetValueOrDefault() };
-      } else if (source.Characteristic.Type == DA.CharacteristicType.Double) {
-        return new DT.DoubleValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.DoubleValue.GetValueOrDefault() };
-      } else if (source.Characteristic.Type == DA.CharacteristicType.Percent) {
-        return new DT.PercentValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.DoubleValue.GetValueOrDefault() };
-      } else if (source.Characteristic.Type == DA.CharacteristicType.String) {
-        return new DT.StringValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.StringValue };
-      } else {
-        throw new ArgumentException("Unknown characteristic type.", "source");
-      }
-    }
   }
 }

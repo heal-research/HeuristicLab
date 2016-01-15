@@ -69,12 +69,35 @@ namespace HeuristicLab.Services.OKB.RunCreation {
       return entity;
     }
 
-    public static DA.CharacteristicValue ToEntity(DT.Value source, DA.OKBDataContext okb, DA.Problem problem, string characteristicName, DA.CharacteristicType type) {
-      if (okb == null || problem == null || string.IsNullOrEmpty(characteristicName) || source == null) throw new ArgumentNullException();
+    public static DT.Value ToDto(DA.CharacteristicValue source) {
+      if (source == null) return null;
+      if (source.Characteristic.Type == DA.CharacteristicType.Bool) {
+        return new DT.BoolValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.BoolValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Int) {
+        return new DT.IntValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.IntValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.TimeSpan) {
+        return new DT.TimeSpanValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.LongValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Long) {
+        return new DT.LongValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.LongValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Float) {
+        return new DT.FloatValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.FloatValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Double) {
+        return new DT.DoubleValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.DoubleValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.Percent) {
+        return new DT.PercentValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.DoubleValue.GetValueOrDefault() };
+      } else if (source.Characteristic.Type == DA.CharacteristicType.String) {
+        return new DT.StringValue { Name = source.Characteristic.Name, DataType = Convert.ToDto(source.DataType), Value = source.StringValue };
+      } else {
+        throw new ArgumentException("Unknown characteristic type.", "source");
+      }
+    }
+
+    public static DA.CharacteristicValue ToEntity(DT.Value source, DA.OKBDataContext okb, DA.Problem problem, DA.CharacteristicType type) {
+      if (okb == null || problem == null || source == null || string.IsNullOrEmpty(source.Name)) throw new ArgumentNullException();
       var entity = new DA.CharacteristicValue();
       entity.Problem = problem;
       entity.DataType = Convert.ToEntity(source.DataType, okb);
-      entity.Characteristic = Convert.ToEntity(characteristicName, type, okb);
+      entity.Characteristic = Convert.ToEntity(source.Name, type, okb);
       if (source is DT.BoolValue) {
         entity.BoolValue = ((DT.BoolValue)source).Value;
       } else if (source is DT.IntValue) {
