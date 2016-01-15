@@ -43,9 +43,6 @@ namespace HeuristicLab.DataPreprocessing {
     public event EventHandler Reset;
 
     #region Constructors
-    public PreprocessingContext()
-      : this(new RegressionProblemData()) {
-    }
     public PreprocessingContext(IDataAnalysisProblemData problemData, IItem source = null)
       : base("Data Preprocessing") {
       if (problemData == null) throw new ArgumentNullException("problemData");

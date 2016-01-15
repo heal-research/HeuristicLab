@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimizer;
+using HeuristicLab.Problems.DataAnalysis;
 
 namespace HeuristicLab.DataPreprocessing.Views {
   public class DataPreprocessingMenuItem {
@@ -41,7 +42,7 @@ namespace HeuristicLab.DataPreprocessing.Views {
       }
 
       public override void Execute() {
-        MainFormManager.MainForm.ShowContent(new PreprocessingContext());
+        MainFormManager.MainForm.ShowContent(new PreprocessingContext(new RegressionProblemData()));
       }
 
       public override Keys ShortCutKeys {
