@@ -23,6 +23,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -140,7 +141,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     // determines the number of newline characters in the first 64KB to guess the number of rows for a file
     private void EstimateNumberOfLines(string fileName) {
       var len = new System.IO.FileInfo(fileName).Length;
-      var buf = new char[64 * 1024];
+      var buf = new char[1024 * 1024];
       using (var reader = new StreamReader(fileName)) {
         reader.ReadBlock(buf, 0, buf.Length);
       }
@@ -232,6 +233,9 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
                     "Line " + tokenizer.CurrentLineNumber + " has more columns.", "",
                 tokenizer.CurrentLineNumber);
             }
+            if (!IsColumnTypeCompatible(values[colIdx], type)) {
+              values[colIdx] = ConvertToStringColumn(values[colIdx]);
+            }
             // add the value to the column
             AddValue(type, values[colIdx++], strVal, dblVal, dateTimeVal);
           }
@@ -264,54 +268,68 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     }
 
     #region type-dependent dispatch
+    private bool IsColumnTypeCompatible(IList list, TokenTypeEnum tokenType) {
+      return (list is List<string>) || // all tokens can be added to a string list
+             (tokenType == TokenTypeEnum.Missing) || // empty entries are allowed in all columns
+             (tokenType == TokenTypeEnum.Double && list is List<double>) ||
+             (tokenType == TokenTypeEnum.DateTime && list is List<DateTime>);
+    }
+
+    // all columns are converted to string columns when we find an non-empty value that has incorrect type
+    private IList ConvertToStringColumn(IList list) {
+      var dblL = list as List<double>;
+      if (dblL != null) {
+        var l = new List<string>(dblL.Capacity);
+        l.AddRange(dblL.Select(dbl => dbl.ToString()));
+        return l;
+      }
+
+      var dtL = list as List<DateTime>;
+      if (dtL != null) {
+        var l = new List<string>(dtL.Capacity);
+        l.AddRange(dtL.Select(dbl => dbl.ToString()));
+        return l;
+      }
+
+      if (list is List<string>) return list;
+
+      throw new InvalidProgramException(string.Format("Cannot convert column of type {0} to string column", list.GetType()));
+    }
+
     private void AddValue(TokenTypeEnum type, IList list, string strVal, double dblVal, DateTime dateTimeVal) {
-      switch (type) {
-        case TokenTypeEnum.Double:
-          AddDoubleToList(list, dblVal);
-          break;
-        case TokenTypeEnum.String:
-          AddStringToList(list, strVal);
-          break;
-        case TokenTypeEnum.DateTime:
-          AddDateTimeToList(list, dateTimeVal);
-          break;
-        default:
-          throw new InvalidOperationException();
-      }
-    }
-
-    private void AddDoubleToList(IList list, double dblVal) {
       var dblList = list as List<double>;
-      if (dblList != null) dblList.Add(dblVal);
-      else {
-        var strList = list as List<string>;
-        if (strList != null) strList.Add(dblVal.ToString());
-        else list.Add(null);
+      if (dblList != null) {
+        AddValue(type, dblList, dblVal);
+        return;
       }
-    }
 
-    private void AddStringToList(IList list, string strVal) {
       var strList = list as List<string>;
-      if (strList != null) strList.Add(strVal);
-      else {
-        var dblList = list as List<double>;
-        if (dblList != null) dblList.Add(double.NaN);
-        else list.Add(null);
+      if (strList != null) {
+        AddValue(type, strList, strVal);
+        return;
       }
+      var dtList = list as List<DateTime>;
+      if (dtList != null) {
+        AddValue(type, dtList, dateTimeVal);
+        return;
+      }
+
+      list.Add(strVal); // assumes List<object>
     }
 
-    private void AddDateTimeToList(IList list, DateTime dateTimeVal) {
-      var dateTimeList = list as List<DateTime>;
-      if (dateTimeList != null) dateTimeList.Add(dateTimeVal);
-      else {
-        var dblList = list as List<double>;
-        if (dblList != null) dblList.Add(double.NaN);
-        else {
-          var strList = list as List<string>;
-          if (strList != null) strList.Add(dateTimeVal.ToString());
-          else list.Add(null);
-        }
-      }
+    private void AddValue(TokenTypeEnum type, List<double> list, double dblVal) {
+      Contract.Assert(type == TokenTypeEnum.Missing || type == TokenTypeEnum.Double);
+      list.Add(type == TokenTypeEnum.Missing ? double.NaN : dblVal);
+    }
+
+    private void AddValue(TokenTypeEnum type, List<string> list, string strVal) {
+      // assumes that strVal is always set to the original token read from the input file
+      list.Add(type == TokenTypeEnum.Missing ? string.Empty : strVal);
+    }
+
+    private void AddValue(TokenTypeEnum type, List<DateTime> list, DateTime dtVal) {
+      Contract.Assert(type == TokenTypeEnum.Missing || type == TokenTypeEnum.DateTime);
+      list.Add(type == TokenTypeEnum.Missing ? DateTime.MinValue : dtVal);
     }
 
     private IList CreateList(TokenTypeEnum type, int estimatedNumberOfLines) {
@@ -319,6 +337,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         case TokenTypeEnum.String:
           return new List<string>(estimatedNumberOfLines);
         case TokenTypeEnum.Double:
+        case TokenTypeEnum.Missing: // assume double columns
           return new List<double>(estimatedNumberOfLines);
         case TokenTypeEnum.DateTime:
           return new List<DateTime>(estimatedNumberOfLines);
@@ -380,7 +399,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
             dateTimeFormatInfo = DateTimeFormatInfo.InvariantInfo;
             separator = ',';
           } else {
-            char[] disallowedSeparators = new char[] { ',' };
+            char[] disallowedSeparators = new char[] { ',' }; // n. def. contains a space so ' ' should be disallowed to, however existing unit tests would fail
             // German format (real values)
             numberFormat = NumberFormatInfo.GetInstance(new CultureInfo("de-DE"));
             dateTimeFormatInfo = DateTimeFormatInfo.GetInstance(new CultureInfo("de-DE"));
@@ -388,7 +407,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
               .Except(disallowedSeparators)
               .Where(c => OccurrencesOf(charCounts, c) > 10)
               .OrderBy(c => -OccurrencesOf(charCounts, c))
-              .DefaultIfEmpty(' ')
+              .DefaultIfEmpty(' ') 
               .First();
           }
         } else {
@@ -411,7 +430,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     #region tokenizer
     // the tokenizer reads full lines and returns separated tokens in the line as well as a terminating end-of-line character
     internal enum TokenTypeEnum {
-      NewLine, String, Double, DateTime
+      NewLine, String, Double, DateTime, Missing
     }
 
     internal class Tokenizer {
@@ -504,6 +523,8 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
               } else if (DateTime.TryParse(tok, dateTimeFormatInfo, DateTimeStyles.None, out dateTimeValue)) {
                 type = TokenTypeEnum.DateTime;
                 dateTimeVals[i] = dateTimeValue;
+              } else if (string.IsNullOrWhiteSpace(tok)) {
+                type = TokenTypeEnum.Missing;
               }
 
               // couldn't parse the token as an int or float number or datetime value so return a string token
