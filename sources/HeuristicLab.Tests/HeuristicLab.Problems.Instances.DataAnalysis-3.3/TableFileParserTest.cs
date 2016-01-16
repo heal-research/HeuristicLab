@@ -20,6 +20,8 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -583,6 +585,83 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.AreEqual((double)parser.Values[3][0], 3);
+      } finally {
+        File.Delete(tempFileName);
+      }
+    }
+
+
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
+    public void ParseWithColumnTypeConversionDE() {
+      // If first entry of a column can be parsed as a double we assume all values are doubles.
+      // However, if any of the following entries cannot be parsed as a double we convert the whole column to a string column.
+      // Special care needs to be taken with missing values, NaN (n.def.) and infinity values.
+      // We only support DE-DE and InvariantCulture number formats
+      string tempFileName = Path.GetTempFileName();
+      WriteToFile(tempFileName,
+      "str\tdbl\tdbl\tdbl" + Environment.NewLine +
+      "1,3\t1,3\t0\t3" + Environment.NewLine +
+      "1,3\t\t0\t0" + Environment.NewLine +
+      "s\tn. def.\t0\t0" + Environment.NewLine +
+      "s\t+unendlich\t0\t0" + Environment.NewLine +
+      "s\t-unendlich\t0\t0" + Environment.NewLine +
+      "s\t0\t0\t0");
+      TableFileParser parser = new TableFileParser();
+      try {
+        parser.Parse(tempFileName,
+          CultureInfo.GetCultureInfo("DE-DE").NumberFormat,
+          CultureInfo.GetCultureInfo("DE-DE").DateTimeFormat,
+          '\t',
+          parser.AreColumnNamesInFirstLine(tempFileName));
+        Assert.AreEqual(6, parser.Rows);
+        Assert.AreEqual(4, parser.Columns);
+        Assert.IsTrue(parser.Values[0] is List<string>);
+        Assert.IsTrue(parser.Values[1] is List<double>);
+        Assert.IsTrue(parser.Values[2] is List<double>);
+        Assert.IsTrue(parser.Values[3] is List<double>);
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][1])); // missing value
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][2]));
+        Assert.IsTrue(double.IsPositiveInfinity((double)parser.Values[1][3])); // NOTE: in DE-DE NumberFormat just "unendlich" is not allowed (compare with InvariantCulture)
+        Assert.IsTrue(double.IsNegativeInfinity((double)parser.Values[1][4])); 
+      } finally {
+        File.Delete(tempFileName);
+      }
+    }
+
+    [TestMethod]
+    [TestCategory("Problems.Instances")]
+    [TestProperty("Time", "short")]
+    public void ParseWithColumnTypeConversionInvariant() {
+      // see ParseWithColumnTypeConversionDE above
+      // same routine only using invariant culture
+      string tempFileName = Path.GetTempFileName();
+      WriteToFile(tempFileName,
+      @"str,dbl,dbl,dbl
+1.3,1.3,0,3
+1.3,,0,0
+s,NaN,0,0
+s,Infinity,0,0
+s,-Infinity,0,0
+s,0,0,0");
+      TableFileParser parser = new TableFileParser();
+      try {
+        parser.Parse(tempFileName,
+          CultureInfo.InvariantCulture.NumberFormat,
+          CultureInfo.InvariantCulture.DateTimeFormat,
+          ',',
+          parser.AreColumnNamesInFirstLine(tempFileName));
+        Assert.AreEqual(6, parser.Rows);
+        Assert.AreEqual(4, parser.Columns);
+        Assert.IsTrue(parser.Values[0] is List<string>);
+        Assert.IsTrue(parser.Values[1] is List<double>);
+        Assert.IsTrue(parser.Values[2] is List<double>);
+        Assert.IsTrue(parser.Values[3] is List<double>);
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][1])); // missing value
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][2])); 
+        Assert.IsTrue(double.IsPositiveInfinity((double)parser.Values[1][3])); // NOTE: in InvariantCulture +Infinity is not allowed (compare with DE-DE)
+        Assert.IsTrue(double.IsNegativeInfinity((double)parser.Values[1][4]));
       } finally {
         File.Delete(tempFileName);
       }
