@@ -48,8 +48,17 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.problemLabel = new System.Windows.Forms.Label();
       this.refreshButton = new System.Windows.Forms.Button();
       this.cloneProblemButton = new System.Windows.Forms.Button();
+      this.tabControl = new System.Windows.Forms.TabControl();
+      this.parametersTabPage = new System.Windows.Forms.TabPage();
+      this.characteristicsTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
+      this.downloadCharacteristicsButton = new System.Windows.Forms.Button();
+      this.uploadCharacteristicsButton = new System.Windows.Forms.Button();
+      this.characteristicsMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+      this.tabControl.SuspendLayout();
+      this.parametersTabPage.SuspendLayout();
+      this.characteristicsTabPage.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -73,7 +82,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // problemComboBox
       // 
       this.problemComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.problemComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.problemComboBox.FormattingEnabled = true;
       this.problemComboBox.Location = new System.Drawing.Point(72, 0);
@@ -115,26 +124,97 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.cloneProblemButton.UseVisualStyleBackColor = true;
       this.cloneProblemButton.Click += new System.EventHandler(this.cloneProblemButton_Click);
       // 
+      // tabControl
+      // 
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl.Controls.Add(this.parametersTabPage);
+      this.tabControl.Controls.Add(this.characteristicsTabPage);
+      this.tabControl.Location = new System.Drawing.Point(6, 53);
+      this.tabControl.Name = "tabControl";
+      this.tabControl.SelectedIndex = 0;
+      this.tabControl.Size = new System.Drawing.Size(700, 340);
+      this.tabControl.TabIndex = 8;
+      // 
+      // parametersTabPage
+      // 
+      this.parametersTabPage.Controls.Add(this.parameterCollectionView);
+      this.parametersTabPage.Location = new System.Drawing.Point(4, 22);
+      this.parametersTabPage.Name = "parametersTabPage";
+      this.parametersTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.parametersTabPage.Size = new System.Drawing.Size(692, 314);
+      this.parametersTabPage.TabIndex = 0;
+      this.parametersTabPage.Text = "Parameters";
+      this.parametersTabPage.UseVisualStyleBackColor = true;
+      // 
+      // characteristicsTabPage
+      // 
+      this.characteristicsTabPage.Controls.Add(this.characteristicsMatrixView);
+      this.characteristicsTabPage.Controls.Add(this.uploadCharacteristicsButton);
+      this.characteristicsTabPage.Controls.Add(this.downloadCharacteristicsButton);
+      this.characteristicsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.characteristicsTabPage.Name = "characteristicsTabPage";
+      this.characteristicsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.characteristicsTabPage.Size = new System.Drawing.Size(692, 314);
+      this.characteristicsTabPage.TabIndex = 1;
+      this.characteristicsTabPage.Text = "Characteristics";
+      this.characteristicsTabPage.UseVisualStyleBackColor = true;
+      // 
       // parameterCollectionView
       // 
       this.parameterCollectionView.AllowEditingOfHiddenParameters = false;
-      this.parameterCollectionView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
       this.parameterCollectionView.Caption = "ParameterCollection View";
       this.parameterCollectionView.Content = null;
-      this.parameterCollectionView.Location = new System.Drawing.Point(0, 53);
+      this.parameterCollectionView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.parameterCollectionView.Location = new System.Drawing.Point(3, 3);
       this.parameterCollectionView.Name = "parameterCollectionView";
-      this.parameterCollectionView.ReadOnly = false;
-      this.parameterCollectionView.Size = new System.Drawing.Size(706, 340);
-      this.parameterCollectionView.TabIndex = 7;
+      this.parameterCollectionView.ReadOnly = true;
+      this.parameterCollectionView.ShowDetails = true;
+      this.parameterCollectionView.Size = new System.Drawing.Size(686, 308);
+      this.parameterCollectionView.TabIndex = 8;
+      // 
+      // downloadCharacteristicsButton
+      // 
+      this.downloadCharacteristicsButton.Location = new System.Drawing.Point(6, 6);
+      this.downloadCharacteristicsButton.Name = "downloadCharacteristicsButton";
+      this.downloadCharacteristicsButton.Size = new System.Drawing.Size(26, 23);
+      this.downloadCharacteristicsButton.TabIndex = 0;
+      this.downloadCharacteristicsButton.Text = "Download";
+      this.downloadCharacteristicsButton.UseVisualStyleBackColor = true;
+      this.downloadCharacteristicsButton.Click += new System.EventHandler(this.downloadCharacteristicsButton_Click);
+      // 
+      // uploadCharacteristicsButton
+      // 
+      this.uploadCharacteristicsButton.Location = new System.Drawing.Point(38, 6);
+      this.uploadCharacteristicsButton.Name = "uploadCharacteristicsButton";
+      this.uploadCharacteristicsButton.Size = new System.Drawing.Size(26, 23);
+      this.uploadCharacteristicsButton.TabIndex = 0;
+      this.uploadCharacteristicsButton.Text = "Upload";
+      this.uploadCharacteristicsButton.UseVisualStyleBackColor = true;
+      this.uploadCharacteristicsButton.Click += new System.EventHandler(this.uploadCharacteristicsButton_Click);
+      // 
+      // characteristicsMatrixView
+      // 
+      this.characteristicsMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.characteristicsMatrixView.Caption = "StringConvertibleMatrix View";
+      this.characteristicsMatrixView.Content = null;
+      this.characteristicsMatrixView.Location = new System.Drawing.Point(6, 35);
+      this.characteristicsMatrixView.Name = "characteristicsMatrixView";
+      this.characteristicsMatrixView.ReadOnly = false;
+      this.characteristicsMatrixView.ShowRowsAndColumnsTextBox = false;
+      this.characteristicsMatrixView.ShowStatisticalInformation = false;
+      this.characteristicsMatrixView.Size = new System.Drawing.Size(680, 273);
+      this.characteristicsMatrixView.TabIndex = 1;
       // 
       // OKBProblemView
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.tabControl);
       this.Controls.Add(this.problemComboBox);
-      this.Controls.Add(this.parameterCollectionView);
       this.Controls.Add(this.problemLabel);
       this.Controls.Add(this.cloneProblemButton);
       this.Controls.Add(this.refreshButton);
@@ -143,12 +223,15 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.Controls.SetChildIndex(this.refreshButton, 0);
       this.Controls.SetChildIndex(this.cloneProblemButton, 0);
       this.Controls.SetChildIndex(this.problemLabel, 0);
-      this.Controls.SetChildIndex(this.parameterCollectionView, 0);
+      this.Controls.SetChildIndex(this.problemComboBox, 0);
+      this.Controls.SetChildIndex(this.tabControl, 0);
       this.Controls.SetChildIndex(this.nameTextBox, 0);
       this.Controls.SetChildIndex(this.nameLabel, 0);
       this.Controls.SetChildIndex(this.infoLabel, 0);
-      this.Controls.SetChildIndex(this.problemComboBox, 0);
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+      this.tabControl.ResumeLayout(false);
+      this.parametersTabPage.ResumeLayout(false);
+      this.characteristicsTabPage.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -160,7 +243,13 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private System.Windows.Forms.Label problemLabel;
     private System.Windows.Forms.Button refreshButton;
     private System.Windows.Forms.Button cloneProblemButton;
-    private HeuristicLab.Core.Views.ParameterCollectionView parameterCollectionView;
+    private System.Windows.Forms.TabControl tabControl;
+    private System.Windows.Forms.TabPage parametersTabPage;
+    private System.Windows.Forms.TabPage characteristicsTabPage;
+    private Core.Views.ParameterCollectionView parameterCollectionView;
+    private Data.Views.StringConvertibleMatrixView characteristicsMatrixView;
+    private System.Windows.Forms.Button uploadCharacteristicsButton;
+    private System.Windows.Forms.Button downloadCharacteristicsButton;
 
 
   }

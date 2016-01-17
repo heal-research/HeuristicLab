@@ -19,6 +19,7 @@
  */
 #endregion
 
+
 namespace HeuristicLab.Clients.OKB.RunCreation {
   public partial class StringValue {
     public StringValue() {
@@ -26,6 +27,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         Name = typeof(string).Name,
         TypeName = typeof(string).AssemblyQualifiedName
       };
+    }
+
+    public override string ToString() {
+      return Value;
     }
   }
 }

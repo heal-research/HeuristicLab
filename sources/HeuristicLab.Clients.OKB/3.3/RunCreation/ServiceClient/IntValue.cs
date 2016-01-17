@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Globalization;
+
 namespace HeuristicLab.Clients.OKB.RunCreation {
   public partial class IntValue {
     public IntValue() {
@@ -26,6 +28,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         Name = typeof(int).Name,
         TypeName = typeof(int).AssemblyQualifiedName
       };
+    }
+
+    public override string ToString() {
+      return Value.ToString(CultureInfo.CurrentCulture.NumberFormat);
     }
   }
 }

@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Globalization;
+
 namespace HeuristicLab.Clients.OKB.RunCreation {
   public partial class PercentValue {
     public PercentValue() {
@@ -26,6 +28,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         Name = typeof(double).Name,
         TypeName = typeof(double).AssemblyQualifiedName
       };
+    }
+
+    public override string ToString() {
+      return (100 * Value).ToString(CultureInfo.CurrentCulture.NumberFormat) + "%";
     }
   }
 }

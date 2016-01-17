@@ -19,6 +19,8 @@
  */
 #endregion
 
+using System.Globalization;
+
 namespace HeuristicLab.Clients.OKB.RunCreation {
   public partial class LongValue {
     public LongValue() {
@@ -26,6 +28,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         Name = typeof(long).Name,
         TypeName = typeof(long).AssemblyQualifiedName
       };
+    }
+
+    public override string ToString() {
+      return Value.ToString(CultureInfo.CurrentCulture.NumberFormat);
     }
   }
 }

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
@@ -99,8 +100,16 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     #endregion
 
     #region Characteristic Methods
-    public static void SetCharacteristicValue(long problemId, string characteristicName, Value v) {
-      CallRunCreationService(s => s.SetCharacteristicValue(problemId, characteristicName, v));
+    public static IEnumerable<Value> GetCharacteristicValues(long problemId) {
+      return CallRunCreationService(s => s.GetCharacteristicValues(problemId));
+    }
+
+    public static void SetCharacteristicValue(long problemId, Value v) {
+      CallRunCreationService(s => s.SetCharacteristicValue(problemId, v));
+    }
+
+    public static void SetCharacteristicValues(long problemId, IEnumerable<Value> values) {
+      CallRunCreationService(s => s.SetCharacteristicValues(problemId, values.ToList()));
     }
     #endregion
 

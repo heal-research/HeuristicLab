@@ -97,12 +97,6 @@ namespace HeuristicLab.Clients.OKB.Query {
     }
     #endregion
 
-    #region Characteristic Methods
-    public List<Value> GetCharacteristics(long problemId) {
-      return CallQueryService(s => s.GetCharacteristics(problemId));
-    }
-    #endregion
-
     #region OKB-Item Conversion
     public Optimization.IRun ConvertToOptimizationRun(Run run) {
       Optimization.Run optRun = new Optimization.Run();

@@ -1895,12 +1895,6 @@ namespace HeuristicLab.Clients.OKB.Query
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQueryService/GetValueNames", ReplyAction="http://tempuri.org/IQueryService/GetValueNamesResponse")]
         System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.ValueName>> GetValueNamesAsync();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQueryService/GetCharacteristics", ReplyAction="http://tempuri.org/IQueryService/GetCharacteristicsResponse")]
-        System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.Value> GetCharacteristics(long problemId);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IQueryService/GetCharacteristics", ReplyAction="http://tempuri.org/IQueryService/GetCharacteristicsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.Value>> GetCharacteristicsAsync(long problemId);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -1995,16 +1989,6 @@ namespace HeuristicLab.Clients.OKB.Query
         public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.ValueName>> GetValueNamesAsync()
         {
             return base.Channel.GetValueNamesAsync();
-        }
-        
-        public System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.Value> GetCharacteristics(long problemId)
-        {
-            return base.Channel.GetCharacteristics(problemId);
-        }
-        
-        public System.Threading.Tasks.Task<System.Collections.Generic.List<HeuristicLab.Clients.OKB.Query.Value>> GetCharacteristicsAsync(long problemId)
-        {
-            return base.Channel.GetCharacteristicsAsync(problemId);
         }
     }
 }
