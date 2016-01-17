@@ -600,21 +600,22 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
       // Special care needs to be taken with missing values, NaN (n.def.) and infinity values.
       // We only support DE-DE and InvariantCulture number formats
       string tempFileName = Path.GetTempFileName();
+      var deCultureInfo = CultureInfo.GetCultureInfo("DE-DE");
       WriteToFile(tempFileName,
       "str\tdbl\tdbl\tdbl" + Environment.NewLine +
       "1,3\t1,3\t0\t3" + Environment.NewLine +
       "1,3\t\t0\t0" + Environment.NewLine +
-      "s\tn. def.\t0\t0" + Environment.NewLine +
-      "s\t+unendlich\t0\t0" + Environment.NewLine +
-      "s\t-unendlich\t0\t0" + Environment.NewLine +
+      "s\t" + double.NaN.ToString(deCultureInfo) + "\t0\t0" + Environment.NewLine + // double.NaN might have a different string representation on different systems (even when using the same CultureInfo)
+      "s\t" + double.PositiveInfinity.ToString(deCultureInfo) + "\t0\t0" + Environment.NewLine +
+      "s\t" + double.NegativeInfinity.ToString(deCultureInfo) + "\t0\t0" + Environment.NewLine +
       "s\t0\t0\t0");
       TableFileParser parser = new TableFileParser();
       try {
         parser.Parse(tempFileName,
-          CultureInfo.GetCultureInfo("DE-DE").NumberFormat,
-          CultureInfo.GetCultureInfo("DE-DE").DateTimeFormat,
+          deCultureInfo.NumberFormat,
+          deCultureInfo.DateTimeFormat,
           '\t',
-          parser.AreColumnNamesInFirstLine(tempFileName));
+          true);
         Assert.AreEqual(6, parser.Rows);
         Assert.AreEqual(4, parser.Columns);
         Assert.IsTrue(parser.Values[0] is List<string>);
@@ -624,7 +625,7 @@ c,3.0000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
         Assert.IsTrue(double.IsNaN((double)parser.Values[1][1])); // missing value
         Assert.IsTrue(double.IsNaN((double)parser.Values[1][2]));
         Assert.IsTrue(double.IsPositiveInfinity((double)parser.Values[1][3])); // NOTE: in DE-DE NumberFormat just "unendlich" is not allowed (compare with InvariantCulture)
-        Assert.IsTrue(double.IsNegativeInfinity((double)parser.Values[1][4])); 
+        Assert.IsTrue(double.IsNegativeInfinity((double)parser.Values[1][4]));
       } finally {
         File.Delete(tempFileName);
       }
@@ -659,7 +660,7 @@ s,0,0,0");
         Assert.IsTrue(parser.Values[2] is List<double>);
         Assert.IsTrue(parser.Values[3] is List<double>);
         Assert.IsTrue(double.IsNaN((double)parser.Values[1][1])); // missing value
-        Assert.IsTrue(double.IsNaN((double)parser.Values[1][2])); 
+        Assert.IsTrue(double.IsNaN((double)parser.Values[1][2]));
         Assert.IsTrue(double.IsPositiveInfinity((double)parser.Values[1][3])); // NOTE: in InvariantCulture +Infinity is not allowed (compare with DE-DE)
         Assert.IsTrue(double.IsNegativeInfinity((double)parser.Values[1][4]));
       } finally {
