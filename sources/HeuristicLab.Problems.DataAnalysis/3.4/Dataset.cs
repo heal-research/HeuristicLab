@@ -193,10 +193,17 @@ namespace HeuristicLab.Problems.DataAnalysis {
     protected int rows;
     public int Rows {
       get { return rows; }
+    }
+    int IStringConvertibleMatrix.Rows {
+      get { return Rows; }
       set { throw new NotSupportedException(); }
     }
+
     public int Columns {
       get { return variableNames.Count; }
+    }
+    int IStringConvertibleMatrix.Columns {
+      get { return Columns; }
       set { throw new NotSupportedException(); }
     }
     bool IStringConvertibleMatrix.SortableView {
