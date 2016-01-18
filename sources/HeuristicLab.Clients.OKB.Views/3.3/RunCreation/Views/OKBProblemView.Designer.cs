@@ -50,15 +50,23 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.cloneProblemButton = new System.Windows.Forms.Button();
       this.tabControl = new System.Windows.Forms.TabControl();
       this.parametersTabPage = new System.Windows.Forms.TabPage();
-      this.characteristicsTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
-      this.downloadCharacteristicsButton = new System.Windows.Forms.Button();
-      this.uploadCharacteristicsButton = new System.Windows.Forms.Button();
+      this.characteristicsTabPage = new System.Windows.Forms.TabPage();
+      this.characteristicSplitContainer = new System.Windows.Forms.SplitContainer();
+      this.calculatorListView = new System.Windows.Forms.ListView();
+      this.characteristicColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.calculateButton = new System.Windows.Forms.Button();
       this.characteristicsMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
+      this.uploadCharacteristicsButton = new System.Windows.Forms.Button();
+      this.downloadCharacteristicsButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.characteristicsTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.characteristicSplitContainer)).BeginInit();
+      this.characteristicSplitContainer.Panel1.SuspendLayout();
+      this.characteristicSplitContainer.Panel2.SuspendLayout();
+      this.characteristicSplitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -81,7 +89,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // 
       // problemComboBox
       // 
-      this.problemComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+      this.problemComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.problemComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.problemComboBox.FormattingEnabled = true;
@@ -103,7 +111,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // refreshButton
       // 
       this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.refreshButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Refresh;
       this.refreshButton.Location = new System.Drawing.Point(682, -1);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(24, 24);
@@ -115,7 +122,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // cloneProblemButton
       // 
       this.cloneProblemButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cloneProblemButton.Image = HeuristicLab.Common.Resources.VSImageLibrary.Clone;
       this.cloneProblemButton.Location = new System.Drawing.Point(652, -1);
       this.cloneProblemButton.Name = "cloneProblemButton";
       this.cloneProblemButton.Size = new System.Drawing.Size(24, 24);
@@ -126,8 +132,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // 
       // tabControl
       // 
-      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+      this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.characteristicsTabPage);
@@ -148,19 +154,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.parametersTabPage.Text = "Parameters";
       this.parametersTabPage.UseVisualStyleBackColor = true;
       // 
-      // characteristicsTabPage
-      // 
-      this.characteristicsTabPage.Controls.Add(this.characteristicsMatrixView);
-      this.characteristicsTabPage.Controls.Add(this.uploadCharacteristicsButton);
-      this.characteristicsTabPage.Controls.Add(this.downloadCharacteristicsButton);
-      this.characteristicsTabPage.Location = new System.Drawing.Point(4, 22);
-      this.characteristicsTabPage.Name = "characteristicsTabPage";
-      this.characteristicsTabPage.Padding = new System.Windows.Forms.Padding(3);
-      this.characteristicsTabPage.Size = new System.Drawing.Size(692, 314);
-      this.characteristicsTabPage.TabIndex = 1;
-      this.characteristicsTabPage.Text = "Characteristics";
-      this.characteristicsTabPage.UseVisualStyleBackColor = true;
-      // 
       // parameterCollectionView
       // 
       this.parameterCollectionView.AllowEditingOfHiddenParameters = false;
@@ -174,15 +167,84 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.parameterCollectionView.Size = new System.Drawing.Size(686, 308);
       this.parameterCollectionView.TabIndex = 8;
       // 
-      // downloadCharacteristicsButton
+      // characteristicsTabPage
       // 
-      this.downloadCharacteristicsButton.Location = new System.Drawing.Point(6, 6);
-      this.downloadCharacteristicsButton.Name = "downloadCharacteristicsButton";
-      this.downloadCharacteristicsButton.Size = new System.Drawing.Size(26, 23);
-      this.downloadCharacteristicsButton.TabIndex = 0;
-      this.downloadCharacteristicsButton.Text = "Download";
-      this.downloadCharacteristicsButton.UseVisualStyleBackColor = true;
-      this.downloadCharacteristicsButton.Click += new System.EventHandler(this.downloadCharacteristicsButton_Click);
+      this.characteristicsTabPage.Controls.Add(this.characteristicSplitContainer);
+      this.characteristicsTabPage.Controls.Add(this.uploadCharacteristicsButton);
+      this.characteristicsTabPage.Controls.Add(this.downloadCharacteristicsButton);
+      this.characteristicsTabPage.Location = new System.Drawing.Point(4, 22);
+      this.characteristicsTabPage.Name = "characteristicsTabPage";
+      this.characteristicsTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.characteristicsTabPage.Size = new System.Drawing.Size(692, 314);
+      this.characteristicsTabPage.TabIndex = 1;
+      this.characteristicsTabPage.Text = "Characteristics";
+      this.characteristicsTabPage.UseVisualStyleBackColor = true;
+      // 
+      // characteristicSplitContainer
+      // 
+      this.characteristicSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.characteristicSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+      this.characteristicSplitContainer.Location = new System.Drawing.Point(0, 35);
+      this.characteristicSplitContainer.Name = "characteristicSplitContainer";
+      // 
+      // characteristicSplitContainer.Panel1
+      // 
+      this.characteristicSplitContainer.Panel1.Controls.Add(this.calculatorListView);
+      this.characteristicSplitContainer.Panel1.Controls.Add(this.calculateButton);
+      // 
+      // characteristicSplitContainer.Panel2
+      // 
+      this.characteristicSplitContainer.Panel2.Controls.Add(this.characteristicsMatrixView);
+      this.characteristicSplitContainer.Size = new System.Drawing.Size(692, 279);
+      this.characteristicSplitContainer.SplitterDistance = 221;
+      this.characteristicSplitContainer.TabIndex = 2;
+      // 
+      // calculatorListView
+      // 
+      this.calculatorListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.calculatorListView.CheckBoxes = true;
+      this.calculatorListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.characteristicColumnHeader});
+      this.calculatorListView.Location = new System.Drawing.Point(3, 0);
+      this.calculatorListView.Name = "calculatorListView";
+      this.calculatorListView.Size = new System.Drawing.Size(215, 244);
+      this.calculatorListView.TabIndex = 0;
+      this.calculatorListView.UseCompatibleStateImageBehavior = false;
+      this.calculatorListView.View = System.Windows.Forms.View.Details;
+      // 
+      // characteristicColumnHeader
+      // 
+      this.characteristicColumnHeader.Text = "Characteristic";
+      this.characteristicColumnHeader.Width = 211;
+      // 
+      // calculateButton
+      // 
+      this.calculateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.calculateButton.Location = new System.Drawing.Point(6, 250);
+      this.calculateButton.Name = "calculateButton";
+      this.calculateButton.Size = new System.Drawing.Size(212, 23);
+      this.calculateButton.TabIndex = 0;
+      this.calculateButton.Text = "Calculate";
+      this.calculateButton.UseVisualStyleBackColor = true;
+      this.calculateButton.Click += new System.EventHandler(this.calculateButton_Click);
+      // 
+      // characteristicsMatrixView
+      // 
+      this.characteristicsMatrixView.Caption = "StringConvertibleMatrix View";
+      this.characteristicsMatrixView.Content = null;
+      this.characteristicsMatrixView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.characteristicsMatrixView.Location = new System.Drawing.Point(0, 0);
+      this.characteristicsMatrixView.Name = "characteristicsMatrixView";
+      this.characteristicsMatrixView.ReadOnly = false;
+      this.characteristicsMatrixView.ShowRowsAndColumnsTextBox = false;
+      this.characteristicsMatrixView.ShowStatisticalInformation = false;
+      this.characteristicsMatrixView.Size = new System.Drawing.Size(467, 279);
+      this.characteristicsMatrixView.TabIndex = 1;
       // 
       // uploadCharacteristicsButton
       // 
@@ -194,20 +256,15 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.uploadCharacteristicsButton.UseVisualStyleBackColor = true;
       this.uploadCharacteristicsButton.Click += new System.EventHandler(this.uploadCharacteristicsButton_Click);
       // 
-      // characteristicsMatrixView
+      // downloadCharacteristicsButton
       // 
-      this.characteristicsMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.characteristicsMatrixView.Caption = "StringConvertibleMatrix View";
-      this.characteristicsMatrixView.Content = null;
-      this.characteristicsMatrixView.Location = new System.Drawing.Point(6, 35);
-      this.characteristicsMatrixView.Name = "characteristicsMatrixView";
-      this.characteristicsMatrixView.ReadOnly = false;
-      this.characteristicsMatrixView.ShowRowsAndColumnsTextBox = false;
-      this.characteristicsMatrixView.ShowStatisticalInformation = false;
-      this.characteristicsMatrixView.Size = new System.Drawing.Size(680, 273);
-      this.characteristicsMatrixView.TabIndex = 1;
+      this.downloadCharacteristicsButton.Location = new System.Drawing.Point(6, 6);
+      this.downloadCharacteristicsButton.Name = "downloadCharacteristicsButton";
+      this.downloadCharacteristicsButton.Size = new System.Drawing.Size(26, 23);
+      this.downloadCharacteristicsButton.TabIndex = 0;
+      this.downloadCharacteristicsButton.Text = "Download";
+      this.downloadCharacteristicsButton.UseVisualStyleBackColor = true;
+      this.downloadCharacteristicsButton.Click += new System.EventHandler(this.downloadCharacteristicsButton_Click);
       // 
       // OKBProblemView
       // 
@@ -232,6 +289,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.characteristicsTabPage.ResumeLayout(false);
+      this.characteristicSplitContainer.Panel1.ResumeLayout(false);
+      this.characteristicSplitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.characteristicSplitContainer)).EndInit();
+      this.characteristicSplitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -250,6 +311,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private Data.Views.StringConvertibleMatrixView characteristicsMatrixView;
     private System.Windows.Forms.Button uploadCharacteristicsButton;
     private System.Windows.Forms.Button downloadCharacteristicsButton;
+    private System.Windows.Forms.SplitContainer characteristicSplitContainer;
+    private System.Windows.Forms.ListView calculatorListView;
+    private System.Windows.Forms.ColumnHeader characteristicColumnHeader;
+    private System.Windows.Forms.Button calculateButton;
 
 
   }

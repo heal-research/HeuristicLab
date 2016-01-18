@@ -21,12 +21,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
+using HeuristicLab.Optimization;
+using HeuristicLab.PluginInfrastructure;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [View("OKBProblem View")]
@@ -40,6 +43,10 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     public OKBProblemView() {
       InitializeComponent();
+      refreshButton.Text = string.Empty;
+      refreshButton.Image = VSImageLibrary.Refresh;
+      cloneProblemButton.Text = string.Empty;
+      cloneProblemButton.Image = VSImageLibrary.Clone;
       downloadCharacteristicsButton.Text = string.Empty;
       downloadCharacteristicsButton.Image = VSImageLibrary.Refresh;
       uploadCharacteristicsButton.Text = string.Empty;
@@ -71,6 +78,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         problemComboBox.SelectedItem = RunCreationClient.Instance.Problems.FirstOrDefault(x => x.Id == Content.ProblemId);
         parameterCollectionView.Content = Content.Parameters;
       }
+      UpdateCharacteristicCalculators();
     }
 
     protected override void SetEnabledStateOfControls() {
@@ -89,6 +97,25 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       RunCreationClient.Instance.Refreshing -= new EventHandler(RunCreationClient_Refreshing);
       RunCreationClient.Instance.Refreshed -= new EventHandler(RunCreationClient_Refreshed);
       base.OnClosed(e);
+    }
+
+    private void UpdateCharacteristicCalculators() {
+      calculatorListView.Items.Clear();
+      calculatorListView.Groups.Clear();
+      if (Content == null || Content.ProblemId == -1) return;
+      var problem = Content.CloneProblem();
+      var calculators = ApplicationManager.Manager.GetInstances<ICharacteristicCalculator>().Where(x => x.CanCalculate(problem)).ToList();
+      try {
+        calculatorListView.BeginUpdate();
+        foreach (var calc in calculators) {
+          var group = calculatorListView.Groups.Add(calc.Name, calc.Name);
+          group.Tag = calc;
+          foreach (var c in calc.Characteristics) {
+            var item = calculatorListView.Items.Add(c, c);
+            item.Group = group;
+          }
+        }
+      } finally { calculatorListView.EndUpdate(); }
     }
 
     private void RunCreationClient_Refreshing(object sender, EventArgs e) {
@@ -159,6 +186,48 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       try {
         RunCreationClient.SetCharacteristicValues(Content.ProblemId, values);
       } catch (Exception ex) { PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex); }
+    }
+    private void calculateButton_Click(object sender, EventArgs e) {
+      var problem = Content.CloneProblem();
+      var characteristics = calculatorListView.CheckedItems.OfType<ListViewItem>().GroupBy(x => x.Group);
+      var results = new Dictionary<string, double>();
+      foreach (var c in characteristics) {
+        var calc = (ICharacteristicCalculator)c.Key.Tag;
+        foreach (var result in calc.Calculate(problem, c.Select(x => x.Text).ToArray()))
+          results[result.Key] = result.Value;
+      }
+      var matrix = characteristicsMatrixView.Content as StringMatrix;
+      if (matrix == null) matrix = new StringMatrix(results.Count, 3);
+      for (var i = 0; i < matrix.Rows; i++) {
+        double r;
+        if (results.TryGetValue(matrix[i, 0], out r)) {
+          matrix[i, 1] = r.ToString(CultureInfo.CurrentCulture.NumberFormat);
+          matrix[i, 2] = "DoubleValue";
+          results.Remove(matrix[i, 0]);
+        }
+      }
+      if (results.Count == 0) return;
+      var resultsList = results.ToList();
+      var counter = resultsList.Count - 1;
+      for (var i = 0; i < matrix.Rows; i++) {
+        if (string.IsNullOrEmpty(matrix[i, 0])) {
+          matrix[i, 0] = resultsList[counter].Key;
+          matrix[i, 1] = resultsList[counter].Value.ToString(CultureInfo.CurrentCulture.NumberFormat);
+          matrix[i, 2] = "DoubleValue";
+          resultsList.RemoveAt(counter);
+          counter--;
+          if (counter < 0) return;
+        }
+      }
+      if (counter >= 0) {
+        ((IStringConvertibleMatrix)matrix).Rows += counter + 1;
+        for (var i = matrix.Rows - 1; counter >= 0; i--) {
+          matrix[i, 0] = resultsList[0].Key;
+          matrix[i, 1] = resultsList[0].Value.ToString(CultureInfo.CurrentCulture.NumberFormat);
+          matrix[i, 2] = "DoubleValue";
+          counter--;
+        }
+      }
     }
     #endregion
 
