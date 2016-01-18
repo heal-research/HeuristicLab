@@ -43,66 +43,70 @@ namespace HeuristicLab.CodeEditor {
     protected override CodeCompletionResult GetCodeCompletionResult(bool controlSpace) {
       var document = codeEditor.TextEditor.Document;
       int offset = codeEditor.TextEditor.CaretOffset;
-
       var result = new CodeCompletionResult();
-      var completionContext = new CSharpCodeCompletionContext(document, offset, projectContent);
-      var completionFactory = new CSharpCodeCompletionDataFactory(completionContext);
-      var cce = new CSharpCompletionEngine(
-        completionContext.Document,
-        completionContext.CompletionContextProvider,
-        completionFactory,
-        completionContext.ProjectContent,
-        completionContext.TypeResolveContextAtCaret
-        );
 
-      char completionChar = completionContext.Document.GetCharAt(completionContext.Offset - 1);
-      int startPos, triggerWordLength;
-      IEnumerable<ICompletionData> completionData;
-
-      if (controlSpace) {
-        if (!cce.TryGetCompletionWord(completionContext.Offset, out startPos, out triggerWordLength)) {
-          startPos = completionContext.Offset;
-          triggerWordLength = 0;
-        }
-        completionData = cce.GetCompletionData(startPos, true);
-      } else {
-        startPos = completionContext.Offset;
-        if (char.IsLetterOrDigit(completionChar) || completionChar == '_') {
-          if (startPos > 1 && char.IsLetterOrDigit(completionContext.Document.GetCharAt((startPos - 2))))
-            return result;
-          completionData = cce.GetCompletionData(startPos, false);
-          triggerWordLength = 1;
-        } else {
-          completionData = cce.GetCompletionData(startPos, false);
-          triggerWordLength = 0;
-        }
-      }
-
-      result.TriggerWordLength = triggerWordLength;
-      result.TriggerWord = completionContext.Document.GetText(completionContext.Offset - triggerWordLength, triggerWordLength);
-
-      if (completionData.Any() && cce.AutoCompleteEmptyMatch) {
-        foreach (var completion in completionData) {
-          var cast = completion as CompletionData;
-          if (cast != null) {
-            cast.TriggerWord = result.TriggerWord;
-            cast.TriggerWordLength = result.TriggerWordLength;
-            result.CompletionData.Add(cast);
-          }
-        }
-      }
-
-      if (!controlSpace) {
-        var pce = new CSharpParameterCompletionEngine(
+      try {
+        var completionContext = new CSharpCodeCompletionContext(document, offset, projectContent);
+        var completionFactory = new CSharpCodeCompletionDataFactory(completionContext);
+        var cce = new CSharpCompletionEngine(
           completionContext.Document,
           completionContext.CompletionContextProvider,
           completionFactory,
           completionContext.ProjectContent,
           completionContext.TypeResolveContextAtCaret
-        );
+          );
 
-        var parameterDataProvider = pce.GetParameterDataProvider(completionContext.Offset, completionChar);
-        result.OverloadProvider = parameterDataProvider as IUpdatableOverloadProvider;
+        char completionChar = completionContext.Document.GetCharAt(completionContext.Offset - 1);
+        int startPos, triggerWordLength;
+        IEnumerable<ICompletionData> completionData;
+
+        if (controlSpace) {
+          if (!cce.TryGetCompletionWord(completionContext.Offset, out startPos, out triggerWordLength)) {
+            startPos = completionContext.Offset;
+            triggerWordLength = 0;
+          }
+          completionData = cce.GetCompletionData(startPos, true);
+        } else {
+          startPos = completionContext.Offset;
+          if (char.IsLetterOrDigit(completionChar) || completionChar == '_') {
+            if (startPos > 1 && char.IsLetterOrDigit(completionContext.Document.GetCharAt((startPos - 2))))
+              return result;
+            completionData = cce.GetCompletionData(startPos, false);
+            triggerWordLength = 1;
+          } else {
+            completionData = cce.GetCompletionData(startPos, false);
+            triggerWordLength = 0;
+          }
+        }
+
+        result.TriggerWordLength = triggerWordLength;
+        result.TriggerWord = completionContext.Document.GetText(completionContext.Offset - triggerWordLength, triggerWordLength);
+
+        if (completionData.Any() && cce.AutoCompleteEmptyMatch) {
+          foreach (var completion in completionData) {
+            var cast = completion as CompletionData;
+            if (cast != null) {
+              cast.TriggerWord = result.TriggerWord;
+              cast.TriggerWordLength = result.TriggerWordLength;
+              result.CompletionData.Add(cast);
+            }
+          }
+        }
+
+        if (!controlSpace) {
+          var pce = new CSharpParameterCompletionEngine(
+            completionContext.Document,
+            completionContext.CompletionContextProvider,
+            completionFactory,
+            completionContext.ProjectContent,
+            completionContext.TypeResolveContextAtCaret
+            );
+
+          var parameterDataProvider = pce.GetParameterDataProvider(completionContext.Offset, completionChar);
+          result.OverloadProvider = parameterDataProvider as IUpdatableOverloadProvider;
+        }
+      } catch {
+        // ignore exceptions thrown during code completion
       }
 
       return result;
