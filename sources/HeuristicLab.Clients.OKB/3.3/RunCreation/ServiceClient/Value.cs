@@ -25,6 +25,10 @@ using System.Text.RegularExpressions;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   public partial class Value {
+    public virtual string GetValue() {
+      return string.Empty;
+    }
+
     public static Value Create(string name, string strValue, string type) {
       switch (type) {
         case "BoolValue": return new BoolValue() {

@@ -23,6 +23,7 @@ using System.Globalization;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   public partial class BoolValue {
+
     public BoolValue() {
       DataType = new DataType() {
         Name = typeof(bool).Name,
@@ -30,7 +31,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       };
     }
 
-    public override string ToString() {
+    public override string GetValue() {
       return Value.ToString(CultureInfo.CurrentCulture.NumberFormat);
     }
   }

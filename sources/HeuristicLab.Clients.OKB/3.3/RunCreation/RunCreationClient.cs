@@ -21,10 +21,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using HeuristicLab.Clients.Common;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
+using HeuristicLab.Persistence.Default.Xml;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [Item("RunCreationClient", "OKB run creation client.")]
@@ -110,6 +113,83 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
 
     public static void SetCharacteristicValues(long problemId, IEnumerable<Value> values) {
       CallRunCreationService(s => s.SetCharacteristicValues(problemId, values.ToList()));
+    }
+    #endregion
+
+    #region OKB-Item Conversion
+    public IItem ConvertToItem(Value value) {
+      if (value is BinaryValue) {
+        IItem item = null;
+        var binaryValue = (BinaryValue)value;
+        if (binaryValue.Value != null) {
+          using (var stream = new MemoryStream(binaryValue.Value)) {
+            try {
+              item = XmlParser.Deserialize<IItem>(stream);
+            } catch (Exception) { }
+            stream.Close();
+          }
+        }
+        return item ?? new Data.StringValue(value.DataType.Name);
+      } else if (value is BoolValue) {
+        return new Data.BoolValue(((BoolValue)value).Value);
+      } else if (value is FloatValue) {
+        return new Data.DoubleValue(((FloatValue)value).Value);
+      } else if (value is PercentValue) {
+        return new Data.PercentValue(((PercentValue)value).Value);
+      } else if (value is DoubleValue) {
+        return new Data.DoubleValue(((DoubleValue)value).Value);
+      } else if (value is IntValue) {
+        return new Data.IntValue((int)((IntValue)value).Value);
+      } else if (value is LongValue) {
+        return new Data.IntValue((int)((LongValue)value).Value);
+      } else if (value is StringValue) {
+        return new Data.StringValue(((StringValue)value).Value);
+      } else if (value is TimeSpanValue) {
+        return new Data.TimeSpanValue(TimeSpan.FromSeconds((long)((TimeSpanValue)value).Value));
+      }
+      return null;
+    }
+
+    public Value ConvertToValue(IItem item, string name) {
+      Value result = null;
+      if (item is ValueTypeValue<bool>) {
+        var boolValue = (ValueTypeValue<bool>)item;
+        result = new BoolValue() { Value = boolValue.Value };
+      } else if (item is ValueTypeValue<int>) {
+        var intValue = (ValueTypeValue<int>)item;
+        result = new IntValue() { Value = intValue.Value };
+      } else if (item is ValueTypeValue<long>) {
+        var longValue = (ValueTypeValue<long>)item;
+        result = new LongValue() { Value = longValue.Value };
+      } else if (item is ValueTypeValue<float>) {
+        var floatValue = (ValueTypeValue<float>)item;
+        result = new FloatValue() { Value = floatValue.Value };
+      } else if (item is ValueTypeValue<double>) {
+        var doubleValue = (ValueTypeValue<double>)item;
+        if (item is Data.PercentValue) result = new PercentValue() { Value = doubleValue.Value };
+        else result = new DoubleValue() { Value = doubleValue.Value };
+      } else if (item is ValueTypeValue<TimeSpan>) {
+        var timeSpanValue = (ValueTypeValue<TimeSpan>)item;
+        result = new TimeSpanValue() { Value = (long)timeSpanValue.Value.TotalSeconds };
+      } else if (item is Data.StringValue) {
+        var stringValue = (Data.StringValue)item;
+        result = new StringValue() { Value = stringValue.Value };
+      }
+      if (result == null) {
+        var binaryValue = new BinaryValue {
+          DataType = new DataType() {
+            Name = item.GetType().Name,
+            TypeName = item.GetType().AssemblyQualifiedName
+          }
+        };
+        using (var memStream = new MemoryStream()) {
+          XmlGenerator.Serialize(item, memStream);
+          binaryValue.Value = memStream.ToArray();
+        }
+        result = binaryValue;
+      }
+      result.Name = name;
+      return result;
     }
     #endregion
 

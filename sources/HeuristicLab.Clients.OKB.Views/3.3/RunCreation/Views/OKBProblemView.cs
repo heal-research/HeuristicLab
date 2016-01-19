@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
@@ -91,6 +90,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       downloadCharacteristicsButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked;
       uploadCharacteristicsButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly
         && characteristicsMatrixView.Content != null && characteristicsMatrixView.Content.Rows > 0;
+      calculateButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly && calculatorListView.CheckedItems.Count > 0;
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -113,6 +113,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
           foreach (var c in calc.Characteristics) {
             var item = calculatorListView.Items.Add(c, c);
             item.Group = group;
+            item.Checked = true;
           }
         }
       } finally { calculatorListView.EndUpdate(); }
@@ -185,24 +186,24 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       }
       try {
         RunCreationClient.SetCharacteristicValues(Content.ProblemId, values);
-      } catch (Exception ex) { PluginInfrastructure.ErrorHandling.ShowErrorDialog(ex); }
+      } catch (Exception ex) { ErrorHandling.ShowErrorDialog(ex); }
     }
     private void calculateButton_Click(object sender, EventArgs e) {
+      var characteristics = calculatorListView.CheckedItems.OfType<ListViewItem>().GroupBy(x => x.Group).ToList();
+      if (characteristics.Count == 0) return;
       var problem = Content.CloneProblem();
-      var characteristics = calculatorListView.CheckedItems.OfType<ListViewItem>().GroupBy(x => x.Group);
-      var results = new Dictionary<string, double>();
+      var results = new Dictionary<string, Value>();
       foreach (var c in characteristics) {
         var calc = (ICharacteristicCalculator)c.Key.Tag;
         foreach (var result in calc.Calculate(problem, c.Select(x => x.Text).ToArray()))
-          results[result.Key] = result.Value;
+          results[result.Key] = RunCreationClient.Instance.ConvertToValue(result.Value, result.Key);
       }
-      var matrix = characteristicsMatrixView.Content as StringMatrix;
-      if (matrix == null) matrix = new StringMatrix(results.Count, 3);
+      var matrix = (characteristicsMatrixView.Content as StringMatrix) ?? (new StringMatrix(results.Count, 3));
       for (var i = 0; i < matrix.Rows; i++) {
-        double r;
+        Value r;
         if (results.TryGetValue(matrix[i, 0], out r)) {
-          matrix[i, 1] = r.ToString(CultureInfo.CurrentCulture.NumberFormat);
-          matrix[i, 2] = "DoubleValue";
+          matrix[i, 1] = r.GetValue();
+          matrix[i, 2] = r.GetType().Name;
           results.Remove(matrix[i, 0]);
         }
       }
@@ -212,8 +213,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       for (var i = 0; i < matrix.Rows; i++) {
         if (string.IsNullOrEmpty(matrix[i, 0])) {
           matrix[i, 0] = resultsList[counter].Key;
-          matrix[i, 1] = resultsList[counter].Value.ToString(CultureInfo.CurrentCulture.NumberFormat);
-          matrix[i, 2] = "DoubleValue";
+          matrix[i, 1] = resultsList[counter].Value.GetValue();
+          matrix[i, 2] = resultsList[counter].Value.GetType().Name;
           resultsList.RemoveAt(counter);
           counter--;
           if (counter < 0) return;
@@ -223,11 +224,16 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         ((IStringConvertibleMatrix)matrix).Rows += counter + 1;
         for (var i = matrix.Rows - 1; counter >= 0; i--) {
           matrix[i, 0] = resultsList[0].Key;
-          matrix[i, 1] = resultsList[0].Value.ToString(CultureInfo.CurrentCulture.NumberFormat);
-          matrix[i, 2] = "DoubleValue";
+          matrix[i, 1] = resultsList[0].Value.GetValue();
+          matrix[i, 2] = resultsList[0].Value.GetType().Name;
+          resultsList.RemoveAt(0);
           counter--;
         }
       }
+      SetEnabledStateOfControls();
+    }
+    private void calculatorListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      SetEnabledStateOfControls();
     }
     #endregion
 
@@ -238,5 +244,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       problemComboBox.DisplayMember = "Name";
     }
     #endregion
+
   }
 }

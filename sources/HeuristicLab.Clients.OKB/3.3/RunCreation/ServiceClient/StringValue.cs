@@ -29,7 +29,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       };
     }
 
-    public override string ToString() {
+    public override string GetValue() {
       return Value;
     }
   }

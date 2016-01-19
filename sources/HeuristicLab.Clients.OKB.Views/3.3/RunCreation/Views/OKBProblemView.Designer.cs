@@ -215,6 +215,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.calculatorListView.TabIndex = 0;
       this.calculatorListView.UseCompatibleStateImageBehavior = false;
       this.calculatorListView.View = System.Windows.Forms.View.Details;
+      this.calculatorListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.calculatorListView_ItemChecked);
       // 
       // characteristicColumnHeader
       // 

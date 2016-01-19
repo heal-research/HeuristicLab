@@ -30,8 +30,8 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       };
     }
 
-    public override string ToString() {
-      return Value.ToString(CultureInfo.CurrentCulture.DateTimeFormat);
+    public override string GetValue() {
+      return Value.ToString(CultureInfo.CurrentCulture.NumberFormat);
     }
   }
 }
