@@ -26,6 +26,6 @@ namespace HeuristicLab.Optimization {
   public interface ICharacteristicCalculator : INamedItem {
     IEnumerable<string> Characteristics { get; }
     bool CanCalculate(IProblem problem);
-    IEnumerable<KeyValuePair<string, double>> Calculate(IProblem problem, IEnumerable<string> characteristics = null);
+    IEnumerable<KeyValuePair<string, IItem>> Calculate(IProblem problem, IEnumerable<string> characteristics = null);
   }
 }

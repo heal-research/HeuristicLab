@@ -168,7 +168,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       var content = new StringMatrix(values.Count, 3);
       for (var i = 0; i < values.Count; i++) {
         content[i, 0] = values[i].Name;
-        content[i, 1] = values[i].ToString();
+        content[i, 1] = values[i].GetValue();
         content[i, 2] = values[i].GetType().Name;
       }
       characteristicsMatrixView.Content = content;
