@@ -132,7 +132,9 @@ namespace HeuristicLab.Optimization.Views {
       if (InvokeRequired)
         Invoke(new EventHandler(Content_ProblemChanged), sender, e);
       else {
-        problemViewHost.ViewType = null;
+        if (problemViewHost.Content != null && Content.Problem != null &&
+          problemViewHost.Content.GetType() != Content.Problem.GetType())
+          problemViewHost.ViewType = null;
         problemViewHost.Content = Content.Problem;
       }
     }
