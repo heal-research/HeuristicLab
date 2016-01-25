@@ -60,7 +60,9 @@ namespace HeuristicLab.Operators {
       Parameters.Add(new FixedValueParameter<OperatorList>(BeforeExecutionOperatorsParameterName, "Actions that are executed before the execution of the operator", new OperatorList()));
       Parameters.Add(new FixedValueParameter<OperatorList>(AfterExecutionOperatorsParameterName, "Actions that are executed after the execution of the operator", new OperatorList()));
       BeforeExecutionOperatorsParameter.Hidden = true;
+      BeforeExecutionOperatorsParameter.GetsCollected = false;
       AfterExecutionOperatorsParameter.Hidden = true;
+      AfterExecutionOperatorsParameter.GetsCollected = false;
     }
 
     [StorableHook(HookType.AfterDeserialization)]
@@ -76,6 +78,22 @@ namespace HeuristicLab.Operators {
         AfterExecutionOperatorsParameter.Hidden = true;
       }
       #endregion
+    }
+
+    protected override IEnumerable<KeyValuePair<string, IItem>> GetCollectedValues(IValueParameter param) {
+      foreach (var b in base.GetCollectedValues(param)) yield return b;
+      if (param != BeforeExecutionOperatorsParameter && param != AfterExecutionOperatorsParameter) yield break;
+      var operatorList = param.Value as OperatorList;
+      if (operatorList != null) {
+        var counter = 0;
+        foreach (var op in operatorList) {
+          yield return new KeyValuePair<string, IItem>(counter.ToString(), op);
+          var children = new Dictionary<string, IItem>();
+          op.CollectParameterValues(children);
+          foreach (var c in children) yield return new KeyValuePair<string, IItem>(counter + "." + c.Key, c.Value);
+          counter++;
+        }
+      }
     }
 
     public sealed override IOperation Apply() {
