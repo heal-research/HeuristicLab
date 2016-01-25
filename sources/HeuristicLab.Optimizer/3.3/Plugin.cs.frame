@@ -59,7 +59,25 @@ namespace HeuristicLab.Optimizer {
         mainForm = new OptimizerSingleDocumentMainForm(typeof(IOptimizerUserInterfaceItemProvider));
       }
 
-      if (mainForm != null) {
+      if (mainForm != null) {      
+        mainForm.Location = Settings.Default.MainFormLocation;
+        mainForm.Size = Settings.Default.MainFormSize;
+        mainForm.Load += (sender, eventArgs) => {
+          mainForm.WindowState = Settings.Default.MainFormWindowState;
+        };
+
+        mainForm.FormClosing += (sender, eventArgs) => {
+          Settings.Default.MainFormWindowState = mainForm.WindowState;
+          if (mainForm.WindowState != FormWindowState.Normal) {
+            Settings.Default.MainFormLocation = mainForm.RestoreBounds.Location;
+            Settings.Default.MainFormSize = mainForm.RestoreBounds.Size;
+          } else if (mainForm.WindowState == FormWindowState.Normal) {
+            Settings.Default.MainFormLocation = mainForm.Location;
+            Settings.Default.MainFormSize = mainForm.Size;
+          }
+        };
+
+
         ClientInformation.InitializeAsync();
         UserInformation.InitializeAsync();
 
