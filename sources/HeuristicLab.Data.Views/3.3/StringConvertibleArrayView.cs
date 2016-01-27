@@ -102,7 +102,7 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Enabled = true;
     }
 
-    protected virtual void UpdateRowHeaders() {
+    public virtual void UpdateRowHeaders() {
       int i = 0;
       foreach (string elementName in Content.ElementNames) {
         dataGridView.Rows[i].HeaderCell.Value = elementName;

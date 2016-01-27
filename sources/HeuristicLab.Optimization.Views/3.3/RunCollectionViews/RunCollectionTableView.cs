@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using HeuristicLab.Collections;
 using HeuristicLab.Core;
 using HeuristicLab.Data.Views;
 using HeuristicLab.MainForm;
@@ -121,7 +120,7 @@ namespace HeuristicLab.Optimization.Views {
       base.UpdateData();
     }
 
-    protected override void UpdateColumnHeaders() {
+    public override void UpdateColumnHeaders() {
       string[] colNames = base.Content.ColumnNames.ToArray();
       int colCount = colNames.Length;
       for (int i = 0; i < dataGridView.ColumnCount; i++) {

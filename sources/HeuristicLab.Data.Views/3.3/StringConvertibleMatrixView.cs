@@ -159,7 +159,7 @@ namespace HeuristicLab.Data.Views {
       dataGridView.Enabled = true;
     }
 
-    protected virtual void UpdateColumnHeaders() {
+    public virtual void UpdateColumnHeaders() {
       HashSet<string> invisibleColumnNames = new HashSet<string>(dataGridView.Columns.OfType<DataGridViewColumn>()
       .Where(c => !c.Visible && !string.IsNullOrEmpty(c.HeaderText)).Select(c => c.HeaderText));
 
@@ -171,7 +171,7 @@ namespace HeuristicLab.Data.Views {
         dataGridView.Columns[i].Visible = !invisibleColumnNames.Contains(dataGridView.Columns[i].HeaderText);
       }
     }
-    protected virtual void UpdateRowHeaders() {
+    public virtual void UpdateRowHeaders() {
       int index = dataGridView.FirstDisplayedScrollingRowIndex;
       if (index == -1) index = 0;
       int updatedRows = 0;
