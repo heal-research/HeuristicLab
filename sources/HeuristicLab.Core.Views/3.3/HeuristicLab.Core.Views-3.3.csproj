@@ -164,6 +164,12 @@
     <Compile Include="NestingLevelErrorControl.Designer.cs">
       <DependentUpon>NestingLevelErrorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="ParameterizedItemView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ParameterizedItemView.Designer.cs">
+      <DependentUpon>ParameterizedItemView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="VariableValueView.cs">
       <SubType>UserControl</SubType>
