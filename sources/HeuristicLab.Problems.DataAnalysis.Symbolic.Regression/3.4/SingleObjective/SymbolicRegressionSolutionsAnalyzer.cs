@@ -26,6 +26,7 @@ using System.Linq;
 using HeuristicLab.Analysis;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 using HeuristicLab.Operators;
 using HeuristicLab.Optimization;
 using HeuristicLab.Parameters;
@@ -36,9 +37,17 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
   public class SymbolicRegressionSolutionsAnalyzer : SingleSuccessorOperator, IAnalyzer {
     private const string ResultCollectionParameterName = "Results";
     private const string RegressionSolutionQualitiesResultName = "Regression Solution Qualities";
+    private const string TrainingQualityParameterName = "TrainingRSquared";
+    private const string TestQualityParameterName = "TestRSquared";
 
     public ILookupParameter<ResultCollection> ResultCollectionParameter {
       get { return (ILookupParameter<ResultCollection>)Parameters[ResultCollectionParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> TrainingQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[TrainingQualityParameterName]; }
+    }
+    public ILookupParameter<DoubleValue> TestQualityParameter {
+      get { return (ILookupParameter<DoubleValue>)Parameters[TestQualityParameterName]; }
     }
 
     public virtual bool EnabledByDefault {
@@ -55,6 +64,20 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
 
     public SymbolicRegressionSolutionsAnalyzer() {
       Parameters.Add(new LookupParameter<ResultCollection>(ResultCollectionParameterName, "The result collection to store the analysis results."));
+      Parameters.Add(new LookupParameter<DoubleValue>(TrainingQualityParameterName));
+      Parameters.Add(new LookupParameter<DoubleValue>(TestQualityParameterName));
+    }
+
+    [StorableHook(HookType.AfterDeserialization)]
+    private void AfterDeserialization() {
+      // BackwardsCompatibility3.3
+
+      #region Backwards compatible code, remove with 3.4
+      if (!Parameters.ContainsKey(TrainingQualityParameterName))
+        Parameters.Add(new LookupParameter<DoubleValue>(TrainingQualityParameterName));
+      if (!Parameters.ContainsKey(TestQualityParameterName))
+        Parameters.Add(new LookupParameter<DoubleValue>(TestQualityParameterName));
+      #endregion
     }
 
     public override IOperation Apply() {
@@ -66,20 +89,50 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic.Regression {
       }
 
       var dataTable = (DataTable)results[RegressionSolutionQualitiesResultName].Value;
+
+      // only if the parameters are available (not available in old persisted code)
+      ILookupParameter<DoubleValue> trainingQualityParam = null;
+      ILookupParameter<DoubleValue> testQualityParam = null;
+      // store actual names of parameter because it is changed below
+      string prevTrainingQualityParamName = TrainingQualityParameterName;
+      string prevTestQualityParamName = TestQualityParameterName;
+      if (Parameters.ContainsKey(TrainingQualityParameterName)) {
+        trainingQualityParam = TrainingQualityParameter;
+        prevTrainingQualityParamName = trainingQualityParam.ActualName;
+      }
+      if (Parameters.ContainsKey(TestQualityParameterName)) {
+        testQualityParam = TestQualityParameter;
+        prevTestQualityParamName = testQualityParam.ActualName;
+      }
+
       foreach (var result in results.Where(r => r.Value is IRegressionSolution)) {
         var solution = (IRegressionSolution)result.Value;
 
-        var trainingR2 = result.Name + Environment.NewLine + "Training R²";
-        if (!dataTable.Rows.ContainsKey(trainingR2))
-          dataTable.Rows.Add(new DataRow(trainingR2));
+        var trainingR2Name = result.Name + " Training R²";
+        if (!dataTable.Rows.ContainsKey(trainingR2Name))
+          dataTable.Rows.Add(new DataRow(trainingR2Name));
 
-        var testR2 = result.Name + Environment.NewLine + " Test R²";
-        if (!dataTable.Rows.ContainsKey(testR2))
-          dataTable.Rows.Add(new DataRow(testR2));
+        var testR2Name = result.Name + " Test R²";
+        if (!dataTable.Rows.ContainsKey(testR2Name))
+          dataTable.Rows.Add(new DataRow(testR2Name));
 
-        dataTable.Rows[trainingR2].Values.Add(solution.TrainingRSquared);
-        dataTable.Rows[testR2].Values.Add(solution.TestRSquared);
+        dataTable.Rows[trainingR2Name].Values.Add(solution.TrainingRSquared);
+        dataTable.Rows[testR2Name].Values.Add(solution.TestRSquared);
+
+        // also add training and test R² to the scope using the parameters
+        // HACK: we change the ActualName of the parameter to write two variables for each solution in the results collection
+        if (trainingQualityParam != null) {
+          trainingQualityParam.ActualName = trainingR2Name;
+          trainingQualityParam.ActualValue = new DoubleValue(solution.TrainingRSquared);
+        }
+        if (testQualityParam != null) {
+          testQualityParam.ActualName = testR2Name;
+          testQualityParam.ActualValue = new DoubleValue(solution.TestRSquared);
+        }
       }
+
+      if (trainingQualityParam != null) trainingQualityParam.ActualName = prevTrainingQualityParamName;
+      if (testQualityParam != null) testQualityParam.ActualName = prevTestQualityParamName;
 
       return base.Apply();
     }
