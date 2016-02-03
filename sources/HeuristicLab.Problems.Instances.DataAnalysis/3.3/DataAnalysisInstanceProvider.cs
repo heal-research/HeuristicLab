@@ -23,7 +23,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -51,7 +50,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     protected virtual void OnProgressChanged(double d) {
       var handler = ProgressChanged;
       if (handler != null)
-        handler(this, new ProgressChangedEventArgs((int)(100*d), null));
+        handler(this, new ProgressChangedEventArgs((int)(100 * d), null));
     }
 
     protected virtual TData ImportData(string path, ImportType type, TableFileParser csvFileParser) {
@@ -101,9 +100,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
         }
         strBuilder.AppendLine();
       }
-
-      using (var writer = new StreamWriter(path)) {
-        writer.Write(strBuilder);
+      using (var fileStream = new FileStream(path, FileMode.Create)) {
+        using (var writer = new StreamWriter(fileStream, Encoding.Default)) {
+          writer.Write(strBuilder);
+        }
       }
     }
   }

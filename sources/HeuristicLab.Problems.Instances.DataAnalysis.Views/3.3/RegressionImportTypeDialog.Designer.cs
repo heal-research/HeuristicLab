@@ -65,7 +65,6 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableInfoLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableLabel);
       this.ProblemDataSettingsGroupBox.Controls.Add(this.TargetVariableComboBox);
-      this.ProblemDataSettingsGroupBox.Size = new System.Drawing.Size(447, 251);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.PreviewLabel, 0);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.ShuffelInfoLabel, 0);
       this.ProblemDataSettingsGroupBox.Controls.SetChildIndex(this.TargetVariableComboBox, 0);

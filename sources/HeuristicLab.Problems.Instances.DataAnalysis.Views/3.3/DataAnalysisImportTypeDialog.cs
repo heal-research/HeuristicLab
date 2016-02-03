@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Problems.DataAnalysis;
@@ -31,24 +32,35 @@ using HeuristicLab.Problems.DataAnalysis;
 namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
   public partial class DataAnalysisImportTypeDialog : Form {
 
-    public static readonly List<KeyValuePair<DateTimeFormatInfo, string>> dateTimeFormats = new List<KeyValuePair<DateTimeFormatInfo, string>>{
-      new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.GetInstance(new CultureInfo("de-DE")), "dd/mm/yyyy hh:MM:ss" ),
-      new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/dd/yyyy hh:MM:ss" ),
-      new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "yyyy/mm/dd hh:MM:ss" ),
-      new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/yyyy/dd hh:MM:ss" )
+    private static readonly List<KeyValuePair<DateTimeFormatInfo, string>> dateTimeFormats =
+      new List<KeyValuePair<DateTimeFormatInfo, string>>{
+        new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.GetInstance(new CultureInfo("de-DE")), "dd/mm/yyyy hh:MM:ss" ),
+        new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/dd/yyyy hh:MM:ss" ),
+        new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "yyyy/mm/dd hh:MM:ss" ),
+        new KeyValuePair<DateTimeFormatInfo, string>(DateTimeFormatInfo.InvariantInfo, "mm/yyyy/dd hh:MM:ss" )
     };
 
-    public static readonly List<KeyValuePair<char, string>> POSSIBLE_SEPARATORS = new List<KeyValuePair<char, string>>{  
-      new KeyValuePair<char, string>(';', "; (Semicolon)" ),
-      new KeyValuePair<char, string>(',', ", (Comma)" ),    
-      new KeyValuePair<char, string>('\t', "\\t (Tab)"),
-      new KeyValuePair<char, string>((char)0, "all whitespaces (including tabs and spaces)")
+    private static readonly List<KeyValuePair<char, string>> POSSIBLE_SEPARATORS =
+      new List<KeyValuePair<char, string>>{  
+        new KeyValuePair<char, string>(';', "; (Semicolon)" ),
+        new KeyValuePair<char, string>(',', ", (Comma)" ),    
+        new KeyValuePair<char, string>('\t', "\\t (Tab)"),
+        new KeyValuePair<char, string>((char)0, "all whitespaces (including tabs and spaces)")
     };
 
-    public static readonly List<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS = new List<KeyValuePair<NumberFormatInfo, string>>{
-      new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.GetInstance(new CultureInfo("de-DE")), ", (Comma)"),
-      new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" )    
+    private static readonly List<KeyValuePair<NumberFormatInfo, string>> POSSIBLE_DECIMAL_SEPARATORS =
+      new List<KeyValuePair<NumberFormatInfo, string>>{
+        new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.GetInstance(new CultureInfo("de-DE")), ", (Comma)"),
+        new KeyValuePair<NumberFormatInfo, string>(NumberFormatInfo.InvariantInfo, ". (Period)" )    
     };
+
+    private static readonly List<KeyValuePair<Encoding, string>> POSSIBLE_ENCODINGS =
+      new List<KeyValuePair<Encoding, string>> {
+        new KeyValuePair<Encoding, string>(Encoding.Default, "Default"),
+        new KeyValuePair<Encoding, string>(Encoding.ASCII, "ASCII"),
+        new KeyValuePair<Encoding, string>(Encoding.Unicode, "Unicode"),    
+        new KeyValuePair<Encoding, string>(Encoding.UTF8, "UTF8")        
+      };
 
     public string Path {
       get { return ProblemTextBox.Text; }
@@ -86,6 +98,10 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       DateTimeFormatComboBox.DataSource = dateTimeFormats;
       DateTimeFormatComboBox.ValueMember = "Key";
       DateTimeFormatComboBox.DisplayMember = "Value";
+      EncodingComboBox.DataSource = POSSIBLE_ENCODINGS;
+      EncodingComboBox.ValueMember = "Key";
+      EncodingComboBox.DisplayMember = "Value";
+
     }
 
     private void TrainingTestTrackBar_ValueChanged(object sender, System.EventArgs e) {
@@ -99,6 +115,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       SeparatorComboBox.Enabled = true;
       DecimalSeparatorComboBox.Enabled = true;
       DateTimeFormatComboBox.Enabled = true;
+      EncodingComboBox.Enabled = true;
       ProblemTextBox.Text = openFileDialog.FileName;
       TableFileParser csvParser = new TableFileParser();
       CheckboxColumnNames.Checked = csvParser.AreColumnNamesInFirstLine(ProblemTextBox.Text,
@@ -124,6 +141,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis.Views {
       PreviewDatasetMatrix.Content = null;
       try {
         TableFileParser csvParser = new TableFileParser();
+        csvParser.Encoding = (Encoding)EncodingComboBox.SelectedValue;
         csvParser.Parse(ProblemTextBox.Text,
                         (NumberFormatInfo)DecimalSeparatorComboBox.SelectedValue,
                         (DateTimeFormatInfo)DateTimeFormatComboBox.SelectedValue,

@@ -27,7 +27,6 @@ using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -39,6 +38,18 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     private static readonly char[] POSSIBLE_SEPARATORS = new char[] { ',', ';', '\t', WHITESPACECHAR };
     private Tokenizer tokenizer;
     private int estimatedNumberOfLines = 200; // initial capacity for columns, will be set automatically when data is read from a file
+
+
+    private Encoding encoding = Encoding.Default;
+
+    public Encoding Encoding {
+      get { return encoding; }
+      set {
+        if (value == null) throw new ArgumentNullException("Encoding");
+        encoding = value;
+      }
+    }
+
 
     private int rows;
     public int Rows {
@@ -103,7 +114,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
 
     public bool AreColumnNamesInFirstLine(Stream stream, NumberFormatInfo numberFormat,
                                           DateTimeFormatInfo dateTimeFormatInfo, char separator) {
-      using (StreamReader reader = new StreamReader(stream)) {
+      using (StreamReader reader = new StreamReader(stream, Encoding)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
         return (tokenizer.PeekType() != TokenTypeEnum.Double);
       }
@@ -142,7 +153,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     private void EstimateNumberOfLines(string fileName) {
       var len = new System.IO.FileInfo(fileName).Length;
       var buf = new char[1024 * 1024];
-      using (var reader = new StreamReader(fileName)) {
+      using (var reader = new StreamReader(fileName, Encoding)) {
         reader.ReadBlock(buf, 0, buf.Length);
       }
       int numNewLine = 0;
@@ -186,7 +197,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
     /// <param name="separator">defines the separator</param>
     /// <param name="columnNamesInFirstLine"></param>
     public void Parse(Stream stream, NumberFormatInfo numberFormat, DateTimeFormatInfo dateTimeFormatInfo, char separator, bool columnNamesInFirstLine, int lineLimit = -1) {
-      using (StreamReader reader = new StreamReader(stream)) {
+      using (StreamReader reader = new StreamReader(stream, Encoding)) {
         tokenizer = new Tokenizer(reader, numberFormat, dateTimeFormatInfo, separator);
         values = new List<IList>();
         if (lineLimit > 0) estimatedNumberOfLines = lineLimit;
@@ -407,7 +418,7 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
               .Except(disallowedSeparators)
               .Where(c => OccurrencesOf(charCounts, c) > 10)
               .OrderBy(c => -OccurrencesOf(charCounts, c))
-              .DefaultIfEmpty(' ') 
+              .DefaultIfEmpty(' ')
               .First();
           }
         } else {
@@ -504,9 +515,11 @@ namespace HeuristicLab.Problems.Instances.DataAnalysis {
           CurrentLineNumber++;
           try {
             BytesRead = reader.BaseStream.Position;
-          } catch (IOException) {
+          }
+          catch (IOException) {
             BytesRead += CurrentLine.Length + 2; // guess
-          } catch (NotSupportedException) {
+          }
+          catch (NotSupportedException) {
             BytesRead += CurrentLine.Length + 2;
           }
           int i = 0;
