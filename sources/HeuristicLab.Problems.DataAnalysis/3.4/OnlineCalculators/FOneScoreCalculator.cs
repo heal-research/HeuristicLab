@@ -35,6 +35,11 @@ namespace HeuristicLab.Problems.DataAnalysis {
       if (!errorState.Equals(OnlineCalculatorError.None)) {
         return double.NaN;
       }
+      //only one class has been present => F1 score cannot be calculated
+      if (confusionMatrix.GetLength(0) != 2 || confusionMatrix.GetLength(1) != 2) {
+        return double.NaN;
+      }
+
       return CalculateFOne(confusionMatrix);
     }
 
