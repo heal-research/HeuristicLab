@@ -79,8 +79,6 @@ namespace HeuristicLab.Optimizer {
         StartPage startPage = new StartPage();
         startPage.Show();
       }
-
-      WindowState = Properties.Settings.Default.ShowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
     }
 
     protected override void OnClosing(CancelEventArgs e) {
@@ -92,7 +90,6 @@ namespace HeuristicLab.Optimizer {
     }
     protected override void OnClosed(EventArgs e) {
       base.OnClosed(e);
-      Properties.Settings.Default.ShowMaximized = WindowState == FormWindowState.Maximized;
       Properties.Settings.Default.CollapseClipboard = clipboard.Collapsed;
       OperatorsSidebar operatorsSidebar = MainFormManager.MainForm.Views.OfType<OperatorsSidebar>().FirstOrDefault();
       if (operatorsSidebar != null) Properties.Settings.Default.CollapseOperatorsSidebar = operatorsSidebar.Collapsed;

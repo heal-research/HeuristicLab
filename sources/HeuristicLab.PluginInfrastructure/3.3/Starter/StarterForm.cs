@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -28,6 +29,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HeuristicLab.PluginInfrastructure.Advanced;
 using HeuristicLab.PluginInfrastructure.Manager;
+using HeuristicLab.PluginInfrastructure.Properties;
 
 namespace HeuristicLab.PluginInfrastructure.Starter {
   /// <summary>
@@ -66,6 +68,12 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
       splashScreen.VisibleChanged += new EventHandler(splashScreen_VisibleChanged);
       splashScreen.Show(this, "Loading HeuristicLab...");
 
+      if (CheckSavedStarterFormSettings()) {
+        Location = Settings.Default.StarterFormLocation;
+        Size = Settings.Default.StarterFormSize;
+        WindowState = Settings.Default.StarterFormWindowState;
+      }
+
       pluginManager.DiscoverAndCheckPlugins();
       UpdateApplicationsList();
 
@@ -95,6 +103,18 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     private void StarterForm_FormClosing(object sender, FormClosingEventArgs e) {
       splashScreen.Close();
       abortRequested = true;
+
+      if (WindowState != FormWindowState.Minimized)
+        Settings.Default.StarterFormWindowState = WindowState;
+      if (WindowState != FormWindowState.Normal) {
+        Settings.Default.StarterFormLocation = RestoreBounds.Location;
+        Settings.Default.StarterFormSize = RestoreBounds.Size;
+      } else if (WindowState == FormWindowState.Normal) {
+        Settings.Default.StarterFormLocation = Location;
+        Settings.Default.StarterFormSize = Size;
+      }
+
+      Settings.Default.Save();
     }
 
     private void applicationsListView_SelectedIndexChanged(object sender, EventArgs e) {
@@ -176,6 +196,14 @@ namespace HeuristicLab.PluginInfrastructure.Starter {
     #endregion
 
     #region Helpers
+    private bool CheckSavedStarterFormSettings() {
+      var formArea = new Rectangle(Settings.Default.StarterFormLocation, Settings.Default.StarterFormSize);
+      var screenArea = Screen.FromRectangle(formArea).WorkingArea;
+      var overlappingArea = Rectangle.Intersect(formArea, screenArea);
+      bool offLimits = overlappingArea.IsEmpty || overlappingArea.Width * overlappingArea.Height < formArea.Width * formArea.Height * 0.25;
+      return !formArea.IsEmpty && !offLimits;
+    }
+
     private void UpdateApplicationsList() {
       if (InvokeRequired) Invoke((Action)UpdateApplicationsList);
       else {
