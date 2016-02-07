@@ -19,16 +19,16 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 using HeuristicLab.Common.Resources;
 using HeuristicLab.Core.Views;
 using HeuristicLab.Data;
 using HeuristicLab.MainForm;
 using HeuristicLab.Optimization;
 using HeuristicLab.PluginInfrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace HeuristicLab.Clients.OKB.RunCreation {
   [View("OKBProblem View")]
@@ -90,7 +90,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       downloadCharacteristicsButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked;
       uploadCharacteristicsButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly
         && characteristicsMatrixView.Content != null && characteristicsMatrixView.Content.Rows > 0;
-      calculateButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly && calculatorListView.CheckedItems.Count > 0;
+      calculateButton.Enabled = Content != null && Content.ProblemId != -1 && !Locked && !ReadOnly;
     }
 
     protected override void OnClosed(FormClosedEventArgs e) {
@@ -104,17 +104,21 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       calculatorListView.Groups.Clear();
       if (Content == null || Content.ProblemId == -1) return;
       var problem = Content.CloneProblem();
-      var calculators = ApplicationManager.Manager.GetInstances<ICharacteristicCalculator>().Where(x => x.CanCalculate(problem)).ToList();
+      var calculators = ApplicationManager.Manager.GetInstances<ICharacteristicCalculator>().ToList();
       try {
         calculatorListView.BeginUpdate();
         foreach (var calc in calculators) {
+          calc.Problem = problem;
           var group = calculatorListView.Groups.Add(calc.Name, calc.Name);
           group.Tag = calc;
-          foreach (var c in calc.Characteristics) {
-            var item = calculatorListView.Items.Add(c, c);
-            item.Group = group;
-            item.Checked = true;
-          }
+
+          var paramItem = calculatorListView.Items.Add(calc.Name + ".Parameters", "Parameters");
+          paramItem.Group = group;
+          paramItem.Tag = "param";
+
+          var charactItem = calculatorListView.Items.Add(calc.Name + ".Characteristics", "Characteristics");
+          charactItem.Group = group;
+          charactItem.Tag = "chara";
         }
       } finally { calculatorListView.EndUpdate(); }
     }
@@ -188,15 +192,32 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
         RunCreationClient.SetCharacteristicValues(Content.ProblemId, values);
       } catch (Exception ex) { ErrorHandling.ShowErrorDialog(ex); }
     }
+    private void calculatorListView_SelectedIndexChanged(object sender, EventArgs e) {
+      if (InvokeRequired) {
+        Invoke((Action<object, EventArgs>)calculatorListView_SelectedIndexChanged, sender, e);
+        return;
+      }
+      if (calculatorListView.SelectedIndices.Count == 0) calculatorViewHost.Content = null;
+      else {
+        var item = calculatorListView.SelectedItems[0];
+        if ((string)item.Tag == "param") {
+          calculatorViewHost.Content = ((ICharacteristicCalculator)item.Group.Tag);
+        } else if ((string)item.Tag == "chara") {
+          calculatorViewHost.Content = ((ICharacteristicCalculator)item.Group.Tag).Characteristics;
+        }
+      }
+    }
     private void calculateButton_Click(object sender, EventArgs e) {
-      var characteristics = calculatorListView.CheckedItems.OfType<ListViewItem>().GroupBy(x => x.Group).ToList();
-      if (characteristics.Count == 0) return;
-      var problem = Content.CloneProblem();
+      var calculators = calculatorListView.Groups.OfType<ListViewGroup>()
+                                                     .Select(x => (ICharacteristicCalculator)x.Tag)
+                                                     .Where(x => x.Characteristics.CheckedItems.Any()
+                                                              && x.CanCalculate()).ToList();
+      if (calculators.Count == 0) return;
+
       var results = new Dictionary<string, Value>();
-      foreach (var c in characteristics) {
-        var calc = (ICharacteristicCalculator)c.Key.Tag;
-        foreach (var result in calc.Calculate(problem, c.Select(x => x.Text).ToArray()))
-          results[result.Key] = RunCreationClient.Instance.ConvertToValue(result.Value, result.Key);
+      foreach (var calc in calculators) {
+        foreach (var result in calc.Calculate())
+          results[result.Name] = RunCreationClient.Instance.ConvertToValue(result.Value, result.Name);
       }
       var matrix = (characteristicsMatrixView.Content as StringMatrix) ?? (new StringMatrix(results.Count, 3));
       for (var i = 0; i < matrix.Rows; i++) {
@@ -230,9 +251,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
           counter--;
         }
       }
-      SetEnabledStateOfControls();
-    }
-    private void calculatorListView_ItemChecked(object sender, ItemCheckedEventArgs e) {
+      characteristicsMatrixView.Content = matrix;
       SetEnabledStateOfControls();
     }
     #endregion

@@ -52,21 +52,23 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.parametersTabPage = new System.Windows.Forms.TabPage();
       this.parameterCollectionView = new HeuristicLab.Core.Views.ParameterCollectionView();
       this.characteristicsTabPage = new System.Windows.Forms.TabPage();
-      this.characteristicSplitContainer = new System.Windows.Forms.SplitContainer();
-      this.calculatorListView = new System.Windows.Forms.ListView();
-      this.characteristicColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-      this.calculateButton = new System.Windows.Forms.Button();
-      this.characteristicsMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       this.uploadCharacteristicsButton = new System.Windows.Forms.Button();
       this.downloadCharacteristicsButton = new System.Windows.Forms.Button();
+      this.flaAnalysisTabPage = new System.Windows.Forms.TabPage();
+      this.calculatorListView = new System.Windows.Forms.ListView();
+      this.calculateButton = new System.Windows.Forms.Button();
+      this.calculatorSplitContainer = new System.Windows.Forms.SplitContainer();
+      this.calculatorViewHost = new HeuristicLab.MainForm.WindowsForms.ViewHost();
+      this.characteristicsMatrixView = new HeuristicLab.Data.Views.StringConvertibleMatrixView();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
       this.tabControl.SuspendLayout();
       this.parametersTabPage.SuspendLayout();
       this.characteristicsTabPage.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.characteristicSplitContainer)).BeginInit();
-      this.characteristicSplitContainer.Panel1.SuspendLayout();
-      this.characteristicSplitContainer.Panel2.SuspendLayout();
-      this.characteristicSplitContainer.SuspendLayout();
+      this.flaAnalysisTabPage.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.calculatorSplitContainer)).BeginInit();
+      this.calculatorSplitContainer.Panel1.SuspendLayout();
+      this.calculatorSplitContainer.Panel2.SuspendLayout();
+      this.calculatorSplitContainer.SuspendLayout();
       this.SuspendLayout();
       // 
       // nameTextBox
@@ -137,6 +139,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl.Controls.Add(this.parametersTabPage);
       this.tabControl.Controls.Add(this.characteristicsTabPage);
+      this.tabControl.Controls.Add(this.flaAnalysisTabPage);
       this.tabControl.Location = new System.Drawing.Point(6, 53);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
@@ -169,7 +172,7 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       // 
       // characteristicsTabPage
       // 
-      this.characteristicsTabPage.Controls.Add(this.characteristicSplitContainer);
+      this.characteristicsTabPage.Controls.Add(this.characteristicsMatrixView);
       this.characteristicsTabPage.Controls.Add(this.uploadCharacteristicsButton);
       this.characteristicsTabPage.Controls.Add(this.downloadCharacteristicsButton);
       this.characteristicsTabPage.Location = new System.Drawing.Point(4, 22);
@@ -179,73 +182,6 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.characteristicsTabPage.TabIndex = 1;
       this.characteristicsTabPage.Text = "Characteristics";
       this.characteristicsTabPage.UseVisualStyleBackColor = true;
-      // 
-      // characteristicSplitContainer
-      // 
-      this.characteristicSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.characteristicSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-      this.characteristicSplitContainer.Location = new System.Drawing.Point(0, 35);
-      this.characteristicSplitContainer.Name = "characteristicSplitContainer";
-      // 
-      // characteristicSplitContainer.Panel1
-      // 
-      this.characteristicSplitContainer.Panel1.Controls.Add(this.calculatorListView);
-      this.characteristicSplitContainer.Panel1.Controls.Add(this.calculateButton);
-      // 
-      // characteristicSplitContainer.Panel2
-      // 
-      this.characteristicSplitContainer.Panel2.Controls.Add(this.characteristicsMatrixView);
-      this.characteristicSplitContainer.Size = new System.Drawing.Size(692, 279);
-      this.characteristicSplitContainer.SplitterDistance = 221;
-      this.characteristicSplitContainer.TabIndex = 2;
-      // 
-      // calculatorListView
-      // 
-      this.calculatorListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.calculatorListView.CheckBoxes = true;
-      this.calculatorListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.characteristicColumnHeader});
-      this.calculatorListView.Location = new System.Drawing.Point(3, 0);
-      this.calculatorListView.Name = "calculatorListView";
-      this.calculatorListView.Size = new System.Drawing.Size(215, 244);
-      this.calculatorListView.TabIndex = 0;
-      this.calculatorListView.UseCompatibleStateImageBehavior = false;
-      this.calculatorListView.View = System.Windows.Forms.View.Details;
-      this.calculatorListView.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.calculatorListView_ItemChecked);
-      // 
-      // characteristicColumnHeader
-      // 
-      this.characteristicColumnHeader.Text = "Characteristic";
-      this.characteristicColumnHeader.Width = 211;
-      // 
-      // calculateButton
-      // 
-      this.calculateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.calculateButton.Location = new System.Drawing.Point(6, 250);
-      this.calculateButton.Name = "calculateButton";
-      this.calculateButton.Size = new System.Drawing.Size(212, 23);
-      this.calculateButton.TabIndex = 0;
-      this.calculateButton.Text = "Calculate";
-      this.calculateButton.UseVisualStyleBackColor = true;
-      this.calculateButton.Click += new System.EventHandler(this.calculateButton_Click);
-      // 
-      // characteristicsMatrixView
-      // 
-      this.characteristicsMatrixView.Caption = "StringConvertibleMatrix View";
-      this.characteristicsMatrixView.Content = null;
-      this.characteristicsMatrixView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.characteristicsMatrixView.Location = new System.Drawing.Point(0, 0);
-      this.characteristicsMatrixView.Name = "characteristicsMatrixView";
-      this.characteristicsMatrixView.ReadOnly = false;
-      this.characteristicsMatrixView.ShowRowsAndColumnsTextBox = false;
-      this.characteristicsMatrixView.ShowStatisticalInformation = false;
-      this.characteristicsMatrixView.Size = new System.Drawing.Size(467, 279);
-      this.characteristicsMatrixView.TabIndex = 1;
       // 
       // uploadCharacteristicsButton
       // 
@@ -266,6 +202,90 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.downloadCharacteristicsButton.Text = "Download";
       this.downloadCharacteristicsButton.UseVisualStyleBackColor = true;
       this.downloadCharacteristicsButton.Click += new System.EventHandler(this.downloadCharacteristicsButton_Click);
+      // 
+      // flaAnalysisTabPage
+      // 
+      this.flaAnalysisTabPage.Controls.Add(this.calculatorSplitContainer);
+      this.flaAnalysisTabPage.Location = new System.Drawing.Point(4, 22);
+      this.flaAnalysisTabPage.Name = "flaAnalysisTabPage";
+      this.flaAnalysisTabPage.Padding = new System.Windows.Forms.Padding(3);
+      this.flaAnalysisTabPage.Size = new System.Drawing.Size(692, 314);
+      this.flaAnalysisTabPage.TabIndex = 2;
+      this.flaAnalysisTabPage.Text = "FLA Analysis";
+      this.flaAnalysisTabPage.UseVisualStyleBackColor = true;
+      // 
+      // calculatorListView
+      // 
+      this.calculatorListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.calculatorListView.HideSelection = false;
+      this.calculatorListView.Location = new System.Drawing.Point(0, 0);
+      this.calculatorListView.Name = "calculatorListView";
+      this.calculatorListView.Size = new System.Drawing.Size(225, 276);
+      this.calculatorListView.TabIndex = 1;
+      this.calculatorListView.UseCompatibleStateImageBehavior = false;
+      this.calculatorListView.View = System.Windows.Forms.View.List;
+      this.calculatorListView.SelectedIndexChanged += new System.EventHandler(this.calculatorListView_SelectedIndexChanged);
+      // 
+      // calculateButton
+      // 
+      this.calculateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.calculateButton.Location = new System.Drawing.Point(0, 282);
+      this.calculateButton.Name = "calculateButton";
+      this.calculateButton.Size = new System.Drawing.Size(225, 23);
+      this.calculateButton.TabIndex = 2;
+      this.calculateButton.Text = "Calculate";
+      this.calculateButton.UseVisualStyleBackColor = true;
+      this.calculateButton.Click += new System.EventHandler(this.calculateButton_Click);
+      // 
+      // calculatorSplitContainer
+      // 
+      this.calculatorSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.calculatorSplitContainer.Location = new System.Drawing.Point(3, 3);
+      this.calculatorSplitContainer.Name = "calculatorSplitContainer";
+      // 
+      // calculatorSplitContainer.Panel1
+      // 
+      this.calculatorSplitContainer.Panel1.Controls.Add(this.calculatorListView);
+      this.calculatorSplitContainer.Panel1.Controls.Add(this.calculateButton);
+      // 
+      // calculatorSplitContainer.Panel2
+      // 
+      this.calculatorSplitContainer.Panel2.Controls.Add(this.calculatorViewHost);
+      this.calculatorSplitContainer.Size = new System.Drawing.Size(686, 308);
+      this.calculatorSplitContainer.SplitterDistance = 228;
+      this.calculatorSplitContainer.TabIndex = 3;
+      // 
+      // calculatorViewHost
+      // 
+      this.calculatorViewHost.Caption = "View";
+      this.calculatorViewHost.Content = null;
+      this.calculatorViewHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.calculatorViewHost.Enabled = false;
+      this.calculatorViewHost.Location = new System.Drawing.Point(0, 0);
+      this.calculatorViewHost.Name = "calculatorViewHost";
+      this.calculatorViewHost.ReadOnly = false;
+      this.calculatorViewHost.Size = new System.Drawing.Size(454, 308);
+      this.calculatorViewHost.TabIndex = 0;
+      this.calculatorViewHost.ViewsLabelVisible = true;
+      this.calculatorViewHost.ViewType = null;
+      // 
+      // characteristicsMatrixView
+      // 
+      this.characteristicsMatrixView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.characteristicsMatrixView.Caption = "StringConvertibleMatrix View";
+      this.characteristicsMatrixView.Content = null;
+      this.characteristicsMatrixView.Location = new System.Drawing.Point(3, 35);
+      this.characteristicsMatrixView.Name = "characteristicsMatrixView";
+      this.characteristicsMatrixView.ReadOnly = false;
+      this.characteristicsMatrixView.ShowRowsAndColumnsTextBox = false;
+      this.characteristicsMatrixView.ShowStatisticalInformation = false;
+      this.characteristicsMatrixView.Size = new System.Drawing.Size(686, 276);
+      this.characteristicsMatrixView.TabIndex = 2;
       // 
       // OKBProblemView
       // 
@@ -290,10 +310,11 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
       this.tabControl.ResumeLayout(false);
       this.parametersTabPage.ResumeLayout(false);
       this.characteristicsTabPage.ResumeLayout(false);
-      this.characteristicSplitContainer.Panel1.ResumeLayout(false);
-      this.characteristicSplitContainer.Panel2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.characteristicSplitContainer)).EndInit();
-      this.characteristicSplitContainer.ResumeLayout(false);
+      this.flaAnalysisTabPage.ResumeLayout(false);
+      this.calculatorSplitContainer.Panel1.ResumeLayout(false);
+      this.calculatorSplitContainer.Panel2.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.calculatorSplitContainer)).EndInit();
+      this.calculatorSplitContainer.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -309,13 +330,14 @@ namespace HeuristicLab.Clients.OKB.RunCreation {
     private System.Windows.Forms.TabPage parametersTabPage;
     private System.Windows.Forms.TabPage characteristicsTabPage;
     private Core.Views.ParameterCollectionView parameterCollectionView;
-    private Data.Views.StringConvertibleMatrixView characteristicsMatrixView;
     private System.Windows.Forms.Button uploadCharacteristicsButton;
     private System.Windows.Forms.Button downloadCharacteristicsButton;
-    private System.Windows.Forms.SplitContainer characteristicSplitContainer;
+    private System.Windows.Forms.TabPage flaAnalysisTabPage;
     private System.Windows.Forms.ListView calculatorListView;
-    private System.Windows.Forms.ColumnHeader characteristicColumnHeader;
     private System.Windows.Forms.Button calculateButton;
+    private System.Windows.Forms.SplitContainer calculatorSplitContainer;
+    private MainForm.WindowsForms.ViewHost calculatorViewHost;
+    private Data.Views.StringConvertibleMatrixView characteristicsMatrixView;
 
 
   }

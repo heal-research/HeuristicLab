@@ -21,11 +21,14 @@
 
 using System.Collections.Generic;
 using HeuristicLab.Core;
+using HeuristicLab.Data;
 
 namespace HeuristicLab.Optimization {
-  public interface ICharacteristicCalculator : INamedItem {
-    IEnumerable<string> Characteristics { get; }
-    bool CanCalculate(IProblem problem);
-    IEnumerable<KeyValuePair<string, IItem>> Calculate(IProblem problem, IEnumerable<string> characteristics = null);
+  public interface ICharacteristicCalculator : IParameterizedNamedItem {
+    IProblem Problem { get; set; }
+    ReadOnlyCheckedItemList<StringValue> Characteristics { get; }
+
+    bool CanCalculate();
+    IEnumerable<IResult> Calculate();
   }
 }
