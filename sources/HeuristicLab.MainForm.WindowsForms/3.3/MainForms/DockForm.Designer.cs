@@ -65,6 +65,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
             this.cloneToolStripMenuItem});
       this.contextMenuStrip.Name = "contextMenuStrip";
       this.contextMenuStrip.Size = new System.Drawing.Size(167, 120);
+      this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
       // 
       // closeToolStripMenuItem
       // 

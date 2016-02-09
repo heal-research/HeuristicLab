@@ -115,25 +115,30 @@ namespace HeuristicLab.MainForm.WindowsForms {
     #endregion
 
     #region Context Menu Events
+    private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+      var contentView = View as IContentView;
+      var content = contentView != null ? contentView.Content : null;
+
+      cloneToolStripMenuItem.Enabled = contentView != null && !contentView.Locked && content is IDeepCloneable;
+    }
+
     private void closeToolStripMenuItem_Click(object sender, EventArgs e) {
       Close();
     }
     private void closeAllToolStripMenuItem_Click(object sender, EventArgs e) {
-      foreach (var dockForm in CurrentDockForms.ToList()) {
+      foreach (var dockForm in CurrentDockForms) {
         dockForm.Close();
       }
     }
     private void closeAllButThisToolStripMenuItem_Click(object sender, EventArgs e) {
-      foreach (var dockForm in CurrentDockForms.Except(this.ToEnumerable()).ToList()) {
+      foreach (var dockForm in CurrentDockForms.Except(this.ToEnumerable())) {
         dockForm.Close();
       }
     }
     private IEnumerable<DockForm> CurrentDockForms {
       get {
-        return DockPanel.ActivePane.IsActiveDocumentPane
-            ? DockPanel.Documents.OfType<DockForm>()
-            : DockPanel.ActivePane.Contents.OfType<DockForm>();
-        // ActivePane.Contents contains all dockforms if ActivePane is the main DocumentPane
+        var dockForms = Pane.Contents.OfType<DockForm>().Where(c => c.Pane == Pane); // Pane.Contents contains DockForms that are not placed on that pane
+        return dockForms.ToList(); // .ToList() necessary because closing a DockForm removes it from the Content collection
       }
     }
 
@@ -145,7 +150,10 @@ namespace HeuristicLab.MainForm.WindowsForms {
       if (cloneable == null) return;
 
       var clone = (IContent)cloneable.Clone();
-      MainFormManager.MainForm.ShowContent(clone);
+
+      var viewHost = contentView as ViewHost;
+      var newView = viewHost != null ? viewHost.ViewType : contentView.GetType();
+      MainFormManager.MainForm.ShowContent(clone, newView);
     }
     #endregion
   }
