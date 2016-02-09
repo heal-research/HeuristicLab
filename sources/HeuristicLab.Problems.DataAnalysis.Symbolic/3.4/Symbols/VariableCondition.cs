@@ -99,7 +99,6 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
         if (value == null) throw new ArgumentNullException();
         allVariableNames.Clear();
         allVariableNames.AddRange(value);
-        VariableNames = value;
       }
     }
 
