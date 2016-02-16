@@ -455,37 +455,42 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     #region create menu and toolbar
     private void CreateGUI() {
-      IEnumerable<object> allUserInterfaceItems = ApplicationManager.Manager.GetInstances(userInterfaceItemType);
+      if (userInterfaceItemType != null) {
+        IEnumerable<object> allUserInterfaceItems = ApplicationManager.Manager.GetInstances(userInterfaceItemType);
 
-      IEnumerable<IPositionableUserInterfaceItem> toolStripMenuItems =
-        from mi in allUserInterfaceItems
-        where (mi is IPositionableUserInterfaceItem) &&
-              (mi is IMenuItem || mi is IMenuSeparatorItem)
-        orderby ((IPositionableUserInterfaceItem)mi).Position
-        select (IPositionableUserInterfaceItem)mi;
+        IEnumerable<IPositionableUserInterfaceItem> toolStripMenuItems =
+          from mi in allUserInterfaceItems
+          where (mi is IPositionableUserInterfaceItem) &&
+                (mi is IMenuItem || mi is IMenuSeparatorItem)
+          orderby ((IPositionableUserInterfaceItem)mi).Position
+          select (IPositionableUserInterfaceItem)mi;
 
-      foreach (IPositionableUserInterfaceItem menuItem in toolStripMenuItems) {
-        if (menuItem is IMenuItem)
-          AddToolStripMenuItem((IMenuItem)menuItem);
-        else if (menuItem is IMenuSeparatorItem)
-          AddToolStripMenuItem((IMenuSeparatorItem)menuItem);
+        foreach (IPositionableUserInterfaceItem menuItem in toolStripMenuItems) {
+          if (menuItem is IMenuItem)
+            AddToolStripMenuItem((IMenuItem)menuItem);
+          else if (menuItem is IMenuSeparatorItem)
+            AddToolStripMenuItem((IMenuSeparatorItem)menuItem);
+        }
+
+        IEnumerable<IPositionableUserInterfaceItem> toolStripButtonItems =
+          from bi in allUserInterfaceItems
+          where (bi is IPositionableUserInterfaceItem) &&
+                (bi is IToolBarItem || bi is IToolBarSeparatorItem)
+          orderby ((IPositionableUserInterfaceItem)bi).Position
+          select (IPositionableUserInterfaceItem)bi;
+
+        foreach (IPositionableUserInterfaceItem toolStripButtonItem in toolStripButtonItems) {
+          if (toolStripButtonItem is IToolBarItem)
+            AddToolStripButtonItem((IToolBarItem)toolStripButtonItem);
+          else if (toolStripButtonItem is IToolBarSeparatorItem)
+            AddToolStripButtonItem((IToolBarSeparatorItem)toolStripButtonItem);
+        }
+
       }
-
-      IEnumerable<IPositionableUserInterfaceItem> toolStripButtonItems =
-        from bi in allUserInterfaceItems
-        where (bi is IPositionableUserInterfaceItem) &&
-              (bi is IToolBarItem || bi is IToolBarSeparatorItem)
-        orderby ((IPositionableUserInterfaceItem)bi).Position
-        select (IPositionableUserInterfaceItem)bi;
-
-      foreach (IPositionableUserInterfaceItem toolStripButtonItem in toolStripButtonItems) {
-        if (toolStripButtonItem is IToolBarItem)
-          AddToolStripButtonItem((IToolBarItem)toolStripButtonItem);
-        else if (toolStripButtonItem is IToolBarSeparatorItem)
-          AddToolStripButtonItem((IToolBarSeparatorItem)toolStripButtonItem);
-      }
-
       this.AdditionalCreationOfGuiElements();
+
+      if (menuStrip.Items.Count == 0) menuStrip.Visible = false;
+      if (toolStrip.Items.Count == 0) toolStrip.Visible = false;
     }
 
     protected virtual void AdditionalCreationOfGuiElements() {
@@ -554,7 +559,8 @@ namespace HeuristicLab.MainForm.WindowsForms {
       System.Windows.Forms.ToolStripItem item = (System.Windows.Forms.ToolStripItem)sender;
       try {
         ((IActionUserInterfaceItem)item.Tag).Execute();
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         ErrorHandling.ShowErrorDialog((Control)MainFormManager.MainForm, ex);
       }
     }
