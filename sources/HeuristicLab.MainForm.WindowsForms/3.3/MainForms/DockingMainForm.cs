@@ -24,13 +24,18 @@ using System.Windows.Forms;
 
 namespace HeuristicLab.MainForm.WindowsForms {
   public partial class DockingMainForm : MainForm {
+
+    public bool AllowContexMenu { get; set; }
+
     public DockingMainForm()
       : base() {
       InitializeComponent();
+      AllowContexMenu = true;
     }
     public DockingMainForm(Type userInterfaceItemType)
       : base(userInterfaceItemType) {
       InitializeComponent();
+      AllowContexMenu = true;
     }
     public DockingMainForm(Type userInterfaceItemType, bool showContentInViewHost)
       : this(userInterfaceItemType) {
@@ -59,7 +64,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     }
 
     protected override Form CreateForm(IView view) {
-      return new DockForm(view);
+      return new DockForm(view, AllowContexMenu);
     }
 
     private void dockPanel_ActiveContentChanged(object sender, EventArgs e) {

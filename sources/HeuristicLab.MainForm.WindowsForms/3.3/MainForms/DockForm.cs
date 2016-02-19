@@ -31,9 +31,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
   /// Displays the used view.
   /// </summary>
   internal partial class DockForm : DockContent {
-    public DockForm(IView view) {
+    public DockForm(IView view, bool allowContextMenu) {
       InitializeComponent();
       this.view = view;
+      this.allowContextMenu = allowContextMenu;
+
       if (view != null) {
         if (view is UserControl) {
           switch (((UserControl)view).Dock) {
@@ -89,6 +91,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
     public IView View {
       get { return this.view; }
     }
+    private readonly bool allowContextMenu;
 
     private void UpdateText() {
       if (InvokeRequired)
@@ -116,6 +119,11 @@ namespace HeuristicLab.MainForm.WindowsForms {
 
     #region Context Menu Events
     private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+      if (!allowContextMenu) {
+        e.Cancel = true;
+        return;
+      }
+
       var contentView = View as IContentView;
       var content = contentView != null ? contentView.Content : null;
 
