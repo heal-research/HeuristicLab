@@ -213,7 +213,7 @@ namespace HeuristicLab.MainForm.WindowsForms {
       throw new NotImplementedException("CreateForm must be implemented in subclasses of MainForm.");
     }
 
-    internal Form GetForm(IView view) {
+    protected internal Form GetForm(IView view) {
       if (views.ContainsKey(view))
         return views[view];
       return null;
