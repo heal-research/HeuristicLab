@@ -55,9 +55,17 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
     public IFixedValueParameter<MultiObjectiveOptimizationSupportScript> SupportScriptParameter {
       get { return (IFixedValueParameter<MultiObjectiveOptimizationSupportScript>)Parameters["SupportScript"]; }
     }
+
+    private IFixedValueParameter<BoolArray> MaximizationParameter {
+      get { return (IFixedValueParameter<BoolArray>)Parameters["Maximization"]; }
+    }
     #endregion
 
     #region Properties
+    public new IEncoding Encoding {
+      get { return base.Encoding; }
+      set { base.Encoding = value; }
+    }
     public EvaluationCache Cache {
       get { return CacheParameter.Value; }
     }
@@ -96,6 +104,13 @@ namespace HeuristicLab.Problems.ExternalEvaluation {
       get {
         return Parameters.ContainsKey("Maximization") ? ((IValueParameter<BoolArray>)Parameters["Maximization"]).Value.ToArray() : new bool[0];
       }
+    }
+
+    public virtual void SetMaximization(bool[] maximization) {
+      ((IStringConvertibleArray)MaximizationParameter.Value).Length = maximization.Length;
+      var array = MaximizationParameter.Value;
+      for (var i = 0; i < maximization.Length; i++)
+        array[i] = maximization[i];
     }
 
     public override double[] Evaluate(Individual individual, IRandom random) {
