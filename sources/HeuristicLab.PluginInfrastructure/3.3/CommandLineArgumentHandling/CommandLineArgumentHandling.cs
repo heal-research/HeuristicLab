@@ -42,7 +42,7 @@ namespace HeuristicLab.PluginInfrastructure {
     }
 
     private static ICommandLineArgument ParseArgument(string entry) {
-      var regex = new Regex(@"^/[A-Za-z]+(:[\w]+)?$");
+      var regex = new Regex(@"^/[A-Za-z]+(:\w[\w\s]*)?$");
       bool isFile = File.Exists(entry);
       if (!regex.IsMatch(entry) && !isFile) return null;
       if (!isFile) {
