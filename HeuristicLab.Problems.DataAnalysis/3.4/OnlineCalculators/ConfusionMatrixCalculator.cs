@@ -26,6 +26,10 @@ using System.Linq;
 namespace HeuristicLab.Problems.DataAnalysis {
   public class ConfusionMatrixCalculator {
     public static double[,] Calculate(IEnumerable<double> originalValues, IEnumerable<double> estimatedValues, out OnlineCalculatorError errorState) {
+      if (!originalValues.Any() || !estimatedValues.Any()) {
+        errorState = OnlineCalculatorError.InsufficientElementsAdded;
+        return null;
+      }
 
       Dictionary<double, int> classValueIndexMapping = new Dictionary<double, int>();
       int index = 0;
