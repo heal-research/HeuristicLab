@@ -62,7 +62,7 @@ namespace HeuristicLab.Data.Views {
             | System.Windows.Forms.AnchorStyles.Right)));
       this.valueTextBox.Location = new System.Drawing.Point(17, 0);
       this.valueTextBox.Name = "valueTextBox";
-      this.valueTextBox.Size = new System.Drawing.Size(135, 20);
+      this.valueTextBox.Size = new System.Drawing.Size(132, 20);
       this.valueTextBox.TabIndex = 2;
       this.valueTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.valueTextBox_KeyDown);
       this.valueTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.valueTextBox_Validating);
