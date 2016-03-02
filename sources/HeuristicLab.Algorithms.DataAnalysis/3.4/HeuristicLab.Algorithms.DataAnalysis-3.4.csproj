@@ -202,6 +202,7 @@
     <Compile Include="GaussianProcess\GaussianProcessRegression.cs" />
     <Compile Include="GaussianProcess\GaussianProcessRegressionSolution.cs" />
     <Compile Include="GaussianProcess\ICovarianceFunction.cs" />
+    <Compile Include="GBM\GradientBoostingRegressionAlgorithm.cs" />
     <Compile Include="GradientBoostedTrees\IGradientBoostedTreesModel.cs" />
     <Compile Include="GradientBoostedTrees\GradientBoostedTreesModelSurrogate.cs" />
     <Compile Include="GradientBoostedTrees\GradientBoostedTreesAlgorithm.cs" />
