@@ -253,6 +253,16 @@
     <Compile Include="Linear\MultinomialLogitClassification.cs" />
     <Compile Include="Linear\MultinomialLogitClassificationSolution.cs" />
     <Compile Include="Linear\MultinomialLogitModel.cs" />
+    <Compile Include="MctsSymbolicRegression\Automaton.cs" />
+    <Compile Include="MctsSymbolicRegression\CodeGenerator.cs" />
+    <Compile Include="MctsSymbolicRegression\ConstraintHandler.cs" />
+    <Compile Include="MctsSymbolicRegression\Disassembler.cs" />
+    <Compile Include="MctsSymbolicRegression\ExpressionEvaluator.cs" />
+    <Compile Include="MctsSymbolicRegression\MctsSymbolicRegressionAlgorithm.cs" />
+    <Compile Include="MctsSymbolicRegression\MctsSymbolicRegressionStatic.cs" />
+    <Compile Include="MctsSymbolicRegression\OpCodes.cs" />
+    <Compile Include="MctsSymbolicRegression\SymbolicExpressionGenerator.cs" />
+    <Compile Include="MctsSymbolicRegression\Tree.cs" />
     <Compile Include="Nca\Initialization\INcaInitializer.cs" />
     <Compile Include="Nca\Initialization\LdaInitializer.cs" />
     <Compile Include="Nca\Initialization\NcaInitializer.cs" />
