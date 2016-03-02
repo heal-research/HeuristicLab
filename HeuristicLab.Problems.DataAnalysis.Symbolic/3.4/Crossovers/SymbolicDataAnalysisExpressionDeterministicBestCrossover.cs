@@ -33,6 +33,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                       "- Take two parent individuals P0 and P1\n" +
                                       "- Randomly choose a crossover point C from P0\n" +
                                       "- Test all nodes from P1 to determine the one that produces the best child when inserted at place C in P0")]
+  [StorableClass]
   public sealed class SymbolicDataAnalysisExpressionDeterministicBestCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     [StorableConstructor]
     private SymbolicDataAnalysisExpressionDeterministicBestCrossover(bool deserializing) : base(deserializing) { }

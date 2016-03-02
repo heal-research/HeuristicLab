@@ -30,6 +30,7 @@ using HeuristicLab.Parameters;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Problems.Orienteering {
+  [StorableClass]
   public sealed class BestOrienteeringSolutionAnalyzer : SingleSuccessorOperator, IAnalyzer {
     public bool EnabledByDefault {
       get { return true; }

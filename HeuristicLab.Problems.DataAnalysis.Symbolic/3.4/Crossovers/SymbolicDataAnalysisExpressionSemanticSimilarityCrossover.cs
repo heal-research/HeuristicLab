@@ -36,6 +36,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                        "- Randomly choose a node N from the P0\n" +
                                        "- Find the first node M that satisfies the semantic similarity criteria\n" +
                                        "- Swap N for M and return P0")]
+  [StorableClass]
   public sealed class SymbolicDataAnalysisExpressionSemanticSimilarityCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     private const string SemanticSimilarityRangeParameterName = "SemanticSimilarityRange";
 

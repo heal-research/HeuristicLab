@@ -24,6 +24,7 @@ using HeuristicLab.Common;
 using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 
 namespace HeuristicLab.Encodings.SymbolicExpressionTreeEncoding {
+  [StorableClass]
   public sealed class SimpleSymbolicExpressionGrammar : SymbolicExpressionGrammar {
     [StorableConstructor]
     private SimpleSymbolicExpressionGrammar(bool deserializing) : base(deserializing) { }

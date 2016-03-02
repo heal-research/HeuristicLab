@@ -26,7 +26,6 @@ using HeuristicLab.Core;
 using HeuristicLab.Data;
 using HeuristicLab.Encodings.BinaryVectorEncoding;
 using HeuristicLab.Parameters;
-using HeuristicLab.Persistence.Default.CompositeSerializers.Storable;
 using HeuristicLab.Problems.Binary;
 
 namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
@@ -60,8 +59,6 @@ namespace HeuristicLab.Algorithms.ParameterlessPopulationPyramid {
     }
     #endregion
 
-    [StorableConstructor]
-    private EvaluationTracker(bool deserializing) : base(deserializing) { }
     private EvaluationTracker(EvaluationTracker original, Cloner cloner)
       : base(original, cloner) {
       problem = cloner.Clone(original.problem);

@@ -35,6 +35,7 @@ namespace HeuristicLab.Problems.DataAnalysis.Symbolic {
                                             "- For each matching node M from P1, calculate the behavioral distance:\n" +
                                             "\t\tD(N,M) = 0.5 * ( abs(max(N) - max(M)) + abs(min(N) - min(M)) )\n" +
                                             "- Make a probabilistic weighted choice of node M from P1, based on the inversed and normalized behavioral distance")]
+  [StorableClass]
   public sealed class SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover<T> : SymbolicDataAnalysisExpressionCrossover<T> where T : class, IDataAnalysisProblemData {
     [StorableConstructor]
     private SymbolicDataAnalysisExpressionProbabilisticFunctionalCrossover(bool deserializing) : base(deserializing) { }
