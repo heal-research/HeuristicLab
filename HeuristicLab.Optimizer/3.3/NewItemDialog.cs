@@ -92,6 +92,7 @@ namespace HeuristicLab.Optimizer {
       isInitialized = true;
     }
 
+    #region Create Tree
     private TreeNode CreateCategoryTree(IEnumerable<IGrouping<string, Type>> categories) {
       imageList.Images.Add(VSImageLibrary.Class);      // default icon
       imageList.Images.Add(VSImageLibrary.Namespace);  // plugins
@@ -175,17 +176,10 @@ namespace HeuristicLab.Optimizer {
 
       return itemNode;
     }
+    #endregion
 
     private void NewItemDialog_Shown(object sender, EventArgs e) {
-      searchTextBox.Text = string.Empty;
-      searchTextBox.Focus();
-      SelectedType = null;
-      typesTreeView.SelectedNode = null;
-      UpdateDescription();
-
-      foreach (TreeNode node in typesTreeView.Nodes)
-        node.Expand();
-      typesTreeView.Nodes[0].EnsureVisible();
+      Reset();
     }
 
     public virtual void Filter(string searchString) {
@@ -220,6 +214,7 @@ namespace HeuristicLab.Optimizer {
 
         // select first item
         typesTreeView.BeginUpdate();
+        typesTreeView.ExpandAll();
         var firstNode = FirstVisibleNode;
         while (firstNode != null && !(firstNode.Tag is Type))
           firstNode = firstNode.NextVisibleNode;
@@ -242,15 +237,19 @@ namespace HeuristicLab.Optimizer {
 
     private bool FilterNode(TreeNode node, string[] searchTokens) {
       if (node.Tag is string) { // Category node
-        int i = 0;
-        while (i < node.Nodes.Count) {
-          bool remove = FilterNode(node.Nodes[i], searchTokens);
-          if (remove)
-            node.Nodes.RemoveAt(i);
-          else i++;
+        var text = node.Text;
+        if (searchTokens.Any(token => !text.ToLower().Contains(token))) {
+          int i = 0;
+          while (i < node.Nodes.Count) {
+            bool remove = FilterNode(node.Nodes[i], searchTokens);
+            if (remove)
+              node.Nodes.RemoveAt(i);
+            else i++;
+          }
         }
         return node.Nodes.Count == 0;
-      } if (node.Tag is Type) { // Type node
+      }
+      if (node.Tag is Type) { // Type node
         var text = node.Text;
         if (searchTokens.Any(searchToken => !text.ToLower().Contains(searchToken))) {
           var typeTag = (Type)node.Tag;
@@ -307,6 +306,8 @@ namespace HeuristicLab.Optimizer {
     #region Control Events
     protected virtual void searchTextBox_TextChanged(object sender, EventArgs e) {
       Filter(searchTextBox.Text);
+      if (string.IsNullOrWhiteSpace(searchTextBox.Text))
+        Reset();
     }
 
     protected virtual void itemsTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
@@ -332,13 +333,30 @@ namespace HeuristicLab.Optimizer {
     }
     private void SetTreeNodeVisibility() {
       TreeNode selectedNode = typesTreeView.SelectedNode;
-      if (string.IsNullOrEmpty(currentSearchString) && (typesTreeView.Nodes.Count > 1)) {
+      if (string.IsNullOrWhiteSpace(currentSearchString) && (typesTreeView.Nodes.Count > 1)) {
         typesTreeView.CollapseAll();
         if (selectedNode != null) typesTreeView.SelectedNode = selectedNode;
       } else {
         typesTreeView.ExpandAll();
       }
-      if (selectedNode != null) selectedNode.EnsureVisible();
+      if (selectedNode != null) {
+        typesTreeView.Nodes[0].EnsureVisible(); // scroll top first
+        selectedNode.EnsureVisible();
+      }
+    }
+    private void Reset() {
+      searchTextBox.Text = string.Empty;
+      searchTextBox.Focus();
+      SelectedType = null;
+      typesTreeView.SelectedNode = null;
+      UpdateDescription();
+
+      typesTreeView.BeginUpdate();
+      typesTreeView.CollapseAll();
+      foreach (TreeNode node in typesTreeView.Nodes)
+        node.Expand();
+      typesTreeView.Nodes[0].EnsureVisible();
+      typesTreeView.EndUpdate();
     }
     #endregion
 
