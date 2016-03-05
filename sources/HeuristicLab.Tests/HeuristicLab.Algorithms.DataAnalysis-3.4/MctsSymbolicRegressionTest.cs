@@ -503,7 +503,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       #region Algorithm Configuration
       mctsSymbReg.Problem = regProblem;
       mctsSymbReg.Iterations = iterations;
-      mctsSymbReg.MaxSize = 10;
+      mctsSymbReg.MaxVariableReferences = 10;
       mctsSymbReg.C = 2; // less greedy
       mctsSymbReg.SetSeedRandomly = false;
       mctsSymbReg.Seed = 1234;
@@ -538,7 +538,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis {
       mctsSymbReg.Seed = 1234;
       mctsSymbReg.Problem = regProblem;
       mctsSymbReg.Iterations = int.MaxValue; // stopping when all solutions have been enumerated
-      mctsSymbReg.MaxSize = maxNumberOfVariables;
+      mctsSymbReg.MaxVariableReferences = maxNumberOfVariables;
       mctsSymbReg.C = 1000; // essentially breath first seach
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.StartsWith("prod")), allowProd);
       mctsSymbReg.AllowedFactors.SetItemCheckedState(mctsSymbReg.AllowedFactors.Single(s => s.Value.Contains("exp")), allowExp);
