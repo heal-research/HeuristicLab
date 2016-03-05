@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using HeuristicLab.Analysis;
+using HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm;
 using HeuristicLab.Common;
 using HeuristicLab.Core;
 using HeuristicLab.Data;
@@ -36,6 +37,7 @@ using HeuristicLab.Problems.DataAnalysis;
 using HeuristicLab.Problems.DataAnalysis.Symbolic;
 using HeuristicLab.Problems.DataAnalysis.Symbolic.Regression;
 using HeuristicLab.Random;
+using HeuristicLab.Selection;
 
 namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
   [Item("Gradient Boosting Machine Regression (GBM)",
@@ -171,10 +173,12 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
     public GradientBoostingRegressionAlgorithm() {
       Problem = new RegressionProblem(); // default problem
       var mctsSymbReg = new MctsSymbolicRegressionAlgorithm();
-      // var sgp = CreateSGP();
+      mctsSymbReg.Iterations = 10000;
+      mctsSymbReg.StoreAlgorithmInEachRun = false;
+      var sgp = CreateOSGP();
       var regressionAlgs = new ItemSet<IAlgorithm>(new IAlgorithm[] {
-        new LinearRegression(), new RandomForestRegression(), new NearestNeighbourRegression(),
-        // sgp, 
+        new RandomForestRegression(),
+        sgp, 
         mctsSymbReg
       });
       foreach (var alg in regressionAlgs) alg.Prepare();
@@ -319,7 +323,27 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       }
     }
 
-    // this is probably slow as hell
+
+    private IAlgorithm CreateOSGP() {
+      // configure strict osgp
+      var alg = new OffspringSelectionGeneticAlgorithm.OffspringSelectionGeneticAlgorithm();
+      var prob = new SymbolicRegressionSingleObjectiveProblem();
+      prob.MaximumSymbolicExpressionTreeDepth.Value = 7;
+      prob.MaximumSymbolicExpressionTreeLength.Value = 15;
+      alg.Problem = prob;
+      alg.SuccessRatio.Value = 1.0;
+      alg.ComparisonFactorLowerBound.Value = 1.0;
+      alg.ComparisonFactorUpperBound.Value = 1.0;
+      alg.MutationProbability.Value = 0.15;
+      alg.PopulationSize.Value = 200;
+      alg.MaximumSelectionPressure.Value = 100;
+      alg.MaximumEvaluatedSolutions.Value = 20000;
+      alg.SelectorParameter.Value = alg.SelectorParameter.ValidValues.OfType<GenderSpecificSelector>().First();
+      alg.MutatorParameter.Value = alg.MutatorParameter.ValidValues.OfType<MultiSymbolicExpressionTreeManipulator>().First();
+      alg.StoreAlgorithmInEachRun = false;
+      return alg;
+    }
+
     private void SampleTrainingData(MersenneTwister rand, ModifiableDataset ds, int rRows,
       IDataset sourceDs, double[] curTarget, string targetVarName, IEnumerable<int> trainingIndices) {
       var selectedRows = trainingIndices.SampleRandomWithoutRepetition(rand, rRows).ToArray();
@@ -373,18 +397,7 @@ namespace HeuristicLab.Algorithms.DataAnalysis.MctsSymbolicRegression {
       if (prob != null) {
         prob.ProblemDataParameter.Value = problemData;
         return true;
-      } else if (alg.Problem != null) {
-        // a problem is set and it is not compatible
-        return false;
-      } else {
-        try {
-          // we try to use a symbolic regression problem (works for simple regression algs and GP)
-          alg.Problem = new SymbolicRegressionSingleObjectiveProblem();
-        } catch (Exception) {
-          return false;
-        }
-        return true;
-      }
+      } else return false;
     }
 
     private static bool TryExecute(IAlgorithm alg, string regressionAlgorithmResultName, out IRegressionModel model, out IRun run) {

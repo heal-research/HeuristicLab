@@ -321,6 +321,10 @@
       <Name>HeuristicLab.Algorithms.GradientDescent-3.3</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm\3.3\HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3.csproj">
+      <Project>{F409DD9E-1E9C-4EB1-AA3A-9F6E987C6E58}</Project>
+      <Name>HeuristicLab.Algorithms.OffspringSelectionGeneticAlgorithm-3.3</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\HeuristicLab.Analysis\3.3\HeuristicLab.Analysis-3.3.csproj">
       <Project>{887425B4-4348-49ED-A457-B7D2C26DDBF9}</Project>
       <Name>HeuristicLab.Analysis-3.3</Name>
@@ -419,6 +423,10 @@
       <Project>{F4539FB6-4708-40C9-BE64-0A1390AEA197}</Project>
       <Name>HeuristicLab.Random-3.3</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HeuristicLab.Selection\3.3\HeuristicLab.Selection-3.3.csproj">
+      <Project>{2C36CD4F-E5F5-43A4-801A-201EA895FE17}</Project>
+      <Name>HeuristicLab.Selection-3.3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
